@@ -60,6 +60,8 @@ private:
     DockRegion* region_ = nullptr;
     DockWindow* window_ = nullptr;
     QHash<Divider*, DividerItem*> divider_views_;
+    //! @brief 上一次同步归属本区域的分组（用于收口已离开的陈旧视图）
+    QSet<PanelGroup*> synced_groups_;
     bool syncing_ = false;
 };
 

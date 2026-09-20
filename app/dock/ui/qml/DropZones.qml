@@ -14,6 +14,20 @@ Item {
     property var zones: []
     //! @brief 目标分组描边：[{x, y, width, height}]，无效时不描边
     property var targetFrame: null
+    //! @brief 标签插入标记：[{x, y, width, height}]，无效时不显示
+    property var tabInsert: null
+
+    // 标签插入标记（悬停目标分组的标题栏/标签栏条带时显示竖线）
+    Rectangle {
+        visible: root.tabInsert !== null && root.tabInsert !== undefined
+            && root.tabInsert.width > 0
+        x: root.tabInsert ? root.tabInsert.x : 0
+        y: root.tabInsert ? root.tabInsert.y : 0
+        width: root.tabInsert ? root.tabInsert.width : 0
+        height: root.tabInsert ? root.tabInsert.height : 0
+        color: "#2f6fb5"
+        radius: 1
+    }
 
     // 目标分组描边（拖动悬停在哪一面板，哪一面板整体高亮）
     Rectangle {

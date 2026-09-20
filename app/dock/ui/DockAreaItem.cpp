@@ -18,6 +18,8 @@
 #include "tree/BoxNode.h"
 #include "tree/Divider.h"
 
+#include <utility>
+
 namespace dock::ui {
 
 DockAreaItem::DockAreaItem(QQuickItem* parent)
@@ -58,8 +60,12 @@ void DockAreaItem::setRegion(DockRegion* region)
     clearSeparatorViews();
 
     region_ = region;
-    if (!region_)
+    if (!region_) {
+        // 区域解绑：清除可能残留的落点浮层（避免蓝框/标记留在屏幕上）
+        if (auto* overlay = DockRuntime::instance().zonesOverlay())
+            overlay->clear(this);
         return;
+    }
 
     // 核心层先于视图销毁时（浮动窗口关闭），立即解除引用，避免悬空解引用
     connect(region_, &QObject::destroyed, this, [this] {
@@ -84,9 +90,33 @@ void DockAreaItem::sync()
 
     syncing_ = true;
 
+#ifdef QT_DEBUG
+    region_->validateTree();
+#endif
+
     // 分组视图：按布局树叶子节点同步几何与可见性
     QSet<PanelGroup*> groups;
     collectGroups(region_->rootNode(), groups);
+
+    // 收口陈旧视图：已离开本区域的分组视图立即隐藏并摘除，交由目标区域接管
+    for (PanelGroup* stale : std::as_const(synced_groups_)) {
+        if (groups.contains(stale))
+            continue;
+        PanelGroupItem* view = DockRuntime::instance().panelGroupItem(stale);
+        if (view && view->parentItem() == this) {
+            view->setVisible(false);
+            view->setParentItem(nullptr);
+        }
+    }
+    for (PanelGroup* group : std::as_const(groups)) {
+        if (!synced_groups_.contains(group)) {
+            connect(group, &QObject::destroyed, this, [this, group] {
+                synced_groups_.remove(group);
+            });
+        }
+    }
+    synced_groups_ = groups;
+
     for (PanelGroup* group : groups) {
         PanelGroupItem* view = DockRuntime::instance().panelGroupItem(group);
         if (!view)
@@ -218,7 +248,21 @@ void DockAreaItem::updateZoneRects()
     if (has_group) {
         target_frame = QRect(area_global.topLeft() + group_rect.topLeft(), group_rect.size());
     }
-    overlay->showZoneRects(hits, area_global, this, target_frame);
+
+    // 标签插入标记：悬停目标分组的标题栏/标签栏条带时绘制插入竖线
+    QRect tab_insert_global;
+    if (has_group && current == DropZone::Merge && drag.hoveredTabIndex() >= 0) {
+        if (PanelGroupItem* group_view
+            = DockRuntime::instance().panelGroupItem(drag.hoveredGroup())) {
+            const QRect marker = group_view->tabInsertMarkerRect(drag.hoveredTabIndex());
+            if (!marker.isNull()) {
+                const QPointF top_left = group_view->mapToGlobal(marker.topLeft());
+                tab_insert_global = QRect(top_left.toPoint(), marker.size());
+            }
+        }
+    }
+
+    overlay->showZoneRects(hits, area_global, this, target_frame, tab_insert_global);
 }
 
 }

@@ -30,6 +30,9 @@ class DockPanelItem : public QQuickItem, public DockView
     Q_PROPERTY(bool shown READ isPanelShown NOTIFY shownChanged)
     Q_PROPERTY(bool isDetached READ isDetached NOTIFY detachedChanged)
     Q_PROPERTY(QString source READ source WRITE setSource NOTIFY sourceChanged)
+    Q_PROPERTY(bool closable READ isClosable WRITE setClosable NOTIFY featuresChanged)
+    Q_PROPERTY(bool movable READ isMovable WRITE setMovable NOTIFY featuresChanged)
+    Q_PROPERTY(bool floatable READ isFloatable WRITE setFloatable NOTIFY featuresChanged)
 
 public:
     explicit DockPanelItem(QQuickItem* parent = nullptr);
@@ -49,6 +52,13 @@ public:
     bool isDetached() const;
     QString source() const { return source_; }
     void setSource(const QString& source);
+    //! @brief 能力位（默认全部开启；在创建控制器前设置也会生效）
+    bool isClosable() const;
+    void setClosable(bool closable);
+    bool isMovable() const;
+    void setMovable(bool movable);
+    bool isFloatable() const;
+    void setFloatable(bool floatable);
 
     Q_INVOKABLE void showPanel();
     Q_INVOKABLE void hidePanel();
@@ -75,6 +85,7 @@ Q_SIGNALS:
     void shownChanged();
     void detachedChanged();
     void sourceChanged();
+    void featuresChanged();
 
 protected:
     void componentComplete() override;
@@ -86,6 +97,9 @@ private:
     QString title_;
     QString source_;
     DockView* parent_view_ = nullptr;
+    bool closable_ = true;
+    bool movable_ = true;
+    bool floatable_ = true;
 };
 
 }

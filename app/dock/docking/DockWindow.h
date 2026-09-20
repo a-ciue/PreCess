@@ -57,6 +57,8 @@ public:
 Q_SIGNALS:
     //! @brief 标题变化
     void titleChanged(const QString& title);
+    //! @brief 承载分组变化（接管/释放分组时发出）
+    void groupChanged();
     //! @brief 几何变化（视图层同步窗口位置/尺寸）
     void geometryChanged(const QRect& geometry);
     //! @brief 窗口关闭

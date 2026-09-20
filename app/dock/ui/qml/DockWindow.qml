@@ -18,6 +18,7 @@ Rectangle {
         objectName: "areaHost"
         anchors.fill: parent
         anchors.margins: 1
+        clip: true
     }
 
     component ResizeHandle: MouseArea {

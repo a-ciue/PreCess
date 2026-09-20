@@ -83,6 +83,13 @@ public:
 
     //! @brief 按全局坐标命中分组（拖放悬停用）
     PanelGroup* groupAt(const QPoint& global_pos) const;
+    //! @brief 区域布局树内的全部分组（树序）
+    QList<PanelGroup*> groups() const;
+
+#ifdef QT_DEBUG
+    //! @brief 调试用：校验布局树父子一致性与无环，损坏时断言
+    void validateTree() const;
+#endif
 
 private:
     //! @brief 把节点插入到相对节点旁，必要时包一层同向容器

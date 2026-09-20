@@ -13,6 +13,8 @@ add_library(dock STATIC
     docking/PanelGroup.cpp
     docking/DockHost.cpp
     docking/DragProxy.cpp
+    docking/DropResolver.cpp
+    docking/DropTarget.h
     tree/LayoutNode.cpp
     tree/BoxNode.cpp
     tree/Divider.cpp

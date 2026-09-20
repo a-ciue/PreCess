@@ -67,6 +67,51 @@ void DockPanelItem::setSource(const QString& source)
     Q_EMIT sourceChanged();
 }
 
+bool DockPanelItem::isClosable() const
+{
+    return panel_ ? panel_->hasFeature(dock::DockPanel::Feature::Closable) : closable_;
+}
+
+void DockPanelItem::setClosable(bool closable)
+{
+    if (closable_ == closable)
+        return;
+    closable_ = closable;
+    if (panel_)
+        panel_->setFeature(dock::DockPanel::Feature::Closable, closable);
+    Q_EMIT featuresChanged();
+}
+
+bool DockPanelItem::isMovable() const
+{
+    return panel_ ? panel_->hasFeature(dock::DockPanel::Feature::Movable) : movable_;
+}
+
+void DockPanelItem::setMovable(bool movable)
+{
+    if (movable_ == movable)
+        return;
+    movable_ = movable;
+    if (panel_)
+        panel_->setFeature(dock::DockPanel::Feature::Movable, movable);
+    Q_EMIT featuresChanged();
+}
+
+bool DockPanelItem::isFloatable() const
+{
+    return panel_ ? panel_->hasFeature(dock::DockPanel::Feature::Floatable) : floatable_;
+}
+
+void DockPanelItem::setFloatable(bool floatable)
+{
+    if (floatable_ == floatable)
+        return;
+    floatable_ = floatable;
+    if (panel_)
+        panel_->setFeature(dock::DockPanel::Feature::Floatable, floatable);
+    Q_EMIT featuresChanged();
+}
+
 void DockPanelItem::showPanel()
 {
     if (panel_)
@@ -158,6 +203,11 @@ void DockPanelItem::componentComplete()
     if (!title_.isEmpty())
         panel_->setTitle(title_);
     panel_->setContentView(this);
+
+    // 应用 QML 声明的能力位（属性可能在 componentComplete 之前设置）
+    panel_->setFeature(dock::DockPanel::Feature::Closable, closable_);
+    panel_->setFeature(dock::DockPanel::Feature::Movable, movable_);
+    panel_->setFeature(dock::DockPanel::Feature::Floatable, floatable_);
 
     DockRuntime::instance().registerPanelContent(panel_, panel_content_item_);
 

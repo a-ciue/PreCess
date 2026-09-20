@@ -58,6 +58,15 @@ public:
     virtual QPoint globalOrigin() const = 0;
 
     /**
+     * @brief 标签插入位置查询（拖放用）
+     *
+     * 仅在视图承载的控制器为分组且光标位于其标题栏/标签栏条带时返回有效值：
+     * 0 表示插到第一个标签之前，count 表示追加到末尾；其余位置返回 -1。
+     * 默认实现返回 -1（无标签栏或未知）。
+     */
+    virtual int tabInsertIndexAt(const QPoint& global_pos) const { return -1; }
+
+    /**
      * @brief 创建浮动窗口视图
      *
      * 仅能创建顶层窗口的视图（主窗口视图）需要实现；

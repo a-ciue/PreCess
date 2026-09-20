@@ -11,6 +11,8 @@
 #include "tree/LayoutNode.h"
 #include "tree/BoxNode.h"
 
+#include <QSet>
+
 namespace dock {
 
 DockRegion::DockRegion(QObject* parent)
@@ -254,6 +256,26 @@ PanelGroup* DockRegion::groupAt(const QPoint& global_pos) const
     return hit;
 }
 
+QList<PanelGroup*> DockRegion::groups() const
+{
+    QList<PanelGroup*> result;
+    const auto visit = [&](auto&& self, LayoutNode* item) -> void {
+        if (!item)
+            return;
+
+        if (item->isContainer()) {
+            for (LayoutNode* child : static_cast<BoxNode*>(item)->children())
+                self(self, child);
+            return;
+        }
+
+        if (auto* group = dynamic_cast<PanelGroup*>(item->client()))
+            result.append(group);
+    };
+    visit(visit, root_item_);
+    return result;
+}
+
 void DockRegion::insertRelative(LayoutNode* item, DockEdge edge, LayoutNode* relative_to,
     int preferred_length, bool visible)
 {
@@ -302,5 +324,28 @@ void DockRegion::insertRelative(LayoutNode* item, DockEdge edge, LayoutNode* rel
     wrapper->setRememberedShare(target_stored_percentage);
     container->replaceNode(target, wrapper);
 }
+
+#ifdef QT_DEBUG
+void DockRegion::validateTree() const
+{
+    QSet<const LayoutNode*> visited;
+    const auto walk = [&visited](auto&& self, const LayoutNode* item) -> void {
+        if (!item)
+            return;
+        Q_ASSERT_X(!visited.contains(item), "DockRegion", "layout tree cycle detected");
+        visited.insert(item);
+        if (!item->isContainer())
+            return;
+
+        const auto* container = static_cast<const BoxNode*>(item);
+        for (const LayoutNode* child : container->children()) {
+            Q_ASSERT_X(child != nullptr, "DockRegion", "layout tree null child");
+            Q_ASSERT_X(child->parent() == container, "DockRegion", "layout tree parent mismatch");
+            self(self, child);
+        }
+    };
+    walk(walk, root_item_);
+}
+#endif
 
 }

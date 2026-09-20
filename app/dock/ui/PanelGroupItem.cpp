@@ -9,13 +9,18 @@
 #include "DockPanelItem.h"
 #include "DockRuntime.h"
 #include "docking/DockPanel.h"
+#include "docking/DockCatalog.h"
+#include "docking/DockHost.h"
 #include "docking/DragSession.h"
 #include "docking/DragHandle.h"
+#include "docking/DockMetrics.h"
 #include "docking/DockWindow.h"
 #include "docking/PanelGroup.h"
 
 #include <QQuickWindow>
 #include <QVariant>
+
+#include <algorithm>
 
 namespace dock::ui {
 
@@ -26,10 +31,14 @@ PanelGroupItem::PanelGroupItem(PanelGroup* group, QQuickItem* parent)
     root_item_ = DockRuntime::instance().createItemFromUrl(QUrl(QStringLiteral("qrc:/precess/dock/PanelGroup.qml")));
     if (root_item_) {
         root_item_->setParentItem(this);
+        // QQuickItem::setParentItem 不改 QObject 父子关系：显式接管所有权并让 findChild 可用
+        root_item_->setParent(this);
         root_item_->setProperty("groupView", QVariant::fromValue<QObject*>(this));
         root_item_->setSize(size());
         root_item_->setVisible(isVisible());
         content_area_ = root_item_->findChild<QQuickItem*>(QStringLiteral("contentArea"));
+        tab_bar_ = root_item_->findChild<QQuickItem*>(QStringLiteral("tabBar"));
+        title_bar_ = root_item_->findChild<QQuickItem*>(QStringLiteral("titleBar"));
 
         connect(this, &QQuickItem::widthChanged, this, [this] {
             if (root_item_)
@@ -52,7 +61,10 @@ PanelGroupItem::PanelGroupItem(PanelGroup* group, QQuickItem* parent)
     if (group_) {
         connect(group_, &PanelGroup::panelsChanged, this, &PanelGroupItem::syncFromGroup);
         connect(group_, &PanelGroup::activePanelChanged, this, [this](DockPanel*) {
-            syncFromGroup();
+            // 仅切换内容与下标：不重建标签模型，避免按下未激活标签时销毁其委托
+            updateGuest();
+            syncTabIndex();
+            Q_EMIT activeTabChanged();
         });
         connect(group_, &PanelGroup::titleChanged, this, [this](const QString&) {
             Q_EMIT groupChanged();
@@ -91,7 +103,18 @@ void PanelGroupItem::syncFromGroup()
         return;
 
     updateGuest();
+    // 模型重建期间 TabBar 可能重置下标并回灌激活请求，用标记抑制
+    updating_tabs_ = true;
     Q_EMIT groupChanged();
+    updating_tabs_ = false;
+    // 选项卡模型重建后校正 TabBar 当前下标（rebuild 期间 TabBar 可能重置下标）
+    syncTabIndex();
+}
+
+void PanelGroupItem::syncTabIndex()
+{
+    if (tab_bar_)
+        tab_bar_->setProperty("currentIndex", activeIndex());
 }
 
 void PanelGroupItem::updateGuest()
@@ -155,6 +178,52 @@ void PanelGroupItem::hideGroup()
         area->sync();
 }
 
+void PanelGroupItem::hidePanelAt(int index)
+{
+    if (!group_)
+        return;
+
+    const QList<DockPanel*> open = group_->shownPanels();
+    if (index < 0 || index >= open.size())
+        return;
+
+    DockPanel* panel = open.at(index);
+    if (panel->isCentral() || !panel->hasFeature(DockPanel::Feature::Closable))
+        return;
+
+    panel->hidePanel();
+
+    if (DockAreaItem* area = areaItem())
+        area->sync();
+}
+
+void PanelGroupItem::hideOthers(int index)
+{
+    if (!group_)
+        return;
+
+    const QList<DockPanel*> open = group_->shownPanels();
+    if (index < 0 || index >= open.size())
+        return;
+
+    group_->hideOthers(open.at(index));
+
+    if (DockAreaItem* area = areaItem())
+        area->sync();
+}
+
+void PanelGroupItem::hideOtherGroups()
+{
+    if (!group_)
+        return;
+
+    if (DockHost* host = DockCatalog::self().host())
+        host->hideOtherGroups(group_);
+
+    if (DockAreaItem* area = areaItem())
+        area->sync();
+}
+
 void PanelGroupItem::toggleDetached()
 {
     if (!group_ || group_->isCentral())
@@ -169,6 +238,10 @@ void PanelGroupItem::beginGroupDrag(const QPointF& global_pos)
 {
     // 中央持久分组不可拖出（其节点受区域保护，拖出会破坏布局树）
     if (!group_ || group_->isCentral())
+        return;
+
+    // 能力门控：不可移动的分组不进入拖拽
+    if (!group_->features().testFlag(DockPanel::Feature::Movable))
         return;
 
     if (drag_) {
@@ -199,22 +272,70 @@ void PanelGroupItem::beginPanelDrag(int index, const QPointF& global_pos)
     if (panel->isCentral())
         return;
 
+    // 能力门控：不可移动的面板不进入拖拽/重排
+    if (!panel->hasFeature(DockPanel::Feature::Movable))
+        return;
+
     if (drag_) {
         DragSession::self().cancel();
         delete drag_;
         drag_ = nullptr;
     }
 
+    // 延迟进入拖拽会话：先记录按下信息，由 dragTo 判别组内重排或浮动
+    press_global_ = global_pos;
+    reorder_from_ = index;
+    reorder_marker_index_ = -1;
+    reordering_ = false;
+
     DockAreaItem* area = areaItem();
     DockWindow* window = area ? area->window() : nullptr;
     drag_ = new DragHandle(this, group_, window, panel);
-    DragSession::self().beginAt(drag_, global_pos.toPoint());
 }
 
 void PanelGroupItem::dragTo(const QPointF& global_pos)
 {
-    if (drag_)
-        DragSession::self().updateAt(global_pos.toPoint());
+    if (!drag_)
+        return;
+
+    DragSession& session = DragSession::self();
+    if (session.phase() != DragSession::Phase::Idle) {
+        session.updateAt(global_pos.toPoint());
+        return;
+    }
+
+    const qreal dx = qAbs(global_pos.x() - press_global_.x());
+    const qreal dy = qAbs(global_pos.y() - press_global_.y());
+    const bool beyond = dx >= DockMetrics::kStartDragDistance
+        || dy >= DockMetrics::kStartDragDistance;
+    if (!beyond)
+        return;
+
+    const bool multi = group_ && group_->shownPanels().size() > 1;
+
+    // 纵向超过阈值（或分组无法重排）：转为浮动拖拽
+    if (dy >= DockMetrics::kStartDragDistance || !multi) {
+        clearReorderPreview();
+        session.beginAt(drag_, press_global_.toPoint());
+        session.updateAt(global_pos.toPoint());
+        return;
+    }
+
+    // 横向移动：组内重排预览（不修改模型，释放时提交）
+    const int insert_index = tabInsertIndexAt(global_pos.toPoint());
+    if (insert_index < 0) {
+        clearReorderPreview();
+        return;
+    }
+
+    const int final_index = insert_index > reorder_from_ ? insert_index - 1 : insert_index;
+    const int marker_index = (final_index == reorder_from_) ? -1 : insert_index;
+    if (marker_index == reorder_marker_index_)
+        return;
+
+    reorder_marker_index_ = marker_index;
+    reordering_ = marker_index >= 0;
+    Q_EMIT reorderChanged();
 }
 
 void PanelGroupItem::endDrag(const QPointF& global_pos)
@@ -222,12 +343,31 @@ void PanelGroupItem::endDrag(const QPointF& global_pos)
     if (!drag_)
         return;
 
-    DragSession::self().endAt(global_pos.toPoint());
+    DragSession& session = DragSession::self();
+    if (session.phase() != DragSession::Phase::Idle) {
+        session.endAt(global_pos.toPoint());
+    } else if (reordering_ && group_ && reorder_from_ >= 0
+        && reorder_marker_index_ >= 0) {
+        // 提交组内重排
+        group_->movePanel(reorder_from_, reorder_marker_index_);
+    }
+
+    clearReorderPreview();
+    reorder_from_ = -1;
     delete drag_;
     drag_ = nullptr;
 
     if (DockAreaItem* area = areaItem())
         area->sync();
+}
+
+void PanelGroupItem::clearReorderPreview()
+{
+    if (!reordering_ && reorder_marker_index_ < 0)
+        return;
+    reordering_ = false;
+    reorder_marker_index_ = -1;
+    Q_EMIT reorderChanged();
 }
 
 QString PanelGroupItem::title() const
@@ -269,6 +409,104 @@ bool PanelGroupItem::isDetached() const
 bool PanelGroupItem::hasTitleBar() const
 {
     return group_ && !group_->isCentral();
+}
+
+bool PanelGroupItem::isClosable() const
+{
+    return group_ && group_->features().testFlag(DockPanel::Feature::Closable);
+}
+
+bool PanelGroupItem::isMovable() const
+{
+    return group_ && group_->features().testFlag(DockPanel::Feature::Movable);
+}
+
+bool PanelGroupItem::isFloatable() const
+{
+    return group_ && group_->features().testFlag(DockPanel::Feature::Floatable);
+}
+
+int PanelGroupItem::reorderMarkerX() const
+{
+    if (!reordering_)
+        return -1;
+    const QRect marker = tabInsertMarkerRect(reorder_marker_index_);
+    return marker.isNull() ? -1 : marker.x();
+}
+
+QQuickItem* PanelGroupItem::tabItem(int index) const
+{
+    if (!tab_bar_ || index < 0)
+        return nullptr;
+
+    QQuickItem* item = nullptr;
+    if (!QMetaObject::invokeMethod(tab_bar_, "itemAt", Q_RETURN_ARG(QQuickItem*, item),
+            Q_ARG(int, index)))
+        return nullptr;
+    return item;
+}
+
+int PanelGroupItem::tabInsertIndexAt(const QPoint& global_pos) const
+{
+    if (!group_ || group_->isCentral())
+        return -1;
+
+    // 标签栏：落在标签上时按左/右半决定插到该标签前或后，尾部追加
+    if (tab_bar_ && tab_bar_->isVisible() && tab_bar_->height() > 0) {
+        const QPointF local = tab_bar_->mapFromGlobal(global_pos);
+        if (local.x() >= 0 && local.y() >= 0
+            && local.x() <= tab_bar_->width() && local.y() <= tab_bar_->height()) {
+            const int count = group_->shownPanels().size();
+            for (int i = 0; i < count; ++i) {
+                QQuickItem* item = tabItem(i);
+                if (!item)
+                    continue;
+                const QPointF item_pos = item->mapToItem(tab_bar_, QPointF(0, 0));
+                const qreal left = item_pos.x();
+                const qreal right = left + item->width();
+                if (local.x() < left)
+                    return i;
+                if (local.x() <= right)
+                    return local.x() < (left + right) / 2.0 ? i : i + 1;
+            }
+            return count;
+        }
+    }
+
+    // 标题栏：按追加处理（与中心合并一致）
+    if (title_bar_ && title_bar_->isVisible() && title_bar_->height() > 0) {
+        const QPointF local = title_bar_->mapFromGlobal(global_pos);
+        if (local.x() >= 0 && local.y() >= 0
+            && local.x() <= title_bar_->width() && local.y() <= title_bar_->height())
+            return group_->shownPanels().size();
+    }
+
+    return -1;
+}
+
+QRect PanelGroupItem::tabInsertMarkerRect(int index) const
+{
+    if (!group_ || !tab_bar_ || !tab_bar_->isVisible() || tab_bar_->height() <= 0)
+        return {};
+
+    const int count = group_->shownPanels().size();
+    if (count <= 1)
+        return {};
+
+    index = std::clamp(index, 0, count);
+    const QPointF bar_pos = tab_bar_->mapToItem(this, QPointF(0, 0));
+
+    qreal x = bar_pos.x();
+    if (index >= count) {
+        QQuickItem* last = tabItem(count - 1);
+        x = last ? last->mapToItem(this, QPointF(last->width(), 0)).x()
+                 : bar_pos.x() + tab_bar_->width();
+    } else if (QQuickItem* item = tabItem(index)) {
+        x = item->mapToItem(this, QPointF(0, 0)).x();
+    }
+
+    return QRect(QPoint(qRound(x) - 1, qRound(bar_pos.y())),
+        QSize(3, qRound(tab_bar_->height())));
 }
 
 void PanelGroupItem::applyFrame(const QRect& geometry)

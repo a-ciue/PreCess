@@ -7,6 +7,7 @@
 
 #include "DockObject.h"
 
+#include <QFlags>
 #include <QString>
 
 namespace dock {
@@ -32,6 +33,17 @@ public:
         Detached //!< 在独立窗口中
     };
     Q_ENUM(Lifecycle)
+
+    //! @brief 面板能力位（UI 按位门控拖拽/浮动/关闭入口）
+    enum Feature {
+        NoFeature = 0x00, //!< 无能力
+        Closable = 0x01, //!< 可关闭
+        Movable = 0x02, //!< 可拖动（含组内重排与跨区域移动）
+        Floatable = 0x04, //!< 可浮动为独立窗口
+        DefaultFeatures = Closable | Movable | Floatable
+    };
+    Q_DECLARE_FLAGS(Features, Feature)
+    Q_FLAG(Features)
 
     explicit DockPanel(const QString& unique_name, QObject* parent = nullptr);
     ~DockPanel() override;
@@ -60,6 +72,15 @@ public:
     //! @brief 标记为中央持久部件
     void setIsCentral(bool central) { central_ = central; }
 
+    //! @brief 面板能力位
+    Features features() const { return features_; }
+    //! @brief 设置面板能力位
+    void setFeatures(Features features) { features_ = features; }
+    //! @brief 开关单项能力
+    void setFeature(Feature feature, bool on = true);
+    //! @brief 是否具备某项能力
+    bool hasFeature(Feature feature) const { return features_.testFlag(feature); }
+
     //! @brief 所属分组
     PanelGroup* group() const { return group_; }
     //! @brief 设置所属分组（由 PanelGroup::addPanel 维护）
@@ -84,6 +105,8 @@ Q_SIGNALS:
     void titleChanged(const QString& title);
     //! @brief 拆出状态变化
     void detachedChanged(bool detached);
+    //! @brief 能力位变化
+    void featuresChanged(DockPanel::Features features);
     //! @brief 被隐藏
     void hidden();
 
@@ -94,6 +117,9 @@ private:
     PanelGroup* group_ = nullptr;
     Lifecycle lifecycle_ = Lifecycle::Hidden;
     bool central_ = false;
+    Features features_ = Feature::DefaultFeatures;
 };
+
+Q_DECLARE_OPERATORS_FOR_FLAGS(DockPanel::Features)
 
 }

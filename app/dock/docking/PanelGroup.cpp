@@ -21,6 +21,10 @@ PanelGroup::PanelGroup(QObject* parent)
 
 PanelGroup::~PanelGroup()
 {
+    // 防御：任何遗漏路径下，节点不得保留指向本分组的悬空 client
+    if (node_)
+        node_->setClient(nullptr);
+
     for (DockPanel* panel : std::as_const(panels_)) {
         if (panel->group() == this)
             panel->setGroup(nullptr);
@@ -29,10 +33,67 @@ PanelGroup::~PanelGroup()
 
 void PanelGroup::addPanel(DockPanel* panel)
 {
+    insertPanelAt(panel, panels_.size());
+}
+
+void PanelGroup::insertPanel(DockPanel* panel, int shown_index)
+{
+    if (!panel)
+        return;
+
+    if (panels_.contains(panel)) {
+        const int from = shownPanels().indexOf(panel);
+        if (from >= 0 && shown_index >= 0)
+            movePanel(from, shown_index);
+        return;
+    }
+
+    // 显示面板下标映射到 panels_ 下标：插到目标显示面板之前，越界追加
+    const QList<DockPanel*> shown = shownPanels();
+    int panels_index = panels_.size();
+    if (shown_index >= 0 && shown_index < shown.size())
+        panels_index = panels_.indexOf(shown.at(shown_index));
+    insertPanelAt(panel, panels_index);
+}
+
+bool PanelGroup::movePanel(int from, int to)
+{
+    const QList<DockPanel*> shown = shownPanels();
+    if (from < 0 || from >= shown.size() || to < 0 || to > shown.size())
+        return false;
+
+    // to 为"插到第 to 个显示面板之前"；移动后的最终显示下标
+    const int final_index = to > from ? to - 1 : to;
+    if (final_index == from)
+        return false;
+
+    DockPanel* panel = shown.at(from);
+    const int panels_from = panels_.indexOf(panel);
+    if (panels_from < 0)
+        return false;
+
+    QList<DockPanel*> target_shown = shown;
+    target_shown.removeAt(from);
+    int panels_to = panels_.size();
+    if (final_index < target_shown.size())
+        panels_to = panels_.indexOf(target_shown.at(final_index));
+
+    panels_.takeAt(panels_from);
+    if (panels_to > panels_from)
+        --panels_to; // 取出后其后元素前移
+    panels_.insert(panels_to, panel);
+
+    Q_EMIT panelsChanged();
+    return true;
+}
+
+void PanelGroup::insertPanelAt(DockPanel* panel, int panels_index)
+{
     if (!panel || panels_.contains(panel))
         return;
 
-    panels_.append(panel);
+    panels_index = std::clamp(panels_index, 0, static_cast<int>(panels_.size()));
+    panels_.insert(panels_index, panel);
     panel->setGroup(this);
 
     connect(panel, &DockPanel::shownChanged, this, [this, panel] {
@@ -45,6 +106,9 @@ void PanelGroup::addPanel(DockPanel* panel)
     connect(panel, &DockPanel::titleChanged, this, [this, panel](const QString&) {
         if (panel == active_)
             Q_EMIT titleChanged(title());
+    });
+    connect(panel, &DockPanel::featuresChanged, this, [this](DockPanel::Features) {
+        Q_EMIT panelsChanged();
     });
 
     if (!active_ || !active_->isShown())
@@ -107,6 +171,31 @@ void PanelGroup::setActiveIndex(int index)
     if (index < 0 || index >= shown.size())
         return;
     setActivePanel(shown.at(index));
+}
+
+void PanelGroup::hideOthers(DockPanel* panel)
+{
+    if (!panel || !panels_.contains(panel))
+        return;
+
+    const QList<DockPanel*> shown = shownPanels();
+    for (DockPanel* other : shown) {
+        if (other != panel)
+            other->hidePanel();
+    }
+}
+
+DockPanel::Features PanelGroup::features() const
+{
+    // 中央持久分组不提供任何可操作能力
+    if (central_)
+        return DockPanel::Feature::NoFeature;
+
+    DockPanel::Features result = DockPanel::Feature::DefaultFeatures;
+    const QList<DockPanel*> shown = shownPanels();
+    for (DockPanel* panel : shown)
+        result &= panel->features();
+    return result;
 }
 
 QString PanelGroup::title() const

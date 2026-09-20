@@ -5,6 +5,7 @@
 
 #pragma once
 
+#include "DropTarget.h"
 #include "DockEnums.h"
 
 #include <QHash>
@@ -53,11 +54,15 @@ public:
     DockWindow* dragWindow() const;
 
     //! @brief 悬停命中的停靠区域
-    DockRegion* hoveredRegion() const { return hovered_region_; }
+    DockRegion* hoveredRegion() const { return hover_.region; }
     //! @brief 悬停命中的分组（外落点为空）
-    PanelGroup* hoveredGroup() const { return hovered_group_; }
+    PanelGroup* hoveredGroup() const { return hover_.group; }
     //! @brief 当前悬停落点
-    DropZone hoveredZone() const { return hovered_zone_; }
+    DropZone hoveredZone() const { return hover_.zone; }
+    //! @brief 悬停分组的标签插入位置（-1 表示无效）
+    int hoveredTabIndex() const { return hover_.tab_index; }
+    //! @brief 当前悬停落点目标
+    const DropTarget& hoverTarget() const { return hover_; }
 
     //! @brief 视图层在标题栏/标签按下时调用
     void beginAt(DragHandle* handle, const QPoint& global_pos);
@@ -68,7 +73,7 @@ public:
     //! @brief 取消当前按下/拖拽（Esc、窗口失焦等）
     void cancel();
 
-    //! @brief 使分组浮动（浮动按钮/双击）；成功返回 true
+    //! @brief 使分组浮动（浮动按钮/浮动菜单）；成功返回 true
     bool detachGroup(PanelGroup* group);
     //! @brief 使浮动分组回停：有占位则回原位，单标签浮出则归还源分组
     bool reattachGroup(PanelGroup* group);
@@ -94,8 +99,23 @@ private:
     //! @brief 保留浮动：临时组登记回停来源并归属浮动窗口
     void parkFloatingGroup(DockWindow* window);
 
+    //! @brief 摘出分组节点（浮窗中优先），所有权交还调用方
+    static LayoutNode* takeGroupNode(PanelGroup* group, DockWindow* window);
+    //! @brief 删除分组节点（含从布局树摘除）；分组本身保留
+    static void disposeGroupNode(PanelGroup* group, DockWindow* window);
+
+    //! @brief 重绑浮窗内全部分组的监听（分组/区域变化时调用）
+    void refreshFloatingWatcher(DockWindow* window);
+    //! @brief 重绑全部浮窗的监听
+    void refreshAllFloatingWatchers();
+
+    //! @brief 仅在浮窗不再承载任何分组时销毁窗口
+    static void closeWindowIfEmpty(DockWindow* window);
+    //! @brief 整窗回收：把浮窗内全部分组归还主区域后关闭
+    void evacuateWindow(DockWindow* window);
+
     //! @brief 创建浮动窗口核心对象并通知视图层创建窗口
-    static DockWindow* createDragWindow();
+    DockWindow* createDragWindow();
     //! @brief 关闭并销毁浮动窗口核心对象
     static void destroyDragWindow(DockWindow* window);
     //! @brief 查找承载指定分组的浮动窗口
@@ -113,9 +133,7 @@ private:
     DragHandle* handle_ = nullptr;
     DragProxy* drag_proxy_ = nullptr;
     DockRegion* source_region_ = nullptr;
-    DockRegion* hovered_region_ = nullptr;
-    PanelGroup* hovered_group_ = nullptr;
-    DropZone hovered_zone_ = DropZone::None;
+    DropTarget hover_;
     QPoint press_pos_;
 
     // 单个标签拖拽
@@ -126,6 +144,11 @@ private:
 
     // 单标签浮出且未停靠时的回停来源（键为临时分组）
     QHash<PanelGroup*, FloatOrigin> floating_origins_;
+
+    // 浮窗分组监听连接（键为浮窗；分组/区域变化时重绑）
+    QHash<DockWindow*, QList<QMetaObject::Connection>> floating_watchers_;
+    //! @brief 空窗回收处理中（防止嵌套 panelsChanged 重入）
+    bool resolving_empty_ = false;
 };
 
 }

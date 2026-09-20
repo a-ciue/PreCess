@@ -10,7 +10,7 @@
 #include "DockPanel.h"
 #include "DragHandle.h"
 #include "DockRegion.h"
-#include "ZoneResolver.h"
+#include "DropResolver.h"
 #include "DockWindow.h"
 #include "PanelGroup.h"
 #include "DockHost.h"
@@ -76,6 +76,10 @@ void DragSession::beginAt(DragHandle* handle, const QPoint& global_pos)
         || (handle->panel() && handle->panel()->isCentral()))
         return;
 
+    // 能力门控：不可移动的分组/面板不进入拖拽
+    if (!handle->group()->features().testFlag(DockPanel::Feature::Movable))
+        return;
+
     if (phase_ != Phase::Idle)
         cancel();
 
@@ -111,11 +115,16 @@ void DragSession::endAt(const QPoint& global_pos)
     }
 
     updateHover(global_pos);
-    if (hovered_region_ && hovered_zone_ != DropZone::None) {
+    if (hover_.region && hover_.zone != DropZone::None) {
         applyDrop();
     } else if (drag_group_ && handle_ && drag_group_ != handle_->group() && origin_group_) {
-        // 未命中落点：单标签浮出保留为浮动窗口，登记回停来源
-        parkFloatingGroup(dragWindow());
+        // 未命中落点：可浮动则保留为浮动窗口，否则回弹归还源分组
+        if (drag_group_->features().testFlag(DockPanel::Feature::Floatable)) {
+            parkFloatingGroup(dragWindow());
+        } else {
+            cancel();
+            return;
+        }
     }
 
     cleanup();
@@ -141,13 +150,12 @@ void DragSession::cancel()
             }
         }
 
-        LayoutNode* item = temp_group->node();
-        delete item;
-        temp_group->setNode(nullptr);
+        disposeGroupNode(temp_group, window);
         if (window)
-            destroyDragWindow(window);
+            closeWindowIfEmpty(window);
 
         floating_origins_.remove(temp_group);
+        temp_group->setParent(this); // 脱离浮窗父子关系后再延迟销毁
         temp_group->deleteLater();
         Q_EMIT layoutChanged();
     } else if (phase_ == Phase::Dragging && handle_ && handle_->group()
@@ -162,6 +170,10 @@ bool DragSession::detachGroup(PanelGroup* group)
 {
     DockHost* host = DockCatalog::self().host();
     if (!host || !group || group->vacancy() || group->isCentral())
+        return false;
+
+    // 能力门控：不可浮动的分组不拆出为独立窗口
+    if (!group->features().testFlag(DockPanel::Feature::Floatable))
         return false;
 
     DockRegion* area = host->region();
@@ -195,19 +207,22 @@ bool DragSession::reattachGroup(PanelGroup* group)
         DockPanel* dock = docks.first();
 
         DockWindow* window = windowForGroup(group);
-        if (window)
-            window->releaseGroup();
+        // 先归还窗口并销毁临时节点（清除面板拆出标记），再迁移面板
+        disposeGroupNode(group, window);
 
         group->removePanel(dock);
         origin->addPanel(dock);
         origin->setActivePanel(dock);
 
-        LayoutNode* item = group->node();
-        delete item;
-        group->setNode(nullptr);
         floating_origins_.remove(group);
-        if (window)
-            destroyDragWindow(window);
+        if (window) {
+            // 临时分组是浮窗的 QObject 子对象：先解除父子关系再销毁窗口，
+            // 避免本方法在分组自身的信号发射中被调用时连带析构分组
+            group->setParent(this);
+            closeWindowIfEmpty(window);
+        }
+        // 延迟销毁临时分组：调用栈上可能仍在分发其信号
+        group->deleteLater();
 
         Q_EMIT layoutChanged();
         return true;
@@ -221,12 +236,17 @@ bool DragSession::reattachGroup(PanelGroup* group)
     if (window)
         window->releaseGroup(); // 摘出布局节点，浮窗变空
 
-    const bool restored = host->region()->restoreGroupFromWindow(group);
+    if (!host->region()->restoreGroupFromWindow(group)) {
+        // 回停失败（无占位且无回停来源）：节点交还窗口，保持浮动，避免分组悬空
+        if (window && group->node())
+            window->takeGroup(group, group->node());
+        return false;
+    }
+
     if (window)
-        destroyDragWindow(window);
-    if (restored)
-        Q_EMIT layoutChanged();
-    return restored;
+        closeWindowIfEmpty(window);
+    Q_EMIT layoutChanged();
+    return true;
 }
 
 bool DragSession::toggleDetached(PanelGroup* group)
@@ -247,8 +267,9 @@ void DragSession::startDrag(const QPoint& global_pos)
 
     PanelGroup* source_group = handle_->group();
     DockPanel* dock = handle_->panel();
-    // 防御：中央持久分组/面板不得进入拖拽流程
-    if (source_group->isCentral() || (dock && dock->isCentral())) {
+    // 防御：中央持久分组/面板与不可移动分组不得进入拖拽流程
+    if (source_group->isCentral() || (dock && dock->isCentral())
+        || !source_group->features().testFlag(DockPanel::Feature::Movable)) {
         cleanup();
         return;
     }
@@ -312,6 +333,10 @@ void DragSession::startDrag(const QPoint& global_pos)
     source_region_ = source_area;
     drag_proxy_ = new DragProxy(handle_, window, global_pos);
 
+    // 拖拽窗口置顶：避免拖动中的浮窗被主窗口遮挡
+    if (window && window->view())
+        window->view()->bringToFront();
+
     phase_ = Phase::Dragging;
     Q_EMIT phaseChanged(phase_);
     updateHover(global_pos);
@@ -326,6 +351,10 @@ void DragSession::parkFloatingGroup(DockWindow* window)
     floating_origins_.insert(drag_group_, origin);
     drag_group_->setParent(window);
 
+    // 保留浮动后置顶，避免浮窗落在主窗口后面被误认为消失
+    if (window && window->view())
+        window->view()->bringToFront();
+
     PanelGroup* parked = drag_group_;
     QObject::connect(parked, &QObject::destroyed, this, [this, parked] {
         floating_origins_.remove(parked);
@@ -334,85 +363,35 @@ void DragSession::parkFloatingGroup(DockWindow* window)
 
 void DragSession::updateHover(const QPoint& global_pos)
 {
-    DockRegion* found_area = nullptr;
-    PanelGroup* found_group = nullptr;
-    DropZone found_location = DropZone::None;
+    const DockWindow* dragged_window = drag_proxy_ ? drag_proxy_->window() : nullptr;
+    const DockRegion* dragged_region = dragged_window ? dragged_window->region() : nullptr;
 
-    const DockWindow* dragged_window = drag_proxy_
-        ? drag_proxy_->window()
-        : nullptr;
-    const DockRegion* dragged_area = dragged_window ? dragged_window->region() : nullptr;
-
-    const auto consider = [&](DockRegion* area) -> bool {
-        if (!area || area == dragged_area)
-            return false;
-
-        const QRect area_rect(area->globalOrigin(), area->geometry().size());
-
-        if (PanelGroup* group = area->groupAt(global_pos)) {
-            const QRect item_geometry = group->node()
-                ? group->node()->geometry()
-                : QRect();
-            const QRect group_rect(area->globalOrigin() + item_geometry.topLeft(),
-                item_geometry.size());
-            found_area = area;
-            found_group = group;
-            // 内方框优先；未命中则回退到常显的外方框
-            found_location = ZoneResolver::zoneInGroup(group_rect, global_pos);
-            // 中央持久分组不提供中心合并落点（对齐 KDDW NonDockable 语义）
-            if (found_location == DropZone::Merge && group->isCentral())
-                found_location = DropZone::None;
-            if (found_location == DropZone::None)
-                found_location = ZoneResolver::zoneInRegion(area_rect, global_pos);
-            return true;
-        }
-
-        if (!area_rect.contains(global_pos))
-            return false;
-
-        // 区域内的任意位置都视为命中该停靠区域：
-        // 不在分组上时由外指示器方框决定落点（未对准方框则无落点）
-        found_area = area;
-        found_group = nullptr;
-        found_location = ZoneResolver::zoneInRegion(area_rect, global_pos);
-        return true;
-    };
-
-    const QList<DockWindow*>& floating_windows = DockCatalog::self().windows();
-    for (auto it = floating_windows.crbegin(); it != floating_windows.crend() && !found_area; ++it)
-        consider((*it)->region());
-    if (!found_area) {
-        if (DockHost* host = DockCatalog::self().host())
-            consider(host->region());
-    }
-
-    if (found_area == hovered_region_ && found_group == hovered_group_
-        && found_location == hovered_zone_)
+    const DropTarget target = DropResolver::resolve(global_pos, dragged_region);
+    if (target == hover_)
         return;
 
-    hovered_region_ = found_area;
-    hovered_group_ = found_group;
-    hovered_zone_ = found_location;
+    hover_ = target;
     Q_EMIT zoneChanged();
 }
 
 void DragSession::applyDrop()
 {
     PanelGroup* group = drag_group_ ? drag_group_ : (handle_ ? handle_->group() : nullptr);
-    if (!group || !hovered_region_)
+    if (!group || !hover_.region)
         return;
 
     DockWindow* window = dragWindow();
     const bool temp_group = drag_group_ && handle_ && drag_group_ != handle_->group();
 
-    if (hovered_zone_ == DropZone::Merge) {
-        if (!hovered_group_ || hovered_group_ == group || hovered_group_->isCentral())
+    if (hover_.zone == DropZone::Merge) {
+        if (!hover_.group || hover_.group == group || hover_.group->isCentral())
             return;
 
-        // 全部面板并入目标分组
+        // 全部面板并入目标分组；悬停标签栏时按插入位置落点
         const QList<DockPanel*> docks = group->panels();
-        for (DockPanel* panel : docks) {
-            hovered_group_->addPanel(panel);
+        for (int i = 0; i < docks.size(); ++i) {
+            DockPanel* panel = docks.at(i);
+            hover_.group->insertPanel(panel, hover_.tab_index < 0 ? -1 : hover_.tab_index + i);
             panel->applyDetached(false);
         }
         for (DockPanel* panel : std::as_const(docks))
@@ -421,36 +400,36 @@ void DragSession::applyDrop()
         if (source_region_)
             source_region_->discardGroupVacancy(group);
 
-        LayoutNode* item = window && window->group() == group
-            ? window->releaseGroup()
-            : group->node();
-        delete item;
-        group->setNode(nullptr);
+        disposeGroupNode(group, window);
 
-        if (temp_group) {
+        // 停靠后的分组不再属于浮窗；临时分组（含此前单标签浮出的回停来源）用完即弃
+        const bool parked_temp = floating_origins_.contains(group);
+        if (temp_group || parked_temp) {
             floating_origins_.remove(group);
-            group->deleteLater(); // 临时分组：面板已并入目标
+            group->setParent(this); // 脱离浮窗父子关系后再延迟销毁
+            group->deleteLater();
+        } else if (group->parent() == nullptr) {
+            group->setParent(source_region_ ? static_cast<QObject*>(source_region_) : this);
         }
     } else {
         if (source_region_)
             source_region_->discardGroupVacancy(group);
 
-        LayoutNode* item = group->node();
-        if (window && window->group() == group)
-            item = window->releaseGroup(); // 从浮窗摘出，所有权在本控制器
+        LayoutNode* item = takeGroupNode(group, window);
         if (item) {
             group->setNode(item);
             // 空尺寸 = 无期望尺寸：按公平份额分空间（两项时各占一半）
-            hovered_region_->attachGroup(group, hovered_zone_, hovered_group_, QSize());
-            if (temp_group) {
-                // 成为分栏：不再需要回停来源
-                floating_origins_.remove(group);
-                group->setParent(hovered_region_);
-            }
+            hover_.region->attachGroup(group, hover_.zone, hover_.group, QSize());
+            // 归纳入目标区域所有：分组从此不再属于浮窗（避免浮窗销毁连带删除）
+            group->setParent(hover_.region);
+            // 成为分栏：不再需要回停来源
+            floating_origins_.remove(group);
         }
     }
 
-    destroyDragWindow(window);
+    closeWindowIfEmpty(window);
+    // 浮窗内分组拓扑可能变化（新增/移除次级分组），重绑空窗监听
+    refreshAllFloatingWatchers();
 }
 
 void DragSession::cleanup()
@@ -469,12 +448,66 @@ void DragSession::cleanup()
         Q_EMIT phaseChanged(phase_);
     }
 
-    if (hovered_region_ || hovered_zone_ != DropZone::None) {
-        hovered_region_ = nullptr;
-        hovered_group_ = nullptr;
-        hovered_zone_ = DropZone::None;
+    if (hover_.region || hover_.zone != DropZone::None) {
+        hover_ = DropTarget{};
         Q_EMIT zoneChanged();
     }
+
+    // 兜底：浮窗内面板全部隐藏（含多分组浮窗），会话结束时统一回收
+    if (!DockCatalog::self().host())
+        return;
+    const QList<DockWindow*> windows = DockCatalog::self().windows();
+    for (DockWindow* window : windows) {
+        if (!window || !window->region())
+            continue;
+
+        bool any_shown = false;
+        const QList<PanelGroup*> groups = window->region()->groups();
+        for (PanelGroup* group : groups) {
+            if (!group->shownPanels().isEmpty()) {
+                any_shown = true;
+                break;
+            }
+        }
+        if (any_shown)
+            continue;
+
+        evacuateWindow(window);
+    }
+}
+
+LayoutNode* DragSession::takeGroupNode(PanelGroup* group, DockWindow* window)
+{
+    if (!group)
+        return nullptr;
+
+    // 主分组在浮窗中：由窗口负责整树/叶子摘出
+    if (window && window->group() == group)
+        return window->releaseGroup();
+
+    // 节点仍挂在某区域的布局树中（如停靠在浮窗内的次级分组）：先从所属区域摘出，
+    // 避免把仍挂在树上的节点再次插入造成一节点两树
+    if (DockRegion* region = regionForGroup(group)) {
+        if (region->rootNode() == group->node())
+            return region->takeRootNode();
+        if (region->extractGroupNode(group))
+            return group->node();
+    }
+    return group->node();
+}
+
+void DragSession::disposeGroupNode(PanelGroup* group, DockWindow* window)
+{
+    LayoutNode* item = takeGroupNode(group, window);
+    if (!item)
+        return;
+
+    // 仍在布局树中的节点需先摘除（含空容器回收），再删除
+    if (BoxNode* parent = item->parent())
+        parent->detachNode(item, true);
+    else
+        delete item;
+    group->setNode(nullptr);
 }
 
 DockWindow* DragSession::createDragWindow()
@@ -486,7 +519,75 @@ DockWindow* DragSession::createDragWindow()
         if (DockView* view = host->view()->createDockWindow(window))
             window->setView(view);
     }
+
+    // 空浮窗自动回停：监听浮窗分组的面板变化
+    QObject::connect(window, &DockWindow::groupChanged, this, [this, window] {
+        refreshFloatingWatcher(window);
+    });
+    QObject::connect(window, &QObject::destroyed, this, [this, window] {
+        floating_watchers_.remove(window);
+    });
     return window;
+}
+
+void DragSession::refreshFloatingWatcher(DockWindow* window)
+{
+    if (!window)
+        return;
+
+    const QList<QMetaObject::Connection> previous = floating_watchers_.take(window);
+    for (const QMetaObject::Connection& connection : previous)
+        QObject::disconnect(connection);
+
+    DockRegion* region = window->region();
+    if (!region)
+        return;
+
+    const QPointer<DockWindow> guarded_window(window);
+    QList<QMetaObject::Connection> bound;
+    const QList<PanelGroup*> groups = region->groups();
+    for (PanelGroup* group : groups) {
+        bound.append(QObject::connect(group, &PanelGroup::panelsChanged, this,
+            [this, guarded_window, group] {
+                if (phase_ != Phase::Idle || resolving_empty_ || !guarded_window)
+                    return;
+
+                DockRegion* current_region = guarded_window->region();
+                if (!current_region)
+                    return;
+
+                const QList<PanelGroup*> current_groups = current_region->groups();
+                if (!current_groups.contains(group) || !group->shownPanels().isEmpty())
+                    return;
+
+                bool any_other_shown = false;
+                for (PanelGroup* other : current_groups) {
+                    if (other != group && !other->shownPanels().isEmpty()) {
+                        any_other_shown = true;
+                        break;
+                    }
+                }
+
+                resolving_empty_ = true;
+                if (any_other_shown) {
+                    // 主分组空出：归还主区域，窗口留给其他分组
+                    if (guarded_window->group() == group)
+                        reattachGroup(group);
+                } else {
+                    // 整窗已无可显示面板：逐组回收后关闭
+                    evacuateWindow(guarded_window);
+                }
+                resolving_empty_ = false;
+            }));
+    }
+    floating_watchers_.insert(window, bound);
+}
+
+void DragSession::refreshAllFloatingWatchers()
+{
+    const QList<DockWindow*> windows = DockCatalog::self().windows();
+    for (DockWindow* window : windows)
+        refreshFloatingWatcher(window);
 }
 
 void DragSession::destroyDragWindow(DockWindow* window)
@@ -494,8 +595,68 @@ void DragSession::destroyDragWindow(DockWindow* window)
     if (!window)
         return;
 
+#ifdef QT_DEBUG
+    Q_ASSERT_X(!window->region() || window->region()->groups().isEmpty(),
+        "DragSession", "destroying a floating window that still hosts groups");
+#endif
+
     window->close();
     delete window;
+}
+
+void DragSession::closeWindowIfEmpty(DockWindow* window)
+{
+    if (!window)
+        return;
+    // 仍承载其他分组：保留窗口，主分组离开不影响它们
+    if (window->region() && !window->region()->groups().isEmpty())
+        return;
+    destroyDragWindow(window);
+}
+
+void DragSession::evacuateWindow(DockWindow* window)
+{
+    if (!window)
+        return;
+
+    DockHost* host = DockCatalog::self().host();
+    if (!host) {
+        destroyDragWindow(window);
+        return;
+    }
+
+    const QPointer<DockWindow> guarded(window);
+
+    // 1) 主分组：有占位/回停来源走标准归还（窗口可能因此清空而销毁）；否则兜底停靠
+    PanelGroup* primary = window->group();
+    if (primary && (floating_origins_.contains(primary) || primary->vacancy())) {
+        reattachGroup(primary);
+    } else if (primary) {
+        window->releaseGroup();
+        host->region()->attachGroup(primary, DropZone::OuterLeft, nullptr, QSize());
+        primary->setParent(host->region());
+    }
+    if (!guarded)
+        return;
+
+    // 2) 次级分组（如停靠进浮窗的分组）：摘出节点后兜底停靠主区域
+    DockRegion* region = guarded->region();
+    if (!region) {
+        destroyDragWindow(guarded);
+        return;
+    }
+
+    const QList<PanelGroup*> rest = region->groups();
+    for (PanelGroup* group : rest)
+        region->extractGroupNode(group);
+    for (PanelGroup* group : rest) {
+        host->region()->attachGroup(group, DropZone::OuterRight, nullptr, QSize());
+        group->setParent(host->region());
+        floating_origins_.remove(group);
+    }
+
+    Q_EMIT layoutChanged();
+    closeWindowIfEmpty(guarded);
 }
 
 DockWindow* DragSession::windowForGroup(PanelGroup* group)

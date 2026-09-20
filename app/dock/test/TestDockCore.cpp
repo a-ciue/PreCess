@@ -8,6 +8,7 @@
 #include "docking/DockCatalog.h"
 #include "docking/DockPanel.h"
 #include "docking/DockRegion.h"
+#include "docking/DragSession.h"
 #include "docking/PanelGroup.h"
 #include "docking/DockHost.h"
 #include "tree/LayoutNode.h"
@@ -126,6 +127,109 @@ TEST_CASE("DockCore: closing and reopening a docked panel restores its size")
     const int difference = side_bar_item->geometry().height() - side_bar_height_before;
     CHECK(difference >= -1);
     CHECK(difference <= 1);
+}
+
+TEST_CASE("DockCore: insert and move panels keep shown order")
+{
+    DockFixture f;
+    PlacedDocks placed(f);
+
+    dock::PanelGroup* group = placed.object_tree->group();
+    REQUIRE(group != nullptr);
+
+    // 组内两个显示面板 + 一个隐藏面板（隐藏面板不参与显示下标）
+    dock::DockPanel* extra = f.makeDock(QStringLiteral("extra"), QStringLiteral("附加面板"));
+    group->addPanel(extra);
+    extra->showPanel();
+    dock::DockPanel* hidden = f.makeDock(QStringLiteral("hidden"), QStringLiteral("隐藏面板"));
+    group->addPanel(hidden);
+
+    QList<dock::DockPanel*> shown = group->shownPanels();
+    REQUIRE(shown.size() == 2);
+    CHECK(shown.at(0) == placed.object_tree);
+    CHECK(shown.at(1) == extra);
+
+    // 插到第一个显示面板之前
+    dock::DockPanel* first = f.makeDock(QStringLiteral("first"), QStringLiteral("最前"));
+    group->insertPanel(first, 0);
+    first->showPanel();
+    shown = group->shownPanels();
+    REQUIRE(shown.size() == 3);
+    CHECK(shown.at(0) == first);
+    CHECK(shown.at(1) == placed.object_tree);
+    CHECK(shown.at(2) == extra);
+
+    // 追加到最后（隐藏面板不影响显示序列）
+    dock::DockPanel* last = f.makeDock(QStringLiteral("last"), QStringLiteral("最后"));
+    group->insertPanel(last, group->shownPanels().size());
+    last->showPanel();
+    shown = group->shownPanels();
+    REQUIRE(shown.size() == 4);
+    CHECK(shown.at(3) == last);
+    CHECK(group->panels().contains(hidden));
+    CHECK_FALSE(hidden->isShown());
+
+    // 重排：把第一个移到第二个标签之后，激活面板不变
+    CHECK(group->movePanel(0, 2));
+    shown = group->shownPanels();
+    REQUIRE(shown.size() == 4);
+    CHECK(shown.at(0) == placed.object_tree);
+    CHECK(shown.at(1) == first);
+    CHECK(shown.at(2) == extra);
+    CHECK(shown.at(3) == last);
+    CHECK(group->activePanel() == placed.object_tree);
+
+    // 越界与无效操作
+    CHECK_FALSE(group->movePanel(0, 0));
+    CHECK_FALSE(group->movePanel(-1, 1));
+    CHECK_FALSE(group->movePanel(0, 99));
+}
+
+TEST_CASE("DockCore: panel features gate detach and hide others")
+{
+    DockFixture f;
+    PlacedDocks placed(f);
+
+    dock::PanelGroup* group = placed.object_tree->group();
+    REQUIRE(group != nullptr);
+
+    dock::DockPanel* extra = f.makeDock(QStringLiteral("extra"), QStringLiteral("附加面板"));
+    group->addPanel(extra);
+    extra->showPanel();
+
+    // 默认能力位全开
+    CHECK(group->features().testFlag(dock::DockPanel::Feature::Floatable));
+    CHECK(group->features().testFlag(dock::DockPanel::Feature::Closable));
+    CHECK(group->features().testFlag(dock::DockPanel::Feature::Movable));
+
+    // 组内任一面板关闭浮动能力 → 整组不可拆出
+    extra->setFeature(dock::DockPanel::Feature::Floatable, false);
+    CHECK_FALSE(group->features().testFlag(dock::DockPanel::Feature::Floatable));
+    CHECK_FALSE(dock::DragSession::self().detachGroup(group));
+
+    // 恢复能力后可正常拆出与回停
+    extra->setFeature(dock::DockPanel::Feature::Floatable, true);
+    REQUIRE(dock::DragSession::self().detachGroup(group));
+    REQUIRE(dock::DragSession::self().reattachGroup(group));
+
+    // 关闭其他标签：只保留指定面板
+    group->hideOthers(placed.object_tree);
+    CHECK(placed.object_tree->isShown());
+    CHECK_FALSE(extra->isShown());
+
+    // 关闭其他分组：指定分组保留，其余隐藏，中央持久部件不受影响
+    extra->showPanel();
+    placed.console->showPanel();
+    f.host.hideOtherGroups(group);
+    CHECK(placed.object_tree->isShown());
+    CHECK(extra->isShown());
+    CHECK_FALSE(placed.console->isShown());
+    CHECK(f.host.centralPanel()->isShown());
+
+    // 中央持久分组无任何能力
+    CHECK_FALSE(f.host.centralGroup()->features().testFlag(dock::DockPanel::Feature::Floatable));
+    CHECK_FALSE(f.host.centralGroup()->features().testFlag(dock::DockPanel::Feature::Closable));
+    CHECK_FALSE(f.host.centralGroup()->features().testFlag(dock::DockPanel::Feature::Movable));
 }
 
 TEST_CASE("DockCore: dock widgets can tab into the central group")

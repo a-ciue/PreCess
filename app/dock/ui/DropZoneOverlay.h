@@ -43,10 +43,12 @@ public:
      * @param area_global_rect 命中区域的全局矩形（浮层覆盖范围）
      * @param request_owner 请求方（用于避免其他区域误清除）
      * @param target_frame_global 目标分组描边（全局坐标，空矩形表示不描边）
+     * @param tab_insert_global 标签插入标记（全局坐标，空矩形表示不显示）
      */
     void showZoneRects(const QList<ZoneRectHit>& zones,
         const QRect& area_global_rect, QQuickItem* request_owner,
-        const QRect& target_frame_global = QRect());
+        const QRect& target_frame_global = QRect(),
+        const QRect& tab_insert_global = QRect());
     //! @brief 清除指示器（仅当请求方匹配时生效）
     void clear(QQuickItem* request_owner);
 
@@ -54,12 +56,15 @@ public:
     bool isActive() const;
     //! @brief 当前指示器数量
     int zoneCount() const;
+    //! @brief 当前标签插入标记（全局坐标；无标记时为空矩形）
+    QRect tabInsertRect() const { return tab_insert_rect_; }
     //! @brief 当前请求方
     QQuickItem* requestOwner() const;
 
 private:
     QQuickItem* root_item_ = nullptr;
     QQuickItem* request_owner_ = nullptr;
+    QRect tab_insert_rect_;
 };
 
 }

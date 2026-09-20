@@ -34,6 +34,7 @@ precess_test_link_libraries(TestDockQmlSmoke
     Qt${VTK_QT_VERSION}::Core
     Qt${VTK_QT_VERSION}::Gui
     Qt${VTK_QT_VERSION}::Quick
+    Qt${VTK_QT_VERSION}::Test
 )
 if(BUILD_TESTING)
     qt_add_resources(TestDockQmlSmoke "dock_test_qml"

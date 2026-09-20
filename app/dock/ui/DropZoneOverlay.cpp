@@ -27,6 +27,8 @@ DropZoneOverlay::DropZoneOverlay(QObject* parent)
         return;
 
     root_item_->setParentItem(contentItem());
+    // QQuickItem::setParentItem 不改 QObject 父子关系：显式接管所有权
+    root_item_->setParent(this);
     root_item_->setSize(contentItem()->size());
     root_item_->setVisible(true);
 
@@ -42,7 +44,7 @@ DropZoneOverlay::~DropZoneOverlay() = default;
 
 void DropZoneOverlay::showZoneRects(const QList<ZoneRectHit>& zones,
     const QRect& area_global_rect, QQuickItem* request_owner,
-    const QRect& target_frame_global)
+    const QRect& target_frame_global, const QRect& tab_insert_global)
 {
     if (!root_item_ || zones.isEmpty())
         return;
@@ -72,8 +74,20 @@ void DropZoneOverlay::showZoneRects(const QList<ZoneRectHit>& zones,
         target.insert(QStringLiteral("height"), local.height());
     }
 
+    // 标签插入标记（浮层局部坐标）
+    QVariantMap tab_insert;
+    tab_insert_rect_ = tab_insert_global;
+    if (!tab_insert_global.isEmpty()) {
+        const QRect local = tab_insert_global.translated(-area_global_rect.topLeft());
+        tab_insert.insert(QStringLiteral("x"), local.x());
+        tab_insert.insert(QStringLiteral("y"), local.y());
+        tab_insert.insert(QStringLiteral("width"), local.width());
+        tab_insert.insert(QStringLiteral("height"), local.height());
+    }
+
     root_item_->setProperty("zones", model);
     root_item_->setProperty("targetFrame", target);
+    root_item_->setProperty("tabInsert", tab_insert);
     request_owner_ = request_owner;
 
     if (!isVisible())
@@ -87,9 +101,11 @@ void DropZoneOverlay::clear(QQuickItem* request_owner)
         return;
 
     request_owner_ = nullptr;
+    tab_insert_rect_ = QRect();
     if (root_item_) {
         root_item_->setProperty("zones", QVariantList());
         root_item_->setProperty("targetFrame", QVariantMap());
+        root_item_->setProperty("tabInsert", QVariantMap());
     }
     hide();
 }

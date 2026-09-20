@@ -37,6 +37,16 @@ void DockPanel::setContentView(DockView* content_view)
     content_view_ = content_view;
 }
 
+void DockPanel::setFeature(Feature feature, bool on)
+{
+    const Features updated = on ? (features_ | feature) : (features_ & ~Features(feature));
+    if (updated == features_)
+        return;
+
+    features_ = updated;
+    Q_EMIT featuresChanged(features_);
+}
+
 void DockPanel::showPanel()
 {
     applyShown(true);

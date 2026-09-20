@@ -12,6 +12,7 @@
 #include "docking/DragSession.h"
 #include "docking/DragHandle.h"
 #include "docking/DockRegion.h"
+#include "docking/DropResolver.h"
 #include "docking/ZoneResolver.h"
 #include "docking/DockWindow.h"
 #include "docking/PanelGroup.h"
@@ -406,6 +407,312 @@ TEST_CASE("DockDrag: dragging a tab separates one panel and can return")
     CHECK(placed.console->group() == placed.object_tree->group());
     CHECK(dock::DockCatalog::self().windows().isEmpty());
     CHECK_FALSE(placed.console->isDetached());
+}
+
+TEST_CASE("DockDrag: docking a parked single-tab float keeps the group alive")
+{
+    DockFixture f;
+    PlacedDocks placed(f);
+    placed.object_tree->showPanel();
+    placed.console->showPanel();
+
+    dock::DragSession& drag = dock::DragSession::self();
+
+    // 先把 console 合并到 objectTree 分组（中心落点）
+    REQUIRE(drag.detachGroup(placed.console->group()));
+    {
+        dock::DockWindow* window = dock::DockCatalog::self().windows().first();
+        dock::DragHandle handle(nullptr, placed.console->group(), window);
+        const QRect target = placed.object_tree->group()->node()->geometry();
+        drag.beginAt(&handle, target.center() + QPoint(-50, -50));
+        drag.updateAt(target.center());
+        REQUIRE(drag.phase() == dock::DragSession::Phase::Dragging);
+        drag.endAt(target.center());
+    }
+    dock::PanelGroup* merged_group = placed.object_tree->group();
+    REQUIRE(placed.console->group() == merged_group);
+    REQUIRE(merged_group->shownPanels().size() == 2);
+
+    // 拖出 console 标签到空白处：浮动（临时分组成为浮窗的 QObject 子对象）
+    const QPoint press = merged_group->node()->geometry().center();
+    {
+        dock::DragHandle tab_handle(nullptr, merged_group, nullptr, placed.console);
+        drag.beginAt(&tab_handle, press);
+        drag.updateAt(press + QPoint(60, 0));
+        REQUIRE(drag.phase() == dock::DragSession::Phase::Dragging);
+        drag.endAt(QPoint(-1000, -1000));
+    }
+    REQUIRE(dock::DockCatalog::self().windows().size() == 1);
+    dock::DockWindow* parked_window = dock::DockCatalog::self().windows().first();
+    dock::PanelGroup* parked_group = parked_window->group();
+    REQUIRE(parked_group != nullptr);
+    REQUIRE(parked_group->panels().contains(placed.console));
+
+    // 再拖动该浮窗整组，停靠到 merged_group 的上边缘（分栏落点，回归“浮出后拖回停靠”崩溃）
+    const QRect target_rect = merged_group->node()->geometry();
+    QPoint inner_top_center;
+    for (const dock::ZoneGeometry::ZoneRect& zone : dock::ZoneGeometry::innerZones(target_rect)) {
+        if (zone.location == dock::DropZone::InnerTop)
+            inner_top_center = zone.rect.center();
+    }
+    REQUIRE(inner_top_center != QPoint());
+
+    {
+        dock::DragHandle window_handle(nullptr, parked_group, parked_window);
+        drag.beginAt(&window_handle, parked_window->geometry().center());
+        drag.updateAt(inner_top_center);
+        REQUIRE(drag.phase() == dock::DragSession::Phase::Dragging);
+        CHECK(drag.hoveredZone() == dock::DropZone::InnerTop);
+        drag.endAt(inner_top_center);
+    }
+
+    // 停靠后分组必须存活且节点 client 指回分组（不得随浮窗销毁）
+    CHECK(dock::DockCatalog::self().windows().isEmpty());
+    CHECK(placed.console->group() == parked_group);
+    REQUIRE(parked_group->node() != nullptr);
+    CHECK(parked_group->node()->client() == static_cast<dock::LayoutClient*>(parked_group));
+    CHECK_FALSE(placed.console->isDetached());
+
+#ifdef QT_DEBUG
+    f.host.region()->validateTree();
+#endif
+
+    // 触发布局路径（原崩溃点）：显隐面板不再崩溃
+    placed.console->hidePanel();
+    CHECK_FALSE(placed.console->isShown());
+    placed.console->showPanel();
+    CHECK(placed.console->isShown());
+
+    // 合并落点同样保持分组存活（整组从主区域拖出时目标几何会变化，需在越阈后再取）
+    dock::DragHandle window_handle2(nullptr, parked_group, nullptr);
+    {
+        drag.beginAt(&window_handle2, parked_group->node()->geometry().center());
+        drag.updateAt(parked_group->node()->geometry().center() + QPoint(0, -60));
+        REQUIRE(drag.phase() == dock::DragSession::Phase::Dragging);
+
+        const QRect merged_rect = merged_group->node()->geometry();
+        drag.updateAt(merged_rect.center());
+        CHECK(drag.hoveredZone() == dock::DropZone::Merge);
+        drag.endAt(merged_rect.center());
+    }
+    CHECK(dock::DockCatalog::self().windows().isEmpty());
+    CHECK(placed.console->group() == merged_group);
+    CHECK(merged_group->node() != nullptr);
+    CHECK(merged_group->node()->client() == static_cast<dock::LayoutClient*>(merged_group));
+
+#ifdef QT_DEBUG
+    f.host.region()->validateTree();
+#endif
+}
+
+TEST_CASE("DockDrag: hiding the last panel closes its floating window")
+{
+    DockFixture f;
+    PlacedDocks placed(f);
+
+    dock::DragSession& drag = dock::DragSession::self();
+
+    // 整组浮动：隐藏最后一个面板 → 自动回停并销毁浮窗
+    placed.console->showPanel();
+    REQUIRE(drag.detachGroup(placed.console->group()));
+    REQUIRE(dock::DockCatalog::self().windows().size() == 1);
+    CHECK(placed.console->group()->vacancy() != nullptr);
+
+    placed.console->hidePanel();
+    CHECK(dock::DockCatalog::self().windows().isEmpty());
+    CHECK(placed.console->group()->vacancy() == nullptr);
+    CHECK_FALSE(placed.console->isDetached());
+    REQUIRE(placed.console->group()->node() != nullptr);
+    CHECK_FALSE(placed.console->group()->node()->isVisible());
+
+    // 重新显示：回到原停靠位置
+    placed.console->showPanel();
+    CHECK(placed.console->group()->node()->isVisible());
+}
+
+TEST_CASE("DockDrag: hiding a parked single-tab float returns it to origin")
+{
+    DockFixture f;
+    PlacedDocks placed(f);
+
+    dock::DragSession& drag = dock::DragSession::self();
+    placed.console->showPanel();
+
+    // 先把 console 合并到 objectTree 分组（中心落点）
+    REQUIRE(drag.detachGroup(placed.console->group()));
+    {
+        dock::DockWindow* window = dock::DockCatalog::self().windows().first();
+        dock::DragHandle handle(nullptr, placed.console->group(), window);
+        const QRect target = placed.object_tree->group()->node()->geometry();
+        drag.beginAt(&handle, target.center() + QPoint(-50, -50));
+        drag.updateAt(target.center());
+        REQUIRE(drag.phase() == dock::DragSession::Phase::Dragging);
+        drag.endAt(target.center());
+    }
+    REQUIRE(placed.console->group() == placed.object_tree->group());
+    REQUIRE(placed.object_tree->group()->shownPanels().size() == 2);
+
+    // 拖出 console 标签到空白处：保留浮动（临时分组）
+    const QPoint press = placed.object_tree->group()->node()->geometry().center();
+    dock::DragHandle tab_handle(nullptr, placed.object_tree->group(), nullptr, placed.console);
+    drag.beginAt(&tab_handle, press);
+    drag.updateAt(press + QPoint(60, 0));
+    REQUIRE(drag.phase() == dock::DragSession::Phase::Dragging);
+    drag.endAt(QPoint(-1000, -1000));
+    REQUIRE(dock::DockCatalog::self().windows().size() == 1);
+
+    // 隐藏该面板 → 浮窗自动关闭并归还源分组
+    placed.console->hidePanel();
+    CHECK(dock::DockCatalog::self().windows().isEmpty());
+    CHECK(placed.console->group() == placed.object_tree->group());
+    CHECK_FALSE(placed.console->isDetached());
+    CHECK_FALSE(placed.console->isShown());
+    CHECK(placed.object_tree->group()->shownPanels().size() == 1);
+}
+
+TEST_CASE("DockDrag: multi-group floating window keeps other groups")
+{
+    DockFixture f;
+    PlacedDocks placed(f);
+    placed.object_tree->showPanel();
+    placed.console->showPanel();
+
+    dock::DragSession& drag = dock::DragSession::self();
+
+    // 1) 浮出 console 分组（主分组）
+    REQUIRE(drag.detachGroup(placed.console->group()));
+    REQUIRE(dock::DockCatalog::self().windows().size() == 1);
+    dock::DockWindow* window = dock::DockCatalog::self().windows().first();
+    dock::PanelGroup* primary = window->group();
+    REQUIRE(primary == placed.console->group());
+
+    const auto window_zone_center = [window](dock::PanelGroup* group, dock::DropZone location) {
+        const QRect group_rect(window->geometry().topLeft() + group->node()->geometry().topLeft(),
+            group->node()->geometry().size());
+        return indicatorRect(dock::ZoneGeometry::innerZones(group_rect), location).center();
+    };
+
+    // 2) 把 objectTree 分组整组拖进该浮窗内部做分栏（次级分组）
+    {
+        dock::DragHandle handle(nullptr, placed.object_tree->group(), nullptr);
+        const QPoint press = placed.object_tree->group()->node()->geometry().center();
+        drag.beginAt(&handle, press);
+        drag.updateAt(press + QPoint(0, -60));
+        REQUIRE(drag.phase() == dock::DragSession::Phase::Dragging);
+
+        const QPoint inner_top = window_zone_center(primary, dock::DropZone::InnerTop);
+        REQUIRE(inner_top != QPoint());
+        drag.updateAt(inner_top);
+        CHECK(drag.hoveredZone() == dock::DropZone::InnerTop);
+        drag.endAt(inner_top);
+    }
+
+    // 浮窗承载两个分组：次级分组停靠不得导致窗口/其他分组消失
+    REQUIRE(dock::DockCatalog::self().windows().size() == 1);
+    CHECK(window->region()->groups().size() == 2);
+    CHECK(placed.object_tree->group() != primary);
+    CHECK(placed.object_tree->group()->parent() == window->region());
+
+    // 3) 次级分组拖回主区域：浮窗与主分组保留
+    {
+        dock::DragHandle handle(nullptr, placed.object_tree->group(), window);
+        const QPoint press = window->geometry().topLeft()
+            + placed.object_tree->group()->node()->geometry().center();
+        drag.beginAt(&handle, press);
+        drag.updateAt(press + QPoint(0, -60));
+        REQUIRE(drag.phase() == dock::DragSession::Phase::Dragging);
+
+        const QRect host_rect(0, 0, 1600, 900);
+        const QPoint outer_left = indicatorRect(
+            dock::ZoneGeometry::outerZones(host_rect), dock::DropZone::OuterLeft).center();
+        REQUIRE(outer_left != QPoint());
+        drag.updateAt(outer_left);
+        CHECK(drag.hoveredZone() == dock::DropZone::OuterLeft);
+        drag.endAt(outer_left);
+    }
+
+    REQUIRE(dock::DockCatalog::self().windows().size() == 1);
+    CHECK(window->region()->groups().size() == 1);
+    CHECK(placed.object_tree->isShown());
+    REQUIRE(placed.object_tree->group()->node() != nullptr);
+    CHECK(placed.object_tree->group()->node()->client()
+        == static_cast<dock::LayoutClient*>(placed.object_tree->group()));
+
+    // 4) 再停靠回浮窗内部；隐藏两个分组全部面板 → 整窗自动回收回主区域
+    {
+        dock::DragHandle handle(nullptr, placed.object_tree->group(), nullptr);
+        const QPoint press = placed.object_tree->group()->node()->geometry().center();
+        drag.beginAt(&handle, press);
+        drag.updateAt(press + QPoint(0, -60));
+        REQUIRE(drag.phase() == dock::DragSession::Phase::Dragging);
+
+        const QPoint inner_left = window_zone_center(primary, dock::DropZone::InnerLeft);
+        REQUIRE(inner_left != QPoint());
+        drag.updateAt(inner_left);
+        drag.endAt(inner_left);
+    }
+    REQUIRE(dock::DockCatalog::self().windows().size() == 1);
+    REQUIRE(window->region()->groups().size() == 2);
+
+    placed.object_tree->hidePanel();
+    placed.console->hidePanel();
+    CHECK(dock::DockCatalog::self().windows().isEmpty());
+    CHECK_FALSE(placed.console->isDetached());
+    CHECK_FALSE(placed.object_tree->isDetached());
+    REQUIRE(placed.console->group() != nullptr);
+    REQUIRE(placed.object_tree->group() != nullptr);
+    REQUIRE(placed.object_tree->group()->node() != nullptr);
+    CHECK(placed.object_tree->group()->node()->client()
+        == static_cast<dock::LayoutClient*>(placed.object_tree->group()));
+
+    placed.console->showPanel();
+    placed.object_tree->showPanel();
+    CHECK(placed.console->isShown());
+    CHECK(placed.object_tree->isShown());
+
+#ifdef QT_DEBUG
+    f.host.region()->validateTree();
+#endif
+}
+
+TEST_CASE("DockDrag: drop resolver prefers floating windows and suppresses center merge on central group")
+{
+    DockFixture f;
+    PlacedDocks placed(f);
+
+    // 非中央分组中心：中心合并
+    const QPoint object_tree_center = placed.object_tree->group()->node()->geometry().center();
+    const dock::DropTarget merge_target = dock::DropResolver::resolve(object_tree_center, nullptr);
+    CHECK(merge_target.region == f.host.region());
+    CHECK(merge_target.group == placed.object_tree->group());
+    CHECK(merge_target.zone == dock::DropZone::Merge);
+
+    // 中央持久分组中心：无落点
+    const QPoint central_center = f.host.centralGroup()->node()->geometry().center();
+    const dock::DropTarget central_target = dock::DropResolver::resolve(central_center, nullptr);
+    CHECK(central_target.group == f.host.centralGroup());
+    CHECK(central_target.zone == dock::DropZone::None);
+
+    // 浮窗优先：浮出 console 后其窗口中心命中浮窗区域
+    placed.console->showPanel();
+    dock::DragSession& drag = dock::DragSession::self();
+    REQUIRE(drag.detachGroup(placed.console->group()));
+    REQUIRE(dock::DockCatalog::self().windows().size() == 1);
+    dock::DockWindow* window = dock::DockCatalog::self().windows().first();
+
+    const QPoint floating_center = window->geometry().center();
+    const dock::DropTarget floating_target = dock::DropResolver::resolve(floating_center, nullptr);
+    CHECK(floating_target.region == window->region());
+    CHECK(floating_target.group == placed.console->group());
+    CHECK(floating_target.zone == dock::DropZone::Merge);
+
+    // 排除拖拽源区域：同一坐标回退到主区域
+    const dock::DropTarget excluded_target
+        = dock::DropResolver::resolve(floating_center, window->region());
+    CHECK(excluded_target.region == f.host.region());
+    CHECK(excluded_target.region != window->region());
+
+    REQUIRE(drag.reattachGroup(placed.console->group()));
 }
 
 TEST_CASE("DockDrag: central group is protected from dragging and center merge")

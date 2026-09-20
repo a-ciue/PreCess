@@ -62,6 +62,9 @@ public:
     //! @brief 以选项卡方式加入中央分组
     void stackPanel(DockPanel* panel);
 
+    //! @brief 隐藏除指定分组外的所有显示面板（中央持久部件不受影响）
+    void hideOtherGroups(PanelGroup* except);
+
     //! @brief 应用窗口内容区几何（视图层尺寸变化时调用）
     void setFrame(const QRect& frame);
 

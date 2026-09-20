@@ -27,6 +27,8 @@ DockWindowItem::DockWindowItem(DockWindow* window)
         QUrl(QStringLiteral("qrc:/precess/dock/DockWindow.qml")));
     if (root_item_) {
         root_item_->setParentItem(contentItem());
+        // QQuickItem::setParentItem 不改 QObject 父子关系：显式接管所有权
+        root_item_->setParent(this);
         root_item_->setSize(contentItem()->size());
         root_item_->setVisible(true);
         area_host_ = root_item_->findChild<QQuickItem*>(QStringLiteral("areaHost"));

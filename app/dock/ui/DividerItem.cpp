@@ -24,6 +24,8 @@ DividerItem::DividerItem(QQuickItem* parent)
         return;
 
     root->setParentItem(this);
+    // QQuickItem::setParentItem 不改 QObject 父子关系：显式接管所有权
+    root->setParent(this);
     root->setProperty("dividerItem", QVariant::fromValue<QObject*>(this));
     root->setSize(size());
     root->setVisible(isVisible());

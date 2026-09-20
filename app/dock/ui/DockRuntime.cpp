@@ -75,6 +75,8 @@ PanelGroupItem* DockRuntime::panelGroupItem(PanelGroup* group)
     if (!view) {
         view = new PanelGroupItem(group);
         group_items_.insert(group, view);
+        // 注册为分组视图：核心层经 DockView 查询标签插入位置等视图信息
+        group->setView(view);
         QObject::connect(group, &QObject::destroyed, view, [this, group] {
             PanelGroupItem* dying = group_items_.take(group);
             if (dying)

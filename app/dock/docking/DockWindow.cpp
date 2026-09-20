@@ -29,6 +29,7 @@ void DockWindow::takeGroup(PanelGroup* group, LayoutNode* item)
     group_ = group;
     if (!group_) {
         region_->setRootNode(nullptr);
+        Q_EMIT groupChanged();
         return;
     }
 
@@ -39,6 +40,7 @@ void DockWindow::takeGroup(PanelGroup* group, LayoutNode* item)
     }
     group_->setDetached(true);
     Q_EMIT titleChanged(title());
+    Q_EMIT groupChanged();
 }
 
 LayoutNode* DockWindow::releaseGroup()
@@ -46,9 +48,21 @@ LayoutNode* DockWindow::releaseGroup()
     if (!group_)
         return nullptr;
 
-    group_->setDetached(false);
+    PanelGroup* released = group_;
+    // 仅当分组就是区域根（独占浮窗）时整树摘出；多分组浮窗只摘叶子
+    LayoutNode* node = nullptr;
+    if (region_->rootNode() == released->node())
+        node = region_->takeRootNode();
+    else if (region_->extractGroupNode(released))
+        node = released->node();
+
+    released->setDetached(false);
+    // 解除窗口所有权：归还出的分组不再随本窗口销毁而被连带删除
+    if (released->parent() == this)
+        released->setParent(nullptr);
     group_ = nullptr;
-    return region_->takeRootNode();
+    Q_EMIT groupChanged();
+    return node;
 }
 
 bool DockWindow::isEmpty() const

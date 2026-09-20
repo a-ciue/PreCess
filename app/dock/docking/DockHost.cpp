@@ -57,6 +57,18 @@ void DockHost::stackPanel(DockPanel* panel)
     region_->stackPanel(panel, central_group_);
 }
 
+void DockHost::hideOtherGroups(PanelGroup* except)
+{
+    const QList<DockPanel*> panels = DockCatalog::self().panels();
+    for (DockPanel* panel : panels) {
+        if (!panel || panel == central_panel_ || !panel->isShown())
+            continue;
+        if (except && panel->group() == except)
+            continue;
+        panel->hidePanel();
+    }
+}
+
 void DockHost::setFrame(const QRect& frame)
 {
     region_->setGeometry(frame);

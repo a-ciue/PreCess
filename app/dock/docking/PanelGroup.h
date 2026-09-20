@@ -6,6 +6,7 @@
 #pragma once
 
 #include "DockObject.h"
+#include "DockPanel.h"
 #include "tree/LayoutClient.h"
 
 #include <QList>
@@ -13,7 +14,6 @@
 
 namespace dock {
 
-class DockPanel;
 class LayoutNode;
 
 /**
@@ -32,6 +32,10 @@ public:
 
     //! @brief 追加面板（不改变显示状态）
     void addPanel(DockPanel* panel);
+    //! @brief 在显示面板序列的指定位置插入面板（0..显示面板数；越界按追加处理）
+    void insertPanel(DockPanel* panel, int shown_index);
+    //! @brief 在显示面板序列内移动面板（from/to 为显示面板下标，to 为插入位置）
+    bool movePanel(int from, int to);
     //! @brief 移除面板（当前仅用于对象销毁前的解绑）
     void removePanel(DockPanel* panel);
 
@@ -48,6 +52,11 @@ public:
     int activeIndex() const;
     //! @brief 按显示面板下标切换
     void setActiveIndex(int index);
+
+    //! @brief 隐藏除指定面板外的组内显示面板
+    void hideOthers(DockPanel* panel);
+    //! @brief 组内显示面板的能力位交集（中央分组恒为无能力）
+    DockPanel::Features features() const;
 
     //! @brief 分组标题（当前面板标题）
     QString title() const;
@@ -90,6 +99,8 @@ Q_SIGNALS:
 private:
     //! @brief 当前面板不可用时选择下一个可显示的面板
     void refreshActivePanel();
+    //! @brief 在组内面板序列的指定下标插入（公共接口的位置映射终点）
+    void insertPanelAt(DockPanel* panel, int panels_index);
 
     QList<DockPanel*> panels_;
     DockPanel* active_ = nullptr;
