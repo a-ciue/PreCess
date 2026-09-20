@@ -59,6 +59,8 @@ PanelGroupItem::PanelGroupItem(PanelGroup* group, QQuickItem* parent)
     }
 
     if (group_) {
+        // 分组被回收（如合并后空组回收）时视图进入安全空态
+        connect(group_, &QObject::destroyed, this, [this] { group_ = nullptr; });
         connect(group_, &PanelGroup::panelsChanged, this, &PanelGroupItem::syncFromGroup);
         connect(group_, &PanelGroup::activePanelChanged, this, [this](DockPanel*) {
             // 仅切换内容与下标：不重建标签模型，避免按下未激活标签时销毁其委托

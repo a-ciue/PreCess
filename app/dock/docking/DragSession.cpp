@@ -384,15 +384,12 @@ void DragSession::applyDrop()
 
         disposeGroupNode(group, window);
 
-        // 停靠后的分组不再属于浮窗；临时分组（含此前单标签浮出的回停来源）用完即弃
-        const bool parked_temp = floating_origins_.contains(group);
-        if (temp_group || parked_temp) {
+        // 停靠后的分组不再属于浮窗；临时/曾浮出的分组用完即弃，
+        // 原分组此时已无面板与节点，同样回收（视图随清空销毁）
+        if (temp_group || floating_origins_.contains(group))
             floating_origins_.remove(group);
-            group->setParent(this); // 脱离浮窗父子关系后再延迟销毁
-            group->deleteLater();
-        } else if (group->parent() == nullptr) {
-            group->setParent(source_region_ ? static_cast<QObject*>(source_region_) : this);
-        }
+        group->setParent(this);
+        group->deleteLater();
     } else {
         if (source_region_)
             source_region_->discardGroupVacancy(group);
