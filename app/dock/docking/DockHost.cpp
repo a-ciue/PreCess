@@ -136,22 +136,26 @@ struct RestoreContext {
     bool central_seen = false;
 };
 
-LayoutNode* buildNode(const QJsonObject& object, RestoreContext& ctx, QObject* group_parent);
+LayoutNode* buildNode(const QJsonObject& object, RestoreContext& ctx, QObject* group_parent,
+    bool allow_central);
 
-PanelGroup* buildGroup(const QJsonObject& object, RestoreContext& ctx, QObject* group_parent)
+PanelGroup* buildGroup(const QJsonObject& object, RestoreContext& ctx, QObject* group_parent,
+    bool allow_central)
 {
     const QJsonArray entries = object.value(QStringLiteral("panels")).toArray();
 
-    // 含中央面板的分组复用现有中央分组与节点
+    // 含中央面板的分组复用现有中央分组与节点（仅主树允许）
     PanelGroup* group = nullptr;
     LayoutNode* node = nullptr;
-    for (const QJsonValue& value : entries) {
-        const QString name = value.toObject().value(QStringLiteral("name")).toString();
-        if (ctx.panels.value(name, nullptr) == ctx.host->centralPanel()) {
-            group = ctx.host->centralGroup();
-            node = ctx.host->centralNode();
-            ctx.central_seen = true;
-            break;
+    if (allow_central) {
+        for (const QJsonValue& value : entries) {
+            const QString name = value.toObject().value(QStringLiteral("name")).toString();
+            if (ctx.panels.value(name, nullptr) == ctx.host->centralPanel()) {
+                group = ctx.host->centralGroup();
+                node = ctx.host->centralNode();
+                ctx.central_seen = true;
+                break;
+            }
         }
     }
 
@@ -160,10 +164,6 @@ PanelGroup* buildGroup(const QJsonObject& object, RestoreContext& ctx, QObject* 
         node = new LayoutNode(group);
         group->setNode(node);
     }
-
-    const int id = object.value(QStringLiteral("id")).toInt(-1);
-    if (id >= 0)
-        ctx.groups.insert(id, group);
 
     for (const QJsonValue& value : entries) {
         const QJsonObject entry = value.toObject();
@@ -188,6 +188,11 @@ PanelGroup* buildGroup(const QJsonObject& object, RestoreContext& ctx, QObject* 
         return nullptr;
     }
 
+    // 仅在分组确定有效后登记，避免悬空 id 引用（失败清理与回停来源会按 id 取用）
+    const int id = object.value(QStringLiteral("id")).toInt(-1);
+    if (id >= 0)
+        ctx.groups.insert(id, group);
+
     const QString active_name = object.value(QStringLiteral("active")).toString();
     if (DockPanel* active = ctx.panels.value(active_name, nullptr))
         group->setActivePanel(active);
@@ -195,12 +200,13 @@ PanelGroup* buildGroup(const QJsonObject& object, RestoreContext& ctx, QObject* 
     return group;
 }
 
-LayoutNode* buildNode(const QJsonObject& object, RestoreContext& ctx, QObject* group_parent)
+LayoutNode* buildNode(const QJsonObject& object, RestoreContext& ctx, QObject* group_parent,
+    bool allow_central)
 {
     const QString type = object.value(QStringLiteral("type")).toString();
 
     if (type == QLatin1String("group")) {
-        PanelGroup* group = buildGroup(object, ctx, group_parent);
+        PanelGroup* group = buildGroup(object, ctx, group_parent, allow_central);
         return group ? group->node() : nullptr;
     }
 
@@ -219,7 +225,7 @@ LayoutNode* buildNode(const QJsonObject& object, RestoreContext& ctx, QObject* g
         for (const QJsonValue& value : object.value(QStringLiteral("children")).toArray()) {
             const QJsonObject entry = value.toObject();
             LayoutNode* child = buildNode(entry.value(QStringLiteral("node")).toObject(), ctx,
-                group_parent);
+                group_parent, allow_central);
             if (!child)
                 continue;
             box->insertNode(box->childCount(), child, 0, true);
@@ -254,6 +260,7 @@ bool validateLayout(const QJsonObject& root, const QString& host_name, const QSt
 
     QHash<int, int> id_uses;
     int central_count = 0;
+    int central_outside = 0;
     QSet<int> vacancy_windows;
 
     const auto walk = [&](auto&& self, const QJsonObject& node, bool in_main) -> void {
@@ -263,8 +270,12 @@ bool validateLayout(const QJsonObject& root, const QString& host_name, const QSt
             if (id >= 0)
                 ++id_uses[id];
             for (const QJsonValue& value : node.value(QStringLiteral("panels")).toArray()) {
-                if (value.toObject().value(QStringLiteral("name")).toString() == central_name)
-                    ++central_count;
+                if (value.toObject().value(QStringLiteral("name")).toString() == central_name) {
+                    if (in_main)
+                        ++central_count;
+                    else
+                        ++central_outside;
+                }
             }
             return;
         }
@@ -279,10 +290,6 @@ bool validateLayout(const QJsonObject& root, const QString& host_name, const QSt
         }
     };
     walk(walk, main, true);
-
-    // 中央面板必须在主区域出现且仅一次
-    if (central_count != 1)
-        return false;
 
     const QJsonArray windows = root.value(QStringLiteral("windows")).toArray();
     for (int i = 0; i < windows.size(); ++i) {
@@ -303,6 +310,10 @@ bool validateLayout(const QJsonObject& root, const QString& host_name, const QSt
                 return false;
         }
     }
+
+    // 中央面板必须在主区域出现且仅一次，不得出现在浮窗树
+    if (central_count != 1 || central_outside != 0)
+        return false;
 
     // id 必须唯一（占位/回停来源引用依赖）
     for (auto it = id_uses.constBegin(); it != id_uses.constEnd(); ++it) {
@@ -363,6 +374,9 @@ void DockHost::hideOtherGroups(PanelGroup* except)
     const QList<DockPanel*> panels = DockCatalog::self().panels();
     for (DockPanel* panel : panels) {
         if (!panel || panel == central_panel_ || !panel->isShown())
+            continue;
+        // 能力门控：不可关闭的面板不参与“关闭其他组”
+        if (!panel->hasFeature(DockPanel::Feature::Closable))
             continue;
         if (except && panel->group() == except)
             continue;
@@ -488,7 +502,8 @@ bool DockHost::restoreLayout(const QByteArray& layout)
     // 建树期间先摘出中央根，避免 setRootNode 误删被复用的中央节点
     region_->takeRootNode();
 
-    LayoutNode* main_root = buildNode(root.value(QStringLiteral("main")).toObject(), ctx, region_);
+    LayoutNode* main_root = buildNode(root.value(QStringLiteral("main")).toObject(), ctx, region_,
+        true);
     if (!main_root || !ctx.central_seen) {
         for (PanelGroup* group : ctx.groups) {
             if (group == central_group_)
@@ -515,9 +530,23 @@ bool DockHost::restoreLayout(const QByteArray& layout)
             continue;
 
         LayoutNode* tree = buildNode(entry.value(QStringLiteral("tree")).toObject(), ctx,
-            window->region());
+            window->region(), false);
         PanelGroup* primary
             = ctx.groups.value(entry.value(QStringLiteral("primary")).toInt(-1), nullptr);
+
+        // primary 必须是本窗口树的节点：否则窗口主分组指向别处节点，
+        // 后续 releaseGroup/takeGroupNode 会从其他区域摘走节点破坏布局
+        if (primary) {
+            bool in_tree = false;
+            for (LayoutNode* item = primary->node(); item; item = item->parent()) {
+                if (item == tree) {
+                    in_tree = true;
+                    break;
+                }
+            }
+            if (!in_tree)
+                primary = nullptr;
+        }
         window->adoptTree(primary, tree);
 
         const QJsonArray geometry = entry.value(QStringLiteral("geometry")).toArray();
