@@ -13,7 +13,7 @@
 namespace dock {
 
 DockWindow::DockWindow(QObject* parent)
-    : DockObject(Kind::Window, parent)
+    : DockObject(parent)
     , region_(new DockRegion(this))
 {
     DockCatalog::self().registerWindow(this);

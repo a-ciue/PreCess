@@ -14,7 +14,7 @@
 namespace dock {
 
 DockHost::DockHost(const QString& unique_name, QObject* parent)
-    : DockObject(Kind::Host, parent)
+    : DockObject(parent)
     , unique_name_(unique_name)
     , region_(new DockRegion(this))
 {

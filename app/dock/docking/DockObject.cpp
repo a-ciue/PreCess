@@ -7,9 +7,8 @@
 
 namespace dock {
 
-DockObject::DockObject(Kind kind, QObject* parent)
+DockObject::DockObject(QObject* parent)
     : QObject(parent)
-    , kind_(kind)
 {
 }
 

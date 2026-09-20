@@ -16,7 +16,7 @@
 namespace dock {
 
 DockRegion::DockRegion(QObject* parent)
-    : DockObject(Kind::None, parent)
+    : DockObject(parent)
 {
 }
 

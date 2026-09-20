@@ -15,7 +15,7 @@
 namespace dock {
 
 PanelGroup::PanelGroup(QObject* parent)
-    : DockObject(Kind::Group, parent)
+    : DockObject(parent)
 {
 }
 

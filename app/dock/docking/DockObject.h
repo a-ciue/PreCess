@@ -1,6 +1,6 @@
 /**
  * @file DockObject.h
- * @brief 控制器基类：持有视图并提供类别标识
+ * @brief 控制器基类：持有视图
  */
 
 #pragma once
@@ -21,21 +21,8 @@ class DockObject : public QObject
 {
     Q_OBJECT
 public:
-    //! @brief 控制器类别
-    enum class Kind {
-        None,
-        Host,
-        Panel,
-        Group,
-        Window
-    };
-    Q_ENUM(Kind)
-
-    explicit DockObject(Kind kind, QObject* parent = nullptr);
+    explicit DockObject(QObject* parent = nullptr);
     ~DockObject() override;
-
-    //! @brief 控制器类别
-    Kind kind() const { return kind_; }
 
     //! @brief 关联视图（可为空）
     DockView* view() const { return view_; }
@@ -43,7 +30,6 @@ public:
     void setView(DockView* view) { view_ = view; }
 
 private:
-    Kind kind_;
     DockView* view_ = nullptr;
 };
 

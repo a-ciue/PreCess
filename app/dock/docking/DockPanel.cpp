@@ -11,7 +11,7 @@
 namespace dock {
 
 DockPanel::DockPanel(const QString& unique_name, QObject* parent)
-    : DockObject(Kind::Panel, parent)
+    : DockObject(parent)
     , unique_name_(unique_name)
     , title_(unique_name)
 {
