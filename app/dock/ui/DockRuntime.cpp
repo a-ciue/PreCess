@@ -124,6 +124,9 @@ void DockRuntime::destroyPanelGroupItem(PanelGroup* group)
     if (!view)
         return;
 
+    // 核心层不得继续引用即将销毁的视图（节点生命周期空窗期仍有解引用路径）
+    group->setView(nullptr);
+
     // 立即隐藏，避免等待 deleteLater 期间以旧几何遮挡相邻分组
     view->setVisible(false);
     view->deleteLater();

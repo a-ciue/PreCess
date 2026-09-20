@@ -5,6 +5,8 @@
 
 #pragma once
 
+#include <QPointer>
+
 namespace dock {
 
 class DockPanel;
@@ -16,7 +18,8 @@ class DockView;
  * @brief 拖拽源描述
  *
  * 由视图层在标题栏/标签按下时创建，DragSession 仅保存裸指针
- * （生命周期由视图层在本次按下-释放期间保证）。
+ * （生命周期由视图层在本次按下-释放期间保证）；内部引用持弱指针，
+ * 拖拽期间分组/面板被回收时自动失效，避免解引用悬空对象。
  * panel() 非空表示拖动单个标签面板，否则拖动整个分组。
  */
 class DragHandle
@@ -27,20 +30,20 @@ public:
 
     //! @brief 触发拖拽的视图（标题栏/标签）
     DockView* view() const { return view_; }
-    //! @brief 被拖拽的分组
-    PanelGroup* group() const { return group_; }
+    //! @brief 被拖拽的分组（已失效时为空）
+    PanelGroup* group() const;
     //! @brief 拖动源为浮动窗口时非空
-    DockWindow* window() const { return window_; }
+    DockWindow* window() const;
     //! @brief 被拖拽的单个标签面板（为空表示整组拖拽）
-    DockPanel* panel() const { return panel_; }
+    DockPanel* panel() const;
     //! @brief 是否源自浮动窗口
-    bool isDetached() const { return window_ != nullptr; }
+    bool isDetached() const;
 
 private:
     DockView* view_ = nullptr;
-    PanelGroup* group_ = nullptr;
-    DockWindow* window_ = nullptr;
-    DockPanel* panel_ = nullptr;
+    QPointer<PanelGroup> group_;
+    QPointer<DockWindow> window_;
+    QPointer<DockPanel> panel_;
 };
 
 }

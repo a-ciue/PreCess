@@ -84,6 +84,14 @@ void DockHostItem::geometryChange(const QRectF& new_geometry, const QRectF& old_
     updateAreaGeometry();
 }
 
+void DockHostItem::itemChange(ItemChange change, const ItemChangeData& value)
+{
+    QQuickItem::itemChange(change, value);
+    // 窗口可能晚于 componentComplete 才就绪（动态创建/延迟 reparent）：场景变化时重试监听
+    if (change == QQuickItem::ItemSceneChange)
+        watchWindow();
+}
+
 void DockHostItem::updateAreaGeometry()
 {
     if (!host_)
@@ -98,16 +106,21 @@ void DockHostItem::updateAreaGeometry()
 
 void DockHostItem::watchWindow()
 {
-    if (window_watched_)
+    QQuickWindow* host = window();
+    if (host == watched_window_)
         return;
 
-    QQuickWindow* host = window();
+    if (watched_window_) {
+        disconnect(watched_window_, nullptr, this, nullptr);
+        watched_window_ = nullptr;
+    }
     if (!host)
         return;
 
     connect(host, &QWindow::xChanged, this, [this] { updateAreaGeometry(); });
     connect(host, &QWindow::yChanged, this, [this] { updateAreaGeometry(); });
-    window_watched_ = true;
+    watched_window_ = host;
+    updateAreaGeometry();
 }
 
 void DockHostItem::loadCentralItem()
@@ -145,14 +158,18 @@ void DockHostItem::placePanel(QQuickItem* panel, DockEdge edge, QQuickItem* rela
     host_->placePanel(dock, edge,
         relative_instantiator ? relative_instantiator->panel() : nullptr, preferred_size, launch);
 
-    connect(dock, &dock::DockPanel::shownChanged, this, [this](bool) {
-        if (area_item_)
-            area_item_->sync();
-    });
-    connect(dock, &dock::DockPanel::detachedChanged, this, [this](bool) {
-        if (area_item_)
-            area_item_->sync();
-    });
+    // 每个面板只绑定一次视图同步；核心层对已分组面板的重复放置会直接拒绝
+    if (!place_watches_.contains(dock)) {
+        place_watches_.insert(dock);
+        connect(dock, &dock::DockPanel::shownChanged, this, [this](bool) {
+            if (area_item_)
+                area_item_->sync();
+        });
+        connect(dock, &dock::DockPanel::detachedChanged, this, [this](bool) {
+            if (area_item_)
+                area_item_->sync();
+        });
+    }
 
     if (area_item_)
         area_item_->sync();
@@ -179,10 +196,8 @@ bool DockHostItem::restoreLayout(const QString& layout)
     if (!host_)
         return false;
 
-    const bool restored = host_->restoreLayout(layout.toUtf8());
-    if (area_item_)
-        area_item_->sync();
-    return restored;
+    // 成功与恢复失败的布局重置都会经 DockHost::layoutRestored 驱动区域同步
+    return host_->restoreLayout(layout.toUtf8());
 }
 
 DockObject* DockHostItem::dockObject() const

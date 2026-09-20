@@ -70,6 +70,13 @@ public:
     void endAt(const QPoint& global_pos);
     //! @brief 取消当前按下/拖拽（Esc、窗口失焦等）
     void cancel();
+    /**
+     * @brief 静默中止会话（宿主拆解期调用）
+     *
+     * 只重置会话状态并释放拖拽代理，不移动/回收任何模型对象、不发信号：
+     * 此时布局对象可能已处于销毁过程中，触碰它们会造成二次破坏。
+     */
+    void abort();
 
     //! @brief 使分组浮动（浮动按钮/浮动菜单）；成功返回 true
     bool detachGroup(PanelGroup* group);
@@ -154,9 +161,9 @@ private:
     QPoint press_pos_;
 
     // 单个标签拖拽
-    DockPanel* dragged_panel_ = nullptr;
+    QPointer<DockPanel> dragged_panel_;
     PanelGroup* drag_group_ = nullptr; // 实际被拖拽的分组（临时组或源分组）
-    PanelGroup* origin_group_ = nullptr;
+    QPointer<PanelGroup> origin_group_;
     int origin_index_ = -1;
 
     // 单标签浮出且未停靠时的回停来源（键为临时分组）

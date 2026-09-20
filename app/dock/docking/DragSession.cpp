@@ -149,6 +149,26 @@ void DragSession::cancel()
     cleanup();
 }
 
+void DragSession::abort()
+{
+    if (!handle_ && !drag_proxy_ && !drag_group_ && phase_ == Phase::Idle
+        && !hover_.region && hover_.zone == DropZone::None) {
+        return;
+    }
+
+    // 宿主拆解期：只重置会话状态，不触碰可能正在销毁的模型对象，也不发信号
+    delete drag_proxy_;
+    drag_proxy_ = nullptr;
+    handle_ = nullptr;
+    source_region_ = nullptr;
+    dragged_panel_ = nullptr;
+    drag_group_ = nullptr;
+    origin_group_ = nullptr;
+    origin_index_ = -1;
+    phase_ = Phase::Idle;
+    hover_ = DropTarget {};
+}
+
 bool DragSession::detachGroup(PanelGroup* group)
 {
     DockHost* host = DockCatalog::self().host();

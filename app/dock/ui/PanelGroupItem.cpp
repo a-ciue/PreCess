@@ -108,7 +108,10 @@ PanelGroupItem::~PanelGroupItem()
         }
     }
 
-    // 从 DockRuntime 缓存中注销，避免悬空视图被再次取用
+    // 从 DockRuntime 缓存中注销，避免悬空视图被再次取用；
+    // 仅在本视图仍是登记视图时清除分组引用，避免组已进入销毁流程时反向访问
+    if (group_ && DockRuntime::instance().existingPanelGroupItem(group_) == this)
+        group_->setView(nullptr);
     DockRuntime::instance().forgetPanelGroupItem(group_, this);
 }
 

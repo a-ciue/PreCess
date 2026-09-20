@@ -349,6 +349,9 @@ DockHost::DockHost(const QString& unique_name, QObject* parent)
 
 DockHost::~DockHost()
 {
+    // 宿主拆解期静默中止拖拽会话：会话持有的区域/分组/窗口指针随本对象一同失效
+    DragSession::self().abort();
+
     if (DockCatalog::self().host() == this)
         DockCatalog::self().setHost(nullptr);
 }
@@ -517,7 +520,8 @@ bool DockHost::restoreLayout(const QByteArray& layout)
             delete group;
         }
         delete main_root;
-        clearLayout();
+    // 恢复前的清理不通知视图：真正的同步由恢复完成后的 layoutRestored 统一驱动
+    clearLayoutInternal(false);
         return false;
     }
     region_->setRootNode(main_root);
@@ -592,6 +596,11 @@ bool DockHost::restoreLayout(const QByteArray& layout)
 
 void DockHost::clearLayout()
 {
+    clearLayoutInternal(true);
+}
+
+void DockHost::clearLayoutInternal(bool notify)
+{
     if (DragSession::self().phase() != DragSession::Phase::Idle)
         DragSession::self().cancel();
 
@@ -652,7 +661,8 @@ void DockHost::clearLayout()
         region_->setRootNode(central_node_);
     }
 
-    Q_EMIT layoutRestored();
+    if (notify)
+        Q_EMIT layoutRestored();
 }
 
 void DockHost::setFrame(const QRect& frame)

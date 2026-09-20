@@ -99,6 +99,9 @@ Q_SIGNALS:
     void layoutRestored();
 
 private:
+    //! @brief 清空布局的实现；notify 为 false 时（恢复流程内部调用）不发 layoutRestored
+    void clearLayoutInternal(bool notify);
+
     QString unique_name_;
     DockRegion* region_ = nullptr;
     DockPanel* central_panel_ = nullptr;

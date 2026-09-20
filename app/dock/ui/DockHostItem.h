@@ -9,12 +9,16 @@
 #include "docking/DockView.h"
 
 #include <QQuickItem>
+#include <QSet>
 #include <QUrl>
 
 #include <memory>
 
+class QQuickWindow;
+
 namespace dock {
 class DockHost;
+class DockPanel;
 
 namespace ui {
 
@@ -73,11 +77,12 @@ Q_SIGNALS:
 protected:
     void componentComplete() override;
     void geometryChange(const QRectF& new_geometry, const QRectF& old_geometry) override;
+    void itemChange(ItemChange change, const ItemChangeData& value) override;
 
 private:
     //! @brief 同步区域几何到控制器与视图
     void updateAreaGeometry();
-    //! @brief 监听宿主窗口移动（全局原点变化）
+    //! @brief 监听宿主窗口移动（全局原点变化）；窗口变化时自动重绑
     void watchWindow();
     //! @brief 加载 central 持久部件
     void loadCentralItem();
@@ -87,7 +92,9 @@ private:
     dock::DockHost* host_ = nullptr;
     DockAreaItem* area_item_ = nullptr;
     std::unique_ptr<PanelContentView> central_view_;
-    bool window_watched_ = false;
+    QQuickWindow* watched_window_ = nullptr;
+    //! @brief 已绑定视图同步的面板（重复 placePanel 不累积连接）
+    QSet<dock::DockPanel*> place_watches_;
 };
 
 }
