@@ -10,6 +10,7 @@
 
 #include <QQuickItem>
 #include <QStringList>
+#include <QVariant>
 
 namespace dock {
 
@@ -128,6 +129,8 @@ private:
     QQuickItem* tabItem(int index) const;
     //! @brief 校正 TabBar 当前下标与核心激活面板一致
     void syncTabIndex();
+    //! @brief 视图状态签名（标签/激活/标题/能力位等）；用于避免重复通知
+    QVariantList stateSignature() const;
     //! @brief 清除组内重排预览状态
     void clearReorderPreview();
 
@@ -145,6 +148,8 @@ private:
     int reorder_marker_index_ = -1;
     bool reordering_ = false;
     bool updating_tabs_ = false;
+    //! @brief 上次通知 QML 的视图状态签名（相同则不再发出 groupChanged）
+    QVariantList last_signature_;
 };
 
 }

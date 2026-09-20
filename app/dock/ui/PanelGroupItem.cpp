@@ -64,6 +64,8 @@ PanelGroupItem::PanelGroupItem(PanelGroup* group, QQuickItem* parent)
             // 仅切换内容与下标：不重建标签模型，避免按下未激活标签时销毁其委托
             updateGuest();
             syncTabIndex();
+            // 同步签名缓存：后续区域 sync 不因激活切换重复通知 QML
+            last_signature_ = stateSignature();
             Q_EMIT activeTabChanged();
         });
         connect(group_, &PanelGroup::titleChanged, this, [this](const QString&) {
@@ -112,13 +114,38 @@ void PanelGroupItem::syncFromGroup()
     if (!group_)
         return;
 
+    // client 可能延迟注册（如中央持久部件）：每次同步都重试挂载
     updateGuest();
+
+    // 状态未变时不通知 QML：避免区域反复 sync 造成标签模型重建
+    const QVariantList signature = stateSignature();
+    if (signature == last_signature_) {
+        syncTabIndex();
+        return;
+    }
+    last_signature_ = signature;
+
     // 模型重建期间 TabBar 可能重置下标并回灌激活请求，用标记抑制
     updating_tabs_ = true;
     Q_EMIT groupChanged();
     updating_tabs_ = false;
     // 选项卡模型重建后校正 TabBar 当前下标（rebuild 期间 TabBar 可能重置下标）
     syncTabIndex();
+}
+
+QVariantList PanelGroupItem::stateSignature() const
+{
+    QVariantList signature;
+    signature << tabNames()
+              << activeIndex()
+              << title()
+              << isCentral()
+              << isDetached()
+              << hasTitleBar()
+              << isClosable()
+              << isMovable()
+              << isFloatable();
+    return signature;
 }
 
 void PanelGroupItem::syncTabIndex()
