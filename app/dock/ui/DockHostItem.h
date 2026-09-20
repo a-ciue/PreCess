@@ -49,6 +49,12 @@ public:
         PanelLaunch launch = PanelLaunch::Visible);
     //! @brief 以选项卡方式加入中央分组
     Q_INVOKABLE void stackPanel(QQuickItem* panel);
+    //! @brief 序列化当前布局为 JSON 字符串
+    Q_INVOKABLE QString saveLayout() const;
+    //! @brief 从 JSON 字符串恢复布局；失败返回 false
+    Q_INVOKABLE bool restoreLayout(const QString& layout);
+    //! @brief 清空为仅含中央面板的默认空布局
+    Q_INVOKABLE void clearLayout();
 
     // DockView
     DockObject* dockObject() const override;

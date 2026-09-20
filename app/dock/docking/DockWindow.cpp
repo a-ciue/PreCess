@@ -47,6 +47,16 @@ void DockWindow::takeGroup(PanelGroup* group, LayoutNode* item)
     Q_EMIT groupChanged();
 }
 
+void DockWindow::adoptTree(PanelGroup* primary, LayoutNode* root)
+{
+    group_ = primary;
+    region_->setRootNode(root);
+    if (primary)
+        primary->setDetached(true);
+    Q_EMIT titleChanged(title());
+    Q_EMIT groupChanged();
+}
+
 LayoutNode* DockWindow::releaseGroup()
 {
     if (!group_)

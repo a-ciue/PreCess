@@ -25,6 +25,15 @@ precess_test_link_libraries(TestDockDragDrop
     Qt${VTK_QT_VERSION}::Core
 )
 
+# 布局持久化测试
+precess_add_test(TestDockPersist
+    TestDockPersist.cpp
+)
+precess_test_link_libraries(TestDockPersist
+    dock
+    Qt${VTK_QT_VERSION}::Core
+)
+
 # QML 集成冒烟测试（offscreen 平台）
 precess_add_test(TestDockQmlSmoke
     TestDockQmlSmoke.cpp

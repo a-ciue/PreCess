@@ -78,6 +78,16 @@ public:
     //! @brief 切换分组浮动/停靠状态
     bool toggleDetached(PanelGroup* group);
 
+    //! @brief 创建浮动窗口（含视图与空窗监听）；拖拽与布局恢复共用
+    DockWindow* createFloatingWindow();
+    //! @brief 销毁浮动窗口（布局恢复/清理用：先回收窗内分组再销毁）
+    void destroyFloatingWindow(DockWindow* window);
+
+    //! @brief 查询单标签浮停的归还来源（无来源返回 false）
+    bool parkedOrigin(PanelGroup* group, PanelGroup*& origin, int& index) const;
+    //! @brief 恢复单标签浮停的归还来源（仅供布局恢复）
+    void restoreParkedGroup(PanelGroup* group, PanelGroup* origin, int index);
+
 Q_SIGNALS:
     //! @brief 状态变化
     void phaseChanged(Phase phase);

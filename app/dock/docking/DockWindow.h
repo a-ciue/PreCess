@@ -37,6 +37,11 @@ public:
 
     //! @brief 接管分组与它的布局节点（接管节点所有权）
     void takeGroup(PanelGroup* group, LayoutNode* item);
+    /**
+     * @brief 恢复用：直接接管布局树与主分组（不改写主分组节点的位置）
+     * @note 常规拖拽路径请用 takeGroup()；树可为单分组叶子或多分组容器
+     */
+    void adoptTree(PanelGroup* primary, LayoutNode* root);
     //! @brief 释放分组但保留布局节点（节点被摘出，所有权交还调用方）
     LayoutNode* releaseGroup();
 

@@ -59,6 +59,12 @@ void DockHostItem::componentComplete()
     area_item_->setSize(size());
     area_item_->setRegion(host_->region());
 
+    // 布局整体恢复（含重置）：视图层统一重新同步
+    connect(host_, &dock::DockHost::layoutRestored, this, [this] {
+        if (area_item_)
+            area_item_->sync();
+    });
+
     watchWindow();
     loadCentralItem();
     updateAreaGeometry();
@@ -151,6 +157,32 @@ void DockHostItem::stackPanel(QQuickItem* panel)
         return;
 
     host_->stackPanel(instantiator->panel());
+    if (area_item_)
+        area_item_->sync();
+}
+
+QString DockHostItem::saveLayout() const
+{
+    return host_ ? QString::fromUtf8(host_->saveLayout()) : QString();
+}
+
+bool DockHostItem::restoreLayout(const QString& layout)
+{
+    if (!host_)
+        return false;
+
+    const bool restored = host_->restoreLayout(layout.toUtf8());
+    if (area_item_)
+        area_item_->sync();
+    return restored;
+}
+
+void DockHostItem::clearLayout()
+{
+    if (!host_)
+        return;
+
+    host_->clearLayout();
     if (area_item_)
         area_item_->sync();
 }

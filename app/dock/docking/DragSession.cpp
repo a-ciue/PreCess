@@ -238,6 +238,64 @@ bool DragSession::toggleDetached(PanelGroup* group)
     return detachGroup(group);
 }
 
+DockWindow* DragSession::createFloatingWindow()
+{
+    return createDragWindow();
+}
+
+void DragSession::destroyFloatingWindow(DockWindow* window)
+{
+    if (!window)
+        return;
+
+    // 布局清理用：先把浮窗内分组全部摘出并回收，再销毁空窗
+    if (DockRegion* region = window->region()) {
+        const QList<PanelGroup*> groups = region->groups();
+        for (PanelGroup* group : groups)
+            region->extractGroupNode(group);
+
+        for (PanelGroup* group : groups) {
+            group->setVacancy(nullptr); // 主树占位随后整体回收，避免悬空引用
+            const QList<DockPanel*> panels = group->panels();
+            for (DockPanel* panel : panels) {
+                panel->applyDetached(false);
+                panel->applyShown(false);
+                group->removePanel(panel);
+            }
+            floating_origins_.remove(group);
+            delete group;
+        }
+    }
+
+    destroyDragWindow(window);
+}
+
+bool DragSession::parkedOrigin(PanelGroup* group, PanelGroup*& origin, int& index) const
+{
+    if (!group)
+        return false;
+
+    const auto it = floating_origins_.constFind(group);
+    if (it == floating_origins_.constEnd() || !it->origin_group)
+        return false;
+
+    origin = it->origin_group;
+    index = it->index;
+    return true;
+}
+
+void DragSession::restoreParkedGroup(PanelGroup* group, PanelGroup* origin, int index)
+{
+    if (!group || !origin)
+        return;
+
+    floating_origins_.insert(group, FloatOrigin { origin, index });
+    connect(group, &QObject::destroyed, this, [this, group] {
+        floating_origins_.remove(group);
+    });
+    refreshFloatingWatcher(windowForGroup(group));
+}
+
 void DragSession::startDrag(const QPoint& global_pos)
 {
     if (!handle_ || !handle_->group()) {

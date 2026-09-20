@@ -8,6 +8,7 @@
 #include "DockObject.h"
 #include "DockEnums.h"
 
+#include <QByteArray>
 #include <QString>
 
 namespace dock {
@@ -41,6 +42,8 @@ public:
     DockPanel* centralPanel() const { return central_panel_; }
     //! @brief 中央分组
     PanelGroup* centralGroup() const { return central_group_; }
+    //! @brief 中央布局节点（布局快照恢复复用该节点）
+    LayoutNode* centralNode() const { return central_node_; }
 
     //! @brief 设置中央内容视图（由视图层加载 QML 后注入）
     void setCentralContentView(DockView* content_view);
@@ -66,9 +69,34 @@ public:
     //! @brief 应用窗口内容区几何（视图层尺寸变化时调用）
     void setFrame(const QRect& frame);
 
+    /**
+     * @brief 序列化当前布局（JSON，含主区域树与浮动窗口）
+     *
+     * 仅保存面板 uniqueName 的顺序/显隐/激活与树结构、占比、浮窗几何；
+     * 标题与能力位等内容由声明层负责，不进入快照。
+     */
+    QByteArray saveLayout() const;
+
+    /**
+     * @brief 从布局快照恢复（版本/宿主/中央校验失败或数据畸形时返回 false 且不改动布局）
+     *
+     * 未知面板名跳过、快照未包含的面板保持当前默认位置（向前/向后兼容）。
+     */
+    bool restoreLayout(const QByteArray& layout);
+
+    /**
+     * @brief 清空为仅含中央面板的默认空布局
+     *
+     * 销毁全部浮动窗口与其余分组（面板对象保留并置为隐藏），中央面板保持显示；
+     * 供布局恢复与“重置布局”入口使用。
+     */
+    void clearLayout();
+
 Q_SIGNALS:
     //! @brief 布局尺寸变化
     void frameChanged(const QRect& frame);
+    //! @brief 布局被整体恢复（视图层需重新同步）
+    void layoutRestored();
 
 private:
     QString unique_name_;
