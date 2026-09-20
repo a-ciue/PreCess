@@ -44,7 +44,6 @@ Rectangle {
                     root.groupView.dragTo(mapToGlobal(mouse.x, mouse.y))
             }
             onReleased: function(mouse) { root.groupView.endDrag(mapToGlobal(mouse.x, mouse.y)) }
-            onDoubleClicked: root.groupView.toggleDetached()
         }
 
         Text {
