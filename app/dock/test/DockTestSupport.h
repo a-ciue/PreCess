@@ -36,11 +36,7 @@ public:
     bool isShown() const override { return visible_; }
     QSize minExtent() const override { return min_size_; }
     QSize maxExtent() const override { return QSize(dock::kMaxSizeLimit, dock::kMaxSizeLimit); }
-    void setParentDockView(dock::DockView* parent) override { parent_ = parent; }
-    dock::DockView* parentDockView() const override { return parent_; }
     void bringToFront() override { }
-    void setCursorShape(Qt::CursorShape shape) override { cursor_ = shape; }
-    Qt::CursorShape cursorShape() const override { return cursor_; }
     QPoint globalOrigin() const override { return global_origin_ + geometry_.topLeft(); }
     dock::DockView* createDockWindow(dock::DockObject* controller) override
     {
@@ -58,8 +54,6 @@ private:
     QRect geometry_;
     QPoint global_origin_;
     bool visible_ = true;
-    dock::DockView* parent_ = nullptr;
-    Qt::CursorShape cursor_ = Qt::ArrowCursor;
 };
 
 //! @brief 复刻 Main.qml 启动布局的测试夹具

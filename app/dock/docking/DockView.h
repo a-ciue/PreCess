@@ -7,7 +7,6 @@
 
 #include <QRect>
 #include <QSize>
-#include <Qt>
 
 namespace dock {
 
@@ -16,7 +15,7 @@ class DockObject;
 /**
  * @brief 视图抽象接口
  *
- * 核心层（控制器）通过该接口驱动界面的几何、可见性与光标，
+ * 核心层（控制器）通过该接口驱动界面的几何与可见性，
  * 不依赖任何 QtQuick 类型。视图层（QQuickItem/QQuickWindow）实现该接口。
  * 视图对象由视图层（QML 引擎）持有，核心层只保存裸指针。
  */
@@ -42,17 +41,8 @@ public:
     //! @brief 视图最大尺寸提示
     virtual QSize maxExtent() const = 0;
 
-    //! @brief 设置父视图（用于拖放时把分组视图移到浮动窗口下）
-    virtual void setParentDockView(DockView* parent) = 0;
-    //! @brief 父视图
-    virtual DockView* parentDockView() const = 0;
-
     //! @brief 激活/置顶视图
     virtual void bringToFront() = 0;
-    //! @brief 设置鼠标光标形状
-    virtual void setCursorShape(Qt::CursorShape shape) = 0;
-    //! @brief 当前鼠标光标形状
-    virtual Qt::CursorShape cursorShape() const = 0;
 
     //! @brief 视图全局原点（用于拖放命中测试）
     virtual QPoint globalOrigin() const = 0;

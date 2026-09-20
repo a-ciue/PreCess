@@ -196,16 +196,6 @@ void DockHostItem::bringToFront()
     setZ(z() + 1);
 }
 
-void DockHostItem::setCursorShape(Qt::CursorShape shape)
-{
-    setCursor(shape);
-}
-
-Qt::CursorShape DockHostItem::cursorShape() const
-{
-    return cursor().shape();
-}
-
 QPoint DockHostItem::globalOrigin() const
 {
     return mapToGlobal(QPointF(0, 0)).toPoint();

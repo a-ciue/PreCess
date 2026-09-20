@@ -105,11 +105,7 @@ public:
     bool isShown() const override;
     QSize minExtent() const override { return QSize(0, 0); }
     QSize maxExtent() const override { return QSize(kMaxSizeLimit, kMaxSizeLimit); }
-    void setParentDockView(DockView* parent) override { parent_view_ = parent; }
-    DockView* parentDockView() const override { return parent_view_; }
     void bringToFront() override;
-    void setCursorShape(Qt::CursorShape shape) override;
-    Qt::CursorShape cursorShape() const override;
     QPoint globalOrigin() const override;
     DockView* createDockWindow(DockObject* controller) override;
 
@@ -142,7 +138,6 @@ private:
     QQuickItem* title_bar_ = nullptr;
     DockPanel* shown_dock_ = nullptr;
     DragHandle* drag_ = nullptr;
-    DockView* parent_view_ = nullptr;
 
     // 组内标签重排：按下后先判别轴向，横向留在标签栏内为重排，纵向超阈值转浮动
     QPointF press_global_;

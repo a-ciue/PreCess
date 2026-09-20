@@ -165,16 +165,6 @@ void DockPanelItem::bringToFront()
 {
 }
 
-void DockPanelItem::setCursorShape(Qt::CursorShape shape)
-{
-    Q_UNUSED(shape);
-}
-
-Qt::CursorShape DockPanelItem::cursorShape() const
-{
-    return Qt::ArrowCursor;
-}
-
 QPoint DockPanelItem::globalOrigin() const
 {
     return mapToGlobal(QPointF(0, 0)).toPoint();

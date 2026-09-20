@@ -558,16 +558,6 @@ void PanelGroupItem::bringToFront()
     setZ(z() + 1);
 }
 
-void PanelGroupItem::setCursorShape(Qt::CursorShape shape)
-{
-    setCursor(shape);
-}
-
-Qt::CursorShape PanelGroupItem::cursorShape() const
-{
-    return cursor().shape();
-}
-
 QPoint PanelGroupItem::globalOrigin() const
 {
     return mapToGlobal(QPointF(0, 0)).toPoint();

@@ -58,11 +58,7 @@ public:
     bool isShown() const override;
     QSize minExtent() const override;
     QSize maxExtent() const override;
-    void setParentDockView(DockView* parent) override { Q_UNUSED(parent); }
-    DockView* parentDockView() const override { return nullptr; }
     void bringToFront() override;
-    void setCursorShape(Qt::CursorShape shape) override;
-    Qt::CursorShape cursorShape() const override;
     QPoint globalOrigin() const override;
     DockView* createDockWindow(DockObject* controller) override;
 

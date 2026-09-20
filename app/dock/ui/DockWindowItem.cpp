@@ -151,16 +151,6 @@ void DockWindowItem::bringToFront()
     raise();
 }
 
-void DockWindowItem::setCursorShape(Qt::CursorShape shape)
-{
-    Q_UNUSED(shape);
-}
-
-Qt::CursorShape DockWindowItem::cursorShape() const
-{
-    return Qt::ArrowCursor;
-}
-
 QPoint DockWindowItem::globalOrigin() const
 {
     return position();

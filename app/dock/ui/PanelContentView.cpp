@@ -7,7 +7,6 @@
 
 #include "tree/NodeMetrics.h"
 
-#include <QCursor>
 #include <QQuickItem>
 #include <QtMath>
 
@@ -59,17 +58,6 @@ void PanelContentView::bringToFront()
 {
     if (panel_content_item_)
         panel_content_item_->setZ(panel_content_item_->z() + 1);
-}
-
-void PanelContentView::setCursorShape(Qt::CursorShape shape)
-{
-    if (panel_content_item_)
-        panel_content_item_->setCursor(QCursor(shape));
-}
-
-Qt::CursorShape PanelContentView::cursorShape() const
-{
-    return panel_content_item_ ? panel_content_item_->cursor().shape() : Qt::ArrowCursor;
 }
 
 QPoint PanelContentView::globalOrigin() const
