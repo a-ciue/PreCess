@@ -225,7 +225,7 @@ TEST_CASE("DockPersist: panels added after snapshot survive restore")
     CHECK(placed.object_tree->isShown());
 }
 
-TEST_CASE("DockPersist: reset clears floats and keeps central")
+TEST_CASE("DockPersist: clearLayout keeps central and drops floats")
 {
     DockFixture f;
     PlacedDocks placed(f);

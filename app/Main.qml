@@ -41,7 +41,7 @@ ApplicationWindow {
         property string json
     }
 
-    //! @brief 声明默认停靠布局（首次启动与重置布局共用）
+    //! @brief 声明默认停靠布局（首次启动与恢复前的基础布局）
     function applyDefaultLayout() {
         dockHost.placePanel(objectTreeDock, Docking.Tokens.DockEdge.Left, null, Qt.size(250, 0))
         dockHost.placePanel(sideBarDock, Docking.Tokens.DockEdge.Bottom, objectTreeDock, Qt.size(0, 400))
@@ -50,13 +50,6 @@ ApplicationWindow {
         dockHost.placePanel(pythonConsoleDock, Docking.Tokens.DockEdge.Right, null, Qt.size(450, 0), Docking.Tokens.PanelLaunch.Hidden)
         dockHost.placePanel(outputLogDock, Docking.Tokens.DockEdge.Bottom, null, Qt.size(0, 300), Docking.Tokens.PanelLaunch.Hidden)
         dockHost.placePanel(preferencesDock, Docking.Tokens.DockEdge.Top, objectTreeDock, Qt.size(0, 200), Docking.Tokens.PanelLaunch.Hidden)
-    }
-
-    //! @brief 重置布局：清除持久化快照并回到声明默认布局
-    function resetDockLayout() {
-        dockSettings.json = ""
-        dockHost.clearLayout()
-        applyDefaultLayout()
     }
 
     onClosing: dockSettings.json = dockHost.saveLayout()
@@ -70,7 +63,6 @@ ApplicationWindow {
         pythonConsoleOpen: pythonConsoleDock.shown
         outputLogOpen: outputLogDock.shown
         preferencesOpen: preferencesDock.shown
-        onResetLayoutRequested: root.resetDockLayout()
         onObjectTreeToggled: {
             if (objectTreeDock.shown) objectTreeDock.hidePanel()
             else objectTreeDock.showPanel()

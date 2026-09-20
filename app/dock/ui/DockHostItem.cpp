@@ -177,16 +177,6 @@ bool DockHostItem::restoreLayout(const QString& layout)
     return restored;
 }
 
-void DockHostItem::clearLayout()
-{
-    if (!host_)
-        return;
-
-    host_->clearLayout();
-    if (area_item_)
-        area_item_->sync();
-}
-
 DockObject* DockHostItem::dockObject() const
 {
     return host_;

@@ -29,7 +29,6 @@ ColumnLayout {
     signal pythonConsoleToggled()
     signal outputLogToggled()
     signal preferencesToggled()
-    signal resetLayoutRequested()
 
     property bool objectTreeOpen: false
     property bool propertyListOpen: false
@@ -361,11 +360,6 @@ ColumnLayout {
                         checkable: true
                         checked: preferencesOpen
                         onToggled: preferencesToggled()
-                    }
-                    MenuSeparator { }
-                    Action {
-                        text: "重置布局"
-                        onTriggered: resetLayoutRequested()
                     }
                 }
             }
