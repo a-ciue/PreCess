@@ -16,7 +16,6 @@
 #include "docking/DockWindow.h"
 #include "docking/PanelGroup.h"
 #include "docking/DockHost.h"
-#include "tree/LayoutNode.h"
 
 #include <QQuickWindow>
 
@@ -133,7 +132,7 @@ void DockHostItem::loadCentralItem()
         return;
 
     DockRuntime::instance().registerPanelContent(host_->centralPanel(), item);
-    // 中央渲染部件的归属宿主：离开分组视图时保持在同一窗口场景图内（避免 VTK 场景重建）
+    // 中央渲染部件的归属宿主：离开分组视图时回到本项（面板声明所在窗口）
     DockRuntime::instance().registerPanelHome(host_->centralPanel(), this);
     central_view_ = std::make_unique<PanelContentView>(host_->centralPanel(), item);
     host_->setCentralContentView(central_view_.get());
@@ -171,17 +170,6 @@ void DockHostItem::placePanel(QQuickItem* panel, DockEdge edge, QQuickItem* rela
         });
     }
 
-    if (area_item_)
-        area_item_->sync();
-}
-
-void DockHostItem::stackPanel(QQuickItem* panel)
-{
-    auto* instantiator = qobject_cast<DockPanelItem*>(panel);
-    if (!host_ || !instantiator || !instantiator->panel())
-        return;
-
-    host_->stackPanel(instantiator->panel());
     if (area_item_)
         area_item_->sync();
 }

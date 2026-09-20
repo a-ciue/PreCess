@@ -119,9 +119,4 @@ int DropZoneOverlay::zoneCount() const
     return root_item_ ? root_item_->property("zones").toList().size() : 0;
 }
 
-QQuickItem* DropZoneOverlay::requestOwner() const
-{
-    return request_owner_;
-}
-
 }

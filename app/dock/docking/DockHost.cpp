@@ -367,11 +367,6 @@ void DockHost::placePanel(DockPanel* panel, DockEdge edge, DockPanel* relative_t
     region_->placePanel(panel, edge, relative_to, preferred_size, launch);
 }
 
-void DockHost::stackPanel(DockPanel* panel)
-{
-    region_->stackPanel(panel, central_group_);
-}
-
 void DockHost::hideOtherGroups(PanelGroup* except)
 {
     const QList<DockPanel*> panels = DockCatalog::self().panels();
@@ -668,7 +663,6 @@ void DockHost::clearLayoutInternal(bool notify)
 void DockHost::setFrame(const QRect& frame)
 {
     region_->setGeometry(frame);
-    Q_EMIT frameChanged(frame);
 }
 
 }

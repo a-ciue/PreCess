@@ -77,16 +77,6 @@ void DockRegion::placePanel(DockPanel* panel, DockEdge edge,
     panel->applyShown(visible);
 }
 
-void DockRegion::stackPanel(DockPanel* panel, PanelGroup* group)
-{
-    if (!panel || !group)
-        return;
-
-    group->addPanel(panel);
-    if (group->node() && panel->isShown())
-        group->syncVisibility();
-}
-
 LayoutNode* DockRegion::extractGroupForWindow(PanelGroup* group)
 {
     if (!group)

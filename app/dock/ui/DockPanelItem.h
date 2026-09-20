@@ -20,7 +20,6 @@ namespace dock::ui {
  * @brief QML 停靠面板
  *
  * QML 声明的内容子项作为 client item；控制器在 componentComplete 时创建。
- * `source` 属性保留接口兼容，当前实现使用子项内容。
  */
 class DockPanelItem : public QQuickItem, public DockView
 {
@@ -29,7 +28,6 @@ class DockPanelItem : public QQuickItem, public DockView
     Q_PROPERTY(QString title READ title WRITE setTitle NOTIFY titleChanged)
     Q_PROPERTY(bool shown READ isPanelShown NOTIFY shownChanged)
     Q_PROPERTY(bool isDetached READ isDetached NOTIFY detachedChanged)
-    Q_PROPERTY(QString source READ source WRITE setSource NOTIFY sourceChanged)
     Q_PROPERTY(bool closable READ isClosable WRITE setClosable NOTIFY featuresChanged)
     Q_PROPERTY(bool movable READ isMovable WRITE setMovable NOTIFY featuresChanged)
     Q_PROPERTY(bool floatable READ isFloatable WRITE setFloatable NOTIFY featuresChanged)
@@ -40,8 +38,6 @@ public:
 
     //! @brief 关联的控制器
     dock::DockPanel* panel() const { return panel_; }
-    //! @brief client 内容项
-    QQuickItem* panelContentItem() const { return panel_content_item_; }
 
     QString uniqueName() const { return unique_name_; }
     void setUniqueName(const QString& unique_name);
@@ -50,8 +46,6 @@ public:
     //! @brief QML `shown` 属性：面板是否显示
     bool isPanelShown() const;
     bool isDetached() const;
-    QString source() const { return source_; }
-    void setSource(const QString& source);
     //! @brief 能力位（默认全部开启；在创建控制器前设置也会生效）
     bool isClosable() const;
     void setClosable(bool closable);
@@ -80,7 +74,6 @@ Q_SIGNALS:
     void titleChanged();
     void shownChanged();
     void detachedChanged();
-    void sourceChanged();
     void featuresChanged();
 
 protected:
@@ -91,7 +84,6 @@ private:
     QQuickItem* panel_content_item_ = nullptr;
     QString unique_name_;
     QString title_;
-    QString source_;
     bool closable_ = true;
     bool movable_ = true;
     bool floatable_ = true;

@@ -9,7 +9,6 @@
 
 import QtQuick
 import QtQuick.Controls
-import PreCess.Docking as Docking
 
 Rectangle {
     id: root
@@ -40,6 +39,7 @@ Rectangle {
             leftMargin: 1
             rightMargin: 1
         }
+        // 与 DockMetrics::kTitleBarHeight 对应（拖拽锚点按该高度计算，修改需同步）
         height: visible ? 30 : 0
         visible: root.showTitleBar
         color: "#eff0f1"

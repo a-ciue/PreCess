@@ -26,8 +26,6 @@ public:
 
     //! @brief 绑定引擎分隔条与所属区域
     void setDivider(Divider* separator, DockAreaItem* area);
-    //! @brief 绑定的分隔条
-    Divider* separator() const { return divider_; }
     //! @brief 容器是否为水平方向（对应水平拖动光标）
     bool isHorizontal() const;
 

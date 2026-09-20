@@ -58,9 +58,6 @@ public:
     void placePanel(DockPanel* panel, DockEdge edge, DockPanel* relative_to,
         const QSize& preferred_size, PanelLaunch launch);
 
-    //! @brief 以选项卡方式加入中央分组
-    void stackPanel(DockPanel* panel, PanelGroup* group);
-
     /**
      * @brief 把分组从本区域摘出用于浮动（拖拽起点）
      *

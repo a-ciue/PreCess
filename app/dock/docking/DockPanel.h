@@ -64,8 +64,6 @@ public:
     bool isShown() const { return lifecycle_ != Lifecycle::Hidden; }
     //! @brief 是否在独立窗口中
     bool isDetached() const { return lifecycle_ == Lifecycle::Detached; }
-    //! @brief 生命周期
-    Lifecycle lifecycle() const { return lifecycle_; }
 
     //! @brief 是否为中央持久部件（不可拖动/拆出/隐藏）
     bool isCentral() const { return central_; }

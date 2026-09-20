@@ -60,9 +60,6 @@ public:
     void placePanel(DockPanel* panel, DockEdge edge, DockPanel* relative_to,
         const QSize& preferred_size, PanelLaunch launch = PanelLaunch::Visible);
 
-    //! @brief 以选项卡方式加入中央分组
-    void stackPanel(DockPanel* panel);
-
     //! @brief 隐藏除指定分组外的所有显示面板（中央持久部件不受影响）
     void hideOtherGroups(PanelGroup* except);
 
@@ -74,6 +71,7 @@ public:
      *
      * 仅保存面板 uniqueName 的顺序/显隐/激活与树结构、占比、浮窗几何；
      * 标题与能力位等内容由声明层负责，不进入快照。
+     * 导出前会先取消进行中的拖拽（会话中的临时浮窗不属于稳定布局）。
      */
     QByteArray saveLayout() const;
 
@@ -93,8 +91,6 @@ public:
     void clearLayout();
 
 Q_SIGNALS:
-    //! @brief 布局尺寸变化
-    void frameChanged(const QRect& frame);
     //! @brief 布局被整体恢复（视图层需重新同步）
     void layoutRestored();
 

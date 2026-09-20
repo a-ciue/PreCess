@@ -39,10 +39,10 @@ class PanelGroupItem : public QQuickItem, public DockView
     Q_PROPERTY(bool detached READ isDetached NOTIFY groupChanged)
     Q_PROPERTY(bool hasTitleBar READ hasTitleBar NOTIFY groupChanged)
     Q_PROPERTY(bool closable READ isClosable NOTIFY groupChanged)
-    Q_PROPERTY(bool movable READ isMovable NOTIFY groupChanged)
     Q_PROPERTY(bool floatable READ isFloatable NOTIFY groupChanged)
     Q_PROPERTY(bool reordering READ isReordering NOTIFY reorderChanged)
     Q_PROPERTY(int reorderMarkerX READ reorderMarkerX NOTIFY reorderChanged)
+    //! @brief 非声明式绑定用：仅在 TabBar 下标回调处理器中读取
     Q_PROPERTY(bool updatingTabs READ isUpdatingTabs)
 
 public:
@@ -82,8 +82,6 @@ public:
     bool hasTitleBar() const;
     //! @brief 组内显示面板是否可关闭（能力位交集）
     bool isClosable() const;
-    //! @brief 组内显示面板是否可拖动
-    bool isMovable() const;
     //! @brief 组内显示面板是否可浮动
     bool isFloatable() const;
     //! @brief 是否处于组内标签重排预览（拖拽标签横向移动）

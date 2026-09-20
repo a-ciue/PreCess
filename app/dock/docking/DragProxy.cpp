@@ -5,15 +5,12 @@
 
 #include "DragProxy.h"
 
-#include "DragHandle.h"
 #include "DockWindow.h"
 
 namespace dock {
 
-DragProxy::DragProxy(DragHandle* handle, DockWindow* window,
-    const QPoint& press_pos)
-    : handle_(handle)
-    , window_(window)
+DragProxy::DragProxy(DockWindow* window, const QPoint& press_pos)
+    : window_(window)
     , press_pos_(press_pos)
     , anchor_pos_(window ? window->geometry().topLeft() : QPoint(0, 0))
     , position_(anchor_pos_)

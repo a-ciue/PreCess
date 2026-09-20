@@ -9,7 +9,6 @@
 #include "docking/DockPanel.h"
 #include "tree/NodeMetrics.h"
 
-#include <QQuickWindow>
 #include <QtMath>
 
 namespace dock::ui {
@@ -58,14 +57,6 @@ bool DockPanelItem::isPanelShown() const
 bool DockPanelItem::isDetached() const
 {
     return panel_ && panel_->isDetached();
-}
-
-void DockPanelItem::setSource(const QString& source)
-{
-    if (source_ == source)
-        return;
-    source_ = source;
-    Q_EMIT sourceChanged();
 }
 
 bool DockPanelItem::isClosable() const

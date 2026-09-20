@@ -27,9 +27,8 @@ class DropZoneOverlay : public QQuickWindow
 {
     Q_OBJECT
 public:
-    //! @brief 单个指示器：落点、矩形（全局坐标）、是否为当前命中项
+    //! @brief 单个指示器：矩形（全局坐标）、是否为当前命中项
     struct ZoneRectHit {
-        DropZone location = DropZone::None;
         QRect rect;
         bool active = false;
     };
@@ -59,8 +58,6 @@ public:
     int zoneCount() const;
     //! @brief 当前标签插入标记（全局坐标；无标记时为空矩形）
     QRect tabInsertRect() const { return tab_insert_rect_; }
-    //! @brief 当前请求方
-    QQuickItem* requestOwner() const;
 
 private:
     QQuickItem* root_item_ = nullptr;

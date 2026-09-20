@@ -7,7 +7,6 @@
 
 #include "DockAreaItem.h"
 #include "DockRuntime.h"
-#include "docking/DockObject.h"
 #include "tree/BoxNode.h"
 #include "tree/Divider.h"
 

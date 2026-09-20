@@ -229,7 +229,7 @@ void DockAreaItem::updateZoneRects()
 
         const QRect global_rect(area_global.topLeft() + indicator.rect.topLeft(),
             indicator.rect.size());
-        hits.append({ indicator.location, global_rect, indicator.location == current });
+        hits.append({ global_rect, indicator.location == current });
     }
 
     if (hits.isEmpty()) {

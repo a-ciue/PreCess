@@ -243,7 +243,7 @@ TEST_CASE("DockCore: dock widgets can tab into the central group")
     const int tabs_before = central_group->panels().size();
 
     dock::DockPanel* extra = f.makeDock(QStringLiteral("extra"), QStringLiteral("附加面板"));
-    f.host.stackPanel(extra);
+    central_group->addPanel(extra);
     extra->applyShown(true);
 
     CHECK(central_group->panels().size() == tabs_before + 1);

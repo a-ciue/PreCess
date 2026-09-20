@@ -17,7 +17,6 @@
 #include "docking/DockWindow.h"
 #include "docking/PanelGroup.h"
 
-#include <QQuickWindow>
 #include <QVariant>
 
 #include <algorithm>
@@ -96,8 +95,8 @@ PanelGroupItem::~PanelGroupItem()
         drag_ = nullptr;
     }
 
-    // client item 不属于本视图，销毁前交还面板宿主（保持同一窗口场景图，
-    // 避免渲染部件随视图销毁而重建）；若已被新视图接管则不再打扰
+    // client item 不属于本视图，销毁前交还面板宿主（面板声明所在窗口）；
+    // 若已被新视图接管则不再打扰
     if (shown_dock_) {
         if (QQuickItem* client = DockRuntime::instance().panelContentItem(shown_dock_)) {
             if (client->parentItem() == content_area_) {
@@ -154,7 +153,6 @@ QVariantList PanelGroupItem::stateSignature() const
               << isDetached()
               << hasTitleBar()
               << isClosable()
-              << isMovable()
               << isFloatable();
     return signature;
 }
@@ -465,7 +463,8 @@ bool PanelGroupItem::isCentral() const
 
 bool PanelGroupItem::isDetached() const
 {
-    return group_ && group_->vacancy() != nullptr;
+    // 与 DragSession 的浮动判定一致：含停靠在浮窗内的次级分组与单标签浮停
+    return group_ && DragSession::isFloating(group_);
 }
 
 bool PanelGroupItem::hasTitleBar() const
@@ -476,11 +475,6 @@ bool PanelGroupItem::hasTitleBar() const
 bool PanelGroupItem::isClosable() const
 {
     return group_ && group_->features().testFlag(DockPanel::Feature::Closable);
-}
-
-bool PanelGroupItem::isMovable() const
-{
-    return group_ && group_->features().testFlag(DockPanel::Feature::Movable);
 }
 
 bool PanelGroupItem::isFloatable() const

@@ -7,8 +7,6 @@
 
 #include <QObject>
 
-#include <optional>
-
 namespace dock {
 
 Q_NAMESPACE
@@ -70,27 +68,6 @@ inline bool isOuterZone(DropZone zone)
         return true;
     default:
         return false;
-    }
-}
-
-//! @brief 落点对应的停靠方位；仅分组内/边缘的方位落点有值（合并与无落点为空）
-inline std::optional<DockEdge> edgeForZone(DropZone zone)
-{
-    switch (zone) {
-    case DropZone::InnerLeft:
-    case DropZone::OuterLeft:
-        return DockEdge::Left;
-    case DropZone::InnerTop:
-    case DropZone::OuterTop:
-        return DockEdge::Top;
-    case DropZone::InnerRight:
-    case DropZone::OuterRight:
-        return DockEdge::Right;
-    case DropZone::InnerBottom:
-    case DropZone::OuterBottom:
-        return DockEdge::Bottom;
-    default:
-        return std::nullopt;
     }
 }
 

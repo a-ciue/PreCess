@@ -7,7 +7,6 @@
 
 #include "docking/DockCatalog.h"
 #include "docking/DockPanel.h"
-#include "docking/DockView.h"
 #include "docking/DragSession.h"
 #include "docking/PanelGroup.h"
 

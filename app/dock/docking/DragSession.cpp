@@ -441,7 +441,7 @@ void DragSession::startDrag(const QPoint& global_pos)
     }
 
     source_region_ = source_area;
-    drag_proxy_ = new DragProxy(handle_, window, global_pos);
+    drag_proxy_ = new DragProxy(window, global_pos);
 
     // 拖拽窗口置顶：避免拖动中的浮窗被主窗口遮挡
     if (window && window->view())

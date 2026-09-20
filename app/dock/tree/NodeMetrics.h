@@ -46,21 +46,6 @@ struct NodeMetrics {
     {
         return orientation == Qt::Horizontal ? geometry.x() : geometry.y();
     }
-
-    //! @brief 交叉轴方向上的长度
-    int crossLength(Qt::Orientation orientation) const
-    {
-        return orientation == Qt::Horizontal ? geometry.height() : geometry.width();
-    }
-
-    //! @brief 将尺寸限制到 [minExtent, maxExtent]
-    QSize boundedSize(const QSize& size) const
-    {
-        const int min_width = minExtent.width();
-        const int min_height = minExtent.height();
-        return QSize(std::clamp(size.width(), min_width, std::max(min_width, maxExtent.width())),
-            std::clamp(size.height(), min_height, std::max(min_height, maxExtent.height())));
-    }
 };
 
 }
