@@ -61,13 +61,20 @@ public:
     //! @brief 以选项卡方式加入中央分组
     void stackPanel(DockPanel* panel, PanelGroup* group);
 
-    //! @brief 把分组从本区域摘出用于浮动；创建隐藏占位并返回分组布局节点
+    /**
+     * @brief 把分组从本区域摘出用于浮动（拖拽起点）
+     *
+     * 在原位置创建隐藏占位（vacancy），供 restoreGroupFromWindow() 原地恢复；
+     * 供"拖出为浮窗"使用。跨区域移动/整窗回收等不保留原位的场景请用
+     * extractGroupNode()（纯摘出，不创建占位）。
+     * @return 分组布局节点（所有权交还调用方）；根节点或中央节点返回空
+     */
     LayoutNode* extractGroupForWindow(PanelGroup* group);
     //! @brief 把浮动的分组放回本区域（用分组节点替换隐藏占位）
     bool restoreGroupFromWindow(PanelGroup* group);
     //! @brief 删除分组在 本区域 的隐藏占位
     void discardGroupVacancy(PanelGroup* group);
-    //! @brief 把分组布局节点从本区域树上摘除但不删除（所有权交还调用方）
+    //! @brief 把分组布局节点从本区域树上摘除但不删除（不创建占位，所有权交还调用方）
     bool extractGroupNode(PanelGroup* group);
     //! @brief 把已摘除节点的分组停靠到本区域的指定落点
     //! @note 空 preferred_size 表示无期望尺寸，按公平份额分配（可见子项均分）

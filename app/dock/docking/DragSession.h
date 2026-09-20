@@ -97,7 +97,13 @@ private:
     //! @brief 保留浮动：临时组登记回停来源并归属浮动窗口
     void parkFloatingGroup(DockWindow* window);
 
-    //! @brief 摘出分组节点（浮窗中优先），所有权交还调用方
+    /**
+     * @brief 摘出分组节点（统一入口），所有权交还调用方
+     *
+     * 优先级：浮窗主分组（releaseGroup，多分组浮窗只摘叶子）→ 所属区域
+     * （根节点 takeRootNode，叶子 extractGroupNode）→ 直接返回 node。
+     * 调用方无需区分节点当前挂在主区域还是浮窗内。
+     */
     static LayoutNode* takeGroupNode(PanelGroup* group, DockWindow* window);
     //! @brief 删除分组节点（含从布局树摘除）；分组本身保留
     static void disposeGroupNode(PanelGroup* group, DockWindow* window);
