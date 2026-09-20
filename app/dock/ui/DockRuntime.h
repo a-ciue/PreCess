@@ -50,7 +50,7 @@ public:
     //! @brief 面板的 client item（可能为空）
     QQuickItem* panelContentItem(DockPanel* panel) const;
 
-    //! @brief 登记面板的宿主项（client 离开分组视图时的归属，保持在同一窗口场景图内）
+    //! @brief 登记面板的宿主项（client 离开分组视图时的归属；跨窗口移动时仍会重建场景图）
     void registerPanelHome(DockPanel* panel, QQuickItem* home_item);
     //! @brief 注销面板的宿主项
     void unregisterPanelHome(DockPanel* panel);

@@ -51,8 +51,6 @@ public:
     Q_INVOKABLE void placePanel(QQuickItem* panel, DockEdge edge,
         QQuickItem* relative_to = nullptr, QSize preferred_size = QSize(),
         PanelLaunch launch = PanelLaunch::Visible);
-    //! @brief 以选项卡方式加入中央分组
-    Q_INVOKABLE void stackPanel(QQuickItem* panel);
     //! @brief 序列化当前布局为 JSON 字符串
     Q_INVOKABLE QString saveLayout() const;
     //! @brief 从 JSON 字符串恢复布局；失败返回 false
