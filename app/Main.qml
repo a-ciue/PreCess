@@ -15,6 +15,8 @@ import QtQuick.Controls
 import QtQuick.Layouts
 import QtQuick.Controls.Fusion
 
+import QtCore
+
 import PreCess.Docking as Docking
 
 import app.model
@@ -32,6 +34,33 @@ ApplicationWindow {
     title: qsTr("PreCess")
     flags: Qt.platform.os === "wasm" ? (Qt.Window | Qt.FramelessWindowHint) : Qt.Window
 
+    // 布局持久化：JSON 快照存于 QSettings；退出保存，启动恢复
+    Settings {
+        id: dockSettings
+        category: "DockLayout"
+        property string json
+    }
+
+    //! @brief 声明默认停靠布局（首次启动与重置布局共用）
+    function applyDefaultLayout() {
+        dockHost.placePanel(objectTreeDock, Docking.Tokens.DockEdge.Left, null, Qt.size(250, 0))
+        dockHost.placePanel(sideBarDock, Docking.Tokens.DockEdge.Bottom, objectTreeDock, Qt.size(0, 400))
+        dockHost.placePanel(attributeRenderDock, Docking.Tokens.DockEdge.Bottom, objectTreeDock, Qt.size(0, 300), Docking.Tokens.PanelLaunch.Hidden)
+        dockHost.placePanel(consoleDock, Docking.Tokens.DockEdge.Bottom, null, Qt.size(0, 300), Docking.Tokens.PanelLaunch.Hidden)
+        dockHost.placePanel(pythonConsoleDock, Docking.Tokens.DockEdge.Right, null, Qt.size(450, 0), Docking.Tokens.PanelLaunch.Hidden)
+        dockHost.placePanel(outputLogDock, Docking.Tokens.DockEdge.Bottom, null, Qt.size(0, 300), Docking.Tokens.PanelLaunch.Hidden)
+        dockHost.placePanel(preferencesDock, Docking.Tokens.DockEdge.Top, objectTreeDock, Qt.size(0, 200), Docking.Tokens.PanelLaunch.Hidden)
+    }
+
+    //! @brief 重置布局：清除持久化快照并回到声明默认布局
+    function resetDockLayout() {
+        dockSettings.json = ""
+        dockHost.clearLayout()
+        applyDefaultLayout()
+    }
+
+    onClosing: dockSettings.json = dockHost.saveLayout()
+
     header: AppToolbar {
         windowHeight: root.height
         objectTreeOpen: objectTreeDock.shown
@@ -41,6 +70,7 @@ ApplicationWindow {
         pythonConsoleOpen: pythonConsoleDock.shown
         outputLogOpen: outputLogDock.shown
         preferencesOpen: preferencesDock.shown
+        onResetLayoutRequested: root.resetDockLayout()
         onObjectTreeToggled: {
             if (objectTreeDock.shown) objectTreeDock.hidePanel()
             else objectTreeDock.showPanel()
@@ -126,7 +156,7 @@ ApplicationWindow {
     Docking.DockHost {
         id: dockHost
         anchors.fill: parent
-        
+
         centralItemFile: "qrc:/qt/qml/app/CentralRenderArea.qml"
         uniqueName: "PreCessMainLayout"
 
@@ -198,13 +228,10 @@ ApplicationWindow {
         }
 
         Component.onCompleted: {
-            placePanel(objectTreeDock, Docking.Tokens.DockEdge.Left, null, Qt.size(250, 0))
-            placePanel(sideBarDock, Docking.Tokens.DockEdge.Bottom, objectTreeDock, Qt.size(0, 400))
-            placePanel(attributeRenderDock, Docking.Tokens.DockEdge.Bottom, objectTreeDock, Qt.size(0, 300), Docking.Tokens.PanelLaunch.Hidden)
-            placePanel(consoleDock, Docking.Tokens.DockEdge.Bottom, null, Qt.size(0, 300), Docking.Tokens.PanelLaunch.Hidden)
-            placePanel(pythonConsoleDock, Docking.Tokens.DockEdge.Right, null, Qt.size(450, 0), Docking.Tokens.PanelLaunch.Hidden)
-            placePanel(outputLogDock, Docking.Tokens.DockEdge.Bottom, null, Qt.size(0, 300), Docking.Tokens.PanelLaunch.Hidden)
-            placePanel(preferencesDock, Docking.Tokens.DockEdge.Top, objectTreeDock, Qt.size(0, 200), Docking.Tokens.PanelLaunch.Hidden)
+            // 先应用声明默认布局，再尝试恢复上次保存的快照
+            root.applyDefaultLayout()
+            if (dockSettings.json.length > 0)
+                dockHost.restoreLayout(dockSettings.json)
         }
     }
 

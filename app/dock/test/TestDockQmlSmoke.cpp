@@ -22,6 +22,7 @@
 #include "docking/DockView.h"
 #include "tree/LayoutNode.h"
 #include "ui/PanelGroupItem.h"
+#include "ui/DockHostItem.h"
 #include "ui/DropZoneOverlay.h"
 #include "ui/DockRuntime.h"
 
@@ -547,6 +548,27 @@ TEST_CASE("DockQml: docking area loads from QML and lays out docks")
     drag.updateAt(QPoint(500, 300));
     CHECK(drag.phase() == dock::DragSession::Phase::Idle);
     CHECK(dock::DockCatalog::self().windows().isEmpty());
+
+    // 布局持久化：QML 接口往返（保存 → 改动 → 恢复）
+    {
+        auto* host_item = qobject_cast<dock::ui::DockHostItem*>(root);
+        REQUIRE(host_item != nullptr);
+
+        const QList<dock::DockPanel*> shown_before = panel_b->group()->shownPanels();
+        REQUIRE(shown_before.size() >= 2);
+        const QString saved = host_item->saveLayout();
+        REQUIRE_FALSE(saved.isEmpty());
+
+        dock::DockPanel* hidden_target = shown_before.last();
+        hidden_target->hidePanel();
+        QCoreApplication::processEvents();
+        CHECK_FALSE(hidden_target->isShown());
+
+        CHECK(host_item->restoreLayout(saved));
+        QCoreApplication::processEvents();
+        CHECK(hidden_target->isShown());
+        CHECK(panel_b->group()->shownPanels().size() == shown_before.size());
+    }
 
     area_item->setParentItem(nullptr);
     delete root;
