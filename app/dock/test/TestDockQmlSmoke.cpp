@@ -396,14 +396,34 @@ TEST_CASE("DockQml: docking area loads from QML and lays out docks")
         QCoreApplication::processEvents();
         CHECK(panel_b->group()->shownPanels().size() >= 2);
 
-        panel_a->setFeature(dock::DockPanel::Feature::Movable, false);
+        // 能力门控：单标签拖拽按面板能力，整组拖拽按组能力（显示面板交集）
+        dock::DockPanel* gated = panel_b->group()->shownPanels().first();
+        gated->setFeature(dock::DockPanel::Feature::Movable, false);
         QCoreApplication::processEvents();
+
+        // 不可移动面板的标签：不进入拖拽
         merged_view->beginPanelDrag(0, tab_center(0));
         merged_view->dragTo(tab_center(0) + QPointF(0, -80));
         CHECK(drag.phase() == dock::DragSession::Phase::Idle);
         CHECK(dock::DockCatalog::self().windows().isEmpty());
-        panel_a->setFeature(dock::DockPanel::Feature::Movable, true);
+
+        // 组能力为交集：标题行整组拖拽同样被门控
+        merged_view->beginGroupDrag(tab_center(0));
+        merged_view->dragTo(tab_center(0) + QPointF(0, -80));
+        CHECK(drag.phase() == dock::DragSession::Phase::Idle);
+        CHECK(dock::DockCatalog::self().windows().isEmpty());
+
+        // 同级其他面板仍可拖动（按面板能力），取消后状态复原
+        merged_view->beginPanelDrag(1, tab_center(1));
+        merged_view->dragTo(tab_center(1) + QPointF(0, -80));
+        REQUIRE(drag.phase() == dock::DragSession::Phase::Dragging);
+        drag.cancel();
         QCoreApplication::processEvents();
+        CHECK(dock::DockCatalog::self().windows().isEmpty());
+
+        gated->setFeature(dock::DockPanel::Feature::Movable, true);
+        QCoreApplication::processEvents();
+        CHECK(panel_b->group()->shownPanels().size() == shown.size());
     }
 
     // 真实鼠标事件路径（回归：QML 移动回调失效导致合并后标签无法拖出/重排）

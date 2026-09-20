@@ -57,12 +57,6 @@ void DockPanel::hidePanel()
     applyShown(false);
 }
 
-void DockPanel::activateTab()
-{
-    if (group_)
-        group_->setActivePanel(this);
-}
-
 void DockPanel::applyShown(bool shown)
 {
     const Lifecycle target = shown ? Lifecycle::Docked : Lifecycle::Hidden;

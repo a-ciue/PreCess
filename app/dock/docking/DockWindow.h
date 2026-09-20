@@ -29,7 +29,7 @@ public:
     explicit DockWindow(QObject* parent = nullptr);
     ~DockWindow() override;
 
-    //! @brief 浮动窗口内的停靠区域
+    //! @brief 浮动窗口内的停靠区域（构造期创建，生命周期内恒非空）
     DockRegion* region() const { return region_; }
 
     //! @brief 当前承载的分组（简化：单分组）
@@ -39,9 +39,6 @@ public:
     void takeGroup(PanelGroup* group, LayoutNode* item);
     //! @brief 释放分组但保留布局节点（节点被摘出，所有权交还调用方）
     LayoutNode* releaseGroup();
-
-    //! @brief 是否未承载任何分组
-    bool isEmpty() const;
 
     //! @brief 窗口几何（全局屏幕坐标）
     QRect geometry() const { return geometry_; }

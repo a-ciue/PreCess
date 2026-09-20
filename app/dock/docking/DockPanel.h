@@ -74,8 +74,6 @@ public:
 
     //! @brief 面板能力位
     Features features() const { return features_; }
-    //! @brief 设置面板能力位
-    void setFeatures(Features features) { features_ = features; }
     //! @brief 开关单项能力
     void setFeature(Feature feature, bool on = true);
     //! @brief 是否具备某项能力
@@ -90,8 +88,6 @@ public:
     void showPanel();
     //! @brief 隐藏但保留分组位置
     void hidePanel();
-    //! @brief 设为所属分组的当前选项卡
-    void activateTab();
 
     //! @brief 由布局层同步显示状态
     void applyShown(bool shown);

@@ -61,8 +61,6 @@ public:
     DropZone hoveredZone() const { return hover_.zone; }
     //! @brief 悬停分组的标签插入位置（-1 表示无效）
     int hoveredTabIndex() const { return hover_.tab_index; }
-    //! @brief 当前悬停落点目标
-    const DropTarget& hoverTarget() const { return hover_; }
 
     //! @brief 视图层在标题栏/标签按下时调用
     void beginAt(DragHandle* handle, const QPoint& global_pos);

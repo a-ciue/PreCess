@@ -34,7 +34,8 @@ public:
         bool active = false;
     };
 
-    explicit DropZoneOverlay(QObject* parent = nullptr);
+    //! @brief 进程内常驻单例：由 DockRuntime 持有，随进程结束，不设 QObject 父
+    explicit DropZoneOverlay();
     ~DropZoneOverlay() override;
 
     /**

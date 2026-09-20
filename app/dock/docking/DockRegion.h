@@ -76,8 +76,6 @@ public:
 
     //! @brief 标记中央持久节点（拖放时不可被替换/移除）
     void setCentralNode(LayoutNode* item) { central_item_ = item; }
-    //! @brief 中央持久节点
-    LayoutNode* centralNode() const { return central_item_; }
     //! @brief 节点是否为中央持久节点（沿父链判断）
     bool isCentralNode(const LayoutNode* item) const;
 

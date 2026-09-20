@@ -96,28 +96,38 @@ void DockAreaItem::sync()
 
     // 分组视图：按布局树叶子节点同步几何与可见性
     QSet<PanelGroup*> groups;
-    collectGroups(region_->rootNode(), groups);
+    const QList<PanelGroup*> region_groups = region_->groups();
+    for (PanelGroup* group : region_groups)
+        groups.insert(group);
 
-    // 收口陈旧视图：已离开本区域的分组视图立即隐藏并摘除，交由目标区域接管
-    for (PanelGroup* stale : std::as_const(synced_groups_)) {
+    // 收口陈旧视图：已离开本区域的分组视图立即隐藏并摘除，交由目标区域接管；
+    // 仅查询缓存，避免为已清空的分组误建视图
+    const QSet<PanelGroup*> previous = synced_groups_;
+    synced_groups_ = groups;
+    for (PanelGroup* stale : previous) {
         if (groups.contains(stale))
             continue;
-        PanelGroupItem* view = DockRuntime::instance().panelGroupItem(stale);
-        if (view && view->parentItem() == this) {
-            view->setVisible(false);
-            view->setParentItem(nullptr);
+        if (PanelGroupItem* view = DockRuntime::instance().existingPanelGroupItem(stale)) {
+            if (view->parentItem() == this) {
+                view->setVisible(false);
+                view->setParentItem(nullptr);
+            }
         }
+        if (const auto watch = group_watches_.take(stale); watch)
+            disconnect(watch);
     }
+
     for (PanelGroup* group : std::as_const(groups)) {
-        if (!synced_groups_.contains(group)) {
+        if (group_watches_.contains(group))
+            continue;
+        group_watches_.insert(group,
             connect(group, &QObject::destroyed, this, [this, group] {
                 synced_groups_.remove(group);
-            });
-        }
+                group_watches_.remove(group);
+            }));
     }
-    synced_groups_ = groups;
 
-    for (PanelGroup* group : groups) {
+    for (PanelGroup* group : region_groups) {
         PanelGroupItem* view = DockRuntime::instance().panelGroupItem(group);
         if (!view)
             continue;
@@ -165,22 +175,6 @@ void DockAreaItem::sync()
 
     updateZoneRects();
     syncing_ = false;
-}
-
-void DockAreaItem::collectGroups(LayoutNode* item, QSet<PanelGroup*>& groups) const
-{
-    if (!item)
-        return;
-
-    if (item->isContainer()) {
-        const auto* container = static_cast<BoxNode*>(item);
-        for (LayoutNode* child : container->children())
-            collectGroups(child, groups);
-        return;
-    }
-
-    if (auto* group = dynamic_cast<PanelGroup*>(item->client()))
-        groups.insert(group);
 }
 
 void DockAreaItem::collectSeparators(LayoutNode* item, QSet<Divider*>& separators) const

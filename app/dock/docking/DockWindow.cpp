@@ -26,6 +26,10 @@ DockWindow::~DockWindow()
 
 void DockWindow::takeGroup(PanelGroup* group, LayoutNode* item)
 {
+#ifdef QT_DEBUG
+    Q_ASSERT_X(!group_ || group_ == group, "DockWindow",
+        "takeGroup on a window that already hosts another group");
+#endif
     group_ = group;
     if (!group_) {
         region_->setRootNode(nullptr);
@@ -63,11 +67,6 @@ LayoutNode* DockWindow::releaseGroup()
     group_ = nullptr;
     Q_EMIT groupChanged();
     return node;
-}
-
-bool DockWindow::isEmpty() const
-{
-    return !group_ || group_->panels().isEmpty();
 }
 
 void DockWindow::setGeometry(const QRect& geometry)

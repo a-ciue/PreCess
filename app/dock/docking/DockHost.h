@@ -41,8 +41,6 @@ public:
     DockPanel* centralPanel() const { return central_panel_; }
     //! @brief 中央分组
     PanelGroup* centralGroup() const { return central_group_; }
-    //! @brief 中央布局节点
-    LayoutNode* centralNode() const { return central_node_; }
 
     //! @brief 设置中央内容视图（由视图层加载 QML 后注入）
     void setCentralContentView(DockView* content_view);

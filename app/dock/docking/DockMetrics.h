@@ -14,10 +14,6 @@ namespace dock {
 struct DockMetrics {
     //! @brief 标题栏高度（像素）
     static constexpr int kTitleBarHeight = 30;
-    //! @brief 选项卡栏高度（像素）
-    static constexpr int kTabBarHeight = 28;
-    //! @brief 分组内容边距（像素）
-    static constexpr int kGroupContentsMargin = 1;
     //! @brief 触发拖拽所需的最小移动距离（像素）
     static constexpr int kStartDragDistance = 4;
     //! @brief 经典指示器距离窗口边缘的间距（像素）

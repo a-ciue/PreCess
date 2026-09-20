@@ -91,6 +91,11 @@ PanelGroupItem* DockRuntime::panelGroupItem(PanelGroup* group)
     return view;
 }
 
+PanelGroupItem* DockRuntime::existingPanelGroupItem(PanelGroup* group) const
+{
+    return group ? group_items_.value(group, nullptr) : nullptr;
+}
+
 void DockRuntime::forgetPanelGroupItem(PanelGroup* group, PanelGroupItem* view)
 {
     if (group_items_.value(group, nullptr) == view)
@@ -111,7 +116,8 @@ void DockRuntime::destroyPanelGroupItem(PanelGroup* group)
 DropZoneOverlay* DockRuntime::zonesOverlay()
 {
     if (!overlay_ && QCoreApplication::instance()) {
-        overlay_ = new DropZoneOverlay(QCoreApplication::instance());
+        // 进程内常驻单例：不设 QObject 父，避免退出期销毁 QQuickWindow 的时序问题
+        overlay_ = new DropZoneOverlay();
     }
     return overlay_;
 }

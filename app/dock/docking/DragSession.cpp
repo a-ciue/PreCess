@@ -23,28 +23,6 @@
 
 namespace dock {
 
-namespace {
-
-//! @brief 布局树中是否包含指定节点
-bool treeContains(const LayoutNode* root, const LayoutNode* item)
-{
-    if (!root)
-        return false;
-    if (root == item)
-        return true;
-    if (!root->isContainer())
-        return false;
-
-    const auto* container = static_cast<const BoxNode*>(root);
-    for (LayoutNode* child : container->children()) {
-        if (treeContains(child, item))
-            return true;
-    }
-    return false;
-}
-
-}
-
 DragSession& DragSession::self()
 {
     static DragSession controller;
@@ -76,8 +54,11 @@ void DragSession::beginAt(DragHandle* handle, const QPoint& global_pos)
         || (handle->panel() && handle->panel()->isCentral()))
         return;
 
-    // 能力门控：不可移动的分组/面板不进入拖拽
-    if (!handle->group()->features().testFlag(DockPanel::Feature::Movable))
+    // 能力门控：单标签拖动按面板能力、整组拖动按组能力（与视图层入口一致）
+    const bool movable = handle->panel()
+        ? handle->panel()->hasFeature(DockPanel::Feature::Movable)
+        : handle->group()->features().testFlag(DockPanel::Feature::Movable);
+    if (!movable)
         return;
 
     if (phase_ != Phase::Idle)
@@ -117,14 +98,13 @@ void DragSession::endAt(const QPoint& global_pos)
     updateHover(global_pos);
     if (hover_.region && hover_.zone != DropZone::None) {
         applyDrop();
+    } else if (drag_group_ && !drag_group_->features().testFlag(DockPanel::Feature::Floatable)) {
+        // 未命中落点且分组不可浮动：整组回弹/单标签归还源分组，不保留浮动
+        cancel();
+        return;
     } else if (drag_group_ && handle_ && drag_group_ != handle_->group() && origin_group_) {
-        // 未命中落点：可浮动则保留为浮动窗口，否则回弹归还源分组
-        if (drag_group_->features().testFlag(DockPanel::Feature::Floatable)) {
-            parkFloatingGroup(dragWindow());
-        } else {
-            cancel();
-            return;
-        }
+        // 未命中落点：可浮动则保留为浮动窗口
+        parkFloatingGroup(dragWindow());
     }
 
     cleanup();
@@ -267,9 +247,11 @@ void DragSession::startDrag(const QPoint& global_pos)
 
     PanelGroup* source_group = handle_->group();
     DockPanel* dock = handle_->panel();
-    // 防御：中央持久分组/面板与不可移动分组不得进入拖拽流程
-    if (source_group->isCentral() || (dock && dock->isCentral())
-        || !source_group->features().testFlag(DockPanel::Feature::Movable)) {
+    // 防御：中央持久分组/面板与不可移动目标不得进入拖拽流程（单标签按面板能力、整组按组能力）
+    const bool movable = dock
+        ? dock->hasFeature(DockPanel::Feature::Movable)
+        : source_group->features().testFlag(DockPanel::Feature::Movable);
+    if (source_group->isCentral() || (dock && dock->isCentral()) || !movable) {
         cleanup();
         return;
     }
@@ -673,13 +655,12 @@ DockRegion* DragSession::regionForGroup(PanelGroup* group)
     if (!group || !group->node())
         return nullptr;
 
-    const LayoutNode* target = group->node();
     if (DockHost* host = DockCatalog::self().host()) {
-        if (treeContains(host->region()->rootNode(), target))
+        if (host->region()->groups().contains(group))
             return host->region();
     }
     for (DockWindow* window : DockCatalog::self().windows()) {
-        if (treeContains(window->region()->rootNode(), target))
+        if (window->region() && window->region()->groups().contains(group))
             return window->region();
     }
     return nullptr;

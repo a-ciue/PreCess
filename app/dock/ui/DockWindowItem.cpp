@@ -103,7 +103,10 @@ void DockWindowItem::updateAreaHost()
         area_item_->setSize(area_host_->size());
 
     if (window_ && area_host_) {
+        // region() 契约恒非空；此处防御性判空，避免核心对象异常期解引用
         DockRegion* region = window_->region();
+        if (!region)
+            return;
         region->setGlobalOrigin(area_host_->mapToGlobal(QPointF(0, 0)).toPoint());
         region->setGeometry(QRect(QPoint(0, 0), area_host_->size().toSize()));
         if (area_item_)

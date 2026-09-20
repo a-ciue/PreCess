@@ -71,6 +71,16 @@ PanelGroupItem::PanelGroupItem(PanelGroup* group, QQuickItem* parent)
         });
     }
 
+    // 会话（可能由全局中继结束，不经过 endDrag）回到空闲后释放遗留拖拽句柄
+    connect(&DragSession::self(), &DragSession::phaseChanged, this,
+        [this](DragSession::Phase phase) {
+            if (phase == DragSession::Phase::Idle && drag_
+                && DragSession::self().handle() == nullptr) {
+                delete drag_;
+                drag_ = nullptr;
+            }
+        });
+
     syncFromGroup();
 }
 
@@ -122,14 +132,18 @@ void PanelGroupItem::updateGuest()
     DockPanel* current = group_ ? group_->activePanel() : nullptr;
     if (current != shown_dock_) {
         if (shown_dock_) {
+            // 断开旧面板的连接：避免切换回同一面板时重复累积，也避免其析构误清当前面板
+            disconnect(shown_dock_, &QObject::destroyed, this, nullptr);
             if (QQuickItem* old_guest = DockRuntime::instance().panelContentItem(shown_dock_))
                 old_guest->setVisible(false);
         }
 
         shown_dock_ = current;
         if (shown_dock_) {
-            connect(shown_dock_, &QObject::destroyed, this, [this] {
-                shown_dock_ = nullptr;
+            DockPanel* panel = shown_dock_;
+            connect(panel, &QObject::destroyed, this, [this, panel] {
+                if (shown_dock_ == panel)
+                    shown_dock_ = nullptr;
             });
         }
     }
@@ -236,19 +250,23 @@ void PanelGroupItem::toggleDetached()
 
 void PanelGroupItem::beginGroupDrag(const QPointF& global_pos)
 {
-    // 中央持久分组不可拖出（其节点受区域保护，拖出会破坏布局树）
-    if (!group_ || group_->isCentral())
+    if (!group_)
         return;
 
-    // 能力门控：不可移动的分组不进入拖拽
-    if (!group_->features().testFlag(DockPanel::Feature::Movable))
-        return;
-
+    // 清理上次拖拽遗留句柄（会话由全局中继结束时不会经过 endDrag）
     if (drag_) {
         DragSession::self().cancel();
         delete drag_;
         drag_ = nullptr;
     }
+
+    // 中央持久分组不可拖出（其节点受区域保护，拖出会破坏布局树）
+    if (group_->isCentral())
+        return;
+
+    // 能力门控：不可移动的分组不进入拖拽
+    if (!group_->features().testFlag(DockPanel::Feature::Movable))
+        return;
 
     DockAreaItem* area = areaItem();
     DockWindow* window = area ? area->window() : nullptr;
@@ -268,6 +286,14 @@ void PanelGroupItem::beginPanelDrag(int index, const QPointF& global_pos)
     DockPanel* panel = open.at(index);
     group_->setActivePanel(panel);
 
+    // 清理上次拖拽遗留句柄（会话由全局中继结束时不会经过 endDrag），
+    // 避免门控拦截后残留句柄被后续 dragTo 误用
+    if (drag_) {
+        DragSession::self().cancel();
+        delete drag_;
+        drag_ = nullptr;
+    }
+
     // 中央持久面板不可拖出（点击仅激活其标签）
     if (panel->isCentral())
         return;
@@ -275,12 +301,6 @@ void PanelGroupItem::beginPanelDrag(int index, const QPointF& global_pos)
     // 能力门控：不可移动的面板不进入拖拽/重排
     if (!panel->hasFeature(DockPanel::Feature::Movable))
         return;
-
-    if (drag_) {
-        DragSession::self().cancel();
-        delete drag_;
-        drag_ = nullptr;
-    }
 
     // 延迟进入拖拽会话：先记录按下信息，由 dragTo 判别组内重排或浮动
     press_global_ = global_pos;

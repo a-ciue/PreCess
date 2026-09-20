@@ -13,10 +13,9 @@
 
 namespace dock::ui {
 
-DropZoneOverlay::DropZoneOverlay(QObject* parent)
+DropZoneOverlay::DropZoneOverlay()
     : QQuickWindow()
 {
-    Q_UNUSED(parent);
     setFlags(Qt::Tool | Qt::FramelessWindowHint | Qt::WindowTransparentForInput
         | Qt::WindowDoesNotAcceptFocus);
     setColor(Qt::transparent);

@@ -52,6 +52,8 @@ public:
 
     //! @brief 取得（必要时创建）分组视图；所有权由本服务持有
     PanelGroupItem* panelGroupItem(PanelGroup* group);
+    //! @brief 仅查询缓存中的分组视图（不创建），用于陈旧视图收口
+    PanelGroupItem* existingPanelGroupItem(PanelGroup* group) const;
     //! @brief 从缓存中注销分组视图（视图析构或分组清空时）
     void forgetPanelGroupItem(PanelGroup* group, PanelGroupItem* view);
     //! @brief 删除分组视图（分组销毁时）

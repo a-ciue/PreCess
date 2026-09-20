@@ -48,8 +48,6 @@ public:
     void sync();
 
 private:
-    //! @brief 递归收集分组
-    void collectGroups(LayoutNode* item, QSet<PanelGroup*>& groups) const;
     //! @brief 递归收集分隔条
     void collectSeparators(LayoutNode* item, QSet<Divider*>& separators) const;
     //! @brief 根据拖拽悬停状态更新落点高亮
@@ -62,6 +60,8 @@ private:
     QHash<Divider*, DividerItem*> divider_views_;
     //! @brief 上一次同步归属本区域的分组（用于收口已离开的陈旧视图）
     QSet<PanelGroup*> synced_groups_;
+    //! @brief 分组销毁监听连接（按分组去重，避免重复累积）
+    QHash<PanelGroup*, QMetaObject::Connection> group_watches_;
     bool syncing_ = false;
 };
 

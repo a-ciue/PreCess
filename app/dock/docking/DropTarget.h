@@ -36,9 +36,6 @@ struct DropTarget {
     }
 
     bool operator!=(const DropTarget& other) const { return !(*this == other); }
-
-    //! @brief 是否命中某个停靠区域
-    explicit operator bool() const { return region != nullptr; }
 };
 
 }
