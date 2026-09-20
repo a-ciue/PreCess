@@ -63,6 +63,12 @@ QString QModelQuery::getComponentName(Index component_id) const
     return name ? QString::fromStdString(*name) : QString();
 }
 
+QString QModelQuery::getModelName(Index model_id) const
+{
+    const auto name = m_query->modelName(model_id);
+    return name ? QString::fromStdString(*name) : QString();
+}
+
 QVariantList QModelQuery::getComponentAttriInfo(Index component_id) const
 {
     QVariantList out;

@@ -10,9 +10,22 @@
 #include "QSelection.h"
 #include "SelectManager.h"
 #include "Selection.h"
+#include "GeometryActor.h"
 #include "GeometryActorManager.h"
+#include "GeometryTopologyDiagnosticActor.h"
 #include "GeometryDataVtk.h"
 #include "MeshIdQuery.h"
+#include "GeometryTopologyEditor.h"
+
+#include <BRep_Builder.hxx>
+#include <NCollection_DataMap.hxx>
+#include <TopAbs_ShapeEnum.hxx>
+#include <TopExp.hxx>
+#include <TopExp_Explorer.hxx>
+#include <TopTools_ShapeMapHasher.hxx>
+#include <TopoDS_Compound.hxx>
+#include <TopoDS_Face.hxx>
+#include <TopoDS_Shape.hxx>
 
 #include <spdlog/spdlog.h>
 #include <vtkCamera.h>
@@ -25,10 +38,102 @@
 #include <vtkObjectFactory.h>
 #include <vtkPlane.h>
 
+#include <algorithm>
+#include <chrono>
 #include <cmath>
+#include <memory>
+#include <optional>
+#include <unordered_map>
 #include <utility>
+#include <vector>
 
 namespace {
+//! 几何干涉检查不开其它诊断类别，这两个阈值只是接口要求，取任意正值。
+constexpr double kInterferenceProbeEdgeLength = 1.0e-6;
+constexpr double kInterferenceProbeFaceArea = 1.0e-12;
+
+/** @brief 日志里标识一个 Model："id (名称)"，名称缺失时只留 id。 */
+std::string modelLabel(QModelQuery& query, Index model_id)
+{
+    const QString name = query.getModelName(model_id);
+    return std::to_string(model_id)
+        + (name.isEmpty() ? std::string() : " (" + name.toStdString() + ")");
+}
+
+/**
+ * @brief 对指定 Model 重算 Geometry Interference Check，并把命中面分发到各 Component。
+ *
+ * 检查范围严格限定在**同一个 Model 的 Component 之间**，不跨 Model。跨 Component 的
+ * 检查无法由单个 Component 的 Actor 完成（它只持有自己的几何），所以编排放在这里；
+ * `GeometryActorManager` 因此不必记录 Model 归属，保持与历史版本一致。
+ *
+ * 必须在渲染线程调用（直接用 Manager 与各 Component 的 Actor）。
+ */
+std::string rebuildModelInterference(
+    GeometryActorManager& manager, QModelQuery& query, Index model_id)
+{
+    std::vector<Index> component_ids;
+    NCollection_DataMap<TopoDS_Shape, Index, TopTools_ShapeMapHasher> face_owners;
+    BRep_Builder builder;
+    TopoDS_Compound root;
+    builder.MakeCompound(root);
+
+    for (Index component_id : query.getComponentIds(model_id)) {
+        const std::optional<GeometryDataVtk> geometry = query.getGeometryVtkDataByComponent(
+            component_id);
+        if (!geometry.has_value() || geometry->shape.IsNull())
+            continue;
+        component_ids.push_back(component_id);
+        builder.Add(root, geometry->shape);
+        for (TopExp_Explorer face(geometry->shape, TopAbs_FACE); face.More(); face.Next()) {
+            if (!face_owners.IsBound(face.Current()))
+                face_owners.Bind(face.Current(), component_id);
+        }
+    }
+
+    // 无论是否命中，先把结果清空，避免 Component 残留上一次的标记。
+    for (Index component_id : component_ids) {
+        if (std::shared_ptr<GeometryActor> actor = manager.getComponentActor(component_id))
+            actor->topologyDiagnostics().setInterferingFaces({ });
+    }
+    if (component_ids.empty())
+        return std::string("0 对");
+
+    GeometryTopologyDiagnosticOptions options {
+        false, false, false, false, false, true, false
+    };
+    const auto started = std::chrono::steady_clock::now();
+    const GeometryTopologyDiagnosticResult result = GeometryTopologyEditor::diagnoseTopology(
+        root, kInterferenceProbeEdgeLength, kInterferenceProbeFaceArea, options);
+    const double elapsed_ms = std::chrono::duration<double, std::milli>(
+        std::chrono::steady_clock::now() - started)
+                                  .count();
+    // 只统计"多少对、涉及多少张面"，具体是哪些面由界面高亮呈现，不写进日志。
+    NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher> hit_faces;
+    for (const GeometryIntersectingFacePair& pair : result.interfering_face_pairs) {
+        hit_faces.Add(pair.first);
+        hit_faces.Add(pair.second);
+    }
+    const std::string summary = std::to_string(result.interfering_face_pairs.size()) + " 对，涉及 "
+        + std::to_string(hit_faces.Extent()) + " 张面";
+    spdlog::info("几何拓扑诊断（model {}）：几何干涉 耗时 {:.1f} ms —— {}", modelLabel(query, model_id),
+        elapsed_ms, summary);
+
+    std::unordered_map<Index, std::vector<TopoDS_Face>> component_faces;
+    for (const GeometryIntersectingFacePair& pair : result.interfering_face_pairs) {
+        for (const TopoDS_Face& face : { pair.first, pair.second }) {
+            if (face_owners.IsBound(face))
+                component_faces[face_owners.Find(face)].push_back(face);
+        }
+    }
+    for (Index component_id : component_ids) {
+        if (std::shared_ptr<GeometryActor> actor = manager.getComponentActor(component_id))
+            actor->topologyDiagnostics().setInterferingFaces(
+                std::move(component_faces[component_id]));
+    }
+    return summary;
+}
+
 //! @brief 比例尺刻度字号因子（vtkAxisActor2D::FontFactor，默认 1.0，取值区间 0.1~2.0）
 constexpr double kScaleBarFontFactor = 0.7;
 
@@ -336,6 +441,11 @@ void QRenderWindow::deleteModel(Index model_id)
             vtk->mesh_actor_manager_->deleteComponent(component_id);
             vtk->geometry_actor_manager_->deleteComponent(component_id);
         }
+        // 各 Component 的 Actor 已随几何一起删除，干涉结果不需要再算；只把 Model 记录移除。
+        loaded_model_ids_.erase(
+            std::remove(loaded_model_ids_.begin(), loaded_model_ids_.end(), model_id),
+            loaded_model_ids_.end());
+        interfered_summaries_.erase(model_id);
 
         this->select_manager_->clearSelection();
     });
@@ -346,12 +456,22 @@ void QRenderWindow::deleteComponent(Index component_id)
     dispatch_async([component_id, this](vtkRenderWindow* renderWindow, vtkUserData userData) -> void {
         Data* vtk = Data::SafeDownCast(userData);
 
+        // 必须在本 Component 被删除之前确定归属，删除后反查会失效。
+        const Index model_id
+            = model_query_ ? model_query_->findModelIdByComponent(component_id) : -1;
+
         if (vtk->mesh_actor_manager_) {
             vtk->mesh_actor_manager_->deleteComponent(component_id);
         }
 
         if (vtk->geometry_actor_manager_) {
             vtk->geometry_actor_manager_->deleteComponent(component_id);
+            // 参与检查的几何变了：清掉该 Model 的缓存并重算。
+            if (interference_enabled_ && model_id >= 0 && model_query_) {
+                interfered_summaries_[model_id]
+                    = rebuildModelInterference(*vtk->geometry_actor_manager_, *model_query_,
+                        model_id);
+            }
         }
 
         this->select_manager_->clearSelection();
@@ -399,7 +519,28 @@ void QRenderWindow::onModelChanged(Index model_id)
             auto geometry_data = model_query_->getGeometryVtkDataByComponent(component_id);
             if (geometry_data) {
                 vtk->geometry_actor_manager_->loadGeometry(*geometry_data);
+                // 组件 ID 只用于日志标注结果归属，装载后立即写入。
+                if (std::shared_ptr<GeometryActor> actor
+                    = vtk->geometry_actor_manager_->getComponentActor(component_id)) {
+                    const QString name = model_query_->getComponentName(component_id);
+                    actor->topologyDiagnostics().setComponentLabel(std::to_string(component_id)
+                        + (name.isEmpty() ? std::string()
+                                          : " (" + name.toStdString() + ")"));
+                }
             }
+        }
+        // 记录本 Model 供类别开关打开时重算；已启用则立即算一次。
+        if (std::find(loaded_model_ids_.begin(), loaded_model_ids_.end(), model_id)
+            == loaded_model_ids_.end()) {
+            loaded_model_ids_.push_back(model_id);
+        }
+        // 走到这里说明模型数据发生了变更（编辑 / undo / 重新导入），几何可能已经不是
+        // 原来那份：摘要缓存一律作废，类别未启用也要清，否则"关掉类别 → 编辑 → 再打开"
+        // 会重播过期的摘要、跳过重算。
+        interfered_summaries_.erase(model_id);
+        if (interference_enabled_) {
+            interfered_summaries_[model_id]
+                = rebuildModelInterference(*vtk->geometry_actor_manager_, *model_query_, model_id);
         }
     });
 }
@@ -415,6 +556,9 @@ void QRenderWindow::onComponentChanged(Index component_id)
         // Component 的子形状索引和 Actor 数据会更新，旧高亮选择器不能继续复用。
         this->select_manager_->clearSelection();
 
+        // 本 Component 归属的 Model；几何变更的缓存作废与干涉重算都要用。
+        const Index model_id = this->model_query_->findModelIdByComponent(component_id);
+
         if (vtk->mesh_actor_manager_) {
             auto mesh_data = this->model_query_->getMeshDataByComponent(component_id);
             if (mesh_data) {
@@ -428,8 +572,24 @@ void QRenderWindow::onComponentChanged(Index component_id)
             auto geometry_data = this->model_query_->getGeometryVtkDataByComponent(component_id);
             if (geometry_data) {
                 vtk->geometry_actor_manager_->loadGeometry(*geometry_data);
+                if (std::shared_ptr<GeometryActor> actor
+                    = vtk->geometry_actor_manager_->getComponentActor(component_id)) {
+                    const QString name = model_query_->getComponentName(component_id);
+                    actor->topologyDiagnostics().setComponentLabel(std::to_string(component_id)
+                        + (name.isEmpty() ? std::string()
+                                          : " (" + name.toStdString() + ")"));
+                }
             } else {
                 vtk->geometry_actor_manager_->deleteComponent(component_id);
+            }
+            // 参与检查的几何变了（编辑 / undo / 重新导入）：摘要缓存一律作废；
+            // 启用时立即重算并刷新摘要，未启用时等类别再打开时重算。
+            if (model_id >= 0)
+                interfered_summaries_.erase(model_id);
+            if (interference_enabled_ && model_id >= 0) {
+                interfered_summaries_[model_id]
+                    = rebuildModelInterference(*vtk->geometry_actor_manager_, *model_query_,
+                        model_id);
             }
         }
     });
@@ -698,10 +858,31 @@ void QRenderWindow::setDihedralAngleRange(double minimum, double maximum)
 
 void QRenderWindow::setGeometryTopologyDiagnosticCategoryEnabled(int category, bool enabled)
 {
-    dispatch_async([category, enabled](vtkRenderWindow* renderWindow, vtkUserData userData) -> void {
+    dispatch_async([category, enabled, this](vtkRenderWindow* renderWindow,
+                        vtkUserData userData) -> void {
         Data* vtk = Data::SafeDownCast(userData);
-        if (vtk->geometry_actor_manager_)
-            vtk->geometry_actor_manager_->setTopologyDiagnosticCategoryEnabled(category, enabled);
+        if (!vtk || !vtk->geometry_actor_manager_)
+            return;
+        vtk->geometry_actor_manager_->setTopologyDiagnosticCategoryEnabled(category, enabled);
+
+        // 几何干涉跨越同一 Model 内的多个 Component，单个 Component 的 Actor 算不了，
+        // 因此由本类按 Model 统一计算：打开类别时补算一次。
+        if (category != static_cast<int>(GeometryTopologyDiagnosticCategory::InterferingFace))
+            return;
+        interference_enabled_ = enabled;
+        if (!enabled || !model_query_)
+            return;
+        for (Index model_id : loaded_model_ids_) {
+            const auto cached = interfered_summaries_.find(model_id);
+            if (cached != interfered_summaries_.end()) {
+                // 已经算过：不重算，但仍把上次的结果摘要再报一次（不带耗时）。
+                spdlog::info("几何拓扑诊断（model {}）：几何干涉 —— {}", modelLabel(*model_query_, model_id),
+                    cached->second);
+                continue;
+            }
+            interfered_summaries_[model_id]
+                = rebuildModelInterference(*vtk->geometry_actor_manager_, *model_query_, model_id);
+        }
     });
 }
 

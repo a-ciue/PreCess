@@ -12,6 +12,7 @@
 #include <NCollection_Map.hxx>
 #include <Standard_Failure.hxx>
 #include <TopAbs_ShapeEnum.hxx>
+#include <TopExp.hxx>
 #include <TopExp_Explorer.hxx>
 #include <TopoDS.hxx>
 #include <TopoDS_Edge.hxx>
@@ -31,6 +32,8 @@
 #include <cmath>
 #include <stdexcept>
 #include <utility>
+#include <cstdio>
+#include <string>
 #include <vector>
 
 namespace {
@@ -43,14 +46,15 @@ constexpr std::array<DiagnosticColor, kGeometryTopologyDiagnosticCategoryCount> 
     { 1.00, 0.35, 0.70 }, // 细小边
     { 1.00, 0.00, 0.80 }, // 细小面
     { 0.00, 0.80, 1.00 }, // 重复面
-    { 1.00, 0.90, 0.00 }, // 几何自交
-    { 1.00, 0.55, 0.20 }, // 面干涉
+    { 1.00, 0.90, 0.00 }, // Self Intersections
+    { 1.00, 0.55, 0.20 }, // Geometry Interference Check
     { 0.55, 0.15, 1.00 }, // 无效拓扑
 } };
 
 constexpr double kDiagnosticLineUnits = highlight::LINE_UNITS + 1.0;
 constexpr double kDiagnosticPolygonUnits = highlight::POLYGON_UNITS + 0.5;
 constexpr double kDiagnosticPointUnits = highlight::POINT_UNITS + 1.0;
+
 
 size_t categoryIndex(GeometryTopologyDiagnosticCategory category)
 {
@@ -154,6 +158,7 @@ void GeometryTopologyDiagnosticActor::loadShape(const TopoDS_Shape& shape,
     line_sub_ids_ = line_sub_ids;
     face_sub_ids_ = face_sub_ids;
     diagnostics_.reset();
+    interfering_faces_.clear();
     category_computed_.fill(false);
 
     // 旧结果的子形状 ID 立即从过滤器里清掉：否则在重新计算完成之前，这些过滤器
@@ -240,20 +245,38 @@ void GeometryTopologyDiagnosticActor::setSmallFaceAreaThreshold(double threshold
     }
 }
 
+void GeometryTopologyDiagnosticActor::setInterferingFaces(std::vector<TopoDS_Face> faces)
+{
+    interfering_faces_ = std::move(faces);
+    const size_t category = categoryIndex(GeometryTopologyDiagnosticCategory::InterferingFace);
+    category_computed_[category] = true;
+    if (category_enabled_[category])
+        rebuildCategory(GeometryTopologyDiagnosticCategory::InterferingFace);
+}
+
 void GeometryTopologyDiagnosticActor::ensureDiagnostics(
     GeometryTopologyDiagnosticCategory category)
 {
     const size_t index = categoryIndex(category);
-    if (index >= category_computed_.size() || category_computed_[index]
-        || !shape_ || shape_->IsNull()) {
+    if (index >= category_computed_.size() || !shape_ || shape_->IsNull())
+        return;
+    if (category_computed_[index]) {
+        // 结果已在缓存里：不重复计算，但仍然输出一次日志——用户重新打开类别时
+        // 应该能看到检出内容，而不是被"已算过"静默跳过。
+        logCachedDiagnostics(category);
         return;
     }
     if (!diagnostics_)
         diagnostics_ = std::make_unique<GeometryTopologyDiagnosticResult>();
 
     GeometryTopologyDiagnosticOptions options {
-        false, false, false, false, false, false
+        false, false, false, false, false, false, false
     };
+    // Geometry Interference Check 必须同时看到窗口内的全部实体，由 Manager 计算后回填。
+    if (category == GeometryTopologyDiagnosticCategory::InterferingFace) {
+        category_computed_[index] = true;
+        return;
+    }
     if (category == GeometryTopologyDiagnosticCategory::BoundaryEdge
         || category == GeometryTopologyDiagnosticCategory::IsolatedEdge
         || category == GeometryTopologyDiagnosticCategory::NonManifoldEdge) {
@@ -265,13 +288,10 @@ void GeometryTopologyDiagnosticActor::ensureDiagnostics(
     } else if (category == GeometryTopologyDiagnosticCategory::DuplicateFace) {
         options.duplicate_faces = true;
     } else if (category == GeometryTopologyDiagnosticCategory::SelfIntersectingFace) {
-        // 几何自交与重复面共用一次逐对扫描，同时保存重复面结果，保证两类互斥且
+        // Self Intersections 与重复面共用一次逐对扫描，同时保存重复面结果，保证两类互斥且
         // 后续开关无需重算。
         options.duplicate_faces = true;
         options.self_intersecting_faces = true;
-    } else if (category == GeometryTopologyDiagnosticCategory::InterferingFace) {
-        options.duplicate_faces = true;
-        options.interfering_faces = true;
     } else if (category == GeometryTopologyDiagnosticCategory::InvalidTopology) {
         options.invalid_topology = true;
     }
@@ -279,10 +299,10 @@ void GeometryTopologyDiagnosticActor::ensureDiagnostics(
     const auto compute_started = std::chrono::steady_clock::now();
     GeometryTopologyDiagnosticResult computed = GeometryTopologyEditor::diagnoseTopology(
         *shape_, small_edge_length_threshold_, small_face_area_threshold_, options);
-    spdlog::info("几何拓扑诊断：同步计算耗时 {:.1f} ms",
-        std::chrono::duration<double, std::milli>(std::chrono::steady_clock::now()
-            - compute_started)
-            .count());
+    const double elapsed_ms = std::chrono::duration<double, std::milli>(
+        std::chrono::steady_clock::now() - compute_started)
+                                  .count();
+    logDiagnosticDetails(computed, options, elapsed_ms);
     if (options.edge_topology) {
         diagnostics_->boundary_edges = std::move(computed.boundary_edges);
         diagnostics_->isolated_edges = std::move(computed.isolated_edges);
@@ -304,18 +324,100 @@ void GeometryTopologyDiagnosticActor::ensureDiagnostics(
         category_computed_[categoryIndex(
             GeometryTopologyDiagnosticCategory::SelfIntersectingFace)]
             = true;
-    } else if (options.interfering_faces) {
-        diagnostics_->duplicate_face_groups = std::move(computed.duplicate_face_groups);
-        diagnostics_->interfering_face_pairs = std::move(computed.interfering_face_pairs);
-        category_computed_[categoryIndex(GeometryTopologyDiagnosticCategory::DuplicateFace)] = true;
-        category_computed_[categoryIndex(GeometryTopologyDiagnosticCategory::InterferingFace)]
-            = true;
     } else if (options.duplicate_faces) {
         diagnostics_->duplicate_face_groups = std::move(computed.duplicate_face_groups);
         category_computed_[categoryIndex(GeometryTopologyDiagnosticCategory::DuplicateFace)] = true;
     } else if (options.invalid_topology) {
         diagnostics_->invalid_shapes = std::move(computed.invalid_shapes);
         category_computed_[categoryIndex(GeometryTopologyDiagnosticCategory::InvalidTopology)] = true;
+    }
+}
+
+void GeometryTopologyDiagnosticActor::logCachedDiagnostics(
+    GeometryTopologyDiagnosticCategory category)
+{
+    if (!diagnostics_ || !shape_ || shape_->IsNull())
+        return;
+
+    // 几何干涉跨越同一 Model 内的多个 Component，由 QRenderWindow 统一报一行，这里跳过。
+    if (category == GeometryTopologyDiagnosticCategory::InterferingFace)
+        return;
+
+    // 其余类别映射回各自的选项，复用同一段格式化逻辑（不传耗时）。
+    GeometryTopologyDiagnosticOptions options {
+        false, false, false, false, false, false, false
+    };
+    switch (category) {
+    case GeometryTopologyDiagnosticCategory::BoundaryEdge:
+    case GeometryTopologyDiagnosticCategory::IsolatedEdge:
+    case GeometryTopologyDiagnosticCategory::NonManifoldEdge:
+        options.edge_topology = true;
+        break;
+    case GeometryTopologyDiagnosticCategory::SmallEdge:
+        options.small_edges = true;
+        break;
+    case GeometryTopologyDiagnosticCategory::SmallFace:
+        options.small_faces = true;
+        break;
+    case GeometryTopologyDiagnosticCategory::DuplicateFace:
+        options.duplicate_faces = true;
+        break;
+    case GeometryTopologyDiagnosticCategory::SelfIntersectingFace:
+        options.duplicate_faces = true;
+        options.self_intersecting_faces = true;
+        break;
+    case GeometryTopologyDiagnosticCategory::InvalidTopology:
+        options.invalid_topology = true;
+        break;
+    default:
+        return;
+    }
+    logDiagnosticDetails(*diagnostics_, options, -1.0);
+}
+
+void GeometryTopologyDiagnosticActor::logDiagnosticDetails(
+    const GeometryTopologyDiagnosticResult& result,
+    const GeometryTopologyDiagnosticOptions& options,
+    double elapsed_ms)
+{
+    // 结果来自缓存时不带耗时（负数约定）；日志里不出现"复用"之类的字样。
+    std::string cost;
+    if (elapsed_ms >= 0.0) {
+        char buffer[32] {};
+        std::snprintf(buffer, sizeof(buffer), "耗时 %.1f ms ", elapsed_ms);
+        cost = buffer;
+    }
+    // 每个组件一个诊断 Actor，日志必须标出结果属于哪个组件，否则多组件时无法区分。
+    const std::string label = component_label_.empty()
+        ? std::string("几何拓扑诊断：")
+        : ("几何拓扑诊断（组件 " + component_label_ + "）：");
+
+    // 每个类别只报一行计数：日志回答"检查了什么、查出多少"，
+    // 具体是哪些面/边由界面高亮呈现，不写进日志。
+    if (options.edge_topology) {
+        spdlog::info("{}边界边/孤立边/非流形边 {}—— 边界边 {}，孤立边 {}，非流形边 {}",
+            label, cost, result.boundary_edges.size(), result.isolated_edges.size(),
+            result.non_manifold_edges.size());
+        return;
+    }
+    if (options.small_edges) {
+        spdlog::info("{}细小边 {}—— {} 条（阈值 {:.6g}）", label, cost,
+            result.small_edges.size(), small_edge_length_threshold_);
+        return;
+    }
+    if (options.small_faces) {
+        spdlog::info("{}细小面 {}—— {} 张（阈值 {:.6g}）", label, cost,
+            result.small_faces.size(), small_face_area_threshold_);
+        return;
+    }
+    if (options.duplicate_faces || options.self_intersecting_faces) {
+        // 两类共用一次逐对扫描，一起报才不会让调用方误以为漏算。
+        spdlog::info("{}重复面/自相交 {}—— 重复面 {} 组，自相交 {} 对", label, cost,
+            result.duplicate_face_groups.size(), result.self_intersecting_face_pairs.size());
+        return;
+    }
+    if (options.invalid_topology) {
+        spdlog::info("{}无效拓扑 {}—— {} 个", label, cost, result.invalid_shapes.size());
     }
 }
 
@@ -362,10 +464,8 @@ void GeometryTopologyDiagnosticActor::rebuildCategory(GeometryTopologyDiagnostic
         }
         break;
     case GeometryTopologyDiagnosticCategory::InterferingFace:
-        for (const GeometryIntersectingFacePair& pair : diagnostics_->interfering_face_pairs) {
-            appendShapeId(ids, occ_shape_, pair.first);
-            appendShapeId(ids, occ_shape_, pair.second);
-        }
+        for (const TopoDS_Face& face : interfering_faces_)
+            appendShapeId(ids, occ_shape_, face);
         break;
     case GeometryTopologyDiagnosticCategory::InvalidTopology:
         for (const TopoDS_Shape& shape : diagnostics_->invalid_shapes) {

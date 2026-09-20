@@ -80,6 +80,8 @@ QML_ELEMENT // Qt6+: 导出为 QML 可用类型（Qt5 请使用 qmlRegisterType�
      * @param component_id 组件 ID
      */
     Q_INVOKABLE QString getComponentName(Index component_id) const;
+    /** @brief 模型名称；模型不存在时返回空串。 */
+    Q_INVOKABLE QString getModelName(Index model_id) const;
 
     /**
      * @brief 获取指定组件的属性渲染条目，供 QML 直接展示属性名、属性类型和分量数

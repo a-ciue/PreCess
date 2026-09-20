@@ -22,7 +22,7 @@ struct GeometryDuplicateFaceGroup {
 /**
  * @brief 一对发生内部穿插或区域重叠的面。
  */
-//! @brief 一对互相穿插的面，几何自交与面干涉共用。
+//! @brief 一对互相穿插的面，自相交与几何干涉共用；单 Face 自交时两个成员相同。
 struct GeometryIntersectingFacePair {
     TopoDS_Face first;
     TopoDS_Face second;
@@ -38,9 +38,10 @@ struct GeometryTopologyDiagnosticResult {
     std::vector<TopoDS_Edge> small_edges;
     std::vector<TopoDS_Face> small_faces;
     std::vector<GeometryDuplicateFaceGroup> duplicate_face_groups;
-    //! 几何自交：同一零件内部互相穿插的面对。
+    //! 自相交：单 Face 自交，或同一 Solid 内互相穿插的面对。
     std::vector<GeometryIntersectingFacePair> self_intersecting_face_pairs;
-    //! 面干涉：跨零件（或不限范围）互相穿插的面对。
+    //! 几何干涉：不同 Solid 或自由 Surface 之间相交的面对。
+    //! 与前处理器一致：重叠（含共面/贴合）与穿越都算。
     std::vector<GeometryIntersectingFacePair> interfering_face_pairs;
     std::vector<TopoDS_Shape> invalid_shapes;
 };
@@ -72,11 +73,10 @@ struct GeometryTopologyDiagnosticOptions {
     bool small_edges { true };
     bool small_faces { true };
     bool duplicate_faces { true };
-    //! 几何自交：单个零件内部的几何缺陷，只检查**同一零件内**的面自身穿插。
-    //! 对应前处理器的 `Surface Repair > Self Intersections`。
+    //! 自相交：检查单 Surface 自交及同一 Solid 内部的 Surface 相交。
     bool self_intersecting_faces { true };
-    //! 面干涉：任意两张面之间的互相穿插，不做零件范围限制。对应前处理器的
-    //! `Geometry Interference Check`（零件之间的干涉）。
+    //! 几何干涉：检查不同 Solid 或自由 Surface 之间的相交；只要面相交就算
+    //! （重叠与穿越都算，与前处理器一致）。
     bool interfering_faces { true };
     bool invalid_topology { true };
 };
@@ -122,8 +122,9 @@ public:
      * @brief 计算用于展示和后续清理的几何拓扑诊断结果。
      *
      * 边按相邻面的数量分为孤立边、边界边和非流形边；尺寸诊断按独立的长度、
-     * 面积阈值筛选细小边和细小面；重复面、几何自交、面干涉和无效拓扑使用 OCC 数值精度。其中几何自交只检查同一
-     * 零件（互相穿透的实体视为同一零件）内部，面干涉不限范围。
+     * 面积阈值筛选细小边和细小面；重复面、自相交、几何干涉和无效拓扑使用 OCC 数值精度。
+     * 自相交检查单 Face 及同一真实 Solid 内部；几何干涉独立检查不同 Solid/自由 Surface，
+     * 不根据包围盒推测 Part；不同 Solid 或自由 Surface 之间的面相交即报。
      *
      * @param root 要诊断的几何根形状。
      * @param small_edge_length_threshold 细小边长度阈值，必须大于零。

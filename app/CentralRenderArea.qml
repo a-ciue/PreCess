@@ -494,13 +494,13 @@ Page {
                         onTriggered: geometryTopologyDiagnosticMenu.keepOpenAfterTrigger()
                     }
                     MenuItem {
-                        text: "几何自交"
+                        text: "自相交"
                         checkable: true
                         onToggled: myItem.setGeometryTopologyDiagnosticCategoryEnabled(6, checked)
                         onTriggered: geometryTopologyDiagnosticMenu.keepOpenAfterTrigger()
                     }
                     MenuItem {
-                        text: "面干涉"
+                        text: "几何干涉"
                         checkable: true
                         onToggled: myItem.setGeometryTopologyDiagnosticCategoryEnabled(7, checked)
                         onTriggered: geometryTopologyDiagnosticMenu.keepOpenAfterTrigger()
@@ -547,7 +547,7 @@ Page {
                             }
                             TextField {
                                 Layout.preferredWidth: 100
-                                text: "0.0001"
+                                text: "0.01"
                                 selectByMouse: true
                                 validator: DoubleValidator {
                                     bottom: 0.0

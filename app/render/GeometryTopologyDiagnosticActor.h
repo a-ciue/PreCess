@@ -4,20 +4,25 @@
  */
 #pragma once
 
+#include "Core.h"
 #include "GeometryTopologyDiagnosticCategory.h"
 
 #include <IVtkOCC_Shape.hxx>
 #include <IVtkTools_SubPolyDataFilter.hxx>
 #include <Standard_Handle.hxx>
+#include <TopoDS_Face.hxx>
 #include <vtkActor.h>
 #include <vtkNew.h>
 #include <vtkPolyData.h>
 #include <vtkPolyDataMapper.h>
 
 #include <array>
+#include <string>
 #include <memory>
+#include <vector>
 
 class GeometryTopologyDiagnosticResult;
+struct GeometryTopologyDiagnosticOptions;
 class TopoDS_Shape;
 class vtkDataArray;
 class vtkPolyData;
@@ -49,6 +54,11 @@ public:
     void setSmallEdgeLengthThreshold(double threshold);
     /** @brief 设置细小面诊断使用的面积阈值。 */
     void setSmallFaceAreaThreshold(double threshold);
+    /** @brief 设置 Manager 按 Model 计算后分配给本组件的几何干涉面。 */
+    void setInterferingFaces(std::vector<TopoDS_Face> faces);
+
+    /** @brief 设置本 Actor 所属组件的显示标签（形如 "2 (Wing)"），只用于日志标注归属。 */
+    void setComponentLabel(std::string label) { component_label_ = std::move(label); }
 
 private:
     /** @brief 保存一种诊断类别的子形状过滤器、映射器和 Actor。 */
@@ -67,6 +77,12 @@ private:
 
     /** @brief 首次需要显示诊断类别时按类别依赖计算并缓存结果。 */
     void ensureDiagnostics(GeometryTopologyDiagnosticCategory category);
+    /** @brief 把本次算出的**已启用类别**的计数与具体子形状索引写入日志。
+     *  @param options 本次实际启用的诊断类别；未启用的类别不写日志，避免以 0 混入。 */
+    void logDiagnosticDetails(const GeometryTopologyDiagnosticResult& result,
+        const GeometryTopologyDiagnosticOptions& options, double elapsed_ms);
+    /** @brief 结果已算过时复用缓存，但仍按统一格式输出一次该类别日志。 */
+    void logCachedDiagnostics(GeometryTopologyDiagnosticCategory category);
     /** @brief 按缓存结果更新指定类别的子形状过滤集合。 */
     void rebuildCategory(GeometryTopologyDiagnosticCategory category);
     /** @brief 更新细小边中点或细小面质心的固定屏幕尺寸标记。 */
@@ -93,4 +109,8 @@ private:
     vtkDataArray* line_sub_ids_ {};
     vtkDataArray* face_sub_ids_ {};
     std::unique_ptr<GeometryTopologyDiagnosticResult> diagnostics_;
+    //! 组间干涉由 QRenderWindow 按 Model 统一计算，本 Actor 只负责显示自身命中面。
+    std::vector<TopoDS_Face> interfering_faces_;
+    //! 所属组件的显示标签（id + 名称），仅用于日志标注结果归属；空表示尚未设置。
+    std::string component_label_;
 };

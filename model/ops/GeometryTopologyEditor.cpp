@@ -11,6 +11,7 @@
 #include <BRepBuilderAPI_MakeWire.hxx>
 #include <BRepClass_FaceClassifier.hxx>
 #include <BRepCheck_Analyzer.hxx>
+#include <BRepCheck_Status.hxx>
 #include <BRepExtrema_DistShapeShape.hxx>
 #include <BRepExtrema_SelfIntersection.hxx>
 #include <BRepMesh_IncrementalMesh.hxx>
@@ -29,6 +30,7 @@
 #include <Geom_Surface.hxx>
 #include <GeomAbs_SurfaceType.hxx>
 #include <GProp_GProps.hxx>
+#include <IntCurveSurface_TransitionOnCurve.hxx>
 #include <Precision.hxx>
 #include <NCollection_Array1.hxx>
 #include <NCollection_Array2.hxx>
@@ -70,6 +72,7 @@
 #include <limits>
 #include <memory>
 #include <numeric>
+#include <optional>
 #include <stdexcept>
 #include <string>
 #include <tuple>
@@ -820,14 +823,6 @@ FacePairRelation classifyFacePair(
 }
 
 /**
- * @brief 判断经过 Face 边界修剪后的 Section 结果中是否存在内部相交边。
- */
-bool hasIntersectionEdge(const TopoDS_Face& first, const TopoDS_Face& second, double tolerance)
-{
-    return classifyFacePair(first, second, tolerance) == FacePairRelation::Crossing;
-}
-
-/**
  * @brief 判断两张非平面 Face 是否可能覆盖同一片曲面区域。
  */
 bool mayHaveCommonArea(const FaceMetrics& first, const FaceMetrics& second, double tolerance)
@@ -875,9 +870,12 @@ bool facesIntersect(
         if (parallel) {
             if (first.plane.Distance(second.plane) > tolerance)
                 return false;
+            // 共面重叠（含贴合）算相交：与前处理器把 overlapping surfaces 计入
+            // intersection 的口径一致。
             return commonArea(first.face, second.face, tolerance) > tolerance * tolerance;
         }
-        return hasIntersectionEdge(first.face, second.face, tolerance);
+        return classifyFacePair(first.face, second.face, tolerance)
+            == FacePairRelation::Crossing;
     }
 
     const FacePairRelation relation = classifyFacePair(first.face, second.face, tolerance);
@@ -892,11 +890,40 @@ bool facesIntersect(
 }
 
 /**
- * @brief 收集并行区间内逃逸的异常，并在串行阶段按原顺序重新抛出。
+ * @brief 检查单张 Face 的边界是否存在自交或内外轮廓互相穿插。
  *
- * std::execution::par 的并行算法一旦有异常逃出并行体就会直接终止进程，因此并行体
- * 必须自行捕获；只按索引升序重新抛出第一个失败，使调用方观察到的异常与串行实现一致。
+ * HyperMesh 的 Self Intersections 同时覆盖单 Surface 自交。OCCT 将这类拓扑错误分别
+ * 记录为 Wire 自交和 Face 内多个 Wire 相交，这里只提取这两种状态，避免把其他无效
+ * 拓扑错误混入 Self Intersections 类别。
  */
+bool faceHasSelfIntersection(
+    const BRepCheck_Analyzer& analyzer, const TopoDS_Face& face)
+{
+    try {
+        const occ::handle<BRepCheck_Result>& face_result = analyzer.Result(face);
+        if (!face_result.IsNull()) {
+            for (NCollection_List<BRepCheck_Status>::Iterator status(face_result->Status());
+                status.More(); status.Next()) {
+                if (status.Value() == BRepCheck_IntersectingWires)
+                    return true;
+            }
+        }
+        for (TopExp_Explorer wire(face, TopAbs_WIRE); wire.More(); wire.Next()) {
+            const occ::handle<BRepCheck_Result>& wire_result = analyzer.Result(wire.Current());
+            if (wire_result.IsNull())
+                continue;
+            for (NCollection_List<BRepCheck_Status>::Iterator status(wire_result->Status());
+                status.More(); status.Next()) {
+                if (status.Value() == BRepCheck_SelfIntersectingWire)
+                    return true;
+            }
+        }
+    } catch (const Standard_Failure&) {
+        return false;
+    }
+    return false;
+}
+
 /**
  * @brief 检查协作式取消标记；置位时抛出取消异常。
  */
@@ -949,7 +976,7 @@ constexpr double kFaceSweepAngularDeflection = 0.5;
 //! 「已花时间 / 已处理对数」外推一次总代价。
 constexpr size_t kFaceSweepProbePairs = 32;
 //! 只有当外推出的精确判定总代价超过这个毫秒数时，才值得付一次全局面片扫描。
-//! 取 200 是实测结果：语义收窄为「同一零件内部」后，中等规模模型（254 面 / 237 个候选对）
+//! 取 200 是实测结果：Self Intersections 收窄到同一 Solid 后，中等规模模型（254 面 / 237 个候选对）
 //! 用宽相位也是净收益（418 -> 259 ms），门槛设得更高只会让它们白白错过；而 6～13 面的小
 //! 模型外推代价本就低于这个值，不会为一次三角化付钱。
 constexpr double kFaceSweepMinimumSavingMs = 200.0;
@@ -1272,6 +1299,16 @@ private:
         measurement_failures.rethrowFirst();
         throwIfCancelled(cancel_);
 
+        // 一次分析整棵拓扑，再读取各 Face/Wire 状态，避免为每张面重复构建 Analyzer。
+        std::unique_ptr<BRepCheck_Analyzer> self_intersection_analyzer;
+        if (options_.self_intersecting_faces) {
+            try {
+                self_intersection_analyzer = std::make_unique<BRepCheck_Analyzer>(root_);
+            } catch (const Standard_Failure&) {
+                // Analyzer 失败时仍继续执行面对求交；单 Surface 自交由无效拓扑诊断兜底。
+            }
+        }
+
         faces_.reserve(face_count);
         for (size_t face_index = 0; face_index < face_count; ++face_index) {
             if (measurement_valid[face_index] == 0)
@@ -1280,66 +1317,24 @@ private:
                 && measured_metrics[face_index].area <= small_face_area_threshold_) {
                 result_.small_faces.push_back(measured_faces[face_index]);
             }
+            // 单 Surface 自交没有第二张 Face，不会进入后续面对循环，必须在这里单独记录。
+            if (self_intersection_analyzer
+                && faceHasSelfIntersection(
+                    *self_intersection_analyzer, measured_faces[face_index])) {
+                result_.self_intersecting_face_pairs.push_back(
+                    { measured_faces[face_index], measured_faces[face_index] });
+            }
             faces_.push_back(std::move(measured_metrics[face_index]));
         }
     }
 
-    //! @brief outer 的包围盒是否完整包住 inner（允许一个容差的余量）。
-    static bool boxContains(const Bnd_Box& outer, const Bnd_Box& inner)
-    {
-        if (outer.IsVoid() || inner.IsVoid())
-            return false;
-        double outer_min_x = 0.0, outer_min_y = 0.0, outer_min_z = 0.0;
-        double outer_max_x = 0.0, outer_max_y = 0.0, outer_max_z = 0.0;
-        double inner_min_x = 0.0, inner_min_y = 0.0, inner_min_z = 0.0;
-        double inner_max_x = 0.0, inner_max_y = 0.0, inner_max_z = 0.0;
-        outer.Get(outer_min_x, outer_min_y, outer_min_z, outer_max_x, outer_max_y, outer_max_z);
-        inner.Get(inner_min_x, inner_min_y, inner_min_z, inner_max_x, inner_max_y, inner_max_z);
-        const double slack = Precision::Confusion();
-        return inner_min_x >= outer_min_x - slack && inner_max_x <= outer_max_x + slack
-            && inner_min_y >= outer_min_y - slack && inner_max_y <= outer_max_y + slack
-            && inner_min_z >= outer_min_z - slack && inner_max_z <= outer_max_z + slack;
-    }
-
-    //! @brief 两组面里是否存在包围盒相交的一对，即两个实体「够得着」。
-    //!
-    //! 这是实体级 `BRepExtrema_DistShapeShape` 的廉价替代：后者在两个实体各含数百张
-    //! 面时要花十几秒，而包围盒相交只是 O(na x nb) 次盒子比较，且足以排除「只是靠近
-    //! 但根本没有接触」的组合。逐面包围盒在逐面测量阶段已经算好，这里零额外成本。
-    bool faceBoxesTouch(const std::vector<size_t>& first, const std::vector<size_t>& second) const
-    {
-        for (size_t first_index : first) {
-            Bnd_Box first_box = faces_[first_index].box;
-            first_box.Enlarge(Precision::Confusion());
-            for (size_t second_index : second) {
-                if (!first_box.IsOut(faces_[second_index].box))
-                    return true;
-            }
-        }
-        return false;
-    }
-
-    //! 并查集：找出实体所属零件的代表编号。
-    static size_t findPart(std::vector<size_t>& parent, size_t index)
-    {
-        size_t root = index;
-        while (parent[root] != root)
-            root = parent[root];
-        while (parent[index] != root) {
-            const size_t next = parent[index];
-            parent[index] = root;
-            index = next;
-        }
-        return root;
-    }
-
-    //! @brief 计算相交面判定的「同一零件」关系。
-    //!
-    //! 相交面对齐前处理器的 `Surface Repair > Self Intersections` 语义：只报告**同一个
-    //! Solid 内**的面自身穿插；跨 Solid 的面对属于零件之间的干涉，是另一个功能。
-    //! 没有 SOLID 祖先的面（纯曲面/壳模型）没有零件划分，全部视为同一组，此时范围
-    //! 与不做限制的原实现一致。
-    void buildFaceParts()
+    /**
+     * @brief 记录每张 Face 的真实 Solid 祖先，供两套检查各自确定范围。
+     *
+     * Self Intersections 只比较同一 Solid 内的 Face；Geometry Interference Check 比较
+     * 不同 Solid 或自由 Surface。这里不再根据包围盒关系猜测或合并 Part 身份。
+     */
+    void buildFaceOwners()
     {
         NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher> solid_map;
         TopExp::MapShapes(root_, TopAbs_SOLID, solid_map);
@@ -1347,69 +1342,23 @@ private:
             TopTools_ShapeMapHasher>
             face_solids;
         TopExp::MapShapesAndAncestors(root_, TopAbs_FACE, TopAbs_SOLID, face_solids);
-        face_parts_.assign(faces_.size(), {});
+        face_owner_solids_.assign(faces_.size(), {});
         for (size_t index = 0; index < faces_.size(); ++index) {
             const TopoDS_Face& face = faces_[index].face;
             if (!face_solids.Contains(face))
                 continue;
             for (NCollection_List<TopoDS_Shape>::Iterator it(face_solids.FindFromKey(face));
                 it.More(); it.Next()) {
-                face_parts_[index].push_back(solid_map.FindIndex(it.Value()) - 1);
+                face_owner_solids_[index].push_back(solid_map.FindIndex(it.Value()) - 1);
             }
-        }
-
-        // 互相穿透的实体视为同一个零件：把它们的编号合并。先按实体收集面索引，
-        // 接触判定只在这些面的包围盒之间做，避免昂贵的实体级最小距离。
-        if (solid_map.Extent() <= 1)
-            return; // 只有一个实体（或没有实体）时不存在跨零件的划分，无需合并。
-        // 实体包围盒直接由逐面包围盒并集得到：BRepBndLib::AddOptimal 在几百张面的
-        // 实体上要花掉与整个诊断相当的时间（实测 254 面模型约 270 ms），而逐面盒子
-        // 在上一阶段已经算好，这里是零成本。
-        std::vector<std::vector<size_t>> solid_faces(solid_map.Extent());
-        std::vector<Bnd_Box> solid_boxes(solid_map.Extent());
-        for (size_t index = 0; index < faces_.size(); ++index) {
-            for (int solid : face_parts_[index]) {
-                solid_faces[static_cast<size_t>(solid)].push_back(index);
-                solid_boxes[static_cast<size_t>(solid)].Add(faces_[index].box);
-            }
-        }
-
-        std::vector<size_t> parent(solid_map.Extent());
-        for (size_t index = 0; index < parent.size(); ++index)
-            parent[index] = index;
-        for (int first = 1; first <= solid_map.Extent(); ++first) {
-            const Bnd_Box& first_box = solid_boxes[static_cast<size_t>(first - 1)];
-            for (int second = first + 1; second <= solid_map.Extent(); ++second) {
-                const Bnd_Box& second_box = solid_boxes[static_cast<size_t>(second - 1)];
-                if (first_box.IsVoid() || second_box.IsVoid() || first_box.IsOut(second_box))
-                    continue;
-                // 一个实体完整包住另一个是嵌套（内外两层蒙皮），两者仍是不同零件。
-                if (boxContains(first_box, second_box) || boxContains(second_box, first_box))
-                    continue;
-                if (!faceBoxesTouch(solid_faces[static_cast<size_t>(first - 1)],
-                        solid_faces[static_cast<size_t>(second - 1)]))
-                    continue;
-                const size_t first_root = findPart(parent, static_cast<size_t>(first - 1));
-                const size_t second_root = findPart(parent, static_cast<size_t>(second - 1));
-                if (first_root != second_root)
-                    parent[first_root] = second_root;
-            }
-        }
-        for (std::vector<int>& parts : face_parts_) {
-            for (int& solid : parts)
-                solid = static_cast<int>(findPart(parent, static_cast<size_t>(solid)));
-            std::sort(parts.begin(), parts.end());
-            parts.erase(std::unique(parts.begin(), parts.end()), parts.end());
         }
     }
 
-    //! 两张面是否属于同一个零件：Solid 集合有交集，或两者都没有 SOLID 祖先。
-    bool samePart(size_t first, size_t second) const
+    //! @brief 两张面是否属于同一个真实 Solid；自由 Surface 之间不视为同一实体。
+    bool belongsToSameSolid(size_t first, size_t second) const
     {
-        const std::vector<int>& first_solids = face_parts_[first];
-        const std::vector<int>& second_solids = face_parts_[second];
-        if (first_solids.empty() || second_solids.empty())
-            return first_solids.empty() && second_solids.empty();
+        const std::vector<int>& first_solids = face_owner_solids_[first];
+        const std::vector<int>& second_solids = face_owner_solids_[second];
         return std::any_of(first_solids.begin(), first_solids.end(),
             [&second_solids](int solid) {
                 return std::find(second_solids.begin(), second_solids.end(), solid)
@@ -1422,7 +1371,7 @@ private:
     {
         if (!needsFacePairs())
             return;
-        buildFaceParts();
+        buildFaceOwners();
         duplicate_parents_.resize(faces_.size());
         std::iota(duplicate_parents_.begin(), duplicate_parents_.end(), size_t { 0 });
         candidate_pairs_ = overlappingFacePairs(faces_, Precision::Confusion());
@@ -1439,13 +1388,11 @@ private:
                 const size_t first = candidate_pairs_[pair_cursor_].first;
                 const size_t second = candidate_pairs_[pair_cursor_].second;
                 throwIfCancelled(cancel_);
-                // 相交面对齐 Self Intersections 语义：跨 Solid 的面不属于同一个零件，
-                // 它们之间的穿插是零件间干涉，不属于本类别；重复面不受此限制。因此
-                // 跨零件的对也不必再做保守分离证明（那只服务于内部穿插判定）。
-                // 几何自交只检查同一零件内部；面干涉不限范围。两者互斥地覆盖全部面对。
-                const bool same_part = samePart(first, second);
-                const bool want_self_intersection = same_part && options_.self_intersecting_faces;
-                const bool want_interference = !same_part && options_.interfering_faces;
+                // 两套检查使用独立范围：Self Intersections 只看同一 Solid，Geometry
+                // Interference Check 只看不同 Solid 或自由 Surface，不再按推测 Part 二分。
+                const bool same_solid = belongsToSameSolid(first, second);
+                const bool want_self_intersection = same_solid && options_.self_intersecting_faces;
+                const bool want_interference = !same_solid && options_.interfering_faces;
                 bool separated = false;
                 if (want_self_intersection || want_interference) {
                     // 全局面片扫描已证明两面相距超过容差：既不可能相交，也不可能同域重叠。
@@ -1466,7 +1413,11 @@ private:
                         }
                     } else if ((want_self_intersection || want_interference)
                         && facesIntersect(faces_[first], faces_[second], tolerance)) {
-                        if (same_part) {
+                        // 同一 Solid 内的面对归 Self Intersections；不同 Solid 或含自由
+                        // Surface 的归 Geometry Interference Check。两者判据一致：只要交线
+                        // 进入面的内部就算——重叠（含共面/贴合）与穿越都算，与前处理器
+                        // "any overlap between solids registers as intersections" 相符。
+                        if (same_solid) {
                             result_.self_intersecting_face_pairs.push_back(
                                 { faces_[first].face, faces_[second].face });
                         } else {
@@ -1606,8 +1557,8 @@ private:
     bool sweep_skipped_ { false };
     //! 逐对阶段开始时刻，用于外推总代价。
     std::chrono::steady_clock::time_point pair_started_at_ {};
-    //! 每张 Face 的 Solid 祖先编号集合（与 faces_ 同序）；空表示该面没有 Solid 祖先。
-    std::vector<std::vector<int>> face_parts_;
+    //! 每张 Face 的真实 Solid 祖先（`buildFaceOwners` 的 solid_map 下标）；空表示自由 Surface。
+    std::vector<std::vector<int>> face_owner_solids_;
     //! 下一次做代价外推的候选对下标。
     size_t next_sweep_probe_ { kFaceSweepProbePairs };
     std::vector<std::pair<size_t, size_t>> duplicate_pairs_;
@@ -1767,6 +1718,16 @@ TopoDS_Shape GeometryTopologyEditor::collapseEdge(
         }
 
         TopoDS_Shape raw_result = reshaper->Apply(root);
+
+        // 孤立边是根 Compound 的唯一子形状时，ReShape 移除它后会返回 Null Shape。
+        // 压缩的语义是保留一个目标顶点，因此直接重建只含该顶点的根 Compound。
+        if (raw_result.IsNull()) {
+            BRep_Builder builder;
+            TopoDS_Compound compound;
+            builder.MakeCompound(compound);
+            builder.Add(compound, destination);
+            raw_result = compound;
+        }
 
         // 点和边可能同时是根 Compound 的独立子节点，需要同步移除旧端点并保留目标点。
         if (raw_result.ShapeType() == TopAbs_COMPOUND) {
