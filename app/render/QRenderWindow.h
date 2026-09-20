@@ -229,10 +229,10 @@ private:
 
     //! 已装载过的 Model；几何干涉类别打开时按需对这些 Model 重算。
     std::vector<Index> loaded_model_ids_;
-    //! 几何干涉类别当前是否启用。由本类记录，避免未启用时为一次昂贵的检查白付代价。
+    //! 几何干涉类别当前是否启用；未启用时不为昂贵的检查付费。
     bool interference_enabled_ { false };
-    //! 已算过干涉的 Model → 结果摘要。**只用于"关掉干涉类别再打开"时复用**；
-    //! 模型数据变更（编辑 / undo / 重新导入）一律重算，因为几何可能已经改了。
+    //! 已算过干涉的 Model → 结果摘要；仅用于"关掉类别再打开"时重播。
+    //! 模型/组件几何变更时一律作废重算。
     std::unordered_map<Index, std::string> interfered_summaries_;
 
     std::unique_ptr<IMeshIdQuery> mesh_id_query_; //> IMeshIdQuery 桥接实现，随 setModelQuery 注入

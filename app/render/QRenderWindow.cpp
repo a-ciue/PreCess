@@ -61,13 +61,10 @@ std::string modelLabel(QModelQuery& query, Index model_id)
 }
 
 /**
- * @brief 对指定 Model 重算 Geometry Interference Check，并把命中面分发到各 Component。
+ * @brief 对指定 Model 重算几何干涉，并把命中面分发到各 Component。
  *
- * 检查范围严格限定在**同一个 Model 的 Component 之间**，不跨 Model。跨 Component 的
- * 检查无法由单个 Component 的 Actor 完成（它只持有自己的几何），所以编排放在这里；
- * `GeometryActorManager` 因此不必记录 Model 归属，保持与历史版本一致。
- *
- * 必须在渲染线程调用（直接用 Manager 与各 Component 的 Actor）。
+ * 检查范围限定在同一 Model 的 Component 之间；跨 Component 的检查无法由单个
+ * Actor 完成（它只持有自己的几何），所以编排放在这里。必须在渲染线程调用。
  */
 std::string rebuildModelInterference(
     GeometryActorManager& manager, QModelQuery& query, Index model_id)
@@ -99,6 +96,7 @@ std::string rebuildModelInterference(
     if (component_ids.empty())
         return std::string("0 对");
 
+    // 只开几何干涉（interfering_faces），其余类别关闭。
     GeometryTopologyDiagnosticOptions options {
         false, false, false, false, false, true, false
     };
@@ -519,7 +517,7 @@ void QRenderWindow::onModelChanged(Index model_id)
             auto geometry_data = model_query_->getGeometryVtkDataByComponent(component_id);
             if (geometry_data) {
                 vtk->geometry_actor_manager_->loadGeometry(*geometry_data);
-                // 组件 ID 只用于日志标注结果归属，装载后立即写入。
+                // 组件标签只用于日志标注结果归属。
                 if (std::shared_ptr<GeometryActor> actor
                     = vtk->geometry_actor_manager_->getComponentActor(component_id)) {
                     const QString name = model_query_->getComponentName(component_id);
@@ -529,14 +527,12 @@ void QRenderWindow::onModelChanged(Index model_id)
                 }
             }
         }
-        // 记录本 Model 供类别开关打开时重算；已启用则立即算一次。
+        // 记录本 Model 供类别开关打开时重算。
         if (std::find(loaded_model_ids_.begin(), loaded_model_ids_.end(), model_id)
             == loaded_model_ids_.end()) {
             loaded_model_ids_.push_back(model_id);
         }
-        // 走到这里说明模型数据发生了变更（编辑 / undo / 重新导入），几何可能已经不是
-        // 原来那份：摘要缓存一律作废，类别未启用也要清，否则"关掉类别 → 编辑 → 再打开"
-        // 会重播过期的摘要、跳过重算。
+        // 模型数据已变更：摘要缓存一律作废（未启用也要清），启用时重算并写回。
         interfered_summaries_.erase(model_id);
         if (interference_enabled_) {
             interfered_summaries_[model_id]
@@ -556,7 +552,7 @@ void QRenderWindow::onComponentChanged(Index component_id)
         // Component 的子形状索引和 Actor 数据会更新，旧高亮选择器不能继续复用。
         this->select_manager_->clearSelection();
 
-        // 本 Component 归属的 Model；几何变更的缓存作废与干涉重算都要用。
+        // 本 Component 归属的 Model，作废缓存与干涉重算都要用。
         const Index model_id = this->model_query_->findModelIdByComponent(component_id);
 
         if (vtk->mesh_actor_manager_) {
@@ -582,8 +578,7 @@ void QRenderWindow::onComponentChanged(Index component_id)
             } else {
                 vtk->geometry_actor_manager_->deleteComponent(component_id);
             }
-            // 参与检查的几何变了（编辑 / undo / 重新导入）：摘要缓存一律作废；
-            // 启用时立即重算并刷新摘要，未启用时等类别再打开时重算。
+            // 几何已变更：作废摘要缓存，启用时重算并写回。
             if (model_id >= 0)
                 interfered_summaries_.erase(model_id);
             if (interference_enabled_ && model_id >= 0) {
@@ -865,8 +860,8 @@ void QRenderWindow::setGeometryTopologyDiagnosticCategoryEnabled(int category, b
             return;
         vtk->geometry_actor_manager_->setTopologyDiagnosticCategoryEnabled(category, enabled);
 
-        // 几何干涉跨越同一 Model 内的多个 Component，单个 Component 的 Actor 算不了，
-        // 因此由本类按 Model 统一计算：打开类别时补算一次。
+        // 几何干涉跨同一 Model 的多个 Component，单个 Actor 算不了，
+        // 由本类按 Model 统一计算：打开类别时补算。
         if (category != static_cast<int>(GeometryTopologyDiagnosticCategory::InterferingFace))
             return;
         interference_enabled_ = enabled;

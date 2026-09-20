@@ -55,7 +55,6 @@ constexpr double kDiagnosticLineUnits = highlight::LINE_UNITS + 1.0;
 constexpr double kDiagnosticPolygonUnits = highlight::POLYGON_UNITS + 0.5;
 constexpr double kDiagnosticPointUnits = highlight::POINT_UNITS + 1.0;
 
-
 size_t categoryIndex(GeometryTopologyDiagnosticCategory category)
 {
     return static_cast<size_t>(category);

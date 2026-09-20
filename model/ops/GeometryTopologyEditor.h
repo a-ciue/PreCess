@@ -19,9 +19,6 @@ struct GeometryDuplicateFaceGroup {
     std::vector<TopoDS_Face> faces;
 };
 
-/**
- * @brief 一对发生内部穿插或区域重叠的面。
- */
 //! @brief 一对互相穿插的面，自相交与几何干涉共用；单 Face 自交时两个成员相同。
 struct GeometryIntersectingFacePair {
     TopoDS_Face first;
