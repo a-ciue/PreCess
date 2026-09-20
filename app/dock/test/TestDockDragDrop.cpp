@@ -771,3 +771,105 @@ TEST_CASE("DockDrag: central group is protected from dragging and center merge")
     REQUIRE(drag.reattachGroup(placed.console->group()));
     CHECK(dock::DockCatalog::self().windows().isEmpty());
 }
+
+TEST_CASE("DockDrag: non-floatable targets never stay floating")
+{
+    DockFixture f;
+    PlacedDocks placed(f);
+    dock::DragSession& drag = dock::DragSession::self();
+    placed.object_tree->showPanel();
+    placed.console->showPanel();
+
+    // 整组不可浮动：拖出后释放到无落点位置 → 回弹回原占位，不保留浮窗
+    placed.console->setFeature(dock::DockPanel::Feature::Floatable, false);
+    {
+        dock::DragHandle handle(nullptr, placed.console->group(), nullptr);
+        const QPoint press = placed.console->group()->node()->geometry().center();
+        drag.beginAt(&handle, press);
+        drag.updateAt(press + QPoint(0, -60));
+        REQUIRE(drag.phase() == dock::DragSession::Phase::Dragging);
+        drag.endAt(QPoint(-1000, -1000));
+    }
+    CHECK(drag.phase() == dock::DragSession::Phase::Idle);
+    CHECK(dock::DockCatalog::self().windows().isEmpty());
+    CHECK(placed.console->isShown());
+    CHECK_FALSE(placed.console->isDetached());
+
+    // 单标签不可浮动：释放到中央分组中心（无落点）→ 归还源分组
+    placed.console->setFeature(dock::DockPanel::Feature::Floatable, true);
+    dock::PanelGroup* group = placed.object_tree->group();
+    REQUIRE(group != nullptr);
+    dock::DockPanel* extra = f.makeDock(QStringLiteral("extra"), QStringLiteral("附加面板"));
+    group->addPanel(extra);
+    extra->showPanel();
+    extra->setFeature(dock::DockPanel::Feature::Floatable, false);
+    {
+        const QRect group_rect = group->node()->geometry();
+        dock::DragHandle handle(nullptr, group, nullptr, extra);
+        drag.beginAt(&handle, group_rect.center());
+        drag.updateAt(group_rect.center() + QPoint(60, 0));
+        REQUIRE(drag.phase() == dock::DragSession::Phase::Dragging);
+        drag.endAt(f.host.centralGroup()->node()->geometry().center());
+    }
+    CHECK(dock::DockCatalog::self().windows().isEmpty());
+    CHECK(extra->group() == group);
+    CHECK(extra->isShown());
+    CHECK(placed.object_tree->isShown());
+    CHECK_FALSE(extra->isDetached());
+}
+
+TEST_CASE("DockDrag: group docked inside a floating window reattaches to the host area")
+{
+    DockFixture f;
+    PlacedDocks placed(f);
+    placed.object_tree->showPanel();
+    placed.console->showPanel();
+
+    dock::DragSession& drag = dock::DragSession::self();
+    REQUIRE(drag.detachGroup(placed.console->group()));
+    REQUIRE(dock::DockCatalog::self().windows().size() == 1);
+    dock::DockWindow* window = dock::DockCatalog::self().windows().first();
+    dock::PanelGroup* primary = window->group();
+    REQUIRE(primary == placed.console->group());
+
+    const auto window_zone_center = [window](dock::PanelGroup* group, dock::DropZone location) {
+        const QRect group_rect(window->geometry().topLeft() + group->node()->geometry().topLeft(),
+            group->node()->geometry().size());
+        return indicatorRect(dock::ZoneGeometry::innerZones(group_rect), location).center();
+    };
+
+    // 1) 把 objectTree 整组拖进浮窗内部做次级分组
+    {
+        dock::DragHandle handle(nullptr, placed.object_tree->group(), nullptr);
+        const QPoint press = placed.object_tree->group()->node()->geometry().center();
+        drag.beginAt(&handle, press);
+        drag.updateAt(press + QPoint(0, -60));
+        REQUIRE(drag.phase() == dock::DragSession::Phase::Dragging);
+
+        const QPoint inner_top = window_zone_center(primary, dock::DropZone::InnerTop);
+        REQUIRE(inner_top != QPoint());
+        drag.updateAt(inner_top);
+        REQUIRE(drag.hoveredZone() == dock::DropZone::InnerTop);
+        drag.endAt(inner_top);
+    }
+    REQUIRE(window->region()->groups().size() == 2);
+    dock::PanelGroup* secondary = placed.object_tree->group();
+    REQUIRE(secondary != primary);
+
+    // 2) 次级分组同样属于浮动状态：浮动命令不重复开窗，回停停回主区域
+    CHECK(dock::DragSession::isFloating(secondary));
+    CHECK_FALSE(drag.detachGroup(secondary));
+    REQUIRE(drag.toggleDetached(secondary));
+    CHECK(dock::DockCatalog::self().windows().size() == 1);
+    CHECK(secondary->parent() == f.host.region());
+    CHECK(f.host.region()->groups().contains(secondary));
+    CHECK_FALSE(dock::DragSession::isFloating(secondary));
+
+    // 3) 主分组回停后窗口回收
+    REQUIRE(drag.reattachGroup(primary));
+    CHECK(dock::DockCatalog::self().windows().isEmpty());
+
+#ifdef QT_DEBUG
+    f.host.region()->validateTree();
+#endif
+}

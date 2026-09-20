@@ -56,6 +56,10 @@ void DockRegion::placePanel(DockPanel* panel, DockEdge edge,
     if (!panel)
         return;
 
+    // 已归属分组的面板不得重复放置，否则同一面板会同时挂进两个分组
+    if (panel->group())
+        return;
+
     auto* group = new PanelGroup(this);
     group->addPanel(panel);
 
@@ -187,7 +191,11 @@ bool DockRegion::extractGroupNode(PanelGroup* group)
     if (!parent)
         return false;
 
-    parent->detachNode(item, false);
+    // detachNode 契约：返回 replacement/nullptr 时原容器已脱离树，需调用方回收
+    LayoutNode* result = parent->detachNode(item, false);
+    if (result != parent)
+        delete parent;
+
     item->setParent(nullptr);
     item->setVisible(true);
     return true;

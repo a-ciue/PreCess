@@ -97,11 +97,14 @@ PanelGroupItem::~PanelGroupItem()
     }
 
     // client item 不属于本视图，销毁前交还面板宿主（保持同一窗口场景图，
-    // 避免渲染部件随视图销毁而重建）
+    // 避免渲染部件随视图销毁而重建）；若已被新视图接管则不再打扰
     if (shown_dock_) {
         if (QQuickItem* client = DockRuntime::instance().panelContentItem(shown_dock_)) {
-            client->setVisible(false);
-            client->setParentItem(DockRuntime::instance().panelHome(shown_dock_));
+            if (client->parentItem() == content_area_) {
+                client->setVisible(false);
+                // 宿主缺失时退回无父项（与旧行为一致），避免留在即将销毁的内容区上
+                client->setParentItem(DockRuntime::instance().panelHome(shown_dock_));
+            }
         }
     }
 
@@ -214,6 +217,10 @@ void PanelGroupItem::activateTab(int index)
 void PanelGroupItem::hideGroup()
 {
     if (!group_)
+        return;
+
+    // 与 hidePanelAt 一致的能力门控：中央持久分组不可关闭，组内能力按交集判定
+    if (group_->isCentral() || !group_->features().testFlag(DockPanel::Feature::Closable))
         return;
 
     const QList<DockPanel*> open = group_->shownPanels();

@@ -76,6 +76,7 @@ LayoutNode* DockWindow::releaseGroup()
         released->setParent(nullptr);
     group_ = nullptr;
     Q_EMIT groupChanged();
+    Q_EMIT titleChanged(title());
     return node;
 }
 

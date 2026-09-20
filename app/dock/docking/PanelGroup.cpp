@@ -130,11 +130,14 @@ void PanelGroup::removePanel(DockPanel* panel)
         panel->setGroup(nullptr);
     disconnect(panel, nullptr, this, nullptr);
 
-    if (active_ == panel)
-        active_ = panels_.isEmpty() ? nullptr : panels_.first();
-
     Q_EMIT panelsChanged();
-    Q_EMIT activePanelChanged(active_);
+
+    // 移除激活面板时交给统一的补位逻辑（跳过隐藏面板）；
+    // 移除其他面板不改变激活态，无需重复通知
+    if (active_ == panel) {
+        active_ = nullptr;
+        refreshActivePanel();
+    }
     syncVisibility();
 }
 

@@ -77,6 +77,8 @@ public:
     bool reattachGroup(PanelGroup* group);
     //! @brief 切换分组浮动/停靠状态
     bool toggleDetached(PanelGroup* group);
+    //! @brief 分组是否处于浮动状态（含停靠在浮窗内的次级分组）
+    static bool isFloating(PanelGroup* group);
 
     //! @brief 创建浮动窗口（含视图与空窗监听）；拖拽与布局恢复共用
     DockWindow* createFloatingWindow();
@@ -102,7 +104,8 @@ private:
 
     void startDrag(const QPoint& global_pos);
     void updateHover(const QPoint& global_pos);
-    void applyDrop();
+    //! @brief 应用悬停落点；落点未被消费（目标无效）时返回 false
+    bool applyDrop();
     void cleanup();
     //! @brief 保留浮动：临时组登记回停来源并归属浮动窗口
     void parkFloatingGroup(DockWindow* window);

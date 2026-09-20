@@ -11,6 +11,7 @@
 #include "docking/DragSession.h"
 #include "docking/PanelGroup.h"
 #include "docking/DockHost.h"
+#include "docking/DockWindow.h"
 #include "tree/LayoutNode.h"
 #include "tree/BoxNode.h"
 
@@ -287,4 +288,99 @@ TEST_CASE("DockCore: dock registry tracks dock widgets and main window")
     CHECK(dock::DockCatalog::self().host() == &f.host);
     CHECK(dock::DockCatalog::self().panels().contains(placed.object_tree));
     CHECK(dock::DockCatalog::self().panels().size() == 8); // 7 + 中央持久面板
+}
+
+TEST_CASE("DockCore: removing the active tab never activates a hidden panel")
+{
+    DockFixture f;
+    PlacedDocks placed(f);
+    dock::PanelGroup* group = placed.object_tree->group();
+    REQUIRE(group != nullptr);
+
+    // 隐藏面板排在最前：旧补位逻辑（panels_.first()）会错误激活它
+    dock::DockPanel* hidden = f.makeDock(QStringLiteral("hidden"), QStringLiteral("隐藏面板"));
+    group->insertPanel(hidden, 0);
+    REQUIRE_FALSE(hidden->isShown());
+
+    dock::DockPanel* shown = f.makeDock(QStringLiteral("shown"), QStringLiteral("显示面板"));
+    group->addPanel(shown);
+    shown->showPanel();
+    placed.object_tree->showPanel();
+    group->setActivePanel(shown);
+    REQUIRE(group->activePanel() == shown);
+    REQUIRE(group->shownPanels().size() == 2);
+
+    group->removePanel(shown);
+
+    CHECK(group->activePanel() == placed.object_tree);
+    REQUIRE(group->activePanel() != nullptr);
+    CHECK(group->activePanel()->isShown());
+    CHECK(group->activeIndex() == group->shownPanels().indexOf(group->activePanel()));
+}
+
+TEST_CASE("DockCore: hideOtherGroups keeps non-closable panels")
+{
+    DockFixture f;
+    PlacedDocks placed(f);
+    dock::PanelGroup* group = placed.object_tree->group();
+    REQUIRE(group != nullptr);
+
+    placed.console->showPanel();
+    placed.python_console->showPanel();
+    placed.console->setFeature(dock::DockPanel::Feature::Closable, false);
+
+    f.host.hideOtherGroups(group);
+
+    // 不可关闭的面板不参与“关闭其他组”
+    CHECK(placed.console->isShown());
+    CHECK_FALSE(placed.python_console->isShown());
+    CHECK(f.host.centralPanel()->isShown());
+
+    placed.console->setFeature(dock::DockPanel::Feature::Closable, true);
+}
+
+TEST_CASE("DockCore: placing an already grouped panel is rejected")
+{
+    DockFixture f;
+    PlacedDocks placed(f);
+    dock::PanelGroup* group = placed.object_tree->group();
+    REQUIRE(group != nullptr);
+    const int groups_before = f.host.region()->groups().size();
+
+    f.host.placePanel(placed.object_tree, dock::DockEdge::Right, nullptr, QSize(120, 0));
+
+    CHECK(placed.object_tree->group() == group);
+    CHECK(f.host.region()->groups().size() == groups_before);
+    CHECK(group->panels().count(placed.object_tree) == 1);
+}
+
+TEST_CASE("DockCore: floating window title follows its primary group")
+{
+    DockFixture f;
+    PlacedDocks placed(f);
+    placed.console->showPanel();
+
+    dock::DragSession& drag = dock::DragSession::self();
+    REQUIRE(drag.detachGroup(placed.console->group()));
+    REQUIRE(dock::DockCatalog::self().windows().size() == 1);
+    dock::DockWindow* window = dock::DockCatalog::self().windows().first();
+    CHECK(window->title() == placed.console->title());
+
+    bool title_notified = false;
+    QObject::connect(window, &dock::DockWindow::titleChanged, window,
+        [&title_notified](const QString&) { title_notified = true; });
+
+    REQUIRE(window->releaseGroup() != nullptr);
+    CHECK(title_notified);
+    CHECK(window->title().isEmpty());
+
+    // 摘出的节点交回主区域并回收窗口，避免测试内泄漏
+    f.host.region()->attachGroup(placed.console->group(), dock::DropZone::OuterRight, nullptr,
+        QSize());
+    placed.console->group()->setParent(f.host.region());
+    drag.destroyFloatingWindow(window);
+
+    CHECK(dock::DockCatalog::self().windows().isEmpty());
+    CHECK(placed.console->group()->parent() == f.host.region());
+    CHECK(f.host.region()->groups().contains(placed.console->group()));
 }
