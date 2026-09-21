@@ -203,7 +203,7 @@ Public 成员函数</h2></td></tr>
 <tr class="memitem:a131302983d1dd7938f2bf7be5ee0486a" id="r_a131302983d1dd7938f2bf7be5ee0486a"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a131302983d1dd7938f2bf7be5ee0486a">~SelectManager</a> ()</td></tr>
 <tr class="memitem:a964a78bc9fe0e1ff7914f6b4e091a818" id="r_a964a78bc9fe0e1ff7914f6b4e091a818"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a964a78bc9fe0e1ff7914f6b4e091a818">select</a> (double posx, double posy)</td></tr>
 <tr class="memitem:a37979778425cef607270918d6f74549b" id="r_a37979778425cef607270918d6f74549b"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a37979778425cef607270918d6f74549b">selectArea</a> (int xmin, int ymin, int xmax, int ymax)</td></tr>
-<tr class="memdesc:a37979778425cef607270918d6f74549b"><td class="mdescLeft">&#160;</td><td class="mdescRight">矩形框选入口（Ctrl+左键拖拽），目前仅转发给网格选择管理器； 几何/组件框选后续再补  <br /></td></tr>
+<tr class="memdesc:a37979778425cef607270918d6f74549b"><td class="mdescLeft">&#160;</td><td class="mdescRight">矩形框选入口（Ctrl+左键拖拽）：按当前选择模式转发给网格、几何或组件选择管理器。  <br /></td></tr>
 <tr class="memitem:a295c8f98625c2653cb76be4e39c94b8b" id="r_a295c8f98625c2653cb76be4e39c94b8b"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a295c8f98625c2653cb76be4e39c94b8b">setSelectMode</a> (const std::string &amp;select_mode)</td></tr>
 <tr class="memitem:a4edd29afd01113124084355e019f9690" id="r_a4edd29afd01113124084355e019f9690"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a4edd29afd01113124084355e019f9690">setFaceSelectionByAngle</a> (bool enabled, double angle_deg)</td></tr>
 <tr class="memdesc:a4edd29afd01113124084355e019f9690"><td class="mdescLeft">&#160;</td><td class="mdescRight">设置网格面选择的角度扩散参数  <br /></td></tr>
@@ -384,7 +384,7 @@ Private 属性</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p>矩形框选入口（Ctrl+左键拖拽），目前仅转发给网格选择管理器； 几何/组件框选后续再补 </p>
+<p>矩形框选入口（Ctrl+左键拖拽）：按当前选择模式转发给网格、几何或组件选择管理器。 </p>
 
 </div>
 </div>

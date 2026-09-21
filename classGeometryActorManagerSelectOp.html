@@ -133,6 +133,8 @@ Public 成员函数</h2></td></tr>
 <tr class="memitem:a02591fcaa2d366d5162b1e47003a7b5a" id="r_a02591fcaa2d366d5162b1e47003a7b5a"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a02591fcaa2d366d5162b1e47003a7b5a">unobserveShapePicker</a> (vtkSmartPointer&lt; IVtkTools_ShapePicker &gt; picker)</td></tr>
 <tr class="memitem:af433790e7c83763b6f97081ab6ffc2c4" id="r_af433790e7c83763b6f97081ab6ffc2c4"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#af433790e7c83763b6f97081ab6ffc2c4">setShapePickerMode</a> (<a class="el" href="Core_8h.html#a33798f6bed937e1f849ed0cf46ebe5a6">SelectMode</a> mode)</td></tr>
 <tr class="memitem:a23eca0e7692ec6f6bc534346e19a7472" id="r_a23eca0e7692ec6f6bc534346e19a7472"><td class="memItemLeft" align="right" valign="top">std::optional&lt; <a class="el" href="classGeometryActorSelectOp.html">GeometryActorSelectOp</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a23eca0e7692ec6f6bc534346e19a7472">getSelectOp</a> (<a class="el" href="Core_8h.html#a1673229bf7fec9388ac2a829a52d69b3">Index</a> component_id) const</td></tr>
+<tr class="memitem:a22bf6f89085ca107145aef47f5cedf6e" id="r_a22bf6f89085ca107145aef47f5cedf6e"><td class="memItemLeft" align="right" valign="top">std::vector&lt; <a class="el" href="Core_8h.html#a1673229bf7fec9388ac2a829a52d69b3">Index</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a22bf6f89085ca107145aef47f5cedf6e">getAllComponentIds</a> () const</td></tr>
+<tr class="memdesc:a22bf6f89085ca107145aef47f5cedf6e"><td class="mdescLeft">&#160;</td><td class="mdescRight">列出当前已注册的所有几何组件 id，供框选遍历用  <br /></td></tr>
 <tr class="memitem:a65377d76b5c6713f050b5191f16067c8" id="r_a65377d76b5c6713f050b5191f16067c8"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a65377d76b5c6713f050b5191f16067c8">registerProps</a> (<a class="el" href="Core_8h.html#a1673229bf7fec9388ac2a829a52d69b3">Index</a> component_id, std::shared_ptr&lt; <a class="el" href="classGeometryActor.html">GeometryActor</a> &gt; actor)</td></tr>
 <tr class="memitem:a27adcd8fee33a1b9bcc86f9ede0e6f81" id="r_a27adcd8fee33a1b9bcc86f9ede0e6f81"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a27adcd8fee33a1b9bcc86f9ede0e6f81">unregisterProps</a> (std::shared_ptr&lt; <a class="el" href="classGeometryActor.html">GeometryActor</a> &gt; actor)</td></tr>
 <tr class="memitem:a49c297ec512aaceb02fb8dd5e6667445" id="r_a49c297ec512aaceb02fb8dd5e6667445"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a49c297ec512aaceb02fb8dd5e6667445">setShapePickingEnabled</a> (std::shared_ptr&lt; <a class="el" href="classGeometryActor.html">GeometryActor</a> &gt; actor, bool enabled)</td></tr>
@@ -203,6 +205,25 @@ Private 属性</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+
+</div>
+</div>
+<a id="a22bf6f89085ca107145aef47f5cedf6e" name="a22bf6f89085ca107145aef47f5cedf6e"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a22bf6f89085ca107145aef47f5cedf6e">&#9670;&#160;</a></span>getAllComponentIds()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::vector&lt; <a class="el" href="Core_8h.html#a1673229bf7fec9388ac2a829a52d69b3">Index</a> &gt; GeometryActorManagerSelectOp::getAllComponentIds </td>
+          <td>(</td>
+          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>列出当前已注册的所有几何组件 id，供框选遍历用 </p>
 
 </div>
 </div>
