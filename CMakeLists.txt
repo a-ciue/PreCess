@@ -87,7 +87,7 @@ endif()
 # 可选内嵌 Python 运行环境依赖发现（python/ 据此定义目标，依赖缺失时自动降级
 # 桩实现，"不可用"是运行时状态）。
 option(PRECESS_BUILD_PYTHON
-    "构建 precess 真实 Python 绑定与内嵌解释器（OFF 或依赖缺失时 precess_runtime 自动降级为桩实现）" ON)
+    "构建 ${MYNAME} 真实 Python 绑定与内嵌解释器（OFF 或依赖缺失时 precess_runtime 自动降级为桩实现）" ON)
 set(PRECESS_PYTHON_PATH "" CACHE PATH
     "构建所用 Python 解释器目录（可选；留空用系统 PATH 发现）")
 if(PRECESS_BUILD_PYTHON AND NOT EMSCRIPTEN)
@@ -139,8 +139,8 @@ add_subdirectory(resource)
 
 set(CPACK_PACKAGE_NAME ${MYNAME})
 set(CPACK_PACKAGE_VENDOR ${MYNAME})
-set(CPACK_PACKAGE_ICON "${CMAKE_SOURCE_DIR}\\resource\\PreCess.ico")
-set(CPACK_PACKAGE_DESCRIPTION_SUMMARY "PreCess，专注网格处理的CAE前处理软件。")
+set(CPACK_PACKAGE_ICON "${CMAKE_SOURCE_DIR}\\resource\\${MYNAME}.ico")
+set(CPACK_PACKAGE_DESCRIPTION_SUMMARY "${MYNAME}，专注网格处理的CAE前处理软件。")
 set(CPACK_PACKAGE_INSTALL_DIRECTORY ${CPACK_PACKAGE_NAME})
 set(CPACK_PACKAGE_VERSION_MAJOR ${PROJECT_VERSION_MAJOR})
 set(CPACK_PACKAGE_VERSION_MINOR ${PROJECT_VERSION_MINOR})
@@ -193,10 +193,10 @@ set(SUPPORTED_MESH_EXTS .mesh .meshb .obj .step .stp .iges .igs .vtk .m .ply )
 set(CPACK_NSIS_EXTRA_INSTALL_COMMANDS "")
 set(CPACK_NSIS_EXTRA_UNINSTALL_COMMANDS "")
 
-# 注册PreCess到打开方式
+# 注册到打开方式
 string(APPEND CPACK_NSIS_EXTRA_INSTALL_COMMANDS "
-WriteRegStr HKCR 'Applications\\${MYNAME}.exe' '' 'PreCess'
-WriteRegStr HKCR 'Applications\\${MYNAME}.exe' 'FriendlyAppName' 'PreCess'
+WriteRegStr HKCR 'Applications\\${MYNAME}.exe' '' '${MYNAME}'
+WriteRegStr HKCR 'Applications\\${MYNAME}.exe' 'FriendlyAppName' '${MYNAME}'
 WriteRegStr HKCR 'Applications\\${MYNAME}.exe\\shell\\open\\command' '' '\"$INSTDIR\\bin\\${MYNAME}.exe\" \"%1\"'
 WriteRegStr HKCR 'Applications\\${MYNAME}.exe\\DefaultIcon' '' '$INSTDIR\\bin\\${MYNAME}.exe,0'
 ")
@@ -207,13 +207,13 @@ DeleteRegKey HKCR 'Applications\\${MYNAME}.exe'
 foreach(ext ${SUPPORTED_MESH_EXTS})
     # 添加右键直接打开菜单
     string(APPEND CPACK_NSIS_EXTRA_INSTALL_COMMANDS "
-    WriteRegStr HKCR 'SystemFileAssociations\\${ext}\\shell\\PreCess' '' '使用 PreCess 打开'
-    WriteRegStr HKCR 'SystemFileAssociations\\${ext}\\shell\\PreCess\\command' '' '\"$INSTDIR\\bin\\${MYNAME}.exe\" \"%1\"'
+    WriteRegStr HKCR 'SystemFileAssociations\\${ext}\\shell\\${MYNAME}' '' '使用 ${MYNAME} 打开'
+    WriteRegStr HKCR 'SystemFileAssociations\\${ext}\\shell\\${MYNAME}\\command' '' '\"$INSTDIR\\bin\\${MYNAME}.exe\" \"%1\"'
     # 添加到打开方式列表
     WriteRegStr HKCR 'SystemFileAssociations\\${ext}\\OpenWithProgids' '${MYNAME}${ext}' ''
     ")
     string(APPEND CPACK_NSIS_EXTRA_UNINSTALL_COMMANDS "
-    DeleteRegKey HKCR 'SystemFileAssociations\\${ext}\\shell\\PreCess'
+    DeleteRegKey HKCR 'SystemFileAssociations\\${ext}\\shell\\${MYNAME}'
     DeleteRegValue HKCR 'SystemFileAssociations\\${ext}\\OpenWithProgids' '${MYNAME}${ext}'
     ")
 endforeach()
