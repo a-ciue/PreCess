@@ -900,8 +900,9 @@ void QRenderWindow::setGeometryTopologyDiagnosticSmallEdgeLength(double threshol
 {
     dispatch_async([threshold](vtkRenderWindow* renderWindow, vtkUserData userData) -> void {
         Data* vtk = Data::SafeDownCast(userData);
-        if (vtk->geometry_actor_manager_)
-            vtk->geometry_actor_manager_->setTopologyDiagnosticSmallEdgeLength(threshold);
+        if (!vtk || !vtk->geometry_actor_manager_)
+            return;
+        vtk->geometry_actor_manager_->setTopologyDiagnosticSmallEdgeLength(threshold);
     });
 }
 
@@ -909,8 +910,9 @@ void QRenderWindow::setGeometryTopologyDiagnosticSmallFaceArea(double threshold)
 {
     dispatch_async([threshold](vtkRenderWindow* renderWindow, vtkUserData userData) -> void {
         Data* vtk = Data::SafeDownCast(userData);
-        if (vtk->geometry_actor_manager_)
-            vtk->geometry_actor_manager_->setTopologyDiagnosticSmallFaceArea(threshold);
+        if (!vtk || !vtk->geometry_actor_manager_)
+            return;
+        vtk->geometry_actor_manager_->setTopologyDiagnosticSmallFaceArea(threshold);
     });
 }
 

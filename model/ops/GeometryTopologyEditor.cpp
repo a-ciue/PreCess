@@ -32,6 +32,7 @@
 #include <GProp_GProps.hxx>
 #include <IntCurveSurface_TransitionOnCurve.hxx>
 #include <Precision.hxx>
+#include <Poly_Triangulation.hxx>
 #include <NCollection_Array1.hxx>
 #include <NCollection_Array2.hxx>
 #include <NCollection_DataMap.hxx>
@@ -42,6 +43,7 @@
 #include <TopAbs_ShapeEnum.hxx>
 #include <TopAbs_State.hxx>
 #include <TopExp.hxx>
+#include <TopLoc_Location.hxx>
 #include <NCollection_IndexedDataMap.hxx>
 #include <NCollection_IndexedMap.hxx>
 #include <NCollection_List.hxx>
@@ -984,6 +986,18 @@ constexpr size_t kFaceSweepProbePairs = 32;
 constexpr double kFaceSweepMinimumSavingMs = 200.0;
 
 /**
+ * @brief 将无序 Face 对归一化成稳定键，避免不同扫描阶段的遍历顺序造成漏检。
+ */
+constexpr std::uint64_t packFacePair(size_t first, size_t second)
+{
+    const size_t low = std::min(first, second);
+    const size_t high = std::max(first, second);
+    return (static_cast<std::uint64_t>(low) << 32) | static_cast<std::uint64_t>(high);
+}
+
+static_assert(packFacePair(3, 7) == packFacePair(7, 3), "Face pair keys must be unordered");
+
+/**
  * @brief 面片空间扫描：一次求出「两张面在容差内可能接触」的面对白名单。
  *
  * 逐对 BRepAlgoAPI_Section 的代价主要由每一对都要重建一遍的拓扑准备（BOPAlgo_PaveFiller）
@@ -1037,7 +1051,16 @@ public:
 
             BRepMesh_IncrementalMesh mesher(
                 swept_shape, deflection, Standard_False, kFaceSweepAngularDeflection, Standard_True);
-            (void)mesher;
+            if (!mesher.IsDone())
+                return nullptr;
+            // 扫描器依赖每张面的三角网格；部分剖分成功也不能作为排除面对的依据。
+            for (const TopoDS_Face& face : swept_faces) {
+                TopLoc_Location location;
+                const occ::handle<Poly_Triangulation>& triangulation
+                    = BRep_Tool::Triangulation(face, location);
+                if (triangulation.IsNull())
+                    return nullptr;
+            }
 
             BRepExtrema_SelfIntersection scanner(swept_shape);
             scanner.SetTolerance(tolerance);
@@ -1081,12 +1104,6 @@ public:
 
 private:
     static constexpr size_t kInvalidFaceIndex = static_cast<size_t>(-1);
-
-    static std::uint64_t packFacePair(size_t first, size_t second)
-    {
-        // 上游已经保证 first < second（candidate_pairs_ 由 overlappingFacePairs 生成）。
-        return (static_cast<std::uint64_t>(first) << 32) | static_cast<std::uint64_t>(second);
-    }
 
     static size_t lookupFaceIndex(
         const NCollection_DataMap<TopoDS_Shape, size_t, TopTools_ShapeMapHasher>& face_index,
@@ -1517,11 +1534,13 @@ private:
     {
         if (!options_.invalid_topology)
             return;
-        if (BRepCheck_Analyzer(root_).IsValid())
+        // Analyzer 已包含根形状及其全部子形状的检查结果，后续直接复用，避免逐形状重建。
+        const BRepCheck_Analyzer analyzer(root_);
+        if (analyzer.IsValid())
             return;
         for (TopAbs_ShapeEnum type : { TopAbs_FACE, TopAbs_WIRE, TopAbs_EDGE, TopAbs_VERTEX }) {
             for (TopExp_Explorer subshape(root_, type); subshape.More(); subshape.Next()) {
-                if (!BRepCheck_Analyzer(subshape.Current()).IsValid())
+                if (!analyzer.IsValid(subshape.Current()))
                     result_.invalid_shapes.push_back(subshape.Current());
             }
         }
@@ -1937,6 +1956,7 @@ TopoDS_Shape GeometryTopologyEditor::mergeFaces(
         TopExp::MapShapesAndUniqueAncestors(
             root, TopAbs_EDGE, TopAbs_FACE, edge_faces);
 
+        // UnifyEdges=false、UnifyFaces=true、ConcatBSplines=false：只合并同域面。
         ShapeUpgrade_UnifySameDomain unifier(root, false, true, false);
         NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher> shared_edges;
         // 只有两侧全部属于选择集的公共边允许消失，其余边界一律保留。
@@ -2066,6 +2086,7 @@ TopoDS_Shape GeometryTopologyEditor::mergeEdges(
         TopExp::MapShapesAndUniqueAncestors(
             root, TopAbs_VERTEX, TopAbs_EDGE, vertex_edges);
 
+        // UnifyEdges=true、UnifyFaces=false、ConcatBSplines=false：只合并同域边。
         ShapeUpgrade_UnifySameDomain unifier(root, true, false, false);
         // 仅允许两条选中边独占的中间点消失，端点和分支点必须保留。
         for (int vertex_index = 1; vertex_index <= vertex_edges.Extent(); ++vertex_index) {
