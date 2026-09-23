@@ -57,6 +57,12 @@ bool QModelQuery::hasComponent(Index component_id) const
     return m_query->hasComponent(component_id);
 }
 
+QString QModelQuery::getModelName(Index model_id) const
+{
+    const auto name = m_query->modelName(model_id);
+    return name ? QString::fromStdString(*name) : QString();
+}
+
 QString QModelQuery::getComponentName(Index component_id) const
 {
     const auto name = m_query->componentName(component_id);

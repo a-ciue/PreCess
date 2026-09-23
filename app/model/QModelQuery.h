@@ -76,6 +76,13 @@ QML_ELEMENT // Qt6+: 导出为 QML 可用类型（Qt5 请使用 qmlRegisterType�
     Q_INVOKABLE bool hasComponent(Index component_id) const;
 
     /**
+     * @brief 获取指定模型的名称（导入模型即为导入文件名）
+     * @param model_id 模型 ID
+     * @return 模型名称；模型不存在返回空字符串
+     */
+    Q_INVOKABLE QString getModelName(Index model_id) const;
+
+    /**
      * @brief 获取指定组件的显示名称，保持和对象树中的组件名称一致
      * @param component_id 组件 ID
      */
