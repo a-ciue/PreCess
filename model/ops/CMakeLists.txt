@@ -9,7 +9,7 @@ target_include_directories(DataOps PUBLIC
 	${CMAKE_CURRENT_SOURCE_DIR}   # 头文件路径
 )
 target_link_libraries(DataOps PUBLIC Core Data
-	VTK::CommonCore
+	VTK::CommonCore VTK::CommonDataModel	# CommonDataModel：UGridModel 直用 vtkCell/vtkCellArray/vtkFieldData
 	spdlog::spdlog $<$<BOOL:${MINGW}>:ws2_32>	# spdlog日志库
 )
 target_link_libraries(DataOps PRIVATE

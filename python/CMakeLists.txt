@@ -37,7 +37,11 @@ set(PRECESS_PYTHON_HOME_DIR "${PRECESS_PYTHON_HOME_DIR}" CACHE INTERNAL
 
 # 内嵌解释器宿主（静态库，无 Qt）：目标恒存在，真实现/桩按可用性二选一
 add_library(precess_runtime STATIC)
-set_target_properties(precess_runtime PROPERTIES EXPORT_NAME Runtime) # SDK 随包导出为 PreCess::Runtime
+# SDK 随包导出为 PreCess::Runtime；DEBUG_POSTFIX 与 PreCessBase 一致，支持双配置同前缀安装
+set_target_properties(precess_runtime PROPERTIES
+    EXPORT_NAME Runtime
+    DEBUG_POSTFIX "d"
+)
 # BUILD/INSTALL 接口拆分：install(EXPORT) 不允许导出目标的 include 指向源码树
 target_include_directories(precess_runtime PUBLIC
     $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>

@@ -242,12 +242,11 @@ function(precess_plugin_link_libraries TARGET)
         return()
     endif()
 
-    if (OpenCASCADE_FOUND)
-        list(APPEND DEPENDENT_LIBRARIES TKernel)
-        if (freetype_FOUND)
-            list(APPEND DEPENDENT_LIBRARIES freetype)
-        endif()
-    endif()
+    # 注：原 in-tree 分支曾在此追加 TKernel/freetype 扫描目录（RUNTIME_DEPENDENCIES 解析辅助）。
+    # 2026-09-23 已删除并与外部分支对齐：解析目录只从显式传入的依赖推导，
+    # freetype 本就在 POST_EXCLUDE 名单（不随插件收拢），OCCT bin 与传入 TK* 的
+    # TARGET_FILE_DIR 同目录。若未来出现"间接 OCCT 导入解析不到"的安装错误，
+    # 恢复点即此处（为两分支共用的扫描目录推导，勿再写单边特判）。
     list(TRANSFORM DEPENDENT_LIBRARIES PREPEND "$<TARGET_FILE_DIR:")
     list(TRANSFORM DEPENDENT_LIBRARIES APPEND ">")
 
