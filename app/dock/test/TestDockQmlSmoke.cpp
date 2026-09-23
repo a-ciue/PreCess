@@ -34,12 +34,27 @@
 #include <QQuickItem>
 #include <QTest>
 
-TEST_CASE("DockQml: docking area loads from QML and lays out docks")
+namespace {
+
+//! @brief 进程内单例 QGuiApplication（offscreen）
+//!
+//! QGuiApplication 为进程级单例，若在多个 TEST_CASE 内各自构造会因重复实例崩溃；
+//! 统一经本函数惰性构造，保证与用例数量无关。
+QGuiApplication& testApplication()
 {
     qputenv("QT_QPA_PLATFORM", "offscreen");
+    static int argc = 1;
+    static char app_name[] = "TestDockQmlSmoke";
+    static char* argv[] = { app_name, nullptr };
+    static QGuiApplication app(argc, argv);
+    return app;
+}
 
-    int argc = 0;
-    QGuiApplication app(argc, nullptr);
+} // namespace
+
+TEST_CASE("DockQml: docking area loads from QML and lays out docks")
+{
+    testApplication();
 
     QQmlEngine engine;
     dock::init(&engine);
