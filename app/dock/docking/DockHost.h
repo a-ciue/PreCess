@@ -76,9 +76,11 @@ public:
     QByteArray saveLayout() const;
 
     /**
-     * @brief 从布局快照恢复（版本/宿主/中央校验失败或数据畸形时返回 false 且不改动布局）
+     * @brief 从布局快照恢复
      *
-     * 未知面板名跳过、快照未包含的面板保持当前默认位置（向前/向后兼容）。
+     * 版本/宿主/中央校验失败、数据畸形或主树无法解析出中央分组时，返回 false
+     * 且不改动当前布局；未知面板名跳过、快照未包含的面板保持当前默认位置
+     * （向前/向后兼容）。
      */
     bool restoreLayout(const QByteArray& layout);
 

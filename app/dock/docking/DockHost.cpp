@@ -457,8 +457,38 @@ bool DockHost::restoreLayout(const QByteArray& layout)
         return false;
 
     const QJsonObject root = document.object();
-    if (!validateLayout(root, unique_name_,
-            central_panel_ ? central_panel_->uniqueName() : QString()))
+    const QString central_name = central_panel_ ? central_panel_->uniqueName() : QString();
+    if (!validateLayout(root, unique_name_, central_name))
+        return false;
+
+    // 建树前置校验（不改动任何布局状态）：主树必须能按面板身份解析出中央分组，
+    // 与 validateLayout 的按名校验互补；不满足时按契约返回 false 且保持当前布局。
+    RestoreContext ctx;
+    ctx.host = this;
+    for (DockPanel* panel : DockCatalog::self().panels()) {
+        if (!panel)
+            continue;
+        ctx.panels.insert(panel->uniqueName(), panel);
+    }
+    const auto central_resolvable = [&](auto&& self, const QJsonObject& node) -> bool {
+        const QString type = node.value(QStringLiteral("type")).toString();
+        if (type == QLatin1String("group")) {
+            for (const QJsonValue& value : node.value(QStringLiteral("panels")).toArray()) {
+                const QString name = value.toObject().value(QStringLiteral("name")).toString();
+                if (name == central_name && ctx.panels.value(name, nullptr) == central_panel_)
+                    return true;
+            }
+            return false;
+        }
+        if (type == QLatin1String("box")) {
+            for (const QJsonValue& value : node.value(QStringLiteral("children")).toArray()) {
+                if (self(self, value.toObject().value(QStringLiteral("node")).toObject()))
+                    return true;
+            }
+        }
+        return false;
+    };
+    if (!central_resolvable(central_resolvable, root.value(QStringLiteral("main")).toObject()))
         return false;
 
     if (DragSession::self().phase() != DragSession::Phase::Idle)
@@ -490,15 +520,8 @@ bool DockHost::restoreLayout(const QByteArray& layout)
             leftovers.append({ panel, panel->isShown() });
     }
 
-    clearLayout();
-
-    RestoreContext ctx;
-    ctx.host = this;
-    for (DockPanel* panel : DockCatalog::self().panels()) {
-        if (!panel)
-            continue;
-        ctx.panels.insert(panel->uniqueName(), panel);
-    }
+    // 清空现有布局（不通知视图：成功恢复由末尾 layoutRestored 统一驱动）
+    clearLayoutInternal(false);
 
     // 建树期间先摘出中央根，避免 setRootNode 误删被复用的中央节点
     region_->takeRootNode();
@@ -518,8 +541,8 @@ bool DockHost::restoreLayout(const QByteArray& layout)
             delete group;
         }
         delete main_root;
-        // 恢复前的清理不通知视图：真正的同步由恢复完成后的 layoutRestored 统一驱动
-        clearLayoutInternal(false);
+        // 前置校验后不应到达：防御性重置为默认布局并通知视图
+        clearLayoutInternal(true);
         return false;
     }
     region_->setRootNode(main_root);
