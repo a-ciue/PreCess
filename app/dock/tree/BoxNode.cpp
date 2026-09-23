@@ -176,16 +176,58 @@ LayoutNode* BoxNode::detachNode(LayoutNode* item, bool hardDelete)
         delete item;
 
     if (children_.isEmpty()) {
-        if (parent_) {
-            // 非根容器清空：从父容器摘除，由调用方删除本对象
-            parent_->children_.removeOne(this);
-            setParent(nullptr);
-            return nullptr;
+        BoxNode* host = parent_;
+        if (!host) {
+            // 根容器清空：就地更新
+            syncVisibility();
+            rebuildDividers();
+            layout();
+            return this;
         }
-        syncVisibility();
-        rebuildDividers();
-        layout();
-        return this;
+
+        // 非根容器清空：从父容器摘除本对象（由调用方回收），并对祖先级联归一化：
+        // 父容器可能因此清空（继续上摘）或只剩一个子项（把唯一子项提升到祖父），
+        // 否则会残留空容器、陈旧分隔条与几何空洞
+        host->children_.removeOne(this);
+        setParent(nullptr);
+
+        BoxNode* current = host;
+        while (current) {
+            const bool has_parent = current->parent_ != nullptr;
+
+            if (current->children_.isEmpty() && has_parent) {
+                BoxNode* up = current->parent_;
+                up->children_.removeOne(current);
+                current->setParent(nullptr);
+                delete current; // 级联产生的空容器由本方法回收
+                current = up;
+                continue;
+            }
+
+            if (current->children_.size() == 1 && has_parent) {
+                BoxNode* up = current->parent_;
+                LayoutNode* only = current->children_.first();
+                current->children_.removeAt(0);
+                const double child_percentage = only->isVisible() ? only->share()
+                                                                 : only->rememberedShare();
+                const double combined = std::clamp(child_percentage * current->share(), 0.0, 1.0);
+                only->setRememberedShare(combined);
+                only->setShare(only->isVisible() ? combined : 0.0);
+                only->setParent(up);
+                const int where = up->children_.indexOf(current);
+                if (where >= 0)
+                    up->children_[where] = only;
+                delete current; // 塌缩容器由本方法回收
+                current = up;
+                continue;
+            }
+
+            current->syncVisibility();
+            current->rebuildDividers();
+            current->layout();
+            break;
+        }
+        return nullptr;
     }
 
     if (children_.size() == 1 && parent_) {

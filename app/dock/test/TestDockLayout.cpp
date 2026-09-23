@@ -209,3 +209,62 @@ TEST_CASE("DockLayout: vertical container uses height as main axis")
     CHECK(column.minExtent().height() == 205);
     CHECK(column.minExtent().width() == 100);
 }
+
+TEST_CASE("DockLayout: emptying a nested container rebuilds the ancestor")
+{
+    LayoutFixture f;
+    f.root.setGeometry(QRect(0, 0, 1000, 600));
+
+    dock::LayoutNode* left = f.makeLeaf(100, 100);
+    f.root.insertNode(0, left, 300, true);
+
+    auto* column = new dock::BoxNode(Qt::Vertical);
+    dock::LayoutNode* only = f.makeLeaf(100, 100);
+    column->insertNode(0, only, 300, true); // 单子容器（瞬时退化）
+    f.root.insertNode(1, column, 700, true);
+
+    REQUIRE(f.root.childCount() == 2);
+    REQUIRE(f.root.dividers().size() == 1);
+
+    dock::LayoutNode* replacement = column->detachNode(only, true);
+    CHECK(replacement == nullptr);
+    CHECK(f.root.childCount() == 1);
+    CHECK(f.root.children().first() == left);
+    CHECK(f.root.dividers().isEmpty()); // 修复点：祖先分隔条随摘除重建
+    delete column; // 调用方回收被摘空的容器
+
+    CHECK(left->geometry().width() == 1000); // 无几何空洞
+}
+
+TEST_CASE("DockLayout: emptying cascades through degenerate ancestors")
+{
+    LayoutFixture f;
+    f.root.setGeometry(QRect(0, 0, 1000, 600));
+
+    dock::LayoutNode* left = f.makeLeaf(100, 100);
+    f.root.insertNode(0, left, 400, true);
+
+    auto* outer = new dock::BoxNode(Qt::Vertical);
+    auto* middle = new dock::BoxNode(Qt::Vertical);
+    dock::LayoutNode* only = f.makeLeaf(100, 100);
+    dock::LayoutNode* right = f.makeLeaf(100, 100);
+    middle->insertNode(0, only, 300, true);
+    outer->insertNode(0, middle, 300, true);
+    outer->insertNode(1, right, 300, true);
+    f.root.insertNode(1, outer, 600, true);
+
+    REQUIRE(f.root.childCount() == 2);
+    REQUIRE(outer->childCount() == 2);
+
+    // middle 摘空：middle 由调用方回收，outer 只剩 right 由内部塌缩提升
+    dock::LayoutNode* replacement = middle->detachNode(only, true);
+    CHECK(replacement == nullptr);
+    delete middle;
+
+    CHECK(f.root.childCount() == 2);
+    CHECK(f.root.children().at(0) == left);
+    CHECK(f.root.children().at(1) == right);
+    CHECK(f.root.dividers().size() == 1);
+    CHECK(left->geometry().width() > 0);
+    CHECK(right->geometry().width() > 0);
+}
