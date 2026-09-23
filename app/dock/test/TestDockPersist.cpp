@@ -401,3 +401,38 @@ TEST_CASE("DockPersist: window primary pointing outside its tree is cleared")
     f.host.region()->validateTree();
 #endif
 }
+
+TEST_CASE("DockPersist: absurd floating window geometry is rejected")
+{
+    DockFixture f;
+    PlacedDocks placed(f);
+    placed.console->showPanel();
+
+    dock::DragSession& drag = dock::DragSession::self();
+    REQUIRE(drag.detachGroup(placed.console->group()));
+    REQUIRE(dock::DockCatalog::self().windows().size() == 1);
+
+    const QByteArray saved = f.host.saveLayout();
+    const QString before = layoutFingerprint(f.host);
+
+    const auto with_geometry = [&saved](int x, int y, int w, int h) {
+        QJsonObject root = QJsonDocument::fromJson(saved).object();
+        QJsonArray windows = root.value(QStringLiteral("windows")).toArray();
+        REQUIRE(windows.size() == 1);
+        QJsonObject window = windows.at(0).toObject();
+        window.insert(QStringLiteral("geometry"), QJsonArray { x, y, w, h });
+        windows.replace(0, window);
+        root.insert(QStringLiteral("windows"), windows);
+        return QJsonDocument(root).toJson(QJsonDocument::Compact);
+    };
+
+    // 非正宽高与超上限边长都必须整快照拒绝，且不改动当前布局
+    CHECK_FALSE(f.host.restoreLayout(with_geometry(100, 100, 0, 200)));
+    CHECK_FALSE(f.host.restoreLayout(with_geometry(100, 100, 300, -20)));
+    CHECK_FALSE(f.host.restoreLayout(with_geometry(100, 100, 40000, 200)));
+    CHECK(layoutFingerprint(f.host) == before);
+    CHECK(dock::DockCatalog::self().windows().size() == 1);
+
+    REQUIRE(drag.reattachGroup(placed.console->group()));
+    CHECK(dock::DockCatalog::self().windows().isEmpty());
+}

@@ -31,6 +31,9 @@ namespace {
 //! @brief 布局快照版本（结构不兼容变更时递增）
 constexpr int kLayoutVersion = 1;
 
+//! @brief 恢复时允许的最大窗口边长（像素）：拒绝损坏/被篡改快照中的极端尺寸
+constexpr int kMaxRestoredWindowSide = 32767;
+
 QString orientationToString(Qt::Orientation orientation)
 {
     return orientation == Qt::Horizontal ? QStringLiteral("horizontal")
@@ -294,7 +297,14 @@ bool validateLayout(const QJsonObject& root, const QString& host_name, const QSt
     const QJsonArray windows = root.value(QStringLiteral("windows")).toArray();
     for (int i = 0; i < windows.size(); ++i) {
         const QJsonObject window = windows.at(i).toObject();
-        if (window.value(QStringLiteral("geometry")).toArray().size() != 4)
+        const QJsonArray geometry = window.value(QStringLiteral("geometry")).toArray();
+        if (geometry.size() != 4)
+            return false;
+        // 宽高必须为正且不超过上限：损坏/被篡改的快照不得产生极端或负尺寸窗口
+        const int width = geometry.at(2).toInt();
+        const int height = geometry.at(3).toInt();
+        if (width <= 0 || height <= 0 || width > kMaxRestoredWindowSide
+            || height > kMaxRestoredWindowSide)
             return false;
         walk(walk, window.value(QStringLiteral("tree")).toObject(), false);
 
