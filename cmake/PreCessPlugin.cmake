@@ -253,20 +253,25 @@ function(precess_plugin_link_libraries TARGET)
         return()
     endif()
 
-    # 注：原 in-tree 分支曾在此追加 TKernel/freetype 扫描目录（RUNTIME_DEPENDENCIES 解析辅助）。
-    # 2026-09-23 已删除并与外部分支对齐：解析目录只从显式传入的依赖推导，
-    # freetype 本就在 POST_EXCLUDE 名单（不随插件收拢），OCCT bin 与传入 TK* 的
-    # TARGET_FILE_DIR 同目录。若未来出现"间接 OCCT 导入解析不到"的安装错误，
-    # 恢复点即此处（为两分支共用的扫描目录推导，勿再写单边特判）。
+    # OCCT 扫描目录兜底（2026-09-23 二次修正）：解析目录只从显式传入依赖推导并不够——
+    # 未显式传 TK* 但经 PreCess::Base 链入 OCCT 符号的插件（如 VtkLegacyModelPlugin）
+    # 在无 OCCT 于 PATH 的环境下安装即报 "Could not resolve runtime dependencies:
+    # TKBRep.dll/TKernel.dll"（当日实证；此前 AllPlugins 通过系验证环境 PATH 恰好含
+    # OCCT bin 的假阴性）。TKernel 的 IMPORTED_LOCATION 为 per-config DLL 路径
+    # （Debug=bind、Release=bin），恒可作扫描目录；freetype/spdlog 本就 PRE_EXCLUDE 不收拢。
     list(TRANSFORM DEPENDENT_LIBRARIES PREPEND "$<TARGET_FILE_DIR:")
     list(TRANSFORM DEPENDENT_LIBRARIES APPEND ">")
+    set(_scan_dirs "$<TARGET_FILE_DIR:Qt${PRECESS_QT_MAJOR}::Core>" ${DEPENDENT_LIBRARIES})
+    if(TARGET TKernel)
+        list(APPEND _scan_dirs "$<TARGET_FILE_DIR:TKernel>")
+    endif()
 
     _precess_plugin_dep_exclude_regexes(plugin_post_exclude_regexes plugin_pre_exclude_regexes)
 
     install(
         TARGETS ${TARGET}
         RUNTIME_DEPENDENCIES
-        DIRECTORIES $<TARGET_FILE_DIR:Qt${PRECESS_QT_MAJOR}::Core> ${DEPENDENT_LIBRARIES}
+        DIRECTORIES ${_scan_dirs}
         PRE_EXCLUDE_REGEXES ${plugin_pre_exclude_regexes}
         POST_EXCLUDE_REGEXES ${plugin_post_exclude_regexes}
         FRAMEWORK DESTINATION $<IF:$<PLATFORM_ID:Darwin>,${PRECESS_APP_NAME}.app/Contents/Frameworks,Frameworks>
@@ -295,6 +300,9 @@ function(precess_plugin_install TARGET)
 
     get_property(_extra_libs TARGET ${TARGET} PROPERTY PRECESS_PLUGIN_DEP_LIBS)
     set(_dep_dirs "$<TARGET_FILE_DIR:Qt${PRECESS_QT_MAJOR}::Core>")
+    if(TARGET TKernel)
+        list(APPEND _dep_dirs "$<TARGET_FILE_DIR:TKernel>")
+    endif()
     foreach(_lib IN LISTS _extra_libs)
         if(TARGET ${_lib})
             list(APPEND _dep_dirs "$<TARGET_FILE_DIR:${_lib}>")
