@@ -5,6 +5,8 @@
 
 #pragma once
 
+#include "DockMetrics.h"
+
 #include <QObject>
 
 namespace dock {
@@ -41,6 +43,12 @@ enum class DropZone {
     OuterBottom
 };
 Q_ENUM_NS(DropZone)
+
+//! @brief 布局度量常量（QML 经 Tokens.Metric 读取，与 DockMetrics 同源）
+enum class Metric {
+    TitleBarHeight = DockMetrics::kTitleBarHeight
+};
+Q_ENUM_NS(Metric)
 
 //! @brief 是否为分组内落点（方位或合并）
 inline bool isInnerZone(DropZone zone)
