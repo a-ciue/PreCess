@@ -23,6 +23,13 @@ struct DockMetrics {
     //! @brief 经典指示器箭头尺寸（像素）
     static constexpr int kZoneSize = 40;
 
+    //! @brief 分组视图的层 z（区域同步时归一，分隔条高于此层）
+    static constexpr qreal kGroupLayerZ = 1.0;
+    //! @brief 分隔条视图的层 z（高于分组，保证始终可拖动）
+    static constexpr qreal kSeparatorLayerZ = 2.0;
+    //! @brief 宿主视图置顶的 z 上限（避免 bringToFront 无界自增）
+    static constexpr qreal kHostFrontMaxZ = 1000.0;
+
     /**
      * @brief 是否达到拖拽启动阈值
      *

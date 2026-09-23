@@ -16,8 +16,11 @@
 #include "docking/DockWindow.h"
 #include "docking/PanelGroup.h"
 #include "docking/DockHost.h"
+#include "docking/DockMetrics.h"
 
 #include <QQuickWindow>
+
+#include <algorithm>
 
 namespace dock::ui {
 
@@ -226,7 +229,8 @@ QSize DockHostItem::maxExtent() const
 
 void DockHostItem::bringToFront()
 {
-    setZ(z() + 1);
+    // 置顶自增设有上限，避免长时间运行后 z 无界增长
+    setZ(std::min(z() + 1.0, DockMetrics::kHostFrontMaxZ));
 }
 
 QPoint DockHostItem::globalOrigin() const

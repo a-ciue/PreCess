@@ -590,7 +590,8 @@ bool PanelGroupItem::isShown() const
 
 void PanelGroupItem::bringToFront()
 {
-    setZ(z() + 1);
+    // 层 z 受控：分组视图恒在分组层，避免无界自增并盖过分隔条
+    setZ(DockMetrics::kGroupLayerZ);
 }
 
 QPoint PanelGroupItem::globalOrigin() const

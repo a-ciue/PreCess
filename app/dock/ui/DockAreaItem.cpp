@@ -10,6 +10,7 @@
 #include "DockRuntime.h"
 #include "DividerItem.h"
 #include "docking/ZoneGeometry.h"
+#include "docking/DockMetrics.h"
 #include "docking/DragSession.h"
 #include "docking/DockRegion.h"
 #include "docking/DockWindow.h"
@@ -142,7 +143,7 @@ void DockAreaItem::sync()
             view->setVisible(item->isVisible());
         }
         // 显式 z 序：分组在下、分隔条在上，避免残留视图互相遮挡
-        view->setZ(1);
+        view->setZ(DockMetrics::kGroupLayerZ);
         // client 可能延迟注册（如中央持久部件）：每次同步刷新挂载与可见性
         view->syncFromGroup();
     }
@@ -170,7 +171,7 @@ void DockAreaItem::sync()
         view->setPosition(separator->geometry().topLeft());
         view->setSize(separator->geometry().size());
         view->setVisible(true);
-        view->setZ(2);
+        view->setZ(DockMetrics::kSeparatorLayerZ);
     }
 
     updateZoneRects();

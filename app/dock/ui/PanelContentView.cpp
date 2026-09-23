@@ -6,6 +6,7 @@
 #include "PanelContentView.h"
 
 #include "tree/NodeMetrics.h"
+#include "docking/DockMetrics.h"
 
 #include <QQuickItem>
 #include <QtMath>
@@ -57,7 +58,8 @@ QSize PanelContentView::maxExtent() const
 void PanelContentView::bringToFront()
 {
     if (panel_content_item_)
-        panel_content_item_->setZ(panel_content_item_->z() + 1);
+        // 层 z 受控（内容视图不参与无界自增）
+        panel_content_item_->setZ(DockMetrics::kGroupLayerZ);
 }
 
 QPoint PanelContentView::globalOrigin() const
