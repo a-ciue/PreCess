@@ -45,15 +45,15 @@ namespace {
 using DiagnosticColor = std::array<double, 3>;
 
 constexpr std::array<DiagnosticColor, kGeometryTopologyDiagnosticCategoryCount> kCategoryColors { {
-    { 0.10, 0.80, 0.20 }, // 边界边
-    { 1.00, 0.50, 0.00 }, // 孤立边
-    { 1.00, 0.00, 0.00 }, // 非流形边
-    { 1.00, 0.35, 0.70 }, // 细小边
-    { 1.00, 0.00, 0.80 }, // 细小面
-    { 0.00, 0.80, 1.00 }, // 重复面
-    { 1.00, 0.90, 0.00 }, // Self Intersections
-    { 1.00, 0.55, 0.20 }, // Geometry Interference Check
-    { 0.55, 0.15, 1.00 }, // 无效拓扑
+    { 0.90, 0.10, 0.20 }, // 边界边：红
+    { 0.55, 0.25, 0.75 }, // 孤立边：紫/洋红
+    { 1.00, 0.75, 0.10 }, // 非流形边：黄
+    { 0.00, 0.72, 0.83 }, // 细小边：青
+    { 0.10, 0.46, 0.82 }, // 细小面：蓝
+    { 0.49, 0.34, 0.76 }, // 重复面：紫
+    { 1.00, 0.09, 0.27 }, // 自相交：亮粉红
+    { 1.00, 0.54, 0.00 }, // 几何干涉：橙
+    { 0.90, 0.10, 0.20 }, // 无效拓扑：红
 } };
 
 constexpr double kDiagnosticLineUnits = highlight::LINE_UNITS + 1.0;
