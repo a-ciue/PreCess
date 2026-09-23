@@ -114,6 +114,8 @@ private:
     //! @brief 应用悬停落点；落点未被消费（目标无效）时返回 false
     bool applyDrop();
     void cleanup();
+    //! @brief 重置会话成员（拖拽代理/句柄/来源/临时分组等）；不发信号、不触碰模型对象
+    void resetSessionMembers();
     //! @brief 保留浮动：临时组登记回停来源并归属浮动窗口
     void parkFloatingGroup(DockWindow* window);
 
