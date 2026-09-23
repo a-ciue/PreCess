@@ -518,8 +518,8 @@ bool DockHost::restoreLayout(const QByteArray& layout)
             delete group;
         }
         delete main_root;
-    // 恢复前的清理不通知视图：真正的同步由恢复完成后的 layoutRestored 统一驱动
-    clearLayoutInternal(false);
+        // 恢复前的清理不通知视图：真正的同步由恢复完成后的 layoutRestored 统一驱动
+        clearLayoutInternal(false);
         return false;
     }
     region_->setRootNode(main_root);
