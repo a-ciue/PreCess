@@ -384,3 +384,32 @@ TEST_CASE("DockCore: floating window title follows its primary group")
     CHECK(placed.console->group()->parent() == f.host.region());
     CHECK(f.host.region()->groups().contains(placed.console->group()));
 }
+
+TEST_CASE("DockCore: destroying a grouped panel detaches it from its group")
+{
+    DockFixture f;
+    PlacedDocks placed(f);
+    dock::PanelGroup* group = placed.object_tree->group();
+    REQUIRE(group != nullptr);
+
+    dock::DockPanel* extra = f.makeDock(QStringLiteral("extra"), QStringLiteral("附加面板"));
+    group->addPanel(extra);
+    extra->showPanel();
+    group->setActivePanel(extra);
+    REQUIRE(group->panels().contains(extra));
+    REQUIRE(group->activePanel() == extra);
+
+    // 面板先于分组销毁：必须从组内自动剔除，且不得留下悬空引用
+    delete extra;
+
+    CHECK_FALSE(group->panels().contains(extra));
+    REQUIRE(group->activePanel() != nullptr);
+    CHECK(group->activePanel() != extra);
+    CHECK(group->activePanel()->isShown());
+    CHECK(group->panels().contains(placed.object_tree));
+
+    // 分组仍可正常使用
+    group->removePanel(placed.object_tree);
+    CHECK(group->panels().isEmpty());
+    CHECK(group->activePanel() == nullptr);
+}

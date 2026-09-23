@@ -101,6 +101,11 @@ private:
     void refreshActivePanel();
     //! @brief 在组内面板序列的指定下标插入（公共接口的位置映射终点）
     void insertPanelAt(DockPanel* panel, int panels_index);
+    /**
+     * @brief 把面板从组内列表剔除并修正激活/可见性
+     * @note 不访问面板成员；供正常移除路径（removePanel）复用
+     */
+    void forgetPanel(DockPanel* panel);
 
     QList<DockPanel*> panels_;
     DockPanel* active_ = nullptr;

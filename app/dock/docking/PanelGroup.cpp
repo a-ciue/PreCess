@@ -110,6 +110,21 @@ void PanelGroup::insertPanelAt(DockPanel* panel, int panels_index)
     connect(panel, &DockPanel::featuresChanged, this, [this](DockPanel::Features) {
         Q_EMIT panelsChanged();
     });
+    // 面板先于分组销毁：仅剔除悬空指针并静默修正激活态。
+    // 该路径可能处于宿主拆解流程中，不触发通知/可见性同步，避免触碰正在销毁的
+    // 视图与布局节点（正常移除路径走 removePanel，语义与信号完整）
+    connect(panel, &QObject::destroyed, this, [this, panel] {
+        panels_.removeOne(panel);
+        if (active_ == panel) {
+            active_ = nullptr;
+            for (DockPanel* other : std::as_const(panels_)) {
+                if (other->isShown()) {
+                    active_ = other;
+                    break;
+                }
+            }
+        }
+    });
 
     if (!active_ || !active_->isShown())
         active_ = panel;
@@ -121,14 +136,23 @@ void PanelGroup::insertPanelAt(DockPanel* panel, int panels_index)
 
 void PanelGroup::removePanel(DockPanel* panel)
 {
-    const int index = panels_.indexOf(panel);
-    if (index < 0)
+    if (!panel || !panels_.contains(panel))
         return;
 
-    panels_.removeAt(index);
+    // 存活面板：解除归属并断开信号连接后再剔除
     if (panel->group() == this)
         panel->setGroup(nullptr);
     disconnect(panel, nullptr, this, nullptr);
+
+    forgetPanel(panel);
+}
+
+void PanelGroup::forgetPanel(DockPanel* panel)
+{
+    if (!panel)
+        return;
+
+    panels_.removeOne(panel);
 
     Q_EMIT panelsChanged();
 

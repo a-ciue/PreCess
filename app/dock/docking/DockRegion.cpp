@@ -22,6 +22,13 @@ DockRegion::DockRegion(QObject* parent)
 
 DockRegion::~DockRegion()
 {
+    // 树销毁前解除分组对布局节点的引用：分组可能晚于区域析构（如中央分组归属宿主），
+    // 否则其 node_/vacancy_ 悬空，分组析构或面板 destroyed 回调解引用即崩溃
+    const QList<PanelGroup*> region_groups = groups();
+    for (PanelGroup* group : region_groups) {
+        group->setNode(nullptr);
+        group->setVacancy(nullptr);
+    }
     delete root_item_;
 }
 
