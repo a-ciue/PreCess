@@ -873,3 +873,25 @@ TEST_CASE("DockDrag: group docked inside a floating window reattaches to the hos
     f.host.region()->validateTree();
 #endif
 }
+
+TEST_CASE("DockDrag: drag threshold uses manhattan distance")
+{
+    DockFixture f;
+    PlacedDocks placed(f);
+    placed.console->showPanel();
+
+    dock::DragSession& drag = dock::DragSession::self();
+    dock::DragHandle handle(nullptr, placed.console->group(), nullptr);
+    const QPoint press = placed.console->group()->node()->geometry().center();
+    drag.beginAt(&handle, press);
+    REQUIRE(drag.phase() == dock::DragSession::Phase::Armed);
+
+    // 单轴均未达阈值，但曼哈顿距离已达阈值：应进入拖拽（与会话内判定一致）
+    drag.updateAt(press + QPoint(3, 3));
+    CHECK(drag.phase() == dock::DragSession::Phase::Dragging);
+
+    drag.cancel();
+    CHECK(dock::DockCatalog::self().windows().isEmpty());
+    CHECK(placed.console->isShown());
+    CHECK_FALSE(placed.console->isDetached());
+}

@@ -73,7 +73,7 @@ void DragSession::beginAt(DragHandle* handle, const QPoint& global_pos)
 void DragSession::updateAt(const QPoint& global_pos)
 {
     if (phase_ == Phase::Armed) {
-        if ((global_pos - press_pos_).manhattanLength() < DockMetrics::kStartDragDistance)
+        if (!DockMetrics::exceedsDragThreshold(global_pos - press_pos_))
             return;
         startDrag(global_pos);
         return;

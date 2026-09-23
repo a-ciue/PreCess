@@ -364,11 +364,10 @@ void PanelGroupItem::dragTo(const QPointF& global_pos)
         return;
     }
 
-    const qreal dx = qAbs(global_pos.x() - press_global_.x());
+    // 起步阈值与 DragSession 统一（曼哈顿距离）；轴向判别仍按单轴分量：
+    // 纵向达阈值（或分组不可重排）转浮动，否则横向进入组内重排预览
     const qreal dy = qAbs(global_pos.y() - press_global_.y());
-    const bool beyond = dx >= DockMetrics::kStartDragDistance
-        || dy >= DockMetrics::kStartDragDistance;
-    if (!beyond)
+    if (!DockMetrics::exceedsDragThreshold((global_pos - press_global_).toPoint()))
         return;
 
     const bool multi = group_ && group_->shownPanels().size() > 1;

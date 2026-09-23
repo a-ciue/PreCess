@@ -9,6 +9,8 @@
 
 #pragma once
 
+#include <QPoint>
+
 namespace dock {
 
 struct DockMetrics {
@@ -20,6 +22,17 @@ struct DockMetrics {
     static constexpr int kZoneMargin = 10;
     //! @brief 经典指示器箭头尺寸（像素）
     static constexpr int kZoneSize = 40;
+
+    /**
+     * @brief 是否达到拖拽启动阈值
+     *
+     * 各拖拽路径（会话 Armed 推进、视图层预判）统一使用曼哈顿距离判定，
+     * 避免同一手势在不同路径下触发条件不一致。
+     */
+    static bool exceedsDragThreshold(const QPoint& delta)
+    {
+        return delta.manhattanLength() >= kStartDragDistance;
+    }
 };
 
 }
