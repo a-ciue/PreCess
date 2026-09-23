@@ -127,7 +127,7 @@ message(STATUS "QT_VERSION: Qt${VTK_QT_VERSION}")
 qt_policy(SET QTP0001 NEW)
 qt_standard_project_setup()
 include(GNUInstallDirs)
-include(test)
+include(PreCessPluginTesting)
 
 add_subdirectory(core)
 add_subdirectory(model)

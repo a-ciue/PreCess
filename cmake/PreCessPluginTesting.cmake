@@ -1,6 +1,6 @@
 # PreCess 插件测试 API（in-tree / 外部 SDK 同源）
 #
-# in-tree 由 cmake/test.cmake include；外部工程经
+# in-tree 由顶层 CMakeLists.txt 直接 include；外部工程经
 # find_package(PreCess COMPONENTS Tests) 由 PreCessConfig.cmake include。
 # 测试链接写法保持与模型层归并前一致（模块目标名 + 裸 TK*，或插件的 <target>lib +
 # FeatureSystem Data）；归并后模块为 OBJECT 库、模块间 link 不传递对象文件，下方

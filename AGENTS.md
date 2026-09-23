@@ -137,7 +137,7 @@
   - 测试：先以 `-DBUILD_TESTING=ON` 配置（默认 OFF），再 `ctest --test-dir out/build/x64-debug --output-on-failure`
   - 注意：预设文件均为标准 JSON（无 `//` 注释），命令行 `cmake --preset` 可直接使用。
   - 注意：命令行构建须先加载 MSVC 环境（`vcvars64.bat` 或 VS Developer PowerShell），否则报标准库头文件缺失（C1083 `fstream`/`array`）；Git Bash 中调用 `cmd.exe` 需防路径转换（`MSYS_NO_PATHCONV=1`，`/c` 否则被转为 `C:/`），内联引号易出错时可改写成临时 `.bat` 调用。
-- 测试框架：模块单元测试用 **Catch2**（`cmake/test.cmake` 的 `precess_add_test` / `precess_test_link_libraries`），测试代码见各模块 `test/` 目录（如 `model/data/test/`、`model/systems/feature/test/`）。
+- 测试框架：模块单元测试用 **Catch2**（`cmake/PreCessPluginTesting.cmake` 的 `precess_add_test` / `precess_test_link_libraries`，顶层 `include(PreCessPluginTesting)` 引入），测试代码见各模块 `test/` 目录（如 `model/data/test/`、`model/systems/feature/test/`）。
 - **新特性必须配套测试用例**；修 bug 时尽量补可复现的回归测试。
 - 不要向无测试的模块强行塞测试框架；遵循该模块既有测试模式。
 - 工具检测用 PowerShell：例如 `Get-Command makensis`（不要用 `where makensis`）。
