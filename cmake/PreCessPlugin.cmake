@@ -15,6 +15,13 @@
 
 include_guard(GLOBAL)
 
+# 安装期 file(GET_RUNTIME_DEPENDENCIES)（即 RUNTIME_DEPENDENCIES）的 CMP0207：
+# 未设策略时，路径规范化前做匹配会为每个扫到的系统 DLL 各刷一条 dev warning。
+# 统一置 NEW（规范化后匹配，CMake ≥3.26 才有该策略，旧版跳过）
+if(POLICY CMP0207)
+    cmake_policy(SET CMP0207 NEW)
+endif()
+
 # ---- 语境与全局约定 -----------------------------------------------------------
 
 if(TARGET PreCessBase)
@@ -73,11 +80,15 @@ function(_get_plugin_class_name PLUGIN_H OUT_VAR)
     endif()
 endfunction()
 
-# 插件运行时依赖收拢的排除规则（in-tree 安装与 precess_plugin_install 共用）
+# 插件运行时依赖收拢的排除规则（in-tree 安装与 precess_plugin_install 共用）。
+# 匹配语义（CMake file(GET_RUNTIME_DEPENDENCIES) 文档）：PRE 过滤依赖**名字**、
+# POST 过滤解析后的**全路径**，且 Windows 下用于匹配的名称/路径**先转为小写**
+# ——正则必须写成全小写 + `.*` 锚定，否则形同虚设（2026-09-23 实测：裸且带大写的
+# "Qt6Core" 从未生效，Qt6Cored.dll 一直被打进插件目录）
 # _precess_plugin_dep_exclude_regexes(<out_post> <out_pre>)
 function(_precess_plugin_dep_exclude_regexes OUT_POST OUT_PRE)
-    set(_pre "api-ms-" "ext-ms-" "spdlog" "freetype") # don't install Windows-provided libs
-    set(_post ".*system32/.*\\.dll" "Qt${PRECESS_QT_MAJOR}Core")
+    set(_pre ".*api-ms-.*" ".*ext-ms-.*" ".*spdlog.*" ".*freetype.*") # don't install Windows-provided libs
+    set(_post ".*system32/.*\\.dll" ".*qt${PRECESS_QT_MAJOR}core.*")
     if(APPLE)
         list(APPEND _post
             "/usr/lib/.*"
