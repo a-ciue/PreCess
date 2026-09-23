@@ -1,6 +1,9 @@
 /**
  * @file DockRuntime.cpp
  * @brief QtQuick 视图层全局服务的实现
+ *
+ * 日志例外：app/dock 刻意仅依赖 Qt Core/Gui/Quick（不引入 spdlog 以保持依赖隔离，
+ * 见 AGENTS.md 的 app/dock 条目），QML 加载类告警沿用 qWarning 输出。
  */
 
 #include "DockRuntime.h"
