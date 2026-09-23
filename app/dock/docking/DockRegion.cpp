@@ -274,6 +274,18 @@ QList<PanelGroup*> DockRegion::groups() const
     return result;
 }
 
+bool DockRegion::containsGroup(const PanelGroup* group) const
+{
+    LayoutNode* item = group ? group->node() : nullptr;
+    if (!item)
+        return false;
+
+    // 沿父链回溯到根节点比较，避免为查询归属重建整棵分组列表
+    while (item->parent())
+        item = item->parent();
+    return item == root_item_;
+}
+
 void DockRegion::insertRelative(LayoutNode* item, DockEdge edge, LayoutNode* relative_to,
     int preferred_length, bool visible)
 {

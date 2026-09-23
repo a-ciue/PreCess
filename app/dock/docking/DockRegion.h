@@ -87,6 +87,8 @@ public:
     PanelGroup* groupAt(const QPoint& global_pos) const;
     //! @brief 区域布局树内的全部分组（树序）
     QList<PanelGroup*> groups() const;
+    //! @brief 分组是否属于本区域（沿节点父链判根，不重建分组列表）
+    bool containsGroup(const PanelGroup* group) const;
 
 #ifdef QT_DEBUG
     //! @brief 调试用：校验布局树父子一致性与无环，损坏时断言

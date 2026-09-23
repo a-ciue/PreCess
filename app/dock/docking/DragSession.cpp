@@ -782,11 +782,11 @@ DockRegion* DragSession::regionForGroup(PanelGroup* group)
         return nullptr;
 
     if (DockHost* host = DockCatalog::self().host()) {
-        if (host->region()->groups().contains(group))
+        if (host->region()->containsGroup(group))
             return host->region();
     }
     for (DockWindow* window : DockCatalog::self().windows()) {
-        if (window->region() && window->region()->groups().contains(group))
+        if (window->region() && window->region()->containsGroup(group))
             return window->region();
     }
     return nullptr;
