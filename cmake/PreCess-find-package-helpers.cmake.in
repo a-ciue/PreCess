@@ -8,6 +8,8 @@ set(_precess_find_hints
     VTK_DIR "@VTK_DIR@"
     Qt6_DIR "@Qt6_DIR@"
     freetype_DIR "@freetype_DIR@"
+    # pybind11：组件 Python 的必需依赖（PreCess::Python 的接口含 $<LINK_ONLY:pybind11::embed>）
+    pybind11_DIR "@pybind11_DIR@"
 )
 while(_precess_find_hints)
     list(POP_FRONT _precess_find_hints _precess_var _precess_val)

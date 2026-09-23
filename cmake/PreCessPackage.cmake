@@ -26,7 +26,7 @@ install(TARGETS PreCessBase EXPORT PreCessTargets
     ARCHIVE DESTINATION "${CMAKE_INSTALL_LIBDIR}"
     COMPONENT Development
 )
-# 内嵌 Python 宿主（可选组件 Python 对应 PreCess::Runtime）
+# 内嵌 Python 宿主（可选组件 Python 对应 PreCess::Python）
 if(TARGET precess_bindings)
     set(PRECESS_WITH_PYTHON ON)
 else()

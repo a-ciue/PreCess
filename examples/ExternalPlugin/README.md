@@ -39,7 +39,8 @@ precess_plugin_install(ExternalDemoPlugin DESTINATION plugins)  # 相对值按 -
 - `-DCMAKE_BUILD_TYPE` 必须与 PreCess 库一致——Debug/Release 淮链是 `_ITERATOR_DEBUG_LEVEL`
   堆损坏，/MD 与 /MT 淮链是跨模块 new/delete 错配；
 - **同一份三方实例**（单实例强约束：Qt · VTK · OCCT · Python）：不要把 `CMAKE_PREFIX_PATH`
-  指向另一份 VTK/OCCT/Qt。helpers 会自动引导 5 个 `<pkg>_DIR` 命中 PreCess 构建时的实例，
+  指向另一份 VTK/OCCT/Qt。helpers 会自动引导 6 个 `<pkg>_DIR`（含 `pybind11_DIR`，组件 Python 必需）
+  命中 PreCess 构建时的实例，
   版本钉对 FATAL 兜底（VTK/Qt/OCCT，spdlog 为 WARN）；
 - 双配置 SDK（多配置生成器单树、分 `--config Debug` / `--config Release` 两次安装到同一前缀）
   两种配置均可直接导入：Debug 库带 `d` 后缀（`PreCessBased.lib`），由 CMake 按
@@ -48,16 +49,20 @@ precess_plugin_install(ExternalDemoPlugin DESTINATION plugins)  # 相对值按 -
 
 **find_package 语义**：
 
-- `find_package(PreCess 0.4 REQUIRED COMPONENTS Feature)` 一次获得 `PreCess::Base`、
+- `find_package(PreCess 0.4 REQUIRED)` 一次获得 `PreCess::Base`（**缺省即导入，无需
+  `COMPONENTS`**——Base 恒可用，声明它无增量信息）、
   三方基线（spdlog/OCCT/VTK 组件/Qt6 经 `find_dependency` 自动拉齐）与插件构建 API；
   0.x 阶段版本策略为 SameMinorVersion；
-- 组件：`IO`/`Algo`/`Edit`/`Feature` 恒可用（系统接口声明，均映射 `PreCess::Base`）；
-  `Tests`（Catch2 测试 API）；`Python`（`PreCess::Runtime`，仅真实 Python 构建提供）；
+- 组件只服务**可选能力**（命名契约：组件名与导入目标同名）：`Python` ↔ `PreCess::Python`
+  （仅真实 Python 构建提供）、`Tests`（Catch2 测试 API，工具组件不产生目标）；
+  `Base`（冗余声明）与历史组件 `IO`/`Algo`/`Edit`/`Feature` 均已移除——写入按未知组件报错
+  （Base 基础能力裸 `find_package` 即得）；
 - 需要 PreCess 已用库的额外组件（如 `find_package(VTK COMPONENTS FiltersGeneral)`）：
   安全，同实例追加组件；
 - **许可证边界外**（gmsh GPL / tetgen AGPL / CGAL GPL）：SDK 不提供 Find 模块与路径引导，
   自行 `find_package` 并承担许可义务；gmsh 另需自行解决其对 OCCT 的相对路径硬编码耦合；
-- `PRECESS_RELOCATABLE_INSTALL=ON` 的可重定位安装不含路径引导文件：需自行保证三方路径一致。
+- `PRECESS_RELOCATABLE_INSTALL=ON` 的可重定位安装不含路径引导文件：需自行保证三方路径一致
+  （**默认 OFF 保本机零配置**——helpers 将 `find_package` 直指本机 deps，主力开发场景免配置）。
 
 **插件结构（最小接入面）**：Handler 实现 + Plugin 类（`Q_PLUGIN_METADATA`，IID
 `com.PreCess.systems.<io|algo|edit|feature>.<类名>/1.0`）+ JSON（`system` 路由字段）。

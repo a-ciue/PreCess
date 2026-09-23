@@ -2,13 +2,13 @@
 # PreCess CMake 包入口：find_package(PreCess) 一次性导入模型层目标（PreCess::Base）、
 # 传递依赖（spdlog/OCCT/VTK/Qt6）与插件构建 API（PreCessPlugin.cmake）。
 #
-# 组件（可选）：
-#   IO / Algo / Edit / Feature  系统接口声明（映射 PreCess::Base）
-#   Tests                       插件测试 API（PreCessPluginTesting.cmake + Catch2）
-#   Python                      内嵌解释器宿主（PreCess::Runtime，仅真实 Python 构建提供）
+# 组件（可选，服务可选能力；命名契约：组件名与其导入目标同名对应）：
+#   Python                      内嵌解释器宿主（PreCess::Python，仅真实 Python 构建提供）
+#   Tests                       插件测试 API（工具组件、不产生目标：PreCessPluginTesting.cmake + Catch2）
 include(CMakeFindDependencyMacro)
 
-# ① 三方包查找引导：指向 PreCess 构建时的同一实例（可重定位安装时本文件不随包）
+# ① 三方包查找引导：指向 PreCess 构建时的同一实例（可重定位安装时本文件不随包；
+#    helpers 带 NOT DEFINED 守卫，用户显式 -D <pkg>_DIR 始终最高优先）
 if(EXISTS "${CMAKE_CURRENT_LIST_DIR}/PreCess-find-package-helpers.cmake")
     include("${CMAKE_CURRENT_LIST_DIR}/PreCess-find-package-helpers.cmake")
 endif()

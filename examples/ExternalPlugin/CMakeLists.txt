@@ -7,7 +7,7 @@ project(ExternalDemoPlugin LANGUAGES CXX)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-find_package(PreCess 0.4 REQUIRED COMPONENTS Feature)
+find_package(PreCess 0.4 REQUIRED)
 # 插件自用的第三方依赖示例（同 PreCess 构建时的同一 VTK 实例上追加组件）：
 # find_package(VTK REQUIRED COMPONENTS FiltersGeneral)
 
