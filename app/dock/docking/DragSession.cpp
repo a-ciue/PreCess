@@ -395,7 +395,7 @@ void DragSession::startDrag(const QPoint& global_pos)
     else if (source_group->node())
         size = source_group->node()->geometry().size();
     if (size.isEmpty())
-        size = QSize(300, 200);
+        size = DockMetrics::kDefaultFloatingWindowSize;
 
     DockRegion* source_area = regionForGroup(source_group);
     DockWindow* window = nullptr;

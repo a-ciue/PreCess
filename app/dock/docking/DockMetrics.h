@@ -10,6 +10,7 @@
 #pragma once
 
 #include <QPoint>
+#include <QSize>
 
 namespace dock {
 
@@ -29,6 +30,9 @@ struct DockMetrics {
     static constexpr qreal kSeparatorLayerZ = 2.0;
     //! @brief 宿主视图置顶的 z 上限（避免 bringToFront 无界自增）
     static constexpr qreal kHostFrontMaxZ = 1000.0;
+
+    //! @brief 拖拽浮窗无法取得源尺寸时的兜底尺寸（像素）
+    static inline const QSize kDefaultFloatingWindowSize { 300, 200 };
 
     /**
      * @brief 是否达到拖拽启动阈值
