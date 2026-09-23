@@ -52,7 +52,7 @@ public:
         QQuickItem* relative_to = nullptr, QSize preferred_size = QSize(),
         PanelLaunch launch = PanelLaunch::Visible);
     //! @brief 序列化当前布局为 JSON 字符串
-    Q_INVOKABLE QString saveLayout() const;
+    Q_INVOKABLE QString saveLayout();
     //! @brief 从 JSON 字符串恢复布局；失败返回 false
     Q_INVOKABLE bool restoreLayout(const QString& layout);
 

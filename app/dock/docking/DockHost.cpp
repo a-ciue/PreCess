@@ -392,7 +392,7 @@ void DockHost::hideOtherGroups(PanelGroup* except)
     }
 }
 
-QByteArray DockHost::saveLayout() const
+QByteArray DockHost::saveLayout()
 {
     if (DragSession::self().phase() != DragSession::Phase::Idle)
         DragSession::self().cancel();

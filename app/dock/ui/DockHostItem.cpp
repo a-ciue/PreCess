@@ -177,7 +177,7 @@ void DockHostItem::placePanel(QQuickItem* panel, DockEdge edge, QQuickItem* rela
         area_item_->sync();
 }
 
-QString DockHostItem::saveLayout() const
+QString DockHostItem::saveLayout()
 {
     return host_ ? QString::fromUtf8(host_->saveLayout()) : QString();
 }
