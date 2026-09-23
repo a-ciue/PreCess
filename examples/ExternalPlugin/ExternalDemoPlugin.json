@@ -1,0 +1,8 @@
+{
+  "system": "FeatureSystem",
+  "handler": {
+    "name": "ExternalDemo",
+    "display_name": "外部插件示例",
+    "description": "find_package(PreCess) 独立构建的最小功能插件示例"
+  }
+}

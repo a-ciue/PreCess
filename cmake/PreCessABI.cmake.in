@@ -1,0 +1,62 @@
+# PreCess ABI 指纹：构建期记录，插件配置期比对（precess_add_*_plugin 自动调用）。
+# 目标：把"版本错配运行时崩溃/静默数据损坏"提前到配置期失败，给出明确错误。
+set(PRECESS_ABI_COMPILER_ID "@CMAKE_CXX_COMPILER_ID@")
+set(PRECESS_ABI_COMPILER_VERSION "@CMAKE_CXX_COMPILER_VERSION@")
+set(PRECESS_ABI_MSVC_TOOLSET "@MSVC_TOOLSET_VERSION@")
+set(PRECESS_ABI_CXX_STANDARD "@CMAKE_CXX_STANDARD@")
+set(PRECESS_ABI_SPDLOG_VERSION "@spdlog_VERSION@")
+set(PRECESS_ABI_VTK_VERSION "@VTK_VERSION@")
+set(PRECESS_ABI_OCCT_VERSION "@OpenCASCADE_VERSION@")
+set(PRECESS_ABI_QT_VERSION "@Qt6_VERSION@")
+
+# 编译器与工具链指纹校验（插件目标创建前调用）
+function(_precess_check_abi)
+    if(NOT CMAKE_CXX_COMPILER_ID STREQUAL "${PRECESS_ABI_COMPILER_ID}")
+        message(FATAL_ERROR
+            "编译器不匹配：PreCess 构建于 ${PRECESS_ABI_COMPILER_ID}，"
+            "当前为 ${CMAKE_CXX_COMPILER_ID}。插件必须与 PreCess 同编译器构建（C++ ABI 不兼容）")
+    endif()
+    if(NOT CMAKE_CXX_COMPILER_VERSION VERSION_EQUAL "${PRECESS_ABI_COMPILER_VERSION}")
+        message(FATAL_ERROR
+            "编译器版本不匹配：PreCess 构建于 ${PRECESS_ABI_COMPILER_ID} ${PRECESS_ABI_COMPILER_VERSION}，"
+            "当前为 ${CMAKE_CXX_COMPILER_VERSION}。请使用相同编译器版本构建插件；"
+            "确认无误需强制继续时可手动绕过（不建议）")
+    endif()
+    if(MSVC AND NOT "${MSVC_TOOLSET_VERSION}" STREQUAL "${PRECESS_ABI_MSVC_TOOLSET}")
+        message(FATAL_ERROR
+            "MSVC 工具集不匹配：PreCess 构建于 v${PRECESS_ABI_MSVC_TOOLSET}，"
+            "当前为 v${MSVC_TOOLSET_VERSION}")
+    endif()
+    if(NOT "${CMAKE_CXX_STANDARD}" STREQUAL "${PRECESS_ABI_CXX_STANDARD}")
+        message(FATAL_ERROR
+            "C++ 标准不匹配：PreCess 构建于 C++${PRECESS_ABI_CXX_STANDARD}，当前为 C++${CMAKE_CXX_STANDARD}")
+    endif()
+endfunction()
+
+# 三方库版本钉对：插件侧命中的实例必须与 PreCess 构建时一致
+function(_precess_check_third_party_versions)
+    if(NOT "${PRECESS_ABI_VTK_VERSION}" STREQUAL "" AND DEFINED VTK_VERSION
+            AND NOT VTK_VERSION VERSION_EQUAL "${PRECESS_ABI_VTK_VERSION}")
+        message(FATAL_ERROR
+            "VTK 版本不匹配：PreCess 构建于 ${PRECESS_ABI_VTK_VERSION}，当前命中 ${VTK_VERSION}。"
+            "插件须使用 PreCess 构建时的同一 VTK 实例（见 PreCess-find-package-helpers.cmake）")
+    endif()
+    if(NOT "${PRECESS_ABI_QT_VERSION}" STREQUAL "" AND DEFINED Qt6_VERSION
+            AND NOT Qt6_VERSION VERSION_EQUAL "${PRECESS_ABI_QT_VERSION}")
+        message(FATAL_ERROR
+            "Qt 版本不匹配：PreCess 构建于 ${PRECESS_ABI_QT_VERSION}，当前命中 ${Qt6_VERSION}。"
+            "插件须使用 PreCess 构建时的同一 Qt 实例")
+    endif()
+    if(NOT "${PRECESS_ABI_OCCT_VERSION}" STREQUAL "" AND DEFINED OpenCASCADE_VERSION
+            AND NOT OpenCASCADE_VERSION VERSION_EQUAL "${PRECESS_ABI_OCCT_VERSION}")
+        message(WARNING
+            "OpenCASCADE 版本不一致：PreCess 构建于 ${PRECESS_ABI_OCCT_VERSION}，"
+            "当前命中 ${OpenCASCADE_VERSION}（不强制，但存在 ABI 风险）")
+    endif()
+    if(NOT "${PRECESS_ABI_SPDLOG_VERSION}" STREQUAL "" AND DEFINED spdlog_VERSION
+            AND NOT spdlog_VERSION VERSION_EQUAL "${PRECESS_ABI_SPDLOG_VERSION}")
+        message(WARNING
+            "spdlog 版本不一致：PreCess 构建于 ${PRECESS_ABI_SPDLOG_VERSION}，"
+            "当前命中 ${spdlog_VERSION}")
+    endif()
+endfunction()

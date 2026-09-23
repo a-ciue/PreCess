@@ -1,0 +1,21 @@
+# PreCess 三方包查找引导：记录 PreCess 构建时各三方包的查找位置，
+# 引导插件侧 find_package 命中同一实例（仅在用户未显式设置时写入，不覆盖用户指定）。
+# 与 PreCessABI.cmake 的版本钉对配合：即使引导失效，错配也会在配置期报错。
+set(_precess_find_hints
+    spdlog_DIR "@spdlog_DIR@"
+    OpenCASCADE_DIR "@OpenCASCADE_DIR@"
+    VTK_DIR "@VTK_DIR@"
+    Qt6_DIR "@Qt6_DIR@"
+    freetype_DIR "@freetype_DIR@"
+    gmsh_DIR "@gmsh_DIR@"
+)
+while(_precess_find_hints)
+    list(POP_FRONT _precess_find_hints _precess_var _precess_val)
+    if(NOT DEFINED ${_precess_var} AND NOT "${_precess_val}" STREQUAL "")
+        set(${_precess_var} "${_precess_val}" CACHE PATH
+            "PreCess 构建时使用的三方包实例（经 PreCess-find-package-helpers 引导）")
+    endif()
+endwhile()
+unset(_precess_find_hints)
+unset(_precess_var)
+unset(_precess_val)

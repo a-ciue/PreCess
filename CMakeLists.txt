@@ -137,6 +137,9 @@ add_subdirectory(plugins)
 add_subdirectory(app)
 add_subdirectory(resource)
 
+# 插件 SDK 打包：开发文件安装 + find_package(PreCess) 包配置生成（见 cmake/PreCessPackage.cmake）
+include(PreCessPackage)
+
 set(CPACK_PACKAGE_NAME ${MYNAME})
 set(CPACK_PACKAGE_VENDOR ${MYNAME})
 set(CPACK_PACKAGE_ICON "${CMAKE_SOURCE_DIR}\\resource\\${MYNAME}.ico")
@@ -232,6 +235,12 @@ cpack_add_component(AllPlugins
     DESCRIPTION "所有插件"
     DEPENDS ${MYNAME}
     GROUP Plugins
+    INSTALL_TYPES Full
+)
+cpack_add_component(Development
+    DISPLAY_NAME "${MYNAME} 插件 SDK"
+    DESCRIPTION "插件开发文件（头文件、模型层库、CMake 包配置），供 find_package(PreCess) 独立构建插件"
+    DEPENDS ${MYNAME}
     INSTALL_TYPES Full
 )
 cpack_add_component_group(Plugins

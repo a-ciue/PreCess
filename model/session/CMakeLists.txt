@@ -1,4 +1,5 @@
-add_library(Session STATIC
+# OBJECT 库：对象经 model/CMakeLists.txt 的 PreCessBase 聚合导出（依赖方向仍由此处强制）
+add_library(Session OBJECT
     Session.cpp
     SessionQuery.cpp
 )

@@ -1,4 +1,5 @@
-add_library(IOSystem STATIC ModelIOSystem.cpp ModelIOSystemRegister.cpp)
+# OBJECT 库：对象经 model/CMakeLists.txt 的 PreCessBase 聚合导出（依赖方向仍由此处强制）
+add_library(IOSystem OBJECT ModelIOSystem.cpp ModelIOSystemRegister.cpp)
 target_link_libraries(IOSystem PRIVATE 
 	Data 
 	spdlog::spdlog $<$<BOOL:${MINGW}>:ws2_32>
