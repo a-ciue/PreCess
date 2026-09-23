@@ -895,3 +895,19 @@ TEST_CASE("DockDrag: drag threshold uses manhattan distance")
     CHECK(placed.console->isShown());
     CHECK_FALSE(placed.console->isDetached());
 }
+
+TEST_CASE("DockDrag: fixture cleanup evacuates floating windows on scope exit")
+{
+    {
+        DockFixture f;
+        PlacedDocks placed(f);
+        placed.console->showPanel();
+
+        REQUIRE(dock::DragSession::self().detachGroup(placed.console->group()));
+        REQUIRE(dock::DockCatalog::self().windows().size() == 1);
+    } // DockFixture 析构：RAII 兜底清理
+
+    CHECK(dock::DockCatalog::self().windows().isEmpty());
+    CHECK(dock::DragSession::self().phase() == dock::DragSession::Phase::Idle);
+    CHECK(dock::DockCatalog::self().host() == nullptr);
+}

@@ -5,9 +5,12 @@
 
 #pragma once
 
+#include "docking/DockCatalog.h"
 #include "docking/DockPanel.h"
 #include "docking/DockHost.h"
 #include "docking/DockView.h"
+#include "docking/DockWindow.h"
+#include "docking/DragSession.h"
 #include "tree/NodeMetrics.h"
 
 #include <QString>
@@ -16,6 +19,23 @@
 #include <vector>
 
 namespace docktest {
+
+//! @brief 用例退出兜底清理：回收全部浮动窗口并静默中止拖拽会话（可重复调用）
+//!
+//! 断言失败会提前退出，用例尾部的清理语句不会执行；本守卫在析构中兜底，
+//! 避免浮窗/会话残留污染共享单例（DockCatalog/DragSession）。
+struct DockSessionCleanup {
+    ~DockSessionCleanup() { clean(); }
+
+    void clean()
+    {
+        dock::DragSession& session = dock::DragSession::self();
+        session.abort();
+        const QList<dock::DockWindow*> windows = dock::DockCatalog::self().windows();
+        for (dock::DockWindow* window : windows)
+            session.destroyFloatingWindow(window);
+    }
+};
 
 //! @brief 记录几何与可见性的桩视图
 class StubView : public dock::DockView
@@ -83,6 +103,8 @@ struct DockFixture {
     StubView main_view { &host };
     StubView central_view;
     std::vector<std::unique_ptr<StubView>> views;
+    //! @brief 最后声明：析构最先执行，确保在 host（及其面板）销毁前回收浮窗
+    DockSessionCleanup cleanup;
 };
 
 //! @brief 与 Main.qml Component.onCompleted 等价的停靠调用序列

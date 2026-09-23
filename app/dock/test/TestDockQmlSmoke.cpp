@@ -10,6 +10,7 @@
  */
 
 #include "Docking.h"
+#include "DockTestSupport.h"
 
 #include "docking/DockCatalog.h"
 #include "docking/DockPanel.h"
@@ -55,6 +56,9 @@ QGuiApplication& testApplication()
 TEST_CASE("DockQml: docking area loads from QML and lays out docks")
 {
     testApplication();
+
+    // 断言失败提前退出时的兜底清理（共享单例：DockCatalog/DragSession）
+    docktest::DockSessionCleanup cleanup;
 
     QQmlEngine engine;
     dock::init(&engine);
@@ -585,6 +589,8 @@ TEST_CASE("DockQml: docking area loads from QML and lays out docks")
         CHECK(panel_b->group()->shownPanels().size() == shown_before.size());
     }
 
+    // 面板仍存活时先回收浮窗（析构守卫只作失败兜底）
+    cleanup.clean();
     area_item->setParentItem(nullptr);
     delete root;
 }
