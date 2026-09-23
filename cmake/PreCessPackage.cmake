@@ -85,7 +85,6 @@ set(_precess_config_files
     "${CMAKE_SOURCE_DIR}/cmake/PreCessPlugin.cmake"
     "${CMAKE_SOURCE_DIR}/cmake/PreCessPluginTesting.cmake"
     "${CMAKE_SOURCE_DIR}/cmake/PreCessModules.cmake"
-    "${CMAKE_SOURCE_DIR}/cmake/Findtetgen.cmake"
     "${CMAKE_SOURCE_DIR}/cmake/Findfreetype.cmake"
 )
 if(NOT PRECESS_RELOCATABLE_INSTALL)

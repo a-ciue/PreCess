@@ -31,7 +31,9 @@ cmake --install build    # 装入 <PreCess 安装前缀>/plugins，启动 PreCes
 
 ## 插件自用第三方依赖
 
-插件需要 PreCess 未用的库（如 `gmsh`、`tetgen`）时自行 `find_package`；
+插件需要 PreCess 未用的库时自行 `find_package`。**许可证边界外**的库
+（`gmsh` GPL、`tetgen` AGPL、`CGAL` GPLv3）SDK 不提供任何查找引导
+（无随包 Find 模块、无 helpers 路径），许可义务由插件开发者自行承担；
 需要 **PreCess 已用库**（如 VTK）的额外组件时同样正常 `find_package`，
 会命中 PreCess 构建时的同一实例（版本钉对在配置期校验）：
 
