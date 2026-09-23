@@ -267,9 +267,7 @@ bool DragSession::reattachGroup(PanelGroup* group)
             host->region()->attachGroup(group, DropZone::OuterRight, nullptr, QSize());
             group->setParent(host->region());
         } else {
-            // 节点未摘出：交还窗口保持浮动，避免分组悬空
-            if (window && group->node())
-                window->takeGroup(group, group->node());
+            // 无布局节点可兜底：无法停靠，保持现状（分组仍归浮窗）
             return false;
         }
     }

@@ -494,8 +494,11 @@ bool DockHost::restoreLayout(const QByteArray& layout)
 
     RestoreContext ctx;
     ctx.host = this;
-    for (DockPanel* panel : DockCatalog::self().panels())
+    for (DockPanel* panel : DockCatalog::self().panels()) {
+        if (!panel)
+            continue;
         ctx.panels.insert(panel->uniqueName(), panel);
+    }
 
     // 建树期间先摘出中央根，避免 setRootNode 误删被复用的中央节点
     region_->takeRootNode();
