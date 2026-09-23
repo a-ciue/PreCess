@@ -18,12 +18,17 @@
 #include <TopoDS_Edge.hxx>
 #include <TopoDS_Face.hxx>
 #include <TopoDS_Shape.hxx>
-#include <vtkDataArray.h>
 #include <vtkCellArray.h>
+#include <vtkDataArray.h>
+#include <vtkExtractSelection.h>
+#include <vtkGeometryFilter.h>
+#include <vtkIdTypeArray.h>
 #include <vtkPoints.h>
 #include <vtkPolyData.h>
 #include <vtkProperty.h>
 #include <vtkRenderer.h>
+#include <vtkSelection.h>
+#include <vtkSelectionNode.h>
 #include <gp_Pnt.hxx>
 
 #include <algorithm>
@@ -78,6 +83,56 @@ void appendShapeId(NCollection_Map<IVtk_IdType>& ids,
     if (id >= 0)
         ids.Add(id);
 }
+
+/**
+ * @brief 将命中子形状对应的单元一次性提取为独立数据。
+ *
+ * 诊断结果不再通过过滤器长期连接主几何数据，避免视角变化时反复触发
+ * 主几何管线更新。提取后的数据只在诊断结果变化时重建。
+ */
+void extractDiagnosticCells(vtkPolyData* source,
+    vtkDataArray* subshape_ids,
+    const NCollection_Map<IVtk_IdType>& selected_subshapes,
+    vtkPolyData& output)
+{
+    output.Initialize();
+    if (!source || !subshape_ids || selected_subshapes.Extent() == 0) {
+        output.Modified();
+        return;
+    }
+
+    const vtkIdType cell_count = std::min(
+        source->GetNumberOfCells(), subshape_ids->GetNumberOfTuples());
+    vtkNew<vtkIdTypeArray> cell_ids;
+    cell_ids->SetNumberOfComponents(1);
+    for (vtkIdType cell_id = 0; cell_id < cell_count; ++cell_id) {
+        const auto subshape_id = static_cast<IVtk_IdType>(subshape_ids->GetTuple1(cell_id));
+        if (selected_subshapes.Contains(subshape_id))
+            cell_ids->InsertNextValue(cell_id);
+    }
+    if (cell_ids->GetNumberOfValues() == 0) {
+        output.Modified();
+        return;
+    }
+
+    vtkNew<vtkSelectionNode> selection_node;
+    selection_node->SetFieldType(vtkSelectionNode::CELL);
+    selection_node->SetContentType(vtkSelectionNode::INDICES);
+    selection_node->SetSelectionList(cell_ids);
+    vtkNew<vtkSelection> selection;
+    selection->AddNode(selection_node);
+
+    vtkNew<vtkExtractSelection> extract_selection;
+    extract_selection->SetInputData(0, source);
+    extract_selection->SetInputData(1, selection);
+    extract_selection->Update();
+
+    vtkNew<vtkGeometryFilter> geometry_filter;
+    geometry_filter->SetInputConnection(extract_selection->GetOutputPort());
+    geometry_filter->Update();
+    output.ShallowCopy(geometry_filter->GetOutput());
+    output.Modified();
+}
 }
 
 GeometryTopologyDiagnosticActor::GeometryTopologyDiagnosticActor(vtkRenderer* renderer)
@@ -87,8 +142,8 @@ GeometryTopologyDiagnosticActor::GeometryTopologyDiagnosticActor(vtkRenderer* re
         throw std::invalid_argument("GeometryTopologyDiagnosticActor: renderer cannot be null");
 
     auto setup_pipeline = [this](DiagnosticPipeline& pipeline, size_t color_index, bool edge) {
-        pipeline.filter->SetDoFiltering(true);
-        pipeline.mapper->SetInputConnection(pipeline.filter->GetOutputPort());
+        pipeline.mapper->SetInputData(pipeline.data);
+        pipeline.mapper->SetScalarVisibility(false);
         if (edge)
             pipeline.mapper->SetRelativeCoincidentTopologyLineOffsetParameters(0, kDiagnosticLineUnits);
         else
@@ -160,14 +215,14 @@ void GeometryTopologyDiagnosticActor::loadShape(const TopoDS_Shape& shape,
     interfering_faces_.clear();
     category_computed_.fill(false);
 
-    // 旧结果的子形状 ID 立即从过滤器里清掉：否则在重新计算完成之前，这些过滤器
-    // 仍指向上一份几何的子形状，会在新模型上短暂高亮错误的面和边。
-    {
-        NCollection_Map<IVtk_IdType> empty_ids;
-        for (DiagnosticPipeline& pipeline : pipelines_)
-            pipeline.filter->SetData(empty_ids);
-        invalid_edge_pipeline_.filter->SetData(empty_ids);
-    }
+    // 立即清掉旧模型的独立诊断数据，避免新模型计算完成前短暂显示旧结果。
+    auto clear_pipeline = [](DiagnosticPipeline& pipeline) {
+        pipeline.data->Initialize();
+        pipeline.data->Modified();
+    };
+    for (DiagnosticPipeline& pipeline : pipelines_)
+        clear_pipeline(pipeline);
+    clear_pipeline(invalid_edge_pipeline_);
     auto clear_marker = [](SizeMarkerPipeline& marker) {
         vtkNew<vtkPoints> points;
         vtkNew<vtkCellArray> vertices;
@@ -179,18 +234,9 @@ void GeometryTopologyDiagnosticActor::loadShape(const TopoDS_Shape& shape,
     clear_marker(small_face_marker_);
 
     for (size_t index = 0; index < pipelines_.size(); ++index) {
-        const bool edge = isEdgeCategory(static_cast<GeometryTopologyDiagnosticCategory>(index));
-        DiagnosticPipeline& pipeline = pipelines_[index];
-        pipeline.filter->SetInputData(edge ? line_data_ : face_data_);
-        vtkDataArray* ids = edge ? line_sub_ids_ : face_sub_ids_;
-        if (ids && ids->GetName())
-            pipeline.filter->SetIdsArrayName(ids->GetName());
         if (category_enabled_[index])
             rebuildCategory(static_cast<GeometryTopologyDiagnosticCategory>(index));
     }
-    invalid_edge_pipeline_.filter->SetInputData(line_data_);
-    if (line_sub_ids_ && line_sub_ids_->GetName())
-        invalid_edge_pipeline_.filter->SetIdsArrayName(line_sub_ids_->GetName());
     applyVisibility();
 }
 
@@ -225,6 +271,7 @@ void GeometryTopologyDiagnosticActor::setSmallEdgeLengthThreshold(double thresho
         diagnostics_->small_edges.clear();
     if (category_enabled_[category]) {
         rebuildCategory(GeometryTopologyDiagnosticCategory::SmallEdge);
+        applyVisibility();
     }
 }
 
@@ -241,6 +288,7 @@ void GeometryTopologyDiagnosticActor::setSmallFaceAreaThreshold(double threshold
         diagnostics_->small_faces.clear();
     if (category_enabled_[category]) {
         rebuildCategory(GeometryTopologyDiagnosticCategory::SmallFace);
+        applyVisibility();
     }
 }
 
@@ -249,8 +297,10 @@ void GeometryTopologyDiagnosticActor::setInterferingFaces(std::vector<TopoDS_Fac
     interfering_faces_ = std::move(faces);
     const size_t category = categoryIndex(GeometryTopologyDiagnosticCategory::InterferingFace);
     category_computed_[category] = true;
-    if (category_enabled_[category])
+    if (category_enabled_[category]) {
         rebuildCategory(GeometryTopologyDiagnosticCategory::InterferingFace);
+        applyVisibility();
+    }
 }
 
 void GeometryTopologyDiagnosticActor::ensureDiagnostics(
@@ -477,12 +527,18 @@ void GeometryTopologyDiagnosticActor::rebuildCategory(GeometryTopologyDiagnostic
                     appendShapeId(invalid_edge_ids, occ_shape_, edge.Current());
             }
         }
-        invalid_edge_pipeline_.filter->SetData(invalid_edge_ids);
         break;
     default:
         break;
     }
-    pipelines_[categoryIndex(category)].filter->SetData(ids);
+    const bool edge_category = isEdgeCategory(category);
+    extractDiagnosticCells(edge_category ? line_data_ : face_data_,
+        edge_category ? line_sub_ids_ : face_sub_ids_, ids,
+        *pipelines_[categoryIndex(category)].data);
+    if (category == GeometryTopologyDiagnosticCategory::InvalidTopology) {
+        extractDiagnosticCells(line_data_, line_sub_ids_, invalid_edge_ids,
+            *invalid_edge_pipeline_.data);
+    }
     rebuildSizeMarker(category);
 }
 
@@ -533,12 +589,21 @@ void GeometryTopologyDiagnosticActor::rebuildSizeMarker(
 
 void GeometryTopologyDiagnosticActor::applyVisibility()
 {
-    for (size_t index = 0; index < pipelines_.size(); ++index)
-        pipelines_[index].actor->SetVisibility(geometry_visible_ && category_enabled_[index]);
+    for (size_t index = 0; index < pipelines_.size(); ++index) {
+        DiagnosticPipeline& pipeline = pipelines_[index];
+        pipeline.actor->SetVisibility(geometry_visible_ && category_enabled_[index]
+            && pipeline.data->GetNumberOfCells() > 0);
+    }
     invalid_edge_pipeline_.actor->SetVisibility(
-        geometry_visible_ && category_enabled_[categoryIndex(GeometryTopologyDiagnosticCategory::InvalidTopology)]);
+        geometry_visible_
+        && category_enabled_[categoryIndex(GeometryTopologyDiagnosticCategory::InvalidTopology)]
+        && invalid_edge_pipeline_.data->GetNumberOfCells() > 0);
     small_edge_marker_.actor->SetVisibility(
-        geometry_visible_ && category_enabled_[categoryIndex(GeometryTopologyDiagnosticCategory::SmallEdge)]);
+        geometry_visible_
+        && category_enabled_[categoryIndex(GeometryTopologyDiagnosticCategory::SmallEdge)]
+        && small_edge_marker_.data->GetNumberOfPoints() > 0);
     small_face_marker_.actor->SetVisibility(
-        geometry_visible_ && category_enabled_[categoryIndex(GeometryTopologyDiagnosticCategory::SmallFace)]);
+        geometry_visible_
+        && category_enabled_[categoryIndex(GeometryTopologyDiagnosticCategory::SmallFace)]
+        && small_face_marker_.data->GetNumberOfPoints() > 0);
 }

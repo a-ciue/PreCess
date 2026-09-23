@@ -8,7 +8,6 @@
 #include "GeometryTopologyDiagnosticCategory.h"
 
 #include <IVtkOCC_Shape.hxx>
-#include <IVtkTools_SubPolyDataFilter.hxx>
 #include <Standard_Handle.hxx>
 #include <TopoDS_Face.hxx>
 #include <vtkActor.h>
@@ -61,9 +60,9 @@ public:
     void setComponentLabel(std::string label) { component_label_ = std::move(label); }
 
 private:
-    /** @brief 保存一种诊断类别的子形状过滤器、映射器和 Actor。 */
+    /** @brief 保存一种诊断类别的独立静态数据、映射器和 Actor。 */
     struct DiagnosticPipeline {
-        vtkNew<IVtkTools_SubPolyDataFilter> filter;
+        vtkNew<vtkPolyData> data;
         vtkNew<vtkPolyDataMapper> mapper;
         vtkNew<vtkActor> actor;
     };
@@ -83,7 +82,7 @@ private:
         const GeometryTopologyDiagnosticOptions& options, double elapsed_ms);
     /** @brief 结果已算过时复用缓存，但仍按统一格式输出一次该类别日志。 */
     void logCachedDiagnostics(GeometryTopologyDiagnosticCategory category);
-    /** @brief 按缓存结果更新指定类别的子形状过滤集合。 */
+    /** @brief 按缓存结果重建指定类别的独立诊断数据。 */
     void rebuildCategory(GeometryTopologyDiagnosticCategory category);
     /** @brief 更新细小边中点或细小面质心的固定屏幕尺寸标记。 */
     void rebuildSizeMarker(GeometryTopologyDiagnosticCategory category);
