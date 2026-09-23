@@ -550,6 +550,13 @@ bool DockHost::restoreLayout(const QByteArray& layout)
             }
             delete group;
         }
+        // 防御：main_root 子树可能复用了 central_node_，删除前先摘出并解除父子关系，
+        // 避免其随 main_root 一同析构后被后续重置流程解引用
+        if (central_node_) {
+            if (BoxNode* parent = central_node_->parent())
+                parent->detachNode(central_node_, false);
+            central_node_->setParent(nullptr);
+        }
         delete main_root;
         // 前置校验后不应到达：防御性重置为默认布局并通知视图
         clearLayoutInternal(true);
