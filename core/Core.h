@@ -43,6 +43,15 @@ enum class SelectMode {
 };
 
 /**
+ * @brief 选择操作类型：点选与框选共用
+ */
+enum class SelectOp {
+    Append,
+    Remove,
+    Toggle
+};
+
+/**
  * @brief 基本索引类型定义
  */
 using Index = int;

@@ -151,12 +151,12 @@ void EdgeSelectorHighlight::select(double posx, double posy)
     picker->Pick(posx, posy, 0, renderer_);
 
     select(posx, posy, picker.GetPointer(), picker->GetActor(),
-        picker->GetCellId(), picker->GetPointId());
+        picker->GetCellId(), picker->GetPointId(), SelectOp::Toggle);
 }
 
 void EdgeSelectorHighlight::select(double posx, double posy,
     vtkHardwarePicker* picker, vtkActor* picked_actor,
-    vtkIdType picked_cell_id, vtkIdType /*picked_point_id*/)
+    vtkIdType picked_cell_id, vtkIdType /*picked_point_id*/, SelectOp /*op*/)
 {
     if (!picked_actor || picked_cell_id == -1) {
         clear();
@@ -209,7 +209,7 @@ void EdgeSelectorHighlight::setupHighlightStyle(vtkActor& actor, vtkMapper& mapp
 
 void EdgeSelectorHighlight::selectArea(
     const std::unordered_map<vtkProp*, std::unordered_set<vtkIdType>>& hits,
-    int xmin, int ymin, int xmax, int ymax)
+    int xmin, int ymin, int xmax, int ymax, SelectOp /*op*/)
 {
     // 与点选对齐：从 face/edge/solid 三个 actor 的命中 cell 派生边并合并端点对。
     // face CELLS 主路径健壮（面表面有 z 遮挡）；edge actor 补独立/物化边；solid 表面补体网格表面边。

@@ -86,7 +86,7 @@ SelectionVtk ComponentSelectorHighlight::get() const
     return back_selection;
 }
 
-void ComponentSelectorHighlight::select(double posx, double posy)
+void ComponentSelectorHighlight::select(double posx, double posy, SelectOp /*op*/)
 {
     component_picker_->Pick(posx, posy, 0, renderer_);
 
@@ -112,7 +112,7 @@ void ComponentSelectorHighlight::select(double posx, double posy)
     updateHighlight();
 }
 
-void ComponentSelectorHighlight::selectArea(int xmin, int ymin, int xmax, int ymax)
+void ComponentSelectorHighlight::selectArea(int xmin, int ymin, int xmax, int ymax, SelectOp /*op*/)
 {
     // 框选恒为替换：先清空，再选中本次框内的全部组件
     clear();

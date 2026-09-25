@@ -100,12 +100,12 @@ void SolidSelectorHighlight::select(double posx, double posy)
     picker->Pick(posx, posy, 0, renderer_);
 
     select(posx, posy, picker.GetPointer(), picker->GetActor(),
-        picker->GetCellId(), picker->GetPointId());
+        picker->GetCellId(), picker->GetPointId(), SelectOp::Toggle);
 }
 
 void SolidSelectorHighlight::select(double posx, double posy,
     vtkHardwarePicker* picker, vtkActor* picked_actor,
-    vtkIdType picked_cell_id, vtkIdType /*picked_point_id*/)
+    vtkIdType picked_cell_id, vtkIdType /*picked_point_id*/, SelectOp /*op*/)
 {
     if (!picked_actor || picked_cell_id < 0) {
         clear();
@@ -158,7 +158,7 @@ void SolidSelectorHighlight::setupHighlightStyle(vtkActor& actor, vtkMapper& map
 
 void SolidSelectorHighlight::selectArea(
     const std::unordered_map<vtkProp*, std::unordered_set<vtkIdType>>& hits,
-    int /*xmin*/, int /*ymin*/, int /*xmax*/, int /*ymax*/)
+    int /*xmin*/, int /*ymin*/, int /*xmax*/, int /*ymax*/, SelectOp /*op*/)
 {
     // solid actor 的命中即体表面 render cell id（MeshSelectManager 一次多 actor 拾取、已清空后分发）
     auto it = hits.find(&select_op_.getSolidActor());

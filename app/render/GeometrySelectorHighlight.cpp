@@ -106,7 +106,7 @@ GeometrySelectionVtk GeometryFaceSelectorHighlight::get() const
     return s;
 }
 
-void GeometryFaceSelectorHighlight::toggle(IVtk_IdType subId, Index geomId)
+void GeometryFaceSelectorHighlight::toggle(IVtk_IdType subId, Index geomId, SelectOp /*op*/)
 {
     auto [it, inserted] = selections_.insert_or_assign(subId, geomId);
     if (!inserted)
@@ -170,7 +170,7 @@ GeometrySelectionVtk GeometryEdgeSelectorHighlight::get() const
     return s;
 }
 
-void GeometryEdgeSelectorHighlight::toggle(IVtk_IdType subId, Index geomId)
+void GeometryEdgeSelectorHighlight::toggle(IVtk_IdType subId, Index geomId, SelectOp /*op*/)
 {
     auto [it, inserted] = selections_.insert_or_assign(subId, geomId);
     if (!inserted)
@@ -234,7 +234,7 @@ GeometrySelectionVtk GeometryVertexSelectorHighlight::get() const
     return s;
 }
 
-void GeometryVertexSelectorHighlight::toggle(IVtk_IdType subId, Index geomId)
+void GeometryVertexSelectorHighlight::toggle(IVtk_IdType subId, Index geomId, SelectOp /*op*/)
 {
     auto [it, inserted] = selections_.insert_or_assign(subId, geomId);
     if (!inserted)
@@ -299,7 +299,7 @@ GeometrySelectionVtk GeometrySolidSelectorHighlight::get() const
     return s;
 }
 
-void GeometrySolidSelectorHighlight::toggleSolid(GeomSolidId solidId, const std::vector<IVtk_IdType>& faceSubIds)
+void GeometrySolidSelectorHighlight::toggleSolid(GeomSolidId solidId, const std::vector<IVtk_IdType>& faceSubIds, SelectOp /*op*/)
 {
     auto [it, inserted] = selections_.insert_or_assign(solidId, solidId);
     if (!inserted)

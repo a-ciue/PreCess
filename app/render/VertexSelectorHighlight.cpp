@@ -124,7 +124,7 @@ void VertexSelectorHighlight::select(double posx, double posy)
 
 void VertexSelectorHighlight::select(double posx, double posy,
     vtkHardwarePicker* picker, vtkActor* picked_actor,
-    vtkIdType /*picked_cell_id*/, vtkIdType picked_point_id)
+    vtkIdType /*picked_cell_id*/, vtkIdType picked_point_id, SelectOp /*op*/)
 {
     // 未命中点（SnapToMeshPoint 取不到）按原语义保留已有选择
     if (!picker || !picked_actor || picked_point_id == -1) {
@@ -175,7 +175,7 @@ void VertexSelectorHighlight::setupHighlightStyle(vtkActor& actor, vtkMapper& ma
 
 void VertexSelectorHighlight::selectArea(
     const std::unordered_map<vtkProp*, std::unordered_set<vtkIdType>>& hits,
-    int xmin, int ymin, int xmax, int ymax)
+    int xmin, int ymin, int xmax, int ymax, SelectOp /*op*/)
 {
     // 与点选对齐：从 face/edge/solid 三个 actor 的命中 cell 派生点并合并（一次多 actor 拾取结果）。
     std::unordered_set<vtkIdType> local_ids;

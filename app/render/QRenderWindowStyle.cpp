@@ -1,11 +1,21 @@
 #include "QRenderWindowStyle.h"
 #include "InteractionService.h"
 #include "SelectManager.h"
+#include "Core.h"
 #include <vtkObjectFactory.h>
 #include <vtkRenderWindowInteractor.h>
 #include <vtkRendererCollection.h>
 
 vtkStandardNewMacro(QRenderWindowStyle);
+
+SelectOp selectOpFromModifiers(bool shift, bool ctrl)
+{
+    if (shift && ctrl)
+        return SelectOp::Remove;
+    if (ctrl)
+        return SelectOp::Append;
+    return SelectOp::Toggle;
+}
 
 QRenderWindowStyle::QRenderWindowStyle()
 {
