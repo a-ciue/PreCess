@@ -318,18 +318,7 @@ void EdgeSelectorHighlight::selectArea(
     }
 
     // 框选恒为替换：manager 已先清空，命中即本组件的新选择（端点对相同即同一条边，set）
-    auto match_selected = [&](const SelectedEdge& e) {
-        return std::find_if(selections_.begin(), selections_.end(),
-            [&](const SelectedEdge& s) {
-                return _is_selected(e.endpoints, std::optional<std::array<vtkIdType, 2>>(s.endpoints));
-            });
-    };
-
-    for (const auto& e : picked_edges) {
-        auto it = match_selected(e);
-        if (it == selections_.end())
-            selections_.push_back(e);
-    }
+    selections_ = std::move(picked_edges);
 
     enableHighlight();
 }
