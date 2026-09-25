@@ -47,6 +47,9 @@ public:
 
     /** @brief 启用或停用一种几何拓扑诊断类别。 */
     void setCategoryEnabled(GeometryTopologyDiagnosticCategory category, bool enabled);
+    /** @brief 仅同步全部类别开关，不触发诊断重建；供加载新 Shape 前配置。 */
+    void setCategoryFlagsOnly(
+        const std::array<bool, kGeometryTopologyDiagnosticCategoryCount>& enabled);
     /** @brief 设置所属几何组件是否可见。 */
     void setGeometryVisible(bool visible);
     /** @brief 设置细小边诊断使用的长度阈值。 */

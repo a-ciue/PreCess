@@ -252,6 +252,12 @@ void GeometryTopologyDiagnosticActor::setCategoryEnabled(
     applyVisibility();
 }
 
+void GeometryTopologyDiagnosticActor::setCategoryFlagsOnly(
+    const std::array<bool, kGeometryTopologyDiagnosticCategoryCount>& enabled)
+{
+    category_enabled_ = enabled;
+}
+
 void GeometryTopologyDiagnosticActor::setGeometryVisible(bool visible)
 {
     geometry_visible_ = visible;

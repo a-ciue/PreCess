@@ -54,11 +54,9 @@ void GeometryActorManager::loadGeometry(const GeometryDataVtk& geometry_data)
     }
 
     auto& actor_ptr = component_actors_[component_id];
-    for (size_t category = 0; category < topology_diagnostic_category_enabled_.size(); ++category) {
-        actor_ptr->topologyDiagnostics().setCategoryEnabled(
-            static_cast<GeometryTopologyDiagnosticCategory>(category),
-            topology_diagnostic_category_enabled_[category]);
-    }
+    // 先同步类别开关但不计算，避免复用 Actor 时对即将替换的旧 Shape 重建诊断。
+    actor_ptr->topologyDiagnostics().setCategoryFlagsOnly(
+        topology_diagnostic_category_enabled_);
     actor_ptr->topologyDiagnostics().setSmallEdgeLengthThreshold(
         topology_diagnostic_small_edge_length_);
     actor_ptr->topologyDiagnostics().setSmallFaceAreaThreshold(
