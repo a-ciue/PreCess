@@ -9,9 +9,6 @@
 #include <memory>
 #include <vector>
 
-class TopoDS_Vertex;
-class gp_Pnt;
-
 /**
  * @brief 一组在 OCC 数值精度内覆盖相同几何区域的面。
  */
@@ -140,93 +137,6 @@ public:
         double small_face_area_threshold,
         const GeometryTopologyDiagnosticOptions& options = {},
         const std::atomic<bool>* cancel = nullptr);
-
-    /**
-     * @brief 将一条 Edge 按归一化比例分成两条 Edge。
-     * @param ratio 从起点到终点的比例，必须位于 (0, 1)。
-     */
-    static TopoDS_Shape splitEdge(
-        const TopoDS_Shape& root,
-        const TopoDS_Edge& edge,
-        double ratio);
-
-    /**
-     * @brief 将一条 Edge 压缩到目标位置。
-     * @param target_position 压缩后的公共顶点位置。
-     */
-    static TopoDS_Shape collapseEdge(
-        const TopoDS_Shape& root,
-        const TopoDS_Edge& edge,
-        const gp_Pnt& target_position);
-
-    /**
-     * @brief 根据相邻曲线、Face、边数和边长推荐应保留的端点。
-     */
-    static TopoDS_Vertex recommendCollapseVertex(
-        const TopoDS_Shape& root,
-        const TopoDS_Edge& edge);
-
-    /**
-     * @brief 将两个或多个 Vertex 合并到目标位置。
-     * @param target_position 合并后的公共顶点位置。
-     */
-    static TopoDS_Shape mergeVertices(
-        const TopoDS_Shape& root,
-        const std::vector<TopoDS_Vertex>& vertices,
-        const gp_Pnt& target_position);
-
-    /**
-     * @brief 将一组连通且同域的 Face 合并为一个 Face。
-     *
-     * 删除选中面之间的内部共享边；若同一 Edge 还是根 Compound 的独立子节点，也会一并删除。
-     * 其他边界保持不变，避免同时合并 root 中未选中的同域面。
-     *
-     * @param root 当前几何根形状。
-     * @param faces 两个或多个属于 root 的待合并面。
-     * @return 合并后的完整根形状。
-     *
-     * @throws std::invalid_argument 输入为空、面数量不足、存在重复面或面不属于 root。
-     * @throws std::runtime_error 所选面不连通、不同域、未能完整合并或结果拓扑无效。
-     */
-    static TopoDS_Shape mergeFaces(
-        const TopoDS_Shape& root,
-        const std::vector<TopoDS_Face>& faces);
-
-    /**
-     * @brief 将一组连续且同域的 Edge 合并为一个 Edge。
-     *
-     * 仅开放选中边之间只连接两条选中边的公共顶点，端点及其他分支节点保持不变。
-     *
-     * @param root 当前几何根形状。
-     * @param edges 两个或多个属于 root 的待合并边。
-     * @return 合并后的完整根形状。
-     *
-     * @throws std::invalid_argument 输入为空、边数量不足、存在重复边或边不属于 root。
-     * @throws std::runtime_error 所选边不连续、不同域、未能完整合并或结果拓扑无效。
-     */
-    static TopoDS_Shape mergeEdges(
-        const TopoDS_Shape& root,
-        const std::vector<TopoDS_Edge>& edges);
-
-    /**
-     * @brief 使用已经位于目标面上的几何边分割一个 Face。
-     *
-     * 目标面可以是根形状的直接子形状，也可以嵌套在 Shell 或 Solid 中。分割边必须
-     * 已经落在目标面的参数域内，且相互连接时共享拓扑顶点；本函数不负责投影或压印。
-     *
-     * @param root 当前几何根形状。
-     * @param target_face 要分割的面，必须属于 root。
-     * @param splitting_edges 一条或多条位于 target_face 上的分割边。
-     * @return 分割后的完整根形状。
-     *
-     * @throws std::invalid_argument 输入为空、分割边集合为空、目标面不属于 root，或分割边
-     * 不在目标面上。
-     * @throws std::runtime_error OCC 分割失败、目标面没有实际分裂或结果拓扑无效。
-     */
-    static TopoDS_Shape splitFace(
-        const TopoDS_Shape& root,
-        const TopoDS_Face& target_face,
-        const std::vector<TopoDS_Edge>& splitting_edges);
 
     /**
      * @brief 从根形状中删除一个顶层独立 Vertex、Edge、Face 或 Solid。

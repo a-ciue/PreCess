@@ -4,7 +4,6 @@
 
 #include <BRepCheck_Analyzer.hxx>
 #include <BRepAlgoAPI_Cut.hxx>
-#include <BRep_Tool.hxx>
 #include <BRep_Builder.hxx>
 #include <BRepBuilderAPI_MakeFace.hxx>
 #include <TopAbs_ShapeEnum.hxx>
@@ -17,8 +16,6 @@
 #include <TopoDS_Face.hxx>
 #include <TopoDS_Shell.hxx>
 #include <TopoDS_Solid.hxx>
-#include <TopoDS_Vertex.hxx>
-#include <TopoDS_Wire.hxx>
 #include <TopTools_ShapeMapHasher.hxx>
 #include <gp_Pnt.hxx>
 #include <GeomConvert.hxx>
@@ -55,53 +52,6 @@ int countSubshapes(const TopoDS_Shape& shape, TopAbs_ShapeEnum type)
     NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher> shapes;
     TopExp::MapShapes(shape, type, shapes);
     return shapes.Extent();
-}
-
-/**
- * @brief 在形状中查找全部顶点都位于指定 Z 平面的 Face。
- */
-std::vector<TopoDS_Face> findFacesOnZPlane(const TopoDS_Shape& shape, double z)
-{
-    constexpr double tolerance = 1.0e-7;
-    std::vector<TopoDS_Face> faces;
-    for (TopExp_Explorer face_exp(shape, TopAbs_FACE); face_exp.More(); face_exp.Next()) {
-        const TopoDS_Face face = TopoDS::Face(face_exp.Current());
-        bool on_plane = true;
-        for (TopExp_Explorer vertex_exp(face, TopAbs_VERTEX); vertex_exp.More(); vertex_exp.Next()) {
-            const gp_Pnt point = BRep_Tool::Pnt(TopoDS::Vertex(vertex_exp.Current()));
-            if (std::abs(point.Z() - z) > tolerance) {
-                on_plane = false;
-                break;
-            }
-        }
-        if (on_plane)
-            faces.push_back(face);
-    }
-    return faces;
-}
-
-/**
- * @brief 在形状中查找全部顶点都位于指定 Z 平面的第一个 Face。
- */
-TopoDS_Face findFaceOnZPlane(const TopoDS_Shape& shape, double z)
-{
-    const std::vector<TopoDS_Face> faces = findFacesOnZPlane(shape, z);
-    return faces.empty() ? TopoDS_Face {} : faces.front();
-}
-
-/**
- * @brief 按坐标查找 Face 上已有的拓扑顶点，供分割边共享边界顶点。
- */
-TopoDS_Vertex findFaceVertex(const TopoDS_Face& face, double x, double y, double z)
-{
-    constexpr double tolerance = 1.0e-7;
-    const gp_Pnt expected(x, y, z);
-    for (TopExp_Explorer vertex_exp(face, TopAbs_VERTEX); vertex_exp.More(); vertex_exp.Next()) {
-        const TopoDS_Vertex vertex = TopoDS::Vertex(vertex_exp.Current());
-        if (BRep_Tool::Pnt(vertex).Distance(expected) <= tolerance)
-            return vertex;
-    }
-    return {};
 }
 
 /**
@@ -207,28 +157,6 @@ GeometryTopologyDiagnosticOptions interferenceOptions()
 }
 }
 
-TEST_CASE("GeometryTopologyEditor splits a nested solid face with an on-face edge")
-{
-    const TopoDS_Shape box =
-        GeometryBuilder::makeBox(0.0, 0.0, 0.0, 10.0, 20.0, 30.0);
-    const TopoDS_Face bottom_face = findFaceOnZPlane(box, 0.0);
-    REQUIRE_FALSE(bottom_face.IsNull());
-
-    const TopoDS_Vertex first = findFaceVertex(bottom_face, 0.0, 0.0, 0.0);
-    const TopoDS_Vertex second = findFaceVertex(bottom_face, 10.0, 20.0, 0.0);
-    REQUIRE_FALSE(first.IsNull());
-    REQUIRE_FALSE(second.IsNull());
-    const TopoDS_Edge diagonal = TopoDS::Edge(GeometryBuilder::makeLine(first, second));
-
-    const TopoDS_Shape root = makeGeometryRoot(box);
-    const TopoDS_Shape result = GeometryTopologyEditor::splitFace(
-        root, bottom_face, std::vector<TopoDS_Edge> { diagonal });
-
-    REQUIRE_FALSE(result.IsNull());
-    REQUIRE(countSubshapes(root, TopAbs_FACE) == 6);
-    REQUIRE(countSubshapes(result, TopAbs_FACE) == 7);
-    REQUIRE(BRepCheck_Analyzer(result).IsValid());
-}
 
 TEST_CASE("GeometryTopologyEditor diagnoses boundary and isolated edges")
 {
@@ -727,119 +655,6 @@ TEST_CASE("GeometryTopologyEditor does not treat nearby parallel faces as duplic
     REQUIRE(result.duplicate_face_groups.empty());
 }
 
-TEST_CASE("GeometryTopologyEditor rejects invalid face split inputs")
-{
-    const TopoDS_Face target_face = TopoDS::Face(
-        GeometryBuilder::makeRectangleFace(
-            0.0, 0.0, 0.0, 10.0, 20.0, CoordinatePlane::XY));
-    const TopoDS_Shape root = makeGeometryRoot(target_face);
-
-    REQUIRE_THROWS_AS(
-        GeometryTopologyEditor::splitFace(root, target_face, {}),
-        std::invalid_argument);
-
-    const TopoDS_Face unrelated_face = TopoDS::Face(
-        GeometryBuilder::makeRectangleFace(
-            30.0, 0.0, 0.0, 10.0, 20.0, CoordinatePlane::XY));
-    const TopoDS_Edge edge = TopoDS::Edge(
-        GeometryBuilder::makeLine(30.0, 0.0, 0.0, 40.0, 20.0, 0.0));
-    REQUIRE_THROWS_AS(
-        GeometryTopologyEditor::splitFace(
-            root, unrelated_face, std::vector<TopoDS_Edge> { edge }),
-        std::invalid_argument);
-
-    const TopoDS_Edge off_face_edge = TopoDS::Edge(
-        GeometryBuilder::makeLine(0.0, 0.0, 1.0, 10.0, 20.0, 1.0));
-    REQUIRE_THROWS_AS(
-        GeometryTopologyEditor::splitFace(
-            root, target_face, std::vector<TopoDS_Edge> { off_face_edge }),
-        std::invalid_argument);
-}
-
-TEST_CASE("GeometryTopologyEditor splits an edge by ratio")
-{
-    const TopoDS_Edge edge = TopoDS::Edge(
-        GeometryBuilder::makeLine(0.0, 0.0, 0.0, 10.0, 0.0, 0.0));
-    const TopoDS_Shape root = makeGeometryRoot(edge);
-    const TopoDS_Shape result = GeometryTopologyEditor::splitEdge(root, edge, 0.25);
-
-    REQUIRE(countSubshapes(result, TopAbs_EDGE) == 2);
-    REQUIRE(countSubshapes(result, TopAbs_VERTEX) == 3);
-    bool found_split_point = false;
-    for (TopExp_Explorer it(result, TopAbs_VERTEX); it.More(); it.Next()) {
-        if (BRep_Tool::Pnt(TopoDS::Vertex(it.Current())).Distance(gp_Pnt(2.5, 0.0, 0.0)) < 1.0e-7)
-            found_split_point = true;
-    }
-    REQUIRE(found_split_point);
-}
-
-TEST_CASE("GeometryTopologyEditor collapses an isolated edge to its midpoint")
-{
-    const TopoDS_Edge edge = TopoDS::Edge(
-        GeometryBuilder::makeLine(0.0, 0.0, 0.0, 10.0, 0.0, 0.0));
-    const TopoDS_Shape root = makeGeometryRoot(edge);
-    const TopoDS_Shape result = GeometryTopologyEditor::collapseEdge(
-        root, edge, gp_Pnt(5.0, 0.0, 0.0));
-
-    REQUIRE(countSubshapes(result, TopAbs_EDGE) == 0);
-    REQUIRE(countSubshapes(result, TopAbs_VERTEX) == 1);
-    TopExp_Explorer vertex_exp(result, TopAbs_VERTEX);
-    REQUIRE(vertex_exp.More());
-    REQUIRE(BRep_Tool::Pnt(TopoDS::Vertex(vertex_exp.Current()))
-                .Distance(gp_Pnt(5.0, 0.0, 0.0))
-        < 1.0e-7);
-}
-
-TEST_CASE("GeometryTopologyEditor collapses parallel edges sharing both endpoints")
-{
-    const TopoDS_Vertex first = TopoDS::Vertex(GeometryBuilder::makePoint(0.0, 0.0, 0.0));
-    const TopoDS_Vertex second = TopoDS::Vertex(GeometryBuilder::makePoint(10.0, 0.0, 0.0));
-    const TopoDS_Edge selected_edge = TopoDS::Edge(GeometryBuilder::makeLine(first, second));
-    const TopoDS_Edge parallel_edge = TopoDS::Edge(GeometryBuilder::makeLine(first, second));
-
-    BRep_Builder builder;
-    TopoDS_Compound compound;
-    builder.MakeCompound(compound);
-    builder.Add(compound, selected_edge);
-    builder.Add(compound, parallel_edge);
-    const TopoDS_Shape root = makeGeometryRoot(compound);
-
-    const TopoDS_Shape result = GeometryTopologyEditor::collapseEdge(
-        root, selected_edge, gp_Pnt(5.0, 0.0, 0.0));
-
-    REQUIRE(countSubshapes(result, TopAbs_EDGE) == 0);
-    REQUIRE(countSubshapes(result, TopAbs_VERTEX) == 1);
-    REQUIRE(BRepCheck_Analyzer(result).IsValid());
-}
-
-TEST_CASE("GeometryTopologyEditor collapses an edge between two junctions")
-{
-    const TopoDS_Vertex first = TopoDS::Vertex(GeometryBuilder::makePoint(0.0, 0.0, 0.0));
-    const TopoDS_Vertex second = TopoDS::Vertex(GeometryBuilder::makePoint(1.0, 0.0, 0.0));
-    const TopoDS_Edge short_edge = TopoDS::Edge(GeometryBuilder::makeLine(first, second));
-
-    BRep_Builder builder;
-    TopoDS_Compound shapes;
-    builder.MakeCompound(shapes);
-    builder.Add(shapes, short_edge);
-    builder.Add(shapes, GeometryBuilder::makeLine(first,
-                            TopoDS::Vertex(GeometryBuilder::makePoint(-10.0, 0.0, 0.0))));
-    builder.Add(shapes, GeometryBuilder::makeLine(first,
-                            TopoDS::Vertex(GeometryBuilder::makePoint(0.0, 10.0, 0.0))));
-    builder.Add(shapes, GeometryBuilder::makeLine(second,
-                            TopoDS::Vertex(GeometryBuilder::makePoint(10.0, 0.0, 0.0))));
-    builder.Add(shapes, GeometryBuilder::makeLine(second,
-                            TopoDS::Vertex(GeometryBuilder::makePoint(1.0, -10.0, 0.0))));
-    const TopoDS_Shape root = makeGeometryRoot(shapes);
-
-    for (const gp_Pnt& target : { gp_Pnt(0.0, 0.0, 0.0),
-             gp_Pnt(1.0, 0.0, 0.0), gp_Pnt(0.5, 0.0, 0.0) }) {
-        const TopoDS_Shape result = GeometryTopologyEditor::collapseEdge(root, short_edge, target);
-        REQUIRE(countSubshapes(result, TopAbs_EDGE) == 4);
-        REQUIRE(countSubshapes(result, TopAbs_VERTEX) == 5);
-        REQUIRE(BRepCheck_Analyzer(result).IsValid());
-    }
-}
 
 TEST_CASE("GeometryTopologyEditor keeps rectangle boundary when deleting a face")
 {

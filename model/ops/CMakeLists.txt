@@ -14,9 +14,7 @@ target_link_libraries(DataOps PUBLIC Core Data
 target_link_libraries(DataOps PRIVATE
 	TKBRep
 	TKBool
-	TKFeat
 	TKPrim
-	TKShHealing
 	TKTopAlgo
 	TKMesh          # 面片空间扫描需要 BRepMesh_IncrementalMesh
 )
