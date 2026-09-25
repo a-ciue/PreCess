@@ -1700,6 +1700,7 @@ TopoDS_Shape GeometryTopologyEditor::collapseEdge(
 
         const int edge_count = countSubshapes(root, TopAbs_EDGE);
         const int vertex_count = countSubshapes(root, TopAbs_VERTEX);
+        int removed_edge_count = 1;
         occ::handle<BRepTools_ReShape> reshaper = new BRepTools_ReShape();
         reshaper->Remove(edge);
 
@@ -1723,6 +1724,7 @@ TopoDS_Shape GeometryTopologyEditor::collapseEdge(
                 continue;
             if (replace_start && replace_end) {
                 reshaper->Remove(adjacent_edge);
+                ++removed_edge_count;
                 continue;
             }
 
@@ -1771,9 +1773,9 @@ TopoDS_Shape GeometryTopologyEditor::collapseEdge(
             raw_result = compound;
         }
         TopoDS_Shape result = fixAndValidate(raw_result, "Collapsing the edge");
-        if (countSubshapes(result, TopAbs_EDGE) != edge_count - 1
+        if (countSubshapes(result, TopAbs_EDGE) != edge_count - removed_edge_count
             || countSubshapes(result, TopAbs_VERTEX) != vertex_count - 1)
-            throw std::runtime_error("Collapsing the edge did not remove one edge and one vertex");
+            throw std::runtime_error("Collapsing the edge did not produce the expected topology");
         return result;
     } catch (const Standard_Failure& error) {
         const char* detail = error.GetMessageString();

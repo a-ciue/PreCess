@@ -790,6 +790,28 @@ TEST_CASE("GeometryTopologyEditor collapses an isolated edge to its midpoint")
         < 1.0e-7);
 }
 
+TEST_CASE("GeometryTopologyEditor collapses parallel edges sharing both endpoints")
+{
+    const TopoDS_Vertex first = TopoDS::Vertex(GeometryBuilder::makePoint(0.0, 0.0, 0.0));
+    const TopoDS_Vertex second = TopoDS::Vertex(GeometryBuilder::makePoint(10.0, 0.0, 0.0));
+    const TopoDS_Edge selected_edge = TopoDS::Edge(GeometryBuilder::makeLine(first, second));
+    const TopoDS_Edge parallel_edge = TopoDS::Edge(GeometryBuilder::makeLine(first, second));
+
+    BRep_Builder builder;
+    TopoDS_Compound compound;
+    builder.MakeCompound(compound);
+    builder.Add(compound, selected_edge);
+    builder.Add(compound, parallel_edge);
+    const TopoDS_Shape root = makeGeometryRoot(compound);
+
+    const TopoDS_Shape result = GeometryTopologyEditor::collapseEdge(
+        root, selected_edge, gp_Pnt(5.0, 0.0, 0.0));
+
+    REQUIRE(countSubshapes(result, TopAbs_EDGE) == 0);
+    REQUIRE(countSubshapes(result, TopAbs_VERTEX) == 1);
+    REQUIRE(BRepCheck_Analyzer(result).IsValid());
+}
+
 TEST_CASE("GeometryTopologyEditor collapses an edge between two junctions")
 {
     const TopoDS_Vertex first = TopoDS::Vertex(GeometryBuilder::makePoint(0.0, 0.0, 0.0));
