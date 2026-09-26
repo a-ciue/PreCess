@@ -1,20 +1,19 @@
 /**
  * @file VtkXmlModelHandler.cpp
- * @brief VTK XML 网格文件读写实现
+ * @brief VTK XML 网格文件读写实现（基于 VTK IOXML 读写器）
  *
- * 覆盖两种 VTK XML 数据集：
- * - .vtp（PolyData）：Points + Lines（折线段 -> 边单元）+ Polys（-> 面单元），
- *   Verts / Strips 告警忽略；
- * - .vtu（UnstructuredGrid）：Points + Cells（connectivity / offsets / types），
- *   按单元 VTK 类型码分发到边（线/折线）、面（三角形/四边形/多边形）、
- *   体（四面体/六面体/三棱柱/金字塔）；多面体与高阶单元告警跳过。
+ * 读取与写出分别经 vtkXMLPolyDataReader / vtkXMLUnstructuredGridReader 与
+ * vtkXMLPolyDataWriter / vtkXMLUnstructuredGridWriter 完成，天然覆盖 VTK
+ * XML 的全部数据承载（ascii、base64 二进制 inline/appended、encoding="raw"
+ * 的原始二进制）与压缩数据（compressor，zlib/lz4/lzma）。
  *
- * 数据承载支持 ascii、base64 二进制（inline 与 appended 两种布局）与
- * encoding="raw" 的 appended 原始二进制（VTK 9 / ParaView 新版默认，详见
- * VtkXmlReader.cpp）；压缩数据（compress 属性）显式报不支持。纯点数据集
- * （Verts-only 点云）读入为只有顶点的网格组件。写出统一为 ascii inline；
- * 扩展名 .vtp 写 PolyData（仅面/边，体单元告警丢弃），.vtu 写
- * UnstructuredGrid（边/面/体全量）。
+ * 安全约定（不可信 XML）：交给 VTK（expat）解析之前先做字节级预检，
+ * 命中 DOCTYPE / ENTITY 声明直接拒绝，不从外部加载任何资源。
+ *
+ * 单元映射：Lines 折线 -> 边单元（相邻点对）、Polys 与二维 cell -> 面单元、
+ * 三维 cell（四面体/六面体/三棱柱/金字塔等）-> 体单元（沿用 VTK 类型码）。
+ * 写出统一 ascii；扩展名 .vtp 写 PolyData（体单元告警丢弃），.vtu 写
+ * UnstructuredGrid（边/面/体全量）。非 ASCII 路径经临时文件中转。
  */
 #include "VtkXmlModelHandler.h"
 
@@ -23,377 +22,262 @@
 #include "MeshData.h"
 #include "ModelData.h"
 #include "ModelLayer.h"
-#include "VtkXmlReader.h"
+#include "TempFile.h"
 
 #include <spdlog/spdlog.h>
+#include <vtkCell.h>
+#include <vtkCellArray.h>
+#include <vtkCellType.h>
+#include <vtkIdList.h>
+#include <vtkNew.h>
+#include <vtkPoints.h>
+#include <vtkPolyData.h>
+#include <vtkSmartPointer.h>
+#include <vtkUnstructuredGrid.h>
+#include <vtkXMLPolyDataReader.h>
+#include <vtkXMLPolyDataWriter.h>
+#include <vtkXMLUnstructuredGridReader.h>
+#include <vtkXMLUnstructuredGridWriter.h>
 
+#include <algorithm>
 #include <array>
+#include <cstring>
+#include <filesystem>
 #include <fstream>
-#include <iomanip>
-#include <map>
-#include <sstream>
 #include <string>
 #include <vector>
 
 namespace {
 
-//! @brief 读入侧用到的 VTK 单元类型码
-constexpr int64_t kVtkLine = 3;
-constexpr int64_t kVtkPolyLine = 4;
-constexpr int64_t kVtkTriangle = 5;
-constexpr int64_t kVtkPolygon = 7;
-constexpr int64_t kVtkQuad = 9;
-constexpr int64_t kVtkTetra = 10;
-constexpr int64_t kVtkHexahedron = 12;
-constexpr int64_t kVtkWedge = 13;
-constexpr int64_t kVtkPyramid = 14;
-constexpr int64_t kVtkPolyhedron = 42;
-
-//! @brief VTK 简单体单元的角点数（读入校验与写出口径一致）
-size_t solidCornerCount(unsigned char vtk_type)
+//! @brief 读文件全部字节，失败返回空（预检与类型探测共用）
+std::string readAllBytes(const std::filesystem::path& path)
 {
-    switch (vtk_type) {
-    case kVtkTetra:
-        return 4;
-    case kVtkHexahedron:
-        return 8;
-    case kVtkWedge:
-        return 6;
-    case kVtkPyramid:
-        return 5;
-    default:
-        return 0; // 多面体 / 高阶等需要面拓扑或不受支持的类型
+    std::ifstream input(path, std::ios::binary);
+    if (!input) {
+        return {};
     }
+    return std::string((std::istreambuf_iterator<char>(input)), std::istreambuf_iterator<char>());
 }
 
-//! @brief 读 Piece 的 Points 段：3 分量坐标流展开为顶点数组
-bool readPoints(const vtkxml::XmlNode& piece, const vtkxml::XmlDocument& doc, MeshData& mesh)
+//! @brief 路径是否全 ASCII（vtkXMLReader 的窄字符文件名在 Windows 下仅支持 ASCII）
+bool isAsciiPath(const std::filesystem::path& path)
 {
-    const vtkxml::XmlNode* points = piece.child("Points");
-    const vtkxml::XmlNode* array = points ? points->child("DataArray") : nullptr;
-    if (!array) {
-        spdlog::error("VtkXmlModelHandler: Piece has no Points/DataArray");
-        return false;
-    }
-    if (const std::string* components = array->attribute("NumberOfComponents");
-        components && *components != "3") {
-        spdlog::error("VtkXmlModelHandler: Points NumberOfComponents '{}' is not 3", *components);
-        return false;
-    }
+    const auto u8 = path.u8string();
+    return std::all_of(u8.begin(), u8.end(), [](unsigned char ch) { return ch < 0x80; });
+}
 
-    const std::vector<double> coordinates = vtkxml::readDoubles(*array, doc);
-    if (coordinates.empty() || coordinates.size() % 3 != 0) {
-        spdlog::error("VtkXmlModelHandler: Points coordinate stream is empty or not a multiple of 3");
+/**
+ * @brief 交给 VTK 解析前的字节级预检与数据集类型探测
+ *
+ * 安全约束：文档中出现 DOCTYPE / ENTITY 声明（含内部子集）直接拒绝；
+ * 同时在文件头部探测 VTKFile 的 type 属性，决定采用哪种 reader。
+ */
+enum class DatasetKind {
+    Unsupported,
+    PolyData,
+    UnstructuredGrid,
+};
+
+DatasetKind preflightCheck(const std::string& bytes)
+{
+    if (bytes.find("<!DOCTYPE") != std::string::npos || bytes.find("<!ENTITY") != std::string::npos) {
+        spdlog::error("VtkXmlModelHandler: DOCTYPE/ENTITY declaration is rejected");
+        return DatasetKind::Unsupported;
+    }
+    // VTKFile 是根元素，type 属性必在文件头部
+    const size_t head_size = std::min<size_t>(bytes.size(), 4096);
+    const std::string head = bytes.substr(0, head_size);
+    if (head.find("type=\"PolyData\"") != std::string::npos) {
+        return DatasetKind::PolyData;
+    }
+    if (head.find("type=\"UnstructuredGrid\"") != std::string::npos) {
+        return DatasetKind::UnstructuredGrid;
+    }
+    spdlog::error("VtkXmlModelHandler: unsupported VTKFile type or missing type attribute");
+    return DatasetKind::Unsupported;
+}
+
+//! @brief 非 ASCII 路径时把文件复制到 ASCII 临时路径，返回给 VTK 用的实际路径
+std::filesystem::path prepareAsciiPath(const std::filesystem::path& path, const std::string& extension)
+{
+    if (isAsciiPath(path)) {
+        return path;
+    }
+    std::filesystem::path temp = core::TempFile::instance().path();
+    temp.replace_extension(extension);
+    std::error_code copy_error;
+    std::filesystem::copy_file(path, temp, std::filesystem::copy_options::overwrite_existing, copy_error);
+    if (copy_error) {
+        spdlog::error("VtkXmlModelHandler: failed to stage non-ascii path '{}': {}",
+            path.string(), copy_error.message());
+        return {};
+    }
+    return temp;
+}
+
+//! @brief Points 展开为顶点数组，返回顶点数（0 视为读取失败）
+bool readVertices(vtkPoints* points, MeshData& mesh)
+{
+    if (!points || points->GetNumberOfPoints() <= 0) {
+        spdlog::error("VtkXmlModelHandler: dataset has no points");
         return false;
     }
-    for (size_t v = 0; v + 2 < coordinates.size(); v += 3) {
-        mesh.vertex_positions_.push_back({ coordinates[v], coordinates[v + 1], coordinates[v + 2] });
+    const vtkIdType point_count = points->GetNumberOfPoints();
+    mesh.vertex_positions_.reserve(static_cast<size_t>(point_count));
+    for (vtkIdType i = 0; i < point_count; ++i) {
+        double position[3] {};
+        points->GetPoint(i, position);
+        mesh.vertex_positions_.push_back({ position[0], position[1], position[2] });
     }
     mesh.vertex_count_ = static_cast<Index>(mesh.vertex_positions_.size());
     return true;
 }
 
-//! @brief 装配目标：把文件点 id 段换算为局部点 id 后分发到三类单元数组
-class CellAssembler {
-public:
-    explicit CellAssembler(MeshData& mesh)
-        : mesh_(mesh)
-    {
-    }
-
-    //! @brief 装配一个面单元（文件点 id 段），越界引用返回 false
-    bool appendFace(const std::vector<int64_t>& connectivity, size_t begin, size_t end)
-    {
-        if (end - begin < 3) {
-            spdlog::warn("VtkXmlModelHandler: degenerate face with {} corners skipped", end - begin);
-            return true;
-        }
-        std::vector<Index> corners;
-        if (!mapCorners(connectivity, begin, end, corners)) {
-            return false;
-        }
-        mesh_.face_vertices_.insert(mesh_.face_vertices_.end(), corners.begin(), corners.end());
-        mesh_.face_vertices_offset_.push_back(static_cast<Index>(mesh_.face_vertices_.size()));
-        ++cell_count_;
-        return true;
-    }
-
-    //! @brief 装配一段折线（文件点 id 段）为相邻点对的边单元
-    bool appendPolyline(const std::vector<int64_t>& connectivity, size_t begin, size_t end)
-    {
-        if (end - begin < 2) {
-            return true; // 单点段不构成边，静默忽略
-        }
-        std::vector<Index> corners;
-        if (!mapCorners(connectivity, begin, end, corners)) {
-            return false;
-        }
-        for (size_t c = 0; c + 1 < corners.size(); ++c) {
-            mesh_.edge_vertices_.push_back(corners[c]);
-            mesh_.edge_vertices_.push_back(corners[c + 1]);
-            ++cell_count_;
-        }
-        return true;
-    }
-
-    //! @brief 装配一个简单体单元（文件点 id 段 + VTK 类型码）
-    bool appendSolid(const std::vector<int64_t>& connectivity, size_t begin, size_t end,
-        unsigned char vtk_type)
-    {
-        const size_t expected = solidCornerCount(vtk_type);
-        if (expected == 0 || end - begin != expected) {
-            spdlog::warn("VtkXmlModelHandler: solid type {} with {} corners skipped",
-                static_cast<int>(vtk_type), end - begin);
-            return true;
-        }
-        std::vector<Index> corners;
-        if (!mapCorners(connectivity, begin, end, corners)) {
-            return false;
-        }
-        mesh_.solid_types_.push_back(vtk_type);
-        mesh_.solid_vertices_.insert(mesh_.solid_vertices_.end(), corners.begin(), corners.end());
-        mesh_.solid_vertices_offset_.push_back(static_cast<Index>(mesh_.solid_vertices_.size()));
-        mesh_.solid_faces_offset_.push_back(0);
-        ++cell_count_;
-        return true;
-    }
-
-    //! @brief 未知/不支持类型的单元计数（汇总告警用）
-    void skipCell(int64_t vtk_type) { ++skipped_types_[vtk_type]; }
-
-    size_t cellCount() const { return cell_count_; }
-
-    void reportSkipped() const
-    {
-        for (const auto& [type, count] : skipped_types_) {
-            spdlog::warn("VtkXmlModelHandler: {} cell(s) of VTK type {} skipped", count, type);
-        }
-    }
-
-private:
-    //! @brief 文件点 id -> 局部点 id，越界返回 false 并记录错误
-    bool mapCorners(const std::vector<int64_t>& connectivity, size_t begin, size_t end,
-        std::vector<Index>& corners) const
-    {
-        corners.reserve(end - begin);
-        for (size_t i = begin; i < end; ++i) {
-            if (connectivity[i] < 0 || connectivity[i] >= mesh_.vertex_count_) {
-                spdlog::error("VtkXmlModelHandler: cell references point {} out of {}",
-                    connectivity[i], mesh_.vertex_count_);
-                return false;
-            }
-            corners.push_back(static_cast<Index>(connectivity[i]));
-        }
-        return true;
-    }
-
-    MeshData& mesh_;
-    size_t cell_count_ { 0 };
-    std::map<int64_t, size_t> skipped_types_;
-};
-
-//! @brief 读 connectivity / offsets 形式的段列表（Lines 与 Polys 共用）
-bool readSegments(const vtkxml::XmlNode& parent, const vtkxml::XmlDocument& doc,
-    std::vector<int64_t>& connectivity, std::vector<int64_t>& offsets)
+//! @brief 单元的点 id 是否全部落在顶点范围内（VTK reader 不校验 connectivity，
+//! 越界引用须在转换层拦截，避免垃圾 id 进入模型层）
+bool idsWithinRange(vtkIdList* ids, vtkIdType vertex_count)
 {
-    const vtkxml::XmlNode* conn_node = nullptr;
-    const vtkxml::XmlNode* offset_node = nullptr;
-    for (const auto& node : parent.children) {
-        if (node.name != "DataArray") {
-            continue;
-        }
-        const std::string* name = node.attribute("Name");
-        if (!name) {
-            continue;
-        }
-        if (*name == "connectivity") {
-            conn_node = &node;
-        } else if (*name == "offsets") {
-            offset_node = &node;
-        }
-    }
-    if (!conn_node || !offset_node) {
-        spdlog::error("VtkXmlModelHandler: '{}' misses connectivity/offsets DataArray",
-            parent.name);
-        return false;
-    }
-    connectivity = vtkxml::readIntegers(*conn_node, doc);
-    offsets = vtkxml::readIntegers(*offset_node, doc);
-    return true;
-}
-
-//! @brief 逐段回调装配：offsets 为段尾位置（1 基累计），段 i 为 [offsets[i-1], offsets[i])
-template <typename Append>
-bool forEachSegment(const std::vector<int64_t>& connectivity, const std::vector<int64_t>& offsets,
-    Append&& append)
-{
-    int64_t previous = 0;
-    for (const int64_t offset : offsets) {
-        if (offset < previous || static_cast<size_t>(offset) > connectivity.size()) {
-            spdlog::error("VtkXmlModelHandler: offsets not monotonic or exceed connectivity");
+    const vtkIdType corner_count = ids->GetNumberOfIds();
+    for (vtkIdType k = 0; k < corner_count; ++k) {
+        if (ids->GetId(k) < 0 || ids->GetId(k) >= vertex_count) {
+            spdlog::error("VtkXmlModelHandler: cell references point {} out of {}",
+                ids->GetId(k), vertex_count);
             return false;
         }
-        if (!append(connectivity, static_cast<size_t>(previous), static_cast<size_t>(offset))) {
-            return false;
-        }
-        previous = offset;
-    }
-    if (previous != static_cast<int64_t>(connectivity.size()) && !connectivity.empty()) {
-        spdlog::error("VtkXmlModelHandler: last offset does not cover connectivity");
-        return false;
     }
     return true;
 }
 
-//! @brief 读 PolyData：Lines -> 边、Polys -> 面；Verts/Strips 告警忽略
-bool readPolyData(const vtkxml::XmlNode& root, const vtkxml::XmlDocument& doc, MeshData& mesh)
+//! @brief 追加一段折线为相邻点对的边单元（单点段静默忽略）；越界引用返回 false
+bool appendPolyline(vtkIdList* ids, MeshData& mesh, vtkIdType vertex_count)
 {
-    const vtkxml::XmlNode* poly_data = root.child("PolyData");
-    if (!poly_data) {
-        spdlog::error("VtkXmlModelHandler: VTKFile has no PolyData element");
+    if (!idsWithinRange(ids, vertex_count)) {
         return false;
     }
-
-    CellAssembler assembler(mesh);
-    bool piece_seen = false;
-    for (const auto& piece : poly_data->children) {
-        if (piece.name != "Piece") {
-            continue;
-        }
-        // vtp 的多 Piece 数据集各持有局部 0 基点 id（.pvtp 拆分文件场景），v1 只取第一块
-        if (piece_seen) {
-            spdlog::warn("VtkXmlModelHandler: multi-piece dataset, extra Piece skipped");
-            break;
-        }
-        piece_seen = true;
-        if (!readPoints(piece, doc, mesh)) {
-            return false;
-        }
-        if (const vtkxml::XmlNode* lines = piece.child("Lines")) {
-            std::vector<int64_t> connectivity, offsets;
-            if (!readSegments(*lines, doc, connectivity, offsets)) {
-                return false;
-            }
-            if (!forEachSegment(connectivity, offsets,
-                    [&](const std::vector<int64_t>& c, size_t b, size_t e) {
-                        return assembler.appendPolyline(c, b, e);
-                    })) {
-                return false;
-            }
-        }
-        if (const vtkxml::XmlNode* polys = piece.child("Polys")) {
-            std::vector<int64_t> connectivity, offsets;
-            if (!readSegments(*polys, doc, connectivity, offsets)) {
-                return false;
-            }
-            if (!forEachSegment(connectivity, offsets,
-                    [&](const std::vector<int64_t>& c, size_t b, size_t e) {
-                        return assembler.appendFace(c, b, e);
-                    })) {
-                return false;
-            }
-        }
-        if (piece.child("Verts")) {
-            spdlog::warn("VtkXmlModelHandler: PolyData Verts are not mesh cells, ignored");
-        }
-        if (piece.child("Strips")) {
-            spdlog::warn("VtkXmlModelHandler: PolyData Strips are not supported, ignored");
-        }
+    const vtkIdType point_count = ids->GetNumberOfIds();
+    for (vtkIdType k = 0; k + 1 < point_count; ++k) {
+        mesh.edge_vertices_.push_back(static_cast<Index>(ids->GetId(k)));
+        mesh.edge_vertices_.push_back(static_cast<Index>(ids->GetId(k + 1)));
     }
-    assembler.reportSkipped();
-    // 纯点文件（Verts-only 点云）合法：顶点即数据，无单元也接受
-    return mesh.vertex_count_ > 0;
+    return true;
 }
 
-//! @brief 读 UnstructuredGrid：Cells 按 VTK 类型码分发到边/面/体
-bool readUnstructuredGrid(const vtkxml::XmlNode& root, const vtkxml::XmlDocument& doc, MeshData& mesh)
+//! @brief 逐段遍历 vtkCellArray（Lines/Polys 共用），对每段执行回调
+template <typename Visit>
+void forEachSegment(vtkCellArray* cells, Visit&& visit)
 {
-    const vtkxml::XmlNode* grid = root.child("UnstructuredGrid");
-    if (!grid) {
-        spdlog::error("VtkXmlModelHandler: VTKFile has no UnstructuredGrid element");
+    if (!cells) {
+        return;
+    }
+    vtkNew<vtkIdList> ids;
+    const vtkIdType segment_count = cells->GetNumberOfCells();
+    for (vtkIdType s = 0; s < segment_count; ++s) {
+        cells->GetCellAtId(s, ids);
+        visit(ids);
+    }
+}
+
+//! @brief vtkPolyData -> MeshData：Lines -> 边、Polys -> 面；Verts/Strips 告警忽略
+bool meshFromPolyData(vtkPolyData* poly_data, MeshData& mesh)
+{
+    if (!readVertices(poly_data->GetPoints(), mesh)) {
         return false;
     }
+    const vtkIdType vertex_count = static_cast<vtkIdType>(mesh.vertex_count_);
+    bool ids_ok = true;
 
-    CellAssembler assembler(mesh);
-    bool piece_seen = false;
-    for (const auto& piece : grid->children) {
-        if (piece.name != "Piece") {
+    forEachSegment(poly_data->GetLines(), [&](vtkIdList* ids) {
+        if (!appendPolyline(ids, mesh, vertex_count)) {
+            ids_ok = false;
+        }
+    });
+    forEachSegment(poly_data->GetPolys(), [&](vtkIdList* ids) {
+        const vtkIdType corner_count = ids->GetNumberOfIds();
+        if (corner_count < 3) {
+            spdlog::warn("VtkXmlModelHandler: degenerate face with {} corners skipped", corner_count);
+            return;
+        }
+        if (!idsWithinRange(ids, vertex_count)) {
+            ids_ok = false;
+            return;
+        }
+        for (vtkIdType k = 0; k < corner_count; ++k) {
+            mesh.face_vertices_.push_back(static_cast<Index>(ids->GetId(k)));
+        }
+        mesh.face_vertices_offset_.push_back(static_cast<Index>(mesh.face_vertices_.size()));
+    });
+    if (poly_data->GetVerts() && poly_data->GetVerts()->GetNumberOfCells() > 0) {
+        spdlog::warn("VtkXmlModelHandler: PolyData Verts are not mesh cells, ignored");
+    }
+    if (poly_data->GetStrips() && poly_data->GetStrips()->GetNumberOfCells() > 0) {
+        spdlog::warn("VtkXmlModelHandler: PolyData Strips are not supported, ignored");
+    }
+    return ids_ok;
+}
+
+//! @brief vtkUnstructuredGrid -> MeshData：按 cell 维度分发到边/面/体
+bool meshFromUnstructuredGrid(vtkUnstructuredGrid* grid, MeshData& mesh)
+{
+    if (!readVertices(grid->GetPoints(), mesh)) {
+        return false;
+    }
+    const vtkIdType vertex_count = static_cast<vtkIdType>(mesh.vertex_count_);
+
+    const vtkIdType cell_count = grid->GetNumberOfCells();
+    for (vtkIdType ci = 0; ci < cell_count; ++ci) {
+        vtkCell* cell = grid->GetCell(ci);
+        if (!cell) {
             continue;
         }
-        // vtu 的多 Piece 数据集各持有局部 0 基点 id（.pvtu 拆分文件场景），v1 只取第一块
-        if (piece_seen) {
-            spdlog::warn("VtkXmlModelHandler: multi-piece dataset, extra Piece skipped");
+        vtkIdList* ids = cell->GetPointIds();
+        if (!ids || ids->GetNumberOfIds() <= 0) {
+            continue;
+        }
+        const vtkIdType corner_count = ids->GetNumberOfIds();
+        if (!idsWithinRange(ids, vertex_count)) {
+            return false;
+        }
+
+        switch (cell->GetCellDimension()) {
+        case 1:
+            // 线段/折线 -> 相邻点对边单元
+            if (!appendPolyline(ids, mesh, vertex_count)) {
+                return false;
+            }
             break;
-        }
-        piece_seen = true;
-        if (!readPoints(piece, doc, mesh)) {
-            return false;
-        }
-        const vtkxml::XmlNode* cells = piece.child("Cells");
-        if (!cells) {
-            spdlog::error("VtkXmlModelHandler: Piece has no Cells element");
-            return false;
-        }
-        std::vector<int64_t> connectivity, offsets;
-        if (!readSegments(*cells, doc, connectivity, offsets)) {
-            return false;
-        }
-        const vtkxml::XmlNode* types_array = nullptr;
-        for (const auto& node : cells->children) {
-            if (node.name == "DataArray" && node.attribute("Name")
-                && *node.attribute("Name") == "types") {
-                types_array = &node;
+        case 2:
+            // 三角形/四边形/多边形 -> 面单元
+            for (vtkIdType k = 0; k < corner_count; ++k) {
+                mesh.face_vertices_.push_back(static_cast<Index>(ids->GetId(k)));
+            }
+            mesh.face_vertices_offset_.push_back(static_cast<Index>(mesh.face_vertices_.size()));
+            break;
+        case 3:
+            // 体单元沿用 VTK 类型码；多面体（VTK_POLYHEDRON）需要面拓扑，跳过
+            if (cell->GetCellType() == VTK_POLYHEDRON) {
+                spdlog::warn("VtkXmlModelHandler: VTK_POLYHEDRON cell {} skipped", ci);
                 break;
             }
-        }
-        if (!types_array) {
-            spdlog::error("VtkXmlModelHandler: Cells misses 'types' DataArray");
-            return false;
-        }
-        const std::vector<int64_t> types = vtkxml::readIntegers(*types_array, doc);
-        if (types.size() != offsets.size()) {
-            spdlog::error("VtkXmlModelHandler: Cells types count {} != offsets count {}",
-                types.size(), offsets.size());
-            return false;
-        }
-
-        // 逐单元按类型分发；引用越界（append 返回 false）整体读取失败
-        size_t cell_index = 0;
-        if (!forEachSegment(connectivity, offsets,
-                [&](const std::vector<int64_t>& c, size_t b, size_t e) {
-                    const int64_t vtk_type = types[cell_index++];
-                    switch (vtk_type) {
-                    case kVtkLine:
-                    case kVtkPolyLine:
-                        return assembler.appendPolyline(c, b, e);
-                    case kVtkTriangle:
-                    case kVtkQuad:
-                    case kVtkPolygon:
-                        return assembler.appendFace(c, b, e);
-                    case kVtkTetra:
-                    case kVtkHexahedron:
-                    case kVtkWedge:
-                    case kVtkPyramid:
-                        return assembler.appendSolid(c, b, e, static_cast<unsigned char>(vtk_type));
-                    default:
-                        assembler.skipCell(vtk_type);
-                        return true;
-                    }
-                })) {
-            return false;
+            mesh.solid_types_.push_back(static_cast<unsigned char>(cell->GetCellType()));
+            for (vtkIdType k = 0; k < corner_count; ++k) {
+                mesh.solid_vertices_.push_back(static_cast<Index>(ids->GetId(k)));
+            }
+            mesh.solid_vertices_offset_.push_back(static_cast<Index>(mesh.solid_vertices_.size()));
+            mesh.solid_faces_offset_.push_back(0);
+            break;
+        default:
+            // 顶点单元（dim 0）不是网格单元，静默忽略
+            break;
         }
     }
-    assembler.reportSkipped();
-    // 纯点数据集（无 Cells 单元）与 vtp 同口径：顶点即数据
-    return mesh.vertex_count_ > 0;
+    return true;
 }
 
 /**
  * @brief 把一个组件的网格追加到 merged，多组件导出时按点偏移拼成一个网格
  *
  * MeshData 自包含、连通性存组件内局部点索引，追加时统一加 vertex_offset。
- * 多面体（VTK_POLYHEDRON，需要面拓扑数组）与未知体类型告警跳过；
- * 面/边单元与简单体单元全量平移。
+ * 面/边单元与体单元全量平移（角点数与类型码原样保留）。
  * @param vertex_offset 入参为当前文件内点偏移，出参累加本组件的点数
  */
 bool appendComponentMesh(const ComponentData& component, MeshData& merged, Index& vertex_offset)
@@ -433,6 +317,7 @@ bool appendComponentMesh(const ComponentData& component, MeshData& merged, Index
         }
     }
 
+    // 面单元：越界与退化（<3 角点）脏面整面跳过
     Index skipped_faces = 0;
     if (source->face_vertices_offset_.size() >= 2) {
         const Index face_count = static_cast<Index>(source->face_vertices_offset_.size() - 1);
@@ -444,8 +329,8 @@ bool appendComponentMesh(const ComponentData& component, MeshData& merged, Index
                 ++skipped_faces;
                 continue;
             }
-            bool face_ok = true;
             std::vector<Index> corners(static_cast<size_t>(end - begin));
+            bool face_ok = true;
             for (Index c = begin; c < end; ++c) {
                 const Index point_id = source->face_vertices_[static_cast<size_t>(c)];
                 if (point_id < 0 || point_id >= point_count) {
@@ -467,23 +352,21 @@ bool appendComponentMesh(const ComponentData& component, MeshData& merged, Index
             component.id, skipped_faces);
     }
 
+    // 体单元：类型码原样保留（写出侧由 VTK writer 解释）
     Index skipped_solids = 0;
     if (source->solid_vertices_offset_.size() >= 2
         && source->solid_types_.size() + 1 == source->solid_vertices_offset_.size()) {
         const Index solid_count = static_cast<Index>(source->solid_types_.size());
         const Index corner_count = static_cast<Index>(source->solid_vertices_.size());
         for (Index s = 0; s < solid_count; ++s) {
-            const unsigned char vtk_type = source->solid_types_[static_cast<size_t>(s)];
             const Index begin = source->solid_vertices_offset_[static_cast<size_t>(s)];
             const Index end = source->solid_vertices_offset_[static_cast<size_t>(s) + 1];
-            if (solidCornerCount(vtk_type) == 0
-                || begin < 0 || end > corner_count
-                || end - begin != static_cast<Index>(solidCornerCount(vtk_type))) {
+            if (begin < 0 || end > corner_count || end < begin) {
                 ++skipped_solids;
                 continue;
             }
-            bool solid_ok = true;
             std::vector<Index> corners(static_cast<size_t>(end - begin));
+            bool solid_ok = true;
             for (Index c = begin; c < end; ++c) {
                 const Index point_id = source->solid_vertices_[static_cast<size_t>(c)];
                 if (point_id < 0 || point_id >= point_count) {
@@ -496,14 +379,14 @@ bool appendComponentMesh(const ComponentData& component, MeshData& merged, Index
                 ++skipped_solids;
                 continue;
             }
-            merged.solid_types_.push_back(vtk_type);
+            merged.solid_types_.push_back(source->solid_types_[static_cast<size_t>(s)]);
             merged.solid_vertices_.insert(merged.solid_vertices_.end(), corners.begin(), corners.end());
             merged.solid_vertices_offset_.push_back(static_cast<Index>(merged.solid_vertices_.size()));
             merged.solid_faces_offset_.push_back(0);
         }
     }
     if (skipped_solids > 0) {
-        spdlog::warn("VtkXmlModelHandler: component {} has {} unsupported solid(s), skip",
+        spdlog::warn("VtkXmlModelHandler: component {} has {} dirty solid(s), skip",
             component.id, skipped_solids);
     }
 
@@ -511,158 +394,99 @@ bool appendComponentMesh(const ComponentData& component, MeshData& merged, Index
     return true;
 }
 
-//! @brief 面单元写出用的 VTK 类型码：三角形/四边形精确、其余按多边形
-int64_t faceVtkType(size_t corner_count)
+//! @brief 从合并网格构造顶点集（写路径共用）
+vtkSmartPointer<vtkPoints> makePoints(const MeshData& mesh)
 {
-    if (corner_count == 3) {
-        return kVtkTriangle;
+    vtkSmartPointer<vtkPoints> points = vtkSmartPointer<vtkPoints>::New();
+    points->SetDataTypeToDouble();
+    points->Allocate(static_cast<vtkIdType>(mesh.vertex_positions_.size()));
+    for (const auto& position : mesh.vertex_positions_) {
+        points->InsertNextPoint(position[0], position[1], position[2]);
     }
-    return corner_count == 4 ? kVtkQuad : kVtkPolygon;
-}
-
-//! @brief 把数值序列写成空格分隔的单行文本（ascii DataArray 载荷）
-template <typename T>
-void writeAsciiArray(std::ostream& output, const std::vector<T>& values)
-{
-    for (size_t i = 0; i < values.size(); ++i) {
-        output << (i == 0 ? "" : " ") << values[i];
-    }
+    return points;
 }
 
 //! @brief 写出 .vtp（PolyData）：Lines 承载边、Polys 承载面；体单元告警丢弃
 bool writeVtp(const std::filesystem::path& path, const MeshData& mesh)
 {
-    std::ofstream output(path, std::ios::binary | std::ios::trunc);
-    if (!output) {
-        spdlog::error("VtkXmlModelHandler: failed to open file '{}' for writing", path.string());
-        return false;
+    vtkNew<vtkCellArray> lines;
+    for (size_t e = 0; e + 1 < mesh.edge_vertices_.size(); e += 2) {
+        const vtkIdType ids[2] = { static_cast<vtkIdType>(mesh.edge_vertices_[e]),
+            static_cast<vtkIdType>(mesh.edge_vertices_[e + 1]) };
+        lines->InsertNextCell(2, ids);
     }
-    output << std::setprecision(17);
 
-    const Index edge_count = static_cast<Index>(mesh.edge_vertices_.size() / 2);
-    const Index face_count = mesh.face_vertices_offset_.size() >= 2
-        ? static_cast<Index>(mesh.face_vertices_offset_.size() - 1)
-        : 0;
+    vtkNew<vtkCellArray> polys;
+    if (mesh.face_vertices_offset_.size() >= 2) {
+        for (size_t f = 0; f + 1 < mesh.face_vertices_offset_.size(); ++f) {
+            const Index begin = mesh.face_vertices_offset_[f];
+            const Index end = mesh.face_vertices_offset_[f + 1];
+            std::vector<vtkIdType> ids(static_cast<size_t>(end - begin));
+            for (Index c = begin; c < end; ++c) {
+                ids[static_cast<size_t>(c - begin)] = static_cast<vtkIdType>(mesh.face_vertices_[static_cast<size_t>(c)]);
+            }
+            polys->InsertNextCell(static_cast<vtkIdType>(ids.size()), ids.data());
+        }
+    }
     if (!mesh.solid_types_.empty()) {
         spdlog::warn("VtkXmlModelHandler: {} solid cell(s) cannot be stored in PolyData, dropped",
             mesh.solid_types_.size());
     }
 
-    output << "<?xml version=\"1.0\"?>\n";
-    output << "<VTKFile type=\"PolyData\" version=\"0.1\" byte_order=\"LittleEndian\">\n";
-    output << "  <PolyData>\n";
-    output << "    <Piece NumberOfPoints=\"" << mesh.vertex_count_
-           << "\" NumberOfVerts=\"0\" NumberOfLines=\"" << edge_count
-           << "\" NumberOfStrips=\"0\" NumberOfPolys=\"" << face_count << "\">\n";
+    vtkNew<vtkPolyData> poly_data;
+    poly_data->SetPoints(makePoints(mesh));
+    poly_data->SetLines(lines);
+    poly_data->SetPolys(polys);
 
-    output << "      <Points>\n";
-    output << "        <DataArray type=\"Float64\" NumberOfComponents=\"3\" format=\"ascii\">\n";
-    for (const auto& position : mesh.vertex_positions_) {
-        output << "          " << position[0] << ' ' << position[1] << ' ' << position[2] << '\n';
-    }
-    output << "        </DataArray>\n";
-    output << "      </Points>\n";
-
-    output << "      <Lines>\n";
-    output << "        <DataArray type=\"Int64\" Name=\"connectivity\" format=\"ascii\">";
-    writeAsciiArray(output, mesh.edge_vertices_);
-    output << "</DataArray>\n";
-    output << "        <DataArray type=\"Int64\" Name=\"offsets\" format=\"ascii\">";
-    for (Index e = 0; e < edge_count; ++e) {
-        output << (e == 0 ? "" : " ") << (e + 1) * 2;
-    }
-    output << "</DataArray>\n";
-    output << "      </Lines>\n";
-
-    output << "      <Polys>\n";
-    output << "        <DataArray type=\"Int64\" Name=\"connectivity\" format=\"ascii\">";
-    writeAsciiArray(output, mesh.face_vertices_);
-    output << "</DataArray>\n";
-    output << "        <DataArray type=\"Int64\" Name=\"offsets\" format=\"ascii\">";
-    for (Index f = 0; f < face_count; ++f) {
-        output << (f == 0 ? "" : " ") << mesh.face_vertices_offset_[static_cast<size_t>(f) + 1];
-    }
-    output << "</DataArray>\n";
-    output << "      </Polys>\n";
-
-    output << "    </Piece>\n";
-    output << "  </PolyData>\n";
-    output << "</VTKFile>\n";
-
-    output.flush();
-    return static_cast<bool>(output);
+    vtkSmartPointer<vtkXMLPolyDataWriter> writer = vtkSmartPointer<vtkXMLPolyDataWriter>::New();
+    writer->SetFileName(path.string().c_str());
+    writer->SetInputData(poly_data);
+    writer->SetDataModeToAscii();
+    return writer->Write() == 1;
 }
 
-//! @brief 写出 .vtu（UnstructuredGrid）：边/面/体全量，单元按 VTK 类型码标注
+//! @brief 写出 .vtu（UnstructuredGrid）：边/面/体全量，体单元沿用 VTK 类型码
 bool writeVtu(const std::filesystem::path& path, const MeshData& mesh)
 {
-    std::ofstream output(path, std::ios::binary | std::ios::trunc);
-    if (!output) {
-        spdlog::error("VtkXmlModelHandler: failed to open file '{}' for writing", path.string());
-        return false;
-    }
-    output << std::setprecision(17);
+    vtkNew<vtkUnstructuredGrid> grid;
+    grid->SetPoints(makePoints(mesh));
 
-    // 单元序列：边（2 点线段）-> 面 -> 体；connectivity/offsets/types 同序生成
-    std::vector<Index> connectivity;
-    std::vector<Index> offsets;
-    std::vector<int64_t> types;
     for (size_t e = 0; e + 1 < mesh.edge_vertices_.size(); e += 2) {
-        connectivity.push_back(mesh.edge_vertices_[e]);
-        connectivity.push_back(mesh.edge_vertices_[e + 1]);
-        offsets.push_back(static_cast<Index>(connectivity.size()));
-        types.push_back(kVtkLine);
+        const vtkIdType ids[2] = { static_cast<vtkIdType>(mesh.edge_vertices_[e]),
+            static_cast<vtkIdType>(mesh.edge_vertices_[e + 1]) };
+        grid->InsertNextCell(VTK_LINE, 2, ids);
     }
     if (mesh.face_vertices_offset_.size() >= 2) {
         for (size_t f = 0; f + 1 < mesh.face_vertices_offset_.size(); ++f) {
             const Index begin = mesh.face_vertices_offset_[f];
             const Index end = mesh.face_vertices_offset_[f + 1];
+            const Index corner_count = end - begin;
+            const int cell_type = corner_count == 3
+                ? VTK_TRIANGLE
+                : (corner_count == 4 ? VTK_QUAD : VTK_POLYGON);
+            std::vector<vtkIdType> ids(static_cast<size_t>(corner_count));
             for (Index c = begin; c < end; ++c) {
-                connectivity.push_back(mesh.face_vertices_[static_cast<size_t>(c)]);
+                ids[static_cast<size_t>(c - begin)] = static_cast<vtkIdType>(mesh.face_vertices_[static_cast<size_t>(c)]);
             }
-            offsets.push_back(static_cast<Index>(connectivity.size()));
-            types.push_back(faceVtkType(static_cast<size_t>(end - begin)));
+            grid->InsertNextCell(cell_type, static_cast<vtkIdType>(ids.size()), ids.data());
         }
     }
     for (size_t s = 0; s < mesh.solid_types_.size(); ++s) {
         const Index begin = mesh.solid_vertices_offset_[s];
         const Index end = mesh.solid_vertices_offset_[s + 1];
+        std::vector<vtkIdType> ids(static_cast<size_t>(end - begin));
         for (Index c = begin; c < end; ++c) {
-            connectivity.push_back(mesh.solid_vertices_[static_cast<size_t>(c)]);
+            ids[static_cast<size_t>(c - begin)] = static_cast<vtkIdType>(mesh.solid_vertices_[static_cast<size_t>(c)]);
         }
-        offsets.push_back(static_cast<Index>(connectivity.size()));
-        types.push_back(mesh.solid_types_[s]);
+        grid->InsertNextCell(static_cast<int>(mesh.solid_types_[s]),
+            static_cast<vtkIdType>(ids.size()), ids.data());
     }
 
-    output << "<?xml version=\"1.0\"?>\n";
-    output << "<VTKFile type=\"UnstructuredGrid\" version=\"0.1\" byte_order=\"LittleEndian\">\n";
-    output << "  <UnstructuredGrid>\n";
-    output << "    <Piece NumberOfPoints=\"" << mesh.vertex_count_
-           << "\" NumberOfCells=\"" << types.size() << "\">\n";
-    output << "      <Points>\n";
-    output << "        <DataArray type=\"Float64\" NumberOfComponents=\"3\" format=\"ascii\">\n";
-    for (const auto& position : mesh.vertex_positions_) {
-        output << "          " << position[0] << ' ' << position[1] << ' ' << position[2] << '\n';
-    }
-    output << "        </DataArray>\n";
-    output << "      </Points>\n";
-    output << "      <Cells>\n";
-    output << "        <DataArray type=\"Int64\" Name=\"connectivity\" format=\"ascii\">";
-    writeAsciiArray(output, connectivity);
-    output << "</DataArray>\n";
-    output << "        <DataArray type=\"Int64\" Name=\"offsets\" format=\"ascii\">";
-    writeAsciiArray(output, offsets);
-    output << "</DataArray>\n";
-    output << "        <DataArray type=\"UInt8\" Name=\"types\" format=\"ascii\">";
-    writeAsciiArray(output, types);
-    output << "</DataArray>\n";
-    output << "      </Cells>\n";
-    output << "    </Piece>\n";
-    output << "  </UnstructuredGrid>\n";
-    output << "</VTKFile>\n";
-
-    output.flush();
-    return static_cast<bool>(output);
+    vtkSmartPointer<vtkXMLUnstructuredGridWriter> writer = vtkSmartPointer<vtkXMLUnstructuredGridWriter>::New();
+    writer->SetFileName(path.string().c_str());
+    writer->SetInputData(grid);
+    writer->SetDataModeToAscii();
+    return writer->Write() == 1;
 }
 
 } // namespace
@@ -677,23 +501,50 @@ std::optional<ModelPayload> VtkXmlModelHandler::read_model(const fs::path& path,
     mesh->init();
 
     try {
-        const vtkxml::XmlDocument doc = vtkxml::XmlDocument::load(path);
-        const std::string dataset = doc.root().attribute("type") ? *doc.root().attribute("type") : "";
+        // VTK（expat）解析前的字节级预检：拒绝 DOCTYPE/ENTITY，探测数据集类型
+        const std::string bytes = readAllBytes(path);
+        if (bytes.empty()) {
+            spdlog::error("VtkXmlModelHandler: failed to open file '{}'", path.string());
+            return std::nullopt;
+        }
+        const DatasetKind kind = preflightCheck(bytes);
+        if (kind == DatasetKind::Unsupported) {
+            spdlog::error("VtkXmlModelHandler: failed to read VTK XML file: {}", path.string());
+            return std::nullopt;
+        }
+
+        // 非 ASCII 路径经 ASCII 临时文件中转（vtkXMLReader 文件名为窄字符）
+        const std::string extension = kind == DatasetKind::PolyData ? ".vtp" : ".vtu";
+        const std::filesystem::path effective_path = prepareAsciiPath(path, extension);
+        if (effective_path.empty()) {
+            return std::nullopt;
+        }
+
         bool ok = false;
-        if (dataset == "PolyData") {
-            ok = readPolyData(doc.root(), doc, *mesh);
-        } else if (dataset == "UnstructuredGrid") {
-            ok = readUnstructuredGrid(doc.root(), doc, *mesh);
+        if (kind == DatasetKind::PolyData) {
+            vtkSmartPointer<vtkXMLPolyDataReader> reader = vtkSmartPointer<vtkXMLPolyDataReader>::New();
+            reader->SetFileName(effective_path.string().c_str());
+            reader->Update();
+            ok = meshFromPolyData(reader->GetOutput(), *mesh);
         } else {
-            spdlog::error("VtkXmlModelHandler: unsupported VTKFile type '{}'", dataset);
-            ok = false;
+            vtkSmartPointer<vtkXMLUnstructuredGridReader> reader
+                = vtkSmartPointer<vtkXMLUnstructuredGridReader>::New();
+            reader->SetFileName(effective_path.string().c_str());
+            reader->Update();
+            ok = meshFromUnstructuredGrid(reader->GetOutput(), *mesh);
         }
         if (!ok) {
             spdlog::error("VtkXmlModelHandler: failed to read VTK XML file: {}", path.string());
             return std::nullopt;
         }
-    } catch (const vtkxml::ReadError& e) {
-        spdlog::error("VtkXmlModelHandler: {}: {}", e.what(), path.string());
+
+        // 读入用的临时文件随会话清理，不保留
+        if (effective_path != path) {
+            std::error_code remove_error;
+            std::filesystem::remove(effective_path, remove_error);
+        }
+    } catch (const std::exception& e) {
+        spdlog::error("VtkXmlModelHandler: exception reading '{}': {}", path.string(), e.what());
         return std::nullopt;
     }
 
@@ -742,20 +593,45 @@ void VtkXmlModelHandler::write_components(const ModelLayer& mgr,
     const bool has_cells = !merged.edge_vertices_.empty()
         || merged.face_vertices_offset_.size() >= 2
         || !merged.solid_types_.empty();
-    if (merged_count == 0 || !has_cells) {
+    if (merged_count == 0 || merged.vertex_positions_.empty()) {
         spdlog::error("VtkXmlModelHandler: no mesh component to export");
         return;
     }
+    if (!has_cells) {
+        spdlog::warn("VtkXmlModelHandler: exporting point-only dataset (no cells)");
+    }
 
     merged.vertex_count_ = static_cast<Index>(merged.vertex_positions_.size());
-    const bool want_poly_data = path.extension() == ".vtp";
-    const bool written = want_poly_data ? writeVtp(path, merged) : writeVtu(path, merged);
-    if (written) {
-        spdlog::info("VtkXmlModelHandler: wrote {} file: {} (components_merged={})",
-            want_poly_data ? "vtp" : "vtu", path.string(), merged_count);
-    } else {
-        spdlog::error("VtkXmlModelHandler: failed to write VTK XML file: {}", path.string());
+
+    // 非 ASCII 目标路径先写 ASCII 临时文件再复制回去
+    std::filesystem::path effective_path = path;
+    std::filesystem::path temp_out;
+    if (!isAsciiPath(path)) {
+        temp_out = core::TempFile::instance().path();
+        temp_out.replace_extension(path.extension().empty() ? ".vtu" : path.extension());
+        effective_path = temp_out;
     }
+
+    const bool want_poly_data = path.extension() == ".vtp";
+    const bool written = want_poly_data ? writeVtp(effective_path, merged) : writeVtu(effective_path, merged);
+    if (!written) {
+        spdlog::error("VtkXmlModelHandler: failed to write VTK XML file: {}", path.string());
+        return;
+    }
+    if (!temp_out.empty()) {
+        std::error_code copy_error;
+        std::filesystem::copy_file(temp_out, path, std::filesystem::copy_options::overwrite_existing, copy_error);
+        std::error_code remove_error;
+        std::filesystem::remove(temp_out, remove_error);
+        if (copy_error) {
+            spdlog::error("VtkXmlModelHandler: failed to move output to '{}': {}",
+                path.string(), copy_error.message());
+            return;
+        }
+    }
+
+    spdlog::info("VtkXmlModelHandler: wrote {} file: {} (components_merged={})",
+        want_poly_data ? "vtp" : "vtu", path.string(), merged_count);
 }
 
 std::vector<ArgType> VtkXmlModelHandler::read_args_type() const

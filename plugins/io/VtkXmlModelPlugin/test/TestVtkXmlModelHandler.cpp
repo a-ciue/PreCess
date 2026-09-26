@@ -9,7 +9,6 @@
 #include "ModelPayload.h"
 #include "TempFile.h"
 #include "VtkXmlModelHandler.h"
-#include "VtkXmlReader.h"
 
 #include <catch2/catch_test_macros.hpp>
 
@@ -218,57 +217,6 @@ TEST_CASE("VtkXmlModelHandler reads ascii vtu and dispatches cell types")
     REQUIRE(mesh->solid_types_ == std::vector<unsigned char> { 10 });
     REQUIRE(mesh->solid_vertices_ == std::vector<Index> { 0, 1, 2, 3 });
     REQUIRE(mesh->solid_vertices_offset_ == std::vector<Index> { 0, 4 });
-}
-
-TEST_CASE("VtkXmlReader decodes signed integers from binary DataArray")
-{
-    // 有符号整型（Int8/16/32/64）的二进制展开必须保留符号位：
-    // 走无符号中间类型会把 -1 读成大正数
-    const auto makeFile = [](const std::string& type_name, const std::string& encoded) {
-        return "<VTKFile type=\"PolyData\" version=\"0.1\">\n"
-               "  <PolyData>\n"
-               "    <Piece>\n"
-               "      <Points><DataArray type=\""
-            + type_name + "\" Name=\"ids\" format=\"binary\">" + encoded + "</DataArray></Points>\n"
-                                                                           "    </Piece>\n"
-                                                                           "  </PolyData>\n"
-                                                                           "</VTKFile>\n";
-    };
-
-    SECTION("Int32 with negative values")
-    {
-        std::vector<uint8_t> header;
-        putBytes<uint32_t>(header, 12);
-        std::vector<uint8_t> data;
-        putBytes<int32_t>(data, -1);
-        putBytes<int32_t>(data, 7);
-        putBytes<int32_t>(data, -2147483648);
-
-        const fs::path input = core::TempFile::instance().path().string() + "_int32.vtp";
-        writeFile(input, makeFile("Int32", base64Encode(header) + base64Encode(data)));
-
-        const vtkxml::XmlDocument doc = vtkxml::XmlDocument::load(input);
-        const vtkxml::XmlNode* array = doc.root().child("PolyData")->child("Piece")->child("Points")->child("DataArray");
-        REQUIRE(array != nullptr);
-        REQUIRE(vtkxml::readIntegers(*array, doc) == std::vector<int64_t> { -1, 7, -2147483648LL });
-    }
-
-    SECTION("Int16 with negative values")
-    {
-        std::vector<uint8_t> header;
-        putBytes<uint32_t>(header, 4);
-        std::vector<uint8_t> data;
-        putBytes<int16_t>(data, -2);
-        putBytes<int16_t>(data, 300);
-
-        const fs::path input = core::TempFile::instance().path().string() + "_int16.vtp";
-        writeFile(input, makeFile("Int16", base64Encode(header) + base64Encode(data)));
-
-        const vtkxml::XmlDocument doc = vtkxml::XmlDocument::load(input);
-        const vtkxml::XmlNode* array = doc.root().child("PolyData")->child("Piece")->child("Points")->child("DataArray");
-        REQUIRE(array != nullptr);
-        REQUIRE(vtkxml::readIntegers(*array, doc) == std::vector<int64_t> { -2, 300 });
-    }
 }
 
 TEST_CASE("VtkXmlModelHandler reads inline binary and appended vtp")
