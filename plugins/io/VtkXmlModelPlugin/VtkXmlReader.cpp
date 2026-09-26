@@ -450,29 +450,29 @@ namespace {
         if (bytes.size() % element_size != 0) {
             throw ReadError("binary DataArray byte count not a multiple of element size");
         }
+        // 按 type 显式区分有符号/无符号中间类型：走无符号中间量会丢符号位（-1 读成大正数）
         values.reserve(bytes.size() / element_size);
         for (size_t i = 0; i < bytes.size(); i += element_size) {
-            switch (element_size) {
-            case 1:
-                values.push_back(static_cast<T>(bytes[i]));
-                break;
-            case 2:
+            if (type == "Int8") {
+                values.push_back(readLittleEndian<int8_t>(&bytes[i]));
+            } else if (type == "UInt8") {
+                values.push_back(readLittleEndian<uint8_t>(&bytes[i]));
+            } else if (type == "Int16") {
+                values.push_back(readLittleEndian<int16_t>(&bytes[i]));
+            } else if (type == "UInt16") {
                 values.push_back(readLittleEndian<uint16_t>(&bytes[i]));
-                break;
-            case 4:
-                if (type == "Float32") {
-                    values.push_back(readLittleEndian<float>(&bytes[i]));
-                } else {
-                    values.push_back(readLittleEndian<uint32_t>(&bytes[i]));
-                }
-                break;
-            default:
-                if (type == "Float64") {
-                    values.push_back(readLittleEndian<double>(&bytes[i]));
-                } else {
-                    values.push_back(readLittleEndian<uint64_t>(&bytes[i]));
-                }
-                break;
+            } else if (type == "Int32") {
+                values.push_back(readLittleEndian<int32_t>(&bytes[i]));
+            } else if (type == "UInt32") {
+                values.push_back(readLittleEndian<uint32_t>(&bytes[i]));
+            } else if (type == "Int64") {
+                values.push_back(readLittleEndian<int64_t>(&bytes[i]));
+            } else if (type == "UInt64") {
+                values.push_back(readLittleEndian<uint64_t>(&bytes[i]));
+            } else if (type == "Float32") {
+                values.push_back(readLittleEndian<float>(&bytes[i]));
+            } else {
+                values.push_back(readLittleEndian<double>(&bytes[i])); // Float64
             }
         }
         return values;

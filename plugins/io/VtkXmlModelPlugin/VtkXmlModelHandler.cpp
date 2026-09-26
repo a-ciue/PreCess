@@ -39,24 +39,28 @@ namespace {
 
 //! @brief 读入侧用到的 VTK 单元类型码
 constexpr int64_t kVtkLine = 3;
+constexpr int64_t kVtkPolyLine = 4;
 constexpr int64_t kVtkTriangle = 5;
 constexpr int64_t kVtkPolygon = 7;
 constexpr int64_t kVtkQuad = 9;
 constexpr int64_t kVtkTetra = 10;
+constexpr int64_t kVtkHexahedron = 12;
+constexpr int64_t kVtkWedge = 13;
+constexpr int64_t kVtkPyramid = 14;
 constexpr int64_t kVtkPolyhedron = 42;
 
 //! @brief VTK 简单体单元的角点数（读入校验与写出口径一致）
 size_t solidCornerCount(unsigned char vtk_type)
 {
     switch (vtk_type) {
-    case 10:
-        return 4; // VTK_TETRA
-    case 12:
-        return 8; // VTK_HEXAHEDRON
-    case 13:
-        return 6; // VTK_WEDGE
-    case 14:
-        return 5; // VTK_PYRAMID
+    case kVtkTetra:
+        return 4;
+    case kVtkHexahedron:
+        return 8;
+    case kVtkWedge:
+        return 6;
+    case kVtkPyramid:
+        return 5;
     default:
         return 0; // 多面体 / 高阶等需要面拓扑或不受支持的类型
     }
@@ -359,17 +363,17 @@ bool readUnstructuredGrid(const vtkxml::XmlNode& root, const vtkxml::XmlDocument
                 [&](const std::vector<int64_t>& c, size_t b, size_t e) {
                     const int64_t vtk_type = types[cell_index++];
                     switch (vtk_type) {
-                    case kVtkLine: // 线段（含折线 VTK_POLY_LINE=4）
-                    case 4:
+                    case kVtkLine:
+                    case kVtkPolyLine:
                         return assembler.appendPolyline(c, b, e);
                     case kVtkTriangle:
                     case kVtkQuad:
                     case kVtkPolygon:
                         return assembler.appendFace(c, b, e);
-                    case 10:
-                    case 12:
-                    case 13:
-                    case 14:
+                    case kVtkTetra:
+                    case kVtkHexahedron:
+                    case kVtkWedge:
+                    case kVtkPyramid:
                         return assembler.appendSolid(c, b, e, static_cast<unsigned char>(vtk_type));
                     default:
                         assembler.skipCell(vtk_type);
