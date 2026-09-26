@@ -9,8 +9,10 @@
 2. **第三方依赖（不随 SDK 安装）**：从 PreCess 项目**发行页**下载与本 SDK 版本配套的
    预编译依赖包 `PreCess-deps`（Qt6、VTK、OpenCASCADE、spdlog、freetype 等），解压到任意目录。
    插件链接 `PreCess::Base` 时需要这些依赖的头文件与导入库。
-3. **工具链**：与构建本 SDK 版本兼容的 MSVC 工具集，且**构建配置一致**
-   （Debug SDK 编 Debug 插件，Release 对 Release——混用会在运行期堆损坏）。
+3. **工具链**：与构建本 SDK 版本兼容的 MSVC 工具集；构建配置按 **Debug / 非 Debug 成类**：
+   Debug 插件只能配 Debug 主程序（混类链接期即失败，强行绕过运行期堆损坏）；
+   同为非 Debug 时 `Release` 与 `RelWithDebInfo`/`MinSizeRel` 互相兼容——
+   插件开发想带调试信息编译，用 `-DCMAKE_BUILD_TYPE=RelWithDebInfo` 即可。
 
 ## 编译
 
@@ -20,7 +22,7 @@ Windows 环境下需要先下载Visual Studio并安装C++开发工具。
 在本目录执行：
 
 ```powershell
-cmake -S . -B build -G Ninja "-DCMAKE_PREFIX_PATH=<SDK 前缀>;<PreCess-deps 根>" -DCMAKE_BUILD_TYPE=Debug
+cmake -S . -B build -G Ninja "-DCMAKE_PREFIX_PATH=<SDK 前缀>;<PreCess-deps 根>" -DCMAKE_BUILD_TYPE=RelWithDebInfo
 cmake --build build
 ```
 

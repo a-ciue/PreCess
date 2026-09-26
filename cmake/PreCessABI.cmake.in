@@ -67,13 +67,35 @@ function(_precess_check_abi)
                 "MSVC 运行库（CRT）不匹配：PreCess 为 \"${PRECESS_ABI_MSVC_RUNTIME}\"（空=默认动态 CRT），"
                 "当前为 \"${CMAKE_MSVC_RUNTIME_LIBRARY}\"。/MD 与 /MT 混链会导致跨模块 new/delete 错配")
         endif()
-        # 单配置生成器（Ninja 等）下可比构建配置；多配置生成器生成期无单一配置，退化为 CRT 检查
+        # 构建配置（单配置生成器）按 Debug 类二分：Debug 与非 Debug
+        # （Release/RelWithDebInfo/MinSizeRel）互不兼容——_ITERATOR_DEBUG_LEVEL 2↔0、
+        # /MDd 与 /MD，链接期 LNK2038、运行期堆损坏；同类内互认：非 Debug 各配置
+        # ABI 关键参数一致（/MD、_ITERATOR_DEBUG_LEVEL=0），仅优化与调试符号差异，
+        # 字符串不等但可安全混链（降为警告）。
         if(NOT "${PRECESS_ABI_BUILD_TYPE}" STREQUAL "" AND "${CMAKE_CONFIGURATION_TYPES}" STREQUAL "")
-            if(NOT "${CMAKE_BUILD_TYPE}" STREQUAL "${PRECESS_ABI_BUILD_TYPE}")
+            string(TOLOWER "${PRECESS_ABI_BUILD_TYPE}" _precess_abi_cfg)
+            string(TOLOWER "${CMAKE_BUILD_TYPE}" _precess_cur_cfg)
+            if(_precess_abi_cfg STREQUAL "debug")
+                set(_precess_abi_debug TRUE)
+            else()
+                set(_precess_abi_debug FALSE)
+            endif()
+            if(_precess_cur_cfg STREQUAL "debug")
+                set(_precess_cur_debug TRUE)
+            else()
+                set(_precess_cur_debug FALSE)
+            endif()
+            if(NOT _precess_abi_debug STREQUAL _precess_cur_debug)
                 message(FATAL_ERROR
-                    "构建配置不匹配：PreCess 库为 ${PRECESS_ABI_BUILD_TYPE}，当前 CMAKE_BUILD_TYPE="
-                    "\"${CMAKE_BUILD_TYPE}\"。Debug/Release 混链（_ITERATOR_DEBUG_LEVEL 不同）会在运行期堆损坏；"
+                    "构建配置类别不匹配：PreCess 库为 ${PRECESS_ABI_BUILD_TYPE}，当前为 "
+                    "${CMAKE_BUILD_TYPE}。Debug 与非 Debug 混链（_ITERATOR_DEBUG_LEVEL 2↔0、"
+                    "/MDd 与 /MD）链接期即 LNK2038 失败，强行绕过则运行期堆损坏；"
                     "请以 -DCMAKE_BUILD_TYPE=${PRECESS_ABI_BUILD_TYPE} 构建插件")
+            elseif(NOT "${CMAKE_BUILD_TYPE}" STREQUAL "${PRECESS_ABI_BUILD_TYPE}")
+                message(WARNING
+                    "构建配置同属非 Debug 类但名称不同：PreCess 库为 ${PRECESS_ABI_BUILD_TYPE}，"
+                    "当前为 ${CMAKE_BUILD_TYPE}。二者 ABI 关键参数一致（/MD、"
+                    "_ITERATOR_DEBUG_LEVEL=0），仅优化与调试符号差异，可安全混链")
             endif()
         endif()
     endif()
