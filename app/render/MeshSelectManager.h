@@ -31,12 +31,12 @@ class MeshSelectManager {
 public:
     MeshSelectManager(vtkRenderer& renderer, vtkActor& highlight_actor, MeshActorManagerSelectOp& op);
 
-    void select(double posx, double posy);
+    void select(double posx, double posy, SelectOp op = SelectOp::Toggle);
     /**
-     * @brief 矩形框选入口（Ctrl+左键拖拽）：框选恒为替换——先清空全部组件选择，
-     *        一次拾取全部可见组件的源 actor，命中结果按组件分发到各 selector 应用
+     * @brief 矩形框选入口（Ctrl+左键拖拽）：框选永不清空，由各 selector 按 op
+     *        （Append->并集 / Remove->差集 / Toggle->对称差）做集合运算；无命中也不清空。
      */
-    void selectArea(int xmin, int ymin, int xmax, int ymax);
+    void selectArea(int xmin, int ymin, int xmax, int ymax, SelectOp op = SelectOp::Toggle);
     void setSelectMode(SelectMode select_mode);
     /**
      * @brief 设置面选择的角度扩散参数，并同步到已创建的面选择器

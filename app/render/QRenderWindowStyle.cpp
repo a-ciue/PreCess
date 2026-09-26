@@ -109,7 +109,7 @@ void QRenderWindowStyle::OnLeftButtonDown()
     if (iren && iren->GetControlKey()) {
         // Ctrl+左键 → 进入框选模式；不调父类，相机不被旋转/平移
         box_selecting_ = true;
-        iren->GetEventPosition(box_start_);
+        click_ = true;
         box_end_[0] = box_start_[0];
         box_end_[1] = box_start_[1];
         attachRubberBand();
@@ -121,6 +121,11 @@ void QRenderWindowStyle::OnLeftButtonDown()
 
 void QRenderWindowStyle::OnLeftButtonUp()
 {
+    auto* iren = this->GetInteractor();
+    const bool shift = iren && iren->GetShiftKey() != 0;
+    const bool ctrl = iren && iren->GetControlKey() != 0;
+    const SelectOp op = selectOpFromModifiers(shift, ctrl);
+
     if (box_selecting_) {
         // 矩形太小不触发（与 demo 对齐：>=2 像素）
         const int dx = std::abs(box_end_[0] - box_start_[0]);
@@ -130,11 +135,14 @@ void QRenderWindowStyle::OnLeftButtonUp()
             int xmax = std::max(box_start_[0], box_end_[0]);
             int ymin = std::min(box_start_[1], box_end_[1]);
             int ymax = std::max(box_start_[1], box_end_[1]);
-            select_manager_->selectArea(xmin, ymin, xmax, ymax);
+            select_manager_->selectArea(xmin, ymin, xmax, ymax, op);
+        } else if (click_ && select_manager_) {
+            int pos[2];
+            iren->GetEventPosition(pos);
+            select_manager_->select(pos[0], pos[1], op);
         }
         detachRubberBand();
         box_selecting_ = false;
-        // 吞掉 click_ 状态：框选路径不应触发点选
         click_ = false;
         return;
     }
@@ -146,7 +154,7 @@ void QRenderWindowStyle::OnLeftButtonUp()
         if (interaction_service_ && interaction_service_->hasActiveState())
             interaction_service_->pick(pos[0], pos[1]);
         else if (select_manager_)
-            select_manager_->select(pos[0], pos[1]);
+            select_manager_->select(pos[0], pos[1], op);
     }
 
     vtkInteractorStyleTrackballCamera::OnLeftButtonUp();

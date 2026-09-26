@@ -156,10 +156,11 @@ void EdgeSelectorHighlight::select(double posx, double posy)
 
 void EdgeSelectorHighlight::select(double posx, double posy,
     vtkHardwarePicker* picker, vtkActor* picked_actor,
-    vtkIdType picked_cell_id, vtkIdType /*picked_point_id*/, SelectOp /*op*/)
+    vtkIdType picked_cell_id, vtkIdType /*picked_point_id*/, SelectOp op)
 {
     if (!picked_actor || picked_cell_id == -1) {
-        clear();
+        if (op == SelectOp::Toggle)
+            clear();
         return;
     }
 
@@ -187,10 +188,22 @@ void EdgeSelectorHighlight::select(double posx, double posy,
             return _is_selected(original_id, std::optional<std::array<vtkIdType, 2>>(e.endpoints));
         });
 
-    if (it != selections_.end()) { // 已选中，取消选中
-        selections_.erase(it);
-    } else { // 未选中，添加
-        selections_.push_back({ original_id, edge_id });
+    // 按 op 决定单条边的选中语义：Append 仅加入；Remove 仅剔除；Toggle 翻转（保持原点击切换语义）
+    switch (op) {
+    case SelectOp::Append:
+        if (it == selections_.end())
+            selections_.push_back({ original_id, edge_id });
+        break;
+    case SelectOp::Remove:
+        if (it != selections_.end())
+            selections_.erase(it);
+        break;
+    case SelectOp::Toggle:
+        if (it != selections_.end())
+            selections_.erase(it);
+        else
+            selections_.push_back({ original_id, edge_id });
+        break;
     }
 
     enableHighlight();
@@ -209,7 +222,7 @@ void EdgeSelectorHighlight::setupHighlightStyle(vtkActor& actor, vtkMapper& mapp
 
 void EdgeSelectorHighlight::selectArea(
     const std::unordered_map<vtkProp*, std::unordered_set<vtkIdType>>& hits,
-    int xmin, int ymin, int xmax, int ymax, SelectOp /*op*/)
+    int xmin, int ymin, int xmax, int ymax, SelectOp op)
 {
     // 与点选对齐：从 face/edge/solid 三个 actor 的命中 cell 派生边并合并端点对。
     // face CELLS 主路径健壮（面表面有 z 遮挡）；edge actor 补独立/物化边；solid 表面补体网格表面边。
@@ -317,8 +330,43 @@ void EdgeSelectorHighlight::selectArea(
         picked_edges.push_back({ { key.first, key.second }, edge_id });
     }
 
-    // 框选恒为替换：manager 已先清空，命中即本组件的新选择（端点对相同即同一条边，set）
-    selections_ = std::move(picked_edges);
+    // 按 op 对框内命中的边做集合运算：Append->并集；Remove->差集；Toggle->对称差。
+    auto in_picked = [&](const SelectedEdge& e) {
+        return std::any_of(picked_edges.begin(), picked_edges.end(),
+            [&](const SelectedEdge& pe) {
+                return _is_selected(pe.endpoints, std::optional<std::array<vtkIdType, 2>>(e.endpoints));
+            });
+    };
+    switch (op) {
+    case SelectOp::Append:
+        for (const auto& pe : picked_edges) {
+            bool found = std::any_of(selections_.begin(), selections_.end(),
+                [&](const SelectedEdge& e) {
+                    return _is_selected(pe.endpoints, std::optional<std::array<vtkIdType, 2>>(e.endpoints));
+                });
+            if (!found)
+                selections_.push_back(pe);
+        }
+        break;
+    case SelectOp::Remove:
+        selections_.erase(
+            std::remove_if(selections_.begin(), selections_.end(), in_picked),
+            selections_.end());
+        break;
+    case SelectOp::Toggle:
+        selections_.erase(
+            std::remove_if(selections_.begin(), selections_.end(), in_picked),
+            selections_.end());
+        for (const auto& pe : picked_edges) {
+            bool found = std::any_of(selections_.begin(), selections_.end(),
+                [&](const SelectedEdge& e) {
+                    return _is_selected(pe.endpoints, std::optional<std::array<vtkIdType, 2>>(e.endpoints));
+                });
+            if (!found)
+                selections_.push_back(pe);
+        }
+        break;
+    }
 
     enableHighlight();
 }

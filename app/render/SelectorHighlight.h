@@ -213,7 +213,7 @@ public:
     void disableHighlight() override;
     void enableHighlight() override;
     SelectionVtk get() override;
-    void selectPickedPoint(vtkDataSet* picked_data_set, vtkIdType picked_point_id);
+    void selectPickedPoint(vtkDataSet* picked_data_set, vtkIdType picked_point_id, SelectOp op = SelectOp::Toggle);
 
 private:
     vtkRenderer* renderer_;

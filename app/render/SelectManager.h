@@ -24,11 +24,12 @@ public:
     SelectManager(vtkRenderer& renderer,
         MeshActorManagerSelectOp& mesh_op, GeometryActorManagerSelectOp& geom_op);
     ~SelectManager();
-    void select(double posx, double posy);
+    void select(double posx, double posy, SelectOp op = SelectOp::Toggle);
     /**
      * @brief 矩形框选入口（Ctrl+左键拖拽）：按当前选择模式转发给网格、几何或组件选择管理器。
+     *        网格模式按 op（Append/Remove/Toggle）做集合运算；几何/组件模式当前忽略 op（仍走原逻辑）。
      */
-    void selectArea(int xmin, int ymin, int xmax, int ymax);
+    void selectArea(int xmin, int ymin, int xmax, int ymax, SelectOp op = SelectOp::Toggle);
     void setSelectMode(const std::string& select_mode);
     /**
      * @brief 设置网格面选择的角度扩散参数

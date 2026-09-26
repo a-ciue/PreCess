@@ -24,26 +24,26 @@ SelectManager::~SelectManager() = default;
 static bool is_mesh_mode(SelectMode m) { return m >= SelectMode::Vertex && m <= SelectMode::Solid; }
 static bool is_geom_mode(SelectMode m) { return m >= SelectMode::GeometryVertex && m <= SelectMode::GeometrySolid; }
 
-void SelectManager::select(double posx, double posy)
+void SelectManager::select(double posx, double posy, SelectOp op)
 {
     if (select_mode_ == SelectMode::Component) {
         component_selector_->select(posx, posy);
         return;
     }
     if (is_mesh_mode(select_mode_))
-        mesh_->select(posx, posy);
+        mesh_->select(posx, posy, op);
     else if (is_geom_mode(select_mode_))
         geom_->select(posx, posy);
 }
 
-void SelectManager::selectArea(int xmin, int ymin, int xmax, int ymax)
+void SelectManager::selectArea(int xmin, int ymin, int xmax, int ymax, SelectOp op)
 {
     if (select_mode_ == SelectMode::Component) {
         component_selector_->selectArea(xmin, ymin, xmax, ymax);
         return;
     }
     if (is_mesh_mode(select_mode_))
-        mesh_->selectArea(xmin, ymin, xmax, ymax);
+        mesh_->selectArea(xmin, ymin, xmax, ymax, op);
     else if (is_geom_mode(select_mode_))
         geom_->selectArea(xmin, ymin, xmax, ymax);
 }

@@ -42,7 +42,7 @@ MeshSelectManager::MeshSelectManager(vtkRenderer& renderer, vtkActor& highlight_
     op_->observePickList(vertex_picker_->GetPickList());
 }
 
-void MeshSelectManager::select(double posx, double posy)
+void MeshSelectManager::select(double posx, double posy, SelectOp op)
 {
     if (this->select_mode_ == SelectMode::None)
         return;
@@ -52,8 +52,11 @@ void MeshSelectManager::select(double posx, double posy)
         vertex_picker_->Pick(posx, posy, 0, renderer_);
         vtkActor* picked_actor = vertex_picker_->GetActor();
         auto component_id = op_->getComponentId(picked_actor);
-        if (!component_id)
+        if (!picked_actor || !component_id) {
+            if (op == SelectOp::Toggle)
+                this->clearSelection();
             return;
+        }
         if (auto* sel = dynamic_cast<VertexSelectorHighlight*>(getOrCreateSelector(*component_id)))
             sel->selectPickedPoint(vertex_picker_->GetDataSet(), vertex_picker_->GetPointId());
         return;
@@ -71,21 +74,22 @@ void MeshSelectManager::select(double posx, double posy)
 
     vtkActor* picked_actor = component_picker_->GetActor();
     auto component_id = op_->getComponentId(picked_actor);
-    if (!component_id)
+    if (!picked_actor || !component_id) {
+        // 点选落空：仅 Toggle 模式清空全部选择；Append/Remove 模式点空白不做事
+        if (op == SelectOp::Toggle)
+            this->clearSelection();
         return;
+    }
 
     if (auto* sel = getOrCreateSelector(*component_id))
         sel->select(posx, posy, component_picker_.GetPointer(), picked_actor,
-            component_picker_->GetCellId(), component_picker_->GetPointId());
+            component_picker_->GetCellId(), component_picker_->GetPointId(), op);
 }
 
-void MeshSelectManager::selectArea(int xmin, int ymin, int xmax, int ymax)
+void MeshSelectManager::selectArea(int xmin, int ymin, int xmax, int ymax, SelectOp op)
 {
     if (this->select_mode_ == SelectMode::None)
         return;
-
-    // 框选恒为替换：先清空全部组件的网格选择，再只选中本次框内（跨组件）元素
-    this->clearSelection();
 
     // 收集可见组件的源 actor（按模式；隐藏组件不渲染 → 一次拾取不会命中它）
     std::vector<vtkActor*> targets;
@@ -124,7 +128,7 @@ void MeshSelectManager::selectArea(int xmin, int ymin, int xmax, int ymax)
     // 分发到各组件 selector（已清空 → 命中即该组件新选择；无命中时其 selectArea 内部直接返回）
     for (Index comp_id : op_->getAllComponentIds()) {
         if (auto* sel = getOrCreateSelector(comp_id))
-            sel->selectArea(hits, xmin, ymin, xmax, ymax);
+            sel->selectArea(hits, xmin, ymin, xmax, ymax, op);
     }
 }
 
