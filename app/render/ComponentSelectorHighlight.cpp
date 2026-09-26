@@ -86,13 +86,14 @@ SelectionVtk ComponentSelectorHighlight::get() const
     return back_selection;
 }
 
-void ComponentSelectorHighlight::select(double posx, double posy, SelectOp /*op*/)
+void ComponentSelectorHighlight::select(double posx, double posy, SelectOp op)
 {
     component_picker_->Pick(posx, posy, 0, renderer_);
 
     vtkActor* picked_actor = component_picker_->GetActor();
     if (!picked_actor) {
-        clear();
+        if (op == SelectOp::Toggle)
+            clear();
         return;
     }
 
@@ -104,19 +105,26 @@ void ComponentSelectorHighlight::select(double posx, double posy, SelectOp /*op*
     }
 
     auto it = _find_component(*component_id, selected_components_);
-    if (it != selected_components_.end())
-        selected_components_.erase(it);
-    else
-        selected_components_.push_back(*component_id);
+    const bool present = (it != selected_components_.end());
+
+    if (op == SelectOp::Append) {
+        if (!present)
+            selected_components_.push_back(*component_id);
+    } else if (op == SelectOp::Remove) {
+        if (present)
+            selected_components_.erase(it);
+    } else {
+        if (present)
+            selected_components_.erase(it);
+        else
+            selected_components_.push_back(*component_id);
+    }
 
     updateHighlight();
 }
 
-void ComponentSelectorHighlight::selectArea(int xmin, int ymin, int xmax, int ymax, SelectOp /*op*/)
+void ComponentSelectorHighlight::selectArea(int xmin, int ymin, int xmax, int ymax, SelectOp op)
 {
-    // 框选恒为替换：先清空，再选中本次框内的全部组件
-    clear();
-
     std::vector<vtkActor*> targets;
     targets.reserve(64);
     for (Index comp_id : mesh_op_.getAllComponentIds()) {
@@ -150,8 +158,24 @@ void ComponentSelectorHighlight::selectArea(int xmin, int ymin, int xmax, int ym
             hit_components.insert(*component_id);
     }
 
-    for (Index component_id : hit_components)
-        selected_components_.push_back(component_id);
+    if (op == SelectOp::Append) {
+        for (Index id : hit_components)
+            if (_find_component(id, selected_components_) == selected_components_.end())
+                selected_components_.push_back(id);
+    } else if (op == SelectOp::Remove) {
+        selected_components_.erase(
+            std::remove_if(selected_components_.begin(), selected_components_.end(),
+                [&](Index id) { return hit_components.count(id) > 0; }),
+            selected_components_.end());
+    } else {
+        for (Index id : hit_components) {
+            auto it = _find_component(id, selected_components_);
+            if (it != selected_components_.end())
+                selected_components_.erase(it);
+            else
+                selected_components_.push_back(id);
+        }
+    }
 
     updateHighlight();
 }

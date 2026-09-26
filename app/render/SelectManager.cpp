@@ -27,7 +27,7 @@ static bool is_geom_mode(SelectMode m) { return m >= SelectMode::GeometryVertex 
 void SelectManager::select(double posx, double posy, SelectOp op)
 {
     if (select_mode_ == SelectMode::Component) {
-        component_selector_->select(posx, posy);
+        component_selector_->select(posx, posy, op);
         return;
     }
     if (is_mesh_mode(select_mode_))
@@ -39,7 +39,7 @@ void SelectManager::select(double posx, double posy, SelectOp op)
 void SelectManager::selectArea(int xmin, int ymin, int xmax, int ymax, SelectOp op)
 {
     if (select_mode_ == SelectMode::Component) {
-        component_selector_->selectArea(xmin, ymin, xmax, ymax);
+        component_selector_->selectArea(xmin, ymin, xmax, ymax, op);
         return;
     }
     if (is_mesh_mode(select_mode_))
