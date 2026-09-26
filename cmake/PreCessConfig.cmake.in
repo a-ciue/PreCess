@@ -7,6 +7,13 @@
 #   Tests                       插件测试 API（工具组件、不产生目标：PreCessPluginTesting.cmake + Catch2）
 include(CMakeFindDependencyMacro)
 
+# RelWithDebInfo 消费者取三方 SHARED 导入库时一律用 Release 版（不设时 CMake 的
+# 配置回退可能落到 DEBUG 版，如 spdlogd.dll——运行期宿主无该 Debug DLL，插件加载
+# 即依赖断链失败）；消费者已显式设置的映射保持不覆盖
+if(NOT DEFINED CMAKE_MAP_IMPORTED_CONFIG_RELWITHDEBINFO)
+    set(CMAKE_MAP_IMPORTED_CONFIG_RELWITHDEBINFO "Release;RelWithDebInfo;MinSizeRel;NoConfig")
+endif()
+
 # ① 三方包查找引导：指向 PreCess 构建时的同一实例（可重定位安装时本文件不随包；
 #    helpers 带 NOT DEFINED 守卫，用户显式 -D <pkg>_DIR 始终最高优先）
 if(EXISTS "${CMAKE_CURRENT_LIST_DIR}/PreCess-find-package-helpers.cmake")
