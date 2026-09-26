@@ -456,6 +456,7 @@ Page {
                         })
                     }
 
+                    // 类别序号必须与 GeometryTopologyDiagnosticCategory 的枚举顺序保持一致。
                     MenuItem {
                         text: "边界边"
                         checkable: true

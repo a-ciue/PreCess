@@ -22,7 +22,6 @@
 #include <Geom_Surface.hxx>
 #include <GeomAbs_SurfaceType.hxx>
 #include <GProp_GProps.hxx>
-#include <IntCurveSurface_TransitionOnCurve.hxx>
 #include <Precision.hxx>
 #include <Poly_Triangulation.hxx>
 #include <NCollection_Array1.hxx>
@@ -44,7 +43,6 @@
 #include <TColStd_PackedMapOfInteger.hxx>
 #include <TopTools_ShapeMapHasher.hxx>
 #include <gp_Pnt.hxx>
-#include <gp_Pnt2d.hxx>
 #include <gp_Cylinder.hxx>
 #include <gp_Dir.hxx>
 #include <gp_Lin.hxx>
@@ -61,7 +59,6 @@
 #include <limits>
 #include <memory>
 #include <numeric>
-#include <optional>
 #include <stdexcept>
 #include <unordered_map>
 #include <unordered_set>
@@ -1439,18 +1436,24 @@ private:
     {
         if (!options_.invalid_topology)
             return;
-        // Analyzer 已包含根形状及其全部子形状的检查结果，后续直接复用，避免逐形状重建。
-        const BRepCheck_Analyzer analyzer(root_);
-        if (analyzer.IsValid())
-            return;
-        for (TopAbs_ShapeEnum type : { TopAbs_FACE, TopAbs_WIRE, TopAbs_EDGE, TopAbs_VERTEX }) {
-            for (TopExp_Explorer subshape(root_, type); subshape.More(); subshape.Next()) {
-                if (!analyzer.IsValid(subshape.Current()))
-                    result_.invalid_shapes.push_back(subshape.Current());
+
+        try {
+            // Analyzer 已包含根形状及其全部子形状的检查结果，后续直接复用，避免逐形状重建。
+            const BRepCheck_Analyzer analyzer(root_);
+            if (analyzer.IsValid())
+                return;
+            for (TopAbs_ShapeEnum type : { TopAbs_FACE, TopAbs_WIRE, TopAbs_EDGE, TopAbs_VERTEX }) {
+                for (TopExp_Explorer subshape(root_, type); subshape.More(); subshape.Next()) {
+                    if (!analyzer.IsValid(subshape.Current()))
+                        result_.invalid_shapes.push_back(subshape.Current());
+                }
             }
-        }
-        if (result_.invalid_shapes.empty())
+            if (result_.invalid_shapes.empty())
+                result_.invalid_shapes.push_back(root_);
+        } catch (const Standard_Failure&) {
+            // 无法完成有效性分析本身就是根形状异常，保留根形状供界面高亮和日志报告。
             result_.invalid_shapes.push_back(root_);
+        }
     }
 
     // 输入
