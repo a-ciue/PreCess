@@ -33,7 +33,7 @@ void SelectManager::select(double posx, double posy, SelectOp op)
     if (is_mesh_mode(select_mode_))
         mesh_->select(posx, posy, op);
     else if (is_geom_mode(select_mode_))
-        geom_->select(posx, posy);
+        geom_->select(posx, posy, op);
 }
 
 void SelectManager::selectArea(int xmin, int ymin, int xmax, int ymax, SelectOp op)
@@ -45,7 +45,7 @@ void SelectManager::selectArea(int xmin, int ymin, int xmax, int ymax, SelectOp 
     if (is_mesh_mode(select_mode_))
         mesh_->selectArea(xmin, ymin, xmax, ymax, op);
     else if (is_geom_mode(select_mode_))
-        geom_->selectArea(xmin, ymin, xmax, ymax);
+        geom_->selectArea(xmin, ymin, xmax, ymax, op);
 }
 
 void SelectManager::setSelectMode(const std::string& select_mode)

@@ -110,6 +110,7 @@ void QRenderWindowStyle::OnLeftButtonDown()
         // Ctrl+左键 → 进入框选模式；不调父类，相机不被旋转/平移
         box_selecting_ = true;
         click_ = true;
+        iren->GetEventPosition(box_start_);  // 起点 = 按下位置（之前遗漏，导致橡皮筋一角固定在旧坐标）
         box_end_[0] = box_start_[0];
         box_end_[1] = box_start_[1];
         attachRubberBand();
