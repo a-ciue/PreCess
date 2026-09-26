@@ -235,6 +235,25 @@ TEST_CASE("GmshModelHandler rejects unsupported and corrupt files")
         const fs::path input = core::TempFile::instance().path().string() + "_missing.msh";
         REQUIRE_FALSE(handler.read_model(input, {}).has_value());
     }
+
+    SECTION("2.2 declared node count exceeds file size")
+    {
+        // 天文数字计数须在分配前按文件大小上界拒绝，而非 length_error 逃逸
+        const fs::path input = core::TempFile::instance().path().string() + "_huge22.msh";
+        writeFile(input,
+            "$MeshFormat\n2.2 0 8\n$EndMeshFormat\n"
+            "$Nodes\n999999999999999\n$EndNodes\n");
+        REQUIRE_FALSE(handler.read_model(input, {}).has_value());
+    }
+
+    SECTION("4.1 block entry count exceeds file size")
+    {
+        const fs::path input = core::TempFile::instance().path().string() + "_huge41.msh";
+        writeFile(input,
+            "$MeshFormat\n4.1 0 8\n$EndMeshFormat\n"
+            "$Nodes\n1 999999999999999 1 1\n2 1 0 999999999999999\n$EndNodes\n");
+        REQUIRE_FALSE(handler.read_model(input, {}).has_value());
+    }
 }
 
 TEST_CASE("GmshModelHandler skips high-order elements but keeps the rest")

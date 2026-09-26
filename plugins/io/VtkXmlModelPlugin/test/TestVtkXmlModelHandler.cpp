@@ -455,6 +455,57 @@ TEST_CASE("VtkXmlModelHandler rejects corrupt files")
         const fs::path input = core::TempFile::instance().path().string() + "_missing.vtp";
         REQUIRE_FALSE(handler.read_model(input, {}).has_value());
     }
+
+    SECTION("deeply nested tags overflow guard")
+    {
+        // 70 层嵌套超过解析深度上限：拒绝而非栈溢出崩溃
+        std::string content;
+        for (int i = 0; i < 70; ++i) {
+            content += "<n>";
+        }
+        content += "<VTKFile type=\"PolyData\" version=\"0.1\"><PolyData/></VTKFile>";
+        for (int i = 0; i < 70; ++i) {
+            content += "</n>";
+        }
+        const fs::path input = core::TempFile::instance().path().string() + "_deep.vtp";
+        writeFile(input, content);
+        REQUIRE_FALSE(handler.read_model(input, {}).has_value());
+    }
+
+    SECTION("inline binary prefix shorter than header size")
+    {
+        // 单独前缀编码分支：base64 解码结果不足 4 字节前缀，应报错而非越界读
+        const fs::path input = core::TempFile::instance().path().string() + "_shortprefix.vtp";
+        writeFile(input,
+            "<VTKFile type=\"PolyData\" version=\"0.1\" byte_order=\"LittleEndian\">\n"
+            "  <PolyData>\n"
+            "    <Piece NumberOfPoints=\"3\" NumberOfPolys=\"0\">\n"
+            "      <Points><DataArray type=\"Float64\" NumberOfComponents=\"3\" format=\"binary\">AAAA</DataArray></Points>\n"
+            "    </Piece>\n"
+            "  </PolyData>\n"
+            "</VTKFile>\n");
+        REQUIRE_FALSE(handler.read_model(input, {}).has_value());
+    }
+
+    SECTION("raw appended offset near size_t max")
+    {
+        // offset 取 ULLONG_MAX 量级：减法形式的边界检查须拒绝而非加法回绕后越界读
+        const fs::path input = core::TempFile::instance().path().string() + "_hugooffset.vtp";
+        writeFile(input,
+            "<VTKFile type=\"PolyData\" version=\"1.0\" byte_order=\"LittleEndian\" header_type=\"UInt64\">\n"
+            "  <PolyData>\n"
+            "    <Piece NumberOfPoints=\"3\" NumberOfPolys=\"1\">\n"
+            "      <Points><DataArray type=\"Float64\" NumberOfComponents=\"3\" format=\"appended\" offset=\"18446744073709551615\"/></Points>\n"
+            "      <Polys>"
+            "<DataArray type=\"Int64\" Name=\"connectivity\" format=\"ascii\">0 1 2</DataArray>"
+            "<DataArray type=\"Int64\" Name=\"offsets\" format=\"ascii\">3</DataArray>"
+            "</Polys>\n"
+            "    </Piece>\n"
+            "  </PolyData>\n"
+            "  <AppendedData encoding=\"raw\">_\n</AppendedData>\n"
+            "</VTKFile>\n");
+        REQUIRE_FALSE(handler.read_model(input, {}).has_value());
+    }
 }
 
 TEST_CASE("VtkXmlModelHandler write_components round-trips vtu and vtp")

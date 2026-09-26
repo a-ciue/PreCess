@@ -109,9 +109,15 @@ namespace {
         return result;
     }
 
+    //! @brief XML 元素嵌套深度上限：VTK XML 实际嵌套远小于此，防不可信输入的栈溢出
+    constexpr int kMaxXmlNestingDepth = 64;
+
     //! @brief 解析一个元素：开标签（属性）、子内容与闭标签
-    XmlNode parseElement(const std::string& text, size_t& pos)
+    XmlNode parseElement(const std::string& text, size_t& pos, int depth)
     {
+        if (depth > kMaxXmlNestingDepth) {
+            throw ReadError("XML nesting too deep");
+        }
         ++pos; // 消费 '<'
         XmlNode node;
         size_t end = text.find_first_of(" \t\r\n/>", pos);
@@ -213,7 +219,7 @@ namespace {
                 pos = tag_end + 1;
                 break;
             } else {
-                node.children.push_back(parseElement(text, pos));
+                node.children.push_back(parseElement(text, pos, depth + 1));
             }
         }
         node.text = std::move(text_buffer);
@@ -325,8 +331,12 @@ namespace {
     std::vector<uint8_t> decodeBinary(const std::string& encoded, size_t header_size, bool separate_header_layout)
     {
         if (separate_header_layout) {
-            // 前缀单独编码：其 base64 段自带 padding，先解码出前缀长度
+            // 前缀单独编码：其 base64 段自带 padding，先解码出前缀长度；
+            // 解码结果短于 header_size 时拒绝，避免 memcpy 越界读
             const std::vector<uint8_t> header = decodeStream(encoded, 0);
+            if (header.size() < header_size) {
+                throw ReadError("binary DataArray prefix shorter than header size");
+            }
             size_t prefix = 0;
             std::memcpy(&prefix, header.data(), header_size);
             // 数据段独立编码：从 padding 之后的下一字符开始
@@ -414,14 +424,15 @@ namespace {
                 throw ReadError("bad appended offset '" + *offset_text + "'");
             }
             if (doc.appendedRaw()) {
-                // raw 承载：offset 为 '_' 后的字节偏移，块布局 = 长度前缀 + 数据
+                // raw 承载：offset 为 '_' 后的字节偏移，块布局 = 长度前缀 + 数据；
+                // 边界检查用减法形式，offset 接近 size_t 上限时加法会回绕绕过检查
                 const std::vector<uint8_t>& stream = doc.appendedBytes();
-                if (offset + doc.headerSize() > stream.size()) {
+                if (offset > stream.size() || stream.size() - offset < doc.headerSize()) {
                     throw ReadError("appended offset out of range");
                 }
                 size_t prefix = 0;
                 std::memcpy(&prefix, stream.data() + offset, doc.headerSize());
-                if (offset + doc.headerSize() + prefix > stream.size()) {
+                if (prefix > stream.size() - offset - doc.headerSize()) {
                     throw ReadError("raw appended block shorter than declared length");
                 }
                 bytes.assign(stream.begin() + static_cast<ptrdiff_t>(offset + doc.headerSize()),
@@ -547,7 +558,7 @@ XmlDocument XmlDocument::load(const std::filesystem::path& path)
             throw ReadError("no root element after XML declaration");
         }
     }
-    doc.root_ = parseElement(parse_content, pos);
+    doc.root_ = parseElement(parse_content, pos, 0);
 
     const std::string* header_type = doc.root_.attribute("header_type");
     if (header_type && *header_type == "UInt64") {

@@ -27,9 +27,11 @@
 #include <array>
 #include <fstream>
 #include <iomanip>
+#include <limits>
 #include <map>
 #include <sstream>
 #include <string>
+#include <system_error>
 #include <unordered_map>
 #include <unordered_set>
 #include <vector>
@@ -226,8 +228,25 @@ private:
     std::map<int, size_t> skipped_types_;
 };
 
+/**
+ * @brief 校验声明计数不超过按文件大小推得的上限
+ *
+ * 每条记录在文件中至少占 2 字节（最短 token + 换行），声明计数超过
+ * 文件大小的一半即必然非法；先行拒绝避免畸形文件的天文数字触发
+ * std::length_error / std::bad_alloc 逃逸出读取边界。
+ */
+bool countWithinLimit(long long count, long long max_count, const std::string& section)
+{
+    if (count <= max_count) {
+        return true;
+    }
+    spdlog::error("GmshModelHandler: {} count {} exceeds file size limit {}", section, count, max_count);
+    return false;
+}
+
 //! @brief 解析 2.2 版 $Nodes：N 行 `tag x y z`，tag 任意、按出现顺序建局部映射
-bool readNodes2_2(std::istream& input, std::unordered_map<Index, Index>& node_ids, MeshData& mesh)
+bool readNodes2_2(std::istream& input, std::unordered_map<Index, Index>& node_ids, MeshData& mesh,
+    long long max_count)
 {
     std::string line;
     if (!nextContentLine(input, line)) {
@@ -235,7 +254,8 @@ bool readNodes2_2(std::istream& input, std::unordered_map<Index, Index>& node_id
     }
     long long declared_count = 0;
     std::istringstream count_record(line);
-    if (!(count_record >> declared_count) || declared_count < 0) {
+    if (!(count_record >> declared_count) || declared_count < 0
+        || !countWithinLimit(declared_count, max_count, "$Nodes")) {
         spdlog::error("GmshModelHandler: bad $Nodes count line '{}'", line);
         return false;
     }
@@ -262,7 +282,8 @@ bool readNodes2_2(std::istream& input, std::unordered_map<Index, Index>& node_id
 }
 
 //! @brief 解析 4.1 版 $Nodes：按 entity block，tag 段与坐标段分离存储
-bool readNodes4_1(std::istream& input, std::unordered_map<Index, Index>& node_ids, MeshData& mesh)
+bool readNodes4_1(std::istream& input, std::unordered_map<Index, Index>& node_ids, MeshData& mesh,
+    long long max_count)
 {
     std::string line;
     if (!nextContentLine(input, line)) {
@@ -272,7 +293,9 @@ bool readNodes4_1(std::istream& input, std::unordered_map<Index, Index>& node_id
     long long declared_nodes = 0;
     std::istringstream head(line);
     long long min_tag = 0, max_tag = 0;
-    if (!(head >> block_count >> declared_nodes >> min_tag >> max_tag) || block_count < 0) {
+    if (!(head >> block_count >> declared_nodes >> min_tag >> max_tag) || block_count < 0
+        || !countWithinLimit(declared_nodes, max_count, "$Nodes")
+        || !countWithinLimit(block_count, max_count, "$Nodes blocks")) {
         spdlog::error("GmshModelHandler: bad $Nodes header '{}'", line);
         return false;
     }
@@ -286,7 +309,8 @@ bool readNodes4_1(std::istream& input, std::unordered_map<Index, Index>& node_id
         long long nodes_in_block = 0;
         std::istringstream record(line);
         if (!(record >> entity_dim >> entity_tag >> parametric >> nodes_in_block)
-            || nodes_in_block < 0) {
+            || nodes_in_block < 0
+            || !countWithinLimit(nodes_in_block, max_count, "$Nodes block entries")) {
             spdlog::error("GmshModelHandler: bad $Nodes block header '{}'", line);
             return false;
         }
@@ -331,7 +355,7 @@ bool readNodes4_1(std::istream& input, std::unordered_map<Index, Index>& node_id
 
 //! @brief 解析 2.2 版 $Elements：`elm-tag elm-type num-tags <tags> node-ids`
 bool readElements2_2(std::istream& input, const std::unordered_map<Index, Index>& node_ids,
-    MeshData& mesh, size_t& element_count)
+    MeshData& mesh, size_t& element_count, long long max_count)
 {
     std::string line;
     if (!nextContentLine(input, line)) {
@@ -339,7 +363,8 @@ bool readElements2_2(std::istream& input, const std::unordered_map<Index, Index>
     }
     long long declared_count = 0;
     std::istringstream count_record(line);
-    if (!(count_record >> declared_count) || declared_count < 0) {
+    if (!(count_record >> declared_count) || declared_count < 0
+        || !countWithinLimit(declared_count, max_count, "$Elements")) {
         spdlog::error("GmshModelHandler: bad $Elements count line '{}'", line);
         return false;
     }
@@ -393,7 +418,7 @@ bool readElements2_2(std::istream& input, const std::unordered_map<Index, Index>
 
 //! @brief 解析 4.1 版 $Elements：按 entity block，单元行仅 `elem-tag node-ids`
 bool readElements4_1(std::istream& input, const std::unordered_map<Index, Index>& node_ids,
-    MeshData& mesh, size_t& element_count)
+    MeshData& mesh, size_t& element_count, long long max_count)
 {
     std::string line;
     if (!nextContentLine(input, line)) {
@@ -402,7 +427,9 @@ bool readElements4_1(std::istream& input, const std::unordered_map<Index, Index>
     long long block_count = 0;
     std::istringstream head(line);
     long long declared_elements = 0, min_tag = 0, max_tag = 0;
-    if (!(head >> block_count >> declared_elements >> min_tag >> max_tag) || block_count < 0) {
+    if (!(head >> block_count >> declared_elements >> min_tag >> max_tag) || block_count < 0
+        || !countWithinLimit(declared_elements, max_count, "$Elements")
+        || !countWithinLimit(block_count, max_count, "$Elements blocks")) {
         spdlog::error("GmshModelHandler: bad $Elements header '{}'", line);
         return false;
     }
@@ -417,7 +444,8 @@ bool readElements4_1(std::istream& input, const std::unordered_map<Index, Index>
         long long elements_in_block = 0;
         std::istringstream record(line);
         if (!(record >> entity_dim >> entity_tag >> element_type >> elements_in_block)
-            || elements_in_block < 0) {
+            || elements_in_block < 0
+            || !countWithinLimit(elements_in_block, max_count, "$Elements block entries")) {
             spdlog::error("GmshModelHandler: bad $Elements block header '{}'", line);
             return false;
         }
@@ -458,8 +486,9 @@ bool readElements4_1(std::istream& input, const std::unordered_map<Index, Index>
  *
  * 已知节的损坏（计数非法、记录字段缺失、引用未知点 tag）整体读取失败；
  * 高阶/未知单元类型统计后告警跳过，不阻塞其余单元。
+ * @param max_count 声明计数的可信上限（按文件大小推得），防畸形文件巨额分配
  */
-bool readGmsh(std::istream& input, MeshData& mesh)
+bool readGmsh(std::istream& input, MeshData& mesh, long long max_count)
 {
     mesh.init();
 
@@ -490,11 +519,11 @@ bool readGmsh(std::istream& input, MeshData& mesh)
             }
         } else if (line == "$Nodes") {
             if (format.version < 4.0) {
-                if (!readNodes2_2(input, node_ids, mesh)) {
+                if (!readNodes2_2(input, node_ids, mesh, max_count)) {
                     return false;
                 }
             } else {
-                if (!readNodes4_1(input, node_ids, mesh)) {
+                if (!readNodes4_1(input, node_ids, mesh, max_count)) {
                     return false;
                 }
             }
@@ -505,11 +534,11 @@ bool readGmsh(std::istream& input, MeshData& mesh)
                 return false;
             }
             if (format.version < 4.0) {
-                if (!readElements2_2(input, node_ids, mesh, element_count)) {
+                if (!readElements2_2(input, node_ids, mesh, element_count, max_count)) {
                     return false;
                 }
             } else {
-                if (!readElements4_1(input, node_ids, mesh, element_count)) {
+                if (!readElements4_1(input, node_ids, mesh, element_count, max_count)) {
                     return false;
                 }
             }
@@ -764,14 +793,29 @@ std::optional<ModelPayload> GmshModelHandler::read_model(const fs::path& path, c
     // msh 承载点与一阶边/面/体单元，读入结果是一个网格组件
     auto mesh = std::make_unique<MeshData>();
 
-    // 二进制打开：行尾 '\r' 由 trimLine 处理
-    std::ifstream input(path, std::ios::binary);
-    if (!input) {
-        spdlog::error("GmshModelHandler: failed to open file '{}'", path.string());
-        return std::nullopt;
-    }
-    if (!readGmsh(input, *mesh)) {
-        spdlog::error("GmshModelHandler: failed to read msh file: {}", path.string());
+    try {
+        // 二进制打开：行尾 '\r' 由 trimLine 处理
+        std::ifstream input(path, std::ios::binary);
+        if (!input) {
+            spdlog::error("GmshModelHandler: failed to open file '{}'", path.string());
+            return std::nullopt;
+        }
+
+        // 声明计数上限按文件大小推得（每条记录至少 2 字节）；文件大小不可得时
+        // 退化为仅靠读取循环的截断检查兜底
+        std::error_code size_error;
+        const long long max_count = fs::file_size(path, size_error) > 0
+            ? static_cast<long long>(fs::file_size(path, size_error)) / 2
+            : std::numeric_limits<long long>::max();
+
+        if (!readGmsh(input, *mesh, max_count)) {
+            spdlog::error("GmshModelHandler: failed to read msh file: {}", path.string());
+            return std::nullopt;
+        }
+    } catch (const std::exception& e) {
+        // 畸形输入可能触发的 std::length_error / std::bad_alloc 等在此兜底，
+        // 不让异常逃逸出 IO 边界终止宿主进程
+        spdlog::error("GmshModelHandler: exception reading '{}': {}", path.string(), e.what());
         return std::nullopt;
     }
 
