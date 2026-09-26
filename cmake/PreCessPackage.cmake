@@ -65,6 +65,14 @@ if(PRECESS_WITH_PYTHON)
     )
 endif()
 
+# ---- 3.5) 示例插件源码（独立 CMake 工程）随 SDK 安装 ------------------------------
+# 作为完整工程原样安装：使用者可在 <prefix>/examples/ExternalPlugin/ 直接
+# cmake -S 该目录编译插件 DLL（README 即"SDK + 发行页第三方依赖 → DLL"教程）
+install(DIRECTORY "${PROJECT_SOURCE_DIR}/examples/ExternalPlugin/"
+    DESTINATION "examples/ExternalPlugin"
+    COMPONENT Development
+)
+
 # ---- 3) CMake 包配置 ---------------------------------------------------------
 configure_package_config_file(cmake/PreCessConfig.cmake.in
     "${CMAKE_CURRENT_BINARY_DIR}/PreCessConfig.cmake"
