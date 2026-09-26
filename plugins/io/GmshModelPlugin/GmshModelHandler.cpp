@@ -24,6 +24,7 @@
 
 #include <spdlog/spdlog.h>
 
+#include <algorithm>
 #include <array>
 #include <fstream>
 #include <iomanip>
@@ -801,12 +802,16 @@ std::optional<ModelPayload> GmshModelHandler::read_model(const fs::path& path, c
             return std::nullopt;
         }
 
-        // 声明计数上限按文件大小推得（每条记录至少 2 字节）；文件大小不可得时
-        // 退化为仅靠读取循环的截断检查兜底
+        // 声明计数上限按文件大小推得（每条记录至少 2 字节）；文件大小不可得
+        // （size_error 置位）时不设上限，退化为仅靠读取循环的截断检查兜底。
+        // 只查返回值不可靠：失败时 file_size 返回 uintmax_t(-1) 而非 0
         std::error_code size_error;
-        const long long max_count = fs::file_size(path, size_error) > 0
-            ? static_cast<long long>(fs::file_size(path, size_error)) / 2
-            : std::numeric_limits<long long>::max();
+        const uintmax_t file_size = fs::file_size(path, size_error);
+        const long long max_count = size_error
+            ? std::numeric_limits<long long>::max()
+            : static_cast<long long>(std::min<uintmax_t>(file_size,
+                  static_cast<uintmax_t>(std::numeric_limits<long long>::max())))
+                / 2;
 
         if (!readGmsh(input, *mesh, max_count)) {
             spdlog::error("GmshModelHandler: failed to read msh file: {}", path.string());
