@@ -83,8 +83,7 @@ endfunction()
 # 插件运行时依赖收拢的排除规则（in-tree 安装与 precess_plugin_install 共用）。
 # 匹配语义（CMake file(GET_RUNTIME_DEPENDENCIES) 文档）：PRE 过滤依赖**名字**、
 # POST 过滤解析后的**全路径**，且 Windows 下用于匹配的名称/路径**先转为小写**
-# ——正则必须写成全小写 + `.*` 锚定，否则形同虚设（2026-09-23 实测：裸且带大写的
-# "Qt6Core" 从未生效，Qt6Cored.dll 一直被打进插件目录）
+# ——正则必须写成全小写 + `.*` 锚定（大写形式不会被匹配到，形同虚设）
 # _precess_plugin_dep_exclude_regexes(<out_post> <out_pre>)
 function(_precess_plugin_dep_exclude_regexes OUT_POST OUT_PRE)
     set(_pre ".*api-ms-.*" ".*ext-ms-.*" ".*spdlog.*" ".*freetype.*") # don't install Windows-provided libs
@@ -253,11 +252,10 @@ function(precess_plugin_link_libraries TARGET)
         return()
     endif()
 
-    # OCCT 扫描目录兜底（2026-09-23 二次修正）：解析目录只从显式传入依赖推导并不够——
+    # OCCT 扫描目录兜底：仅从显式传入依赖推导扫描目录并不够——
     # 未显式传 TK* 但经 PreCess::Base 链入 OCCT 符号的插件（如 VtkLegacyModelPlugin）
     # 在无 OCCT 于 PATH 的环境下安装即报 "Could not resolve runtime dependencies:
-    # TKBRep.dll/TKernel.dll"（当日实证；此前 AllPlugins 通过系验证环境 PATH 恰好含
-    # OCCT bin 的假阴性）。TKernel 的 IMPORTED_LOCATION 为 per-config DLL 路径
+    # TKBRep.dll/TKernel.dll"。TKernel 的 IMPORTED_LOCATION 为 per-config DLL 路径
     # （Debug=bind、Release=bin），恒可作扫描目录；freetype/spdlog 本就 PRE_EXCLUDE 不收拢。
     list(TRANSFORM DEPENDENT_LIBRARIES PREPEND "$<TARGET_FILE_DIR:")
     list(TRANSFORM DEPENDENT_LIBRARIES APPEND ">")
@@ -274,10 +272,12 @@ function(precess_plugin_link_libraries TARGET)
         DIRECTORIES ${_scan_dirs}
         PRE_EXCLUDE_REGEXES ${plugin_pre_exclude_regexes}
         POST_EXCLUDE_REGEXES ${plugin_post_exclude_regexes}
+        # COMPONENT 放 dest 之前（通用绑定）：dest 级关键字按位置归属，放 BUNDLE 后
+        # 会把 RUNTIME 产物漏进默认 Unspecified（隐藏恒装）
+        COMPONENT AllPlugins
         FRAMEWORK DESTINATION $<IF:$<PLATFORM_ID:Darwin>,${PRECESS_APP_NAME}.app/Contents/Frameworks,Frameworks>
         LIBRARY DESTINATION $<IF:$<PLATFORM_ID:Darwin>,${PRECESS_APP_NAME}.app/Contents/Frameworks,plugins>
         BUNDLE DESTINATION .
-        COMPONENT AllPlugins
     )
 endfunction()
 
@@ -317,8 +317,10 @@ function(precess_plugin_install TARGET)
         DIRECTORIES ${_dep_dirs}
         PRE_EXCLUDE_REGEXES ${_pre_exclude}
         POST_EXCLUDE_REGEXES ${_post_exclude}
+        # COMPONENT 置于 dest 之前（通用绑定，同 in-tree 分支）：紧随 LIBRARY 会让
+        # RUNTIME 收拢产物漏进默认 Unspecified；组件名与 in-tree 统一为 AllPlugins
+        COMPONENT AllPlugins
         RUNTIME DESTINATION "${dest}"
         LIBRARY DESTINATION "${dest}"
-        COMPONENT Plugins
     )
 endfunction()

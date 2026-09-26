@@ -1,7 +1,7 @@
 # PreCess find_package 组件解析（命名契约：组件名与其导入目标同名对应）
 #
 # 组件语义（见 docs/plugin-sdk-design.md §6）：
-#   Python   提供 PreCess::Python（仅真实 Python 构建；2026-09-23 自 Runtime 改名）
+#   Python   提供 PreCess::Python（仅真实 Python 构建）
 #   Tests    插件测试 API（工具组件，不产生目标）
 include_guard(GLOBAL)
 

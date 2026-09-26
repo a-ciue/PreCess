@@ -37,8 +37,8 @@ set(PRECESS_PYTHON_HOME_DIR "${PRECESS_PYTHON_HOME_DIR}" CACHE INTERNAL
 
 # 内嵌解释器宿主（静态库，无 Qt）：目标恒存在，真实现/桩按可用性二选一
 add_library(precess_runtime STATIC)
-# SDK 随包导出为 PreCess::Python（命名契约：组件 Python ↔ 目标同名；2026-09-23 自
-# Runtime 改名）；DEBUG_POSTFIX 与 PreCessBase 一致，支持双配置同前缀安装。
+# SDK 随包导出为 PreCess::Python（命名契约：组件 Python ↔ 目标同名）；
+# DEBUG_POSTFIX 与 PreCessBase 一致，支持双配置同前缀安装。
 # 内部目标名 precess_runtime 保留（构建树内细节，SDK 消费者不可见）
 set_target_properties(precess_runtime PROPERTIES
     EXPORT_NAME Python
@@ -110,13 +110,17 @@ if(_precess_real)
     # 安装树自包含：pyd 装到宿主首选模块目录 <exe_dir>/python，解释器标准库
     # 与二进制扩展随包分发到 exe 目录（运行库本身由 app 依赖收拢放入）；
     # 排除开发/测试内容控制体积，非标准布局（无 Lib/）时跳过
+    # COMPONENT 放 dest 之前（通用绑定）：紧随 RUNTIME 会让 LIBRARY（pyd）漏进
+    # 默认 Unspecified（隐藏恒装）
     install(TARGETS precess_bindings
+        COMPONENT ${MYNAME}
         LIBRARY DESTINATION "${CMAKE_INSTALL_BINDIR}/python"
         RUNTIME DESTINATION "${CMAKE_INSTALL_BINDIR}/python"
     )
     if(EXISTS "${PRECESS_PYTHON_HOME_DIR}/Lib")
         install(DIRECTORY "${PRECESS_PYTHON_HOME_DIR}/Lib"
             DESTINATION "${CMAKE_INSTALL_BINDIR}"
+            COMPONENT ${MYNAME}
             PATTERN "__pycache__" EXCLUDE
             PATTERN "site-packages" EXCLUDE
             PATTERN "idlelib" EXCLUDE
@@ -128,6 +132,7 @@ if(_precess_real)
         if(EXISTS "${PRECESS_PYTHON_HOME_DIR}/DLLs")
             install(DIRECTORY "${PRECESS_PYTHON_HOME_DIR}/DLLs"
                 DESTINATION "${CMAKE_INSTALL_BINDIR}"
+                COMPONENT ${MYNAME}
                 PATTERN "__pycache__" EXCLUDE
             )
         endif()

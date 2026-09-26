@@ -154,9 +154,12 @@ install(
     POST_EXCLUDE_REGEXES ${DEPENDENCY_POST_EXCLUDE_REGEXES}
     FRAMEWORK DESTINATION $<IF:$<PLATFORM_ID:Darwin>,${MYNAME}.app/Contents/Frameworks,Frameworks>
     LIBRARY DESTINATION $<IF:$<PLATFORM_ID:Darwin>,${MYNAME}.app/Contents/Frameworks,lib>
+    # COMPONENT 紧跟 RUNTIME DESTINATION：dest 级关键字按位置绑定，置于
+    # BUNDLE DESTINATION 之后会被绑给 BUNDLE——RUNTIME 产物（exe+收拢 DLL）
+    # 将落回默认 Unspecified（隐藏恒装）
     RUNTIME DESTINATION $<IF:$<PLATFORM_ID:Darwin>,${MYNAME}.app/Contents/MacOS,bin>
-    BUNDLE DESTINATION .
     COMPONENT ${MYNAME}
+    BUNDLE DESTINATION .
 )
 
 # 4) 生成部署 QML 的脚本（若需要更多 QML 插件，可在这里处理）
