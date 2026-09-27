@@ -21,6 +21,12 @@ public:
     GeometrySelectManager(vtkRenderer& renderer, vtkActor& highlight_actor, GeometryActorManagerSelectOp& op);
 
     void select(double posx, double posy);
+
+    /**
+     * @brief 几何框选：矩形区域内的几何元素（面/边/顶点/体）
+     * @note 与网格框选一致，框选恒为替换——先清空，命中即本次新选择
+     */
+    void selectArea(int xmin, int ymin, int xmax, int ymax);
     void setSelectMode(SelectMode select_mode);
     void clearSelection();
     std::unique_ptr<Selection> getSelection();

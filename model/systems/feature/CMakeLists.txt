@@ -1,4 +1,5 @@
-add_library(FeatureSystem STATIC FeatureSystem.cpp FeatureSystemRegister.cpp FeatureParams.cpp InteractionContext.cpp)
+# OBJECT 库：对象经 model/CMakeLists.txt 的 PreCessBase 聚合导出（依赖方向仍由此处强制）
+add_library(FeatureSystem OBJECT FeatureSystem.cpp FeatureSystemRegister.cpp FeatureParams.cpp InteractionContext.cpp)
 target_link_libraries(FeatureSystem PRIVATE
     Data
     Qt6::Core

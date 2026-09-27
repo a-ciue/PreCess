@@ -4,9 +4,13 @@
  *
  * 解释器宿主逻辑在 python/（runtime.cpp 真实现 / stub.cpp 桩，precess_runtime
  * 目标恒存在、无需条件编译）；本文件只做线程断言、字符串编解码、日志与信号
- * 桥接。"不可用"是运行时状态：桩实现 available 恒 false、错误信息说明原因。
+ * 桥接。app 侧 Python 函数注册（precess.app 子模块）编入 pythonApp 静态库
+ * （真/桩按可用性二选一）。"不可用"是运行时状态：桩实现 available 恒 false、
+ * 错误信息说明原因。
  */
 #include "QPythonRuntime.h"
+
+#include "QPythonAppModule.h"
 
 #include "python/runtime.h"
 
@@ -54,7 +58,11 @@ QPythonRuntime::QPythonRuntime(session::Session* session, QObject* parent)
 {
 }
 
-QPythonRuntime::~QPythonRuntime() = default;
+QPythonRuntime::~QPythonRuntime()
+{
+    // 先关停 precess.app 定时器表（释放脚本回调 py::object），再经 runtime_ 终结解释器
+    python::app::shutdownAppModule();
+}
 
 bool QPythonRuntime::isAvailable() const
 {
@@ -72,9 +80,10 @@ void QPythonRuntime::initialize()
     if (runtime_->isAvailable() || !runtime_->lastError().empty())
         return;
     runtime_->initialize();
-    if (runtime_->isAvailable())
+    if (runtime_->isAvailable()) {
+        python::app::registerAppModule(this); // app 侧 pybind11 注册 precess.app 子模块
         spdlog::info("QPythonRuntime: Python 运行环境就绪，活动会话已注入 precess.current");
-    else
+    } else
         spdlog::error("QPythonRuntime: {}", runtime_->lastError());
     emit availableChanged();
 }

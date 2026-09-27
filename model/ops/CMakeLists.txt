@@ -1,4 +1,5 @@
-add_library(DataOps STATIC
+# OBJECT 库：对象经 model/CMakeLists.txt 的 PreCessBase 聚合导出（依赖方向仍由此处强制）
+add_library(DataOps OBJECT
 	ObjMeshIO.cpp
 	UGridModel.cpp
 	GeometryBuilder.cpp
@@ -8,7 +9,7 @@ target_include_directories(DataOps PUBLIC
 	${CMAKE_CURRENT_SOURCE_DIR}   # 头文件路径
 )
 target_link_libraries(DataOps PUBLIC Core Data
-	VTK::CommonCore
+	VTK::CommonCore VTK::CommonDataModel	# CommonDataModel：UGridModel 直用 vtkCell/vtkCellArray/vtkFieldData
 	spdlog::spdlog $<$<BOOL:${MINGW}>:ws2_32>	# spdlog日志库
 )
 target_link_libraries(DataOps PRIVATE

@@ -4,7 +4,7 @@
 #include <QObject>
 #include <QString>
 #include <QVariantMap>
-#include <QtQml/qqml.h>
+
 #include <memory>
 
 namespace session {
@@ -18,24 +18,29 @@ class Runtime;
  * @brief app 内嵌 Python 运行环境的 QML 接入层：QPythonRuntime 仅是
  * python::Runtime（无 Qt 解释器宿主）之上的 QObject 薄壳
  *
+ * 编入 pythonApp 静态库目标；QML 类型（原 QML_ELEMENT/UNCREATABLE 语义）经
+ * modelQml 的 QPythonRuntimeQml.h 外来包装注册，类本身不携带 QML 宏。
+ *
  * 职责限于：QML 属性/信号桥接（available/availableChanged）、GUI 线程断言、
- * 字符串编解码（QString ↔ UTF-8）与日志。解释器生命周期、precess 模块导入、
- * 活会话注入（precess.current）、控制台执行与输出捕获均在 python::Runtime。
+ * 字符串编解码（QString ↔ UTF-8）与日志。解释器就绪后经 python::app
+ * （QPythonAppModule，app 侧 pybind11 注册逻辑）创建 app 专属子模块 precess.app
+ * 并注册任意签名本机函数——app 侧 Python 函数统一收在该模块，定时策略与
+ * 生命周期亦由其管理。解释器生命周期、precess 模块导入、活会话注入
+ * （precess.current）、控制台执行与输出捕获均在 python::Runtime。
  *
  * 线程约定：Python 与 GUI 线程绑定，所有入口须在 GUI 线程调用（断言把关），
  * 渲染线程不得触碰 Python。
  *
  * 本类无编译期降级分支：precess_runtime 目标恒存在，Python 嵌入不可用
  * （缺 Python3/pybind11、PRECESS_BUILD_PYTHON=OFF 或 wasm）时宿主为桩实现，
- * available 恒 false、lastError() 说明原因。
+ * available 恒 false、lastError() 说明原因，模块注册亦为桩空操作。
  *
  * @sa QModelManager::pythonRuntime
  * @sa python::Runtime
+ * @sa python::app::registerAppModule
  */
 class QPythonRuntime : public QObject {
     Q_OBJECT
-    QML_ELEMENT
-    QML_UNCREATABLE("经 QModelManager.pythonRuntime 访问")
     Q_PROPERTY(bool available READ isAvailable NOTIFY availableChanged)
 public:
     /**
@@ -45,7 +50,7 @@ public:
      */
     explicit QPythonRuntime(session::Session* session, QObject* parent = nullptr);
     /**
-     * @brief 析构：终结解释器（经宿主）并丢弃 Python 侧活会话引用
+     * @brief 析构：先关停 precess.app 定时器表（释放脚本回调），再终结解释器（经宿主）
      */
     ~QPythonRuntime() override;
 

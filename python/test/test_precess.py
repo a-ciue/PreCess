@@ -106,5 +106,17 @@ if plugins_dir.is_dir():
 else:
     print("plugins dir not found, skip feature e2e")
 
+# —— 延时回调契约：app 侧函数收在 precess.app 子模块、由宿主（GUI 侧经
+#    pybind11）注册；裸 precess 绑定是单 pyd 扩展模块、无 __path__，不含子模块
+#    （同 precess.current 的宿主注入面），宿主未运行时 precess.app 不可 import ——
+assert not hasattr(precess, "call_later")
+assert not hasattr(precess, "cancel_call")
+assert not hasattr(precess, "app")
+try:
+    import precess.app
+    raise AssertionError("expected ModuleNotFoundError for bare runtime (precess.app 由宿主注册)")
+except ModuleNotFoundError:
+    pass
+
 session.teardown()
 print("precess smoke ok")

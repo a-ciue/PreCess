@@ -11,7 +11,10 @@
 #include <vtkRenderer.h>
 
 #include <array>
+#include <map>
+#include <set>
 #include <utility>
+#include <vector>
 
 GeometrySelectManager::GeometrySelectManager(vtkRenderer& renderer, vtkActor& highlight_actor, GeometryActorManagerSelectOp& op)
     : op_(&op)
@@ -78,6 +81,78 @@ void GeometrySelectManager::select(double posx, double posy)
             break;
         case SelectMode::GeometryVertex:
             static_cast<GeometryVertexSelectorHighlight*>(sel)->toggle(subId, *geomId);
+            break;
+        }
+    }
+}
+
+void GeometrySelectManager::selectArea(int xmin, int ymin, int xmax, int ymax)
+{
+    if (this->select_mode_ == SelectMode::None)
+        return;
+
+    if (!op_->hasRegisteredComponents())
+        return;
+
+    this->clearSelection();
+
+    picker_->SetAreaSelection(true);
+    const int n = picker_->Pick(xmin, ymin, xmax, ymax, renderer_);
+    picker_->SetAreaSelection(false);
+
+    if (n <= 0)
+        return;
+
+    std::set<IVtk_IdType> unique_shape_ids;
+    for (const IVtk_IdType shapeId : picker_->GetPickedShapesIds(true))
+        unique_shape_ids.insert(shapeId);
+
+    std::map<Index, std::map<IVtk_IdType, Index>> picked_by_component;
+
+    for (const IVtk_IdType shapeId : unique_shape_ids) {
+        auto component_id = op_->getComponentIdByShapeId(shapeId);
+        if (!component_id)
+            continue;
+
+        auto select_op = op_->getSelectOp(*component_id);
+        if (!select_op)
+            continue;
+
+        if (select_mode_ == SelectMode::GeometrySolid) {
+            GeomSolidId solidId = kInvalidGeomSolidId;
+            std::vector<IVtk_IdType> faceSubIds;
+            if (select_op->resolvePickedSolid(picker_.Get(), shapeId, solidId, faceSubIds)) {
+                if (auto* sel = getOrCreateSelector(*component_id))
+                    static_cast<GeometrySolidSelectorHighlight*>(sel)->toggleSolid(solidId, faceSubIds);
+            }
+            continue;
+        }
+
+        auto& picked = picked_by_component[*component_id];
+        for (const auto& [subId, geomId] :
+            select_op->resolvePickedSubshapes(picker_.Get(), shapeId, select_mode_)) {
+            picked.emplace(subId, geomId);
+        }
+    }
+
+    for (const auto& [component_id, picked] : picked_by_component) {
+        auto* sel = getOrCreateSelector(component_id);
+        if (!sel)
+            continue;
+        switch (select_mode_) {
+        case SelectMode::GeometryFace:
+            for (const auto& [subId, geomId] : picked)
+                static_cast<GeometryFaceSelectorHighlight*>(sel)->toggle(subId, geomId);
+            break;
+        case SelectMode::GeometryEdge:
+            for (const auto& [subId, geomId] : picked)
+                static_cast<GeometryEdgeSelectorHighlight*>(sel)->toggle(subId, geomId);
+            break;
+        case SelectMode::GeometryVertex:
+            for (const auto& [subId, geomId] : picked)
+                static_cast<GeometryVertexSelectorHighlight*>(sel)->toggle(subId, geomId);
+            break;
+        default:
             break;
         }
     }
