@@ -35,7 +35,7 @@ void writeFile(const fs::path& path, const std::string& content)
     output << content;
 }
 
-//! @brief 测试用 base64 编码（与读取器的解码互逆，用于构造二进制载荷）
+//! @brief 测试用 base64 编码（构造的二进制载荷须经 VTK 读取器的 base64 解码）
 std::string base64Encode(const std::vector<uint8_t>& bytes)
 {
     static const char* table = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
@@ -54,7 +54,8 @@ std::string base64Encode(const std::vector<uint8_t>& bytes)
         }
     }
     if (digits == 1) {
-        group <<= 8;
+        // 余 1 字节须补足成 24 位组：<< 16 后高 12 位依次给出两个 6 bit 编码
+        group <<= 16;
         text.push_back(table[(group >> 18) & 0x3f]);
         text.push_back(table[(group >> 12) & 0x3f]);
         text.append("==");
@@ -184,6 +185,16 @@ ModelPayload requireReadPayload(systems::io::VtkXmlModelHandler& handler, const 
     return std::move(*payload);
 }
 } // namespace
+
+TEST_CASE("base64Encode matches RFC 4648 vectors for partial groups")
+{
+    // 余 1/2 字节的尾部编码须与标准一致：曾经 << 8 少移 8 位产出错误编码，
+    // 被载荷尾字节恒为 0x00 的既有用例掩盖
+    REQUIRE(base64Encode({ 'f', 'o', 'o', 'b' }) == "Zm9vYg==");
+    REQUIRE(base64Encode({ 'f', 'o', 'o', 'b', 'a' }) == "Zm9vYmE=");
+    REQUIRE(base64Encode({ 'f', 'o', 'o', 'b', 'a', 'r' }) == "Zm9vYmFy");
+    REQUIRE(base64Encode({}).empty());
+}
 
 TEST_CASE("VtkXmlModelHandler reads ascii vtp with lines and polys")
 {
