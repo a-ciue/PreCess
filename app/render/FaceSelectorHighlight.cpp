@@ -303,15 +303,16 @@ void FaceSelectorHighlight::select(double posx, double posy)
     picker->Pick(posx, posy, 0, renderer_);
 
     select(posx, posy, picker.GetPointer(), picker->GetActor(),
-        picker->GetCellId(), picker->GetPointId());
+        picker->GetCellId(), picker->GetPointId(), SelectOp::Toggle);
 }
 
 void FaceSelectorHighlight::select(double posx, double posy,
     vtkHardwarePicker* /*picker*/, vtkActor* picked_actor,
-    vtkIdType picked_cell_id, vtkIdType /*picked_point_id*/)
+    vtkIdType picked_cell_id, vtkIdType /*picked_point_id*/, SelectOp op)
 {
     if (!picked_actor || picked_cell_id == -1) {
-        clear();
+        if (op == SelectOp::Toggle)
+            clear();
         return;
     }
 
@@ -327,12 +328,21 @@ void FaceSelectorHighlight::select(double posx, double posy,
             spread_cache_.normals, picked_cell_id, spread_options_.angle_deg);
     }
 
-    // 以种子面的状态决定整片区域是加入还是移除，保持原有点击切换语义。
-    bool remove_faces = isSelected(picked_cell_id, selections_);
-    if (remove_faces)
-        removeSelected(picked_faces, selections_);
-    else
+    // 按 op 决定整片区域（含角度扩散）的选中语义：
+    switch (op) {
+    case SelectOp::Append:
         addSelected(picked_faces, selections_);
+        break;
+    case SelectOp::Remove:
+        removeSelected(picked_faces, selections_);
+        break;
+    case SelectOp::Toggle:
+        if (isSelected(picked_cell_id, selections_))
+            removeSelected(picked_faces, selections_);
+        else
+            addSelected(picked_faces, selections_);
+        break;
+    }
 
     enableHighlight();
 }
@@ -357,7 +367,7 @@ void FaceSelectorHighlight::setupHighlightStyle(vtkActor& actor, vtkMapper& mapp
 
 void FaceSelectorHighlight::selectArea(
     const std::unordered_map<vtkProp*, std::unordered_set<vtkIdType>>& hits,
-    int /*xmin*/, int /*ymin*/, int /*xmax*/, int /*ymax*/)
+    int /*xmin*/, int /*ymin*/, int /*xmax*/, int /*ymax*/, SelectOp op)
 {
     // face actor 的命中即面 render cell id（MeshSelectManager 一次多 actor 拾取、已清空后分发）
     auto it = hits.find(&select_op_.getFaceActor());
@@ -369,12 +379,29 @@ void FaceSelectorHighlight::selectArea(
     if (picked.empty())
         return;
 
-    // 框选恒为替换：manager 已先清空，命中即本组件的新选择（set）
-    // 与 select 路径对齐：selections_ 存 picker 报的 render cell id（无 clip 时 = 原 face id；
-    // 有 clip 时为 face_clipper_->output 上的 cell 索引，PrecessFaceIds 数组跟着裁剪链透传）
+    // 按 op 对框内命中的面做集合运算：Append->并集；Remove->差集；Toggle->对称差。
     std::unordered_set<vtkIdType> cur(selections_.begin(), selections_.end());
-    for (auto id : picked)
-        cur.insert(id);
-    selections_.assign(cur.begin(), cur.end());
+    std::unordered_set<vtkIdType> picked_set(picked.begin(), picked.end());
+    std::unordered_set<vtkIdType> result;
+    switch (op) {
+    case SelectOp::Append:
+        result = cur;
+        result.insert(picked_set.begin(), picked_set.end());
+        break;
+    case SelectOp::Remove:
+        for (auto id : cur)
+            if (picked_set.find(id) == picked_set.end())
+                result.insert(id);
+        break;
+    case SelectOp::Toggle:
+        for (auto id : cur)
+            if (picked_set.find(id) == picked_set.end())
+                result.insert(id);
+        for (auto id : picked_set)
+            if (cur.find(id) == cur.end())
+                result.insert(id);
+        break;
+    }
+    selections_.assign(result.begin(), result.end());
     enableHighlight();
 }

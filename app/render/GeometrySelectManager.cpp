@@ -32,7 +32,7 @@ GeometrySelectManager::GeometrySelectManager(vtkRenderer& renderer, vtkActor& hi
     op_->observeShapePicker(picker_.Get());
 }
 
-void GeometrySelectManager::select(double posx, double posy)
+void GeometrySelectManager::select(double posx, double posy, SelectOp op)
 {
     if (this->select_mode_ == SelectMode::None)
         return;
@@ -42,8 +42,11 @@ void GeometrySelectManager::select(double posx, double posy)
         return;
 
     const int n = picker_->Pick(posx, posy, 0.0, renderer_);
-    if (n <= 0)
+    if (n <= 0) {
+        if (op == SelectOp::Toggle)
+            this->clearSelection();
         return;
+    }
 
     const auto& pickedShapes = picker_->GetPickedShapesIds(false);
     if (pickedShapes.IsEmpty())
@@ -66,7 +69,7 @@ void GeometrySelectManager::select(double posx, double posy)
         GeomSolidId solidId = kInvalidGeomSolidId;
         std::vector<IVtk_IdType> faceSubIds;
         if (select_op->resolvePickedSolid(picker_.Get(), shapeId, solidId, faceSubIds))
-            static_cast<GeometrySolidSelectorHighlight*>(sel)->toggleSolid(solidId, faceSubIds);
+            static_cast<GeometrySolidSelectorHighlight*>(sel)->toggleSolid(solidId, faceSubIds, op);
     } else {
         IVtk_IdType subId = -1;
         auto geomId = select_op->resolvePickedSubshape(picker_.Get(), shapeId, select_mode_, subId);
@@ -74,27 +77,25 @@ void GeometrySelectManager::select(double posx, double posy)
             return;
         switch (select_mode_) {
         case SelectMode::GeometryFace:
-            static_cast<GeometryFaceSelectorHighlight*>(sel)->toggle(subId, *geomId);
+            static_cast<GeometryFaceSelectorHighlight*>(sel)->toggle(subId, *geomId, op);
             break;
         case SelectMode::GeometryEdge:
-            static_cast<GeometryEdgeSelectorHighlight*>(sel)->toggle(subId, *geomId);
+            static_cast<GeometryEdgeSelectorHighlight*>(sel)->toggle(subId, *geomId, op);
             break;
         case SelectMode::GeometryVertex:
-            static_cast<GeometryVertexSelectorHighlight*>(sel)->toggle(subId, *geomId);
+            static_cast<GeometryVertexSelectorHighlight*>(sel)->toggle(subId, *geomId, op);
             break;
         }
     }
 }
 
-void GeometrySelectManager::selectArea(int xmin, int ymin, int xmax, int ymax)
+void GeometrySelectManager::selectArea(int xmin, int ymin, int xmax, int ymax, SelectOp op)
 {
     if (this->select_mode_ == SelectMode::None)
         return;
 
     if (!op_->hasRegisteredComponents())
         return;
-
-    this->clearSelection();
 
     picker_->SetAreaSelection(true);
     const int n = picker_->Pick(xmin, ymin, xmax, ymax, renderer_);
@@ -123,7 +124,7 @@ void GeometrySelectManager::selectArea(int xmin, int ymin, int xmax, int ymax)
             std::vector<IVtk_IdType> faceSubIds;
             if (select_op->resolvePickedSolid(picker_.Get(), shapeId, solidId, faceSubIds)) {
                 if (auto* sel = getOrCreateSelector(*component_id))
-                    static_cast<GeometrySolidSelectorHighlight*>(sel)->toggleSolid(solidId, faceSubIds);
+                    static_cast<GeometrySolidSelectorHighlight*>(sel)->toggleSolid(solidId, faceSubIds, op);
             }
             continue;
         }
@@ -142,15 +143,15 @@ void GeometrySelectManager::selectArea(int xmin, int ymin, int xmax, int ymax)
         switch (select_mode_) {
         case SelectMode::GeometryFace:
             for (const auto& [subId, geomId] : picked)
-                static_cast<GeometryFaceSelectorHighlight*>(sel)->toggle(subId, geomId);
+                static_cast<GeometryFaceSelectorHighlight*>(sel)->toggle(subId, geomId, op);
             break;
         case SelectMode::GeometryEdge:
             for (const auto& [subId, geomId] : picked)
-                static_cast<GeometryEdgeSelectorHighlight*>(sel)->toggle(subId, geomId);
+                static_cast<GeometryEdgeSelectorHighlight*>(sel)->toggle(subId, geomId, op);
             break;
         case SelectMode::GeometryVertex:
             for (const auto& [subId, geomId] : picked)
-                static_cast<GeometryVertexSelectorHighlight*>(sel)->toggle(subId, geomId);
+                static_cast<GeometryVertexSelectorHighlight*>(sel)->toggle(subId, geomId, op);
             break;
         default:
             break;

@@ -20,13 +20,13 @@ class GeometrySelectManager {
 public:
     GeometrySelectManager(vtkRenderer& renderer, vtkActor& highlight_actor, GeometryActorManagerSelectOp& op);
 
-    void select(double posx, double posy);
+    void select(double posx, double posy, SelectOp op = SelectOp::Toggle);
 
     /**
      * @brief 几何框选：矩形区域内的几何元素（面/边/顶点/体）
-     * @note 与网格框选一致，框选恒为替换——先清空，命中即本次新选择
+     * @note 框选永不清空——由各 selector 按 op 做集合运算（Append->并集 / Remove->差集 / Toggle->对称差）。
      */
-    void selectArea(int xmin, int ymin, int xmax, int ymax);
+    void selectArea(int xmin, int ymin, int xmax, int ymax, SelectOp op = SelectOp::Toggle);
     void setSelectMode(SelectMode select_mode);
     void clearSelection();
     std::unique_ptr<Selection> getSelection();

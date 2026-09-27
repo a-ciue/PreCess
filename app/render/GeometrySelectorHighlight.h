@@ -2,6 +2,7 @@
 #define GEOMETRY_SELECTOR_HIGHLIGHT_H
 #include "GeometryActorSelectOp.h"
 #include "Selection.h"
+#include "Core.h"
 
 #include <unordered_map>
 #include <unordered_set>
@@ -30,7 +31,7 @@ public:
     GeometryFaceSelectorHighlight(vtkPartitionedDataSet& highlight_data,
         unsigned int partition_id, GeometryActorSelectOp select_op);
     ~GeometryFaceSelectorHighlight() override;
-    void toggle(IVtk_IdType subId, Index geomId);
+    void toggle(IVtk_IdType subId, Index geomId, SelectOp op = SelectOp::Toggle);
     void clear() override;
     void disableHighlight() override;
     void enableHighlight() override;
@@ -51,7 +52,7 @@ public:
     GeometryEdgeSelectorHighlight(vtkPartitionedDataSet& highlight_data,
         unsigned int partition_id, GeometryActorSelectOp select_op);
     ~GeometryEdgeSelectorHighlight() override;
-    void toggle(IVtk_IdType subId, Index geomId);
+    void toggle(IVtk_IdType subId, Index geomId, SelectOp op = SelectOp::Toggle);
     void clear() override;
     void disableHighlight() override;
     void enableHighlight() override;
@@ -72,7 +73,7 @@ public:
     GeometryVertexSelectorHighlight(vtkPartitionedDataSet& highlight_data,
         unsigned int partition_id, GeometryActorSelectOp select_op);
     ~GeometryVertexSelectorHighlight() override;
-    void toggle(IVtk_IdType subId, Index geomId);
+    void toggle(IVtk_IdType subId, Index geomId, SelectOp op = SelectOp::Toggle);
     void clear() override;
     void disableHighlight() override;
     void enableHighlight() override;
@@ -93,7 +94,7 @@ public:
     GeometrySolidSelectorHighlight(vtkPartitionedDataSet& highlight_data,
         unsigned int partition_id, GeometryActorSelectOp select_op);
     ~GeometrySolidSelectorHighlight() override;
-    void toggleSolid(GeomSolidId solidId, const std::vector<IVtk_IdType>& faceSubIds);
+    void toggleSolid(GeomSolidId solidId, const std::vector<IVtk_IdType>& faceSubIds, SelectOp op = SelectOp::Toggle);
     void clear() override;
     void disableHighlight() override;
     void enableHighlight() override;
