@@ -1,8 +1,9 @@
-add_library(AlgorithmSystem STATIC AlgorithmSystem.cpp AlgorithmSystemRegister.cpp)
+# OBJECT 库：对象经 model/CMakeLists.txt 的 PreCessBase 聚合导出（依赖方向仍由此处强制）
+add_library(AlgorithmSystem OBJECT AlgorithmSystem.cpp AlgorithmSystemRegister.cpp)
 target_link_libraries(AlgorithmSystem PRIVATE 
-    Data 
-    $<COMPILE_ONLY:IOSystem> # 对IOSystem只编译时依赖（只在编译时使用头文件），不链接IOSystem.lib
-    Qt6::Core spdlog::spdlog
+	Data 
+	IOSystem # 只使用头文件；OBJECT 库间仅传递用法需求不并入对象，等价原 $<COMPILE_ONLY:> 语义
+	Qt6::Core spdlog::spdlog
 )
 target_link_libraries(AlgorithmSystem PUBLIC
     SystemCore Core    

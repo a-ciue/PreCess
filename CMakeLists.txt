@@ -127,7 +127,7 @@ message(STATUS "QT_VERSION: Qt${VTK_QT_VERSION}")
 qt_policy(SET QTP0001 NEW)
 qt_standard_project_setup()
 include(GNUInstallDirs)
-include(test)
+include(PreCessPluginTesting)
 
 add_subdirectory(core)
 add_subdirectory(model)
@@ -136,6 +136,9 @@ add_subdirectory(plugins)
 
 add_subdirectory(app)
 add_subdirectory(resource)
+
+# 插件 SDK 打包：开发文件安装 + find_package(PreCess) 包配置生成（见 cmake/PreCessPackage.cmake）
+include(PreCessPackage)
 
 set(CPACK_PACKAGE_NAME ${MYNAME})
 set(CPACK_PACKAGE_VENDOR ${MYNAME})
@@ -220,25 +223,28 @@ endforeach()
 
 include(CPack)
 
+# 主程序：默认勾选、用户可取消（支持只装插件 SDK 的安装）。
+# CPack 组件语义：无标志=默认勾可取消；DISABLED=默认不勾可手动勾；REQUIRED=恒勾不可取消
 cpack_add_component(${MYNAME}
     DISPLAY_NAME ${MYNAME}
     DESCRIPTION "主程序"
-    REQUIRED
     INSTALL_TYPES Full Minimal
 )
 
+# PreCess 插件作顶层单项（不套组）
 cpack_add_component(AllPlugins
     DISPLAY_NAME "${MYNAME} 插件"
     DESCRIPTION "所有插件"
     DEPENDS ${MYNAME}
-    GROUP Plugins
     INSTALL_TYPES Full
 )
-cpack_add_component_group(Plugins
-    DISPLAY_NAME "功能插件"
-    DESCRIPTION "IO与算法功能。"
+# 开发插件 SDK：DISABLED=默认不勾、组件页可手动勾选；
+# 不挂安装类型（选 Full 不连带）、不 DEPENDS 主程序——可纯 SDK 单独安装
+cpack_add_component(Development
+    DISPLAY_NAME "${MYNAME} 插件 SDK"
+    DESCRIPTION "插件开发文件（头文件、模型层库、CMake 包配置），供 find_package(PreCess) 独立构建插件"
+    DISABLED
 )
-
 cpack_add_install_type(Full)
 cpack_add_install_type(Minimal)
 

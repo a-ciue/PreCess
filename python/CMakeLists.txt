@@ -37,8 +37,19 @@ set(PRECESS_PYTHON_HOME_DIR "${PRECESS_PYTHON_HOME_DIR}" CACHE INTERNAL
 
 # 内嵌解释器宿主（静态库，无 Qt）：目标恒存在，真实现/桩按可用性二选一
 add_library(precess_runtime STATIC)
-target_include_directories(precess_runtime PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/include")
-target_link_libraries(precess_runtime PUBLIC Session)
+# SDK 随包导出为 PreCess::Python（命名契约：组件 Python ↔ 目标同名）；
+# DEBUG_POSTFIX 与 PreCessBase 一致，支持双配置同前缀安装。
+# 内部目标名 precess_runtime 保留（构建树内细节，SDK 消费者不可见）
+set_target_properties(precess_runtime PROPERTIES
+    EXPORT_NAME Python
+    DEBUG_POSTFIX "d"
+)
+# BUILD/INSTALL 接口拆分：install(EXPORT) 不允许导出目标的 include 指向源码树
+target_include_directories(precess_runtime PUBLIC
+    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+    $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}/precess/python>
+)
+target_link_libraries(precess_runtime PUBLIC PreCessBase)
 if(_precess_real)
     target_sources(precess_runtime PRIVATE runtime.cpp)
     target_link_libraries(precess_runtime PRIVATE pybind11::embed spdlog::spdlog)
@@ -49,8 +60,11 @@ if(_precess_real)
         # 嵌入式解释器的标准库根：构建机解释器目录（运行期另作捆绑 Lib 探测，
         # 见 QPythonRuntime::makeRuntimeConfig）
         PRECESS_PYTHON_HOME="${PRECESS_PYTHON_HOME_DIR}"
-        # 构建树中 precess 扩展模块输出目录（运行时另一候选为 <exe_dir>/python）
-        PRECESS_PYTHON_MODULE_DIR="$<TARGET_FILE_DIR:precess_bindings>"
+        # 构建树中 precess 扩展模块输出目录（运行时另一候选为 <exe_dir>/python）；
+        # 拆 BUILD/INSTALL 接口使 install(EXPORT) 不引用未导出目标，安装树置空由
+        # 宿主运行期探测候选目录
+        $<BUILD_INTERFACE:PRECESS_PYTHON_MODULE_DIR="$<TARGET_FILE_DIR:precess_bindings>">
+        $<INSTALL_INTERFACE:PRECESS_PYTHON_MODULE_DIR="">
     )
 else()
     target_sources(precess_runtime PRIVATE stub.cpp)
@@ -62,7 +76,7 @@ if(_precess_real)
     pybind11_add_module(precess_bindings precess_module.cpp)
     set_target_properties(precess_bindings PROPERTIES OUTPUT_NAME "precess")
     target_link_libraries(precess_bindings PRIVATE
-        Session
+        PreCessBase
     )
 
     # 构建树自包含（仅 Windows）：把解释器运行库（版本相关，经导入目标求值）
@@ -96,13 +110,17 @@ if(_precess_real)
     # 安装树自包含：pyd 装到宿主首选模块目录 <exe_dir>/python，解释器标准库
     # 与二进制扩展随包分发到 exe 目录（运行库本身由 app 依赖收拢放入）；
     # 排除开发/测试内容控制体积，非标准布局（无 Lib/）时跳过
+    # COMPONENT 放 dest 之前（通用绑定）：紧随 RUNTIME 会让 LIBRARY（pyd）漏进
+    # 默认 Unspecified（隐藏恒装）
     install(TARGETS precess_bindings
+        COMPONENT ${MYNAME}
         LIBRARY DESTINATION "${CMAKE_INSTALL_BINDIR}/python"
         RUNTIME DESTINATION "${CMAKE_INSTALL_BINDIR}/python"
     )
     if(EXISTS "${PRECESS_PYTHON_HOME_DIR}/Lib")
         install(DIRECTORY "${PRECESS_PYTHON_HOME_DIR}/Lib"
             DESTINATION "${CMAKE_INSTALL_BINDIR}"
+            COMPONENT ${MYNAME}
             PATTERN "__pycache__" EXCLUDE
             PATTERN "site-packages" EXCLUDE
             PATTERN "idlelib" EXCLUDE
@@ -114,6 +132,7 @@ if(_precess_real)
         if(EXISTS "${PRECESS_PYTHON_HOME_DIR}/DLLs")
             install(DIRECTORY "${PRECESS_PYTHON_HOME_DIR}/DLLs"
                 DESTINATION "${CMAKE_INSTALL_BINDIR}"
+                COMPONENT ${MYNAME}
                 PATTERN "__pycache__" EXCLUDE
             )
         endif()

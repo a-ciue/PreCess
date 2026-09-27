@@ -1,0 +1,137 @@
+# PreCess ABI 指纹：构建期记录，插件配置期比对（precess_add_*_plugin 自动调用）。
+# 目标：把"版本错配运行时崩溃/静默数据损坏"提前到配置期发现并给出明确提示。
+# 分级：编译器族（ID/主.次/toolset）与 C++ 标准不一致 = 警告，兼容性由使用者核对
+#   （跨主.次/跨 toolset/跨标准存在合法互通组合，硬拒会误杀 VS 微更新与工具链迁移）；
+#   MSVC CRT、Debug/Release 配置、VTK/Qt/OCCT 单实例版本 = 硬失败（崩溃级）。
+# 全部硬校验可经 -DPRECESS_ALLOW_ABI_MISMATCH=ON 降级为警告（显式承担风险时用）。
+# 跨平台：指纹通用记录（ID/版本/标准适用于 MSVC、GCC、Clang、AppleClang）；
+#   MSVC 专属项（toolset、CRT、构建配置）仅在 MSVC 下检查，其余平台自动跳过。
+set(PRECESS_ABI_COMPILER_ID "@CMAKE_CXX_COMPILER_ID@")
+set(PRECESS_ABI_COMPILER_VERSION "@CMAKE_CXX_COMPILER_VERSION@")
+set(PRECESS_ABI_MSVC_TOOLSET "@MSVC_TOOLSET_VERSION@")
+set(PRECESS_ABI_CXX_STANDARD "@CMAKE_CXX_STANDARD@")
+set(PRECESS_ABI_BUILD_TYPE "@CMAKE_BUILD_TYPE@")
+set(PRECESS_ABI_MSVC_RUNTIME "@CMAKE_MSVC_RUNTIME_LIBRARY@")
+set(PRECESS_ABI_SPDLOG_VERSION "@spdlog_VERSION@")
+set(PRECESS_ABI_VTK_VERSION "@VTK_VERSION@")
+set(PRECESS_ABI_OCCT_VERSION "@OpenCASCADE_VERSION@")
+set(PRECESS_ABI_QT_VERSION "@Qt6_VERSION@")
+
+option(PRECESS_ALLOW_ABI_MISMATCH "跳过 ABI 校验硬失败（降级为警告）——确认风险后手动开启" OFF)
+
+# 编译器与工具链指纹核对（插件目标创建前调用）
+function(_precess_check_abi)
+    if(PRECESS_ALLOW_ABI_MISMATCH)
+        message(WARNING "PRECESS_ALLOW_ABI_MISMATCH=ON：已跳过 PreCess ABI 硬校验（自行承担崩溃/数据损坏风险）")
+        return()
+    endif()
+    # 编译器族三项（ID / 主.次版本 / MSVC toolset）：仅警告，兼容性由使用者核对。
+    # 不同编译器族（MSVC↔GCC↔Clang）C++ ABI 互不兼容；同族跨版本存在互通组合
+    # （MSVC 14.3x↔14.4x、clang-cl 迁移等），硬拒会误杀正常升级——给足信息由用户判断。
+    if(NOT CMAKE_CXX_COMPILER_ID STREQUAL "${PRECESS_ABI_COMPILER_ID}")
+        message(WARNING
+            "编译器 ID 不一致：PreCess 构建于 ${PRECESS_ABI_COMPILER_ID}，当前为 "
+            "${CMAKE_CXX_COMPILER_ID}。不同编译器族的 C++ ABI 通常互不兼容（MSVC/GCC/Clang 互不兼容；"
+            "MSVC 与 clang-cl 同属 MSVC 生态可互通）——请自行核对当前组合是否兼容，"
+            "不兼容将运行期崩溃/数据损坏")
+    endif()
+    # 版本比较到主.次：补丁级升级不改变 ABI（MSVC 同 toolset 14.x、GCC/Clang 同主.次均二进制兼容），
+    # 全段相等会误杀 VS 微更新；跨主.次不硬失败（同上：互通与否由使用者核对）
+    string(REGEX MATCH "^[0-9]+\\.[0-9]+" _precess_abi_ver "${CMAKE_CXX_COMPILER_VERSION}")
+    string(REGEX MATCH "^[0-9]+\\.[0-9]+" _precess_abi_ref "${PRECESS_ABI_COMPILER_VERSION}")
+    if(NOT "${_precess_abi_ver}" VERSION_EQUAL "${_precess_abi_ref}")
+        message(WARNING
+            "编译器主.次版本不一致：PreCess 构建于 ${PRECESS_ABI_COMPILER_ID} "
+            "${PRECESS_ABI_COMPILER_VERSION}，当前为 ${CMAKE_CXX_COMPILER_VERSION}。"
+            "同主.次通常二进制兼容；跨主.次请自行核对兼容性"
+            "（MSVC 14.3x↔14.4x 实测常可互通，GCC/Clang 跨主.次需谨慎）")
+    endif()
+    if(MSVC AND NOT "${MSVC_TOOLSET_VERSION}" STREQUAL "${PRECESS_ABI_MSVC_TOOLSET}")
+        message(WARNING
+            "MSVC 工具集不一致：PreCess 构建于 v${PRECESS_ABI_MSVC_TOOLSET}，"
+            "当前为 v${MSVC_TOOLSET_VERSION}。VS 微更新常升 toolset，请自行核对兼容性")
+    endif()
+    if(NOT "${CMAKE_CXX_STANDARD}" STREQUAL "${PRECESS_ABI_CXX_STANDARD}")
+        message(WARNING
+            "C++ 标准不一致：PreCess 构建于 C++${PRECESS_ABI_CXX_STANDARD}，"
+            "当前为 C++${CMAKE_CXX_STANDARD}。同编译器族跨标准实践安全"
+            "（MSVC 支持混合 /std、容器布局跨标准稳定）——请核对两侧标准相关的 "
+            "ODR 一致性（同一头文件的重载决议/inline 实现不因标准级别产生分歧）")
+    endif()
+    # CRT 与构建配置（MSVC 专属，非 MSVC 平台自动跳过）：Debug/Release 混链 =
+    # _ITERATOR_DEBUG_LEVEL 2↔0，运行期堆损坏；动态 CRT(/MD) 与静态 CRT(/MT) 混链 =
+    # 跨模块 new/delete 错配
+    if(MSVC)
+        if(NOT "${CMAKE_MSVC_RUNTIME_LIBRARY}" STREQUAL "${PRECESS_ABI_MSVC_RUNTIME}")
+            message(FATAL_ERROR
+                "MSVC 运行库（CRT）不匹配：PreCess 为 \"${PRECESS_ABI_MSVC_RUNTIME}\"（空=默认动态 CRT），"
+                "当前为 \"${CMAKE_MSVC_RUNTIME_LIBRARY}\"。/MD 与 /MT 混链会导致跨模块 new/delete 错配")
+        endif()
+        # 构建配置（单配置生成器）按 Debug 类二分：Debug 与非 Debug
+        # （Release/RelWithDebInfo/MinSizeRel）互不兼容——_ITERATOR_DEBUG_LEVEL 2↔0、
+        # /MDd 与 /MD，链接期 LNK2038、运行期堆损坏；同类内互认：非 Debug 各配置
+        # ABI 关键参数一致（/MD、_ITERATOR_DEBUG_LEVEL=0），仅优化与调试符号差异，
+        # 字符串不等但可安全混链（降为警告）。
+        if(NOT "${PRECESS_ABI_BUILD_TYPE}" STREQUAL "" AND "${CMAKE_CONFIGURATION_TYPES}" STREQUAL "")
+            string(TOLOWER "${PRECESS_ABI_BUILD_TYPE}" _precess_abi_cfg)
+            string(TOLOWER "${CMAKE_BUILD_TYPE}" _precess_cur_cfg)
+            if(_precess_abi_cfg STREQUAL "debug")
+                set(_precess_abi_debug TRUE)
+            else()
+                set(_precess_abi_debug FALSE)
+            endif()
+            if(_precess_cur_cfg STREQUAL "debug")
+                set(_precess_cur_debug TRUE)
+            else()
+                set(_precess_cur_debug FALSE)
+            endif()
+            if(NOT _precess_abi_debug STREQUAL _precess_cur_debug)
+                message(FATAL_ERROR
+                    "构建配置类别不匹配：PreCess 库为 ${PRECESS_ABI_BUILD_TYPE}，当前为 "
+                    "${CMAKE_BUILD_TYPE}。Debug 与非 Debug 混链（_ITERATOR_DEBUG_LEVEL 2↔0、"
+                    "/MDd 与 /MD）链接期即 LNK2038 失败，强行绕过则运行期堆损坏；"
+                    "请以 -DCMAKE_BUILD_TYPE=${PRECESS_ABI_BUILD_TYPE} 构建插件")
+            elseif(NOT "${CMAKE_BUILD_TYPE}" STREQUAL "${PRECESS_ABI_BUILD_TYPE}")
+                message(WARNING
+                    "构建配置同属非 Debug 类但名称不同：PreCess 库为 ${PRECESS_ABI_BUILD_TYPE}，"
+                    "当前为 ${CMAKE_BUILD_TYPE}。二者 ABI 关键参数一致（/MD、"
+                    "_ITERATOR_DEBUG_LEVEL=0），仅优化与调试符号差异，可安全混链")
+            endif()
+        endif()
+    endif()
+endfunction()
+
+# 三方库版本钉对：插件侧命中的实例必须与 PreCess 构建时一致。
+# 分级依据三方互依拓扑（docs/plugin-sdk-design.md §5.1）：
+# - VTK/Qt/OCCT 属"单实例强约束"且被下游二进制锁死（gmsh 硬锁 OCCT；TKIVtk 锁 VTK -9.6 前缀）→ FATAL
+# - spdlog 无下游锁、ABI 面窄 → WARN
+function(_precess_check_third_party_versions)
+    if(PRECESS_ALLOW_ABI_MISMATCH)
+        return()
+    endif()
+    if(NOT "${PRECESS_ABI_VTK_VERSION}" STREQUAL "" AND DEFINED VTK_VERSION
+            AND NOT VTK_VERSION VERSION_EQUAL "${PRECESS_ABI_VTK_VERSION}")
+        message(FATAL_ERROR
+            "VTK 版本不匹配：PreCess 构建于 ${PRECESS_ABI_VTK_VERSION}，当前命中 ${VTK_VERSION}。"
+            "插件须使用 PreCess 构建时的同一 VTK 实例（见 PreCess-find-package-helpers.cmake）")
+    endif()
+    if(NOT "${PRECESS_ABI_QT_VERSION}" STREQUAL "" AND DEFINED Qt6_VERSION
+            AND NOT Qt6_VERSION VERSION_EQUAL "${PRECESS_ABI_QT_VERSION}")
+        message(FATAL_ERROR
+            "Qt 版本不匹配：PreCess 构建于 ${PRECESS_ABI_QT_VERSION}，当前命中 ${Qt6_VERSION}。"
+            "插件须使用 PreCess 构建时的同一 Qt 实例")
+    endif()
+    if(NOT "${PRECESS_ABI_OCCT_VERSION}" STREQUAL "" AND DEFINED OpenCASCADE_VERSION
+            AND NOT OpenCASCADE_VERSION VERSION_EQUAL "${PRECESS_ABI_OCCT_VERSION}")
+        message(FATAL_ERROR
+            "OpenCASCADE 版本不匹配：PreCess 构建于 ${PRECESS_ABI_OCCT_VERSION}，当前命中 ${OpenCASCADE_VERSION}。"
+            "OCCT 是三方互依的重耦合节点：gmsh 二进制硬锁 TK*、TKIVtk（VIS）锁 VTK 且与 OCCT 对象跨 DLL 传递，"
+            "版本错配为运行期崩溃级。升级 OCCT 须连带核对 gmsh/TKIVtk 对应关系")
+    endif()
+    if(NOT "${PRECESS_ABI_SPDLOG_VERSION}" STREQUAL "" AND DEFINED spdlog_VERSION
+            AND NOT spdlog_VERSION VERSION_EQUAL "${PRECESS_ABI_SPDLOG_VERSION}")
+        message(WARNING
+            "spdlog 版本不一致：PreCess 构建于 ${PRECESS_ABI_SPDLOG_VERSION}，"
+            "当前命中 ${spdlog_VERSION}")
+    endif()
+endfunction()
