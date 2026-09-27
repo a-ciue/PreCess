@@ -50,7 +50,11 @@ vtk_module_autoinit(TARGETS vtkPart MODULES VTK::InteractionStyle VTK::FiltersGe
 qt_add_qml_module(renderQml
     URI app.render
     STATIC
-    SOURCES QRenderWindow.h QRenderWindow.cpp
+    SOURCES
+        GeometryInterferenceController.h
+        GeometryInterferenceController.cpp
+        QRenderWindow.h
+        QRenderWindow.cpp
 )
 target_link_libraries(renderQml PRIVATE 
     vtkPart modelQml 

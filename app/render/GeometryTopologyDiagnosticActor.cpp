@@ -394,7 +394,7 @@ void GeometryTopologyDiagnosticActor::logCachedDiagnostics(
     if (!diagnostics_ || !shape_ || shape_->IsNull())
         return;
 
-    // 几何干涉跨越同一 Model 内的多个 Component，由 QRenderWindow 统一报一行，这里跳过。
+    // 几何干涉跨越同一 Model 内的多个 Component，由 Controller 统一报一行，这里跳过。
     if (category == GeometryTopologyDiagnosticCategory::InterferingFace)
         return;
 

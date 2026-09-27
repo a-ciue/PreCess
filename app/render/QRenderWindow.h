@@ -33,6 +33,7 @@ class MeshActorManager;
 class QRenderWindowStyle;
 class vtkDisplaySizedImplicitPlaneWidget;
 class IMeshIdQuery;
+class GeometryInterferenceController;
 namespace systems::feature {
 class QFeatureSystemAdaptor;
 }
@@ -227,17 +228,8 @@ private:
 
     QModelQuery* model_query_ {};
 
-    //! 已装载过的 Model；几何干涉类别打开时按需对这些 Model 重算。
-    std::vector<Index> loaded_model_ids_;
-    //! 几何干涉类别当前是否启用；未启用时不为昂贵的检查付费。
-    bool interference_enabled_ { false };
-    //! 已算过干涉的 Model → 结果摘要；仅用于"关掉类别再打开"时重播。
-    //! 模型/组件几何变更时一律作废重算。
-    std::unordered_map<Index, std::string> interfered_summaries_;
-    //! Component 被移除后模型层已无法反查归属，因此在装载时保留渲染侧映射。
-    std::unordered_map<Index, Index> component_model_ids_;
-
     std::unique_ptr<IMeshIdQuery> mesh_id_query_; //> IMeshIdQuery 桥接实现，随 setModelQuery 注入
+    std::unique_ptr<GeometryInterferenceController> geometry_interference_; //> 模型级几何干涉编排
 
     //! @brief 注入渲染刷新回调到 FeatureSystem（initializeVTK 与 setFeatureAdaptor 各调一次，确保初始化顺序无关）
     void injectRenderRefreshCallback();
