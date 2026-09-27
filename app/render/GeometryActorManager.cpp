@@ -1,5 +1,6 @@
 #include "GeometryActorManager.h"
 #include "GeometryActor.h"
+#include "GeometryInterferenceController.h"
 #include "GeometryTopologyDiagnosticActor.h"
 
 #include "Core.h"
@@ -7,9 +8,21 @@
 #include <algorithm>
 #include <cmath>
 #include <iostream>
+#include <optional>
 #include <spdlog/spdlog.h>
 
-GeometryActorManager::GeometryActorManager() = default;
+namespace {
+/** @brief 生成日志使用的“id (名称)”标签，名称为空时只保留 id。 */
+std::string displayLabel(Index id, const std::string& name)
+{
+    return std::to_string(id) + (name.empty() ? std::string() : " (" + name + ")");
+}
+}
+
+GeometryActorManager::GeometryActorManager()
+    : interference_(std::make_unique<GeometryInterferenceController>(*this))
+{
+}
 
 GeometryActorManager::~GeometryActorManager() = default;
 
@@ -34,11 +47,27 @@ bool GeometryActorManager::hasComponent(Index component_id) const
 
 void GeometryActorManager::deleteComponent(Index component_id)
 {
+    const std::optional<Index> model_id = interference_->untrackComponent(component_id);
     auto it = component_actors_.find(component_id);
     if (it != component_actors_.end()) {
         op_.unregisterProps(it->second);
         component_actors_.erase(it);
     }
+    if (model_id.has_value())
+        interference_->modelChanged(*model_id);
+}
+
+void GeometryActorManager::deleteModel(Index model_id)
+{
+    // 删除 Model 时批量清 Actor，避免每删一个 Component 都重算一次干涉。
+    for (Index component_id : interference_->componentIds(model_id)) {
+        auto it = component_actors_.find(component_id);
+        if (it != component_actors_.end()) {
+            op_.unregisterProps(it->second);
+            component_actors_.erase(it);
+        }
+    }
+    interference_->removeModel(model_id);
 }
 
 void GeometryActorManager::loadGeometry(const GeometryDataVtk& geometry_data)
@@ -64,6 +93,21 @@ void GeometryActorManager::loadGeometry(const GeometryDataVtk& geometry_data)
     actor_ptr->loadShape(geometry_data);
     actor_ptr->setRenderStyle(current_style_);
     op_.registerProps(component_id, actor_ptr);
+}
+
+void GeometryActorManager::loadGeometry(const GeometryDataVtk& geometry_data, Index model_id,
+    const std::string& model_name, const std::string& component_name)
+{
+    loadGeometry(geometry_data);
+    interference_->trackComponent(model_id, geometry_data.component_id,
+        geometry_data.shape, displayLabel(model_id, model_name));
+    component_actors_[geometry_data.component_id]->topologyDiagnostics().setComponentLabel(
+        displayLabel(geometry_data.component_id, component_name));
+}
+
+void GeometryActorManager::modelChanged(Index model_id)
+{
+    interference_->modelChanged(model_id);
 }
 
 void GeometryActorManager::setVisibility(Index component_id, bool visibility)
@@ -97,6 +141,8 @@ void GeometryActorManager::setTopologyDiagnosticCategoryEnabled(int category, bo
         actor->topologyDiagnostics().setCategoryEnabled(
             static_cast<GeometryTopologyDiagnosticCategory>(category), enabled);
     }
+    if (category == static_cast<int>(GeometryTopologyDiagnosticCategory::InterferingFace))
+        interference_->setEnabled(enabled);
 }
 
 void GeometryActorManager::setTopologyDiagnosticSmallEdgeLength(double threshold)

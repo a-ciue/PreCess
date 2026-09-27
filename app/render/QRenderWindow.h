@@ -33,7 +33,6 @@ class MeshActorManager;
 class QRenderWindowStyle;
 class vtkDisplaySizedImplicitPlaneWidget;
 class IMeshIdQuery;
-class GeometryInterferenceController;
 namespace systems::feature {
 class QFeatureSystemAdaptor;
 }
@@ -229,7 +228,6 @@ private:
     QModelQuery* model_query_ {};
 
     std::unique_ptr<IMeshIdQuery> mesh_id_query_; //> IMeshIdQuery 桥接实现，随 setModelQuery 注入
-    std::unique_ptr<GeometryInterferenceController> geometry_interference_; //> 模型级几何干涉编排
 
     //! @brief 注入渲染刷新回调到 FeatureSystem（initializeVTK 与 setFeatureAdaptor 各调一次，确保初始化顺序无关）
     void injectRenderRefreshCallback();

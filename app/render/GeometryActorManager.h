@@ -5,12 +5,14 @@
 #include "GeometryTopologyDiagnosticCategory.h"
 #include <array>
 #include <memory>
+#include <string>
 #include <unordered_map>
 #include <vector>
 #include <vtkRenderer.h>
 
 struct GeometryDataVtk;
 class GeometryActor;
+class GeometryInterferenceController;
 
 class GeometryActorManager {
 public:
@@ -22,7 +24,14 @@ public:
     bool hasComponent(Index component_id) const;
 
     void deleteComponent(Index component_id);
+    /** @brief 删除指定 Model 的全部几何 Actor 和模型级干涉状态。 */
+    void deleteModel(Index model_id);
     void loadGeometry(const GeometryDataVtk& geometry_data);
+    /** @brief 装载带 Model 归属和显示名称的几何，供模型级干涉检查使用。 */
+    void loadGeometry(const GeometryDataVtk& geometry_data, Index model_id,
+        const std::string& model_name, const std::string& component_name);
+    /** @brief 一个 Model 的几何装载完成后，作废并按需重算模型级干涉。 */
+    void modelChanged(Index model_id);
 
     void setVisibility(Index component_id, bool visibility);
     void setCurrentRenderStyle(GeometryRenderStyle style);
@@ -40,6 +49,7 @@ public:
 
 private:
     GeometryActorManagerSelectOp op_{*this};
+    std::unique_ptr<GeometryInterferenceController> interference_; //> 模型级几何干涉编排
     std::unordered_map<Index, std::shared_ptr<GeometryActor>> component_actors_;
     vtkRenderer* renderer_;
     GeometryRenderStyle current_style_ { GeometryRenderStyle::SurfaceWithEdges };

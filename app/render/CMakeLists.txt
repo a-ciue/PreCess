@@ -9,6 +9,8 @@ add_library(vtkPart STATIC
     GeometrySelectManager.cpp
     MeshSelectManager.cpp
     GeometryActor.cpp
+    GeometryInterferenceController.h
+    GeometryInterferenceController.cpp
     GeometryTopologyDiagnosticActor.cpp
     MeshActorManager.cpp
     GeometryActorManager.cpp
@@ -51,14 +53,11 @@ qt_add_qml_module(renderQml
     URI app.render
     STATIC
     SOURCES
-        GeometryInterferenceController.h
-        GeometryInterferenceController.cpp
         QRenderWindow.h
         QRenderWindow.cpp
 )
 target_link_libraries(renderQml PRIVATE 
     vtkPart modelQml 
-    DataOps # 几何干涉跨越同一 Model 内的多个 Component，需要在窗口层按 Model 统一计算
     FeatureSystem # startInteraction 经功能系统获取 InteractionState
     VTK::GUISupportQtQuick VTK::CommonColor VTK::RenderingAnnotation
 )

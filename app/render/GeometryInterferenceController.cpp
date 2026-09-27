@@ -2,10 +2,8 @@
 
 #include "GeometryActor.h"
 #include "GeometryActorManager.h"
-#include "GeometryDataVtk.h"
 #include "GeometryTopologyDiagnosticActor.h"
 #include "GeometryTopologyEditor.h"
-#include "QModelQuery.h"
 
 #include <BRep_Builder.hxx>
 #include <NCollection_DataMap.hxx>
@@ -18,7 +16,6 @@
 #include <TopoDS_Shape.hxx>
 
 #include <chrono>
-#include <optional>
 #include <spdlog/spdlog.h>
 #include <string>
 #include <utility>
@@ -29,62 +26,65 @@ namespace {
 constexpr double kInterferenceProbeEdgeLength = 1.0e-6;
 constexpr double kInterferenceProbeFaceArea = 1.0e-12;
 
-/** @brief 日志里标识一个 Model："id (名称)"，名称缺失时只留 id。 */
-std::string modelLabel(QModelQuery& query, Index model_id)
-{
-    const QString name = query.getModelName(model_id);
-    return std::to_string(model_id)
-        + (name.isEmpty() ? std::string() : " (" + name.toStdString() + ")");
-}
 }
 
-void GeometryInterferenceController::trackComponent(Index model_id, Index component_id)
+GeometryInterferenceController::GeometryInterferenceController(GeometryActorManager& manager)
+    : manager_(manager)
 {
-    if (model_id >= 0)
-        component_model_ids_[component_id] = model_id;
 }
 
-void GeometryInterferenceController::removeModel(
-    Index model_id, GeometryActorManager& manager)
+void GeometryInterferenceController::trackComponent(Index model_id, Index component_id,
+    const TopoDS_Shape& shape, std::string model_label)
 {
-    for (auto it = component_model_ids_.begin(); it != component_model_ids_.end();) {
-        if (it->second != model_id) {
-            ++it;
-            continue;
-        }
-        manager.deleteComponent(it->first);
-        it = component_model_ids_.erase(it);
+    if (model_id < 0)
+        return;
+    components_[component_id] = { model_id, shape };
+    model_labels_[model_id] = std::move(model_label);
+}
+
+std::vector<Index> GeometryInterferenceController::componentIds(Index model_id) const
+{
+    std::vector<Index> component_ids;
+    for (const auto& [component_id, geometry] : components_) {
+        if (geometry.model_id == model_id)
+            component_ids.push_back(component_id);
     }
+    return component_ids;
+}
+
+std::optional<Index> GeometryInterferenceController::untrackComponent(Index component_id)
+{
+    const auto it = components_.find(component_id);
+    if (it == components_.end())
+        return std::nullopt;
+    const Index model_id = it->second.model_id;
+    components_.erase(it);
+    computed_model_ids_.erase(model_id);
+    return model_id;
+}
+
+void GeometryInterferenceController::removeModel(Index model_id)
+{
+    for (auto it = components_.begin(); it != components_.end();) {
+        if (it->second.model_id == model_id)
+            it = components_.erase(it);
+        else
+            ++it;
+    }
+    model_labels_.erase(model_id);
     computed_model_ids_.erase(model_id);
 }
 
-void GeometryInterferenceController::removeComponent(
-    Index component_id, GeometryActorManager& manager, QModelQuery& query)
+void GeometryInterferenceController::modelChanged(Index model_id)
 {
-    const auto model_it = component_model_ids_.find(component_id);
-    const Index model_id = model_it == component_model_ids_.end() ? -1 : model_it->second;
-    component_model_ids_.erase(component_id);
-    manager.deleteComponent(component_id);
-
     if (model_id < 0)
         return;
     computed_model_ids_.erase(model_id);
     if (enabled_)
-        rebuild(model_id, manager, query);
+        rebuild(model_id);
 }
 
-void GeometryInterferenceController::modelChanged(
-    Index model_id, GeometryActorManager& manager, QModelQuery& query)
-{
-    if (model_id < 0)
-        return;
-    computed_model_ids_.erase(model_id);
-    if (enabled_)
-        rebuild(model_id, manager, query);
-}
-
-void GeometryInterferenceController::setEnabled(
-    bool enabled, GeometryActorManager& manager, QModelQuery& query)
+void GeometryInterferenceController::setEnabled(bool enabled)
 {
     enabled_ = enabled;
     if (!enabled_)
@@ -92,16 +92,15 @@ void GeometryInterferenceController::setEnabled(
 
     // Component 归属表直接提供当前 Model 集合，避免维护重复的 Model 列表。
     std::unordered_set<Index> model_ids;
-    for (const auto& [component_id, model_id] : component_model_ids_)
-        model_ids.insert(model_id);
+    for (const auto& [component_id, geometry] : components_)
+        model_ids.insert(geometry.model_id);
     for (Index model_id : model_ids) {
         if (computed_model_ids_.count(model_id) == 0)
-            rebuild(model_id, manager, query);
+            rebuild(model_id);
     }
 }
 
-void GeometryInterferenceController::rebuild(
-    Index model_id, GeometryActorManager& manager, QModelQuery& query)
+void GeometryInterferenceController::rebuild(Index model_id)
 {
     std::vector<Index> component_ids;
     NCollection_DataMap<TopoDS_Shape, Index, TopTools_ShapeMapHasher> face_owners;
@@ -109,14 +108,12 @@ void GeometryInterferenceController::rebuild(
     TopoDS_Compound root;
     builder.MakeCompound(root);
 
-    for (Index component_id : query.getComponentIds(model_id)) {
-        const std::optional<GeometryDataVtk> geometry
-            = query.getGeometryVtkDataByComponent(component_id);
-        if (!geometry.has_value() || geometry->shape.IsNull())
+    for (const auto& [component_id, geometry] : components_) {
+        if (geometry.model_id != model_id || geometry.shape.IsNull())
             continue;
         component_ids.push_back(component_id);
-        builder.Add(root, geometry->shape);
-        for (TopExp_Explorer face(geometry->shape, TopAbs_FACE); face.More(); face.Next()) {
+        builder.Add(root, geometry.shape);
+        for (TopExp_Explorer face(geometry.shape, TopAbs_FACE); face.More(); face.Next()) {
             if (!face_owners.IsBound(face.Current()))
                 face_owners.Bind(face.Current(), component_id);
         }
@@ -124,7 +121,7 @@ void GeometryInterferenceController::rebuild(
 
     // 无论是否命中，先清空旧结果，避免 Component 残留上一次的标记。
     for (Index component_id : component_ids) {
-        if (std::shared_ptr<GeometryActor> actor = manager.getComponentActor(component_id))
+        if (std::shared_ptr<GeometryActor> actor = manager_.getComponentActor(component_id))
             actor->topologyDiagnostics().setInterferingFaces({ });
     }
     if (component_ids.empty()) {
@@ -154,10 +151,10 @@ void GeometryInterferenceController::rebuild(
     }
 
     spdlog::info("几何拓扑诊断（model {}）：几何干涉 耗时 {:.1f} ms —— {} 对，涉及 {} 张面",
-        modelLabel(query, model_id), elapsed_ms, result.interfering_face_pairs.size(),
+        model_labels_[model_id], elapsed_ms, result.interfering_face_pairs.size(),
         hit_faces.Extent());
     for (Index component_id : component_ids) {
-        if (std::shared_ptr<GeometryActor> actor = manager.getComponentActor(component_id)) {
+        if (std::shared_ptr<GeometryActor> actor = manager_.getComponentActor(component_id)) {
             actor->topologyDiagnostics().setInterferingFaces(
                 std::move(component_faces[component_id]));
         }

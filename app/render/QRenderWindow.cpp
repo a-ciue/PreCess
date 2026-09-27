@@ -10,11 +10,8 @@
 #include "QSelection.h"
 #include "SelectManager.h"
 #include "Selection.h"
-#include "GeometryActor.h"
 #include "GeometryActorManager.h"
 #include "GeometryDataVtk.h"
-#include "GeometryInterferenceController.h"
-#include "GeometryTopologyDiagnosticActor.h"
 #include "MeshIdQuery.h"
 
 #include <spdlog/spdlog.h>
@@ -165,10 +162,7 @@ private:
 
 }
 
-QRenderWindow::QRenderWindow()
-    : geometry_interference_(std::make_unique<GeometryInterferenceController>())
-{
-}
+QRenderWindow::QRenderWindow() = default;
 
 QRenderWindow::~QRenderWindow() = default;
 
@@ -343,9 +337,10 @@ void QRenderWindow::deleteModel(Index model_id)
         Data* vtk = Data::SafeDownCast(userData);
 
         auto component_ids = model_query_->getComponentIds(model_id);
-        for (Index component_id : component_ids)
+        for (Index component_id : component_ids) {
             vtk->mesh_actor_manager_->deleteComponent(component_id);
-        geometry_interference_->removeModel(model_id, *vtk->geometry_actor_manager_);
+        }
+        vtk->geometry_actor_manager_->deleteModel(model_id);
 
         this->select_manager_->clearSelection();
     });
@@ -361,12 +356,7 @@ void QRenderWindow::deleteComponent(Index component_id)
         }
 
         if (vtk->geometry_actor_manager_) {
-            if (model_query_) {
-                geometry_interference_->removeComponent(
-                    component_id, *vtk->geometry_actor_manager_, *model_query_);
-            } else {
-                vtk->geometry_actor_manager_->deleteComponent(component_id);
-            }
+            vtk->geometry_actor_manager_->deleteComponent(component_id);
         }
 
         this->select_manager_->clearSelection();
@@ -404,6 +394,7 @@ void QRenderWindow::onModelChanged(Index model_id)
         // Actor 即将重新加载，先释放引用旧 PolyData 和 OCC Shape 的选择器。
         this->select_manager_->clearSelection();
         auto component_ids = model_query_->getComponentIds(model_id);
+        const std::string model_name = model_query_->getModelName(model_id).toStdString();
 
         for (Index component_id : component_ids) {
             auto mesh_data = model_query_->getMeshDataByComponent(component_id);
@@ -413,19 +404,11 @@ void QRenderWindow::onModelChanged(Index model_id)
 
             auto geometry_data = model_query_->getGeometryVtkDataByComponent(component_id);
             if (geometry_data) {
-                vtk->geometry_actor_manager_->loadGeometry(*geometry_data);
-                geometry_interference_->trackComponent(model_id, component_id);
-                if (std::shared_ptr<GeometryActor> actor
-                    = vtk->geometry_actor_manager_->getComponentActor(component_id)) {
-                    const QString name = model_query_->getComponentName(component_id);
-                    actor->topologyDiagnostics().setComponentLabel(std::to_string(component_id)
-                        + (name.isEmpty() ? std::string()
-                                          : " (" + name.toStdString() + ")"));
-                }
+                vtk->geometry_actor_manager_->loadGeometry(*geometry_data, model_id, model_name,
+                    model_query_->getComponentName(component_id).toStdString());
             }
         }
-        geometry_interference_->modelChanged(
-            model_id, *vtk->geometry_actor_manager_, *model_query_);
+        vtk->geometry_actor_manager_->modelChanged(model_id);
     });
 }
 
@@ -455,20 +438,12 @@ void QRenderWindow::onComponentChanged(Index component_id)
         if (vtk->geometry_actor_manager_) {
             auto geometry_data = this->model_query_->getGeometryVtkDataByComponent(component_id);
             if (geometry_data) {
-                vtk->geometry_actor_manager_->loadGeometry(*geometry_data);
-                geometry_interference_->trackComponent(model_id, component_id);
-                if (std::shared_ptr<GeometryActor> actor
-                    = vtk->geometry_actor_manager_->getComponentActor(component_id)) {
-                    const QString name = model_query_->getComponentName(component_id);
-                    actor->topologyDiagnostics().setComponentLabel(std::to_string(component_id)
-                        + (name.isEmpty() ? std::string()
-                                          : " (" + name.toStdString() + ")"));
-                }
-                geometry_interference_->modelChanged(
-                    model_id, *vtk->geometry_actor_manager_, *model_query_);
+                vtk->geometry_actor_manager_->loadGeometry(*geometry_data, model_id,
+                    model_query_->getModelName(model_id).toStdString(),
+                    model_query_->getComponentName(component_id).toStdString());
+                vtk->geometry_actor_manager_->modelChanged(model_id);
             } else {
-                geometry_interference_->removeComponent(
-                    component_id, *vtk->geometry_actor_manager_, *model_query_);
+                vtk->geometry_actor_manager_->deleteComponent(component_id);
             }
         }
     });
@@ -743,11 +718,6 @@ void QRenderWindow::setGeometryTopologyDiagnosticCategoryEnabled(int category, b
         if (!vtk || !vtk->geometry_actor_manager_)
             return;
         vtk->geometry_actor_manager_->setTopologyDiagnosticCategoryEnabled(category, enabled);
-        if (category == static_cast<int>(GeometryTopologyDiagnosticCategory::InterferingFace)
-            && model_query_) {
-            geometry_interference_->setEnabled(
-                enabled, *vtk->geometry_actor_manager_, *model_query_);
-        }
     });
 }
 

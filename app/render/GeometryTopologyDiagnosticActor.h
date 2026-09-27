@@ -111,7 +111,7 @@ private:
     vtkDataArray* line_sub_ids_ {};
     vtkDataArray* face_sub_ids_ {};
     std::unique_ptr<GeometryTopologyDiagnosticResult> diagnostics_;
-    //! 组间干涉由 QRenderWindow 按 Model 统一计算，本 Actor 只负责显示自身命中面。
+    //! 组间干涉由 GeometryActorManager 按 Model 统一计算，本 Actor 只负责显示自身命中面。
     std::vector<TopoDS_Face> interfering_faces_;
     //! 所属组件的显示标签（id + 名称），仅用于日志标注结果归属；空表示尚未设置。
     std::string component_label_;

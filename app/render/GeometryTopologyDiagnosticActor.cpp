@@ -327,7 +327,7 @@ void GeometryTopologyDiagnosticActor::ensureDiagnostics(
     GeometryTopologyDiagnosticOptions options {
         false, false, false, false, false, false, false
     };
-    // Geometry Interference Check 必须同时看到窗口内的全部实体，由 Manager 计算后回填。
+    // Geometry Interference Check 必须同时看到同一 Model 内的全部实体，由 Manager 计算后回填。
     if (category == GeometryTopologyDiagnosticCategory::InterferingFace) {
         category_computed_[index] = true;
         return;
