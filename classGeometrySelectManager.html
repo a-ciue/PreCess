@@ -133,9 +133,9 @@ GeometrySelectManager 的协作图:</div>
 <tr class="heading"><td colspan="2"><h2 id="header-pub-methods" class="groupheader"><a id="pub-methods" name="pub-methods"></a>
 Public 成员函数</h2></td></tr>
 <tr class="memitem:a73666339e686d57050f9fd01c86cb16f" id="r_a73666339e686d57050f9fd01c86cb16f"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a73666339e686d57050f9fd01c86cb16f">GeometrySelectManager</a> (vtkRenderer &amp;renderer, vtkActor &amp;highlight_actor, <a class="el" href="classGeometryActorManagerSelectOp.html">GeometryActorManagerSelectOp</a> &amp;op)</td></tr>
-<tr class="memitem:a0dbd1d51d886b917ee31059ffd1b85b7" id="r_a0dbd1d51d886b917ee31059ffd1b85b7"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a0dbd1d51d886b917ee31059ffd1b85b7">select</a> (double posx, double posy)</td></tr>
-<tr class="memitem:afafd1c893bd3a5f1e4ba5c27cdf9e10f" id="r_afafd1c893bd3a5f1e4ba5c27cdf9e10f"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#afafd1c893bd3a5f1e4ba5c27cdf9e10f">selectArea</a> (int xmin, int ymin, int xmax, int ymax)</td></tr>
-<tr class="memdesc:afafd1c893bd3a5f1e4ba5c27cdf9e10f"><td class="mdescLeft">&#160;</td><td class="mdescRight">几何框选：矩形区域内的几何元素（面/边/顶点/体）  <br /></td></tr>
+<tr class="memitem:a88791858225889581f3dddffc6aeac8e" id="r_a88791858225889581f3dddffc6aeac8e"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a88791858225889581f3dddffc6aeac8e">select</a> (double posx, double posy, <a class="el" href="Core_8h.html#a7b4340f86a469a9549b19713fc7c657a">SelectOp</a> op=<a class="el" href="Core_8h.html#a7b4340f86a469a9549b19713fc7c657aaa8875bbe4272c0bdd786cfaaedf77921">SelectOp::Toggle</a>)</td></tr>
+<tr class="memitem:ac1550c3266b5387aa8f976cd2374a46e" id="r_ac1550c3266b5387aa8f976cd2374a46e"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ac1550c3266b5387aa8f976cd2374a46e">selectArea</a> (int xmin, int ymin, int xmax, int ymax, <a class="el" href="Core_8h.html#a7b4340f86a469a9549b19713fc7c657a">SelectOp</a> op=<a class="el" href="Core_8h.html#a7b4340f86a469a9549b19713fc7c657aaa8875bbe4272c0bdd786cfaaedf77921">SelectOp::Toggle</a>)</td></tr>
+<tr class="memdesc:ac1550c3266b5387aa8f976cd2374a46e"><td class="mdescLeft">&#160;</td><td class="mdescRight">几何框选：矩形区域内的几何元素（面/边/顶点/体）  <br /></td></tr>
 <tr class="memitem:accd6412ae019d8e33710f21e12e0a5a4" id="r_accd6412ae019d8e33710f21e12e0a5a4"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#accd6412ae019d8e33710f21e12e0a5a4">setSelectMode</a> (<a class="el" href="Core_8h.html#a33798f6bed937e1f849ed0cf46ebe5a6">SelectMode</a> select_mode)</td></tr>
 <tr class="memitem:aa6fb352ba1bf242a7de34ee69232f3c9" id="r_aa6fb352ba1bf242a7de34ee69232f3c9"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#aa6fb352ba1bf242a7de34ee69232f3c9">clearSelection</a> ()</td></tr>
 <tr class="memitem:ac72461b0c47ec15d7a4c0efa56ea13e5" id="r_ac72461b0c47ec15d7a4c0efa56ea13e5"><td class="memItemLeft" align="right" valign="top">std::unique_ptr&lt; <a class="el" href="structSelection.html">Selection</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ac72461b0c47ec15d7a4c0efa56ea13e5">getSelection</a> ()</td></tr>
@@ -273,8 +273,8 @@ Private 属性</h2></td></tr>
 
 </div>
 </div>
-<a id="a0dbd1d51d886b917ee31059ffd1b85b7" name="a0dbd1d51d886b917ee31059ffd1b85b7"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a0dbd1d51d886b917ee31059ffd1b85b7">&#9670;&#160;</a></span>select()</h2>
+<a id="a88791858225889581f3dddffc6aeac8e" name="a88791858225889581f3dddffc6aeac8e"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a88791858225889581f3dddffc6aeac8e">&#9670;&#160;</a></span>select()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -287,15 +287,20 @@ Private 属性</h2></td></tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">double</td>          <td class="paramname"><span class="paramname"><em>posy</em></span>&#160;)</td>
+          <td class="paramtype">double</td>          <td class="paramname"><span class="paramname"><em>posy</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="Core_8h.html#a7b4340f86a469a9549b19713fc7c657a">SelectOp</a></td>          <td class="paramname"><span class="paramname"><em>op</em></span><span class="paramdefsep"> = </span><span class="paramdefval"><a class="el" href="Core_8h.html#a7b4340f86a469a9549b19713fc7c657aaa8875bbe4272c0bdd786cfaaedf77921">SelectOp::Toggle</a></span>&#160;)</td>
         </tr>
       </table>
 </div><div class="memdoc">
 
 </div>
 </div>
-<a id="afafd1c893bd3a5f1e4ba5c27cdf9e10f" name="afafd1c893bd3a5f1e4ba5c27cdf9e10f"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#afafd1c893bd3a5f1e4ba5c27cdf9e10f">&#9670;&#160;</a></span>selectArea()</h2>
+<a id="ac1550c3266b5387aa8f976cd2374a46e" name="ac1550c3266b5387aa8f976cd2374a46e"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ac1550c3266b5387aa8f976cd2374a46e">&#9670;&#160;</a></span>selectArea()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -318,13 +323,18 @@ Private 属性</h2></td></tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">int</td>          <td class="paramname"><span class="paramname"><em>ymax</em></span>&#160;)</td>
+          <td class="paramtype">int</td>          <td class="paramname"><span class="paramname"><em>ymax</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="Core_8h.html#a7b4340f86a469a9549b19713fc7c657a">SelectOp</a></td>          <td class="paramname"><span class="paramname"><em>op</em></span><span class="paramdefsep"> = </span><span class="paramdefval"><a class="el" href="Core_8h.html#a7b4340f86a469a9549b19713fc7c657aaa8875bbe4272c0bdd786cfaaedf77921">SelectOp::Toggle</a></span>&#160;)</td>
         </tr>
       </table>
 </div><div class="memdoc">
 
 <p>几何框选：矩形区域内的几何元素（面/边/顶点/体） </p>
-<dl class="section note"><dt>注解</dt><dd>与网格框选一致，框选恒为替换——先清空，命中即本次新选择 </dd></dl>
+<dl class="section note"><dt>注解</dt><dd>框选永不清空——由各 selector 按 op 做集合运算（Append-&gt;并集 / Remove-&gt;差集 / Toggle-&gt;对称差）。 </dd></dl>
 
 </div>
 </div>

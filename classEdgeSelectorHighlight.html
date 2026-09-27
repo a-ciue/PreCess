@@ -184,10 +184,10 @@ Public 成员函数</h2></td></tr>
 <tr class="memitem:afdb85c28368cd8fcdf956cfcf34e693e" id="r_afdb85c28368cd8fcdf956cfcf34e693e"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#afdb85c28368cd8fcdf956cfcf34e693e">~EdgeSelectorHighlight</a> () override</td></tr>
 <tr class="memitem:ad4878fe7d661ab85696416aee7596d44" id="r_ad4878fe7d661ab85696416aee7596d44"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ad4878fe7d661ab85696416aee7596d44">select</a> (double posx, double posy)</td></tr>
 <tr class="memdesc:ad4878fe7d661ab85696416aee7596d44"><td class="mdescLeft">&#160;</td><td class="mdescRight">自建 picker 的点选兼容入口（测试/独立调用用；生产路径由 <a class="el" href="classMeshSelectManager.html">MeshSelectManager</a> 预拾后调下面的 picker 重载）  <br /></td></tr>
-<tr class="memitem:a34086333be45f22124732833cc2e0d58" id="r_a34086333be45f22124732833cc2e0d58"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a34086333be45f22124732833cc2e0d58">select</a> (double posx, double posy, vtkHardwarePicker *picker, vtkActor *picked_actor, vtkIdType picked_cell_id, vtkIdType picked_point_id) override</td></tr>
-<tr class="memdesc:a34086333be45f22124732833cc2e0d58"><td class="mdescLeft">&#160;</td><td class="mdescRight">单点拾取：使用外层预 picker.Pick 拾取结果，避免两次 picker.Pick 污染 picking buffer。  <br /></td></tr>
-<tr class="memitem:a6402cd9615165a243cd7e828b2c2f3c0" id="r_a6402cd9615165a243cd7e828b2c2f3c0"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a6402cd9615165a243cd7e828b2c2f3c0">selectArea</a> (const std::unordered_map&lt; vtkProp *, std::unordered_set&lt; vtkIdType &gt; &gt; &amp;hits, int xmin, int ymin, int xmax, int ymax) override</td></tr>
-<tr class="memdesc:a6402cd9615165a243cd7e828b2c2f3c0"><td class="mdescLeft">&#160;</td><td class="mdescRight">应用一次多 actor 框选拾取结果到本选择器（MeshSelectManager 已先清空全部组件选择并分发命中）  <br /></td></tr>
+<tr class="memitem:a0cddbcfbf89f35e751f58e8abf82a5f1" id="r_a0cddbcfbf89f35e751f58e8abf82a5f1"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a0cddbcfbf89f35e751f58e8abf82a5f1">select</a> (double posx, double posy, vtkHardwarePicker *picker, vtkActor *picked_actor, vtkIdType picked_cell_id, vtkIdType picked_point_id, <a class="el" href="Core_8h.html#a7b4340f86a469a9549b19713fc7c657a">SelectOp</a> op) override</td></tr>
+<tr class="memdesc:a0cddbcfbf89f35e751f58e8abf82a5f1"><td class="mdescLeft">&#160;</td><td class="mdescRight">单点拾取：使用外层预 picker.Pick 拾取结果，避免两次 picker.Pick 污染 picking buffer。  <br /></td></tr>
+<tr class="memitem:af5a8457ff3fed93a0786e94d8105997e" id="r_af5a8457ff3fed93a0786e94d8105997e"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#af5a8457ff3fed93a0786e94d8105997e">selectArea</a> (const std::unordered_map&lt; vtkProp *, std::unordered_set&lt; vtkIdType &gt; &gt; &amp;hits, int xmin, int ymin, int xmax, int ymax, <a class="el" href="Core_8h.html#a7b4340f86a469a9549b19713fc7c657a">SelectOp</a> op) override</td></tr>
+<tr class="memdesc:af5a8457ff3fed93a0786e94d8105997e"><td class="mdescLeft">&#160;</td><td class="mdescRight">应用一次多 actor 框选拾取结果到本选择器（MeshSelectManager 已先清空全部组件选择并分发命中）  <br /></td></tr>
 <tr class="memitem:af71996a5002742103866e5c826479d0f" id="r_af71996a5002742103866e5c826479d0f"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#af71996a5002742103866e5c826479d0f">clear</a> () override</td></tr>
 <tr class="memdesc:af71996a5002742103866e5c826479d0f"><td class="mdescLeft">&#160;</td><td class="mdescRight">清空选中元素，并取消高亮  <br /></td></tr>
 <tr class="memitem:abc07d0f31a2fe01d3f77e4562f30193e" id="r_abc07d0f31a2fe01d3f77e4562f30193e"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#abc07d0f31a2fe01d3f77e4562f30193e">disableHighlight</a> () override</td></tr>
@@ -418,8 +418,8 @@ Private 属性</h2></td></tr>
 
 </div>
 </div>
-<a id="a34086333be45f22124732833cc2e0d58" name="a34086333be45f22124732833cc2e0d58"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a34086333be45f22124732833cc2e0d58">&#9670;&#160;</a></span>select() <span class="overload">[2/2]</span></h2>
+<a id="a0cddbcfbf89f35e751f58e8abf82a5f1" name="a0cddbcfbf89f35e751f58e8abf82a5f1"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a0cddbcfbf89f35e751f58e8abf82a5f1">&#9670;&#160;</a></span>select() <span class="overload">[2/2]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -455,7 +455,12 @@ Private 属性</h2></td></tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">vtkIdType</td>          <td class="paramname"><span class="paramname"><em>picked_point_id</em></span>&#160;)</td>
+          <td class="paramtype">vtkIdType</td>          <td class="paramname"><span class="paramname"><em>picked_point_id</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="Core_8h.html#a7b4340f86a469a9549b19713fc7c657a">SelectOp</a></td>          <td class="paramname"><span class="paramname"><em>op</em></span>&#160;)</td>
         </tr>
       </table>
   </td>
@@ -467,12 +472,12 @@ Private 属性</h2></td></tr>
 
 <p>单点拾取：使用外层预 picker.Pick 拾取结果，避免两次 picker.Pick 污染 picking buffer。 </p>
 
-<p>实现了 <a class="el" href="classSelectorHighlight.html#af8001f12a2d6a9604e17b7d256486e9b">SelectorHighlight</a>.</p>
+<p>实现了 <a class="el" href="classSelectorHighlight.html#af4b864d1136a1a26e5c1f9104f8d0f1a">SelectorHighlight</a>.</p>
 
 </div>
 </div>
-<a id="a6402cd9615165a243cd7e828b2c2f3c0" name="a6402cd9615165a243cd7e828b2c2f3c0"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a6402cd9615165a243cd7e828b2c2f3c0">&#9670;&#160;</a></span>selectArea()</h2>
+<a id="af5a8457ff3fed93a0786e94d8105997e" name="af5a8457ff3fed93a0786e94d8105997e"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#af5a8457ff3fed93a0786e94d8105997e">&#9670;&#160;</a></span>selectArea()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -503,7 +508,12 @@ Private 属性</h2></td></tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">int</td>          <td class="paramname"><span class="paramname"><em>ymax</em></span>&#160;)</td>
+          <td class="paramtype">int</td>          <td class="paramname"><span class="paramname"><em>ymax</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="Core_8h.html#a7b4340f86a469a9549b19713fc7c657a">SelectOp</a></td>          <td class="paramname"><span class="paramname"><em>op</em></span>&#160;)</td>
         </tr>
       </table>
   </td>
@@ -522,7 +532,7 @@ Private 属性</h2></td></tr>
   </dd>
 </dl>
 
-<p>实现了 <a class="el" href="classSelectorHighlight.html#ab668ad9c17debae16c0bc66258e0f9e8">SelectorHighlight</a>.</p>
+<p>实现了 <a class="el" href="classSelectorHighlight.html#ab093964feb6176e90a73884a2610d448">SelectorHighlight</a>.</p>
 
 </div>
 </div>

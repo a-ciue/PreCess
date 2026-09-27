@@ -129,7 +129,7 @@ GeometrySolidSelectorHighlight 的协作图:</div>
 Public 成员函数</h2></td></tr>
 <tr class="memitem:a3321d5313c221e070ac5b4f36f38ecb1" id="r_a3321d5313c221e070ac5b4f36f38ecb1"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a3321d5313c221e070ac5b4f36f38ecb1">GeometrySolidSelectorHighlight</a> (vtkPartitionedDataSet &amp;highlight_data, unsigned int partition_id, <a class="el" href="classGeometryActorSelectOp.html">GeometryActorSelectOp</a> select_op)</td></tr>
 <tr class="memitem:a8564d14ab19d573aea806862ddc0b542" id="r_a8564d14ab19d573aea806862ddc0b542"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a8564d14ab19d573aea806862ddc0b542">~GeometrySolidSelectorHighlight</a> () override</td></tr>
-<tr class="memitem:a4bf0dc3fdfbab090b716834ccca694de" id="r_a4bf0dc3fdfbab090b716834ccca694de"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a4bf0dc3fdfbab090b716834ccca694de">toggleSolid</a> (<a class="el" href="Core_8h.html#a09b977d80717477b28230209e7cc183f">GeomSolidId</a> solidId, const std::vector&lt; IVtk_IdType &gt; &amp;faceSubIds)</td></tr>
+<tr class="memitem:a928623f2ec5cfb4172566ee4d188e8e0" id="r_a928623f2ec5cfb4172566ee4d188e8e0"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a928623f2ec5cfb4172566ee4d188e8e0">toggleSolid</a> (<a class="el" href="Core_8h.html#a09b977d80717477b28230209e7cc183f">GeomSolidId</a> solidId, const std::vector&lt; IVtk_IdType &gt; &amp;faceSubIds, <a class="el" href="Core_8h.html#a7b4340f86a469a9549b19713fc7c657a">SelectOp</a> op=<a class="el" href="Core_8h.html#a7b4340f86a469a9549b19713fc7c657aaa8875bbe4272c0bdd786cfaaedf77921">SelectOp::Toggle</a>)</td></tr>
 <tr class="memitem:aeba9f62ae3f550b61a022000fcb907e7" id="r_aeba9f62ae3f550b61a022000fcb907e7"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#aeba9f62ae3f550b61a022000fcb907e7">clear</a> () override</td></tr>
 <tr class="memitem:a39ed23e139c64ec7e846680535ad0f14" id="r_a39ed23e139c64ec7e846680535ad0f14"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a39ed23e139c64ec7e846680535ad0f14">disableHighlight</a> () override</td></tr>
 <tr class="memitem:a1cbe3f65429c97d30748f629ea294253" id="r_a1cbe3f65429c97d30748f629ea294253"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a1cbe3f65429c97d30748f629ea294253">enableHighlight</a> () override</td></tr>
@@ -340,8 +340,8 @@ Private 属性</h2></td></tr>
 
 </div>
 </div>
-<a id="a4bf0dc3fdfbab090b716834ccca694de" name="a4bf0dc3fdfbab090b716834ccca694de"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a4bf0dc3fdfbab090b716834ccca694de">&#9670;&#160;</a></span>toggleSolid()</h2>
+<a id="a928623f2ec5cfb4172566ee4d188e8e0" name="a928623f2ec5cfb4172566ee4d188e8e0"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a928623f2ec5cfb4172566ee4d188e8e0">&#9670;&#160;</a></span>toggleSolid()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -354,7 +354,12 @@ Private 属性</h2></td></tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">const std::vector&lt; IVtk_IdType &gt; &amp;</td>          <td class="paramname"><span class="paramname"><em>faceSubIds</em></span>&#160;)</td>
+          <td class="paramtype">const std::vector&lt; IVtk_IdType &gt; &amp;</td>          <td class="paramname"><span class="paramname"><em>faceSubIds</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="Core_8h.html#a7b4340f86a469a9549b19713fc7c657a">SelectOp</a></td>          <td class="paramname"><span class="paramname"><em>op</em></span><span class="paramdefsep"> = </span><span class="paramdefval"><a class="el" href="Core_8h.html#a7b4340f86a469a9549b19713fc7c657aaa8875bbe4272c0bdd786cfaaedf77921">SelectOp::Toggle</a></span>&#160;)</td>
         </tr>
       </table>
 </div><div class="memdoc">

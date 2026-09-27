@@ -100,10 +100,10 @@ $(function() {
 <tr class="heading"><td colspan="2"><h2 id="header-pub-methods" class="groupheader"><a id="pub-methods" name="pub-methods"></a>
 Public 成员函数</h2></td></tr>
 <tr class="memitem:aeb60a59064e736c2c80f85dd2823ee9f" id="r_aeb60a59064e736c2c80f85dd2823ee9f"><td class="memItemLeft" align="right" valign="top">virtual&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#aeb60a59064e736c2c80f85dd2823ee9f">~SelectorHighlight</a> ()=default</td></tr>
-<tr class="memitem:af8001f12a2d6a9604e17b7d256486e9b" id="r_af8001f12a2d6a9604e17b7d256486e9b"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#af8001f12a2d6a9604e17b7d256486e9b">select</a> (double posx, double posy, vtkHardwarePicker *picker, vtkActor *picked_actor, vtkIdType picked_cell_id, vtkIdType picked_point_id)=0</td></tr>
-<tr class="memdesc:af8001f12a2d6a9604e17b7d256486e9b"><td class="mdescLeft">&#160;</td><td class="mdescRight">单点拾取：使用外层预 picker.Pick 拾取结果，避免两次 picker.Pick 污染 picking buffer。  <br /></td></tr>
-<tr class="memitem:ab668ad9c17debae16c0bc66258e0f9e8" id="r_ab668ad9c17debae16c0bc66258e0f9e8"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ab668ad9c17debae16c0bc66258e0f9e8">selectArea</a> (const std::unordered_map&lt; vtkProp *, std::unordered_set&lt; vtkIdType &gt; &gt; &amp;hits, int xmin, int ymin, int xmax, int ymax)=0</td></tr>
-<tr class="memdesc:ab668ad9c17debae16c0bc66258e0f9e8"><td class="mdescLeft">&#160;</td><td class="mdescRight">应用一次多 actor 框选拾取结果到本选择器（MeshSelectManager 已先清空全部组件选择并分发命中）  <br /></td></tr>
+<tr class="memitem:af4b864d1136a1a26e5c1f9104f8d0f1a" id="r_af4b864d1136a1a26e5c1f9104f8d0f1a"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#af4b864d1136a1a26e5c1f9104f8d0f1a">select</a> (double posx, double posy, vtkHardwarePicker *picker, vtkActor *picked_actor, vtkIdType picked_cell_id, vtkIdType picked_point_id, <a class="el" href="Core_8h.html#a7b4340f86a469a9549b19713fc7c657a">SelectOp</a> op=<a class="el" href="Core_8h.html#a7b4340f86a469a9549b19713fc7c657aaa8875bbe4272c0bdd786cfaaedf77921">SelectOp::Toggle</a>)=0</td></tr>
+<tr class="memdesc:af4b864d1136a1a26e5c1f9104f8d0f1a"><td class="mdescLeft">&#160;</td><td class="mdescRight">单点拾取：使用外层预 picker.Pick 拾取结果，避免两次 picker.Pick 污染 picking buffer。  <br /></td></tr>
+<tr class="memitem:ab093964feb6176e90a73884a2610d448" id="r_ab093964feb6176e90a73884a2610d448"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ab093964feb6176e90a73884a2610d448">selectArea</a> (const std::unordered_map&lt; vtkProp *, std::unordered_set&lt; vtkIdType &gt; &gt; &amp;hits, int xmin, int ymin, int xmax, int ymax, <a class="el" href="Core_8h.html#a7b4340f86a469a9549b19713fc7c657a">SelectOp</a> op=<a class="el" href="Core_8h.html#a7b4340f86a469a9549b19713fc7c657aaa8875bbe4272c0bdd786cfaaedf77921">SelectOp::Toggle</a>)=0</td></tr>
+<tr class="memdesc:ab093964feb6176e90a73884a2610d448"><td class="mdescLeft">&#160;</td><td class="mdescRight">应用一次多 actor 框选拾取结果到本选择器（MeshSelectManager 已先清空全部组件选择并分发命中）  <br /></td></tr>
 <tr class="memitem:a848c28c9db33a22a74d31fa1be332581" id="r_a848c28c9db33a22a74d31fa1be332581"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a848c28c9db33a22a74d31fa1be332581">clear</a> ()=0</td></tr>
 <tr class="memdesc:a848c28c9db33a22a74d31fa1be332581"><td class="mdescLeft">&#160;</td><td class="mdescRight">清空选中元素，并取消高亮  <br /></td></tr>
 <tr class="memitem:ae6da7769f8706c9d0a64fe2bdd931831" id="r_ae6da7769f8706c9d0a64fe2bdd931831"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ae6da7769f8706c9d0a64fe2bdd931831">disableHighlight</a> ()=0</td></tr>
@@ -253,8 +253,8 @@ Public 成员函数</h2></td></tr>
 
 </div>
 </div>
-<a id="af8001f12a2d6a9604e17b7d256486e9b" name="af8001f12a2d6a9604e17b7d256486e9b"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#af8001f12a2d6a9604e17b7d256486e9b">&#9670;&#160;</a></span>select()</h2>
+<a id="af4b864d1136a1a26e5c1f9104f8d0f1a" name="af4b864d1136a1a26e5c1f9104f8d0f1a"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#af4b864d1136a1a26e5c1f9104f8d0f1a">&#9670;&#160;</a></span>select()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -290,7 +290,12 @@ Public 成员函数</h2></td></tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">vtkIdType</td>          <td class="paramname"><span class="paramname"><em>picked_point_id</em></span>&#160;)</td>
+          <td class="paramtype">vtkIdType</td>          <td class="paramname"><span class="paramname"><em>picked_point_id</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="Core_8h.html#a7b4340f86a469a9549b19713fc7c657a">SelectOp</a></td>          <td class="paramname"><span class="paramname"><em>op</em></span><span class="paramdefsep"> = </span><span class="paramdefval"><a class="el" href="Core_8h.html#a7b4340f86a469a9549b19713fc7c657aaa8875bbe4272c0bdd786cfaaedf77921">SelectOp::Toggle</a></span>&#160;)</td>
         </tr>
       </table>
   </td>
@@ -302,12 +307,12 @@ Public 成员函数</h2></td></tr>
 
 <p>单点拾取：使用外层预 picker.Pick 拾取结果，避免两次 picker.Pick 污染 picking buffer。 </p>
 
-<p>在 <a class="el" href="classEdgeSelectorHighlight.html#a34086333be45f22124732833cc2e0d58">EdgeSelectorHighlight</a>, <a class="el" href="classFaceSelectorHighlight.html#ad244be472a6b53d97380def67f6ec1ed">FaceSelectorHighlight</a>, <a class="el" href="classSolidSelectorHighlight.html#a732d6cbfb2988d5605623b78149d2b08">SolidSelectorHighlight</a> , 以及 <a class="el" href="classVertexSelectorHighlight.html#a3282bcec5a461aa7984d1b67f8458507">VertexSelectorHighlight</a> 内被实现.</p>
+<p>在 <a class="el" href="classEdgeSelectorHighlight.html#a0cddbcfbf89f35e751f58e8abf82a5f1">EdgeSelectorHighlight</a>, <a class="el" href="classFaceSelectorHighlight.html#a5fd9aa90db9a015d6a5b77cd66e7187e">FaceSelectorHighlight</a>, <a class="el" href="classSolidSelectorHighlight.html#a314caeba56b20cf5da9ddcd58a4ac6bd">SolidSelectorHighlight</a> , 以及 <a class="el" href="classVertexSelectorHighlight.html#a8d5b2012279c44f35be6c08cb2570c5e">VertexSelectorHighlight</a> 内被实现.</p>
 
 </div>
 </div>
-<a id="ab668ad9c17debae16c0bc66258e0f9e8" name="ab668ad9c17debae16c0bc66258e0f9e8"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ab668ad9c17debae16c0bc66258e0f9e8">&#9670;&#160;</a></span>selectArea()</h2>
+<a id="ab093964feb6176e90a73884a2610d448" name="ab093964feb6176e90a73884a2610d448"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ab093964feb6176e90a73884a2610d448">&#9670;&#160;</a></span>selectArea()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -338,7 +343,12 @@ Public 成员函数</h2></td></tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">int</td>          <td class="paramname"><span class="paramname"><em>ymax</em></span>&#160;)</td>
+          <td class="paramtype">int</td>          <td class="paramname"><span class="paramname"><em>ymax</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="Core_8h.html#a7b4340f86a469a9549b19713fc7c657a">SelectOp</a></td>          <td class="paramname"><span class="paramname"><em>op</em></span><span class="paramdefsep"> = </span><span class="paramdefval"><a class="el" href="Core_8h.html#a7b4340f86a469a9549b19713fc7c657aaa8875bbe4272c0bdd786cfaaedf77921">SelectOp::Toggle</a></span>&#160;)</td>
         </tr>
       </table>
   </td>
@@ -357,7 +367,7 @@ Public 成员函数</h2></td></tr>
   </dd>
 </dl>
 
-<p>在 <a class="el" href="classEdgeSelectorHighlight.html#a6402cd9615165a243cd7e828b2c2f3c0">EdgeSelectorHighlight</a>, <a class="el" href="classFaceSelectorHighlight.html#a1ce8a48eaa132b7f82df01a473487850">FaceSelectorHighlight</a>, <a class="el" href="classSolidSelectorHighlight.html#ad7f5034e2087f061d95e9718740f8a1a">SolidSelectorHighlight</a> , 以及 <a class="el" href="classVertexSelectorHighlight.html#a329be903fd7fbfd15e47127be4927464">VertexSelectorHighlight</a> 内被实现.</p>
+<p>在 <a class="el" href="classEdgeSelectorHighlight.html#af5a8457ff3fed93a0786e94d8105997e">EdgeSelectorHighlight</a>, <a class="el" href="classFaceSelectorHighlight.html#acae2cf315b25d5f3175ec1ada52f458a">FaceSelectorHighlight</a>, <a class="el" href="classSolidSelectorHighlight.html#aaa1b896260212b426dcb6228ed585ffd">SolidSelectorHighlight</a> , 以及 <a class="el" href="classVertexSelectorHighlight.html#aad24e115f64bd0fbeb613e748db07b4b">VertexSelectorHighlight</a> 内被实现.</p>
 
 </div>
 </div>
