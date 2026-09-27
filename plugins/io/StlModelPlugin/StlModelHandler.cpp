@@ -339,27 +339,34 @@ std::optional<ModelPayload> StlModelHandler::read_model(const fs::path& path, co
     // STL 只承载点与三角形面，读入结果是一个网格组件
     auto mesh = std::make_unique<MeshData>();
 
-    // 二进制读入整个文件：ASCII/二进制两种布局共用一份字节流
-    std::ifstream input(path, std::ios::binary);
-    if (!input) {
-        spdlog::error("StlModelHandler: failed to open file '{}'", path.string());
-        return std::nullopt;
-    }
-    const std::vector<uint8_t> bytes((std::istreambuf_iterator<char>(input)),
-        std::istreambuf_iterator<char>());
+    try {
+        // 二进制读入整个文件：ASCII/二进制两种布局共用一份字节流
+        std::ifstream input(path, std::ios::binary);
+        if (!input) {
+            spdlog::error("StlModelHandler: failed to open file '{}'", path.string());
+            return std::nullopt;
+        }
+        const std::vector<uint8_t> bytes((std::istreambuf_iterator<char>(input)),
+            std::istreambuf_iterator<char>());
 
-    // 先按二进制布局探测（大小与声明数自洽）；不满足再按 ASCII 解析，
-    // 兼容部分二进制文件以 "solid" 开头的头部
-    bool ok = false;
-    if (detectBinaryLayout(bytes)) {
-        ok = readBinary(bytes, *mesh);
-    } else {
-        std::istringstream text;
-        text.str(std::string(reinterpret_cast<const char*>(bytes.data()), bytes.size()));
-        ok = readAscii(text, *mesh);
-    }
-    if (!ok) {
-        spdlog::error("StlModelHandler: failed to read STL file: {}", path.string());
+        // 先按二进制布局探测（大小与声明数自洽）；不满足再按 ASCII 解析，
+        // 兼容部分二进制文件以 "solid" 开头的头部
+        bool ok = false;
+        if (detectBinaryLayout(bytes)) {
+            ok = readBinary(bytes, *mesh);
+        } else {
+            std::istringstream text;
+            text.str(std::string(reinterpret_cast<const char*>(bytes.data()), bytes.size()));
+            ok = readAscii(text, *mesh);
+        }
+        if (!ok) {
+            spdlog::error("StlModelHandler: failed to read STL file: {}", path.string());
+            return std::nullopt;
+        }
+    } catch (const std::exception& e) {
+        // 整文件字节流拷贝与 ASCII 解析可能触发的 std::length_error / std::bad_alloc
+        // 等在此兜底，不让异常逃逸出 IO 边界
+        spdlog::error("StlModelHandler: exception reading '{}': {}", path.string(), e.what());
         return std::nullopt;
     }
 
