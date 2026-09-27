@@ -191,6 +191,8 @@ public:
             local_ids.push_back(mapped->second);
         }
 
+        // Skip 类别已在入口提前返回，走到这里即实际装配
+        ++assembled_count_;
         switch (spec.category) {
         case ElementCategory::Edge:
             mesh.edge_vertices_.insert(mesh.edge_vertices_.end(),
@@ -216,17 +218,22 @@ public:
         return true;
     }
 
+    //! @brief 已实际装配进网格的单元数（点/高阶/未知等跳过单元不计入）
+    size_t assembledCount() const { return assembled_count_; }
+
     //! @brief 汇总输出跳过类型的告警（每类型一次）
-    void reportSkipped() const
+    void reportSkipped()
     {
         for (const auto& [type, count] : skipped_types_) {
             spdlog::warn("GmshModelHandler: {} element(s) of type {} skipped", count, type);
         }
+        skipped_types_.clear();
     }
 
 private:
     const std::unordered_map<Index, Index>& node_ids_;
     std::map<int, size_t> skipped_types_;
+    size_t assembled_count_ = 0;
 };
 
 /**
@@ -355,8 +362,8 @@ bool readNodes4_1(std::istream& input, std::unordered_map<Index, Index>& node_id
 }
 
 //! @brief 解析 2.2 版 $Elements：`elm-tag elm-type num-tags <tags> node-ids`
-bool readElements2_2(std::istream& input, const std::unordered_map<Index, Index>& node_ids,
-    MeshData& mesh, size_t& element_count, long long max_count)
+bool readElements2_2(std::istream& input, ElementAssembler& assembler, MeshData& mesh,
+    long long max_count)
 {
     std::string line;
     if (!nextContentLine(input, line)) {
@@ -370,7 +377,6 @@ bool readElements2_2(std::istream& input, const std::unordered_map<Index, Index>
         return false;
     }
 
-    ElementAssembler assembler(node_ids);
     for (long long e = 0; e < declared_count; ++e) {
         if (!nextContentLine(input, line)) {
             spdlog::error("GmshModelHandler: $Elements truncated at {}/{}", e, declared_count);
@@ -411,15 +417,14 @@ bool readElements2_2(std::istream& input, const std::unordered_map<Index, Index>
         if (!assembler.append(gmsh_type, corners, mesh)) {
             return false;
         }
-        ++element_count;
     }
     assembler.reportSkipped();
     return true;
 }
 
 //! @brief 解析 4.1 版 $Elements：按 entity block，单元行仅 `elem-tag node-ids`
-bool readElements4_1(std::istream& input, const std::unordered_map<Index, Index>& node_ids,
-    MeshData& mesh, size_t& element_count, long long max_count)
+bool readElements4_1(std::istream& input, ElementAssembler& assembler, MeshData& mesh,
+    long long max_count)
 {
     std::string line;
     if (!nextContentLine(input, line)) {
@@ -435,7 +440,6 @@ bool readElements4_1(std::istream& input, const std::unordered_map<Index, Index>
         return false;
     }
 
-    ElementAssembler assembler(node_ids);
     for (long long b = 0; b < block_count; ++b) {
         if (!nextContentLine(input, line)) {
             spdlog::error("GmshModelHandler: $Elements truncated at block {}/{}", b, block_count);
@@ -475,7 +479,6 @@ bool readElements4_1(std::istream& input, const std::unordered_map<Index, Index>
             if (!assembler.append(element_type, corners, mesh)) {
                 return false;
             }
-            ++element_count;
         }
     }
     assembler.reportSkipped();
@@ -495,7 +498,7 @@ bool readGmsh(std::istream& input, MeshData& mesh, long long max_count)
 
     MeshFormat format;
     std::unordered_map<Index, Index> node_ids;
-    size_t element_count = 0;
+    ElementAssembler assembler(node_ids);
     bool nodes_seen = false;
     bool elements_seen = false;
     std::unordered_set<std::string> skipped_sections;
@@ -535,11 +538,11 @@ bool readGmsh(std::istream& input, MeshData& mesh, long long max_count)
                 return false;
             }
             if (format.version < 4.0) {
-                if (!readElements2_2(input, node_ids, mesh, element_count, max_count)) {
+                if (!readElements2_2(input, assembler, mesh, max_count)) {
                     return false;
                 }
             } else {
-                if (!readElements4_1(input, node_ids, mesh, element_count, max_count)) {
+                if (!readElements4_1(input, assembler, mesh, max_count)) {
                     return false;
                 }
             }
@@ -557,8 +560,11 @@ bool readGmsh(std::istream& input, MeshData& mesh, long long max_count)
         spdlog::error("GmshModelHandler: no node records found");
         return false;
     }
+    // 与写出侧 has_cells 口径对齐：跳过的点/高阶/未知单元不计入，
+    // 只含这类单元的文件整体失败，而非产出无连通性的空网格
+    const size_t element_count = assembler.assembledCount();
     if (!elements_seen || element_count == 0) {
-        spdlog::error("GmshModelHandler: no element records found");
+        spdlog::error("GmshModelHandler: no supported element records found");
         return false;
     }
 

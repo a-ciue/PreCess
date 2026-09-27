@@ -230,6 +230,33 @@ TEST_CASE("GmshModelHandler rejects unsupported and corrupt files")
         REQUIRE_FALSE(handler.read_model(input, {}).has_value());
     }
 
+    SECTION("only point element records")
+    {
+        // 点单元（type 15）不装配：与写出侧 has_cells 口径对齐，
+        // 只含跳过单元的文件整体失败而非产出无连通性的空网格
+        const fs::path input = core::TempFile::instance().path().string() + "_pointsonly.msh";
+        writeFile(input,
+            "$MeshFormat\n2.2 0 8\n$EndMeshFormat\n"
+            "$Nodes\n3\n1 0 0 0\n2 1 0 0\n3 0 1 0\n$EndNodes\n"
+            "$Elements\n3\n"
+            "1 15 2 0 0 1\n"
+            "2 15 2 0 0 2\n"
+            "3 15 2 0 0 3\n"
+            "$EndElements\n");
+        REQUIRE_FALSE(handler.read_model(input, {}).has_value());
+    }
+
+    SECTION("4.1 only point element block")
+    {
+        const fs::path input = core::TempFile::instance().path().string() + "_pointsonly41.msh";
+        writeFile(input,
+            "$MeshFormat\n4.1 0 8\n$EndMeshFormat\n"
+            "$Nodes\n1 3 1 3\n2 1 0 3\n1\n2\n3\n"
+            "0 0 0\n1 0 0\n0 1 0\n$EndNodes\n"
+            "$Elements\n1 3 1 3\n2 1 15 3\n1 1\n2 2\n3 3\n$EndElements\n");
+        REQUIRE_FALSE(handler.read_model(input, {}).has_value());
+    }
+
     SECTION("missing file")
     {
         const fs::path input = core::TempFile::instance().path().string() + "_missing.msh";
