@@ -142,7 +142,7 @@ ApplicationWindow {
         KDDW.DockWidget {
             id: sideBarDock
             uniqueName: "sideBar"
-            title: "属性列表"
+            title: "操作面板"
             SideBar {
                 anchors.fill: parent
             }
