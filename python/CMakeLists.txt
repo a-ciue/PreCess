@@ -15,11 +15,19 @@ if(PRECESS_BUILD_PYTHON AND Python3_FOUND AND NOT EMSCRIPTEN
 elseif(PRECESS_BUILD_PYTHON AND NOT EMSCRIPTEN)
     if(NOT Python3_Interpreter_FOUND)
         message(WARNING
+            "未找到 Python 解释器，precess_runtime 降级为桩模式（运行时 Python 功能不可用）；"
             "请确认 Python 被正确加入环境变量中，或者手动指定解释器所在目录 PRECESS_PYTHON_PATH=\"${PRECESS_PYTHON_PATH}\"")
+    elseif(NOT Python3_Development.Module_FOUND OR NOT Python3_Development.Embed_FOUND)
+        # Development 缺失时根 CMakeLists 不会发起 pybind11 搜索，
+        # 此处不能误报为"未找到 pybind11"，须指出真实原因
+        message(WARNING
+            "Python 解释器 ${Python3_EXECUTABLE} 缺少开发组件（头文件/链接库，Development.Module 或 Development.Embed），"
+            "precess_runtime 降级为桩模式（运行时 Python 功能不可用）；"
+            "请检查该 Python 安装是否完整（Windows 官方安装包默认包含）")
     elseif(NOT pybind11_FOUND)
-        message(STATUS
-            "未找到 pybind11，precess_runtime 降级为桩模式（运行时 Python 功能不可用）；"
-            "安装请经 PreCess-deps.py 或 pip install pybind11")
+        message(WARNING
+            "Python 解释器 ${Python3_EXECUTABLE} 未安装 pybind11，precess_runtime 降级为桩模式（运行时 Python 功能不可用）；"
+            "安装：\"${Python3_EXECUTABLE}\" -m pip install pybind11，或经 PreCess-deps.py 构建依赖包后随 CMAKE_PREFIX_PATH 提供")
     endif()
 endif()
 
