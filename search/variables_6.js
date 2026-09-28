@@ -23,8 +23,13 @@ var searchData=
   ['feature_20',['feature',['../structsystems_1_1feature_1_1ParameterChangedEvent.html#a1393abb9e71ed73e0c1caaca134bec03',1,'systems::feature::ParameterChangedEvent']]],
   ['feature_5fadaptor_5f_21',['feature_adaptor_',['../classQModelManager.html#a365dc85e240555a4bcc35c6eaeeca32f',1,'QModelManager::feature_adaptor_'],['../structQRenderWindow.html#a3696d5929dc64d1b55d6e5bd1322f16b',1,'QRenderWindow::feature_adaptor_']]],
   ['feature_5fsystem_5f_22',['feature_system_',['../classsystems_1_1feature_1_1QFeatureSystemAdaptor.html#a4a84799be9789b5282e5e1bbb20397d6',1,'systems::feature::QFeatureSystemAdaptor::feature_system_'],['../classsession_1_1Session.html#a72c708fa5f9f8573909d8ead389c3eb8',1,'session::Session::feature_system_']]],
-  ['file_5ftype_23',['file_type',['../structsystems_1_1io_1_1HandlerMetaData.html#a0fd2bd481588605b64368f0b2f012b06',1,'systems::io::HandlerMetaData']]],
-  ['file_5ftype_5finfos_5f_24',['file_type_infos_',['../classsystems_1_1io_1_1ModelIOSystem.html#aa77c1911fef7c74aec38980081657431',1,'systems::io::ModelIOSystem']]],
-  ['floatvalues_25',['floatValues',['../structtinyobj_1_1tag__t.html#a6e531cc0a0d53b6334cf55da4bb62ffc',1,'tinyobj::tag_t']]],
-  ['free_5fids_5f_26',['free_ids_',['../classMeshIDMap.html#af77c63a66105df837cd430116bd84fde',1,'MeshIDMap']]]
+  ['features_5f_23',['features_',['../classdock_1_1DockPanel.html#a0515b0419cfe00242ef53519f740b09d',1,'dock::DockPanel']]],
+  ['file_5ftype_24',['file_type',['../structsystems_1_1io_1_1HandlerMetaData.html#a0fd2bd481588605b64368f0b2f012b06',1,'systems::io::HandlerMetaData']]],
+  ['file_5ftype_5finfos_5f_25',['file_type_infos_',['../classsystems_1_1io_1_1ModelIOSystem.html#aa77c1911fef7c74aec38980081657431',1,'systems::io::ModelIOSystem']]],
+  ['floatable_5f_26',['floatable_',['../classdock_1_1ui_1_1DockPanelItem.html#a9e157d149ad6d24b42d7e75aad7e780c',1,'dock::ui::DockPanelItem']]],
+  ['floating_5forigins_5f_27',['floating_origins_',['../classdock_1_1DragSession.html#a4c492de128c2956d144ccd8212446a4d',1,'dock::DragSession']]],
+  ['floating_5fviews_28',['floating_views',['../classdocktest_1_1StubView.html#a7ba99669eb10d20f4f67e7b169d14e21',1,'docktest::StubView']]],
+  ['floating_5fwatchers_5f_29',['floating_watchers_',['../classdock_1_1DragSession.html#a1866d0f4b3c67ed7fcb291f9e7bbe813',1,'dock::DragSession']]],
+  ['floatvalues_30',['floatValues',['../structtinyobj_1_1tag__t.html#a6e531cc0a0d53b6334cf55da4bb62ffc',1,'tinyobj::tag_t']]],
+  ['free_5fids_5f_31',['free_ids_',['../classMeshIDMap.html#af77c63a66105df837cd430116bd84fde',1,'MeshIDMap']]]
 ];

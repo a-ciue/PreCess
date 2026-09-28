@@ -1,0 +1,7 @@
+<map id="app/dock/ui/PanelContentView.h" name="app/dock/ui/PanelContentView.h">
+<area shape="rect" id="Node000001" title="由 QML 内容项直接构成的 client 视图适配器（中央持久部件使用）" alt="" coords="136,5,323,45"/>
+<area shape="rect" id="Node000002" href="$DockHostItem_8cpp.html" title="主停靠区域视图的实现" alt="" coords="5,101,227,126"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="195,56,133,102,130,98,192,52"/>
+<area shape="rect" id="Node000003" href="$PanelContentView_8cpp.html" title="client 视图适配器的实现" alt="" coords="251,93,437,133"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="267,52,320,91,317,95,264,56"/>
+</map>

@@ -1,0 +1,20 @@
+<map id="app/dock/docking/ZoneGeometry.cpp" name="app/dock/docking/ZoneGeometry.cpp">
+<area shape="rect" id="Node000001" title="经典指示器几何的实现" alt="" coords="111,5,373,31"/>
+<area shape="rect" id="Node000002" href="$ZoneGeometry_8h.html" title="经典拖放指示器几何：内 4 + 中心 + 外 4，共 9 个" alt="" coords="126,79,257,104"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="236,33,210,69,205,66,231,29"/>
+<area shape="rect" id="Node000004" href="$DockMetrics_8h.html" title="停靠组件的默认行为常量" alt="" coords="191,225,306,251"/>
+<area shape="poly" id="edge9_Node000001_Node000004" title=" " alt="" coords="253,29,270,56,288,92,299,135,299,157,295,178,285,199,272,217,268,214,281,196,290,176,294,156,294,135,283,94,266,58,249,32"/>
+<area shape="rect" id="Node000003" href="$DockEnums_8h.html" title="停靠组件的公共枚举与判定辅助" alt="" coords="5,152,116,177"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="172,106,95,148,93,143,169,102"/>
+<area shape="rect" id="Node000008" title=" " alt="" coords="140,152,195,177"/>
+<area shape="poly" id="edge7_Node000002_Node000008" title=" " alt="" coords="190,105,178,140,173,138,185,103"/>
+<area shape="rect" id="Node000009" title=" " alt="" coords="219,152,281,177"/>
+<area shape="poly" id="edge8_Node000002_Node000009" title=" " alt="" coords="203,103,234,140,230,143,199,106"/>
+<area shape="poly" id="edge3_Node000003_Node000004" title=" " alt="" coords="92,175,206,218,204,223,90,180"/>
+<area shape="rect" id="Node000007" title=" " alt="" coords="23,225,98,251"/>
+<area shape="poly" id="edge6_Node000003_Node000007" title=" " alt="" coords="63,178,63,212,58,212,58,178"/>
+<area shape="rect" id="Node000005" title=" " alt="" coords="173,299,239,324"/>
+<area shape="poly" id="edge4_Node000004_Node000005" title=" " alt="" coords="244,252,222,288,218,286,239,250"/>
+<area shape="rect" id="Node000006" title=" " alt="" coords="263,299,322,324"/>
+<area shape="poly" id="edge5_Node000004_Node000006" title=" " alt="" coords="258,250,281,286,276,288,254,252"/>
+</map>

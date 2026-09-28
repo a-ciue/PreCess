@@ -1,0 +1,7 @@
+<map id="app/dock/tree/LayoutClient.h" name="app/dock/tree/LayoutClient.h">
+<area shape="rect" id="Node000001" title="被布局引擎托管的实体接口" alt="" coords="5,5,215,31"/>
+<area shape="rect" id="Node000002" title=" " alt="" coords="38,79,99,104"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="105,32,85,68,80,65,101,30"/>
+<area shape="rect" id="Node000003" title=" " alt="" coords="123,79,182,104"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="119,30,141,66,137,68,115,32"/>
+</map>

@@ -1,0 +1,7 @@
+<map id="app/dock/ui/DockRuntime.h" name="app/dock/ui/DockRuntime.h">
+<area shape="rect" id="Node000001" title="QtQuick 视图层的全局服务：QML 引擎、client 映射、分组视图缓存" alt="" coords="5,5,207,31"/>
+<area shape="rect" id="Node000002" title=" " alt="" coords="32,79,97,104"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="101,32,81,68,76,65,97,30"/>
+<area shape="rect" id="Node000003" title=" " alt="" coords="122,79,173,104"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="115,30,136,65,131,68,111,32"/>
+</map>

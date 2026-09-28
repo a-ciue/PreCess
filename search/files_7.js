@@ -1,4 +1,5 @@
 var searchData=
 [
-  ['javascriptconsole_2eqml_0',['JavaScriptConsole.qml',['../JavaScriptConsole_8qml.html',1,'']]]
+  ['handlercreatordestroyer_2eh_0',['HandlerCreatorDestroyer.h',['../HandlerCreatorDestroyer_8h.html',1,'']]],
+  ['handlercreatordestroyerfactory_2eh_1',['HandlerCreatorDestroyerFactory.h',['../HandlerCreatorDestroyerFactory_8h.html',1,'']]]
 ];

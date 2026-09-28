@@ -1,0 +1,292 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="zh">
+<head>
+<meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=11"/>
+<meta name="generator" content="Doxygen 1.14.0"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>PreCess: app/dock/test/TestDockLayout.cpp 文件参考</title>
+<link href="tabs.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="jquery.js"></script>
+<script type="text/javascript" src="dynsections.js"></script>
+<script type="text/javascript" src="clipboard.js"></script>
+<script type="text/javascript" src="cookie.js"></script>
+<link href="search/search.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="search/searchdata.js"></script>
+<script type="text/javascript" src="search/search.js"></script>
+<link href="doxygen.css" rel="stylesheet" type="text/css" />
+</head>
+<body>
+<div id="top"><!-- do not remove this div, it is closed by doxygen! -->
+<div id="titlearea">
+<table cellspacing="0" cellpadding="0">
+ <tbody>
+ <tr id="projectrow">
+  <td id="projectlogo"><img alt="Logo" src="PreCess.ico"/></td>
+  <td id="projectalign">
+   <div id="projectname">PreCess
+   </div>
+  </td>
+ </tr>
+ </tbody>
+</table>
+</div>
+<!-- end header part -->
+<!-- 制作者 Doxygen 1.14.0 -->
+<script type="text/javascript">
+var searchBox = new SearchBox("searchBox", "search/",'.html');
+</script>
+<script type="text/javascript">
+$(function() { codefold.init(); });
+</script>
+<script type="text/javascript" src="menudata.js"></script>
+<script type="text/javascript" src="menu.js"></script>
+<script type="text/javascript">
+$(function() {
+  initMenu('',true,false,'search.php','搜索',false);
+  $(function() { init_search(); });
+});
+</script>
+<div id="main-nav"></div>
+<!-- window showing the filter options -->
+<div id="MSearchSelectWindow"
+     onmouseover="return searchBox.OnSearchSelectShow()"
+     onmouseout="return searchBox.OnSearchSelectHide()"
+     onkeydown="return searchBox.OnSearchSelectKey(event)">
+</div>
+
+<!-- iframe showing the search results (closed by default) -->
+<div id="MSearchResultsWindow">
+<div id="MSearchResults">
+<div class="SRPage">
+<div id="SRIndex">
+<div id="SRResults"></div>
+<div class="SRStatus" id="Loading">载入中...</div>
+<div class="SRStatus" id="Searching">搜索中...</div>
+<div class="SRStatus" id="NoMatches">未找到</div>
+</div>
+</div>
+</div>
+</div>
+
+<div id="nav-path" class="navpath">
+  <ul>
+<li class="navelem"><a href="dir_d422163b96683743ed3963d4aac17747.html">app</a></li><li class="navelem"><a href="dir_4e5d8f7ce7c3dc0f91a395eba455c956.html">dock</a></li><li class="navelem"><a href="dir_ba649ca18379a81c9bc542363a71e95d.html">test</a></li>  </ul>
+</div>
+</div><!-- top -->
+<div id="doc-content">
+<div class="header">
+  <div class="summary">
+<a href="#func-members">函数</a>  </div>
+  <div class="headertitle"><div class="title">TestDockLayout.cpp 文件参考</div></div>
+</div><!--header-->
+<div class="contents">
+
+<p>停靠布局引擎单元测试：占比分配、分隔条拖动、隐显恢复、移除提升、最小尺寸约束  
+<a href="#details">更多...</a></p>
+<div class="textblock"><code>#include &quot;<a class="el" href="LayoutNode_8h_source.html">tree/LayoutNode.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="BoxNode_8h_source.html">tree/BoxNode.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="LayoutClient_8h_source.html">tree/LayoutClient.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="Divider_8h_source.html">tree/Divider.h</a>&quot;</code><br />
+<code>#include &lt;catch2/catch_test_macros.hpp&gt;</code><br />
+<code>#include &lt;memory&gt;</code><br />
+<code>#include &lt;vector&gt;</code><br />
+</div><div class="textblock"><div class="dynheader">
+TestDockLayout.cpp 的引用(Include)关系图:</div>
+<div class="dyncontent">
+<div class="center"><img src="TestDockLayout_8cpp__incl.png" border="0" usemap="#aapp_2dock_2test_2TestDockLayout_8cpp" loading="lazy" alt=""/></div>
+<map name="aapp_2dock_2test_2TestDockLayout_8cpp" id="aapp_2dock_2test_2TestDockLayout_8cpp">
+<area shape="rect" title="停靠布局引擎单元测试：占比分配、分隔条拖动、隐显恢复、移除提升、最小尺寸约束" alt="" coords="276,5,520,31"/>
+<area shape="rect" href="LayoutNode_8h.html" title="布局树节点" alt="" coords="79,152,221,177"/>
+<area shape="poly" title=" " alt="" coords="277,32,223,50,199,63,177,81,167,93,161,108,154,139,149,138,156,106,163,90,173,77,196,59,221,45,275,27"/>
+<area shape="rect" href="BoxNode_8h.html" title="盒式布局容器：子节点沿单一方向排列并可拖拽分隔条调整" alt="" coords="187,79,310,104"/>
+<area shape="poly" title=" " alt="" coords="375,33,287,75,284,70,373,28"/>
+<area shape="rect" href="LayoutClient_8h.html" title="被布局引擎托管的实体接口" alt="" coords="270,225,417,251"/>
+<area shape="poly" title=" " alt="" coords="398,32,352,212,347,211,392,30"/>
+<area shape="rect" href="Divider_8h.html" title="相邻可见布局项之间的可拖动分隔条" alt="" coords="393,152,504,177"/>
+<area shape="poly" title=" " alt="" coords="404,30,426,103,440,138,435,140,421,105,398,32"/>
+<area shape="rect" title=" " alt="" coords="435,79,654,104"/>
+<area shape="poly" title=" " alt="" coords="423,28,510,70,507,75,420,33"/>
+<area shape="rect" title=" " alt="" coords="678,79,755,104"/>
+<area shape="poly" title=" " alt="" coords="450,28,665,76,664,81,449,33"/>
+<area shape="rect" title=" " alt="" coords="780,79,843,104"/>
+<area shape="poly" title=" " alt="" coords="483,28,613,48,767,76,766,81,612,53,482,33"/>
+<area shape="rect" href="NodeMetrics_8h.html" title="布局节点的几何与尺寸约束信息" alt="" coords="35,225,151,251"/>
+<area shape="poly" title=" " alt="" coords="143,179,113,216,109,213,138,176"/>
+<area shape="rect" title=" " alt="" coords="175,225,245,251"/>
+<area shape="poly" title=" " alt="" coords="162,176,194,213,189,217,158,179"/>
+<area shape="rect" title=" " alt="" coords="313,299,374,324"/>
+<area shape="poly" title=" " alt="" coords="134,248,300,295,299,300,132,253"/>
+<area shape="rect" title=" " alt="" coords="213,299,271,324"/>
+<area shape="poly" title=" " alt="" coords="118,248,206,290,204,295,116,253"/>
+<area shape="rect" title=" " alt="" coords="5,299,44,324"/>
+<area shape="poly" title=" " alt="" coords="83,253,47,290,43,287,80,249"/>
+<area shape="rect" title=" " alt="" coords="69,299,154,324"/>
+<area shape="poly" title=" " alt="" coords="98,250,107,285,102,286,93,252"/>
+<area shape="poly" title=" " alt="" coords="234,106,179,146,176,142,231,102"/>
+<area shape="rect" title=" " alt="" coords="245,152,300,177"/>
+<area shape="poly" title=" " alt="" coords="255,103,267,138,262,140,250,105"/>
+<area shape="poly" title=" " alt="" coords="346,251,346,285,341,285,341,251"/>
+<area shape="poly" title=" " alt="" coords="329,253,271,293,268,288,326,248"/>
+<area shape="poly" title=" " alt="" coords="451,178,447,213,441,233,431,252,408,276,382,294,379,290,405,272,426,249,436,231,441,211,446,177"/>
+</map>
+</div>
+</div><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 id="header-func-members" class="groupheader"><a id="func-members" name="func-members"></a>
+函数</h2></td></tr>
+<tr class="memitem:ae25ad69caa56709eb537e42302831338" id="r_ae25ad69caa56709eb537e42302831338"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ae25ad69caa56709eb537e42302831338">TEST_CASE</a> (&quot;DockLayout: preferredSize allocation fills container&quot;)</td></tr>
+<tr class="memitem:a15e0b32aa90c64d5bdf0b47991d63d2e" id="r_a15e0b32aa90c64d5bdf0b47991d63d2e"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a15e0b32aa90c64d5bdf0b47991d63d2e">TEST_CASE</a> (&quot;DockLayout: separator drag respects minimum sizes&quot;)</td></tr>
+<tr class="memitem:ad472b7754792631a5df538a16be580ac" id="r_ad472b7754792631a5df538a16be580ac"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ad472b7754792631a5df538a16be580ac">TEST_CASE</a> (&quot;DockLayout: hidden item yields space and restores on show&quot;)</td></tr>
+<tr class="memitem:a3493d4b4bd96ee3340679e2b3b8ffaad" id="r_a3493d4b4bd96ee3340679e2b3b8ffaad"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a3493d4b4bd96ee3340679e2b3b8ffaad">TEST_CASE</a> (&quot;DockLayout: single-child container is promoted on removal&quot;)</td></tr>
+<tr class="memitem:a840e6837de90d1c519a5dc24bab47944" id="r_a840e6837de90d1c519a5dc24bab47944"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a840e6837de90d1c519a5dc24bab47944">TEST_CASE</a> (&quot;DockLayout: minimum sizes overflow when constrained&quot;)</td></tr>
+<tr class="memitem:a17c83a60d4e3f9043d0710b98d9dd86e" id="r_a17c83a60d4e3f9043d0710b98d9dd86e"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a17c83a60d4e3f9043d0710b98d9dd86e">TEST_CASE</a> (&quot;DockLayout: vertical container uses height as <a class="el" href="main_8cpp.html#a0ddf1224851353fc92bfbff6f499fa97">main</a> axis&quot;)</td></tr>
+<tr class="memitem:a398f805720a71f84c6d99391334cc536" id="r_a398f805720a71f84c6d99391334cc536"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a398f805720a71f84c6d99391334cc536">TEST_CASE</a> (&quot;DockLayout: emptying a nested container rebuilds the ancestor&quot;)</td></tr>
+<tr class="memitem:aeff9d42a3a9268e5983b392c585de721" id="r_aeff9d42a3a9268e5983b392c585de721"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#aeff9d42a3a9268e5983b392c585de721">TEST_CASE</a> (&quot;DockLayout: emptying cascades through degenerate ancestors&quot;)</td></tr>
+</table>
+<a name="details" id="details"></a><h2 id="header-details" class="groupheader">详细描述</h2>
+<div class="textblock"><p>停靠布局引擎单元测试：占比分配、分隔条拖动、隐显恢复、移除提升、最小尺寸约束 </p>
+</div><a name="doc-func-members" id="doc-func-members"></a><h2 id="header-doc-func-members" class="groupheader">函数说明</h2>
+<a id="a398f805720a71f84c6d99391334cc536" name="a398f805720a71f84c6d99391334cc536"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a398f805720a71f84c6d99391334cc536">&#9670;&#160;</a></span>TEST_CASE() <span class="overload">[1/8]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">TEST_CASE </td>
+          <td>(</td>
+          <td class="paramtype">&quot;DockLayout: emptying a nested container rebuilds the ancestor&quot;</td>          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="aeff9d42a3a9268e5983b392c585de721" name="aeff9d42a3a9268e5983b392c585de721"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aeff9d42a3a9268e5983b392c585de721">&#9670;&#160;</a></span>TEST_CASE() <span class="overload">[2/8]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">TEST_CASE </td>
+          <td>(</td>
+          <td class="paramtype">&quot;DockLayout: emptying cascades through degenerate ancestors&quot;</td>          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="ad472b7754792631a5df538a16be580ac" name="ad472b7754792631a5df538a16be580ac"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ad472b7754792631a5df538a16be580ac">&#9670;&#160;</a></span>TEST_CASE() <span class="overload">[3/8]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">TEST_CASE </td>
+          <td>(</td>
+          <td class="paramtype">&quot;DockLayout: hidden item yields space and restores on show&quot;</td>          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a840e6837de90d1c519a5dc24bab47944" name="a840e6837de90d1c519a5dc24bab47944"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a840e6837de90d1c519a5dc24bab47944">&#9670;&#160;</a></span>TEST_CASE() <span class="overload">[4/8]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">TEST_CASE </td>
+          <td>(</td>
+          <td class="paramtype">&quot;DockLayout: minimum sizes overflow when constrained&quot;</td>          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="ae25ad69caa56709eb537e42302831338" name="ae25ad69caa56709eb537e42302831338"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ae25ad69caa56709eb537e42302831338">&#9670;&#160;</a></span>TEST_CASE() <span class="overload">[5/8]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">TEST_CASE </td>
+          <td>(</td>
+          <td class="paramtype">&quot;DockLayout: preferredSize allocation fills container&quot;</td>          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a15e0b32aa90c64d5bdf0b47991d63d2e" name="a15e0b32aa90c64d5bdf0b47991d63d2e"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a15e0b32aa90c64d5bdf0b47991d63d2e">&#9670;&#160;</a></span>TEST_CASE() <span class="overload">[6/8]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">TEST_CASE </td>
+          <td>(</td>
+          <td class="paramtype">&quot;DockLayout: separator drag respects minimum sizes&quot;</td>          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a3493d4b4bd96ee3340679e2b3b8ffaad" name="a3493d4b4bd96ee3340679e2b3b8ffaad"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a3493d4b4bd96ee3340679e2b3b8ffaad">&#9670;&#160;</a></span>TEST_CASE() <span class="overload">[7/8]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">TEST_CASE </td>
+          <td>(</td>
+          <td class="paramtype">&quot;DockLayout: single-child container is promoted on removal&quot;</td>          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a17c83a60d4e3f9043d0710b98d9dd86e" name="a17c83a60d4e3f9043d0710b98d9dd86e"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a17c83a60d4e3f9043d0710b98d9dd86e">&#9670;&#160;</a></span>TEST_CASE() <span class="overload">[8/8]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">TEST_CASE </td>
+          <td>(</td>
+          <td class="paramtype">&quot;DockLayout: vertical container uses height as <a class="el" href="main_8cpp.html#a0ddf1224851353fc92bfbff6f499fa97">main</a> axis&quot;</td>          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+</div><!-- contents -->
+<!-- start footer part -->
+<hr class="footer"/><address class="footer"><small>
+制作者&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.14.0
+</small></address>
+</div><!-- doc-content -->
+</body>
+</html>

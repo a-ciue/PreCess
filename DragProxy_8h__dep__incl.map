@@ -1,0 +1,7 @@
+<map id="app/dock/docking/DragProxy.h" name="app/dock/docking/DragProxy.h">
+<area shape="rect" id="Node000001" title="正在被拖拽的浮动窗口：记录鼠标与窗口的偏移并跟随光标" alt="" coords="145,5,363,31"/>
+<area shape="rect" id="Node000002" href="$DragProxy_8cpp.html" title="被拖拽浮动窗口的实现" alt="" coords="5,79,239,104"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="222,39,145,81,142,76,220,35"/>
+<area shape="rect" id="Node000003" href="$DragSession_8cpp.html" title="拖拽状态机的实现" alt="" coords="263,79,511,104"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="289,35,367,76,364,81,286,39"/>
+</map>

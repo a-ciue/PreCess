@@ -1,0 +1,7 @@
+<map id="dock::ui::DockWindowItem" name="dock::ui::DockWindowItem">
+<area shape="rect" id="Node000001" title="浮动窗口视图" alt="" coords="41,79,237,104"/>
+<area shape="rect" id="Node000002" title=" " alt="" coords="5,5,127,31"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="90,38,129,77,126,80,86,42"/>
+<area shape="rect" id="Node000003" href="$classdock_1_1DockView.html" title="视图抽象接口" alt="" coords="151,5,277,31"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="194,42,153,80,150,77,190,38"/>
+</map>

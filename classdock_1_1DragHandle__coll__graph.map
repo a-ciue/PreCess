@@ -1,0 +1,5 @@
+<map id="dock::DragHandle" name="dock::DragHandle">
+<area shape="rect" id="Node000001" title="拖拽源描述" alt="" coords="5,101,144,127"/>
+<area shape="rect" id="Node000002" href="$classdock_1_1DockView.html" title="视图抽象接口" alt="" coords="11,5,138,31"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="77,45,77,101,72,101,72,45"/>
+</map>

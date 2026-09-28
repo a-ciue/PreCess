@@ -1,0 +1,25 @@
+<map id="app/dock/tree/BoxNode.h" name="app/dock/tree/BoxNode.h">
+<area shape="rect" id="Node000001" title="盒式布局容器：子节点沿单一方向排列并可拖拽分隔条调整" alt="" coords="1354,5,1541,31"/>
+<area shape="rect" id="Node000002" href="$DockHost_8cpp.html" title="主停靠窗口的实现" alt="" coords="5,79,236,104"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="1340,26,867,46,249,81,236,82,236,77,248,76,867,41,1340,21"/>
+<area shape="rect" id="Node000003" href="$DockRegion_8cpp.html" title="停靠区域的实现" alt="" coords="261,79,506,104"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="1340,28,976,50,518,81,506,82,506,77,518,76,975,45,1340,23"/>
+<area shape="rect" id="Node000004" href="$DragSession_8cpp.html" title="拖拽状态机的实现" alt="" coords="530,79,778,104"/>
+<area shape="poly" id="edge3_Node000001_Node000004" title=" " alt="" coords="1341,31,778,82,778,76,1340,26"/>
+<area shape="rect" id="Node000005" href="$TestDockCore_8cpp.html" title="停靠核心语义单元测试：命令式停靠布局、关闭/恢复、中央部件、选项卡" alt="" coords="803,79,1033,104"/>
+<area shape="poly" id="edge4_Node000001_Node000005" title=" " alt="" coords="1349,35,1004,81,1003,76,1348,30"/>
+<area shape="rect" id="Node000006" href="$TestDockLayout_8cpp.html" title="停靠布局引擎单元测试：占比分配、分隔条拖动、隐显恢复、移除提升、最小尺寸约束" alt="" coords="1057,79,1301,104"/>
+<area shape="poly" id="edge5_Node000001_Node000006" title=" " alt="" coords="1391,37,1223,81,1222,76,1390,32"/>
+<area shape="rect" id="Node000007" href="$TestDockPersist_8cpp.html" title="布局持久化测试：快照往返、浮窗占位/回停来源、兼容性与坏数据拒绝" alt="" coords="1325,79,1569,104"/>
+<area shape="poly" id="edge6_Node000001_Node000007" title=" " alt="" coords="1450,44,1450,79,1445,79,1445,44"/>
+<area shape="rect" id="Node000008" href="$BoxNode_8cpp.html" title="盒式布局容器的实现" alt="" coords="1593,79,1795,104"/>
+<area shape="poly" id="edge7_Node000001_Node000008" title=" " alt="" coords="1501,32,1655,76,1653,81,1499,37"/>
+<area shape="rect" id="Node000009" href="$Divider_8cpp.html" title="分隔条的实现" alt="" coords="1819,79,2007,104"/>
+<area shape="poly" id="edge8_Node000001_Node000009" title=" " alt="" coords="1536,30,1838,76,1837,81,1535,35"/>
+<area shape="rect" id="Node000010" href="$LayoutNode_8cpp.html" title="布局树节点的实现" alt="" coords="2031,79,2251,104"/>
+<area shape="poly" id="edge9_Node000001_Node000010" title=" " alt="" coords="1554,28,2031,76,2030,81,1554,33"/>
+<area shape="rect" id="Node000011" href="$DividerItem_8cpp.html" title="分隔条视图的实现" alt="" coords="2275,79,2481,104"/>
+<area shape="poly" id="edge10_Node000001_Node000011" title=" " alt="" coords="1555,24,1873,45,2264,76,2275,77,2275,82,2263,81,1872,51,1555,29"/>
+<area shape="rect" id="Node000012" href="$DockAreaItem_8cpp.html" title="布局区域视图的实现" alt="" coords="2505,79,2726,104"/>
+<area shape="poly" id="edge11_Node000001_Node000012" title=" " alt="" coords="1555,22,1966,42,2493,76,2505,77,2504,82,2492,81,1966,48,1554,27"/>
+</map>

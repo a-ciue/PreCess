@@ -1,0 +1,237 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="zh">
+<head>
+<meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=11"/>
+<meta name="generator" content="Doxygen 1.14.0"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>PreCess: app/dock/ui/DockAreaItem.cpp 文件参考</title>
+<link href="tabs.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="jquery.js"></script>
+<script type="text/javascript" src="dynsections.js"></script>
+<script type="text/javascript" src="clipboard.js"></script>
+<script type="text/javascript" src="cookie.js"></script>
+<link href="search/search.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="search/searchdata.js"></script>
+<script type="text/javascript" src="search/search.js"></script>
+<link href="doxygen.css" rel="stylesheet" type="text/css" />
+</head>
+<body>
+<div id="top"><!-- do not remove this div, it is closed by doxygen! -->
+<div id="titlearea">
+<table cellspacing="0" cellpadding="0">
+ <tbody>
+ <tr id="projectrow">
+  <td id="projectlogo"><img alt="Logo" src="PreCess.ico"/></td>
+  <td id="projectalign">
+   <div id="projectname">PreCess
+   </div>
+  </td>
+ </tr>
+ </tbody>
+</table>
+</div>
+<!-- end header part -->
+<!-- 制作者 Doxygen 1.14.0 -->
+<script type="text/javascript">
+var searchBox = new SearchBox("searchBox", "search/",'.html');
+</script>
+<script type="text/javascript">
+$(function() { codefold.init(); });
+</script>
+<script type="text/javascript" src="menudata.js"></script>
+<script type="text/javascript" src="menu.js"></script>
+<script type="text/javascript">
+$(function() {
+  initMenu('',true,false,'search.php','搜索',false);
+  $(function() { init_search(); });
+});
+</script>
+<div id="main-nav"></div>
+<!-- window showing the filter options -->
+<div id="MSearchSelectWindow"
+     onmouseover="return searchBox.OnSearchSelectShow()"
+     onmouseout="return searchBox.OnSearchSelectHide()"
+     onkeydown="return searchBox.OnSearchSelectKey(event)">
+</div>
+
+<!-- iframe showing the search results (closed by default) -->
+<div id="MSearchResultsWindow">
+<div id="MSearchResults">
+<div class="SRPage">
+<div id="SRIndex">
+<div id="SRResults"></div>
+<div class="SRStatus" id="Loading">载入中...</div>
+<div class="SRStatus" id="Searching">搜索中...</div>
+<div class="SRStatus" id="NoMatches">未找到</div>
+</div>
+</div>
+</div>
+</div>
+
+<div id="nav-path" class="navpath">
+  <ul>
+<li class="navelem"><a href="dir_d422163b96683743ed3963d4aac17747.html">app</a></li><li class="navelem"><a href="dir_4e5d8f7ce7c3dc0f91a395eba455c956.html">dock</a></li><li class="navelem"><a href="dir_8737260d02abc2e1280d33ed55618f28.html">ui</a></li>  </ul>
+</div>
+</div><!-- top -->
+<div id="doc-content">
+<div class="header">
+  <div class="summary">
+<a href="#namespaces">命名空间</a>  </div>
+  <div class="headertitle"><div class="title">DockAreaItem.cpp 文件参考</div></div>
+</div><!--header-->
+<div class="contents">
+
+<p>布局区域视图的实现  
+<a href="#details">更多...</a></p>
+<div class="textblock"><code>#include &quot;<a class="el" href="DockAreaItem_8h_source.html">DockAreaItem.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="PanelGroupItem_8h_source.html">PanelGroupItem.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="DropZoneOverlay_8h_source.html">DropZoneOverlay.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="DockRuntime_8h_source.html">DockRuntime.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="DividerItem_8h_source.html">DividerItem.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="ZoneGeometry_8h_source.html">docking/ZoneGeometry.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="DockMetrics_8h_source.html">docking/DockMetrics.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="DragSession_8h_source.html">docking/DragSession.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="DockRegion_8h_source.html">docking/DockRegion.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="DockWindow_8h_source.html">docking/DockWindow.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="PanelGroup_8h_source.html">docking/PanelGroup.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="LayoutNode_8h_source.html">tree/LayoutNode.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="BoxNode_8h_source.html">tree/BoxNode.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="Divider_8h_source.html">tree/Divider.h</a>&quot;</code><br />
+<code>#include &lt;utility&gt;</code><br />
+</div><div class="textblock"><div class="dynheader">
+DockAreaItem.cpp 的引用(Include)关系图:</div>
+<div class="dyncontent">
+<div class="center"><img src="DockAreaItem_8cpp__incl.png" border="0" usemap="#aapp_2dock_2ui_2DockAreaItem_8cpp" loading="lazy" alt=""/></div>
+<map name="aapp_2dock_2ui_2DockAreaItem_8cpp" id="aapp_2dock_2ui_2DockAreaItem_8cpp">
+<area shape="rect" title="布局区域视图的实现" alt="" coords="1284,5,1505,31"/>
+<area shape="rect" href="DockAreaItem_8h.html" title="布局区域视图：把 DockRegion 的布局树同步为 PanelGroupItem/DividerItem" alt="" coords="640,79,767,104"/>
+<area shape="poly" title=" " alt="" coords="1284,33,781,85,780,79,1283,28"/>
+<area shape="rect" href="PanelGroupItem_8h.html" title="分组视图：QML 视图对象与 PanelGroup 控制器之间的桥" alt="" coords="988,79,1126,104"/>
+<area shape="poly" title=" " alt="" coords="1341,33,1126,78,1124,73,1339,28"/>
+<area shape="rect" href="DropZoneOverlay_8h.html" title="透明顶层落点指示器窗口：始终显示在被拖动窗口之上" alt="" coords="1321,79,1468,104"/>
+<area shape="poly" title=" " alt="" coords="1397,31,1397,65,1392,65,1392,31"/>
+<area shape="rect" href="DockMetrics_8h.html" title="停靠组件的默认行为常量" alt="" coords="150,299,265,324"/>
+<area shape="poly" title=" " alt="" coords="1283,24,647,44,328,60,213,70,145,81,91,96,41,114,23,125,12,139,9,155,15,176,45,216,83,248,124,273,163,291,161,296,122,278,80,252,41,219,11,179,3,155,7,136,19,121,38,109,89,91,144,76,213,65,328,55,647,38,1283,19"/>
+<area shape="rect" href="DockRuntime_8h.html" title="QtQuick 视图层的全局服务：QML 引擎、client 映射、分组视图缓存" alt="" coords="157,79,280,104"/>
+<area shape="poly" title=" " alt="" coords="1283,24,854,40,577,57,294,81,293,76,576,52,853,35,1283,19"/>
+<area shape="rect" href="DividerItem_8h.html" title="分隔条视图：把鼠标拖动转成引擎的分隔条移动" alt="" coords="844,79,955,104"/>
+<area shape="poly" title=" " alt="" coords="1313,33,976,81,969,82,968,77,975,76,1312,28"/>
+<area shape="rect" href="ZoneGeometry_8h.html" title="经典拖放指示器几何：内 4 + 中心 + 外 4，共 9 个" alt="" coords="1492,79,1678,104"/>
+<area shape="poly" title=" " alt="" coords="1426,28,1542,71,1540,76,1424,33"/>
+<area shape="rect" href="DragSession_8h.html" title="拖拽状态机：按下 → 超过阈值转拖拽 → 悬停落点 → 释放/取消" alt="" coords="304,79,474,104"/>
+<area shape="poly" title=" " alt="" coords="1283,30,488,86,488,80,1283,24"/>
+<area shape="rect" href="DockRegion_8h.html" title="停靠区域：持有布局树根节点，负责命令式停靠与拖放落点" alt="" coords="1200,152,1367,177"/>
+<area shape="poly" title=" " alt="" coords="1371,33,1339,53,1311,80,1297,109,1289,139,1284,138,1292,108,1307,77,1336,48,1368,28"/>
+<area shape="rect" href="DockWindow_8h.html" title="浮动窗口：承载被拖出主窗口的分组" alt="" coords="2113,152,2286,177"/>
+<area shape="poly" title=" " alt="" coords="1505,16,1662,18,1842,26,1929,34,2009,44,2076,58,2126,76,2146,89,2163,105,2188,138,2184,141,2159,108,2142,93,2124,81,2074,63,2008,50,1929,39,1842,31,1662,23,1505,21"/>
+<area shape="rect" href="PanelGroup_8h.html" title="选项卡分组：承载一个或多个停靠面板的布局单元" alt="" coords="1950,79,2113,104"/>
+<area shape="poly" title=" " alt="" coords="1497,28,1937,77,1937,82,1496,33"/>
+<area shape="rect" href="LayoutNode_8h.html" title="布局树节点" alt="" coords="1768,152,1911,177"/>
+<area shape="poly" title=" " alt="" coords="1505,16,1600,19,1699,29,1784,47,1816,60,1839,77,1847,91,1851,107,1849,139,1844,138,1846,108,1842,93,1835,80,1814,65,1782,52,1698,34,1600,25,1505,21"/>
+<area shape="rect" href="BoxNode_8h.html" title="盒式布局容器：子节点沿单一方向排列并可拖拽分隔条调整" alt="" coords="1702,79,1825,104"/>
+<area shape="poly" title=" " alt="" coords="1454,28,1691,73,1690,79,1453,33"/>
+<area shape="rect" href="Divider_8h.html" title="相邻可见布局项之间的可拖动分隔条" alt="" coords="2231,225,2342,251"/>
+<area shape="poly" title=" " alt="" coords="1505,20,1855,39,2032,55,2105,65,2160,76,2253,95,2289,113,2306,129,2322,151,2327,167,2325,185,2308,216,2304,213,2320,183,2322,168,2317,153,2302,133,2286,118,2251,101,2159,81,2104,70,2032,60,1855,44,1505,26"/>
+<area shape="rect" title=" " alt="" coords="2466,79,2526,104"/>
+<area shape="poly" title=" " alt="" coords="1505,17,1685,20,1920,29,2183,47,2447,76,2453,77,2452,82,2446,81,2182,52,1920,34,1685,25,1505,22"/>
+<area shape="rect" title=" " alt="" coords="356,152,422,177"/>
+<area shape="poly" title=" " alt="" coords="650,107,436,154,434,149,648,101"/>
+<area shape="rect" title=" " alt="" coords="704,152,802,177"/>
+<area shape="poly" title=" " alt="" coords="714,103,739,139,735,142,710,106"/>
+<area shape="rect" title=" " alt="" coords="626,152,680,177"/>
+<area shape="poly" title=" " alt="" coords="697,106,671,142,667,139,693,103"/>
+<area shape="poly" title=" " alt="" coords="1009,107,816,151,815,146,1007,101"/>
+<area shape="rect" href="DockView_8h.html" title="停靠组件与视图层（QtQuick）之间的抽象接口" alt="" coords="1094,225,1247,251"/>
+<area shape="poly" title=" " alt="" coords="1068,103,1155,213,1151,216,1064,106"/>
+<area shape="rect" href="NodeMetrics_8h.html" title="布局节点的几何与尺寸约束信息" alt="" coords="1358,225,1505,251"/>
+<area shape="poly" title=" " alt="" coords="1072,102,1122,138,1189,175,1268,202,1345,220,1344,226,1266,207,1186,180,1119,142,1069,106"/>
+<area shape="rect" title=" " alt="" coords="930,152,1024,177"/>
+<area shape="poly" title=" " alt="" coords="1046,106,1002,145,998,141,1042,102"/>
+<area shape="rect" title=" " alt="" coords="827,152,906,177"/>
+<area shape="poly" title=" " alt="" coords="1027,107,911,149,909,144,1025,102"/>
+<area shape="rect" title=" " alt="" coords="1596,299,1657,324"/>
+<area shape="poly" title=" " alt="" coords="1244,248,1582,300,1581,306,1243,253"/>
+<area shape="rect" title=" " alt="" coords="1256,372,1314,397"/>
+<area shape="poly" title=" " alt="" coords="1182,249,1269,360,1265,363,1178,253"/>
+<area shape="poly" title=" " alt="" coords="1464,248,1583,292,1581,297,1462,253"/>
+<area shape="poly" title=" " alt="" coords="1450,249,1468,264,1484,283,1493,304,1492,315,1487,326,1472,342,1453,356,1411,374,1368,384,1328,387,1328,382,1367,378,1410,369,1450,351,1468,338,1483,322,1487,314,1487,305,1479,286,1464,268,1446,253"/>
+<area shape="rect" title=" " alt="" coords="1324,299,1363,324"/>
+<area shape="poly" title=" " alt="" coords="1419,253,1370,292,1367,288,1416,249"/>
+<area shape="rect" title=" " alt="" coords="1388,299,1473,324"/>
+<area shape="poly" title=" " alt="" coords="1434,251,1433,285,1428,285,1429,251"/>
+<area shape="poly" title=" " alt="" coords="1434,102,1480,121,1525,150,1557,183,1583,219,1618,285,1614,288,1578,222,1553,186,1522,154,1478,125,1432,107"/>
+<area shape="rect" href="DockEnums_8h.html" title="停靠组件的公共枚举与判定辅助" alt="" coords="706,225,872,251"/>
+<area shape="poly" title=" " alt="" coords="1347,107,851,225,850,219,1346,101"/>
+<area shape="rect" title=" " alt="" coords="1690,152,1744,177"/>
+<area shape="poly" title=" " alt="" coords="1447,101,1677,152,1676,157,1446,107"/>
+<area shape="rect" title=" " alt="" coords="1391,152,1512,177"/>
+<area shape="poly" title=" " alt="" coords="1406,103,1436,139,1432,143,1402,106"/>
+<area shape="poly" title=" " alt="" coords="705,252,279,304,278,299,705,247"/>
+<area shape="rect" title=" " alt="" coords="752,299,826,324"/>
+<area shape="poly" title=" " alt="" coords="792,251,792,285,786,285,786,251"/>
+<area shape="poly" title=" " alt="" coords="265,319,284,321,570,346,849,363,1242,379,1242,385,849,369,569,351,283,327,265,324"/>
+<area shape="rect" title=" " alt="" coords="128,372,194,397"/>
+<area shape="poly" title=" " alt="" coords="202,326,178,362,174,359,198,323"/>
+<area shape="poly" title=" " alt="" coords="247,102,350,144,348,149,245,106"/>
+<area shape="rect" title=" " alt="" coords="25,152,76,177"/>
+<area shape="poly" title=" " alt="" coords="192,106,90,150,88,145,190,102"/>
+<area shape="poly" title=" " alt="" coords="877,106,790,148,788,144,875,102"/>
+<area shape="poly" title=" " alt="" coords="1596,103,1610,124,1622,151,1630,187,1633,224,1631,285,1626,285,1627,224,1624,188,1617,153,1606,127,1592,106"/>
+<area shape="poly" title=" " alt="" coords="1583,106,1562,143,1546,164,1525,180,1489,191,1428,201,1255,217,886,236,886,231,1254,211,1427,195,1488,186,1522,175,1542,160,1558,140,1578,103"/>
+<area shape="poly" title=" " alt="" coords="1607,102,1685,143,1682,148,1605,106"/>
+<area shape="poly" title=" " alt="" coords="392,104,392,138,386,138,386,104"/>
+<area shape="poly" title=" " alt="" coords="374,106,357,120,342,137,333,157,335,177,350,203,367,220,417,248,488,275,586,299,702,319,826,337,1069,363,1242,378,1242,383,1068,369,826,342,701,325,585,304,486,280,414,253,364,224,346,206,330,178,328,156,338,134,354,116,370,102"/>
+<area shape="poly" title=" " alt="" coords="427,102,563,150,615,175,739,219,737,224,613,180,561,154,426,107"/>
+<area shape="poly" title=" " alt="" coords="323,107,209,130,163,143,140,154,126,178,119,204,117,232,120,261,134,315,151,358,146,360,129,317,115,262,112,232,114,203,121,176,136,150,161,138,207,125,321,102"/>
+<area shape="poly" title=" " alt="" coords="376,106,361,121,347,139,341,158,342,167,346,176,371,198,411,219,462,238,519,255,639,282,738,300,737,305,637,287,518,260,460,243,409,224,368,203,341,179,336,169,335,158,343,137,357,118,373,102"/>
+<area shape="rect" href="DropTarget_8h.html" title="拖放落点目标：区域 + 分组 + 落点 + 标签插入位置" alt="" coords="446,152,551,177"/>
+<area shape="poly" title=" " alt="" coords="408,102,470,142,467,147,405,106"/>
+<area shape="rect" title=" " alt="" coords="151,152,230,177"/>
+<area shape="poly" title=" " alt="" coords="358,107,237,150,235,145,356,102"/>
+<area shape="poly" title=" " alt="" coords="546,175,730,219,728,225,544,180"/>
+<area shape="poly" title=" " alt="" coords="1361,175,1438,193,1518,223,1567,254,1606,287,1603,291,1564,258,1516,228,1437,198,1360,180"/>
+<area shape="poly" title=" " alt="" coords="1286,178,1287,358,1282,358,1281,178"/>
+<area shape="poly" title=" " alt="" coords="1204,180,882,226,882,221,1204,175"/>
+<area shape="rect" href="DockObject_8h.html" title="控制器基类：持有视图" alt="" coords="1876,225,1985,251"/>
+<area shape="poly" title=" " alt="" coords="1367,173,1378,175,1619,197,1725,206,1862,223,1861,228,1725,212,1618,202,1378,180,1367,179"/>
+<area shape="poly" title=" " alt="" coords="1876,252,1864,253,1560,281,1263,298,840,312,840,307,1263,293,1560,275,1863,248,1875,247"/>
+<area shape="poly" title=" " alt="" coords="2169,180,2049,228,2024,241,1998,253,1908,277,1818,293,1671,310,1671,305,1817,288,1907,272,1996,248,2021,237,2046,223,2167,175"/>
+<area shape="poly" title=" " alt="" coords="2157,180,1987,224,1986,219,2156,175"/>
+<area shape="poly" title=" " alt="" coords="2113,99,2233,118,2285,132,2321,150,2347,173,2365,198,2370,225,2365,239,2356,253,2335,267,2299,281,2192,305,2050,327,1888,344,1560,371,1329,384,1328,379,1560,365,1887,339,2050,321,2191,300,2297,276,2332,263,2352,249,2361,236,2364,224,2360,200,2343,176,2318,154,2283,137,2231,123,2113,104"/>
+<area shape="poly" title=" " alt="" coords="1973,107,1758,154,1757,149,1972,101"/>
+<area shape="poly" title=" " alt="" coords="2041,104,2056,138,2057,159,2051,179,2026,205,1994,223,1991,218,2022,201,2047,176,2052,158,2050,139,2037,106"/>
+<area shape="rect" href="DockPanel_8h.html" title="逻辑停靠面板：可显隐、可停靠、可拆出为独立窗口" alt="" coords="1935,152,2038,177"/>
+<area shape="poly" title=" " alt="" coords="2026,106,2003,142,1999,139,2022,103"/>
+<area shape="rect" href="LayoutClient_8h.html" title="被布局引擎托管的实体接口" alt="" coords="2060,225,2206,251"/>
+<area shape="poly" title=" " alt="" coords="2113,97,2224,116,2270,130,2288,140,2300,150,2308,164,2308,177,2302,188,2291,198,2260,213,2221,225,2219,220,2258,209,2288,194,2298,185,2303,176,2303,165,2296,154,2285,144,2268,135,2222,121,2112,102"/>
+<area shape="poly" title=" " alt="" coords="1979,179,1950,216,1946,213,1975,176"/>
+<area shape="rect" title=" " alt="" coords="1785,225,1852,251"/>
+<area shape="poly" title=" " alt="" coords="1960,180,1859,222,1857,217,1958,175"/>
+<area shape="rect" title=" " alt="" coords="1690,225,1760,251"/>
+<area shape="poly" title=" " alt="" coords="1945,180,1774,226,1773,221,1944,175"/>
+<area shape="poly" title=" " alt="" coords="2060,252,1671,306,1670,301,2059,247"/>
+<area shape="poly" title=" " alt="" coords="2074,253,1669,327,1328,380,1328,374,1668,321,2073,248"/>
+<area shape="poly" title=" " alt="" coords="1774,180,1511,226,1510,220,1774,175"/>
+<area shape="poly" title=" " alt="" coords="1823,180,1757,220,1754,216,1820,175"/>
+<area shape="poly" title=" " alt="" coords="1758,106,1734,142,1730,139,1754,103"/>
+<area shape="poly" title=" " alt="" coords="1778,102,1819,141,1815,144,1774,106"/>
+<area shape="poly" title=" " alt="" coords="2231,252,2219,253,1905,288,1671,309,1670,304,1905,283,2218,248,2230,246"/>
+</map>
+</div>
+</div><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 id="header-namespaces" class="groupheader"><a id="namespaces" name="namespaces"></a>
+命名空间</h2></td></tr>
+<tr class="memitem:dock" id="r_dock"><td class="memItemLeft" align="right" valign="top">namespace &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacedock.html">dock</a></td></tr>
+<tr class="memitem:dock_3A_3Aui" id="r_dock_3A_3Aui"><td class="memItemLeft" align="right" valign="top">namespace &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacedock_1_1ui.html">dock::ui</a></td></tr>
+</table>
+<a name="details" id="details"></a><h2 id="header-details" class="groupheader">详细描述</h2>
+<div class="textblock"><p>布局区域视图的实现 </p>
+</div></div><!-- contents -->
+<!-- start footer part -->
+<hr class="footer"/><address class="footer"><small>
+制作者&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.14.0
+</small></address>
+</div><!-- doc-content -->
+</body>
+</html>

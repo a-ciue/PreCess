@@ -1,0 +1,9 @@
+<map id="dock::PanelGroup" name="dock::PanelGroup">
+<area shape="rect" id="Node000001" title="选项卡分组" alt="" coords="87,152,222,177"/>
+<area shape="rect" id="Node000002" href="$classdock_1_1DockObject.html" title="控制器基类" alt="" coords="5,79,141,104"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="98,111,143,150,140,154,95,115"/>
+<area shape="rect" id="Node000003" title=" " alt="" coords="36,5,111,31"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="76,44,76,79,71,79,71,44"/>
+<area shape="rect" id="Node000004" href="$classdock_1_1LayoutClient.html" title="被布局引擎托管的实体接口" alt="" coords="166,79,309,104"/>
+<area shape="poly" id="edge3_Node000001_Node000004" title=" " alt="" coords="215,115,170,154,166,150,212,111"/>
+</map>

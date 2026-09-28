@@ -1,4 +1,5 @@
 var searchData=
 [
-  ['elementtype_0',['ElementType',['../AttributeCommon_8h.html#a16b11be27a8e9362dd122c4d879e01ae',1,'AttributeCommon.h']]]
+  ['dockedge_0',['DockEdge',['../namespacedock.html#a273fac4f54024f9a812abdf3248ee4c0',1,'dock']]],
+  ['dropzone_1',['DropZone',['../namespacedock.html#a3ebdb589812160d63d8811311bf4ed63',1,'dock']]]
 ];

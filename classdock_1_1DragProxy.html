@@ -1,0 +1,343 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="zh">
+<head>
+<meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=11"/>
+<meta name="generator" content="Doxygen 1.14.0"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>PreCess: dock::DragProxy类 参考</title>
+<link href="tabs.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="jquery.js"></script>
+<script type="text/javascript" src="dynsections.js"></script>
+<script type="text/javascript" src="clipboard.js"></script>
+<script type="text/javascript" src="cookie.js"></script>
+<link href="search/search.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="search/searchdata.js"></script>
+<script type="text/javascript" src="search/search.js"></script>
+<link href="doxygen.css" rel="stylesheet" type="text/css" />
+</head>
+<body>
+<div id="top"><!-- do not remove this div, it is closed by doxygen! -->
+<div id="titlearea">
+<table cellspacing="0" cellpadding="0">
+ <tbody>
+ <tr id="projectrow">
+  <td id="projectlogo"><img alt="Logo" src="PreCess.ico"/></td>
+  <td id="projectalign">
+   <div id="projectname">PreCess
+   </div>
+  </td>
+ </tr>
+ </tbody>
+</table>
+</div>
+<!-- end header part -->
+<!-- 制作者 Doxygen 1.14.0 -->
+<script type="text/javascript">
+var searchBox = new SearchBox("searchBox", "search/",'.html');
+</script>
+<script type="text/javascript">
+$(function() { codefold.init(); });
+</script>
+<script type="text/javascript" src="menudata.js"></script>
+<script type="text/javascript" src="menu.js"></script>
+<script type="text/javascript">
+$(function() {
+  initMenu('',true,false,'search.php','搜索',false);
+  $(function() { init_search(); });
+});
+</script>
+<div id="main-nav"></div>
+<!-- window showing the filter options -->
+<div id="MSearchSelectWindow"
+     onmouseover="return searchBox.OnSearchSelectShow()"
+     onmouseout="return searchBox.OnSearchSelectHide()"
+     onkeydown="return searchBox.OnSearchSelectKey(event)">
+</div>
+
+<!-- iframe showing the search results (closed by default) -->
+<div id="MSearchResultsWindow">
+<div id="MSearchResults">
+<div class="SRPage">
+<div id="SRIndex">
+<div id="SRResults"></div>
+<div class="SRStatus" id="Loading">载入中...</div>
+<div class="SRStatus" id="Searching">搜索中...</div>
+<div class="SRStatus" id="NoMatches">未找到</div>
+</div>
+</div>
+</div>
+</div>
+
+<div id="nav-path" class="navpath">
+  <ul>
+<li class="navelem"><a href="namespacedock.html">dock</a></li><li class="navelem"><a href="classdock_1_1DragProxy.html">DragProxy</a></li>  </ul>
+</div>
+</div><!-- top -->
+<div id="doc-content">
+<div class="header">
+  <div class="summary">
+<a href="#pub-methods">Public 成员函数</a> &#124;
+<a href="#pri-attribs">Private 属性</a> &#124;
+<a href="classdock_1_1DragProxy-members.html">所有成员列表</a>  </div>
+  <div class="headertitle"><div class="title">dock::DragProxy类 参考</div></div>
+</div><!--header-->
+<div class="contents">
+
+<p>拖拽会话中的浮动窗口  
+ <a href="#details">更多...</a></p>
+
+<p><code>#include &lt;<a class="el" href="DragProxy_8h_source.html">DragProxy.h</a>&gt;</code></p>
+<div class="dynheader">
+dock::DragProxy 的协作图:</div>
+<div class="dyncontent">
+<div class="center"><img src="classdock_1_1DragProxy__coll__graph.png" border="0" usemap="#adock_1_1DragProxy_coll__map" loading="lazy" alt="Collaboration graph"/></div>
+<map name="adock_1_1DragProxy_coll__map" id="adock_1_1DragProxy_coll__map">
+<area shape="rect" title="拖拽会话中的浮动窗口" alt="" coords="633,409,763,435"/>
+<area shape="rect" href="classdock_1_1DockWindow.html" title="浮动窗口" alt="" coords="625,313,771,339"/>
+<area shape="poly" title=" " alt="" coords="701,353,701,409,695,409,695,353"/>
+<area shape="rect" href="classdock_1_1DockObject.html" title="控制器基类" alt="" coords="575,101,711,127"/>
+<area shape="poly" title=" " alt="" coords="678,132,723,166,744,189,761,216,762,234,760,258,754,291,741,305,726,315,723,311,737,301,749,288,755,257,757,234,755,218,740,193,719,170,675,136"/>
+<area shape="rect" href="classdock_1_1DockRegion.html" title="停靠区域" alt="" coords="607,217,746,243"/>
+<area shape="poly" title=" " alt="" coords="656,139,661,150,677,216,672,218,655,151,651,140"/>
+<area shape="rect" href="classdock_1_1PanelGroup.html" title="选项卡分组" alt="" coords="389,217,524,243"/>
+<area shape="poly" title=" " alt="" coords="635,141,618,169,593,195,560,213,525,223,523,218,558,208,590,191,614,166,631,138"/>
+<area shape="rect" href="classdock_1_1DockPanel.html" title="逻辑停靠面板" alt="" coords="373,313,503,339"/>
+<area shape="poly" title=" " alt="" coords="644,141,639,168,627,195,613,209,597,219,558,257,515,292,469,316,466,311,513,287,554,253,594,215,610,205,622,192,633,166,639,140"/>
+<area shape="rect" title=" " alt="" coords="606,5,681,31"/>
+<area shape="poly" title=" " alt="" coords="646,45,646,101,641,101,641,45"/>
+<area shape="rect" href="classdock_1_1DockView.html" title="视图抽象接口" alt="" coords="5,5,132,31"/>
+<area shape="poly" title=" " alt="" coords="147,29,271,52,289,64,306,75,356,86,427,95,575,107,575,112,426,101,355,92,304,80,286,68,269,57,146,34"/>
+<area shape="poly" title=" " alt="" coords="74,44,91,114,106,155,128,192,152,219,181,242,212,262,245,278,312,301,373,314,372,319,311,306,243,283,209,266,177,246,149,223,124,195,102,157,86,116,69,45"/>
+<area shape="poly" title=" " alt="" coords="685,255,698,313,693,314,680,257"/>
+<area shape="rect" href="classdock_1_1LayoutNode.html" title="布局树节点（叶子节点与容器节点的公共基类）" alt="" coords="259,101,398,127"/>
+<area shape="poly" title=" " alt="" coords="377,128,436,148,556,191,636,215,635,220,555,196,434,153,376,134"/>
+<area shape="rect" href="classdock_1_1BoxNode.html" title="盒式布局容器" alt="" coords="207,217,327,243"/>
+<area shape="poly" title=" " alt="" coords="323,141,299,195,281,219,277,215,294,192,318,139"/>
+<area shape="poly" title=" " alt="" coords="336,139,346,167,363,191,381,205,403,215,401,220,379,210,359,195,341,169,331,141"/>
+<area shape="rect" href="structdock_1_1NodeMetrics.html" title="单个布局节点的几何与尺寸约束" alt="" coords="156,5,299,31"/>
+<area shape="poly" title=" " alt="" coords="218,44,214,61,219,76,237,92,260,103,258,108,234,97,214,79,209,61,213,43"/>
+<area shape="rect" href="classdock_1_1LayoutClient.html" title="被布局引擎托管的实体接口" alt="" coords="356,5,499,31"/>
+<area shape="poly" title=" " alt="" coords="400,41,380,57,339,103,335,100,376,53,396,36"/>
+<area shape="poly" title=" " alt="" coords="434,44,458,217,452,217,428,45"/>
+<area shape="poly" title=" " alt="" coords="244,208,237,194,230,171,231,161,237,149,252,134,269,124,272,129,255,139,242,152,237,162,236,171,242,192,249,205"/>
+<area shape="poly" title=" " alt="" coords="500,245,670,311,668,316,498,250"/>
+<area shape="poly" title=" " alt="" coords="458,257,454,290,446,314,441,312,449,289,453,256"/>
+<area shape="poly" title=" " alt="" coords="405,306,393,291,389,278,393,265,406,251,422,241,424,245,409,255,398,268,395,278,398,288,409,303"/>
+</map>
+<center><span class="legend">[<a href="graph_legend.html">图例</a>]</span></center></div>
+<table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 id="header-pub-methods" class="groupheader"><a id="pub-methods" name="pub-methods"></a>
+Public 成员函数</h2></td></tr>
+<tr class="memitem:a423a882fc4fb61d88970dd4b06f67a9a" id="r_a423a882fc4fb61d88970dd4b06f67a9a"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a423a882fc4fb61d88970dd4b06f67a9a">DragProxy</a> (<a class="el" href="classdock_1_1DockWindow.html">DockWindow</a> *<a class="el" href="#adbc3454cd1c0061945b86d7f44591c41">window</a>, const QPoint &amp;press_pos)</td></tr>
+<tr class="memitem:a1671d737527ef8d1de02ffb5b65eba5d" id="r_a1671d737527ef8d1de02ffb5b65eba5d"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a1671d737527ef8d1de02ffb5b65eba5d">~DragProxy</a> ()</td></tr>
+<tr class="memitem:adbc3454cd1c0061945b86d7f44591c41" id="r_adbc3454cd1c0061945b86d7f44591c41"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classdock_1_1DockWindow.html">DockWindow</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#adbc3454cd1c0061945b86d7f44591c41">window</a> () const</td></tr>
+<tr class="memdesc:adbc3454cd1c0061945b86d7f44591c41"><td class="mdescLeft">&#160;</td><td class="mdescRight">被拖拽的浮动窗口  <br /></td></tr>
+<tr class="memitem:a884a9b88402dbd7eeb2c8c7d00c2ff5e" id="r_a884a9b88402dbd7eeb2c8c7d00c2ff5e"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a884a9b88402dbd7eeb2c8c7d00c2ff5e">moveTo</a> (const QPoint &amp;global_pos)</td></tr>
+<tr class="memdesc:a884a9b88402dbd7eeb2c8c7d00c2ff5e"><td class="mdescLeft">&#160;</td><td class="mdescRight">跟随光标移动：窗口位置 = 起点 + (光标 - 按下点)  <br /></td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 id="header-pri-attribs" class="groupheader"><a id="pri-attribs" name="pri-attribs"></a>
+Private 属性</h2></td></tr>
+<tr class="memitem:a29c2625dfccb0bff3ba8776fa4202ccb" id="r_a29c2625dfccb0bff3ba8776fa4202ccb"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classdock_1_1DockWindow.html">DockWindow</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a29c2625dfccb0bff3ba8776fa4202ccb">window_</a> = nullptr</td></tr>
+<tr class="memitem:a09f9ba22b6a2f9fad55e0f281eab5027" id="r_a09f9ba22b6a2f9fad55e0f281eab5027"><td class="memItemLeft" align="right" valign="top">QPoint&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a09f9ba22b6a2f9fad55e0f281eab5027">press_pos_</a></td></tr>
+<tr class="memitem:a580c0cf0660b61b2ffa448f7efb2f0ec" id="r_a580c0cf0660b61b2ffa448f7efb2f0ec"><td class="memItemLeft" align="right" valign="top">QPoint&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a580c0cf0660b61b2ffa448f7efb2f0ec">anchor_pos_</a></td></tr>
+<tr class="memitem:a66edf02cf3d61ae237fac74d4dbfac61" id="r_a66edf02cf3d61ae237fac74d4dbfac61"><td class="memItemLeft" align="right" valign="top">QPoint&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a66edf02cf3d61ae237fac74d4dbfac61">position_</a></td></tr>
+</table>
+<a name="details" id="details"></a><h2 id="header-details" class="groupheader">详细描述</h2>
+<div class="textblock"><p>拖拽会话中的浮动窗口 </p>
+<p><a class="el" href="classdock_1_1DragSession.html" title="拖拽状态机">DragSession</a> 在拖拽开始时创建，负责把顶层窗口的位置随光标更新； 视图层监听 <a class="el" href="classdock_1_1DockWindow.html#a17f16a11cc2909fc99580483be52bd4c" title="几何变化（视图层同步窗口位置/尺寸）">DockWindow::geometryChanged</a> 同步实际窗口。 </p>
+</div><a name="doc-constructors" id="doc-constructors"></a><h2 id="header-doc-constructors" class="groupheader">构造及析构函数说明</h2>
+<a id="a423a882fc4fb61d88970dd4b06f67a9a" name="a423a882fc4fb61d88970dd4b06f67a9a"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a423a882fc4fb61d88970dd4b06f67a9a">&#9670;&#160;</a></span>DragProxy()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">dock::DragProxy::DragProxy </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="classdock_1_1DockWindow.html">DockWindow</a> *</td>          <td class="paramname"><span class="paramname"><em>window</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const QPoint &amp;</td>          <td class="paramname"><span class="paramname"><em>press_pos</em></span>&#160;)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a1671d737527ef8d1de02ffb5b65eba5d" name="a1671d737527ef8d1de02ffb5b65eba5d"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a1671d737527ef8d1de02ffb5b65eba5d">&#9670;&#160;</a></span>~DragProxy()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">dock::DragProxy::~DragProxy </td>
+          <td>(</td>
+          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel default">default</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a name="doc-func-members" id="doc-func-members"></a><h2 id="header-doc-func-members" class="groupheader">成员函数说明</h2>
+<a id="a884a9b88402dbd7eeb2c8c7d00c2ff5e" name="a884a9b88402dbd7eeb2c8c7d00c2ff5e"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a884a9b88402dbd7eeb2c8c7d00c2ff5e">&#9670;&#160;</a></span>moveTo()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void dock::DragProxy::moveTo </td>
+          <td>(</td>
+          <td class="paramtype">const QPoint &amp;</td>          <td class="paramname"><span class="paramname"><em>global_pos</em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>跟随光标移动：窗口位置 = 起点 + (光标 - 按下点) </p>
+
+</div>
+</div>
+<a id="adbc3454cd1c0061945b86d7f44591c41" name="adbc3454cd1c0061945b86d7f44591c41"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#adbc3454cd1c0061945b86d7f44591c41">&#9670;&#160;</a></span>window()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classdock_1_1DockWindow.html">DockWindow</a> * dock::DragProxy::window </td>
+          <td>(</td>
+          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel inline">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>被拖拽的浮动窗口 </p>
+
+</div>
+</div>
+<a name="doc-variable-members" id="doc-variable-members"></a><h2 id="header-doc-variable-members" class="groupheader">类成员变量说明</h2>
+<a id="a580c0cf0660b61b2ffa448f7efb2f0ec" name="a580c0cf0660b61b2ffa448f7efb2f0ec"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a580c0cf0660b61b2ffa448f7efb2f0ec">&#9670;&#160;</a></span>anchor_pos_</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">QPoint dock::DragProxy::anchor_pos_</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel private">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a66edf02cf3d61ae237fac74d4dbfac61" name="a66edf02cf3d61ae237fac74d4dbfac61"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a66edf02cf3d61ae237fac74d4dbfac61">&#9670;&#160;</a></span>position_</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">QPoint dock::DragProxy::position_</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel private">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a09f9ba22b6a2f9fad55e0f281eab5027" name="a09f9ba22b6a2f9fad55e0f281eab5027"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a09f9ba22b6a2f9fad55e0f281eab5027">&#9670;&#160;</a></span>press_pos_</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">QPoint dock::DragProxy::press_pos_</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel private">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a29c2625dfccb0bff3ba8776fa4202ccb" name="a29c2625dfccb0bff3ba8776fa4202ccb"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a29c2625dfccb0bff3ba8776fa4202ccb">&#9670;&#160;</a></span>window_</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classdock_1_1DockWindow.html">DockWindow</a>* dock::DragProxy::window_ = nullptr</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel private">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<hr/>该类的文档由以下文件生成:<ul>
+<li>app/dock/docking/<a class="el" href="DragProxy_8h_source.html">DragProxy.h</a></li>
+<li>app/dock/docking/<a class="el" href="DragProxy_8cpp.html">DragProxy.cpp</a></li>
+</ul>
+</div><!-- contents -->
+<!-- start footer part -->
+<hr class="footer"/><address class="footer"><small>
+制作者&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.14.0
+</small></address>
+</div><!-- doc-content -->
+</body>
+</html>

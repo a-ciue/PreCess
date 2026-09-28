@@ -1,0 +1,627 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="zh">
+<head>
+<meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=11"/>
+<meta name="generator" content="Doxygen 1.14.0"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>PreCess: dock::ui::DockRuntime类 参考</title>
+<link href="tabs.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="jquery.js"></script>
+<script type="text/javascript" src="dynsections.js"></script>
+<script type="text/javascript" src="clipboard.js"></script>
+<script type="text/javascript" src="cookie.js"></script>
+<link href="search/search.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="search/searchdata.js"></script>
+<script type="text/javascript" src="search/search.js"></script>
+<link href="doxygen.css" rel="stylesheet" type="text/css" />
+</head>
+<body>
+<div id="top"><!-- do not remove this div, it is closed by doxygen! -->
+<div id="titlearea">
+<table cellspacing="0" cellpadding="0">
+ <tbody>
+ <tr id="projectrow">
+  <td id="projectlogo"><img alt="Logo" src="PreCess.ico"/></td>
+  <td id="projectalign">
+   <div id="projectname">PreCess
+   </div>
+  </td>
+ </tr>
+ </tbody>
+</table>
+</div>
+<!-- end header part -->
+<!-- 制作者 Doxygen 1.14.0 -->
+<script type="text/javascript">
+var searchBox = new SearchBox("searchBox", "search/",'.html');
+</script>
+<script type="text/javascript">
+$(function() { codefold.init(); });
+</script>
+<script type="text/javascript" src="menudata.js"></script>
+<script type="text/javascript" src="menu.js"></script>
+<script type="text/javascript">
+$(function() {
+  initMenu('',true,false,'search.php','搜索',false);
+  $(function() { init_search(); });
+});
+</script>
+<div id="main-nav"></div>
+<!-- window showing the filter options -->
+<div id="MSearchSelectWindow"
+     onmouseover="return searchBox.OnSearchSelectShow()"
+     onmouseout="return searchBox.OnSearchSelectHide()"
+     onkeydown="return searchBox.OnSearchSelectKey(event)">
+</div>
+
+<!-- iframe showing the search results (closed by default) -->
+<div id="MSearchResultsWindow">
+<div id="MSearchResults">
+<div class="SRPage">
+<div id="SRIndex">
+<div id="SRResults"></div>
+<div class="SRStatus" id="Loading">载入中...</div>
+<div class="SRStatus" id="Searching">搜索中...</div>
+<div class="SRStatus" id="NoMatches">未找到</div>
+</div>
+</div>
+</div>
+</div>
+
+<div id="nav-path" class="navpath">
+  <ul>
+<li class="navelem"><a href="namespacedock.html">dock</a></li><li class="navelem"><a href="namespacedock_1_1ui.html">ui</a></li><li class="navelem"><a href="classdock_1_1ui_1_1DockRuntime.html">DockRuntime</a></li>  </ul>
+</div>
+</div><!-- top -->
+<div id="doc-content">
+<div class="header">
+  <div class="summary">
+<a href="#pub-methods">Public 成员函数</a> &#124;
+<a href="#pub-static-methods">静态 Public 成员函数</a> &#124;
+<a href="#pri-methods">Private 成员函数</a> &#124;
+<a href="#pri-attribs">Private 属性</a> &#124;
+<a href="classdock_1_1ui_1_1DockRuntime-members.html">所有成员列表</a>  </div>
+  <div class="headertitle"><div class="title">dock::ui::DockRuntime类 参考</div></div>
+</div><!--header-->
+<div class="contents">
+
+<p>QtQuick 视图层全局服务  
+ <a href="#details">更多...</a></p>
+
+<p><code>#include &lt;<a class="el" href="DockRuntime_8h_source.html">DockRuntime.h</a>&gt;</code></p>
+<div class="dynheader">
+dock::ui::DockRuntime 的协作图:</div>
+<div class="dyncontent">
+<div class="center"><img src="classdock_1_1ui_1_1DockRuntime__coll__graph.png" border="0" usemap="#adock_1_1ui_1_1DockRuntime_coll__map" loading="lazy" alt="Collaboration graph"/></div>
+<map name="adock_1_1ui_1_1DockRuntime_coll__map" id="adock_1_1ui_1_1DockRuntime_coll__map">
+<area shape="rect" title="QtQuick 视图层全局服务" alt="" coords="19,176,188,201"/>
+<area shape="rect" href="classdock_1_1ui_1_1DropZoneOverlay.html" title="指示器浮层窗口" alt="" coords="5,80,201,105"/>
+<area shape="poly" title=" " alt="" coords="106,119,106,176,101,176,101,119"/>
+<area shape="rect" title=" " alt="" coords="43,5,164,31"/>
+<area shape="poly" title=" " alt="" coords="106,45,106,80,101,80,101,45"/>
+</map>
+<center><span class="legend">[<a href="graph_legend.html">图例</a>]</span></center></div>
+<table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 id="header-pub-methods" class="groupheader"><a id="pub-methods" name="pub-methods"></a>
+Public 成员函数</h2></td></tr>
+<tr class="memitem:a84f6c70bf382a06d23f5cbe3474de736" id="r_a84f6c70bf382a06d23f5cbe3474de736"><td class="memItemLeft" align="right" valign="top">QQmlEngine *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a84f6c70bf382a06d23f5cbe3474de736">engine</a> () const</td></tr>
+<tr class="memdesc:a84f6c70bf382a06d23f5cbe3474de736"><td class="mdescLeft">&#160;</td><td class="mdescRight">QML 引擎（由 <a class="el" href="namespacedock.html#a119a420f8947c2697b4c16af326c94c0" title="初始化停靠组件">dock::init</a> 注入）  <br /></td></tr>
+<tr class="memitem:a484e9775ce836c0e188090d7d5e122a3" id="r_a484e9775ce836c0e188090d7d5e122a3"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a484e9775ce836c0e188090d7d5e122a3">setEngine</a> (QQmlEngine *<a class="el" href="#a84f6c70bf382a06d23f5cbe3474de736">engine</a>)</td></tr>
+<tr class="memdesc:a484e9775ce836c0e188090d7d5e122a3"><td class="mdescLeft">&#160;</td><td class="mdescRight">注入 QML 引擎  <br /></td></tr>
+<tr class="memitem:ae6aae1e07fddbde9c1a6b0bbb94327ac" id="r_ae6aae1e07fddbde9c1a6b0bbb94327ac"><td class="memItemLeft" align="right" valign="top">QQuickItem *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ae6aae1e07fddbde9c1a6b0bbb94327ac">createItemFromUrl</a> (const QUrl &amp;url)</td></tr>
+<tr class="memdesc:ae6aae1e07fddbde9c1a6b0bbb94327ac"><td class="mdescLeft">&#160;</td><td class="mdescRight">从 qrc/文件路径创建 QML 根项；失败返回 nullptr  <br /></td></tr>
+<tr class="memitem:a9e517fba494950501e7ab06159695a90" id="r_a9e517fba494950501e7ab06159695a90"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a9e517fba494950501e7ab06159695a90">registerPanelContent</a> (<a class="el" href="classdock_1_1DockPanel.html">DockPanel</a> *panel, QQuickItem *guest_item)</td></tr>
+<tr class="memdesc:a9e517fba494950501e7ab06159695a90"><td class="mdescLeft">&#160;</td><td class="mdescRight">登记面板的 client item（QML 声明的内容项）  <br /></td></tr>
+<tr class="memitem:a0adc7547361acec7205f11c6b8eefd96" id="r_a0adc7547361acec7205f11c6b8eefd96"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a0adc7547361acec7205f11c6b8eefd96">unregisterPanelContent</a> (<a class="el" href="classdock_1_1DockPanel.html">DockPanel</a> *panel)</td></tr>
+<tr class="memdesc:a0adc7547361acec7205f11c6b8eefd96"><td class="mdescLeft">&#160;</td><td class="mdescRight">注销面板的 client item  <br /></td></tr>
+<tr class="memitem:a7aefbc5f289613110fa8ef2a0deed386" id="r_a7aefbc5f289613110fa8ef2a0deed386"><td class="memItemLeft" align="right" valign="top">QQuickItem *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a7aefbc5f289613110fa8ef2a0deed386">panelContentItem</a> (<a class="el" href="classdock_1_1DockPanel.html">DockPanel</a> *panel) const</td></tr>
+<tr class="memdesc:a7aefbc5f289613110fa8ef2a0deed386"><td class="mdescLeft">&#160;</td><td class="mdescRight">面板的 client item（可能为空）  <br /></td></tr>
+<tr class="memitem:a5e612004444379104b7006eca33a0fb6" id="r_a5e612004444379104b7006eca33a0fb6"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a5e612004444379104b7006eca33a0fb6">registerPanelHome</a> (<a class="el" href="classdock_1_1DockPanel.html">DockPanel</a> *panel, QQuickItem *home_item)</td></tr>
+<tr class="memdesc:a5e612004444379104b7006eca33a0fb6"><td class="mdescLeft">&#160;</td><td class="mdescRight">登记面板的宿主项（client 离开分组视图时的归属；跨窗口移动时仍会重建场景图）  <br /></td></tr>
+<tr class="memitem:a460dc7e2589b6c65e1a2f902df68da2f" id="r_a460dc7e2589b6c65e1a2f902df68da2f"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a460dc7e2589b6c65e1a2f902df68da2f">unregisterPanelHome</a> (<a class="el" href="classdock_1_1DockPanel.html">DockPanel</a> *panel)</td></tr>
+<tr class="memdesc:a460dc7e2589b6c65e1a2f902df68da2f"><td class="mdescLeft">&#160;</td><td class="mdescRight">注销面板的宿主项  <br /></td></tr>
+<tr class="memitem:a5aedbca8880fb162517eac42586efc49" id="r_a5aedbca8880fb162517eac42586efc49"><td class="memItemLeft" align="right" valign="top">QQuickItem *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a5aedbca8880fb162517eac42586efc49">panelHome</a> (<a class="el" href="classdock_1_1DockPanel.html">DockPanel</a> *panel) const</td></tr>
+<tr class="memdesc:a5aedbca8880fb162517eac42586efc49"><td class="mdescLeft">&#160;</td><td class="mdescRight">面板的宿主项（可能为空）  <br /></td></tr>
+<tr class="memitem:ac0f97a393f7bc99ddc19ed93563f1c43" id="r_ac0f97a393f7bc99ddc19ed93563f1c43"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classdock_1_1ui_1_1PanelGroupItem.html">PanelGroupItem</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ac0f97a393f7bc99ddc19ed93563f1c43">panelGroupItem</a> (<a class="el" href="classdock_1_1PanelGroup.html">PanelGroup</a> *group)</td></tr>
+<tr class="memdesc:ac0f97a393f7bc99ddc19ed93563f1c43"><td class="mdescLeft">&#160;</td><td class="mdescRight">取得（必要时创建）分组视图；所有权由本服务持有  <br /></td></tr>
+<tr class="memitem:a5ff13d3f8db5181c586c8b9804b99ec1" id="r_a5ff13d3f8db5181c586c8b9804b99ec1"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classdock_1_1ui_1_1PanelGroupItem.html">PanelGroupItem</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a5ff13d3f8db5181c586c8b9804b99ec1">existingPanelGroupItem</a> (<a class="el" href="classdock_1_1PanelGroup.html">PanelGroup</a> *group) const</td></tr>
+<tr class="memdesc:a5ff13d3f8db5181c586c8b9804b99ec1"><td class="mdescLeft">&#160;</td><td class="mdescRight">仅查询缓存中的分组视图（不创建），用于陈旧视图收口  <br /></td></tr>
+<tr class="memitem:a047ea17d4f52348435ce2c0f8489be0e" id="r_a047ea17d4f52348435ce2c0f8489be0e"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a047ea17d4f52348435ce2c0f8489be0e">forgetPanelGroupItem</a> (<a class="el" href="classdock_1_1PanelGroup.html">PanelGroup</a> *group, <a class="el" href="classdock_1_1ui_1_1PanelGroupItem.html">PanelGroupItem</a> *view)</td></tr>
+<tr class="memdesc:a047ea17d4f52348435ce2c0f8489be0e"><td class="mdescLeft">&#160;</td><td class="mdescRight">从缓存中注销分组视图（视图析构或分组清空时）  <br /></td></tr>
+<tr class="memitem:ac19dfe7b52dd26e738123ac8401e9d1d" id="r_ac19dfe7b52dd26e738123ac8401e9d1d"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ac19dfe7b52dd26e738123ac8401e9d1d">destroyPanelGroupItem</a> (<a class="el" href="classdock_1_1PanelGroup.html">PanelGroup</a> *group)</td></tr>
+<tr class="memdesc:ac19dfe7b52dd26e738123ac8401e9d1d"><td class="mdescLeft">&#160;</td><td class="mdescRight">删除分组视图（分组销毁时）  <br /></td></tr>
+<tr class="memitem:aab9c4382fdc768c42eaa814d0dfbbc51" id="r_aab9c4382fdc768c42eaa814d0dfbbc51"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classdock_1_1ui_1_1DropZoneOverlay.html">DropZoneOverlay</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#aab9c4382fdc768c42eaa814d0dfbbc51">zonesOverlay</a> ()</td></tr>
+<tr class="memdesc:aab9c4382fdc768c42eaa814d0dfbbc51"><td class="mdescLeft">&#160;</td><td class="mdescRight">透明顶层指示器窗口（懒创建，随应用存活）  <br /></td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 id="header-pub-static-methods" class="groupheader"><a id="pub-static-methods" name="pub-static-methods"></a>
+静态 Public 成员函数</h2></td></tr>
+<tr class="memitem:a463ae7a10bc59bb175241fe7025d991e" id="r_a463ae7a10bc59bb175241fe7025d991e"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="classdock_1_1ui_1_1DockRuntime.html">DockRuntime</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a463ae7a10bc59bb175241fe7025d991e">instance</a> ()</td></tr>
+<tr class="memdesc:a463ae7a10bc59bb175241fe7025d991e"><td class="mdescLeft">&#160;</td><td class="mdescRight">单例  <br /></td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 id="header-pri-methods" class="groupheader"><a id="pri-methods" name="pri-methods"></a>
+Private 成员函数</h2></td></tr>
+<tr class="memitem:a76bc9c004457e7681acb8944e317350e" id="r_a76bc9c004457e7681acb8944e317350e"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a76bc9c004457e7681acb8944e317350e">DockRuntime</a> ()=default</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 id="header-pri-attribs" class="groupheader"><a id="pri-attribs" name="pri-attribs"></a>
+Private 属性</h2></td></tr>
+<tr class="memitem:aeab9afad33d4046b55a0b4158c963d80" id="r_aeab9afad33d4046b55a0b4158c963d80"><td class="memItemLeft" align="right" valign="top">QQmlEngine *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#aeab9afad33d4046b55a0b4158c963d80">engine_</a> = nullptr</td></tr>
+<tr class="memitem:a716c5700be093f1eae8fd1d06e2c274c" id="r_a716c5700be093f1eae8fd1d06e2c274c"><td class="memItemLeft" align="right" valign="top">QHash&lt; <a class="el" href="classdock_1_1DockPanel.html">DockPanel</a> *, QQuickItem * &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a716c5700be093f1eae8fd1d06e2c274c">panel_contents_</a></td></tr>
+<tr class="memitem:add16335c9a0b2901690c6ecc43f1a179" id="r_add16335c9a0b2901690c6ecc43f1a179"><td class="memItemLeft" align="right" valign="top">QHash&lt; <a class="el" href="classdock_1_1DockPanel.html">DockPanel</a> *, QQuickItem * &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#add16335c9a0b2901690c6ecc43f1a179">panel_homes_</a></td></tr>
+<tr class="memitem:ac709ed0a23e2dcb8e514d858c090b5e6" id="r_ac709ed0a23e2dcb8e514d858c090b5e6"><td class="memItemLeft" align="right" valign="top">QHash&lt; <a class="el" href="classdock_1_1PanelGroup.html">PanelGroup</a> *, <a class="el" href="classdock_1_1ui_1_1PanelGroupItem.html">PanelGroupItem</a> * &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ac709ed0a23e2dcb8e514d858c090b5e6">group_items_</a></td></tr>
+<tr class="memitem:a48727a8da71f9942dbcb84798383ff2b" id="r_a48727a8da71f9942dbcb84798383ff2b"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classdock_1_1ui_1_1DropZoneOverlay.html">DropZoneOverlay</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a48727a8da71f9942dbcb84798383ff2b">overlay_</a> = nullptr</td></tr>
+</table>
+<a name="details" id="details"></a><h2 id="header-details" class="groupheader">详细描述</h2>
+<div class="textblock"><p>QtQuick 视图层全局服务 </p>
+<p>核心层（QtCore）与视图层（QtQuick）之间的桥：保存 QML 引擎用于动态加载 视图 QML、维护停靠面板到 client item 的映射、按分组缓存分组视图。 </p>
+</div><a name="doc-constructors" id="doc-constructors"></a><h2 id="header-doc-constructors" class="groupheader">构造及析构函数说明</h2>
+<a id="a76bc9c004457e7681acb8944e317350e" name="a76bc9c004457e7681acb8944e317350e"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a76bc9c004457e7681acb8944e317350e">&#9670;&#160;</a></span>DockRuntime()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">dock::ui::DockRuntime::DockRuntime </td>
+          <td>(</td>
+          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel private">private</span><span class="mlabel default">default</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a name="doc-func-members" id="doc-func-members"></a><h2 id="header-doc-func-members" class="groupheader">成员函数说明</h2>
+<a id="ae6aae1e07fddbde9c1a6b0bbb94327ac" name="ae6aae1e07fddbde9c1a6b0bbb94327ac"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ae6aae1e07fddbde9c1a6b0bbb94327ac">&#9670;&#160;</a></span>createItemFromUrl()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">QQuickItem * dock::ui::DockRuntime::createItemFromUrl </td>
+          <td>(</td>
+          <td class="paramtype">const QUrl &amp;</td>          <td class="paramname"><span class="paramname"><em>url</em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>从 qrc/文件路径创建 QML 根项；失败返回 nullptr </p>
+
+</div>
+</div>
+<a id="ac19dfe7b52dd26e738123ac8401e9d1d" name="ac19dfe7b52dd26e738123ac8401e9d1d"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ac19dfe7b52dd26e738123ac8401e9d1d">&#9670;&#160;</a></span>destroyPanelGroupItem()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void dock::ui::DockRuntime::destroyPanelGroupItem </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="classdock_1_1PanelGroup.html">PanelGroup</a> *</td>          <td class="paramname"><span class="paramname"><em>group</em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>删除分组视图（分组销毁时） </p>
+
+</div>
+</div>
+<a id="a84f6c70bf382a06d23f5cbe3474de736" name="a84f6c70bf382a06d23f5cbe3474de736"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a84f6c70bf382a06d23f5cbe3474de736">&#9670;&#160;</a></span>engine()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">QQmlEngine * dock::ui::DockRuntime::engine </td>
+          <td>(</td>
+          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel inline">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>QML 引擎（由 <a class="el" href="namespacedock.html#a119a420f8947c2697b4c16af326c94c0" title="初始化停靠组件">dock::init</a> 注入） </p>
+
+</div>
+</div>
+<a id="a5ff13d3f8db5181c586c8b9804b99ec1" name="a5ff13d3f8db5181c586c8b9804b99ec1"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a5ff13d3f8db5181c586c8b9804b99ec1">&#9670;&#160;</a></span>existingPanelGroupItem()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classdock_1_1ui_1_1PanelGroupItem.html">PanelGroupItem</a> * dock::ui::DockRuntime::existingPanelGroupItem </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="classdock_1_1PanelGroup.html">PanelGroup</a> *</td>          <td class="paramname"><span class="paramname"><em>group</em></span></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>仅查询缓存中的分组视图（不创建），用于陈旧视图收口 </p>
+
+</div>
+</div>
+<a id="a047ea17d4f52348435ce2c0f8489be0e" name="a047ea17d4f52348435ce2c0f8489be0e"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a047ea17d4f52348435ce2c0f8489be0e">&#9670;&#160;</a></span>forgetPanelGroupItem()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void dock::ui::DockRuntime::forgetPanelGroupItem </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="classdock_1_1PanelGroup.html">PanelGroup</a> *</td>          <td class="paramname"><span class="paramname"><em>group</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="classdock_1_1ui_1_1PanelGroupItem.html">PanelGroupItem</a> *</td>          <td class="paramname"><span class="paramname"><em>view</em></span>&#160;)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>从缓存中注销分组视图（视图析构或分组清空时） </p>
+
+</div>
+</div>
+<a id="a463ae7a10bc59bb175241fe7025d991e" name="a463ae7a10bc59bb175241fe7025d991e"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a463ae7a10bc59bb175241fe7025d991e">&#9670;&#160;</a></span>instance()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classdock_1_1ui_1_1DockRuntime.html">DockRuntime</a> &amp; dock::ui::DockRuntime::instance </td>
+          <td>(</td>
+          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel static">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>单例 </p>
+
+</div>
+</div>
+<a id="a7aefbc5f289613110fa8ef2a0deed386" name="a7aefbc5f289613110fa8ef2a0deed386"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a7aefbc5f289613110fa8ef2a0deed386">&#9670;&#160;</a></span>panelContentItem()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">QQuickItem * dock::ui::DockRuntime::panelContentItem </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="classdock_1_1DockPanel.html">DockPanel</a> *</td>          <td class="paramname"><span class="paramname"><em>panel</em></span></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>面板的 client item（可能为空） </p>
+
+</div>
+</div>
+<a id="ac0f97a393f7bc99ddc19ed93563f1c43" name="ac0f97a393f7bc99ddc19ed93563f1c43"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ac0f97a393f7bc99ddc19ed93563f1c43">&#9670;&#160;</a></span>panelGroupItem()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classdock_1_1ui_1_1PanelGroupItem.html">PanelGroupItem</a> * dock::ui::DockRuntime::panelGroupItem </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="classdock_1_1PanelGroup.html">PanelGroup</a> *</td>          <td class="paramname"><span class="paramname"><em>group</em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>取得（必要时创建）分组视图；所有权由本服务持有 </p>
+
+</div>
+</div>
+<a id="a5aedbca8880fb162517eac42586efc49" name="a5aedbca8880fb162517eac42586efc49"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a5aedbca8880fb162517eac42586efc49">&#9670;&#160;</a></span>panelHome()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">QQuickItem * dock::ui::DockRuntime::panelHome </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="classdock_1_1DockPanel.html">DockPanel</a> *</td>          <td class="paramname"><span class="paramname"><em>panel</em></span></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>面板的宿主项（可能为空） </p>
+
+</div>
+</div>
+<a id="a9e517fba494950501e7ab06159695a90" name="a9e517fba494950501e7ab06159695a90"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a9e517fba494950501e7ab06159695a90">&#9670;&#160;</a></span>registerPanelContent()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void dock::ui::DockRuntime::registerPanelContent </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="classdock_1_1DockPanel.html">DockPanel</a> *</td>          <td class="paramname"><span class="paramname"><em>panel</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">QQuickItem *</td>          <td class="paramname"><span class="paramname"><em>guest_item</em></span>&#160;)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>登记面板的 client item（QML 声明的内容项） </p>
+
+</div>
+</div>
+<a id="a5e612004444379104b7006eca33a0fb6" name="a5e612004444379104b7006eca33a0fb6"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a5e612004444379104b7006eca33a0fb6">&#9670;&#160;</a></span>registerPanelHome()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void dock::ui::DockRuntime::registerPanelHome </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="classdock_1_1DockPanel.html">DockPanel</a> *</td>          <td class="paramname"><span class="paramname"><em>panel</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">QQuickItem *</td>          <td class="paramname"><span class="paramname"><em>home_item</em></span>&#160;)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>登记面板的宿主项（client 离开分组视图时的归属；跨窗口移动时仍会重建场景图） </p>
+
+</div>
+</div>
+<a id="a484e9775ce836c0e188090d7d5e122a3" name="a484e9775ce836c0e188090d7d5e122a3"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a484e9775ce836c0e188090d7d5e122a3">&#9670;&#160;</a></span>setEngine()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void dock::ui::DockRuntime::setEngine </td>
+          <td>(</td>
+          <td class="paramtype">QQmlEngine *</td>          <td class="paramname"><span class="paramname"><em>engine</em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel inline">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>注入 QML 引擎 </p>
+
+</div>
+</div>
+<a id="a0adc7547361acec7205f11c6b8eefd96" name="a0adc7547361acec7205f11c6b8eefd96"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a0adc7547361acec7205f11c6b8eefd96">&#9670;&#160;</a></span>unregisterPanelContent()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void dock::ui::DockRuntime::unregisterPanelContent </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="classdock_1_1DockPanel.html">DockPanel</a> *</td>          <td class="paramname"><span class="paramname"><em>panel</em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>注销面板的 client item </p>
+
+</div>
+</div>
+<a id="a460dc7e2589b6c65e1a2f902df68da2f" name="a460dc7e2589b6c65e1a2f902df68da2f"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a460dc7e2589b6c65e1a2f902df68da2f">&#9670;&#160;</a></span>unregisterPanelHome()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void dock::ui::DockRuntime::unregisterPanelHome </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="classdock_1_1DockPanel.html">DockPanel</a> *</td>          <td class="paramname"><span class="paramname"><em>panel</em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>注销面板的宿主项 </p>
+
+</div>
+</div>
+<a id="aab9c4382fdc768c42eaa814d0dfbbc51" name="aab9c4382fdc768c42eaa814d0dfbbc51"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aab9c4382fdc768c42eaa814d0dfbbc51">&#9670;&#160;</a></span>zonesOverlay()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classdock_1_1ui_1_1DropZoneOverlay.html">DropZoneOverlay</a> * dock::ui::DockRuntime::zonesOverlay </td>
+          <td>(</td>
+          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>透明顶层指示器窗口（懒创建，随应用存活） </p>
+
+</div>
+</div>
+<a name="doc-variable-members" id="doc-variable-members"></a><h2 id="header-doc-variable-members" class="groupheader">类成员变量说明</h2>
+<a id="aeab9afad33d4046b55a0b4158c963d80" name="aeab9afad33d4046b55a0b4158c963d80"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aeab9afad33d4046b55a0b4158c963d80">&#9670;&#160;</a></span>engine_</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">QQmlEngine* dock::ui::DockRuntime::engine_ = nullptr</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel private">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="ac709ed0a23e2dcb8e514d858c090b5e6" name="ac709ed0a23e2dcb8e514d858c090b5e6"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ac709ed0a23e2dcb8e514d858c090b5e6">&#9670;&#160;</a></span>group_items_</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">QHash&lt;<a class="el" href="classdock_1_1PanelGroup.html">PanelGroup</a>*, <a class="el" href="classdock_1_1ui_1_1PanelGroupItem.html">PanelGroupItem</a>*&gt; dock::ui::DockRuntime::group_items_</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel private">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a48727a8da71f9942dbcb84798383ff2b" name="a48727a8da71f9942dbcb84798383ff2b"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a48727a8da71f9942dbcb84798383ff2b">&#9670;&#160;</a></span>overlay_</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classdock_1_1ui_1_1DropZoneOverlay.html">DropZoneOverlay</a>* dock::ui::DockRuntime::overlay_ = nullptr</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel private">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a716c5700be093f1eae8fd1d06e2c274c" name="a716c5700be093f1eae8fd1d06e2c274c"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a716c5700be093f1eae8fd1d06e2c274c">&#9670;&#160;</a></span>panel_contents_</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">QHash&lt;<a class="el" href="classdock_1_1DockPanel.html">DockPanel</a>*, QQuickItem*&gt; dock::ui::DockRuntime::panel_contents_</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel private">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="add16335c9a0b2901690c6ecc43f1a179" name="add16335c9a0b2901690c6ecc43f1a179"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#add16335c9a0b2901690c6ecc43f1a179">&#9670;&#160;</a></span>panel_homes_</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">QHash&lt;<a class="el" href="classdock_1_1DockPanel.html">DockPanel</a>*, QQuickItem*&gt; dock::ui::DockRuntime::panel_homes_</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel private">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<hr/>该类的文档由以下文件生成:<ul>
+<li>app/dock/ui/<a class="el" href="DockRuntime_8h_source.html">DockRuntime.h</a></li>
+<li>app/dock/ui/<a class="el" href="DockRuntime_8cpp.html">DockRuntime.cpp</a></li>
+</ul>
+</div><!-- contents -->
+<!-- start footer part -->
+<hr class="footer"/><address class="footer"><small>
+制作者&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.14.0
+</small></address>
+</div><!-- doc-content -->
+</body>
+</html>

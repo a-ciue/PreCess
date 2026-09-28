@@ -1,0 +1,15 @@
+<map id="docktest::StubView" name="docktest::StubView">
+<area shape="rect" id="Node000001" title="记录几何与可见性的桩视图" alt="" coords="504,58,651,83"/>
+<area shape="rect" id="Node000004" title=" " alt="" coords="725,5,916,45"/>
+<area shape="poly" id="edge4_Node000004_Node000001" title=" " alt="" coords="659,53,725,40,726,46,660,58"/>
+<area shape="rect" id="Node000002" href="$classdock_1_1DockView.html" title="视图抽象接口" alt="" coords="5,51,132,77"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="146,60,300,59,480,61,504,62,504,68,480,67,300,64,146,65"/>
+<area shape="rect" id="Node000005" href="$classdock_1_1DockObject.html" title="控制器基类" alt="" coords="227,83,363,109"/>
+<area shape="poly" id="edge7_Node000005_Node000002" title=" " alt="" coords="125,77,156,84,227,91,226,97,156,89,124,83"/>
+<area shape="rect" id="Node000003" title=" " alt="" coords="1033,51,1251,91"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="1020,80,879,84,725,83,651,79,651,74,725,77,878,78,1019,74"/>
+<area shape="poly" id="edge3_Node000003_Node000004" title=" " alt="" coords="930,38,1034,53,1033,58,930,43"/>
+<area shape="poly" id="edge5_Node000001_Node000005" title=" " alt="" coords="376,91,480,84,505,81,506,86,480,89,377,97"/>
+<area shape="rect" id="Node000006" title=" " alt="" coords="31,119,106,145"/>
+<area shape="poly" id="edge6_Node000005_Node000006" title=" " alt="" coords="119,121,226,104,227,109,120,127"/>
+</map>

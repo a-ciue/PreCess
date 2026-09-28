@@ -1,0 +1,17 @@
+<map id="app/dock/docking/ZoneGeometry.h" name="app/dock/docking/ZoneGeometry.h">
+<area shape="rect" id="Node000001" title="经典拖放指示器几何：内 4 + 中心 + 外 4，共 9 个" alt="" coords="122,5,370,31"/>
+<area shape="rect" id="Node000002" href="$DockEnums_8h.html" title="停靠组件的公共枚举与判定辅助" alt="" coords="84,79,195,104"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="230,33,170,73,167,69,227,28"/>
+<area shape="rect" id="Node000007" title=" " alt="" coords="219,79,273,104"/>
+<area shape="poly" id="edge6_Node000001_Node000007" title=" " alt="" coords="249,31,249,65,243,65,243,31"/>
+<area shape="rect" id="Node000008" title=" " alt="" coords="298,79,359,104"/>
+<area shape="poly" id="edge7_Node000001_Node000008" title=" " alt="" coords="261,29,306,67,303,72,258,33"/>
+<area shape="rect" id="Node000003" href="$DockMetrics_8h.html" title="停靠组件的默认行为常量" alt="" coords="23,152,138,177"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="132,106,101,143,97,140,128,103"/>
+<area shape="rect" id="Node000006" title=" " alt="" coords="162,152,237,177"/>
+<area shape="poly" id="edge5_Node000002_Node000006" title=" " alt="" coords="151,103,183,140,179,143,147,106"/>
+<area shape="rect" id="Node000004" title=" " alt="" coords="5,225,71,251"/>
+<area shape="poly" id="edge3_Node000003_Node000004" title=" " alt="" coords="76,179,54,215,50,212,71,176"/>
+<area shape="rect" id="Node000005" title=" " alt="" coords="95,225,154,251"/>
+<area shape="poly" id="edge4_Node000003_Node000005" title=" " alt="" coords="90,176,113,212,108,215,86,179"/>
+</map>

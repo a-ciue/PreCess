@@ -1,0 +1,26 @@
+<map id="docktest::PlacedDocks" name="docktest::PlacedDocks">
+<area shape="rect" id="Node000001" title="与 Main.qml Component.onCompleted 等价的停靠调用序列" alt="" coords="5,413,175,439"/>
+<area shape="rect" id="Node000002" href="$classdock_1_1DockPanel.html" title="逻辑停靠面板" alt="" coords="261,197,391,223"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="249,217,207,228,170,249,152,267,137,288,114,335,101,380,94,413,89,412,95,379,109,334,132,286,148,264,167,245,205,223,247,212"/>
+<area shape="rect" id="Node000006" href="$classdock_1_1PanelGroup.html" title="选项卡分组" alt="" coords="321,413,456,439"/>
+<area shape="poly" id="edge9_Node000006_Node000002" title=" " alt="" coords="352,231,362,245,379,292,388,340,392,413,386,413,382,341,373,294,357,248,348,234"/>
+<area shape="rect" id="Node000003" href="$classdock_1_1DockObject.html" title="控制器基类" alt="" coords="145,101,281,127"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="239,134,314,195,310,199,236,138"/>
+<area shape="poly" id="edge7_Node000006_Node000003" title=" " alt="" coords="214,141,216,192,224,258,233,293,245,327,262,359,284,387,301,401,322,411,320,416,299,406,280,391,258,362,241,329,228,294,219,259,210,192,209,141"/>
+<area shape="rect" id="Node000004" title=" " alt="" coords="166,5,241,31"/>
+<area shape="poly" id="edge3_Node000003_Node000004" title=" " alt="" coords="209,44,214,101,209,101,203,45"/>
+<area shape="rect" id="Node000005" href="$classdock_1_1DockView.html" title="视图抽象接口" alt="" coords="265,5,392,31"/>
+<area shape="poly" id="edge5_Node000002_Node000005" title=" " alt="" coords="331,45,329,197,323,197,326,44"/>
+<area shape="poly" id="edge4_Node000003_Node000005" title=" " alt="" coords="292,39,265,57,241,80,223,103,219,99,237,76,262,53,289,35"/>
+<area shape="poly" id="edge6_Node000002_Node000006" title=" " alt="" coords="323,409,304,391,286,354,284,321,292,287,304,246,315,222,320,224,308,248,297,288,290,321,292,353,308,388,327,405"/>
+<area shape="rect" id="Node000007" href="$classdock_1_1LayoutClient.html" title="被布局引擎托管的实体接口" alt="" coords="456,101,599,127"/>
+<area shape="poly" id="edge8_Node000006_Node000007" title=" " alt="" coords="521,140,486,247,478,288,475,322,468,355,448,391,434,405,418,415,415,411,431,401,444,388,463,353,470,321,472,288,481,246,516,139"/>
+<area shape="rect" id="Node000008" href="$classdock_1_1LayoutNode.html" title="布局树节点（叶子节点与容器节点的公共基类）" alt="" coords="539,197,678,223"/>
+<area shape="poly" id="edge12_Node000008_Node000007" title=" " alt="" coords="548,136,601,195,597,199,544,139"/>
+<area shape="poly" id="edge10_Node000006_Node000008" title=" " alt="" coords="548,231,524,249,512,266,505,283,503,318,501,354,495,372,481,391,463,406,442,416,440,411,460,401,477,388,490,370,496,353,498,318,500,282,507,264,520,245,545,226"/>
+<area shape="rect" id="Node000010" href="$classdock_1_1BoxNode.html" title="盒式布局容器" alt="" coords="587,413,707,439"/>
+<area shape="poly" id="edge14_Node000010_Node000008" title=" " alt="" coords="654,228,670,245,685,283,688,316,681,350,670,390,658,414,654,412,665,388,676,348,682,316,680,284,665,248,650,232"/>
+<area shape="rect" id="Node000009" href="$structdock_1_1NodeMetrics.html" title="单个布局节点的几何与尺寸约束" alt="" coords="623,101,765,127"/>
+<area shape="poly" id="edge11_Node000008_Node000009" title=" " alt="" coords="676,139,621,199,617,195,672,135"/>
+<area shape="poly" id="edge13_Node000008_Node000010" title=" " alt="" coords="618,405,608,390,595,343,593,295,597,253,603,222,608,223,603,253,599,295,600,343,612,388,622,402"/>
+</map>

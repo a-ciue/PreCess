@@ -1,0 +1,5 @@
+<map id="app/dock/ui/DividerItem.h" name="app/dock/ui/DividerItem.h">
+<area shape="rect" id="Node000001" title="分隔条视图：把鼠标拖动转成引擎的分隔条移动" alt="" coords="5,5,196,31"/>
+<area shape="rect" id="Node000002" title=" " alt="" coords="51,79,150,104"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="103,31,103,65,98,65,98,31"/>
+</map>

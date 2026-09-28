@@ -1,0 +1,7 @@
+<map id="app/dock/ui/GlobalMouseRelay.h" name="app/dock/ui/GlobalMouseRelay.h">
+<area shape="rect" id="Node000001" title="全局输入事件过滤器：拖拽鼠标事件转发 + Esc 取消 + Ctrl+Tab 标签切换" alt="" coords="145,5,378,31"/>
+<area shape="rect" id="Node000002" href="$GlobalMouseRelay_8cpp.html" title="全局输入事件过滤器的实现" alt="" coords="5,79,253,104"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="230,39,152,81,150,76,227,35"/>
+<area shape="rect" id="Node000003" href="$QmlRegistration_8cpp.html" title="QML 类型注册与组件初始化" alt="" coords="277,79,512,104"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="296,35,374,76,372,81,293,39"/>
+</map>

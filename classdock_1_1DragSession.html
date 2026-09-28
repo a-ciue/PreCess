@@ -1,0 +1,1672 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="zh">
+<head>
+<meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=11"/>
+<meta name="generator" content="Doxygen 1.14.0"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>PreCess: dock::DragSession类 参考</title>
+<link href="tabs.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="jquery.js"></script>
+<script type="text/javascript" src="dynsections.js"></script>
+<script type="text/javascript" src="clipboard.js"></script>
+<script type="text/javascript" src="cookie.js"></script>
+<link href="search/search.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="search/searchdata.js"></script>
+<script type="text/javascript" src="search/search.js"></script>
+<link href="doxygen.css" rel="stylesheet" type="text/css" />
+</head>
+<body>
+<div id="top"><!-- do not remove this div, it is closed by doxygen! -->
+<div id="titlearea">
+<table cellspacing="0" cellpadding="0">
+ <tbody>
+ <tr id="projectrow">
+  <td id="projectlogo"><img alt="Logo" src="PreCess.ico"/></td>
+  <td id="projectalign">
+   <div id="projectname">PreCess
+   </div>
+  </td>
+ </tr>
+ </tbody>
+</table>
+</div>
+<!-- end header part -->
+<!-- 制作者 Doxygen 1.14.0 -->
+<script type="text/javascript">
+var searchBox = new SearchBox("searchBox", "search/",'.html');
+</script>
+<script type="text/javascript">
+$(function() { codefold.init(); });
+</script>
+<script type="text/javascript" src="menudata.js"></script>
+<script type="text/javascript" src="menu.js"></script>
+<script type="text/javascript">
+$(function() {
+  initMenu('',true,false,'search.php','搜索',false);
+  $(function() { init_search(); });
+});
+</script>
+<div id="main-nav"></div>
+<!-- window showing the filter options -->
+<div id="MSearchSelectWindow"
+     onmouseover="return searchBox.OnSearchSelectShow()"
+     onmouseout="return searchBox.OnSearchSelectHide()"
+     onkeydown="return searchBox.OnSearchSelectKey(event)">
+</div>
+
+<!-- iframe showing the search results (closed by default) -->
+<div id="MSearchResultsWindow">
+<div id="MSearchResults">
+<div class="SRPage">
+<div id="SRIndex">
+<div id="SRResults"></div>
+<div class="SRStatus" id="Loading">载入中...</div>
+<div class="SRStatus" id="Searching">搜索中...</div>
+<div class="SRStatus" id="NoMatches">未找到</div>
+</div>
+</div>
+</div>
+</div>
+
+<div id="nav-path" class="navpath">
+  <ul>
+<li class="navelem"><a href="namespacedock.html">dock</a></li><li class="navelem"><a href="classdock_1_1DragSession.html">DragSession</a></li>  </ul>
+</div>
+</div><!-- top -->
+<div id="doc-content">
+<div class="header">
+  <div class="summary">
+<a href="#nested-classes">类</a> &#124;
+<a href="#pub-types">Public 类型</a> &#124;
+<a href="#signals">信号</a> &#124;
+<a href="#pub-methods">Public 成员函数</a> &#124;
+<a href="#pub-static-methods">静态 Public 成员函数</a> &#124;
+<a href="#pri-methods">Private 成员函数</a> &#124;
+<a href="#pri-static-methods">静态 Private 成员函数</a> &#124;
+<a href="#pri-attribs">Private 属性</a> &#124;
+<a href="classdock_1_1DragSession-members.html">所有成员列表</a>  </div>
+  <div class="headertitle"><div class="title">dock::DragSession类 参考</div></div>
+</div><!--header-->
+<div class="contents">
+
+<p>拖拽状态机  
+ <a href="#details">更多...</a></p>
+
+<p><code>#include &lt;<a class="el" href="DragSession_8h_source.html">DragSession.h</a>&gt;</code></p>
+<div class="dynheader">
+类 dock::DragSession 继承关系图:</div>
+<div class="dyncontent">
+<div class="center"><img src="classdock_1_1DragSession__inherit__graph.png" border="0" usemap="#adock_1_1DragSession_inherit__map" loading="lazy" alt="Inheritance graph"/></div>
+<map name="adock_1_1DragSession_inherit__map" id="adock_1_1DragSession_inherit__map">
+<area shape="rect" title="拖拽状态机" alt="" coords="5,79,148,104"/>
+<area shape="rect" title=" " alt="" coords="39,5,114,31"/>
+<area shape="poly" title=" " alt="" coords="79,44,79,79,74,79,74,44"/>
+</map>
+<center><span class="legend">[<a href="graph_legend.html">图例</a>]</span></center></div>
+<div class="dynheader">
+dock::DragSession 的协作图:</div>
+<div class="dyncontent">
+<div class="center"><img src="classdock_1_1DragSession__coll__graph.png" border="0" usemap="#adock_1_1DragSession_coll__map" loading="lazy" alt="Collaboration graph"/></div>
+<map name="adock_1_1DragSession_coll__map" id="adock_1_1DragSession_coll__map">
+<area shape="rect" title="拖拽状态机" alt="" coords="1387,146,1529,171"/>
+<area shape="rect" title=" " alt="" coords="39,19,114,45"/>
+<area shape="poly" title=" " alt="" coords="127,21,216,9,317,3,1186,3,1229,7,1270,20,1309,38,1346,59,1407,106,1446,144,1443,148,1403,110,1343,64,1307,42,1268,25,1228,12,1186,8,317,8,216,14,128,26"/>
+<area shape="rect" href="classdock_1_1DockObject.html" title="控制器基类" alt="" coords="251,197,387,222"/>
+<area shape="poly" title=" " alt="" coords="128,42,178,60,227,89,256,115,280,144,313,195,308,198,276,147,252,118,224,93,175,65,126,47"/>
+<area shape="rect" href="classdock_1_1DragHandle.html" title="拖拽源描述" alt="" coords="412,61,551,86"/>
+<area shape="poly" title=" " alt="" coords="564,67,765,63,1186,63,1223,65,1261,72,1332,94,1393,120,1437,144,1434,148,1390,125,1330,99,1259,77,1223,70,1186,68,765,68,565,72"/>
+<area shape="rect" href="classdock_1_1DockView.html" title="视图抽象接口" alt="" coords="13,197,140,222"/>
+<area shape="poly" title=" " alt="" coords="128,190,442,83,443,89,129,195"/>
+<area shape="poly" title=" " alt="" coords="154,207,250,207,250,212,154,212"/>
+<area shape="rect" href="classdock_1_1DockPanel.html" title="逻辑停靠面板" alt="" coords="827,421,957,446"/>
+<area shape="poly" title=" " alt="" coords="105,229,158,270,231,321,319,371,365,392,413,409,580,420,827,429,827,434,580,425,411,415,363,397,316,376,228,326,154,275,102,233"/>
+<area shape="rect" href="classdock_1_1DragProxy.html" title="拖拽会话中的浮动窗口" alt="" coords="1120,121,1249,146"/>
+<area shape="poly" title=" " alt="" coords="1263,138,1387,149,1386,155,1263,143"/>
+<area shape="rect" href="classdock_1_1DockWindow.html" title="浮动窗口" alt="" coords="819,121,965,146"/>
+<area shape="poly" title=" " alt="" coords="979,131,1120,131,1120,136,979,136"/>
+<area shape="poly" title=" " alt="" coords="382,191,542,155,639,138,737,125,818,124,818,130,738,131,640,143,543,160,383,196"/>
+<area shape="rect" href="classdock_1_1DockRegion.html" title="停靠区域" alt="" coords="575,197,713,222"/>
+<area shape="poly" title=" " alt="" coords="400,207,574,207,574,212,400,212"/>
+<area shape="rect" href="classdock_1_1PanelGroup.html" title="选项卡分组" alt="" coords="577,450,711,475"/>
+<area shape="poly" title=" " alt="" coords="332,233,363,292,386,323,414,349,432,359,448,366,480,370,513,373,552,386,598,417,632,448,628,452,595,421,549,390,512,378,479,375,447,371,429,364,410,353,382,326,358,295,327,236"/>
+<area shape="poly" title=" " alt="" coords="401,218,486,234,587,259,694,294,746,316,796,342,823,360,847,381,882,419,878,422,843,384,819,364,793,346,744,321,692,299,586,264,485,239,400,223"/>
+<area shape="poly" title=" " alt="" coords="727,202,1386,160,1386,166,727,207"/>
+<area shape="poly" title=" " alt="" coords="684,189,737,168,828,143,830,149,738,173,686,194"/>
+<area shape="rect" href="structdock_1_1DropTarget.html" title="拖放落点目标" alt="" coords="826,269,958,294"/>
+<area shape="poly" title=" " alt="" coords="673,229,738,278,782,286,826,287,826,292,781,292,736,282,670,233"/>
+<area shape="rect" href="classdock_1_1LayoutNode.html" title="布局树节点（叶子节点与容器节点的公共基类）" alt="" coords="249,530,388,555"/>
+<area shape="poly" title=" " alt="" coords="329,516,361,452,384,416,410,382,464,329,522,283,619,220,622,224,525,287,467,333,414,386,388,419,366,455,333,518"/>
+<area shape="rect" href="classdock_1_1BoxNode.html" title="盒式布局容器" alt="" coords="584,578,704,603"/>
+<area shape="poly" title=" " alt="" coords="402,552,584,579,584,585,401,557"/>
+<area shape="poly" title=" " alt="" coords="402,543,475,538,513,532,550,522,593,499,627,474,630,478,596,504,552,526,514,537,476,544,402,549"/>
+<area shape="rect" href="structdock_1_1NodeMetrics.html" title="单个布局节点的几何与尺寸约束" alt="" coords="5,546,148,571"/>
+<area shape="poly" title=" " alt="" coords="162,557,225,555,249,552,249,557,226,560,162,563"/>
+<area shape="rect" href="classdock_1_1LayoutClient.html" title="被布局引擎托管的实体接口" alt="" coords="5,471,148,497"/>
+<area shape="poly" title=" " alt="" coords="144,497,266,527,265,533,142,503"/>
+<area shape="poly" title=" " alt="" coords="162,478,576,463,576,468,162,483"/>
+<area shape="poly" title=" " alt="" coords="590,610,551,618,505,623,458,623,411,613,387,602,364,587,330,558,334,554,368,583,389,598,413,608,458,617,505,618,550,613,589,604"/>
+<area shape="poly" title=" " alt="" coords="674,481,704,499,738,513,766,517,794,513,848,502,902,487,1007,448,1108,399,1200,346,1283,291,1352,241,1441,169,1444,173,1355,245,1286,296,1203,350,1110,404,1010,453,904,493,850,508,795,519,766,523,737,519,701,504,671,486"/>
+<area shape="poly" title=" " alt="" coords="650,435,681,352,705,302,735,256,768,220,804,189,868,144,871,148,807,193,771,224,739,259,710,305,686,354,655,437"/>
+<area shape="poly" title=" " alt="" coords="725,457,794,451,836,443,837,449,795,456,726,462"/>
+<area shape="poly" title=" " alt="" coords="672,440,872,292,875,296,675,444"/>
+<area shape="poly" title=" " alt="" coords="872,458,838,486,795,509,758,514,722,506,689,493,663,478,665,473,691,488,723,501,759,508,794,504,835,482,868,454"/>
+<area shape="poly" title=" " alt="" coords="971,273,1054,265,1152,251,1258,230,1362,201,1400,186,1433,169,1435,174,1402,191,1364,207,1259,236,1153,256,1054,270,972,279"/>
+</map>
+<center><span class="legend">[<a href="graph_legend.html">图例</a>]</span></center></div>
+<table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 id="header-nested-classes" class="groupheader"><a id="nested-classes" name="nested-classes"></a>
+类</h2></td></tr>
+<tr class="memitem:FloatOrigin" id="r_FloatOrigin"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structdock_1_1DragSession_1_1FloatOrigin.html">FloatOrigin</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">单个标签浮出后的回停来源  <a href="structdock_1_1DragSession_1_1FloatOrigin.html#details">更多...</a><br /></td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 id="header-pub-types" class="groupheader"><a id="pub-types" name="pub-types"></a>
+Public 类型</h2></td></tr>
+<tr class="memitem:a675b625941ef8014227127fdf384b0eb" id="r_a675b625941ef8014227127fdf384b0eb"><td class="memItemLeft" align="right" valign="top">enum class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a675b625941ef8014227127fdf384b0eb">Phase</a> { <a class="el" href="#a675b625941ef8014227127fdf384b0ebae599161956d626eda4cb0a5ffb85271c">Idle</a>
+, <a class="el" href="#a675b625941ef8014227127fdf384b0ebadb4e3578582cd2cd9c679eef11172d83">Armed</a>
+, <a class="el" href="#a675b625941ef8014227127fdf384b0eba7c0a2f343108fd64dbd0b5e97a75f145">Dragging</a>
+ }</td></tr>
+<tr class="memdesc:a675b625941ef8014227127fdf384b0eb"><td class="mdescLeft">&#160;</td><td class="mdescRight">状态  <a href="#a675b625941ef8014227127fdf384b0eb">更多...</a><br /></td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 id="header-signals" class="groupheader"><a id="signals" name="signals"></a>
+信号</h2></td></tr>
+<tr class="memitem:aca4a8c836df9302a9211304f5c22595e" id="r_aca4a8c836df9302a9211304f5c22595e"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#aca4a8c836df9302a9211304f5c22595e">phaseChanged</a> (<a class="el" href="#a675b625941ef8014227127fdf384b0eb">Phase</a> <a class="el" href="#ad3c64aced01dc3dd243b34a87a40c89c">phase</a>)</td></tr>
+<tr class="memdesc:aca4a8c836df9302a9211304f5c22595e"><td class="mdescLeft">&#160;</td><td class="mdescRight">状态变化  <br /></td></tr>
+<tr class="memitem:a08bc5142440b189976df05f7524b0a81" id="r_a08bc5142440b189976df05f7524b0a81"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a08bc5142440b189976df05f7524b0a81">zoneChanged</a> ()</td></tr>
+<tr class="memdesc:a08bc5142440b189976df05f7524b0a81"><td class="mdescLeft">&#160;</td><td class="mdescRight">悬停落点变化（视图层刷新指示器）  <br /></td></tr>
+<tr class="memitem:a67d0b4f01c0b386bf5a8da54fd944f27" id="r_a67d0b4f01c0b386bf5a8da54fd944f27"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a67d0b4f01c0b386bf5a8da54fd944f27">layoutChanged</a> ()</td></tr>
+<tr class="memdesc:a67d0b4f01c0b386bf5a8da54fd944f27"><td class="mdescLeft">&#160;</td><td class="mdescRight">命令式布局变化（浮动/回停），视图层需重新同步  <br /></td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 id="header-pub-methods" class="groupheader"><a id="pub-methods" name="pub-methods"></a>
+Public 成员函数</h2></td></tr>
+<tr class="memitem:ad3c64aced01dc3dd243b34a87a40c89c" id="r_ad3c64aced01dc3dd243b34a87a40c89c"><td class="memItemLeft" align="right" valign="top"><a class="el" href="#a675b625941ef8014227127fdf384b0eb">Phase</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ad3c64aced01dc3dd243b34a87a40c89c">phase</a> () const</td></tr>
+<tr class="memdesc:ad3c64aced01dc3dd243b34a87a40c89c"><td class="mdescLeft">&#160;</td><td class="mdescRight">当前状态  <br /></td></tr>
+<tr class="memitem:a9cc7a0fcba1b4591698d04abff2eb72e" id="r_a9cc7a0fcba1b4591698d04abff2eb72e"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classdock_1_1DragHandle.html">DragHandle</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a9cc7a0fcba1b4591698d04abff2eb72e">handle</a> () const</td></tr>
+<tr class="memdesc:a9cc7a0fcba1b4591698d04abff2eb72e"><td class="mdescLeft">&#160;</td><td class="mdescRight">当前拖拽源（空闲时为空）  <br /></td></tr>
+<tr class="memitem:a3d8ff95df18c0721623e3942f19d35b4" id="r_a3d8ff95df18c0721623e3942f19d35b4"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classdock_1_1DockWindow.html">DockWindow</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a3d8ff95df18c0721623e3942f19d35b4">dragWindow</a> () const</td></tr>
+<tr class="memdesc:a3d8ff95df18c0721623e3942f19d35b4"><td class="mdescLeft">&#160;</td><td class="mdescRight">当前被拖拽的浮动窗口（空闲时为空）  <br /></td></tr>
+<tr class="memitem:ad7b2fe74cb1af854a2be86cd057539f1" id="r_ad7b2fe74cb1af854a2be86cd057539f1"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classdock_1_1DockRegion.html">DockRegion</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ad7b2fe74cb1af854a2be86cd057539f1">hoveredRegion</a> () const</td></tr>
+<tr class="memdesc:ad7b2fe74cb1af854a2be86cd057539f1"><td class="mdescLeft">&#160;</td><td class="mdescRight">悬停命中的停靠区域  <br /></td></tr>
+<tr class="memitem:ae230875642af1988f676d05d71785d5a" id="r_ae230875642af1988f676d05d71785d5a"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classdock_1_1PanelGroup.html">PanelGroup</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ae230875642af1988f676d05d71785d5a">hoveredGroup</a> () const</td></tr>
+<tr class="memdesc:ae230875642af1988f676d05d71785d5a"><td class="mdescLeft">&#160;</td><td class="mdescRight">悬停命中的分组（外落点为空）  <br /></td></tr>
+<tr class="memitem:a96e1ad04b7ab13d520759da98c1af271" id="r_a96e1ad04b7ab13d520759da98c1af271"><td class="memItemLeft" align="right" valign="top"><a class="el" href="namespacedock.html#a3ebdb589812160d63d8811311bf4ed63">DropZone</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a96e1ad04b7ab13d520759da98c1af271">hoveredZone</a> () const</td></tr>
+<tr class="memdesc:a96e1ad04b7ab13d520759da98c1af271"><td class="mdescLeft">&#160;</td><td class="mdescRight">当前悬停落点  <br /></td></tr>
+<tr class="memitem:a332721bbf3a65caa2a070a94a9ee999c" id="r_a332721bbf3a65caa2a070a94a9ee999c"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a332721bbf3a65caa2a070a94a9ee999c">hoveredTabIndex</a> () const</td></tr>
+<tr class="memdesc:a332721bbf3a65caa2a070a94a9ee999c"><td class="mdescLeft">&#160;</td><td class="mdescRight">悬停分组的标签插入位置（-1 表示无效）  <br /></td></tr>
+<tr class="memitem:aad1fe3efe5de5a128bb61a86ef725241" id="r_aad1fe3efe5de5a128bb61a86ef725241"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#aad1fe3efe5de5a128bb61a86ef725241">beginAt</a> (<a class="el" href="classdock_1_1DragHandle.html">DragHandle</a> *<a class="el" href="#a9cc7a0fcba1b4591698d04abff2eb72e">handle</a>, const QPoint &amp;global_pos)</td></tr>
+<tr class="memdesc:aad1fe3efe5de5a128bb61a86ef725241"><td class="mdescLeft">&#160;</td><td class="mdescRight">视图层在标题栏/标签按下时调用  <br /></td></tr>
+<tr class="memitem:a33cdede6249b35a1deae614c02eabdc8" id="r_a33cdede6249b35a1deae614c02eabdc8"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a33cdede6249b35a1deae614c02eabdc8">updateAt</a> (const QPoint &amp;global_pos)</td></tr>
+<tr class="memdesc:a33cdede6249b35a1deae614c02eabdc8"><td class="mdescLeft">&#160;</td><td class="mdescRight">视图层转发鼠标移动  <br /></td></tr>
+<tr class="memitem:ab1bfc717e5d692d19f69b922b18c37e8" id="r_ab1bfc717e5d692d19f69b922b18c37e8"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ab1bfc717e5d692d19f69b922b18c37e8">endAt</a> (const QPoint &amp;global_pos)</td></tr>
+<tr class="memdesc:ab1bfc717e5d692d19f69b922b18c37e8"><td class="mdescLeft">&#160;</td><td class="mdescRight">视图层转发鼠标释放  <br /></td></tr>
+<tr class="memitem:ad1007fd2cf6b92b21143772305df21cf" id="r_ad1007fd2cf6b92b21143772305df21cf"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ad1007fd2cf6b92b21143772305df21cf">cancel</a> ()</td></tr>
+<tr class="memdesc:ad1007fd2cf6b92b21143772305df21cf"><td class="mdescLeft">&#160;</td><td class="mdescRight">取消当前按下/拖拽（Esc、窗口失焦等）  <br /></td></tr>
+<tr class="memitem:a46b0b8a6d3613809b303ca9e77db264e" id="r_a46b0b8a6d3613809b303ca9e77db264e"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a46b0b8a6d3613809b303ca9e77db264e">abort</a> ()</td></tr>
+<tr class="memdesc:a46b0b8a6d3613809b303ca9e77db264e"><td class="mdescLeft">&#160;</td><td class="mdescRight">静默中止会话（宿主拆解期调用）  <br /></td></tr>
+<tr class="memitem:a47a746d2191dbd7ce19e2b5b1be62f33" id="r_a47a746d2191dbd7ce19e2b5b1be62f33"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a47a746d2191dbd7ce19e2b5b1be62f33">detachGroup</a> (<a class="el" href="classdock_1_1PanelGroup.html">PanelGroup</a> *group)</td></tr>
+<tr class="memdesc:a47a746d2191dbd7ce19e2b5b1be62f33"><td class="mdescLeft">&#160;</td><td class="mdescRight">使分组浮动（浮动按钮/浮动菜单）；成功返回 true  <br /></td></tr>
+<tr class="memitem:a15e278b1de25345f77573cc8a94bc10d" id="r_a15e278b1de25345f77573cc8a94bc10d"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a15e278b1de25345f77573cc8a94bc10d">reattachGroup</a> (<a class="el" href="classdock_1_1PanelGroup.html">PanelGroup</a> *group)</td></tr>
+<tr class="memdesc:a15e278b1de25345f77573cc8a94bc10d"><td class="mdescLeft">&#160;</td><td class="mdescRight">使浮动分组回停：有占位则回原位，单标签浮出则归还源分组  <br /></td></tr>
+<tr class="memitem:a1d56c423d304a99b33a4f92e8b5c67ee" id="r_a1d56c423d304a99b33a4f92e8b5c67ee"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a1d56c423d304a99b33a4f92e8b5c67ee">toggleDetached</a> (<a class="el" href="classdock_1_1PanelGroup.html">PanelGroup</a> *group)</td></tr>
+<tr class="memdesc:a1d56c423d304a99b33a4f92e8b5c67ee"><td class="mdescLeft">&#160;</td><td class="mdescRight">切换分组浮动/停靠状态  <br /></td></tr>
+<tr class="memitem:ad7c20944eed159ee901b2c8767a339fd" id="r_ad7c20944eed159ee901b2c8767a339fd"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classdock_1_1DockWindow.html">DockWindow</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ad7c20944eed159ee901b2c8767a339fd">createFloatingWindow</a> ()</td></tr>
+<tr class="memdesc:ad7c20944eed159ee901b2c8767a339fd"><td class="mdescLeft">&#160;</td><td class="mdescRight">创建浮动窗口（含视图与空窗监听）；拖拽与布局恢复共用  <br /></td></tr>
+<tr class="memitem:a2d80e070bd0c31ef6fb5d9725c1d99da" id="r_a2d80e070bd0c31ef6fb5d9725c1d99da"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a2d80e070bd0c31ef6fb5d9725c1d99da">destroyFloatingWindow</a> (<a class="el" href="classdock_1_1DockWindow.html">DockWindow</a> *window)</td></tr>
+<tr class="memdesc:a2d80e070bd0c31ef6fb5d9725c1d99da"><td class="mdescLeft">&#160;</td><td class="mdescRight">销毁浮动窗口（布局恢复/清理用：先回收窗内分组再销毁）  <br /></td></tr>
+<tr class="memitem:ae52daafb81b53014fd2db79ce91af072" id="r_ae52daafb81b53014fd2db79ce91af072"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ae52daafb81b53014fd2db79ce91af072">parkedOrigin</a> (<a class="el" href="classdock_1_1PanelGroup.html">PanelGroup</a> *group, <a class="el" href="classdock_1_1PanelGroup.html">PanelGroup</a> *&amp;origin, int &amp;index) const</td></tr>
+<tr class="memdesc:ae52daafb81b53014fd2db79ce91af072"><td class="mdescLeft">&#160;</td><td class="mdescRight">查询单标签浮停的归还来源（无来源返回 false）  <br /></td></tr>
+<tr class="memitem:aec8270b0ea7ab93a40dfa74fe0338899" id="r_aec8270b0ea7ab93a40dfa74fe0338899"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#aec8270b0ea7ab93a40dfa74fe0338899">restoreParkedGroup</a> (<a class="el" href="classdock_1_1PanelGroup.html">PanelGroup</a> *group, <a class="el" href="classdock_1_1PanelGroup.html">PanelGroup</a> *origin, int index)</td></tr>
+<tr class="memdesc:aec8270b0ea7ab93a40dfa74fe0338899"><td class="mdescLeft">&#160;</td><td class="mdescRight">恢复单标签浮停的归还来源（仅供布局恢复）  <br /></td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 id="header-pub-static-methods" class="groupheader"><a id="pub-static-methods" name="pub-static-methods"></a>
+静态 Public 成员函数</h2></td></tr>
+<tr class="memitem:a4680798cb49d0b8345520c3ea21edb41" id="r_a4680798cb49d0b8345520c3ea21edb41"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="classdock_1_1DragSession.html">DragSession</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a4680798cb49d0b8345520c3ea21edb41">self</a> ()</td></tr>
+<tr class="memdesc:a4680798cb49d0b8345520c3ea21edb41"><td class="mdescLeft">&#160;</td><td class="mdescRight">单例  <br /></td></tr>
+<tr class="memitem:a59c5a1e2112d4aabe6399a25ca88a8ab" id="r_a59c5a1e2112d4aabe6399a25ca88a8ab"><td class="memItemLeft" align="right" valign="top">static bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a59c5a1e2112d4aabe6399a25ca88a8ab">isFloating</a> (<a class="el" href="classdock_1_1PanelGroup.html">PanelGroup</a> *group)</td></tr>
+<tr class="memdesc:a59c5a1e2112d4aabe6399a25ca88a8ab"><td class="mdescLeft">&#160;</td><td class="mdescRight">分组是否处于浮动状态（含停靠在浮窗内的次级分组）  <br /></td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 id="header-pri-methods" class="groupheader"><a id="pri-methods" name="pri-methods"></a>
+Private 成员函数</h2></td></tr>
+<tr class="memitem:aed93a719ca029bf519d25f5f256bd711" id="r_aed93a719ca029bf519d25f5f256bd711"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#aed93a719ca029bf519d25f5f256bd711">DragSession</a> (QObject *parent=nullptr)</td></tr>
+<tr class="memitem:a96ec47400cf5fc40d1a737a6e7e22e49" id="r_a96ec47400cf5fc40d1a737a6e7e22e49"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a96ec47400cf5fc40d1a737a6e7e22e49">~DragSession</a> () override</td></tr>
+<tr class="memitem:a6e8dd3723145ab47a87f7236bb61a642" id="r_a6e8dd3723145ab47a87f7236bb61a642"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a6e8dd3723145ab47a87f7236bb61a642">startDrag</a> (const QPoint &amp;global_pos)</td></tr>
+<tr class="memitem:a2243b3bb8e1fbd846412c03911e10ed7" id="r_a2243b3bb8e1fbd846412c03911e10ed7"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a2243b3bb8e1fbd846412c03911e10ed7">updateHover</a> (const QPoint &amp;global_pos)</td></tr>
+<tr class="memitem:ad887dec869ac53459909d6609aa68739" id="r_ad887dec869ac53459909d6609aa68739"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ad887dec869ac53459909d6609aa68739">applyDrop</a> ()</td></tr>
+<tr class="memdesc:ad887dec869ac53459909d6609aa68739"><td class="mdescLeft">&#160;</td><td class="mdescRight">应用悬停落点；落点未被消费（目标无效）时返回 false  <br /></td></tr>
+<tr class="memitem:aa296b55cd7fb5b893b9ced378107b489" id="r_aa296b55cd7fb5b893b9ced378107b489"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#aa296b55cd7fb5b893b9ced378107b489">cleanup</a> ()</td></tr>
+<tr class="memitem:a38e8999fef09e9e693f7d8da7c572f38" id="r_a38e8999fef09e9e693f7d8da7c572f38"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a38e8999fef09e9e693f7d8da7c572f38">resetSessionMembers</a> ()</td></tr>
+<tr class="memdesc:a38e8999fef09e9e693f7d8da7c572f38"><td class="mdescLeft">&#160;</td><td class="mdescRight">重置会话成员（拖拽代理/句柄/来源/临时分组等）；不发信号、不触碰模型对象  <br /></td></tr>
+<tr class="memitem:a378e73e45d6e8037ce15288a6feea64a" id="r_a378e73e45d6e8037ce15288a6feea64a"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a378e73e45d6e8037ce15288a6feea64a">parkFloatingGroup</a> (<a class="el" href="classdock_1_1DockWindow.html">DockWindow</a> *window)</td></tr>
+<tr class="memdesc:a378e73e45d6e8037ce15288a6feea64a"><td class="mdescLeft">&#160;</td><td class="mdescRight">保留浮动：临时组登记回停来源并归属浮动窗口  <br /></td></tr>
+<tr class="memitem:ae9a11f0473975a9cdfed84883c5536bd" id="r_ae9a11f0473975a9cdfed84883c5536bd"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ae9a11f0473975a9cdfed84883c5536bd">refreshFloatingWatcher</a> (<a class="el" href="classdock_1_1DockWindow.html">DockWindow</a> *window)</td></tr>
+<tr class="memdesc:ae9a11f0473975a9cdfed84883c5536bd"><td class="mdescLeft">&#160;</td><td class="mdescRight">重绑浮窗内全部分组的监听（分组/区域变化时调用）  <br /></td></tr>
+<tr class="memitem:a9d32a3331ca65aa15a5aace21a0bfc83" id="r_a9d32a3331ca65aa15a5aace21a0bfc83"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a9d32a3331ca65aa15a5aace21a0bfc83">refreshAllFloatingWatchers</a> ()</td></tr>
+<tr class="memdesc:a9d32a3331ca65aa15a5aace21a0bfc83"><td class="mdescLeft">&#160;</td><td class="mdescRight">重绑全部浮窗的监听  <br /></td></tr>
+<tr class="memitem:a0532f469e185628ae5ea0962e5621239" id="r_a0532f469e185628ae5ea0962e5621239"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a0532f469e185628ae5ea0962e5621239">evacuateWindow</a> (<a class="el" href="classdock_1_1DockWindow.html">DockWindow</a> *window)</td></tr>
+<tr class="memdesc:a0532f469e185628ae5ea0962e5621239"><td class="mdescLeft">&#160;</td><td class="mdescRight">整窗回收：把浮窗内全部分组归还主区域后关闭  <br /></td></tr>
+<tr class="memitem:acf26539594cbaa1ec347e5c14969d685" id="r_acf26539594cbaa1ec347e5c14969d685"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classdock_1_1DockWindow.html">DockWindow</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#acf26539594cbaa1ec347e5c14969d685">createDragWindow</a> ()</td></tr>
+<tr class="memdesc:acf26539594cbaa1ec347e5c14969d685"><td class="mdescLeft">&#160;</td><td class="mdescRight">创建浮动窗口核心对象并通知视图层创建窗口  <br /></td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 id="header-pri-static-methods" class="groupheader"><a id="pri-static-methods" name="pri-static-methods"></a>
+静态 Private 成员函数</h2></td></tr>
+<tr class="memitem:ab347448168df1be58fc85b497a8d3031" id="r_ab347448168df1be58fc85b497a8d3031"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="classdock_1_1LayoutNode.html">LayoutNode</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ab347448168df1be58fc85b497a8d3031">takeGroupNode</a> (<a class="el" href="classdock_1_1PanelGroup.html">PanelGroup</a> *group, <a class="el" href="classdock_1_1DockWindow.html">DockWindow</a> *window)</td></tr>
+<tr class="memdesc:ab347448168df1be58fc85b497a8d3031"><td class="mdescLeft">&#160;</td><td class="mdescRight">摘出分组节点（统一入口），所有权交还调用方  <br /></td></tr>
+<tr class="memitem:aada05f8e4ccbf76debad16228fa2a152" id="r_aada05f8e4ccbf76debad16228fa2a152"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#aada05f8e4ccbf76debad16228fa2a152">disposeGroupNode</a> (<a class="el" href="classdock_1_1PanelGroup.html">PanelGroup</a> *group, <a class="el" href="classdock_1_1DockWindow.html">DockWindow</a> *window)</td></tr>
+<tr class="memdesc:aada05f8e4ccbf76debad16228fa2a152"><td class="mdescLeft">&#160;</td><td class="mdescRight">删除分组节点（含从布局树摘除）；分组本身保留  <br /></td></tr>
+<tr class="memitem:a2e5c1897e4215594de782baebb567416" id="r_a2e5c1897e4215594de782baebb567416"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a2e5c1897e4215594de782baebb567416">closeWindowIfEmpty</a> (<a class="el" href="classdock_1_1DockWindow.html">DockWindow</a> *window)</td></tr>
+<tr class="memdesc:a2e5c1897e4215594de782baebb567416"><td class="mdescLeft">&#160;</td><td class="mdescRight">仅在浮窗不再承载任何分组时销毁窗口  <br /></td></tr>
+<tr class="memitem:a8dbac15bd9456efd4c90d4a15c03c59f" id="r_a8dbac15bd9456efd4c90d4a15c03c59f"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a8dbac15bd9456efd4c90d4a15c03c59f">destroyDragWindow</a> (<a class="el" href="classdock_1_1DockWindow.html">DockWindow</a> *window)</td></tr>
+<tr class="memdesc:a8dbac15bd9456efd4c90d4a15c03c59f"><td class="mdescLeft">&#160;</td><td class="mdescRight">关闭并销毁浮动窗口核心对象  <br /></td></tr>
+<tr class="memitem:a42c79be2ab2355518c143a4709f25428" id="r_a42c79be2ab2355518c143a4709f25428"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="classdock_1_1DockWindow.html">DockWindow</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a42c79be2ab2355518c143a4709f25428">windowForGroup</a> (<a class="el" href="classdock_1_1PanelGroup.html">PanelGroup</a> *group)</td></tr>
+<tr class="memdesc:a42c79be2ab2355518c143a4709f25428"><td class="mdescLeft">&#160;</td><td class="mdescRight">查找承载指定分组的浮动窗口  <br /></td></tr>
+<tr class="memitem:acfea72a79d8494418a884e43598d1314" id="r_acfea72a79d8494418a884e43598d1314"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="classdock_1_1DockRegion.html">DockRegion</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#acfea72a79d8494418a884e43598d1314">regionForGroup</a> (<a class="el" href="classdock_1_1PanelGroup.html">PanelGroup</a> *group)</td></tr>
+<tr class="memdesc:acfea72a79d8494418a884e43598d1314"><td class="mdescLeft">&#160;</td><td class="mdescRight">查找分组所在的停靠区域（主窗口或浮动窗口）  <br /></td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 id="header-pri-attribs" class="groupheader"><a id="pri-attribs" name="pri-attribs"></a>
+Private 属性</h2></td></tr>
+<tr class="memitem:a3217e7f0a6cc062737d0184c4d04ed12" id="r_a3217e7f0a6cc062737d0184c4d04ed12"><td class="memItemLeft" align="right" valign="top"><a class="el" href="#a675b625941ef8014227127fdf384b0eb">Phase</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a3217e7f0a6cc062737d0184c4d04ed12">phase_</a> = <a class="el" href="#a675b625941ef8014227127fdf384b0ebae599161956d626eda4cb0a5ffb85271c">Phase::Idle</a></td></tr>
+<tr class="memitem:a9a215e4cca1c69aa8a46e9c027c601a1" id="r_a9a215e4cca1c69aa8a46e9c027c601a1"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classdock_1_1DragHandle.html">DragHandle</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a9a215e4cca1c69aa8a46e9c027c601a1">handle_</a> = nullptr</td></tr>
+<tr class="memitem:a0d3efdfdcae2fe8248d9272311917888" id="r_a0d3efdfdcae2fe8248d9272311917888"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classdock_1_1DragProxy.html">DragProxy</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a0d3efdfdcae2fe8248d9272311917888">drag_proxy_</a> = nullptr</td></tr>
+<tr class="memitem:a53d9dc4cd7e1f0eeff5cc46b494ebaf1" id="r_a53d9dc4cd7e1f0eeff5cc46b494ebaf1"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classdock_1_1DockRegion.html">DockRegion</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a53d9dc4cd7e1f0eeff5cc46b494ebaf1">source_region_</a> = nullptr</td></tr>
+<tr class="memitem:a11f770ff64337ed60081a582509ef4fc" id="r_a11f770ff64337ed60081a582509ef4fc"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structdock_1_1DropTarget.html">DropTarget</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a11f770ff64337ed60081a582509ef4fc">hover_</a></td></tr>
+<tr class="memitem:a0b976946b3b9ec530730fa2de9dce896" id="r_a0b976946b3b9ec530730fa2de9dce896"><td class="memItemLeft" align="right" valign="top">QPoint&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a0b976946b3b9ec530730fa2de9dce896">press_pos_</a></td></tr>
+<tr class="memitem:ada7ed21328743a20de0c187672a0f2c0" id="r_ada7ed21328743a20de0c187672a0f2c0"><td class="memItemLeft" align="right" valign="top">QPointer&lt; <a class="el" href="classdock_1_1DockPanel.html">DockPanel</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ada7ed21328743a20de0c187672a0f2c0">dragged_panel_</a></td></tr>
+<tr class="memitem:a9fde070a12bd367b52eb7c3e25bc1845" id="r_a9fde070a12bd367b52eb7c3e25bc1845"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classdock_1_1PanelGroup.html">PanelGroup</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a9fde070a12bd367b52eb7c3e25bc1845">drag_group_</a> = nullptr</td></tr>
+<tr class="memitem:a8e0e7e3abff1172b9946a12b4e8c6c08" id="r_a8e0e7e3abff1172b9946a12b4e8c6c08"><td class="memItemLeft" align="right" valign="top">QPointer&lt; <a class="el" href="classdock_1_1PanelGroup.html">PanelGroup</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a8e0e7e3abff1172b9946a12b4e8c6c08">origin_group_</a></td></tr>
+<tr class="memitem:a488da0e74abee96f5a53fbefd8e23cf3" id="r_a488da0e74abee96f5a53fbefd8e23cf3"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a488da0e74abee96f5a53fbefd8e23cf3">origin_index_</a> = -1</td></tr>
+<tr class="memitem:a4c492de128c2956d144ccd8212446a4d" id="r_a4c492de128c2956d144ccd8212446a4d"><td class="memItemLeft" align="right" valign="top">QHash&lt; <a class="el" href="classdock_1_1PanelGroup.html">PanelGroup</a> *, <a class="el" href="structdock_1_1DragSession_1_1FloatOrigin.html">FloatOrigin</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a4c492de128c2956d144ccd8212446a4d">floating_origins_</a></td></tr>
+<tr class="memitem:a1866d0f4b3c67ed7fcb291f9e7bbe813" id="r_a1866d0f4b3c67ed7fcb291f9e7bbe813"><td class="memItemLeft" align="right" valign="top">QHash&lt; <a class="el" href="classdock_1_1DockWindow.html">DockWindow</a> *, QList&lt; QMetaObject::Connection &gt; &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a1866d0f4b3c67ed7fcb291f9e7bbe813">floating_watchers_</a></td></tr>
+<tr class="memitem:ad338159dbb36abc69cb468c552de6c19" id="r_ad338159dbb36abc69cb468c552de6c19"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ad338159dbb36abc69cb468c552de6c19">resolving_empty_</a> = false</td></tr>
+<tr class="memdesc:ad338159dbb36abc69cb468c552de6c19"><td class="mdescLeft">&#160;</td><td class="mdescRight">空窗回收处理中（防止嵌套 panelsChanged 重入）  <br /></td></tr>
+</table>
+<a name="details" id="details"></a><h2 id="header-details" class="groupheader">详细描述</h2>
+<div class="textblock"><p>拖拽状态机 </p>
+<p>视图层（全局鼠标过滤器 / QML 标题栏）在按下、移动、释放时驱动本控制器； 拖拽开始时把分组（或单个标签面板）摘入浮动窗口，释放时按悬停落点停靠 或保留浮动。本控制器为核心层单例，不依赖 QtQuick。 </p>
+</div><a name="doc-enum-members" id="doc-enum-members"></a><h2 id="header-doc-enum-members" class="groupheader">成员枚举类型说明</h2>
+<a id="a675b625941ef8014227127fdf384b0eb" name="a675b625941ef8014227127fdf384b0eb"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a675b625941ef8014227127fdf384b0eb">&#9670;&#160;</a></span>Phase</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">enum class <a class="el" href="#a675b625941ef8014227127fdf384b0eb">dock::DragSession::Phase</a></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel strong">strong</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>状态 </p>
+<table class="fieldtable">
+<tr><th colspan="2">枚举值</th></tr><tr><td class="fieldname"><a id="a675b625941ef8014227127fdf384b0ebae599161956d626eda4cb0a5ffb85271c" name="a675b625941ef8014227127fdf384b0ebae599161956d626eda4cb0a5ffb85271c"></a>Idle&#160;</td><td class="fielddoc"><p>空闲 </p>
+</td></tr>
+<tr><td class="fieldname"><a id="a675b625941ef8014227127fdf384b0ebadb4e3578582cd2cd9c679eef11172d83" name="a675b625941ef8014227127fdf384b0ebadb4e3578582cd2cd9c679eef11172d83"></a>Armed&#160;</td><td class="fielddoc"><p>已按下但未超过拖拽阈值 </p>
+</td></tr>
+<tr><td class="fieldname"><a id="a675b625941ef8014227127fdf384b0eba7c0a2f343108fd64dbd0b5e97a75f145" name="a675b625941ef8014227127fdf384b0eba7c0a2f343108fd64dbd0b5e97a75f145"></a>Dragging&#160;</td><td class="fielddoc"><p>拖拽中 </p>
+</td></tr>
+</table>
+
+</div>
+</div>
+<a name="doc-constructors" id="doc-constructors"></a><h2 id="header-doc-constructors" class="groupheader">构造及析构函数说明</h2>
+<a id="aed93a719ca029bf519d25f5f256bd711" name="aed93a719ca029bf519d25f5f256bd711"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aed93a719ca029bf519d25f5f256bd711">&#9670;&#160;</a></span>DragSession()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">dock::DragSession::DragSession </td>
+          <td>(</td>
+          <td class="paramtype">QObject *</td>          <td class="paramname"><span class="paramname"><em>parent</em></span><span class="paramdefsep"> = </span><span class="paramdefval">nullptr</span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel explicit">explicit</span><span class="mlabel private">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a96ec47400cf5fc40d1a737a6e7e22e49" name="a96ec47400cf5fc40d1a737a6e7e22e49"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a96ec47400cf5fc40d1a737a6e7e22e49">&#9670;&#160;</a></span>~DragSession()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">dock::DragSession::~DragSession </td>
+          <td>(</td>
+          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel override">override</span><span class="mlabel private">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a name="doc-func-members" id="doc-func-members"></a><h2 id="header-doc-func-members" class="groupheader">成员函数说明</h2>
+<a id="a46b0b8a6d3613809b303ca9e77db264e" name="a46b0b8a6d3613809b303ca9e77db264e"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a46b0b8a6d3613809b303ca9e77db264e">&#9670;&#160;</a></span>abort()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void dock::DragSession::abort </td>
+          <td>(</td>
+          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>静默中止会话（宿主拆解期调用） </p>
+<p>只重置会话状态并释放拖拽代理，不移动/回收任何模型对象、不发信号： 此时布局对象可能已处于销毁过程中，触碰它们会造成二次破坏。 </p>
+
+</div>
+</div>
+<a id="ad887dec869ac53459909d6609aa68739" name="ad887dec869ac53459909d6609aa68739"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ad887dec869ac53459909d6609aa68739">&#9670;&#160;</a></span>applyDrop()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool dock::DragSession::applyDrop </td>
+          <td>(</td>
+          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel private">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>应用悬停落点；落点未被消费（目标无效）时返回 false </p>
+
+</div>
+</div>
+<a id="aad1fe3efe5de5a128bb61a86ef725241" name="aad1fe3efe5de5a128bb61a86ef725241"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aad1fe3efe5de5a128bb61a86ef725241">&#9670;&#160;</a></span>beginAt()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void dock::DragSession::beginAt </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="classdock_1_1DragHandle.html">DragHandle</a> *</td>          <td class="paramname"><span class="paramname"><em>handle</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const QPoint &amp;</td>          <td class="paramname"><span class="paramname"><em>global_pos</em></span>&#160;)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>视图层在标题栏/标签按下时调用 </p>
+
+</div>
+</div>
+<a id="ad1007fd2cf6b92b21143772305df21cf" name="ad1007fd2cf6b92b21143772305df21cf"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ad1007fd2cf6b92b21143772305df21cf">&#9670;&#160;</a></span>cancel()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void dock::DragSession::cancel </td>
+          <td>(</td>
+          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>取消当前按下/拖拽（Esc、窗口失焦等） </p>
+
+</div>
+</div>
+<a id="aa296b55cd7fb5b893b9ced378107b489" name="aa296b55cd7fb5b893b9ced378107b489"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aa296b55cd7fb5b893b9ced378107b489">&#9670;&#160;</a></span>cleanup()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void dock::DragSession::cleanup </td>
+          <td>(</td>
+          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel private">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a2e5c1897e4215594de782baebb567416" name="a2e5c1897e4215594de782baebb567416"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a2e5c1897e4215594de782baebb567416">&#9670;&#160;</a></span>closeWindowIfEmpty()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void dock::DragSession::closeWindowIfEmpty </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="classdock_1_1DockWindow.html">DockWindow</a> *</td>          <td class="paramname"><span class="paramname"><em>window</em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel static">static</span><span class="mlabel private">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>仅在浮窗不再承载任何分组时销毁窗口 </p>
+
+</div>
+</div>
+<a id="acf26539594cbaa1ec347e5c14969d685" name="acf26539594cbaa1ec347e5c14969d685"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#acf26539594cbaa1ec347e5c14969d685">&#9670;&#160;</a></span>createDragWindow()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classdock_1_1DockWindow.html">DockWindow</a> * dock::DragSession::createDragWindow </td>
+          <td>(</td>
+          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel private">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>创建浮动窗口核心对象并通知视图层创建窗口 </p>
+
+</div>
+</div>
+<a id="ad7c20944eed159ee901b2c8767a339fd" name="ad7c20944eed159ee901b2c8767a339fd"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ad7c20944eed159ee901b2c8767a339fd">&#9670;&#160;</a></span>createFloatingWindow()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classdock_1_1DockWindow.html">DockWindow</a> * dock::DragSession::createFloatingWindow </td>
+          <td>(</td>
+          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>创建浮动窗口（含视图与空窗监听）；拖拽与布局恢复共用 </p>
+
+</div>
+</div>
+<a id="a8dbac15bd9456efd4c90d4a15c03c59f" name="a8dbac15bd9456efd4c90d4a15c03c59f"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a8dbac15bd9456efd4c90d4a15c03c59f">&#9670;&#160;</a></span>destroyDragWindow()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void dock::DragSession::destroyDragWindow </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="classdock_1_1DockWindow.html">DockWindow</a> *</td>          <td class="paramname"><span class="paramname"><em>window</em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel static">static</span><span class="mlabel private">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>关闭并销毁浮动窗口核心对象 </p>
+
+</div>
+</div>
+<a id="a2d80e070bd0c31ef6fb5d9725c1d99da" name="a2d80e070bd0c31ef6fb5d9725c1d99da"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a2d80e070bd0c31ef6fb5d9725c1d99da">&#9670;&#160;</a></span>destroyFloatingWindow()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void dock::DragSession::destroyFloatingWindow </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="classdock_1_1DockWindow.html">DockWindow</a> *</td>          <td class="paramname"><span class="paramname"><em>window</em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>销毁浮动窗口（布局恢复/清理用：先回收窗内分组再销毁） </p>
+
+</div>
+</div>
+<a id="a47a746d2191dbd7ce19e2b5b1be62f33" name="a47a746d2191dbd7ce19e2b5b1be62f33"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a47a746d2191dbd7ce19e2b5b1be62f33">&#9670;&#160;</a></span>detachGroup()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool dock::DragSession::detachGroup </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="classdock_1_1PanelGroup.html">PanelGroup</a> *</td>          <td class="paramname"><span class="paramname"><em>group</em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>使分组浮动（浮动按钮/浮动菜单）；成功返回 true </p>
+
+</div>
+</div>
+<a id="aada05f8e4ccbf76debad16228fa2a152" name="aada05f8e4ccbf76debad16228fa2a152"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aada05f8e4ccbf76debad16228fa2a152">&#9670;&#160;</a></span>disposeGroupNode()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void dock::DragSession::disposeGroupNode </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="classdock_1_1PanelGroup.html">PanelGroup</a> *</td>          <td class="paramname"><span class="paramname"><em>group</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="classdock_1_1DockWindow.html">DockWindow</a> *</td>          <td class="paramname"><span class="paramname"><em>window</em></span>&#160;)</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel static">static</span><span class="mlabel private">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>删除分组节点（含从布局树摘除）；分组本身保留 </p>
+
+</div>
+</div>
+<a id="a3d8ff95df18c0721623e3942f19d35b4" name="a3d8ff95df18c0721623e3942f19d35b4"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a3d8ff95df18c0721623e3942f19d35b4">&#9670;&#160;</a></span>dragWindow()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classdock_1_1DockWindow.html">DockWindow</a> * dock::DragSession::dragWindow </td>
+          <td>(</td>
+          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>当前被拖拽的浮动窗口（空闲时为空） </p>
+
+</div>
+</div>
+<a id="ab1bfc717e5d692d19f69b922b18c37e8" name="ab1bfc717e5d692d19f69b922b18c37e8"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ab1bfc717e5d692d19f69b922b18c37e8">&#9670;&#160;</a></span>endAt()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void dock::DragSession::endAt </td>
+          <td>(</td>
+          <td class="paramtype">const QPoint &amp;</td>          <td class="paramname"><span class="paramname"><em>global_pos</em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>视图层转发鼠标释放 </p>
+
+</div>
+</div>
+<a id="a0532f469e185628ae5ea0962e5621239" name="a0532f469e185628ae5ea0962e5621239"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a0532f469e185628ae5ea0962e5621239">&#9670;&#160;</a></span>evacuateWindow()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void dock::DragSession::evacuateWindow </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="classdock_1_1DockWindow.html">DockWindow</a> *</td>          <td class="paramname"><span class="paramname"><em>window</em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel private">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>整窗回收：把浮窗内全部分组归还主区域后关闭 </p>
+
+</div>
+</div>
+<a id="a9cc7a0fcba1b4591698d04abff2eb72e" name="a9cc7a0fcba1b4591698d04abff2eb72e"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a9cc7a0fcba1b4591698d04abff2eb72e">&#9670;&#160;</a></span>handle()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classdock_1_1DragHandle.html">DragHandle</a> * dock::DragSession::handle </td>
+          <td>(</td>
+          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel inline">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>当前拖拽源（空闲时为空） </p>
+
+</div>
+</div>
+<a id="ae230875642af1988f676d05d71785d5a" name="ae230875642af1988f676d05d71785d5a"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ae230875642af1988f676d05d71785d5a">&#9670;&#160;</a></span>hoveredGroup()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classdock_1_1PanelGroup.html">PanelGroup</a> * dock::DragSession::hoveredGroup </td>
+          <td>(</td>
+          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel inline">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>悬停命中的分组（外落点为空） </p>
+
+</div>
+</div>
+<a id="ad7b2fe74cb1af854a2be86cd057539f1" name="ad7b2fe74cb1af854a2be86cd057539f1"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ad7b2fe74cb1af854a2be86cd057539f1">&#9670;&#160;</a></span>hoveredRegion()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classdock_1_1DockRegion.html">DockRegion</a> * dock::DragSession::hoveredRegion </td>
+          <td>(</td>
+          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel inline">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>悬停命中的停靠区域 </p>
+
+</div>
+</div>
+<a id="a332721bbf3a65caa2a070a94a9ee999c" name="a332721bbf3a65caa2a070a94a9ee999c"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a332721bbf3a65caa2a070a94a9ee999c">&#9670;&#160;</a></span>hoveredTabIndex()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">int dock::DragSession::hoveredTabIndex </td>
+          <td>(</td>
+          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel inline">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>悬停分组的标签插入位置（-1 表示无效） </p>
+
+</div>
+</div>
+<a id="a96e1ad04b7ab13d520759da98c1af271" name="a96e1ad04b7ab13d520759da98c1af271"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a96e1ad04b7ab13d520759da98c1af271">&#9670;&#160;</a></span>hoveredZone()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="namespacedock.html#a3ebdb589812160d63d8811311bf4ed63">DropZone</a> dock::DragSession::hoveredZone </td>
+          <td>(</td>
+          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel inline">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>当前悬停落点 </p>
+
+</div>
+</div>
+<a id="a59c5a1e2112d4aabe6399a25ca88a8ab" name="a59c5a1e2112d4aabe6399a25ca88a8ab"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a59c5a1e2112d4aabe6399a25ca88a8ab">&#9670;&#160;</a></span>isFloating()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool dock::DragSession::isFloating </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="classdock_1_1PanelGroup.html">PanelGroup</a> *</td>          <td class="paramname"><span class="paramname"><em>group</em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel static">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>分组是否处于浮动状态（含停靠在浮窗内的次级分组） </p>
+
+</div>
+</div>
+<a id="a67d0b4f01c0b386bf5a8da54fd944f27" name="a67d0b4f01c0b386bf5a8da54fd944f27"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a67d0b4f01c0b386bf5a8da54fd944f27">&#9670;&#160;</a></span>layoutChanged</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void dock::DragSession::layoutChanged </td>
+          <td>(</td>
+          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel signal">signal</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>命令式布局变化（浮动/回停），视图层需重新同步 </p>
+
+</div>
+</div>
+<a id="ae52daafb81b53014fd2db79ce91af072" name="ae52daafb81b53014fd2db79ce91af072"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ae52daafb81b53014fd2db79ce91af072">&#9670;&#160;</a></span>parkedOrigin()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool dock::DragSession::parkedOrigin </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="classdock_1_1PanelGroup.html">PanelGroup</a> *</td>          <td class="paramname"><span class="paramname"><em>group</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="classdock_1_1PanelGroup.html">PanelGroup</a> *&amp;</td>          <td class="paramname"><span class="paramname"><em>origin</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int &amp;</td>          <td class="paramname"><span class="paramname"><em>index</em></span>&#160;) const</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>查询单标签浮停的归还来源（无来源返回 false） </p>
+
+</div>
+</div>
+<a id="a378e73e45d6e8037ce15288a6feea64a" name="a378e73e45d6e8037ce15288a6feea64a"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a378e73e45d6e8037ce15288a6feea64a">&#9670;&#160;</a></span>parkFloatingGroup()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void dock::DragSession::parkFloatingGroup </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="classdock_1_1DockWindow.html">DockWindow</a> *</td>          <td class="paramname"><span class="paramname"><em>window</em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel private">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>保留浮动：临时组登记回停来源并归属浮动窗口 </p>
+
+</div>
+</div>
+<a id="ad3c64aced01dc3dd243b34a87a40c89c" name="ad3c64aced01dc3dd243b34a87a40c89c"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ad3c64aced01dc3dd243b34a87a40c89c">&#9670;&#160;</a></span>phase()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="#a675b625941ef8014227127fdf384b0eb">Phase</a> dock::DragSession::phase </td>
+          <td>(</td>
+          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel inline">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>当前状态 </p>
+
+</div>
+</div>
+<a id="aca4a8c836df9302a9211304f5c22595e" name="aca4a8c836df9302a9211304f5c22595e"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aca4a8c836df9302a9211304f5c22595e">&#9670;&#160;</a></span>phaseChanged</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void dock::DragSession::phaseChanged </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="#a675b625941ef8014227127fdf384b0eb">Phase</a></td>          <td class="paramname"><span class="paramname"><em>phase</em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel signal">signal</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>状态变化 </p>
+
+</div>
+</div>
+<a id="a15e278b1de25345f77573cc8a94bc10d" name="a15e278b1de25345f77573cc8a94bc10d"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a15e278b1de25345f77573cc8a94bc10d">&#9670;&#160;</a></span>reattachGroup()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool dock::DragSession::reattachGroup </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="classdock_1_1PanelGroup.html">PanelGroup</a> *</td>          <td class="paramname"><span class="paramname"><em>group</em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>使浮动分组回停：有占位则回原位，单标签浮出则归还源分组 </p>
+
+</div>
+</div>
+<a id="a9d32a3331ca65aa15a5aace21a0bfc83" name="a9d32a3331ca65aa15a5aace21a0bfc83"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a9d32a3331ca65aa15a5aace21a0bfc83">&#9670;&#160;</a></span>refreshAllFloatingWatchers()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void dock::DragSession::refreshAllFloatingWatchers </td>
+          <td>(</td>
+          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel private">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>重绑全部浮窗的监听 </p>
+
+</div>
+</div>
+<a id="ae9a11f0473975a9cdfed84883c5536bd" name="ae9a11f0473975a9cdfed84883c5536bd"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ae9a11f0473975a9cdfed84883c5536bd">&#9670;&#160;</a></span>refreshFloatingWatcher()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void dock::DragSession::refreshFloatingWatcher </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="classdock_1_1DockWindow.html">DockWindow</a> *</td>          <td class="paramname"><span class="paramname"><em>window</em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel private">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>重绑浮窗内全部分组的监听（分组/区域变化时调用） </p>
+
+</div>
+</div>
+<a id="acfea72a79d8494418a884e43598d1314" name="acfea72a79d8494418a884e43598d1314"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#acfea72a79d8494418a884e43598d1314">&#9670;&#160;</a></span>regionForGroup()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classdock_1_1DockRegion.html">DockRegion</a> * dock::DragSession::regionForGroup </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="classdock_1_1PanelGroup.html">PanelGroup</a> *</td>          <td class="paramname"><span class="paramname"><em>group</em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel static">static</span><span class="mlabel private">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>查找分组所在的停靠区域（主窗口或浮动窗口） </p>
+
+</div>
+</div>
+<a id="a38e8999fef09e9e693f7d8da7c572f38" name="a38e8999fef09e9e693f7d8da7c572f38"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a38e8999fef09e9e693f7d8da7c572f38">&#9670;&#160;</a></span>resetSessionMembers()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void dock::DragSession::resetSessionMembers </td>
+          <td>(</td>
+          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel private">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>重置会话成员（拖拽代理/句柄/来源/临时分组等）；不发信号、不触碰模型对象 </p>
+
+</div>
+</div>
+<a id="aec8270b0ea7ab93a40dfa74fe0338899" name="aec8270b0ea7ab93a40dfa74fe0338899"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aec8270b0ea7ab93a40dfa74fe0338899">&#9670;&#160;</a></span>restoreParkedGroup()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void dock::DragSession::restoreParkedGroup </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="classdock_1_1PanelGroup.html">PanelGroup</a> *</td>          <td class="paramname"><span class="paramname"><em>group</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="classdock_1_1PanelGroup.html">PanelGroup</a> *</td>          <td class="paramname"><span class="paramname"><em>origin</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int</td>          <td class="paramname"><span class="paramname"><em>index</em></span>&#160;)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>恢复单标签浮停的归还来源（仅供布局恢复） </p>
+
+</div>
+</div>
+<a id="a4680798cb49d0b8345520c3ea21edb41" name="a4680798cb49d0b8345520c3ea21edb41"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a4680798cb49d0b8345520c3ea21edb41">&#9670;&#160;</a></span>self()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classdock_1_1DragSession.html">DragSession</a> &amp; dock::DragSession::self </td>
+          <td>(</td>
+          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel static">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>单例 </p>
+
+</div>
+</div>
+<a id="a6e8dd3723145ab47a87f7236bb61a642" name="a6e8dd3723145ab47a87f7236bb61a642"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a6e8dd3723145ab47a87f7236bb61a642">&#9670;&#160;</a></span>startDrag()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void dock::DragSession::startDrag </td>
+          <td>(</td>
+          <td class="paramtype">const QPoint &amp;</td>          <td class="paramname"><span class="paramname"><em>global_pos</em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel private">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="ab347448168df1be58fc85b497a8d3031" name="ab347448168df1be58fc85b497a8d3031"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ab347448168df1be58fc85b497a8d3031">&#9670;&#160;</a></span>takeGroupNode()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classdock_1_1LayoutNode.html">LayoutNode</a> * dock::DragSession::takeGroupNode </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="classdock_1_1PanelGroup.html">PanelGroup</a> *</td>          <td class="paramname"><span class="paramname"><em>group</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="classdock_1_1DockWindow.html">DockWindow</a> *</td>          <td class="paramname"><span class="paramname"><em>window</em></span>&#160;)</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel static">static</span><span class="mlabel private">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>摘出分组节点（统一入口），所有权交还调用方 </p>
+<p>优先级：浮窗主分组（releaseGroup，多分组浮窗只摘叶子）→ 所属区域 （根节点 takeRootNode，叶子 extractGroupNode）→ 直接返回 node。 调用方无需区分节点当前挂在主区域还是浮窗内。 </p>
+
+</div>
+</div>
+<a id="a1d56c423d304a99b33a4f92e8b5c67ee" name="a1d56c423d304a99b33a4f92e8b5c67ee"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a1d56c423d304a99b33a4f92e8b5c67ee">&#9670;&#160;</a></span>toggleDetached()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool dock::DragSession::toggleDetached </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="classdock_1_1PanelGroup.html">PanelGroup</a> *</td>          <td class="paramname"><span class="paramname"><em>group</em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>切换分组浮动/停靠状态 </p>
+
+</div>
+</div>
+<a id="a33cdede6249b35a1deae614c02eabdc8" name="a33cdede6249b35a1deae614c02eabdc8"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a33cdede6249b35a1deae614c02eabdc8">&#9670;&#160;</a></span>updateAt()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void dock::DragSession::updateAt </td>
+          <td>(</td>
+          <td class="paramtype">const QPoint &amp;</td>          <td class="paramname"><span class="paramname"><em>global_pos</em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>视图层转发鼠标移动 </p>
+
+</div>
+</div>
+<a id="a2243b3bb8e1fbd846412c03911e10ed7" name="a2243b3bb8e1fbd846412c03911e10ed7"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a2243b3bb8e1fbd846412c03911e10ed7">&#9670;&#160;</a></span>updateHover()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void dock::DragSession::updateHover </td>
+          <td>(</td>
+          <td class="paramtype">const QPoint &amp;</td>          <td class="paramname"><span class="paramname"><em>global_pos</em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel private">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a42c79be2ab2355518c143a4709f25428" name="a42c79be2ab2355518c143a4709f25428"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a42c79be2ab2355518c143a4709f25428">&#9670;&#160;</a></span>windowForGroup()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classdock_1_1DockWindow.html">DockWindow</a> * dock::DragSession::windowForGroup </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="classdock_1_1PanelGroup.html">PanelGroup</a> *</td>          <td class="paramname"><span class="paramname"><em>group</em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel static">static</span><span class="mlabel private">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>查找承载指定分组的浮动窗口 </p>
+
+</div>
+</div>
+<a id="a08bc5142440b189976df05f7524b0a81" name="a08bc5142440b189976df05f7524b0a81"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a08bc5142440b189976df05f7524b0a81">&#9670;&#160;</a></span>zoneChanged</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void dock::DragSession::zoneChanged </td>
+          <td>(</td>
+          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel signal">signal</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>悬停落点变化（视图层刷新指示器） </p>
+
+</div>
+</div>
+<a name="doc-variable-members" id="doc-variable-members"></a><h2 id="header-doc-variable-members" class="groupheader">类成员变量说明</h2>
+<a id="a9fde070a12bd367b52eb7c3e25bc1845" name="a9fde070a12bd367b52eb7c3e25bc1845"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a9fde070a12bd367b52eb7c3e25bc1845">&#9670;&#160;</a></span>drag_group_</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classdock_1_1PanelGroup.html">PanelGroup</a>* dock::DragSession::drag_group_ = nullptr</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel private">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a0d3efdfdcae2fe8248d9272311917888" name="a0d3efdfdcae2fe8248d9272311917888"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a0d3efdfdcae2fe8248d9272311917888">&#9670;&#160;</a></span>drag_proxy_</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classdock_1_1DragProxy.html">DragProxy</a>* dock::DragSession::drag_proxy_ = nullptr</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel private">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="ada7ed21328743a20de0c187672a0f2c0" name="ada7ed21328743a20de0c187672a0f2c0"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ada7ed21328743a20de0c187672a0f2c0">&#9670;&#160;</a></span>dragged_panel_</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">QPointer&lt;<a class="el" href="classdock_1_1DockPanel.html">DockPanel</a>&gt; dock::DragSession::dragged_panel_</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel private">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a4c492de128c2956d144ccd8212446a4d" name="a4c492de128c2956d144ccd8212446a4d"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a4c492de128c2956d144ccd8212446a4d">&#9670;&#160;</a></span>floating_origins_</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">QHash&lt;<a class="el" href="classdock_1_1PanelGroup.html">PanelGroup</a>*, <a class="el" href="structdock_1_1DragSession_1_1FloatOrigin.html">FloatOrigin</a>&gt; dock::DragSession::floating_origins_</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel private">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a1866d0f4b3c67ed7fcb291f9e7bbe813" name="a1866d0f4b3c67ed7fcb291f9e7bbe813"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a1866d0f4b3c67ed7fcb291f9e7bbe813">&#9670;&#160;</a></span>floating_watchers_</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">QHash&lt;<a class="el" href="classdock_1_1DockWindow.html">DockWindow</a>*, QList&lt;QMetaObject::Connection&gt; &gt; dock::DragSession::floating_watchers_</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel private">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a9a215e4cca1c69aa8a46e9c027c601a1" name="a9a215e4cca1c69aa8a46e9c027c601a1"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a9a215e4cca1c69aa8a46e9c027c601a1">&#9670;&#160;</a></span>handle_</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classdock_1_1DragHandle.html">DragHandle</a>* dock::DragSession::handle_ = nullptr</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel private">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a11f770ff64337ed60081a582509ef4fc" name="a11f770ff64337ed60081a582509ef4fc"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a11f770ff64337ed60081a582509ef4fc">&#9670;&#160;</a></span>hover_</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="structdock_1_1DropTarget.html">DropTarget</a> dock::DragSession::hover_</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel private">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a8e0e7e3abff1172b9946a12b4e8c6c08" name="a8e0e7e3abff1172b9946a12b4e8c6c08"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a8e0e7e3abff1172b9946a12b4e8c6c08">&#9670;&#160;</a></span>origin_group_</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">QPointer&lt;<a class="el" href="classdock_1_1PanelGroup.html">PanelGroup</a>&gt; dock::DragSession::origin_group_</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel private">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a488da0e74abee96f5a53fbefd8e23cf3" name="a488da0e74abee96f5a53fbefd8e23cf3"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a488da0e74abee96f5a53fbefd8e23cf3">&#9670;&#160;</a></span>origin_index_</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">int dock::DragSession::origin_index_ = -1</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel private">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a3217e7f0a6cc062737d0184c4d04ed12" name="a3217e7f0a6cc062737d0184c4d04ed12"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a3217e7f0a6cc062737d0184c4d04ed12">&#9670;&#160;</a></span>phase_</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="#a675b625941ef8014227127fdf384b0eb">Phase</a> dock::DragSession::phase_ = <a class="el" href="#a675b625941ef8014227127fdf384b0ebae599161956d626eda4cb0a5ffb85271c">Phase::Idle</a></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel private">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a0b976946b3b9ec530730fa2de9dce896" name="a0b976946b3b9ec530730fa2de9dce896"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a0b976946b3b9ec530730fa2de9dce896">&#9670;&#160;</a></span>press_pos_</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">QPoint dock::DragSession::press_pos_</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel private">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="ad338159dbb36abc69cb468c552de6c19" name="ad338159dbb36abc69cb468c552de6c19"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ad338159dbb36abc69cb468c552de6c19">&#9670;&#160;</a></span>resolving_empty_</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool dock::DragSession::resolving_empty_ = false</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel private">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>空窗回收处理中（防止嵌套 panelsChanged 重入） </p>
+
+</div>
+</div>
+<a id="a53d9dc4cd7e1f0eeff5cc46b494ebaf1" name="a53d9dc4cd7e1f0eeff5cc46b494ebaf1"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a53d9dc4cd7e1f0eeff5cc46b494ebaf1">&#9670;&#160;</a></span>source_region_</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classdock_1_1DockRegion.html">DockRegion</a>* dock::DragSession::source_region_ = nullptr</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel private">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<hr/>该类的文档由以下文件生成:<ul>
+<li>app/dock/docking/<a class="el" href="DragSession_8h_source.html">DragSession.h</a></li>
+<li>app/dock/docking/<a class="el" href="DragSession_8cpp.html">DragSession.cpp</a></li>
+</ul>
+</div><!-- contents -->
+<!-- start footer part -->
+<hr class="footer"/><address class="footer"><small>
+制作者&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.14.0
+</small></address>
+</div><!-- doc-content -->
+</body>
+</html>

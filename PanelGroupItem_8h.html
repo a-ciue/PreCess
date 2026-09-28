@@ -1,0 +1,161 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="zh">
+<head>
+<meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=11"/>
+<meta name="generator" content="Doxygen 1.14.0"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>PreCess: app/dock/ui/PanelGroupItem.h 文件参考</title>
+<link href="tabs.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="jquery.js"></script>
+<script type="text/javascript" src="dynsections.js"></script>
+<script type="text/javascript" src="clipboard.js"></script>
+<script type="text/javascript" src="cookie.js"></script>
+<link href="search/search.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="search/searchdata.js"></script>
+<script type="text/javascript" src="search/search.js"></script>
+<link href="doxygen.css" rel="stylesheet" type="text/css" />
+</head>
+<body>
+<div id="top"><!-- do not remove this div, it is closed by doxygen! -->
+<div id="titlearea">
+<table cellspacing="0" cellpadding="0">
+ <tbody>
+ <tr id="projectrow">
+  <td id="projectlogo"><img alt="Logo" src="PreCess.ico"/></td>
+  <td id="projectalign">
+   <div id="projectname">PreCess
+   </div>
+  </td>
+ </tr>
+ </tbody>
+</table>
+</div>
+<!-- end header part -->
+<!-- 制作者 Doxygen 1.14.0 -->
+<script type="text/javascript">
+var searchBox = new SearchBox("searchBox", "search/",'.html');
+</script>
+<script type="text/javascript">
+$(function() { codefold.init(); });
+</script>
+<script type="text/javascript" src="menudata.js"></script>
+<script type="text/javascript" src="menu.js"></script>
+<script type="text/javascript">
+$(function() {
+  initMenu('',true,false,'search.php','搜索',false);
+  $(function() { init_search(); });
+});
+</script>
+<div id="main-nav"></div>
+<!-- window showing the filter options -->
+<div id="MSearchSelectWindow"
+     onmouseover="return searchBox.OnSearchSelectShow()"
+     onmouseout="return searchBox.OnSearchSelectHide()"
+     onkeydown="return searchBox.OnSearchSelectKey(event)">
+</div>
+
+<!-- iframe showing the search results (closed by default) -->
+<div id="MSearchResultsWindow">
+<div id="MSearchResults">
+<div class="SRPage">
+<div id="SRIndex">
+<div id="SRResults"></div>
+<div class="SRStatus" id="Loading">载入中...</div>
+<div class="SRStatus" id="Searching">搜索中...</div>
+<div class="SRStatus" id="NoMatches">未找到</div>
+</div>
+</div>
+</div>
+</div>
+
+<div id="nav-path" class="navpath">
+  <ul>
+<li class="navelem"><a href="dir_d422163b96683743ed3963d4aac17747.html">app</a></li><li class="navelem"><a href="dir_4e5d8f7ce7c3dc0f91a395eba455c956.html">dock</a></li><li class="navelem"><a href="dir_8737260d02abc2e1280d33ed55618f28.html">ui</a></li>  </ul>
+</div>
+</div><!-- top -->
+<div id="doc-content">
+<div class="header">
+  <div class="summary">
+<a href="#nested-classes">类</a> &#124;
+<a href="#namespaces">命名空间</a>  </div>
+  <div class="headertitle"><div class="title">PanelGroupItem.h 文件参考</div></div>
+</div><!--header-->
+<div class="contents">
+
+<p>分组视图：QML 视图对象与 PanelGroup 控制器之间的桥  
+<a href="#details">更多...</a></p>
+<div class="textblock"><code>#include &quot;<a class="el" href="DockView_8h_source.html">docking/DockView.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="NodeMetrics_8h_source.html">tree/NodeMetrics.h</a>&quot;</code><br />
+<code>#include &lt;QQuickItem&gt;</code><br />
+<code>#include &lt;QStringList&gt;</code><br />
+<code>#include &lt;QVariant&gt;</code><br />
+</div><div class="textblock"><div class="dynheader">
+PanelGroupItem.h 的引用(Include)关系图:</div>
+<div class="dyncontent">
+<div class="center"><img src="PanelGroupItem_8h__incl.png" border="0" usemap="#aapp_2dock_2ui_2PanelGroupItem_8h" loading="lazy" alt=""/></div>
+<map name="aapp_2dock_2ui_2PanelGroupItem_8h" id="aapp_2dock_2ui_2PanelGroupItem_8h">
+<area shape="rect" title="分组视图：QML 视图对象与 PanelGroup 控制器之间的桥" alt="" coords="295,5,512,31"/>
+<area shape="rect" href="DockView_8h.html" title="停靠组件与视图层（QtQuick）之间的抽象接口" alt="" coords="5,79,159,104"/>
+<area shape="poly" title=" " alt="" coords="352,33,148,78,147,73,351,28"/>
+<area shape="rect" href="NodeMetrics_8h.html" title="布局节点的几何与尺寸约束信息" alt="" coords="183,79,330,104"/>
+<area shape="poly" title=" " alt="" coords="381,33,294,75,292,70,379,28"/>
+<area shape="rect" title=" " alt="" coords="354,79,453,104"/>
+<area shape="poly" title=" " alt="" coords="406,31,406,65,401,65,401,31"/>
+<area shape="rect" title=" " alt="" coords="477,79,570,104"/>
+<area shape="poly" title=" " alt="" coords="424,28,493,69,490,74,421,33"/>
+<area shape="rect" title=" " alt="" coords="595,79,673,104"/>
+<area shape="poly" title=" " alt="" coords="441,28,585,72,583,77,440,33"/>
+<area shape="rect" title=" " alt="" coords="59,152,121,177"/>
+<area shape="poly" title=" " alt="" coords="86,104,90,138,85,139,81,105"/>
+<area shape="rect" title=" " alt="" coords="149,152,207,177"/>
+<area shape="poly" title=" " alt="" coords="99,102,153,141,150,146,96,106"/>
+<area shape="poly" title=" " alt="" coords="231,106,131,149,129,144,229,102"/>
+<area shape="poly" title=" " alt="" coords="246,106,203,145,199,141,242,102"/>
+<area shape="rect" title=" " alt="" coords="235,152,273,177"/>
+<area shape="poly" title=" " alt="" coords="259,104,258,139,252,138,254,104"/>
+<area shape="rect" title=" " alt="" coords="298,152,383,177"/>
+<area shape="poly" title=" " alt="" coords="272,102,318,141,315,145,268,106"/>
+</map>
+</div>
+</div><div class="textblock"><div class="dynheader">
+此图展示该文件被哪些文件直接或间接地引用了:</div>
+<div class="dyncontent">
+<div class="center"><img src="PanelGroupItem_8h__dep__incl.png" border="0" usemap="#aapp_2dock_2ui_2PanelGroupItem_8hdep" loading="lazy" alt=""/></div>
+<map name="aapp_2dock_2ui_2PanelGroupItem_8hdep" id="aapp_2dock_2ui_2PanelGroupItem_8hdep">
+<area shape="rect" title="分组视图：QML 视图对象与 PanelGroup 控制器之间的桥" alt="" coords="477,5,694,31"/>
+<area shape="rect" href="TestDockQmlSmoke_8cpp.html" title="QML 集成冒烟测试：类型注册、中央持久部件、重开面板、拖拽浮窗回归" alt="" coords="5,79,205,119"/>
+<area shape="poly" title=" " alt="" coords="501,35,218,81,206,83,205,78,217,76,500,30"/>
+<area shape="rect" href="DockAreaItem_8cpp.html" title="布局区域视图的实现" alt="" coords="229,86,451,111"/>
+<area shape="poly" title=" " alt="" coords="538,37,377,89,375,83,536,32"/>
+<area shape="rect" href="DockHostItem_8cpp.html" title="主停靠区域视图的实现" alt="" coords="475,86,696,111"/>
+<area shape="poly" title=" " alt="" coords="588,44,588,86,583,86,583,44"/>
+<area shape="rect" href="DockRuntime_8cpp.html" title="QtQuick 视图层全局服务的实现" alt="" coords="720,86,936,111"/>
+<area shape="poly" title=" " alt="" coords="635,32,793,83,792,89,633,37"/>
+<area shape="rect" href="PanelGroupItem_8cpp.html" title="分组视图的实现" alt="" coords="960,86,1192,111"/>
+<area shape="poly" title=" " alt="" coords="671,30,1005,83,1004,89,670,35"/>
+</map>
+</div>
+</div>
+<p><a href="PanelGroupItem_8h_source.html">浏览该文件的源代码.</a></p>
+<table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 id="header-nested-classes" class="groupheader"><a id="nested-classes" name="nested-classes"></a>
+类</h2></td></tr>
+<tr class="memitem:dock_3A_3Aui_3A_3APanelGroupItem" id="r_dock_3A_3Aui_3A_3APanelGroupItem"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classdock_1_1ui_1_1PanelGroupItem.html">dock::ui::PanelGroupItem</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">分组视图  <a href="classdock_1_1ui_1_1PanelGroupItem.html#details">更多...</a><br /></td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 id="header-namespaces" class="groupheader"><a id="namespaces" name="namespaces"></a>
+命名空间</h2></td></tr>
+<tr class="memitem:dock" id="r_dock"><td class="memItemLeft" align="right" valign="top">namespace &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacedock.html">dock</a></td></tr>
+<tr class="memitem:dock_3A_3Aui" id="r_dock_3A_3Aui"><td class="memItemLeft" align="right" valign="top">namespace &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacedock_1_1ui.html">dock::ui</a></td></tr>
+</table>
+<a name="details" id="details"></a><h2 id="header-details" class="groupheader">详细描述</h2>
+<div class="textblock"><p>分组视图：QML 视图对象与 PanelGroup 控制器之间的桥 </p>
+</div></div><!-- contents -->
+<!-- start footer part -->
+<hr class="footer"/><address class="footer"><small>
+制作者&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.14.0
+</small></address>
+</div><!-- doc-content -->
+</body>
+</html>

@@ -1,0 +1,13 @@
+<map id="app/dock/ui/DockAreaItem.h" name="app/dock/ui/DockAreaItem.h">
+<area shape="rect" id="Node000001" title="布局区域视图：把 DockRegion 的布局树同步为 PanelGroupItem/DividerItem" alt="" coords="487,5,694,31"/>
+<area shape="rect" id="Node000002" href="$DividerItem_8cpp.html" title="分隔条视图的实现" alt="" coords="5,79,211,104"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="500,35,186,81,185,76,499,30"/>
+<area shape="rect" id="Node000003" href="$DockAreaItem_8cpp.html" title="布局区域视图的实现" alt="" coords="235,79,456,104"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="539,37,386,81,384,76,538,32"/>
+<area shape="rect" id="Node000004" href="$DockHostItem_8cpp.html" title="主停靠区域视图的实现" alt="" coords="480,79,701,104"/>
+<area shape="poly" id="edge3_Node000001_Node000004" title=" " alt="" coords="593,44,593,79,588,79,588,44"/>
+<area shape="rect" id="Node000005" href="$DockWindowItem_8cpp.html" title="浮动窗口视图的实现" alt="" coords="725,79,968,104"/>
+<area shape="poly" id="edge4_Node000001_Node000005" title=" " alt="" coords="645,32,806,76,805,81,644,37"/>
+<area shape="rect" id="Node000006" href="$PanelGroupItem_8cpp.html" title="分组视图的实现" alt="" coords="992,79,1224,104"/>
+<area shape="poly" id="edge5_Node000001_Node000006" title=" " alt="" coords="687,30,1025,76,1024,81,687,35"/>
+</map>

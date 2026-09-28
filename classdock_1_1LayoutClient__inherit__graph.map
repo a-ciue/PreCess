@@ -1,0 +1,5 @@
+<map id="dock::LayoutClient" name="dock::LayoutClient">
+<area shape="rect" id="Node000001" title="被布局引擎托管的实体接口" alt="" coords="5,5,148,31"/>
+<area shape="rect" id="Node000002" href="$classdock_1_1PanelGroup.html" title="选项卡分组" alt="" coords="9,79,144,104"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="79,44,79,79,74,79,74,44"/>
+</map>

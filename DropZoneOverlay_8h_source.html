@@ -1,0 +1,151 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="zh">
+<head>
+<meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=11"/>
+<meta name="generator" content="Doxygen 1.14.0"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>PreCess: app/dock/ui/DropZoneOverlay.h 源文件</title>
+<link href="tabs.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="jquery.js"></script>
+<script type="text/javascript" src="dynsections.js"></script>
+<script type="text/javascript" src="clipboard.js"></script>
+<script type="text/javascript" src="cookie.js"></script>
+<link href="search/search.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="search/searchdata.js"></script>
+<script type="text/javascript" src="search/search.js"></script>
+<link href="doxygen.css" rel="stylesheet" type="text/css" />
+</head>
+<body>
+<div id="top"><!-- do not remove this div, it is closed by doxygen! -->
+<div id="titlearea">
+<table cellspacing="0" cellpadding="0">
+ <tbody>
+ <tr id="projectrow">
+  <td id="projectlogo"><img alt="Logo" src="PreCess.ico"/></td>
+  <td id="projectalign">
+   <div id="projectname">PreCess
+   </div>
+  </td>
+ </tr>
+ </tbody>
+</table>
+</div>
+<!-- end header part -->
+<!-- 制作者 Doxygen 1.14.0 -->
+<script type="text/javascript">
+var searchBox = new SearchBox("searchBox", "search/",'.html');
+</script>
+<script type="text/javascript">
+$(function() { codefold.init(); });
+</script>
+<script type="text/javascript" src="menudata.js"></script>
+<script type="text/javascript" src="menu.js"></script>
+<script type="text/javascript">
+$(function() {
+  initMenu('',true,false,'search.php','搜索',false);
+  $(function() { init_search(); });
+});
+</script>
+<div id="main-nav"></div>
+<!-- window showing the filter options -->
+<div id="MSearchSelectWindow"
+     onmouseover="return searchBox.OnSearchSelectShow()"
+     onmouseout="return searchBox.OnSearchSelectHide()"
+     onkeydown="return searchBox.OnSearchSelectKey(event)">
+</div>
+
+<!-- iframe showing the search results (closed by default) -->
+<div id="MSearchResultsWindow">
+<div id="MSearchResults">
+<div class="SRPage">
+<div id="SRIndex">
+<div id="SRResults"></div>
+<div class="SRStatus" id="Loading">载入中...</div>
+<div class="SRStatus" id="Searching">搜索中...</div>
+<div class="SRStatus" id="NoMatches">未找到</div>
+</div>
+</div>
+</div>
+</div>
+
+<div id="nav-path" class="navpath">
+  <ul>
+<li class="navelem"><a href="dir_d422163b96683743ed3963d4aac17747.html">app</a></li><li class="navelem"><a href="dir_4e5d8f7ce7c3dc0f91a395eba455c956.html">dock</a></li><li class="navelem"><a href="dir_8737260d02abc2e1280d33ed55618f28.html">ui</a></li>  </ul>
+</div>
+</div><!-- top -->
+<div id="doc-content">
+<div class="header">
+  <div class="headertitle"><div class="title">DropZoneOverlay.h</div></div>
+</div><!--header-->
+<div class="contents">
+<a href="DropZoneOverlay_8h.html">浏览该文件的文档.</a><div class="fragment"><div class="line"><a id="l00001" name="l00001"></a><span class="lineno">    1</span></div>
+<div class="line"><a id="l00005" name="l00005"></a><span class="lineno">    5</span> </div>
+<div class="line"><a id="l00006" name="l00006"></a><span class="lineno">    6</span><span class="preprocessor">#pragma once</span></div>
+<div class="line"><a id="l00007" name="l00007"></a><span class="lineno">    7</span> </div>
+<div class="line"><a id="l00008" name="l00008"></a><span class="lineno">    8</span><span class="preprocessor">#include &quot;<a class="code" href="DockEnums_8h.html">docking/DockEnums.h</a>&quot;</span></div>
+<div class="line"><a id="l00009" name="l00009"></a><span class="lineno">    9</span> </div>
+<div class="line"><a id="l00010" name="l00010"></a><span class="lineno">   10</span><span class="preprocessor">#include &lt;QList&gt;</span></div>
+<div class="line"><a id="l00011" name="l00011"></a><span class="lineno">   11</span><span class="preprocessor">#include &lt;QRect&gt;</span></div>
+<div class="line"><a id="l00012" name="l00012"></a><span class="lineno">   12</span><span class="preprocessor">#include &lt;QQuickWindow&gt;</span></div>
+<div class="line"><a id="l00013" name="l00013"></a><span class="lineno">   13</span> </div>
+<div class="line"><a id="l00014" name="l00014"></a><span class="lineno">   14</span><span class="keyword">class </span>QQuickItem;</div>
+<div class="line"><a id="l00015" name="l00015"></a><span class="lineno">   15</span> </div>
+<div class="line"><a id="l00016" name="l00016"></a><span class="lineno">   16</span><span class="keyword">namespace </span><a class="code hl_namespace" href="namespacedock_1_1ui.html">dock::ui</a> {</div>
+<div class="line"><a id="l00017" name="l00017"></a><span class="lineno">   17</span></div>
+<div class="foldopen" id="foldopen00026" data-start="{" data-end="};">
+<div class="line"><a id="l00026" name="l00026"></a><span class="lineno"><a class="line" href="classdock_1_1ui_1_1DropZoneOverlay.html">   26</a></span><span class="keyword">class </span><a class="code hl_function" href="classdock_1_1ui_1_1DropZoneOverlay.html#a106fd22379e1bbe000d6a7eaf7129abd">DropZoneOverlay</a> : <span class="keyword">public</span> QQuickWindow</div>
+<div class="line"><a id="l00027" name="l00027"></a><span class="lineno">   27</span>{</div>
+<div class="line"><a id="l00028" name="l00028"></a><span class="lineno">   28</span>    Q_OBJECT</div>
+<div class="line"><a id="l00029" name="l00029"></a><span class="lineno">   29</span><span class="keyword">public</span>:</div>
+<div class="foldopen" id="foldopen00031" data-start="{" data-end="};">
+<div class="line"><a id="l00031" name="l00031"></a><span class="lineno"><a class="line" href="structdock_1_1ui_1_1DropZoneOverlay_1_1ZoneRectHit.html">   31</a></span>    <span class="keyword">struct </span><a class="code hl_struct" href="structdock_1_1ui_1_1DropZoneOverlay_1_1ZoneRectHit.html">ZoneRectHit</a> {</div>
+<div class="line"><a id="l00032" name="l00032"></a><span class="lineno"><a class="line" href="structdock_1_1ui_1_1DropZoneOverlay_1_1ZoneRectHit.html#a9d76a3def3659586fd5f03d89ee40c5b">   32</a></span>        QRect <a class="code hl_variable" href="structdock_1_1ui_1_1DropZoneOverlay_1_1ZoneRectHit.html#a9d76a3def3659586fd5f03d89ee40c5b">rect</a>;</div>
+<div class="line"><a id="l00033" name="l00033"></a><span class="lineno"><a class="line" href="structdock_1_1ui_1_1DropZoneOverlay_1_1ZoneRectHit.html#a4739fae3cafca18a2617407f49ade396">   33</a></span>        <span class="keywordtype">bool</span> <a class="code hl_variable" href="structdock_1_1ui_1_1DropZoneOverlay_1_1ZoneRectHit.html#a4739fae3cafca18a2617407f49ade396">active</a> = <span class="keyword">false</span>;</div>
+<div class="line"><a id="l00034" name="l00034"></a><span class="lineno">   34</span>    };</div>
+</div>
+<div class="line"><a id="l00035" name="l00035"></a><span class="lineno">   35</span></div>
+<div class="line"><a id="l00037" name="l00037"></a><span class="lineno">   37</span>    <span class="keyword">explicit</span> <a class="code hl_function" href="classdock_1_1ui_1_1DropZoneOverlay.html#a106fd22379e1bbe000d6a7eaf7129abd">DropZoneOverlay</a>();</div>
+<div class="line"><a id="l00038" name="l00038"></a><span class="lineno"><a class="line" href="classdock_1_1ui_1_1DropZoneOverlay.html#ada9e2ea38f231ea9f48269027d3fd6e7">   38</a></span>    <a class="code hl_function" href="classdock_1_1ui_1_1DropZoneOverlay.html#ada9e2ea38f231ea9f48269027d3fd6e7">~DropZoneOverlay</a>() <span class="keyword">override</span>;</div>
+<div class="line"><a id="l00039" name="l00039"></a><span class="lineno">   39</span></div>
+<div class="line"><a id="l00048" name="l00048"></a><span class="lineno">   48</span>    <span class="keywordtype">void</span> <a class="code hl_function" href="classdock_1_1ui_1_1DropZoneOverlay.html#a2d373eb9200f4ece3b82b0f59d236b55">showZoneRects</a>(<span class="keyword">const</span> QList&lt;ZoneRectHit&gt;&amp; zones,</div>
+<div class="line"><a id="l00049" name="l00049"></a><span class="lineno">   49</span>        <span class="keyword">const</span> QRect&amp; area_global_rect, QQuickItem* request_owner,</div>
+<div class="line"><a id="l00050" name="l00050"></a><span class="lineno">   50</span>        <span class="keyword">const</span> QRect&amp; target_frame_global = QRect(),</div>
+<div class="line"><a id="l00051" name="l00051"></a><span class="lineno">   51</span>        <span class="keyword">const</span> QRect&amp; tab_insert_global = QRect());</div>
+<div class="line"><a id="l00053" name="l00053"></a><span class="lineno">   53</span>    <span class="keywordtype">void</span> <a class="code hl_function" href="classdock_1_1ui_1_1DropZoneOverlay.html#aeb78619669faae051e15da119cb594ae">clear</a>(QQuickItem* request_owner);</div>
+<div class="line"><a id="l00054" name="l00054"></a><span class="lineno">   54</span></div>
+<div class="line"><a id="l00056" name="l00056"></a><span class="lineno">   56</span>    <span class="keywordtype">bool</span> <a class="code hl_function" href="classdock_1_1ui_1_1DropZoneOverlay.html#a7059eabb5d9e2bfc6ce3c8d5a6e642f4">isActive</a>() <span class="keyword">const</span>;</div>
+<div class="line"><a id="l00058" name="l00058"></a><span class="lineno">   58</span>    <span class="keywordtype">int</span> <a class="code hl_function" href="classdock_1_1ui_1_1DropZoneOverlay.html#a7d5aa57307c92fde5f5f4957541bbc43">zoneCount</a>() <span class="keyword">const</span>;</div>
+<div class="line"><a id="l00060" name="l00060"></a><span class="lineno"><a class="line" href="classdock_1_1ui_1_1DropZoneOverlay.html#a2cbd9d0ebb4a5bcb4db706d153283bfc">   60</a></span>    QRect <a class="code hl_function" href="classdock_1_1ui_1_1DropZoneOverlay.html#a2cbd9d0ebb4a5bcb4db706d153283bfc">tabInsertRect</a>()<span class="keyword"> const </span>{ <span class="keywordflow">return</span> <a class="code hl_variable" href="classdock_1_1ui_1_1DropZoneOverlay.html#ae4ee8187d5d47228acc9e46c76b4952d">tab_insert_rect_</a>; }</div>
+<div class="line"><a id="l00061" name="l00061"></a><span class="lineno">   61</span> </div>
+<div class="line"><a id="l00062" name="l00062"></a><span class="lineno">   62</span><span class="keyword">private</span>:</div>
+<div class="line"><a id="l00063" name="l00063"></a><span class="lineno"><a class="line" href="classdock_1_1ui_1_1DropZoneOverlay.html#a7e6e4a59a420c985c543d34563f008b0">   63</a></span>    QQuickItem* <a class="code hl_variable" href="classdock_1_1ui_1_1DropZoneOverlay.html#a7e6e4a59a420c985c543d34563f008b0">root_item_</a> = <span class="keyword">nullptr</span>;</div>
+<div class="line"><a id="l00064" name="l00064"></a><span class="lineno"><a class="line" href="classdock_1_1ui_1_1DropZoneOverlay.html#a105195d460f911e3f034a9530ca76c11">   64</a></span>    QQuickItem* <a class="code hl_variable" href="classdock_1_1ui_1_1DropZoneOverlay.html#a105195d460f911e3f034a9530ca76c11">request_owner_</a> = <span class="keyword">nullptr</span>;</div>
+<div class="line"><a id="l00065" name="l00065"></a><span class="lineno"><a class="line" href="classdock_1_1ui_1_1DropZoneOverlay.html#ae4ee8187d5d47228acc9e46c76b4952d">   65</a></span>    QRect <a class="code hl_variable" href="classdock_1_1ui_1_1DropZoneOverlay.html#ae4ee8187d5d47228acc9e46c76b4952d">tab_insert_rect_</a>;</div>
+<div class="line"><a id="l00066" name="l00066"></a><span class="lineno">   66</span>};</div>
+</div>
+<div class="line"><a id="l00067" name="l00067"></a><span class="lineno">   67</span> </div>
+<div class="line"><a id="l00068" name="l00068"></a><span class="lineno">   68</span>}</div>
+<div class="ttc" id="aDockEnums_8h_html"><div class="ttname"><a href="DockEnums_8h.html">DockEnums.h</a></div><div class="ttdoc">停靠组件的公共枚举与判定辅助</div></div>
+<div class="ttc" id="aclassdock_1_1ui_1_1DropZoneOverlay_html_a105195d460f911e3f034a9530ca76c11"><div class="ttname"><a href="classdock_1_1ui_1_1DropZoneOverlay.html#a105195d460f911e3f034a9530ca76c11">dock::ui::DropZoneOverlay::request_owner_</a></div><div class="ttdeci">QQuickItem * request_owner_</div><div class="ttdef"><b>定义</b> DropZoneOverlay.h:64</div></div>
+<div class="ttc" id="aclassdock_1_1ui_1_1DropZoneOverlay_html_a106fd22379e1bbe000d6a7eaf7129abd"><div class="ttname"><a href="classdock_1_1ui_1_1DropZoneOverlay.html#a106fd22379e1bbe000d6a7eaf7129abd">dock::ui::DropZoneOverlay::DropZoneOverlay</a></div><div class="ttdeci">DropZoneOverlay()</div><div class="ttdoc">进程内常驻单例：由 DockRuntime 持有，随进程结束，不设 QObject 父</div><div class="ttdef"><b>定义</b> DropZoneOverlay.cpp:16</div></div>
+<div class="ttc" id="aclassdock_1_1ui_1_1DropZoneOverlay_html_a2cbd9d0ebb4a5bcb4db706d153283bfc"><div class="ttname"><a href="classdock_1_1ui_1_1DropZoneOverlay.html#a2cbd9d0ebb4a5bcb4db706d153283bfc">dock::ui::DropZoneOverlay::tabInsertRect</a></div><div class="ttdeci">QRect tabInsertRect() const</div><div class="ttdoc">当前标签插入标记（全局坐标；无标记时为空矩形）</div><div class="ttdef"><b>定义</b> DropZoneOverlay.h:60</div></div>
+<div class="ttc" id="aclassdock_1_1ui_1_1DropZoneOverlay_html_a2d373eb9200f4ece3b82b0f59d236b55"><div class="ttname"><a href="classdock_1_1ui_1_1DropZoneOverlay.html#a2d373eb9200f4ece3b82b0f59d236b55">dock::ui::DropZoneOverlay::showZoneRects</a></div><div class="ttdeci">void showZoneRects(const QList&lt; ZoneRectHit &gt; &amp;zones, const QRect &amp;area_global_rect, QQuickItem *request_owner, const QRect &amp;target_frame_global=QRect(), const QRect &amp;tab_insert_global=QRect())</div><div class="ttdoc">显示指示器方框</div><div class="ttdef"><b>定义</b> DropZoneOverlay.cpp:44</div></div>
+<div class="ttc" id="aclassdock_1_1ui_1_1DropZoneOverlay_html_a7059eabb5d9e2bfc6ce3c8d5a6e642f4"><div class="ttname"><a href="classdock_1_1ui_1_1DropZoneOverlay.html#a7059eabb5d9e2bfc6ce3c8d5a6e642f4">dock::ui::DropZoneOverlay::isActive</a></div><div class="ttdeci">bool isActive() const</div><div class="ttdoc">当前是否有指示器</div><div class="ttdef"><b>定义</b> DropZoneOverlay.cpp:112</div></div>
+<div class="ttc" id="aclassdock_1_1ui_1_1DropZoneOverlay_html_a7d5aa57307c92fde5f5f4957541bbc43"><div class="ttname"><a href="classdock_1_1ui_1_1DropZoneOverlay.html#a7d5aa57307c92fde5f5f4957541bbc43">dock::ui::DropZoneOverlay::zoneCount</a></div><div class="ttdeci">int zoneCount() const</div><div class="ttdoc">当前指示器数量</div><div class="ttdef"><b>定义</b> DropZoneOverlay.cpp:117</div></div>
+<div class="ttc" id="aclassdock_1_1ui_1_1DropZoneOverlay_html_a7e6e4a59a420c985c543d34563f008b0"><div class="ttname"><a href="classdock_1_1ui_1_1DropZoneOverlay.html#a7e6e4a59a420c985c543d34563f008b0">dock::ui::DropZoneOverlay::root_item_</a></div><div class="ttdeci">QQuickItem * root_item_</div><div class="ttdef"><b>定义</b> DropZoneOverlay.h:63</div></div>
+<div class="ttc" id="aclassdock_1_1ui_1_1DropZoneOverlay_html_ada9e2ea38f231ea9f48269027d3fd6e7"><div class="ttname"><a href="classdock_1_1ui_1_1DropZoneOverlay.html#ada9e2ea38f231ea9f48269027d3fd6e7">dock::ui::DropZoneOverlay::~DropZoneOverlay</a></div><div class="ttdeci">~DropZoneOverlay() override</div></div>
+<div class="ttc" id="aclassdock_1_1ui_1_1DropZoneOverlay_html_ae4ee8187d5d47228acc9e46c76b4952d"><div class="ttname"><a href="classdock_1_1ui_1_1DropZoneOverlay.html#ae4ee8187d5d47228acc9e46c76b4952d">dock::ui::DropZoneOverlay::tab_insert_rect_</a></div><div class="ttdeci">QRect tab_insert_rect_</div><div class="ttdef"><b>定义</b> DropZoneOverlay.h:65</div></div>
+<div class="ttc" id="aclassdock_1_1ui_1_1DropZoneOverlay_html_aeb78619669faae051e15da119cb594ae"><div class="ttname"><a href="classdock_1_1ui_1_1DropZoneOverlay.html#aeb78619669faae051e15da119cb594ae">dock::ui::DropZoneOverlay::clear</a></div><div class="ttdeci">void clear(QQuickItem *request_owner)</div><div class="ttdoc">清除指示器（仅当请求方匹配时生效）</div><div class="ttdef"><b>定义</b> DropZoneOverlay.cpp:97</div></div>
+<div class="ttc" id="anamespacedock_1_1ui_html"><div class="ttname"><a href="namespacedock_1_1ui.html">dock::ui</a></div><div class="ttdef"><b>定义</b> DividerItem.cpp:15</div></div>
+<div class="ttc" id="astructdock_1_1ui_1_1DropZoneOverlay_1_1ZoneRectHit_html"><div class="ttname"><a href="structdock_1_1ui_1_1DropZoneOverlay_1_1ZoneRectHit.html">dock::ui::DropZoneOverlay::ZoneRectHit</a></div><div class="ttdoc">单个指示器：矩形（全局坐标）、是否为当前命中项</div><div class="ttdef"><b>定义</b> DropZoneOverlay.h:31</div></div>
+<div class="ttc" id="astructdock_1_1ui_1_1DropZoneOverlay_1_1ZoneRectHit_html_a4739fae3cafca18a2617407f49ade396"><div class="ttname"><a href="structdock_1_1ui_1_1DropZoneOverlay_1_1ZoneRectHit.html#a4739fae3cafca18a2617407f49ade396">dock::ui::DropZoneOverlay::ZoneRectHit::active</a></div><div class="ttdeci">bool active</div><div class="ttdef"><b>定义</b> DropZoneOverlay.h:33</div></div>
+<div class="ttc" id="astructdock_1_1ui_1_1DropZoneOverlay_1_1ZoneRectHit_html_a9d76a3def3659586fd5f03d89ee40c5b"><div class="ttname"><a href="structdock_1_1ui_1_1DropZoneOverlay_1_1ZoneRectHit.html#a9d76a3def3659586fd5f03d89ee40c5b">dock::ui::DropZoneOverlay::ZoneRectHit::rect</a></div><div class="ttdeci">QRect rect</div><div class="ttdef"><b>定义</b> DropZoneOverlay.h:32</div></div>
+</div><!-- fragment --></div><!-- contents -->
+<!-- start footer part -->
+<hr class="footer"/><address class="footer"><small>
+制作者&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.14.0
+</small></address>
+</div><!-- doc-content -->
+</body>
+</html>

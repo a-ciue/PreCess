@@ -22,12 +22,13 @@ var searchData=
   ['emissive_5ftexopt_19',['emissive_texopt',['../structtinyobj_1_1material__t.html#a7a2da381cdabd6655aaed320d5b1ffe3',1,'tinyobj::material_t']]],
   ['enabled_20',['enabled',['../structFaceSelectionSpreadOptions.html#a8b1c78d2150315a9030b0f5e83584114',1,'FaceSelectionSpreadOptions']]],
   ['endpoints_21',['endpoints',['../structTopologyDiagnosticEdge.html#a276c15c8cb8f4ff23578a361d7cb61a4',1,'TopologyDiagnosticEdge::endpoints'],['../structEdgeSelectorHighlight_1_1SelectedEdge.html#ac74ab612ed4902cfe6e81c7c27e5704a',1,'EdgeSelectorHighlight::SelectedEdge::endpoints'],['../structMeshAdjacency_1_1EdgeRow.html#a5fca66bc34f8a5699f94aad05f6b6586',1,'MeshAdjacency::EdgeRow::endpoints']]],
-  ['entries_5f_22',['entries_',['../classsystems_1_1feature_1_1FeatureSystem.html#a175c6e151ef13beedba062dccd4a3052',1,'systems::feature::FeatureSystem']]],
-  ['error_5f_23',['error_',['../classtinyobj_1_1ObjReader.html#a801eaed7fd371b79f569bd40a728aaec',1,'tinyobj::ObjReader']]],
-  ['event_5fbus_5f_24',['event_bus_',['../classsession_1_1Session.html#aa0c7032181b336d486047cf6a730d1b0',1,'session::Session::event_bus_'],['../classsystems_1_1feature_1_1FeatureSystem.html#aba8b654496a220e2cb145bc305552141',1,'systems::feature::FeatureSystem::event_bus_']]],
-  ['event_5fgateway_25',['event_gateway',['../structsystems_1_1feature_1_1FeatureSystem_1_1FeatureEntry.html#ac130c4e6c2b8f7ce2d81e7e5432fb67a',1,'systems::feature::FeatureSystem::FeatureEntry']]],
-  ['events_26',['events',['../structsystems_1_1feature_1_1FeatureContext.html#a76998da867c9a37ea2c9721d24692256',1,'systems::feature::FeatureContext']]],
-  ['extensions_27',['extensions',['../structsystems_1_1io_1_1ModelIOInfo.html#a9198045d34c816f47f49f5aff452e36b',1,'systems::io::ModelIOInfo::extensions'],['../structsystems_1_1io_1_1HandlerMetaData.html#ac554766178cbfdc5d5d45ffc807bf144',1,'systems::io::HandlerMetaData::extensions']]],
-  ['extensions_5f_28',['extensions_',['../classsystems_1_1io_1_1QModelIOInfo.html#aca9c15b0baeaaafb2cc65094340fde5d',1,'systems::io::QModelIOInfo']]],
-  ['extract_5ffilter_5f_29',['extract_filter_',['../classSolidSelectorHighlight.html#a01649527e51122f2925ace2e03532701',1,'SolidSelectorHighlight::extract_filter_'],['../classVertexSelectorHighlight.html#a66021a8e9dd4edc9770e6e7866034ca7',1,'VertexSelectorHighlight::extract_filter_']]]
+  ['engine_5f_22',['engine_',['../classdock_1_1ui_1_1DockRuntime.html#aeab9afad33d4046b55a0b4158c963d80',1,'dock::ui::DockRuntime']]],
+  ['entries_5f_23',['entries_',['../classsystems_1_1feature_1_1FeatureSystem.html#a175c6e151ef13beedba062dccd4a3052',1,'systems::feature::FeatureSystem']]],
+  ['error_5f_24',['error_',['../classtinyobj_1_1ObjReader.html#a801eaed7fd371b79f569bd40a728aaec',1,'tinyobj::ObjReader']]],
+  ['event_5fbus_5f_25',['event_bus_',['../classsession_1_1Session.html#aa0c7032181b336d486047cf6a730d1b0',1,'session::Session::event_bus_'],['../classsystems_1_1feature_1_1FeatureSystem.html#aba8b654496a220e2cb145bc305552141',1,'systems::feature::FeatureSystem::event_bus_']]],
+  ['event_5fgateway_26',['event_gateway',['../structsystems_1_1feature_1_1FeatureSystem_1_1FeatureEntry.html#ac130c4e6c2b8f7ce2d81e7e5432fb67a',1,'systems::feature::FeatureSystem::FeatureEntry']]],
+  ['events_27',['events',['../structsystems_1_1feature_1_1FeatureContext.html#a76998da867c9a37ea2c9721d24692256',1,'systems::feature::FeatureContext']]],
+  ['extensions_28',['extensions',['../structsystems_1_1io_1_1ModelIOInfo.html#a9198045d34c816f47f49f5aff452e36b',1,'systems::io::ModelIOInfo::extensions'],['../structsystems_1_1io_1_1HandlerMetaData.html#ac554766178cbfdc5d5d45ffc807bf144',1,'systems::io::HandlerMetaData::extensions']]],
+  ['extensions_5f_29',['extensions_',['../classsystems_1_1io_1_1QModelIOInfo.html#aca9c15b0baeaaafb2cc65094340fde5d',1,'systems::io::QModelIOInfo']]],
+  ['extract_5ffilter_5f_30',['extract_filter_',['../classSolidSelectorHighlight.html#a01649527e51122f2925ace2e03532701',1,'SolidSelectorHighlight::extract_filter_'],['../classVertexSelectorHighlight.html#a66021a8e9dd4edc9770e6e7866034ca7',1,'VertexSelectorHighlight::extract_filter_']]]
 ];

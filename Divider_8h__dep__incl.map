@@ -1,0 +1,13 @@
+<map id="app/dock/tree/Divider.h" name="app/dock/tree/Divider.h">
+<area shape="rect" id="Node000001" title="相邻可见布局项之间的可拖动分隔条" alt="" coords="506,5,679,31"/>
+<area shape="rect" id="Node000002" href="$TestDockLayout_8cpp.html" title="停靠布局引擎单元测试：占比分配、分隔条拖动、隐显恢复、移除提升、最小尺寸约束" alt="" coords="5,79,249,104"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="505,35,203,81,202,76,504,30"/>
+<area shape="rect" id="Node000003" href="$BoxNode_8cpp.html" title="盒式布局容器的实现" alt="" coords="273,79,475,104"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="545,37,410,81,409,76,544,32"/>
+<area shape="rect" id="Node000004" href="$Divider_8cpp.html" title="分隔条的实现" alt="" coords="499,79,687,104"/>
+<area shape="poly" id="edge3_Node000001_Node000004" title=" " alt="" coords="595,44,595,79,590,79,590,44"/>
+<area shape="rect" id="Node000005" href="$DividerItem_8cpp.html" title="分隔条视图的实现" alt="" coords="711,79,917,104"/>
+<area shape="poly" id="edge4_Node000001_Node000005" title=" " alt="" coords="642,32,779,76,777,81,640,37"/>
+<area shape="rect" id="Node000006" href="$DockAreaItem_8cpp.html" title="布局区域视图的实现" alt="" coords="941,79,1162,104"/>
+<area shape="poly" id="edge5_Node000001_Node000006" title=" " alt="" coords="680,30,978,76,977,81,679,35"/>
+</map>

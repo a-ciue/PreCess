@@ -1,0 +1,165 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="zh">
+<head>
+<meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=11"/>
+<meta name="generator" content="Doxygen 1.14.0"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>PreCess: app/dock/tree/BoxNode.h 文件参考</title>
+<link href="tabs.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="jquery.js"></script>
+<script type="text/javascript" src="dynsections.js"></script>
+<script type="text/javascript" src="clipboard.js"></script>
+<script type="text/javascript" src="cookie.js"></script>
+<link href="search/search.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="search/searchdata.js"></script>
+<script type="text/javascript" src="search/search.js"></script>
+<link href="doxygen.css" rel="stylesheet" type="text/css" />
+</head>
+<body>
+<div id="top"><!-- do not remove this div, it is closed by doxygen! -->
+<div id="titlearea">
+<table cellspacing="0" cellpadding="0">
+ <tbody>
+ <tr id="projectrow">
+  <td id="projectlogo"><img alt="Logo" src="PreCess.ico"/></td>
+  <td id="projectalign">
+   <div id="projectname">PreCess
+   </div>
+  </td>
+ </tr>
+ </tbody>
+</table>
+</div>
+<!-- end header part -->
+<!-- 制作者 Doxygen 1.14.0 -->
+<script type="text/javascript">
+var searchBox = new SearchBox("searchBox", "search/",'.html');
+</script>
+<script type="text/javascript">
+$(function() { codefold.init(); });
+</script>
+<script type="text/javascript" src="menudata.js"></script>
+<script type="text/javascript" src="menu.js"></script>
+<script type="text/javascript">
+$(function() {
+  initMenu('',true,false,'search.php','搜索',false);
+  $(function() { init_search(); });
+});
+</script>
+<div id="main-nav"></div>
+<!-- window showing the filter options -->
+<div id="MSearchSelectWindow"
+     onmouseover="return searchBox.OnSearchSelectShow()"
+     onmouseout="return searchBox.OnSearchSelectHide()"
+     onkeydown="return searchBox.OnSearchSelectKey(event)">
+</div>
+
+<!-- iframe showing the search results (closed by default) -->
+<div id="MSearchResultsWindow">
+<div id="MSearchResults">
+<div class="SRPage">
+<div id="SRIndex">
+<div id="SRResults"></div>
+<div class="SRStatus" id="Loading">载入中...</div>
+<div class="SRStatus" id="Searching">搜索中...</div>
+<div class="SRStatus" id="NoMatches">未找到</div>
+</div>
+</div>
+</div>
+</div>
+
+<div id="nav-path" class="navpath">
+  <ul>
+<li class="navelem"><a href="dir_d422163b96683743ed3963d4aac17747.html">app</a></li><li class="navelem"><a href="dir_4e5d8f7ce7c3dc0f91a395eba455c956.html">dock</a></li><li class="navelem"><a href="dir_5eadc552fcf5a00d591e43a164d6005f.html">tree</a></li>  </ul>
+</div>
+</div><!-- top -->
+<div id="doc-content">
+<div class="header">
+  <div class="summary">
+<a href="#nested-classes">类</a> &#124;
+<a href="#namespaces">命名空间</a>  </div>
+  <div class="headertitle"><div class="title">BoxNode.h 文件参考</div></div>
+</div><!--header-->
+<div class="contents">
+
+<p>盒式布局容器：子节点沿单一方向排列并可拖拽分隔条调整  
+<a href="#details">更多...</a></p>
+<div class="textblock"><code>#include &quot;<a class="el" href="LayoutNode_8h_source.html">LayoutNode.h</a>&quot;</code><br />
+<code>#include &lt;QList&gt;</code><br />
+</div><div class="textblock"><div class="dynheader">
+BoxNode.h 的引用(Include)关系图:</div>
+<div class="dyncontent">
+<div class="center"><img src="BoxNode_8h__incl.png" border="0" usemap="#aapp_2dock_2tree_2BoxNode_8h" loading="lazy" alt=""/></div>
+<map name="aapp_2dock_2tree_2BoxNode_8h" id="aapp_2dock_2tree_2BoxNode_8h">
+<area shape="rect" title="盒式布局容器：子节点沿单一方向排列并可拖拽分隔条调整" alt="" coords="175,5,361,31"/>
+<area shape="rect" href="LayoutNode_8h.html" title="布局树节点" alt="" coords="159,79,271,104"/>
+<area shape="poly" title=" " alt="" coords="261,33,234,69,229,66,257,29"/>
+<area shape="rect" title=" " alt="" coords="295,79,350,104"/>
+<area shape="poly" title=" " alt="" coords="279,29,308,66,303,69,275,33"/>
+<area shape="rect" href="NodeMetrics_8h.html" title="布局节点的几何与尺寸约束信息" alt="" coords="98,152,214,177"/>
+<area shape="poly" title=" " alt="" coords="207,106,176,143,172,140,203,103"/>
+<area shape="rect" title=" " alt="" coords="238,152,309,177"/>
+<area shape="poly" title=" " alt="" coords="226,103,257,140,253,143,222,106"/>
+<area shape="rect" title=" " alt="" coords="5,225,67,251"/>
+<area shape="poly" title=" " alt="" coords="138,180,69,220,66,216,135,175"/>
+<area shape="rect" title=" " alt="" coords="91,225,149,251"/>
+<area shape="poly" title=" " alt="" coords="152,179,134,214,130,212,148,176"/>
+<area shape="rect" title=" " alt="" coords="174,225,213,251"/>
+<area shape="poly" title=" " alt="" coords="165,176,183,212,179,215,160,179"/>
+<area shape="rect" title=" " alt="" coords="237,225,323,251"/>
+<area shape="poly" title=" " alt="" coords="177,175,249,216,247,221,175,180"/>
+</map>
+</div>
+</div><div class="textblock"><div class="dynheader">
+此图展示该文件被哪些文件直接或间接地引用了:</div>
+<div class="dyncontent">
+<div class="center"><img src="BoxNode_8h__dep__incl.png" border="0" usemap="#aapp_2dock_2tree_2BoxNode_8hdep" loading="lazy" alt=""/></div>
+<map name="aapp_2dock_2tree_2BoxNode_8hdep" id="aapp_2dock_2tree_2BoxNode_8hdep">
+<area shape="rect" title="盒式布局容器：子节点沿单一方向排列并可拖拽分隔条调整" alt="" coords="1354,5,1541,31"/>
+<area shape="rect" href="DockHost_8cpp.html" title="主停靠窗口的实现" alt="" coords="5,79,236,104"/>
+<area shape="poly" title=" " alt="" coords="1340,26,867,46,249,81,236,82,236,77,248,76,867,41,1340,21"/>
+<area shape="rect" href="DockRegion_8cpp.html" title="停靠区域的实现" alt="" coords="261,79,506,104"/>
+<area shape="poly" title=" " alt="" coords="1340,28,976,50,518,81,506,82,506,77,518,76,975,45,1340,23"/>
+<area shape="rect" href="DragSession_8cpp.html" title="拖拽状态机的实现" alt="" coords="530,79,778,104"/>
+<area shape="poly" title=" " alt="" coords="1341,31,778,82,778,76,1340,26"/>
+<area shape="rect" href="TestDockCore_8cpp.html" title="停靠核心语义单元测试：命令式停靠布局、关闭/恢复、中央部件、选项卡" alt="" coords="803,79,1033,104"/>
+<area shape="poly" title=" " alt="" coords="1349,35,1004,81,1003,76,1348,30"/>
+<area shape="rect" href="TestDockLayout_8cpp.html" title="停靠布局引擎单元测试：占比分配、分隔条拖动、隐显恢复、移除提升、最小尺寸约束" alt="" coords="1057,79,1301,104"/>
+<area shape="poly" title=" " alt="" coords="1391,37,1223,81,1222,76,1390,32"/>
+<area shape="rect" href="TestDockPersist_8cpp.html" title="布局持久化测试：快照往返、浮窗占位/回停来源、兼容性与坏数据拒绝" alt="" coords="1325,79,1569,104"/>
+<area shape="poly" title=" " alt="" coords="1450,44,1450,79,1445,79,1445,44"/>
+<area shape="rect" href="BoxNode_8cpp.html" title="盒式布局容器的实现" alt="" coords="1593,79,1795,104"/>
+<area shape="poly" title=" " alt="" coords="1501,32,1655,76,1653,81,1499,37"/>
+<area shape="rect" href="Divider_8cpp.html" title="分隔条的实现" alt="" coords="1819,79,2007,104"/>
+<area shape="poly" title=" " alt="" coords="1536,30,1838,76,1837,81,1535,35"/>
+<area shape="rect" href="LayoutNode_8cpp.html" title="布局树节点的实现" alt="" coords="2031,79,2251,104"/>
+<area shape="poly" title=" " alt="" coords="1554,28,2031,76,2030,81,1554,33"/>
+<area shape="rect" href="DividerItem_8cpp.html" title="分隔条视图的实现" alt="" coords="2275,79,2481,104"/>
+<area shape="poly" title=" " alt="" coords="1555,24,1873,45,2264,76,2275,77,2275,82,2263,81,1872,51,1555,29"/>
+<area shape="rect" href="DockAreaItem_8cpp.html" title="布局区域视图的实现" alt="" coords="2505,79,2726,104"/>
+<area shape="poly" title=" " alt="" coords="1555,22,1966,42,2493,76,2505,77,2504,82,2492,81,1966,48,1554,27"/>
+</map>
+</div>
+</div>
+<p><a href="BoxNode_8h_source.html">浏览该文件的源代码.</a></p>
+<table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 id="header-nested-classes" class="groupheader"><a id="nested-classes" name="nested-classes"></a>
+类</h2></td></tr>
+<tr class="memitem:dock_3A_3ABoxNode" id="r_dock_3A_3ABoxNode"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classdock_1_1BoxNode.html">dock::BoxNode</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">盒式布局容器  <a href="classdock_1_1BoxNode.html#details">更多...</a><br /></td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 id="header-namespaces" class="groupheader"><a id="namespaces" name="namespaces"></a>
+命名空间</h2></td></tr>
+<tr class="memitem:dock" id="r_dock"><td class="memItemLeft" align="right" valign="top">namespace &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacedock.html">dock</a></td></tr>
+</table>
+<a name="details" id="details"></a><h2 id="header-details" class="groupheader">详细描述</h2>
+<div class="textblock"><p>盒式布局容器：子节点沿单一方向排列并可拖拽分隔条调整 </p>
+</div></div><!-- contents -->
+<!-- start footer part -->
+<hr class="footer"/><address class="footer"><small>
+制作者&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.14.0
+</small></address>
+</div><!-- doc-content -->
+</body>
+</html>

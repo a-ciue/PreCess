@@ -1,0 +1,695 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="zh">
+<head>
+<meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=11"/>
+<meta name="generator" content="Doxygen 1.14.0"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>PreCess: dock::ui::DockWindowItem类 参考</title>
+<link href="tabs.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="jquery.js"></script>
+<script type="text/javascript" src="dynsections.js"></script>
+<script type="text/javascript" src="clipboard.js"></script>
+<script type="text/javascript" src="cookie.js"></script>
+<link href="search/search.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="search/searchdata.js"></script>
+<script type="text/javascript" src="search/search.js"></script>
+<link href="doxygen.css" rel="stylesheet" type="text/css" />
+</head>
+<body>
+<div id="top"><!-- do not remove this div, it is closed by doxygen! -->
+<div id="titlearea">
+<table cellspacing="0" cellpadding="0">
+ <tbody>
+ <tr id="projectrow">
+  <td id="projectlogo"><img alt="Logo" src="PreCess.ico"/></td>
+  <td id="projectalign">
+   <div id="projectname">PreCess
+   </div>
+  </td>
+ </tr>
+ </tbody>
+</table>
+</div>
+<!-- end header part -->
+<!-- 制作者 Doxygen 1.14.0 -->
+<script type="text/javascript">
+var searchBox = new SearchBox("searchBox", "search/",'.html');
+</script>
+<script type="text/javascript">
+$(function() { codefold.init(); });
+</script>
+<script type="text/javascript" src="menudata.js"></script>
+<script type="text/javascript" src="menu.js"></script>
+<script type="text/javascript">
+$(function() {
+  initMenu('',true,false,'search.php','搜索',false);
+  $(function() { init_search(); });
+});
+</script>
+<div id="main-nav"></div>
+<!-- window showing the filter options -->
+<div id="MSearchSelectWindow"
+     onmouseover="return searchBox.OnSearchSelectShow()"
+     onmouseout="return searchBox.OnSearchSelectHide()"
+     onkeydown="return searchBox.OnSearchSelectKey(event)">
+</div>
+
+<!-- iframe showing the search results (closed by default) -->
+<div id="MSearchResultsWindow">
+<div id="MSearchResults">
+<div class="SRPage">
+<div id="SRIndex">
+<div id="SRResults"></div>
+<div class="SRStatus" id="Loading">载入中...</div>
+<div class="SRStatus" id="Searching">搜索中...</div>
+<div class="SRStatus" id="NoMatches">未找到</div>
+</div>
+</div>
+</div>
+</div>
+
+<div id="nav-path" class="navpath">
+  <ul>
+<li class="navelem"><a href="namespacedock.html">dock</a></li><li class="navelem"><a href="namespacedock_1_1ui.html">ui</a></li><li class="navelem"><a href="classdock_1_1ui_1_1DockWindowItem.html">DockWindowItem</a></li>  </ul>
+</div>
+</div><!-- top -->
+<div id="doc-content">
+<div class="header">
+  <div class="summary">
+<a href="#pub-methods">Public 成员函数</a> &#124;
+<a href="#pri-methods">Private 成员函数</a> &#124;
+<a href="#pri-attribs">Private 属性</a> &#124;
+<a href="classdock_1_1ui_1_1DockWindowItem-members.html">所有成员列表</a>  </div>
+  <div class="headertitle"><div class="title">dock::ui::DockWindowItem类 参考</div></div>
+</div><!--header-->
+<div class="contents">
+
+<p>浮动窗口视图  
+ <a href="#details">更多...</a></p>
+
+<p><code>#include &lt;<a class="el" href="DockWindowItem_8h_source.html">DockWindowItem.h</a>&gt;</code></p>
+<div class="dynheader">
+类 dock::ui::DockWindowItem 继承关系图:</div>
+<div class="dyncontent">
+<div class="center"><img src="classdock_1_1ui_1_1DockWindowItem__inherit__graph.png" border="0" usemap="#adock_1_1ui_1_1DockWindowItem_inherit__map" loading="lazy" alt="Inheritance graph"/></div>
+<map name="adock_1_1ui_1_1DockWindowItem_inherit__map" id="adock_1_1ui_1_1DockWindowItem_inherit__map">
+<area shape="rect" title="浮动窗口视图" alt="" coords="41,79,237,104"/>
+<area shape="rect" title=" " alt="" coords="5,5,127,31"/>
+<area shape="poly" title=" " alt="" coords="90,38,129,77,126,80,86,42"/>
+<area shape="rect" href="classdock_1_1DockView.html" title="视图抽象接口" alt="" coords="151,5,277,31"/>
+<area shape="poly" title=" " alt="" coords="194,42,153,80,150,77,190,38"/>
+</map>
+<center><span class="legend">[<a href="graph_legend.html">图例</a>]</span></center></div>
+<div class="dynheader">
+dock::ui::DockWindowItem 的协作图:</div>
+<div class="dyncontent">
+<div class="center"><img src="classdock_1_1ui_1_1DockWindowItem__coll__graph.png" border="0" usemap="#adock_1_1ui_1_1DockWindowItem_coll__map" loading="lazy" alt="Collaboration graph"/></div>
+<map name="adock_1_1ui_1_1DockWindowItem_coll__map" id="adock_1_1ui_1_1DockWindowItem_coll__map">
+<area shape="rect" title="浮动窗口视图" alt="" coords="145,505,341,531"/>
+<area shape="rect" title=" " alt="" coords="5,409,127,435"/>
+<area shape="poly" title=" " alt="" coords="91,441,147,479,205,503,203,508,145,484,88,446"/>
+<area shape="rect" href="classdock_1_1DockView.html" title="视图抽象接口" alt="" coords="152,5,279,31"/>
+<area shape="poly" title=" " alt="" coords="198,43,177,75,170,93,167,113,167,423,173,448,188,471,207,489,225,503,222,507,203,493,183,474,168,450,162,424,162,112,165,92,172,72,193,40"/>
+<area shape="rect" href="classdock_1_1DockObject.html" title="控制器基类" alt="" coords="363,101,499,127"/>
+<area shape="poly" title=" " alt="" coords="256,34,406,99,404,104,253,39"/>
+<area shape="rect" href="classdock_1_1DockPanel.html" title="逻辑停靠面板" alt="" coords="216,313,345,339"/>
+<area shape="poly" title=" " alt="" coords="215,45,213,112,215,153,222,193,233,228,248,262,276,312,271,315,243,264,228,230,217,194,210,153,208,112,210,44"/>
+<area shape="rect" href="classdock_1_1DockWindow.html" title="浮动窗口" alt="" coords="381,313,527,339"/>
+<area shape="poly" title=" " alt="" coords="432,350,258,507,254,503,429,346"/>
+<area shape="rect" href="classdock_1_1ui_1_1DockAreaItem.html" title="布局区域视图" alt="" coords="463,409,637,435"/>
+<area shape="poly" title=" " alt="" coords="471,348,500,383,532,407,529,411,496,387,467,352"/>
+<area shape="poly" title=" " alt="" coords="457,134,488,170,503,192,514,216,520,237,521,255,517,272,507,291,495,305,480,315,477,311,491,301,502,288,512,270,516,254,514,238,509,218,498,195,484,173,453,138"/>
+<area shape="rect" href="classdock_1_1DockRegion.html" title="停靠区域" alt="" coords="618,217,757,243"/>
+<area shape="poly" title=" " alt="" coords="479,129,523,148,557,170,590,191,650,215,648,220,587,196,554,174,521,153,477,134"/>
+<area shape="rect" href="classdock_1_1PanelGroup.html" title="选项卡分组" alt="" coords="364,217,499,243"/>
+<area shape="poly" title=" " alt="" coords="434,141,434,217,429,217,429,141"/>
+<area shape="poly" title=" " alt="" coords="402,136,370,159,334,189,301,226,277,268,274,291,279,312,273,314,268,291,271,266,297,222,331,185,366,155,399,132"/>
+<area shape="rect" title=" " alt="" coords="394,5,469,31"/>
+<area shape="poly" title=" " alt="" coords="434,45,434,101,429,101,429,45"/>
+<area shape="poly" title=" " alt="" coords="651,251,556,292,490,316,488,311,554,287,649,246"/>
+<area shape="poly" title=" " alt="" coords="689,257,682,298,675,320,664,340,645,364,621,384,576,412,573,407,618,379,641,360,660,337,670,318,677,296,684,256"/>
+<area shape="rect" href="classdock_1_1LayoutNode.html" title="布局树节点（叶子节点与容器节点的公共基类）" alt="" coords="661,101,799,127"/>
+<area shape="poly" title=" " alt="" coords="723,141,694,218,689,216,718,139"/>
+<area shape="rect" href="classdock_1_1BoxNode.html" title="盒式布局容器" alt="" coords="795,217,915,243"/>
+<area shape="poly" title=" " alt="" coords="789,130,818,149,832,165,843,183,855,216,850,218,838,186,828,168,815,153,786,134"/>
+<area shape="poly" title=" " alt="" coords="668,133,628,153,616,163,610,174,603,185,590,196,545,215,499,226,498,220,544,210,587,191,599,181,605,171,612,160,624,148,665,129"/>
+<area shape="rect" href="structdock_1_1NodeMetrics.html" title="单个布局节点的几何与尺寸约束" alt="" coords="669,5,812,31"/>
+<area shape="poly" title=" " alt="" coords="740,45,734,101,729,101,735,44"/>
+<area shape="rect" href="classdock_1_1LayoutClient.html" title="被布局引擎托管的实体接口" alt="" coords="503,5,645,31"/>
+<area shape="poly" title=" " alt="" coords="606,35,712,99,709,103,603,40"/>
+<area shape="poly" title=" " alt="" coords="564,44,514,128,443,219,439,215,509,125,559,42"/>
+<area shape="poly" title=" " alt="" coords="858,204,858,177,854,164,848,152,826,134,799,124,801,119,829,130,852,149,859,162,863,176,863,204"/>
+<area shape="poly" title=" " alt="" coords="440,255,454,312,449,314,435,257"/>
+<area shape="poly" title=" " alt="" coords="351,246,314,256,291,269,285,279,282,290,281,313,276,313,276,290,280,276,287,265,312,251,350,241"/>
+<area shape="poly" title=" " alt="" coords="315,305,346,287,378,264,413,241,416,245,381,269,349,292,317,309"/>
+<area shape="poly" title=" " alt="" coords="500,441,282,508,280,503,499,436"/>
+<area shape="rect" title=" " alt="" coords="551,313,650,339"/>
+<area shape="poly" title=" " alt="" coords="590,352,559,410,554,408,586,350"/>
+</map>
+<center><span class="legend">[<a href="graph_legend.html">图例</a>]</span></center></div>
+<table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 id="header-pub-methods" class="groupheader"><a id="pub-methods" name="pub-methods"></a>
+Public 成员函数</h2></td></tr>
+<tr class="memitem:ad164decffe361d0d1039e92e15cfde8a" id="r_ad164decffe361d0d1039e92e15cfde8a"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ad164decffe361d0d1039e92e15cfde8a">DockWindowItem</a> (<a class="el" href="classdock_1_1DockWindow.html">DockWindow</a> *window)</td></tr>
+<tr class="memitem:a853d3fb703a206142b1aa1d419326368" id="r_a853d3fb703a206142b1aa1d419326368"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a853d3fb703a206142b1aa1d419326368">~DockWindowItem</a> () override</td></tr>
+<tr class="memitem:a1fdb86fbc5d44ca07a7dd7092bad333c" id="r_a1fdb86fbc5d44ca07a7dd7092bad333c"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classdock_1_1DockObject.html">DockObject</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a1fdb86fbc5d44ca07a7dd7092bad333c">dockObject</a> () const override</td></tr>
+<tr class="memdesc:a1fdb86fbc5d44ca07a7dd7092bad333c"><td class="mdescLeft">&#160;</td><td class="mdescRight">关联的控制器  <br /></td></tr>
+<tr class="memitem:aa86e8543b870772886c9331b591f7f1f" id="r_aa86e8543b870772886c9331b591f7f1f"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#aa86e8543b870772886c9331b591f7f1f">applyFrame</a> (const QRect &amp;<a class="el" href="TestComponentModel_8cpp.html#acd06f41b01ec41c67d52bd9d7cc86e10">geometry</a>) override</td></tr>
+<tr class="memdesc:aa86e8543b870772886c9331b591f7f1f"><td class="mdescLeft">&#160;</td><td class="mdescRight">应用几何（父视图坐标系）  <br /></td></tr>
+<tr class="memitem:ae4eed3fbbb39ff19d2c3a40ba21e03ab" id="r_ae4eed3fbbb39ff19d2c3a40ba21e03ab"><td class="memItemLeft" align="right" valign="top">QRect&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ae4eed3fbbb39ff19d2c3a40ba21e03ab">frame</a> () const override</td></tr>
+<tr class="memdesc:ae4eed3fbbb39ff19d2c3a40ba21e03ab"><td class="mdescLeft">&#160;</td><td class="mdescRight">当前几何  <br /></td></tr>
+<tr class="memitem:aefea90b56ae110e90c1a4de6954f4fa0" id="r_aefea90b56ae110e90c1a4de6954f4fa0"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#aefea90b56ae110e90c1a4de6954f4fa0">applyVisibility</a> (bool visible) override</td></tr>
+<tr class="memdesc:aefea90b56ae110e90c1a4de6954f4fa0"><td class="mdescLeft">&#160;</td><td class="mdescRight">应用可见性  <br /></td></tr>
+<tr class="memitem:ac84688f7a90fc625b7446f3570af5bab" id="r_ac84688f7a90fc625b7446f3570af5bab"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ac84688f7a90fc625b7446f3570af5bab">isShown</a> () const override</td></tr>
+<tr class="memdesc:ac84688f7a90fc625b7446f3570af5bab"><td class="mdescLeft">&#160;</td><td class="mdescRight">当前可见性  <br /></td></tr>
+<tr class="memitem:a08cc2cd3f232d8f971f956e7bae7b8de" id="r_a08cc2cd3f232d8f971f956e7bae7b8de"><td class="memItemLeft" align="right" valign="top">QSize&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a08cc2cd3f232d8f971f956e7bae7b8de">minExtent</a> () const override</td></tr>
+<tr class="memdesc:a08cc2cd3f232d8f971f956e7bae7b8de"><td class="mdescLeft">&#160;</td><td class="mdescRight">视图最小尺寸  <br /></td></tr>
+<tr class="memitem:a53f3c5cc5dea2d1023feec2d4e5f2cec" id="r_a53f3c5cc5dea2d1023feec2d4e5f2cec"><td class="memItemLeft" align="right" valign="top">QSize&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a53f3c5cc5dea2d1023feec2d4e5f2cec">maxExtent</a> () const override</td></tr>
+<tr class="memdesc:a53f3c5cc5dea2d1023feec2d4e5f2cec"><td class="mdescLeft">&#160;</td><td class="mdescRight">视图最大尺寸提示  <br /></td></tr>
+<tr class="memitem:a4ffa6df353d379e737e14de1dbe8111f" id="r_a4ffa6df353d379e737e14de1dbe8111f"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a4ffa6df353d379e737e14de1dbe8111f">bringToFront</a> () override</td></tr>
+<tr class="memdesc:a4ffa6df353d379e737e14de1dbe8111f"><td class="mdescLeft">&#160;</td><td class="mdescRight">激活/置顶视图  <br /></td></tr>
+<tr class="memitem:a0e5d1f5fe3e190c32da5eacd8d5d05b8" id="r_a0e5d1f5fe3e190c32da5eacd8d5d05b8"><td class="memItemLeft" align="right" valign="top">QPoint&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a0e5d1f5fe3e190c32da5eacd8d5d05b8">globalOrigin</a> () const override</td></tr>
+<tr class="memdesc:a0e5d1f5fe3e190c32da5eacd8d5d05b8"><td class="mdescLeft">&#160;</td><td class="mdescRight">视图全局原点（用于拖放命中测试）  <br /></td></tr>
+<tr class="memitem:aed9a26cbb0605adc2a9e06a05dab9502" id="r_aed9a26cbb0605adc2a9e06a05dab9502"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classdock_1_1DockView.html">DockView</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#aed9a26cbb0605adc2a9e06a05dab9502">createDockWindow</a> (<a class="el" href="classdock_1_1DockObject.html">DockObject</a> *controller) override</td></tr>
+<tr class="memdesc:aed9a26cbb0605adc2a9e06a05dab9502"><td class="mdescLeft">&#160;</td><td class="mdescRight">创建浮动窗口视图  <br /></td></tr>
+<tr class="inherit_header pub_methods_classdock_1_1DockView"><td colspan="2" onclick="javascript:dynsection.toggleInherit('pub_methods_classdock_1_1DockView')"><span class="dynarrow"><span class="arrowhead closed"></span></span>Public 成员函数 继承自 <a class="el" href="classdock_1_1DockView.html">dock::DockView</a></td></tr>
+<tr class="memitem:aa40637d44c7fb04c086468a550244562 inherit pub_methods_classdock_1_1DockView" id="r_aa40637d44c7fb04c086468a550244562"><td class="memItemLeft" align="right" valign="top">virtual&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classdock_1_1DockView.html#aa40637d44c7fb04c086468a550244562">~DockView</a> ()=default</td></tr>
+<tr class="memitem:a9e5e4b012a0a9c9628a43a46fc4de062 inherit pub_methods_classdock_1_1DockView" id="r_a9e5e4b012a0a9c9628a43a46fc4de062"><td class="memItemLeft" align="right" valign="top">virtual int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classdock_1_1DockView.html#a9e5e4b012a0a9c9628a43a46fc4de062">tabInsertIndexAt</a> (const QPoint &amp;global_pos) const</td></tr>
+<tr class="memdesc:a9e5e4b012a0a9c9628a43a46fc4de062 inherit pub_methods_classdock_1_1DockView"><td class="mdescLeft">&#160;</td><td class="mdescRight">标签插入位置查询（拖放用）  <br /></td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 id="header-pri-methods" class="groupheader"><a id="pri-methods" name="pri-methods"></a>
+Private 成员函数</h2></td></tr>
+<tr class="memitem:a479259539c39c1607e00a5135e808e67" id="r_a479259539c39c1607e00a5135e808e67"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a479259539c39c1607e00a5135e808e67">updateFromController</a> ()</td></tr>
+<tr class="memdesc:a479259539c39c1607e00a5135e808e67"><td class="mdescLeft">&#160;</td><td class="mdescRight">应用控制器的几何  <br /></td></tr>
+<tr class="memitem:ae7642e608514b48a1ff58a5449a56bf9" id="r_ae7642e608514b48a1ff58a5449a56bf9"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ae7642e608514b48a1ff58a5449a56bf9">updateAreaHost</a> ()</td></tr>
+<tr class="memdesc:ae7642e608514b48a1ff58a5449a56bf9"><td class="mdescLeft">&#160;</td><td class="mdescRight">同步内容宿主尺寸与区域几何  <br /></td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 id="header-pri-attribs" class="groupheader"><a id="pri-attribs" name="pri-attribs"></a>
+Private 属性</h2></td></tr>
+<tr class="memitem:a4bb377bdae32c9603af0ec9359d7c99b" id="r_a4bb377bdae32c9603af0ec9359d7c99b"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classdock_1_1DockWindow.html">DockWindow</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a4bb377bdae32c9603af0ec9359d7c99b">window_</a> = nullptr</td></tr>
+<tr class="memitem:aad371a0c3e3575a32ead6e7432b8c470" id="r_aad371a0c3e3575a32ead6e7432b8c470"><td class="memItemLeft" align="right" valign="top">QQuickItem *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#aad371a0c3e3575a32ead6e7432b8c470">root_item_</a> = nullptr</td></tr>
+<tr class="memitem:ad33316d6175f0357460c1d92e7589d74" id="r_ad33316d6175f0357460c1d92e7589d74"><td class="memItemLeft" align="right" valign="top">QQuickItem *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ad33316d6175f0357460c1d92e7589d74">area_host_</a> = nullptr</td></tr>
+<tr class="memitem:ad94fde08dced7e33d0642d4998bce8f3" id="r_ad94fde08dced7e33d0642d4998bce8f3"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classdock_1_1ui_1_1DockAreaItem.html">DockAreaItem</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ad94fde08dced7e33d0642d4998bce8f3">area_item_</a> = nullptr</td></tr>
+</table>
+<a name="details" id="details"></a><h2 id="header-details" class="groupheader">详细描述</h2>
+<div class="textblock"><p>浮动窗口视图 </p>
+<p>无边框 Qt::Tool 顶层窗口；内容宿主由 <a class="el" href="DockWindow_8qml.html">DockWindow.qml</a> 提供， 其中嵌一个 <a class="el" href="classdock_1_1ui_1_1DockAreaItem.html" title="布局区域视图">DockAreaItem</a> 支持在浮窗内继续停靠。窗口位置/尺寸由核心层 <a class="el" href="classdock_1_1DockWindow.html#a17f16a11cc2909fc99580483be52bd4c" title="几何变化（视图层同步窗口位置/尺寸）">DockWindow::geometryChanged</a> 驱动。 </p>
+</div><a name="doc-constructors" id="doc-constructors"></a><h2 id="header-doc-constructors" class="groupheader">构造及析构函数说明</h2>
+<a id="ad164decffe361d0d1039e92e15cfde8a" name="ad164decffe361d0d1039e92e15cfde8a"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ad164decffe361d0d1039e92e15cfde8a">&#9670;&#160;</a></span>DockWindowItem()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">dock::ui::DockWindowItem::DockWindowItem </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="classdock_1_1DockWindow.html">DockWindow</a> *</td>          <td class="paramname"><span class="paramname"><em>window</em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel explicit">explicit</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a853d3fb703a206142b1aa1d419326368" name="a853d3fb703a206142b1aa1d419326368"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a853d3fb703a206142b1aa1d419326368">&#9670;&#160;</a></span>~DockWindowItem()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">dock::ui::DockWindowItem::~DockWindowItem </td>
+          <td>(</td>
+          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel override">override</span><span class="mlabel default">default</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a name="doc-func-members" id="doc-func-members"></a><h2 id="header-doc-func-members" class="groupheader">成员函数说明</h2>
+<a id="aa86e8543b870772886c9331b591f7f1f" name="aa86e8543b870772886c9331b591f7f1f"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aa86e8543b870772886c9331b591f7f1f">&#9670;&#160;</a></span>applyFrame()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void dock::ui::DockWindowItem::applyFrame </td>
+          <td>(</td>
+          <td class="paramtype">const QRect &amp;</td>          <td class="paramname"><span class="paramname"><em>geometry</em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel override">override</span><span class="mlabel virtual">virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>应用几何（父视图坐标系） </p>
+
+<p>实现了 <a class="el" href="classdock_1_1DockView.html#adddb2c1d1dd5818d33310ce8eaa68cdc">dock::DockView</a>.</p>
+
+</div>
+</div>
+<a id="aefea90b56ae110e90c1a4de6954f4fa0" name="aefea90b56ae110e90c1a4de6954f4fa0"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aefea90b56ae110e90c1a4de6954f4fa0">&#9670;&#160;</a></span>applyVisibility()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void dock::ui::DockWindowItem::applyVisibility </td>
+          <td>(</td>
+          <td class="paramtype">bool</td>          <td class="paramname"><span class="paramname"><em>visible</em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel override">override</span><span class="mlabel virtual">virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>应用可见性 </p>
+
+<p>实现了 <a class="el" href="classdock_1_1DockView.html#a12208a4c409af1c7ad4048356ecf5c2c">dock::DockView</a>.</p>
+
+</div>
+</div>
+<a id="a4ffa6df353d379e737e14de1dbe8111f" name="a4ffa6df353d379e737e14de1dbe8111f"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a4ffa6df353d379e737e14de1dbe8111f">&#9670;&#160;</a></span>bringToFront()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void dock::ui::DockWindowItem::bringToFront </td>
+          <td>(</td>
+          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel override">override</span><span class="mlabel virtual">virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>激活/置顶视图 </p>
+
+<p>实现了 <a class="el" href="classdock_1_1DockView.html#ada09ae5957fc2b31e376a450e96e5a73">dock::DockView</a>.</p>
+
+</div>
+</div>
+<a id="aed9a26cbb0605adc2a9e06a05dab9502" name="aed9a26cbb0605adc2a9e06a05dab9502"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aed9a26cbb0605adc2a9e06a05dab9502">&#9670;&#160;</a></span>createDockWindow()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classdock_1_1DockView.html">DockView</a> * dock::ui::DockWindowItem::createDockWindow </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="classdock_1_1DockObject.html">DockObject</a> *</td>          <td class="paramname"><span class="paramname"><em>controller</em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel override">override</span><span class="mlabel virtual">virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>创建浮动窗口视图 </p>
+<p>仅能创建顶层窗口的视图（主窗口视图）需要实现； controller 为 <a class="el" href="classdock_1_1DockWindow.html" title="浮动窗口">DockWindow</a> 控制器，返回其视图对象。 </p>
+
+<p>实现了 <a class="el" href="classdock_1_1DockView.html#a6dfa0c6f8f9f2bb5917fb51ec2033514">dock::DockView</a>.</p>
+
+</div>
+</div>
+<a id="a1fdb86fbc5d44ca07a7dd7092bad333c" name="a1fdb86fbc5d44ca07a7dd7092bad333c"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a1fdb86fbc5d44ca07a7dd7092bad333c">&#9670;&#160;</a></span>dockObject()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classdock_1_1DockObject.html">DockObject</a> * dock::ui::DockWindowItem::dockObject </td>
+          <td>(</td>
+          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel override">override</span><span class="mlabel virtual">virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>关联的控制器 </p>
+
+<p>实现了 <a class="el" href="classdock_1_1DockView.html#a270f145f65122fc81869246479343a85">dock::DockView</a>.</p>
+
+</div>
+</div>
+<a id="ae4eed3fbbb39ff19d2c3a40ba21e03ab" name="ae4eed3fbbb39ff19d2c3a40ba21e03ab"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ae4eed3fbbb39ff19d2c3a40ba21e03ab">&#9670;&#160;</a></span>frame()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">QRect dock::ui::DockWindowItem::frame </td>
+          <td>(</td>
+          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel override">override</span><span class="mlabel virtual">virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>当前几何 </p>
+
+<p>实现了 <a class="el" href="classdock_1_1DockView.html#a5745bb2ae612282b4127f8a7684d6563">dock::DockView</a>.</p>
+
+</div>
+</div>
+<a id="a0e5d1f5fe3e190c32da5eacd8d5d05b8" name="a0e5d1f5fe3e190c32da5eacd8d5d05b8"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a0e5d1f5fe3e190c32da5eacd8d5d05b8">&#9670;&#160;</a></span>globalOrigin()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">QPoint dock::ui::DockWindowItem::globalOrigin </td>
+          <td>(</td>
+          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel override">override</span><span class="mlabel virtual">virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>视图全局原点（用于拖放命中测试） </p>
+
+<p>实现了 <a class="el" href="classdock_1_1DockView.html#a809481addd49472a1bef8ddcef622b02">dock::DockView</a>.</p>
+
+</div>
+</div>
+<a id="ac84688f7a90fc625b7446f3570af5bab" name="ac84688f7a90fc625b7446f3570af5bab"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ac84688f7a90fc625b7446f3570af5bab">&#9670;&#160;</a></span>isShown()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool dock::ui::DockWindowItem::isShown </td>
+          <td>(</td>
+          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel override">override</span><span class="mlabel virtual">virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>当前可见性 </p>
+
+<p>实现了 <a class="el" href="classdock_1_1DockView.html#a1d7991ae3f2b1e5b7c8e29ba7e1ce147">dock::DockView</a>.</p>
+
+</div>
+</div>
+<a id="a53f3c5cc5dea2d1023feec2d4e5f2cec" name="a53f3c5cc5dea2d1023feec2d4e5f2cec"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a53f3c5cc5dea2d1023feec2d4e5f2cec">&#9670;&#160;</a></span>maxExtent()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">QSize dock::ui::DockWindowItem::maxExtent </td>
+          <td>(</td>
+          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel override">override</span><span class="mlabel virtual">virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>视图最大尺寸提示 </p>
+
+<p>实现了 <a class="el" href="classdock_1_1DockView.html#a8ce9e67004556fbac2696ba58617f829">dock::DockView</a>.</p>
+
+</div>
+</div>
+<a id="a08cc2cd3f232d8f971f956e7bae7b8de" name="a08cc2cd3f232d8f971f956e7bae7b8de"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a08cc2cd3f232d8f971f956e7bae7b8de">&#9670;&#160;</a></span>minExtent()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">QSize dock::ui::DockWindowItem::minExtent </td>
+          <td>(</td>
+          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel override">override</span><span class="mlabel virtual">virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>视图最小尺寸 </p>
+
+<p>实现了 <a class="el" href="classdock_1_1DockView.html#af61018da5187c7c474de9c0a2c42fbfa">dock::DockView</a>.</p>
+
+</div>
+</div>
+<a id="ae7642e608514b48a1ff58a5449a56bf9" name="ae7642e608514b48a1ff58a5449a56bf9"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ae7642e608514b48a1ff58a5449a56bf9">&#9670;&#160;</a></span>updateAreaHost()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void dock::ui::DockWindowItem::updateAreaHost </td>
+          <td>(</td>
+          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel private">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>同步内容宿主尺寸与区域几何 </p>
+
+</div>
+</div>
+<a id="a479259539c39c1607e00a5135e808e67" name="a479259539c39c1607e00a5135e808e67"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a479259539c39c1607e00a5135e808e67">&#9670;&#160;</a></span>updateFromController()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void dock::ui::DockWindowItem::updateFromController </td>
+          <td>(</td>
+          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel private">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>应用控制器的几何 </p>
+
+</div>
+</div>
+<a name="doc-variable-members" id="doc-variable-members"></a><h2 id="header-doc-variable-members" class="groupheader">类成员变量说明</h2>
+<a id="ad33316d6175f0357460c1d92e7589d74" name="ad33316d6175f0357460c1d92e7589d74"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ad33316d6175f0357460c1d92e7589d74">&#9670;&#160;</a></span>area_host_</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">QQuickItem* dock::ui::DockWindowItem::area_host_ = nullptr</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel private">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="ad94fde08dced7e33d0642d4998bce8f3" name="ad94fde08dced7e33d0642d4998bce8f3"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ad94fde08dced7e33d0642d4998bce8f3">&#9670;&#160;</a></span>area_item_</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classdock_1_1ui_1_1DockAreaItem.html">DockAreaItem</a>* dock::ui::DockWindowItem::area_item_ = nullptr</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel private">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="aad371a0c3e3575a32ead6e7432b8c470" name="aad371a0c3e3575a32ead6e7432b8c470"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aad371a0c3e3575a32ead6e7432b8c470">&#9670;&#160;</a></span>root_item_</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">QQuickItem* dock::ui::DockWindowItem::root_item_ = nullptr</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel private">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a4bb377bdae32c9603af0ec9359d7c99b" name="a4bb377bdae32c9603af0ec9359d7c99b"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a4bb377bdae32c9603af0ec9359d7c99b">&#9670;&#160;</a></span>window_</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classdock_1_1DockWindow.html">DockWindow</a>* dock::ui::DockWindowItem::window_ = nullptr</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel private">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<hr/>该类的文档由以下文件生成:<ul>
+<li>app/dock/ui/<a class="el" href="DockWindowItem_8h_source.html">DockWindowItem.h</a></li>
+<li>app/dock/ui/<a class="el" href="DockWindowItem_8cpp.html">DockWindowItem.cpp</a></li>
+</ul>
+</div><!-- contents -->
+<!-- start footer part -->
+<hr class="footer"/><address class="footer"><small>
+制作者&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.14.0
+</small></address>
+</div><!-- doc-content -->
+</body>
+</html>

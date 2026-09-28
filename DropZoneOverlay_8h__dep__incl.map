@@ -1,0 +1,11 @@
+<map id="app/dock/ui/DropZoneOverlay.h" name="app/dock/ui/DropZoneOverlay.h">
+<area shape="rect" id="Node000001" title="透明顶层落点指示器窗口：始终显示在被拖动窗口之上" alt="" coords="348,5,575,31"/>
+<area shape="rect" id="Node000002" href="$TestDockQmlSmoke_8cpp.html" title="QML 集成冒烟测试：类型注册、中央持久部件、重开面板、拖拽浮窗回归" alt="" coords="5,79,205,119"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="397,36,191,81,190,76,396,31"/>
+<area shape="rect" id="Node000003" href="$DockAreaItem_8cpp.html" title="布局区域视图的实现" alt="" coords="229,86,451,111"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="433,41,359,88,357,84,430,36"/>
+<area shape="rect" id="Node000004" href="$DockRuntime_8cpp.html" title="QtQuick 视图层全局服务的实现" alt="" coords="475,86,691,111"/>
+<area shape="poly" id="edge3_Node000001_Node000004" title=" " alt="" coords="493,36,566,84,563,88,490,41"/>
+<area shape="rect" id="Node000005" href="$DropZoneOverlay_8cpp.html" title="透明顶层落点指示器窗口的实现" alt="" coords="715,86,957,111"/>
+<area shape="poly" id="edge4_Node000001_Node000005" title=" " alt="" coords="530,31,782,83,781,89,529,36"/>
+</map>

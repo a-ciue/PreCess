@@ -1,0 +1,10 @@
+<map id="dock::LayoutNode" name="dock::LayoutNode">
+<area shape="rect" id="Node000001" title="布局树节点（叶子节点与容器节点的公共基类）" alt="" coords="90,101,229,127"/>
+<area shape="rect" id="Node000004" href="$classdock_1_1BoxNode.html" title="盒式布局容器" alt="" coords="99,197,219,223"/>
+<area shape="poly" id="edge4_Node000004_Node000001" title=" " alt="" coords="160,141,159,151,159,173,161,197,156,197,154,173,154,151,155,140"/>
+<area shape="rect" id="Node000002" href="$structdock_1_1NodeMetrics.html" title="单个布局节点的几何与尺寸约束" alt="" coords="5,5,148,31"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="98,39,151,99,147,103,94,43"/>
+<area shape="rect" id="Node000003" href="$classdock_1_1LayoutClient.html" title="被布局引擎托管的实体接口" alt="" coords="172,5,315,31"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="226,43,172,103,168,99,222,39"/>
+<area shape="poly" id="edge3_Node000001_Node000004" title=" " alt="" coords="157,183,157,127,162,127,162,183"/>
+</map>

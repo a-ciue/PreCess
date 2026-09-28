@@ -13,5 +13,6 @@ var searchData=
   ['featureparams_10',['FeatureParams',['../classsystems_1_1feature_1_1FeatureParams.html',1,'systems::feature']]],
   ['featureregistrar_11',['FeatureRegistrar',['../classsystems_1_1feature_1_1FeatureRegistrar.html',1,'systems::feature']]],
   ['featuresystem_12',['FeatureSystem',['../classsystems_1_1feature_1_1FeatureSystem.html',1,'systems::feature']]],
-  ['featuresystemregister_13',['FeatureSystemRegister',['../classsystems_1_1feature_1_1FeatureSystemRegister.html',1,'systems::feature']]]
+  ['featuresystemregister_13',['FeatureSystemRegister',['../classsystems_1_1feature_1_1FeatureSystemRegister.html',1,'systems::feature']]],
+  ['floatorigin_14',['FloatOrigin',['../structdock_1_1DragSession_1_1FloatOrigin.html',1,'dock::DragSession']]]
 ];

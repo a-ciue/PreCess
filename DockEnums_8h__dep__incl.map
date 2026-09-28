@@ -1,0 +1,100 @@
+<map id="app/dock/docking/DockEnums.h" name="app/dock/docking/DockEnums.h">
+<area shape="rect" id="Node000001" title="停靠组件的公共枚举与判定辅助" alt="" coords="3448,5,3678,31"/>
+<area shape="rect" id="Node000002" href="$DockHost_8h.html" title="主停靠窗口：持有根停靠区域与中央持久面板" alt="" coords="577,152,792,177"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="3435,28,792,161,792,155,3434,23"/>
+<area shape="rect" id="Node000014" href="$DockRegion_8h.html" title="停靠区域：持有布局树根节点，负责命令式停靠与拖放落点" alt="" coords="1753,152,1984,177"/>
+<area shape="poly" id="edge17_Node000001_Node000014" title=" " alt="" coords="3435,33,1985,156,1984,151,3434,28"/>
+<area shape="rect" id="Node000019" href="$DragSession_8h.html" title="拖拽状态机：按下 → 超过阈值转拖拽 → 悬停落点 → 释放/取消" alt="" coords="2930,152,3164,177"/>
+<area shape="poly" id="edge31_Node000001_Node000019" title=" " alt="" coords="3435,29,3312,47,3248,62,3185,81,3149,97,3115,117,3063,154,3060,150,3112,113,3147,93,3184,76,3246,57,3311,42,3434,24"/>
+<area shape="rect" id="Node000021" href="$DropTarget_8h.html" title="拖放落点目标：区域 + 分组 + 落点 + 标签插入位置" alt="" coords="3196,79,3418,104"/>
+<area shape="poly" id="edge43_Node000001_Node000021" title=" " alt="" coords="3510,37,3349,81,3348,76,3508,32"/>
+<area shape="rect" id="Node000023" href="$ZoneGeometry_8h.html" title="经典拖放指示器几何：内 4 + 中心 + 外 4，共 9 个" alt="" coords="4159,152,4407,177"/>
+<area shape="poly" id="edge49_Node000001_Node000023" title=" " alt="" coords="3634,31,4227,149,4225,155,3633,36"/>
+<area shape="rect" id="Node000026" href="$ZoneResolver_8h.html" title="拖放落点计算（Classic 指示器的 9 个位置）" alt="" coords="3856,152,4097,177"/>
+<area shape="poly" id="edge54_Node000001_Node000026" title=" " alt="" coords="3619,32,3763,76,3867,115,3951,149,3949,154,3865,120,3761,81,3617,37"/>
+<area shape="rect" id="Node000027" href="$DockHostItem_8h.html" title="QML 主停靠区域（PreCess.Docking 的 DockHost 类型）" alt="" coords="3460,152,3666,177"/>
+<area shape="poly" id="edge58_Node000001_Node000027" title=" " alt="" coords="3566,45,3566,152,3560,152,3560,45"/>
+<area shape="rect" id="Node000028" href="$QmlRegistration_8cpp.html" title="QML 类型注册与组件初始化" alt="" coords="3846,225,4080,251"/>
+<area shape="poly" id="edge67_Node000001_Node000028" title=" " alt="" coords="3596,35,3846,175,3941,223,3938,228,3843,180,3593,40"/>
+<area shape="rect" id="Node000029" href="$DropZoneOverlay_8h.html" title="透明顶层落点指示器窗口：始终显示在被拖动窗口之上" alt="" coords="4768,152,4995,177"/>
+<area shape="poly" id="edge62_Node000001_Node000029" title=" " alt="" coords="3681,29,4778,149,4778,155,3680,35"/>
+<area shape="rect" id="Node000003" href="$DockCatalog_8cpp.html" title="停靠对象注册表的实现" alt="" coords="168,225,419,251"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="609,182,358,228,357,223,608,177"/>
+<area shape="rect" id="Node000004" href="$DockHost_8cpp.html" title="主停靠窗口的实现" alt="" coords="444,225,674,251"/>
+<area shape="poly" id="edge3_Node000002_Node000004" title=" " alt="" coords="654,186,581,227,578,223,651,182"/>
+<area shape="rect" id="Node000005" href="$DragSession_8cpp.html" title="拖拽状态机的实现" alt="" coords="2472,225,2720,251"/>
+<area shape="poly" id="edge4_Node000002_Node000005" title=" " alt="" coords="806,165,1508,182,1980,199,2461,223,2472,223,2472,229,2460,228,1980,204,1507,188,805,171"/>
+<area shape="rect" id="Node000006" href="$DropResolver_8cpp.html" title="拖放落点解析的实现" alt="" coords="2745,225,3000,251"/>
+<area shape="poly" id="edge5_Node000002_Node000006" title=" " alt="" coords="806,165,1614,180,2168,197,2733,223,2745,223,2745,229,2732,228,2168,203,1614,185,806,170"/>
+<area shape="rect" id="Node000007" href="$DockTestSupport_8h.html" title="停靠组件测试支撑：桩视图与复刻 Main.qml 启动布局的夹具" alt="" coords="1571,225,1806,251"/>
+<area shape="poly" id="edge6_Node000002_Node000007" title=" " alt="" coords="806,172,1571,226,1571,231,805,177"/>
+<area shape="rect" id="Node000008" href="$TestDockCore_8cpp.html" title="停靠核心语义单元测试：命令式停靠布局、关闭/恢复、中央部件、选项卡" alt="" coords="1340,306,1570,331"/>
+<area shape="poly" id="edge11_Node000002_Node000008" title=" " alt="" coords="563,171,405,176,232,186,87,203,39,214,13,227,8,238,13,249,31,257,68,264,191,278,363,289,567,297,997,309,1339,314,1339,319,997,314,567,303,363,294,191,283,67,270,29,262,9,253,3,238,9,223,37,209,86,198,232,181,405,170,563,165"/>
+<area shape="rect" id="Node000009" href="$TestDockDragDrop_8cpp.html" title="拖放核心单元测试：落点计算、指示器几何、浮动/回停、拖拽阈值与停靠" alt="" coords="3088,299,3292,339"/>
+<area shape="poly" id="edge12_Node000002_Node000009" title=" " alt="" coords="563,171,418,177,273,191,214,202,172,215,159,223,152,231,152,239,158,248,191,256,271,264,543,275,921,284,1352,289,2562,296,3088,311,3087,317,2562,301,1352,295,920,289,543,281,270,269,190,262,155,253,147,241,147,229,155,219,170,211,213,197,272,186,418,172,563,165"/>
+<area shape="rect" id="Node000010" href="$TestDockPersist_8cpp.html" title="布局持久化测试：快照往返、浮窗占位/回停来源、兼容性与坏数据拒绝" alt="" coords="1594,306,1838,331"/>
+<area shape="poly" id="edge13_Node000002_Node000010" title=" " alt="" coords="563,168,390,171,211,183,137,194,83,209,66,217,57,227,56,237,63,249,88,259,141,267,312,280,546,288,812,292,1317,294,1582,296,1645,303,1645,309,1582,301,1317,299,812,297,546,293,312,285,140,273,87,264,60,253,51,238,52,225,63,213,81,204,136,189,210,178,390,166,563,162"/>
+<area shape="rect" id="Node000011" href="$TestDockQmlSmoke_8cpp.html" title="QML 集成冒烟测试：类型注册、中央持久部件、重开面板、拖拽浮窗回归" alt="" coords="2350,299,2550,339"/>
+<area shape="poly" id="edge14_Node000002_Node000011" title=" " alt="" coords="563,169,405,174,244,187,178,198,130,212,116,220,108,229,107,238,114,249,137,254,195,260,391,270,976,284,1850,296,2350,311,2349,317,1850,301,976,290,391,275,195,265,137,260,111,253,102,239,103,227,112,216,128,207,177,193,243,182,405,169,563,164"/>
+<area shape="rect" id="Node000012" href="$DockHostItem_8cpp.html" title="主停靠区域视图的实现" alt="" coords="699,225,920,251"/>
+<area shape="poly" id="edge15_Node000002_Node000012" title=" " alt="" coords="718,182,791,223,788,227,715,186"/>
+<area shape="rect" id="Node000013" href="$PanelGroupItem_8cpp.html" title="分组视图的实现" alt="" coords="1214,225,1446,251"/>
+<area shape="poly" id="edge16_Node000002_Node000013" title=" " alt="" coords="802,176,1226,223,1226,228,801,181"/>
+<area shape="poly" id="edge7_Node000007_Node000008" title=" " alt="" coords="1643,257,1490,309,1488,303,1641,252"/>
+<area shape="poly" id="edge8_Node000007_Node000009" title=" " alt="" coords="1820,245,1875,248,3088,310,3087,315,1875,253,1819,250"/>
+<area shape="poly" id="edge9_Node000007_Node000010" title=" " alt="" coords="1700,263,1715,305,1710,307,1695,264"/>
+<area shape="poly" id="edge10_Node000007_Node000011" title=" " alt="" coords="1813,249,2350,304,2349,310,1812,255"/>
+<area shape="poly" id="edge18_Node000014_Node000003" title=" " alt="" coords="1739,172,1172,192,804,208,431,228,419,229,419,223,431,223,803,202,1171,186,1739,167"/>
+<area shape="poly" id="edge19_Node000014_Node000004" title=" " alt="" coords="1740,174,1276,194,687,228,675,229,674,224,687,223,1275,189,1740,168"/>
+<area shape="poly" id="edge22_Node000014_Node000005" title=" " alt="" coords="1997,176,2479,223,2479,228,1997,181"/>
+<area shape="poly" id="edge23_Node000014_Node000006" title=" " alt="" coords="1998,172,2733,223,2745,224,2745,229,2732,228,1997,177"/>
+<area shape="poly" id="edge24_Node000014_Node000008" title=" " alt="" coords="1740,174,1642,192,1593,207,1547,228,1521,245,1498,267,1465,307,1461,304,1494,263,1517,241,1544,223,1591,202,1641,187,1739,169"/>
+<area shape="poly" id="edge25_Node000014_Node000009" title=" " alt="" coords="1878,190,1894,222,1906,237,1920,248,1972,259,2082,269,2412,288,3087,312,3087,317,2412,293,2081,275,1971,264,1918,253,1902,240,1890,225,1874,192"/>
+<area shape="poly" id="edge26_Node000014_Node000010" title=" " alt="" coords="1740,177,1684,184,1631,195,1588,209,1561,227,1554,240,1555,252,1563,263,1576,273,1615,291,1659,303,1658,309,1613,296,1573,278,1559,267,1550,254,1549,239,1557,224,1585,204,1629,190,1683,179,1739,172"/>
+<area shape="poly" id="edge27_Node000014_Node000011" title=" " alt="" coords="1865,191,1865,222,1869,236,1877,249,1899,260,1941,271,2066,288,2215,301,2350,310,2350,315,2214,307,2066,294,1940,276,1897,265,1873,253,1864,239,1860,223,1860,191"/>
+<area shape="poly" id="edge29_Node000014_Node000012" title=" " alt="" coords="1739,176,1376,197,933,228,921,229,921,224,932,223,1376,192,1739,170"/>
+<area shape="rect" id="Node000015" href="$DockRegion_8cpp.html" title="停靠区域的实现" alt="" coords="944,225,1190,251"/>
+<area shape="poly" id="edge20_Node000014_Node000015" title=" " alt="" coords="1740,180,1190,228,1190,223,1739,175"/>
+<area shape="rect" id="Node000016" href="$DockWindow_8cpp.html" title="浮动窗口的实现" alt="" coords="1931,225,2182,251"/>
+<area shape="poly" id="edge21_Node000014_Node000016" title=" " alt="" coords="1912,180,2027,223,2025,228,1910,185"/>
+<area shape="rect" id="Node000017" href="$DockAreaItem_8cpp.html" title="布局区域视图的实现" alt="" coords="3600,225,3822,251"/>
+<area shape="poly" id="edge28_Node000014_Node000017" title=" " alt="" coords="1998,167,2638,189,3487,223,3600,228,3600,233,3487,228,2638,195,1998,173"/>
+<area shape="rect" id="Node000018" href="$DockWindowItem_8cpp.html" title="浮动窗口视图的实现" alt="" coords="2206,225,2448,251"/>
+<area shape="poly" id="edge30_Node000014_Node000018" title=" " alt="" coords="1956,177,2254,223,2253,228,1955,182"/>
+<area shape="poly" id="edge32_Node000019_Node000004" title=" " alt="" coords="2917,169,2537,172,1987,181,1344,199,687,228,675,229,674,223,687,223,1344,193,1987,176,2537,167,2917,164"/>
+<area shape="poly" id="edge33_Node000019_Node000005" title=" " alt="" coords="2962,182,2669,228,2669,223,2961,177"/>
+<area shape="poly" id="edge34_Node000019_Node000007" title=" " alt="" coords="2917,175,1806,233,1806,228,2917,170"/>
+<area shape="poly" id="edge35_Node000019_Node000008" title=" " alt="" coords="3047,192,3037,224,3027,240,3014,253,2987,261,2936,268,2773,279,2302,292,1830,297,1582,301,1523,309,1522,303,1582,296,1830,292,2302,286,2772,274,2935,263,2986,256,3011,248,3023,237,3032,222,3042,190"/>
+<area shape="poly" id="edge36_Node000019_Node000009" title=" " alt="" coords="3097,180,3130,198,3160,224,3172,242,3181,261,3190,298,3185,299,3175,263,3167,244,3156,227,3127,202,3094,185"/>
+<area shape="poly" id="edge37_Node000019_Node000010" title=" " alt="" coords="3061,189,3069,221,3067,238,3058,253,3012,262,2903,271,2562,289,1839,316,1838,311,2562,284,2903,266,3011,257,3055,248,3062,236,3063,222,3056,191"/>
+<area shape="poly" id="edge38_Node000019_Node000011" title=" " alt="" coords="3078,184,3096,198,3110,216,3116,234,3109,252,3081,267,3030,279,2881,298,2706,310,2550,317,2550,312,2706,305,2880,293,3029,274,3079,262,3105,249,3111,234,3105,218,3092,202,3075,188"/>
+<area shape="poly" id="edge42_Node000019_Node000013" title=" " alt="" coords="2917,173,1559,228,1446,233,1446,228,1559,223,2917,168"/>
+<area shape="poly" id="edge39_Node000019_Node000017" title=" " alt="" coords="3167,176,3604,223,3604,228,3167,181"/>
+<area shape="poly" id="edge40_Node000019_Node000018" title=" " alt="" coords="2918,181,2443,228,2443,223,2918,176"/>
+<area shape="rect" id="Node000020" href="$GlobalMouseRelay_8cpp.html" title="全局输入事件过滤器的实现" alt="" coords="3227,225,3475,251"/>
+<area shape="poly" id="edge41_Node000019_Node000020" title=" " alt="" coords="3110,178,3303,223,3301,228,3109,183"/>
+<area shape="poly" id="edge44_Node000021_Node000019" title=" " alt="" coords="3253,110,3090,154,3089,149,3252,105"/>
+<area shape="rect" id="Node000022" href="$DropResolver_8h.html" title="拖放落点解析：全局坐标 → 落点目标" alt="" coords="3188,152,3426,177"/>
+<area shape="poly" id="edge45_Node000021_Node000022" title=" " alt="" coords="3310,118,3310,152,3304,152,3304,118"/>
+<area shape="poly" id="edge46_Node000022_Node000005" title=" " alt="" coords="3180,181,2711,228,2711,223,3179,176"/>
+<area shape="poly" id="edge47_Node000022_Node000006" title=" " alt="" coords="3224,182,2943,228,2942,223,3224,177"/>
+<area shape="poly" id="edge48_Node000022_Node000009" title=" " alt="" coords="3408,178,3449,189,3481,204,3492,214,3498,225,3497,238,3489,252,3476,264,3458,274,3410,290,3352,302,3292,311,3292,305,3351,297,3408,285,3456,269,3473,259,3485,249,3492,237,3492,226,3488,217,3478,208,3447,194,3407,183"/>
+<area shape="poly" id="edge52_Node000023_Node000009" title=" " alt="" coords="4349,178,4386,191,4417,207,4428,217,4434,228,4433,240,4425,253,4408,261,4376,268,4271,280,3952,299,3585,312,3292,318,3292,313,3585,306,3951,294,4271,275,4375,262,4406,256,4421,249,4428,238,4428,229,4423,220,4414,212,4384,196,4347,183"/>
+<area shape="poly" id="edge53_Node000023_Node000017" title=" " alt="" coords="4178,182,3804,228,3803,223,4177,176"/>
+<area shape="rect" id="Node000024" href="$ZoneGeometry_8cpp.html" title="经典指示器几何的实现" alt="" coords="4486,225,4749,251"/>
+<area shape="poly" id="edge50_Node000023_Node000024" title=" " alt="" coords="4351,178,4564,223,4563,228,4350,183"/>
+<area shape="rect" id="Node000025" href="$ZoneResolver_8cpp.html" title="落点计算的实现" alt="" coords="4155,225,4411,251"/>
+<area shape="poly" id="edge51_Node000023_Node000025" title=" " alt="" coords="4286,191,4286,225,4280,225,4280,191"/>
+<area shape="poly" id="edge55_Node000026_Node000006" title=" " alt="" coords="3842,177,3000,231,3000,226,3842,172"/>
+<area shape="poly" id="edge57_Node000026_Node000009" title=" " alt="" coords="4029,179,4061,193,4088,209,4102,229,4102,241,4094,253,4078,263,4053,273,3977,288,3875,300,3757,308,3504,317,3292,320,3292,315,3504,312,3756,303,3875,294,3976,283,4051,267,4076,259,4091,249,4096,239,4097,231,4084,213,4059,197,4027,184"/>
+<area shape="poly" id="edge56_Node000026_Node000025" title=" " alt="" coords="4040,178,4234,223,4233,228,4038,183"/>
+<area shape="poly" id="edge59_Node000027_Node000011" title=" " alt="" coords="3552,191,3526,224,3508,240,3488,253,3434,267,3340,280,3079,298,2788,311,2550,318,2550,313,2788,306,3079,293,3340,274,3433,262,3486,248,3505,236,3522,221,3547,188"/>
+<area shape="poly" id="edge60_Node000027_Node000012" title=" " alt="" coords="3446,180,3439,180,3058,197,2735,205,2450,206,2186,204,1921,202,1637,203,1314,211,933,228,921,229,921,223,932,223,1314,205,1637,198,1921,196,2186,198,2450,201,2735,199,3058,192,3439,175,3446,174"/>
+<area shape="poly" id="edge61_Node000027_Node000028" title=" " alt="" coords="3641,177,3899,223,3898,228,3640,182"/>
+<area shape="poly" id="edge63_Node000029_Node000011" title=" " alt="" coords="5009,166,5087,171,5164,181,5229,198,5253,210,5271,224,5277,238,5270,253,5238,261,5165,268,4917,279,4179,293,3077,301,2550,317,2550,311,3076,296,4179,288,4916,274,5164,263,5237,256,5267,249,5271,238,5266,227,5250,214,5227,203,5163,187,5087,176,5009,171"/>
+<area shape="poly" id="edge64_Node000029_Node000017" title=" " alt="" coords="4754,174,4345,195,3834,228,3822,229,3822,224,3834,223,4344,190,4754,169"/>
+<area shape="rect" id="Node000030" href="$DockRuntime_8cpp.html" title="QtQuick 视图层全局服务的实现" alt="" coords="4774,225,4990,251"/>
+<area shape="poly" id="edge65_Node000029_Node000030" title=" " alt="" coords="4884,191,4884,225,4879,225,4879,191"/>
+<area shape="rect" id="Node000031" href="$DropZoneOverlay_8cpp.html" title="透明顶层落点指示器窗口的实现" alt="" coords="5014,225,5256,251"/>
+<area shape="poly" id="edge66_Node000029_Node000031" title=" " alt="" coords="4937,179,5095,223,5093,228,4935,184"/>
+</map>

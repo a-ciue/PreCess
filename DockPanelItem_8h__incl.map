@@ -1,0 +1,13 @@
+<map id="app/dock/ui/DockPanelItem.h" name="app/dock/ui/DockPanelItem.h">
+<area shape="rect" id="Node000001" title="QML 停靠面板实例化器（PreCess.Docking 的 DockPanel 类型）" alt="" coords="127,5,338,31"/>
+<area shape="rect" id="Node000002" href="$DockView_8h.html" title="停靠组件与视图层（QtQuick）之间的抽象接口" alt="" coords="5,79,159,104"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="210,33,120,75,118,70,207,28"/>
+<area shape="rect" id="Node000005" title=" " alt="" coords="183,79,282,104"/>
+<area shape="poly" id="edge4_Node000001_Node000005" title=" " alt="" coords="235,31,235,65,230,65,230,31"/>
+<area shape="rect" id="Node000006" title=" " alt="" coords="307,79,377,104"/>
+<area shape="poly" id="edge5_Node000001_Node000006" title=" " alt="" coords="252,28,314,69,311,73,249,33"/>
+<area shape="rect" id="Node000003" title=" " alt="" coords="10,152,71,177"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="77,106,57,141,52,139,73,103"/>
+<area shape="rect" id="Node000004" title=" " alt="" coords="95,152,154,177"/>
+<area shape="poly" id="edge3_Node000002_Node000004" title=" " alt="" coords="91,103,113,139,109,142,87,106"/>
+</map>

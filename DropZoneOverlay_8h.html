@@ -1,0 +1,156 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="zh">
+<head>
+<meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=11"/>
+<meta name="generator" content="Doxygen 1.14.0"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>PreCess: app/dock/ui/DropZoneOverlay.h 文件参考</title>
+<link href="tabs.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="jquery.js"></script>
+<script type="text/javascript" src="dynsections.js"></script>
+<script type="text/javascript" src="clipboard.js"></script>
+<script type="text/javascript" src="cookie.js"></script>
+<link href="search/search.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="search/searchdata.js"></script>
+<script type="text/javascript" src="search/search.js"></script>
+<link href="doxygen.css" rel="stylesheet" type="text/css" />
+</head>
+<body>
+<div id="top"><!-- do not remove this div, it is closed by doxygen! -->
+<div id="titlearea">
+<table cellspacing="0" cellpadding="0">
+ <tbody>
+ <tr id="projectrow">
+  <td id="projectlogo"><img alt="Logo" src="PreCess.ico"/></td>
+  <td id="projectalign">
+   <div id="projectname">PreCess
+   </div>
+  </td>
+ </tr>
+ </tbody>
+</table>
+</div>
+<!-- end header part -->
+<!-- 制作者 Doxygen 1.14.0 -->
+<script type="text/javascript">
+var searchBox = new SearchBox("searchBox", "search/",'.html');
+</script>
+<script type="text/javascript">
+$(function() { codefold.init(); });
+</script>
+<script type="text/javascript" src="menudata.js"></script>
+<script type="text/javascript" src="menu.js"></script>
+<script type="text/javascript">
+$(function() {
+  initMenu('',true,false,'search.php','搜索',false);
+  $(function() { init_search(); });
+});
+</script>
+<div id="main-nav"></div>
+<!-- window showing the filter options -->
+<div id="MSearchSelectWindow"
+     onmouseover="return searchBox.OnSearchSelectShow()"
+     onmouseout="return searchBox.OnSearchSelectHide()"
+     onkeydown="return searchBox.OnSearchSelectKey(event)">
+</div>
+
+<!-- iframe showing the search results (closed by default) -->
+<div id="MSearchResultsWindow">
+<div id="MSearchResults">
+<div class="SRPage">
+<div id="SRIndex">
+<div id="SRResults"></div>
+<div class="SRStatus" id="Loading">载入中...</div>
+<div class="SRStatus" id="Searching">搜索中...</div>
+<div class="SRStatus" id="NoMatches">未找到</div>
+</div>
+</div>
+</div>
+</div>
+
+<div id="nav-path" class="navpath">
+  <ul>
+<li class="navelem"><a href="dir_d422163b96683743ed3963d4aac17747.html">app</a></li><li class="navelem"><a href="dir_4e5d8f7ce7c3dc0f91a395eba455c956.html">dock</a></li><li class="navelem"><a href="dir_8737260d02abc2e1280d33ed55618f28.html">ui</a></li>  </ul>
+</div>
+</div><!-- top -->
+<div id="doc-content">
+<div class="header">
+  <div class="summary">
+<a href="#nested-classes">类</a> &#124;
+<a href="#namespaces">命名空间</a>  </div>
+  <div class="headertitle"><div class="title">DropZoneOverlay.h 文件参考</div></div>
+</div><!--header-->
+<div class="contents">
+
+<p>透明顶层落点指示器窗口：始终显示在被拖动窗口之上  
+<a href="#details">更多...</a></p>
+<div class="textblock"><code>#include &quot;<a class="el" href="DockEnums_8h_source.html">docking/DockEnums.h</a>&quot;</code><br />
+<code>#include &lt;QList&gt;</code><br />
+<code>#include &lt;QRect&gt;</code><br />
+<code>#include &lt;QQuickWindow&gt;</code><br />
+</div><div class="textblock"><div class="dynheader">
+DropZoneOverlay.h 的引用(Include)关系图:</div>
+<div class="dyncontent">
+<div class="center"><img src="DropZoneOverlay_8h__incl.png" border="0" usemap="#aapp_2dock_2ui_2DropZoneOverlay_8h" loading="lazy" alt=""/></div>
+<map name="aapp_2dock_2ui_2DropZoneOverlay_8h" id="aapp_2dock_2ui_2DropZoneOverlay_8h">
+<area shape="rect" title="透明顶层落点指示器窗口：始终显示在被拖动窗口之上" alt="" coords="202,5,429,31"/>
+<area shape="rect" href="DockEnums_8h.html" title="停靠组件的公共枚举与判定辅助" alt="" coords="56,79,223,104"/>
+<area shape="poly" title=" " alt="" coords="288,33,182,76,180,71,286,28"/>
+<area shape="rect" title=" " alt="" coords="247,79,301,104"/>
+<area shape="poly" title=" " alt="" coords="311,32,290,68,285,65,306,30"/>
+<area shape="rect" title=" " alt="" coords="326,79,387,104"/>
+<area shape="poly" title=" " alt="" coords="324,30,345,65,341,68,320,32"/>
+<area shape="rect" title=" " alt="" coords="412,79,533,104"/>
+<area shape="poly" title=" " alt="" coords="342,28,436,71,434,75,340,33"/>
+<area shape="rect" href="DockMetrics_8h.html" title="停靠组件的默认行为常量" alt="" coords="23,152,138,177"/>
+<area shape="poly" title=" " alt="" coords="132,106,101,143,97,140,128,103"/>
+<area shape="rect" title=" " alt="" coords="162,152,237,177"/>
+<area shape="poly" title=" " alt="" coords="151,103,183,140,179,143,147,106"/>
+<area shape="rect" title=" " alt="" coords="5,225,71,251"/>
+<area shape="poly" title=" " alt="" coords="76,179,54,215,50,212,71,176"/>
+<area shape="rect" title=" " alt="" coords="95,225,154,251"/>
+<area shape="poly" title=" " alt="" coords="90,176,113,212,108,215,86,179"/>
+</map>
+</div>
+</div><div class="textblock"><div class="dynheader">
+此图展示该文件被哪些文件直接或间接地引用了:</div>
+<div class="dyncontent">
+<div class="center"><img src="DropZoneOverlay_8h__dep__incl.png" border="0" usemap="#aapp_2dock_2ui_2DropZoneOverlay_8hdep" loading="lazy" alt=""/></div>
+<map name="aapp_2dock_2ui_2DropZoneOverlay_8hdep" id="aapp_2dock_2ui_2DropZoneOverlay_8hdep">
+<area shape="rect" title="透明顶层落点指示器窗口：始终显示在被拖动窗口之上" alt="" coords="348,5,575,31"/>
+<area shape="rect" href="TestDockQmlSmoke_8cpp.html" title="QML 集成冒烟测试：类型注册、中央持久部件、重开面板、拖拽浮窗回归" alt="" coords="5,79,205,119"/>
+<area shape="poly" title=" " alt="" coords="397,36,191,81,190,76,396,31"/>
+<area shape="rect" href="DockAreaItem_8cpp.html" title="布局区域视图的实现" alt="" coords="229,86,451,111"/>
+<area shape="poly" title=" " alt="" coords="433,41,359,88,357,84,430,36"/>
+<area shape="rect" href="DockRuntime_8cpp.html" title="QtQuick 视图层全局服务的实现" alt="" coords="475,86,691,111"/>
+<area shape="poly" title=" " alt="" coords="493,36,566,84,563,88,490,41"/>
+<area shape="rect" href="DropZoneOverlay_8cpp.html" title="透明顶层落点指示器窗口的实现" alt="" coords="715,86,957,111"/>
+<area shape="poly" title=" " alt="" coords="530,31,782,83,781,89,529,36"/>
+</map>
+</div>
+</div>
+<p><a href="DropZoneOverlay_8h_source.html">浏览该文件的源代码.</a></p>
+<table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 id="header-nested-classes" class="groupheader"><a id="nested-classes" name="nested-classes"></a>
+类</h2></td></tr>
+<tr class="memitem:dock_3A_3Aui_3A_3ADropZoneOverlay" id="r_dock_3A_3Aui_3A_3ADropZoneOverlay"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classdock_1_1ui_1_1DropZoneOverlay.html">dock::ui::DropZoneOverlay</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">指示器浮层窗口  <a href="classdock_1_1ui_1_1DropZoneOverlay.html#details">更多...</a><br /></td></tr>
+<tr class="memitem:dock_3A_3Aui_3A_3ADropZoneOverlay_3A_3AZoneRectHit" id="r_dock_3A_3Aui_3A_3ADropZoneOverlay_3A_3AZoneRectHit"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structdock_1_1ui_1_1DropZoneOverlay_1_1ZoneRectHit.html">dock::ui::DropZoneOverlay::ZoneRectHit</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">单个指示器：矩形（全局坐标）、是否为当前命中项  <a href="structdock_1_1ui_1_1DropZoneOverlay_1_1ZoneRectHit.html#details">更多...</a><br /></td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 id="header-namespaces" class="groupheader"><a id="namespaces" name="namespaces"></a>
+命名空间</h2></td></tr>
+<tr class="memitem:dock" id="r_dock"><td class="memItemLeft" align="right" valign="top">namespace &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacedock.html">dock</a></td></tr>
+<tr class="memitem:dock_3A_3Aui" id="r_dock_3A_3Aui"><td class="memItemLeft" align="right" valign="top">namespace &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacedock_1_1ui.html">dock::ui</a></td></tr>
+</table>
+<a name="details" id="details"></a><h2 id="header-details" class="groupheader">详细描述</h2>
+<div class="textblock"><p>透明顶层落点指示器窗口：始终显示在被拖动窗口之上 </p>
+</div></div><!-- contents -->
+<!-- start footer part -->
+<hr class="footer"/><address class="footer"><small>
+制作者&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.14.0
+</small></address>
+</div><!-- doc-content -->
+</body>
+</html>

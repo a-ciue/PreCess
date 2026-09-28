@@ -1,0 +1,23 @@
+<map id="app/dock/ui/DockRuntime.h" name="app/dock/ui/DockRuntime.h">
+<area shape="rect" id="Node000001" title="QtQuick 视图层的全局服务：QML 引擎、client 映射、分组视图缓存" alt="" coords="1085,5,1286,31"/>
+<area shape="rect" id="Node000002" href="$TestDockQmlSmoke_8cpp.html" title="QML 集成冒烟测试：类型注册、中央持久部件、重开面板、拖拽浮窗回归" alt="" coords="5,79,205,119"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="1071,25,691,42,455,59,218,81,206,83,205,77,217,76,454,53,691,37,1070,20"/>
+<area shape="rect" id="Node000003" href="$DividerItem_8cpp.html" title="分隔条视图的实现" alt="" coords="229,86,435,111"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="1071,28,787,48,447,81,397,89,396,83,446,76,786,43,1070,23"/>
+<area shape="rect" id="Node000004" href="$DockAreaItem_8cpp.html" title="布局区域视图的实现" alt="" coords="459,86,680,111"/>
+<area shape="poly" id="edge3_Node000001_Node000004" title=" " alt="" coords="1071,35,692,81,642,89,641,83,692,76,1070,29"/>
+<area shape="rect" id="Node000005" href="$DockHostItem_8cpp.html" title="主停靠区域视图的实现" alt="" coords="704,86,925,111"/>
+<area shape="poly" id="edge4_Node000001_Node000005" title=" " alt="" coords="1119,36,869,89,868,83,1118,31"/>
+<area shape="rect" id="Node000006" href="$DockPanelItem_8cpp.html" title="QML 停靠面板实例化器的实现" alt="" coords="949,86,1176,111"/>
+<area shape="poly" id="edge5_Node000001_Node000006" title=" " alt="" coords="1157,40,1082,88,1079,84,1154,36"/>
+<area shape="rect" id="Node000007" href="$DockRuntime_8cpp.html" title="QtQuick 视图层全局服务的实现" alt="" coords="1200,86,1416,111"/>
+<area shape="poly" id="edge6_Node000001_Node000007" title=" " alt="" coords="1216,36,1291,84,1288,88,1213,40"/>
+<area shape="rect" id="Node000008" href="$DockWindowItem_8cpp.html" title="浮动窗口视图的实现" alt="" coords="1440,86,1683,111"/>
+<area shape="poly" id="edge7_Node000001_Node000008" title=" " alt="" coords="1254,31,1507,83,1506,89,1253,36"/>
+<area shape="rect" id="Node000009" href="$DropZoneOverlay_8cpp.html" title="透明顶层落点指示器窗口的实现" alt="" coords="1707,86,1949,111"/>
+<area shape="poly" id="edge8_Node000001_Node000009" title=" " alt="" coords="1300,29,1695,76,1749,83,1749,89,1694,81,1300,35"/>
+<area shape="rect" id="Node000010" href="$PanelGroupItem_8cpp.html" title="分组视图的实现" alt="" coords="1973,86,2205,111"/>
+<area shape="poly" id="edge9_Node000001_Node000010" title=" " alt="" coords="1300,23,1600,43,1962,76,2018,83,2017,89,1961,81,1599,48,1300,28"/>
+<area shape="rect" id="Node000011" href="$QmlRegistration_8cpp.html" title="QML 类型注册与组件初始化" alt="" coords="2229,86,2464,111"/>
+<area shape="poly" id="edge10_Node000001_Node000011" title=" " alt="" coords="1300,20,1705,38,1961,54,2218,76,2276,83,2275,89,2217,81,1960,59,1705,43,1300,25"/>
+</map>

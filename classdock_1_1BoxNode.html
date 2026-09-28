@@ -1,0 +1,906 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="zh">
+<head>
+<meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=11"/>
+<meta name="generator" content="Doxygen 1.14.0"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>PreCess: dock::BoxNode类 参考</title>
+<link href="tabs.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="jquery.js"></script>
+<script type="text/javascript" src="dynsections.js"></script>
+<script type="text/javascript" src="clipboard.js"></script>
+<script type="text/javascript" src="cookie.js"></script>
+<link href="search/search.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="search/searchdata.js"></script>
+<script type="text/javascript" src="search/search.js"></script>
+<link href="doxygen.css" rel="stylesheet" type="text/css" />
+</head>
+<body>
+<div id="top"><!-- do not remove this div, it is closed by doxygen! -->
+<div id="titlearea">
+<table cellspacing="0" cellpadding="0">
+ <tbody>
+ <tr id="projectrow">
+  <td id="projectlogo"><img alt="Logo" src="PreCess.ico"/></td>
+  <td id="projectalign">
+   <div id="projectname">PreCess
+   </div>
+  </td>
+ </tr>
+ </tbody>
+</table>
+</div>
+<!-- end header part -->
+<!-- 制作者 Doxygen 1.14.0 -->
+<script type="text/javascript">
+var searchBox = new SearchBox("searchBox", "search/",'.html');
+</script>
+<script type="text/javascript">
+$(function() { codefold.init(); });
+</script>
+<script type="text/javascript" src="menudata.js"></script>
+<script type="text/javascript" src="menu.js"></script>
+<script type="text/javascript">
+$(function() {
+  initMenu('',true,false,'search.php','搜索',false);
+  $(function() { init_search(); });
+});
+</script>
+<div id="main-nav"></div>
+<!-- window showing the filter options -->
+<div id="MSearchSelectWindow"
+     onmouseover="return searchBox.OnSearchSelectShow()"
+     onmouseout="return searchBox.OnSearchSelectHide()"
+     onkeydown="return searchBox.OnSearchSelectKey(event)">
+</div>
+
+<!-- iframe showing the search results (closed by default) -->
+<div id="MSearchResultsWindow">
+<div id="MSearchResults">
+<div class="SRPage">
+<div id="SRIndex">
+<div id="SRResults"></div>
+<div class="SRStatus" id="Loading">载入中...</div>
+<div class="SRStatus" id="Searching">搜索中...</div>
+<div class="SRStatus" id="NoMatches">未找到</div>
+</div>
+</div>
+</div>
+</div>
+
+<div id="nav-path" class="navpath">
+  <ul>
+<li class="navelem"><a href="namespacedock.html">dock</a></li><li class="navelem"><a href="classdock_1_1BoxNode.html">BoxNode</a></li>  </ul>
+</div>
+</div><!-- top -->
+<div id="doc-content">
+<div class="header">
+  <div class="summary">
+<a href="#pub-methods">Public 成员函数</a> &#124;
+<a href="#pri-methods">Private 成员函数</a> &#124;
+<a href="#pri-attribs">Private 属性</a> &#124;
+<a href="classdock_1_1BoxNode-members.html">所有成员列表</a>  </div>
+  <div class="headertitle"><div class="title">dock::BoxNode类 参考</div></div>
+</div><!--header-->
+<div class="contents">
+
+<p>盒式布局容器  
+ <a href="#details">更多...</a></p>
+
+<p><code>#include &lt;<a class="el" href="BoxNode_8h_source.html">BoxNode.h</a>&gt;</code></p>
+<div class="dynheader">
+类 dock::BoxNode 继承关系图:</div>
+<div class="dyncontent">
+<div class="center"><img src="classdock_1_1BoxNode__inherit__graph.png" border="0" usemap="#adock_1_1BoxNode_inherit__map" loading="lazy" alt="Inheritance graph"/></div>
+<map name="adock_1_1BoxNode_inherit__map" id="adock_1_1BoxNode_inherit__map">
+<area shape="rect" title="盒式布局容器" alt="" coords="15,79,135,104"/>
+<area shape="rect" href="classdock_1_1LayoutNode.html" title="布局树节点（叶子节点与容器节点的公共基类）" alt="" coords="5,5,144,31"/>
+<area shape="poly" title=" " alt="" coords="77,44,77,79,72,79,72,44"/>
+</map>
+<center><span class="legend">[<a href="graph_legend.html">图例</a>]</span></center></div>
+<div class="dynheader">
+dock::BoxNode 的协作图:</div>
+<div class="dyncontent">
+<div class="center"><img src="classdock_1_1BoxNode__coll__graph.png" border="0" usemap="#adock_1_1BoxNode_coll__map" loading="lazy" alt="Collaboration graph"/></div>
+<map name="adock_1_1BoxNode_coll__map" id="adock_1_1BoxNode_coll__map">
+<area shape="rect" title="盒式布局容器" alt="" coords="5,5,125,31"/>
+<area shape="rect" href="classdock_1_1LayoutNode.html" title="布局树节点（叶子节点与容器节点的公共基类）" alt="" coords="125,101,264,127"/>
+<area shape="poly" title=" " alt="" coords="66,44,69,61,77,76,99,93,126,103,124,108,96,97,73,79,64,63,61,45"/>
+<area shape="poly" title=" " alt="" coords="175,93,136,57,93,33,95,28,139,53,178,89"/>
+<area shape="rect" href="structdock_1_1NodeMetrics.html" title="单个布局节点的几何与尺寸约束" alt="" coords="150,5,293,31"/>
+<area shape="poly" title=" " alt="" coords="217,45,201,102,195,100,212,43"/>
+<area shape="rect" href="classdock_1_1LayoutClient.html" title="被布局引擎托管的实体接口" alt="" coords="317,5,459,31"/>
+<area shape="poly" title=" " alt="" coords="354,39,270,80,220,104,218,99,268,75,351,34"/>
+</map>
+<center><span class="legend">[<a href="graph_legend.html">图例</a>]</span></center></div>
+<table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 id="header-pub-methods" class="groupheader"><a id="pub-methods" name="pub-methods"></a>
+Public 成员函数</h2></td></tr>
+<tr class="memitem:a081b8282f4035c63b2b51e16a68d2424" id="r_a081b8282f4035c63b2b51e16a68d2424"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a081b8282f4035c63b2b51e16a68d2424">BoxNode</a> (Qt::Orientation <a class="el" href="#ae6f2cb1bd9260e0f1e350475c0a60603">orientation</a>)</td></tr>
+<tr class="memitem:a0a2df7c2218f2bfd08a4cfaf0b2e44cb" id="r_a0a2df7c2218f2bfd08a4cfaf0b2e44cb"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a0a2df7c2218f2bfd08a4cfaf0b2e44cb">~BoxNode</a> () override</td></tr>
+<tr class="memitem:a7d07102d10be819acf444c4552917667" id="r_a7d07102d10be819acf444c4552917667"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a7d07102d10be819acf444c4552917667">isContainer</a> () const override</td></tr>
+<tr class="memdesc:a7d07102d10be819acf444c4552917667"><td class="mdescLeft">&#160;</td><td class="mdescRight">是否为容器节点  <br /></td></tr>
+<tr class="memitem:ae6f2cb1bd9260e0f1e350475c0a60603" id="r_ae6f2cb1bd9260e0f1e350475c0a60603"><td class="memItemLeft" align="right" valign="top">Qt::Orientation&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ae6f2cb1bd9260e0f1e350475c0a60603">orientation</a> () const</td></tr>
+<tr class="memdesc:ae6f2cb1bd9260e0f1e350475c0a60603"><td class="mdescLeft">&#160;</td><td class="mdescRight">排列方向（水平容器内子节点自左向右）  <br /></td></tr>
+<tr class="memitem:a673726e73832d7497f897dfe672d5bcf" id="r_a673726e73832d7497f897dfe672d5bcf"><td class="memItemLeft" align="right" valign="top">const QList&lt; <a class="el" href="classdock_1_1LayoutNode.html">LayoutNode</a> * &gt; &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a673726e73832d7497f897dfe672d5bcf">children</a> () const</td></tr>
+<tr class="memdesc:a673726e73832d7497f897dfe672d5bcf"><td class="mdescLeft">&#160;</td><td class="mdescRight">全部子节点  <br /></td></tr>
+<tr class="memitem:a74088ac58dead5189c47f816c106acc6" id="r_a74088ac58dead5189c47f816c106acc6"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a74088ac58dead5189c47f816c106acc6">childCount</a> () const</td></tr>
+<tr class="memdesc:a74088ac58dead5189c47f816c106acc6"><td class="mdescLeft">&#160;</td><td class="mdescRight">子节点数量  <br /></td></tr>
+<tr class="memitem:a22c4c20d8255efe8c0325dcff886e381" id="r_a22c4c20d8255efe8c0325dcff886e381"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a22c4c20d8255efe8c0325dcff886e381">indexOfNode</a> (<a class="el" href="classdock_1_1LayoutNode.html">LayoutNode</a> *item) const</td></tr>
+<tr class="memdesc:a22c4c20d8255efe8c0325dcff886e381"><td class="mdescLeft">&#160;</td><td class="mdescRight">子节点下标，不存在返回 -1  <br /></td></tr>
+<tr class="memitem:a2e72c6f9eb10de41b13445df9d74f944" id="r_a2e72c6f9eb10de41b13445df9d74f944"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a2e72c6f9eb10de41b13445df9d74f944">visibleNodeCount</a> () const</td></tr>
+<tr class="memdesc:a2e72c6f9eb10de41b13445df9d74f944"><td class="mdescLeft">&#160;</td><td class="mdescRight">可见且自身可见的子节点数量  <br /></td></tr>
+<tr class="memitem:a709c2bbd5c84173d43dd497cf144ae20" id="r_a709c2bbd5c84173d43dd497cf144ae20"><td class="memItemLeft" align="right" valign="top">QList&lt; <a class="el" href="classdock_1_1LayoutNode.html">LayoutNode</a> * &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a709c2bbd5c84173d43dd497cf144ae20">visibleNodes</a> () const</td></tr>
+<tr class="memdesc:a709c2bbd5c84173d43dd497cf144ae20"><td class="mdescLeft">&#160;</td><td class="mdescRight">可见子节点列表  <br /></td></tr>
+<tr class="memitem:a1ffc67c074c1a38bbd8d637520bf3d7c" id="r_a1ffc67c074c1a38bbd8d637520bf3d7c"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a1ffc67c074c1a38bbd8d637520bf3d7c">replaceNode</a> (<a class="el" href="classdock_1_1LayoutNode.html">LayoutNode</a> *old_child, <a class="el" href="classdock_1_1LayoutNode.html">LayoutNode</a> *new_child)</td></tr>
+<tr class="memdesc:a1ffc67c074c1a38bbd8d637520bf3d7c"><td class="mdescLeft">&#160;</td><td class="mdescRight">用 new_child 原地替换 old_child（继承可见性；占比由调用方先行设置）  <br /></td></tr>
+<tr class="memitem:a7c84cd94a1dea947b7530299fdd8e74d" id="r_a7c84cd94a1dea947b7530299fdd8e74d"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a7c84cd94a1dea947b7530299fdd8e74d">insertNode</a> (int index, <a class="el" href="classdock_1_1LayoutNode.html">LayoutNode</a> *item, int preferredLength, bool startsVisible)</td></tr>
+<tr class="memdesc:a7c84cd94a1dea947b7530299fdd8e74d"><td class="mdescLeft">&#160;</td><td class="mdescRight">在 index 处插入子节点并接管所有权  <br /></td></tr>
+<tr class="memitem:af5ec5524712539567c1cf74c8d7a189c" id="r_af5ec5524712539567c1cf74c8d7a189c"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classdock_1_1LayoutNode.html">LayoutNode</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#af5ec5524712539567c1cf74c8d7a189c">detachNode</a> (<a class="el" href="classdock_1_1LayoutNode.html">LayoutNode</a> *item, bool hardDelete)</td></tr>
+<tr class="memdesc:af5ec5524712539567c1cf74c8d7a189c"><td class="mdescLeft">&#160;</td><td class="mdescRight">从容器中摘除子节点  <br /></td></tr>
+<tr class="memitem:adbb0ffc9dc119731e79529a9bbd3c1e5" id="r_adbb0ffc9dc119731e79529a9bbd3c1e5"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#adbb0ffc9dc119731e79529a9bbd3c1e5">setGeometry</a> (const QRect &amp;<a class="el" href="classdock_1_1LayoutNode.html#a29a633796eb918d40610fa20714ff476">geometry</a>) override</td></tr>
+<tr class="memdesc:adbb0ffc9dc119731e79529a9bbd3c1e5"><td class="mdescLeft">&#160;</td><td class="mdescRight">设置几何并下发给 client  <br /></td></tr>
+<tr class="memitem:a2bb07128122e51964c9f0e60eac979b4" id="r_a2bb07128122e51964c9f0e60eac979b4"><td class="memItemLeft" align="right" valign="top">QSize&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a2bb07128122e51964c9f0e60eac979b4">minExtent</a> () const override</td></tr>
+<tr class="memdesc:a2bb07128122e51964c9f0e60eac979b4"><td class="mdescLeft">&#160;</td><td class="mdescRight">硬最小尺寸（默认取 client 约束）  <br /></td></tr>
+<tr class="memitem:ab648c6bb8451e3a642753605d3336b12" id="r_ab648c6bb8451e3a642753605d3336b12"><td class="memItemLeft" align="right" valign="top">QSize&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ab648c6bb8451e3a642753605d3336b12">maxExtent</a> () const override</td></tr>
+<tr class="memdesc:ab648c6bb8451e3a642753605d3336b12"><td class="mdescLeft">&#160;</td><td class="mdescRight">软最大尺寸提示（默认取 client 约束）  <br /></td></tr>
+<tr class="memitem:ab431817fcf4432483aef4ba292d49181" id="r_ab431817fcf4432483aef4ba292d49181"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ab431817fcf4432483aef4ba292d49181">layout</a> ()</td></tr>
+<tr class="memdesc:ab431817fcf4432483aef4ba292d49181"><td class="mdescLeft">&#160;</td><td class="mdescRight">按主轴占比重算全部可见子节点几何与分隔条位置  <br /></td></tr>
+<tr class="memitem:aed2d616209a77cd7c6c62ad332bd82c3" id="r_aed2d616209a77cd7c6c62ad332bd82c3"><td class="memItemLeft" align="right" valign="top">const QList&lt; <a class="el" href="classdock_1_1Divider.html">Divider</a> * &gt; &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#aed2d616209a77cd7c6c62ad332bd82c3">dividers</a> () const</td></tr>
+<tr class="memdesc:aed2d616209a77cd7c6c62ad332bd82c3"><td class="mdescLeft">&#160;</td><td class="mdescRight">相邻可见子节点之间的分隔条  <br /></td></tr>
+<tr class="memitem:a3c51a410b5d8a581d300b983fed3ae8b" id="r_a3c51a410b5d8a581d300b983fed3ae8b"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a3c51a410b5d8a581d300b983fed3ae8b">rebuildDividers</a> ()</td></tr>
+<tr class="memdesc:a3c51a410b5d8a581d300b983fed3ae8b"><td class="mdescLeft">&#160;</td><td class="mdescRight">重建分隔条（子节点集合变化后调用）  <br /></td></tr>
+<tr class="memitem:aa9148a3747641a8d0519d6d22b33be18" id="r_aa9148a3747641a8d0519d6d22b33be18"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#aa9148a3747641a8d0519d6d22b33be18">applyDividerMove</a> (<a class="el" href="classdock_1_1Divider.html">Divider</a> *separator, int side1Length, int side2Length)</td></tr>
+<tr class="memdesc:aa9148a3747641a8d0519d6d22b33be18"><td class="mdescLeft">&#160;</td><td class="mdescRight">应用分隔条拖动后的侧 1/侧 2 主轴长度并重排  <br /></td></tr>
+<tr class="memitem:a6aba43ce8847245f02e638e486bf461f" id="r_a6aba43ce8847245f02e638e486bf461f"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a6aba43ce8847245f02e638e486bf461f">handleChildVisibility</a> (<a class="el" href="classdock_1_1LayoutNode.html">LayoutNode</a> *child, bool visible)</td></tr>
+<tr class="memdesc:a6aba43ce8847245f02e638e486bf461f"><td class="mdescLeft">&#160;</td><td class="mdescRight">子节点可见性变化回调，由 <a class="el" href="classdock_1_1LayoutNode.html#a5b2418d589838d0258c003d43c270e51" title="设置可见性；变化时通知父容器重排">LayoutNode::setVisible</a> 触发  <br /></td></tr>
+<tr class="inherit_header pub_methods_classdock_1_1LayoutNode"><td colspan="2" onclick="javascript:dynsection.toggleInherit('pub_methods_classdock_1_1LayoutNode')"><span class="dynarrow"><span class="arrowhead closed"></span></span>Public 成员函数 继承自 <a class="el" href="classdock_1_1LayoutNode.html">dock::LayoutNode</a></td></tr>
+<tr class="memitem:ab502912c14547c37b207cd6cee17bf28 inherit pub_methods_classdock_1_1LayoutNode" id="r_ab502912c14547c37b207cd6cee17bf28"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classdock_1_1LayoutNode.html#ab502912c14547c37b207cd6cee17bf28">LayoutNode</a> (<a class="el" href="classdock_1_1LayoutClient.html">LayoutClient</a> *<a class="el" href="classdock_1_1LayoutNode.html#aa68140dba3871158446d4a34e2632285">client</a>=nullptr)</td></tr>
+<tr class="memitem:aede94f40e6ab60ff6a3450ae7e0f8ba7 inherit pub_methods_classdock_1_1LayoutNode" id="r_aede94f40e6ab60ff6a3450ae7e0f8ba7"><td class="memItemLeft" align="right" valign="top">virtual&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classdock_1_1LayoutNode.html#aede94f40e6ab60ff6a3450ae7e0f8ba7">~LayoutNode</a> ()</td></tr>
+<tr class="memitem:a29a633796eb918d40610fa20714ff476 inherit pub_methods_classdock_1_1LayoutNode" id="r_a29a633796eb918d40610fa20714ff476"><td class="memItemLeft" align="right" valign="top">const QRect &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classdock_1_1LayoutNode.html#a29a633796eb918d40610fa20714ff476">geometry</a> () const</td></tr>
+<tr class="memdesc:a29a633796eb918d40610fa20714ff476 inherit pub_methods_classdock_1_1LayoutNode"><td class="mdescLeft">&#160;</td><td class="mdescRight">布局几何（父容器坐标系）  <br /></td></tr>
+<tr class="memitem:ad36b85d576c6561f4b8bd46649ef88af inherit pub_methods_classdock_1_1LayoutNode" id="r_ad36b85d576c6561f4b8bd46649ef88af"><td class="memItemLeft" align="right" valign="top">virtual bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classdock_1_1LayoutNode.html#ad36b85d576c6561f4b8bd46649ef88af">isVisible</a> () const</td></tr>
+<tr class="memdesc:ad36b85d576c6561f4b8bd46649ef88af inherit pub_methods_classdock_1_1LayoutNode"><td class="mdescLeft">&#160;</td><td class="mdescRight">自身可见性（不含父链影响）  <br /></td></tr>
+<tr class="memitem:a5b2418d589838d0258c003d43c270e51 inherit pub_methods_classdock_1_1LayoutNode" id="r_a5b2418d589838d0258c003d43c270e51"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classdock_1_1LayoutNode.html#a5b2418d589838d0258c003d43c270e51">setVisible</a> (bool visible)</td></tr>
+<tr class="memdesc:a5b2418d589838d0258c003d43c270e51 inherit pub_methods_classdock_1_1LayoutNode"><td class="mdescLeft">&#160;</td><td class="mdescRight">设置可见性；变化时通知父容器重排  <br /></td></tr>
+<tr class="memitem:a5dfc58207dc11471465c6786bcb8a61a inherit pub_methods_classdock_1_1LayoutNode" id="r_a5dfc58207dc11471465c6786bcb8a61a"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classdock_1_1LayoutNode.html#a5dfc58207dc11471465c6786bcb8a61a">setVisibleSilently</a> (bool visible)</td></tr>
+<tr class="memdesc:a5dfc58207dc11471465c6786bcb8a61a inherit pub_methods_classdock_1_1LayoutNode"><td class="mdescLeft">&#160;</td><td class="mdescRight">设置可见性但不通知父容器（仅用于树结构调整过程中）  <br /></td></tr>
+<tr class="memitem:ae67b6d7d36243b7a416ec61e3cd4e688 inherit pub_methods_classdock_1_1LayoutNode" id="r_ae67b6d7d36243b7a416ec61e3cd4e688"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classdock_1_1LayoutNode.html#ae67b6d7d36243b7a416ec61e3cd4e688">length</a> (Qt::Orientation orientation) const</td></tr>
+<tr class="memdesc:ae67b6d7d36243b7a416ec61e3cd4e688 inherit pub_methods_classdock_1_1LayoutNode"><td class="mdescLeft">&#160;</td><td class="mdescRight">主轴方向上的长度  <br /></td></tr>
+<tr class="memitem:af340d9855289a2df461dfc71abf3ea75 inherit pub_methods_classdock_1_1LayoutNode" id="r_af340d9855289a2df461dfc71abf3ea75"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classdock_1_1LayoutNode.html#af340d9855289a2df461dfc71abf3ea75">position</a> (Qt::Orientation orientation) const</td></tr>
+<tr class="memdesc:af340d9855289a2df461dfc71abf3ea75 inherit pub_methods_classdock_1_1LayoutNode"><td class="mdescLeft">&#160;</td><td class="mdescRight">主轴方向上的起点坐标  <br /></td></tr>
+<tr class="memitem:a153052bc082995189bf2355ee0725bd2 inherit pub_methods_classdock_1_1LayoutNode" id="r_a153052bc082995189bf2355ee0725bd2"><td class="memItemLeft" align="right" valign="top">double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classdock_1_1LayoutNode.html#a153052bc082995189bf2355ee0725bd2">share</a> () const</td></tr>
+<tr class="memdesc:a153052bc082995189bf2355ee0725bd2 inherit pub_methods_classdock_1_1LayoutNode"><td class="mdescLeft">&#160;</td><td class="mdescRight">主轴长度占比（0.0~1.0）  <br /></td></tr>
+<tr class="memitem:a02c11965630a1653920de4dfdfe7f114 inherit pub_methods_classdock_1_1LayoutNode" id="r_a02c11965630a1653920de4dfdfe7f114"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classdock_1_1LayoutNode.html#a02c11965630a1653920de4dfdfe7f114">setShare</a> (double <a class="el" href="classdock_1_1LayoutNode.html#a153052bc082995189bf2355ee0725bd2">share</a>)</td></tr>
+<tr class="memdesc:a02c11965630a1653920de4dfdfe7f114 inherit pub_methods_classdock_1_1LayoutNode"><td class="mdescLeft">&#160;</td><td class="mdescRight">设置主轴占比；几何在容器 layout() 时更新  <br /></td></tr>
+<tr class="memitem:af4aa26ce1185167f27ff3cca940bee70 inherit pub_methods_classdock_1_1LayoutNode" id="r_af4aa26ce1185167f27ff3cca940bee70"><td class="memItemLeft" align="right" valign="top">double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classdock_1_1LayoutNode.html#af4aa26ce1185167f27ff3cca940bee70">rememberedShare</a> () const</td></tr>
+<tr class="memdesc:af4aa26ce1185167f27ff3cca940bee70 inherit pub_methods_classdock_1_1LayoutNode"><td class="mdescLeft">&#160;</td><td class="mdescRight">隐藏前保存的占比，重新显示时用于恢复  <br /></td></tr>
+<tr class="memitem:a0decd3e5d9c427a8e570fa134a62c9da inherit pub_methods_classdock_1_1LayoutNode" id="r_a0decd3e5d9c427a8e570fa134a62c9da"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classdock_1_1LayoutNode.html#a0decd3e5d9c427a8e570fa134a62c9da">setRememberedShare</a> (double <a class="el" href="classdock_1_1LayoutNode.html#a153052bc082995189bf2355ee0725bd2">share</a>)</td></tr>
+<tr class="memdesc:a0decd3e5d9c427a8e570fa134a62c9da inherit pub_methods_classdock_1_1LayoutNode"><td class="mdescLeft">&#160;</td><td class="mdescRight">设置隐藏前保存的占比  <br /></td></tr>
+<tr class="memitem:ace3ddd9762fc699a5fb4009ecc22c28b inherit pub_methods_classdock_1_1LayoutNode" id="r_ace3ddd9762fc699a5fb4009ecc22c28b"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classdock_1_1BoxNode.html">BoxNode</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classdock_1_1LayoutNode.html#ace3ddd9762fc699a5fb4009ecc22c28b">parent</a> () const</td></tr>
+<tr class="memdesc:ace3ddd9762fc699a5fb4009ecc22c28b inherit pub_methods_classdock_1_1LayoutNode"><td class="mdescLeft">&#160;</td><td class="mdescRight">父容器  <br /></td></tr>
+<tr class="memitem:a87e08abaff76fae23b1eaa3d20edc1e3 inherit pub_methods_classdock_1_1LayoutNode" id="r_a87e08abaff76fae23b1eaa3d20edc1e3"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classdock_1_1LayoutNode.html#a87e08abaff76fae23b1eaa3d20edc1e3">setParent</a> (<a class="el" href="classdock_1_1BoxNode.html">BoxNode</a> *<a class="el" href="classdock_1_1LayoutNode.html#ace3ddd9762fc699a5fb4009ecc22c28b">parent</a>)</td></tr>
+<tr class="memdesc:a87e08abaff76fae23b1eaa3d20edc1e3 inherit pub_methods_classdock_1_1LayoutNode"><td class="mdescLeft">&#160;</td><td class="mdescRight">设置父容器（由容器维护，不应手工调用）  <br /></td></tr>
+<tr class="memitem:aa68140dba3871158446d4a34e2632285 inherit pub_methods_classdock_1_1LayoutNode" id="r_aa68140dba3871158446d4a34e2632285"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classdock_1_1LayoutClient.html">LayoutClient</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classdock_1_1LayoutNode.html#aa68140dba3871158446d4a34e2632285">client</a> () const</td></tr>
+<tr class="memdesc:aa68140dba3871158446d4a34e2632285 inherit pub_methods_classdock_1_1LayoutNode"><td class="mdescLeft">&#160;</td><td class="mdescRight">被托管的实体（容器节点为空）  <br /></td></tr>
+<tr class="memitem:aff44cafc816a56c1a0a523becb08317c inherit pub_methods_classdock_1_1LayoutNode" id="r_aff44cafc816a56c1a0a523becb08317c"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classdock_1_1LayoutNode.html#aff44cafc816a56c1a0a523becb08317c">setClient</a> (<a class="el" href="classdock_1_1LayoutClient.html">LayoutClient</a> *<a class="el" href="classdock_1_1LayoutNode.html#aa68140dba3871158446d4a34e2632285">client</a>)</td></tr>
+<tr class="memdesc:aff44cafc816a56c1a0a523becb08317c inherit pub_methods_classdock_1_1LayoutNode"><td class="mdescLeft">&#160;</td><td class="mdescRight">设置被托管的实体  <br /></td></tr>
+<tr class="memitem:ad372b16914f526c58886f2dc4715d472 inherit pub_methods_classdock_1_1LayoutNode" id="r_ad372b16914f526c58886f2dc4715d472"><td class="memItemLeft" align="right" valign="top">const QString &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classdock_1_1LayoutNode.html#ad372b16914f526c58886f2dc4715d472">id</a> () const</td></tr>
+<tr class="memdesc:ad372b16914f526c58886f2dc4715d472 inherit pub_methods_classdock_1_1LayoutNode"><td class="mdescLeft">&#160;</td><td class="mdescRight">调试标识  <br /></td></tr>
+<tr class="memitem:a97dc984069f355ef59069e62a47d6561 inherit pub_methods_classdock_1_1LayoutNode" id="r_a97dc984069f355ef59069e62a47d6561"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classdock_1_1LayoutNode.html#a97dc984069f355ef59069e62a47d6561">setId</a> (const QString &amp;<a class="el" href="classdock_1_1LayoutNode.html#ad372b16914f526c58886f2dc4715d472">id</a>)</td></tr>
+<tr class="memdesc:a97dc984069f355ef59069e62a47d6561 inherit pub_methods_classdock_1_1LayoutNode"><td class="mdescLeft">&#160;</td><td class="mdescRight">设置调试标识  <br /></td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 id="header-pri-methods" class="groupheader"><a id="pri-methods" name="pri-methods"></a>
+Private 成员函数</h2></td></tr>
+<tr class="memitem:a27e1dc0e4aa28dd416f95983e0a22f47" id="r_a27e1dc0e4aa28dd416f95983e0a22f47"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a27e1dc0e4aa28dd416f95983e0a22f47">freeSpan</a> () const</td></tr>
+<tr class="memdesc:a27e1dc0e4aa28dd416f95983e0a22f47"><td class="mdescLeft">&#160;</td><td class="mdescRight">扣除分隔条后的可用主轴长度  <br /></td></tr>
+<tr class="memitem:a7e8830017a051bf69534eecea6eec015" id="r_a7e8830017a051bf69534eecea6eec015"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a7e8830017a051bf69534eecea6eec015">assignPreferredSpan</a> (<a class="el" href="classdock_1_1LayoutNode.html">LayoutNode</a> *item, int preferredLength)</td></tr>
+<tr class="memdesc:a7e8830017a051bf69534eecea6eec015"><td class="mdescLeft">&#160;</td><td class="mdescRight">给新插入的可见子节点分配期望长度（其余可见子节点按比例让位）  <br /></td></tr>
+<tr class="memitem:af055affe4a836a7cd36a6ba67147c3b2" id="r_af055affe4a836a7cd36a6ba67147c3b2"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#af055affe4a836a7cd36a6ba67147c3b2">syncVisibility</a> ()</td></tr>
+<tr class="memdesc:af055affe4a836a7cd36a6ba67147c3b2"><td class="mdescLeft">&#160;</td><td class="mdescRight">子节点可见性变化后同步容器自身的有效可见性  <br /></td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 id="header-pri-attribs" class="groupheader"><a id="pri-attribs" name="pri-attribs"></a>
+Private 属性</h2></td></tr>
+<tr class="memitem:a4f57121145342fd4f9bada80d6589e66" id="r_a4f57121145342fd4f9bada80d6589e66"><td class="memItemLeft" align="right" valign="top">Qt::Orientation&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a4f57121145342fd4f9bada80d6589e66">orientation_</a></td></tr>
+<tr class="memitem:a5644364165c612b3438f3aa6bce3c879" id="r_a5644364165c612b3438f3aa6bce3c879"><td class="memItemLeft" align="right" valign="top">QList&lt; <a class="el" href="classdock_1_1LayoutNode.html">LayoutNode</a> * &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a5644364165c612b3438f3aa6bce3c879">children_</a></td></tr>
+<tr class="memitem:ad75a444890b0a4fc1d1ea98c86a34221" id="r_ad75a444890b0a4fc1d1ea98c86a34221"><td class="memItemLeft" align="right" valign="top">QList&lt; <a class="el" href="classdock_1_1Divider.html">Divider</a> * &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ad75a444890b0a4fc1d1ea98c86a34221">dividers_</a></td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 id="header-inherited" class="groupheader"><a id="inherited" name="inherited"></a>
+额外继承的成员函数</h2></td></tr>
+<tr class="inherit_header pro_attribs_classdock_1_1LayoutNode"><td colspan="2" onclick="javascript:dynsection.toggleInherit('pro_attribs_classdock_1_1LayoutNode')"><span class="dynarrow"><span class="arrowhead closed"></span></span>Protected 属性 继承自 <a class="el" href="classdock_1_1LayoutNode.html">dock::LayoutNode</a></td></tr>
+<tr class="memitem:a7045d7797e22fe2b473ab7f335c4c50f inherit pro_attribs_classdock_1_1LayoutNode" id="r_a7045d7797e22fe2b473ab7f335c4c50f"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structdock_1_1NodeMetrics.html">NodeMetrics</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classdock_1_1LayoutNode.html#a7045d7797e22fe2b473ab7f335c4c50f">sizing_</a></td></tr>
+<tr class="memdesc:a7045d7797e22fe2b473ab7f335c4c50f inherit pro_attribs_classdock_1_1LayoutNode"><td class="mdescLeft">&#160;</td><td class="mdescRight">几何与尺寸约束  <br /></td></tr>
+<tr class="memitem:a330708290105b38593bcfe495ede8fbd inherit pro_attribs_classdock_1_1LayoutNode" id="r_a330708290105b38593bcfe495ede8fbd"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classdock_1_1LayoutClient.html">LayoutClient</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classdock_1_1LayoutNode.html#a330708290105b38593bcfe495ede8fbd">client_</a> = nullptr</td></tr>
+<tr class="memdesc:a330708290105b38593bcfe495ede8fbd inherit pro_attribs_classdock_1_1LayoutNode"><td class="mdescLeft">&#160;</td><td class="mdescRight">被托管的实体（容器节点为空）  <br /></td></tr>
+<tr class="memitem:acc956f3bd4afb7d84acf1cd160c1a50c inherit pro_attribs_classdock_1_1LayoutNode" id="r_acc956f3bd4afb7d84acf1cd160c1a50c"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classdock_1_1BoxNode.html">BoxNode</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classdock_1_1LayoutNode.html#acc956f3bd4afb7d84acf1cd160c1a50c">parent_</a> = nullptr</td></tr>
+<tr class="memdesc:acc956f3bd4afb7d84acf1cd160c1a50c inherit pro_attribs_classdock_1_1LayoutNode"><td class="mdescLeft">&#160;</td><td class="mdescRight">父容器  <br /></td></tr>
+<tr class="memitem:ae7c187229d510d993570526f84dfccb5 inherit pro_attribs_classdock_1_1LayoutNode" id="r_ae7c187229d510d993570526f84dfccb5"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classdock_1_1LayoutNode.html#ae7c187229d510d993570526f84dfccb5">visible_</a> = true</td></tr>
+<tr class="memdesc:ae7c187229d510d993570526f84dfccb5 inherit pro_attribs_classdock_1_1LayoutNode"><td class="mdescLeft">&#160;</td><td class="mdescRight">自身可见性（不含父链影响）  <br /></td></tr>
+</table>
+<a name="details" id="details"></a><h2 id="header-details" class="groupheader">详细描述</h2>
+<div class="textblock"><p>盒式布局容器 </p>
+<p>子节点沿 orientation 指定的主轴依次排列，相邻可见子节点之间自动 维护分隔条。容器尺寸变化或子节点增删/显隐时按主轴占比重新分配长度， 并保证每个子节点不小于其 minExtent。 </p>
+</div><a name="doc-constructors" id="doc-constructors"></a><h2 id="header-doc-constructors" class="groupheader">构造及析构函数说明</h2>
+<a id="a081b8282f4035c63b2b51e16a68d2424" name="a081b8282f4035c63b2b51e16a68d2424"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a081b8282f4035c63b2b51e16a68d2424">&#9670;&#160;</a></span>BoxNode()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">dock::BoxNode::BoxNode </td>
+          <td>(</td>
+          <td class="paramtype">Qt::Orientation</td>          <td class="paramname"><span class="paramname"><em>orientation</em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel explicit">explicit</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a0a2df7c2218f2bfd08a4cfaf0b2e44cb" name="a0a2df7c2218f2bfd08a4cfaf0b2e44cb"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a0a2df7c2218f2bfd08a4cfaf0b2e44cb">&#9670;&#160;</a></span>~BoxNode()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">dock::BoxNode::~BoxNode </td>
+          <td>(</td>
+          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel override">override</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a name="doc-func-members" id="doc-func-members"></a><h2 id="header-doc-func-members" class="groupheader">成员函数说明</h2>
+<a id="aa9148a3747641a8d0519d6d22b33be18" name="aa9148a3747641a8d0519d6d22b33be18"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aa9148a3747641a8d0519d6d22b33be18">&#9670;&#160;</a></span>applyDividerMove()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void dock::BoxNode::applyDividerMove </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="classdock_1_1Divider.html">Divider</a> *</td>          <td class="paramname"><span class="paramname"><em>separator</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int</td>          <td class="paramname"><span class="paramname"><em>side1Length</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int</td>          <td class="paramname"><span class="paramname"><em>side2Length</em></span>&#160;)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>应用分隔条拖动后的侧 1/侧 2 主轴长度并重排 </p>
+
+</div>
+</div>
+<a id="a7e8830017a051bf69534eecea6eec015" name="a7e8830017a051bf69534eecea6eec015"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a7e8830017a051bf69534eecea6eec015">&#9670;&#160;</a></span>assignPreferredSpan()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void dock::BoxNode::assignPreferredSpan </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="classdock_1_1LayoutNode.html">LayoutNode</a> *</td>          <td class="paramname"><span class="paramname"><em>item</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int</td>          <td class="paramname"><span class="paramname"><em>preferredLength</em></span>&#160;)</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel private">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>给新插入的可见子节点分配期望长度（其余可见子节点按比例让位） </p>
+
+</div>
+</div>
+<a id="a74088ac58dead5189c47f816c106acc6" name="a74088ac58dead5189c47f816c106acc6"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a74088ac58dead5189c47f816c106acc6">&#9670;&#160;</a></span>childCount()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">int dock::BoxNode::childCount </td>
+          <td>(</td>
+          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel inline">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>子节点数量 </p>
+
+</div>
+</div>
+<a id="a673726e73832d7497f897dfe672d5bcf" name="a673726e73832d7497f897dfe672d5bcf"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a673726e73832d7497f897dfe672d5bcf">&#9670;&#160;</a></span>children()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">const QList&lt; <a class="el" href="classdock_1_1LayoutNode.html">LayoutNode</a> * &gt; &amp; dock::BoxNode::children </td>
+          <td>(</td>
+          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel inline">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>全部子节点 </p>
+
+</div>
+</div>
+<a id="af5ec5524712539567c1cf74c8d7a189c" name="af5ec5524712539567c1cf74c8d7a189c"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#af5ec5524712539567c1cf74c8d7a189c">&#9670;&#160;</a></span>detachNode()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classdock_1_1LayoutNode.html">LayoutNode</a> * dock::BoxNode::detachNode </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="classdock_1_1LayoutNode.html">LayoutNode</a> *</td>          <td class="paramname"><span class="paramname"><em>item</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">bool</td>          <td class="paramname"><span class="paramname"><em>hardDelete</em></span>&#160;)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>从容器中摘除子节点 </p>
+<p>若容器只剩一个子节点且自身有父容器，则用该子节点替换本容器 （返回替代节点，调用方负责在返回值非 this 时删除本容器）； 若非根容器清空，则从父容器摘除并返回 nullptr。 </p><dl class="section return"><dt>返回</dt><dd>本容器或替代节点；返回 nullptr 表示本容器已空且无父容器 </dd></dl>
+
+</div>
+</div>
+<a id="aed2d616209a77cd7c6c62ad332bd82c3" name="aed2d616209a77cd7c6c62ad332bd82c3"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aed2d616209a77cd7c6c62ad332bd82c3">&#9670;&#160;</a></span>dividers()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">const QList&lt; <a class="el" href="classdock_1_1Divider.html">Divider</a> * &gt; &amp; dock::BoxNode::dividers </td>
+          <td>(</td>
+          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel inline">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>相邻可见子节点之间的分隔条 </p>
+
+</div>
+</div>
+<a id="a27e1dc0e4aa28dd416f95983e0a22f47" name="a27e1dc0e4aa28dd416f95983e0a22f47"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a27e1dc0e4aa28dd416f95983e0a22f47">&#9670;&#160;</a></span>freeSpan()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">int dock::BoxNode::freeSpan </td>
+          <td>(</td>
+          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel private">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>扣除分隔条后的可用主轴长度 </p>
+
+</div>
+</div>
+<a id="a6aba43ce8847245f02e638e486bf461f" name="a6aba43ce8847245f02e638e486bf461f"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a6aba43ce8847245f02e638e486bf461f">&#9670;&#160;</a></span>handleChildVisibility()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void dock::BoxNode::handleChildVisibility </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="classdock_1_1LayoutNode.html">LayoutNode</a> *</td>          <td class="paramname"><span class="paramname"><em>child</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">bool</td>          <td class="paramname"><span class="paramname"><em>visible</em></span>&#160;)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>子节点可见性变化回调，由 <a class="el" href="classdock_1_1LayoutNode.html#a5b2418d589838d0258c003d43c270e51" title="设置可见性；变化时通知父容器重排">LayoutNode::setVisible</a> 触发 </p>
+
+</div>
+</div>
+<a id="a22c4c20d8255efe8c0325dcff886e381" name="a22c4c20d8255efe8c0325dcff886e381"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a22c4c20d8255efe8c0325dcff886e381">&#9670;&#160;</a></span>indexOfNode()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">int dock::BoxNode::indexOfNode </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="classdock_1_1LayoutNode.html">LayoutNode</a> *</td>          <td class="paramname"><span class="paramname"><em>item</em></span></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel inline">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>子节点下标，不存在返回 -1 </p>
+
+</div>
+</div>
+<a id="a7c84cd94a1dea947b7530299fdd8e74d" name="a7c84cd94a1dea947b7530299fdd8e74d"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a7c84cd94a1dea947b7530299fdd8e74d">&#9670;&#160;</a></span>insertNode()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void dock::BoxNode::insertNode </td>
+          <td>(</td>
+          <td class="paramtype">int</td>          <td class="paramname"><span class="paramname"><em>index</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="classdock_1_1LayoutNode.html">LayoutNode</a> *</td>          <td class="paramname"><span class="paramname"><em>item</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int</td>          <td class="paramname"><span class="paramname"><em>preferredLength</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">bool</td>          <td class="paramname"><span class="paramname"><em>startsVisible</em></span>&#160;)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>在 index 处插入子节点并接管所有权 </p>
+<dl class="params"><dt>参数</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">index</td><td>插入位置，越界时收敛到两端 </td></tr>
+    <tr><td class="paramname">item</td><td>被插入的节点 </td></tr>
+    <tr><td class="paramname">preferredLength</td><td>主轴期望长度（&lt;=0 表示均分） </td></tr>
+    <tr><td class="paramname">startsVisible</td><td>插入后是否可见；不可见时记录占比供 show 时恢复 </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="a7d07102d10be819acf444c4552917667" name="a7d07102d10be819acf444c4552917667"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a7d07102d10be819acf444c4552917667">&#9670;&#160;</a></span>isContainer()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool dock::BoxNode::isContainer </td>
+          <td>(</td>
+          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel inline">inline</span><span class="mlabel override">override</span><span class="mlabel virtual">virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>是否为容器节点 </p>
+
+<p>重载 <a class="el" href="classdock_1_1LayoutNode.html#a88cad0a54c273b270c09aa4b4cb44c12">dock::LayoutNode</a> .</p>
+
+</div>
+</div>
+<a id="ab431817fcf4432483aef4ba292d49181" name="ab431817fcf4432483aef4ba292d49181"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ab431817fcf4432483aef4ba292d49181">&#9670;&#160;</a></span>layout()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void dock::BoxNode::layout </td>
+          <td>(</td>
+          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>按主轴占比重算全部可见子节点几何与分隔条位置 </p>
+
+</div>
+</div>
+<a id="ab648c6bb8451e3a642753605d3336b12" name="ab648c6bb8451e3a642753605d3336b12"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ab648c6bb8451e3a642753605d3336b12">&#9670;&#160;</a></span>maxExtent()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">QSize dock::BoxNode::maxExtent </td>
+          <td>(</td>
+          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel override">override</span><span class="mlabel virtual">virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>软最大尺寸提示（默认取 client 约束） </p>
+
+<p>重载 <a class="el" href="classdock_1_1LayoutNode.html#a133db7e05a6b888ec823269219fb0ec6">dock::LayoutNode</a> .</p>
+
+</div>
+</div>
+<a id="a2bb07128122e51964c9f0e60eac979b4" name="a2bb07128122e51964c9f0e60eac979b4"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a2bb07128122e51964c9f0e60eac979b4">&#9670;&#160;</a></span>minExtent()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">QSize dock::BoxNode::minExtent </td>
+          <td>(</td>
+          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel override">override</span><span class="mlabel virtual">virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>硬最小尺寸（默认取 client 约束） </p>
+
+<p>重载 <a class="el" href="classdock_1_1LayoutNode.html#add7d64da392bf5343cf0c5e8dc19b84e">dock::LayoutNode</a> .</p>
+
+</div>
+</div>
+<a id="ae6f2cb1bd9260e0f1e350475c0a60603" name="ae6f2cb1bd9260e0f1e350475c0a60603"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ae6f2cb1bd9260e0f1e350475c0a60603">&#9670;&#160;</a></span>orientation()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">Qt::Orientation dock::BoxNode::orientation </td>
+          <td>(</td>
+          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel inline">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>排列方向（水平容器内子节点自左向右） </p>
+
+</div>
+</div>
+<a id="a3c51a410b5d8a581d300b983fed3ae8b" name="a3c51a410b5d8a581d300b983fed3ae8b"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a3c51a410b5d8a581d300b983fed3ae8b">&#9670;&#160;</a></span>rebuildDividers()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void dock::BoxNode::rebuildDividers </td>
+          <td>(</td>
+          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>重建分隔条（子节点集合变化后调用） </p>
+
+</div>
+</div>
+<a id="a1ffc67c074c1a38bbd8d637520bf3d7c" name="a1ffc67c074c1a38bbd8d637520bf3d7c"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a1ffc67c074c1a38bbd8d637520bf3d7c">&#9670;&#160;</a></span>replaceNode()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void dock::BoxNode::replaceNode </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="classdock_1_1LayoutNode.html">LayoutNode</a> *</td>          <td class="paramname"><span class="paramname"><em>old_child</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="classdock_1_1LayoutNode.html">LayoutNode</a> *</td>          <td class="paramname"><span class="paramname"><em>new_child</em></span>&#160;)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>用 new_child 原地替换 old_child（继承可见性；占比由调用方先行设置） </p>
+
+</div>
+</div>
+<a id="adbb0ffc9dc119731e79529a9bbd3c1e5" name="adbb0ffc9dc119731e79529a9bbd3c1e5"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#adbb0ffc9dc119731e79529a9bbd3c1e5">&#9670;&#160;</a></span>setGeometry()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void dock::BoxNode::setGeometry </td>
+          <td>(</td>
+          <td class="paramtype">const QRect &amp;</td>          <td class="paramname"><span class="paramname"><em>geometry</em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel override">override</span><span class="mlabel virtual">virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>设置几何并下发给 client </p>
+
+<p>重载 <a class="el" href="classdock_1_1LayoutNode.html#aab3fe64543a4241faeb0fef4dd7793d3">dock::LayoutNode</a> .</p>
+
+</div>
+</div>
+<a id="af055affe4a836a7cd36a6ba67147c3b2" name="af055affe4a836a7cd36a6ba67147c3b2"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#af055affe4a836a7cd36a6ba67147c3b2">&#9670;&#160;</a></span>syncVisibility()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void dock::BoxNode::syncVisibility </td>
+          <td>(</td>
+          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel private">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>子节点可见性变化后同步容器自身的有效可见性 </p>
+
+</div>
+</div>
+<a id="a2e72c6f9eb10de41b13445df9d74f944" name="a2e72c6f9eb10de41b13445df9d74f944"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a2e72c6f9eb10de41b13445df9d74f944">&#9670;&#160;</a></span>visibleNodeCount()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">int dock::BoxNode::visibleNodeCount </td>
+          <td>(</td>
+          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>可见且自身可见的子节点数量 </p>
+
+</div>
+</div>
+<a id="a709c2bbd5c84173d43dd497cf144ae20" name="a709c2bbd5c84173d43dd497cf144ae20"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a709c2bbd5c84173d43dd497cf144ae20">&#9670;&#160;</a></span>visibleNodes()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">QList&lt; <a class="el" href="classdock_1_1LayoutNode.html">LayoutNode</a> * &gt; dock::BoxNode::visibleNodes </td>
+          <td>(</td>
+          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>可见子节点列表 </p>
+
+</div>
+</div>
+<a name="doc-variable-members" id="doc-variable-members"></a><h2 id="header-doc-variable-members" class="groupheader">类成员变量说明</h2>
+<a id="a5644364165c612b3438f3aa6bce3c879" name="a5644364165c612b3438f3aa6bce3c879"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a5644364165c612b3438f3aa6bce3c879">&#9670;&#160;</a></span>children_</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">QList&lt;<a class="el" href="classdock_1_1LayoutNode.html">LayoutNode</a>*&gt; dock::BoxNode::children_</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel private">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="ad75a444890b0a4fc1d1ea98c86a34221" name="ad75a444890b0a4fc1d1ea98c86a34221"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ad75a444890b0a4fc1d1ea98c86a34221">&#9670;&#160;</a></span>dividers_</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">QList&lt;<a class="el" href="classdock_1_1Divider.html">Divider</a>*&gt; dock::BoxNode::dividers_</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel private">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a4f57121145342fd4f9bada80d6589e66" name="a4f57121145342fd4f9bada80d6589e66"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a4f57121145342fd4f9bada80d6589e66">&#9670;&#160;</a></span>orientation_</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">Qt::Orientation dock::BoxNode::orientation_</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel private">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<hr/>该类的文档由以下文件生成:<ul>
+<li>app/dock/tree/<a class="el" href="BoxNode_8h_source.html">BoxNode.h</a></li>
+<li>app/dock/tree/<a class="el" href="BoxNode_8cpp.html">BoxNode.cpp</a></li>
+</ul>
+</div><!-- contents -->
+<!-- start footer part -->
+<hr class="footer"/><address class="footer"><small>
+制作者&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.14.0
+</small></address>
+</div><!-- doc-content -->
+</body>
+</html>

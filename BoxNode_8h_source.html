@@ -1,0 +1,180 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="zh">
+<head>
+<meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=11"/>
+<meta name="generator" content="Doxygen 1.14.0"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>PreCess: app/dock/tree/BoxNode.h 源文件</title>
+<link href="tabs.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="jquery.js"></script>
+<script type="text/javascript" src="dynsections.js"></script>
+<script type="text/javascript" src="clipboard.js"></script>
+<script type="text/javascript" src="cookie.js"></script>
+<link href="search/search.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="search/searchdata.js"></script>
+<script type="text/javascript" src="search/search.js"></script>
+<link href="doxygen.css" rel="stylesheet" type="text/css" />
+</head>
+<body>
+<div id="top"><!-- do not remove this div, it is closed by doxygen! -->
+<div id="titlearea">
+<table cellspacing="0" cellpadding="0">
+ <tbody>
+ <tr id="projectrow">
+  <td id="projectlogo"><img alt="Logo" src="PreCess.ico"/></td>
+  <td id="projectalign">
+   <div id="projectname">PreCess
+   </div>
+  </td>
+ </tr>
+ </tbody>
+</table>
+</div>
+<!-- end header part -->
+<!-- 制作者 Doxygen 1.14.0 -->
+<script type="text/javascript">
+var searchBox = new SearchBox("searchBox", "search/",'.html');
+</script>
+<script type="text/javascript">
+$(function() { codefold.init(); });
+</script>
+<script type="text/javascript" src="menudata.js"></script>
+<script type="text/javascript" src="menu.js"></script>
+<script type="text/javascript">
+$(function() {
+  initMenu('',true,false,'search.php','搜索',false);
+  $(function() { init_search(); });
+});
+</script>
+<div id="main-nav"></div>
+<!-- window showing the filter options -->
+<div id="MSearchSelectWindow"
+     onmouseover="return searchBox.OnSearchSelectShow()"
+     onmouseout="return searchBox.OnSearchSelectHide()"
+     onkeydown="return searchBox.OnSearchSelectKey(event)">
+</div>
+
+<!-- iframe showing the search results (closed by default) -->
+<div id="MSearchResultsWindow">
+<div id="MSearchResults">
+<div class="SRPage">
+<div id="SRIndex">
+<div id="SRResults"></div>
+<div class="SRStatus" id="Loading">载入中...</div>
+<div class="SRStatus" id="Searching">搜索中...</div>
+<div class="SRStatus" id="NoMatches">未找到</div>
+</div>
+</div>
+</div>
+</div>
+
+<div id="nav-path" class="navpath">
+  <ul>
+<li class="navelem"><a href="dir_d422163b96683743ed3963d4aac17747.html">app</a></li><li class="navelem"><a href="dir_4e5d8f7ce7c3dc0f91a395eba455c956.html">dock</a></li><li class="navelem"><a href="dir_5eadc552fcf5a00d591e43a164d6005f.html">tree</a></li>  </ul>
+</div>
+</div><!-- top -->
+<div id="doc-content">
+<div class="header">
+  <div class="headertitle"><div class="title">BoxNode.h</div></div>
+</div><!--header-->
+<div class="contents">
+<a href="BoxNode_8h.html">浏览该文件的文档.</a><div class="fragment"><div class="line"><a id="l00001" name="l00001"></a><span class="lineno">    1</span></div>
+<div class="line"><a id="l00005" name="l00005"></a><span class="lineno">    5</span> </div>
+<div class="line"><a id="l00006" name="l00006"></a><span class="lineno">    6</span><span class="preprocessor">#pragma once</span></div>
+<div class="line"><a id="l00007" name="l00007"></a><span class="lineno">    7</span> </div>
+<div class="line"><a id="l00008" name="l00008"></a><span class="lineno">    8</span><span class="preprocessor">#include &quot;<a class="code" href="LayoutNode_8h.html">LayoutNode.h</a>&quot;</span></div>
+<div class="line"><a id="l00009" name="l00009"></a><span class="lineno">    9</span> </div>
+<div class="line"><a id="l00010" name="l00010"></a><span class="lineno">   10</span><span class="preprocessor">#include &lt;QList&gt;</span></div>
+<div class="line"><a id="l00011" name="l00011"></a><span class="lineno">   11</span> </div>
+<div class="line"><a id="l00012" name="l00012"></a><span class="lineno">   12</span><span class="keyword">namespace </span><a class="code hl_namespace" href="namespacedock.html">dock</a> {</div>
+<div class="line"><a id="l00013" name="l00013"></a><span class="lineno">   13</span> </div>
+<div class="line"><a id="l00014" name="l00014"></a><span class="lineno">   14</span><span class="keyword">class </span><a class="code hl_class" href="classdock_1_1Divider.html">Divider</a>;</div>
+<div class="line"><a id="l00015" name="l00015"></a><span class="lineno">   15</span></div>
+<div class="foldopen" id="foldopen00023" data-start="{" data-end="};">
+<div class="line"><a id="l00023" name="l00023"></a><span class="lineno"><a class="line" href="classdock_1_1BoxNode.html">   23</a></span><span class="keyword">class </span><a class="code hl_function" href="classdock_1_1BoxNode.html#a081b8282f4035c63b2b51e16a68d2424">BoxNode</a> : <span class="keyword">public</span> <a class="code hl_function" href="classdock_1_1LayoutNode.html#ab502912c14547c37b207cd6cee17bf28">LayoutNode</a></div>
+<div class="line"><a id="l00024" name="l00024"></a><span class="lineno">   24</span>{</div>
+<div class="line"><a id="l00025" name="l00025"></a><span class="lineno">   25</span><span class="keyword">public</span>:</div>
+<div class="line"><a id="l00026" name="l00026"></a><span class="lineno">   26</span>    <span class="keyword">explicit</span> <a class="code hl_function" href="classdock_1_1BoxNode.html#a081b8282f4035c63b2b51e16a68d2424">BoxNode</a>(Qt::Orientation <a class="code hl_function" href="classdock_1_1BoxNode.html#ae6f2cb1bd9260e0f1e350475c0a60603">orientation</a>);</div>
+<div class="line"><a id="l00027" name="l00027"></a><span class="lineno">   27</span>    <a class="code hl_function" href="classdock_1_1BoxNode.html#a0a2df7c2218f2bfd08a4cfaf0b2e44cb">~BoxNode</a>() <span class="keyword">override</span>;</div>
+<div class="line"><a id="l00028" name="l00028"></a><span class="lineno">   28</span> </div>
+<div class="line"><a id="l00029" name="l00029"></a><span class="lineno"><a class="line" href="classdock_1_1BoxNode.html#a7d07102d10be819acf444c4552917667">   29</a></span>    <span class="keywordtype">bool</span> <a class="code hl_function" href="classdock_1_1BoxNode.html#a7d07102d10be819acf444c4552917667">isContainer</a>()<span class="keyword"> const override </span>{ <span class="keywordflow">return</span> <span class="keyword">true</span>; }</div>
+<div class="line"><a id="l00030" name="l00030"></a><span class="lineno">   30</span></div>
+<div class="line"><a id="l00032" name="l00032"></a><span class="lineno"><a class="line" href="classdock_1_1BoxNode.html#ae6f2cb1bd9260e0f1e350475c0a60603">   32</a></span>    Qt::Orientation <a class="code hl_function" href="classdock_1_1BoxNode.html#ae6f2cb1bd9260e0f1e350475c0a60603">orientation</a>()<span class="keyword"> const </span>{ <span class="keywordflow">return</span> <a class="code hl_variable" href="classdock_1_1BoxNode.html#a4f57121145342fd4f9bada80d6589e66">orientation_</a>; }</div>
+<div class="line"><a id="l00033" name="l00033"></a><span class="lineno">   33</span></div>
+<div class="line"><a id="l00035" name="l00035"></a><span class="lineno"><a class="line" href="classdock_1_1BoxNode.html#a673726e73832d7497f897dfe672d5bcf">   35</a></span>    <span class="keyword">const</span> QList&lt;LayoutNode*&gt;&amp; <a class="code hl_function" href="classdock_1_1BoxNode.html#a673726e73832d7497f897dfe672d5bcf">children</a>()<span class="keyword"> const </span>{ <span class="keywordflow">return</span> <a class="code hl_variable" href="classdock_1_1BoxNode.html#a5644364165c612b3438f3aa6bce3c879">children_</a>; }</div>
+<div class="line"><a id="l00037" name="l00037"></a><span class="lineno"><a class="line" href="classdock_1_1BoxNode.html#a74088ac58dead5189c47f816c106acc6">   37</a></span>    <span class="keywordtype">int</span> <a class="code hl_function" href="classdock_1_1BoxNode.html#a74088ac58dead5189c47f816c106acc6">childCount</a>()<span class="keyword"> const </span>{ <span class="keywordflow">return</span> <a class="code hl_variable" href="classdock_1_1BoxNode.html#a5644364165c612b3438f3aa6bce3c879">children_</a>.size(); }</div>
+<div class="line"><a id="l00039" name="l00039"></a><span class="lineno"><a class="line" href="classdock_1_1BoxNode.html#a22c4c20d8255efe8c0325dcff886e381">   39</a></span>    <span class="keywordtype">int</span> <a class="code hl_function" href="classdock_1_1BoxNode.html#a22c4c20d8255efe8c0325dcff886e381">indexOfNode</a>(<a class="code hl_function" href="classdock_1_1LayoutNode.html#ab502912c14547c37b207cd6cee17bf28">LayoutNode</a>* item)<span class="keyword"> const </span>{ <span class="keywordflow">return</span> <a class="code hl_variable" href="classdock_1_1BoxNode.html#a5644364165c612b3438f3aa6bce3c879">children_</a>.indexOf(item); }</div>
+<div class="line"><a id="l00041" name="l00041"></a><span class="lineno">   41</span>    <span class="keywordtype">int</span> <a class="code hl_function" href="classdock_1_1BoxNode.html#a2e72c6f9eb10de41b13445df9d74f944">visibleNodeCount</a>() <span class="keyword">const</span>;</div>
+<div class="line"><a id="l00043" name="l00043"></a><span class="lineno">   43</span>    QList&lt;LayoutNode*&gt; <a class="code hl_function" href="classdock_1_1BoxNode.html#a709c2bbd5c84173d43dd497cf144ae20">visibleNodes</a>() <span class="keyword">const</span>;</div>
+<div class="line"><a id="l00044" name="l00044"></a><span class="lineno">   44</span></div>
+<div class="line"><a id="l00046" name="l00046"></a><span class="lineno">   46</span>    <span class="keywordtype">void</span> <a class="code hl_function" href="classdock_1_1BoxNode.html#a1ffc67c074c1a38bbd8d637520bf3d7c">replaceNode</a>(<a class="code hl_class" href="classdock_1_1LayoutNode.html">LayoutNode</a>* old_child, <a class="code hl_class" href="classdock_1_1LayoutNode.html">LayoutNode</a>* new_child);</div>
+<div class="line"><a id="l00047" name="l00047"></a><span class="lineno">   47</span></div>
+<div class="line"><a id="l00055" name="l00055"></a><span class="lineno">   55</span>    <span class="keywordtype">void</span> <a class="code hl_function" href="classdock_1_1BoxNode.html#a7c84cd94a1dea947b7530299fdd8e74d">insertNode</a>(<span class="keywordtype">int</span> index, <a class="code hl_class" href="classdock_1_1LayoutNode.html">LayoutNode</a>* item, <span class="keywordtype">int</span> preferredLength, <span class="keywordtype">bool</span> startsVisible);</div>
+<div class="line"><a id="l00056" name="l00056"></a><span class="lineno">   56</span></div>
+<div class="line"><a id="l00065" name="l00065"></a><span class="lineno">   65</span>    <a class="code hl_class" href="classdock_1_1LayoutNode.html">LayoutNode</a>* <a class="code hl_function" href="classdock_1_1BoxNode.html#af5ec5524712539567c1cf74c8d7a189c">detachNode</a>(<a class="code hl_class" href="classdock_1_1LayoutNode.html">LayoutNode</a>* item, <span class="keywordtype">bool</span> hardDelete);</div>
+<div class="line"><a id="l00066" name="l00066"></a><span class="lineno">   66</span> </div>
+<div class="line"><a id="l00067" name="l00067"></a><span class="lineno">   67</span>    <span class="keywordtype">void</span> <a class="code hl_function" href="classdock_1_1BoxNode.html#adbb0ffc9dc119731e79529a9bbd3c1e5">setGeometry</a>(<span class="keyword">const</span> QRect&amp; <a class="code hl_variable" href="TestComponentModel_8cpp.html#acd06f41b01ec41c67d52bd9d7cc86e10">geometry</a>) <span class="keyword">override</span>;</div>
+<div class="line"><a id="l00068" name="l00068"></a><span class="lineno">   68</span>    QSize <a class="code hl_function" href="classdock_1_1BoxNode.html#a2bb07128122e51964c9f0e60eac979b4">minExtent</a>() <span class="keyword">const override</span>;</div>
+<div class="line"><a id="l00069" name="l00069"></a><span class="lineno">   69</span>    QSize <a class="code hl_function" href="classdock_1_1BoxNode.html#ab648c6bb8451e3a642753605d3336b12">maxExtent</a>() <span class="keyword">const override</span>;</div>
+<div class="line"><a id="l00070" name="l00070"></a><span class="lineno">   70</span></div>
+<div class="line"><a id="l00072" name="l00072"></a><span class="lineno">   72</span>    <span class="keywordtype">void</span> <a class="code hl_function" href="classdock_1_1BoxNode.html#ab431817fcf4432483aef4ba292d49181">layout</a>();</div>
+<div class="line"><a id="l00073" name="l00073"></a><span class="lineno">   73</span></div>
+<div class="line"><a id="l00075" name="l00075"></a><span class="lineno"><a class="line" href="classdock_1_1BoxNode.html#aed2d616209a77cd7c6c62ad332bd82c3">   75</a></span>    <span class="keyword">const</span> QList&lt;Divider*&gt;&amp; <a class="code hl_function" href="classdock_1_1BoxNode.html#aed2d616209a77cd7c6c62ad332bd82c3">dividers</a>()<span class="keyword"> const </span>{ <span class="keywordflow">return</span> <a class="code hl_variable" href="classdock_1_1BoxNode.html#ad75a444890b0a4fc1d1ea98c86a34221">dividers_</a>; }</div>
+<div class="line"><a id="l00077" name="l00077"></a><span class="lineno">   77</span>    <span class="keywordtype">void</span> <a class="code hl_function" href="classdock_1_1BoxNode.html#a3c51a410b5d8a581d300b983fed3ae8b">rebuildDividers</a>();</div>
+<div class="line"><a id="l00079" name="l00079"></a><span class="lineno">   79</span>    <span class="keywordtype">void</span> <a class="code hl_function" href="classdock_1_1BoxNode.html#aa9148a3747641a8d0519d6d22b33be18">applyDividerMove</a>(<a class="code hl_class" href="classdock_1_1Divider.html">Divider</a>* separator, <span class="keywordtype">int</span> side1Length, <span class="keywordtype">int</span> side2Length);</div>
+<div class="line"><a id="l00080" name="l00080"></a><span class="lineno">   80</span></div>
+<div class="line"><a id="l00082" name="l00082"></a><span class="lineno">   82</span>    <span class="keywordtype">void</span> <a class="code hl_function" href="classdock_1_1BoxNode.html#a6aba43ce8847245f02e638e486bf461f">handleChildVisibility</a>(<a class="code hl_class" href="classdock_1_1LayoutNode.html">LayoutNode</a>* child, <span class="keywordtype">bool</span> visible);</div>
+<div class="line"><a id="l00083" name="l00083"></a><span class="lineno">   83</span> </div>
+<div class="line"><a id="l00084" name="l00084"></a><span class="lineno">   84</span><span class="keyword">private</span>:</div>
+<div class="line"><a id="l00086" name="l00086"></a><span class="lineno">   86</span>    <span class="keywordtype">int</span> <a class="code hl_function" href="classdock_1_1BoxNode.html#a27e1dc0e4aa28dd416f95983e0a22f47">freeSpan</a>() <span class="keyword">const</span>;</div>
+<div class="line"><a id="l00088" name="l00088"></a><span class="lineno">   88</span>    <span class="keywordtype">void</span> <a class="code hl_function" href="classdock_1_1BoxNode.html#a7e8830017a051bf69534eecea6eec015">assignPreferredSpan</a>(<a class="code hl_class" href="classdock_1_1LayoutNode.html">LayoutNode</a>* item, <span class="keywordtype">int</span> preferredLength);</div>
+<div class="line"><a id="l00090" name="l00090"></a><span class="lineno">   90</span>    <span class="keywordtype">void</span> <a class="code hl_function" href="classdock_1_1BoxNode.html#af055affe4a836a7cd36a6ba67147c3b2">syncVisibility</a>();</div>
+<div class="line"><a id="l00091" name="l00091"></a><span class="lineno">   91</span> </div>
+<div class="line"><a id="l00092" name="l00092"></a><span class="lineno"><a class="line" href="classdock_1_1BoxNode.html#a4f57121145342fd4f9bada80d6589e66">   92</a></span>    Qt::Orientation <a class="code hl_variable" href="classdock_1_1BoxNode.html#a4f57121145342fd4f9bada80d6589e66">orientation_</a>;</div>
+<div class="line"><a id="l00093" name="l00093"></a><span class="lineno"><a class="line" href="classdock_1_1BoxNode.html#a5644364165c612b3438f3aa6bce3c879">   93</a></span>    QList&lt;LayoutNode*&gt; <a class="code hl_variable" href="classdock_1_1BoxNode.html#a5644364165c612b3438f3aa6bce3c879">children_</a>;</div>
+<div class="line"><a id="l00094" name="l00094"></a><span class="lineno"><a class="line" href="classdock_1_1BoxNode.html#ad75a444890b0a4fc1d1ea98c86a34221">   94</a></span>    QList&lt;Divider*&gt; <a class="code hl_variable" href="classdock_1_1BoxNode.html#ad75a444890b0a4fc1d1ea98c86a34221">dividers_</a>;</div>
+<div class="line"><a id="l00095" name="l00095"></a><span class="lineno">   95</span>};</div>
+</div>
+<div class="line"><a id="l00096" name="l00096"></a><span class="lineno">   96</span> </div>
+<div class="line"><a id="l00097" name="l00097"></a><span class="lineno">   97</span>}</div>
+<div class="ttc" id="aLayoutNode_8h_html"><div class="ttname"><a href="LayoutNode_8h.html">LayoutNode.h</a></div><div class="ttdoc">布局树节点</div></div>
+<div class="ttc" id="aTestComponentModel_8cpp_html_acd06f41b01ec41c67d52bd9d7cc86e10"><div class="ttname"><a href="TestComponentModel_8cpp.html#acd06f41b01ec41c67d52bd9d7cc86e10">geometry</a></div><div class="ttdeci">c1 geometry</div><div class="ttdef"><b>定义</b> TestComponentModel.cpp:81</div></div>
+<div class="ttc" id="aclassdock_1_1BoxNode_html_a081b8282f4035c63b2b51e16a68d2424"><div class="ttname"><a href="classdock_1_1BoxNode.html#a081b8282f4035c63b2b51e16a68d2424">dock::BoxNode::BoxNode</a></div><div class="ttdeci">BoxNode(Qt::Orientation orientation)</div><div class="ttdef"><b>定义</b> BoxNode.cpp:100</div></div>
+<div class="ttc" id="aclassdock_1_1BoxNode_html_a0a2df7c2218f2bfd08a4cfaf0b2e44cb"><div class="ttname"><a href="classdock_1_1BoxNode.html#a0a2df7c2218f2bfd08a4cfaf0b2e44cb">dock::BoxNode::~BoxNode</a></div><div class="ttdeci">~BoxNode() override</div><div class="ttdef"><b>定义</b> BoxNode.cpp:106</div></div>
+<div class="ttc" id="aclassdock_1_1BoxNode_html_a1ffc67c074c1a38bbd8d637520bf3d7c"><div class="ttname"><a href="classdock_1_1BoxNode.html#a1ffc67c074c1a38bbd8d637520bf3d7c">dock::BoxNode::replaceNode</a></div><div class="ttdeci">void replaceNode(LayoutNode *old_child, LayoutNode *new_child)</div><div class="ttdoc">用 new_child 原地替换 old_child（继承可见性；占比由调用方先行设置）</div><div class="ttdef"><b>定义</b> BoxNode.cpp:268</div></div>
+<div class="ttc" id="aclassdock_1_1BoxNode_html_a22c4c20d8255efe8c0325dcff886e381"><div class="ttname"><a href="classdock_1_1BoxNode.html#a22c4c20d8255efe8c0325dcff886e381">dock::BoxNode::indexOfNode</a></div><div class="ttdeci">int indexOfNode(LayoutNode *item) const</div><div class="ttdoc">子节点下标，不存在返回 -1</div><div class="ttdef"><b>定义</b> BoxNode.h:39</div></div>
+<div class="ttc" id="aclassdock_1_1BoxNode_html_a27e1dc0e4aa28dd416f95983e0a22f47"><div class="ttname"><a href="classdock_1_1BoxNode.html#a27e1dc0e4aa28dd416f95983e0a22f47">dock::BoxNode::freeSpan</a></div><div class="ttdeci">int freeSpan() const</div><div class="ttdoc">扣除分隔条后的可用主轴长度</div><div class="ttdef"><b>定义</b> BoxNode.cpp:445</div></div>
+<div class="ttc" id="aclassdock_1_1BoxNode_html_a2bb07128122e51964c9f0e60eac979b4"><div class="ttname"><a href="classdock_1_1BoxNode.html#a2bb07128122e51964c9f0e60eac979b4">dock::BoxNode::minExtent</a></div><div class="ttdeci">QSize minExtent() const override</div><div class="ttdoc">硬最小尺寸（默认取 client 约束）</div><div class="ttdef"><b>定义</b> BoxNode.cpp:297</div></div>
+<div class="ttc" id="aclassdock_1_1BoxNode_html_a2e72c6f9eb10de41b13445df9d74f944"><div class="ttname"><a href="classdock_1_1BoxNode.html#a2e72c6f9eb10de41b13445df9d74f944">dock::BoxNode::visibleNodeCount</a></div><div class="ttdeci">int visibleNodeCount() const</div><div class="ttdoc">可见且自身可见的子节点数量</div><div class="ttdef"><b>定义</b> BoxNode.cpp:112</div></div>
+<div class="ttc" id="aclassdock_1_1BoxNode_html_a3c51a410b5d8a581d300b983fed3ae8b"><div class="ttname"><a href="classdock_1_1BoxNode.html#a3c51a410b5d8a581d300b983fed3ae8b">dock::BoxNode::rebuildDividers</a></div><div class="ttdeci">void rebuildDividers()</div><div class="ttdoc">重建分隔条（子节点集合变化后调用）</div><div class="ttdef"><b>定义</b> BoxNode.cpp:390</div></div>
+<div class="ttc" id="aclassdock_1_1BoxNode_html_a4f57121145342fd4f9bada80d6589e66"><div class="ttname"><a href="classdock_1_1BoxNode.html#a4f57121145342fd4f9bada80d6589e66">dock::BoxNode::orientation_</a></div><div class="ttdeci">Qt::Orientation orientation_</div><div class="ttdef"><b>定义</b> BoxNode.h:92</div></div>
+<div class="ttc" id="aclassdock_1_1BoxNode_html_a5644364165c612b3438f3aa6bce3c879"><div class="ttname"><a href="classdock_1_1BoxNode.html#a5644364165c612b3438f3aa6bce3c879">dock::BoxNode::children_</a></div><div class="ttdeci">QList&lt; LayoutNode * &gt; children_</div><div class="ttdef"><b>定义</b> BoxNode.h:93</div></div>
+<div class="ttc" id="aclassdock_1_1BoxNode_html_a673726e73832d7497f897dfe672d5bcf"><div class="ttname"><a href="classdock_1_1BoxNode.html#a673726e73832d7497f897dfe672d5bcf">dock::BoxNode::children</a></div><div class="ttdeci">const QList&lt; LayoutNode * &gt; &amp; children() const</div><div class="ttdoc">全部子节点</div><div class="ttdef"><b>定义</b> BoxNode.h:35</div></div>
+<div class="ttc" id="aclassdock_1_1BoxNode_html_a6aba43ce8847245f02e638e486bf461f"><div class="ttname"><a href="classdock_1_1BoxNode.html#a6aba43ce8847245f02e638e486bf461f">dock::BoxNode::handleChildVisibility</a></div><div class="ttdeci">void handleChildVisibility(LayoutNode *child, bool visible)</div><div class="ttdoc">子节点可见性变化回调，由 LayoutNode::setVisible 触发</div><div class="ttdef"><b>定义</b> BoxNode.cpp:415</div></div>
+<div class="ttc" id="aclassdock_1_1BoxNode_html_a709c2bbd5c84173d43dd497cf144ae20"><div class="ttname"><a href="classdock_1_1BoxNode.html#a709c2bbd5c84173d43dd497cf144ae20">dock::BoxNode::visibleNodes</a></div><div class="ttdeci">QList&lt; LayoutNode * &gt; visibleNodes() const</div><div class="ttdoc">可见子节点列表</div><div class="ttdef"><b>定义</b> BoxNode.cpp:122</div></div>
+<div class="ttc" id="aclassdock_1_1BoxNode_html_a74088ac58dead5189c47f816c106acc6"><div class="ttname"><a href="classdock_1_1BoxNode.html#a74088ac58dead5189c47f816c106acc6">dock::BoxNode::childCount</a></div><div class="ttdeci">int childCount() const</div><div class="ttdoc">子节点数量</div><div class="ttdef"><b>定义</b> BoxNode.h:37</div></div>
+<div class="ttc" id="aclassdock_1_1BoxNode_html_a7c84cd94a1dea947b7530299fdd8e74d"><div class="ttname"><a href="classdock_1_1BoxNode.html#a7c84cd94a1dea947b7530299fdd8e74d">dock::BoxNode::insertNode</a></div><div class="ttdeci">void insertNode(int index, LayoutNode *item, int preferredLength, bool startsVisible)</div><div class="ttdoc">在 index 处插入子节点并接管所有权</div><div class="ttdef"><b>定义</b> BoxNode.cpp:132</div></div>
+<div class="ttc" id="aclassdock_1_1BoxNode_html_a7d07102d10be819acf444c4552917667"><div class="ttname"><a href="classdock_1_1BoxNode.html#a7d07102d10be819acf444c4552917667">dock::BoxNode::isContainer</a></div><div class="ttdeci">bool isContainer() const override</div><div class="ttdoc">是否为容器节点</div><div class="ttdef"><b>定义</b> BoxNode.h:29</div></div>
+<div class="ttc" id="aclassdock_1_1BoxNode_html_a7e8830017a051bf69534eecea6eec015"><div class="ttname"><a href="classdock_1_1BoxNode.html#a7e8830017a051bf69534eecea6eec015">dock::BoxNode::assignPreferredSpan</a></div><div class="ttdeci">void assignPreferredSpan(LayoutNode *item, int preferredLength)</div><div class="ttdoc">给新插入的可见子节点分配期望长度（其余可见子节点按比例让位）</div><div class="ttdef"><b>定义</b> BoxNode.cpp:453</div></div>
+<div class="ttc" id="aclassdock_1_1BoxNode_html_aa9148a3747641a8d0519d6d22b33be18"><div class="ttname"><a href="classdock_1_1BoxNode.html#aa9148a3747641a8d0519d6d22b33be18">dock::BoxNode::applyDividerMove</a></div><div class="ttdeci">void applyDividerMove(Divider *separator, int side1Length, int side2Length)</div><div class="ttdoc">应用分隔条拖动后的侧 1/侧 2 主轴长度并重排</div><div class="ttdef"><b>定义</b> BoxNode.cpp:400</div></div>
+<div class="ttc" id="aclassdock_1_1BoxNode_html_ab431817fcf4432483aef4ba292d49181"><div class="ttname"><a href="classdock_1_1BoxNode.html#ab431817fcf4432483aef4ba292d49181">dock::BoxNode::layout</a></div><div class="ttdeci">void layout()</div><div class="ttdoc">按主轴占比重算全部可见子节点几何与分隔条位置</div><div class="ttdef"><b>定义</b> BoxNode.cpp:340</div></div>
+<div class="ttc" id="aclassdock_1_1BoxNode_html_ab648c6bb8451e3a642753605d3336b12"><div class="ttname"><a href="classdock_1_1BoxNode.html#ab648c6bb8451e3a642753605d3336b12">dock::BoxNode::maxExtent</a></div><div class="ttdeci">QSize maxExtent() const override</div><div class="ttdoc">软最大尺寸提示（默认取 client 约束）</div><div class="ttdef"><b>定义</b> BoxNode.cpp:317</div></div>
+<div class="ttc" id="aclassdock_1_1BoxNode_html_ad75a444890b0a4fc1d1ea98c86a34221"><div class="ttname"><a href="classdock_1_1BoxNode.html#ad75a444890b0a4fc1d1ea98c86a34221">dock::BoxNode::dividers_</a></div><div class="ttdeci">QList&lt; Divider * &gt; dividers_</div><div class="ttdef"><b>定义</b> BoxNode.h:94</div></div>
+<div class="ttc" id="aclassdock_1_1BoxNode_html_adbb0ffc9dc119731e79529a9bbd3c1e5"><div class="ttname"><a href="classdock_1_1BoxNode.html#adbb0ffc9dc119731e79529a9bbd3c1e5">dock::BoxNode::setGeometry</a></div><div class="ttdeci">void setGeometry(const QRect &amp;geometry) override</div><div class="ttdoc">设置几何并下发给 client</div><div class="ttdef"><b>定义</b> BoxNode.cpp:288</div></div>
+<div class="ttc" id="aclassdock_1_1BoxNode_html_ae6f2cb1bd9260e0f1e350475c0a60603"><div class="ttname"><a href="classdock_1_1BoxNode.html#ae6f2cb1bd9260e0f1e350475c0a60603">dock::BoxNode::orientation</a></div><div class="ttdeci">Qt::Orientation orientation() const</div><div class="ttdoc">排列方向（水平容器内子节点自左向右）</div><div class="ttdef"><b>定义</b> BoxNode.h:32</div></div>
+<div class="ttc" id="aclassdock_1_1BoxNode_html_aed2d616209a77cd7c6c62ad332bd82c3"><div class="ttname"><a href="classdock_1_1BoxNode.html#aed2d616209a77cd7c6c62ad332bd82c3">dock::BoxNode::dividers</a></div><div class="ttdeci">const QList&lt; Divider * &gt; &amp; dividers() const</div><div class="ttdoc">相邻可见子节点之间的分隔条</div><div class="ttdef"><b>定义</b> BoxNode.h:75</div></div>
+<div class="ttc" id="aclassdock_1_1BoxNode_html_af055affe4a836a7cd36a6ba67147c3b2"><div class="ttname"><a href="classdock_1_1BoxNode.html#af055affe4a836a7cd36a6ba67147c3b2">dock::BoxNode::syncVisibility</a></div><div class="ttdeci">void syncVisibility()</div><div class="ttdoc">子节点可见性变化后同步容器自身的有效可见性</div><div class="ttdef"><b>定义</b> BoxNode.cpp:490</div></div>
+<div class="ttc" id="aclassdock_1_1BoxNode_html_af5ec5524712539567c1cf74c8d7a189c"><div class="ttname"><a href="classdock_1_1BoxNode.html#af5ec5524712539567c1cf74c8d7a189c">dock::BoxNode::detachNode</a></div><div class="ttdeci">LayoutNode * detachNode(LayoutNode *item, bool hardDelete)</div><div class="ttdoc">从容器中摘除子节点</div><div class="ttdef"><b>定义</b> BoxNode.cpp:166</div></div>
+<div class="ttc" id="aclassdock_1_1Divider_html"><div class="ttname"><a href="classdock_1_1Divider.html">dock::Divider</a></div><div class="ttdoc">分隔条</div><div class="ttdef"><b>定义</b> Divider.h:22</div></div>
+<div class="ttc" id="aclassdock_1_1LayoutNode_html"><div class="ttname"><a href="classdock_1_1LayoutNode.html">dock::LayoutNode</a></div><div class="ttdoc">布局树节点（叶子节点与容器节点的公共基类）</div><div class="ttdef"><b>定义</b> LayoutNode.h:25</div></div>
+<div class="ttc" id="aclassdock_1_1LayoutNode_html_ab502912c14547c37b207cd6cee17bf28"><div class="ttname"><a href="classdock_1_1LayoutNode.html#ab502912c14547c37b207cd6cee17bf28">dock::LayoutNode::LayoutNode</a></div><div class="ttdeci">LayoutNode(LayoutClient *client=nullptr)</div><div class="ttdef"><b>定义</b> LayoutNode.cpp:13</div></div>
+<div class="ttc" id="anamespacedock_html"><div class="ttname"><a href="namespacedock.html">dock</a></div><div class="ttdef"><b>定义</b> DockCatalog.cpp:14</div></div>
+</div><!-- fragment --></div><!-- contents -->
+<!-- start footer part -->
+<hr class="footer"/><address class="footer"><small>
+制作者&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.14.0
+</small></address>
+</div><!-- doc-content -->
+</body>
+</html>

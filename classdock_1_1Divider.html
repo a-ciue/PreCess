@@ -1,0 +1,481 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="zh">
+<head>
+<meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=11"/>
+<meta name="generator" content="Doxygen 1.14.0"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>PreCess: dock::Divider类 参考</title>
+<link href="tabs.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="jquery.js"></script>
+<script type="text/javascript" src="dynsections.js"></script>
+<script type="text/javascript" src="clipboard.js"></script>
+<script type="text/javascript" src="cookie.js"></script>
+<link href="search/search.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="search/searchdata.js"></script>
+<script type="text/javascript" src="search/search.js"></script>
+<link href="doxygen.css" rel="stylesheet" type="text/css" />
+</head>
+<body>
+<div id="top"><!-- do not remove this div, it is closed by doxygen! -->
+<div id="titlearea">
+<table cellspacing="0" cellpadding="0">
+ <tbody>
+ <tr id="projectrow">
+  <td id="projectlogo"><img alt="Logo" src="PreCess.ico"/></td>
+  <td id="projectalign">
+   <div id="projectname">PreCess
+   </div>
+  </td>
+ </tr>
+ </tbody>
+</table>
+</div>
+<!-- end header part -->
+<!-- 制作者 Doxygen 1.14.0 -->
+<script type="text/javascript">
+var searchBox = new SearchBox("searchBox", "search/",'.html');
+</script>
+<script type="text/javascript">
+$(function() { codefold.init(); });
+</script>
+<script type="text/javascript" src="menudata.js"></script>
+<script type="text/javascript" src="menu.js"></script>
+<script type="text/javascript">
+$(function() {
+  initMenu('',true,false,'search.php','搜索',false);
+  $(function() { init_search(); });
+});
+</script>
+<div id="main-nav"></div>
+<!-- window showing the filter options -->
+<div id="MSearchSelectWindow"
+     onmouseover="return searchBox.OnSearchSelectShow()"
+     onmouseout="return searchBox.OnSearchSelectHide()"
+     onkeydown="return searchBox.OnSearchSelectKey(event)">
+</div>
+
+<!-- iframe showing the search results (closed by default) -->
+<div id="MSearchResultsWindow">
+<div id="MSearchResults">
+<div class="SRPage">
+<div id="SRIndex">
+<div id="SRResults"></div>
+<div class="SRStatus" id="Loading">载入中...</div>
+<div class="SRStatus" id="Searching">搜索中...</div>
+<div class="SRStatus" id="NoMatches">未找到</div>
+</div>
+</div>
+</div>
+</div>
+
+<div id="nav-path" class="navpath">
+  <ul>
+<li class="navelem"><a href="namespacedock.html">dock</a></li><li class="navelem"><a href="classdock_1_1Divider.html">Divider</a></li>  </ul>
+</div>
+</div><!-- top -->
+<div id="doc-content">
+<div class="header">
+  <div class="summary">
+<a href="#pub-methods">Public 成员函数</a> &#124;
+<a href="#pri-attribs">Private 属性</a> &#124;
+<a href="classdock_1_1Divider-members.html">所有成员列表</a>  </div>
+  <div class="headertitle"><div class="title">dock::Divider类 参考</div></div>
+</div><!--header-->
+<div class="contents">
+
+<p>分隔条  
+ <a href="#details">更多...</a></p>
+
+<p><code>#include &lt;<a class="el" href="Divider_8h_source.html">Divider.h</a>&gt;</code></p>
+<div class="dynheader">
+dock::Divider 的协作图:</div>
+<div class="dyncontent">
+<div class="center"><img src="classdock_1_1Divider__coll__graph.png" border="0" usemap="#adock_1_1Divider_coll__map" loading="lazy" alt="Collaboration graph"/></div>
+<map name="adock_1_1Divider_coll__map" id="adock_1_1Divider_coll__map">
+<area shape="rect" title="分隔条" alt="" coords="18,217,126,243"/>
+<area shape="rect" href="classdock_1_1BoxNode.html" title="盒式布局容器" alt="" coords="5,5,125,31"/>
+<area shape="poly" title=" " alt="" coords="67,45,65,101,65,127,73,217,68,217,60,127,60,101,62,45"/>
+<area shape="rect" href="classdock_1_1LayoutNode.html" title="布局树节点（叶子节点与容器节点的公共基类）" alt="" coords="152,101,291,127"/>
+<area shape="poly" title=" " alt="" coords="75,42,84,60,96,75,123,91,153,102,151,107,121,96,93,79,79,63,70,45"/>
+<area shape="poly" title=" " alt="" coords="197,137,89,219,86,215,193,133"/>
+<area shape="poly" title=" " alt="" coords="200,93,156,57,103,33,106,28,159,52,203,89"/>
+<area shape="rect" href="structdock_1_1NodeMetrics.html" title="单个布局节点的几何与尺寸约束" alt="" coords="150,5,293,31"/>
+<area shape="poly" title=" " alt="" coords="224,45,224,101,219,101,219,45"/>
+<area shape="rect" href="classdock_1_1LayoutClient.html" title="被布局引擎托管的实体接口" alt="" coords="317,5,459,31"/>
+<area shape="poly" title=" " alt="" coords="357,40,243,103,241,99,354,35"/>
+</map>
+<center><span class="legend">[<a href="graph_legend.html">图例</a>]</span></center></div>
+<table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 id="header-pub-methods" class="groupheader"><a id="pub-methods" name="pub-methods"></a>
+Public 成员函数</h2></td></tr>
+<tr class="memitem:ac7594c5a6e96f0ca85d8a16a4efb9d82" id="r_ac7594c5a6e96f0ca85d8a16a4efb9d82"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ac7594c5a6e96f0ca85d8a16a4efb9d82">Divider</a> (<a class="el" href="classdock_1_1BoxNode.html">BoxNode</a> *<a class="el" href="#a05bd9890063c1c5e0bbc0baad2da6e50">container</a>, <a class="el" href="classdock_1_1LayoutNode.html">LayoutNode</a> *<a class="el" href="#a66712bcae2bb2ed4097f6c3661db4e2b">side1</a>, <a class="el" href="classdock_1_1LayoutNode.html">LayoutNode</a> *<a class="el" href="#a0c13354c3093ab7e48ddcd9194391add">side2</a>)</td></tr>
+<tr class="memitem:a05bd9890063c1c5e0bbc0baad2da6e50" id="r_a05bd9890063c1c5e0bbc0baad2da6e50"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classdock_1_1BoxNode.html">BoxNode</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a05bd9890063c1c5e0bbc0baad2da6e50">container</a> () const</td></tr>
+<tr class="memdesc:a05bd9890063c1c5e0bbc0baad2da6e50"><td class="mdescLeft">&#160;</td><td class="mdescRight">所属容器  <br /></td></tr>
+<tr class="memitem:a66712bcae2bb2ed4097f6c3661db4e2b" id="r_a66712bcae2bb2ed4097f6c3661db4e2b"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classdock_1_1LayoutNode.html">LayoutNode</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a66712bcae2bb2ed4097f6c3661db4e2b">side1</a> () const</td></tr>
+<tr class="memdesc:a66712bcae2bb2ed4097f6c3661db4e2b"><td class="mdescLeft">&#160;</td><td class="mdescRight">前一个可见子节点  <br /></td></tr>
+<tr class="memitem:a0c13354c3093ab7e48ddcd9194391add" id="r_a0c13354c3093ab7e48ddcd9194391add"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classdock_1_1LayoutNode.html">LayoutNode</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a0c13354c3093ab7e48ddcd9194391add">side2</a> () const</td></tr>
+<tr class="memdesc:a0c13354c3093ab7e48ddcd9194391add"><td class="mdescLeft">&#160;</td><td class="mdescRight">后一个可见子节点  <br /></td></tr>
+<tr class="memitem:ab0df332effc896d2d891de061ee3b75a" id="r_ab0df332effc896d2d891de061ee3b75a"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ab0df332effc896d2d891de061ee3b75a">position</a> () const</td></tr>
+<tr class="memdesc:ab0df332effc896d2d891de061ee3b75a"><td class="mdescLeft">&#160;</td><td class="mdescRight">沿容器主轴的位置（分隔条起始坐标）  <br /></td></tr>
+<tr class="memitem:a18dd5ada606e3a5dd63edbbc51b75b17" id="r_a18dd5ada606e3a5dd63edbbc51b75b17"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a18dd5ada606e3a5dd63edbbc51b75b17">minPosition</a> () const</td></tr>
+<tr class="memdesc:a18dd5ada606e3a5dd63edbbc51b75b17"><td class="mdescLeft">&#160;</td><td class="mdescRight">可拖动的最小位置（侧 1 不小于其最小尺寸）  <br /></td></tr>
+<tr class="memitem:a311358fc1a0e4e144af1edacb90f2363" id="r_a311358fc1a0e4e144af1edacb90f2363"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a311358fc1a0e4e144af1edacb90f2363">maxPosition</a> () const</td></tr>
+<tr class="memdesc:a311358fc1a0e4e144af1edacb90f2363"><td class="mdescLeft">&#160;</td><td class="mdescRight">可拖动的最大位置（侧 2 不小于其最小尺寸）  <br /></td></tr>
+<tr class="memitem:a20844d578274710b4e1dce5311921164" id="r_a20844d578274710b4e1dce5311921164"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a20844d578274710b4e1dce5311921164">move</a> (int newPosition)</td></tr>
+<tr class="memdesc:a20844d578274710b4e1dce5311921164"><td class="mdescLeft">&#160;</td><td class="mdescRight">拖动到指定坐标；返回是否发生实际移动  <br /></td></tr>
+<tr class="memitem:ae5fa34017ecabca890667580b8a75f18" id="r_ae5fa34017ecabca890667580b8a75f18"><td class="memItemLeft" align="right" valign="top">const QRect &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ae5fa34017ecabca890667580b8a75f18">geometry</a> () const</td></tr>
+<tr class="memdesc:ae5fa34017ecabca890667580b8a75f18"><td class="mdescLeft">&#160;</td><td class="mdescRight">分隔条几何（由容器 layout() 更新）  <br /></td></tr>
+<tr class="memitem:af15c18485802b47e7dc0ff9e284b0b58" id="r_af15c18485802b47e7dc0ff9e284b0b58"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#af15c18485802b47e7dc0ff9e284b0b58">setGeometry</a> (const QRect &amp;<a class="el" href="#ae5fa34017ecabca890667580b8a75f18">geometry</a>)</td></tr>
+<tr class="memdesc:af15c18485802b47e7dc0ff9e284b0b58"><td class="mdescLeft">&#160;</td><td class="mdescRight">更新分隔条几何  <br /></td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 id="header-pri-attribs" class="groupheader"><a id="pri-attribs" name="pri-attribs"></a>
+Private 属性</h2></td></tr>
+<tr class="memitem:ae7780dc202a560881fd482616b9fe4b0" id="r_ae7780dc202a560881fd482616b9fe4b0"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classdock_1_1BoxNode.html">BoxNode</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ae7780dc202a560881fd482616b9fe4b0">container_</a> = nullptr</td></tr>
+<tr class="memitem:ae07ff9c6dbb7151f8e52f1563c4028e3" id="r_ae07ff9c6dbb7151f8e52f1563c4028e3"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classdock_1_1LayoutNode.html">LayoutNode</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ae07ff9c6dbb7151f8e52f1563c4028e3">side1_</a> = nullptr</td></tr>
+<tr class="memitem:a0df3b7e1176b721f75e1f70204bd262e" id="r_a0df3b7e1176b721f75e1f70204bd262e"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classdock_1_1LayoutNode.html">LayoutNode</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a0df3b7e1176b721f75e1f70204bd262e">side2_</a> = nullptr</td></tr>
+<tr class="memitem:afaa0638b0d1e6d69e2081d6fb529eb32" id="r_afaa0638b0d1e6d69e2081d6fb529eb32"><td class="memItemLeft" align="right" valign="top">QRect&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#afaa0638b0d1e6d69e2081d6fb529eb32">geometry_</a></td></tr>
+</table>
+<a name="details" id="details"></a><h2 id="header-details" class="groupheader">详细描述</h2>
+<div class="textblock"><p>分隔条 </p>
+<p>由 <a class="el" href="classdock_1_1BoxNode.html#a3c51a410b5d8a581d300b983fed3ae8b" title="重建分隔条（子节点集合变化后调用）">BoxNode::rebuildDividers()</a> 在相邻可见子节点之间创建， 拖动时在两侧子节点最小尺寸约束内移动，并触发容器按占比重排。 </p>
+</div><a name="doc-constructors" id="doc-constructors"></a><h2 id="header-doc-constructors" class="groupheader">构造及析构函数说明</h2>
+<a id="ac7594c5a6e96f0ca85d8a16a4efb9d82" name="ac7594c5a6e96f0ca85d8a16a4efb9d82"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ac7594c5a6e96f0ca85d8a16a4efb9d82">&#9670;&#160;</a></span>Divider()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">dock::Divider::Divider </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="classdock_1_1BoxNode.html">BoxNode</a> *</td>          <td class="paramname"><span class="paramname"><em>container</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="classdock_1_1LayoutNode.html">LayoutNode</a> *</td>          <td class="paramname"><span class="paramname"><em>side1</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="classdock_1_1LayoutNode.html">LayoutNode</a> *</td>          <td class="paramname"><span class="paramname"><em>side2</em></span>&#160;)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a name="doc-func-members" id="doc-func-members"></a><h2 id="header-doc-func-members" class="groupheader">成员函数说明</h2>
+<a id="a05bd9890063c1c5e0bbc0baad2da6e50" name="a05bd9890063c1c5e0bbc0baad2da6e50"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a05bd9890063c1c5e0bbc0baad2da6e50">&#9670;&#160;</a></span>container()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classdock_1_1BoxNode.html">BoxNode</a> * dock::Divider::container </td>
+          <td>(</td>
+          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel inline">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>所属容器 </p>
+
+</div>
+</div>
+<a id="ae5fa34017ecabca890667580b8a75f18" name="ae5fa34017ecabca890667580b8a75f18"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ae5fa34017ecabca890667580b8a75f18">&#9670;&#160;</a></span>geometry()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">const QRect &amp; dock::Divider::geometry </td>
+          <td>(</td>
+          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel inline">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>分隔条几何（由容器 layout() 更新） </p>
+
+</div>
+</div>
+<a id="a311358fc1a0e4e144af1edacb90f2363" name="a311358fc1a0e4e144af1edacb90f2363"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a311358fc1a0e4e144af1edacb90f2363">&#9670;&#160;</a></span>maxPosition()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">int dock::Divider::maxPosition </td>
+          <td>(</td>
+          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>可拖动的最大位置（侧 2 不小于其最小尺寸） </p>
+
+</div>
+</div>
+<a id="a18dd5ada606e3a5dd63edbbc51b75b17" name="a18dd5ada606e3a5dd63edbbc51b75b17"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a18dd5ada606e3a5dd63edbbc51b75b17">&#9670;&#160;</a></span>minPosition()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">int dock::Divider::minPosition </td>
+          <td>(</td>
+          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>可拖动的最小位置（侧 1 不小于其最小尺寸） </p>
+
+</div>
+</div>
+<a id="a20844d578274710b4e1dce5311921164" name="a20844d578274710b4e1dce5311921164"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a20844d578274710b4e1dce5311921164">&#9670;&#160;</a></span>move()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool dock::Divider::move </td>
+          <td>(</td>
+          <td class="paramtype">int</td>          <td class="paramname"><span class="paramname"><em>newPosition</em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>拖动到指定坐标；返回是否发生实际移动 </p>
+
+</div>
+</div>
+<a id="ab0df332effc896d2d891de061ee3b75a" name="ab0df332effc896d2d891de061ee3b75a"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ab0df332effc896d2d891de061ee3b75a">&#9670;&#160;</a></span>position()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">int dock::Divider::position </td>
+          <td>(</td>
+          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>沿容器主轴的位置（分隔条起始坐标） </p>
+
+</div>
+</div>
+<a id="af15c18485802b47e7dc0ff9e284b0b58" name="af15c18485802b47e7dc0ff9e284b0b58"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#af15c18485802b47e7dc0ff9e284b0b58">&#9670;&#160;</a></span>setGeometry()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void dock::Divider::setGeometry </td>
+          <td>(</td>
+          <td class="paramtype">const QRect &amp;</td>          <td class="paramname"><span class="paramname"><em>geometry</em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel inline">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>更新分隔条几何 </p>
+
+</div>
+</div>
+<a id="a66712bcae2bb2ed4097f6c3661db4e2b" name="a66712bcae2bb2ed4097f6c3661db4e2b"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a66712bcae2bb2ed4097f6c3661db4e2b">&#9670;&#160;</a></span>side1()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classdock_1_1LayoutNode.html">LayoutNode</a> * dock::Divider::side1 </td>
+          <td>(</td>
+          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel inline">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>前一个可见子节点 </p>
+
+</div>
+</div>
+<a id="a0c13354c3093ab7e48ddcd9194391add" name="a0c13354c3093ab7e48ddcd9194391add"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a0c13354c3093ab7e48ddcd9194391add">&#9670;&#160;</a></span>side2()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classdock_1_1LayoutNode.html">LayoutNode</a> * dock::Divider::side2 </td>
+          <td>(</td>
+          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel inline">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>后一个可见子节点 </p>
+
+</div>
+</div>
+<a name="doc-variable-members" id="doc-variable-members"></a><h2 id="header-doc-variable-members" class="groupheader">类成员变量说明</h2>
+<a id="ae7780dc202a560881fd482616b9fe4b0" name="ae7780dc202a560881fd482616b9fe4b0"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ae7780dc202a560881fd482616b9fe4b0">&#9670;&#160;</a></span>container_</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classdock_1_1BoxNode.html">BoxNode</a>* dock::Divider::container_ = nullptr</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel private">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="afaa0638b0d1e6d69e2081d6fb529eb32" name="afaa0638b0d1e6d69e2081d6fb529eb32"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#afaa0638b0d1e6d69e2081d6fb529eb32">&#9670;&#160;</a></span>geometry_</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">QRect dock::Divider::geometry_</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel private">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="ae07ff9c6dbb7151f8e52f1563c4028e3" name="ae07ff9c6dbb7151f8e52f1563c4028e3"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ae07ff9c6dbb7151f8e52f1563c4028e3">&#9670;&#160;</a></span>side1_</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classdock_1_1LayoutNode.html">LayoutNode</a>* dock::Divider::side1_ = nullptr</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel private">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a0df3b7e1176b721f75e1f70204bd262e" name="a0df3b7e1176b721f75e1f70204bd262e"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a0df3b7e1176b721f75e1f70204bd262e">&#9670;&#160;</a></span>side2_</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classdock_1_1LayoutNode.html">LayoutNode</a>* dock::Divider::side2_ = nullptr</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel private">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<hr/>该类的文档由以下文件生成:<ul>
+<li>app/dock/tree/<a class="el" href="Divider_8h_source.html">Divider.h</a></li>
+<li>app/dock/tree/<a class="el" href="Divider_8cpp.html">Divider.cpp</a></li>
+</ul>
+</div><!-- contents -->
+<!-- start footer part -->
+<hr class="footer"/><address class="footer"><small>
+制作者&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.14.0
+</small></address>
+</div><!-- doc-content -->
+</body>
+</html>

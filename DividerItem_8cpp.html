@@ -1,0 +1,155 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="zh">
+<head>
+<meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=11"/>
+<meta name="generator" content="Doxygen 1.14.0"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>PreCess: app/dock/ui/DividerItem.cpp 文件参考</title>
+<link href="tabs.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="jquery.js"></script>
+<script type="text/javascript" src="dynsections.js"></script>
+<script type="text/javascript" src="clipboard.js"></script>
+<script type="text/javascript" src="cookie.js"></script>
+<link href="search/search.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="search/searchdata.js"></script>
+<script type="text/javascript" src="search/search.js"></script>
+<link href="doxygen.css" rel="stylesheet" type="text/css" />
+</head>
+<body>
+<div id="top"><!-- do not remove this div, it is closed by doxygen! -->
+<div id="titlearea">
+<table cellspacing="0" cellpadding="0">
+ <tbody>
+ <tr id="projectrow">
+  <td id="projectlogo"><img alt="Logo" src="PreCess.ico"/></td>
+  <td id="projectalign">
+   <div id="projectname">PreCess
+   </div>
+  </td>
+ </tr>
+ </tbody>
+</table>
+</div>
+<!-- end header part -->
+<!-- 制作者 Doxygen 1.14.0 -->
+<script type="text/javascript">
+var searchBox = new SearchBox("searchBox", "search/",'.html');
+</script>
+<script type="text/javascript">
+$(function() { codefold.init(); });
+</script>
+<script type="text/javascript" src="menudata.js"></script>
+<script type="text/javascript" src="menu.js"></script>
+<script type="text/javascript">
+$(function() {
+  initMenu('',true,false,'search.php','搜索',false);
+  $(function() { init_search(); });
+});
+</script>
+<div id="main-nav"></div>
+<!-- window showing the filter options -->
+<div id="MSearchSelectWindow"
+     onmouseover="return searchBox.OnSearchSelectShow()"
+     onmouseout="return searchBox.OnSearchSelectHide()"
+     onkeydown="return searchBox.OnSearchSelectKey(event)">
+</div>
+
+<!-- iframe showing the search results (closed by default) -->
+<div id="MSearchResultsWindow">
+<div id="MSearchResults">
+<div class="SRPage">
+<div id="SRIndex">
+<div id="SRResults"></div>
+<div class="SRStatus" id="Loading">载入中...</div>
+<div class="SRStatus" id="Searching">搜索中...</div>
+<div class="SRStatus" id="NoMatches">未找到</div>
+</div>
+</div>
+</div>
+</div>
+
+<div id="nav-path" class="navpath">
+  <ul>
+<li class="navelem"><a href="dir_d422163b96683743ed3963d4aac17747.html">app</a></li><li class="navelem"><a href="dir_4e5d8f7ce7c3dc0f91a395eba455c956.html">dock</a></li><li class="navelem"><a href="dir_8737260d02abc2e1280d33ed55618f28.html">ui</a></li>  </ul>
+</div>
+</div><!-- top -->
+<div id="doc-content">
+<div class="header">
+  <div class="summary">
+<a href="#namespaces">命名空间</a>  </div>
+  <div class="headertitle"><div class="title">DividerItem.cpp 文件参考</div></div>
+</div><!--header-->
+<div class="contents">
+
+<p>分隔条视图的实现  
+<a href="#details">更多...</a></p>
+<div class="textblock"><code>#include &quot;<a class="el" href="DividerItem_8h_source.html">DividerItem.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="DockAreaItem_8h_source.html">DockAreaItem.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="DockRuntime_8h_source.html">DockRuntime.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="BoxNode_8h_source.html">tree/BoxNode.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="Divider_8h_source.html">tree/Divider.h</a>&quot;</code><br />
+<code>#include &lt;QVariant&gt;</code><br />
+</div><div class="textblock"><div class="dynheader">
+DividerItem.cpp 的引用(Include)关系图:</div>
+<div class="dyncontent">
+<div class="center"><img src="DividerItem_8cpp__incl.png" border="0" usemap="#aapp_2dock_2ui_2DividerItem_8cpp" loading="lazy" alt=""/></div>
+<map name="aapp_2dock_2ui_2DividerItem_8cpp" id="aapp_2dock_2ui_2DividerItem_8cpp">
+<area shape="rect" title="分隔条视图的实现" alt="" coords="323,5,529,31"/>
+<area shape="rect" href="DividerItem_8h.html" title="分隔条视图：把鼠标拖动转成引擎的分隔条移动" alt="" coords="5,79,116,104"/>
+<area shape="poly" title=" " alt="" coords="368,33,130,79,129,74,367,28"/>
+<area shape="rect" href="DockAreaItem_8h.html" title="布局区域视图：把 DockRegion 的布局树同步为 PanelGroupItem/DividerItem" alt="" coords="140,79,267,104"/>
+<area shape="poly" title=" " alt="" coords="391,33,253,77,251,72,389,28"/>
+<area shape="rect" href="DockRuntime_8h.html" title="QtQuick 视图层的全局服务：QML 引擎、client 映射、分组视图缓存" alt="" coords="291,79,414,104"/>
+<area shape="poly" title=" " alt="" coords="416,33,376,71,373,67,412,29"/>
+<area shape="rect" href="BoxNode_8h.html" title="盒式布局容器：子节点沿单一方向排列并可拖拽分隔条调整" alt="" coords="438,79,561,104"/>
+<area shape="poly" title=" " alt="" coords="440,29,479,67,476,71,436,33"/>
+<area shape="rect" href="Divider_8h.html" title="相邻可见布局项之间的可拖动分隔条" alt="" coords="569,225,680,251"/>
+<area shape="poly" title=" " alt="" coords="485,28,532,46,555,60,575,77,597,109,612,145,621,181,626,211,620,212,616,182,607,147,593,111,571,80,552,64,530,51,483,33"/>
+<area shape="rect" title=" " alt="" coords="663,79,741,104"/>
+<area shape="poly" title=" " alt="" coords="471,28,650,74,648,79,470,33"/>
+<area shape="rect" title=" " alt="" coords="23,152,122,177"/>
+<area shape="poly" title=" " alt="" coords="65,104,71,138,66,139,60,105"/>
+<area shape="poly" title=" " alt="" coords="184,106,107,148,105,143,181,102"/>
+<area shape="rect" title=" " alt="" coords="231,152,296,177"/>
+<area shape="poly" title=" " alt="" coords="215,103,247,140,243,143,211,106"/>
+<area shape="rect" title=" " alt="" coords="153,152,206,177"/>
+<area shape="poly" title=" " alt="" coords="202,105,190,140,185,138,197,103"/>
+<area shape="poly" title=" " alt="" coords="340,106,290,145,287,141,337,102"/>
+<area shape="rect" title=" " alt="" coords="321,152,371,177"/>
+<area shape="poly" title=" " alt="" coords="354,105,351,139,346,138,349,104"/>
+<area shape="rect" href="LayoutNode_8h.html" title="布局树节点" alt="" coords="395,152,507,177"/>
+<area shape="poly" title=" " alt="" coords="494,106,469,142,464,139,489,103"/>
+<area shape="rect" title=" " alt="" coords="532,152,587,177"/>
+<area shape="poly" title=" " alt="" coords="511,103,543,140,539,143,507,106"/>
+<area shape="rect" href="NodeMetrics_8h.html" title="布局节点的几何与尺寸约束信息" alt="" coords="335,225,451,251"/>
+<area shape="poly" title=" " alt="" coords="444,179,413,217,409,213,440,176"/>
+<area shape="rect" title=" " alt="" coords="475,225,545,251"/>
+<area shape="poly" title=" " alt="" coords="463,176,494,213,490,217,459,179"/>
+<area shape="rect" title=" " alt="" coords="570,299,631,324"/>
+<area shape="poly" title=" " alt="" coords="427,248,557,292,555,297,425,253"/>
+<area shape="rect" title=" " alt="" coords="290,299,349,324"/>
+<area shape="poly" title=" " alt="" coords="382,253,343,291,339,287,379,249"/>
+<area shape="rect" title=" " alt="" coords="373,299,412,324"/>
+<area shape="poly" title=" " alt="" coords="395,251,395,285,390,285,390,251"/>
+<area shape="rect" title=" " alt="" coords="437,299,522,324"/>
+<area shape="poly" title=" " alt="" coords="408,249,456,288,453,292,405,253"/>
+<area shape="poly" title=" " alt="" coords="623,252,611,286,606,285,618,250"/>
+</map>
+</div>
+</div><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 id="header-namespaces" class="groupheader"><a id="namespaces" name="namespaces"></a>
+命名空间</h2></td></tr>
+<tr class="memitem:dock" id="r_dock"><td class="memItemLeft" align="right" valign="top">namespace &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacedock.html">dock</a></td></tr>
+<tr class="memitem:dock_3A_3Aui" id="r_dock_3A_3Aui"><td class="memItemLeft" align="right" valign="top">namespace &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacedock_1_1ui.html">dock::ui</a></td></tr>
+</table>
+<a name="details" id="details"></a><h2 id="header-details" class="groupheader">详细描述</h2>
+<div class="textblock"><p>分隔条视图的实现 </p>
+</div></div><!-- contents -->
+<!-- start footer part -->
+<hr class="footer"/><address class="footer"><small>
+制作者&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.14.0
+</small></address>
+</div><!-- doc-content -->
+</body>
+</html>

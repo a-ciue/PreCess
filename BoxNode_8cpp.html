@@ -1,0 +1,142 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="zh">
+<head>
+<meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=11"/>
+<meta name="generator" content="Doxygen 1.14.0"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>PreCess: app/dock/tree/BoxNode.cpp 文件参考</title>
+<link href="tabs.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="jquery.js"></script>
+<script type="text/javascript" src="dynsections.js"></script>
+<script type="text/javascript" src="clipboard.js"></script>
+<script type="text/javascript" src="cookie.js"></script>
+<link href="search/search.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="search/searchdata.js"></script>
+<script type="text/javascript" src="search/search.js"></script>
+<link href="doxygen.css" rel="stylesheet" type="text/css" />
+</head>
+<body>
+<div id="top"><!-- do not remove this div, it is closed by doxygen! -->
+<div id="titlearea">
+<table cellspacing="0" cellpadding="0">
+ <tbody>
+ <tr id="projectrow">
+  <td id="projectlogo"><img alt="Logo" src="PreCess.ico"/></td>
+  <td id="projectalign">
+   <div id="projectname">PreCess
+   </div>
+  </td>
+ </tr>
+ </tbody>
+</table>
+</div>
+<!-- end header part -->
+<!-- 制作者 Doxygen 1.14.0 -->
+<script type="text/javascript">
+var searchBox = new SearchBox("searchBox", "search/",'.html');
+</script>
+<script type="text/javascript">
+$(function() { codefold.init(); });
+</script>
+<script type="text/javascript" src="menudata.js"></script>
+<script type="text/javascript" src="menu.js"></script>
+<script type="text/javascript">
+$(function() {
+  initMenu('',true,false,'search.php','搜索',false);
+  $(function() { init_search(); });
+});
+</script>
+<div id="main-nav"></div>
+<!-- window showing the filter options -->
+<div id="MSearchSelectWindow"
+     onmouseover="return searchBox.OnSearchSelectShow()"
+     onmouseout="return searchBox.OnSearchSelectHide()"
+     onkeydown="return searchBox.OnSearchSelectKey(event)">
+</div>
+
+<!-- iframe showing the search results (closed by default) -->
+<div id="MSearchResultsWindow">
+<div id="MSearchResults">
+<div class="SRPage">
+<div id="SRIndex">
+<div id="SRResults"></div>
+<div class="SRStatus" id="Loading">载入中...</div>
+<div class="SRStatus" id="Searching">搜索中...</div>
+<div class="SRStatus" id="NoMatches">未找到</div>
+</div>
+</div>
+</div>
+</div>
+
+<div id="nav-path" class="navpath">
+  <ul>
+<li class="navelem"><a href="dir_d422163b96683743ed3963d4aac17747.html">app</a></li><li class="navelem"><a href="dir_4e5d8f7ce7c3dc0f91a395eba455c956.html">dock</a></li><li class="navelem"><a href="dir_5eadc552fcf5a00d591e43a164d6005f.html">tree</a></li>  </ul>
+</div>
+</div><!-- top -->
+<div id="doc-content">
+<div class="header">
+  <div class="summary">
+<a href="#namespaces">命名空间</a>  </div>
+  <div class="headertitle"><div class="title">BoxNode.cpp 文件参考</div></div>
+</div><!--header-->
+<div class="contents">
+
+<p>盒式布局容器的实现  
+<a href="#details">更多...</a></p>
+<div class="textblock"><code>#include &quot;<a class="el" href="BoxNode_8h_source.html">BoxNode.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="LayoutClient_8h_source.html">LayoutClient.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="Divider_8h_source.html">Divider.h</a>&quot;</code><br />
+<code>#include &lt;algorithm&gt;</code><br />
+<code>#include &lt;utility&gt;</code><br />
+</div><div class="textblock"><div class="dynheader">
+BoxNode.cpp 的引用(Include)关系图:</div>
+<div class="dyncontent">
+<div class="center"><img src="BoxNode_8cpp__incl.png" border="0" usemap="#aapp_2dock_2tree_2BoxNode_8cpp" loading="lazy" alt=""/></div>
+<map name="aapp_2dock_2tree_2BoxNode_8cpp" id="aapp_2dock_2tree_2BoxNode_8cpp">
+<area shape="rect" title="盒式布局容器的实现" alt="" coords="137,5,338,31"/>
+<area shape="rect" href="BoxNode_8h.html" title="盒式布局容器：子节点沿单一方向排列并可拖拽分隔条调整" alt="" coords="191,79,284,104"/>
+<area shape="poly" title=" " alt="" coords="240,31,240,65,235,65,235,31"/>
+<area shape="rect" title=" " alt="" coords="395,299,480,324"/>
+<area shape="poly" title=" " alt="" coords="259,29,326,76,363,111,396,151,413,185,426,221,438,284,432,285,420,222,408,187,391,153,359,114,322,80,256,33"/>
+<area shape="rect" href="LayoutClient_8h.html" title="被布局引擎托管的实体接口" alt="" coords="54,225,170,251"/>
+<area shape="poly" title=" " alt="" coords="225,33,203,54,181,80,161,115,144,151,122,213,117,211,139,149,156,112,176,77,199,50,221,29"/>
+<area shape="rect" href="Divider_8h.html" title="相邻可见布局项之间的可拖动分隔条" alt="" coords="5,152,85,177"/>
+<area shape="poly" title=" " alt="" coords="205,33,160,53,115,81,85,111,62,142,58,138,81,107,112,77,158,48,202,28"/>
+<area shape="rect" title=" " alt="" coords="481,79,541,104"/>
+<area shape="poly" title=" " alt="" coords="282,28,468,76,466,81,281,33"/>
+<area shape="rect" href="LayoutNode_8h.html" title="布局树节点" alt="" coords="269,152,381,177"/>
+<area shape="poly" title=" " alt="" coords="253,102,302,141,299,145,250,106"/>
+<area shape="rect" title=" " alt="" coords="190,152,245,177"/>
+<area shape="poly" title=" " alt="" coords="237,105,227,140,222,138,231,104"/>
+<area shape="rect" href="NodeMetrics_8h.html" title="布局节点的几何与尺寸约束信息" alt="" coords="289,225,405,251"/>
+<area shape="poly" title=" " alt="" coords="331,177,342,211,337,213,326,178"/>
+<area shape="rect" title=" " alt="" coords="194,225,265,251"/>
+<area shape="poly" title=" " alt="" coords="311,180,258,219,255,215,308,175"/>
+<area shape="rect" title=" " alt="" coords="81,299,143,324"/>
+<area shape="poly" title=" " alt="" coords="310,253,157,299,155,294,308,248"/>
+<area shape="rect" title=" " alt="" coords="205,299,264,324"/>
+<area shape="poly" title=" " alt="" coords="330,253,266,293,263,289,327,248"/>
+<area shape="rect" title=" " alt="" coords="327,299,366,324"/>
+<area shape="poly" title=" " alt="" coords="349,251,349,285,344,285,344,251"/>
+<area shape="poly" title=" " alt="" coords="363,249,413,288,410,292,360,253"/>
+<area shape="poly" title=" " alt="" coords="115,251,115,285,109,285,109,251"/>
+<area shape="poly" title=" " alt="" coords="133,248,204,289,202,294,130,253"/>
+<area shape="poly" title=" " alt="" coords="44,178,38,212,39,231,44,250,59,272,80,289,77,293,55,275,39,252,33,232,33,211,39,177"/>
+</map>
+</div>
+</div><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 id="header-namespaces" class="groupheader"><a id="namespaces" name="namespaces"></a>
+命名空间</h2></td></tr>
+<tr class="memitem:dock" id="r_dock"><td class="memItemLeft" align="right" valign="top">namespace &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacedock.html">dock</a></td></tr>
+</table>
+<a name="details" id="details"></a><h2 id="header-details" class="groupheader">详细描述</h2>
+<div class="textblock"><p>盒式布局容器的实现 </p>
+</div></div><!-- contents -->
+<!-- start footer part -->
+<hr class="footer"/><address class="footer"><small>
+制作者&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.14.0
+</small></address>
+</div><!-- doc-content -->
+</body>
+</html>

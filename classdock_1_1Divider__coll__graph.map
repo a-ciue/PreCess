@@ -1,0 +1,13 @@
+<map id="dock::Divider" name="dock::Divider">
+<area shape="rect" id="Node000001" title="分隔条" alt="" coords="18,217,126,243"/>
+<area shape="rect" id="Node000002" href="$classdock_1_1BoxNode.html" title="盒式布局容器" alt="" coords="5,5,125,31"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="67,45,65,101,65,127,73,217,68,217,60,127,60,101,62,45"/>
+<area shape="rect" id="Node000003" href="$classdock_1_1LayoutNode.html" title="布局树节点（叶子节点与容器节点的公共基类）" alt="" coords="152,101,291,127"/>
+<area shape="poly" id="edge5_Node000003_Node000002" title=" " alt="" coords="75,42,84,60,96,75,123,91,153,102,151,107,121,96,93,79,79,63,70,45"/>
+<area shape="poly" id="edge6_Node000001_Node000003" title=" " alt="" coords="197,137,89,219,86,215,193,133"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="200,93,156,57,103,33,106,28,159,52,203,89"/>
+<area shape="rect" id="Node000004" href="$structdock_1_1NodeMetrics.html" title="单个布局节点的几何与尺寸约束" alt="" coords="150,5,293,31"/>
+<area shape="poly" id="edge3_Node000003_Node000004" title=" " alt="" coords="224,45,224,101,219,101,219,45"/>
+<area shape="rect" id="Node000005" href="$classdock_1_1LayoutClient.html" title="被布局引擎托管的实体接口" alt="" coords="317,5,459,31"/>
+<area shape="poly" id="edge4_Node000003_Node000005" title=" " alt="" coords="357,40,243,103,241,99,354,35"/>
+</map>

@@ -1,0 +1,133 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="zh">
+<head>
+<meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=11"/>
+<meta name="generator" content="Doxygen 1.14.0"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>PreCess: app/dock/docking/DropTarget.h 源文件</title>
+<link href="tabs.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="jquery.js"></script>
+<script type="text/javascript" src="dynsections.js"></script>
+<script type="text/javascript" src="clipboard.js"></script>
+<script type="text/javascript" src="cookie.js"></script>
+<link href="search/search.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="search/searchdata.js"></script>
+<script type="text/javascript" src="search/search.js"></script>
+<link href="doxygen.css" rel="stylesheet" type="text/css" />
+</head>
+<body>
+<div id="top"><!-- do not remove this div, it is closed by doxygen! -->
+<div id="titlearea">
+<table cellspacing="0" cellpadding="0">
+ <tbody>
+ <tr id="projectrow">
+  <td id="projectlogo"><img alt="Logo" src="PreCess.ico"/></td>
+  <td id="projectalign">
+   <div id="projectname">PreCess
+   </div>
+  </td>
+ </tr>
+ </tbody>
+</table>
+</div>
+<!-- end header part -->
+<!-- 制作者 Doxygen 1.14.0 -->
+<script type="text/javascript">
+var searchBox = new SearchBox("searchBox", "search/",'.html');
+</script>
+<script type="text/javascript">
+$(function() { codefold.init(); });
+</script>
+<script type="text/javascript" src="menudata.js"></script>
+<script type="text/javascript" src="menu.js"></script>
+<script type="text/javascript">
+$(function() {
+  initMenu('',true,false,'search.php','搜索',false);
+  $(function() { init_search(); });
+});
+</script>
+<div id="main-nav"></div>
+<!-- window showing the filter options -->
+<div id="MSearchSelectWindow"
+     onmouseover="return searchBox.OnSearchSelectShow()"
+     onmouseout="return searchBox.OnSearchSelectHide()"
+     onkeydown="return searchBox.OnSearchSelectKey(event)">
+</div>
+
+<!-- iframe showing the search results (closed by default) -->
+<div id="MSearchResultsWindow">
+<div id="MSearchResults">
+<div class="SRPage">
+<div id="SRIndex">
+<div id="SRResults"></div>
+<div class="SRStatus" id="Loading">载入中...</div>
+<div class="SRStatus" id="Searching">搜索中...</div>
+<div class="SRStatus" id="NoMatches">未找到</div>
+</div>
+</div>
+</div>
+</div>
+
+<div id="nav-path" class="navpath">
+  <ul>
+<li class="navelem"><a href="dir_d422163b96683743ed3963d4aac17747.html">app</a></li><li class="navelem"><a href="dir_4e5d8f7ce7c3dc0f91a395eba455c956.html">dock</a></li><li class="navelem"><a href="dir_af03ec025cea5bb7a3f8764ea8f0664e.html">docking</a></li>  </ul>
+</div>
+</div><!-- top -->
+<div id="doc-content">
+<div class="header">
+  <div class="headertitle"><div class="title">DropTarget.h</div></div>
+</div><!--header-->
+<div class="contents">
+<a href="DropTarget_8h.html">浏览该文件的文档.</a><div class="fragment"><div class="line"><a id="l00001" name="l00001"></a><span class="lineno">    1</span></div>
+<div class="line"><a id="l00005" name="l00005"></a><span class="lineno">    5</span> </div>
+<div class="line"><a id="l00006" name="l00006"></a><span class="lineno">    6</span><span class="preprocessor">#pragma once</span></div>
+<div class="line"><a id="l00007" name="l00007"></a><span class="lineno">    7</span> </div>
+<div class="line"><a id="l00008" name="l00008"></a><span class="lineno">    8</span><span class="preprocessor">#include &quot;<a class="code" href="DockEnums_8h.html">DockEnums.h</a>&quot;</span></div>
+<div class="line"><a id="l00009" name="l00009"></a><span class="lineno">    9</span> </div>
+<div class="line"><a id="l00010" name="l00010"></a><span class="lineno">   10</span><span class="keyword">namespace </span><a class="code hl_namespace" href="namespacedock.html">dock</a> {</div>
+<div class="line"><a id="l00011" name="l00011"></a><span class="lineno">   11</span> </div>
+<div class="line"><a id="l00012" name="l00012"></a><span class="lineno">   12</span><span class="keyword">class </span><a class="code hl_class" href="classdock_1_1DockRegion.html">DockRegion</a>;</div>
+<div class="line"><a id="l00013" name="l00013"></a><span class="lineno">   13</span><span class="keyword">class </span><a class="code hl_class" href="classdock_1_1PanelGroup.html">PanelGroup</a>;</div>
+<div class="line"><a id="l00014" name="l00014"></a><span class="lineno">   14</span></div>
+<div class="foldopen" id="foldopen00022" data-start="{" data-end="};">
+<div class="line"><a id="l00022" name="l00022"></a><span class="lineno"><a class="line" href="structdock_1_1DropTarget.html">   22</a></span><span class="keyword">struct </span><a class="code hl_struct" href="structdock_1_1DropTarget.html">DropTarget</a> {</div>
+<div class="line"><a id="l00024" name="l00024"></a><span class="lineno"><a class="line" href="structdock_1_1DropTarget.html#a06c915a9798d3f37a2dbdc135cb38830">   24</a></span>    <a class="code hl_class" href="classdock_1_1DockRegion.html">DockRegion</a>* <a class="code hl_variable" href="structdock_1_1DropTarget.html#a06c915a9798d3f37a2dbdc135cb38830">region</a> = <span class="keyword">nullptr</span>;</div>
+<div class="line"><a id="l00026" name="l00026"></a><span class="lineno"><a class="line" href="structdock_1_1DropTarget.html#a77cc0f2b1b1ceed6a51c2930c5758416">   26</a></span>    <a class="code hl_class" href="classdock_1_1PanelGroup.html">PanelGroup</a>* <a class="code hl_variable" href="structdock_1_1DropTarget.html#a77cc0f2b1b1ceed6a51c2930c5758416">group</a> = <span class="keyword">nullptr</span>;</div>
+<div class="line"><a id="l00028" name="l00028"></a><span class="lineno"><a class="line" href="structdock_1_1DropTarget.html#ae47bd3e1bec4c0f49125861925f2b8b8">   28</a></span>    <a class="code hl_enumeration" href="namespacedock.html#a3ebdb589812160d63d8811311bf4ed63">DropZone</a> <a class="code hl_variable" href="structdock_1_1DropTarget.html#ae47bd3e1bec4c0f49125861925f2b8b8">zone</a> = <a class="code hl_enumvalue" href="namespacedock.html#a3ebdb589812160d63d8811311bf4ed63a6adf97f83acf6453d4a6a4b1070f3754">DropZone::None</a>;</div>
+<div class="line"><a id="l00030" name="l00030"></a><span class="lineno"><a class="line" href="structdock_1_1DropTarget.html#a158ba12c24da301a2af1c8cd8851f141">   30</a></span>    <span class="keywordtype">int</span> <a class="code hl_variable" href="structdock_1_1DropTarget.html#a158ba12c24da301a2af1c8cd8851f141">tab_index</a> = -1;</div>
+<div class="line"><a id="l00031" name="l00031"></a><span class="lineno">   31</span> </div>
+<div class="foldopen" id="foldopen00032" data-start="{" data-end="}">
+<div class="line"><a id="l00032" name="l00032"></a><span class="lineno"><a class="line" href="structdock_1_1DropTarget.html#a9b42412a4b53d51d6112c6de7ab04445">   32</a></span>    <span class="keywordtype">bool</span> <a class="code hl_function" href="structdock_1_1DropTarget.html#a9b42412a4b53d51d6112c6de7ab04445">operator==</a>(<span class="keyword">const</span> <a class="code hl_struct" href="structdock_1_1DropTarget.html">DropTarget</a>&amp; other)<span class="keyword"> const</span></div>
+<div class="line"><a id="l00033" name="l00033"></a><span class="lineno">   33</span><span class="keyword">    </span>{</div>
+<div class="line"><a id="l00034" name="l00034"></a><span class="lineno">   34</span>        <span class="keywordflow">return</span> <a class="code hl_variable" href="structdock_1_1DropTarget.html#a06c915a9798d3f37a2dbdc135cb38830">region</a> == other.<a class="code hl_variable" href="structdock_1_1DropTarget.html#a06c915a9798d3f37a2dbdc135cb38830">region</a> &amp;&amp; <a class="code hl_variable" href="structdock_1_1DropTarget.html#a77cc0f2b1b1ceed6a51c2930c5758416">group</a> == other.<a class="code hl_variable" href="structdock_1_1DropTarget.html#a77cc0f2b1b1ceed6a51c2930c5758416">group</a></div>
+<div class="line"><a id="l00035" name="l00035"></a><span class="lineno">   35</span>            &amp;&amp; <a class="code hl_variable" href="structdock_1_1DropTarget.html#ae47bd3e1bec4c0f49125861925f2b8b8">zone</a> == other.<a class="code hl_variable" href="structdock_1_1DropTarget.html#ae47bd3e1bec4c0f49125861925f2b8b8">zone</a> &amp;&amp; <a class="code hl_variable" href="structdock_1_1DropTarget.html#a158ba12c24da301a2af1c8cd8851f141">tab_index</a> == other.<a class="code hl_variable" href="structdock_1_1DropTarget.html#a158ba12c24da301a2af1c8cd8851f141">tab_index</a>;</div>
+<div class="line"><a id="l00036" name="l00036"></a><span class="lineno">   36</span>    }</div>
+</div>
+<div class="line"><a id="l00037" name="l00037"></a><span class="lineno">   37</span> </div>
+<div class="line"><a id="l00038" name="l00038"></a><span class="lineno"><a class="line" href="structdock_1_1DropTarget.html#a145efae3b6081376b102736b84434446">   38</a></span>    <span class="keywordtype">bool</span> <a class="code hl_function" href="structdock_1_1DropTarget.html#a145efae3b6081376b102736b84434446">operator!=</a>(<span class="keyword">const</span> <a class="code hl_struct" href="structdock_1_1DropTarget.html">DropTarget</a>&amp; other)<span class="keyword"> const </span>{ <span class="keywordflow">return</span> !(*<span class="keyword">this</span> == other); }</div>
+<div class="line"><a id="l00039" name="l00039"></a><span class="lineno">   39</span>};</div>
+</div>
+<div class="line"><a id="l00040" name="l00040"></a><span class="lineno">   40</span> </div>
+<div class="line"><a id="l00041" name="l00041"></a><span class="lineno">   41</span>}</div>
+<div class="ttc" id="aDockEnums_8h_html"><div class="ttname"><a href="DockEnums_8h.html">DockEnums.h</a></div><div class="ttdoc">停靠组件的公共枚举与判定辅助</div></div>
+<div class="ttc" id="aclassdock_1_1DockRegion_html"><div class="ttname"><a href="classdock_1_1DockRegion.html">dock::DockRegion</a></div><div class="ttdoc">停靠区域</div><div class="ttdef"><b>定义</b> DockRegion.h:27</div></div>
+<div class="ttc" id="aclassdock_1_1PanelGroup_html"><div class="ttname"><a href="classdock_1_1PanelGroup.html">dock::PanelGroup</a></div><div class="ttdoc">选项卡分组</div><div class="ttdef"><b>定义</b> PanelGroup.h:27</div></div>
+<div class="ttc" id="anamespacedock_html"><div class="ttname"><a href="namespacedock.html">dock</a></div><div class="ttdef"><b>定义</b> DockCatalog.cpp:14</div></div>
+<div class="ttc" id="anamespacedock_html_a3ebdb589812160d63d8811311bf4ed63"><div class="ttname"><a href="namespacedock.html#a3ebdb589812160d63d8811311bf4ed63">dock::DropZone</a></div><div class="ttdeci">DropZone</div><div class="ttdoc">拖放落点：分组内 5 个 + 区域边缘 4 个</div><div class="ttdef"><b>定义</b> DockEnums.h:33</div></div>
+<div class="ttc" id="anamespacedock_html_a3ebdb589812160d63d8811311bf4ed63a6adf97f83acf6453d4a6a4b1070f3754"><div class="ttname"><a href="namespacedock.html#a3ebdb589812160d63d8811311bf4ed63a6adf97f83acf6453d4a6a4b1070f3754">dock::DropZone::None</a></div><div class="ttdeci">@ None</div><div class="ttdef"><b>定义</b> DockEnums.h:34</div></div>
+<div class="ttc" id="astructdock_1_1DropTarget_html"><div class="ttname"><a href="structdock_1_1DropTarget.html">dock::DropTarget</a></div><div class="ttdoc">拖放落点目标</div><div class="ttdef"><b>定义</b> DropTarget.h:22</div></div>
+<div class="ttc" id="astructdock_1_1DropTarget_html_a06c915a9798d3f37a2dbdc135cb38830"><div class="ttname"><a href="structdock_1_1DropTarget.html#a06c915a9798d3f37a2dbdc135cb38830">dock::DropTarget::region</a></div><div class="ttdeci">DockRegion * region</div><div class="ttdoc">命中的停靠区域（空表示无命中）</div><div class="ttdef"><b>定义</b> DropTarget.h:24</div></div>
+<div class="ttc" id="astructdock_1_1DropTarget_html_a145efae3b6081376b102736b84434446"><div class="ttname"><a href="structdock_1_1DropTarget.html#a145efae3b6081376b102736b84434446">dock::DropTarget::operator!=</a></div><div class="ttdeci">bool operator!=(const DropTarget &amp;other) const</div><div class="ttdef"><b>定义</b> DropTarget.h:38</div></div>
+<div class="ttc" id="astructdock_1_1DropTarget_html_a158ba12c24da301a2af1c8cd8851f141"><div class="ttname"><a href="structdock_1_1DropTarget.html#a158ba12c24da301a2af1c8cd8851f141">dock::DropTarget::tab_index</a></div><div class="ttdeci">int tab_index</div><div class="ttdoc">标签插入位置（0..count；-1 表示无效）</div><div class="ttdef"><b>定义</b> DropTarget.h:30</div></div>
+<div class="ttc" id="astructdock_1_1DropTarget_html_a77cc0f2b1b1ceed6a51c2930c5758416"><div class="ttname"><a href="structdock_1_1DropTarget.html#a77cc0f2b1b1ceed6a51c2930c5758416">dock::DropTarget::group</a></div><div class="ttdeci">PanelGroup * group</div><div class="ttdoc">命中的分组（外落点或无分组命中时为空）</div><div class="ttdef"><b>定义</b> DropTarget.h:26</div></div>
+<div class="ttc" id="astructdock_1_1DropTarget_html_a9b42412a4b53d51d6112c6de7ab04445"><div class="ttname"><a href="structdock_1_1DropTarget.html#a9b42412a4b53d51d6112c6de7ab04445">dock::DropTarget::operator==</a></div><div class="ttdeci">bool operator==(const DropTarget &amp;other) const</div><div class="ttdef"><b>定义</b> DropTarget.h:32</div></div>
+<div class="ttc" id="astructdock_1_1DropTarget_html_ae47bd3e1bec4c0f49125861925f2b8b8"><div class="ttname"><a href="structdock_1_1DropTarget.html#ae47bd3e1bec4c0f49125861925f2b8b8">dock::DropTarget::zone</a></div><div class="ttdeci">DropZone zone</div><div class="ttdoc">落点</div><div class="ttdef"><b>定义</b> DropTarget.h:28</div></div>
+</div><!-- fragment --></div><!-- contents -->
+<!-- start footer part -->
+<hr class="footer"/><address class="footer"><small>
+制作者&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.14.0
+</small></address>
+</div><!-- doc-content -->
+</body>
+</html>

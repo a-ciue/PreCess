@@ -1,7 +1,6 @@
 var searchData=
 [
-  ['pluginbase_2eh_0',['PluginBase.h',['../PluginBase_8h.html',1,'']]],
-  ['preferenceswindow_2eqml_1',['PreferencesWindow.qml',['../PreferencesWindow_8qml.html',1,'']]],
-  ['private_5fargtypeenum_2eh_2',['private_ArgTypeEnum.h',['../private__ArgTypeEnum_8h.html',1,'']]],
-  ['pythonconsole_2eqml_3',['PythonConsole.qml',['../PythonConsole_8qml.html',1,'']]]
+  ['layoutclient_2eh_0',['LayoutClient.h',['../LayoutClient_8h.html',1,'']]],
+  ['layoutnode_2ecpp_1',['LayoutNode.cpp',['../LayoutNode_8cpp.html',1,'']]],
+  ['layoutnode_2eh_2',['LayoutNode.h',['../LayoutNode_8h.html',1,'']]]
 ];

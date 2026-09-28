@@ -1,0 +1,33 @@
+<map id="app/dock/ui/DropZoneOverlay.cpp" name="app/dock/ui/DropZoneOverlay.cpp">
+<area shape="rect" id="Node000001" title="透明顶层落点指示器窗口的实现" alt="" coords="604,5,845,31"/>
+<area shape="rect" id="Node000002" href="$DropZoneOverlay_8h.html" title="透明顶层落点指示器窗口：始终显示在被拖动窗口之上" alt="" coords="283,79,430,104"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="666,33,430,79,429,73,665,28"/>
+<area shape="rect" id="Node000011" href="$DockRuntime_8h.html" title="QtQuick 视图层的全局服务：QML 引擎、client 映射、分组视图缓存" alt="" coords="529,79,651,104"/>
+<area shape="poly" id="edge10_Node000001_Node000011" title=" " alt="" coords="704,33,625,74,623,70,702,28"/>
+<area shape="rect" id="Node000014" title=" " alt="" coords="675,79,774,104"/>
+<area shape="poly" id="edge13_Node000001_Node000014" title=" " alt="" coords="727,31,727,65,722,65,722,31"/>
+<area shape="rect" id="Node000015" title=" " alt="" coords="798,79,899,104"/>
+<area shape="poly" id="edge14_Node000001_Node000015" title=" " alt="" coords="746,28,818,69,815,74,743,33"/>
+<area shape="rect" id="Node000016" title=" " alt="" coords="923,79,1030,104"/>
+<area shape="poly" id="edge15_Node000001_Node000016" title=" " alt="" coords="766,28,923,72,922,77,764,33"/>
+<area shape="rect" id="Node000003" href="$DockEnums_8h.html" title="停靠组件的公共枚举与判定辅助" alt="" coords="56,152,223,177"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="323,107,188,150,187,145,321,101"/>
+<area shape="rect" id="Node000008" title=" " alt="" coords="247,152,301,177"/>
+<area shape="poly" id="edge7_Node000002_Node000008" title=" " alt="" coords="345,106,300,145,296,141,342,102"/>
+<area shape="rect" id="Node000009" title=" " alt="" coords="326,152,387,177"/>
+<area shape="poly" id="edge8_Node000002_Node000009" title=" " alt="" coords="359,104,359,138,354,138,354,104"/>
+<area shape="rect" id="Node000010" title=" " alt="" coords="412,152,533,177"/>
+<area shape="poly" id="edge9_Node000002_Node000010" title=" " alt="" coords="377,102,443,142,441,147,374,106"/>
+<area shape="rect" id="Node000004" href="$DockMetrics_8h.html" title="停靠组件的默认行为常量" alt="" coords="23,225,138,251"/>
+<area shape="poly" id="edge3_Node000003_Node000004" title=" " alt="" coords="132,179,101,217,97,213,128,176"/>
+<area shape="rect" id="Node000007" title=" " alt="" coords="162,225,237,251"/>
+<area shape="poly" id="edge6_Node000003_Node000007" title=" " alt="" coords="151,176,183,213,179,217,147,179"/>
+<area shape="rect" id="Node000005" title=" " alt="" coords="5,299,71,324"/>
+<area shape="poly" id="edge4_Node000004_Node000005" title=" " alt="" coords="76,252,54,288,50,286,71,250"/>
+<area shape="rect" id="Node000006" title=" " alt="" coords="95,299,154,324"/>
+<area shape="poly" id="edge5_Node000004_Node000006" title=" " alt="" coords="90,250,113,286,108,288,86,252"/>
+<area shape="rect" id="Node000012" title=" " alt="" coords="557,152,623,177"/>
+<area shape="poly" id="edge11_Node000011_Node000012" title=" " alt="" coords="593,104,593,138,587,138,587,104"/>
+<area shape="rect" id="Node000013" title=" " alt="" coords="647,152,698,177"/>
+<area shape="poly" id="edge12_Node000011_Node000013" title=" " alt="" coords="605,102,650,141,647,145,602,106"/>
+</map>

@@ -1,0 +1,9 @@
+<map id="app/dock/ui/PanelContentView.h" name="app/dock/ui/PanelContentView.h">
+<area shape="rect" id="Node000001" title="由 QML 内容项直接构成的 client 视图适配器（中央持久部件使用）" alt="" coords="5,5,192,45"/>
+<area shape="rect" id="Node000002" href="$DockView_8h.html" title="停靠组件与视图层（QtQuick）之间的抽象接口" alt="" coords="22,93,175,119"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="101,46,101,79,96,79,96,46"/>
+<area shape="rect" id="Node000003" title=" " alt="" coords="27,167,88,192"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="94,120,73,156,69,153,90,118"/>
+<area shape="rect" id="Node000004" title=" " alt="" coords="112,167,171,192"/>
+<area shape="poly" id="edge3_Node000002_Node000004" title=" " alt="" coords="108,118,130,154,125,156,103,120"/>
+</map>

@@ -1,0 +1,107 @@
+<map id="app/dock/ui/DockHostItem.cpp" name="app/dock/ui/DockHostItem.cpp">
+<area shape="rect" id="Node000001" title="主停靠区域视图的实现" alt="" coords="945,5,1166,31"/>
+<area shape="rect" id="Node000002" href="$DockHostItem_8h.html" title="QML 主停靠区域（PreCess.Docking 的 DockHost 类型）" alt="" coords="364,79,491,104"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="955,33,504,84,504,79,954,28"/>
+<area shape="rect" id="Node000004" href="$DockMetrics_8h.html" title="停靠组件的默认行为常量" alt="" coords="615,225,730,251"/>
+<area shape="poly" id="edge66_Node000001_Node000004" title=" " alt="" coords="945,23,713,27,436,36,190,53,104,66,55,81,37,95,26,110,12,153,9,166,12,176,41,190,96,202,260,219,446,229,602,233,601,238,446,234,259,224,96,207,39,195,8,179,3,166,7,151,21,108,33,91,53,76,103,61,190,48,435,31,713,21,944,17"/>
+<area shape="rect" id="Node000014" href="$DockAreaItem_8h.html" title="布局区域视图：把 DockRegion 的布局树同步为 PanelGroupItem/DividerItem" alt="" coords="213,79,340,104"/>
+<area shape="poly" id="edge14_Node000001_Node000014" title=" " alt="" coords="944,29,679,49,354,81,353,76,679,44,944,24"/>
+<area shape="rect" id="Node000016" href="$DockPanelItem_8h.html" title="QML 停靠面板实例化器（PreCess.Docking 的 DockPanel 类型）" alt="" coords="1329,79,1461,104"/>
+<area shape="poly" id="edge18_Node000001_Node000016" title=" " alt="" coords="1110,28,1328,73,1326,78,1109,33"/>
+<area shape="rect" id="Node000018" href="$DockWindowItem_8h.html" title="浮动窗口视图：无边框顶层窗口 + 拖拽/边缘缩放" alt="" coords="981,79,1130,104"/>
+<area shape="poly" id="edge22_Node000001_Node000018" title=" " alt="" coords="1058,31,1058,65,1053,65,1053,31"/>
+<area shape="rect" id="Node000019" title=" " alt="" coords="932,152,1053,177"/>
+<area shape="poly" id="edge67_Node000001_Node000019" title=" " alt="" coords="1027,33,996,52,982,65,971,80,967,94,968,110,980,139,975,141,963,111,961,94,966,78,978,61,992,48,1024,28"/>
+<area shape="rect" id="Node000020" href="$PanelGroupItem_8h.html" title="分组视图：QML 视图对象与 PanelGroup 控制器之间的桥" alt="" coords="646,79,785,104"/>
+<area shape="poly" id="edge25_Node000001_Node000020" title=" " alt="" coords="1001,33,784,78,783,73,1000,28"/>
+<area shape="rect" id="Node000023" title=" " alt="" coords="869,225,954,251"/>
+<area shape="poly" id="edge68_Node000001_Node000023" title=" " alt="" coords="1030,33,995,53,961,81,936,113,922,153,916,183,914,211,908,211,910,182,917,151,931,111,957,77,992,48,1028,29"/>
+<area shape="rect" id="Node000026" href="$PanelContentView_8h.html" title="由 QML 内容项直接构成的 client 视图适配器（中央持久部件使用）" alt="" coords="1155,79,1305,104"/>
+<area shape="poly" id="edge35_Node000001_Node000026" title=" " alt="" coords="1084,28,1190,71,1188,76,1082,33"/>
+<area shape="rect" id="Node000027" href="$DockRuntime_8h.html" title="QtQuick 视图层的全局服务：QML 引擎、client 映射、分组视图缓存" alt="" coords="66,79,189,104"/>
+<area shape="poly" id="edge37_Node000001_Node000027" title=" " alt="" coords="944,27,616,45,412,61,202,81,202,76,411,56,616,40,944,21"/>
+<area shape="rect" id="Node000028" href="$DockPanel_8h.html" title="逻辑停靠面板：可显隐、可停靠、可拆出为独立窗口" alt="" coords="2198,152,2355,177"/>
+<area shape="poly" id="edge40_Node000001_Node000028" title=" " alt="" coords="1166,19,1720,39,1993,55,2091,65,2149,76,2180,89,2209,106,2255,141,2252,145,2206,110,2178,94,2148,81,2090,70,1993,61,1720,44,1166,25"/>
+<area shape="rect" id="Node000031" href="$DockRegion_8h.html" title="停靠区域：持有布局树根节点，负责命令式停靠与拖放落点" alt="" coords="1485,79,1652,104"/>
+<area shape="poly" id="edge45_Node000001_Node000031" title=" " alt="" coords="1138,28,1473,74,1472,79,1137,33"/>
+<area shape="rect" id="Node000032" href="$DockWindow_8h.html" title="浮动窗口：承载被拖出主窗口的分组" alt="" coords="1718,152,1891,177"/>
+<area shape="poly" id="edge50_Node000001_Node000032" title=" " alt="" coords="1166,22,1438,40,1570,56,1665,76,1698,90,1730,107,1781,141,1778,146,1727,111,1696,95,1664,81,1569,61,1438,46,1166,27"/>
+<area shape="rect" id="Node000033" href="$PanelGroup_8h.html" title="选项卡分组：承载一个或多个停靠面板的布局单元" alt="" coords="1974,79,2137,104"/>
+<area shape="poly" id="edge53_Node000001_Node000033" title=" " alt="" coords="1166,25,1960,81,1960,86,1166,30"/>
+<area shape="rect" id="Node000036" href="$DockHost_8h.html" title="主停靠窗口：持有根停靠区域与中央持久面板" alt="" coords="2317,79,2469,104"/>
+<area shape="poly" id="edge61_Node000001_Node000036" title=" " alt="" coords="1166,21,1641,42,2257,76,2303,79,2303,85,2256,81,1640,47,1166,26"/>
+<area shape="rect" id="Node000003" href="$DockEnums_8h.html" title="停靠组件的公共枚举与判定辅助" alt="" coords="1255,152,1421,177"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="491,94,809,114,1241,149,1240,154,808,119,491,99"/>
+<area shape="rect" id="Node000008" href="$DockView_8h.html" title="停靠组件与视图层（QtQuick）之间的抽象接口" alt="" coords="1077,152,1231,177"/>
+<area shape="poly" id="edge7_Node000002_Node000008" title=" " alt="" coords="491,95,738,117,1064,149,1063,154,737,122,491,100"/>
+<area shape="rect" id="Node000010" title=" " alt="" coords="366,152,465,177"/>
+<area shape="poly" id="edge10_Node000002_Node000010" title=" " alt="" coords="428,105,422,139,417,138,423,104"/>
+<area shape="rect" id="Node000011" title=" " alt="" coords="187,152,241,177"/>
+<area shape="poly" id="edge11_Node000002_Node000011" title=" " alt="" coords="394,107,254,153,253,148,392,101"/>
+<area shape="rect" id="Node000012" title=" " alt="" coords="113,152,163,177"/>
+<area shape="poly" id="edge12_Node000002_Node000012" title=" " alt="" coords="375,107,177,154,176,149,374,101"/>
+<area shape="rect" id="Node000013" title=" " alt="" coords="265,152,342,177"/>
+<area shape="poly" id="edge13_Node000002_Node000013" title=" " alt="" coords="409,106,337,147,334,143,406,102"/>
+<area shape="poly" id="edge3_Node000003_Node000004" title=" " alt="" coords="1255,179,1244,180,744,232,744,227,1243,175,1254,173"/>
+<area shape="rect" id="Node000007" title=" " alt="" coords="1463,299,1538,324"/>
+<area shape="poly" id="edge6_Node000003_Node000007" title=" " alt="" coords="1346,176,1368,211,1401,249,1432,272,1463,290,1461,295,1429,276,1397,253,1364,214,1342,179"/>
+<area shape="rect" id="Node000005" title=" " alt="" coords="640,299,705,324"/>
+<area shape="poly" id="edge4_Node000004_Node000005" title=" " alt="" coords="675,251,675,285,670,285,670,251"/>
+<area shape="rect" id="Node000006" title=" " alt="" coords="1334,299,1393,324"/>
+<area shape="poly" id="edge5_Node000004_Node000006" title=" " alt="" coords="731,246,749,248,1077,283,1320,304,1320,309,1077,288,748,253,730,251"/>
+<area shape="poly" id="edge9_Node000008_Node000006" title=" " alt="" coords="1172,175,1337,288,1334,293,1169,180"/>
+<area shape="rect" id="Node000009" title=" " alt="" coords="1411,225,1473,251"/>
+<area shape="poly" id="edge8_Node000008_Node000009" title=" " alt="" coords="1201,175,1398,223,1397,228,1200,180"/>
+<area shape="poly" id="edge16_Node000014_Node000010" title=" " alt="" coords="300,102,382,143,379,148,298,106"/>
+<area shape="poly" id="edge17_Node000014_Node000011" title=" " alt="" coords="268,106,235,143,231,140,264,103"/>
+<area shape="rect" id="Node000015" title=" " alt="" coords="23,152,88,177"/>
+<area shape="poly" id="edge15_Node000014_Node000015" title=" " alt="" coords="242,107,102,151,100,146,240,101"/>
+<area shape="poly" id="edge19_Node000016_Node000008" title=" " alt="" coords="1357,107,1207,151,1206,145,1356,101"/>
+<area shape="poly" id="edge20_Node000016_Node000010" title=" " alt="" coords="1329,105,1318,107,1084,124,900,128,715,134,606,142,478,155,478,149,606,136,715,129,900,123,1084,118,1318,101,1329,100"/>
+<area shape="rect" id="Node000017" title=" " alt="" coords="2313,225,2384,251"/>
+<area shape="poly" id="edge21_Node000016_Node000017" title=" " alt="" coords="1462,100,1474,101,1689,124,1783,133,1904,149,2100,182,2300,223,2299,228,2100,187,1903,155,1782,139,1688,129,1474,107,1461,105"/>
+<area shape="poly" id="edge23_Node000018_Node000008" title=" " alt="" coords="1073,102,1128,142,1125,146,1070,106"/>
+<area shape="poly" id="edge24_Node000018_Node000019" title=" " alt="" coords="1047,106,1014,143,1010,140,1043,103"/>
+<area shape="poly" id="edge26_Node000020_Node000008" title=" " alt="" coords="785,101,1070,147,1069,152,784,106"/>
+<area shape="poly" id="edge32_Node000020_Node000010" title=" " alt="" coords="668,107,477,151,476,146,666,101"/>
+<area shape="rect" id="Node000021" href="$NodeMetrics_8h.html" title="布局节点的几何与尺寸约束信息" alt="" coords="710,152,857,177"/>
+<area shape="poly" id="edge27_Node000020_Node000021" title=" " alt="" coords="728,102,765,140,761,144,725,106"/>
+<area shape="rect" id="Node000024" title=" " alt="" coords="489,152,582,177"/>
+<area shape="poly" id="edge33_Node000020_Node000024" title=" " alt="" coords="687,107,578,149,576,144,685,102"/>
+<area shape="rect" id="Node000025" title=" " alt="" coords="607,152,685,177"/>
+<area shape="poly" id="edge34_Node000020_Node000025" title=" " alt="" coords="706,106,668,144,665,140,702,102"/>
+<area shape="poly" id="edge29_Node000021_Node000006" title=" " alt="" coords="783,178,781,214,784,233,794,249,822,261,873,272,1023,289,1190,300,1320,306,1320,311,1189,305,1023,294,873,277,820,266,791,253,780,235,775,214,778,178"/>
+<area shape="poly" id="edge28_Node000021_Node000009" title=" " alt="" coords="857,171,1398,229,1397,235,857,177"/>
+<area shape="rect" id="Node000022" title=" " alt="" coords="805,225,844,251"/>
+<area shape="poly" id="edge30_Node000021_Node000022" title=" " alt="" coords="792,176,813,212,809,215,788,179"/>
+<area shape="poly" id="edge31_Node000021_Node000023" title=" " alt="" coords="805,175,879,216,877,221,802,180"/>
+<area shape="poly" id="edge36_Node000026_Node000008" title=" " alt="" coords="1219,106,1178,144,1174,141,1216,102"/>
+<area shape="poly" id="edge39_Node000027_Node000012" title=" " alt="" coords="132,104,137,138,131,139,126,105"/>
+<area shape="poly" id="edge38_Node000027_Node000015" title=" " alt="" coords="117,106,79,144,75,140,113,102"/>
+<area shape="poly" id="edge44_Node000028_Node000017" title=" " alt="" coords="2290,176,2329,214,2325,218,2287,180"/>
+<area shape="rect" id="Node000029" href="$DockObject_8h.html" title="控制器基类：持有视图" alt="" coords="2067,225,2177,251"/>
+<area shape="poly" id="edge41_Node000028_Node000029" title=" " alt="" coords="2253,180,2161,222,2158,217,2251,175"/>
+<area shape="rect" id="Node000030" title=" " alt="" coords="2222,225,2289,251"/>
+<area shape="poly" id="edge43_Node000028_Node000030" title=" " alt="" coords="2276,178,2265,213,2260,211,2270,177"/>
+<area shape="poly" id="edge42_Node000029_Node000007" title=" " alt="" coords="2067,251,2049,253,1769,286,1552,308,1552,303,1768,281,2048,248,2067,245"/>
+<area shape="poly" id="edge47_Node000031_Node000003" title=" " alt="" coords="1532,107,1389,151,1387,145,1531,101"/>
+<area shape="poly" id="edge49_Node000031_Node000006" title=" " alt="" coords="1564,106,1538,153,1525,182,1517,206,1506,228,1486,253,1448,281,1407,299,1404,295,1445,276,1483,249,1502,225,1512,204,1520,180,1533,151,1559,103"/>
+<area shape="poly" id="edge48_Node000031_Node000009" title=" " alt="" coords="1551,106,1522,127,1493,154,1471,184,1455,214,1450,211,1467,181,1489,150,1519,123,1548,102"/>
+<area shape="poly" id="edge46_Node000031_Node000029" title=" " alt="" coords="1652,100,1772,120,1904,149,2003,183,2086,217,2084,222,2001,188,1902,155,1771,125,1652,106"/>
+<area shape="poly" id="edge52_Node000032_Node000009" title=" " alt="" coords="1747,180,1487,231,1486,225,1746,175"/>
+<area shape="poly" id="edge51_Node000032_Node000029" title=" " alt="" coords="1856,175,2058,220,2057,225,1855,180"/>
+<area shape="poly" id="edge60_Node000033_Node000006" title=" " alt="" coords="2040,106,1981,142,1904,180,1764,227,1623,264,1498,290,1406,306,1406,301,1497,285,1622,258,1763,222,1902,175,1979,138,2037,102"/>
+<area shape="poly" id="edge55_Node000033_Node000028" title=" " alt="" coords="2092,101,2229,145,2227,150,2090,107"/>
+<area shape="poly" id="edge54_Node000033_Node000029" title=" " alt="" coords="2063,103,2113,212,2108,214,2058,106"/>
+<area shape="rect" id="Node000034" href="$LayoutClient_8h.html" title="被布局引擎托管的实体接口" alt="" coords="1547,152,1694,177"/>
+<area shape="poly" id="edge56_Node000033_Node000034" title=" " alt="" coords="1986,107,1704,152,1703,147,1985,101"/>
+<area shape="rect" id="Node000035" title=" " alt="" coords="2119,152,2173,177"/>
+<area shape="poly" id="edge59_Node000033_Node000035" title=" " alt="" coords="2071,102,2122,141,2118,145,2068,106"/>
+<area shape="poly" id="edge58_Node000034_Node000006" title=" " alt="" coords="1613,179,1578,215,1530,253,1467,283,1407,302,1405,297,1465,278,1527,248,1575,211,1609,176"/>
+<area shape="poly" id="edge57_Node000034_Node000009" title=" " alt="" coords="1593,180,1485,223,1483,218,1591,175"/>
+<area shape="poly" id="edge63_Node000036_Node000003" title=" " alt="" coords="2316,100,1435,159,1435,154,2316,95"/>
+<area shape="poly" id="edge65_Node000036_Node000017" title=" " alt="" coords="2402,103,2415,137,2418,158,2414,178,2399,201,2380,219,2376,215,2395,198,2409,176,2412,158,2410,138,2397,105"/>
+<area shape="poly" id="edge62_Node000036_Node000029" title=" " alt="" coords="2395,105,2390,141,2382,162,2369,179,2339,196,2294,211,2191,230,2190,225,2292,205,2337,192,2365,175,2377,159,2385,140,2390,104"/>
+<area shape="rect" id="Node000037" title=" " alt="" coords="2481,152,2579,177"/>
+<area shape="poly" id="edge64_Node000036_Node000037" title=" " alt="" coords="2416,102,2497,143,2494,148,2413,106"/>
+</map>

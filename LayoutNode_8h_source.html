@@ -1,0 +1,186 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="zh">
+<head>
+<meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=11"/>
+<meta name="generator" content="Doxygen 1.14.0"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>PreCess: app/dock/tree/LayoutNode.h 源文件</title>
+<link href="tabs.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="jquery.js"></script>
+<script type="text/javascript" src="dynsections.js"></script>
+<script type="text/javascript" src="clipboard.js"></script>
+<script type="text/javascript" src="cookie.js"></script>
+<link href="search/search.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="search/searchdata.js"></script>
+<script type="text/javascript" src="search/search.js"></script>
+<link href="doxygen.css" rel="stylesheet" type="text/css" />
+</head>
+<body>
+<div id="top"><!-- do not remove this div, it is closed by doxygen! -->
+<div id="titlearea">
+<table cellspacing="0" cellpadding="0">
+ <tbody>
+ <tr id="projectrow">
+  <td id="projectlogo"><img alt="Logo" src="PreCess.ico"/></td>
+  <td id="projectalign">
+   <div id="projectname">PreCess
+   </div>
+  </td>
+ </tr>
+ </tbody>
+</table>
+</div>
+<!-- end header part -->
+<!-- 制作者 Doxygen 1.14.0 -->
+<script type="text/javascript">
+var searchBox = new SearchBox("searchBox", "search/",'.html');
+</script>
+<script type="text/javascript">
+$(function() { codefold.init(); });
+</script>
+<script type="text/javascript" src="menudata.js"></script>
+<script type="text/javascript" src="menu.js"></script>
+<script type="text/javascript">
+$(function() {
+  initMenu('',true,false,'search.php','搜索',false);
+  $(function() { init_search(); });
+});
+</script>
+<div id="main-nav"></div>
+<!-- window showing the filter options -->
+<div id="MSearchSelectWindow"
+     onmouseover="return searchBox.OnSearchSelectShow()"
+     onmouseout="return searchBox.OnSearchSelectHide()"
+     onkeydown="return searchBox.OnSearchSelectKey(event)">
+</div>
+
+<!-- iframe showing the search results (closed by default) -->
+<div id="MSearchResultsWindow">
+<div id="MSearchResults">
+<div class="SRPage">
+<div id="SRIndex">
+<div id="SRResults"></div>
+<div class="SRStatus" id="Loading">载入中...</div>
+<div class="SRStatus" id="Searching">搜索中...</div>
+<div class="SRStatus" id="NoMatches">未找到</div>
+</div>
+</div>
+</div>
+</div>
+
+<div id="nav-path" class="navpath">
+  <ul>
+<li class="navelem"><a href="dir_d422163b96683743ed3963d4aac17747.html">app</a></li><li class="navelem"><a href="dir_4e5d8f7ce7c3dc0f91a395eba455c956.html">dock</a></li><li class="navelem"><a href="dir_5eadc552fcf5a00d591e43a164d6005f.html">tree</a></li>  </ul>
+</div>
+</div><!-- top -->
+<div id="doc-content">
+<div class="header">
+  <div class="headertitle"><div class="title">LayoutNode.h</div></div>
+</div><!--header-->
+<div class="contents">
+<a href="LayoutNode_8h.html">浏览该文件的文档.</a><div class="fragment"><div class="line"><a id="l00001" name="l00001"></a><span class="lineno">    1</span></div>
+<div class="line"><a id="l00005" name="l00005"></a><span class="lineno">    5</span> </div>
+<div class="line"><a id="l00006" name="l00006"></a><span class="lineno">    6</span><span class="preprocessor">#pragma once</span></div>
+<div class="line"><a id="l00007" name="l00007"></a><span class="lineno">    7</span> </div>
+<div class="line"><a id="l00008" name="l00008"></a><span class="lineno">    8</span><span class="preprocessor">#include &quot;<a class="code" href="NodeMetrics_8h.html">NodeMetrics.h</a>&quot;</span></div>
+<div class="line"><a id="l00009" name="l00009"></a><span class="lineno">    9</span> </div>
+<div class="line"><a id="l00010" name="l00010"></a><span class="lineno">   10</span><span class="preprocessor">#include &lt;QString&gt;</span></div>
+<div class="line"><a id="l00011" name="l00011"></a><span class="lineno">   11</span> </div>
+<div class="line"><a id="l00012" name="l00012"></a><span class="lineno">   12</span><span class="keyword">namespace </span><a class="code hl_namespace" href="namespacedock.html">dock</a> {</div>
+<div class="line"><a id="l00013" name="l00013"></a><span class="lineno">   13</span> </div>
+<div class="line"><a id="l00014" name="l00014"></a><span class="lineno">   14</span><span class="keyword">class </span><a class="code hl_class" href="classdock_1_1BoxNode.html">BoxNode</a>;</div>
+<div class="line"><a id="l00015" name="l00015"></a><span class="lineno">   15</span><span class="keyword">class </span><a class="code hl_class" href="classdock_1_1LayoutClient.html">LayoutClient</a>;</div>
+<div class="line"><a id="l00016" name="l00016"></a><span class="lineno">   16</span></div>
+<div class="foldopen" id="foldopen00024" data-start="{" data-end="};">
+<div class="line"><a id="l00024" name="l00024"></a><span class="lineno"><a class="line" href="classdock_1_1LayoutNode.html">   24</a></span><span class="keyword">class </span><a class="code hl_function" href="classdock_1_1LayoutNode.html#ab502912c14547c37b207cd6cee17bf28">LayoutNode</a></div>
+<div class="line"><a id="l00025" name="l00025"></a><span class="lineno">   25</span>{</div>
+<div class="line"><a id="l00026" name="l00026"></a><span class="lineno">   26</span><span class="keyword">public</span>:</div>
+<div class="line"><a id="l00027" name="l00027"></a><span class="lineno">   27</span>    <span class="keyword">explicit</span> <a class="code hl_function" href="classdock_1_1LayoutNode.html#ab502912c14547c37b207cd6cee17bf28">LayoutNode</a>(<a class="code hl_class" href="classdock_1_1LayoutClient.html">LayoutClient</a>* <a class="code hl_function" href="classdock_1_1LayoutNode.html#aa68140dba3871158446d4a34e2632285">client</a> = <span class="keyword">nullptr</span>);</div>
+<div class="line"><a id="l00028" name="l00028"></a><span class="lineno"><a class="line" href="classdock_1_1LayoutNode.html#aede94f40e6ab60ff6a3450ae7e0f8ba7">   28</a></span>    <span class="keyword">virtual</span> <a class="code hl_function" href="classdock_1_1LayoutNode.html#aede94f40e6ab60ff6a3450ae7e0f8ba7">~LayoutNode</a>();</div>
+<div class="line"><a id="l00029" name="l00029"></a><span class="lineno">   29</span></div>
+<div class="line"><a id="l00031" name="l00031"></a><span class="lineno"><a class="line" href="classdock_1_1LayoutNode.html#a88cad0a54c273b270c09aa4b4cb44c12">   31</a></span>    <span class="keyword">virtual</span> <span class="keywordtype">bool</span> <a class="code hl_function" href="classdock_1_1LayoutNode.html#a88cad0a54c273b270c09aa4b4cb44c12">isContainer</a>()<span class="keyword"> const </span>{ <span class="keywordflow">return</span> <span class="keyword">false</span>; }</div>
+<div class="line"><a id="l00032" name="l00032"></a><span class="lineno">   32</span></div>
+<div class="line"><a id="l00034" name="l00034"></a><span class="lineno"><a class="line" href="classdock_1_1LayoutNode.html#a29a633796eb918d40610fa20714ff476">   34</a></span>    <span class="keyword">const</span> QRect&amp; <a class="code hl_function" href="classdock_1_1LayoutNode.html#a29a633796eb918d40610fa20714ff476">geometry</a>()<span class="keyword"> const </span>{ <span class="keywordflow">return</span> <a class="code hl_variable" href="classdock_1_1LayoutNode.html#a7045d7797e22fe2b473ab7f335c4c50f">sizing_</a>.geometry; }</div>
+<div class="line"><a id="l00036" name="l00036"></a><span class="lineno">   36</span>    <span class="keyword">virtual</span> <span class="keywordtype">void</span> <a class="code hl_function" href="classdock_1_1LayoutNode.html#aab3fe64543a4241faeb0fef4dd7793d3">setGeometry</a>(<span class="keyword">const</span> QRect&amp; <a class="code hl_variable" href="TestComponentModel_8cpp.html#acd06f41b01ec41c67d52bd9d7cc86e10">geometry</a>);</div>
+<div class="line"><a id="l00037" name="l00037"></a><span class="lineno">   37</span></div>
+<div class="line"><a id="l00039" name="l00039"></a><span class="lineno"><a class="line" href="classdock_1_1LayoutNode.html#ad36b85d576c6561f4b8bd46649ef88af">   39</a></span>    <span class="keyword">virtual</span> <span class="keywordtype">bool</span> <a class="code hl_function" href="classdock_1_1LayoutNode.html#ad36b85d576c6561f4b8bd46649ef88af">isVisible</a>()<span class="keyword"> const </span>{ <span class="keywordflow">return</span> <a class="code hl_variable" href="classdock_1_1LayoutNode.html#ae7c187229d510d993570526f84dfccb5">visible_</a>; }</div>
+<div class="line"><a id="l00041" name="l00041"></a><span class="lineno">   41</span>    <span class="keyword">virtual</span> <span class="keywordtype">void</span> <a class="code hl_function" href="classdock_1_1LayoutNode.html#a5b2418d589838d0258c003d43c270e51">setVisible</a>(<span class="keywordtype">bool</span> visible);</div>
+<div class="line"><a id="l00043" name="l00043"></a><span class="lineno">   43</span>    <span class="keywordtype">void</span> <a class="code hl_function" href="classdock_1_1LayoutNode.html#a5dfc58207dc11471465c6786bcb8a61a">setVisibleSilently</a>(<span class="keywordtype">bool</span> visible);</div>
+<div class="line"><a id="l00044" name="l00044"></a><span class="lineno">   44</span></div>
+<div class="line"><a id="l00046" name="l00046"></a><span class="lineno"><a class="line" href="classdock_1_1LayoutNode.html#ae67b6d7d36243b7a416ec61e3cd4e688">   46</a></span>    <span class="keywordtype">int</span> <a class="code hl_function" href="classdock_1_1LayoutNode.html#ae67b6d7d36243b7a416ec61e3cd4e688">length</a>(Qt::Orientation orientation)<span class="keyword"> const </span>{ <span class="keywordflow">return</span> <a class="code hl_variable" href="classdock_1_1LayoutNode.html#a7045d7797e22fe2b473ab7f335c4c50f">sizing_</a>.length(orientation); }</div>
+<div class="line"><a id="l00048" name="l00048"></a><span class="lineno"><a class="line" href="classdock_1_1LayoutNode.html#af340d9855289a2df461dfc71abf3ea75">   48</a></span>    <span class="keywordtype">int</span> <a class="code hl_function" href="classdock_1_1LayoutNode.html#af340d9855289a2df461dfc71abf3ea75">position</a>(Qt::Orientation orientation)<span class="keyword"> const </span>{ <span class="keywordflow">return</span> <a class="code hl_variable" href="classdock_1_1LayoutNode.html#a7045d7797e22fe2b473ab7f335c4c50f">sizing_</a>.position(orientation); }</div>
+<div class="line"><a id="l00049" name="l00049"></a><span class="lineno">   49</span></div>
+<div class="line"><a id="l00051" name="l00051"></a><span class="lineno">   51</span>    <span class="keyword">virtual</span> QSize <a class="code hl_function" href="classdock_1_1LayoutNode.html#add7d64da392bf5343cf0c5e8dc19b84e">minExtent</a>() <span class="keyword">const</span>;</div>
+<div class="line"><a id="l00053" name="l00053"></a><span class="lineno">   53</span>    <span class="keyword">virtual</span> QSize <a class="code hl_function" href="classdock_1_1LayoutNode.html#a133db7e05a6b888ec823269219fb0ec6">maxExtent</a>() <span class="keyword">const</span>;</div>
+<div class="line"><a id="l00054" name="l00054"></a><span class="lineno">   54</span></div>
+<div class="line"><a id="l00056" name="l00056"></a><span class="lineno"><a class="line" href="classdock_1_1LayoutNode.html#a153052bc082995189bf2355ee0725bd2">   56</a></span>    <span class="keywordtype">double</span> <a class="code hl_function" href="classdock_1_1LayoutNode.html#a153052bc082995189bf2355ee0725bd2">share</a>()<span class="keyword"> const </span>{ <span class="keywordflow">return</span> <a class="code hl_variable" href="classdock_1_1LayoutNode.html#a7045d7797e22fe2b473ab7f335c4c50f">sizing_</a>.share; }</div>
+<div class="line"><a id="l00058" name="l00058"></a><span class="lineno"><a class="line" href="classdock_1_1LayoutNode.html#a02c11965630a1653920de4dfdfe7f114">   58</a></span>    <span class="keywordtype">void</span> <a class="code hl_function" href="classdock_1_1LayoutNode.html#a02c11965630a1653920de4dfdfe7f114">setShare</a>(<span class="keywordtype">double</span> <a class="code hl_function" href="classdock_1_1LayoutNode.html#a153052bc082995189bf2355ee0725bd2">share</a>) { <a class="code hl_variable" href="classdock_1_1LayoutNode.html#a7045d7797e22fe2b473ab7f335c4c50f">sizing_</a>.share = <a class="code hl_function" href="classdock_1_1LayoutNode.html#a153052bc082995189bf2355ee0725bd2">share</a>; }</div>
+<div class="line"><a id="l00059" name="l00059"></a><span class="lineno">   59</span></div>
+<div class="line"><a id="l00061" name="l00061"></a><span class="lineno"><a class="line" href="classdock_1_1LayoutNode.html#af4aa26ce1185167f27ff3cca940bee70">   61</a></span>    <span class="keywordtype">double</span> <a class="code hl_function" href="classdock_1_1LayoutNode.html#af4aa26ce1185167f27ff3cca940bee70">rememberedShare</a>()<span class="keyword"> const </span>{ <span class="keywordflow">return</span> <a class="code hl_variable" href="classdock_1_1LayoutNode.html#aae9de7ec2181bae0ef735b8a43b1b50c">stored_percentage_</a>; }</div>
+<div class="line"><a id="l00063" name="l00063"></a><span class="lineno"><a class="line" href="classdock_1_1LayoutNode.html#a0decd3e5d9c427a8e570fa134a62c9da">   63</a></span>    <span class="keywordtype">void</span> <a class="code hl_function" href="classdock_1_1LayoutNode.html#a0decd3e5d9c427a8e570fa134a62c9da">setRememberedShare</a>(<span class="keywordtype">double</span> <a class="code hl_function" href="classdock_1_1LayoutNode.html#a153052bc082995189bf2355ee0725bd2">share</a>) { <a class="code hl_variable" href="classdock_1_1LayoutNode.html#aae9de7ec2181bae0ef735b8a43b1b50c">stored_percentage_</a> = <a class="code hl_function" href="classdock_1_1LayoutNode.html#a153052bc082995189bf2355ee0725bd2">share</a>; }</div>
+<div class="line"><a id="l00064" name="l00064"></a><span class="lineno">   64</span></div>
+<div class="line"><a id="l00066" name="l00066"></a><span class="lineno"><a class="line" href="classdock_1_1LayoutNode.html#ace3ddd9762fc699a5fb4009ecc22c28b">   66</a></span>    <a class="code hl_class" href="classdock_1_1BoxNode.html">BoxNode</a>* <a class="code hl_function" href="classdock_1_1LayoutNode.html#ace3ddd9762fc699a5fb4009ecc22c28b">parent</a>()<span class="keyword"> const </span>{ <span class="keywordflow">return</span> <a class="code hl_variable" href="classdock_1_1LayoutNode.html#acc956f3bd4afb7d84acf1cd160c1a50c">parent_</a>; }</div>
+<div class="line"><a id="l00068" name="l00068"></a><span class="lineno"><a class="line" href="classdock_1_1LayoutNode.html#a87e08abaff76fae23b1eaa3d20edc1e3">   68</a></span>    <span class="keywordtype">void</span> <a class="code hl_function" href="classdock_1_1LayoutNode.html#a87e08abaff76fae23b1eaa3d20edc1e3">setParent</a>(<a class="code hl_class" href="classdock_1_1BoxNode.html">BoxNode</a>* <a class="code hl_function" href="classdock_1_1LayoutNode.html#ace3ddd9762fc699a5fb4009ecc22c28b">parent</a>) { <a class="code hl_variable" href="classdock_1_1LayoutNode.html#acc956f3bd4afb7d84acf1cd160c1a50c">parent_</a> = <a class="code hl_function" href="classdock_1_1LayoutNode.html#ace3ddd9762fc699a5fb4009ecc22c28b">parent</a>; }</div>
+<div class="line"><a id="l00069" name="l00069"></a><span class="lineno">   69</span></div>
+<div class="line"><a id="l00071" name="l00071"></a><span class="lineno"><a class="line" href="classdock_1_1LayoutNode.html#aa68140dba3871158446d4a34e2632285">   71</a></span>    <a class="code hl_class" href="classdock_1_1LayoutClient.html">LayoutClient</a>* <a class="code hl_function" href="classdock_1_1LayoutNode.html#aa68140dba3871158446d4a34e2632285">client</a>()<span class="keyword"> const </span>{ <span class="keywordflow">return</span> <a class="code hl_variable" href="classdock_1_1LayoutNode.html#a330708290105b38593bcfe495ede8fbd">client_</a>; }</div>
+<div class="line"><a id="l00073" name="l00073"></a><span class="lineno"><a class="line" href="classdock_1_1LayoutNode.html#aff44cafc816a56c1a0a523becb08317c">   73</a></span>    <span class="keywordtype">void</span> <a class="code hl_function" href="classdock_1_1LayoutNode.html#aff44cafc816a56c1a0a523becb08317c">setClient</a>(<a class="code hl_class" href="classdock_1_1LayoutClient.html">LayoutClient</a>* <a class="code hl_function" href="classdock_1_1LayoutNode.html#aa68140dba3871158446d4a34e2632285">client</a>) { <a class="code hl_variable" href="classdock_1_1LayoutNode.html#a330708290105b38593bcfe495ede8fbd">client_</a> = <a class="code hl_function" href="classdock_1_1LayoutNode.html#aa68140dba3871158446d4a34e2632285">client</a>; }</div>
+<div class="line"><a id="l00074" name="l00074"></a><span class="lineno">   74</span></div>
+<div class="line"><a id="l00076" name="l00076"></a><span class="lineno"><a class="line" href="classdock_1_1LayoutNode.html#ad372b16914f526c58886f2dc4715d472">   76</a></span>    <span class="keyword">const</span> QString&amp; <a class="code hl_function" href="classdock_1_1LayoutNode.html#ad372b16914f526c58886f2dc4715d472">id</a>()<span class="keyword"> const </span>{ <span class="keywordflow">return</span> <a class="code hl_variable" href="classdock_1_1LayoutNode.html#a3fd6219998fd058965465ef0809d2428">id_</a>; }</div>
+<div class="line"><a id="l00078" name="l00078"></a><span class="lineno"><a class="line" href="classdock_1_1LayoutNode.html#a97dc984069f355ef59069e62a47d6561">   78</a></span>    <span class="keywordtype">void</span> <a class="code hl_function" href="classdock_1_1LayoutNode.html#a97dc984069f355ef59069e62a47d6561">setId</a>(<span class="keyword">const</span> QString&amp; <span class="keywordtype">id</span>) { <a class="code hl_variable" href="classdock_1_1LayoutNode.html#a3fd6219998fd058965465ef0809d2428">id_</a> = <a class="code hl_function" href="classdock_1_1LayoutNode.html#ad372b16914f526c58886f2dc4715d472">id</a>; }</div>
+<div class="line"><a id="l00079" name="l00079"></a><span class="lineno">   79</span> </div>
+<div class="line"><a id="l00080" name="l00080"></a><span class="lineno">   80</span><span class="keyword">protected</span>:</div>
+<div class="line"><a id="l00082" name="l00082"></a><span class="lineno"><a class="line" href="classdock_1_1LayoutNode.html#a7045d7797e22fe2b473ab7f335c4c50f">   82</a></span>    <a class="code hl_struct" href="structdock_1_1NodeMetrics.html">NodeMetrics</a> <a class="code hl_variable" href="classdock_1_1LayoutNode.html#a7045d7797e22fe2b473ab7f335c4c50f">sizing_</a>;</div>
+<div class="line"><a id="l00084" name="l00084"></a><span class="lineno"><a class="line" href="classdock_1_1LayoutNode.html#a330708290105b38593bcfe495ede8fbd">   84</a></span>    <a class="code hl_class" href="classdock_1_1LayoutClient.html">LayoutClient</a>* <a class="code hl_variable" href="classdock_1_1LayoutNode.html#a330708290105b38593bcfe495ede8fbd">client_</a> = <span class="keyword">nullptr</span>;</div>
+<div class="line"><a id="l00086" name="l00086"></a><span class="lineno"><a class="line" href="classdock_1_1LayoutNode.html#acc956f3bd4afb7d84acf1cd160c1a50c">   86</a></span>    <a class="code hl_class" href="classdock_1_1BoxNode.html">BoxNode</a>* <a class="code hl_variable" href="classdock_1_1LayoutNode.html#acc956f3bd4afb7d84acf1cd160c1a50c">parent_</a> = <span class="keyword">nullptr</span>;</div>
+<div class="line"><a id="l00088" name="l00088"></a><span class="lineno"><a class="line" href="classdock_1_1LayoutNode.html#ae7c187229d510d993570526f84dfccb5">   88</a></span>    <span class="keywordtype">bool</span> <a class="code hl_variable" href="classdock_1_1LayoutNode.html#ae7c187229d510d993570526f84dfccb5">visible_</a> = <span class="keyword">true</span>;</div>
+<div class="line"><a id="l00089" name="l00089"></a><span class="lineno">   89</span> </div>
+<div class="line"><a id="l00090" name="l00090"></a><span class="lineno">   90</span><span class="keyword">private</span>:</div>
+<div class="line"><a id="l00091" name="l00091"></a><span class="lineno"><a class="line" href="classdock_1_1LayoutNode.html#aae9de7ec2181bae0ef735b8a43b1b50c">   91</a></span>    <span class="keywordtype">double</span> <a class="code hl_variable" href="classdock_1_1LayoutNode.html#aae9de7ec2181bae0ef735b8a43b1b50c">stored_percentage_</a> = 0.0;</div>
+<div class="line"><a id="l00092" name="l00092"></a><span class="lineno"><a class="line" href="classdock_1_1LayoutNode.html#a3fd6219998fd058965465ef0809d2428">   92</a></span>    QString <a class="code hl_variable" href="classdock_1_1LayoutNode.html#a3fd6219998fd058965465ef0809d2428">id_</a>;</div>
+<div class="line"><a id="l00093" name="l00093"></a><span class="lineno">   93</span>};</div>
+</div>
+<div class="line"><a id="l00094" name="l00094"></a><span class="lineno">   94</span> </div>
+<div class="line"><a id="l00095" name="l00095"></a><span class="lineno">   95</span>}</div>
+<div class="ttc" id="aNodeMetrics_8h_html"><div class="ttname"><a href="NodeMetrics_8h.html">NodeMetrics.h</a></div><div class="ttdoc">布局节点的几何与尺寸约束信息</div></div>
+<div class="ttc" id="aTestComponentModel_8cpp_html_acd06f41b01ec41c67d52bd9d7cc86e10"><div class="ttname"><a href="TestComponentModel_8cpp.html#acd06f41b01ec41c67d52bd9d7cc86e10">geometry</a></div><div class="ttdeci">c1 geometry</div><div class="ttdef"><b>定义</b> TestComponentModel.cpp:81</div></div>
+<div class="ttc" id="aclassdock_1_1BoxNode_html"><div class="ttname"><a href="classdock_1_1BoxNode.html">dock::BoxNode</a></div><div class="ttdoc">盒式布局容器</div><div class="ttdef"><b>定义</b> BoxNode.h:24</div></div>
+<div class="ttc" id="aclassdock_1_1LayoutClient_html"><div class="ttname"><a href="classdock_1_1LayoutClient.html">dock::LayoutClient</a></div><div class="ttdoc">被布局引擎托管的实体接口</div><div class="ttdef"><b>定义</b> LayoutClient.h:20</div></div>
+<div class="ttc" id="aclassdock_1_1LayoutNode_html_a02c11965630a1653920de4dfdfe7f114"><div class="ttname"><a href="classdock_1_1LayoutNode.html#a02c11965630a1653920de4dfdfe7f114">dock::LayoutNode::setShare</a></div><div class="ttdeci">void setShare(double share)</div><div class="ttdoc">设置主轴占比；几何在容器 layout() 时更新</div><div class="ttdef"><b>定义</b> LayoutNode.h:58</div></div>
+<div class="ttc" id="aclassdock_1_1LayoutNode_html_a0decd3e5d9c427a8e570fa134a62c9da"><div class="ttname"><a href="classdock_1_1LayoutNode.html#a0decd3e5d9c427a8e570fa134a62c9da">dock::LayoutNode::setRememberedShare</a></div><div class="ttdeci">void setRememberedShare(double share)</div><div class="ttdoc">设置隐藏前保存的占比</div><div class="ttdef"><b>定义</b> LayoutNode.h:63</div></div>
+<div class="ttc" id="aclassdock_1_1LayoutNode_html_a133db7e05a6b888ec823269219fb0ec6"><div class="ttname"><a href="classdock_1_1LayoutNode.html#a133db7e05a6b888ec823269219fb0ec6">dock::LayoutNode::maxExtent</a></div><div class="ttdeci">virtual QSize maxExtent() const</div><div class="ttdoc">软最大尺寸提示（默认取 client 约束）</div><div class="ttdef"><b>定义</b> LayoutNode.cpp:52</div></div>
+<div class="ttc" id="aclassdock_1_1LayoutNode_html_a153052bc082995189bf2355ee0725bd2"><div class="ttname"><a href="classdock_1_1LayoutNode.html#a153052bc082995189bf2355ee0725bd2">dock::LayoutNode::share</a></div><div class="ttdeci">double share() const</div><div class="ttdoc">主轴长度占比（0.0~1.0）</div><div class="ttdef"><b>定义</b> LayoutNode.h:56</div></div>
+<div class="ttc" id="aclassdock_1_1LayoutNode_html_a29a633796eb918d40610fa20714ff476"><div class="ttname"><a href="classdock_1_1LayoutNode.html#a29a633796eb918d40610fa20714ff476">dock::LayoutNode::geometry</a></div><div class="ttdeci">const QRect &amp; geometry() const</div><div class="ttdoc">布局几何（父容器坐标系）</div><div class="ttdef"><b>定义</b> LayoutNode.h:34</div></div>
+<div class="ttc" id="aclassdock_1_1LayoutNode_html_a330708290105b38593bcfe495ede8fbd"><div class="ttname"><a href="classdock_1_1LayoutNode.html#a330708290105b38593bcfe495ede8fbd">dock::LayoutNode::client_</a></div><div class="ttdeci">LayoutClient * client_</div><div class="ttdoc">被托管的实体（容器节点为空）</div><div class="ttdef"><b>定义</b> LayoutNode.h:84</div></div>
+<div class="ttc" id="aclassdock_1_1LayoutNode_html_a3fd6219998fd058965465ef0809d2428"><div class="ttname"><a href="classdock_1_1LayoutNode.html#a3fd6219998fd058965465ef0809d2428">dock::LayoutNode::id_</a></div><div class="ttdeci">QString id_</div><div class="ttdef"><b>定义</b> LayoutNode.h:92</div></div>
+<div class="ttc" id="aclassdock_1_1LayoutNode_html_a5b2418d589838d0258c003d43c270e51"><div class="ttname"><a href="classdock_1_1LayoutNode.html#a5b2418d589838d0258c003d43c270e51">dock::LayoutNode::setVisible</a></div><div class="ttdeci">virtual void setVisible(bool visible)</div><div class="ttdoc">设置可见性；变化时通知父容器重排</div><div class="ttdef"><b>定义</b> LayoutNode.cpp:27</div></div>
+<div class="ttc" id="aclassdock_1_1LayoutNode_html_a5dfc58207dc11471465c6786bcb8a61a"><div class="ttname"><a href="classdock_1_1LayoutNode.html#a5dfc58207dc11471465c6786bcb8a61a">dock::LayoutNode::setVisibleSilently</a></div><div class="ttdeci">void setVisibleSilently(bool visible)</div><div class="ttdoc">设置可见性但不通知父容器（仅用于树结构调整过程中）</div><div class="ttdef"><b>定义</b> LayoutNode.cpp:37</div></div>
+<div class="ttc" id="aclassdock_1_1LayoutNode_html_a7045d7797e22fe2b473ab7f335c4c50f"><div class="ttname"><a href="classdock_1_1LayoutNode.html#a7045d7797e22fe2b473ab7f335c4c50f">dock::LayoutNode::sizing_</a></div><div class="ttdeci">NodeMetrics sizing_</div><div class="ttdoc">几何与尺寸约束</div><div class="ttdef"><b>定义</b> LayoutNode.h:82</div></div>
+<div class="ttc" id="aclassdock_1_1LayoutNode_html_a87e08abaff76fae23b1eaa3d20edc1e3"><div class="ttname"><a href="classdock_1_1LayoutNode.html#a87e08abaff76fae23b1eaa3d20edc1e3">dock::LayoutNode::setParent</a></div><div class="ttdeci">void setParent(BoxNode *parent)</div><div class="ttdoc">设置父容器（由容器维护，不应手工调用）</div><div class="ttdef"><b>定义</b> LayoutNode.h:68</div></div>
+<div class="ttc" id="aclassdock_1_1LayoutNode_html_a88cad0a54c273b270c09aa4b4cb44c12"><div class="ttname"><a href="classdock_1_1LayoutNode.html#a88cad0a54c273b270c09aa4b4cb44c12">dock::LayoutNode::isContainer</a></div><div class="ttdeci">virtual bool isContainer() const</div><div class="ttdoc">是否为容器节点</div><div class="ttdef"><b>定义</b> LayoutNode.h:31</div></div>
+<div class="ttc" id="aclassdock_1_1LayoutNode_html_a97dc984069f355ef59069e62a47d6561"><div class="ttname"><a href="classdock_1_1LayoutNode.html#a97dc984069f355ef59069e62a47d6561">dock::LayoutNode::setId</a></div><div class="ttdeci">void setId(const QString &amp;id)</div><div class="ttdoc">设置调试标识</div><div class="ttdef"><b>定义</b> LayoutNode.h:78</div></div>
+<div class="ttc" id="aclassdock_1_1LayoutNode_html_aa68140dba3871158446d4a34e2632285"><div class="ttname"><a href="classdock_1_1LayoutNode.html#aa68140dba3871158446d4a34e2632285">dock::LayoutNode::client</a></div><div class="ttdeci">LayoutClient * client() const</div><div class="ttdoc">被托管的实体（容器节点为空）</div><div class="ttdef"><b>定义</b> LayoutNode.h:71</div></div>
+<div class="ttc" id="aclassdock_1_1LayoutNode_html_aab3fe64543a4241faeb0fef4dd7793d3"><div class="ttname"><a href="classdock_1_1LayoutNode.html#aab3fe64543a4241faeb0fef4dd7793d3">dock::LayoutNode::setGeometry</a></div><div class="ttdeci">virtual void setGeometry(const QRect &amp;geometry)</div><div class="ttdoc">设置几何并下发给 client</div><div class="ttdef"><b>定义</b> LayoutNode.cpp:20</div></div>
+<div class="ttc" id="aclassdock_1_1LayoutNode_html_aae9de7ec2181bae0ef735b8a43b1b50c"><div class="ttname"><a href="classdock_1_1LayoutNode.html#aae9de7ec2181bae0ef735b8a43b1b50c">dock::LayoutNode::stored_percentage_</a></div><div class="ttdeci">double stored_percentage_</div><div class="ttdef"><b>定义</b> LayoutNode.h:91</div></div>
+<div class="ttc" id="aclassdock_1_1LayoutNode_html_ab502912c14547c37b207cd6cee17bf28"><div class="ttname"><a href="classdock_1_1LayoutNode.html#ab502912c14547c37b207cd6cee17bf28">dock::LayoutNode::LayoutNode</a></div><div class="ttdeci">LayoutNode(LayoutClient *client=nullptr)</div><div class="ttdef"><b>定义</b> LayoutNode.cpp:13</div></div>
+<div class="ttc" id="aclassdock_1_1LayoutNode_html_acc956f3bd4afb7d84acf1cd160c1a50c"><div class="ttname"><a href="classdock_1_1LayoutNode.html#acc956f3bd4afb7d84acf1cd160c1a50c">dock::LayoutNode::parent_</a></div><div class="ttdeci">BoxNode * parent_</div><div class="ttdoc">父容器</div><div class="ttdef"><b>定义</b> LayoutNode.h:86</div></div>
+<div class="ttc" id="aclassdock_1_1LayoutNode_html_ace3ddd9762fc699a5fb4009ecc22c28b"><div class="ttname"><a href="classdock_1_1LayoutNode.html#ace3ddd9762fc699a5fb4009ecc22c28b">dock::LayoutNode::parent</a></div><div class="ttdeci">BoxNode * parent() const</div><div class="ttdoc">父容器</div><div class="ttdef"><b>定义</b> LayoutNode.h:66</div></div>
+<div class="ttc" id="aclassdock_1_1LayoutNode_html_ad36b85d576c6561f4b8bd46649ef88af"><div class="ttname"><a href="classdock_1_1LayoutNode.html#ad36b85d576c6561f4b8bd46649ef88af">dock::LayoutNode::isVisible</a></div><div class="ttdeci">virtual bool isVisible() const</div><div class="ttdoc">自身可见性（不含父链影响）</div><div class="ttdef"><b>定义</b> LayoutNode.h:39</div></div>
+<div class="ttc" id="aclassdock_1_1LayoutNode_html_ad372b16914f526c58886f2dc4715d472"><div class="ttname"><a href="classdock_1_1LayoutNode.html#ad372b16914f526c58886f2dc4715d472">dock::LayoutNode::id</a></div><div class="ttdeci">const QString &amp; id() const</div><div class="ttdoc">调试标识</div><div class="ttdef"><b>定义</b> LayoutNode.h:76</div></div>
+<div class="ttc" id="aclassdock_1_1LayoutNode_html_add7d64da392bf5343cf0c5e8dc19b84e"><div class="ttname"><a href="classdock_1_1LayoutNode.html#add7d64da392bf5343cf0c5e8dc19b84e">dock::LayoutNode::minExtent</a></div><div class="ttdeci">virtual QSize minExtent() const</div><div class="ttdoc">硬最小尺寸（默认取 client 约束）</div><div class="ttdef"><b>定义</b> LayoutNode.cpp:47</div></div>
+<div class="ttc" id="aclassdock_1_1LayoutNode_html_ae67b6d7d36243b7a416ec61e3cd4e688"><div class="ttname"><a href="classdock_1_1LayoutNode.html#ae67b6d7d36243b7a416ec61e3cd4e688">dock::LayoutNode::length</a></div><div class="ttdeci">int length(Qt::Orientation orientation) const</div><div class="ttdoc">主轴方向上的长度</div><div class="ttdef"><b>定义</b> LayoutNode.h:46</div></div>
+<div class="ttc" id="aclassdock_1_1LayoutNode_html_ae7c187229d510d993570526f84dfccb5"><div class="ttname"><a href="classdock_1_1LayoutNode.html#ae7c187229d510d993570526f84dfccb5">dock::LayoutNode::visible_</a></div><div class="ttdeci">bool visible_</div><div class="ttdoc">自身可见性（不含父链影响）</div><div class="ttdef"><b>定义</b> LayoutNode.h:88</div></div>
+<div class="ttc" id="aclassdock_1_1LayoutNode_html_aede94f40e6ab60ff6a3450ae7e0f8ba7"><div class="ttname"><a href="classdock_1_1LayoutNode.html#aede94f40e6ab60ff6a3450ae7e0f8ba7">dock::LayoutNode::~LayoutNode</a></div><div class="ttdeci">virtual ~LayoutNode()</div></div>
+<div class="ttc" id="aclassdock_1_1LayoutNode_html_af340d9855289a2df461dfc71abf3ea75"><div class="ttname"><a href="classdock_1_1LayoutNode.html#af340d9855289a2df461dfc71abf3ea75">dock::LayoutNode::position</a></div><div class="ttdeci">int position(Qt::Orientation orientation) const</div><div class="ttdoc">主轴方向上的起点坐标</div><div class="ttdef"><b>定义</b> LayoutNode.h:48</div></div>
+<div class="ttc" id="aclassdock_1_1LayoutNode_html_af4aa26ce1185167f27ff3cca940bee70"><div class="ttname"><a href="classdock_1_1LayoutNode.html#af4aa26ce1185167f27ff3cca940bee70">dock::LayoutNode::rememberedShare</a></div><div class="ttdeci">double rememberedShare() const</div><div class="ttdoc">隐藏前保存的占比，重新显示时用于恢复</div><div class="ttdef"><b>定义</b> LayoutNode.h:61</div></div>
+<div class="ttc" id="aclassdock_1_1LayoutNode_html_aff44cafc816a56c1a0a523becb08317c"><div class="ttname"><a href="classdock_1_1LayoutNode.html#aff44cafc816a56c1a0a523becb08317c">dock::LayoutNode::setClient</a></div><div class="ttdeci">void setClient(LayoutClient *client)</div><div class="ttdoc">设置被托管的实体</div><div class="ttdef"><b>定义</b> LayoutNode.h:73</div></div>
+<div class="ttc" id="anamespacedock_html"><div class="ttname"><a href="namespacedock.html">dock</a></div><div class="ttdef"><b>定义</b> DockCatalog.cpp:14</div></div>
+<div class="ttc" id="astructdock_1_1NodeMetrics_html"><div class="ttname"><a href="structdock_1_1NodeMetrics.html">dock::NodeMetrics</a></div><div class="ttdoc">单个布局节点的几何与尺寸约束</div><div class="ttdef"><b>定义</b> NodeMetrics.h:28</div></div>
+</div><!-- fragment --></div><!-- contents -->
+<!-- start footer part -->
+<hr class="footer"/><address class="footer"><small>
+制作者&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.14.0
+</small></address>
+</div><!-- doc-content -->
+</body>
+</html>

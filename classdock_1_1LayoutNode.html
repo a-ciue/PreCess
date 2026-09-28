@@ -1,0 +1,926 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="zh">
+<head>
+<meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=11"/>
+<meta name="generator" content="Doxygen 1.14.0"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>PreCess: dock::LayoutNode类 参考</title>
+<link href="tabs.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="jquery.js"></script>
+<script type="text/javascript" src="dynsections.js"></script>
+<script type="text/javascript" src="clipboard.js"></script>
+<script type="text/javascript" src="cookie.js"></script>
+<link href="search/search.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="search/searchdata.js"></script>
+<script type="text/javascript" src="search/search.js"></script>
+<link href="doxygen.css" rel="stylesheet" type="text/css" />
+</head>
+<body>
+<div id="top"><!-- do not remove this div, it is closed by doxygen! -->
+<div id="titlearea">
+<table cellspacing="0" cellpadding="0">
+ <tbody>
+ <tr id="projectrow">
+  <td id="projectlogo"><img alt="Logo" src="PreCess.ico"/></td>
+  <td id="projectalign">
+   <div id="projectname">PreCess
+   </div>
+  </td>
+ </tr>
+ </tbody>
+</table>
+</div>
+<!-- end header part -->
+<!-- 制作者 Doxygen 1.14.0 -->
+<script type="text/javascript">
+var searchBox = new SearchBox("searchBox", "search/",'.html');
+</script>
+<script type="text/javascript">
+$(function() { codefold.init(); });
+</script>
+<script type="text/javascript" src="menudata.js"></script>
+<script type="text/javascript" src="menu.js"></script>
+<script type="text/javascript">
+$(function() {
+  initMenu('',true,false,'search.php','搜索',false);
+  $(function() { init_search(); });
+});
+</script>
+<div id="main-nav"></div>
+<!-- window showing the filter options -->
+<div id="MSearchSelectWindow"
+     onmouseover="return searchBox.OnSearchSelectShow()"
+     onmouseout="return searchBox.OnSearchSelectHide()"
+     onkeydown="return searchBox.OnSearchSelectKey(event)">
+</div>
+
+<!-- iframe showing the search results (closed by default) -->
+<div id="MSearchResultsWindow">
+<div id="MSearchResults">
+<div class="SRPage">
+<div id="SRIndex">
+<div id="SRResults"></div>
+<div class="SRStatus" id="Loading">载入中...</div>
+<div class="SRStatus" id="Searching">搜索中...</div>
+<div class="SRStatus" id="NoMatches">未找到</div>
+</div>
+</div>
+</div>
+</div>
+
+<div id="nav-path" class="navpath">
+  <ul>
+<li class="navelem"><a href="namespacedock.html">dock</a></li><li class="navelem"><a href="classdock_1_1LayoutNode.html">LayoutNode</a></li>  </ul>
+</div>
+</div><!-- top -->
+<div id="doc-content">
+<div class="header">
+  <div class="summary">
+<a href="#pub-methods">Public 成员函数</a> &#124;
+<a href="#pro-attribs">Protected 属性</a> &#124;
+<a href="#pri-attribs">Private 属性</a> &#124;
+<a href="classdock_1_1LayoutNode-members.html">所有成员列表</a>  </div>
+  <div class="headertitle"><div class="title">dock::LayoutNode类 参考</div></div>
+</div><!--header-->
+<div class="contents">
+
+<p>布局树节点（叶子节点与容器节点的公共基类）  
+ <a href="#details">更多...</a></p>
+
+<p><code>#include &lt;<a class="el" href="LayoutNode_8h_source.html">LayoutNode.h</a>&gt;</code></p>
+<div class="dynheader">
+类 dock::LayoutNode 继承关系图:</div>
+<div class="dyncontent">
+<div class="center"><img src="classdock_1_1LayoutNode__inherit__graph.png" border="0" usemap="#adock_1_1LayoutNode_inherit__map" loading="lazy" alt="Inheritance graph"/></div>
+<map name="adock_1_1LayoutNode_inherit__map" id="adock_1_1LayoutNode_inherit__map">
+<area shape="rect" title="布局树节点（叶子节点与容器节点的公共基类）" alt="" coords="5,5,144,31"/>
+<area shape="rect" href="classdock_1_1BoxNode.html" title="盒式布局容器" alt="" coords="15,79,135,104"/>
+<area shape="poly" title=" " alt="" coords="77,44,77,79,72,79,72,44"/>
+</map>
+<center><span class="legend">[<a href="graph_legend.html">图例</a>]</span></center></div>
+<div class="dynheader">
+dock::LayoutNode 的协作图:</div>
+<div class="dyncontent">
+<div class="center"><img src="classdock_1_1LayoutNode__coll__graph.png" border="0" usemap="#adock_1_1LayoutNode_coll__map" loading="lazy" alt="Collaboration graph"/></div>
+<map name="adock_1_1LayoutNode_coll__map" id="adock_1_1LayoutNode_coll__map">
+<area shape="rect" title="布局树节点（叶子节点与容器节点的公共基类）" alt="" coords="90,101,229,127"/>
+<area shape="rect" href="classdock_1_1BoxNode.html" title="盒式布局容器" alt="" coords="99,197,219,223"/>
+<area shape="poly" title=" " alt="" coords="160,141,159,151,159,173,161,197,156,197,154,173,154,151,155,140"/>
+<area shape="rect" href="structdock_1_1NodeMetrics.html" title="单个布局节点的几何与尺寸约束" alt="" coords="5,5,148,31"/>
+<area shape="poly" title=" " alt="" coords="98,39,151,99,147,103,94,43"/>
+<area shape="rect" href="classdock_1_1LayoutClient.html" title="被布局引擎托管的实体接口" alt="" coords="172,5,315,31"/>
+<area shape="poly" title=" " alt="" coords="226,43,172,103,168,99,222,39"/>
+<area shape="poly" title=" " alt="" coords="157,183,157,127,162,127,162,183"/>
+</map>
+<center><span class="legend">[<a href="graph_legend.html">图例</a>]</span></center></div>
+<table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 id="header-pub-methods" class="groupheader"><a id="pub-methods" name="pub-methods"></a>
+Public 成员函数</h2></td></tr>
+<tr class="memitem:ab502912c14547c37b207cd6cee17bf28" id="r_ab502912c14547c37b207cd6cee17bf28"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ab502912c14547c37b207cd6cee17bf28">LayoutNode</a> (<a class="el" href="classdock_1_1LayoutClient.html">LayoutClient</a> *<a class="el" href="#aa68140dba3871158446d4a34e2632285">client</a>=nullptr)</td></tr>
+<tr class="memitem:aede94f40e6ab60ff6a3450ae7e0f8ba7" id="r_aede94f40e6ab60ff6a3450ae7e0f8ba7"><td class="memItemLeft" align="right" valign="top">virtual&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#aede94f40e6ab60ff6a3450ae7e0f8ba7">~LayoutNode</a> ()</td></tr>
+<tr class="memitem:a88cad0a54c273b270c09aa4b4cb44c12" id="r_a88cad0a54c273b270c09aa4b4cb44c12"><td class="memItemLeft" align="right" valign="top">virtual bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a88cad0a54c273b270c09aa4b4cb44c12">isContainer</a> () const</td></tr>
+<tr class="memdesc:a88cad0a54c273b270c09aa4b4cb44c12"><td class="mdescLeft">&#160;</td><td class="mdescRight">是否为容器节点  <br /></td></tr>
+<tr class="memitem:a29a633796eb918d40610fa20714ff476" id="r_a29a633796eb918d40610fa20714ff476"><td class="memItemLeft" align="right" valign="top">const QRect &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a29a633796eb918d40610fa20714ff476">geometry</a> () const</td></tr>
+<tr class="memdesc:a29a633796eb918d40610fa20714ff476"><td class="mdescLeft">&#160;</td><td class="mdescRight">布局几何（父容器坐标系）  <br /></td></tr>
+<tr class="memitem:aab3fe64543a4241faeb0fef4dd7793d3" id="r_aab3fe64543a4241faeb0fef4dd7793d3"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#aab3fe64543a4241faeb0fef4dd7793d3">setGeometry</a> (const QRect &amp;<a class="el" href="#a29a633796eb918d40610fa20714ff476">geometry</a>)</td></tr>
+<tr class="memdesc:aab3fe64543a4241faeb0fef4dd7793d3"><td class="mdescLeft">&#160;</td><td class="mdescRight">设置几何并下发给 client  <br /></td></tr>
+<tr class="memitem:ad36b85d576c6561f4b8bd46649ef88af" id="r_ad36b85d576c6561f4b8bd46649ef88af"><td class="memItemLeft" align="right" valign="top">virtual bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ad36b85d576c6561f4b8bd46649ef88af">isVisible</a> () const</td></tr>
+<tr class="memdesc:ad36b85d576c6561f4b8bd46649ef88af"><td class="mdescLeft">&#160;</td><td class="mdescRight">自身可见性（不含父链影响）  <br /></td></tr>
+<tr class="memitem:a5b2418d589838d0258c003d43c270e51" id="r_a5b2418d589838d0258c003d43c270e51"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a5b2418d589838d0258c003d43c270e51">setVisible</a> (bool visible)</td></tr>
+<tr class="memdesc:a5b2418d589838d0258c003d43c270e51"><td class="mdescLeft">&#160;</td><td class="mdescRight">设置可见性；变化时通知父容器重排  <br /></td></tr>
+<tr class="memitem:a5dfc58207dc11471465c6786bcb8a61a" id="r_a5dfc58207dc11471465c6786bcb8a61a"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a5dfc58207dc11471465c6786bcb8a61a">setVisibleSilently</a> (bool visible)</td></tr>
+<tr class="memdesc:a5dfc58207dc11471465c6786bcb8a61a"><td class="mdescLeft">&#160;</td><td class="mdescRight">设置可见性但不通知父容器（仅用于树结构调整过程中）  <br /></td></tr>
+<tr class="memitem:ae67b6d7d36243b7a416ec61e3cd4e688" id="r_ae67b6d7d36243b7a416ec61e3cd4e688"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ae67b6d7d36243b7a416ec61e3cd4e688">length</a> (Qt::Orientation orientation) const</td></tr>
+<tr class="memdesc:ae67b6d7d36243b7a416ec61e3cd4e688"><td class="mdescLeft">&#160;</td><td class="mdescRight">主轴方向上的长度  <br /></td></tr>
+<tr class="memitem:af340d9855289a2df461dfc71abf3ea75" id="r_af340d9855289a2df461dfc71abf3ea75"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#af340d9855289a2df461dfc71abf3ea75">position</a> (Qt::Orientation orientation) const</td></tr>
+<tr class="memdesc:af340d9855289a2df461dfc71abf3ea75"><td class="mdescLeft">&#160;</td><td class="mdescRight">主轴方向上的起点坐标  <br /></td></tr>
+<tr class="memitem:add7d64da392bf5343cf0c5e8dc19b84e" id="r_add7d64da392bf5343cf0c5e8dc19b84e"><td class="memItemLeft" align="right" valign="top">virtual QSize&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#add7d64da392bf5343cf0c5e8dc19b84e">minExtent</a> () const</td></tr>
+<tr class="memdesc:add7d64da392bf5343cf0c5e8dc19b84e"><td class="mdescLeft">&#160;</td><td class="mdescRight">硬最小尺寸（默认取 client 约束）  <br /></td></tr>
+<tr class="memitem:a133db7e05a6b888ec823269219fb0ec6" id="r_a133db7e05a6b888ec823269219fb0ec6"><td class="memItemLeft" align="right" valign="top">virtual QSize&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a133db7e05a6b888ec823269219fb0ec6">maxExtent</a> () const</td></tr>
+<tr class="memdesc:a133db7e05a6b888ec823269219fb0ec6"><td class="mdescLeft">&#160;</td><td class="mdescRight">软最大尺寸提示（默认取 client 约束）  <br /></td></tr>
+<tr class="memitem:a153052bc082995189bf2355ee0725bd2" id="r_a153052bc082995189bf2355ee0725bd2"><td class="memItemLeft" align="right" valign="top">double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a153052bc082995189bf2355ee0725bd2">share</a> () const</td></tr>
+<tr class="memdesc:a153052bc082995189bf2355ee0725bd2"><td class="mdescLeft">&#160;</td><td class="mdescRight">主轴长度占比（0.0~1.0）  <br /></td></tr>
+<tr class="memitem:a02c11965630a1653920de4dfdfe7f114" id="r_a02c11965630a1653920de4dfdfe7f114"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a02c11965630a1653920de4dfdfe7f114">setShare</a> (double <a class="el" href="#a153052bc082995189bf2355ee0725bd2">share</a>)</td></tr>
+<tr class="memdesc:a02c11965630a1653920de4dfdfe7f114"><td class="mdescLeft">&#160;</td><td class="mdescRight">设置主轴占比；几何在容器 layout() 时更新  <br /></td></tr>
+<tr class="memitem:af4aa26ce1185167f27ff3cca940bee70" id="r_af4aa26ce1185167f27ff3cca940bee70"><td class="memItemLeft" align="right" valign="top">double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#af4aa26ce1185167f27ff3cca940bee70">rememberedShare</a> () const</td></tr>
+<tr class="memdesc:af4aa26ce1185167f27ff3cca940bee70"><td class="mdescLeft">&#160;</td><td class="mdescRight">隐藏前保存的占比，重新显示时用于恢复  <br /></td></tr>
+<tr class="memitem:a0decd3e5d9c427a8e570fa134a62c9da" id="r_a0decd3e5d9c427a8e570fa134a62c9da"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a0decd3e5d9c427a8e570fa134a62c9da">setRememberedShare</a> (double <a class="el" href="#a153052bc082995189bf2355ee0725bd2">share</a>)</td></tr>
+<tr class="memdesc:a0decd3e5d9c427a8e570fa134a62c9da"><td class="mdescLeft">&#160;</td><td class="mdescRight">设置隐藏前保存的占比  <br /></td></tr>
+<tr class="memitem:ace3ddd9762fc699a5fb4009ecc22c28b" id="r_ace3ddd9762fc699a5fb4009ecc22c28b"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classdock_1_1BoxNode.html">BoxNode</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ace3ddd9762fc699a5fb4009ecc22c28b">parent</a> () const</td></tr>
+<tr class="memdesc:ace3ddd9762fc699a5fb4009ecc22c28b"><td class="mdescLeft">&#160;</td><td class="mdescRight">父容器  <br /></td></tr>
+<tr class="memitem:a87e08abaff76fae23b1eaa3d20edc1e3" id="r_a87e08abaff76fae23b1eaa3d20edc1e3"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a87e08abaff76fae23b1eaa3d20edc1e3">setParent</a> (<a class="el" href="classdock_1_1BoxNode.html">BoxNode</a> *<a class="el" href="#ace3ddd9762fc699a5fb4009ecc22c28b">parent</a>)</td></tr>
+<tr class="memdesc:a87e08abaff76fae23b1eaa3d20edc1e3"><td class="mdescLeft">&#160;</td><td class="mdescRight">设置父容器（由容器维护，不应手工调用）  <br /></td></tr>
+<tr class="memitem:aa68140dba3871158446d4a34e2632285" id="r_aa68140dba3871158446d4a34e2632285"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classdock_1_1LayoutClient.html">LayoutClient</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#aa68140dba3871158446d4a34e2632285">client</a> () const</td></tr>
+<tr class="memdesc:aa68140dba3871158446d4a34e2632285"><td class="mdescLeft">&#160;</td><td class="mdescRight">被托管的实体（容器节点为空）  <br /></td></tr>
+<tr class="memitem:aff44cafc816a56c1a0a523becb08317c" id="r_aff44cafc816a56c1a0a523becb08317c"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#aff44cafc816a56c1a0a523becb08317c">setClient</a> (<a class="el" href="classdock_1_1LayoutClient.html">LayoutClient</a> *<a class="el" href="#aa68140dba3871158446d4a34e2632285">client</a>)</td></tr>
+<tr class="memdesc:aff44cafc816a56c1a0a523becb08317c"><td class="mdescLeft">&#160;</td><td class="mdescRight">设置被托管的实体  <br /></td></tr>
+<tr class="memitem:ad372b16914f526c58886f2dc4715d472" id="r_ad372b16914f526c58886f2dc4715d472"><td class="memItemLeft" align="right" valign="top">const QString &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ad372b16914f526c58886f2dc4715d472">id</a> () const</td></tr>
+<tr class="memdesc:ad372b16914f526c58886f2dc4715d472"><td class="mdescLeft">&#160;</td><td class="mdescRight">调试标识  <br /></td></tr>
+<tr class="memitem:a97dc984069f355ef59069e62a47d6561" id="r_a97dc984069f355ef59069e62a47d6561"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a97dc984069f355ef59069e62a47d6561">setId</a> (const QString &amp;<a class="el" href="#ad372b16914f526c58886f2dc4715d472">id</a>)</td></tr>
+<tr class="memdesc:a97dc984069f355ef59069e62a47d6561"><td class="mdescLeft">&#160;</td><td class="mdescRight">设置调试标识  <br /></td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 id="header-pro-attribs" class="groupheader"><a id="pro-attribs" name="pro-attribs"></a>
+Protected 属性</h2></td></tr>
+<tr class="memitem:a7045d7797e22fe2b473ab7f335c4c50f" id="r_a7045d7797e22fe2b473ab7f335c4c50f"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structdock_1_1NodeMetrics.html">NodeMetrics</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a7045d7797e22fe2b473ab7f335c4c50f">sizing_</a></td></tr>
+<tr class="memdesc:a7045d7797e22fe2b473ab7f335c4c50f"><td class="mdescLeft">&#160;</td><td class="mdescRight">几何与尺寸约束  <br /></td></tr>
+<tr class="memitem:a330708290105b38593bcfe495ede8fbd" id="r_a330708290105b38593bcfe495ede8fbd"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classdock_1_1LayoutClient.html">LayoutClient</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a330708290105b38593bcfe495ede8fbd">client_</a> = nullptr</td></tr>
+<tr class="memdesc:a330708290105b38593bcfe495ede8fbd"><td class="mdescLeft">&#160;</td><td class="mdescRight">被托管的实体（容器节点为空）  <br /></td></tr>
+<tr class="memitem:acc956f3bd4afb7d84acf1cd160c1a50c" id="r_acc956f3bd4afb7d84acf1cd160c1a50c"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classdock_1_1BoxNode.html">BoxNode</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#acc956f3bd4afb7d84acf1cd160c1a50c">parent_</a> = nullptr</td></tr>
+<tr class="memdesc:acc956f3bd4afb7d84acf1cd160c1a50c"><td class="mdescLeft">&#160;</td><td class="mdescRight">父容器  <br /></td></tr>
+<tr class="memitem:ae7c187229d510d993570526f84dfccb5" id="r_ae7c187229d510d993570526f84dfccb5"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ae7c187229d510d993570526f84dfccb5">visible_</a> = true</td></tr>
+<tr class="memdesc:ae7c187229d510d993570526f84dfccb5"><td class="mdescLeft">&#160;</td><td class="mdescRight">自身可见性（不含父链影响）  <br /></td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 id="header-pri-attribs" class="groupheader"><a id="pri-attribs" name="pri-attribs"></a>
+Private 属性</h2></td></tr>
+<tr class="memitem:aae9de7ec2181bae0ef735b8a43b1b50c" id="r_aae9de7ec2181bae0ef735b8a43b1b50c"><td class="memItemLeft" align="right" valign="top">double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#aae9de7ec2181bae0ef735b8a43b1b50c">stored_percentage_</a> = 0.0</td></tr>
+<tr class="memitem:a3fd6219998fd058965465ef0809d2428" id="r_a3fd6219998fd058965465ef0809d2428"><td class="memItemLeft" align="right" valign="top">QString&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a3fd6219998fd058965465ef0809d2428">id_</a></td></tr>
+</table>
+<a name="details" id="details"></a><h2 id="header-details" class="groupheader">详细描述</h2>
+<div class="textblock"><p>布局树节点（叶子节点与容器节点的公共基类） </p>
+<p>叶子节点持有 LayoutClient，几何变化经 client 接口下发； 容器节点由 <a class="el" href="classdock_1_1BoxNode.html" title="盒式布局容器">BoxNode</a> 实现。主轴占比 share 描述节点在 父容器主轴上的长度份额，父容器尺寸变化时按占比重新分配长度。 </p>
+</div><a name="doc-constructors" id="doc-constructors"></a><h2 id="header-doc-constructors" class="groupheader">构造及析构函数说明</h2>
+<a id="ab502912c14547c37b207cd6cee17bf28" name="ab502912c14547c37b207cd6cee17bf28"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ab502912c14547c37b207cd6cee17bf28">&#9670;&#160;</a></span>LayoutNode()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">dock::LayoutNode::LayoutNode </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="classdock_1_1LayoutClient.html">LayoutClient</a> *</td>          <td class="paramname"><span class="paramname"><em>client</em></span><span class="paramdefsep"> = </span><span class="paramdefval">nullptr</span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel explicit">explicit</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="aede94f40e6ab60ff6a3450ae7e0f8ba7" name="aede94f40e6ab60ff6a3450ae7e0f8ba7"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aede94f40e6ab60ff6a3450ae7e0f8ba7">&#9670;&#160;</a></span>~LayoutNode()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">dock::LayoutNode::~LayoutNode </td>
+          <td>(</td>
+          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel virtual">virtual</span><span class="mlabel default">default</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a name="doc-func-members" id="doc-func-members"></a><h2 id="header-doc-func-members" class="groupheader">成员函数说明</h2>
+<a id="aa68140dba3871158446d4a34e2632285" name="aa68140dba3871158446d4a34e2632285"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aa68140dba3871158446d4a34e2632285">&#9670;&#160;</a></span>client()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classdock_1_1LayoutClient.html">LayoutClient</a> * dock::LayoutNode::client </td>
+          <td>(</td>
+          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel inline">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>被托管的实体（容器节点为空） </p>
+
+</div>
+</div>
+<a id="a29a633796eb918d40610fa20714ff476" name="a29a633796eb918d40610fa20714ff476"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a29a633796eb918d40610fa20714ff476">&#9670;&#160;</a></span>geometry()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">const QRect &amp; dock::LayoutNode::geometry </td>
+          <td>(</td>
+          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel inline">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>布局几何（父容器坐标系） </p>
+
+</div>
+</div>
+<a id="ad372b16914f526c58886f2dc4715d472" name="ad372b16914f526c58886f2dc4715d472"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ad372b16914f526c58886f2dc4715d472">&#9670;&#160;</a></span>id()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">const QString &amp; dock::LayoutNode::id </td>
+          <td>(</td>
+          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel inline">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>调试标识 </p>
+
+</div>
+</div>
+<a id="a88cad0a54c273b270c09aa4b4cb44c12" name="a88cad0a54c273b270c09aa4b4cb44c12"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a88cad0a54c273b270c09aa4b4cb44c12">&#9670;&#160;</a></span>isContainer()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">virtual bool dock::LayoutNode::isContainer </td>
+          <td>(</td>
+          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel inline">inline</span><span class="mlabel virtual">virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>是否为容器节点 </p>
+
+<p>被 <a class="el" href="classdock_1_1BoxNode.html#a7d07102d10be819acf444c4552917667">dock::BoxNode</a> 重载.</p>
+
+</div>
+</div>
+<a id="ad36b85d576c6561f4b8bd46649ef88af" name="ad36b85d576c6561f4b8bd46649ef88af"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ad36b85d576c6561f4b8bd46649ef88af">&#9670;&#160;</a></span>isVisible()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">virtual bool dock::LayoutNode::isVisible </td>
+          <td>(</td>
+          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel inline">inline</span><span class="mlabel virtual">virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>自身可见性（不含父链影响） </p>
+
+</div>
+</div>
+<a id="ae67b6d7d36243b7a416ec61e3cd4e688" name="ae67b6d7d36243b7a416ec61e3cd4e688"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ae67b6d7d36243b7a416ec61e3cd4e688">&#9670;&#160;</a></span>length()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">int dock::LayoutNode::length </td>
+          <td>(</td>
+          <td class="paramtype">Qt::Orientation</td>          <td class="paramname"><span class="paramname"><em>orientation</em></span></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel inline">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>主轴方向上的长度 </p>
+
+</div>
+</div>
+<a id="a133db7e05a6b888ec823269219fb0ec6" name="a133db7e05a6b888ec823269219fb0ec6"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a133db7e05a6b888ec823269219fb0ec6">&#9670;&#160;</a></span>maxExtent()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">QSize dock::LayoutNode::maxExtent </td>
+          <td>(</td>
+          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel virtual">virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>软最大尺寸提示（默认取 client 约束） </p>
+
+<p>被 <a class="el" href="classdock_1_1BoxNode.html#ab648c6bb8451e3a642753605d3336b12">dock::BoxNode</a> 重载.</p>
+
+</div>
+</div>
+<a id="add7d64da392bf5343cf0c5e8dc19b84e" name="add7d64da392bf5343cf0c5e8dc19b84e"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#add7d64da392bf5343cf0c5e8dc19b84e">&#9670;&#160;</a></span>minExtent()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">QSize dock::LayoutNode::minExtent </td>
+          <td>(</td>
+          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel virtual">virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>硬最小尺寸（默认取 client 约束） </p>
+
+<p>被 <a class="el" href="classdock_1_1BoxNode.html#a2bb07128122e51964c9f0e60eac979b4">dock::BoxNode</a> 重载.</p>
+
+</div>
+</div>
+<a id="ace3ddd9762fc699a5fb4009ecc22c28b" name="ace3ddd9762fc699a5fb4009ecc22c28b"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ace3ddd9762fc699a5fb4009ecc22c28b">&#9670;&#160;</a></span>parent()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classdock_1_1BoxNode.html">BoxNode</a> * dock::LayoutNode::parent </td>
+          <td>(</td>
+          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel inline">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>父容器 </p>
+
+</div>
+</div>
+<a id="af340d9855289a2df461dfc71abf3ea75" name="af340d9855289a2df461dfc71abf3ea75"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#af340d9855289a2df461dfc71abf3ea75">&#9670;&#160;</a></span>position()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">int dock::LayoutNode::position </td>
+          <td>(</td>
+          <td class="paramtype">Qt::Orientation</td>          <td class="paramname"><span class="paramname"><em>orientation</em></span></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel inline">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>主轴方向上的起点坐标 </p>
+
+</div>
+</div>
+<a id="af4aa26ce1185167f27ff3cca940bee70" name="af4aa26ce1185167f27ff3cca940bee70"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#af4aa26ce1185167f27ff3cca940bee70">&#9670;&#160;</a></span>rememberedShare()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">double dock::LayoutNode::rememberedShare </td>
+          <td>(</td>
+          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel inline">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>隐藏前保存的占比，重新显示时用于恢复 </p>
+
+</div>
+</div>
+<a id="aff44cafc816a56c1a0a523becb08317c" name="aff44cafc816a56c1a0a523becb08317c"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aff44cafc816a56c1a0a523becb08317c">&#9670;&#160;</a></span>setClient()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void dock::LayoutNode::setClient </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="classdock_1_1LayoutClient.html">LayoutClient</a> *</td>          <td class="paramname"><span class="paramname"><em>client</em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel inline">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>设置被托管的实体 </p>
+
+</div>
+</div>
+<a id="aab3fe64543a4241faeb0fef4dd7793d3" name="aab3fe64543a4241faeb0fef4dd7793d3"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aab3fe64543a4241faeb0fef4dd7793d3">&#9670;&#160;</a></span>setGeometry()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void dock::LayoutNode::setGeometry </td>
+          <td>(</td>
+          <td class="paramtype">const QRect &amp;</td>          <td class="paramname"><span class="paramname"><em>geometry</em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel virtual">virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>设置几何并下发给 client </p>
+
+<p>被 <a class="el" href="classdock_1_1BoxNode.html#adbb0ffc9dc119731e79529a9bbd3c1e5">dock::BoxNode</a> 重载.</p>
+
+</div>
+</div>
+<a id="a97dc984069f355ef59069e62a47d6561" name="a97dc984069f355ef59069e62a47d6561"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a97dc984069f355ef59069e62a47d6561">&#9670;&#160;</a></span>setId()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void dock::LayoutNode::setId </td>
+          <td>(</td>
+          <td class="paramtype">const QString &amp;</td>          <td class="paramname"><span class="paramname"><em>id</em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel inline">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>设置调试标识 </p>
+
+</div>
+</div>
+<a id="a87e08abaff76fae23b1eaa3d20edc1e3" name="a87e08abaff76fae23b1eaa3d20edc1e3"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a87e08abaff76fae23b1eaa3d20edc1e3">&#9670;&#160;</a></span>setParent()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void dock::LayoutNode::setParent </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="classdock_1_1BoxNode.html">BoxNode</a> *</td>          <td class="paramname"><span class="paramname"><em>parent</em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel inline">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>设置父容器（由容器维护，不应手工调用） </p>
+
+</div>
+</div>
+<a id="a0decd3e5d9c427a8e570fa134a62c9da" name="a0decd3e5d9c427a8e570fa134a62c9da"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a0decd3e5d9c427a8e570fa134a62c9da">&#9670;&#160;</a></span>setRememberedShare()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void dock::LayoutNode::setRememberedShare </td>
+          <td>(</td>
+          <td class="paramtype">double</td>          <td class="paramname"><span class="paramname"><em>share</em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel inline">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>设置隐藏前保存的占比 </p>
+
+</div>
+</div>
+<a id="a02c11965630a1653920de4dfdfe7f114" name="a02c11965630a1653920de4dfdfe7f114"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a02c11965630a1653920de4dfdfe7f114">&#9670;&#160;</a></span>setShare()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void dock::LayoutNode::setShare </td>
+          <td>(</td>
+          <td class="paramtype">double</td>          <td class="paramname"><span class="paramname"><em>share</em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel inline">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>设置主轴占比；几何在容器 layout() 时更新 </p>
+
+</div>
+</div>
+<a id="a5b2418d589838d0258c003d43c270e51" name="a5b2418d589838d0258c003d43c270e51"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a5b2418d589838d0258c003d43c270e51">&#9670;&#160;</a></span>setVisible()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void dock::LayoutNode::setVisible </td>
+          <td>(</td>
+          <td class="paramtype">bool</td>          <td class="paramname"><span class="paramname"><em>visible</em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel virtual">virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>设置可见性；变化时通知父容器重排 </p>
+
+</div>
+</div>
+<a id="a5dfc58207dc11471465c6786bcb8a61a" name="a5dfc58207dc11471465c6786bcb8a61a"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a5dfc58207dc11471465c6786bcb8a61a">&#9670;&#160;</a></span>setVisibleSilently()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void dock::LayoutNode::setVisibleSilently </td>
+          <td>(</td>
+          <td class="paramtype">bool</td>          <td class="paramname"><span class="paramname"><em>visible</em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>设置可见性但不通知父容器（仅用于树结构调整过程中） </p>
+
+</div>
+</div>
+<a id="a153052bc082995189bf2355ee0725bd2" name="a153052bc082995189bf2355ee0725bd2"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a153052bc082995189bf2355ee0725bd2">&#9670;&#160;</a></span>share()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">double dock::LayoutNode::share </td>
+          <td>(</td>
+          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel inline">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>主轴长度占比（0.0~1.0） </p>
+
+</div>
+</div>
+<a name="doc-variable-members" id="doc-variable-members"></a><h2 id="header-doc-variable-members" class="groupheader">类成员变量说明</h2>
+<a id="a330708290105b38593bcfe495ede8fbd" name="a330708290105b38593bcfe495ede8fbd"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a330708290105b38593bcfe495ede8fbd">&#9670;&#160;</a></span>client_</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classdock_1_1LayoutClient.html">LayoutClient</a>* dock::LayoutNode::client_ = nullptr</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel protected">protected</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>被托管的实体（容器节点为空） </p>
+
+</div>
+</div>
+<a id="a3fd6219998fd058965465ef0809d2428" name="a3fd6219998fd058965465ef0809d2428"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a3fd6219998fd058965465ef0809d2428">&#9670;&#160;</a></span>id_</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">QString dock::LayoutNode::id_</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel private">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="acc956f3bd4afb7d84acf1cd160c1a50c" name="acc956f3bd4afb7d84acf1cd160c1a50c"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#acc956f3bd4afb7d84acf1cd160c1a50c">&#9670;&#160;</a></span>parent_</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classdock_1_1BoxNode.html">BoxNode</a>* dock::LayoutNode::parent_ = nullptr</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel protected">protected</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>父容器 </p>
+
+</div>
+</div>
+<a id="a7045d7797e22fe2b473ab7f335c4c50f" name="a7045d7797e22fe2b473ab7f335c4c50f"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a7045d7797e22fe2b473ab7f335c4c50f">&#9670;&#160;</a></span>sizing_</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="structdock_1_1NodeMetrics.html">NodeMetrics</a> dock::LayoutNode::sizing_</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel protected">protected</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>几何与尺寸约束 </p>
+
+</div>
+</div>
+<a id="aae9de7ec2181bae0ef735b8a43b1b50c" name="aae9de7ec2181bae0ef735b8a43b1b50c"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aae9de7ec2181bae0ef735b8a43b1b50c">&#9670;&#160;</a></span>stored_percentage_</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">double dock::LayoutNode::stored_percentage_ = 0.0</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel private">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="ae7c187229d510d993570526f84dfccb5" name="ae7c187229d510d993570526f84dfccb5"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ae7c187229d510d993570526f84dfccb5">&#9670;&#160;</a></span>visible_</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool dock::LayoutNode::visible_ = true</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel protected">protected</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>自身可见性（不含父链影响） </p>
+
+</div>
+</div>
+<hr/>该类的文档由以下文件生成:<ul>
+<li>app/dock/tree/<a class="el" href="LayoutNode_8h_source.html">LayoutNode.h</a></li>
+<li>app/dock/tree/<a class="el" href="LayoutNode_8cpp.html">LayoutNode.cpp</a></li>
+</ul>
+</div><!-- contents -->
+<!-- start footer part -->
+<hr class="footer"/><address class="footer"><small>
+制作者&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.14.0
+</small></address>
+</div><!-- doc-content -->
+</body>
+</html>

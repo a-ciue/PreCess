@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['kind_0',['Kind',['../structStructuralEntry.html#a13ddf8991a341b935c1f72da3fe46749',1,'StructuralEntry::Kind'],['../structsystems_1_1feature_1_1ModelEvent.html#a91b904d63c8caf3b41e5fa1942da4c3b',1,'systems::feature::ModelEvent::Kind']]]
+  ['feature_0',['Feature',['../classdock_1_1DockPanel.html#ab02806346cd0b303fdfdb11093c01daf',1,'dock::DockPanel']]]
 ];

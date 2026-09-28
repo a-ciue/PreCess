@@ -1,0 +1,269 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="zh">
+<head>
+<meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=11"/>
+<meta name="generator" content="Doxygen 1.14.0"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>PreCess: dock::LayoutClient类 参考</title>
+<link href="tabs.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="jquery.js"></script>
+<script type="text/javascript" src="dynsections.js"></script>
+<script type="text/javascript" src="clipboard.js"></script>
+<script type="text/javascript" src="cookie.js"></script>
+<link href="search/search.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="search/searchdata.js"></script>
+<script type="text/javascript" src="search/search.js"></script>
+<link href="doxygen.css" rel="stylesheet" type="text/css" />
+</head>
+<body>
+<div id="top"><!-- do not remove this div, it is closed by doxygen! -->
+<div id="titlearea">
+<table cellspacing="0" cellpadding="0">
+ <tbody>
+ <tr id="projectrow">
+  <td id="projectlogo"><img alt="Logo" src="PreCess.ico"/></td>
+  <td id="projectalign">
+   <div id="projectname">PreCess
+   </div>
+  </td>
+ </tr>
+ </tbody>
+</table>
+</div>
+<!-- end header part -->
+<!-- 制作者 Doxygen 1.14.0 -->
+<script type="text/javascript">
+var searchBox = new SearchBox("searchBox", "search/",'.html');
+</script>
+<script type="text/javascript">
+$(function() { codefold.init(); });
+</script>
+<script type="text/javascript" src="menudata.js"></script>
+<script type="text/javascript" src="menu.js"></script>
+<script type="text/javascript">
+$(function() {
+  initMenu('',true,false,'search.php','搜索',false);
+  $(function() { init_search(); });
+});
+</script>
+<div id="main-nav"></div>
+<!-- window showing the filter options -->
+<div id="MSearchSelectWindow"
+     onmouseover="return searchBox.OnSearchSelectShow()"
+     onmouseout="return searchBox.OnSearchSelectHide()"
+     onkeydown="return searchBox.OnSearchSelectKey(event)">
+</div>
+
+<!-- iframe showing the search results (closed by default) -->
+<div id="MSearchResultsWindow">
+<div id="MSearchResults">
+<div class="SRPage">
+<div id="SRIndex">
+<div id="SRResults"></div>
+<div class="SRStatus" id="Loading">载入中...</div>
+<div class="SRStatus" id="Searching">搜索中...</div>
+<div class="SRStatus" id="NoMatches">未找到</div>
+</div>
+</div>
+</div>
+</div>
+
+<div id="nav-path" class="navpath">
+  <ul>
+<li class="navelem"><a href="namespacedock.html">dock</a></li><li class="navelem"><a href="classdock_1_1LayoutClient.html">LayoutClient</a></li>  </ul>
+</div>
+</div><!-- top -->
+<div id="doc-content">
+<div class="header">
+  <div class="summary">
+<a href="#pub-methods">Public 成员函数</a> &#124;
+<a href="classdock_1_1LayoutClient-members.html">所有成员列表</a>  </div>
+  <div class="headertitle"><div class="title">dock::LayoutClient类 参考<span class="mlabels"><span class="mlabel abstract">abstract</span></span></div></div>
+</div><!--header-->
+<div class="contents">
+
+<p>被布局引擎托管的实体接口  
+ <a href="#details">更多...</a></p>
+
+<p><code>#include &lt;<a class="el" href="LayoutClient_8h_source.html">LayoutClient.h</a>&gt;</code></p>
+<div class="dynheader">
+类 dock::LayoutClient 继承关系图:</div>
+<div class="dyncontent">
+<div class="center"><img src="classdock_1_1LayoutClient__inherit__graph.png" border="0" usemap="#adock_1_1LayoutClient_inherit__map" loading="lazy" alt="Inheritance graph"/></div>
+<map name="adock_1_1LayoutClient_inherit__map" id="adock_1_1LayoutClient_inherit__map">
+<area shape="rect" title="被布局引擎托管的实体接口" alt="" coords="5,5,148,31"/>
+<area shape="rect" href="classdock_1_1PanelGroup.html" title="选项卡分组" alt="" coords="9,79,144,104"/>
+<area shape="poly" title=" " alt="" coords="79,44,79,79,74,79,74,44"/>
+</map>
+<center><span class="legend">[<a href="graph_legend.html">图例</a>]</span></center></div>
+<table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 id="header-pub-methods" class="groupheader"><a id="pub-methods" name="pub-methods"></a>
+Public 成员函数</h2></td></tr>
+<tr class="memitem:a165d70aca30628a2c915f37b1de252e9" id="r_a165d70aca30628a2c915f37b1de252e9"><td class="memItemLeft" align="right" valign="top">virtual&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a165d70aca30628a2c915f37b1de252e9">~LayoutClient</a> ()=default</td></tr>
+<tr class="memitem:aa72349d59cc6b95976e1ee519c3c1f51" id="r_aa72349d59cc6b95976e1ee519c3c1f51"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#aa72349d59cc6b95976e1ee519c3c1f51">applyGeometry</a> (const QRect &amp;<a class="el" href="TestComponentModel_8cpp.html#acd06f41b01ec41c67d52bd9d7cc86e10">geometry</a>)=0</td></tr>
+<tr class="memdesc:aa72349d59cc6b95976e1ee519c3c1f51"><td class="mdescLeft">&#160;</td><td class="mdescRight">由引擎调用，应用布局几何  <br /></td></tr>
+<tr class="memitem:a56ea3a889ca77ae7b20c4890d3bd7829" id="r_a56ea3a889ca77ae7b20c4890d3bd7829"><td class="memItemLeft" align="right" valign="top">virtual QSize&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a56ea3a889ca77ae7b20c4890d3bd7829">minExtent</a> () const =0</td></tr>
+<tr class="memdesc:a56ea3a889ca77ae7b20c4890d3bd7829"><td class="mdescLeft">&#160;</td><td class="mdescRight">硬最小尺寸  <br /></td></tr>
+<tr class="memitem:a63edd2388159154f20edf6ca65b1795c" id="r_a63edd2388159154f20edf6ca65b1795c"><td class="memItemLeft" align="right" valign="top">virtual QSize&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a63edd2388159154f20edf6ca65b1795c">maxExtent</a> () const =0</td></tr>
+<tr class="memdesc:a63edd2388159154f20edf6ca65b1795c"><td class="mdescLeft">&#160;</td><td class="mdescRight">软最大尺寸提示  <br /></td></tr>
+<tr class="memitem:aa3060a568afdd6fa78acf97f215f803e" id="r_aa3060a568afdd6fa78acf97f215f803e"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#aa3060a568afdd6fa78acf97f215f803e">applyVisibility</a> (bool visible)=0</td></tr>
+<tr class="memdesc:aa3060a568afdd6fa78acf97f215f803e"><td class="mdescLeft">&#160;</td><td class="mdescRight">由引擎调用，应用可见性  <br /></td></tr>
+</table>
+<a name="details" id="details"></a><h2 id="header-details" class="groupheader">详细描述</h2>
+<div class="textblock"><p>被布局引擎托管的实体接口 </p>
+<p>由停靠语义层的视图（PanelGroup 等）实现，布局引擎仅通过该接口 读写几何与可见性，不感知具体的 UI 类型。 </p>
+</div><a name="doc-constructors" id="doc-constructors"></a><h2 id="header-doc-constructors" class="groupheader">构造及析构函数说明</h2>
+<a id="a165d70aca30628a2c915f37b1de252e9" name="a165d70aca30628a2c915f37b1de252e9"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a165d70aca30628a2c915f37b1de252e9">&#9670;&#160;</a></span>~LayoutClient()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">virtual dock::LayoutClient::~LayoutClient </td>
+          <td>(</td>
+          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel virtual">virtual</span><span class="mlabel default">default</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a name="doc-func-members" id="doc-func-members"></a><h2 id="header-doc-func-members" class="groupheader">成员函数说明</h2>
+<a id="aa72349d59cc6b95976e1ee519c3c1f51" name="aa72349d59cc6b95976e1ee519c3c1f51"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aa72349d59cc6b95976e1ee519c3c1f51">&#9670;&#160;</a></span>applyGeometry()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">virtual void dock::LayoutClient::applyGeometry </td>
+          <td>(</td>
+          <td class="paramtype">const QRect &amp;</td>          <td class="paramname"><span class="paramname"><em>geometry</em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel pure-virtual">pure virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>由引擎调用，应用布局几何 </p>
+
+<p>在 <a class="el" href="classdock_1_1PanelGroup.html#abe18c85489c25b31c27adc8b359acbc9">dock::PanelGroup</a> 内被实现.</p>
+
+</div>
+</div>
+<a id="aa3060a568afdd6fa78acf97f215f803e" name="aa3060a568afdd6fa78acf97f215f803e"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aa3060a568afdd6fa78acf97f215f803e">&#9670;&#160;</a></span>applyVisibility()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">virtual void dock::LayoutClient::applyVisibility </td>
+          <td>(</td>
+          <td class="paramtype">bool</td>          <td class="paramname"><span class="paramname"><em>visible</em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel pure-virtual">pure virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>由引擎调用，应用可见性 </p>
+
+<p>在 <a class="el" href="classdock_1_1PanelGroup.html#a0653c5b68b7f17ab9e1e6e02015828d0">dock::PanelGroup</a> 内被实现.</p>
+
+</div>
+</div>
+<a id="a63edd2388159154f20edf6ca65b1795c" name="a63edd2388159154f20edf6ca65b1795c"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a63edd2388159154f20edf6ca65b1795c">&#9670;&#160;</a></span>maxExtent()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">virtual QSize dock::LayoutClient::maxExtent </td>
+          <td>(</td>
+          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel pure-virtual">pure virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>软最大尺寸提示 </p>
+
+<p>在 <a class="el" href="classdock_1_1PanelGroup.html#ac30915a5331dbf7433c84139475d3b6e">dock::PanelGroup</a> 内被实现.</p>
+
+</div>
+</div>
+<a id="a56ea3a889ca77ae7b20c4890d3bd7829" name="a56ea3a889ca77ae7b20c4890d3bd7829"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a56ea3a889ca77ae7b20c4890d3bd7829">&#9670;&#160;</a></span>minExtent()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">virtual QSize dock::LayoutClient::minExtent </td>
+          <td>(</td>
+          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel pure-virtual">pure virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>硬最小尺寸 </p>
+
+<p>在 <a class="el" href="classdock_1_1PanelGroup.html#a4a35c559b5d57b13e66e2664fa8b5901">dock::PanelGroup</a> 内被实现.</p>
+
+</div>
+</div>
+<hr/>该类的文档由以下文件生成:<ul>
+<li>app/dock/tree/<a class="el" href="LayoutClient_8h_source.html">LayoutClient.h</a></li>
+</ul>
+</div><!-- contents -->
+<!-- start footer part -->
+<hr class="footer"/><address class="footer"><small>
+制作者&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.14.0
+</small></address>
+</div><!-- doc-content -->
+</body>
+</html>

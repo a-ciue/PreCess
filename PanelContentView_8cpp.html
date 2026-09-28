@@ -1,0 +1,140 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="zh">
+<head>
+<meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=11"/>
+<meta name="generator" content="Doxygen 1.14.0"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>PreCess: app/dock/ui/PanelContentView.cpp 文件参考</title>
+<link href="tabs.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="jquery.js"></script>
+<script type="text/javascript" src="dynsections.js"></script>
+<script type="text/javascript" src="clipboard.js"></script>
+<script type="text/javascript" src="cookie.js"></script>
+<link href="search/search.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="search/searchdata.js"></script>
+<script type="text/javascript" src="search/search.js"></script>
+<link href="doxygen.css" rel="stylesheet" type="text/css" />
+</head>
+<body>
+<div id="top"><!-- do not remove this div, it is closed by doxygen! -->
+<div id="titlearea">
+<table cellspacing="0" cellpadding="0">
+ <tbody>
+ <tr id="projectrow">
+  <td id="projectlogo"><img alt="Logo" src="PreCess.ico"/></td>
+  <td id="projectalign">
+   <div id="projectname">PreCess
+   </div>
+  </td>
+ </tr>
+ </tbody>
+</table>
+</div>
+<!-- end header part -->
+<!-- 制作者 Doxygen 1.14.0 -->
+<script type="text/javascript">
+var searchBox = new SearchBox("searchBox", "search/",'.html');
+</script>
+<script type="text/javascript">
+$(function() { codefold.init(); });
+</script>
+<script type="text/javascript" src="menudata.js"></script>
+<script type="text/javascript" src="menu.js"></script>
+<script type="text/javascript">
+$(function() {
+  initMenu('',true,false,'search.php','搜索',false);
+  $(function() { init_search(); });
+});
+</script>
+<div id="main-nav"></div>
+<!-- window showing the filter options -->
+<div id="MSearchSelectWindow"
+     onmouseover="return searchBox.OnSearchSelectShow()"
+     onmouseout="return searchBox.OnSearchSelectHide()"
+     onkeydown="return searchBox.OnSearchSelectKey(event)">
+</div>
+
+<!-- iframe showing the search results (closed by default) -->
+<div id="MSearchResultsWindow">
+<div id="MSearchResults">
+<div class="SRPage">
+<div id="SRIndex">
+<div id="SRResults"></div>
+<div class="SRStatus" id="Loading">载入中...</div>
+<div class="SRStatus" id="Searching">搜索中...</div>
+<div class="SRStatus" id="NoMatches">未找到</div>
+</div>
+</div>
+</div>
+</div>
+
+<div id="nav-path" class="navpath">
+  <ul>
+<li class="navelem"><a href="dir_d422163b96683743ed3963d4aac17747.html">app</a></li><li class="navelem"><a href="dir_4e5d8f7ce7c3dc0f91a395eba455c956.html">dock</a></li><li class="navelem"><a href="dir_8737260d02abc2e1280d33ed55618f28.html">ui</a></li>  </ul>
+</div>
+</div><!-- top -->
+<div id="doc-content">
+<div class="header">
+  <div class="summary">
+<a href="#namespaces">命名空间</a>  </div>
+  <div class="headertitle"><div class="title">PanelContentView.cpp 文件参考</div></div>
+</div><!--header-->
+<div class="contents">
+
+<p>client 视图适配器的实现  
+<a href="#details">更多...</a></p>
+<div class="textblock"><code>#include &quot;<a class="el" href="PanelContentView_8h_source.html">PanelContentView.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="NodeMetrics_8h_source.html">tree/NodeMetrics.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="DockMetrics_8h_source.html">docking/DockMetrics.h</a>&quot;</code><br />
+<code>#include &lt;QQuickItem&gt;</code><br />
+<code>#include &lt;QtMath&gt;</code><br />
+</div><div class="textblock"><div class="dynheader">
+PanelContentView.cpp 的引用(Include)关系图:</div>
+<div class="dyncontent">
+<div class="center"><img src="PanelContentView_8cpp__incl.png" border="0" usemap="#aapp_2dock_2ui_2PanelContentView_8cpp" loading="lazy" alt=""/></div>
+<map name="aapp_2dock_2ui_2PanelContentView_8cpp" id="aapp_2dock_2ui_2PanelContentView_8cpp">
+<area shape="rect" title="client 视图适配器的实现" alt="" coords="279,5,466,45"/>
+<area shape="rect" href="PanelContentView_8h.html" title="由 QML 内容项直接构成的 client 视图适配器（中央持久部件使用）" alt="" coords="37,93,188,119"/>
+<area shape="poly" title=" " alt="" coords="311,48,164,92,163,87,310,43"/>
+<area shape="rect" href="NodeMetrics_8h.html" title="布局节点的几何与尺寸约束信息" alt="" coords="183,167,330,192"/>
+<area shape="poly" title=" " alt="" coords="333,48,303,68,278,95,265,124,260,154,255,153,260,122,273,92,299,64,330,43"/>
+<area shape="rect" href="DockMetrics_8h.html" title="停靠组件的默认行为常量" alt="" coords="287,93,458,119"/>
+<area shape="poly" title=" " alt="" coords="375,46,375,79,370,79,370,46"/>
+<area shape="rect" title=" " alt="" coords="482,93,581,119"/>
+<area shape="poly" title=" " alt="" coords="412,43,497,85,495,90,409,48"/>
+<area shape="rect" title=" " alt="" coords="605,93,676,119"/>
+<area shape="poly" title=" " alt="" coords="438,43,593,88,591,93,436,48"/>
+<area shape="rect" href="DockView_8h.html" title="停靠组件与视图层（QtQuick）之间的抽象接口" alt="" coords="5,167,159,192"/>
+<area shape="poly" title=" " alt="" coords="110,120,95,155,90,153,105,118"/>
+<area shape="rect" title=" " alt="" coords="61,240,122,265"/>
+<area shape="poly" title=" " alt="" coords="86,192,91,226,85,227,81,193"/>
+<area shape="rect" title=" " alt="" coords="154,240,213,265"/>
+<area shape="poly" title=" " alt="" coords="100,190,157,230,154,234,97,194"/>
+<area shape="poly" title=" " alt="" coords="231,194,132,237,130,232,229,190"/>
+<area shape="poly" title=" " alt="" coords="246,194,207,232,203,228,243,190"/>
+<area shape="rect" title=" " alt="" coords="237,240,276,265"/>
+<area shape="poly" title=" " alt="" coords="259,192,259,226,254,226,254,192"/>
+<area shape="rect" title=" " alt="" coords="301,240,386,265"/>
+<area shape="poly" title=" " alt="" coords="272,190,320,229,317,233,269,194"/>
+<area shape="poly" title=" " alt="" coords="374,119,366,155,357,176,344,194,298,215,227,240,225,235,296,210,340,190,353,173,361,154,369,118"/>
+<area shape="rect" title=" " alt="" coords="405,167,471,192"/>
+<area shape="poly" title=" " alt="" coords="385,117,420,155,416,158,381,121"/>
+</map>
+</div>
+</div><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 id="header-namespaces" class="groupheader"><a id="namespaces" name="namespaces"></a>
+命名空间</h2></td></tr>
+<tr class="memitem:dock" id="r_dock"><td class="memItemLeft" align="right" valign="top">namespace &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacedock.html">dock</a></td></tr>
+<tr class="memitem:dock_3A_3Aui" id="r_dock_3A_3Aui"><td class="memItemLeft" align="right" valign="top">namespace &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacedock_1_1ui.html">dock::ui</a></td></tr>
+</table>
+<a name="details" id="details"></a><h2 id="header-details" class="groupheader">详细描述</h2>
+<div class="textblock"><p>client 视图适配器的实现 </p>
+</div></div><!-- contents -->
+<!-- start footer part -->
+<hr class="footer"/><address class="footer"><small>
+制作者&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.14.0
+</small></address>
+</div><!-- doc-content -->
+</body>
+</html>

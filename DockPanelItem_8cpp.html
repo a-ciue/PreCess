@@ -1,0 +1,152 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="zh">
+<head>
+<meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=11"/>
+<meta name="generator" content="Doxygen 1.14.0"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>PreCess: app/dock/ui/DockPanelItem.cpp 文件参考</title>
+<link href="tabs.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="jquery.js"></script>
+<script type="text/javascript" src="dynsections.js"></script>
+<script type="text/javascript" src="clipboard.js"></script>
+<script type="text/javascript" src="cookie.js"></script>
+<link href="search/search.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="search/searchdata.js"></script>
+<script type="text/javascript" src="search/search.js"></script>
+<link href="doxygen.css" rel="stylesheet" type="text/css" />
+</head>
+<body>
+<div id="top"><!-- do not remove this div, it is closed by doxygen! -->
+<div id="titlearea">
+<table cellspacing="0" cellpadding="0">
+ <tbody>
+ <tr id="projectrow">
+  <td id="projectlogo"><img alt="Logo" src="PreCess.ico"/></td>
+  <td id="projectalign">
+   <div id="projectname">PreCess
+   </div>
+  </td>
+ </tr>
+ </tbody>
+</table>
+</div>
+<!-- end header part -->
+<!-- 制作者 Doxygen 1.14.0 -->
+<script type="text/javascript">
+var searchBox = new SearchBox("searchBox", "search/",'.html');
+</script>
+<script type="text/javascript">
+$(function() { codefold.init(); });
+</script>
+<script type="text/javascript" src="menudata.js"></script>
+<script type="text/javascript" src="menu.js"></script>
+<script type="text/javascript">
+$(function() {
+  initMenu('',true,false,'search.php','搜索',false);
+  $(function() { init_search(); });
+});
+</script>
+<div id="main-nav"></div>
+<!-- window showing the filter options -->
+<div id="MSearchSelectWindow"
+     onmouseover="return searchBox.OnSearchSelectShow()"
+     onmouseout="return searchBox.OnSearchSelectHide()"
+     onkeydown="return searchBox.OnSearchSelectKey(event)">
+</div>
+
+<!-- iframe showing the search results (closed by default) -->
+<div id="MSearchResultsWindow">
+<div id="MSearchResults">
+<div class="SRPage">
+<div id="SRIndex">
+<div id="SRResults"></div>
+<div class="SRStatus" id="Loading">载入中...</div>
+<div class="SRStatus" id="Searching">搜索中...</div>
+<div class="SRStatus" id="NoMatches">未找到</div>
+</div>
+</div>
+</div>
+</div>
+
+<div id="nav-path" class="navpath">
+  <ul>
+<li class="navelem"><a href="dir_d422163b96683743ed3963d4aac17747.html">app</a></li><li class="navelem"><a href="dir_4e5d8f7ce7c3dc0f91a395eba455c956.html">dock</a></li><li class="navelem"><a href="dir_8737260d02abc2e1280d33ed55618f28.html">ui</a></li>  </ul>
+</div>
+</div><!-- top -->
+<div id="doc-content">
+<div class="header">
+  <div class="summary">
+<a href="#namespaces">命名空间</a>  </div>
+  <div class="headertitle"><div class="title">DockPanelItem.cpp 文件参考</div></div>
+</div><!--header-->
+<div class="contents">
+
+<p>QML 停靠面板实例化器的实现  
+<a href="#details">更多...</a></p>
+<div class="textblock"><code>#include &quot;<a class="el" href="DockPanelItem_8h_source.html">DockPanelItem.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="DockRuntime_8h_source.html">DockRuntime.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="DockPanel_8h_source.html">docking/DockPanel.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="NodeMetrics_8h_source.html">tree/NodeMetrics.h</a>&quot;</code><br />
+<code>#include &lt;QtMath&gt;</code><br />
+</div><div class="textblock"><div class="dynheader">
+DockPanelItem.cpp 的引用(Include)关系图:</div>
+<div class="dyncontent">
+<div class="center"><img src="DockPanelItem_8cpp__incl.png" border="0" usemap="#aapp_2dock_2ui_2DockPanelItem_8cpp" loading="lazy" alt=""/></div>
+<map name="aapp_2dock_2ui_2DockPanelItem_8cpp" id="aapp_2dock_2ui_2DockPanelItem_8cpp">
+<area shape="rect" title="QML 停靠面板实例化器的实现" alt="" coords="568,5,795,31"/>
+<area shape="rect" href="DockPanelItem_8h.html" title="QML 停靠面板实例化器（PreCess.Docking 的 DockPanel 类型）" alt="" coords="418,79,550,104"/>
+<area shape="poly" title=" " alt="" coords="651,33,530,76,528,71,649,28"/>
+<area shape="rect" href="DockRuntime_8h.html" title="QtQuick 视图层的全局服务：QML 引擎、client 映射、分组视图缓存" alt="" coords="803,79,925,104"/>
+<area shape="poly" title=" " alt="" coords="712,28,822,71,820,76,710,33"/>
+<area shape="rect" href="DockPanel_8h.html" title="逻辑停靠面板：可显隐、可停靠、可拆出为独立窗口" alt="" coords="603,79,760,104"/>
+<area shape="poly" title=" " alt="" coords="684,31,684,65,679,65,679,31"/>
+<area shape="rect" href="NodeMetrics_8h.html" title="布局节点的几何与尺寸约束信息" alt="" coords="59,152,205,177"/>
+<area shape="poly" title=" " alt="" coords="621,33,520,54,406,81,283,117,179,150,177,145,281,112,405,76,519,49,620,28"/>
+<area shape="rect" title=" " alt="" coords="950,79,1021,104"/>
+<area shape="poly" title=" " alt="" coords="732,28,937,76,936,81,730,33"/>
+<area shape="rect" href="DockView_8h.html" title="停靠组件与视图层（QtQuick）之间的抽象接口" alt="" coords="230,152,383,177"/>
+<area shape="poly" title=" " alt="" coords="456,106,349,149,347,144,455,102"/>
+<area shape="rect" title=" " alt="" coords="408,152,507,177"/>
+<area shape="poly" title=" " alt="" coords="482,105,469,140,464,138,477,103"/>
+<area shape="rect" title=" " alt="" coords="531,152,602,177"/>
+<area shape="poly" title=" " alt="" coords="499,102,544,141,541,145,496,106"/>
+<area shape="rect" title=" " alt="" coords="273,225,335,251"/>
+<area shape="poly" title=" " alt="" coords="309,178,308,212,302,212,304,178"/>
+<area shape="rect" title=" " alt="" coords="187,225,245,251"/>
+<area shape="poly" title=" " alt="" coords="294,179,243,219,240,214,290,175"/>
+<area shape="rect" title=" " alt="" coords="851,152,917,177"/>
+<area shape="poly" title=" " alt="" coords="870,104,880,138,875,140,865,105"/>
+<area shape="rect" title=" " alt="" coords="941,152,992,177"/>
+<area shape="poly" title=" " alt="" coords="882,102,940,142,937,146,879,106"/>
+<area shape="poly" title=" " alt="" coords="664,106,598,147,596,142,662,102"/>
+<area shape="rect" href="DockObject_8h.html" title="控制器基类：持有视图" alt="" coords="627,152,736,177"/>
+<area shape="poly" title=" " alt="" coords="684,104,684,138,679,138,679,104"/>
+<area shape="rect" title=" " alt="" coords="760,152,827,177"/>
+<area shape="poly" title=" " alt="" coords="701,102,765,142,762,147,698,106"/>
+<area shape="rect" title=" " alt="" coords="644,225,719,251"/>
+<area shape="poly" title=" " alt="" coords="684,178,684,212,679,212,679,178"/>
+<area shape="poly" title=" " alt="" coords="161,175,264,218,262,222,159,180"/>
+<area shape="poly" title=" " alt="" coords="147,175,193,214,190,218,144,179"/>
+<area shape="rect" title=" " alt="" coords="115,225,154,251"/>
+<area shape="poly" title=" " alt="" coords="135,178,136,212,131,212,130,178"/>
+<area shape="rect" title=" " alt="" coords="5,225,91,251"/>
+<area shape="poly" title=" " alt="" coords="120,179,74,218,71,214,117,175"/>
+</map>
+</div>
+</div><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 id="header-namespaces" class="groupheader"><a id="namespaces" name="namespaces"></a>
+命名空间</h2></td></tr>
+<tr class="memitem:dock" id="r_dock"><td class="memItemLeft" align="right" valign="top">namespace &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacedock.html">dock</a></td></tr>
+<tr class="memitem:dock_3A_3Aui" id="r_dock_3A_3Aui"><td class="memItemLeft" align="right" valign="top">namespace &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacedock_1_1ui.html">dock::ui</a></td></tr>
+</table>
+<a name="details" id="details"></a><h2 id="header-details" class="groupheader">详细描述</h2>
+<div class="textblock"><p>QML 停靠面板实例化器的实现 </p>
+</div></div><!-- contents -->
+<!-- start footer part -->
+<hr class="footer"/><address class="footer"><small>
+制作者&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.14.0
+</small></address>
+</div><!-- doc-content -->
+</body>
+</html>

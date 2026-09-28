@@ -1,0 +1,223 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="zh">
+<head>
+<meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=11"/>
+<meta name="generator" content="Doxygen 1.14.0"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>PreCess: app/dock/ui/DockPanelItem.h 源文件</title>
+<link href="tabs.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="jquery.js"></script>
+<script type="text/javascript" src="dynsections.js"></script>
+<script type="text/javascript" src="clipboard.js"></script>
+<script type="text/javascript" src="cookie.js"></script>
+<link href="search/search.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="search/searchdata.js"></script>
+<script type="text/javascript" src="search/search.js"></script>
+<link href="doxygen.css" rel="stylesheet" type="text/css" />
+</head>
+<body>
+<div id="top"><!-- do not remove this div, it is closed by doxygen! -->
+<div id="titlearea">
+<table cellspacing="0" cellpadding="0">
+ <tbody>
+ <tr id="projectrow">
+  <td id="projectlogo"><img alt="Logo" src="PreCess.ico"/></td>
+  <td id="projectalign">
+   <div id="projectname">PreCess
+   </div>
+  </td>
+ </tr>
+ </tbody>
+</table>
+</div>
+<!-- end header part -->
+<!-- 制作者 Doxygen 1.14.0 -->
+<script type="text/javascript">
+var searchBox = new SearchBox("searchBox", "search/",'.html');
+</script>
+<script type="text/javascript">
+$(function() { codefold.init(); });
+</script>
+<script type="text/javascript" src="menudata.js"></script>
+<script type="text/javascript" src="menu.js"></script>
+<script type="text/javascript">
+$(function() {
+  initMenu('',true,false,'search.php','搜索',false);
+  $(function() { init_search(); });
+});
+</script>
+<div id="main-nav"></div>
+<!-- window showing the filter options -->
+<div id="MSearchSelectWindow"
+     onmouseover="return searchBox.OnSearchSelectShow()"
+     onmouseout="return searchBox.OnSearchSelectHide()"
+     onkeydown="return searchBox.OnSearchSelectKey(event)">
+</div>
+
+<!-- iframe showing the search results (closed by default) -->
+<div id="MSearchResultsWindow">
+<div id="MSearchResults">
+<div class="SRPage">
+<div id="SRIndex">
+<div id="SRResults"></div>
+<div class="SRStatus" id="Loading">载入中...</div>
+<div class="SRStatus" id="Searching">搜索中...</div>
+<div class="SRStatus" id="NoMatches">未找到</div>
+</div>
+</div>
+</div>
+</div>
+
+<div id="nav-path" class="navpath">
+  <ul>
+<li class="navelem"><a href="dir_d422163b96683743ed3963d4aac17747.html">app</a></li><li class="navelem"><a href="dir_4e5d8f7ce7c3dc0f91a395eba455c956.html">dock</a></li><li class="navelem"><a href="dir_8737260d02abc2e1280d33ed55618f28.html">ui</a></li>  </ul>
+</div>
+</div><!-- top -->
+<div id="doc-content">
+<div class="header">
+  <div class="headertitle"><div class="title">DockPanelItem.h</div></div>
+</div><!--header-->
+<div class="contents">
+<a href="DockPanelItem_8h.html">浏览该文件的文档.</a><div class="fragment"><div class="line"><a id="l00001" name="l00001"></a><span class="lineno">    1</span></div>
+<div class="line"><a id="l00005" name="l00005"></a><span class="lineno">    5</span> </div>
+<div class="line"><a id="l00006" name="l00006"></a><span class="lineno">    6</span><span class="preprocessor">#pragma once</span></div>
+<div class="line"><a id="l00007" name="l00007"></a><span class="lineno">    7</span> </div>
+<div class="line"><a id="l00008" name="l00008"></a><span class="lineno">    8</span><span class="preprocessor">#include &quot;<a class="code" href="DockView_8h.html">docking/DockView.h</a>&quot;</span></div>
+<div class="line"><a id="l00009" name="l00009"></a><span class="lineno">    9</span> </div>
+<div class="line"><a id="l00010" name="l00010"></a><span class="lineno">   10</span><span class="preprocessor">#include &lt;QQuickItem&gt;</span></div>
+<div class="line"><a id="l00011" name="l00011"></a><span class="lineno">   11</span><span class="preprocessor">#include &lt;QString&gt;</span></div>
+<div class="line"><a id="l00012" name="l00012"></a><span class="lineno">   12</span> </div>
+<div class="line"><a id="l00013" name="l00013"></a><span class="lineno">   13</span><span class="keyword">namespace </span><a class="code hl_namespace" href="namespacedock.html">dock</a> {</div>
+<div class="line"><a id="l00014" name="l00014"></a><span class="lineno">   14</span><span class="keyword">class </span><a class="code hl_class" href="classdock_1_1DockPanel.html">DockPanel</a>;</div>
+<div class="line"><a id="l00015" name="l00015"></a><span class="lineno">   15</span>}</div>
+<div class="line"><a id="l00016" name="l00016"></a><span class="lineno">   16</span> </div>
+<div class="line"><a id="l00017" name="l00017"></a><span class="lineno">   17</span><span class="keyword">namespace </span><a class="code hl_namespace" href="namespacedock_1_1ui.html">dock::ui</a> {</div>
+<div class="line"><a id="l00018" name="l00018"></a><span class="lineno">   18</span></div>
+<div class="foldopen" id="foldopen00024" data-start="{" data-end="};">
+<div class="line"><a id="l00024" name="l00024"></a><span class="lineno"><a class="line" href="classdock_1_1ui_1_1DockPanelItem.html">   24</a></span><span class="keyword">class </span><a class="code hl_function" href="classdock_1_1ui_1_1DockPanelItem.html#af2d04cb2a6c8186aa13d4c1d0ed65f19">DockPanelItem</a> : <span class="keyword">public</span> QQuickItem, <span class="keyword">public</span> <a class="code hl_class" href="classdock_1_1DockView.html">DockView</a></div>
+<div class="line"><a id="l00025" name="l00025"></a><span class="lineno">   25</span>{</div>
+<div class="line"><a id="l00026" name="l00026"></a><span class="lineno">   26</span>    Q_OBJECT</div>
+<div class="line"><a id="l00027" name="l00027"></a><span class="lineno"><a class="line" href="classdock_1_1ui_1_1DockPanelItem.html#a73271090c97f0bd6acc25ab925b7109b">   27</a></span>    Q_PROPERTY(QString <a class="code hl_property" href="classdock_1_1ui_1_1DockPanelItem.html#a73271090c97f0bd6acc25ab925b7109b">uniqueName</a> READ <a class="code hl_property" href="classdock_1_1ui_1_1DockPanelItem.html#a73271090c97f0bd6acc25ab925b7109b">uniqueName</a> WRITE <a class="code hl_function" href="classdock_1_1ui_1_1DockPanelItem.html#a4942a2beb664ae30782eb2bfc5568829">setUniqueName</a> NOTIFY <a class="code hl_signal" href="classdock_1_1ui_1_1DockPanelItem.html#a06496c08b383b5fdc7208a7da8411b6c">uniqueNameChanged</a>)</div>
+<div class="line"><a id="l00028" name="l00028"></a><span class="lineno"><a class="line" href="classdock_1_1ui_1_1DockPanelItem.html#a3e4345721c13b4f8ba933607b2da639a">   28</a></span>    Q_PROPERTY(QString <a class="code hl_property" href="classdock_1_1ui_1_1DockPanelItem.html#a3e4345721c13b4f8ba933607b2da639a">title</a> READ <a class="code hl_property" href="classdock_1_1ui_1_1DockPanelItem.html#a3e4345721c13b4f8ba933607b2da639a">title</a> WRITE <a class="code hl_function" href="classdock_1_1ui_1_1DockPanelItem.html#afbf3021ec053ec47816bc6b5251e531e">setTitle</a> NOTIFY <a class="code hl_signal" href="classdock_1_1ui_1_1DockPanelItem.html#a070e2685bc4496dbe192456720b2576b">titleChanged</a>)</div>
+<div class="line"><a id="l00029" name="l00029"></a><span class="lineno"><a class="line" href="classdock_1_1ui_1_1DockPanelItem.html#a539275ea009a23f453261d1b7a1cebda">   29</a></span>    Q_PROPERTY(<span class="keywordtype">bool</span> <a class="code hl_property" href="classdock_1_1ui_1_1DockPanelItem.html#a539275ea009a23f453261d1b7a1cebda">shown</a> READ <a class="code hl_function" href="classdock_1_1ui_1_1DockPanelItem.html#a5044410e31bcc70ae0516fa3b542be7f">isPanelShown</a> NOTIFY <a class="code hl_signal" href="classdock_1_1ui_1_1DockPanelItem.html#ae9d534b02a0a85c2a967e12ab7cb68c7">shownChanged</a>)</div>
+<div class="line"><a id="l00030" name="l00030"></a><span class="lineno"><a class="line" href="classdock_1_1ui_1_1DockPanelItem.html#a466af8c3787698e52b9db25edb97a7f2">   30</a></span>    Q_PROPERTY(<span class="keywordtype">bool</span> <a class="code hl_property" href="classdock_1_1ui_1_1DockPanelItem.html#a466af8c3787698e52b9db25edb97a7f2">isDetached</a> READ <a class="code hl_property" href="classdock_1_1ui_1_1DockPanelItem.html#a466af8c3787698e52b9db25edb97a7f2">isDetached</a> NOTIFY <a class="code hl_signal" href="classdock_1_1ui_1_1DockPanelItem.html#acf277c454de5b3f8d05139b5b94ddb24">detachedChanged</a>)</div>
+<div class="line"><a id="l00031" name="l00031"></a><span class="lineno"><a class="line" href="classdock_1_1ui_1_1DockPanelItem.html#a1535958579b6aca4723c18675ec1b3d9">   31</a></span>    Q_PROPERTY(<span class="keywordtype">bool</span> <a class="code hl_property" href="classdock_1_1ui_1_1DockPanelItem.html#a1535958579b6aca4723c18675ec1b3d9">closable</a> READ <a class="code hl_function" href="classdock_1_1ui_1_1DockPanelItem.html#a3f0b2dafb10b0f4a4a12f24de758e99f">isClosable</a> WRITE <a class="code hl_function" href="classdock_1_1ui_1_1DockPanelItem.html#a03c4d6cb97cddfac5548b5306e32ca0b">setClosable</a> NOTIFY <a class="code hl_signal" href="classdock_1_1ui_1_1DockPanelItem.html#af3aaf32c63ceed597f75c88145c58dda">featuresChanged</a>)</div>
+<div class="line"><a id="l00032" name="l00032"></a><span class="lineno"><a class="line" href="classdock_1_1ui_1_1DockPanelItem.html#a0af860ce854a7b3049dbed8b11157c03">   32</a></span>    Q_PROPERTY(<span class="keywordtype">bool</span> <a class="code hl_property" href="classdock_1_1ui_1_1DockPanelItem.html#a0af860ce854a7b3049dbed8b11157c03">movable</a> READ <a class="code hl_function" href="classdock_1_1ui_1_1DockPanelItem.html#ab26f1e274a73664318917d2e06cb4fd0">isMovable</a> WRITE <a class="code hl_function" href="classdock_1_1ui_1_1DockPanelItem.html#a3f73b264de21bee27a2deaecdaef7f1d">setMovable</a> NOTIFY <a class="code hl_signal" href="classdock_1_1ui_1_1DockPanelItem.html#af3aaf32c63ceed597f75c88145c58dda">featuresChanged</a>)</div>
+<div class="line"><a id="l00033" name="l00033"></a><span class="lineno"><a class="line" href="classdock_1_1ui_1_1DockPanelItem.html#a0027e35a62c5aa1d6512d2cc6958d5e8">   33</a></span>    Q_PROPERTY(<span class="keywordtype">bool</span> <a class="code hl_property" href="classdock_1_1ui_1_1DockPanelItem.html#a0027e35a62c5aa1d6512d2cc6958d5e8">floatable</a> READ <a class="code hl_function" href="classdock_1_1ui_1_1DockPanelItem.html#a53ac170359b38a14f899bbf534daed43">isFloatable</a> WRITE <a class="code hl_function" href="classdock_1_1ui_1_1DockPanelItem.html#a619101158292bcfc7be0fdcb66f47aff">setFloatable</a> NOTIFY <a class="code hl_signal" href="classdock_1_1ui_1_1DockPanelItem.html#af3aaf32c63ceed597f75c88145c58dda">featuresChanged</a>)</div>
+<div class="line"><a id="l00034" name="l00034"></a><span class="lineno">   34</span> </div>
+<div class="line"><a id="l00035" name="l00035"></a><span class="lineno">   35</span>public:</div>
+<div class="line"><a id="l00036" name="l00036"></a><span class="lineno">   36</span>    explicit <a class="code hl_function" href="classdock_1_1ui_1_1DockPanelItem.html#af2d04cb2a6c8186aa13d4c1d0ed65f19">DockPanelItem</a>(QQuickItem* parent = <span class="keywordtype">nullptr</span>);</div>
+<div class="line"><a id="l00037" name="l00037"></a><span class="lineno">   37</span>    ~<a class="code hl_function" href="classdock_1_1ui_1_1DockPanelItem.html#af2d04cb2a6c8186aa13d4c1d0ed65f19">DockPanelItem</a>() override;</div>
+<div class="line"><a id="l00038" name="l00038"></a><span class="lineno">   38</span></div>
+<div class="line"><a id="l00040" name="l00040"></a><span class="lineno"><a class="line" href="classdock_1_1ui_1_1DockPanelItem.html#a7a83a49b2ced49a6d85b982c8b183ceb">   40</a></span>    <a class="code hl_namespace" href="namespacedock.html">dock</a>::<a class="code hl_class" href="classdock_1_1DockPanel.html">DockPanel</a>* <a class="code hl_function" href="classdock_1_1ui_1_1DockPanelItem.html#a7a83a49b2ced49a6d85b982c8b183ceb">panel</a>()<span class="keyword"> const </span>{ <span class="keywordflow">return</span> <a class="code hl_variable" href="classdock_1_1ui_1_1DockPanelItem.html#a94dbc08bd12308fa294cf2530e3c76be">panel_</a>; }</div>
+<div class="line"><a id="l00041" name="l00041"></a><span class="lineno">   41</span> </div>
+<div class="line"><a id="l00042" name="l00042"></a><span class="lineno"><a class="line" href="classdock_1_1ui_1_1DockPanelItem.html#a93fe8962f70e1e1a9a81fb7c3dbfc76b">   42</a></span>    QString <a class="code hl_function" href="classdock_1_1ui_1_1DockPanelItem.html#a93fe8962f70e1e1a9a81fb7c3dbfc76b">uniqueName</a>()<span class="keyword"> const </span>{ <span class="keywordflow">return</span> <a class="code hl_variable" href="classdock_1_1ui_1_1DockPanelItem.html#afc5dc1a4341918285e3bdc853b8f0080">unique_name_</a>; }</div>
+<div class="line"><a id="l00043" name="l00043"></a><span class="lineno">   43</span>    <span class="keywordtype">void</span> <a class="code hl_function" href="classdock_1_1ui_1_1DockPanelItem.html#a4942a2beb664ae30782eb2bfc5568829">setUniqueName</a>(<span class="keyword">const</span> QString&amp; unique_name);</div>
+<div class="line"><a id="l00044" name="l00044"></a><span class="lineno">   44</span>    QString <a class="code hl_property" href="classdock_1_1ui_1_1DockPanelItem.html#a3e4345721c13b4f8ba933607b2da639a">title</a>() <span class="keyword">const</span>;</div>
+<div class="line"><a id="l00045" name="l00045"></a><span class="lineno">   45</span>    <span class="keywordtype">void</span> <a class="code hl_function" href="classdock_1_1ui_1_1DockPanelItem.html#afbf3021ec053ec47816bc6b5251e531e">setTitle</a>(<span class="keyword">const</span> QString&amp; <a class="code hl_property" href="classdock_1_1ui_1_1DockPanelItem.html#a3e4345721c13b4f8ba933607b2da639a">title</a>);</div>
+<div class="line"><a id="l00047" name="l00047"></a><span class="lineno">   47</span>    <span class="keywordtype">bool</span> <a class="code hl_function" href="classdock_1_1ui_1_1DockPanelItem.html#a5044410e31bcc70ae0516fa3b542be7f">isPanelShown</a>() <span class="keyword">const</span>;</div>
+<div class="line"><a id="l00048" name="l00048"></a><span class="lineno">   48</span>    <span class="keywordtype">bool</span> <a class="code hl_property" href="classdock_1_1ui_1_1DockPanelItem.html#a466af8c3787698e52b9db25edb97a7f2">isDetached</a>() <span class="keyword">const</span>;</div>
+<div class="line"><a id="l00050" name="l00050"></a><span class="lineno">   50</span>    <span class="keywordtype">bool</span> <a class="code hl_function" href="classdock_1_1ui_1_1DockPanelItem.html#a3f0b2dafb10b0f4a4a12f24de758e99f">isClosable</a>() <span class="keyword">const</span>;</div>
+<div class="line"><a id="l00051" name="l00051"></a><span class="lineno">   51</span>    <span class="keywordtype">void</span> <a class="code hl_function" href="classdock_1_1ui_1_1DockPanelItem.html#a03c4d6cb97cddfac5548b5306e32ca0b">setClosable</a>(<span class="keywordtype">bool</span> <a class="code hl_property" href="classdock_1_1ui_1_1DockPanelItem.html#a1535958579b6aca4723c18675ec1b3d9">closable</a>);</div>
+<div class="line"><a id="l00052" name="l00052"></a><span class="lineno">   52</span>    <span class="keywordtype">bool</span> <a class="code hl_function" href="classdock_1_1ui_1_1DockPanelItem.html#ab26f1e274a73664318917d2e06cb4fd0">isMovable</a>() <span class="keyword">const</span>;</div>
+<div class="line"><a id="l00053" name="l00053"></a><span class="lineno">   53</span>    <span class="keywordtype">void</span> <a class="code hl_function" href="classdock_1_1ui_1_1DockPanelItem.html#a3f73b264de21bee27a2deaecdaef7f1d">setMovable</a>(<span class="keywordtype">bool</span> <a class="code hl_property" href="classdock_1_1ui_1_1DockPanelItem.html#a0af860ce854a7b3049dbed8b11157c03">movable</a>);</div>
+<div class="line"><a id="l00054" name="l00054"></a><span class="lineno">   54</span>    <span class="keywordtype">bool</span> <a class="code hl_function" href="classdock_1_1ui_1_1DockPanelItem.html#a53ac170359b38a14f899bbf534daed43">isFloatable</a>() <span class="keyword">const</span>;</div>
+<div class="line"><a id="l00055" name="l00055"></a><span class="lineno">   55</span>    <span class="keywordtype">void</span> <a class="code hl_function" href="classdock_1_1ui_1_1DockPanelItem.html#a619101158292bcfc7be0fdcb66f47aff">setFloatable</a>(<span class="keywordtype">bool</span> <a class="code hl_property" href="classdock_1_1ui_1_1DockPanelItem.html#a0027e35a62c5aa1d6512d2cc6958d5e8">floatable</a>);</div>
+<div class="line"><a id="l00056" name="l00056"></a><span class="lineno">   56</span> </div>
+<div class="line"><a id="l00057" name="l00057"></a><span class="lineno">   57</span>    Q_INVOKABLE <span class="keywordtype">void</span> <a class="code hl_function" href="classdock_1_1ui_1_1DockPanelItem.html#a4e8f46c96acad4d727d5fb79f0e6532a">showPanel</a>();</div>
+<div class="line"><a id="l00058" name="l00058"></a><span class="lineno">   58</span>    Q_INVOKABLE <span class="keywordtype">void</span> <a class="code hl_function" href="classdock_1_1ui_1_1DockPanelItem.html#a8295b7a100de53c2ca82061c833eb57a">hidePanel</a>();</div>
+<div class="line"><a id="l00059" name="l00059"></a><span class="lineno">   59</span> </div>
+<div class="line"><a id="l00060" name="l00060"></a><span class="lineno">   60</span>    <span class="comment">// DockView</span></div>
+<div class="line"><a id="l00061" name="l00061"></a><span class="lineno">   61</span>    <a class="code hl_class" href="classdock_1_1DockObject.html">DockObject</a>* <a class="code hl_function" href="classdock_1_1ui_1_1DockPanelItem.html#a8e392090cbc24b0e075cc10720982819">dockObject</a>() <span class="keyword">const override</span>;</div>
+<div class="line"><a id="l00062" name="l00062"></a><span class="lineno">   62</span>    <span class="keywordtype">void</span> <a class="code hl_function" href="classdock_1_1ui_1_1DockPanelItem.html#a99d8c5660ae04a453555ef7adeb8e0ea">applyFrame</a>(<span class="keyword">const</span> QRect&amp; <a class="code hl_variable" href="TestComponentModel_8cpp.html#acd06f41b01ec41c67d52bd9d7cc86e10">geometry</a>) <span class="keyword">override</span>;</div>
+<div class="line"><a id="l00063" name="l00063"></a><span class="lineno">   63</span>    QRect <a class="code hl_function" href="classdock_1_1ui_1_1DockPanelItem.html#af36130e657cbcda22e08fe4f03b88169">frame</a>() <span class="keyword">const override</span>;</div>
+<div class="line"><a id="l00064" name="l00064"></a><span class="lineno">   64</span>    <span class="keywordtype">void</span> <a class="code hl_function" href="classdock_1_1ui_1_1DockPanelItem.html#a8c7e90d622540723d9a9f9f30a141c82">applyVisibility</a>(<span class="keywordtype">bool</span> visible) <span class="keyword">override</span>;</div>
+<div class="line"><a id="l00065" name="l00065"></a><span class="lineno">   65</span>    <span class="keywordtype">bool</span> <a class="code hl_function" href="classdock_1_1ui_1_1DockPanelItem.html#ab6f06e40438652d875fd5921450a671a">isShown</a>() <span class="keyword">const override</span>;</div>
+<div class="line"><a id="l00066" name="l00066"></a><span class="lineno">   66</span>    QSize <a class="code hl_function" href="classdock_1_1ui_1_1DockPanelItem.html#a500f17e847335a7db5467fd8766be513">minExtent</a>() <span class="keyword">const override</span>;</div>
+<div class="line"><a id="l00067" name="l00067"></a><span class="lineno">   67</span>    QSize <a class="code hl_function" href="classdock_1_1ui_1_1DockPanelItem.html#a7bc75bc76b414422befa10cd0dbb569c">maxExtent</a>() <span class="keyword">const override</span>;</div>
+<div class="line"><a id="l00068" name="l00068"></a><span class="lineno">   68</span>    <span class="keywordtype">void</span> <a class="code hl_function" href="classdock_1_1ui_1_1DockPanelItem.html#a9b8583defcbd2d4a1702e30d74453179">bringToFront</a>() <span class="keyword">override</span>;</div>
+<div class="line"><a id="l00069" name="l00069"></a><span class="lineno">   69</span>    QPoint <a class="code hl_function" href="classdock_1_1ui_1_1DockPanelItem.html#aed897308635a86c3549ebae0ef692a8e">globalOrigin</a>() <span class="keyword">const override</span>;</div>
+<div class="line"><a id="l00070" name="l00070"></a><span class="lineno">   70</span>    <a class="code hl_class" href="classdock_1_1DockView.html">DockView</a>* <a class="code hl_function" href="classdock_1_1ui_1_1DockPanelItem.html#a1e52f1f487abeb4b3bb588e4e2377d5d">createDockWindow</a>(<a class="code hl_class" href="classdock_1_1DockObject.html">DockObject</a>* controller) <span class="keyword">override</span>;</div>
+<div class="line"><a id="l00071" name="l00071"></a><span class="lineno">   71</span> </div>
+<div class="line"><a id="l00072" name="l00072"></a><span class="lineno">   72</span>Q_SIGNALS:</div>
+<div class="line"><a id="l00073" name="l00073"></a><span class="lineno"><a class="line" href="classdock_1_1ui_1_1DockPanelItem.html#a06496c08b383b5fdc7208a7da8411b6c">   73</a></span>    <span class="keywordtype">void</span> <a class="code hl_signal" href="classdock_1_1ui_1_1DockPanelItem.html#a06496c08b383b5fdc7208a7da8411b6c">uniqueNameChanged</a>();</div>
+<div class="line"><a id="l00074" name="l00074"></a><span class="lineno"><a class="line" href="classdock_1_1ui_1_1DockPanelItem.html#a070e2685bc4496dbe192456720b2576b">   74</a></span>    <span class="keywordtype">void</span> <a class="code hl_signal" href="classdock_1_1ui_1_1DockPanelItem.html#a070e2685bc4496dbe192456720b2576b">titleChanged</a>();</div>
+<div class="line"><a id="l00075" name="l00075"></a><span class="lineno"><a class="line" href="classdock_1_1ui_1_1DockPanelItem.html#ae9d534b02a0a85c2a967e12ab7cb68c7">   75</a></span>    <span class="keywordtype">void</span> <a class="code hl_signal" href="classdock_1_1ui_1_1DockPanelItem.html#ae9d534b02a0a85c2a967e12ab7cb68c7">shownChanged</a>();</div>
+<div class="line"><a id="l00076" name="l00076"></a><span class="lineno"><a class="line" href="classdock_1_1ui_1_1DockPanelItem.html#acf277c454de5b3f8d05139b5b94ddb24">   76</a></span>    <span class="keywordtype">void</span> <a class="code hl_signal" href="classdock_1_1ui_1_1DockPanelItem.html#acf277c454de5b3f8d05139b5b94ddb24">detachedChanged</a>();</div>
+<div class="line"><a id="l00077" name="l00077"></a><span class="lineno"><a class="line" href="classdock_1_1ui_1_1DockPanelItem.html#af3aaf32c63ceed597f75c88145c58dda">   77</a></span>    <span class="keywordtype">void</span> <a class="code hl_signal" href="classdock_1_1ui_1_1DockPanelItem.html#af3aaf32c63ceed597f75c88145c58dda">featuresChanged</a>();</div>
+<div class="line"><a id="l00078" name="l00078"></a><span class="lineno">   78</span> </div>
+<div class="line"><a id="l00079" name="l00079"></a><span class="lineno">   79</span><span class="keyword">protected</span>:</div>
+<div class="line"><a id="l00080" name="l00080"></a><span class="lineno">   80</span>    <span class="keywordtype">void</span> <a class="code hl_function" href="classdock_1_1ui_1_1DockPanelItem.html#a0a9a540c6721fe54edfc83d526684a1e">componentComplete</a>() <span class="keyword">override</span>;</div>
+<div class="line"><a id="l00081" name="l00081"></a><span class="lineno">   81</span> </div>
+<div class="line"><a id="l00082" name="l00082"></a><span class="lineno">   82</span><span class="keyword">private</span>:</div>
+<div class="line"><a id="l00083" name="l00083"></a><span class="lineno"><a class="line" href="classdock_1_1ui_1_1DockPanelItem.html#a94dbc08bd12308fa294cf2530e3c76be">   83</a></span>    <a class="code hl_class" href="classdock_1_1DockPanel.html">dock::DockPanel</a>* <a class="code hl_variable" href="classdock_1_1ui_1_1DockPanelItem.html#a94dbc08bd12308fa294cf2530e3c76be">panel_</a> = <span class="keyword">nullptr</span>;</div>
+<div class="line"><a id="l00084" name="l00084"></a><span class="lineno"><a class="line" href="classdock_1_1ui_1_1DockPanelItem.html#ac5e961939ba9eef58a0445c4982e5842">   84</a></span>    QQuickItem* <a class="code hl_variable" href="classdock_1_1ui_1_1DockPanelItem.html#ac5e961939ba9eef58a0445c4982e5842">panel_content_item_</a> = <span class="keyword">nullptr</span>;</div>
+<div class="line"><a id="l00085" name="l00085"></a><span class="lineno"><a class="line" href="classdock_1_1ui_1_1DockPanelItem.html#afc5dc1a4341918285e3bdc853b8f0080">   85</a></span>    QString <a class="code hl_variable" href="classdock_1_1ui_1_1DockPanelItem.html#afc5dc1a4341918285e3bdc853b8f0080">unique_name_</a>;</div>
+<div class="line"><a id="l00086" name="l00086"></a><span class="lineno"><a class="line" href="classdock_1_1ui_1_1DockPanelItem.html#a3a82ea4a03db3627329e9ff9bd4c9267">   86</a></span>    QString <a class="code hl_variable" href="classdock_1_1ui_1_1DockPanelItem.html#a3a82ea4a03db3627329e9ff9bd4c9267">title_</a>;</div>
+<div class="line"><a id="l00087" name="l00087"></a><span class="lineno"><a class="line" href="classdock_1_1ui_1_1DockPanelItem.html#ab0e4b978d09175d474e5ac859864e8ee">   87</a></span>    <span class="keywordtype">bool</span> <a class="code hl_variable" href="classdock_1_1ui_1_1DockPanelItem.html#ab0e4b978d09175d474e5ac859864e8ee">closable_</a> = <span class="keyword">true</span>;</div>
+<div class="line"><a id="l00088" name="l00088"></a><span class="lineno"><a class="line" href="classdock_1_1ui_1_1DockPanelItem.html#a6c288cae3e81a1a5b56efc8bb7543eb0">   88</a></span>    <span class="keywordtype">bool</span> <a class="code hl_variable" href="classdock_1_1ui_1_1DockPanelItem.html#a6c288cae3e81a1a5b56efc8bb7543eb0">movable_</a> = <span class="keyword">true</span>;</div>
+<div class="line"><a id="l00089" name="l00089"></a><span class="lineno"><a class="line" href="classdock_1_1ui_1_1DockPanelItem.html#a9e157d149ad6d24b42d7e75aad7e780c">   89</a></span>    <span class="keywordtype">bool</span> <a class="code hl_variable" href="classdock_1_1ui_1_1DockPanelItem.html#a9e157d149ad6d24b42d7e75aad7e780c">floatable_</a> = <span class="keyword">true</span>;</div>
+<div class="line"><a id="l00090" name="l00090"></a><span class="lineno">   90</span>};</div>
+</div>
+<div class="line"><a id="l00091" name="l00091"></a><span class="lineno">   91</span> </div>
+<div class="line"><a id="l00092" name="l00092"></a><span class="lineno">   92</span>}</div>
+<div class="ttc" id="aDockView_8h_html"><div class="ttname"><a href="DockView_8h.html">DockView.h</a></div><div class="ttdoc">停靠组件与视图层（QtQuick）之间的抽象接口</div></div>
+<div class="ttc" id="aTestComponentModel_8cpp_html_acd06f41b01ec41c67d52bd9d7cc86e10"><div class="ttname"><a href="TestComponentModel_8cpp.html#acd06f41b01ec41c67d52bd9d7cc86e10">geometry</a></div><div class="ttdeci">c1 geometry</div><div class="ttdef"><b>定义</b> TestComponentModel.cpp:81</div></div>
+<div class="ttc" id="aclassdock_1_1DockObject_html"><div class="ttname"><a href="classdock_1_1DockObject.html">dock::DockObject</a></div><div class="ttdoc">控制器基类</div><div class="ttdef"><b>定义</b> DockObject.h:21</div></div>
+<div class="ttc" id="aclassdock_1_1DockPanel_html"><div class="ttname"><a href="classdock_1_1DockPanel.html">dock::DockPanel</a></div><div class="ttdoc">逻辑停靠面板</div><div class="ttdef"><b>定义</b> DockPanel.h:26</div></div>
+<div class="ttc" id="aclassdock_1_1DockView_html"><div class="ttname"><a href="classdock_1_1DockView.html">dock::DockView</a></div><div class="ttdoc">视图抽象接口</div><div class="ttdef"><b>定义</b> DockView.h:23</div></div>
+<div class="ttc" id="aclassdock_1_1ui_1_1DockPanelItem_html_a0027e35a62c5aa1d6512d2cc6958d5e8"><div class="ttname"><a href="classdock_1_1ui_1_1DockPanelItem.html#a0027e35a62c5aa1d6512d2cc6958d5e8">dock::ui::DockPanelItem::floatable</a></div><div class="ttdeci">bool floatable</div><div class="ttdef"><b>定义</b> DockPanelItem.h:33</div></div>
+<div class="ttc" id="aclassdock_1_1ui_1_1DockPanelItem_html_a03c4d6cb97cddfac5548b5306e32ca0b"><div class="ttname"><a href="classdock_1_1ui_1_1DockPanelItem.html#a03c4d6cb97cddfac5548b5306e32ca0b">dock::ui::DockPanelItem::setClosable</a></div><div class="ttdeci">void setClosable(bool closable)</div><div class="ttdef"><b>定义</b> DockPanelItem.cpp:67</div></div>
+<div class="ttc" id="aclassdock_1_1ui_1_1DockPanelItem_html_a06496c08b383b5fdc7208a7da8411b6c"><div class="ttname"><a href="classdock_1_1ui_1_1DockPanelItem.html#a06496c08b383b5fdc7208a7da8411b6c">dock::ui::DockPanelItem::uniqueNameChanged</a></div><div class="ttdeci">void uniqueNameChanged()</div></div>
+<div class="ttc" id="aclassdock_1_1ui_1_1DockPanelItem_html_a070e2685bc4496dbe192456720b2576b"><div class="ttname"><a href="classdock_1_1ui_1_1DockPanelItem.html#a070e2685bc4496dbe192456720b2576b">dock::ui::DockPanelItem::titleChanged</a></div><div class="ttdeci">void titleChanged()</div></div>
+<div class="ttc" id="aclassdock_1_1ui_1_1DockPanelItem_html_a0a9a540c6721fe54edfc83d526684a1e"><div class="ttname"><a href="classdock_1_1ui_1_1DockPanelItem.html#a0a9a540c6721fe54edfc83d526684a1e">dock::ui::DockPanelItem::componentComplete</a></div><div class="ttdeci">void componentComplete() override</div><div class="ttdef"><b>定义</b> DockPanelItem.cpp:171</div></div>
+<div class="ttc" id="aclassdock_1_1ui_1_1DockPanelItem_html_a0af860ce854a7b3049dbed8b11157c03"><div class="ttname"><a href="classdock_1_1ui_1_1DockPanelItem.html#a0af860ce854a7b3049dbed8b11157c03">dock::ui::DockPanelItem::movable</a></div><div class="ttdeci">bool movable</div><div class="ttdef"><b>定义</b> DockPanelItem.h:32</div></div>
+<div class="ttc" id="aclassdock_1_1ui_1_1DockPanelItem_html_a1535958579b6aca4723c18675ec1b3d9"><div class="ttname"><a href="classdock_1_1ui_1_1DockPanelItem.html#a1535958579b6aca4723c18675ec1b3d9">dock::ui::DockPanelItem::closable</a></div><div class="ttdeci">bool closable</div><div class="ttdef"><b>定义</b> DockPanelItem.h:31</div></div>
+<div class="ttc" id="aclassdock_1_1ui_1_1DockPanelItem_html_a1e52f1f487abeb4b3bb588e4e2377d5d"><div class="ttname"><a href="classdock_1_1ui_1_1DockPanelItem.html#a1e52f1f487abeb4b3bb588e4e2377d5d">dock::ui::DockPanelItem::createDockWindow</a></div><div class="ttdeci">DockView * createDockWindow(DockObject *controller) override</div><div class="ttdoc">创建浮动窗口视图</div><div class="ttdef"><b>定义</b> DockPanelItem.cpp:165</div></div>
+<div class="ttc" id="aclassdock_1_1ui_1_1DockPanelItem_html_a3a82ea4a03db3627329e9ff9bd4c9267"><div class="ttname"><a href="classdock_1_1ui_1_1DockPanelItem.html#a3a82ea4a03db3627329e9ff9bd4c9267">dock::ui::DockPanelItem::title_</a></div><div class="ttdeci">QString title_</div><div class="ttdef"><b>定义</b> DockPanelItem.h:86</div></div>
+<div class="ttc" id="aclassdock_1_1ui_1_1DockPanelItem_html_a3e4345721c13b4f8ba933607b2da639a"><div class="ttname"><a href="classdock_1_1ui_1_1DockPanelItem.html#a3e4345721c13b4f8ba933607b2da639a">dock::ui::DockPanelItem::title</a></div><div class="ttdeci">QString title</div><div class="ttdef"><b>定义</b> DockPanelItem.h:28</div></div>
+<div class="ttc" id="aclassdock_1_1ui_1_1DockPanelItem_html_a3f0b2dafb10b0f4a4a12f24de758e99f"><div class="ttname"><a href="classdock_1_1ui_1_1DockPanelItem.html#a3f0b2dafb10b0f4a4a12f24de758e99f">dock::ui::DockPanelItem::isClosable</a></div><div class="ttdeci">bool isClosable() const</div><div class="ttdoc">能力位（默认全部开启；在创建控制器前设置也会生效）</div><div class="ttdef"><b>定义</b> DockPanelItem.cpp:62</div></div>
+<div class="ttc" id="aclassdock_1_1ui_1_1DockPanelItem_html_a3f73b264de21bee27a2deaecdaef7f1d"><div class="ttname"><a href="classdock_1_1ui_1_1DockPanelItem.html#a3f73b264de21bee27a2deaecdaef7f1d">dock::ui::DockPanelItem::setMovable</a></div><div class="ttdeci">void setMovable(bool movable)</div><div class="ttdef"><b>定义</b> DockPanelItem.cpp:82</div></div>
+<div class="ttc" id="aclassdock_1_1ui_1_1DockPanelItem_html_a466af8c3787698e52b9db25edb97a7f2"><div class="ttname"><a href="classdock_1_1ui_1_1DockPanelItem.html#a466af8c3787698e52b9db25edb97a7f2">dock::ui::DockPanelItem::isDetached</a></div><div class="ttdeci">bool isDetached</div><div class="ttdef"><b>定义</b> DockPanelItem.h:30</div></div>
+<div class="ttc" id="aclassdock_1_1ui_1_1DockPanelItem_html_a4942a2beb664ae30782eb2bfc5568829"><div class="ttname"><a href="classdock_1_1ui_1_1DockPanelItem.html#a4942a2beb664ae30782eb2bfc5568829">dock::ui::DockPanelItem::setUniqueName</a></div><div class="ttdeci">void setUniqueName(const QString &amp;unique_name)</div><div class="ttdef"><b>定义</b> DockPanelItem.cpp:27</div></div>
+<div class="ttc" id="aclassdock_1_1ui_1_1DockPanelItem_html_a4e8f46c96acad4d727d5fb79f0e6532a"><div class="ttname"><a href="classdock_1_1ui_1_1DockPanelItem.html#a4e8f46c96acad4d727d5fb79f0e6532a">dock::ui::DockPanelItem::showPanel</a></div><div class="ttdeci">Q_INVOKABLE void showPanel()</div><div class="ttdef"><b>定义</b> DockPanelItem.cpp:107</div></div>
+<div class="ttc" id="aclassdock_1_1ui_1_1DockPanelItem_html_a500f17e847335a7db5467fd8766be513"><div class="ttname"><a href="classdock_1_1ui_1_1DockPanelItem.html#a500f17e847335a7db5467fd8766be513">dock::ui::DockPanelItem::minExtent</a></div><div class="ttdeci">QSize minExtent() const override</div><div class="ttdoc">视图最小尺寸</div><div class="ttdef"><b>定义</b> DockPanelItem.cpp:144</div></div>
+<div class="ttc" id="aclassdock_1_1ui_1_1DockPanelItem_html_a5044410e31bcc70ae0516fa3b542be7f"><div class="ttname"><a href="classdock_1_1ui_1_1DockPanelItem.html#a5044410e31bcc70ae0516fa3b542be7f">dock::ui::DockPanelItem::isPanelShown</a></div><div class="ttdeci">bool isPanelShown() const</div><div class="ttdoc">QML shown 属性：面板是否显示</div><div class="ttdef"><b>定义</b> DockPanelItem.cpp:52</div></div>
+<div class="ttc" id="aclassdock_1_1ui_1_1DockPanelItem_html_a539275ea009a23f453261d1b7a1cebda"><div class="ttname"><a href="classdock_1_1ui_1_1DockPanelItem.html#a539275ea009a23f453261d1b7a1cebda">dock::ui::DockPanelItem::shown</a></div><div class="ttdeci">bool shown</div><div class="ttdef"><b>定义</b> DockPanelItem.h:29</div></div>
+<div class="ttc" id="aclassdock_1_1ui_1_1DockPanelItem_html_a53ac170359b38a14f899bbf534daed43"><div class="ttname"><a href="classdock_1_1ui_1_1DockPanelItem.html#a53ac170359b38a14f899bbf534daed43">dock::ui::DockPanelItem::isFloatable</a></div><div class="ttdeci">bool isFloatable() const</div><div class="ttdef"><b>定义</b> DockPanelItem.cpp:92</div></div>
+<div class="ttc" id="aclassdock_1_1ui_1_1DockPanelItem_html_a619101158292bcfc7be0fdcb66f47aff"><div class="ttname"><a href="classdock_1_1ui_1_1DockPanelItem.html#a619101158292bcfc7be0fdcb66f47aff">dock::ui::DockPanelItem::setFloatable</a></div><div class="ttdeci">void setFloatable(bool floatable)</div><div class="ttdef"><b>定义</b> DockPanelItem.cpp:97</div></div>
+<div class="ttc" id="aclassdock_1_1ui_1_1DockPanelItem_html_a6c288cae3e81a1a5b56efc8bb7543eb0"><div class="ttname"><a href="classdock_1_1ui_1_1DockPanelItem.html#a6c288cae3e81a1a5b56efc8bb7543eb0">dock::ui::DockPanelItem::movable_</a></div><div class="ttdeci">bool movable_</div><div class="ttdef"><b>定义</b> DockPanelItem.h:88</div></div>
+<div class="ttc" id="aclassdock_1_1ui_1_1DockPanelItem_html_a73271090c97f0bd6acc25ab925b7109b"><div class="ttname"><a href="classdock_1_1ui_1_1DockPanelItem.html#a73271090c97f0bd6acc25ab925b7109b">dock::ui::DockPanelItem::uniqueName</a></div><div class="ttdeci">QString uniqueName</div><div class="ttdef"><b>定义</b> DockPanelItem.h:27</div></div>
+<div class="ttc" id="aclassdock_1_1ui_1_1DockPanelItem_html_a7a83a49b2ced49a6d85b982c8b183ceb"><div class="ttname"><a href="classdock_1_1ui_1_1DockPanelItem.html#a7a83a49b2ced49a6d85b982c8b183ceb">dock::ui::DockPanelItem::panel</a></div><div class="ttdeci">dock::DockPanel * panel() const</div><div class="ttdoc">关联的控制器</div><div class="ttdef"><b>定义</b> DockPanelItem.h:40</div></div>
+<div class="ttc" id="aclassdock_1_1ui_1_1DockPanelItem_html_a7bc75bc76b414422befa10cd0dbb569c"><div class="ttname"><a href="classdock_1_1ui_1_1DockPanelItem.html#a7bc75bc76b414422befa10cd0dbb569c">dock::ui::DockPanelItem::maxExtent</a></div><div class="ttdeci">QSize maxExtent() const override</div><div class="ttdoc">视图最大尺寸提示</div><div class="ttdef"><b>定义</b> DockPanelItem.cpp:151</div></div>
+<div class="ttc" id="aclassdock_1_1ui_1_1DockPanelItem_html_a8295b7a100de53c2ca82061c833eb57a"><div class="ttname"><a href="classdock_1_1ui_1_1DockPanelItem.html#a8295b7a100de53c2ca82061c833eb57a">dock::ui::DockPanelItem::hidePanel</a></div><div class="ttdeci">Q_INVOKABLE void hidePanel()</div><div class="ttdef"><b>定义</b> DockPanelItem.cpp:113</div></div>
+<div class="ttc" id="aclassdock_1_1ui_1_1DockPanelItem_html_a8c7e90d622540723d9a9f9f30a141c82"><div class="ttname"><a href="classdock_1_1ui_1_1DockPanelItem.html#a8c7e90d622540723d9a9f9f30a141c82">dock::ui::DockPanelItem::applyVisibility</a></div><div class="ttdeci">void applyVisibility(bool visible) override</div><div class="ttdoc">应用可见性</div><div class="ttdef"><b>定义</b> DockPanelItem.cpp:134</div></div>
+<div class="ttc" id="aclassdock_1_1ui_1_1DockPanelItem_html_a8e392090cbc24b0e075cc10720982819"><div class="ttname"><a href="classdock_1_1ui_1_1DockPanelItem.html#a8e392090cbc24b0e075cc10720982819">dock::ui::DockPanelItem::dockObject</a></div><div class="ttdeci">DockObject * dockObject() const override</div><div class="ttdoc">关联的控制器</div><div class="ttdef"><b>定义</b> DockPanelItem.cpp:119</div></div>
+<div class="ttc" id="aclassdock_1_1ui_1_1DockPanelItem_html_a93fe8962f70e1e1a9a81fb7c3dbfc76b"><div class="ttname"><a href="classdock_1_1ui_1_1DockPanelItem.html#a93fe8962f70e1e1a9a81fb7c3dbfc76b">dock::ui::DockPanelItem::uniqueName</a></div><div class="ttdeci">QString uniqueName() const</div><div class="ttdef"><b>定义</b> DockPanelItem.h:42</div></div>
+<div class="ttc" id="aclassdock_1_1ui_1_1DockPanelItem_html_a94dbc08bd12308fa294cf2530e3c76be"><div class="ttname"><a href="classdock_1_1ui_1_1DockPanelItem.html#a94dbc08bd12308fa294cf2530e3c76be">dock::ui::DockPanelItem::panel_</a></div><div class="ttdeci">dock::DockPanel * panel_</div><div class="ttdef"><b>定义</b> DockPanelItem.h:83</div></div>
+<div class="ttc" id="aclassdock_1_1ui_1_1DockPanelItem_html_a99d8c5660ae04a453555ef7adeb8e0ea"><div class="ttname"><a href="classdock_1_1ui_1_1DockPanelItem.html#a99d8c5660ae04a453555ef7adeb8e0ea">dock::ui::DockPanelItem::applyFrame</a></div><div class="ttdeci">void applyFrame(const QRect &amp;geometry) override</div><div class="ttdoc">应用几何（父视图坐标系）</div><div class="ttdef"><b>定义</b> DockPanelItem.cpp:124</div></div>
+<div class="ttc" id="aclassdock_1_1ui_1_1DockPanelItem_html_a9b8583defcbd2d4a1702e30d74453179"><div class="ttname"><a href="classdock_1_1ui_1_1DockPanelItem.html#a9b8583defcbd2d4a1702e30d74453179">dock::ui::DockPanelItem::bringToFront</a></div><div class="ttdeci">void bringToFront() override</div><div class="ttdoc">激活/置顶视图</div><div class="ttdef"><b>定义</b> DockPanelItem.cpp:156</div></div>
+<div class="ttc" id="aclassdock_1_1ui_1_1DockPanelItem_html_a9e157d149ad6d24b42d7e75aad7e780c"><div class="ttname"><a href="classdock_1_1ui_1_1DockPanelItem.html#a9e157d149ad6d24b42d7e75aad7e780c">dock::ui::DockPanelItem::floatable_</a></div><div class="ttdeci">bool floatable_</div><div class="ttdef"><b>定义</b> DockPanelItem.h:89</div></div>
+<div class="ttc" id="aclassdock_1_1ui_1_1DockPanelItem_html_ab0e4b978d09175d474e5ac859864e8ee"><div class="ttname"><a href="classdock_1_1ui_1_1DockPanelItem.html#ab0e4b978d09175d474e5ac859864e8ee">dock::ui::DockPanelItem::closable_</a></div><div class="ttdeci">bool closable_</div><div class="ttdef"><b>定义</b> DockPanelItem.h:87</div></div>
+<div class="ttc" id="aclassdock_1_1ui_1_1DockPanelItem_html_ab26f1e274a73664318917d2e06cb4fd0"><div class="ttname"><a href="classdock_1_1ui_1_1DockPanelItem.html#ab26f1e274a73664318917d2e06cb4fd0">dock::ui::DockPanelItem::isMovable</a></div><div class="ttdeci">bool isMovable() const</div><div class="ttdef"><b>定义</b> DockPanelItem.cpp:77</div></div>
+<div class="ttc" id="aclassdock_1_1ui_1_1DockPanelItem_html_ab6f06e40438652d875fd5921450a671a"><div class="ttname"><a href="classdock_1_1ui_1_1DockPanelItem.html#ab6f06e40438652d875fd5921450a671a">dock::ui::DockPanelItem::isShown</a></div><div class="ttdeci">bool isShown() const override</div><div class="ttdoc">当前可见性</div><div class="ttdef"><b>定义</b> DockPanelItem.cpp:139</div></div>
+<div class="ttc" id="aclassdock_1_1ui_1_1DockPanelItem_html_ac5e961939ba9eef58a0445c4982e5842"><div class="ttname"><a href="classdock_1_1ui_1_1DockPanelItem.html#ac5e961939ba9eef58a0445c4982e5842">dock::ui::DockPanelItem::panel_content_item_</a></div><div class="ttdeci">QQuickItem * panel_content_item_</div><div class="ttdef"><b>定义</b> DockPanelItem.h:84</div></div>
+<div class="ttc" id="aclassdock_1_1ui_1_1DockPanelItem_html_acf277c454de5b3f8d05139b5b94ddb24"><div class="ttname"><a href="classdock_1_1ui_1_1DockPanelItem.html#acf277c454de5b3f8d05139b5b94ddb24">dock::ui::DockPanelItem::detachedChanged</a></div><div class="ttdeci">void detachedChanged()</div></div>
+<div class="ttc" id="aclassdock_1_1ui_1_1DockPanelItem_html_ae9d534b02a0a85c2a967e12ab7cb68c7"><div class="ttname"><a href="classdock_1_1ui_1_1DockPanelItem.html#ae9d534b02a0a85c2a967e12ab7cb68c7">dock::ui::DockPanelItem::shownChanged</a></div><div class="ttdeci">void shownChanged()</div></div>
+<div class="ttc" id="aclassdock_1_1ui_1_1DockPanelItem_html_aed897308635a86c3549ebae0ef692a8e"><div class="ttname"><a href="classdock_1_1ui_1_1DockPanelItem.html#aed897308635a86c3549ebae0ef692a8e">dock::ui::DockPanelItem::globalOrigin</a></div><div class="ttdeci">QPoint globalOrigin() const override</div><div class="ttdoc">视图全局原点（用于拖放命中测试）</div><div class="ttdef"><b>定义</b> DockPanelItem.cpp:160</div></div>
+<div class="ttc" id="aclassdock_1_1ui_1_1DockPanelItem_html_af2d04cb2a6c8186aa13d4c1d0ed65f19"><div class="ttname"><a href="classdock_1_1ui_1_1DockPanelItem.html#af2d04cb2a6c8186aa13d4c1d0ed65f19">dock::ui::DockPanelItem::DockPanelItem</a></div><div class="ttdeci">DockPanelItem(QQuickItem *parent=nullptr)</div><div class="ttdef"><b>定义</b> DockPanelItem.cpp:16</div></div>
+<div class="ttc" id="aclassdock_1_1ui_1_1DockPanelItem_html_af36130e657cbcda22e08fe4f03b88169"><div class="ttname"><a href="classdock_1_1ui_1_1DockPanelItem.html#af36130e657cbcda22e08fe4f03b88169">dock::ui::DockPanelItem::frame</a></div><div class="ttdeci">QRect frame() const override</div><div class="ttdoc">当前几何</div><div class="ttdef"><b>定义</b> DockPanelItem.cpp:129</div></div>
+<div class="ttc" id="aclassdock_1_1ui_1_1DockPanelItem_html_af3aaf32c63ceed597f75c88145c58dda"><div class="ttname"><a href="classdock_1_1ui_1_1DockPanelItem.html#af3aaf32c63ceed597f75c88145c58dda">dock::ui::DockPanelItem::featuresChanged</a></div><div class="ttdeci">void featuresChanged()</div></div>
+<div class="ttc" id="aclassdock_1_1ui_1_1DockPanelItem_html_afbf3021ec053ec47816bc6b5251e531e"><div class="ttname"><a href="classdock_1_1ui_1_1DockPanelItem.html#afbf3021ec053ec47816bc6b5251e531e">dock::ui::DockPanelItem::setTitle</a></div><div class="ttdeci">void setTitle(const QString &amp;title)</div><div class="ttdef"><b>定义</b> DockPanelItem.cpp:40</div></div>
+<div class="ttc" id="aclassdock_1_1ui_1_1DockPanelItem_html_afc5dc1a4341918285e3bdc853b8f0080"><div class="ttname"><a href="classdock_1_1ui_1_1DockPanelItem.html#afc5dc1a4341918285e3bdc853b8f0080">dock::ui::DockPanelItem::unique_name_</a></div><div class="ttdeci">QString unique_name_</div><div class="ttdef"><b>定义</b> DockPanelItem.h:85</div></div>
+<div class="ttc" id="anamespacedock_1_1ui_html"><div class="ttname"><a href="namespacedock_1_1ui.html">dock::ui</a></div><div class="ttdef"><b>定义</b> DividerItem.cpp:15</div></div>
+<div class="ttc" id="anamespacedock_html"><div class="ttname"><a href="namespacedock.html">dock</a></div><div class="ttdef"><b>定义</b> DockCatalog.cpp:14</div></div>
+</div><!-- fragment --></div><!-- contents -->
+<!-- start footer part -->
+<hr class="footer"/><address class="footer"><small>
+制作者&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.14.0
+</small></address>
+</div><!-- doc-content -->
+</body>
+</html>

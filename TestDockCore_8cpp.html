@@ -1,0 +1,470 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="zh">
+<head>
+<meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=11"/>
+<meta name="generator" content="Doxygen 1.14.0"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>PreCess: app/dock/test/TestDockCore.cpp 文件参考</title>
+<link href="tabs.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="jquery.js"></script>
+<script type="text/javascript" src="dynsections.js"></script>
+<script type="text/javascript" src="clipboard.js"></script>
+<script type="text/javascript" src="cookie.js"></script>
+<link href="search/search.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="search/searchdata.js"></script>
+<script type="text/javascript" src="search/search.js"></script>
+<link href="doxygen.css" rel="stylesheet" type="text/css" />
+</head>
+<body>
+<div id="top"><!-- do not remove this div, it is closed by doxygen! -->
+<div id="titlearea">
+<table cellspacing="0" cellpadding="0">
+ <tbody>
+ <tr id="projectrow">
+  <td id="projectlogo"><img alt="Logo" src="PreCess.ico"/></td>
+  <td id="projectalign">
+   <div id="projectname">PreCess
+   </div>
+  </td>
+ </tr>
+ </tbody>
+</table>
+</div>
+<!-- end header part -->
+<!-- 制作者 Doxygen 1.14.0 -->
+<script type="text/javascript">
+var searchBox = new SearchBox("searchBox", "search/",'.html');
+</script>
+<script type="text/javascript">
+$(function() { codefold.init(); });
+</script>
+<script type="text/javascript" src="menudata.js"></script>
+<script type="text/javascript" src="menu.js"></script>
+<script type="text/javascript">
+$(function() {
+  initMenu('',true,false,'search.php','搜索',false);
+  $(function() { init_search(); });
+});
+</script>
+<div id="main-nav"></div>
+<!-- window showing the filter options -->
+<div id="MSearchSelectWindow"
+     onmouseover="return searchBox.OnSearchSelectShow()"
+     onmouseout="return searchBox.OnSearchSelectHide()"
+     onkeydown="return searchBox.OnSearchSelectKey(event)">
+</div>
+
+<!-- iframe showing the search results (closed by default) -->
+<div id="MSearchResultsWindow">
+<div id="MSearchResults">
+<div class="SRPage">
+<div id="SRIndex">
+<div id="SRResults"></div>
+<div class="SRStatus" id="Loading">载入中...</div>
+<div class="SRStatus" id="Searching">搜索中...</div>
+<div class="SRStatus" id="NoMatches">未找到</div>
+</div>
+</div>
+</div>
+</div>
+
+<div id="nav-path" class="navpath">
+  <ul>
+<li class="navelem"><a href="dir_d422163b96683743ed3963d4aac17747.html">app</a></li><li class="navelem"><a href="dir_4e5d8f7ce7c3dc0f91a395eba455c956.html">dock</a></li><li class="navelem"><a href="dir_ba649ca18379a81c9bc542363a71e95d.html">test</a></li>  </ul>
+</div>
+</div><!-- top -->
+<div id="doc-content">
+<div class="header">
+  <div class="summary">
+<a href="#func-members">函数</a>  </div>
+  <div class="headertitle"><div class="title">TestDockCore.cpp 文件参考</div></div>
+</div><!--header-->
+<div class="contents">
+
+<p>停靠核心语义单元测试：命令式停靠布局、关闭/恢复、中央部件、选项卡  
+<a href="#details">更多...</a></p>
+<div class="textblock"><code>#include &quot;<a class="el" href="DockTestSupport_8h_source.html">DockTestSupport.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="DockCatalog_8h_source.html">docking/DockCatalog.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="DockPanel_8h_source.html">docking/DockPanel.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="DockRegion_8h_source.html">docking/DockRegion.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="DragSession_8h_source.html">docking/DragSession.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="PanelGroup_8h_source.html">docking/PanelGroup.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="DockHost_8h_source.html">docking/DockHost.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="DockWindow_8h_source.html">docking/DockWindow.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="LayoutNode_8h_source.html">tree/LayoutNode.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="BoxNode_8h_source.html">tree/BoxNode.h</a>&quot;</code><br />
+<code>#include &lt;catch2/catch_test_macros.hpp&gt;</code><br />
+</div><div class="textblock"><div class="dynheader">
+TestDockCore.cpp 的引用(Include)关系图:</div>
+<div class="dyncontent">
+<div class="center"><img src="TestDockCore_8cpp__incl.png" border="0" usemap="#aapp_2dock_2test_2TestDockCore_8cpp" loading="lazy" alt=""/></div>
+<map name="aapp_2dock_2test_2TestDockCore_8cpp" id="aapp_2dock_2test_2TestDockCore_8cpp">
+<area shape="rect" title="停靠核心语义单元测试：命令式停靠布局、关闭/恢复、中央部件、选项卡" alt="" coords="890,5,1121,31"/>
+<area shape="rect" href="DockTestSupport_8h.html" title="停靠组件测试支撑：桩视图与复刻 Main.qml 启动布局的夹具" alt="" coords="809,79,951,104"/>
+<area shape="poly" title=" " alt="" coords="987,33,914,74,911,69,984,28"/>
+<area shape="rect" href="DockCatalog_8h.html" title="停靠对象注册表（极简版）" alt="" coords="935,152,1107,177"/>
+<area shape="poly" title=" " alt="" coords="1009,31,1021,138,1016,139,1004,31"/>
+<area shape="rect" href="DockPanel_8h.html" title="逻辑停靠面板：可显隐、可停靠、可拆出为独立窗口" alt="" coords="413,152,571,177"/>
+<area shape="poly" title=" " alt="" coords="965,33,547,151,545,146,964,28"/>
+<area shape="rect" href="DockHost_8h.html" title="主停靠窗口：持有根停靠区域与中央持久面板" alt="" coords="1329,152,1481,177"/>
+<area shape="poly" title=" " alt="" coords="1021,29,1072,65,1140,102,1229,131,1316,149,1315,154,1228,136,1138,106,1069,69,1018,33"/>
+<area shape="rect" href="DockWindow_8h.html" title="浮动窗口：承载被拖出主窗口的分组" alt="" coords="1132,152,1305,177"/>
+<area shape="poly" title=" " alt="" coords="1016,29,1047,64,1090,102,1131,126,1173,145,1171,150,1129,131,1086,106,1043,68,1012,33"/>
+<area shape="rect" href="DragSession_8h.html" title="拖拽状态机：按下 → 超过阈值转拖拽 → 悬停落点 → 释放/取消" alt="" coords="1697,152,1868,177"/>
+<area shape="poly" title=" " alt="" coords="1044,28,1109,49,1182,76,1208,90,1234,101,1300,118,1356,129,1454,138,1555,141,1684,149,1684,155,1555,146,1454,143,1355,134,1298,123,1232,107,1206,95,1180,81,1108,54,1043,33"/>
+<area shape="rect" href="DockRegion_8h.html" title="停靠区域：持有布局树根节点，负责命令式停靠与拖放落点" alt="" coords="1506,152,1673,177"/>
+<area shape="poly" title=" " alt="" coords="1031,28,1190,101,1311,122,1493,148,1492,153,1310,127,1189,107,1029,33"/>
+<area shape="rect" href="PanelGroup_8h.html" title="选项卡分组：承载一个或多个停靠面板的布局单元" alt="" coords="25,79,188,104"/>
+<area shape="poly" title=" " alt="" coords="890,29,583,49,202,81,201,76,583,44,890,23"/>
+<area shape="rect" href="LayoutNode_8h.html" title="布局树节点" alt="" coords="195,152,338,177"/>
+<area shape="poly" title=" " alt="" coords="947,33,339,152,338,147,946,28"/>
+<area shape="rect" href="BoxNode_8h.html" title="盒式布局容器：子节点沿单一方向排列并可拖拽分隔条调整" alt="" coords="212,79,335,104"/>
+<area shape="poly" title=" " alt="" coords="890,33,349,85,348,80,889,28"/>
+<area shape="rect" title=" " alt="" coords="1245,79,1464,104"/>
+<area shape="poly" title=" " alt="" coords="1062,28,1286,73,1284,79,1061,33"/>
+<area shape="poly" title=" " alt="" coords="904,102,987,143,985,148,902,106"/>
+<area shape="poly" title=" " alt="" coords="818,107,568,152,568,147,817,101"/>
+<area shape="rect" title=" " alt="" coords="561,225,631,251"/>
+<area shape="poly" title=" " alt="" coords="843,107,785,127,723,154,668,187,623,219,620,215,665,182,720,150,783,122,841,102"/>
+<area shape="poly" title=" " alt="" coords="952,100,1316,149,1315,154,951,105"/>
+<area shape="rect" href="DockView_8h.html" title="停靠组件与视图层（QtQuick）之间的抽象接口" alt="" coords="655,225,809,251"/>
+<area shape="poly" title=" " alt="" coords="811,107,770,124,752,137,737,153,730,167,727,182,729,211,723,212,722,181,725,165,732,151,748,133,767,119,809,102"/>
+<area shape="poly" title=" " alt="" coords="935,101,1151,147,1150,152,934,107"/>
+<area shape="poly" title=" " alt="" coords="952,94,1265,115,1684,149,1683,155,1265,120,952,100"/>
+<area shape="rect" href="NodeMetrics_8h.html" title="布局节点的几何与尺寸约束信息" alt="" coords="299,225,445,251"/>
+<area shape="poly" title=" " alt="" coords="809,95,704,98,584,107,475,125,433,138,403,154,392,166,384,181,376,212,371,211,379,179,388,163,400,150,430,133,474,119,583,102,704,93,809,90"/>
+<area shape="rect" title=" " alt="" coords="747,152,824,177"/>
+<area shape="poly" title=" " alt="" coords="866,106,813,146,810,141,863,102"/>
+<area shape="rect" title=" " alt="" coords="849,152,911,177"/>
+<area shape="poly" title=" " alt="" coords="883,104,883,138,877,138,877,104"/>
+<area shape="rect" title=" " alt="" coords="217,225,271,251"/>
+<area shape="poly" title=" " alt="" coords="935,179,924,180,745,192,604,196,465,204,287,228,285,228,284,223,286,223,464,199,604,191,744,187,924,175,935,174"/>
+<area shape="rect" title=" " alt="" coords="1747,445,1813,471"/>
+<area shape="poly" title=" " alt="" coords="1033,176,1067,211,1116,248,1199,291,1287,328,1376,360,1463,386,1620,425,1734,447,1733,452,1619,430,1461,391,1374,365,1285,333,1197,296,1113,253,1064,215,1029,179"/>
+<area shape="rect" href="DockObject_8h.html" title="控制器基类：持有视图" alt="" coords="1127,225,1236,251"/>
+<area shape="poly" title=" " alt="" coords="571,171,1113,227,1113,232,570,177"/>
+<area shape="rect" title=" " alt="" coords="469,225,536,251"/>
+<area shape="poly" title=" " alt="" coords="496,177,502,211,496,212,491,178"/>
+<area shape="poly" title=" " alt="" coords="510,175,569,215,566,219,507,180"/>
+<area shape="rect" title=" " alt="" coords="1624,372,1699,397"/>
+<area shape="poly" title=" " alt="" coords="1220,248,1612,366,1610,371,1219,253"/>
+<area shape="poly" title=" " alt="" coords="1370,180,1231,224,1230,219,1369,175"/>
+<area shape="poly" title=" " alt="" coords="1329,179,1318,180,1130,194,982,198,834,205,645,228,645,223,834,200,982,193,1130,188,1317,175,1329,173"/>
+<area shape="rect" href="DockEnums_8h.html" title="停靠组件的公共枚举与判定辅助" alt="" coords="1687,299,1798,324"/>
+<area shape="poly" title=" " alt="" coords="1433,175,1705,291,1702,296,1431,180"/>
+<area shape="rect" title=" " alt="" coords="1261,225,1358,251"/>
+<area shape="poly" title=" " alt="" coords="1391,180,1338,219,1335,215,1388,175"/>
+<area shape="poly" title=" " alt="" coords="1731,326,1687,365,1683,361,1728,322"/>
+<area shape="rect" href="DockMetrics_8h.html" title="停靠组件的默认行为常量" alt="" coords="1723,372,1837,397"/>
+<area shape="poly" title=" " alt="" coords="1751,323,1770,359,1765,361,1746,326"/>
+<area shape="poly" title=" " alt="" coords="1783,398,1783,432,1777,432,1777,398"/>
+<area shape="rect" title=" " alt="" coords="737,445,796,471"/>
+<area shape="poly" title=" " alt="" coords="1723,398,1711,400,1443,425,1181,442,810,458,809,453,1180,437,1442,420,1710,395,1722,393"/>
+<area shape="poly" title=" " alt="" coords="736,251,765,431,760,432,731,251"/>
+<area shape="rect" title=" " alt="" coords="668,299,729,324"/>
+<area shape="poly" title=" " alt="" coords="729,252,712,287,707,285,724,250"/>
+<area shape="poly" title=" " alt="" coords="1215,179,1196,215,1191,212,1210,176"/>
+<area shape="poly" title=" " alt="" coords="1178,180,743,300,742,295,1177,175"/>
+<area shape="poly" title=" " alt="" coords="1868,171,1976,189,2021,204,2038,213,2050,224,2062,242,2067,260,2067,278,2061,296,2038,328,2003,358,1959,386,1912,409,1827,444,1825,439,1910,404,1957,381,2000,354,2034,325,2056,293,2061,277,2062,261,2057,244,2046,227,2035,218,2019,209,1975,195,1868,176"/>
+<area shape="poly" title=" " alt="" coords="1769,180,1744,201,1719,227,1695,261,1679,300,1670,330,1666,359,1661,358,1665,329,1673,298,1690,258,1715,224,1741,197,1766,176"/>
+<area shape="poly" title=" " alt="" coords="1768,179,1746,200,1729,226,1726,241,1726,256,1734,286,1729,287,1721,257,1720,240,1724,224,1742,196,1765,176"/>
+<area shape="poly" title=" " alt="" coords="1752,180,1469,277,1265,341,1055,400,922,430,810,452,809,447,921,425,1054,395,1264,336,1467,272,1750,175"/>
+<area shape="rect" href="DropTarget_8h.html" title="拖放落点目标：区域 + 分组 + 落点 + 标签插入位置" alt="" coords="1738,225,1843,251"/>
+<area shape="poly" title=" " alt="" coords="1787,177,1791,212,1785,212,1781,178"/>
+<area shape="rect" title=" " alt="" coords="1867,225,1933,251"/>
+<area shape="poly" title=" " alt="" coords="1803,175,1870,216,1868,220,1800,180"/>
+<area shape="rect" title=" " alt="" coords="1957,225,2035,251"/>
+<area shape="poly" title=" " alt="" coords="1818,175,1949,218,1948,223,1816,180"/>
+<area shape="poly" title=" " alt="" coords="1785,253,1760,289,1756,286,1781,250"/>
+<area shape="poly" title=" " alt="" coords="394,248,735,436,732,441,391,253"/>
+<area shape="poly" title=" " alt="" coords="425,248,655,298,654,303,424,253"/>
+<area shape="rect" title=" " alt="" coords="397,299,435,324"/>
+<area shape="poly" title=" " alt="" coords="382,250,404,286,399,288,377,252"/>
+<area shape="rect" title=" " alt="" coords="287,299,372,324"/>
+<area shape="poly" title=" " alt="" coords="367,252,345,288,341,286,363,250"/>
+<area shape="poly" title=" " alt="" coords="1524,180,1250,227,1249,222,1523,175"/>
+<area shape="poly" title=" " alt="" coords="1604,176,1722,287,1719,291,1600,180"/>
+<area shape="poly" title=" " alt="" coords="1572,180,1510,215,1430,253,1253,320,1075,376,921,420,810,449,809,444,919,415,1074,371,1251,315,1428,248,1508,210,1569,175"/>
+<area shape="poly" title=" " alt="" coords="1567,180,1483,217,1428,237,1371,253,1282,271,1190,285,1011,303,855,311,743,313,743,308,854,306,1011,298,1190,280,1281,266,1370,248,1426,232,1481,212,1565,175"/>
+<area shape="poly" title=" " alt="" coords="117,103,143,136,177,175,220,215,217,219,173,179,138,140,113,106"/>
+<area shape="poly" title=" " alt="" coords="169,101,417,147,416,152,168,107"/>
+<area shape="poly" title=" " alt="" coords="189,100,583,149,735,175,1113,226,1113,231,734,180,582,155,188,105"/>
+<area shape="poly" title=" " alt="" coords="93,106,67,128,40,158,17,195,10,216,8,237,8,312,14,325,31,337,96,361,191,383,305,403,544,433,724,450,724,456,544,438,304,408,190,388,94,366,28,342,10,328,3,313,3,237,5,214,12,193,35,155,64,124,89,102"/>
+<area shape="rect" href="LayoutClient_8h.html" title="被布局引擎托管的实体接口" alt="" coords="45,225,192,251"/>
+<area shape="poly" title=" " alt="" coords="103,105,92,138,89,157,91,177,106,212,101,215,85,178,84,157,87,136,98,103"/>
+<area shape="poly" title=" " alt="" coords="138,249,198,284,276,322,401,366,527,401,724,446,723,451,526,407,399,371,274,326,195,289,135,253"/>
+<area shape="poly" title=" " alt="" coords="193,247,204,248,655,302,654,308,204,253,192,252"/>
+<area shape="poly" title=" " alt="" coords="323,175,548,223,547,228,322,180"/>
+<area shape="poly" title=" " alt="" coords="285,175,345,215,342,220,282,180"/>
+<area shape="poly" title=" " alt="" coords="243,106,211,125,196,138,185,153,182,170,188,186,201,202,216,215,213,219,197,205,183,189,176,170,180,151,192,134,207,121,240,102"/>
+<area shape="poly" title=" " alt="" coords="275,105,272,139,266,138,270,104"/>
+</map>
+</div>
+</div><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 id="header-func-members" class="groupheader"><a id="func-members" name="func-members"></a>
+函数</h2></td></tr>
+<tr class="memitem:af0d748356ac2b891c365df1b9ab878d9" id="r_af0d748356ac2b891c365df1b9ab878d9"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#af0d748356ac2b891c365df1b9ab878d9">TEST_CASE</a> (&quot;DockCore: initial layout matches Main.qml placement&quot;)</td></tr>
+<tr class="memitem:a22637498fe608e7edf6c905ec84eb426" id="r_a22637498fe608e7edf6c905ec84eb426"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a22637498fe608e7edf6c905ec84eb426">TEST_CASE</a> (&quot;DockCore: <a class="el" href="Core_8h.html#a4b1d429db0e34bdb0fb3ef7ded313ad8a7acdf85c69cc3c5305456a293524386e">PanelLaunch::Hidden</a> docks stay closed until opened&quot;)</td></tr>
+<tr class="memitem:a95c62866129c0aa4fe74d9bd07272ca8" id="r_a95c62866129c0aa4fe74d9bd07272ca8"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a95c62866129c0aa4fe74d9bd07272ca8">TEST_CASE</a> (&quot;DockCore: open shows hidden dock at remembered position&quot;)</td></tr>
+<tr class="memitem:a3439648f5c6d6c84590b19831a62d5b9" id="r_a3439648f5c6d6c84590b19831a62d5b9"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a3439648f5c6d6c84590b19831a62d5b9">TEST_CASE</a> (&quot;DockCore: closing and reopening a docked panel restores its size&quot;)</td></tr>
+<tr class="memitem:aa435a04c098a73073a0a14ae36be1509" id="r_aa435a04c098a73073a0a14ae36be1509"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#aa435a04c098a73073a0a14ae36be1509">TEST_CASE</a> (&quot;DockCore: insert and move panels keep shown order&quot;)</td></tr>
+<tr class="memitem:a7675729daffc60383b957470bd22b82e" id="r_a7675729daffc60383b957470bd22b82e"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a7675729daffc60383b957470bd22b82e">TEST_CASE</a> (&quot;DockCore: panel features gate detach and hide others&quot;)</td></tr>
+<tr class="memitem:a23106a78cd1e5eb8aaff64b8119e2f40" id="r_a23106a78cd1e5eb8aaff64b8119e2f40"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a23106a78cd1e5eb8aaff64b8119e2f40">TEST_CASE</a> (&quot;DockCore: dock widgets can tab into the central group&quot;)</td></tr>
+<tr class="memitem:ab9a36cb0b3d80eeb4ed61e0b29e0eb4b" id="r_ab9a36cb0b3d80eeb4ed61e0b29e0eb4b"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ab9a36cb0b3d80eeb4ed61e0b29e0eb4b">TEST_CASE</a> (&quot;DockCore: hovering decides the Ctrl+Tab tab target&quot;)</td></tr>
+<tr class="memitem:a38312658270041e249d4ddcfe6829858" id="r_a38312658270041e249d4ddcfe6829858"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a38312658270041e249d4ddcfe6829858">TEST_CASE</a> (&quot;DockCore: dock registry tracks dock widgets and <a class="el" href="main_8cpp.html#a0ddf1224851353fc92bfbff6f499fa97">main</a> window&quot;)</td></tr>
+<tr class="memitem:afe21f9a06eb13fe22712430571c15ed8" id="r_afe21f9a06eb13fe22712430571c15ed8"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#afe21f9a06eb13fe22712430571c15ed8">TEST_CASE</a> (&quot;DockCore: removing the active tab never activates a hidden panel&quot;)</td></tr>
+<tr class="memitem:aed66239da2305c81b0541552c438bb85" id="r_aed66239da2305c81b0541552c438bb85"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#aed66239da2305c81b0541552c438bb85">TEST_CASE</a> (&quot;DockCore: hideOtherGroups keeps non-closable panels&quot;)</td></tr>
+<tr class="memitem:a9f961a4df3f8f705df6662a541d6fc2a" id="r_a9f961a4df3f8f705df6662a541d6fc2a"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a9f961a4df3f8f705df6662a541d6fc2a">TEST_CASE</a> (&quot;DockCore: placing an already grouped panel is rejected&quot;)</td></tr>
+<tr class="memitem:a194c3c3a4755adb6e3f46ec7a6fd4a74" id="r_a194c3c3a4755adb6e3f46ec7a6fd4a74"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a194c3c3a4755adb6e3f46ec7a6fd4a74">TEST_CASE</a> (&quot;DockCore: floating window title follows its primary group&quot;)</td></tr>
+<tr class="memitem:afdfb3c6b0e0b95eddb47da6eede6e49d" id="r_afdfb3c6b0e0b95eddb47da6eede6e49d"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#afdfb3c6b0e0b95eddb47da6eede6e49d">TEST_CASE</a> (&quot;DockCore: destroying a grouped panel detaches it from its group&quot;)</td></tr>
+</table>
+<a name="details" id="details"></a><h2 id="header-details" class="groupheader">详细描述</h2>
+<div class="textblock"><p>停靠核心语义单元测试：命令式停靠布局、关闭/恢复、中央部件、选项卡 </p>
+</div><a name="doc-func-members" id="doc-func-members"></a><h2 id="header-doc-func-members" class="groupheader">函数说明</h2>
+<a id="a3439648f5c6d6c84590b19831a62d5b9" name="a3439648f5c6d6c84590b19831a62d5b9"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a3439648f5c6d6c84590b19831a62d5b9">&#9670;&#160;</a></span>TEST_CASE() <span class="overload">[1/14]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">TEST_CASE </td>
+          <td>(</td>
+          <td class="paramtype">&quot;DockCore: closing and reopening a docked panel restores its size&quot;</td>          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="afdfb3c6b0e0b95eddb47da6eede6e49d" name="afdfb3c6b0e0b95eddb47da6eede6e49d"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#afdfb3c6b0e0b95eddb47da6eede6e49d">&#9670;&#160;</a></span>TEST_CASE() <span class="overload">[2/14]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">TEST_CASE </td>
+          <td>(</td>
+          <td class="paramtype">&quot;DockCore: destroying a grouped panel detaches it from its group&quot;</td>          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a38312658270041e249d4ddcfe6829858" name="a38312658270041e249d4ddcfe6829858"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a38312658270041e249d4ddcfe6829858">&#9670;&#160;</a></span>TEST_CASE() <span class="overload">[3/14]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">TEST_CASE </td>
+          <td>(</td>
+          <td class="paramtype">&quot;DockCore: dock registry tracks dock widgets and <a class="el" href="main_8cpp.html#a0ddf1224851353fc92bfbff6f499fa97">main</a> window&quot;</td>          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a23106a78cd1e5eb8aaff64b8119e2f40" name="a23106a78cd1e5eb8aaff64b8119e2f40"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a23106a78cd1e5eb8aaff64b8119e2f40">&#9670;&#160;</a></span>TEST_CASE() <span class="overload">[4/14]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">TEST_CASE </td>
+          <td>(</td>
+          <td class="paramtype">&quot;DockCore: dock widgets can tab into the central group&quot;</td>          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a194c3c3a4755adb6e3f46ec7a6fd4a74" name="a194c3c3a4755adb6e3f46ec7a6fd4a74"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a194c3c3a4755adb6e3f46ec7a6fd4a74">&#9670;&#160;</a></span>TEST_CASE() <span class="overload">[5/14]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">TEST_CASE </td>
+          <td>(</td>
+          <td class="paramtype">&quot;DockCore: floating window title follows its primary group&quot;</td>          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="aed66239da2305c81b0541552c438bb85" name="aed66239da2305c81b0541552c438bb85"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aed66239da2305c81b0541552c438bb85">&#9670;&#160;</a></span>TEST_CASE() <span class="overload">[6/14]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">TEST_CASE </td>
+          <td>(</td>
+          <td class="paramtype">&quot;DockCore: hideOtherGroups keeps non-closable panels&quot;</td>          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="ab9a36cb0b3d80eeb4ed61e0b29e0eb4b" name="ab9a36cb0b3d80eeb4ed61e0b29e0eb4b"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ab9a36cb0b3d80eeb4ed61e0b29e0eb4b">&#9670;&#160;</a></span>TEST_CASE() <span class="overload">[7/14]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">TEST_CASE </td>
+          <td>(</td>
+          <td class="paramtype">&quot;DockCore: hovering decides the Ctrl+Tab tab target&quot;</td>          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="af0d748356ac2b891c365df1b9ab878d9" name="af0d748356ac2b891c365df1b9ab878d9"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#af0d748356ac2b891c365df1b9ab878d9">&#9670;&#160;</a></span>TEST_CASE() <span class="overload">[8/14]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">TEST_CASE </td>
+          <td>(</td>
+          <td class="paramtype">&quot;DockCore: initial layout matches Main.qml placement&quot;</td>          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="aa435a04c098a73073a0a14ae36be1509" name="aa435a04c098a73073a0a14ae36be1509"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aa435a04c098a73073a0a14ae36be1509">&#9670;&#160;</a></span>TEST_CASE() <span class="overload">[9/14]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">TEST_CASE </td>
+          <td>(</td>
+          <td class="paramtype">&quot;DockCore: insert and move panels keep shown order&quot;</td>          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a95c62866129c0aa4fe74d9bd07272ca8" name="a95c62866129c0aa4fe74d9bd07272ca8"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a95c62866129c0aa4fe74d9bd07272ca8">&#9670;&#160;</a></span>TEST_CASE() <span class="overload">[10/14]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">TEST_CASE </td>
+          <td>(</td>
+          <td class="paramtype">&quot;DockCore: open shows hidden dock at remembered position&quot;</td>          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a7675729daffc60383b957470bd22b82e" name="a7675729daffc60383b957470bd22b82e"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a7675729daffc60383b957470bd22b82e">&#9670;&#160;</a></span>TEST_CASE() <span class="overload">[11/14]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">TEST_CASE </td>
+          <td>(</td>
+          <td class="paramtype">&quot;DockCore: panel features gate detach and hide others&quot;</td>          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a22637498fe608e7edf6c905ec84eb426" name="a22637498fe608e7edf6c905ec84eb426"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a22637498fe608e7edf6c905ec84eb426">&#9670;&#160;</a></span>TEST_CASE() <span class="overload">[12/14]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">TEST_CASE </td>
+          <td>(</td>
+          <td class="paramtype">&quot;DockCore: <a class="el" href="Core_8h.html#a4b1d429db0e34bdb0fb3ef7ded313ad8a7acdf85c69cc3c5305456a293524386e">PanelLaunch::Hidden</a> docks stay closed until opened&quot;</td>          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a9f961a4df3f8f705df6662a541d6fc2a" name="a9f961a4df3f8f705df6662a541d6fc2a"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a9f961a4df3f8f705df6662a541d6fc2a">&#9670;&#160;</a></span>TEST_CASE() <span class="overload">[13/14]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">TEST_CASE </td>
+          <td>(</td>
+          <td class="paramtype">&quot;DockCore: placing an already grouped panel is rejected&quot;</td>          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="afe21f9a06eb13fe22712430571c15ed8" name="afe21f9a06eb13fe22712430571c15ed8"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#afe21f9a06eb13fe22712430571c15ed8">&#9670;&#160;</a></span>TEST_CASE() <span class="overload">[14/14]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">TEST_CASE </td>
+          <td>(</td>
+          <td class="paramtype">&quot;DockCore: removing the active tab never activates a hidden panel&quot;</td>          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+</div><!-- contents -->
+<!-- start footer part -->
+<hr class="footer"/><address class="footer"><small>
+制作者&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.14.0
+</small></address>
+</div><!-- doc-content -->
+</body>
+</html>

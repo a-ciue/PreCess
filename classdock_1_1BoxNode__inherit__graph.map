@@ -1,0 +1,5 @@
+<map id="dock::BoxNode" name="dock::BoxNode">
+<area shape="rect" id="Node000001" title="盒式布局容器" alt="" coords="15,79,135,104"/>
+<area shape="rect" id="Node000002" href="$classdock_1_1LayoutNode.html" title="布局树节点（叶子节点与容器节点的公共基类）" alt="" coords="5,5,144,31"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="77,44,77,79,72,79,72,44"/>
+</map>

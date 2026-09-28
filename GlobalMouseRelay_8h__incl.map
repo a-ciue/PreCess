@@ -1,0 +1,5 @@
+<map id="app/dock/ui/GlobalMouseRelay.h" name="app/dock/ui/GlobalMouseRelay.h">
+<area shape="rect" id="Node000001" title="全局输入事件过滤器：拖拽鼠标事件转发 + Esc 取消 + Ctrl+Tab 标签切换" alt="" coords="5,5,239,31"/>
+<area shape="rect" id="Node000002" title=" " alt="" coords="85,79,159,104"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="125,31,125,65,119,65,119,31"/>
+</map>

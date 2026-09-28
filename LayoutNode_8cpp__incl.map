@@ -1,0 +1,26 @@
+<map id="app/dock/tree/LayoutNode.cpp" name="app/dock/tree/LayoutNode.cpp">
+<area shape="rect" id="Node000001" title="布局树节点的实现" alt="" coords="144,5,364,31"/>
+<area shape="rect" id="Node000002" href="$LayoutNode_8h.html" title="布局树节点" alt="" coords="110,152,222,177"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="241,33,219,54,198,80,183,110,174,139,169,138,178,108,193,77,215,50,237,29"/>
+<area shape="rect" id="Node000009" href="$BoxNode_8h.html" title="盒式布局容器：子节点沿单一方向排列并可拖拽分隔条调整" alt="" coords="207,79,301,104"/>
+<area shape="poly" id="edge8_Node000001_Node000009" title=" " alt="" coords="257,31,257,65,251,65,251,31"/>
+<area shape="rect" id="Node000011" href="$LayoutClient_8h.html" title="被布局引擎托管的实体接口" alt="" coords="281,225,397,251"/>
+<area shape="poly" id="edge11_Node000001_Node000011" title=" " alt="" coords="272,29,295,50,315,77,329,112,337,149,342,211,337,212,332,149,324,114,310,80,291,53,268,33"/>
+<area shape="rect" id="Node000003" href="$NodeMetrics_8h.html" title="布局节点的几何与尺寸约束信息" alt="" coords="47,225,163,251"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="158,179,126,217,122,213,154,176"/>
+<area shape="rect" id="Node000008" title=" " alt="" coords="187,225,257,251"/>
+<area shape="poly" id="edge7_Node000002_Node000008" title=" " alt="" coords="177,176,207,213,202,216,173,179"/>
+<area shape="rect" id="Node000004" title=" " alt="" coords="205,299,266,324"/>
+<area shape="poly" id="edge3_Node000003_Node000004" title=" " alt="" coords="127,248,203,290,201,294,124,253"/>
+<area shape="rect" id="Node000005" title=" " alt="" coords="303,299,362,324"/>
+<area shape="poly" id="edge4_Node000003_Node000005" title=" " alt="" coords="142,248,291,294,289,299,141,253"/>
+<area shape="rect" id="Node000006" title=" " alt="" coords="5,299,44,324"/>
+<area shape="poly" id="edge5_Node000003_Node000006" title=" " alt="" coords="94,253,50,292,46,288,90,249"/>
+<area shape="rect" id="Node000007" title=" " alt="" coords="69,299,154,324"/>
+<area shape="poly" id="edge6_Node000003_Node000007" title=" " alt="" coords="108,251,112,285,106,285,103,251"/>
+<area shape="poly" id="edge9_Node000009_Node000002" title=" " alt="" coords="242,106,193,145,189,141,238,102"/>
+<area shape="rect" id="Node000010" title=" " alt="" coords="247,152,301,177"/>
+<area shape="poly" id="edge10_Node000009_Node000010" title=" " alt="" coords="260,104,270,138,265,140,255,105"/>
+<area shape="poly" id="edge12_Node000011_Node000004" title=" " alt="" coords="324,253,265,293,262,288,321,248"/>
+<area shape="poly" id="edge13_Node000011_Node000005" title=" " alt="" coords="341,251,338,285,332,285,336,251"/>
+</map>

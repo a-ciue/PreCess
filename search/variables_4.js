@@ -24,5 +24,14 @@ var searchData=
   ['display_5fname_21',['display_name',['../structsession_1_1AttributeInfo.html#a41de638ece541279873640997079db5c',1,'session::AttributeInfo::display_name'],['../structsystems_1_1algo_1_1AlgorithmInfo.html#adaea0bf3f4106a845ec8b2d4e1f7bf93',1,'systems::algo::AlgorithmInfo::display_name'],['../structsystems_1_1algo_1_1HandlerMetaData.html#a1177cec33025df2ceb4989fad185c871',1,'systems::algo::HandlerMetaData::display_name'],['../structsystems_1_1edit_1_1EditInfo.html#a9ddfe6824a8e84f9744b729590d0502a',1,'systems::edit::EditInfo::display_name'],['../structsystems_1_1edit_1_1HandlerMetaData.html#a0aa4059bb2ef1186a262f97855ac386b',1,'systems::edit::HandlerMetaData::display_name'],['../structsystems_1_1feature_1_1FeatureInfo.html#a3678feaf9cb0d7e02dd1ccf5a4278fd4',1,'systems::feature::FeatureInfo::display_name'],['../structsystems_1_1feature_1_1HandlerMetaData.html#a1264980135b1ff7350be8a298295e978',1,'systems::feature::HandlerMetaData::display_name']]],
   ['display_5fname_5f_22',['display_name_',['../classQAlgorithmInfo.html#a581849a72618576791b98b266f657e37',1,'QAlgorithmInfo::display_name_'],['../classQEditInfo.html#adf6d67496c8224250be9d65d6a0ba7f6',1,'QEditInfo::display_name_'],['../classQFeatureInfo.html#aa808c58b486376a2081e79dfc725f14a',1,'QFeatureInfo::display_name_']]],
   ['dissolve_23',['dissolve',['../structtinyobj_1_1material__t.html#a61e3561bf67f6faec6ac4f551f9956cb',1,'tinyobj::material_t']]],
-  ['dummy_24',['dummy',['../structtinyobj_1_1material__t.html#a6b1814d1066609178c81d2a4f7b34bd8',1,'tinyobj::material_t']]]
+  ['divider_5f_24',['divider_',['../classdock_1_1ui_1_1DividerItem.html#a9520e56e7cf87cb08afc8bf0c38a4dae',1,'dock::ui::DividerItem']]],
+  ['divider_5fviews_5f_25',['divider_views_',['../classdock_1_1ui_1_1DockAreaItem.html#a622e83e6316f890135f1d8fb0646218b',1,'dock::ui::DockAreaItem']]],
+  ['dividers_5f_26',['dividers_',['../classdock_1_1BoxNode.html#ad75a444890b0a4fc1d1ea98c86a34221',1,'dock::BoxNode']]],
+  ['dock_5fobject_5f_27',['dock_object_',['../classdocktest_1_1StubView.html#ac13f744f0490edc5d2b663371eadb65f',1,'docktest::StubView::dock_object_'],['../classdock_1_1ui_1_1PanelContentView.html#ab93589187b7c3ae1a6c233542d8d7609',1,'dock::ui::PanelContentView::dock_object_']]],
+  ['drag_5f_28',['drag_',['../classdock_1_1ui_1_1PanelGroupItem.html#a3fd872164409be5f7a8515a14d0ea990',1,'dock::ui::PanelGroupItem']]],
+  ['drag_5fgroup_5f_29',['drag_group_',['../classdock_1_1DragSession.html#a9fde070a12bd367b52eb7c3e25bc1845',1,'dock::DragSession']]],
+  ['drag_5fproxy_5f_30',['drag_proxy_',['../classdock_1_1DragSession.html#a0d3efdfdcae2fe8248d9272311917888',1,'dock::DragSession']]],
+  ['dragged_5fpanel_5f_31',['dragged_panel_',['../classdock_1_1DragSession.html#ada7ed21328743a20de0c187672a0f2c0',1,'dock::DragSession']]],
+  ['dragging_5f_32',['dragging_',['../classdock_1_1ui_1_1DividerItem.html#a46af178d1deb4c9a4f6ae70335c5a916',1,'dock::ui::DividerItem']]],
+  ['dummy_33',['dummy',['../structtinyobj_1_1material__t.html#a6b1814d1066609178c81d2a4f7b34bd8',1,'tinyobj::material_t']]]
 ];

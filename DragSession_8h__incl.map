@@ -1,0 +1,23 @@
+<map id="app/dock/docking/DragSession.h" name="app/dock/docking/DragSession.h">
+<area shape="rect" id="Node000001" title="拖拽状态机：按下 → 超过阈值转拖拽 → 悬停落点 → 释放/取消" alt="" coords="109,5,343,31"/>
+<area shape="rect" id="Node000002" href="$DropTarget_8h.html" title="拖放落点目标：区域 + 分组 + 落点 + 标签插入位置" alt="" coords="83,79,188,104"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="213,33,163,72,159,68,210,29"/>
+<area shape="rect" id="Node000003" href="$DockEnums_8h.html" title="停靠组件的公共枚举与判定辅助" alt="" coords="52,152,163,177"/>
+<area shape="poly" id="edge7_Node000001_Node000003" title=" " alt="" coords="146,33,105,51,87,64,72,80,67,95,70,110,88,140,84,143,65,112,62,94,68,77,83,60,102,46,144,28"/>
+<area shape="rect" id="Node000005" title=" " alt="" coords="5,299,71,324"/>
+<area shape="poly" id="edge10_Node000001_Node000005" title=" " alt="" coords="151,33,103,51,81,64,61,81,29,120,13,158,10,199,17,250,29,286,24,287,11,251,4,199,8,156,25,117,57,77,78,60,101,46,150,28"/>
+<area shape="rect" id="Node000006" title=" " alt="" coords="99,299,158,324"/>
+<area shape="poly" id="edge12_Node000001_Node000006" title=" " alt="" coords="234,30,251,69,268,127,273,159,273,191,267,223,254,252,237,271,217,286,173,304,171,299,214,281,234,267,249,249,262,221,267,191,267,159,263,128,246,71,230,32"/>
+<area shape="rect" id="Node000007" title=" " alt="" coords="165,225,239,251"/>
+<area shape="poly" id="edge9_Node000001_Node000007" title=" " alt="" coords="227,31,207,211,202,211,222,31"/>
+<area shape="rect" id="Node000008" title=" " alt="" coords="315,79,380,104"/>
+<area shape="poly" id="edge8_Node000001_Node000008" title=" " alt="" coords="247,28,317,69,315,74,244,33"/>
+<area shape="rect" id="Node000009" title=" " alt="" coords="404,79,483,104"/>
+<area shape="poly" id="edge11_Node000001_Node000009" title=" " alt="" coords="262,28,396,72,394,77,260,33"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="133,105,119,140,114,138,128,103"/>
+<area shape="rect" id="Node000004" href="$DockMetrics_8h.html" title="停靠组件的默认行为常量" alt="" coords="26,225,141,251"/>
+<area shape="poly" id="edge3_Node000003_Node000004" title=" " alt="" coords="106,179,94,213,89,211,101,177"/>
+<area shape="poly" id="edge6_Node000003_Node000007" title=" " alt="" coords="124,175,177,215,174,219,121,179"/>
+<area shape="poly" id="edge4_Node000004_Node000005" title=" " alt="" coords="78,252,55,289,50,286,74,250"/>
+<area shape="poly" id="edge5_Node000004_Node000006" title=" " alt="" coords="93,250,116,286,112,289,89,252"/>
+</map>

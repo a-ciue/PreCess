@@ -1,0 +1,139 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="zh">
+<head>
+<meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=11"/>
+<meta name="generator" content="Doxygen 1.14.0"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>PreCess: app/dock/tree/NodeMetrics.h 源文件</title>
+<link href="tabs.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="jquery.js"></script>
+<script type="text/javascript" src="dynsections.js"></script>
+<script type="text/javascript" src="clipboard.js"></script>
+<script type="text/javascript" src="cookie.js"></script>
+<link href="search/search.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="search/searchdata.js"></script>
+<script type="text/javascript" src="search/search.js"></script>
+<link href="doxygen.css" rel="stylesheet" type="text/css" />
+</head>
+<body>
+<div id="top"><!-- do not remove this div, it is closed by doxygen! -->
+<div id="titlearea">
+<table cellspacing="0" cellpadding="0">
+ <tbody>
+ <tr id="projectrow">
+  <td id="projectlogo"><img alt="Logo" src="PreCess.ico"/></td>
+  <td id="projectalign">
+   <div id="projectname">PreCess
+   </div>
+  </td>
+ </tr>
+ </tbody>
+</table>
+</div>
+<!-- end header part -->
+<!-- 制作者 Doxygen 1.14.0 -->
+<script type="text/javascript">
+var searchBox = new SearchBox("searchBox", "search/",'.html');
+</script>
+<script type="text/javascript">
+$(function() { codefold.init(); });
+</script>
+<script type="text/javascript" src="menudata.js"></script>
+<script type="text/javascript" src="menu.js"></script>
+<script type="text/javascript">
+$(function() {
+  initMenu('',true,false,'search.php','搜索',false);
+  $(function() { init_search(); });
+});
+</script>
+<div id="main-nav"></div>
+<!-- window showing the filter options -->
+<div id="MSearchSelectWindow"
+     onmouseover="return searchBox.OnSearchSelectShow()"
+     onmouseout="return searchBox.OnSearchSelectHide()"
+     onkeydown="return searchBox.OnSearchSelectKey(event)">
+</div>
+
+<!-- iframe showing the search results (closed by default) -->
+<div id="MSearchResultsWindow">
+<div id="MSearchResults">
+<div class="SRPage">
+<div id="SRIndex">
+<div id="SRResults"></div>
+<div class="SRStatus" id="Loading">载入中...</div>
+<div class="SRStatus" id="Searching">搜索中...</div>
+<div class="SRStatus" id="NoMatches">未找到</div>
+</div>
+</div>
+</div>
+</div>
+
+<div id="nav-path" class="navpath">
+  <ul>
+<li class="navelem"><a href="dir_d422163b96683743ed3963d4aac17747.html">app</a></li><li class="navelem"><a href="dir_4e5d8f7ce7c3dc0f91a395eba455c956.html">dock</a></li><li class="navelem"><a href="dir_5eadc552fcf5a00d591e43a164d6005f.html">tree</a></li>  </ul>
+</div>
+</div><!-- top -->
+<div id="doc-content">
+<div class="header">
+  <div class="headertitle"><div class="title">NodeMetrics.h</div></div>
+</div><!--header-->
+<div class="contents">
+<a href="NodeMetrics_8h.html">浏览该文件的文档.</a><div class="fragment"><div class="line"><a id="l00001" name="l00001"></a><span class="lineno">    1</span></div>
+<div class="line"><a id="l00005" name="l00005"></a><span class="lineno">    5</span> </div>
+<div class="line"><a id="l00006" name="l00006"></a><span class="lineno">    6</span><span class="preprocessor">#pragma once</span></div>
+<div class="line"><a id="l00007" name="l00007"></a><span class="lineno">    7</span> </div>
+<div class="line"><a id="l00008" name="l00008"></a><span class="lineno">    8</span><span class="preprocessor">#include &lt;QRect&gt;</span></div>
+<div class="line"><a id="l00009" name="l00009"></a><span class="lineno">    9</span><span class="preprocessor">#include &lt;QSize&gt;</span></div>
+<div class="line"><a id="l00010" name="l00010"></a><span class="lineno">   10</span><span class="preprocessor">#include &lt;Qt&gt;</span></div>
+<div class="line"><a id="l00011" name="l00011"></a><span class="lineno">   11</span> </div>
+<div class="line"><a id="l00012" name="l00012"></a><span class="lineno">   12</span><span class="preprocessor">#include &lt;algorithm&gt;</span></div>
+<div class="line"><a id="l00013" name="l00013"></a><span class="lineno">   13</span> </div>
+<div class="line"><a id="l00014" name="l00014"></a><span class="lineno">   14</span><span class="keyword">namespace </span><a class="code hl_namespace" href="namespacedock.html">dock</a> {</div>
+<div class="line"><a id="l00015" name="l00015"></a><span class="lineno">   15</span></div>
+<div class="line"><a id="l00017" name="l00017"></a><span class="lineno"><a class="line" href="namespacedock.html#abc474d09d97bd8c32375258274a0fa84">   17</a></span><span class="keyword">inline</span> <span class="keyword">constexpr</span> <span class="keywordtype">int</span> <a class="code hl_variable" href="namespacedock.html#abc474d09d97bd8c32375258274a0fa84">kMaxSizeLimit</a> = 16777215;</div>
+<div class="line"><a id="l00018" name="l00018"></a><span class="lineno">   18</span></div>
+<div class="line"><a id="l00020" name="l00020"></a><span class="lineno"><a class="line" href="namespacedock.html#ad5d0462dc9b83f6221f6b2622d1069d9">   20</a></span><span class="keyword">inline</span> <span class="keyword">constexpr</span> <span class="keywordtype">int</span> <a class="code hl_variable" href="namespacedock.html#ad5d0462dc9b83f6221f6b2622d1069d9">kDividerThickness</a> = 5;</div>
+<div class="line"><a id="l00021" name="l00021"></a><span class="lineno">   21</span></div>
+<div class="foldopen" id="foldopen00028" data-start="{" data-end="};">
+<div class="line"><a id="l00028" name="l00028"></a><span class="lineno"><a class="line" href="structdock_1_1NodeMetrics.html">   28</a></span><span class="keyword">struct </span><a class="code hl_struct" href="structdock_1_1NodeMetrics.html">NodeMetrics</a> {</div>
+<div class="line"><a id="l00030" name="l00030"></a><span class="lineno"><a class="line" href="structdock_1_1NodeMetrics.html#a0c693616252ea7663274ecde2452cf11">   30</a></span>    QRect <a class="code hl_variable" href="structdock_1_1NodeMetrics.html#a0c693616252ea7663274ecde2452cf11">geometry</a>;</div>
+<div class="line"><a id="l00032" name="l00032"></a><span class="lineno"><a class="line" href="structdock_1_1NodeMetrics.html#ad7701d827b3112c603a0d0aa9ce9c41e">   32</a></span>    QSize <a class="code hl_variable" href="structdock_1_1NodeMetrics.html#ad7701d827b3112c603a0d0aa9ce9c41e">minExtent</a> { 0, 0 };</div>
+<div class="line"><a id="l00034" name="l00034"></a><span class="lineno"><a class="line" href="structdock_1_1NodeMetrics.html#ada8b43333675a450e39ba3940875c864">   34</a></span>    QSize <a class="code hl_variable" href="structdock_1_1NodeMetrics.html#ada8b43333675a450e39ba3940875c864">maxExtent</a> { <a class="code hl_variable" href="namespacedock.html#abc474d09d97bd8c32375258274a0fa84">kMaxSizeLimit</a>, <a class="code hl_variable" href="namespacedock.html#abc474d09d97bd8c32375258274a0fa84">kMaxSizeLimit</a> };</div>
+<div class="line"><a id="l00036" name="l00036"></a><span class="lineno"><a class="line" href="structdock_1_1NodeMetrics.html#a6ba8ae4cfdb39b24731151f7933d0136">   36</a></span>    <span class="keywordtype">double</span> <a class="code hl_variable" href="structdock_1_1NodeMetrics.html#a6ba8ae4cfdb39b24731151f7933d0136">share</a> = 0.0;</div>
+<div class="line"><a id="l00037" name="l00037"></a><span class="lineno">   37</span></div>
+<div class="foldopen" id="foldopen00039" data-start="{" data-end="}">
+<div class="line"><a id="l00039" name="l00039"></a><span class="lineno"><a class="line" href="structdock_1_1NodeMetrics.html#a67679d4c76dbd20e3f36e9e1a471da94">   39</a></span>    <span class="keywordtype">int</span> <a class="code hl_function" href="structdock_1_1NodeMetrics.html#a67679d4c76dbd20e3f36e9e1a471da94">length</a>(Qt::Orientation orientation)<span class="keyword"> const</span></div>
+<div class="line"><a id="l00040" name="l00040"></a><span class="lineno">   40</span><span class="keyword">    </span>{</div>
+<div class="line"><a id="l00041" name="l00041"></a><span class="lineno">   41</span>        <span class="keywordflow">return</span> orientation == Qt::Horizontal ? <a class="code hl_variable" href="structdock_1_1NodeMetrics.html#a0c693616252ea7663274ecde2452cf11">geometry</a>.width() : <a class="code hl_variable" href="structdock_1_1NodeMetrics.html#a0c693616252ea7663274ecde2452cf11">geometry</a>.height();</div>
+<div class="line"><a id="l00042" name="l00042"></a><span class="lineno">   42</span>    }</div>
+</div>
+<div class="line"><a id="l00043" name="l00043"></a><span class="lineno">   43</span></div>
+<div class="foldopen" id="foldopen00045" data-start="{" data-end="}">
+<div class="line"><a id="l00045" name="l00045"></a><span class="lineno"><a class="line" href="structdock_1_1NodeMetrics.html#a95c1170c5b0a0fbcef99e0970f34e444">   45</a></span>    <span class="keywordtype">int</span> <a class="code hl_function" href="structdock_1_1NodeMetrics.html#a95c1170c5b0a0fbcef99e0970f34e444">position</a>(Qt::Orientation orientation)<span class="keyword"> const</span></div>
+<div class="line"><a id="l00046" name="l00046"></a><span class="lineno">   46</span><span class="keyword">    </span>{</div>
+<div class="line"><a id="l00047" name="l00047"></a><span class="lineno">   47</span>        <span class="keywordflow">return</span> orientation == Qt::Horizontal ? <a class="code hl_variable" href="structdock_1_1NodeMetrics.html#a0c693616252ea7663274ecde2452cf11">geometry</a>.x() : <a class="code hl_variable" href="structdock_1_1NodeMetrics.html#a0c693616252ea7663274ecde2452cf11">geometry</a>.y();</div>
+<div class="line"><a id="l00048" name="l00048"></a><span class="lineno">   48</span>    }</div>
+</div>
+<div class="line"><a id="l00049" name="l00049"></a><span class="lineno">   49</span>};</div>
+</div>
+<div class="line"><a id="l00050" name="l00050"></a><span class="lineno">   50</span> </div>
+<div class="line"><a id="l00051" name="l00051"></a><span class="lineno">   51</span>}</div>
+<div class="ttc" id="anamespacedock_html"><div class="ttname"><a href="namespacedock.html">dock</a></div><div class="ttdef"><b>定义</b> DockCatalog.cpp:14</div></div>
+<div class="ttc" id="anamespacedock_html_abc474d09d97bd8c32375258274a0fa84"><div class="ttname"><a href="namespacedock.html#abc474d09d97bd8c32375258274a0fa84">dock::kMaxSizeLimit</a></div><div class="ttdeci">constexpr int kMaxSizeLimit</div><div class="ttdoc">尺寸上限哨兵值（与 Qt 的 QWIDGETSIZE_MAX 相同），表示不限制大小</div><div class="ttdef"><b>定义</b> NodeMetrics.h:17</div></div>
+<div class="ttc" id="anamespacedock_html_ad5d0462dc9b83f6221f6b2622d1069d9"><div class="ttname"><a href="namespacedock.html#ad5d0462dc9b83f6221f6b2622d1069d9">dock::kDividerThickness</a></div><div class="ttdeci">constexpr int kDividerThickness</div><div class="ttdoc">分隔条厚度（像素）</div><div class="ttdef"><b>定义</b> NodeMetrics.h:20</div></div>
+<div class="ttc" id="astructdock_1_1NodeMetrics_html"><div class="ttname"><a href="structdock_1_1NodeMetrics.html">dock::NodeMetrics</a></div><div class="ttdoc">单个布局节点的几何与尺寸约束</div><div class="ttdef"><b>定义</b> NodeMetrics.h:28</div></div>
+<div class="ttc" id="astructdock_1_1NodeMetrics_html_a0c693616252ea7663274ecde2452cf11"><div class="ttname"><a href="structdock_1_1NodeMetrics.html#a0c693616252ea7663274ecde2452cf11">dock::NodeMetrics::geometry</a></div><div class="ttdeci">QRect geometry</div><div class="ttdoc">布局几何（父容器坐标系）</div><div class="ttdef"><b>定义</b> NodeMetrics.h:30</div></div>
+<div class="ttc" id="astructdock_1_1NodeMetrics_html_a67679d4c76dbd20e3f36e9e1a471da94"><div class="ttname"><a href="structdock_1_1NodeMetrics.html#a67679d4c76dbd20e3f36e9e1a471da94">dock::NodeMetrics::length</a></div><div class="ttdeci">int length(Qt::Orientation orientation) const</div><div class="ttdoc">主轴方向上的长度</div><div class="ttdef"><b>定义</b> NodeMetrics.h:39</div></div>
+<div class="ttc" id="astructdock_1_1NodeMetrics_html_a6ba8ae4cfdb39b24731151f7933d0136"><div class="ttname"><a href="structdock_1_1NodeMetrics.html#a6ba8ae4cfdb39b24731151f7933d0136">dock::NodeMetrics::share</a></div><div class="ttdeci">double share</div><div class="ttdoc">主轴长度占比</div><div class="ttdef"><b>定义</b> NodeMetrics.h:36</div></div>
+<div class="ttc" id="astructdock_1_1NodeMetrics_html_a95c1170c5b0a0fbcef99e0970f34e444"><div class="ttname"><a href="structdock_1_1NodeMetrics.html#a95c1170c5b0a0fbcef99e0970f34e444">dock::NodeMetrics::position</a></div><div class="ttdeci">int position(Qt::Orientation orientation) const</div><div class="ttdoc">主轴方向上的起点坐标</div><div class="ttdef"><b>定义</b> NodeMetrics.h:45</div></div>
+<div class="ttc" id="astructdock_1_1NodeMetrics_html_ad7701d827b3112c603a0d0aa9ce9c41e"><div class="ttname"><a href="structdock_1_1NodeMetrics.html#ad7701d827b3112c603a0d0aa9ce9c41e">dock::NodeMetrics::minExtent</a></div><div class="ttdeci">QSize minExtent</div><div class="ttdoc">硬最小尺寸</div><div class="ttdef"><b>定义</b> NodeMetrics.h:32</div></div>
+<div class="ttc" id="astructdock_1_1NodeMetrics_html_ada8b43333675a450e39ba3940875c864"><div class="ttname"><a href="structdock_1_1NodeMetrics.html#ada8b43333675a450e39ba3940875c864">dock::NodeMetrics::maxExtent</a></div><div class="ttdeci">QSize maxExtent</div><div class="ttdoc">软最大尺寸提示</div><div class="ttdef"><b>定义</b> NodeMetrics.h:34</div></div>
+</div><!-- fragment --></div><!-- contents -->
+<!-- start footer part -->
+<hr class="footer"/><address class="footer"><small>
+制作者&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.14.0
+</small></address>
+</div><!-- doc-content -->
+</body>
+</html>

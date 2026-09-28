@@ -1,0 +1,7 @@
+<map id="app/dock/docking/DockCatalog.h" name="app/dock/docking/DockCatalog.h">
+<area shape="rect" id="Node000001" title="停靠对象注册表（极简版）" alt="" coords="5,5,240,31"/>
+<area shape="rect" id="Node000002" title=" " alt="" coords="54,79,109,104"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="118,32,97,68,93,65,114,30"/>
+<area shape="rect" id="Node000003" title=" " alt="" coords="133,79,198,104"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="132,30,154,66,149,68,127,32"/>
+</map>

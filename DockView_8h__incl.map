@@ -1,0 +1,7 @@
+<map id="app/dock/docking/DockView.h" name="app/dock/docking/DockView.h">
+<area shape="rect" id="Node000001" title="停靠组件与视图层（QtQuick）之间的抽象接口" alt="" coords="5,5,221,31"/>
+<area shape="rect" id="Node000002" title=" " alt="" coords="41,79,103,104"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="109,32,88,68,83,65,104,30"/>
+<area shape="rect" id="Node000003" title=" " alt="" coords="127,79,185,104"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="123,30,144,66,140,68,118,32"/>
+</map>

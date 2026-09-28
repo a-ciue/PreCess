@@ -1,0 +1,16 @@
+<map id="app/dock/docking/ZoneResolver.h" name="app/dock/docking/ZoneResolver.h">
+<area shape="rect" id="Node000001" title="拖放落点计算（Classic 指示器的 9 个位置）" alt="" coords="135,5,377,31"/>
+<area shape="rect" id="Node000002" href="$DockEnums_8h.html" title="停靠组件的公共枚举与判定辅助" alt="" coords="107,79,218,104"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="243,33,190,72,187,68,239,29"/>
+<area shape="rect" id="Node000004" title=" " alt="" coords="170,225,235,251"/>
+<area shape="poly" id="edge6_Node000001_Node000004" title=" " alt="" coords="258,31,251,94,233,178,218,214,213,212,228,177,246,93,253,30"/>
+<area shape="rect" id="Node000007" title=" " alt="" coords="293,79,355,104"/>
+<area shape="poly" id="edge7_Node000001_Node000007" title=" " alt="" coords="269,29,305,67,301,70,265,33"/>
+<area shape="rect" id="Node000003" href="$DockMetrics_8h.html" title="停靠组件的默认行为常量" alt="" coords="5,152,120,177"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="148,106,92,146,89,142,145,102"/>
+<area shape="rect" id="Node000006" title=" " alt="" coords="144,152,219,177"/>
+<area shape="poly" id="edge5_Node000002_Node000006" title=" " alt="" coords="168,104,177,138,172,140,163,105"/>
+<area shape="poly" id="edge3_Node000003_Node000004" title=" " alt="" coords="86,175,169,217,167,221,84,180"/>
+<area shape="rect" id="Node000005" title=" " alt="" coords="33,225,92,251"/>
+<area shape="poly" id="edge4_Node000003_Node000005" title=" " alt="" coords="65,178,65,212,60,212,60,178"/>
+</map>

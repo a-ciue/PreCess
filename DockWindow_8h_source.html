@@ -1,0 +1,165 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="zh">
+<head>
+<meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=11"/>
+<meta name="generator" content="Doxygen 1.14.0"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>PreCess: app/dock/docking/DockWindow.h 源文件</title>
+<link href="tabs.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="jquery.js"></script>
+<script type="text/javascript" src="dynsections.js"></script>
+<script type="text/javascript" src="clipboard.js"></script>
+<script type="text/javascript" src="cookie.js"></script>
+<link href="search/search.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="search/searchdata.js"></script>
+<script type="text/javascript" src="search/search.js"></script>
+<link href="doxygen.css" rel="stylesheet" type="text/css" />
+</head>
+<body>
+<div id="top"><!-- do not remove this div, it is closed by doxygen! -->
+<div id="titlearea">
+<table cellspacing="0" cellpadding="0">
+ <tbody>
+ <tr id="projectrow">
+  <td id="projectlogo"><img alt="Logo" src="PreCess.ico"/></td>
+  <td id="projectalign">
+   <div id="projectname">PreCess
+   </div>
+  </td>
+ </tr>
+ </tbody>
+</table>
+</div>
+<!-- end header part -->
+<!-- 制作者 Doxygen 1.14.0 -->
+<script type="text/javascript">
+var searchBox = new SearchBox("searchBox", "search/",'.html');
+</script>
+<script type="text/javascript">
+$(function() { codefold.init(); });
+</script>
+<script type="text/javascript" src="menudata.js"></script>
+<script type="text/javascript" src="menu.js"></script>
+<script type="text/javascript">
+$(function() {
+  initMenu('',true,false,'search.php','搜索',false);
+  $(function() { init_search(); });
+});
+</script>
+<div id="main-nav"></div>
+<!-- window showing the filter options -->
+<div id="MSearchSelectWindow"
+     onmouseover="return searchBox.OnSearchSelectShow()"
+     onmouseout="return searchBox.OnSearchSelectHide()"
+     onkeydown="return searchBox.OnSearchSelectKey(event)">
+</div>
+
+<!-- iframe showing the search results (closed by default) -->
+<div id="MSearchResultsWindow">
+<div id="MSearchResults">
+<div class="SRPage">
+<div id="SRIndex">
+<div id="SRResults"></div>
+<div class="SRStatus" id="Loading">载入中...</div>
+<div class="SRStatus" id="Searching">搜索中...</div>
+<div class="SRStatus" id="NoMatches">未找到</div>
+</div>
+</div>
+</div>
+</div>
+
+<div id="nav-path" class="navpath">
+  <ul>
+<li class="navelem"><a href="dir_d422163b96683743ed3963d4aac17747.html">app</a></li><li class="navelem"><a href="dir_4e5d8f7ce7c3dc0f91a395eba455c956.html">dock</a></li><li class="navelem"><a href="dir_af03ec025cea5bb7a3f8764ea8f0664e.html">docking</a></li>  </ul>
+</div>
+</div><!-- top -->
+<div id="doc-content">
+<div class="header">
+  <div class="headertitle"><div class="title">DockWindow.h</div></div>
+</div><!--header-->
+<div class="contents">
+<a href="DockWindow_8h.html">浏览该文件的文档.</a><div class="fragment"><div class="line"><a id="l00001" name="l00001"></a><span class="lineno">    1</span></div>
+<div class="line"><a id="l00005" name="l00005"></a><span class="lineno">    5</span> </div>
+<div class="line"><a id="l00006" name="l00006"></a><span class="lineno">    6</span><span class="preprocessor">#pragma once</span></div>
+<div class="line"><a id="l00007" name="l00007"></a><span class="lineno">    7</span> </div>
+<div class="line"><a id="l00008" name="l00008"></a><span class="lineno">    8</span><span class="preprocessor">#include &quot;<a class="code" href="DockObject_8h.html">DockObject.h</a>&quot;</span></div>
+<div class="line"><a id="l00009" name="l00009"></a><span class="lineno">    9</span> </div>
+<div class="line"><a id="l00010" name="l00010"></a><span class="lineno">   10</span><span class="preprocessor">#include &lt;QRect&gt;</span></div>
+<div class="line"><a id="l00011" name="l00011"></a><span class="lineno">   11</span> </div>
+<div class="line"><a id="l00012" name="l00012"></a><span class="lineno">   12</span><span class="keyword">namespace </span><a class="code hl_namespace" href="namespacedock.html">dock</a> {</div>
+<div class="line"><a id="l00013" name="l00013"></a><span class="lineno">   13</span> </div>
+<div class="line"><a id="l00014" name="l00014"></a><span class="lineno">   14</span><span class="keyword">class </span><a class="code hl_class" href="classdock_1_1DockRegion.html">DockRegion</a>;</div>
+<div class="line"><a id="l00015" name="l00015"></a><span class="lineno">   15</span><span class="keyword">class </span><a class="code hl_class" href="classdock_1_1PanelGroup.html">PanelGroup</a>;</div>
+<div class="line"><a id="l00016" name="l00016"></a><span class="lineno">   16</span><span class="keyword">class </span><a class="code hl_class" href="classdock_1_1LayoutNode.html">LayoutNode</a>;</div>
+<div class="line"><a id="l00017" name="l00017"></a><span class="lineno">   17</span></div>
+<div class="foldopen" id="foldopen00025" data-start="{" data-end="};">
+<div class="line"><a id="l00025" name="l00025"></a><span class="lineno"><a class="line" href="classdock_1_1DockWindow.html">   25</a></span><span class="keyword">class </span><a class="code hl_function" href="classdock_1_1DockWindow.html#a29c39507fba1ca8ab3acf27dc82419c9">DockWindow</a> : <span class="keyword">public</span> <a class="code hl_function" href="classdock_1_1DockObject.html#a66e651055b7004f7a3ad0db2cd57d58a">DockObject</a></div>
+<div class="line"><a id="l00026" name="l00026"></a><span class="lineno">   26</span>{</div>
+<div class="line"><a id="l00027" name="l00027"></a><span class="lineno">   27</span>    Q_OBJECT</div>
+<div class="line"><a id="l00028" name="l00028"></a><span class="lineno">   28</span><span class="keyword">public</span>:</div>
+<div class="line"><a id="l00029" name="l00029"></a><span class="lineno">   29</span>    <span class="keyword">explicit</span> <a class="code hl_function" href="classdock_1_1DockWindow.html#a29c39507fba1ca8ab3acf27dc82419c9">DockWindow</a>(QObject* parent = <span class="keyword">nullptr</span>);</div>
+<div class="line"><a id="l00030" name="l00030"></a><span class="lineno">   30</span>    <a class="code hl_function" href="classdock_1_1DockWindow.html#a6f31673220037b97ae57eae2794c26f1">~DockWindow</a>() <span class="keyword">override</span>;</div>
+<div class="line"><a id="l00031" name="l00031"></a><span class="lineno">   31</span></div>
+<div class="line"><a id="l00033" name="l00033"></a><span class="lineno"><a class="line" href="classdock_1_1DockWindow.html#a25921a79bfe2872f474b9f94fbcd88dc">   33</a></span>    <a class="code hl_class" href="classdock_1_1DockRegion.html">DockRegion</a>* <a class="code hl_function" href="classdock_1_1DockWindow.html#a25921a79bfe2872f474b9f94fbcd88dc">region</a>()<span class="keyword"> const </span>{ <span class="keywordflow">return</span> <a class="code hl_variable" href="classdock_1_1DockWindow.html#aaf69ae2a9affdc6ae0128b42b41c08fc">region_</a>; }</div>
+<div class="line"><a id="l00034" name="l00034"></a><span class="lineno">   34</span></div>
+<div class="line"><a id="l00036" name="l00036"></a><span class="lineno"><a class="line" href="classdock_1_1DockWindow.html#a8b6f75d70477b244c011059811b8c663">   36</a></span>    <a class="code hl_class" href="classdock_1_1PanelGroup.html">PanelGroup</a>* <a class="code hl_function" href="classdock_1_1DockWindow.html#a8b6f75d70477b244c011059811b8c663">group</a>()<span class="keyword"> const </span>{ <span class="keywordflow">return</span> <a class="code hl_variable" href="classdock_1_1DockWindow.html#a4679e2c53a42e3458e68546f601759a7">group_</a>; }</div>
+<div class="line"><a id="l00037" name="l00037"></a><span class="lineno">   37</span></div>
+<div class="line"><a id="l00039" name="l00039"></a><span class="lineno">   39</span>    <span class="keywordtype">void</span> <a class="code hl_function" href="classdock_1_1DockWindow.html#ac9a81f449bfdc79cce424352962b9014">takeGroup</a>(<a class="code hl_class" href="classdock_1_1PanelGroup.html">PanelGroup</a>* <a class="code hl_function" href="classdock_1_1DockWindow.html#a8b6f75d70477b244c011059811b8c663">group</a>, <a class="code hl_class" href="classdock_1_1LayoutNode.html">LayoutNode</a>* item);</div>
+<div class="line"><a id="l00044" name="l00044"></a><span class="lineno">   44</span>    <span class="keywordtype">void</span> <a class="code hl_function" href="classdock_1_1DockWindow.html#a60bb112e6c00a4ebf9b1a89342179bec">adoptTree</a>(<a class="code hl_class" href="classdock_1_1PanelGroup.html">PanelGroup</a>* primary, <a class="code hl_class" href="classdock_1_1LayoutNode.html">LayoutNode</a>* root);</div>
+<div class="line"><a id="l00046" name="l00046"></a><span class="lineno">   46</span>    <a class="code hl_class" href="classdock_1_1LayoutNode.html">LayoutNode</a>* <a class="code hl_function" href="classdock_1_1DockWindow.html#ac08e17bfa2e1f4cc1d4ca4b5d1f99d39">releaseGroup</a>();</div>
+<div class="line"><a id="l00047" name="l00047"></a><span class="lineno">   47</span></div>
+<div class="line"><a id="l00049" name="l00049"></a><span class="lineno"><a class="line" href="classdock_1_1DockWindow.html#a7e81fa501c286a414719f5faecae5528">   49</a></span>    QRect <a class="code hl_function" href="classdock_1_1DockWindow.html#a7e81fa501c286a414719f5faecae5528">geometry</a>()<span class="keyword"> const </span>{ <span class="keywordflow">return</span> <a class="code hl_variable" href="classdock_1_1DockWindow.html#a9709f76db216fe4762339ff0ef3b3bf1">geometry_</a>; }</div>
+<div class="line"><a id="l00051" name="l00051"></a><span class="lineno">   51</span>    <span class="keywordtype">void</span> <a class="code hl_function" href="classdock_1_1DockWindow.html#a234ca21d3aa5face4005db985817620a">setGeometry</a>(<span class="keyword">const</span> QRect&amp; <a class="code hl_variable" href="TestComponentModel_8cpp.html#acd06f41b01ec41c67d52bd9d7cc86e10">geometry</a>);</div>
+<div class="line"><a id="l00052" name="l00052"></a><span class="lineno">   52</span></div>
+<div class="line"><a id="l00054" name="l00054"></a><span class="lineno">   54</span>    QString <a class="code hl_function" href="classdock_1_1DockWindow.html#ae26ab0bf983cd2bf8232e93113a0c67b">title</a>() <span class="keyword">const</span>;</div>
+<div class="line"><a id="l00055" name="l00055"></a><span class="lineno">   55</span></div>
+<div class="line"><a id="l00057" name="l00057"></a><span class="lineno">   57</span>    <span class="keywordtype">void</span> <a class="code hl_function" href="classdock_1_1DockWindow.html#ad80317f17916ff5842065d3f472ce32a">close</a>();</div>
+<div class="line"><a id="l00058" name="l00058"></a><span class="lineno">   58</span> </div>
+<div class="line"><a id="l00059" name="l00059"></a><span class="lineno">   59</span>Q_SIGNALS:</div>
+<div class="line"><a id="l00061" name="l00061"></a><span class="lineno"><a class="line" href="classdock_1_1DockWindow.html#a0e6c4545968b4ade4b9fb1fb4d4e543e">   61</a></span>    <span class="keywordtype">void</span> <a class="code hl_signal" href="classdock_1_1DockWindow.html#a0e6c4545968b4ade4b9fb1fb4d4e543e">titleChanged</a>(<span class="keyword">const</span> QString&amp; <a class="code hl_function" href="classdock_1_1DockWindow.html#ae26ab0bf983cd2bf8232e93113a0c67b">title</a>);</div>
+<div class="line"><a id="l00063" name="l00063"></a><span class="lineno"><a class="line" href="classdock_1_1DockWindow.html#aba4c94b4647e31c6eb3581c49904746f">   63</a></span>    <span class="keywordtype">void</span> <a class="code hl_signal" href="classdock_1_1DockWindow.html#aba4c94b4647e31c6eb3581c49904746f">groupChanged</a>();</div>
+<div class="line"><a id="l00065" name="l00065"></a><span class="lineno"><a class="line" href="classdock_1_1DockWindow.html#a17f16a11cc2909fc99580483be52bd4c">   65</a></span>    <span class="keywordtype">void</span> <a class="code hl_signal" href="classdock_1_1DockWindow.html#a17f16a11cc2909fc99580483be52bd4c">geometryChanged</a>(<span class="keyword">const</span> QRect&amp; <a class="code hl_function" href="classdock_1_1DockWindow.html#a7e81fa501c286a414719f5faecae5528">geometry</a>);</div>
+<div class="line"><a id="l00067" name="l00067"></a><span class="lineno"><a class="line" href="classdock_1_1DockWindow.html#a36c5ba36465bd24733d482c4632e9cbd">   67</a></span>    <span class="keywordtype">void</span> <a class="code hl_signal" href="classdock_1_1DockWindow.html#a36c5ba36465bd24733d482c4632e9cbd">closed</a>();</div>
+<div class="line"><a id="l00068" name="l00068"></a><span class="lineno">   68</span> </div>
+<div class="line"><a id="l00069" name="l00069"></a><span class="lineno">   69</span><span class="keyword">private</span>:</div>
+<div class="line"><a id="l00070" name="l00070"></a><span class="lineno"><a class="line" href="classdock_1_1DockWindow.html#aaf69ae2a9affdc6ae0128b42b41c08fc">   70</a></span>    <a class="code hl_class" href="classdock_1_1DockRegion.html">DockRegion</a>* <a class="code hl_variable" href="classdock_1_1DockWindow.html#aaf69ae2a9affdc6ae0128b42b41c08fc">region_</a> = <span class="keyword">nullptr</span>;</div>
+<div class="line"><a id="l00071" name="l00071"></a><span class="lineno"><a class="line" href="classdock_1_1DockWindow.html#a4679e2c53a42e3458e68546f601759a7">   71</a></span>    <a class="code hl_class" href="classdock_1_1PanelGroup.html">PanelGroup</a>* <a class="code hl_variable" href="classdock_1_1DockWindow.html#a4679e2c53a42e3458e68546f601759a7">group_</a> = <span class="keyword">nullptr</span>;</div>
+<div class="line"><a id="l00072" name="l00072"></a><span class="lineno"><a class="line" href="classdock_1_1DockWindow.html#a9709f76db216fe4762339ff0ef3b3bf1">   72</a></span>    QRect <a class="code hl_variable" href="classdock_1_1DockWindow.html#a9709f76db216fe4762339ff0ef3b3bf1">geometry_</a>;</div>
+<div class="line"><a id="l00073" name="l00073"></a><span class="lineno">   73</span>};</div>
+</div>
+<div class="line"><a id="l00074" name="l00074"></a><span class="lineno">   74</span> </div>
+<div class="line"><a id="l00075" name="l00075"></a><span class="lineno">   75</span>}</div>
+<div class="ttc" id="aDockObject_8h_html"><div class="ttname"><a href="DockObject_8h.html">DockObject.h</a></div><div class="ttdoc">控制器基类：持有视图</div></div>
+<div class="ttc" id="aTestComponentModel_8cpp_html_acd06f41b01ec41c67d52bd9d7cc86e10"><div class="ttname"><a href="TestComponentModel_8cpp.html#acd06f41b01ec41c67d52bd9d7cc86e10">geometry</a></div><div class="ttdeci">c1 geometry</div><div class="ttdef"><b>定义</b> TestComponentModel.cpp:81</div></div>
+<div class="ttc" id="aclassdock_1_1DockObject_html_a66e651055b7004f7a3ad0db2cd57d58a"><div class="ttname"><a href="classdock_1_1DockObject.html#a66e651055b7004f7a3ad0db2cd57d58a">dock::DockObject::DockObject</a></div><div class="ttdeci">DockObject(QObject *parent=nullptr)</div><div class="ttdef"><b>定义</b> DockObject.cpp:10</div></div>
+<div class="ttc" id="aclassdock_1_1DockRegion_html"><div class="ttname"><a href="classdock_1_1DockRegion.html">dock::DockRegion</a></div><div class="ttdoc">停靠区域</div><div class="ttdef"><b>定义</b> DockRegion.h:27</div></div>
+<div class="ttc" id="aclassdock_1_1DockWindow_html_a0e6c4545968b4ade4b9fb1fb4d4e543e"><div class="ttname"><a href="classdock_1_1DockWindow.html#a0e6c4545968b4ade4b9fb1fb4d4e543e">dock::DockWindow::titleChanged</a></div><div class="ttdeci">void titleChanged(const QString &amp;title)</div><div class="ttdoc">标题变化</div></div>
+<div class="ttc" id="aclassdock_1_1DockWindow_html_a17f16a11cc2909fc99580483be52bd4c"><div class="ttname"><a href="classdock_1_1DockWindow.html#a17f16a11cc2909fc99580483be52bd4c">dock::DockWindow::geometryChanged</a></div><div class="ttdeci">void geometryChanged(const QRect &amp;geometry)</div><div class="ttdoc">几何变化（视图层同步窗口位置/尺寸）</div></div>
+<div class="ttc" id="aclassdock_1_1DockWindow_html_a234ca21d3aa5face4005db985817620a"><div class="ttname"><a href="classdock_1_1DockWindow.html#a234ca21d3aa5face4005db985817620a">dock::DockWindow::setGeometry</a></div><div class="ttdeci">void setGeometry(const QRect &amp;geometry)</div><div class="ttdoc">设置窗口几何（由视图层或拖放逻辑调用）</div><div class="ttdef"><b>定义</b> DockWindow.cpp:83</div></div>
+<div class="ttc" id="aclassdock_1_1DockWindow_html_a25921a79bfe2872f474b9f94fbcd88dc"><div class="ttname"><a href="classdock_1_1DockWindow.html#a25921a79bfe2872f474b9f94fbcd88dc">dock::DockWindow::region</a></div><div class="ttdeci">DockRegion * region() const</div><div class="ttdoc">浮动窗口内的停靠区域（构造期创建，生命周期内恒非空）</div><div class="ttdef"><b>定义</b> DockWindow.h:33</div></div>
+<div class="ttc" id="aclassdock_1_1DockWindow_html_a29c39507fba1ca8ab3acf27dc82419c9"><div class="ttname"><a href="classdock_1_1DockWindow.html#a29c39507fba1ca8ab3acf27dc82419c9">dock::DockWindow::DockWindow</a></div><div class="ttdeci">DockWindow(QObject *parent=nullptr)</div><div class="ttdef"><b>定义</b> DockWindow.cpp:15</div></div>
+<div class="ttc" id="aclassdock_1_1DockWindow_html_a36c5ba36465bd24733d482c4632e9cbd"><div class="ttname"><a href="classdock_1_1DockWindow.html#a36c5ba36465bd24733d482c4632e9cbd">dock::DockWindow::closed</a></div><div class="ttdeci">void closed()</div><div class="ttdoc">窗口关闭</div></div>
+<div class="ttc" id="aclassdock_1_1DockWindow_html_a4679e2c53a42e3458e68546f601759a7"><div class="ttname"><a href="classdock_1_1DockWindow.html#a4679e2c53a42e3458e68546f601759a7">dock::DockWindow::group_</a></div><div class="ttdeci">PanelGroup * group_</div><div class="ttdef"><b>定义</b> DockWindow.h:71</div></div>
+<div class="ttc" id="aclassdock_1_1DockWindow_html_a60bb112e6c00a4ebf9b1a89342179bec"><div class="ttname"><a href="classdock_1_1DockWindow.html#a60bb112e6c00a4ebf9b1a89342179bec">dock::DockWindow::adoptTree</a></div><div class="ttdeci">void adoptTree(PanelGroup *primary, LayoutNode *root)</div><div class="ttdoc">恢复用：直接接管布局树与主分组（不改写主分组节点的位置）</div><div class="ttdef"><b>定义</b> DockWindow.cpp:50</div></div>
+<div class="ttc" id="aclassdock_1_1DockWindow_html_a6f31673220037b97ae57eae2794c26f1"><div class="ttname"><a href="classdock_1_1DockWindow.html#a6f31673220037b97ae57eae2794c26f1">dock::DockWindow::~DockWindow</a></div><div class="ttdeci">~DockWindow() override</div><div class="ttdef"><b>定义</b> DockWindow.cpp:22</div></div>
+<div class="ttc" id="aclassdock_1_1DockWindow_html_a7e81fa501c286a414719f5faecae5528"><div class="ttname"><a href="classdock_1_1DockWindow.html#a7e81fa501c286a414719f5faecae5528">dock::DockWindow::geometry</a></div><div class="ttdeci">QRect geometry() const</div><div class="ttdoc">窗口几何（全局屏幕坐标）</div><div class="ttdef"><b>定义</b> DockWindow.h:49</div></div>
+<div class="ttc" id="aclassdock_1_1DockWindow_html_a8b6f75d70477b244c011059811b8c663"><div class="ttname"><a href="classdock_1_1DockWindow.html#a8b6f75d70477b244c011059811b8c663">dock::DockWindow::group</a></div><div class="ttdeci">PanelGroup * group() const</div><div class="ttdoc">当前承载的分组（简化：单分组）</div><div class="ttdef"><b>定义</b> DockWindow.h:36</div></div>
+<div class="ttc" id="aclassdock_1_1DockWindow_html_a9709f76db216fe4762339ff0ef3b3bf1"><div class="ttname"><a href="classdock_1_1DockWindow.html#a9709f76db216fe4762339ff0ef3b3bf1">dock::DockWindow::geometry_</a></div><div class="ttdeci">QRect geometry_</div><div class="ttdef"><b>定义</b> DockWindow.h:72</div></div>
+<div class="ttc" id="aclassdock_1_1DockWindow_html_aaf69ae2a9affdc6ae0128b42b41c08fc"><div class="ttname"><a href="classdock_1_1DockWindow.html#aaf69ae2a9affdc6ae0128b42b41c08fc">dock::DockWindow::region_</a></div><div class="ttdeci">DockRegion * region_</div><div class="ttdef"><b>定义</b> DockWindow.h:70</div></div>
+<div class="ttc" id="aclassdock_1_1DockWindow_html_aba4c94b4647e31c6eb3581c49904746f"><div class="ttname"><a href="classdock_1_1DockWindow.html#aba4c94b4647e31c6eb3581c49904746f">dock::DockWindow::groupChanged</a></div><div class="ttdeci">void groupChanged()</div><div class="ttdoc">承载分组变化（接管/释放分组时发出）</div></div>
+<div class="ttc" id="aclassdock_1_1DockWindow_html_ac08e17bfa2e1f4cc1d4ca4b5d1f99d39"><div class="ttname"><a href="classdock_1_1DockWindow.html#ac08e17bfa2e1f4cc1d4ca4b5d1f99d39">dock::DockWindow::releaseGroup</a></div><div class="ttdeci">LayoutNode * releaseGroup()</div><div class="ttdoc">释放分组但保留布局节点（节点被摘出，所有权交还调用方）</div><div class="ttdef"><b>定义</b> DockWindow.cpp:60</div></div>
+<div class="ttc" id="aclassdock_1_1DockWindow_html_ac9a81f449bfdc79cce424352962b9014"><div class="ttname"><a href="classdock_1_1DockWindow.html#ac9a81f449bfdc79cce424352962b9014">dock::DockWindow::takeGroup</a></div><div class="ttdeci">void takeGroup(PanelGroup *group, LayoutNode *item)</div><div class="ttdoc">接管分组与它的布局节点（接管节点所有权）</div><div class="ttdef"><b>定义</b> DockWindow.cpp:27</div></div>
+<div class="ttc" id="aclassdock_1_1DockWindow_html_ad80317f17916ff5842065d3f472ce32a"><div class="ttname"><a href="classdock_1_1DockWindow.html#ad80317f17916ff5842065d3f472ce32a">dock::DockWindow::close</a></div><div class="ttdeci">void close()</div><div class="ttdoc">通知视图层关闭窗口（核心对象由创建方删除）</div><div class="ttdef"><b>定义</b> DockWindow.cpp:99</div></div>
+<div class="ttc" id="aclassdock_1_1DockWindow_html_ae26ab0bf983cd2bf8232e93113a0c67b"><div class="ttname"><a href="classdock_1_1DockWindow.html#ae26ab0bf983cd2bf8232e93113a0c67b">dock::DockWindow::title</a></div><div class="ttdeci">QString title() const</div><div class="ttdoc">标题</div><div class="ttdef"><b>定义</b> DockWindow.cpp:94</div></div>
+<div class="ttc" id="aclassdock_1_1LayoutNode_html"><div class="ttname"><a href="classdock_1_1LayoutNode.html">dock::LayoutNode</a></div><div class="ttdoc">布局树节点（叶子节点与容器节点的公共基类）</div><div class="ttdef"><b>定义</b> LayoutNode.h:25</div></div>
+<div class="ttc" id="aclassdock_1_1PanelGroup_html"><div class="ttname"><a href="classdock_1_1PanelGroup.html">dock::PanelGroup</a></div><div class="ttdoc">选项卡分组</div><div class="ttdef"><b>定义</b> PanelGroup.h:27</div></div>
+<div class="ttc" id="anamespacedock_html"><div class="ttname"><a href="namespacedock.html">dock</a></div><div class="ttdef"><b>定义</b> DockCatalog.cpp:14</div></div>
+</div><!-- fragment --></div><!-- contents -->
+<!-- start footer part -->
+<hr class="footer"/><address class="footer"><small>
+制作者&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.14.0
+</small></address>
+</div><!-- doc-content -->
+</body>
+</html>

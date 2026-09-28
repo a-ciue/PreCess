@@ -1,0 +1,25 @@
+<map id="app/dock/docking/ZoneResolver.cpp" name="app/dock/docking/ZoneResolver.cpp">
+<area shape="rect" id="Node000001" title="落点计算的实现" alt="" coords="89,5,345,31"/>
+<area shape="rect" id="Node000002" href="$ZoneResolver_8h.html" title="拖放落点计算（Classic 指示器的 9 个位置）" alt="" coords="5,79,128,104"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="194,33,105,75,103,70,192,28"/>
+<area shape="rect" id="Node000004" href="$DockMetrics_8h.html" title="停靠组件的默认行为常量" alt="" coords="187,225,301,251"/>
+<area shape="poly" id="edge13_Node000001_Node000004" title=" " alt="" coords="239,29,269,49,297,77,317,112,327,151,329,165,326,178,308,203,284,221,280,216,304,199,322,176,324,165,321,153,312,114,293,80,265,53,236,33"/>
+<area shape="rect" id="Node000009" href="$ZoneGeometry_8h.html" title="经典拖放指示器几何：内 4 + 中心 + 外 4，共 9 个" alt="" coords="152,79,283,104"/>
+<area shape="poly" id="edge9_Node000001_Node000009" title=" " alt="" coords="220,31,220,65,215,65,215,31"/>
+<area shape="rect" id="Node000003" href="$DockEnums_8h.html" title="停靠组件的公共枚举与判定辅助" alt="" coords="122,152,233,177"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="86,102,149,142,146,147,83,106"/>
+<area shape="rect" id="Node000005" title=" " alt="" coords="71,299,137,324"/>
+<area shape="poly" id="edge7_Node000002_Node000005" title=" " alt="" coords="57,106,40,127,27,153,24,165,27,177,38,208,54,238,88,287,83,290,50,241,33,210,21,178,19,165,21,151,36,124,53,102"/>
+<area shape="rect" id="Node000008" title=" " alt="" coords="36,152,97,177"/>
+<area shape="poly" id="edge8_Node000002_Node000008" title=" " alt="" coords="69,104,69,138,64,138,64,104"/>
+<area shape="poly" id="edge3_Node000003_Node000004" title=" " alt="" coords="190,176,226,213,222,217,186,179"/>
+<area shape="rect" id="Node000007" title=" " alt="" coords="88,225,163,251"/>
+<area shape="poly" id="edge6_Node000003_Node000007" title=" " alt="" coords="171,179,144,216,140,213,167,176"/>
+<area shape="poly" id="edge4_Node000004_Node000005" title=" " alt="" coords="223,253,140,295,138,290,220,248"/>
+<area shape="rect" id="Node000006" title=" " alt="" coords="215,299,273,324"/>
+<area shape="poly" id="edge5_Node000004_Node000006" title=" " alt="" coords="247,251,247,285,241,285,241,251"/>
+<area shape="poly" id="edge10_Node000009_Node000003" title=" " alt="" coords="213,106,193,141,188,139,208,103"/>
+<area shape="poly" id="edge12_Node000009_Node000008" title=" " alt="" coords="194,106,105,148,103,144,192,102"/>
+<area shape="rect" id="Node000010" title=" " alt="" coords="257,152,311,177"/>
+<area shape="poly" id="edge11_Node000009_Node000010" title=" " alt="" coords="230,103,266,140,262,144,226,106"/>
+</map>

@@ -1,0 +1,7 @@
+<map id="app/dock/docking/DockMetrics.h" name="app/dock/docking/DockMetrics.h">
+<area shape="rect" id="Node000001" title="停靠组件的默认行为常量" alt="" coords="5,5,239,31"/>
+<area shape="rect" id="Node000002" title=" " alt="" coords="47,79,112,104"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="117,32,95,68,91,66,113,30"/>
+<area shape="rect" id="Node000003" title=" " alt="" coords="137,79,195,104"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="132,30,154,66,149,68,127,32"/>
+</map>

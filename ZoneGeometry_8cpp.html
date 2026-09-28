@@ -1,0 +1,128 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="zh">
+<head>
+<meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=11"/>
+<meta name="generator" content="Doxygen 1.14.0"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>PreCess: app/dock/docking/ZoneGeometry.cpp 文件参考</title>
+<link href="tabs.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="jquery.js"></script>
+<script type="text/javascript" src="dynsections.js"></script>
+<script type="text/javascript" src="clipboard.js"></script>
+<script type="text/javascript" src="cookie.js"></script>
+<link href="search/search.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="search/searchdata.js"></script>
+<script type="text/javascript" src="search/search.js"></script>
+<link href="doxygen.css" rel="stylesheet" type="text/css" />
+</head>
+<body>
+<div id="top"><!-- do not remove this div, it is closed by doxygen! -->
+<div id="titlearea">
+<table cellspacing="0" cellpadding="0">
+ <tbody>
+ <tr id="projectrow">
+  <td id="projectlogo"><img alt="Logo" src="PreCess.ico"/></td>
+  <td id="projectalign">
+   <div id="projectname">PreCess
+   </div>
+  </td>
+ </tr>
+ </tbody>
+</table>
+</div>
+<!-- end header part -->
+<!-- 制作者 Doxygen 1.14.0 -->
+<script type="text/javascript">
+var searchBox = new SearchBox("searchBox", "search/",'.html');
+</script>
+<script type="text/javascript">
+$(function() { codefold.init(); });
+</script>
+<script type="text/javascript" src="menudata.js"></script>
+<script type="text/javascript" src="menu.js"></script>
+<script type="text/javascript">
+$(function() {
+  initMenu('',true,false,'search.php','搜索',false);
+  $(function() { init_search(); });
+});
+</script>
+<div id="main-nav"></div>
+<!-- window showing the filter options -->
+<div id="MSearchSelectWindow"
+     onmouseover="return searchBox.OnSearchSelectShow()"
+     onmouseout="return searchBox.OnSearchSelectHide()"
+     onkeydown="return searchBox.OnSearchSelectKey(event)">
+</div>
+
+<!-- iframe showing the search results (closed by default) -->
+<div id="MSearchResultsWindow">
+<div id="MSearchResults">
+<div class="SRPage">
+<div id="SRIndex">
+<div id="SRResults"></div>
+<div class="SRStatus" id="Loading">载入中...</div>
+<div class="SRStatus" id="Searching">搜索中...</div>
+<div class="SRStatus" id="NoMatches">未找到</div>
+</div>
+</div>
+</div>
+</div>
+
+<div id="nav-path" class="navpath">
+  <ul>
+<li class="navelem"><a href="dir_d422163b96683743ed3963d4aac17747.html">app</a></li><li class="navelem"><a href="dir_4e5d8f7ce7c3dc0f91a395eba455c956.html">dock</a></li><li class="navelem"><a href="dir_af03ec025cea5bb7a3f8764ea8f0664e.html">docking</a></li>  </ul>
+</div>
+</div><!-- top -->
+<div id="doc-content">
+<div class="header">
+  <div class="summary">
+<a href="#namespaces">命名空间</a>  </div>
+  <div class="headertitle"><div class="title">ZoneGeometry.cpp 文件参考</div></div>
+</div><!--header-->
+<div class="contents">
+
+<p>经典指示器几何的实现  
+<a href="#details">更多...</a></p>
+<div class="textblock"><code>#include &quot;<a class="el" href="ZoneGeometry_8h_source.html">ZoneGeometry.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="DockMetrics_8h_source.html">DockMetrics.h</a>&quot;</code><br />
+</div><div class="textblock"><div class="dynheader">
+ZoneGeometry.cpp 的引用(Include)关系图:</div>
+<div class="dyncontent">
+<div class="center"><img src="ZoneGeometry_8cpp__incl.png" border="0" usemap="#aapp_2dock_2docking_2ZoneGeometry_8cpp" loading="lazy" alt=""/></div>
+<map name="aapp_2dock_2docking_2ZoneGeometry_8cpp" id="aapp_2dock_2docking_2ZoneGeometry_8cpp">
+<area shape="rect" title="经典指示器几何的实现" alt="" coords="111,5,373,31"/>
+<area shape="rect" href="ZoneGeometry_8h.html" title="经典拖放指示器几何：内 4 + 中心 + 外 4，共 9 个" alt="" coords="126,79,257,104"/>
+<area shape="poly" title=" " alt="" coords="236,33,210,69,205,66,231,29"/>
+<area shape="rect" href="DockMetrics_8h.html" title="停靠组件的默认行为常量" alt="" coords="191,225,306,251"/>
+<area shape="poly" title=" " alt="" coords="253,29,270,56,288,92,299,135,299,157,295,178,285,199,272,217,268,214,281,196,290,176,294,156,294,135,283,94,266,58,249,32"/>
+<area shape="rect" href="DockEnums_8h.html" title="停靠组件的公共枚举与判定辅助" alt="" coords="5,152,116,177"/>
+<area shape="poly" title=" " alt="" coords="172,106,95,148,93,143,169,102"/>
+<area shape="rect" title=" " alt="" coords="140,152,195,177"/>
+<area shape="poly" title=" " alt="" coords="190,105,178,140,173,138,185,103"/>
+<area shape="rect" title=" " alt="" coords="219,152,281,177"/>
+<area shape="poly" title=" " alt="" coords="203,103,234,140,230,143,199,106"/>
+<area shape="poly" title=" " alt="" coords="92,175,206,218,204,223,90,180"/>
+<area shape="rect" title=" " alt="" coords="23,225,98,251"/>
+<area shape="poly" title=" " alt="" coords="63,178,63,212,58,212,58,178"/>
+<area shape="rect" title=" " alt="" coords="173,299,239,324"/>
+<area shape="poly" title=" " alt="" coords="244,252,222,288,218,286,239,250"/>
+<area shape="rect" title=" " alt="" coords="263,299,322,324"/>
+<area shape="poly" title=" " alt="" coords="258,250,281,286,276,288,254,252"/>
+</map>
+</div>
+</div><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 id="header-namespaces" class="groupheader"><a id="namespaces" name="namespaces"></a>
+命名空间</h2></td></tr>
+<tr class="memitem:dock" id="r_dock"><td class="memItemLeft" align="right" valign="top">namespace &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacedock.html">dock</a></td></tr>
+</table>
+<a name="details" id="details"></a><h2 id="header-details" class="groupheader">详细描述</h2>
+<div class="textblock"><p>经典指示器几何的实现 </p>
+</div></div><!-- contents -->
+<!-- start footer part -->
+<hr class="footer"/><address class="footer"><small>
+制作者&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.14.0
+</small></address>
+</div><!-- doc-content -->
+</body>
+</html>

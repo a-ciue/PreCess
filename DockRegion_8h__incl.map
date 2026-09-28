@@ -1,0 +1,19 @@
+<map id="app/dock/docking/DockRegion.h" name="app/dock/docking/DockRegion.h">
+<area shape="rect" id="Node000001" title="停靠区域：持有布局树根节点，负责命令式停靠与拖放落点" alt="" coords="126,5,357,31"/>
+<area shape="rect" id="Node000002" href="$DockObject_8h.html" title="控制器基类：持有视图" alt="" coords="5,79,115,104"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="213,33,103,76,101,71,211,28"/>
+<area shape="rect" id="Node000004" href="$DockEnums_8h.html" title="停靠组件的公共枚举与判定辅助" alt="" coords="139,79,250,104"/>
+<area shape="poly" id="edge3_Node000001_Node000004" title=" " alt="" coords="236,32,212,69,208,66,231,30"/>
+<area shape="rect" id="Node000007" title=" " alt="" coords="255,225,313,251"/>
+<area shape="poly" id="edge9_Node000001_Node000007" title=" " alt="" coords="248,30,264,78,277,150,284,211,279,212,272,151,259,79,243,32"/>
+<area shape="rect" id="Node000008" title=" " alt="" coords="325,79,387,104"/>
+<area shape="poly" id="edge8_Node000001_Node000008" title=" " alt="" coords="261,28,327,69,324,74,258,33"/>
+<area shape="rect" id="Node000003" title=" " alt="" coords="31,152,105,177"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="64,104,68,138,63,139,59,105"/>
+<area shape="poly" id="edge7_Node000004_Node000003" title=" " alt="" coords="176,106,102,147,99,143,173,102"/>
+<area shape="rect" id="Node000005" href="$DockMetrics_8h.html" title="停靠组件的默认行为常量" alt="" coords="136,152,251,177"/>
+<area shape="poly" id="edge4_Node000004_Node000005" title=" " alt="" coords="197,104,196,139,191,138,192,104"/>
+<area shape="rect" id="Node000006" title=" " alt="" coords="161,225,226,251"/>
+<area shape="poly" id="edge5_Node000005_Node000006" title=" " alt="" coords="196,178,196,212,191,212,191,178"/>
+<area shape="poly" id="edge6_Node000005_Node000007" title=" " alt="" coords="210,175,260,214,257,219,206,179"/>
+</map>

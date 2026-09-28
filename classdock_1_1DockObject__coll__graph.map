@@ -1,0 +1,7 @@
+<map id="dock::DockObject" name="dock::DockObject">
+<area shape="rect" id="Node000001" title="控制器基类" alt="" coords="37,101,173,127"/>
+<area shape="rect" id="Node000002" title=" " alt="" coords="5,5,80,31"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="60,41,100,100,95,103,56,44"/>
+<area shape="rect" id="Node000003" href="$classdock_1_1DockView.html" title="视图抽象接口" alt="" coords="105,5,231,31"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="155,44,115,103,111,100,150,41"/>
+</map>

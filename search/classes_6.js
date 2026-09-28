@@ -19,5 +19,6 @@ var searchData=
   ['geometrysubshapeindex_16',['GeometrySubshapeIndex',['../structGeometrySubshapeIndex.html',1,'']]],
   ['geometrysummary_17',['GeometrySummary',['../structsession_1_1GeometrySummary.html',1,'session']]],
   ['geometrytopologyeditor_18',['GeometryTopologyEditor',['../classGeometryTopologyEditor.html',1,'']]],
-  ['geometryvertexselectorhighlight_19',['GeometryVertexSelectorHighlight',['../classGeometryVertexSelectorHighlight.html',1,'']]]
+  ['geometryvertexselectorhighlight_19',['GeometryVertexSelectorHighlight',['../classGeometryVertexSelectorHighlight.html',1,'']]],
+  ['globalmouserelay_20',['GlobalMouseRelay',['../classdock_1_1ui_1_1GlobalMouseRelay.html',1,'dock::ui']]]
 ];

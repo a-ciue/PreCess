@@ -1,0 +1,11 @@
+<map id="app/dock/docking/DockPanel.h" name="app/dock/docking/DockPanel.h">
+<area shape="rect" id="Node000001" title="逻辑停靠面板：可显隐、可停靠、可拆出为独立窗口" alt="" coords="62,5,282,31"/>
+<area shape="rect" id="Node000002" href="$DockObject_8h.html" title="控制器基类：持有视图" alt="" coords="5,79,115,104"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="155,33,92,73,89,69,153,28"/>
+<area shape="rect" id="Node000004" title=" " alt="" coords="139,79,205,104"/>
+<area shape="poly" id="edge3_Node000001_Node000004" title=" " alt="" coords="175,31,175,65,169,65,169,31"/>
+<area shape="rect" id="Node000005" title=" " alt="" coords="230,79,301,104"/>
+<area shape="poly" id="edge4_Node000001_Node000005" title=" " alt="" coords="189,29,241,68,238,72,185,33"/>
+<area shape="rect" id="Node000003" title=" " alt="" coords="23,152,97,177"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="63,104,63,138,57,138,57,104"/>
+</map>

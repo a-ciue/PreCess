@@ -1,0 +1,528 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="zh">
+<head>
+<meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=11"/>
+<meta name="generator" content="Doxygen 1.14.0"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>PreCess: dock::DockCatalog类 参考</title>
+<link href="tabs.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="jquery.js"></script>
+<script type="text/javascript" src="dynsections.js"></script>
+<script type="text/javascript" src="clipboard.js"></script>
+<script type="text/javascript" src="cookie.js"></script>
+<link href="search/search.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="search/searchdata.js"></script>
+<script type="text/javascript" src="search/search.js"></script>
+<link href="doxygen.css" rel="stylesheet" type="text/css" />
+</head>
+<body>
+<div id="top"><!-- do not remove this div, it is closed by doxygen! -->
+<div id="titlearea">
+<table cellspacing="0" cellpadding="0">
+ <tbody>
+ <tr id="projectrow">
+  <td id="projectlogo"><img alt="Logo" src="PreCess.ico"/></td>
+  <td id="projectalign">
+   <div id="projectname">PreCess
+   </div>
+  </td>
+ </tr>
+ </tbody>
+</table>
+</div>
+<!-- end header part -->
+<!-- 制作者 Doxygen 1.14.0 -->
+<script type="text/javascript">
+var searchBox = new SearchBox("searchBox", "search/",'.html');
+</script>
+<script type="text/javascript">
+$(function() { codefold.init(); });
+</script>
+<script type="text/javascript" src="menudata.js"></script>
+<script type="text/javascript" src="menu.js"></script>
+<script type="text/javascript">
+$(function() {
+  initMenu('',true,false,'search.php','搜索',false);
+  $(function() { init_search(); });
+});
+</script>
+<div id="main-nav"></div>
+<!-- window showing the filter options -->
+<div id="MSearchSelectWindow"
+     onmouseover="return searchBox.OnSearchSelectShow()"
+     onmouseout="return searchBox.OnSearchSelectHide()"
+     onkeydown="return searchBox.OnSearchSelectKey(event)">
+</div>
+
+<!-- iframe showing the search results (closed by default) -->
+<div id="MSearchResultsWindow">
+<div id="MSearchResults">
+<div class="SRPage">
+<div id="SRIndex">
+<div id="SRResults"></div>
+<div class="SRStatus" id="Loading">载入中...</div>
+<div class="SRStatus" id="Searching">搜索中...</div>
+<div class="SRStatus" id="NoMatches">未找到</div>
+</div>
+</div>
+</div>
+</div>
+
+<div id="nav-path" class="navpath">
+  <ul>
+<li class="navelem"><a href="namespacedock.html">dock</a></li><li class="navelem"><a href="classdock_1_1DockCatalog.html">DockCatalog</a></li>  </ul>
+</div>
+</div><!-- top -->
+<div id="doc-content">
+<div class="header">
+  <div class="summary">
+<a href="#pub-methods">Public 成员函数</a> &#124;
+<a href="#pub-static-methods">静态 Public 成员函数</a> &#124;
+<a href="#pri-methods">Private 成员函数</a> &#124;
+<a href="#pri-attribs">Private 属性</a> &#124;
+<a href="classdock_1_1DockCatalog-members.html">所有成员列表</a>  </div>
+  <div class="headertitle"><div class="title">dock::DockCatalog类 参考</div></div>
+</div><!--header-->
+<div class="contents">
+
+<p><code>#include &lt;<a class="el" href="DockCatalog_8h_source.html">DockCatalog.h</a>&gt;</code></p>
+<div class="dynheader">
+dock::DockCatalog 的协作图:</div>
+<div class="dyncontent">
+<div class="center"><img src="classdock_1_1DockCatalog__coll__graph.png" border="0" usemap="#adock_1_1DockCatalog_coll__map" loading="lazy" alt="Collaboration graph"/></div>
+<map name="adock_1_1DockCatalog_coll__map" id="adock_1_1DockCatalog_coll__map">
+<area shape="rect" title=" " alt="" coords="193,505,337,531"/>
+<area shape="rect" href="classdock_1_1DockHost.html" title="主停靠窗口" alt="" coords="203,409,327,435"/>
+<area shape="poly" title=" " alt="" coords="267,449,267,505,262,505,262,449"/>
+<area shape="rect" href="classdock_1_1DockObject.html" title="控制器基类" alt="" coords="197,101,333,127"/>
+<area shape="poly" title=" " alt="" coords="197,132,96,161,55,179,29,199,15,225,9,251,10,275,18,299,32,321,50,343,99,383,123,396,150,406,203,416,202,421,148,411,121,401,96,388,47,347,27,324,13,301,5,276,3,250,10,223,25,196,52,175,95,156,195,127"/>
+<area shape="rect" href="classdock_1_1DockRegion.html" title="停靠区域" alt="" coords="362,313,501,339"/>
+<area shape="poly" title=" " alt="" coords="297,132,357,179,389,210,415,245,428,281,433,313,428,314,423,283,410,248,385,213,354,183,294,136"/>
+<area shape="rect" href="classdock_1_1DockPanel.html" title="逻辑停靠面板" alt="" coords="40,197,169,223"/>
+<area shape="poly" title=" " alt="" coords="234,136,126,199,123,195,232,131"/>
+<area shape="rect" href="classdock_1_1PanelGroup.html" title="选项卡分组" alt="" coords="197,313,332,339"/>
+<area shape="poly" title=" " alt="" coords="267,141,267,313,262,313,262,141"/>
+<area shape="rect" title=" " alt="" coords="227,5,302,31"/>
+<area shape="poly" title=" " alt="" coords="267,45,267,101,262,101,262,45"/>
+<area shape="rect" href="classdock_1_1DockView.html" title="视图抽象接口" alt="" coords="41,5,168,31"/>
+<area shape="poly" title=" " alt="" coords="137,35,246,99,243,103,135,40"/>
+<area shape="poly" title=" " alt="" coords="99,44,85,102,84,128,88,154,102,196,97,198,83,156,79,128,79,101,93,43"/>
+<area shape="poly" title=" " alt="" coords="416,351,399,370,377,388,348,402,319,412,317,407,346,397,374,383,395,366,413,348"/>
+<area shape="rect" href="classdock_1_1LayoutNode.html" title="布局树节点（叶子节点与容器节点的公共基类）" alt="" coords="531,197,670,223"/>
+<area shape="poly" title=" " alt="" coords="666,227,685,245,698,270,701,294,695,318,678,341,654,359,618,374,524,397,419,411,327,420,327,414,418,406,523,391,616,369,651,354,675,337,690,315,696,294,693,272,681,248,663,231"/>
+<area shape="poly" title=" " alt="" coords="539,230,499,249,464,282,441,314,436,311,460,278,496,244,536,225"/>
+<area shape="rect" href="classdock_1_1BoxNode.html" title="盒式布局容器" alt="" coords="545,313,665,339"/>
+<area shape="poly" title=" " alt="" coords="648,228,664,245,672,268,664,291,652,305,636,316,633,311,648,301,660,288,666,268,660,248,644,232"/>
+<area shape="poly" title=" " alt="" coords="518,219,450,229,380,249,282,315,279,311,378,244,448,224,517,213"/>
+<area shape="rect" href="structdock_1_1NodeMetrics.html" title="单个布局节点的几何与尺寸约束" alt="" coords="529,101,672,127"/>
+<area shape="poly" title=" " alt="" coords="603,141,603,197,598,197,598,141"/>
+<area shape="rect" href="classdock_1_1LayoutClient.html" title="被布局引擎托管的实体接口" alt="" coords="361,101,504,127"/>
+<area shape="poly" title=" " alt="" coords="466,131,581,195,578,199,464,136"/>
+<area shape="poly" title=" " alt="" coords="414,139,369,188,319,248,274,315,269,312,314,245,365,184,410,135"/>
+<area shape="poly" title=" " alt="" coords="601,299,598,223,604,223,606,299"/>
+<area shape="poly" title=" " alt="" coords="93,236,83,259,75,285,74,312,83,337,107,364,137,384,170,399,203,408,202,413,168,404,134,389,103,368,78,340,69,313,70,284,78,257,88,234"/>
+<area shape="poly" title=" " alt="" coords="98,236,95,263,97,276,102,287,136,299,198,312,197,317,135,305,99,291,92,278,89,263,93,235"/>
+<area shape="poly" title=" " alt="" coords="267,353,267,409,262,409,262,353"/>
+<area shape="poly" title=" " alt="" coords="219,310,191,291,175,270,160,249,126,225,129,221,164,245,179,267,194,287,222,305"/>
+</map>
+<center><span class="legend">[<a href="graph_legend.html">图例</a>]</span></center></div>
+<table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 id="header-pub-methods" class="groupheader"><a id="pub-methods" name="pub-methods"></a>
+Public 成员函数</h2></td></tr>
+<tr class="memitem:a9e3ea0175ebae137c3d268d0e896721b" id="r_a9e3ea0175ebae137c3d268d0e896721b"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a9e3ea0175ebae137c3d268d0e896721b">setHost</a> (<a class="el" href="classdock_1_1DockHost.html">DockHost</a> *<a class="el" href="#a8119aba32a2ca482007ee4848fa150dc">host</a>)</td></tr>
+<tr class="memdesc:a9e3ea0175ebae137c3d268d0e896721b"><td class="mdescLeft">&#160;</td><td class="mdescRight">设置唯一主窗口（空表示注销）  <br /></td></tr>
+<tr class="memitem:a8119aba32a2ca482007ee4848fa150dc" id="r_a8119aba32a2ca482007ee4848fa150dc"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classdock_1_1DockHost.html">DockHost</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a8119aba32a2ca482007ee4848fa150dc">host</a> () const</td></tr>
+<tr class="memdesc:a8119aba32a2ca482007ee4848fa150dc"><td class="mdescLeft">&#160;</td><td class="mdescRight">唯一主窗口  <br /></td></tr>
+<tr class="memitem:abe832c3cb88272ceaa2a2947b24a615e" id="r_abe832c3cb88272ceaa2a2947b24a615e"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#abe832c3cb88272ceaa2a2947b24a615e">registerPanel</a> (<a class="el" href="classdock_1_1DockPanel.html">DockPanel</a> *panel)</td></tr>
+<tr class="memdesc:abe832c3cb88272ceaa2a2947b24a615e"><td class="mdescLeft">&#160;</td><td class="mdescRight">登记停靠面板  <br /></td></tr>
+<tr class="memitem:aba1039560d12eca3d9a02cbb0714f1da" id="r_aba1039560d12eca3d9a02cbb0714f1da"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#aba1039560d12eca3d9a02cbb0714f1da">unregisterPanel</a> (<a class="el" href="classdock_1_1DockPanel.html">DockPanel</a> *panel)</td></tr>
+<tr class="memdesc:aba1039560d12eca3d9a02cbb0714f1da"><td class="mdescLeft">&#160;</td><td class="mdescRight">注销停靠面板  <br /></td></tr>
+<tr class="memitem:a5431d4bb8bfe4127cb8c3feb5b0cd2e6" id="r_a5431d4bb8bfe4127cb8c3feb5b0cd2e6"><td class="memItemLeft" align="right" valign="top">const QList&lt; <a class="el" href="classdock_1_1DockPanel.html">DockPanel</a> * &gt; &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a5431d4bb8bfe4127cb8c3feb5b0cd2e6">panels</a> () const</td></tr>
+<tr class="memdesc:a5431d4bb8bfe4127cb8c3feb5b0cd2e6"><td class="mdescLeft">&#160;</td><td class="mdescRight">全部停靠面板  <br /></td></tr>
+<tr class="memitem:aa5a9995ecb8434fee490a308d76c96fe" id="r_aa5a9995ecb8434fee490a308d76c96fe"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#aa5a9995ecb8434fee490a308d76c96fe">registerWindow</a> (<a class="el" href="classdock_1_1DockWindow.html">DockWindow</a> *window)</td></tr>
+<tr class="memdesc:aa5a9995ecb8434fee490a308d76c96fe"><td class="mdescLeft">&#160;</td><td class="mdescRight">登记独立窗口  <br /></td></tr>
+<tr class="memitem:a7832cd32a4313d844bb30260fad27026" id="r_a7832cd32a4313d844bb30260fad27026"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a7832cd32a4313d844bb30260fad27026">unregisterWindow</a> (<a class="el" href="classdock_1_1DockWindow.html">DockWindow</a> *window)</td></tr>
+<tr class="memdesc:a7832cd32a4313d844bb30260fad27026"><td class="mdescLeft">&#160;</td><td class="mdescRight">注销独立窗口  <br /></td></tr>
+<tr class="memitem:a381c6bf2d113c82b27e9ae95a19cbbf7" id="r_a381c6bf2d113c82b27e9ae95a19cbbf7"><td class="memItemLeft" align="right" valign="top">const QList&lt; <a class="el" href="classdock_1_1DockWindow.html">DockWindow</a> * &gt; &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a381c6bf2d113c82b27e9ae95a19cbbf7">windows</a> () const</td></tr>
+<tr class="memdesc:a381c6bf2d113c82b27e9ae95a19cbbf7"><td class="mdescLeft">&#160;</td><td class="mdescRight">全部独立窗口  <br /></td></tr>
+<tr class="memitem:acabbef12a964bb5dac7750560b8a83fc" id="r_acabbef12a964bb5dac7750560b8a83fc"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classdock_1_1PanelGroup.html">PanelGroup</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#acabbef12a964bb5dac7750560b8a83fc">groupAtGlobal</a> (const QPoint &amp;global_pos) const</td></tr>
+<tr class="memdesc:acabbef12a964bb5dac7750560b8a83fc"><td class="mdescLeft">&#160;</td><td class="mdescRight">按屏幕坐标命中分组（浮动窗口优先，其次主区域）  <br /></td></tr>
+<tr class="memitem:ad938485c9687b9805c0f7a8223b65264" id="r_ad938485c9687b9805c0f7a8223b65264"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ad938485c9687b9805c0f7a8223b65264">cyclePanelAt</a> (const QPoint &amp;global_pos, bool forward)</td></tr>
+<tr class="memdesc:ad938485c9687b9805c0f7a8223b65264"><td class="mdescLeft">&#160;</td><td class="mdescRight">按鼠标悬停位置循环切换标签（键盘导航）  <br /></td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 id="header-pub-static-methods" class="groupheader"><a id="pub-static-methods" name="pub-static-methods"></a>
+静态 Public 成员函数</h2></td></tr>
+<tr class="memitem:af6c35a33487bfee8109a6dcf06e3998e" id="r_af6c35a33487bfee8109a6dcf06e3998e"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="classdock_1_1DockCatalog.html">DockCatalog</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#af6c35a33487bfee8109a6dcf06e3998e">self</a> ()</td></tr>
+<tr class="memdesc:af6c35a33487bfee8109a6dcf06e3998e"><td class="mdescLeft">&#160;</td><td class="mdescRight">单例  <br /></td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 id="header-pri-methods" class="groupheader"><a id="pri-methods" name="pri-methods"></a>
+Private 成员函数</h2></td></tr>
+<tr class="memitem:ab322db0904c14a8d550f1705146ac186" id="r_ab322db0904c14a8d550f1705146ac186"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ab322db0904c14a8d550f1705146ac186">DockCatalog</a> ()=default</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 id="header-pri-attribs" class="groupheader"><a id="pri-attribs" name="pri-attribs"></a>
+Private 属性</h2></td></tr>
+<tr class="memitem:a029591db162f667dcd728d9f396aa33c" id="r_a029591db162f667dcd728d9f396aa33c"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classdock_1_1DockHost.html">DockHost</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a029591db162f667dcd728d9f396aa33c">host_</a> = nullptr</td></tr>
+<tr class="memitem:a4592e9ae9da778d24a03d2409eb02864" id="r_a4592e9ae9da778d24a03d2409eb02864"><td class="memItemLeft" align="right" valign="top">QList&lt; <a class="el" href="classdock_1_1DockPanel.html">DockPanel</a> * &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a4592e9ae9da778d24a03d2409eb02864">panels_</a></td></tr>
+<tr class="memitem:a9d064b165888dd87c892f4c700e2b694" id="r_a9d064b165888dd87c892f4c700e2b694"><td class="memItemLeft" align="right" valign="top">QList&lt; <a class="el" href="classdock_1_1DockWindow.html">DockWindow</a> * &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a9d064b165888dd87c892f4c700e2b694">windows_</a></td></tr>
+</table>
+<a name="doc-constructors" id="doc-constructors"></a><h2 id="header-doc-constructors" class="groupheader">构造及析构函数说明</h2>
+<a id="ab322db0904c14a8d550f1705146ac186" name="ab322db0904c14a8d550f1705146ac186"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ab322db0904c14a8d550f1705146ac186">&#9670;&#160;</a></span>DockCatalog()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">dock::DockCatalog::DockCatalog </td>
+          <td>(</td>
+          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel private">private</span><span class="mlabel default">default</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a name="doc-func-members" id="doc-func-members"></a><h2 id="header-doc-func-members" class="groupheader">成员函数说明</h2>
+<a id="ad938485c9687b9805c0f7a8223b65264" name="ad938485c9687b9805c0f7a8223b65264"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ad938485c9687b9805c0f7a8223b65264">&#9670;&#160;</a></span>cyclePanelAt()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool dock::DockCatalog::cyclePanelAt </td>
+          <td>(</td>
+          <td class="paramtype">const QPoint &amp;</td>          <td class="paramname"><span class="paramname"><em>global_pos</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">bool</td>          <td class="paramname"><span class="paramname"><em>forward</em></span>&#160;)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>按鼠标悬停位置循环切换标签（键盘导航） </p>
+<p>光标悬停的分组有多个显示面板时循环切换其标签； 悬停分组无多标签（含未悬停到任何分组）时不切换。 </p><dl class="section return"><dt>返回</dt><dd>是否发生了切换 </dd></dl>
+
+</div>
+</div>
+<a id="acabbef12a964bb5dac7750560b8a83fc" name="acabbef12a964bb5dac7750560b8a83fc"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#acabbef12a964bb5dac7750560b8a83fc">&#9670;&#160;</a></span>groupAtGlobal()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classdock_1_1PanelGroup.html">PanelGroup</a> * dock::DockCatalog::groupAtGlobal </td>
+          <td>(</td>
+          <td class="paramtype">const QPoint &amp;</td>          <td class="paramname"><span class="paramname"><em>global_pos</em></span></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>按屏幕坐标命中分组（浮动窗口优先，其次主区域） </p>
+
+</div>
+</div>
+<a id="a8119aba32a2ca482007ee4848fa150dc" name="a8119aba32a2ca482007ee4848fa150dc"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a8119aba32a2ca482007ee4848fa150dc">&#9670;&#160;</a></span>host()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classdock_1_1DockHost.html">DockHost</a> * dock::DockCatalog::host </td>
+          <td>(</td>
+          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel inline">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>唯一主窗口 </p>
+
+</div>
+</div>
+<a id="a5431d4bb8bfe4127cb8c3feb5b0cd2e6" name="a5431d4bb8bfe4127cb8c3feb5b0cd2e6"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a5431d4bb8bfe4127cb8c3feb5b0cd2e6">&#9670;&#160;</a></span>panels()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">const QList&lt; <a class="el" href="classdock_1_1DockPanel.html">DockPanel</a> * &gt; &amp; dock::DockCatalog::panels </td>
+          <td>(</td>
+          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel inline">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>全部停靠面板 </p>
+
+</div>
+</div>
+<a id="abe832c3cb88272ceaa2a2947b24a615e" name="abe832c3cb88272ceaa2a2947b24a615e"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#abe832c3cb88272ceaa2a2947b24a615e">&#9670;&#160;</a></span>registerPanel()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void dock::DockCatalog::registerPanel </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="classdock_1_1DockPanel.html">DockPanel</a> *</td>          <td class="paramname"><span class="paramname"><em>panel</em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>登记停靠面板 </p>
+
+</div>
+</div>
+<a id="aa5a9995ecb8434fee490a308d76c96fe" name="aa5a9995ecb8434fee490a308d76c96fe"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aa5a9995ecb8434fee490a308d76c96fe">&#9670;&#160;</a></span>registerWindow()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void dock::DockCatalog::registerWindow </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="classdock_1_1DockWindow.html">DockWindow</a> *</td>          <td class="paramname"><span class="paramname"><em>window</em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>登记独立窗口 </p>
+
+</div>
+</div>
+<a id="af6c35a33487bfee8109a6dcf06e3998e" name="af6c35a33487bfee8109a6dcf06e3998e"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#af6c35a33487bfee8109a6dcf06e3998e">&#9670;&#160;</a></span>self()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classdock_1_1DockCatalog.html">DockCatalog</a> &amp; dock::DockCatalog::self </td>
+          <td>(</td>
+          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel static">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>单例 </p>
+
+</div>
+</div>
+<a id="a9e3ea0175ebae137c3d268d0e896721b" name="a9e3ea0175ebae137c3d268d0e896721b"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a9e3ea0175ebae137c3d268d0e896721b">&#9670;&#160;</a></span>setHost()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void dock::DockCatalog::setHost </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="classdock_1_1DockHost.html">DockHost</a> *</td>          <td class="paramname"><span class="paramname"><em>host</em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel inline">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>设置唯一主窗口（空表示注销） </p>
+
+</div>
+</div>
+<a id="aba1039560d12eca3d9a02cbb0714f1da" name="aba1039560d12eca3d9a02cbb0714f1da"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aba1039560d12eca3d9a02cbb0714f1da">&#9670;&#160;</a></span>unregisterPanel()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void dock::DockCatalog::unregisterPanel </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="classdock_1_1DockPanel.html">DockPanel</a> *</td>          <td class="paramname"><span class="paramname"><em>panel</em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>注销停靠面板 </p>
+
+</div>
+</div>
+<a id="a7832cd32a4313d844bb30260fad27026" name="a7832cd32a4313d844bb30260fad27026"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a7832cd32a4313d844bb30260fad27026">&#9670;&#160;</a></span>unregisterWindow()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void dock::DockCatalog::unregisterWindow </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="classdock_1_1DockWindow.html">DockWindow</a> *</td>          <td class="paramname"><span class="paramname"><em>window</em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>注销独立窗口 </p>
+
+</div>
+</div>
+<a id="a381c6bf2d113c82b27e9ae95a19cbbf7" name="a381c6bf2d113c82b27e9ae95a19cbbf7"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a381c6bf2d113c82b27e9ae95a19cbbf7">&#9670;&#160;</a></span>windows()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">const QList&lt; <a class="el" href="classdock_1_1DockWindow.html">DockWindow</a> * &gt; &amp; dock::DockCatalog::windows </td>
+          <td>(</td>
+          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel inline">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>全部独立窗口 </p>
+
+</div>
+</div>
+<a name="doc-variable-members" id="doc-variable-members"></a><h2 id="header-doc-variable-members" class="groupheader">类成员变量说明</h2>
+<a id="a029591db162f667dcd728d9f396aa33c" name="a029591db162f667dcd728d9f396aa33c"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a029591db162f667dcd728d9f396aa33c">&#9670;&#160;</a></span>host_</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classdock_1_1DockHost.html">DockHost</a>* dock::DockCatalog::host_ = nullptr</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel private">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a4592e9ae9da778d24a03d2409eb02864" name="a4592e9ae9da778d24a03d2409eb02864"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a4592e9ae9da778d24a03d2409eb02864">&#9670;&#160;</a></span>panels_</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">QList&lt;<a class="el" href="classdock_1_1DockPanel.html">DockPanel</a>*&gt; dock::DockCatalog::panels_</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel private">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a9d064b165888dd87c892f4c700e2b694" name="a9d064b165888dd87c892f4c700e2b694"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a9d064b165888dd87c892f4c700e2b694">&#9670;&#160;</a></span>windows_</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">QList&lt;<a class="el" href="classdock_1_1DockWindow.html">DockWindow</a>*&gt; dock::DockCatalog::windows_</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel private">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<hr/>该类的文档由以下文件生成:<ul>
+<li>app/dock/docking/<a class="el" href="DockCatalog_8h_source.html">DockCatalog.h</a></li>
+<li>app/dock/docking/<a class="el" href="DockCatalog_8cpp.html">DockCatalog.cpp</a></li>
+</ul>
+</div><!-- contents -->
+<!-- start footer part -->
+<hr class="footer"/><address class="footer"><small>
+制作者&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.14.0
+</small></address>
+</div><!-- doc-content -->
+</body>
+</html>

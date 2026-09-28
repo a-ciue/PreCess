@@ -1,21 +1,4 @@
 var searchData=
 [
-  ['scalarattributedisplayrequestedevent_0',['ScalarAttributeDisplayRequestedEvent',['../structsystems_1_1feature_1_1ScalarAttributeDisplayRequestedEvent.html',1,'systems::feature']]],
-  ['selectededge_1',['SelectedEdge',['../structEdgeSelectorHighlight_1_1SelectedEdge.html',1,'EdgeSelectorHighlight']]],
-  ['selection_2',['Selection',['../structSelection.html',1,'']]],
-  ['selectmanager_3',['SelectManager',['../classSelectManager.html',1,'']]],
-  ['selectorhighlight_4',['SelectorHighlight',['../classSelectorHighlight.html',1,'']]],
-  ['session_5',['Session',['../classsession_1_1Session.html',1,'session']]],
-  ['sessionquery_6',['SessionQuery',['../classsession_1_1SessionQuery.html',1,'session']]],
-  ['shape_5ft_7',['shape_t',['../structtinyobj_1_1shape__t.html',1,'tinyobj']]],
-  ['skin_5fweight_5ft_8',['skin_weight_t',['../structtinyobj_1_1skin__weight__t.html',1,'tinyobj']]],
-  ['solidpickinteractorstyle_9',['SolidPickInteractorStyle',['../classSolidPickInteractorStyle.html',1,'']]],
-  ['solidselectorhighlight_10',['SolidSelectorHighlight',['../classSolidSelectorHighlight.html',1,'']]],
-  ['stagedsession_11',['StagedSession',['../structUndoStack_1_1StagedSession.html',1,'UndoStack']]],
-  ['string_12',['string',['../classsystems_1_1algo_1_1string.html',1,'systems::algo::string'],['../classsystems_1_1edit_1_1string.html',1,'systems::edit::string'],['../classsystems_1_1io_1_1string.html',1,'systems::io::string']]],
-  ['structuralentry_13',['StructuralEntry',['../structStructuralEntry.html',1,'']]],
-  ['subscription_14',['Subscription',['../classcore_1_1EventBus_1_1Subscription.html',1,'core::EventBus::Subscription'],['../classEventBus_1_1Subscription.html',1,'EventBus::Subscription']]],
-  ['systemhandlerdestroyer_15',['SystemHandlerDestroyer',['../structsystems_1_1SystemHandlerDestroyer.html',1,'systems']]],
-  ['systempluginmanager_16',['SystemPluginManager',['../classsystems_1_1SystemPluginManager.html',1,'systems']]],
-  ['systemregisterbase_17',['SystemRegisterBase',['../classsystems_1_1SystemRegisterBase.html',1,'systems']]]
+  ['reverse_5fiterator_0',['reverse_iterator',['../classsystems_1_1algo_1_1string_1_1reverse__iterator.html',1,'systems::algo::string::reverse_iterator'],['../classsystems_1_1algo_1_1vector_1_1reverse__iterator.html',1,'systems::algo::vector&lt; T &gt;::reverse_iterator'],['../classsystems_1_1edit_1_1string_1_1reverse__iterator.html',1,'systems::edit::string::reverse_iterator'],['../classsystems_1_1edit_1_1vector_1_1reverse__iterator.html',1,'systems::edit::vector&lt; T &gt;::reverse_iterator'],['../classsystems_1_1io_1_1string_1_1reverse__iterator.html',1,'systems::io::string::reverse_iterator'],['../classsystems_1_1io_1_1vector_1_1reverse__iterator.html',1,'systems::io::vector&lt; T &gt;::reverse_iterator']]]
 ];

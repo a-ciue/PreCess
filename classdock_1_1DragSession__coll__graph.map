@@ -1,0 +1,45 @@
+<map id="dock::DragSession" name="dock::DragSession">
+<area shape="rect" id="Node000001" title="拖拽状态机" alt="" coords="1387,146,1529,171"/>
+<area shape="rect" id="Node000002" title=" " alt="" coords="39,19,114,45"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="127,21,216,9,317,3,1186,3,1229,7,1270,20,1309,38,1346,59,1407,106,1446,144,1443,148,1403,110,1343,64,1307,42,1268,25,1228,12,1186,8,317,8,216,14,128,26"/>
+<area shape="rect" id="Node000007" href="$classdock_1_1DockObject.html" title="控制器基类" alt="" coords="251,197,387,222"/>
+<area shape="poly" id="edge7_Node000007_Node000002" title=" " alt="" coords="128,42,178,60,227,89,256,115,280,144,313,195,308,198,276,147,252,118,224,93,175,65,126,47"/>
+<area shape="rect" id="Node000003" href="$classdock_1_1DragHandle.html" title="拖拽源描述" alt="" coords="412,61,551,86"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="564,67,765,63,1186,63,1223,65,1261,72,1332,94,1393,120,1437,144,1434,148,1390,125,1330,99,1259,77,1223,70,1186,68,765,68,565,72"/>
+<area shape="rect" id="Node000004" href="$classdock_1_1DockView.html" title="视图抽象接口" alt="" coords="13,197,140,222"/>
+<area shape="poly" id="edge3_Node000003_Node000004" title=" " alt="" coords="128,190,442,83,443,89,129,195"/>
+<area shape="poly" id="edge8_Node000007_Node000004" title=" " alt="" coords="154,207,250,207,250,212,154,212"/>
+<area shape="rect" id="Node000014" href="$classdock_1_1DockPanel.html" title="逻辑停靠面板" alt="" coords="827,421,957,446"/>
+<area shape="poly" id="edge21_Node000014_Node000004" title=" " alt="" coords="105,229,158,270,231,321,319,371,365,392,413,409,580,420,827,429,827,434,580,425,411,415,363,397,316,376,228,326,154,275,102,233"/>
+<area shape="rect" id="Node000005" href="$classdock_1_1DragProxy.html" title="拖拽会话中的浮动窗口" alt="" coords="1120,121,1249,146"/>
+<area shape="poly" id="edge4_Node000001_Node000005" title=" " alt="" coords="1263,138,1387,149,1386,155,1263,143"/>
+<area shape="rect" id="Node000006" href="$classdock_1_1DockWindow.html" title="浮动窗口" alt="" coords="819,121,965,146"/>
+<area shape="poly" id="edge5_Node000005_Node000006" title=" " alt="" coords="979,131,1120,131,1120,136,979,136"/>
+<area shape="poly" id="edge6_Node000006_Node000007" title=" " alt="" coords="382,191,542,155,639,138,737,125,818,124,818,130,738,131,640,143,543,160,383,196"/>
+<area shape="rect" id="Node000008" href="$classdock_1_1DockRegion.html" title="停靠区域" alt="" coords="575,197,713,222"/>
+<area shape="poly" id="edge10_Node000008_Node000007" title=" " alt="" coords="400,207,574,207,574,212,400,212"/>
+<area shape="rect" id="Node000013" href="$classdock_1_1PanelGroup.html" title="选项卡分组" alt="" coords="577,450,711,475"/>
+<area shape="poly" id="edge17_Node000013_Node000007" title=" " alt="" coords="332,233,363,292,386,323,414,349,432,359,448,366,480,370,513,373,552,386,598,417,632,448,628,452,595,421,549,390,512,378,479,375,447,371,429,364,410,353,382,326,358,295,327,236"/>
+<area shape="poly" id="edge20_Node000014_Node000007" title=" " alt="" coords="401,218,486,234,587,259,694,294,746,316,796,342,823,360,847,381,882,419,878,422,843,384,819,364,793,346,744,321,692,299,586,264,485,239,400,223"/>
+<area shape="poly" id="edge24_Node000001_Node000008" title=" " alt="" coords="727,202,1386,160,1386,166,727,207"/>
+<area shape="poly" id="edge9_Node000006_Node000008" title=" " alt="" coords="684,189,737,168,828,143,830,149,738,173,686,194"/>
+<area shape="rect" id="Node000015" href="$structdock_1_1DropTarget.html" title="拖放落点目标" alt="" coords="826,269,958,294"/>
+<area shape="poly" id="edge26_Node000015_Node000008" title=" " alt="" coords="673,229,738,278,782,286,826,287,826,292,781,292,736,282,670,233"/>
+<area shape="rect" id="Node000009" href="$classdock_1_1LayoutNode.html" title="布局树节点（叶子节点与容器节点的公共基类）" alt="" coords="249,530,388,555"/>
+<area shape="poly" id="edge11_Node000008_Node000009" title=" " alt="" coords="329,516,361,452,384,416,410,382,464,329,522,283,619,220,622,224,525,287,467,333,414,386,388,419,366,455,333,518"/>
+<area shape="rect" id="Node000012" href="$classdock_1_1BoxNode.html" title="盒式布局容器" alt="" coords="584,578,704,603"/>
+<area shape="poly" id="edge15_Node000012_Node000009" title=" " alt="" coords="402,552,584,579,584,585,401,557"/>
+<area shape="poly" id="edge23_Node000013_Node000009" title=" " alt="" coords="402,543,475,538,513,532,550,522,593,499,627,474,630,478,596,504,552,526,514,537,476,544,402,549"/>
+<area shape="rect" id="Node000010" href="$structdock_1_1NodeMetrics.html" title="单个布局节点的几何与尺寸约束" alt="" coords="5,546,148,571"/>
+<area shape="poly" id="edge12_Node000009_Node000010" title=" " alt="" coords="162,557,225,555,249,552,249,557,226,560,162,563"/>
+<area shape="rect" id="Node000011" href="$classdock_1_1LayoutClient.html" title="被布局引擎托管的实体接口" alt="" coords="5,471,148,497"/>
+<area shape="poly" id="edge13_Node000009_Node000011" title=" " alt="" coords="144,497,266,527,265,533,142,503"/>
+<area shape="poly" id="edge18_Node000013_Node000011" title=" " alt="" coords="162,478,576,463,576,468,162,483"/>
+<area shape="poly" id="edge14_Node000009_Node000012" title=" " alt="" coords="590,610,551,618,505,623,458,623,411,613,387,602,364,587,330,558,334,554,368,583,389,598,413,608,458,617,505,618,550,613,589,604"/>
+<area shape="poly" id="edge28_Node000001_Node000013" title=" " alt="" coords="674,481,704,499,738,513,766,517,794,513,848,502,902,487,1007,448,1108,399,1200,346,1283,291,1352,241,1441,169,1444,173,1355,245,1286,296,1203,350,1110,404,1010,453,904,493,850,508,795,519,766,523,737,519,701,504,671,486"/>
+<area shape="poly" id="edge16_Node000006_Node000013" title=" " alt="" coords="650,435,681,352,705,302,735,256,768,220,804,189,868,144,871,148,807,193,771,224,739,259,710,305,686,354,655,437"/>
+<area shape="poly" id="edge22_Node000014_Node000013" title=" " alt="" coords="725,457,794,451,836,443,837,449,795,456,726,462"/>
+<area shape="poly" id="edge27_Node000015_Node000013" title=" " alt="" coords="672,440,872,292,875,296,675,444"/>
+<area shape="poly" id="edge19_Node000013_Node000014" title=" " alt="" coords="872,458,838,486,795,509,758,514,722,506,689,493,663,478,665,473,691,488,723,501,759,508,794,504,835,482,868,454"/>
+<area shape="poly" id="edge25_Node000001_Node000015" title=" " alt="" coords="971,273,1054,265,1152,251,1258,230,1362,201,1400,186,1433,169,1435,174,1402,191,1364,207,1259,236,1153,256,1054,270,972,279"/>
+</map>

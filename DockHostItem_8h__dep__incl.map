@@ -1,0 +1,9 @@
+<map id="app/dock/ui/DockHostItem.h" name="app/dock/ui/DockHostItem.h">
+<area shape="rect" id="Node000001" title="QML 主停靠区域（PreCess.Docking 的 DockHost 类型）" alt="" coords="237,5,443,31"/>
+<area shape="rect" id="Node000002" href="$TestDockQmlSmoke_8cpp.html" title="QML 集成冒烟测试：类型注册、中央持久部件、重开面板、拖拽浮窗回归" alt="" coords="5,79,205,119"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="294,37,163,81,161,76,292,32"/>
+<area shape="rect" id="Node000003" href="$DockHostItem_8cpp.html" title="主停靠区域视图的实现" alt="" coords="229,86,451,111"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="343,44,343,86,337,86,337,44"/>
+<area shape="rect" id="Node000004" href="$QmlRegistration_8cpp.html" title="QML 类型注册与组件初始化" alt="" coords="475,86,709,111"/>
+<area shape="poly" id="edge3_Node000001_Node000004" title=" " alt="" coords="390,32,556,83,555,89,389,37"/>
+</map>

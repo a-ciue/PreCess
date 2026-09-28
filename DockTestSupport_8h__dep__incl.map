@@ -1,0 +1,11 @@
+<map id="app/dock/test/DockTestSupport.h" name="app/dock/test/DockTestSupport.h">
+<area shape="rect" id="Node000001" title="停靠组件测试支撑：桩视图与复刻 Main.qml 启动布局的夹具" alt="" coords="369,5,603,31"/>
+<area shape="rect" id="Node000002" href="$TestDockCore_8cpp.html" title="停靠核心语义单元测试：命令式停靠布局、关闭/恢复、中央部件、选项卡" alt="" coords="5,86,236,111"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="420,36,174,89,173,83,419,31"/>
+<area shape="rect" id="Node000003" href="$TestDockDragDrop_8cpp.html" title="拖放核心单元测试：落点计算、指示器几何、浮动/回停、拖拽阈值与停靠" alt="" coords="260,79,464,119"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="457,41,393,81,390,76,454,36"/>
+<area shape="rect" id="Node000004" href="$TestDockPersist_8cpp.html" title="布局持久化测试：快照往返、浮窗占位/回停来源、兼容性与坏数据拒绝" alt="" coords="488,86,732,111"/>
+<area shape="poly" id="edge3_Node000001_Node000004" title=" " alt="" coords="517,36,593,84,590,88,514,40"/>
+<area shape="rect" id="Node000005" href="$TestDockQmlSmoke_8cpp.html" title="QML 集成冒烟测试：类型注册、中央持久部件、重开面板、拖拽浮窗回归" alt="" coords="757,79,957,119"/>
+<area shape="poly" id="edge4_Node000001_Node000005" title=" " alt="" coords="554,31,768,76,767,81,552,36"/>
+</map>

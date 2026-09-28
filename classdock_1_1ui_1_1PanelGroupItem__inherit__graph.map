@@ -1,0 +1,7 @@
+<map id="dock::ui::PanelGroupItem" name="dock::ui::PanelGroupItem">
+<area shape="rect" id="Node000001" title="分组视图" alt="" coords="30,79,215,104"/>
+<area shape="rect" id="Node000002" title=" " alt="" coords="5,5,104,31"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="77,39,114,77,110,80,73,42"/>
+<area shape="rect" id="Node000003" href="$classdock_1_1DockView.html" title="视图抽象接口" alt="" coords="129,5,255,31"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="173,43,136,80,132,77,169,39"/>
+</map>
