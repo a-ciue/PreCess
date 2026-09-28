@@ -9,7 +9,6 @@
 
 #include <IVtkOCC_Shape.hxx>
 #include <Standard_Handle.hxx>
-#include <TopoDS_Face.hxx>
 #include <vtkActor.h>
 #include <vtkNew.h>
 #include <vtkPolyData.h>
@@ -18,7 +17,6 @@
 #include <array>
 #include <string>
 #include <memory>
-#include <vector>
 
 class GeometryTopologyDiagnosticResult;
 struct GeometryTopologyDiagnosticOptions;
@@ -56,9 +54,6 @@ public:
     void setSmallEdgeLengthThreshold(double threshold);
     /** @brief 设置细小面诊断使用的面积阈值。 */
     void setSmallFaceAreaThreshold(double threshold);
-    /** @brief 设置 Manager 按 Model 计算后分配给本组件的几何干涉面。 */
-    void setInterferingFaces(std::vector<TopoDS_Face> faces);
-
     /** @brief 设置本 Actor 所属组件的显示标签（形如 "2 (Wing)"），只用于日志标注归属。 */
     void setComponentLabel(std::string label) { component_label_ = std::move(label); }
 
@@ -111,8 +106,6 @@ private:
     vtkDataArray* line_sub_ids_ {};
     vtkDataArray* face_sub_ids_ {};
     std::unique_ptr<GeometryTopologyDiagnosticResult> diagnostics_;
-    //! 组间干涉由 GeometryActorManager 按 Model 统一计算，本 Actor 只负责显示自身命中面。
-    std::vector<TopoDS_Face> interfering_faces_;
     //! 所属组件的显示标签（id + 名称），仅用于日志标注结果归属；空表示尚未设置。
     std::string component_label_;
 };

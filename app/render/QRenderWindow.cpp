@@ -339,8 +339,8 @@ void QRenderWindow::deleteModel(Index model_id)
         auto component_ids = model_query_->getComponentIds(model_id);
         for (Index component_id : component_ids) {
             vtk->mesh_actor_manager_->deleteComponent(component_id);
+            vtk->geometry_actor_manager_->deleteComponent(component_id);
         }
-        vtk->geometry_actor_manager_->deleteModel(model_id);
 
         this->select_manager_->clearSelection();
     });
@@ -394,7 +394,6 @@ void QRenderWindow::onModelChanged(Index model_id)
         // Actor 即将重新加载，先释放引用旧 PolyData 和 OCC Shape 的选择器。
         this->select_manager_->clearSelection();
         auto component_ids = model_query_->getComponentIds(model_id);
-        const std::string model_name = model_query_->getModelName(model_id).toStdString();
 
         for (Index component_id : component_ids) {
             auto mesh_data = model_query_->getMeshDataByComponent(component_id);
@@ -404,11 +403,10 @@ void QRenderWindow::onModelChanged(Index model_id)
 
             auto geometry_data = model_query_->getGeometryVtkDataByComponent(component_id);
             if (geometry_data) {
-                vtk->geometry_actor_manager_->loadGeometry(*geometry_data, model_id, model_name,
+                vtk->geometry_actor_manager_->loadGeometry(*geometry_data,
                     model_query_->getComponentName(component_id).toStdString());
             }
         }
-        vtk->geometry_actor_manager_->modelChanged(model_id);
     });
 }
 
@@ -423,9 +421,6 @@ void QRenderWindow::onComponentChanged(Index component_id)
         // Component 的子形状索引和 Actor 数据会更新，旧高亮选择器不能继续复用。
         this->select_manager_->clearSelection();
 
-        // 本 Component 归属的 Model，作废缓存与干涉重算都要用。
-        const Index model_id = this->model_query_->findModelIdByComponent(component_id);
-
         if (vtk->mesh_actor_manager_) {
             auto mesh_data = this->model_query_->getMeshDataByComponent(component_id);
             if (mesh_data) {
@@ -438,10 +433,8 @@ void QRenderWindow::onComponentChanged(Index component_id)
         if (vtk->geometry_actor_manager_) {
             auto geometry_data = this->model_query_->getGeometryVtkDataByComponent(component_id);
             if (geometry_data) {
-                vtk->geometry_actor_manager_->loadGeometry(*geometry_data, model_id,
-                    model_query_->getModelName(model_id).toStdString(),
+                vtk->geometry_actor_manager_->loadGeometry(*geometry_data,
                     model_query_->getComponentName(component_id).toStdString());
-                vtk->geometry_actor_manager_->modelChanged(model_id);
             } else {
                 vtk->geometry_actor_manager_->deleteComponent(component_id);
             }

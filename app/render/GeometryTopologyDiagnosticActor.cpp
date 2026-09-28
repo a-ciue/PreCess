@@ -212,7 +212,6 @@ void GeometryTopologyDiagnosticActor::loadShape(const TopoDS_Shape& shape,
     line_sub_ids_ = line_sub_ids;
     face_sub_ids_ = face_sub_ids;
     diagnostics_.reset();
-    interfering_faces_.clear();
     category_computed_.fill(false);
 
     // 立即清掉旧模型的独立诊断数据，避免新模型计算完成前短暂显示旧结果。
@@ -298,17 +297,6 @@ void GeometryTopologyDiagnosticActor::setSmallFaceAreaThreshold(double threshold
     }
 }
 
-void GeometryTopologyDiagnosticActor::setInterferingFaces(std::vector<TopoDS_Face> faces)
-{
-    interfering_faces_ = std::move(faces);
-    const size_t category = categoryIndex(GeometryTopologyDiagnosticCategory::InterferingFace);
-    category_computed_[category] = true;
-    if (category_enabled_[category]) {
-        rebuildCategory(GeometryTopologyDiagnosticCategory::InterferingFace);
-        applyVisibility();
-    }
-}
-
 void GeometryTopologyDiagnosticActor::ensureDiagnostics(
     GeometryTopologyDiagnosticCategory category)
 {
@@ -327,11 +315,6 @@ void GeometryTopologyDiagnosticActor::ensureDiagnostics(
     GeometryTopologyDiagnosticOptions options {
         false, false, false, false, false, false, false
     };
-    // Geometry Interference Check 必须同时看到同一 Model 内的全部实体，由 Manager 计算后回填。
-    if (category == GeometryTopologyDiagnosticCategory::InterferingFace) {
-        category_computed_[index] = true;
-        return;
-    }
     if (category == GeometryTopologyDiagnosticCategory::BoundaryEdge
         || category == GeometryTopologyDiagnosticCategory::IsolatedEdge
         || category == GeometryTopologyDiagnosticCategory::NonManifoldEdge) {
@@ -347,6 +330,9 @@ void GeometryTopologyDiagnosticActor::ensureDiagnostics(
         // 后续开关无需重算。
         options.duplicate_faces = true;
         options.self_intersecting_faces = true;
+    } else if (category == GeometryTopologyDiagnosticCategory::InterferingFace) {
+        // 只检查当前 Component 根 Shape 内不同 Solid 或自由 Surface 之间的干涉。
+        options.interfering_faces = true;
     } else if (category == GeometryTopologyDiagnosticCategory::InvalidTopology) {
         options.invalid_topology = true;
     }
@@ -382,6 +368,9 @@ void GeometryTopologyDiagnosticActor::ensureDiagnostics(
     } else if (options.duplicate_faces) {
         diagnostics_->duplicate_face_groups = std::move(computed.duplicate_face_groups);
         category_computed_[categoryIndex(GeometryTopologyDiagnosticCategory::DuplicateFace)] = true;
+    } else if (options.interfering_faces) {
+        diagnostics_->interfering_face_pairs = std::move(computed.interfering_face_pairs);
+        category_computed_[categoryIndex(GeometryTopologyDiagnosticCategory::InterferingFace)] = true;
     } else if (options.invalid_topology) {
         diagnostics_->invalid_shapes = std::move(computed.invalid_shapes);
         category_computed_[categoryIndex(GeometryTopologyDiagnosticCategory::InvalidTopology)] = true;
@@ -394,11 +383,7 @@ void GeometryTopologyDiagnosticActor::logCachedDiagnostics(
     if (!diagnostics_ || !shape_ || shape_->IsNull())
         return;
 
-    // 几何干涉跨越同一 Model 内的多个 Component，由 Controller 统一报一行，这里跳过。
-    if (category == GeometryTopologyDiagnosticCategory::InterferingFace)
-        return;
-
-    // 其余类别映射回各自的选项，复用同一段格式化逻辑（不传耗时）。
+    // 将类别映射回对应选项，复用同一段格式化逻辑（不传耗时）。
     GeometryTopologyDiagnosticOptions options {
         false, false, false, false, false, false, false
     };
@@ -420,6 +405,9 @@ void GeometryTopologyDiagnosticActor::logCachedDiagnostics(
     case GeometryTopologyDiagnosticCategory::SelfIntersectingFace:
         options.duplicate_faces = true;
         options.self_intersecting_faces = true;
+        break;
+    case GeometryTopologyDiagnosticCategory::InterferingFace:
+        options.interfering_faces = true;
         break;
     case GeometryTopologyDiagnosticCategory::InvalidTopology:
         options.invalid_topology = true;
@@ -471,6 +459,11 @@ void GeometryTopologyDiagnosticActor::logDiagnosticDetails(
             result.duplicate_face_groups.size(), result.self_intersecting_face_pairs.size());
         return;
     }
+    if (options.interfering_faces) {
+        spdlog::info("{}几何干涉 {}—— {} 对", label, cost,
+            result.interfering_face_pairs.size());
+        return;
+    }
     if (options.invalid_topology) {
         spdlog::info("{}无效拓扑 {}—— {} 个", label, cost, result.invalid_shapes.size());
     }
@@ -519,8 +512,10 @@ void GeometryTopologyDiagnosticActor::rebuildCategory(GeometryTopologyDiagnostic
         }
         break;
     case GeometryTopologyDiagnosticCategory::InterferingFace:
-        for (const TopoDS_Face& face : interfering_faces_)
-            appendShapeId(ids, occ_shape_, face);
+        for (const GeometryIntersectingFacePair& pair : diagnostics_->interfering_face_pairs) {
+            appendShapeId(ids, occ_shape_, pair.first);
+            appendShapeId(ids, occ_shape_, pair.second);
+        }
         break;
     case GeometryTopologyDiagnosticCategory::InvalidTopology:
         for (const TopoDS_Shape& shape : diagnostics_->invalid_shapes) {

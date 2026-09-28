@@ -9,8 +9,6 @@ add_library(vtkPart STATIC
     GeometrySelectManager.cpp
     MeshSelectManager.cpp
     GeometryActor.cpp
-    GeometryInterferenceController.h
-    GeometryInterferenceController.cpp
     GeometryTopologyDiagnosticActor.cpp
     MeshActorManager.cpp
     GeometryActorManager.cpp
