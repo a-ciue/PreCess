@@ -106,6 +106,29 @@ if(_precess_real)
         set_tests_properties(precess_python_smoke PROPERTIES
             ENVIRONMENT "PYTHONPATH=$<TARGET_FILE_DIR:precess_bindings>"
             ENVIRONMENT_MODIFICATION "$<LIST:TRANSFORM,$<TARGET_RUNTIME_DLL_DIRS:precess_bindings>,PREPEND,PATH=path_list_prepend:>;$<LIST:TRANSFORM,$<TARGET_RUNTIME_DLL_DIRS:precess_bindings>,PREPEND,PRECESS_DLL_DIRS=path_list_append:>")
+        if(MSVC AND WIN32)
+            # 编译器隐式链接的 Debug CRT 不在 TARGET_RUNTIME_DLL_DIRS 的目标闭包内。
+            # 在函数作用域内仅探测目录，不引入安装规则或影响其他目录的打包设置。
+            function(precess_configure_python_debug_runtime)
+                set(CMAKE_INSTALL_SYSTEM_RUNTIME_LIBS "")
+                set(CMAKE_INSTALL_SYSTEM_RUNTIME_LIBS_SKIP TRUE)
+                set(CMAKE_INSTALL_DEBUG_LIBRARIES TRUE)
+                set(CMAKE_INSTALL_DEBUG_LIBRARIES_ONLY TRUE)
+                include(InstallRequiredSystemLibraries)
+
+                set(runtime_dirs)
+                foreach(runtime_lib IN LISTS CMAKE_INSTALL_SYSTEM_RUNTIME_LIBS)
+                    get_filename_component(runtime_dir "${runtime_lib}" DIRECTORY)
+                    list(APPEND runtime_dirs "${runtime_dir}")
+                endforeach()
+                list(REMOVE_DUPLICATES runtime_dirs)
+                foreach(runtime_dir IN LISTS runtime_dirs)
+                    set_property(TEST precess_python_smoke APPEND PROPERTY ENVIRONMENT_MODIFICATION
+                        "$<$<CONFIG:Debug>:PRECESS_DLL_DIRS=path_list_append:${runtime_dir}>")
+                endforeach()
+            endfunction()
+            precess_configure_python_debug_runtime()
+        endif()
         # C++ 嵌入测试：验证宿主初始化、控制台执行与活会话调用（依赖真实
         # 宿主与 precess 模块，桩模式无意义）；宿主配置宏经 precess_runtime
         # PUBLIC 传递，此处仅补测试专属的插件目录
