@@ -1,0 +1,8 @@
+{
+  "system": "FeatureSystem",
+  "handler": {
+    "name": "MergePoints",
+    "display_name": "点合并",
+    "description": "将容差内的两个几何点合并到第一点、第二点或中点"
+  }
+}

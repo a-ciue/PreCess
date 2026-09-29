@@ -44,6 +44,14 @@ struct GeometryGapRepairResult {
 };
 
 /**
+ * @brief 一组可与种子链缝合的对侧自由边链及其最大间隙。
+ */
+struct GeometryGapPartnerChain {
+    std::vector<TopoDS_Edge> edges;
+    double maximum_gap { 0.0 };
+};
+
+/**
  * @brief 几何拓扑诊断的完整结果。
  */
 struct GeometryTopologyDiagnosticResult {
@@ -304,6 +312,60 @@ public:
         const TopoDS_Shape& root,
         const std::vector<TopoDS_Edge>& first_chain,
         const std::vector<TopoDS_Edge>& second_chain,
+        double tolerance);
+
+    /**
+     * @brief 从种子自由边扩展出容差内可缝合的同侧连续自由边链。
+     *
+     * 只吸收「在容差内存在跨面自由边配对」的邻接自由边，避免把同一面的
+     * 无关外轮廓扩进间隙边界。种子边自身必须是自由边且存在对侧配对。
+     *
+     * @param root 当前几何根形状。
+     * @param seed 间隙边，必须是 root 上的自由边界边。
+     * @param tolerance 最大间隙距离，必须为有限正数。
+     * @return 含种子边在内的同侧可缝合自由边链。
+     *
+     * @throws std::invalid_argument 种子边不是自由边或不属于 root。
+     * @throws std::runtime_error 种子边在容差内没有对侧自由边配对。
+     */
+    static std::vector<TopoDS_Edge> expandStitchableFreeChain(
+        const TopoDS_Shape& root,
+        const TopoDS_Edge& seed,
+        double tolerance);
+
+    /**
+     * @brief 为种子自由边链查找容差内的对侧间隙链，按最大间隙升序返回。
+     *
+     * 候选链须与种子链互相覆盖且总长接近，语义与 stitchBoundaryEdges 一致；
+     * 多组时由调用方按容差收窄，或取间隙最小者。不执行缝合。
+     *
+     * @param root 当前几何根形状。
+     * @param seed_chain 同侧连续自由边链。
+     * @param tolerance 最大间隙距离，必须为有限正数。
+     * @return 对侧链候选；第一项最大间隙最小。
+     */
+    static std::vector<GeometryGapPartnerChain> findGapPartnerChains(
+        const TopoDS_Shape& root,
+        const std::vector<TopoDS_Edge>& seed_chain,
+        double tolerance);
+
+    /**
+     * @brief 以种子自由边为入口，自动识别所属间隙边界并缝合已有面。
+     *
+     * 只做已有面自由边 Sewing，不创建填充面；多组对侧候选时取最大间隙最小者。
+     * 等价于 expandStitchableFreeChain + findGapPartnerChains + stitchBoundaryEdges。
+     *
+     * @param root 当前几何根形状。
+     * @param seed_edge 间隙边，必须是 root 上的自由边界边。
+     * @param tolerance 最大缝合距离，必须为有限正数。
+     * @return 缝合后的完整根形状。
+     *
+     * @throws std::invalid_argument 种子边不是自由边或不属于 root。
+     * @throws std::runtime_error 容差内找不到对侧间隙链，或缝合失败。
+     */
+    static TopoDS_Shape stitchGapFromSeedEdge(
+        const TopoDS_Shape& root,
+        const TopoDS_Edge& seed_edge,
         double tolerance);
 
     /**

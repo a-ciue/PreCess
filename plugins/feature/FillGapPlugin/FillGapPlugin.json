@@ -1,0 +1,8 @@
+{
+  "system": "FeatureSystem",
+  "handler": {
+    "name": "FillGap",
+    "display_name": "补间隙",
+    "description": "从一条间隙边识别所属间隙边界，并以缝合已有面的方式封闭间隙"
+  }
+}

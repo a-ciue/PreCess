@@ -1,0 +1,2 @@
+precess_add_test(TestMergePointsPlugin TestMergePointsPlugin.cpp)
+precess_test_link_libraries(TestMergePointsPlugin MergePointsPluginlib FeatureSystem Data)

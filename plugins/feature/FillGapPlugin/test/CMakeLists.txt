@@ -1,0 +1,2 @@
+precess_add_test(TestFillGapPlugin TestFillGapPlugin.cpp)
+precess_test_link_libraries(TestFillGapPlugin FillGapPluginlib FeatureSystem Data)

@@ -399,6 +399,79 @@ TEST_CASE("GeometryTopologyEditor rejects boundary edges outside stitch toleranc
         std::runtime_error);
 }
 
+TEST_CASE("GeometryTopologyEditor expands stitchable free chain from a gap seed edge")
+{
+    const TopoDS_Face left = TopoDS::Face(GeometryBuilder::makeRectangleFace(
+        0.0, 0.0, 0.0, 10.0, 10.0, CoordinatePlane::XY));
+    const TopoDS_Face right = TopoDS::Face(GeometryBuilder::makeRectangleFace(
+        10.005, 0.0, 0.0, 10.0, 10.0, CoordinatePlane::XY));
+    const TopoDS_Edge left_boundary = findEdgeOnX(left, 10.0);
+    REQUIRE_FALSE(left_boundary.IsNull());
+    const TopoDS_Shape root = makeShapePairRoot(left, right);
+
+    const std::vector<TopoDS_Edge> chain =
+        GeometryTopologyEditor::expandStitchableFreeChain(root, left_boundary, 0.01);
+    REQUIRE(chain.size() == 1);
+    REQUIRE(chain.front().IsSame(left_boundary));
+}
+
+TEST_CASE("GeometryTopologyEditor finds the smallest gap partner chain and stitches from seed")
+{
+    const TopoDS_Face left = TopoDS::Face(GeometryBuilder::makeRectangleFace(
+        0.0, 0.0, 0.0, 10.0, 10.0, CoordinatePlane::XY));
+    const TopoDS_Face right = TopoDS::Face(GeometryBuilder::makeRectangleFace(
+        10.005, 0.0, 0.0, 10.0, 10.0, CoordinatePlane::XY));
+    const TopoDS_Edge left_boundary = findEdgeOnX(left, 10.0);
+    REQUIRE_FALSE(left_boundary.IsNull());
+    const TopoDS_Shape root = makeShapePairRoot(left, right);
+
+    const std::vector<TopoDS_Edge> chain =
+        GeometryTopologyEditor::expandStitchableFreeChain(root, left_boundary, 0.01);
+    const std::vector<GeometryGapPartnerChain> partners =
+        GeometryTopologyEditor::findGapPartnerChains(root, chain, 0.01);
+    REQUIRE(partners.size() == 1);
+    REQUIRE(partners.front().edges.size() == 1);
+    REQUIRE(partners.front().maximum_gap == Catch::Approx(0.005).margin(1.0e-6));
+
+    const TopoDS_Shape result =
+        GeometryTopologyEditor::stitchGapFromSeedEdge(root, left_boundary, 0.01);
+    REQUIRE(countSubshapes(result, TopAbs_FACE) == 2);
+    REQUIRE(countSharedEdges(result) == 1);
+    REQUIRE(BRepCheck_Analyzer(result).IsValid());
+}
+
+TEST_CASE("GeometryTopologyEditor stitches a long gap seed edge to two short partners")
+{
+    const TopoDS_Face left = TopoDS::Face(GeometryBuilder::makeRectangleFace(
+        0.0, 0.0, 0.0, 10.0, 10.0, CoordinatePlane::XY));
+    const auto [right, right_boundaries]
+        = makeSplitLeftRectangleFace(10.005, 0.0, 10.0, 10.0);
+    const TopoDS_Edge left_boundary = findEdgeOnX(left, 10.0);
+    REQUIRE_FALSE(left_boundary.IsNull());
+    REQUIRE(right_boundaries.size() == 2);
+    const TopoDS_Shape root = makeShapePairRoot(left, right);
+
+    const TopoDS_Shape result =
+        GeometryTopologyEditor::stitchGapFromSeedEdge(root, left_boundary, 0.01);
+    REQUIRE(countSubshapes(result, TopAbs_FACE) == 2);
+    REQUIRE(countSharedEdges(result) == 2);
+    REQUIRE(BRepCheck_Analyzer(result).IsValid());
+}
+
+TEST_CASE("GeometryTopologyEditor rejects a gap seed without a partner within tolerance")
+{
+    const TopoDS_Face left = TopoDS::Face(GeometryBuilder::makeRectangleFace(
+        0.0, 0.0, 0.0, 10.0, 10.0, CoordinatePlane::XY));
+    const TopoDS_Face right = TopoDS::Face(GeometryBuilder::makeRectangleFace(
+        10.005, 0.0, 0.0, 10.0, 10.0, CoordinatePlane::XY));
+    const TopoDS_Edge left_boundary = findEdgeOnX(left, 10.0);
+    const TopoDS_Shape root = makeShapePairRoot(left, right);
+
+    REQUIRE_THROWS_AS(
+        GeometryTopologyEditor::stitchGapFromSeedEdge(root, left_boundary, 0.001),
+        std::runtime_error);
+}
+
 TEST_CASE("GeometryTopologyEditor splits a nested solid face with an on-face edge")
 {
     const TopoDS_Shape box =
