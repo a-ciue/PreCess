@@ -3,6 +3,6 @@
   "handler": {
     "name": "FillGap",
     "display_name": "局部缝合",
-    "description": "选择一条自由边，自动识别对侧边界并缝合已有面；不创建填充面"
+    "description": "选择自由边，可局部缝合已有面，或为孔洞及两侧间隙生成平面或曲面补面"
   }
 }

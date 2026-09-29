@@ -3,7 +3,7 @@
 
 namespace systems::feature {
 /**
- * @brief 局部缝合功能：从种子自由边识别所属间隙边界，并缝合已有面。
+ * @brief 从种子自由边识别边界，按选项缝合已有面或创建平面/曲面补面。
  */
 class FillGapHandler : public FeatureHandler {
 public:

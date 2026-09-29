@@ -22,7 +22,7 @@ void DeleteGeometryHandler::setup(FeatureRegistrar& reg, FeatureContext& /*ctx*/
     reg.addParameter({ ArgTypeEnum::Selector, "目标几何",
         "GeometryFace,GeometryVertex,GeometryEdge,GeometrySolid",
         "请选择一个几何点、边、面或体；面可为 Shell/Solid 内的嵌套面" });
-    reg.addParameter({ ArgTypeEnum::Bool, "同时删除下级拓扑", "false",
+    reg.addParameter({ ArgTypeEnum::Bool, "同时删除下级拓扑", "true",
         "关闭时保留直接下级拓扑，开启时不影响其他形状共享的拓扑" });
     reg.addMenuItem({ "几何", "删除几何", "qrc:/images/toolbar/Geometry/delete_geometry.svg" });
 }
@@ -37,7 +37,7 @@ std::any DeleteGeometryHandler::execute(FeatureContext& ctx)
         return std::string("请选择一个几何形状。");
 
     const bool* delete_children_param = ctx.params.value(1).get<ArgTypeEnum::Bool>();
-    const bool delete_children = delete_children_param ? *delete_children_param : false;
+    const bool delete_children = delete_children_param ? *delete_children_param : true;
 
     try {
         const Index shape_id = selected->ids.front();

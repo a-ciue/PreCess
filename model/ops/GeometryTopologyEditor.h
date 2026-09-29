@@ -369,6 +369,19 @@ public:
         double tolerance);
 
     /**
+     * @brief 从自由边识别孔洞或两侧间隙，创建并连接一个平面或非共面填充面。
+     * @param root 当前几何根形状。
+     * @param seed_edge 所属边界的种子自由边。
+     * @param tolerance 对侧间隙的搜索距离和曲面拟合误差上限，必须有限且不小于 OCC 几何精度。
+     * @return 新增一个面后的完整根形状；原始形状不被原地修改。
+     * @throws std::runtime_error 边界歧义、不闭合、覆盖已有面或无法生成有效补面。
+     */
+    static TopoDS_Shape fillGapFromSeedEdge(
+        const TopoDS_Shape& root,
+        const TopoDS_Edge& seed_edge,
+        double tolerance);
+
+    /**
      * @brief 从根形状中删除一个顶层独立 Vertex、Edge、Face 或 Solid。
      *
      * @param root 当前几何根形状。
@@ -394,7 +407,7 @@ public:
      *
      * @param root 当前几何根形状。
      * @param target 要删除的 Vertex、Edge、Face 或 Solid。
-     * @param delete_children 仅对顶层独立形状生效，语义同 removeTopLevelShape。
+     * @param delete_children 为 false 时保留独占下级拓扑；嵌套面独占的边提升为独立几何。
      * @return 删除后的根形状；没有任何剩余拓扑时返回空 Shape。
      *
      * @throws std::invalid_argument 输入为空、类型不支持、目标不属于 root，或目标是

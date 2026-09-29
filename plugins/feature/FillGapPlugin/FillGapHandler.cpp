@@ -25,14 +25,17 @@ namespace systems::feature {
 namespace {
 constexpr size_t kSeedEdgeParam = 0;
 constexpr size_t kToleranceParam = 1;
+constexpr size_t kModeParam = 2;
 }
 
 void FillGapHandler::setup(FeatureRegistrar& reg, FeatureContext& /*ctx*/)
 {
     reg.addParameter({ ArgTypeEnum::Selector, "间隙边", "GeometryEdge",
         "请选择一条间隙边界上的自由边" });
-    reg.addParameter({ ArgTypeEnum::Float, "缝合容差", "0.01",
-        "识别间隙边界与缝合的最大距离，使用当前模型长度单位" });
+    reg.addParameter({ ArgTypeEnum::Float, "边界识别容差", "0.01",
+        "搜索对侧边界的最大距离；局部缝合时也用作缝合容差，使用模型长度单位" });
+    reg.addParameter({ ArgTypeEnum::Combo, "操作方式", "局部缝合,补面|0",
+        "局部缝合连接已有面；补面自动封闭孔洞或桥接两侧边界，支持非共面边界" });
     reg.addMenuItem({ "几何/修复", "局部缝合", "" });
 }
 
@@ -45,7 +48,10 @@ std::any FillGapHandler::execute(FeatureContext& ctx)
 
     const double* tolerance = ctx.params.value(kToleranceParam).get<ArgTypeEnum::Float>();
     if (!tolerance || !std::isfinite(*tolerance) || *tolerance <= 0.0)
-        return std::string("缝合容差必须大于零。");
+        return std::string("边界识别容差必须大于零。");
+    const int* mode = ctx.params.value(kModeParam).get<ArgTypeEnum::Combo>();
+    if (!mode || *mode < 0 || *mode > 1)
+        return std::string("请选择局部缝合或补面。");
 
     try {
         const Index edge_id = (*seed_param)->ids.front();
@@ -66,8 +72,12 @@ std::any FillGapHandler::execute(FeatureContext& ctx)
 
         ctx.model.setGeometryCleanupTolerance(*tolerance);
         const double cleanup_tolerance = ctx.model.geometryCleanupTolerance();
-        TopoDS_Shape result = GeometryTopologyEditor::stitchGapFromSeedEdge(
-            *component->geometry->rootShape, TopoDS::Edge(*edge_shape), cleanup_tolerance);
+        // 两种操作均先生成并校验完整结果，再一次写回，保持一次执行对应一次撤销。
+        TopoDS_Shape result = *mode == 0
+            ? GeometryTopologyEditor::stitchGapFromSeedEdge(
+                  *component->geometry->rootShape, TopoDS::Edge(*edge_shape), cleanup_tolerance)
+            : GeometryTopologyEditor::fillGapFromSeedEdge(
+                  *component->geometry->rootShape, TopoDS::Edge(*edge_shape), cleanup_tolerance);
 
         auto component_operator = ctx.componentOperator
             ? ctx.componentOperator(*component_id)
@@ -81,6 +91,8 @@ std::any FillGapHandler::execute(FeatureContext& ctx)
     } catch (const std::exception& error) {
         spdlog::error("FillGap: {}", error.what());
     }
-    return std::string("局部缝合失败，请确认所选边是容差内间隙边界上的自由边；详细原因请查看日志。");
+    return *mode == 0
+        ? std::string("局部缝合失败，请确认所选边是容差内间隙边界上的自由边；详细原因请查看日志。")
+        : std::string("补面失败：需要无分支的闭合自由边界或容差内的对侧边链，且新面不能覆盖已有面；详细原因请查看日志。");
 }
 }

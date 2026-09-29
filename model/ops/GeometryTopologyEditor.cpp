@@ -7,6 +7,7 @@
 #include <BRepBndLib.hxx>
 #include <BRepBuilderAPI_Copy.hxx>
 #include <BRepBuilderAPI_MakeEdge.hxx>
+#include <BRepBuilderAPI_MakeFace.hxx>
 #include <BRepBuilderAPI_MakeVertex.hxx>
 #include <BRepBuilderAPI_MakeWire.hxx>
 #include <BRepBuilderAPI_Sewing.hxx>
@@ -17,6 +18,7 @@
 #include <BRepExtrema_SelfIntersection.hxx>
 #include <BRepMesh_IncrementalMesh.hxx>
 #include <BRepFeat_SplitShape.hxx>
+#include <BRepFill_Filling.hxx>
 #include <BRepGProp.hxx>
 #include <BRep_Tool.hxx>
 #include <BRep_Builder.hxx>
@@ -3123,4 +3125,283 @@ TopoDS_Shape GeometryTopologyEditor::removeShape(
 
     throw std::invalid_argument(
         "Nested edges or vertices cannot be deleted alone; delete the owning face instead");
+}
+
+namespace {
+/**
+ * @brief 将无分支边界排成首尾相接的有向边链，拒绝断链和分支歧义。
+ */
+std::vector<TopoDS_Edge> orderPatchBoundary(const std::vector<TopoDS_Edge>& edges)
+{
+    if (edges.empty())
+        throw std::runtime_error("No boundary edges were found");
+    NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher> vertices;
+    std::vector<int> degrees(1, 0);
+    for (const TopoDS_Edge& edge : edges) {
+        TopoDS_Vertex first;
+        TopoDS_Vertex last;
+        TopExp::Vertices(edge, first, last, true);
+        if (first.IsNull() || last.IsNull())
+            throw std::runtime_error("Boundary edge has no endpoints");
+        for (const TopoDS_Vertex& vertex : { first, last }) {
+            const int index = vertices.Add(vertex);
+            degrees.resize(static_cast<size_t>(vertices.Extent()) + 1, 0);
+            if (++degrees[index] > 2)
+                throw std::runtime_error("Boundary has branches; a unique patch cannot be inferred");
+        }
+    }
+    TopoDS_Vertex current = TopoDS::Vertex(vertices.FindKey(1));
+    for (int index = 1; index <= vertices.Extent(); ++index) {
+        if (degrees[index] == 1) {
+            current = TopoDS::Vertex(vertices.FindKey(index));
+            break;
+        }
+    }
+    std::vector<TopoDS_Edge> ordered;
+    std::vector<bool> used(edges.size(), false);
+    while (ordered.size() != edges.size()) {
+        bool found = false;
+        for (size_t index = 0; index < edges.size(); ++index) {
+            if (used[index])
+                continue;
+            TopoDS_Vertex first;
+            TopoDS_Vertex last;
+            TopExp::Vertices(edges[index], first, last, true);
+            if (!current.IsSame(first) && !current.IsSame(last))
+                continue;
+            const bool reverse = !current.IsSame(first);
+            ordered.push_back(reverse ? TopoDS::Edge(edges[index].Reversed()) : edges[index]);
+            current = reverse ? first : last;
+            used[index] = true;
+            found = true;
+            break;
+        }
+        if (!found)
+            throw std::runtime_error("Boundary contains disconnected chains");
+    }
+    return ordered;
+}
+
+/**
+ * @brief 返回已经定向的边链的首尾顶点，供闭环检查和桥接端点配对使用。
+ */
+std::pair<TopoDS_Vertex, TopoDS_Vertex> patchChainEndpoints(const std::vector<TopoDS_Edge>& edges)
+{
+    TopoDS_Vertex first;
+    TopoDS_Vertex unused;
+    TopoDS_Vertex last;
+    TopExp::Vertices(edges.front(), first, unused, true);
+    TopExp::Vertices(edges.back(), unused, last, true);
+    return { first, last };
+}
+
+/**
+ * @brief 收集种子所在的自由边连通分量；排除退化边和同一面内部的接缝边。
+ */
+std::vector<TopoDS_Edge> collectPatchLoop(const TopoDS_Shape& root, const TopoDS_Edge& seed)
+{
+    NCollection_IndexedDataMap<TopoDS_Shape,
+        NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>
+        edge_faces;
+    TopExp::MapShapesAndUniqueAncestors(root, TopAbs_EDGE, TopAbs_FACE, edge_faces);
+    std::vector<TopoDS_Edge> boundary { seed };
+    NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher> included;
+    included.Add(seed);
+    // 按拓扑邻接扩展，禁止通过空间距离把附近但不相连的孔洞并进来。
+    for (size_t cursor = 0; cursor < boundary.size(); ++cursor) {
+        for (int index = 1; index <= edge_faces.Extent(); ++index) {
+            const TopoDS_Edge edge = TopoDS::Edge(edge_faces.FindKey(index));
+            const auto& faces = edge_faces.FindFromIndex(index);
+            if (included.Contains(edge) || uniqueFaceCount(faces) != 1
+                || BRep_Tool::Degenerated(edge)
+                || BRep_Tool::IsClosed(edge, TopoDS::Face(faces.First())))
+                continue;
+            if (shareTopologicalVertex(boundary[cursor], edge)) {
+                boundary.push_back(edge);
+                included.Add(edge);
+            }
+        }
+    }
+    return orderPatchBoundary(boundary);
+}
+
+/**
+ * @brief 由闭合边界生成平面或 C0 曲面，并拒绝覆盖现有面的填充结果。
+ */
+TopoDS_Face buildPatchFace(const TopoDS_Shape& root,
+    const std::vector<TopoDS_Edge>& boundary, double fitting_tolerance)
+{
+    const auto [first, last] = patchChainEndpoints(boundary);
+    if (!first.IsSame(last))
+        throw std::runtime_error("Boundary is open and no opposite chain was found");
+    BRepBuilderAPI_MakeWire wire;
+    for (const TopoDS_Edge& edge : boundary)
+        wire.Add(edge);
+    if (!wire.IsDone())
+        throw std::runtime_error("Cannot construct the patch boundary wire");
+
+    // 共面边界优先保留解析平面，非共面边界使用有序 C0 约束拟合曲面。
+    TopoDS_Face patch;
+    BRepBuilderAPI_MakeFace planar(wire.Wire(), true);
+    if (planar.IsDone()) {
+        patch = planar.Face();
+    } else {
+        BRepFill_Filling filling;
+        filling.SetConstrParam(Precision::PConfusion(), fitting_tolerance);
+        for (const TopoDS_Edge& edge : boundary)
+            filling.Add(edge, GeomAbs_C0);
+        filling.Build();
+        if (!filling.IsDone() || filling.G0Error() > fitting_tolerance)
+            throw std::runtime_error("Cannot fit a patch within the requested tolerance");
+        patch = filling.Face();
+    }
+    if (patch.IsNull() || !BRepCheck_Analyzer(patch).IsValid())
+        throw std::runtime_error("Patch face has invalid topology");
+    GProp_GProps patch_properties;
+    BRepGProp::SurfaceProperties(patch, patch_properties);
+    if (patch_properties.Mass() <= Precision::Confusion() * Precision::Confusion())
+        throw std::runtime_error("Patch has zero area; use stitching for coincident boundaries");
+
+    // 普通面的外轮廓也是闭合自由边，不能把它误当孔洞再盖一层面。
+    for (TopExp_Explorer face(root, TopAbs_FACE); face.More(); face.Next()) {
+        BRepAlgoAPI_Common common(patch, face.Current());
+        if (!common.IsDone())
+            throw std::runtime_error("Cannot verify that the patch avoids existing faces");
+        GProp_GProps overlap;
+        BRepGProp::SurfaceProperties(common.Shape(), overlap);
+        if (overlap.Mass() > std::max(Precision::Confusion() * Precision::Confusion(),
+                patch_properties.Mass() * 1.0e-8))
+            throw std::runtime_error("Patch would overlap an existing face");
+    }
+    return patch;
+}
+} // namespace
+
+TopoDS_Shape GeometryTopologyEditor::fillGapFromSeedEdge(
+    const TopoDS_Shape& root, const TopoDS_Edge& seed_edge, double tolerance)
+{
+    if (root.IsNull() || seed_edge.IsNull())
+        throw std::invalid_argument("Geometry root and seed edge must not be null");
+    if (!std::isfinite(tolerance) || tolerance < Precision::Confusion())
+        throw std::invalid_argument("Fill tolerance must be finite and at least OCC precision");
+    requireSubshape(root, seed_edge, TopAbs_EDGE, "Seed edge does not belong to the geometry root");
+    try {
+        // OCC 构面和 Sewing 可能补写 pcurve，深复制后计算以保护原几何及撤销快照。
+        BRepBuilderAPI_Copy copier(root, true, false);
+        const TopoDS_Shape working_root = copier.Shape();
+        const TopoDS_Edge seed = TopoDS::Edge(copier.ModifiedShape(seed_edge));
+        NCollection_IndexedDataMap<TopoDS_Shape,
+            NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>
+            edge_faces;
+        TopExp::MapShapesAndUniqueAncestors(working_root, TopAbs_EDGE, TopAbs_FACE, edge_faces);
+        if (!edge_faces.Contains(seed) || uniqueFaceCount(edge_faces.FindFromKey(seed)) != 1
+            || BRep_Tool::Degenerated(seed)
+            || BRep_Tool::IsClosed(seed, TopoDS::Face(edge_faces.FindFromKey(seed).First())))
+            throw std::invalid_argument("Select a non-degenerate free boundary edge");
+
+        std::vector<TopoDS_Edge> boundary;
+        std::vector<TopoDS_Edge> attachment_edges;
+        double fitting_tolerance = std::min(tolerance, 1.0e-5);
+        const auto candidates = findStitchCandidates(working_root, tolerance);
+        const bool has_partner = std::any_of(candidates.begin(), candidates.end(),
+            [&](const GeometryStitchCandidate& candidate) {
+                return candidate.first.IsSame(seed) || candidate.second.IsSame(seed);
+            });
+        if (has_partner) {
+            const auto first_chain = expandStitchableFreeChain(working_root, seed, tolerance);
+            const auto partners = findGapPartnerChains(working_root, first_chain, tolerance);
+            if (partners.empty())
+                throw std::runtime_error("Opposite gap boundary does not fully cover the seed chain");
+            if (partners.size() > 1
+                && std::abs(partners[0].maximum_gap - partners[1].maximum_gap) <= Precision::Confusion())
+                throw std::runtime_error("Multiple equally close opposite boundaries; reduce the search tolerance");
+            auto first = orderPatchBoundary(first_chain);
+            auto second = orderPatchBoundary(partners.front().edges);
+            const auto [a, b] = patchChainEndpoints(first);
+            auto [c, d] = patchChainEndpoints(second);
+            if (a.IsSame(b) || c.IsSame(d))
+                throw std::runtime_error("A bridge requires two open boundary chains");
+            // 取总长较短的端点配对，避免生成交叉的桥接端边。
+            const double aligned = BRep_Tool::Pnt(a).Distance(BRep_Tool::Pnt(c))
+                + BRep_Tool::Pnt(b).Distance(BRep_Tool::Pnt(d));
+            const double crossed = BRep_Tool::Pnt(a).Distance(BRep_Tool::Pnt(d))
+                + BRep_Tool::Pnt(b).Distance(BRep_Tool::Pnt(c));
+            if (aligned < crossed) {
+                std::reverse(second.begin(), second.end());
+                for (TopoDS_Edge& edge : second)
+                    edge.Reverse();
+                std::swap(c, d);
+            }
+            attachment_edges = first;
+            attachment_edges.insert(attachment_edges.end(), second.begin(), second.end());
+            boundary = first;
+            // 空间重合而身份不同的端点不能构造零长边，应由局部缝合处理。
+            const auto append_connector = [&](const TopoDS_Vertex& from, const TopoDS_Vertex& to) {
+                if (from.IsSame(to))
+                    return;
+                const double length = BRep_Tool::Pnt(from).Distance(BRep_Tool::Pnt(to));
+                if (length <= Precision::Confusion() * 10.0)
+                    throw std::runtime_error("Gap endpoints coincide; use local stitching instead");
+                fitting_tolerance = std::min(fitting_tolerance, length / 100.0);
+                boundary.push_back(BRepBuilderAPI_MakeEdge(from, to).Edge());
+            };
+            append_connector(b, c);
+            boundary.insert(boundary.end(), second.begin(), second.end());
+            append_connector(d, a);
+        } else {
+            boundary = collectPatchLoop(working_root, seed);
+            attachment_edges = boundary;
+        }
+        fitting_tolerance = std::max(Precision::Confusion(), fitting_tolerance);
+        const TopoDS_Face patch = buildPatchFace(working_root, boundary, fitting_tolerance);
+
+        // 仅对补面及边界相邻面做精度级连接；不使用搜索容差，以免把桥接面压没。
+        BRep_Builder builder;
+        TopoDS_Compound combined;
+        builder.MakeCompound(combined);
+        builder.Add(combined, working_root);
+        builder.Add(combined, patch);
+        BRepBuilderAPI_Sewing sewing(fitting_tolerance * 5.0, true, true, true, false);
+        sewing.SetMinTolerance(Precision::Confusion());
+        sewing.SetMaxTolerance(fitting_tolerance * 5.0);
+        sewing.SetLocalTolerancesMode(false);
+        sewing.Load(combined);
+        sewing.Add(patch);
+        NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher> owners;
+        for (const TopoDS_Edge& edge : attachment_edges)
+            owners.Add(edge_faces.FindFromKey(edge).First());
+        for (int index = 1; index <= owners.Extent(); ++index)
+            sewing.Add(owners.FindKey(index));
+        sewing.Perform();
+        const TopoDS_Shape result = sewing.SewedShape();
+        if (result.IsNull() || !BRepCheck_Analyzer(result).IsValid()
+            || countSubshapes(result, TopAbs_FACE) != countSubshapes(root, TopAbs_FACE) + 1
+            || sewing.NbMultipleEdges() != 0)
+            throw std::runtime_error("Filling did not create exactly one valid connected face");
+
+        // 原有每条边界都须与新面建立共享边，不能只返回一个悬浮的拟合面。
+        NCollection_IndexedDataMap<TopoDS_Shape,
+            NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>
+            result_edge_faces;
+        TopExp::MapShapesAndUniqueAncestors(result, TopAbs_EDGE, TopAbs_FACE, result_edge_faces);
+        for (const TopoDS_Edge& edge : attachment_edges) {
+            const TopoDS_Shape mapped = sewing.IsModifiedSubShape(edge) ? sewing.ModifiedSubShape(edge) : edge;
+            NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher> sections;
+            TopExp::MapShapes(mapped, TopAbs_EDGE, sections);
+            if (sections.IsEmpty())
+                throw std::runtime_error("Filling lost an original boundary edge");
+            for (int index = 1; index <= sections.Extent(); ++index) {
+                const TopoDS_Shape& section = sections.FindKey(index);
+                if (!result_edge_faces.Contains(section)
+                    || uniqueFaceCount(result_edge_faces.FindFromKey(section)) != 2)
+                    throw std::runtime_error("Patch is not connected to every original boundary edge");
+            }
+        }
+        return result;
+    } catch (const Standard_Failure& error) {
+        const char* detail = error.GetMessageString();
+        throw std::runtime_error(detail
+                ? std::string("OpenCASCADE failed to fill the boundary: ") + detail
+                : "OpenCASCADE failed to fill the boundary");
+    }
 }

@@ -181,3 +181,35 @@ TEST_CASE("FillGap feature reports missing partner when tolerance is too small",
     REQUIRE(std::any_cast<std::string>(hint).find("局部缝合失败") != std::string::npos);
     REQUIRE(countSharedEdges(*model_layer.findComponent(fixture.component_id)) == 0);
 }
+
+//! @brief 补面模式生成桥接面，并以单条记录支持撤销和重做。
+TEST_CASE("FillGap feature creates a bridge face with undo and redo", "[FillGapPlugin]")
+{
+    core::EventBus bus;
+    ModelLayer model_layer;
+    UndoStack undo_stack(model_layer);
+    model_layer.setUndoRecorder(&undo_stack);
+    FeatureSystem feature_system(model_layer, bus, &undo_stack);
+    const FillGapFixture fixture = addGapPair(model_layer);
+    undo_stack.clear();
+    FeatureSystem::SystemHandlerPtr handler { new FillGapHandler };
+    REQUIRE(feature_system.registerHandler(handlerMetaData(), std::move(handler)));
+    REQUIRE(feature_system.setParameter("FillGap", 0,
+        core::ArgObject::create<ArgTypeEnum::Selector>(makeEdgeSelection(fixture))));
+    REQUIRE(feature_system.setParameter("FillGap", 2,
+        core::ArgObject::create<ArgTypeEnum::Combo>(1)));
+    const auto result = feature_system.invoke("FillGap");
+    if (result.type() == typeid(std::string))
+        INFO(std::any_cast<std::string>(result));
+    REQUIRE(result.type() == typeid(Index));
+    REQUIRE(std::any_cast<Index>(result) == fixture.component_id);
+    const auto* component = model_layer.findComponent(fixture.component_id);
+    REQUIRE(component->geometry->index.face_local_to_global.size() == 4);
+    REQUIRE(countSharedEdges(*component) == 2);
+    undo_stack.undo();
+    REQUIRE(component->geometry->index.face_local_to_global.size() == 3);
+    REQUIRE(countSharedEdges(*component) == 0);
+    undo_stack.redo();
+    REQUIRE(component->geometry->index.face_local_to_global.size() == 4);
+    REQUIRE(countSharedEdges(*component) == 2);
+}
