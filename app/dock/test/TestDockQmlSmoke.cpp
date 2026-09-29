@@ -34,6 +34,7 @@
 #include <QQmlEngine>
 #include <QQuickItem>
 #include <QTest>
+#include <QtQuickTest/quicktest.h>
 
 namespace {
 
@@ -284,6 +285,9 @@ TEST_CASE("DockQml: docking area loads from QML and lays out docks")
                     : QPointF();
     };
 
+    // 标签模型变更后的 ListView 布局在 polish 阶段完成；处理事件并不保证坐标已更新。
+    // 后续各场景在读取坐标前就地断言等待结果，保留具体失败位置，便于定位未完成布局的操作。
+    REQUIRE(QQuickTest::qWaitForPolish(&host_window));
     QQuickItem* tab1 = tab_item(1);
     REQUIRE(tab1 != nullptr);
     const QPointF tab1_left = tab1->mapToGlobal(QPointF(tab1->width() * 0.25, tab1->height() / 2));
@@ -328,6 +332,7 @@ TEST_CASE("DockQml: docking area loads from QML and lays out docks")
     QCoreApplication::processEvents();
     REQUIRE(dock::DockCatalog::self().windows().size() == 1);
 
+    REQUIRE(QQuickTest::qWaitForPolish(&host_window));
     QQuickItem* tab1_after = tab_item(1);
     REQUIRE(tab1_after != nullptr);
     const QPointF insert_point
@@ -357,6 +362,7 @@ TEST_CASE("DockQml: docking area loads from QML and lays out docks")
     }
 
     // 组内标签重排：横向拖拽显示标记线，释放时提交顺序（不进入拖拽会话）
+    REQUIRE(QQuickTest::qWaitForPolish(&host_window));
     const QPointF tab0_center = tab_center(0);
     const QPointF second_tab_right = [&tab_item] {
         QQuickItem* item = tab_item(1);
@@ -380,6 +386,7 @@ TEST_CASE("DockQml: docking area loads from QML and lays out docks")
     }
 
     // 纵向拖拽标签仍走浮动流程：分离单个标签为浮窗并回停
+    REQUIRE(QQuickTest::qWaitForPolish(&host_window));
     dock::DockPanel* dragged_panel = panel_b->group()->shownPanels().first();
     merged_view->beginPanelDrag(0, tab_center(0));
     merged_view->dragTo(tab_center(0) + QPointF(0, -80));
@@ -416,6 +423,7 @@ TEST_CASE("DockQml: docking area loads from QML and lays out docks")
         QCoreApplication::processEvents();
         CHECK(panel_b->group()->shownPanels().size() >= 2);
 
+        REQUIRE(QQuickTest::qWaitForPolish(&host_window));
         // 能力门控：单标签拖拽按面板能力，整组拖拽按组能力（显示面板交集）
         dock::DockPanel* gated = panel_b->group()->shownPanels().first();
         gated->setFeature(dock::DockPanel::Feature::Movable, false);
@@ -454,6 +462,7 @@ TEST_CASE("DockQml: docking area loads from QML and lays out docks")
         panel_b->group()->setActivePanel(shown.first());
         QCoreApplication::processEvents();
 
+        REQUIRE(QQuickTest::qWaitForPolish(&host_window));
         QQuickItem* drag_tab = tab_item(1);
         REQUIRE(drag_tab != nullptr);
         dock::DockPanel* dragged = shown.at(1);
@@ -486,6 +495,7 @@ TEST_CASE("DockQml: docking area loads from QML and lays out docks")
         panel_b->group()->setActivePanel(before.first());
         QCoreApplication::processEvents();
 
+        REQUIRE(QQuickTest::qWaitForPolish(&host_window));
         QQuickItem* first = tab_item(0);
         QQuickItem* second = tab_item(1);
         REQUIRE(first != nullptr);
@@ -512,6 +522,7 @@ TEST_CASE("DockQml: docking area loads from QML and lays out docks")
 
     // C. 标题行空白拖动整组 → 浮窗并回停
     {
+        REQUIRE(QQuickTest::qWaitForPolish(&host_window));
         QQuickItem* buttons = merged_view->findChild<QQuickItem*>(QStringLiteral("titleButtons"));
         REQUIRE(buttons != nullptr);
         const qreal empty_x = (tab_bar->x() + tab_bar->width() + buttons->x()) / 2.0;
