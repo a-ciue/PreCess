@@ -2878,7 +2878,8 @@ std::vector<TopoDS_Edge> GeometryTopologyEditor::expandStitchableFreeChain(
 
     const auto has_stitch_partner = [&](const TopoDS_Edge& edge) {
         for (const TopoDS_Edge& candidate : free_edges) {
-            if (candidate.IsSame(edge))
+            if (candidate.IsSame(edge)
+                || edge_faces.FindFromKey(edge).First().IsSame(edge_faces.FindFromKey(candidate).First()))
                 continue;
             if (stitchMaximumGap(edge, candidate, tolerance).has_value())
                 return true;
@@ -2973,7 +2974,8 @@ std::vector<GeometryGapPartnerChain> GeometryTopologyEditor::findGapPartnerChain
         if (!edge_faces.Contains(candidate) || uniqueFaceCount(edge_faces.FindFromKey(candidate)) != 1)
             continue;
         for (const TopoDS_Edge& seed_edge : seed_chain) {
-            if (stitchMaximumGap(seed_edge, candidate, tolerance).has_value()) {
+            if (!edge_faces.FindFromKey(seed_edge).First().IsSame(edge_faces.FindFromKey(candidate).First())
+                && stitchMaximumGap(seed_edge, candidate, tolerance).has_value()) {
                 partner_edges.push_back(candidate);
                 break;
             }
@@ -3067,16 +3069,72 @@ std::vector<GeometryGapPartnerChain> GeometryTopologyEditor::findGapPartnerChain
 TopoDS_Shape GeometryTopologyEditor::stitchGapFromSeedEdge(
     const TopoDS_Shape& root,
     const TopoDS_Edge& seed_edge,
-    double tolerance)
+    double tolerance, bool* reversed)
 {
-    const std::vector<TopoDS_Edge> seed_chain =
-        expandStitchableFreeChain(root, seed_edge, tolerance);
-    const std::vector<GeometryGapPartnerChain> partners =
-        findGapPartnerChains(root, seed_chain, tolerance);
-    if (partners.empty())
-        throw std::runtime_error("No gap boundary partner chain found within the tolerance");
-    // 多组对侧时取最大间隙最小者，对应「容差内该边所属的最小间隙」。
-    return stitchBoundaryEdges(root, seed_chain, partners.front().edges, tolerance);
+    if (reversed)
+        *reversed = false;
+    if (root.IsNull() || seed_edge.IsNull())
+        throw std::invalid_argument("Geometry root and seed edge must not be null");
+    if (!std::isfinite(tolerance) || tolerance <= 0.0)
+        throw std::invalid_argument("Gap tolerance must be greater than zero");
+    NCollection_IndexedDataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher> edge_faces;
+    TopExp::MapShapesAndUniqueAncestors(root, TopAbs_EDGE, TopAbs_FACE, edge_faces);
+    if (!edge_faces.Contains(seed_edge) || uniqueFaceCount(edge_faces.FindFromKey(seed_edge)) != 1)
+        throw std::invalid_argument("Select a free boundary edge from the geometry root");
+    const auto seed_face = edge_faces.FindFromKey(seed_edge).First();
+
+    // 最大间隙仅作搜索上限。按实际跨面配对距离逐级找完整边链，避免大阈值一次吸入远处短边。
+    std::vector<double> search_distances;
+    double seed_gap = std::numeric_limits<double>::infinity();
+    for (int first = 1; first <= edge_faces.Extent(); ++first) {
+        const auto& first_faces = edge_faces.FindFromIndex(first);
+        if (uniqueFaceCount(first_faces) != 1 || !first_faces.First().IsSame(seed_face))
+            continue;
+        const auto edge = TopoDS::Edge(edge_faces.FindKey(first));
+        for (int second = 1; second <= edge_faces.Extent(); ++second) {
+            const auto& second_faces = edge_faces.FindFromIndex(second);
+            if (uniqueFaceCount(second_faces) != 1 || second_faces.First().IsSame(seed_face))
+                continue;
+            const auto candidate = TopoDS::Edge(edge_faces.FindKey(second));
+            const auto gap = stitchMaximumGap(edge, candidate, tolerance);
+            if (!gap)
+                continue;
+            const double distance = std::min(tolerance, *gap + Precision::Confusion());
+            search_distances.push_back(distance);
+            if (edge.IsSame(seed_edge))
+                seed_gap = std::min(seed_gap, distance);
+        }
+    }
+    if (!std::isfinite(seed_gap))
+        throw std::runtime_error("Seed edge has no free boundary partner within the maximum gap");
+    search_distances.push_back(tolerance);
+    std::sort(search_distances.begin(), search_distances.end());
+    search_distances.erase(std::unique(search_distances.begin(), search_distances.end()), search_distances.end());
+    for (const double distance : search_distances) {
+        if (distance < seed_gap)
+            continue;
+        const auto seed_chain = expandStitchableFreeChain(root, seed_edge, distance);
+        const auto partners = findGapPartnerChains(root, seed_chain, distance);
+        if (partners.empty())
+            continue;
+        // 固定同一组配对；每次定向缝合均深复制原模型，失败尝试不会污染反向计算。
+        const auto& partner_chain = partners.front().edges;
+        try {
+            return stitchBoundaryEdges(root, seed_chain, partner_chain, distance);
+        } catch (const std::runtime_error& forward_error) {
+            // 只对几何重建失败尝试反向；参数错误、配对失败不触发额外修改。
+            try {
+                auto result = stitchBoundaryEdges(root, partner_chain, seed_chain, distance);
+                if (reversed)
+                    *reversed = true;
+                return result;
+            } catch (const std::runtime_error& reverse_error) {
+                throw std::runtime_error(std::string("Both stitch directions failed. Selected side: ")
+                    + forward_error.what() + "; Opposite side: " + reverse_error.what());
+            }
+        }
+    }
+    throw std::runtime_error("No complete gap boundary partner chain found within the maximum gap");
 }
 
 TopoDS_Shape GeometryTopologyEditor::removeTopLevelShape(

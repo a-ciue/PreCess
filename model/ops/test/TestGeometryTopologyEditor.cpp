@@ -1998,3 +1998,122 @@ TEST_CASE("GeometryTopologyEditor fills isolated circles and rejects open isolat
     const auto line = TopoDS::Edge(GeometryBuilder::makeLine(0, 0, 0, 10, 0, 0));
     REQUIRE_THROWS_AS(GeometryTopologyEditor::fillBoundaryLoop(makeGeometryRoot(line), line), std::runtime_error);
 }
+
+//! @brief 放宽最大间隙不能把窄面端部的短边吸入已能缝合的种子边链。
+TEST_CASE("GeometryTopologyEditor keeps the nearest local stitch when the maximum gap grows")
+{
+    const auto left = TopoDS::Face(GeometryBuilder::makeRectangleFace(0, 0, 0, 0.05, 10, CoordinatePlane::XY));
+    const auto right = TopoDS::Face(GeometryBuilder::makeRectangleFace(0.055, 0, 0, 10, 10, CoordinatePlane::XY));
+    const auto seed = findEdgeOnX(left, 0.05);
+    const auto root = makeShapePairRoot(left, right);
+    for (double tolerance : { 0.01, 0.1, 1.0 }) {
+        CAPTURE(tolerance);
+        const auto result = GeometryTopologyEditor::stitchGapFromSeedEdge(root, seed, tolerance);
+        REQUIRE(BRepCheck_Analyzer(result).IsValid());
+        REQUIRE(countSharedEdges(result) == 1);
+        REQUIRE(countSubshapes(result, TopAbs_FACE) == 2);
+        REQUIRE(countSubshapes(result, TopAbs_EDGE) == 7);
+    }
+}
+
+//! @brief 同一个窄面的其他边不能被识别为对侧，避免放大阈值后与自身缝合。
+TEST_CASE("GeometryTopologyEditor excludes same face boundaries from gap partners")
+{
+    const auto face = TopoDS::Face(GeometryBuilder::makeRectangleFace(0, 0, 0, 0.05, 10, CoordinatePlane::XY));
+    const auto root = makeGeometryRoot(face);
+    const auto seed = findEdgeOnX(face, 0.05);
+    REQUIRE(GeometryTopologyEditor::findGapPartnerChains(root, { seed }, 1.0).empty());
+    REQUIRE_THROWS_AS(GeometryTopologyEditor::expandStitchableFreeChain(root, seed, 1.0), std::runtime_error);
+    REQUIRE_THROWS_AS(GeometryTopologyEditor::stitchGapFromSeedEdge(root, seed, 1.0), std::runtime_error);
+}
+
+//! @brief 最近匹配距离不固定为 0.01，较大真实间隙仍能在用户给定上限内缝合。
+TEST_CASE("GeometryTopologyEditor searches actual larger gaps without a fixed distance cap")
+{
+    const auto left = TopoDS::Face(GeometryBuilder::makeRectangleFace(0, 0, 0, 10, 10, CoordinatePlane::XY));
+    const auto right = TopoDS::Face(GeometryBuilder::makeRectangleFace(10.05, 0, 0, 10, 10, CoordinatePlane::XY));
+    const auto root = makeShapePairRoot(left, right);
+    const auto seed = findEdgeOnX(left, 10);
+    REQUIRE_THROWS_AS(GeometryTopologyEditor::stitchGapFromSeedEdge(root, seed, 0.01), std::runtime_error);
+    for (double tolerance : { 0.1, 1.0 }) {
+        const auto result = GeometryTopologyEditor::stitchGapFromSeedEdge(root, seed, tolerance);
+        REQUIRE(BRepCheck_Analyzer(result).IsValid());
+        REQUIRE(countSharedEdges(result) == 1);
+    }
+}
+
+//! @brief 正向整链移动因中间顶点支路失败时，反向应共享原边而保留支路及输入。
+TEST_CASE("GeometryTopologyEditor retries the same stitch pair in reverse")
+{
+    const auto left = TopoDS::Face(GeometryBuilder::makeRectangleFace(0, 0, 0, 10, 10, CoordinatePlane::XY));
+    const auto [right, edges] = makeSplitLeftRectangleFace(10.005, 0, 10, 10);
+    TopoDS_Vertex middle;
+    for (TopExp_Explorer v(right, TopAbs_VERTEX); v.More(); v.Next()) {
+        const auto vertex = TopoDS::Vertex(v.Current());
+        const auto point = BRep_Tool::Pnt(vertex);
+        if (std::abs(point.X() - 10.005) < 1.e-7 && std::abs(point.Y() - 5) < 1.e-7)
+            middle = vertex;
+    }
+    REQUIRE_FALSE(middle.IsNull());
+    const auto tip = TopoDS::Vertex(GeometryBuilder::makePoint(10.005, 5, 2));
+    const auto branch = BRepBuilderAPI_MakeEdge(middle, tip).Edge();
+    BRep_Builder builder;
+    auto root = makeShapePairRoot(left, right);
+    builder.Add(root, branch);
+    REQUIRE_THROWS_AS(GeometryTopologyEditor::stitchBoundaryEdges(root, edges, { findEdgeOnX(left, 10) }, 0.01), std::runtime_error);
+    bool reversed = false;
+    const auto result = GeometryTopologyEditor::stitchGapFromSeedEdge(root, edges.front(), 0.01, &reversed);
+    REQUIRE(reversed);
+    REQUIRE(BRepCheck_Analyzer(result).IsValid());
+    REQUIRE(countSharedEdges(result) == 2);
+    REQUIRE(countSubshapes(result, TopAbs_EDGE) == 9);
+    REQUIRE(countSharedEdges(root) == 0);
+    REQUIRE(BRep_Tool::Pnt(middle).X() == Catch::Approx(10.005));
+}
+
+//! @brief 两侧都无法整链移动时，合并报告两次失败原因且不修改输入。
+TEST_CASE("GeometryTopologyEditor reports both failed stitch directions without changing the input")
+{
+    BRep_Builder builder;
+    TopoDS_Compound root;
+    builder.MakeCompound(root);
+    TopoDS_Edge seed;
+    for (double x : { 0.0, 0.005 }) {
+        const auto [face, edges] = makeSplitLeftRectangleFace(x, 0, 10, 10);
+        builder.Add(root, face);
+        TopoDS_Vertex middle;
+        for (TopExp_Explorer v(face, TopAbs_VERTEX); v.More(); v.Next()) {
+            const auto vertex = TopoDS::Vertex(v.Current());
+            if (BRep_Tool::Pnt(vertex).Distance(gp_Pnt(x, 5, 0)) < 1.e-7)
+                middle = vertex;
+        }
+        const auto tip = TopoDS::Vertex(GeometryBuilder::makePoint(x, 5, 2));
+        builder.Add(root, BRepBuilderAPI_MakeEdge(middle, tip).Edge());
+        seed = edges.front();
+    }
+    const int before_edges = countSubshapes(root, TopAbs_EDGE);
+    bool reversed = true;
+    try {
+        GeometryTopologyEditor::stitchGapFromSeedEdge(root, seed, 0.01, &reversed);
+        FAIL("Both directions should fail");
+    } catch (const std::runtime_error& error) {
+        const std::string message = error.what();
+        REQUIRE(message.find("Selected side:") != std::string::npos);
+        REQUIRE(message.find("Opposite side:") != std::string::npos);
+    }
+    REQUIRE_FALSE(reversed);
+    REQUIRE(countSubshapes(root, TopAbs_EDGE) == before_edges);
+    REQUIRE(countSharedEdges(root) == 0);
+    REQUIRE(BRepCheck_Analyzer(root).IsValid());
+}
+
+//! @brief 正向可成功时不反向，输出标志不残留上一次状态。
+TEST_CASE("GeometryTopologyEditor keeps the selected direction when it succeeds")
+{
+    const auto left = TopoDS::Face(GeometryBuilder::makeRectangleFace(0, 0, 0, 10, 10, CoordinatePlane::XY));
+    const auto right = TopoDS::Face(GeometryBuilder::makeRectangleFace(10.005, 0, 0, 10, 10, CoordinatePlane::XY));
+    bool reversed = true;
+    const auto result = GeometryTopologyEditor::stitchGapFromSeedEdge(makeShapePairRoot(left, right), findEdgeOnX(left, 10), 0.01, &reversed);
+    REQUIRE_FALSE(reversed);
+    REQUIRE(countSharedEdges(result) == 1);
+}

@@ -354,12 +354,14 @@ public:
     /**
      * @brief 以种子自由边为入口，自动识别所属间隙边界并缝合已有面。
      *
-     * 只做已有面自由边 Sewing，不创建填充面；多组对侧候选时取最大间隙最小者。
-     * 等价于 expandStitchableFreeChain + findGapPartnerChains + stitchBoundaryEdges。
+     * 最大间隙作为搜索上限，按实际跨面配对距离由近到远寻找完整边链。
+     * 固定最近完整配对后优先移动选中侧；重建失败则基于原模型交换两侧重试。
+     * 不创建填充面，两侧失败时抛出包含两次原因的异常；拟合精度不随搜索上限放宽。
      *
      * @param root 当前几何根形状。
      * @param seed_edge 间隙边，必须是 root 上的自由边界边。
      * @param tolerance 最大缝合距离，必须为有限正数。
+     * @param reversed 可选输出；仅反向缝合成功时为 true，失败或正向成功为 false。
      * @return 缝合后的完整根形状。
      *
      * @throws std::invalid_argument 种子边不是自由边或不属于 root。
@@ -368,7 +370,8 @@ public:
     static TopoDS_Shape stitchGapFromSeedEdge(
         const TopoDS_Shape& root,
         const TopoDS_Edge& seed_edge,
-        double tolerance);
+        double tolerance,
+        bool* reversed = nullptr);
 
     /**
      * @brief 填充包含种子边且总弧长最短的闭合边界环，支持平面和非共面边界。

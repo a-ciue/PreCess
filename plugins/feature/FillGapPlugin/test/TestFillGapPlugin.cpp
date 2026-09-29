@@ -10,6 +10,9 @@
 #include "UndoStack.h"
 
 #include <BRep_Builder.hxx>
+#include <BRepBuilderAPI_MakePolygon.hxx>
+#include <BRepBuilderAPI_MakeFace.hxx>
+#include <BRepBuilderAPI_MakeEdge.hxx>
 #include <BRep_Tool.hxx>
 #include <NCollection_IndexedDataMap.hxx>
 #include <NCollection_IndexedMap.hxx>
@@ -69,13 +72,29 @@ TopoDS_Edge findEdgeOnX(const TopoDS_Face& face, double x)
     return { };
 }
 
-FillGapFixture addGapPair(ModelLayer& model_layer)
+FillGapFixture addGapPair(ModelLayer& model_layer, bool reverse_retry = false)
 {
     const TopoDS_Face left = TopoDS::Face(GeometryBuilder::makeRectangleFace(
         0.0, 0.0, 0.0, 10.0, 10.0, CoordinatePlane::XY));
-    const TopoDS_Face right = TopoDS::Face(GeometryBuilder::makeRectangleFace(
-        10.005, 0.0, 0.0, 10.0, 10.0, CoordinatePlane::XY));
-    const TopoDS_Edge seed = findEdgeOnX(left, 10.0);
+    TopoDS_Face right;
+    TopoDS_Vertex middle;
+    if (reverse_retry) {
+        // 右侧分段边的中间顶点带支路，正向整链替换会拒绝，反向保留它则可成功。
+        BRepBuilderAPI_MakePolygon polygon;
+        for (const auto& point : { gp_Pnt(10.005, 0, 0), gp_Pnt(20.005, 0, 0), gp_Pnt(20.005, 10, 0), gp_Pnt(10.005, 10, 0), gp_Pnt(10.005, 5, 0) })
+            polygon.Add(point);
+        polygon.Close();
+        right = BRepBuilderAPI_MakeFace(polygon.Wire()).Face();
+        for (TopExp_Explorer vertex(right, TopAbs_VERTEX); vertex.More(); vertex.Next()) {
+            const auto candidate = TopoDS::Vertex(vertex.Current());
+            if (BRep_Tool::Pnt(candidate).Distance(gp_Pnt(10.005, 5, 0)) < 1.e-7)
+                middle = candidate;
+        }
+        REQUIRE_FALSE(middle.IsNull());
+    } else {
+        right = TopoDS::Face(GeometryBuilder::makeRectangleFace(10.005, 0, 0, 10, 10, CoordinatePlane::XY));
+    }
+    const TopoDS_Edge seed = reverse_retry ? findEdgeOnX(right, 10.005) : findEdgeOnX(left, 10.0);
     REQUIRE_FALSE(seed.IsNull());
 
     BRep_Builder builder;
@@ -83,6 +102,10 @@ FillGapFixture addGapPair(ModelLayer& model_layer)
     builder.MakeCompound(compound);
     builder.Add(compound, left);
     builder.Add(compound, right);
+    if (reverse_retry) {
+        const auto tip = TopoDS::Vertex(GeometryBuilder::makePoint(10.005, 5, 2));
+        builder.Add(compound, BRepBuilderAPI_MakeEdge(middle, tip).Edge());
+    }
 
     auto geometry = std::make_unique<GeometryData>();
     geometry->setRootShape(compound);
@@ -180,4 +203,27 @@ TEST_CASE("FillGap feature reports missing partner when tolerance is too small",
     const std::any hint = feature_system.invoke("FillGap");
     REQUIRE(std::any_cast<std::string>(hint).find("局部缝合失败") != std::string::npos);
     REQUIRE(countSharedEdges(*model_layer.findComponent(fixture.component_id)) == 0);
+}
+
+//! @brief 反向成功显示方向提示，两次几何尝试仅产生一次可撤销的模型写入。
+TEST_CASE("FillGap feature reports reverse success as one undo operation", "[FillGapPlugin]")
+{
+    core::EventBus bus;
+    ModelLayer model_layer;
+    UndoStack undo_stack(model_layer);
+    model_layer.setUndoRecorder(&undo_stack);
+    FeatureSystem feature_system(model_layer, bus, &undo_stack);
+    const auto fixture = addGapPair(model_layer, true);
+    undo_stack.clear();
+    FeatureSystem::SystemHandlerPtr handler { new FillGapHandler };
+    REQUIRE(feature_system.registerHandler(handlerMetaData(), std::move(handler)));
+    REQUIRE(feature_system.setParameter("FillGap", 0, core::ArgObject::create<ArgTypeEnum::Selector>(makeEdgeSelection(fixture))));
+    const auto result = feature_system.invoke("FillGap");
+    REQUIRE(std::any_cast<std::string>(result) == "已反向缝合，选中侧保持原位。");
+    REQUIRE(countSharedEdges(*model_layer.findComponent(fixture.component_id)) == 2);
+    undo_stack.undo();
+    REQUIRE(countSharedEdges(*model_layer.findComponent(fixture.component_id)) == 0);
+    REQUIRE_FALSE(undo_stack.canUndo());
+    undo_stack.redo();
+    REQUIRE(countSharedEdges(*model_layer.findComponent(fixture.component_id)) == 2);
 }

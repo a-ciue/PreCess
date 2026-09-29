@@ -32,7 +32,7 @@ void FillGapHandler::setup(FeatureRegistrar& reg, FeatureContext& /*ctx*/)
     reg.addParameter({ ArgTypeEnum::Selector, "间隙边", "GeometryEdge",
         "请选择一条间隙边界上的自由边" });
     reg.addParameter({ ArgTypeEnum::Float, "最大间隙", "0.01",
-        "允许识别和缝合的最大间隙；选中侧向对侧移动，使用模型长度单位" });
+        "允许识别和缝合的最大间隙；优先移动选中侧，重建失败则反向重试；使用模型长度单位" });
     reg.addMenuItem({ "几何/修复", "局部缝合", "" });
 }
 
@@ -67,20 +67,24 @@ std::any FillGapHandler::execute(FeatureContext& ctx)
         ctx.model.setGeometryCleanupTolerance(*tolerance);
         const double cleanup_tolerance = ctx.model.geometryCleanupTolerance();
         // 先按选中侧到对侧的方向重建几何，再一次写回，形成一条撤销记录。
+        bool reversed = false;
         TopoDS_Shape result = GeometryTopologyEditor::stitchGapFromSeedEdge(
-            *component->geometry->rootShape, TopoDS::Edge(*edge_shape), cleanup_tolerance);
+            *component->geometry->rootShape, TopoDS::Edge(*edge_shape), cleanup_tolerance, &reversed);
         auto component_operator = ctx.componentOperator
             ? ctx.componentOperator(*component_id)
             : std::nullopt;
         if (!component_operator)
             return std::string("几何操作失败，详细原因请查看日志。");
-        return component_operator->replaceGeometryRoot(std::move(result));
+        const auto result_id = component_operator->replaceGeometryRoot(std::move(result));
+        if (reversed)
+            return std::string("已反向缝合，选中侧保持原位。");
+        return result_id;
     } catch (const Standard_Failure& error) {
         const char* detail = error.GetMessageString();
         spdlog::error("FillGap: {}", detail ? detail : "OpenCASCADE error");
     } catch (const std::exception& error) {
         spdlog::error("FillGap: {}", error.what());
     }
-    return std::string("局部缝合失败，请确认最大间隙内存在可匹配的对侧边界；详细原因请查看日志。");
+    return std::string("局部缝合失败，无法匹配对侧边界或重建有效邻面；详细原因请查看日志。");
 }
 }
