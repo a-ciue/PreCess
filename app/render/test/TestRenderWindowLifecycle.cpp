@@ -44,7 +44,11 @@ TEST_CASE("QRenderWindow releases interaction actors before recreating VTK resou
         vtkWeakPointer<vtkActor> interaction_actor = actors->GetLastActor();
         REQUIRE(interaction_actor.GetPointer() != nullptr);
 
+        REQUIRE(data->style_->HasObserver(vtkCommand::SelectionChangedEvent));
         item.destroyingVTK(window, user_data);
+        CHECK_FALSE(data->style_->HasObserver(vtkCommand::SelectionChangedEvent));
+        // 即使外部仍持有 style，销毁后的事件也不得访问已释放的服务。
+        data->style_->InvokeEvent(vtkCommand::SelectionChangedEvent);
         // RemoveAllViewProps 只能释放 renderer 持有的引用，服务本身也必须及时析构。
         CHECK(interaction_actor.GetPointer() == nullptr);
         window->RemoveRenderer(data->overlay_renderer_);
@@ -74,10 +78,12 @@ TEST_CASE("QRenderWindow queues selection updates and discards results for old p
         data->style_->SetClick();
         data->style_->OnLeftButtonUp();
         CHECK(updates == before);
-        if (cycle == 0)
+        if (cycle == 0) {
             item.setSelectionRevision(item.selectionRevision() + 1);
+            CHECK(updates == before + 1); // 重置通知同步送达
+        }
         QCoreApplication::processEvents();
-        CHECK(updates == before + (cycle == 0 ? 0 : 1));
+        CHECK(updates == before + 1);
         CHECK(item.selectedIDs() == nullptr); // None 模式的空选择也正常发布
 
         item.destroyingVTK(window, user_data);
@@ -85,4 +91,18 @@ TEST_CASE("QRenderWindow queues selection updates and discards results for old p
         window->RemoveRenderer(data->renderer_);
         user_data = nullptr;
     }
+}
+
+TEST_CASE("QRenderWindow notifies selection reset without a render window")
+{
+    testApplication();
+    QRenderWindow item;
+    int updates = 0;
+    QObject::connect(&item, &QRenderWindow::selectedChanged, &item, [&updates] { ++updates; });
+    item.setSelectionRevision(1);
+    CHECK(updates == 1);
+    CHECK(item.selectedIDs() == nullptr);
+    item.setSelectionRevision(1);
+    QCoreApplication::processEvents();
+    CHECK(updates == 1);
 }

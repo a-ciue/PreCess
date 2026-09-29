@@ -60,6 +60,7 @@ public:
 
         /*std::unordered_map<Index, std::unique_ptr<MeshActor>> models_;*/
         vtkNew<QRenderWindowStyle> style_;
+        unsigned long selection_observer_tag_ {}; //> 随当前场景图注册和移除
         vtkSmartPointer<vtkCameraOrientationWidget> orientationWidget = vtkSmartPointer<vtkCameraOrientationWidget>::New();
 
         std::unique_ptr<MeshActorManager> mesh_actor_manager_;
@@ -224,7 +225,7 @@ private:
     void publishSelection();
     // QQuickVTKItem 会接管事件分发，GUI 排队通知交给独立 QObject。
     QObject selection_dispatcher_;
-    std::shared_ptr<Selection> selection_snapshot_; //> 仅 GUI 线程访问
+    std::shared_ptr<const Selection> selection_snapshot_; //> 仅 GUI 线程访问
     int selection_revision_ {}; //> GUI 侧版本
     int render_selection_revision_ {}; //> 渲染侧已应用版本
 

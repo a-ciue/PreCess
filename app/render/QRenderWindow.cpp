@@ -271,7 +271,7 @@ QQuickVTKItem::vtkUserData QRenderWindow::initializeVTK(vtkRenderWindow* renderW
     vtk->plane_widget_->AddObserver(vtkCommand::InteractionEvent, callback);
 
     render_selection_revision_ = selection_revision_;
-    vtk->style_->AddObserver(vtkCommand::SelectionChangedEvent, this, &QRenderWindow::publishSelection);
+    vtk->selection_observer_tag_ = vtk->style_->AddObserver(vtkCommand::SelectionChangedEvent, this, &QRenderWindow::publishSelection);
     publishSelection();
     return vtk;
 }
@@ -281,6 +281,9 @@ void QRenderWindow::destroyingVTK(vtkRenderWindow* renderWindow, vtkUserData use
     auto* vtk = Data::SafeDownCast(userData);
     // 场景图重建会先释放旧 Data，再调用 initializeVTK；服务持有旧 renderer 的
     // 裸指针，必须在此渲染线程边界销毁，不能拖到下一次 unique_ptr 赋值或 GUI 析构。
+    // 回调持有非 VTK 对象 this，必须在服务和场景图拆解前解除。
+    vtk->style_->RemoveObserver(vtk->selection_observer_tag_);
+    vtk->selection_observer_tag_ = 0;
     vtk->style_->SetInteractionService(nullptr);
     vtk->style_->SetSelectManager(nullptr);
     interaction_service_.reset();
@@ -532,6 +535,7 @@ void QRenderWindow::setSelectionRevision(int revision)
     selection_revision_ = revision;
     selection_snapshot_.reset();
     emit selectionRevisionChanged();
+    emit selectedChanged(); // 没有渲染窗口时也立即同步空选择
     dispatch_async([this, revision](vtkRenderWindow*, vtkUserData) {
         render_selection_revision_ = revision;
         select_manager_->clearSelection();
@@ -541,9 +545,11 @@ void QRenderWindow::setSelectionRevision(int revision)
 
 void QRenderWindow::publishSelection()
 {
-    std::shared_ptr<Selection> snapshot = select_manager_->getSelection();
-    if (snapshot && snapshot->component_id < 0)
-        snapshot->component_id = cur_component_id_;
+    auto selection = select_manager_->getSelection();
+    if (selection && selection->component_id < 0)
+        selection->component_id = cur_component_id_;
+    // getSelection 返回独立副本；发布后只读，避免跨线程修改。
+    std::shared_ptr<const Selection> snapshot = std::move(selection);
     const int revision = render_selection_revision_;
     QMetaObject::invokeMethod(&selection_dispatcher_, [this, snapshot, revision] {
         if (revision != selection_revision_)

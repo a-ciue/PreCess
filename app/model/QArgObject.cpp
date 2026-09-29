@@ -39,6 +39,11 @@ std::optional<ArgObject> QArgObject::getValue() const
         ret = ArgObject::create<ArgTypeEnum::Combo>(value_.toInt(&canConvert));
         break;
     case ArgTypeEnum::Selector: {
+        // QML 的 null 表示主动清空，必须写入有类型的空选择，不能保留旧参数。
+        if (!value_.isValid() || value_.isNull()) {
+            ret = ArgObject::create<ArgTypeEnum::Selector>({});
+            break;
+        }
         QSelection* selection = value_.value<QSelection*>();
         if (selection) {
             canConvert = true;
