@@ -583,6 +583,33 @@ TEST_CASE("GeometryTopologyEditor splits an edge by ratio")
     REQUIRE(found_split_point);
 }
 
+//! @brief 反向边按选择方向分割，同时保持所在线框的端点与拓扑有效性。
+TEST_CASE("GeometryTopologyEditor splits a reversed edge along its orientation")
+{
+    const TopoDS_Edge edge = TopoDS::Edge(
+        GeometryBuilder::makeLine(0.0, 0.0, 0.0, 10.0, 0.0, 0.0).Reversed());
+    BRepBuilderAPI_MakeWire wire_builder(edge);
+    const TopoDS_Shape result = GeometryTopologyEditor::splitEdge(
+        makeGeometryRoot(wire_builder.Wire()), edge, 0.25);
+
+    REQUIRE(BRepCheck_Analyzer(result).IsValid());
+    REQUIRE(countSubshapes(result, TopAbs_EDGE) == 2);
+    REQUIRE(countSubshapes(result, TopAbs_VERTEX) == 3);
+    bool found_split_point = false;
+    for (TopExp_Explorer it(result, TopAbs_VERTEX); it.More(); it.Next()) {
+        if (BRep_Tool::Pnt(TopoDS::Vertex(it.Current())).Distance(gp_Pnt(7.5, 0.0, 0.0)) < 1.0e-7)
+            found_split_point = true;
+    }
+    REQUIRE(found_split_point);
+    TopExp_Explorer wire(result, TopAbs_WIRE);
+    REQUIRE(wire.More());
+    TopoDS_Vertex start;
+    TopoDS_Vertex end;
+    TopExp::Vertices(TopoDS::Wire(wire.Current()), start, end);
+    REQUIRE(BRep_Tool::Pnt(start).Distance(gp_Pnt(10.0, 0.0, 0.0)) < 1.0e-7);
+    REQUIRE(BRep_Tool::Pnt(end).Distance(gp_Pnt(0.0, 0.0, 0.0)) < 1.0e-7);
+}
+
 TEST_CASE("GeometryTopologyEditor collapses an isolated edge to its midpoint")
 {
     const TopoDS_Edge edge = TopoDS::Edge(
@@ -683,6 +710,39 @@ TEST_CASE("GeometryTopologyEditor merges independent vertices to the first verte
     REQUIRE(BRep_Tool::Pnt(TopoDS::Vertex(vertex_exp.Current()))
                 .Distance(gp_Pnt(0.0, 0.0, 0.0))
         < 1.0e-7);
+}
+
+//! @brief 合并孤立边的端点后保留目标点，兼顾根中仍有其他独立几何的情况。
+TEST_CASE("GeometryTopologyEditor merges endpoints of an isolated edge")
+{
+    const TopoDS_Edge edge = TopoDS::Edge(
+        GeometryBuilder::makeLine(0.0, 0.0, 0.0, 0.005, 0.0, 0.0));
+    const TopoDS_Edge other = TopoDS::Edge(
+        GeometryBuilder::makeLine(10.0, 0.0, 0.0, 20.0, 0.0, 0.0));
+    TopoDS_Vertex first;
+    TopoDS_Vertex second;
+    TopExp::Vertices(edge, first, second);
+    for (bool keep_other : { false, true }) {
+        CAPTURE(keep_other);
+        BRep_Builder builder;
+        TopoDS_Compound root;
+        builder.MakeCompound(root);
+        builder.Add(root, edge);
+        if (keep_other)
+            builder.Add(root, other);
+        const TopoDS_Shape result = GeometryTopologyEditor::mergeVertices(
+            root, { first, second }, gp_Pnt(0.0025, 0.0, 0.0));
+        REQUIRE_FALSE(result.IsNull());
+        REQUIRE(BRepCheck_Analyzer(result).IsValid());
+        REQUIRE(countSubshapes(result, TopAbs_EDGE) == (keep_other ? 1 : 0));
+        REQUIRE(countSubshapes(result, TopAbs_VERTEX) == (keep_other ? 3 : 1));
+        bool found_destination = false;
+        for (TopExp_Explorer it(result, TopAbs_VERTEX); it.More(); it.Next()) {
+            if (BRep_Tool::Pnt(TopoDS::Vertex(it.Current())).Distance(gp_Pnt(0.0025, 0.0, 0.0)) < 1.0e-7)
+                found_destination = true;
+        }
+        REQUIRE(found_destination);
+    }
 }
 
 TEST_CASE("GeometryTopologyEditor merges selected same-domain faces")
@@ -1395,6 +1455,35 @@ TEST_CASE("GeometryTopologyEditor deletes the only face of a single-face shell")
     const TopoDS_Shape result =
         GeometryTopologyEditor::removeShape(root, face, true);
     REQUIRE(result.IsNull());
+}
+
+//! @brief 删除最后一个壳面时，根中的独立边与点仍应保留原有身份。
+TEST_CASE("GeometryTopologyEditor preserves independent geometry after deleting the last face")
+{
+    const TopoDS_Face face = TopoDS::Face(GeometryBuilder::makeRectangleFace(
+        0.0, 0.0, 0.0, 5.0, 5.0, CoordinatePlane::XY));
+    const TopoDS_Shape edge = GeometryBuilder::makeLine(10.0, 0.0, 0.0, 20.0, 0.0, 0.0);
+    const TopoDS_Shape point = GeometryBuilder::makePoint(30.0, 0.0, 0.0);
+    BRep_Builder builder;
+    TopoDS_Shell shell;
+    builder.MakeShell(shell);
+    builder.Add(shell, face);
+    TopoDS_Compound root;
+    builder.MakeCompound(root);
+    builder.Add(root, shell);
+    builder.Add(root, edge);
+    builder.Add(root, point);
+
+    const TopoDS_Shape result = GeometryTopologyEditor::removeShape(root, face, true);
+    REQUIRE_FALSE(result.IsNull());
+    REQUIRE(BRepCheck_Analyzer(result).IsValid());
+    REQUIRE(countSubshapes(result, TopAbs_FACE) == 0);
+    REQUIRE(countSubshapes(result, TopAbs_EDGE) == 1);
+    REQUIRE(countSubshapes(result, TopAbs_VERTEX) == 3);
+    NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher> shapes;
+    TopExp::MapShapes(result, shapes);
+    REQUIRE(shapes.Contains(edge));
+    REQUIRE(shapes.Contains(point));
 }
 
 TEST_CASE("GeometryTopologyEditor removes a face nested under a compound wrapper in a shell")

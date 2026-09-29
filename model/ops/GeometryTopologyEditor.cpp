@@ -1808,7 +1808,9 @@ TopoDS_Shape GeometryTopologyEditor::splitEdge(
     try {
         TopoDS_Vertex start;
         TopoDS_Vertex end;
-        TopExp::Vertices(edge, start, end, true);
+        // 构造子边时统一使用曲线正向端点，选择方向仅用于换算分割比例。
+        const TopoDS_Edge forward_edge = TopoDS::Edge(edge.Oriented(TopAbs_FORWARD));
+        TopExp::Vertices(forward_edge, start, end, true);
         double first = 0.0;
         double last = 0.0;
         const occ::handle<Geom_Curve> curve = BRep_Tool::Curve(edge, first, last);
@@ -1816,7 +1818,8 @@ TopoDS_Shape GeometryTopologyEditor::splitEdge(
             || !std::isfinite(first) || !std::isfinite(last) || first >= last)
             throw std::invalid_argument("Selected edge has no splittable 3D curve");
 
-        const double parameter = first + (last - first) * ratio;
+        const double curve_ratio = edge.Orientation() == TopAbs_REVERSED ? 1.0 - ratio : ratio;
+        const double parameter = first + (last - first) * curve_ratio;
         const TopoDS_Vertex middle = BRepBuilderAPI_MakeVertex(curve->Value(parameter));
         BRepBuilderAPI_MakeEdge first_builder(curve, start, middle, first, parameter);
         BRepBuilderAPI_MakeEdge second_builder(curve, middle, end, parameter, last);
@@ -1832,7 +1835,7 @@ TopoDS_Shape GeometryTopologyEditor::splitEdge(
         const int edge_count = countSubshapes(root, TopAbs_EDGE);
         const int vertex_count = countSubshapes(root, TopAbs_VERTEX);
         occ::handle<BRepTools_ReShape> reshaper = new BRepTools_ReShape();
-        reshaper->Replace(edge, wire_builder.Wire());
+        reshaper->Replace(forward_edge, wire_builder.Wire());
         TopoDS_Shape result = fixAndValidate(reshaper->Apply(root), "Splitting the edge");
         if (countSubshapes(result, TopAbs_EDGE) != edge_count + 1
             || countSubshapes(result, TopAbs_VERTEX) != vertex_count + 1)
@@ -2074,7 +2077,10 @@ TopoDS_Shape GeometryTopologyEditor::mergeVertices(
         }
 
         TopoDS_Shape raw_result = reshaper->Apply(root);
-        if (raw_result.ShapeType() == TopAbs_COMPOUND) {
+        // 唯一的边被移除后仍须保留合并点，且空 Shape 不能查询类型。
+        if (raw_result.IsNull()) {
+            raw_result = destination;
+        } else if (raw_result.ShapeType() == TopAbs_COMPOUND) {
             BRep_Builder builder;
             TopoDS_Compound compound;
             builder.MakeCompound(compound);
@@ -2087,7 +2093,10 @@ TopoDS_Shape GeometryTopologyEditor::mergeVertices(
                 }
                 builder.Add(compound, child);
             }
-            if (removed_top_level_vertex)
+            NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher> retained_vertices;
+            TopExp::MapShapes(compound, TopAbs_VERTEX, retained_vertices);
+            // 选中点仅属于被删除的边时，其他独立形状仍在，也需要补回目标点。
+            if (removed_top_level_vertex || !retained_vertices.Contains(destination))
                 builder.Add(compound, destination);
             raw_result = compound;
         }
@@ -3032,17 +3041,17 @@ TopoDS_Shape removeNestedFace(const TopoDS_Shape& root, const TopoDS_Face& face)
         }
 
         TopoDS_Shape raw_result = reshaper->Apply(root);
-        // 删掉的是几何里最后一块面时，结果为空是合法的（整块几何被删掉）。
-        if (raw_result.IsNull() || countSubshapes(raw_result, TopAbs_FACE) == 0) {
+        // 没有面不代表没有几何，独立边和点必须继续保留并校验。
+        if (raw_result.IsNull()) {
             if (root_faces.Extent() == 1)
-                return {};
+                return { };
             throw std::runtime_error(
                 "Removing the nested face produced an empty result (reshape returned null)");
         }
         TopoDS_Shape result = demoteOpenSolids(raw_result);
-        if (result.IsNull() || countSubshapes(result, TopAbs_FACE) == 0) {
+        if (result.IsNull()) {
             if (root_faces.Extent() == 1)
-                return {};
+                return { };
             throw std::runtime_error(
                 "Removing the nested face produced an empty result (after demote)");
         }
