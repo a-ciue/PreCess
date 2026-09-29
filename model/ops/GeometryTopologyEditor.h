@@ -193,7 +193,9 @@ public:
         const TopoDS_Edge& edge);
 
     /**
-     * @brief 将两个或多个 Vertex 合并到目标位置。
+     * @brief 将两个或多个 Vertex 合并到目标位置，并实际重建相邻曲线和面。
+     *
+     * 不限制点间距离；不通过放大拓扑容差掩盖几何位移。无效重建会抛异常，输入不变。
      * @param target_position 合并后的公共顶点位置。
      */
     static TopoDS_Shape mergeVertices(
@@ -295,13 +297,13 @@ public:
     /**
      * @brief 在指定容差内缝合两组自由边链。
      *
-     * 仅把两组选择链的相邻 Face 加入局部 Sewing，根形状中已有连接保持不变；支持
-     * 一条长边与多条连续短边的自动切分和共享。两组边都必须属于 root、各自连续，
-     * 且每条边只能邻接一个 Face。
+     * 将第一组链所在的面及受影响邻面重建到第二组链，保持第二组曲线的几何位置。
+     * 支持一长对多短及多短对一长；移动链必须位于同一面且内部顶点没有支路。
+     * 两组边都必须属于 root、各自连续，且每条边只能邻接一个 Face。
      *
      * @param root 当前几何根形状。
-     * @param first_chain 第一组自由边链。
-     * @param second_chain 第二组自由边链。
+     * @param first_chain 要移动的自由边链。
+     * @param second_chain 保持原位的目标自由边链。
      * @param tolerance 最大缝合距离，必须为有限正数。
      * @return 缝合后的完整根形状。
      *
@@ -369,17 +371,15 @@ public:
         double tolerance);
 
     /**
-     * @brief 从自由边识别孔洞或两侧间隙，创建并连接一个平面或非共面填充面。
+     * @brief 填充包含种子边且总弧长最短的闭合边界环，支持平面和非共面边界。
      * @param root 当前几何根形状。
-     * @param seed_edge 所属边界的种子自由边。
-     * @param tolerance 对侧间隙的搜索距离和曲面拟合误差上限，必须有限且不小于 OCC 几何精度。
+     * @param seed_edge 所属边界的种子边，可为孤立边或仅邻接一个面的自由边。
      * @return 新增一个面后的完整根形状；原始形状不被原地修改。
-     * @throws std::runtime_error 边界歧义、不闭合、覆盖已有面或无法生成有效补面。
+     * @throws std::runtime_error 找不到闭环、覆盖已有面或无法生成有效补面。
      */
-    static TopoDS_Shape fillGapFromSeedEdge(
+    static TopoDS_Shape fillBoundaryLoop(
         const TopoDS_Shape& root,
-        const TopoDS_Edge& seed_edge,
-        double tolerance);
+        const TopoDS_Edge& seed_edge);
 
     /**
      * @brief 从根形状中删除一个顶层独立 Vertex、Edge、Face 或 Solid。

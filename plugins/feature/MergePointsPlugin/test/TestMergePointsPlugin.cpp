@@ -50,7 +50,7 @@ HandlerMetaData handlerMetaData()
 MergePointsFixture addTwoPoints(ModelLayer& model_layer)
 {
     const TopoDS_Vertex first = TopoDS::Vertex(GeometryBuilder::makePoint(0.0, 0.0, 0.0));
-    const TopoDS_Vertex second = TopoDS::Vertex(GeometryBuilder::makePoint(0.005, 0.0, 0.0));
+    const TopoDS_Vertex second = TopoDS::Vertex(GeometryBuilder::makePoint(5.0, 0.0, 0.0));
 
     BRep_Builder builder;
     TopoDS_Compound compound;
@@ -123,19 +123,22 @@ TEST_CASE("MergePoints feature merges two vertices at midpoint", "[MergePointsPl
             makeVertexSelection(fixture, fixture.vertex_ids[1]))));
     REQUIRE(feature_system.setParameter("MergePoints", 2,
         core::ArgObject::create<ArgTypeEnum::Combo>(2)));
-    REQUIRE(feature_system.setParameter("MergePoints", 3,
-        core::ArgObject::create<ArgTypeEnum::Float>(0.01)));
 
     const Index result = std::any_cast<Index>(feature_system.invoke("MergePoints"));
     REQUIRE(result == fixture.component_id);
     REQUIRE(countVertices(*model_layer.findComponent(fixture.component_id)) == 1);
     REQUIRE(undo_stack.undoLabel() == "点合并");
+    NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher> vertices;
+    TopExp::MapShapes(*model_layer.findComponent(fixture.component_id)->geometry->rootShape, TopAbs_VERTEX, vertices);
+    REQUIRE(BRep_Tool::Pnt(TopoDS::Vertex(vertices.FindKey(1))).Distance(gp_Pnt(2.5, 0, 0)) < 1.e-7);
 
     undo_stack.undo();
     REQUIRE(countVertices(*model_layer.findComponent(fixture.component_id)) == 2);
+    undo_stack.redo();
+    REQUIRE(countVertices(*model_layer.findComponent(fixture.component_id)) == 1);
 }
 
-TEST_CASE("MergePoints feature rejects points beyond max distance", "[MergePointsPlugin]")
+TEST_CASE("MergePoints feature merges distant points without a distance parameter", "[MergePointsPlugin]")
 {
     core::EventBus bus;
     ModelLayer model_layer;
@@ -153,10 +156,8 @@ TEST_CASE("MergePoints feature rejects points beyond max distance", "[MergePoint
     REQUIRE(feature_system.setParameter("MergePoints", 1,
         core::ArgObject::create<ArgTypeEnum::Selector>(
             makeVertexSelection(fixture, fixture.vertex_ids[1]))));
-    REQUIRE(feature_system.setParameter("MergePoints", 3,
-        core::ArgObject::create<ArgTypeEnum::Float>(0.001)));
 
     const std::any hint = feature_system.invoke("MergePoints");
-    REQUIRE(std::any_cast<std::string>(hint) == "两个点的距离超过最大距离。");
-    REQUIRE(countVertices(*model_layer.findComponent(fixture.component_id)) == 2);
+    REQUIRE(std::any_cast<Index>(hint) == fixture.component_id);
+    REQUIRE(countVertices(*model_layer.findComponent(fixture.component_id)) == 1);
 }

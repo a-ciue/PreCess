@@ -3,7 +3,7 @@
 
 namespace systems::feature {
 /**
- * @brief 从种子自由边识别边界，按选项缝合已有面或创建平面/曲面补面。
+ * @brief 从种子自由边识别间隙，将选中侧重建到对侧边界。
  */
 class FillGapHandler : public FeatureHandler {
 public:

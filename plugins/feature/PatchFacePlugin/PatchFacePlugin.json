@@ -1,0 +1,8 @@
+{
+  "system": "FeatureSystem",
+  "handler": {
+    "name": "PatchFace",
+    "display_name": "补面",
+    "description": "从选中的边界边查找最小闭合边界环，创建平面或曲面补面"
+  }
+}

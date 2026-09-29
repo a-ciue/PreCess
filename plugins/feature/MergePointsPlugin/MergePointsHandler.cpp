@@ -17,7 +17,6 @@
 #include <gp_Pnt.hxx>
 #include <spdlog/spdlog.h>
 
-#include <cmath>
 #include <exception>
 #include <optional>
 #include <string>
@@ -28,7 +27,6 @@ namespace {
 constexpr size_t kFirstPointParam = 0;
 constexpr size_t kSecondPointParam = 1;
 constexpr size_t kTargetParam = 2;
-constexpr size_t kMaxDistanceParam = 3;
 }
 
 void MergePointsHandler::setup(FeatureRegistrar& reg, FeatureContext& /*ctx*/)
@@ -36,9 +34,7 @@ void MergePointsHandler::setup(FeatureRegistrar& reg, FeatureContext& /*ctx*/)
     reg.addParameter({ ArgTypeEnum::Selector, "第一个几何点", "GeometryVertex", "请选择第一个几何点" });
     reg.addParameter({ ArgTypeEnum::Selector, "第二个几何点", "GeometryVertex", "请选择第二个几何点" });
     reg.addParameter({ ArgTypeEnum::Combo, "合并到", "保留第一点,保留第二点,中点|0",
-        "合并后公共顶点所在位置" });
-    reg.addParameter({ ArgTypeEnum::Float, "最大距离", "0.01",
-        "两点距离超过该值时拒绝合并，使用当前模型长度单位" });
+        "合并后公共顶点所在位置；相邻曲线和面随之变形" });
     reg.addMenuItem({ "几何/拓扑", "点合并", "" });
 }
 
@@ -52,10 +48,6 @@ std::any MergePointsHandler::execute(FeatureContext& ctx)
     if (!second_param || !*second_param || (*second_param)->type != ElementEnum::GeometryVertex
         || (*second_param)->ids.size() != 1)
         return std::string("请选择第二个几何点。");
-
-    const double* max_distance = ctx.params.value(kMaxDistanceParam).get<ArgTypeEnum::Float>();
-    if (!max_distance || !std::isfinite(*max_distance) || *max_distance <= 0.0)
-        return std::string("最大距离必须大于零。");
 
     const int* target_mode = ctx.params.value(kTargetParam).get<ArgTypeEnum::Combo>();
     if (!target_mode || *target_mode < 0 || *target_mode > 2)
@@ -93,8 +85,6 @@ std::any MergePointsHandler::execute(FeatureContext& ctx)
 
         const gp_Pnt first_point = BRep_Tool::Pnt(first);
         const gp_Pnt second_point = BRep_Tool::Pnt(second);
-        if (first_point.Distance(second_point) > *max_distance)
-            return std::string("两个点的距离超过最大距离。");
 
         gp_Pnt target_position = first_point;
         if (*target_mode == 1)
@@ -116,6 +106,6 @@ std::any MergePointsHandler::execute(FeatureContext& ctx)
     } catch (const std::exception& error) {
         spdlog::error("MergePoints: {}", error.what());
     }
-    return std::string("点合并失败，请确认两点距离在容差内；详细原因请查看日志。");
+    return std::string("点合并失败，无法重建有效的相邻曲线或面；详细原因请查看日志。");
 }
 }

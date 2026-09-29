@@ -3,6 +3,9 @@
 #include "GeometryTopologyEditor.h"
 
 #include <BRepCheck_Analyzer.hxx>
+#include <BRepAdaptor_Curve.hxx>
+#include <BRepGProp.hxx>
+#include <GProp_GProps.hxx>
 #include <BRepAlgoAPI_Cut.hxx>
 #include <BRep_Builder.hxx>
 #include <BRepBuilderAPI_MakeFace.hxx>
@@ -1671,31 +1674,12 @@ TEST_CASE("GeometryTopologyEditor fills a planar hole")
     const auto face = findFaceOnZPlane(box, 10.0);
     const auto open = GeometryTopologyEditor::removeShape(makeGeometryRoot(box), face, true);
     const auto seed = TopoDS::Edge(TopExp_Explorer(face, TopAbs_EDGE).Current());
-    const auto result = GeometryTopologyEditor::fillGapFromSeedEdge(open, seed, 0.01);
+    const auto result = GeometryTopologyEditor::fillBoundaryLoop(open, seed);
     REQUIRE(BRepCheck_Analyzer(result).IsValid());
     REQUIRE(countSubshapes(result, TopAbs_FACE) == 6);
     REQUIRE(countSharedEdges(result) == 12);
     REQUIRE(countSubshapes(open, TopAbs_FACE) == 5);
     REQUIRE(countSharedEdges(open) == 8);
-}
-
-//! @brief 两个面之间生成桥接面，不能把补面退化成原来的直接缝合。
-TEST_CASE("GeometryTopologyEditor fills a gap with a bridge face")
-{
-    const auto left = TopoDS::Face(GeometryBuilder::makeRectangleFace(
-        0.0, 0.0, 0.0, 10.0, 10.0, CoordinatePlane::XY));
-    const auto right = TopoDS::Face(GeometryBuilder::makeRectangleFace(
-        10.005, 0.0, 0.0, 10.0, 10.0, CoordinatePlane::XY));
-    BRep_Builder builder;
-    TopoDS_Compound root;
-    builder.MakeCompound(root);
-    builder.Add(root, left);
-    builder.Add(root, right);
-    const auto result = GeometryTopologyEditor::fillGapFromSeedEdge(root, findEdgeOnX(left, 10.0), 0.01);
-    REQUIRE(BRepCheck_Analyzer(result).IsValid());
-    REQUIRE(countSubshapes(result, TopAbs_FACE) == 3);
-    REQUIRE(countSharedEdges(result) == 2);
-    REQUIRE(countSharedEdges(root) == 0);
 }
 
 //! @brief 四个三角侧面围出非共面孔洞，验证曲面拟合而非平面限定。
@@ -1723,7 +1707,7 @@ TEST_CASE("GeometryTopologyEditor fills a nonplanar hole")
         builder.Add(shell, BRepBuilderAPI_MakeFace(wire.Wire()).Face());
     }
     REQUIRE(BRepCheck_Analyzer(shell).IsValid());
-    const auto result = GeometryTopologyEditor::fillGapFromSeedEdge(makeGeometryRoot(shell), rim[0], 0.01);
+    const auto result = GeometryTopologyEditor::fillBoundaryLoop(makeGeometryRoot(shell), rim[0]);
     REQUIRE(BRepCheck_Analyzer(result).IsValid());
     REQUIRE(countSubshapes(result, TopAbs_FACE) == 5);
     REQUIRE(countSharedEdges(result) == 8);
@@ -1736,51 +1720,11 @@ TEST_CASE("GeometryTopologyEditor rejects filling an existing face outline")
     const auto face = TopoDS::Face(GeometryBuilder::makeRectangleFace(
         0.0, 0.0, 0.0, 10.0, 10.0, CoordinatePlane::XY));
     const auto root = makeGeometryRoot(face);
-    REQUIRE_THROWS_AS(GeometryTopologyEditor::fillGapFromSeedEdge(root,
-                          findEdgeOnX(face, 0.0), 0.01),
+    REQUIRE_THROWS_AS(GeometryTopologyEditor::fillBoundaryLoop(root,
+                          findEdgeOnX(face, 0.0)),
         std::runtime_error);
     REQUIRE(countSubshapes(root, TopAbs_FACE) == 1);
     REQUIRE(BRepCheck_Analyzer(root).IsValid());
-}
-//! @brief 扭曲的两侧边链生成非共面桥接面，仍连接原来的两条边。
-TEST_CASE("GeometryTopologyEditor fills a nonplanar bridge")
-{
-    const auto left = TopoDS::Face(GeometryBuilder::makeRectangleFace(
-        0.0, 0.0, 0.0, 10.0, 10.0, CoordinatePlane::XY));
-    std::vector<TopoDS_Vertex> corners;
-    for (const gp_Pnt& point : { gp_Pnt(10.005, 0, 0), gp_Pnt(20, 0, 0),
-             gp_Pnt(20, 10, 0.002), gp_Pnt(10.005, 10, 0.002) })
-        corners.push_back(TopoDS::Vertex(GeometryBuilder::makePoint(point.X(), point.Y(), point.Z())));
-    BRepBuilderAPI_MakeWire wire;
-    for (size_t index = 0; index < corners.size(); ++index)
-        wire.Add(BRepBuilderAPI_MakeEdge(corners[index], corners[(index + 1) % corners.size()]).Edge());
-    const auto right = BRepBuilderAPI_MakeFace(wire.Wire()).Face();
-    BRep_Builder builder;
-    TopoDS_Compound root;
-    builder.MakeCompound(root);
-    builder.Add(root, left);
-    builder.Add(root, right);
-    const auto result = GeometryTopologyEditor::fillGapFromSeedEdge(root, findEdgeOnX(left, 10.0), 0.01);
-    REQUIRE(BRepCheck_Analyzer(result).IsValid());
-    REQUIRE(countSubshapes(result, TopAbs_FACE) == 3);
-    REQUIRE(countSharedEdges(result) == 2);
-}
-
-//! @brief 桥接面支持一侧长边与另一侧多条短边，保留所有相邻面的边界连接。
-TEST_CASE("GeometryTopologyEditor fills a bridge across unequal edge counts")
-{
-    const auto left = TopoDS::Face(GeometryBuilder::makeRectangleFace(
-        0.0, 0.0, 0.0, 10.0, 10.0, CoordinatePlane::XY));
-    const auto [right, right_edges] = makeSplitLeftRectangleFace(10.005, 0.0, 10.0, 10.0);
-    BRep_Builder builder;
-    TopoDS_Compound root;
-    builder.MakeCompound(root);
-    builder.Add(root, left);
-    builder.Add(root, right);
-    const auto result = GeometryTopologyEditor::fillGapFromSeedEdge(root, findEdgeOnX(left, 10.0), 0.01);
-    REQUIRE(BRepCheck_Analyzer(result).IsValid());
-    REQUIRE(countSubshapes(result, TopAbs_FACE) == 3);
-    REQUIRE(countSharedEdges(result) == 3);
 }
 
 //! @brief 从同一原始 Shell 取出相邻两面，非级联删除只提升独占边，不重复共享边。
@@ -1817,14 +1761,14 @@ TEST_CASE("GeometryTopologyEditor fills a circular hole")
     REQUIRE_FALSE(cap.IsNull());
     const auto open = GeometryTopologyEditor::removeShape(makeGeometryRoot(cylinder), cap, true);
     const auto seed = TopoDS::Edge(TopExp_Explorer(cap, TopAbs_EDGE).Current());
-    const auto result = GeometryTopologyEditor::fillGapFromSeedEdge(open, seed, 0.01);
+    const auto result = GeometryTopologyEditor::fillBoundaryLoop(open, seed);
     REQUIRE(BRepCheck_Analyzer(result).IsValid());
     REQUIRE(countSubshapes(result, TopAbs_FACE) == 3);
     REQUIRE(countSharedEdges(result) == 2);
 }
 
-//! @brief 两个面只共用一个顶点时自由边界产生分支，应拒绝自动选择补面区域。
-TEST_CASE("GeometryTopologyEditor rejects branched patch boundaries")
+//! @brief 分支上找到的最小环若已被现有面覆盖，应拒绝重复盖面。
+TEST_CASE("GeometryTopologyEditor rejects an occupied minimum boundary loop")
 {
     const auto center = TopoDS::Vertex(GeometryBuilder::makePoint(0, 0, 0));
     BRep_Builder builder;
@@ -1842,6 +1786,215 @@ TEST_CASE("GeometryTopologyEditor rejects branched patch boundaries")
         builder.Add(root, BRepBuilderAPI_MakeFace(wire.Wire()).Face());
         seed = edge;
     }
-    REQUIRE_THROWS_AS(GeometryTopologyEditor::fillGapFromSeedEdge(root, seed, 0.01), std::runtime_error);
+    REQUIRE_THROWS_AS(GeometryTopologyEditor::fillBoundaryLoop(root, seed), std::runtime_error);
     REQUIRE(countSubshapes(root, TopAbs_FACE) == 2);
+}
+
+//! @brief 无论从哪一侧选择，公共边都准确落在对侧；长短边分段不影响方向。
+TEST_CASE("GeometryTopologyEditor stitches the selected side onto the stationary side")
+{
+    for (bool reverse : { false, true }) {
+        CAPTURE(reverse);
+        const auto left = TopoDS::Face(GeometryBuilder::makeRectangleFace(0, 0, 0, 10, 10, CoordinatePlane::XY));
+        const auto [right, right_edges] = makeSplitLeftRectangleFace(10.005, 0, 10, 10);
+        const auto left_edge = findEdgeOnX(left, 10);
+        const auto root = makeShapePairRoot(left, right);
+        const auto result = GeometryTopologyEditor::stitchGapFromSeedEdge(
+            root, reverse ? right_edges.front() : left_edge, 0.01);
+        REQUIRE(countSharedEdges(result) == (reverse ? 1 : 2));
+        NCollection_IndexedDataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher> edge_faces;
+        TopExp::MapShapesAndUniqueAncestors(result, TopAbs_EDGE, TopAbs_FACE, edge_faces);
+        for (int index = 1; index <= edge_faces.Extent(); ++index) {
+            if (edge_faces.FindFromIndex(index).Size() != 2)
+                continue;
+            BRepAdaptor_Curve curve(TopoDS::Edge(edge_faces.FindKey(index)));
+            for (double ratio : { 0.0, 0.5, 1.0 }) {
+                const auto point = curve.Value(curve.FirstParameter() + ratio * (curve.LastParameter() - curve.FirstParameter()));
+                REQUIRE(point.X() == Catch::Approx(reverse ? 10.0 : 10.005).margin(1.e-7));
+            }
+        }
+        REQUIRE(countSharedEdges(root) == 0);
+        REQUIRE(BRepCheck_Analyzer(result).IsValid());
+    }
+}
+
+//! @brief 用多个顶点分段的短路径与边数更少的长路径竞争，按总弧长补最小环。
+TEST_CASE("GeometryTopologyEditor fills the shortest length loop through a branched boundary")
+{
+    std::vector<TopoDS_Vertex> vertices;
+    for (const auto& point : { gp_Pnt(0, 0, 0), gp_Pnt(10, 0, 0), gp_Pnt(10, 1, 0),
+             gp_Pnt(5, 1, 0), gp_Pnt(0, 1, 0), gp_Pnt(5, 10, 0) })
+        vertices.push_back(TopoDS::Vertex(GeometryBuilder::makePoint(point.X(), point.Y(), point.Z())));
+    BRep_Builder builder;
+    TopoDS_Compound root;
+    builder.MakeCompound(root);
+    TopoDS_Edge seed;
+    int face_index = 0;
+    for (const auto& [a, b] : std::vector<std::pair<int, int>> { { 0, 1 }, { 1, 2 }, { 2, 3 }, { 3, 4 }, { 4, 0 }, { 1, 5 }, { 5, 0 } }) {
+        const auto edge = BRepBuilderAPI_MakeEdge(vertices[a], vertices[b]).Edge();
+        const auto apex = TopoDS::Vertex(GeometryBuilder::makePoint(50 + face_index * 31, -30 - face_index * 17, -100));
+        BRepBuilderAPI_MakeWire wire;
+        wire.Add(edge);
+        wire.Add(BRepBuilderAPI_MakeEdge(vertices[b], apex).Edge());
+        wire.Add(BRepBuilderAPI_MakeEdge(apex, vertices[a]).Edge());
+        builder.Add(root, BRepBuilderAPI_MakeFace(wire.Wire()).Face());
+        if (face_index++ == 0)
+            seed = edge;
+    }
+    const auto result = GeometryTopologyEditor::fillBoundaryLoop(root, seed);
+    REQUIRE(countSubshapes(result, TopAbs_FACE) == 8);
+    REQUIRE(countSharedEdges(result) == 5);
+    bool found_patch = false;
+    for (TopExp_Explorer face(result, TopAbs_FACE); face.More(); face.Next()) {
+        if (!findFaceOnZPlane(face.Current(), 0).IsNull()) {
+            GProp_GProps properties;
+            BRepGProp::SurfaceProperties(face.Current(), properties);
+            REQUIRE(properties.Mass() == Catch::Approx(10).margin(1.e-5));
+            found_patch = true;
+        }
+    }
+    REQUIRE(found_patch);
+}
+
+//! @brief 相距较远的点合并时，边的三维曲线端点随之移动，容差不随位移增大。
+TEST_CASE("GeometryTopologyEditor deforms incident lines and curves for distant merged vertices")
+{
+    for (bool curved : { false, true }) {
+        CAPTURE(curved);
+        const auto edge = curved
+            ? BRepBuilderAPI_MakeEdge(gp_Circ(gp_Ax2(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 10), 0, 1.0).Edge()
+            : TopoDS::Edge(GeometryBuilder::makeLine(0, 0, 0, 10, 0, 0));
+        const auto first = TopExp::FirstVertex(edge);
+        const auto other = TopoDS::Vertex(GeometryBuilder::makePoint(20, 20, 5));
+        const auto root = makeShapePairRoot(edge, other);
+        const auto target = BRep_Tool::Pnt(other);
+        const auto result = GeometryTopologyEditor::mergeVertices(root, { first, other }, target);
+        const auto moved_edge = TopoDS::Edge(TopExp_Explorer(result, TopAbs_EDGE).Current());
+        BRepAdaptor_Curve moved(moved_edge);
+        REQUIRE(moved.Value(moved.FirstParameter()).Distance(target) < 1.e-6);
+        REQUIRE(BRep_Tool::Tolerance(TopExp::FirstVertex(moved_edge)) < 1.e-5);
+        REQUIRE(BRepCheck_Analyzer(result).IsValid());
+        REQUIRE(BRep_Tool::Pnt(first).Distance(target) > 1);
+    }
+}
+
+//! @brief 将面角点合并到平面外的独立点时，允许邻面变为曲面而保持完整边界。
+TEST_CASE("GeometryTopologyEditor deforms an incident face for an out of plane vertex merge")
+{
+    const auto face = GeometryBuilder::makeRectangleFace(0, 0, 0, 10, 10, CoordinatePlane::XY);
+    const auto vertex = TopoDS::Vertex(TopExp_Explorer(face, TopAbs_VERTEX).Current());
+    const auto point = BRep_Tool::Pnt(vertex);
+    const auto destination = TopoDS::Vertex(GeometryBuilder::makePoint(point.X(), point.Y(), 3));
+    const auto root = makeShapePairRoot(face, destination);
+    const auto result = GeometryTopologyEditor::mergeVertices(root, { vertex, destination }, BRep_Tool::Pnt(destination));
+    REQUIRE(BRepCheck_Analyzer(result).IsValid());
+    REQUIRE(countSubshapes(result, TopAbs_FACE) == 1);
+    REQUIRE(countSubshapes(result, TopAbs_EDGE) == 4);
+    REQUIRE(countSubshapes(result, TopAbs_VERTEX) == 4);
+    REQUIRE(BRep_Tool::Pnt(vertex).Z() == 0);
+}
+
+//! @brief 两片面之间的开放间隙不能凭空加桥接端边，也不能覆盖原面。
+TEST_CASE("GeometryTopologyEditor does not bridge open gaps when filling")
+{
+    const auto left = TopoDS::Face(GeometryBuilder::makeRectangleFace(0, 0, 0, 10, 10, CoordinatePlane::XY));
+    const auto right = GeometryBuilder::makeRectangleFace(10.005, 0, 0, 10, 10, CoordinatePlane::XY);
+    const auto root = makeShapePairRoot(left, right);
+    REQUIRE_THROWS_AS(GeometryTopologyEditor::fillBoundaryLoop(root, findEdgeOnX(left, 10)), std::runtime_error);
+    REQUIRE(countSubshapes(root, TopAbs_FACE) == 2);
+}
+
+//! @brief 实体角点移动需同时重建三张邻面，维持共享边和实体有效性。
+TEST_CASE("GeometryTopologyEditor deforms all faces around a solid vertex")
+{
+    const auto box = GeometryBuilder::makeBox(0, 0, 0, 10, 10, 10);
+    const auto vertex = TopoDS::Vertex(TopExp_Explorer(box, TopAbs_VERTEX).Current());
+    const auto point = BRep_Tool::Pnt(vertex);
+    const auto destination = TopoDS::Vertex(GeometryBuilder::makePoint(point.X() - 1, point.Y() - 1, point.Z() - 1));
+    const auto root = makeShapePairRoot(box, destination);
+    const auto result = GeometryTopologyEditor::mergeVertices(root, { vertex, destination }, BRep_Tool::Pnt(destination));
+    REQUIRE(BRepCheck_Analyzer(result).IsValid());
+    REQUIRE(countSubshapes(result, TopAbs_SOLID) == 1);
+    REQUIRE(countSubshapes(result, TopAbs_FACE) == 6);
+    REQUIRE(countSharedEdges(result) == 12);
+    for (TopExp_Explorer v(result, TopAbs_VERTEX); v.More(); v.Next())
+        REQUIRE(BRep_Tool::Tolerance(TopoDS::Vertex(v.Current())) < 1.e-5);
+}
+
+//! @brief 合并实体上一条边的两端点时移除退化边，仍保留封闭共享拓扑。
+TEST_CASE("GeometryTopologyEditor merges adjacent solid vertices with geometric reconstruction")
+{
+    const auto box = GeometryBuilder::makeBox(0, 0, 0, 10, 10, 10);
+    const auto edge = TopoDS::Edge(TopExp_Explorer(box, TopAbs_EDGE).Current());
+    const auto first = TopExp::FirstVertex(edge);
+    const auto last = TopExp::LastVertex(edge);
+    const auto target = gp_Pnt((BRep_Tool::Pnt(first).XYZ() + BRep_Tool::Pnt(last).XYZ()) * 0.5);
+    const auto result = GeometryTopologyEditor::mergeVertices(makeGeometryRoot(box), { first, last }, target);
+    REQUIRE(BRepCheck_Analyzer(result).IsValid());
+    REQUIRE(countSubshapes(result, TopAbs_VERTEX) == 7);
+    REQUIRE(countSubshapes(result, TopAbs_EDGE) == 11);
+    REQUIRE(countSharedEdges(result) == 11);
+}
+
+//! @brief 全部边都未邻接面时，仍可补平面或非共面闭环，并保留无关孤立边。
+TEST_CASE("GeometryTopologyEditor fills isolated planar and nonplanar edge loops")
+{
+    for (double height : { 0.0, 2.0 }) {
+        CAPTURE(height);
+        std::vector<TopoDS_Vertex> vertices;
+        for (const auto& point : { gp_Pnt(0, 0, 0), gp_Pnt(10, 0, 0), gp_Pnt(10, 10, height), gp_Pnt(0, 10, 0) })
+            vertices.push_back(TopoDS::Vertex(GeometryBuilder::makePoint(point.X(), point.Y(), point.Z())));
+        BRep_Builder builder;
+        TopoDS_Compound root;
+        builder.MakeCompound(root);
+        std::vector<TopoDS_Edge> edges;
+        for (size_t i = 0; i < vertices.size(); ++i) {
+            edges.push_back(BRepBuilderAPI_MakeEdge(vertices[i], vertices[(i + 1) % vertices.size()]).Edge());
+            builder.Add(root, edges.back());
+        }
+        builder.Add(root, GeometryBuilder::makeLine(20, 0, 0, 30, 0, 0));
+        const auto result = GeometryTopologyEditor::fillBoundaryLoop(root, edges.front());
+        REQUIRE(BRepCheck_Analyzer(result).IsValid());
+        REQUIRE(countSubshapes(result, TopAbs_FACE) == 1);
+        REQUIRE(countSubshapes(result, TopAbs_EDGE) == 5);
+        REQUIRE(countSubshapes(result, TopAbs_VERTEX) == 6);
+        REQUIRE(countSubshapes(root, TopAbs_FACE) == 0);
+    }
+}
+
+//! @brief 孤立边与单面自由边共同围成的最短闭环，都可作为种子边。
+TEST_CASE("GeometryTopologyEditor fills mixed isolated and face boundary loops")
+{
+    const auto face = TopoDS::Face(GeometryBuilder::makeRectangleFace(0, 0, 0, 10, 10, CoordinatePlane::XY));
+    const auto boundary = findEdgeOnX(face, 10);
+    const auto first = TopExp::FirstVertex(boundary, true);
+    const auto last = TopExp::LastVertex(boundary, true);
+    const auto tip = TopoDS::Vertex(GeometryBuilder::makePoint(11, 5, 0));
+    const auto a = BRepBuilderAPI_MakeEdge(first, tip).Edge();
+    const auto b = BRepBuilderAPI_MakeEdge(tip, last).Edge();
+    BRep_Builder builder;
+    TopoDS_Compound root;
+    builder.MakeCompound(root);
+    builder.Add(root, face);
+    builder.Add(root, a);
+    builder.Add(root, b);
+    for (const auto& seed : { boundary, a }) {
+        const auto result = GeometryTopologyEditor::fillBoundaryLoop(root, seed);
+        REQUIRE(BRepCheck_Analyzer(result).IsValid());
+        REQUIRE(countSubshapes(result, TopAbs_FACE) == 2);
+        REQUIRE(countSubshapes(result, TopAbs_EDGE) == 6);
+        REQUIRE(countSharedEdges(result) == 1);
+    }
+}
+
+//! @brief 只有一条闭合圆边且不属于任何面时也应补面；开放孤立边链仍拒绝。
+TEST_CASE("GeometryTopologyEditor fills isolated circles and rejects open isolated chains")
+{
+    const auto circle = BRepBuilderAPI_MakeEdge(gp_Circ(gp_Ax2(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 5)).Edge();
+    const auto result = GeometryTopologyEditor::fillBoundaryLoop(makeGeometryRoot(circle), circle);
+    REQUIRE(BRepCheck_Analyzer(result).IsValid());
+    REQUIRE(countSubshapes(result, TopAbs_FACE) == 1);
+    REQUIRE(countSubshapes(result, TopAbs_EDGE) == 1);
+    const auto line = TopoDS::Edge(GeometryBuilder::makeLine(0, 0, 0, 10, 0, 0));
+    REQUIRE_THROWS_AS(GeometryTopologyEditor::fillBoundaryLoop(makeGeometryRoot(line), line), std::runtime_error);
 }
