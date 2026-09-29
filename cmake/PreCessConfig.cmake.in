@@ -43,7 +43,8 @@ set(PRECESS_PLUGIN_INSTALL_DIR "${PRECESS_PLUGIN_INSTALL_DIR}" CACHE PATH
 # ⑥ 插件构建 API 与组件解析
 # 边界内自定义 Find 模块随包安装（Findfreetype）：加入模块路径使插件工程可直接
 # find_package(freetype) 命中与 PreCess 同款实现；许可证边界外的 Find 模块
-# （Findtetgen 等）刻意不随包——相关依赖由插件自行查找并承担许可证义务
+# 刻意不随包（如 tetgen 的 Find 模块随 ZenithGridToolkit 工程自带）——
+# 相关依赖由插件工程自行查找并承担许可证义务
 list(PREPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_LIST_DIR}")
 include("${CMAKE_CURRENT_LIST_DIR}/PreCessPlugin.cmake")
 include("${CMAKE_CURRENT_LIST_DIR}/PreCessModules.cmake")

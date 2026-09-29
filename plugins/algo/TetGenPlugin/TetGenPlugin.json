@@ -1,7 +1,0 @@
-{
-  "system": "AlgorithmSystem",
-  "handler": {
-    "name": "TetGenPlugin",
-    "display_name": "TetGen体网格剖分"
-  }
-}

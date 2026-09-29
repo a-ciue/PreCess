@@ -117,14 +117,13 @@
 * [![spdlog][spdlog]][spdlog-url]
 * [![Catch2][Catch2]][Catch2-url]
 
-**插件层功能依赖**（由 `PreCess-deps.bat` 或 `PreCess-deps.sh` 获取，随对应插件按需构建）：
+**插件层三方依赖**（gmsh、CGAL、Boost、TetGen）已全部随插件拆分至独立仓库
+`ZenithGridToolkit`，由该工程获取与构建，本仓库不再构建任何插件专属依赖：
 
-* [![TetGen][TetGen]][TetGen-url]：TetGen 体网格剖分插件（`tetgen::tetgen`，旧版调用外部 `tetgen` 可执行文件）
-
-> Gmsh 渐进式网格划分（`GmshPlugin`）、网格布尔 / 网格修复（`MeshBooleanPlugin`、
-> `MeshRepairPlugin`）与共用转换层 `cgal_support` 已拆分至独立仓库 `ZenithGridToolkit`，
-> 其依赖（gmsh、CGAL、Boost）由该工程自行获取与构建；`.msh` 格式 IO 插件
-> `GmshModelPlugin` 自带解析器、不依赖 gmsh 库，保留在本仓库。
+> 已外置：`GmshPlugin`（Gmsh 渐进式网格划分）、`TetGenPlugin` / `TetGenLibPlugin`
+> （TetGen 体网格剖分）、`MeshBooleanPlugin` / `MeshRepairPlugin`（网格布尔 / 网格修复）
+> 与共用转换层 `cgal_support`；`.msh` 格式 IO 插件 `GmshModelPlugin` 自带解析器、
+> 不依赖三方库，保留在本仓库。
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -150,7 +149,7 @@ cmake --build ./build --target install
 ## ⚙️功能用法
 
 - **模型导入与展示**：支持 IGES、STEP、OBJ、PLY、STL、`.m`、Medit `.mesh`、Gmsh `.msh`、Abaqus `.inp`、VTK `.vtk`、VTK XML（`.vtp`/`.vtu`）、`.off` 等格式导入与展示，支持多文件同时导入；几何与网格分层组织、网格/几何渲染风格切换（如「网格·面·带网格线」「网格·线·带内部线」等）、体网格切面裁剪。
-- **交互式选择与算法调用**：组件/点/边/面/体/几何点线面体选择器，网格面支持按角度扩散多选；对选择结果调用网格算法插件（TetGen/TetGenLib 体网格剖分、CCGMeshToNURBS、执行 cmd 命令等）。
+- **交互式选择与算法调用**：组件/点/边/面/体/几何点线面体选择器，网格面支持按角度扩散多选；对选择结果调用网格算法插件（CCGMeshToNURBS、执行 cmd 命令等）。
 - **几何处理**：基础图元创建——点、直线边（坐标/选点）、矩形面、圆盘/扇形面、长方体、圆柱、圆锥/圆台、球体/部分球体；几何编辑——闭合边成面、面拉伸为实体、删除几何。以功能系统插件提供，菜单点选后经参数侧栏执行。
 - **网格编辑**：创建面、删除面等编辑插件。
 - **测量与尺寸标注**：视口交互测量与参数化尺寸标注（距离/角度/半径/长度/面积/体积/包围盒/重心）。
@@ -346,5 +345,3 @@ github镜像：[https://github.com/a-ciue/PreCess](https://github.com/a-ciue/Pre
 [spdlog-url]: https://github.com/gabime/spdlog
 [Catch2]: https://img.shields.io/badge/Catch2-000000?style=for-the-badge&logo=catch2&logoColor=white
 [Catch2-url]: https://github.com/catchorg/Catch2
-[TetGen]: https://img.shields.io/badge/TetGen-000000?style=for-the-badge&logo=tetgen&logoColor=white
-[TetGen-url]: https://wias-berlin.de/software/tetgen/

@@ -200,12 +200,6 @@ GIT_REPOSITORIES = [
         "https://github.com/LoicMarechal/libMeshb.git",
         "v7.80",
     ),
-    GitRepository(
-        "TetGen",
-        "https://github.com/TetGen/TetGen.git",
-        "v1.6.0",
-        "tetgen",
-    ),
 ]
 
 class DependencyError(Exception):
@@ -394,8 +388,8 @@ def configure_cmake_project(
             build_directory,
             "-G",
             "Ninja Multi-Config",
-            # CMake 4 起移除了对 <3.5 的兼容；个别依赖（tetgen 自生成工程等）
-            # 声明的最低版本过低，统一放开下限。
+            # CMake 4 起移除了对 <3.5 的兼容；个别依赖声明的最低版本过低时
+            # 统一放开下限。
             "-DCMAKE_POLICY_VERSION_MINIMUM=3.5",
             *(
                 toolchain_arguments(settings) if use_toolchain else []
@@ -631,39 +625,6 @@ def build_libmeshb(settings: DependenciesSettings) -> None:
     (build_directory / "fmod").mkdir(parents=True, exist_ok=True)
     install_configs(settings.install_configs, build_directory)
 
-def prepare_tetgen_project(source: Path) -> None:
-    cmake_content = "\n".join(
-        [
-            "cmake_minimum_required(VERSION 3.5)",
-            "project(tetgen CXX)",
-            # tet 静态库会被链入本项目的动态插件库（.so/.dylib），须 PIC。
-            "set(CMAKE_POSITION_INDEPENDENT_CODE ON)",
-            "add_library(tet STATIC tetgen.cxx predicates.cxx)",
-            "target_compile_definitions(tet PUBLIC TETLIBRARY)",
-            "target_include_directories(tet PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})",
-            "install(TARGETS tet ARCHIVE DESTINATION lib)",
-            "install(FILES tetgen.h DESTINATION include)",
-            "",
-        ]
-    )
-    write_text_file(source / "CMakeLists.txt", cmake_content)
-
-def build_tetgen(settings: DependenciesSettings) -> None:
-    source = settings.source_dir / "tetgen"
-    build_directory = settings.build_directory(source)
-    prepare_tetgen_project(source)
-    configure_cmake_project(
-        source,
-        build_directory,
-        settings.install_dir / "tetgen1.6.0",
-        [
-            ("-DCMAKE_RELWITHDEBINFO_POSTFIX", "i"),
-            ("-DCMAKE_DEBUG_POSTFIX", "d"),
-        ],
-        settings,
-    )
-    install_configs(settings.install_configs, build_directory)
-
 def build_native(settings: DependenciesSettings) -> None:
     """构建原生（非 wasm）平台的依赖。"""
 
@@ -700,7 +661,6 @@ def build_native(settings: DependenciesSettings) -> None:
     build_occt(settings)
     build_catch2(settings)
     build_libmeshb(settings)
-    build_tetgen(settings)
     build_pybind11(settings)
 
 REQUIRED_EMSDK_VERSION = "3.1.56"
@@ -1116,25 +1076,6 @@ def build_libmeshb_wasm(settings: DependenciesSettings, environment: dict[str, s
     (build_directory / "fmod").mkdir(parents=True, exist_ok=True)
     install_configs(("Release",), build_directory, environment)
 
-def build_tetgen_wasm(settings: DependenciesSettings, environment: dict[str, str]) -> None:
-    source = settings.source_dir / "tetgen"
-    build_directory = settings.build_directory(source)
-    prepare_tetgen_project(source)
-    configure_cmake_project(
-        source,
-        build_directory,
-        settings.install_dir / "tetgen1.6.0",
-        [
-            ("-DCMAKE_C_FLAGS", wasm_compile_flags(settings)),
-            ("-DCMAKE_CXX_FLAGS", wasm_compile_flags(settings)),
-            ("-DCMAKE_RELWITHDEBINFO_POSTFIX", "i"),
-            ("-DCMAKE_DEBUG_POSTFIX", "d"),
-        ],
-        settings,
-        environment=environment,
-    )
-    install_configs(("Release",), build_directory, environment)
-
 def build_wasm(settings: DependenciesSettings) -> None:
     """把依赖交叉编译到 WebAssembly（仅 Release；multiple 架构为 -pthread 多线程配方）。"""
 
@@ -1162,7 +1103,6 @@ def build_wasm(settings: DependenciesSettings) -> None:
     build_spdlog_wasm(settings, environment)
     build_catch2_wasm(settings, environment)
     build_libmeshb_wasm(settings, environment)
-    build_tetgen_wasm(settings, environment)
 
 def build_dependencies(settings: DependenciesSettings) -> None:
     if settings.platform.is_wasm:

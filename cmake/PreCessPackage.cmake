@@ -4,7 +4,7 @@
 #   include/precess/...            开发头文件（镜像源码模块布局，裸名 include 语义不变）
 #   lib/PreCessBase.lib（Debug: PreCessBased.lib）  模型层单一静态库（导出 PreCess::Base）
 #   lib/cmake/PreCess/             PreCessConfig/Targets/Plugin/PluginTesting/ABI/
-#                                  find-package-helpers/Modules + Findtetgen/Findfreetype
+#                                  find-package-helpers/Modules + Findfreetype
 include_guard(GLOBAL)
 
 option(PRECESS_INSTALL_DEVELOPMENT_FILES
