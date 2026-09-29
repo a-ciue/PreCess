@@ -2877,33 +2877,63 @@ TopoDS_Shape GeometryTopologyEditor::removeTopLevelShape(
 }
 
 /**
- * @brief 递归重建形状树并摘除目标 Face；空 Shell/空节点一并丢弃。
+ * @brief 递归收集形状下的 Face，跳过目标 Face。
  *
- * 不依赖 BRepTools_ReShape：部分嵌套 Solid/Shell 拓扑下 Remove+Apply 会得到空结果。
- * 缺面后不再闭合的 Solid 降级为 Shell 返回。
+ * 会穿过 Compound 包装：BRepFeat 分割后 Shell 子节点里可能挂着 Compound，
+ * 不能只看直接子级是不是 Face。
  */
-TopoDS_Shape rebuildWithoutFace(const TopoDS_Shape& shape, const TopoDS_Face& face)
+void collectFacesExcept(
+    const TopoDS_Shape& shape,
+    const TopoDS_Shape& target,
+    std::vector<TopoDS_Face>& out)
+{
+    if (shape.IsNull())
+        return;
+    if (shape.ShapeType() == TopAbs_FACE) {
+        if (!shape.IsSame(target))
+            out.push_back(TopoDS::Face(shape));
+        return;
+    }
+    if (shape.ShapeType() == TopAbs_EDGE || shape.ShapeType() == TopAbs_VERTEX)
+        return;
+    for (TopoDS_Iterator it(shape); it.More(); it.Next())
+        collectFacesExcept(it.Value(), target, out);
+}
+
+/**
+ * @brief 将不再闭合的 Solid 降级为 Shell，使缺面结果仍可通过拓扑校验。
+ */
+TopoDS_Shape demoteOpenSolids(const TopoDS_Shape& shape)
 {
     if (shape.IsNull())
         return {};
-    if (shape.IsSame(face))
-        return {};
-
-    const TopAbs_ShapeEnum type = shape.ShapeType();
-    if (type != TopAbs_COMPOUND && type != TopAbs_SHELL && type != TopAbs_SOLID)
-        return shape;
-
-    BRep_Builder builder;
-    if (type == TopAbs_COMPOUND) {
+    if (shape.ShapeType() == TopAbs_SOLID) {
+        if (BRep_Tool::IsClosed(shape))
+            return shape;
+        std::vector<TopoDS_Shape> parts;
+        for (TopoDS_Iterator it(shape); it.More(); it.Next())
+            parts.push_back(it.Value());
+        if (parts.empty())
+            return {};
+        if (parts.size() == 1)
+            return parts.front();
+        BRep_Builder builder;
+        TopoDS_Compound compound;
+        builder.MakeCompound(compound);
+        for (const TopoDS_Shape& part : parts)
+            builder.Add(compound, part);
+        return compound;
+    }
+    if (shape.ShapeType() == TopAbs_COMPOUND || shape.ShapeType() == TopAbs_COMPSOLID) {
+        BRep_Builder builder;
         TopoDS_Compound compound;
         builder.MakeCompound(compound);
         int count = 0;
         for (TopoDS_Iterator it(shape); it.More(); it.Next()) {
-            TopoDS_Shape child = rebuildWithoutFace(it.Value(), face);
+            const TopoDS_Shape child = demoteOpenSolids(it.Value());
             if (child.IsNull())
                 continue;
-            if (child.ShapeType() == TopAbs_COMPOUND && !child.IsSame(shape)) {
-                // 子节点可能因 Solid 降级被展平为 Compound，拆开挂入当前层。
+            if (child.ShapeType() == TopAbs_COMPOUND) {
                 for (TopoDS_Iterator inner(child); inner.More(); inner.Next()) {
                     builder.Add(compound, inner.Value());
                     ++count;
@@ -2915,67 +2945,15 @@ TopoDS_Shape rebuildWithoutFace(const TopoDS_Shape& shape, const TopoDS_Face& fa
         }
         return count == 0 ? TopoDS_Shape() : TopoDS_Shape(compound);
     }
-
-    if (type == TopAbs_SHELL) {
-        TopoDS_Shell shell;
-        builder.MakeShell(shell);
-        int count = 0;
-        for (TopoDS_Iterator it(shape); it.More(); it.Next()) {
-            TopoDS_Shape child = rebuildWithoutFace(it.Value(), face);
-            if (child.IsNull() || child.ShapeType() != TopAbs_FACE)
-                continue;
-            builder.Add(shell, TopoDS::Face(child));
-            ++count;
-        }
-        if (count == 0)
-            return {};
-        shell.Closed(BRep_Tool::IsClosed(shell));
-        return TopoDS_Shape(shell);
-    }
-
-    // SOLID：收集重建后的 Shell；任一 Shell 不闭合则整体降级，不再包一层无效 Solid。
-    std::vector<TopoDS_Shape> shells;
-    bool has_open_shell = false;
-    for (TopoDS_Iterator it(shape); it.More(); it.Next()) {
-        TopoDS_Shape child = rebuildWithoutFace(it.Value(), face);
-        if (child.IsNull())
-            continue;
-        if (child.ShapeType() == TopAbs_SHELL) {
-            shells.push_back(child);
-            if (!BRep_Tool::IsClosed(child))
-                has_open_shell = true;
-        } else if (child.ShapeType() == TopAbs_COMPOUND) {
-            for (TopoDS_Iterator inner(child); inner.More(); inner.Next()) {
-                shells.push_back(inner.Value());
-                if (inner.Value().ShapeType() == TopAbs_SHELL
-                    && !BRep_Tool::IsClosed(inner.Value()))
-                    has_open_shell = true;
-            }
-        } else {
-            shells.push_back(child);
-        }
-    }
-    if (shells.empty())
-        return {};
-    if (has_open_shell || shells.size() > 1) {
-        if (shells.size() == 1)
-            return shells.front();
-        BRep_Builder compound_builder;
-        TopoDS_Compound compound;
-        compound_builder.MakeCompound(compound);
-        for (const TopoDS_Shape& shell : shells)
-            compound_builder.Add(compound, shell);
-        return TopoDS_Shape(compound);
-    }
-    TopoDS_Solid solid;
-    builder.MakeSolid(solid);
-    builder.Add(solid, shells.front());
-    solid.Closed(true);
-    return TopoDS_Shape(solid);
+    return shape;
 }
 
 /**
  * @brief 从父 Shell/Solid 中摘除嵌套 Face 并重建父级。
+ *
+ * 按「父 Shell 整体替换」实现：收集 Shell 内除目标外的全部 Face（穿过 Compound
+ * 包装）重建 Shell，再写回根形状。避免 BRepTools_ReShape 对嵌套拓扑返回空结果，
+ * 也避免把分割后挂在 Shell 下的 Compound 子树误丢。
  */
 TopoDS_Shape removeNestedFace(const TopoDS_Shape& root, const TopoDS_Face& face)
 {
@@ -2995,11 +2973,86 @@ TopoDS_Shape removeNestedFace(const TopoDS_Shape& root, const TopoDS_Face& face)
     }
 
     try {
-        TopoDS_Shape result = rebuildWithoutFace(root, face);
-        if (result.IsNull())
-            throw std::runtime_error("Removing the nested face produced an empty result");
-        if (countSubshapes(result, TopAbs_FACE) != root_faces.Extent() - 1)
-            throw std::runtime_error("Removing the nested face did not drop exactly one face");
+        // 找到直接包含目标 Face 的父级（Shell 或 Solid/Compound 包装）。
+        NCollection_IndexedDataMap<TopoDS_Shape,
+            NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>
+            face_parents;
+        TopExp::MapShapesAndAncestors(root, TopAbs_FACE, TopAbs_SHELL, face_parents);
+
+        occ::handle<BRepTools_ReShape> reshaper = new BRepTools_ReShape();
+        bool found_parent = false;
+
+        if (face_parents.Contains(face)) {
+            const NCollection_List<TopoDS_Shape>& parents = face_parents.FindFromKey(face);
+            for (NCollection_List<TopoDS_Shape>::Iterator it(parents); it.More(); it.Next()) {
+                const TopoDS_Shape parent_shell = it.Value();
+                std::vector<TopoDS_Face> retained_faces;
+                collectFacesExcept(parent_shell, face, retained_faces);
+                found_parent = true;
+
+                if (retained_faces.empty()) {
+                    // 该 Shell 只剩目标 Face，整壳移除。
+                    reshaper->Remove(parent_shell);
+                    continue;
+                }
+
+                BRep_Builder builder;
+                TopoDS_Shell new_shell;
+                builder.MakeShell(new_shell);
+                for (const TopoDS_Face& retained : retained_faces)
+                    builder.Add(new_shell, retained);
+                new_shell.Closed(BRep_Tool::IsClosed(new_shell));
+                reshaper->Replace(parent_shell, new_shell);
+            }
+        }
+
+        if (!found_parent) {
+            // Face 不在任何 Shell 内（如直接挂在 Solid/Compound 下）：整体重建。
+            std::vector<TopoDS_Face> retained_faces;
+            collectFacesExcept(root, face, retained_faces);
+            if (retained_faces.empty()) {
+                if (root_faces.Extent() == 1)
+                    return {};
+                throw std::runtime_error(
+                    "Removing the nested face produced an empty result (no retained faces)");
+            }
+            BRep_Builder builder;
+            TopoDS_Shell new_shell;
+            builder.MakeShell(new_shell);
+            for (const TopoDS_Face& retained : retained_faces)
+                builder.Add(new_shell, retained);
+            new_shell.Closed(BRep_Tool::IsClosed(new_shell));
+            TopoDS_Shape result = demoteOpenSolids(new_shell);
+            if (result.IsNull() || countSubshapes(result, TopAbs_FACE) != root_faces.Extent() - 1)
+                throw std::runtime_error(
+                    "Removing the nested face did not drop exactly one face");
+            if (!BRepCheck_Analyzer(result).IsValid())
+                throw std::runtime_error("Removing the nested face produced invalid topology");
+            return result;
+        }
+
+        TopoDS_Shape raw_result = reshaper->Apply(root);
+        // 删掉的是几何里最后一块面时，结果为空是合法的（整块几何被删掉）。
+        if (raw_result.IsNull() || countSubshapes(raw_result, TopAbs_FACE) == 0) {
+            if (root_faces.Extent() == 1)
+                return {};
+            throw std::runtime_error(
+                "Removing the nested face produced an empty result (reshape returned null)");
+        }
+        TopoDS_Shape result = demoteOpenSolids(raw_result);
+        if (result.IsNull() || countSubshapes(result, TopAbs_FACE) == 0) {
+            if (root_faces.Extent() == 1)
+                return {};
+            throw std::runtime_error(
+                "Removing the nested face produced an empty result (after demote)");
+        }
+        const int result_faces = countSubshapes(result, TopAbs_FACE);
+        if (result_faces != root_faces.Extent() - 1) {
+            throw std::runtime_error(
+                "Removing the nested face did not drop exactly one face (before="
+                + std::to_string(root_faces.Extent()) + " after=" + std::to_string(result_faces)
+                + ")");
+        }
         if (!BRepCheck_Analyzer(result).IsValid())
             throw std::runtime_error("Removing the nested face produced invalid topology");
         return result;

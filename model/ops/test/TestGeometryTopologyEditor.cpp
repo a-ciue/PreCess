@@ -1354,6 +1354,86 @@ TEST_CASE("GeometryTopologyEditor removes a nested face from a solid")
     REQUIRE(BRepCheck_Analyzer(result).IsValid());
 }
 
+TEST_CASE("GeometryTopologyEditor removes a nested face from an open shell")
+{
+    // 开口 Shell（无 Solid 包装），与 STEP 自由面组结构一致。
+    const TopoDS_Face bottom = TopoDS::Face(GeometryBuilder::makeRectangleFace(
+        0.0, 0.0, 0.0, 10.0, 10.0, CoordinatePlane::XY));
+    const TopoDS_Face left = TopoDS::Face(GeometryBuilder::makeRectangleFace(
+        0.0, 0.0, 0.0, 10.0, 10.0, CoordinatePlane::XZ));
+    BRep_Builder builder;
+    TopoDS_Shell shell;
+    builder.MakeShell(shell);
+    builder.Add(shell, bottom);
+    builder.Add(shell, left);
+    shell.Closed(false);
+    const TopoDS_Shape root = makeGeometryRoot(shell);
+    REQUIRE(countSubshapes(root, TopAbs_FACE) == 2);
+    REQUIRE(countSubshapes(root, TopAbs_SHELL) == 1);
+
+    const TopoDS_Shape result =
+        GeometryTopologyEditor::removeShape(root, bottom, true);
+
+    REQUIRE_FALSE(result.IsNull());
+    REQUIRE(countSubshapes(result, TopAbs_FACE) == 1);
+    REQUIRE(BRepCheck_Analyzer(result).IsValid());
+}
+
+TEST_CASE("GeometryTopologyEditor deletes the only face of a single-face shell")
+{
+    // 突出小面片常是「单面壳」：删掉后整块几何为空，应允许。
+    const TopoDS_Face face = TopoDS::Face(GeometryBuilder::makeRectangleFace(
+        0.0, 0.0, 0.0, 5.0, 5.0, CoordinatePlane::XY));
+    BRep_Builder builder;
+    TopoDS_Shell shell;
+    builder.MakeShell(shell);
+    builder.Add(shell, face);
+    shell.Closed(false);
+    const TopoDS_Shape root = makeGeometryRoot(shell);
+    REQUIRE(countSubshapes(root, TopAbs_FACE) == 1);
+
+    const TopoDS_Shape result =
+        GeometryTopologyEditor::removeShape(root, face, true);
+    REQUIRE(result.IsNull());
+}
+
+TEST_CASE("GeometryTopologyEditor removes a face nested under a compound wrapper in a shell")
+{
+    // 模拟 BRepFeat 分割后：Shell 子节点里挂着 Compound[两块面]。
+    const TopoDS_Shape box =
+        GeometryBuilder::makeBox(0.0, 0.0, 0.0, 10.0, 20.0, 30.0);
+    const TopoDS_Face bottom_face = findFaceOnZPlane(box, 0.0);
+    REQUIRE_FALSE(bottom_face.IsNull());
+    const TopoDS_Vertex first = findFaceVertex(bottom_face, 0.0, 0.0, 0.0);
+    const TopoDS_Vertex second = findFaceVertex(bottom_face, 10.0, 20.0, 0.0);
+    const TopoDS_Edge diagonal = TopoDS::Edge(GeometryBuilder::makeLine(first, second));
+    const TopoDS_Shape split_result = GeometryTopologyEditor::splitFace(
+        makeGeometryRoot(box), bottom_face, std::vector<TopoDS_Edge> { diagonal });
+    REQUIRE(countSubshapes(split_result, TopAbs_FACE) == 7);
+
+    // 把分割产生的底面两块重新包进 Compound，塞回原 Shell 位置（模拟包装残留）。
+    std::vector<TopoDS_Face> bottom_pieces;
+    for (TopExp_Explorer face_exp(split_result, TopAbs_FACE); face_exp.More(); face_exp.Next()) {
+        const TopoDS_Face face = TopoDS::Face(face_exp.Current());
+        bool on_z0 = true;
+        for (TopExp_Explorer vertex_exp(face, TopAbs_VERTEX); vertex_exp.More(); vertex_exp.Next()) {
+            if (std::abs(BRep_Tool::Pnt(TopoDS::Vertex(vertex_exp.Current())).Z()) > 1.0e-7) {
+                on_z0 = false;
+                break;
+            }
+        }
+        if (on_z0)
+            bottom_pieces.push_back(face);
+    }
+    REQUIRE(bottom_pieces.size() == 2);
+
+    const TopoDS_Shape result =
+        GeometryTopologyEditor::removeShape(split_result, bottom_pieces.front(), true);
+    REQUIRE_FALSE(result.IsNull());
+    REQUIRE(countSubshapes(result, TopAbs_FACE) == 6);
+    REQUIRE(BRepCheck_Analyzer(result).IsValid());
+}
+
 TEST_CASE("GeometryTopologyEditor removes a split face piece from a solid")
 {
     // 模拟「分割突出面片后删除小块」工作流：先切开底面，再删掉其中一块。
