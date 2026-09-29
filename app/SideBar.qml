@@ -390,6 +390,9 @@ Item{
                 target: App.selection
                 enabled: selectStartButton.checked
                 function onSelectionUpdated(selection) {
+                    // 切换参数的同步通知可能先于 checked 绑定刷新，必须核对当前监听者。
+                    if (App.selection.listeningSelectorIndex !== index)
+                        return
                     // 只更新当前监听参数，保持选择会话以便继续增删；null 也须同步到业务层。
                     value = selection
                     root.setParam(index, value)
