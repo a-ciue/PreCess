@@ -1626,13 +1626,16 @@ bool shareTopologicalVertex(const TopoDS_Edge& first, const TopoDS_Edge& second)
  *
  * 单向比较允许一条长边对应多条短边；每个采样点都必须落在容差内，避免仅因
  * 两条边局部接近或相交就被误判为 Stitch 候选。
+ *
+ * 不因共用拓扑顶点而直接排除：两面「共边但拓扑未共享」时两侧自由边常共享
+ * 端点，却是合法缝合对。同链邻接边只在端点接触，几何覆盖检查会将其排除。
  */
 std::optional<double> stitchMaximumGap(
     const TopoDS_Edge& first,
     const TopoDS_Edge& second,
     double tolerance)
 {
-    if (shareTopologicalVertex(first, second))
+    if (first.IsSame(second))
         return std::nullopt;
 
     const double first_length = edgeLength(first);
@@ -2614,9 +2617,18 @@ std::vector<TopoDS_Edge> GeometryTopologyEditor::expandStitchableFreeChain(
     };
 
     if (!has_stitch_partner(seed))
-        throw std::runtime_error("Seed edge has no free boundary partner within the gap tolerance");
+        throw std::runtime_error(
+            "Seed edge has no free boundary partner within the gap tolerance; "
+            "if two faces share geometry but not topology, enlarge the tolerance "
+            "or stitch the adjacent faces first");
 
-    // 只吸收「可缝合」的邻接自由边，避免把同一面无关外轮廓并进间隙边界。
+    // 只吸收「可缝合」且与链同属一侧（同一 Face）的邻接自由边。
+    // 对侧间隙边常与种子共端点（共边未共享拓扑），绝不能并进种子链。
+    const auto owner_face = [&](const TopoDS_Edge& edge) -> TopoDS_Face {
+        if (!edge_faces.Contains(edge))
+            return {};
+        return TopoDS::Face(edge_faces.FindFromKey(edge).First());
+    };
     std::vector<TopoDS_Edge> chain { seed };
     NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher> in_chain;
     in_chain.Add(seed);
@@ -2626,14 +2638,17 @@ std::vector<TopoDS_Edge> GeometryTopologyEditor::expandStitchableFreeChain(
         for (const TopoDS_Edge& candidate : free_edges) {
             if (in_chain.Contains(candidate) || !has_stitch_partner(candidate))
                 continue;
+            bool same_side = false;
             bool touches = false;
+            const TopoDS_Face candidate_face = owner_face(candidate);
             for (const TopoDS_Edge& existing : chain) {
-                if (shareTopologicalVertex(existing, candidate)) {
+                if (shareTopologicalVertex(existing, candidate))
                     touches = true;
-                    break;
-                }
+                const TopoDS_Face existing_face = owner_face(existing);
+                if (!candidate_face.IsNull() && candidate_face.IsSame(existing_face))
+                    same_side = true;
             }
-            if (!touches)
+            if (!touches || !same_side)
                 continue;
             std::vector<TopoDS_Edge> next = chain;
             next.push_back(candidate);
@@ -2859,4 +2874,169 @@ TopoDS_Shape GeometryTopologyEditor::removeTopLevelShape(
     if (!BRepCheck_Analyzer(result).IsValid())
         throw std::runtime_error("Deleting the geometry shape produced invalid topology");
     return result;
+}
+
+/**
+ * @brief 递归重建形状树并摘除目标 Face；空 Shell/空节点一并丢弃。
+ *
+ * 不依赖 BRepTools_ReShape：部分嵌套 Solid/Shell 拓扑下 Remove+Apply 会得到空结果。
+ * 缺面后不再闭合的 Solid 降级为 Shell 返回。
+ */
+TopoDS_Shape rebuildWithoutFace(const TopoDS_Shape& shape, const TopoDS_Face& face)
+{
+    if (shape.IsNull())
+        return {};
+    if (shape.IsSame(face))
+        return {};
+
+    const TopAbs_ShapeEnum type = shape.ShapeType();
+    if (type != TopAbs_COMPOUND && type != TopAbs_SHELL && type != TopAbs_SOLID)
+        return shape;
+
+    BRep_Builder builder;
+    if (type == TopAbs_COMPOUND) {
+        TopoDS_Compound compound;
+        builder.MakeCompound(compound);
+        int count = 0;
+        for (TopoDS_Iterator it(shape); it.More(); it.Next()) {
+            TopoDS_Shape child = rebuildWithoutFace(it.Value(), face);
+            if (child.IsNull())
+                continue;
+            if (child.ShapeType() == TopAbs_COMPOUND && !child.IsSame(shape)) {
+                // 子节点可能因 Solid 降级被展平为 Compound，拆开挂入当前层。
+                for (TopoDS_Iterator inner(child); inner.More(); inner.Next()) {
+                    builder.Add(compound, inner.Value());
+                    ++count;
+                }
+            } else {
+                builder.Add(compound, child);
+                ++count;
+            }
+        }
+        return count == 0 ? TopoDS_Shape() : TopoDS_Shape(compound);
+    }
+
+    if (type == TopAbs_SHELL) {
+        TopoDS_Shell shell;
+        builder.MakeShell(shell);
+        int count = 0;
+        for (TopoDS_Iterator it(shape); it.More(); it.Next()) {
+            TopoDS_Shape child = rebuildWithoutFace(it.Value(), face);
+            if (child.IsNull() || child.ShapeType() != TopAbs_FACE)
+                continue;
+            builder.Add(shell, TopoDS::Face(child));
+            ++count;
+        }
+        if (count == 0)
+            return {};
+        shell.Closed(BRep_Tool::IsClosed(shell));
+        return TopoDS_Shape(shell);
+    }
+
+    // SOLID：收集重建后的 Shell；任一 Shell 不闭合则整体降级，不再包一层无效 Solid。
+    std::vector<TopoDS_Shape> shells;
+    bool has_open_shell = false;
+    for (TopoDS_Iterator it(shape); it.More(); it.Next()) {
+        TopoDS_Shape child = rebuildWithoutFace(it.Value(), face);
+        if (child.IsNull())
+            continue;
+        if (child.ShapeType() == TopAbs_SHELL) {
+            shells.push_back(child);
+            if (!BRep_Tool::IsClosed(child))
+                has_open_shell = true;
+        } else if (child.ShapeType() == TopAbs_COMPOUND) {
+            for (TopoDS_Iterator inner(child); inner.More(); inner.Next()) {
+                shells.push_back(inner.Value());
+                if (inner.Value().ShapeType() == TopAbs_SHELL
+                    && !BRep_Tool::IsClosed(inner.Value()))
+                    has_open_shell = true;
+            }
+        } else {
+            shells.push_back(child);
+        }
+    }
+    if (shells.empty())
+        return {};
+    if (has_open_shell || shells.size() > 1) {
+        if (shells.size() == 1)
+            return shells.front();
+        BRep_Builder compound_builder;
+        TopoDS_Compound compound;
+        compound_builder.MakeCompound(compound);
+        for (const TopoDS_Shape& shell : shells)
+            compound_builder.Add(compound, shell);
+        return TopoDS_Shape(compound);
+    }
+    TopoDS_Solid solid;
+    builder.MakeSolid(solid);
+    builder.Add(solid, shells.front());
+    solid.Closed(true);
+    return TopoDS_Shape(solid);
+}
+
+/**
+ * @brief 从父 Shell/Solid 中摘除嵌套 Face 并重建父级。
+ */
+TopoDS_Shape removeNestedFace(const TopoDS_Shape& root, const TopoDS_Face& face)
+{
+    NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher> root_faces;
+    TopExp::MapShapes(root, TopAbs_FACE, root_faces);
+    if (!root_faces.Contains(face))
+        throw std::invalid_argument("Selected face does not belong to the geometry root");
+
+    // 目标已是顶层独立 Face 时走通用顶层删除，保持「保留下级拓扑」语义一致。
+    if (root.IsSame(face))
+        return GeometryTopologyEditor::removeTopLevelShape(root, face, true);
+    if (root.ShapeType() == TopAbs_COMPOUND) {
+        for (TopoDS_Iterator it(root); it.More(); it.Next()) {
+            if (it.Value().IsSame(face))
+                return GeometryTopologyEditor::removeTopLevelShape(root, face, true);
+        }
+    }
+
+    try {
+        TopoDS_Shape result = rebuildWithoutFace(root, face);
+        if (result.IsNull())
+            throw std::runtime_error("Removing the nested face produced an empty result");
+        if (countSubshapes(result, TopAbs_FACE) != root_faces.Extent() - 1)
+            throw std::runtime_error("Removing the nested face did not drop exactly one face");
+        if (!BRepCheck_Analyzer(result).IsValid())
+            throw std::runtime_error("Removing the nested face produced invalid topology");
+        return result;
+    } catch (const Standard_Failure& error) {
+        const char* detail = error.GetMessageString();
+        throw std::runtime_error(detail
+                ? std::string("OpenCASCADE failed to remove the nested face: ") + detail
+                : "OpenCASCADE failed to remove the nested face");
+    }
+}
+
+TopoDS_Shape GeometryTopologyEditor::removeShape(
+    const TopoDS_Shape& root,
+    const TopoDS_Shape& target,
+    bool delete_children)
+{
+    if (root.IsNull() || target.IsNull())
+        throw std::invalid_argument("Geometry root and selected shape must not be null");
+    if (!isSupportedShapeType(target.ShapeType()))
+        throw std::invalid_argument("Only vertex, edge, face or solid can be deleted");
+
+    // 顶层独立形状：维持既有「可提升独占下级拓扑」行为。
+    bool top_level = root.IsSame(target);
+    if (!top_level && root.ShapeType() == TopAbs_COMPOUND) {
+        for (TopoDS_Iterator it(root); it.More(); it.Next()) {
+            if (it.Value().IsSame(target)) {
+                top_level = true;
+                break;
+            }
+        }
+    }
+    if (top_level)
+        return removeTopLevelShape(root, target, delete_children);
+
+    if (target.ShapeType() == TopAbs_FACE)
+        return removeNestedFace(root, TopoDS::Face(target));
+
+    throw std::invalid_argument(
+        "Nested edges or vertices cannot be deleted alone; delete the owning face instead");
 }

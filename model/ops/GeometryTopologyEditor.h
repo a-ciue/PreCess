@@ -384,4 +384,25 @@ public:
         const TopoDS_Shape& root,
         const TopoDS_Shape& target,
         bool delete_children);
+
+    /**
+     * @brief 从根形状中删除一个几何形状，Face 支持嵌套在 Shell/Solid 内。
+     *
+     * 顶层独立形状走 removeTopLevelShape；嵌套 Face 从父 Shell/Solid 中摘除后重建
+     * 父级，Solid 因缺面不再闭合时降级为对应 Shell。用于切除分割后的突出面片。
+     * 嵌套的 Edge/Vertex 不支持（会破坏所在 Face 的 Wire），请先删所属 Face。
+     *
+     * @param root 当前几何根形状。
+     * @param target 要删除的 Vertex、Edge、Face 或 Solid。
+     * @param delete_children 仅对顶层独立形状生效，语义同 removeTopLevelShape。
+     * @return 删除后的根形状；没有任何剩余拓扑时返回空 Shape。
+     *
+     * @throws std::invalid_argument 输入为空、类型不支持、目标不属于 root，或目标是
+     * 不能单独删除的嵌套 Edge/Vertex。
+     * @throws std::runtime_error 编辑后的拓扑无效。
+     */
+    static TopoDS_Shape removeShape(
+        const TopoDS_Shape& root,
+        const TopoDS_Shape& target,
+        bool delete_children);
 };

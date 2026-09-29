@@ -472,6 +472,48 @@ TEST_CASE("GeometryTopologyEditor rejects a gap seed without a partner within to
         std::runtime_error);
 }
 
+TEST_CASE("GeometryTopologyEditor stitches free edges that share vertices but not topology")
+{
+    // 两面「共边但拓扑未共享」：同一对端点上各有一条独立 Edge，共享顶点却不共享边。
+    const TopoDS_Vertex bottom = TopoDS::Vertex(GeometryBuilder::makePoint(0.0, 0.0, 0.0));
+    const TopoDS_Vertex top = TopoDS::Vertex(GeometryBuilder::makePoint(0.0, 10.0, 0.0));
+    const TopoDS_Edge left_boundary = TopoDS::Edge(GeometryBuilder::makeLine(bottom, top));
+    const TopoDS_Edge right_boundary = TopoDS::Edge(GeometryBuilder::makeLine(bottom, top));
+
+    BRepBuilderAPI_MakeWire left_wire;
+    left_wire.Add(left_boundary);
+    left_wire.Add(TopoDS::Edge(GeometryBuilder::makeLine(
+        top, TopoDS::Vertex(GeometryBuilder::makePoint(-10.0, 10.0, 0.0)))));
+    left_wire.Add(TopoDS::Edge(GeometryBuilder::makeLine(
+        TopoDS::Vertex(GeometryBuilder::makePoint(-10.0, 10.0, 0.0)),
+        TopoDS::Vertex(GeometryBuilder::makePoint(-10.0, 0.0, 0.0)))));
+    left_wire.Add(TopoDS::Edge(GeometryBuilder::makeLine(
+        TopoDS::Vertex(GeometryBuilder::makePoint(-10.0, 0.0, 0.0)), bottom)));
+    REQUIRE(left_wire.IsDone());
+
+    BRepBuilderAPI_MakeWire right_wire;
+    right_wire.Add(right_boundary);
+    right_wire.Add(TopoDS::Edge(GeometryBuilder::makeLine(
+        top, TopoDS::Vertex(GeometryBuilder::makePoint(10.0, 10.0, 0.0)))));
+    right_wire.Add(TopoDS::Edge(GeometryBuilder::makeLine(
+        TopoDS::Vertex(GeometryBuilder::makePoint(10.0, 10.0, 0.0)),
+        TopoDS::Vertex(GeometryBuilder::makePoint(10.0, 0.0, 0.0)))));
+    right_wire.Add(TopoDS::Edge(GeometryBuilder::makeLine(
+        TopoDS::Vertex(GeometryBuilder::makePoint(10.0, 0.0, 0.0)), bottom)));
+    REQUIRE(right_wire.IsDone());
+
+    const TopoDS_Face left = BRepBuilderAPI_MakeFace(left_wire.Wire()).Face();
+    const TopoDS_Face right = BRepBuilderAPI_MakeFace(right_wire.Wire()).Face();
+    REQUIRE_FALSE(left_boundary.IsSame(right_boundary));
+    const TopoDS_Shape root = makeShapePairRoot(left, right);
+
+    const TopoDS_Shape result =
+        GeometryTopologyEditor::stitchGapFromSeedEdge(root, left_boundary, 0.01);
+    REQUIRE(countSubshapes(result, TopAbs_FACE) == 2);
+    REQUIRE(countSharedEdges(result) >= 1);
+    REQUIRE(BRepCheck_Analyzer(result).IsValid());
+}
+
 TEST_CASE("GeometryTopologyEditor splits a nested solid face with an on-face edge")
 {
     const TopoDS_Shape box =
@@ -1289,6 +1331,83 @@ TEST_CASE("GeometryTopologyEditor rejects a face nested in a solid")
 
     REQUIRE_THROWS_AS(
         GeometryTopologyEditor::removeTopLevelShape(root, nested_face, false),
+        std::invalid_argument);
+}
+
+TEST_CASE("GeometryTopologyEditor removes a nested face from a solid")
+{
+    const TopoDS_Shape box =
+        GeometryBuilder::makeBox(0.0, 0.0, 0.0, 10.0, 20.0, 30.0);
+    TopExp_Explorer face_exp(box, TopAbs_FACE);
+    REQUIRE(face_exp.More());
+    const TopoDS_Face nested_face = TopoDS::Face(face_exp.Current());
+    const TopoDS_Shape root = makeGeometryRoot(box);
+    REQUIRE(countSubshapes(root, TopAbs_FACE) == 6);
+
+    const TopoDS_Shape result =
+        GeometryTopologyEditor::removeShape(root, nested_face, true);
+
+    REQUIRE_FALSE(result.IsNull());
+    REQUIRE(countSubshapes(result, TopAbs_FACE) == 5);
+    // 缺面后 Solid 不再闭合，结果应为 Shell 而非无效 Solid。
+    REQUIRE(countSubshapes(result, TopAbs_SOLID) == 0);
+    REQUIRE(BRepCheck_Analyzer(result).IsValid());
+}
+
+TEST_CASE("GeometryTopologyEditor removes a split face piece from a solid")
+{
+    // 模拟「分割突出面片后删除小块」工作流：先切开底面，再删掉其中一块。
+    const TopoDS_Shape box =
+        GeometryBuilder::makeBox(0.0, 0.0, 0.0, 10.0, 20.0, 30.0);
+    const TopoDS_Face bottom_face = findFaceOnZPlane(box, 0.0);
+    REQUIRE_FALSE(bottom_face.IsNull());
+    const TopoDS_Vertex first = findFaceVertex(bottom_face, 0.0, 0.0, 0.0);
+    const TopoDS_Vertex second = findFaceVertex(bottom_face, 10.0, 20.0, 0.0);
+    REQUIRE_FALSE(first.IsNull());
+    REQUIRE_FALSE(second.IsNull());
+    const TopoDS_Edge diagonal = TopoDS::Edge(GeometryBuilder::makeLine(first, second));
+    const TopoDS_Shape root = makeGeometryRoot(box);
+
+    const TopoDS_Shape split_result = GeometryTopologyEditor::splitFace(
+        root, bottom_face, std::vector<TopoDS_Edge> { diagonal });
+    REQUIRE(countSubshapes(split_result, TopAbs_FACE) == 7);
+
+    // 取分割后两块底面中面积较小的一块作为「突出面片」删除。
+    std::vector<TopoDS_Face> bottom_pieces;
+    for (TopExp_Explorer face_exp(split_result, TopAbs_FACE); face_exp.More(); face_exp.Next()) {
+        const TopoDS_Face face = TopoDS::Face(face_exp.Current());
+        bool on_z0 = true;
+        for (TopExp_Explorer vertex_exp(face, TopAbs_VERTEX); vertex_exp.More(); vertex_exp.Next()) {
+            if (std::abs(BRep_Tool::Pnt(TopoDS::Vertex(vertex_exp.Current())).Z()) > 1.0e-7) {
+                on_z0 = false;
+                break;
+            }
+        }
+        if (on_z0)
+            bottom_pieces.push_back(face);
+    }
+    REQUIRE(bottom_pieces.size() == 2);
+
+    const TopoDS_Shape result =
+        GeometryTopologyEditor::removeShape(split_result, bottom_pieces.front(), true);
+
+    REQUIRE_FALSE(result.IsNull());
+    REQUIRE(countSubshapes(result, TopAbs_FACE) == 6);
+    REQUIRE(countSubshapes(result, TopAbs_SOLID) == 0);
+    REQUIRE(BRepCheck_Analyzer(result).IsValid());
+}
+
+TEST_CASE("GeometryTopologyEditor rejects deleting a nested edge alone")
+{
+    const TopoDS_Shape box =
+        GeometryBuilder::makeBox(0.0, 0.0, 0.0, 10.0, 20.0, 30.0);
+    TopExp_Explorer edge_exp(box, TopAbs_EDGE);
+    REQUIRE(edge_exp.More());
+    const TopoDS_Edge nested_edge = TopoDS::Edge(edge_exp.Current());
+    const TopoDS_Shape root = makeGeometryRoot(box);
+
+    REQUIRE_THROWS_AS(
+        GeometryTopologyEditor::removeShape(root, nested_edge, true),
         std::invalid_argument);
 }
 

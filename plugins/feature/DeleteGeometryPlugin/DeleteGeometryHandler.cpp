@@ -21,7 +21,7 @@ void DeleteGeometryHandler::setup(FeatureRegistrar& reg, FeatureContext& /*ctx*/
     // 删除目标组件由所选形状反查，无需在对象树中选中组件
     reg.addParameter({ ArgTypeEnum::Selector, "目标几何",
         "GeometryFace,GeometryVertex,GeometryEdge,GeometrySolid",
-        "请选择一个顶层几何点、边、面或体" });
+        "请选择一个几何点、边、面或体；面可为 Shell/Solid 内的嵌套面" });
     reg.addParameter({ ArgTypeEnum::Bool, "同时删除下级拓扑", "false",
         "关闭时保留直接下级拓扑，开启时不影响其他形状共享的拓扑" });
     reg.addMenuItem({ "几何", "删除几何", "qrc:/images/toolbar/Geometry/delete_geometry.svg" });
@@ -79,8 +79,9 @@ std::any DeleteGeometryHandler::execute(FeatureContext& ctx)
             return std::string("目标组件没有几何。");
 
         // 在释放旧索引前复制 OCC Shape 句柄，并先完成纯 OCC 根拓扑重建。
+        // 嵌套 Face（Shell/Solid 内）也允许删除，用于切除分割后的突出面片。
         const TopoDS_Shape target = *selected_shape;
-        TopoDS_Shape result = GeometryTopologyEditor::removeTopLevelShape(
+        TopoDS_Shape result = GeometryTopologyEditor::removeShape(
             *component->geometry->rootShape, target, delete_children);
 
         auto component_operator = ctx.componentOperator
