@@ -30,6 +30,7 @@ TEST_CASE("QRenderWindow releases interaction actors before recreating VTK resou
         auto* data = QRenderWindow::Data::SafeDownCast(user_data);
         REQUIRE(data != nullptr);
         auto* actors = data->renderer_->GetActors();
+        // InteractionService 添加点、实线、虚线三个标注 actor；renderer 还可包含选择高亮等 actor。
         REQUIRE(actors->GetNumberOfItems() >= 3);
         vtkWeakPointer<vtkActor> interaction_actor = actors->GetLastActor();
         REQUIRE(interaction_actor.GetPointer() != nullptr);

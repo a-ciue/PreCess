@@ -286,6 +286,7 @@ TEST_CASE("DockQml: docking area loads from QML and lays out docks")
     };
 
     // 标签模型变更后的 ListView 布局在 polish 阶段完成；处理事件并不保证坐标已更新。
+    // 后续各场景在读取坐标前就地断言等待结果，保留具体失败位置，便于定位未完成布局的操作。
     REQUIRE(QQuickTest::qWaitForPolish(&host_window));
     QQuickItem* tab1 = tab_item(1);
     REQUIRE(tab1 != nullptr);
