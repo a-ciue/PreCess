@@ -11,10 +11,6 @@ import app.core
 RowLayout {
     id:root
     signal clearButtonClicked
-    signal confirmButtonClicked
-    // 选择已提交给参数后发出：渲染侧可复位高亮（确认即本轮选择结束）
-    signal selectionConfirmed
-    property QSelection selection
 
     // 当前角度扩散参数，由渲染区域传入。
     property bool faceSelectByAngle
@@ -85,16 +81,6 @@ RowLayout {
             if (!isNaN(value))
                 root.faceSelectionSpreadEdited(root.faceSelectByAngle,Math.max(0.0, Math.min(180.0, value)))
         }
-    }
-    Button{
-        text: "确认"
-        onClicked: {
-            root.confirmButtonClicked()
-            App.selection.confirmed(root.selection)
-            root.selectionConfirmed()
-        }
-        enabled: App.selection.listeningSelectorIndex >= 0
-        opacity: enabled ? 1.0 : 0.6
     }
     /** type:string 选择框中当前文本 */
     property alias comboBoxSelectedString: selectModeComboBox.currentText

@@ -137,10 +137,12 @@ void QRenderWindowStyle::OnLeftButtonUp()
             int ymin = std::min(box_start_[1], box_end_[1]);
             int ymax = std::max(box_start_[1], box_end_[1]);
             select_manager_->selectArea(xmin, ymin, xmax, ymax, op);
+            this->InvokeEvent(vtkCommand::SelectionChangedEvent);
         } else if (click_ && select_manager_) {
             int pos[2];
             iren->GetEventPosition(pos);
             select_manager_->select(pos[0], pos[1], op);
+            this->InvokeEvent(vtkCommand::SelectionChangedEvent);
         }
         detachRubberBand();
         box_selecting_ = false;
@@ -154,8 +156,10 @@ void QRenderWindowStyle::OnLeftButtonUp()
         this->GetInteractor()->GetEventPosition(pos);
         if (interaction_service_ && interaction_service_->hasActiveState())
             interaction_service_->pick(pos[0], pos[1]);
-        else if (select_manager_)
+        else if (select_manager_) {
             select_manager_->select(pos[0], pos[1], op);
+            this->InvokeEvent(vtkCommand::SelectionChangedEvent);
+        }
     }
 
     vtkInteractorStyleTrackballCamera::OnLeftButtonUp();

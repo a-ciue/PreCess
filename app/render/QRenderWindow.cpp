@@ -270,6 +270,9 @@ QQuickVTKItem::vtkUserData QRenderWindow::initializeVTK(vtkRenderWindow* renderW
     vtk->plane_widget_->SetRepresentation(rep);
     vtk->plane_widget_->AddObserver(vtkCommand::InteractionEvent, callback);
 
+    render_selection_revision_ = selection_revision_;
+    vtk->style_->AddObserver(vtkCommand::SelectionChangedEvent, this, &QRenderWindow::publishSelection);
+    publishSelection();
     return vtk;
 }
 
@@ -350,6 +353,7 @@ void QRenderWindow::deleteModel(Index model_id)
         }
 
         this->select_manager_->clearSelection();
+        publishSelection();
     });
 }
 
@@ -367,6 +371,7 @@ void QRenderWindow::deleteComponent(Index component_id)
         }
 
         this->select_manager_->clearSelection();
+        publishSelection();
     });
 }
 
@@ -400,6 +405,7 @@ void QRenderWindow::onModelChanged(Index model_id)
 
         // Actor 即将重新加载，先释放引用旧 PolyData 和 OCC Shape 的选择器。
         this->select_manager_->clearSelection();
+        publishSelection();
         auto component_ids = model_query_->getComponentIds(model_id);
 
         for (Index component_id : component_ids) {
@@ -427,6 +433,7 @@ void QRenderWindow::onComponentChanged(Index component_id)
 
         // Component 的子形状索引和 Actor 数据会更新，旧高亮选择器不能继续复用。
         this->select_manager_->clearSelection();
+        publishSelection();
 
         if (vtk->mesh_actor_manager_) {
             auto mesh_data = this->model_query_->getMeshDataByComponent(component_id);
@@ -511,18 +518,38 @@ void QRenderWindow::setGeometryVisibility(Index component_id, bool visibility)
 
 QSelection* QRenderWindow::selectedIDs()
 {
-    std::unique_ptr<Selection> data = this->select_manager_->getSelection();
-    if (!data) {
+    if (!selection_snapshot_)
         return nullptr;
-    }
-
-    // 保留 SelectManager 实际拾取到的 component_id；如果拾取器未提供，再退到当前活动组件
-    if (data->component_id < 0) {
-        data->component_id = this->cur_component_id_;
-    }
-    QSelection* selection = new QSelection(std::move(data));
+    auto* selection = new QSelection(std::make_unique<Selection>(*selection_snapshot_));
     QJSEngine::setObjectOwnership(selection, QJSEngine::JavaScriptOwnership);
     return selection;
+}
+
+void QRenderWindow::setSelectionRevision(int revision)
+{
+    if (selection_revision_ == revision)
+        return;
+    selection_revision_ = revision;
+    selection_snapshot_.reset();
+    emit selectionRevisionChanged();
+    dispatch_async([this, revision](vtkRenderWindow*, vtkUserData) {
+        render_selection_revision_ = revision;
+        select_manager_->clearSelection();
+        publishSelection();
+    });
+}
+
+void QRenderWindow::publishSelection()
+{
+    std::shared_ptr<Selection> snapshot = select_manager_->getSelection();
+    if (snapshot && snapshot->component_id < 0)
+        snapshot->component_id = cur_component_id_;
+    const int revision = render_selection_revision_;
+    QMetaObject::invokeMethod(&selection_dispatcher_, [this, snapshot, revision] {
+        if (revision != selection_revision_)
+            return;
+        selection_snapshot_ = snapshot;
+        emit selectedChanged(); }, Qt::QueuedConnection);
 }
 
 void QRenderWindow::setModelQuery(QModelQuery* query)
@@ -551,6 +578,7 @@ void QRenderWindow::setSelectMode(QString select_mode)
 {
     dispatch_async([select_mode, this](vtkRenderWindow* renderWindow, vtkUserData userData) -> void {
         select_manager_->setSelectMode(select_mode.toStdString());
+        publishSelection();
     });
 }
 
@@ -565,6 +593,7 @@ void QRenderWindow::clearSelection()
 {
     dispatch_async([this](vtkRenderWindow* renderWindow, vtkUserData userData) -> void {
         this->select_manager_->clearSelection();
+        publishSelection();
     });
 }
 

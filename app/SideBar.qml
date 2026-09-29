@@ -59,6 +59,7 @@ Item{
             enabled: !!(root.activeOp && root.activeOp.info)
             Layout.fillWidth: true
             onClicked:{
+                App.selection.listeningSelectorIndex = -1
                 if (root.activeOp && root.activeOp.execute) {
                     try {
                         const result = root.activeOp.execute(App.selection.activeComponentId, root.parameters)
@@ -361,7 +362,7 @@ Item{
 
             Button{
                 id: selectStartButton
-                text: "开始选择"
+                text: checked ? "结束选择" : "开始选择"
                 checked: App.selection.listeningSelectorIndex === index
                 onClicked: {
                     if (!checked) {
@@ -387,10 +388,9 @@ Item{
             Connections {
                 target: App.selection
                 enabled: selectStartButton.checked
-                function onConfirmed(selection) {
+                function onSelectionUpdated(selection) {
                     value = selection
                     root.setParam(index, value)
-                    App.selection.listeningSelectorIndex = -1
                 }
             }
 

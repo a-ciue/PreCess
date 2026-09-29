@@ -25,6 +25,8 @@
 #include <vtkRenderer.h>
 #include <vtkPoints.h>
 
+#include <memory>
+
 class MeshActor;
 class SelectManager;
 class InteractionService;
@@ -40,6 +42,7 @@ class QFeatureSystemAdaptor;
 struct QRenderWindow : QQuickVTKItem { // 结构体继承QQuickVTKItem
     Q_OBJECT
     Q_PROPERTY(QSelection* selectedIDs READ selectedIDs NOTIFY selectedChanged)
+    Q_PROPERTY(int selectionRevision READ selectionRevision WRITE setSelectionRevision NOTIFY selectionRevisionChanged)
     Q_PROPERTY(QModelQuery* query MEMBER model_query_ WRITE setModelQuery REQUIRED)
     Q_PROPERTY(int geometryStyle READ getGeometryStyle WRITE setGeometryStyle NOTIFY geometryStyleChanged)
     Q_PROPERTY(int meshStyle READ getMeshStyle WRITE setMeshStyle NOTIFY meshStyleChanged)
@@ -73,6 +76,9 @@ public:
     Q_INVOKABLE void resetCamera();
 
     QSelection* selectedIDs();
+    //! @brief GUI 侧选择参数版本，防止旧渲染结果写入新参数。
+    int selectionRevision() const { return selection_revision_; }
+    void setSelectionRevision(int revision);
     void setModelQuery(QModelQuery* query);
 
     /**
@@ -207,12 +213,21 @@ public:
 
 signals:
     void selectedChanged();
+    void selectionRevisionChanged();
     void geometryStyleChanged();
     void meshStyleChanged();
     void clicked();
     void rightClicked();
 
 private:
+    //! @brief 渲染线程制作选择快照，排队交付 GUI 线程，禁止 QML 直接读取拾取器。
+    void publishSelection();
+    // QQuickVTKItem 会接管事件分发，GUI 排队通知交给独立 QObject。
+    QObject selection_dispatcher_;
+    std::shared_ptr<Selection> selection_snapshot_; //> 仅 GUI 线程访问
+    int selection_revision_ {}; //> GUI 侧版本
+    int render_selection_revision_ {}; //> 渲染侧已应用版本
+
     GeometryRenderStyle geometry_style_ { GeometryRenderStyle::SurfaceWithEdges };
     MeshRenderStyle mesh_style_ { MeshRenderStyle::FaceWithEdges };
 
@@ -220,7 +235,7 @@ private:
     std::unique_ptr<InteractionService> interaction_service_;
     systems::feature::QFeatureSystemAdaptor* feature_adaptor_ {};
     MeshActor* cur_actor_ {};
-    Index cur_component_id_;
+    Index cur_component_id_ { -1 };
 
     std::unique_ptr<QMouseEvent> _click;
     const Data* data_ {};
