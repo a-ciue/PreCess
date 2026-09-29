@@ -69,6 +69,7 @@ QString QModelQuery::getComponentName(Index component_id) const
     return name ? QString::fromStdString(*name) : QString();
 }
 
+
 QVariantList QModelQuery::getComponentAttriInfo(Index component_id) const
 {
     QVariantList out;

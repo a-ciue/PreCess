@@ -26,7 +26,11 @@
 #include <vtkPlane.h>
 
 #include <cmath>
+#include <memory>
+#include <optional>
+#include <string>
 #include <utility>
+#include <vector>
 
 namespace {
 //! @brief 比例尺刻度字号因子（vtkAxisActor2D::FontFactor，默认 1.0，取值区间 0.1~2.0）
@@ -155,6 +159,7 @@ public:
 private:
     QModelQuery* query_ {};
 };
+
 }
 
 QRenderWindow::QRenderWindow() = default;
@@ -398,7 +403,8 @@ void QRenderWindow::onModelChanged(Index model_id)
 
             auto geometry_data = model_query_->getGeometryVtkDataByComponent(component_id);
             if (geometry_data) {
-                vtk->geometry_actor_manager_->loadGeometry(*geometry_data);
+                vtk->geometry_actor_manager_->loadGeometry(*geometry_data,
+                    model_query_->getComponentName(component_id).toStdString());
             }
         }
     });
@@ -427,7 +433,8 @@ void QRenderWindow::onComponentChanged(Index component_id)
         if (vtk->geometry_actor_manager_) {
             auto geometry_data = this->model_query_->getGeometryVtkDataByComponent(component_id);
             if (geometry_data) {
-                vtk->geometry_actor_manager_->loadGeometry(*geometry_data);
+                vtk->geometry_actor_manager_->loadGeometry(*geometry_data,
+                    model_query_->getComponentName(component_id).toStdString());
             } else {
                 vtk->geometry_actor_manager_->deleteComponent(component_id);
             }
@@ -693,6 +700,37 @@ void QRenderWindow::setDihedralAngleRange(double minimum, double maximum)
         Data* vtk = Data::SafeDownCast(userData);
         if (vtk->mesh_actor_manager_)
             vtk->mesh_actor_manager_->setDihedralAngleRange(minimum, maximum);
+    });
+}
+
+void QRenderWindow::setGeometryTopologyDiagnosticCategoryEnabled(int category, bool enabled)
+{
+    dispatch_async([category, enabled, this](vtkRenderWindow* renderWindow,
+                        vtkUserData userData) -> void {
+        Data* vtk = Data::SafeDownCast(userData);
+        if (!vtk || !vtk->geometry_actor_manager_)
+            return;
+        vtk->geometry_actor_manager_->setTopologyDiagnosticCategoryEnabled(category, enabled);
+    });
+}
+
+void QRenderWindow::setGeometryTopologyDiagnosticSmallEdgeLength(double threshold)
+{
+    dispatch_async([threshold](vtkRenderWindow* renderWindow, vtkUserData userData) -> void {
+        Data* vtk = Data::SafeDownCast(userData);
+        if (!vtk || !vtk->geometry_actor_manager_)
+            return;
+        vtk->geometry_actor_manager_->setTopologyDiagnosticSmallEdgeLength(threshold);
+    });
+}
+
+void QRenderWindow::setGeometryTopologyDiagnosticSmallFaceArea(double threshold)
+{
+    dispatch_async([threshold](vtkRenderWindow* renderWindow, vtkUserData userData) -> void {
+        Data* vtk = Data::SafeDownCast(userData);
+        if (!vtk || !vtk->geometry_actor_manager_)
+            return;
+        vtk->geometry_actor_manager_->setTopologyDiagnosticSmallFaceArea(threshold);
     });
 }
 

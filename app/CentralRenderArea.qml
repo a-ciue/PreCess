@@ -62,7 +62,7 @@ Page {
                 readonly property int subMenuCloseDelay: 500
                 text: myItem ? (myItem.geometryStyle >= 0 && myItem.geometryStyle < geoLabels.length ? geoLabels[myItem.geometryStyle] : "几何") : "几何"
                 Layout.fillHeight: true
-                onClicked: geoMenu.open()
+                onClicked: geoMenu.visible ? geoMenu.close() : geoMenu.open()
 
                 Timer { id: geoSubCloseTimer; interval: geoBtn.subMenuCloseDelay; onTriggered: { geoFaceMenu.close(); geoTransMenu.close(); geoWireMenu.close() } }
 
@@ -199,7 +199,7 @@ Page {
                 readonly property int subMenuCloseDelay: 500
                 text: myItem ? (myItem.meshStyle >= 0 && myItem.meshStyle < meshLabels.length ? meshLabels[myItem.meshStyle] : "网格") : "网格"
                 Layout.fillHeight: true
-                onClicked: meshMenu.open()
+                onClicked: meshMenu.visible ? meshMenu.close() : meshMenu.open()
 
                 Timer { id: meshSubCloseTimer; interval: meshBtn.subMenuCloseDelay; onTriggered: { meshFaceMenu.close(); meshTransMenu.close(); meshWireMenu.close() } }
 
@@ -328,10 +328,10 @@ Page {
 
             ToolButton {
                 id: topologyDiagnosticBtn
-                text: "拓扑诊断"
+                text: "网格诊断"
                 Layout.preferredWidth: 70
                 Layout.fillHeight: true
-                onClicked: topologyDiagnosticMenu.open()
+                onClicked: topologyDiagnosticMenu.visible ? topologyDiagnosticMenu.close() : topologyDiagnosticMenu.open()
 
                 Menu {
                     id: topologyDiagnosticMenu
@@ -433,6 +433,135 @@ Page {
                             }
                         }
                         onTriggered: topologyDiagnosticMenu.keepOpenAfterTrigger()
+                    }
+                }
+            }
+
+            ToolButton {
+                id: geometryTopologyDiagnosticBtn
+                text: "几何诊断"
+                Layout.preferredWidth: 70
+                Layout.fillHeight: true
+                onClicked: geometryTopologyDiagnosticMenu.visible ? geometryTopologyDiagnosticMenu.close() : geometryTopologyDiagnosticMenu.open()
+
+                Menu {
+                    id: geometryTopologyDiagnosticMenu
+                    closePolicy: Popup.CloseOnEscape | Popup.CloseOnPressOutsideParent
+                    onAboutToShow: { y = -height }
+
+                    function keepOpenAfterTrigger() {
+                        Qt.callLater(function() {
+                            if (!geometryTopologyDiagnosticMenu.visible)
+                                geometryTopologyDiagnosticMenu.open()
+                        })
+                    }
+
+                    // 类别序号必须与 GeometryTopologyDiagnosticCategory 的枚举顺序保持一致。
+                    MenuItem {
+                        text: "边界边"
+                        checkable: true
+                        onToggled: myItem.setGeometryTopologyDiagnosticCategoryEnabled(0, checked)
+                        onTriggered: geometryTopologyDiagnosticMenu.keepOpenAfterTrigger()
+                    }
+                    MenuItem {
+                        text: "孤立边"
+                        checkable: true
+                        onToggled: myItem.setGeometryTopologyDiagnosticCategoryEnabled(1, checked)
+                        onTriggered: geometryTopologyDiagnosticMenu.keepOpenAfterTrigger()
+                    }
+                    MenuItem {
+                        text: "非流形边"
+                        checkable: true
+                        onToggled: myItem.setGeometryTopologyDiagnosticCategoryEnabled(2, checked)
+                        onTriggered: geometryTopologyDiagnosticMenu.keepOpenAfterTrigger()
+                    }
+                    MenuSeparator {}
+                    MenuItem {
+                        text: "细小边"
+                        checkable: true
+                        onToggled: myItem.setGeometryTopologyDiagnosticCategoryEnabled(3, checked)
+                        onTriggered: geometryTopologyDiagnosticMenu.keepOpenAfterTrigger()
+                    }
+                    MenuItem {
+                        text: "细小面"
+                        checkable: true
+                        onToggled: myItem.setGeometryTopologyDiagnosticCategoryEnabled(4, checked)
+                        onTriggered: geometryTopologyDiagnosticMenu.keepOpenAfterTrigger()
+                    }
+                    MenuItem {
+                        text: "重复面"
+                        checkable: true
+                        onToggled: myItem.setGeometryTopologyDiagnosticCategoryEnabled(5, checked)
+                        onTriggered: geometryTopologyDiagnosticMenu.keepOpenAfterTrigger()
+                    }
+                    MenuItem {
+                        text: "自相交"
+                        checkable: true
+                        onToggled: myItem.setGeometryTopologyDiagnosticCategoryEnabled(6, checked)
+                        onTriggered: geometryTopologyDiagnosticMenu.keepOpenAfterTrigger()
+                    }
+                    MenuItem {
+                        text: "几何干涉"
+                        checkable: true
+                        onToggled: myItem.setGeometryTopologyDiagnosticCategoryEnabled(7, checked)
+                        onTriggered: geometryTopologyDiagnosticMenu.keepOpenAfterTrigger()
+                    }
+                    MenuItem {
+                        text: "无效拓扑"
+                        checkable: true
+                        onToggled: myItem.setGeometryTopologyDiagnosticCategoryEnabled(8, checked)
+                        onTriggered: geometryTopologyDiagnosticMenu.keepOpenAfterTrigger()
+                    }
+                    MenuSeparator {}
+                    MenuItem {
+                        id: geometrySmallEdgeLengthItem
+                        text: "细小边长度"
+                        contentItem: RowLayout {
+                            Label {
+                                text: geometrySmallEdgeLengthItem.text
+                                Layout.fillWidth: true
+                            }
+                            TextField {
+                                Layout.preferredWidth: 100
+                                text: "0.01"
+                                selectByMouse: true
+                                validator: DoubleValidator {
+                                    bottom: 0.0
+                                    notation: DoubleValidator.ScientificNotation
+                                }
+                                onEditingFinished: {
+                                    const threshold = Number(text)
+                                    if (threshold > 0)
+                                        myItem.setGeometryTopologyDiagnosticSmallEdgeLength(threshold)
+                                }
+                            }
+                        }
+                        onTriggered: geometryTopologyDiagnosticMenu.keepOpenAfterTrigger()
+                    }
+                    MenuItem {
+                        id: geometrySmallFaceAreaItem
+                        text: "细小面面积"
+                        contentItem: RowLayout {
+                            Label {
+                                text: geometrySmallFaceAreaItem.text
+                                Layout.fillWidth: true
+                            }
+                            TextField {
+                                Layout.preferredWidth: 100
+                                text: "0.01"
+                                selectByMouse: true
+                                validator: DoubleValidator {
+                                    bottom: 0.0
+                                    notation: DoubleValidator.ScientificNotation
+                                }
+                                onEditingFinished: {
+                                    const threshold = Number(text)
+                                    if (threshold > 0)
+                                        myItem.setGeometryTopologyDiagnosticSmallFaceArea(threshold)
+                                }
+                            }
+                        }
+                        onTriggered: geometryTopologyDiagnosticMenu.keepOpenAfterTrigger()
                     }
                 }
             }

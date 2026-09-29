@@ -137,6 +137,19 @@ public:
     /** @brief 设置二面角诊断边的角度范围，单位为度 */
     Q_INVOKABLE void setDihedralAngleRange(double minimum, double maximum);
 
+    /**
+     * @brief 启用或停用一种几何拓扑诊断类别。
+     * @param category 类别序号，依次为边界边、孤立边、非流形边、细小边、细小面、重复面、
+     *        自相交、几何干涉、无效拓扑。
+     * @param enabled 是否启用。
+     */
+    Q_INVOKABLE void setGeometryTopologyDiagnosticCategoryEnabled(int category, bool enabled);
+
+    /** @brief 设置几何拓扑诊断的细小边长度阈值。 */
+    Q_INVOKABLE void setGeometryTopologyDiagnosticSmallEdgeLength(double threshold);
+    /** @brief 设置几何拓扑诊断的细小面面积阈值。 */
+    Q_INVOKABLE void setGeometryTopologyDiagnosticSmallFaceArea(double threshold);
+
     Q_INVOKABLE void onModelChanged(Index model_id);
     Q_INVOKABLE void onComponentChanged(Index component_id);
 
