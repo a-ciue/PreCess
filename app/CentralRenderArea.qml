@@ -595,7 +595,6 @@ Page {
                 text: "裁剪"
                 flat: true
                 checkable: true
-                Layout.preferredWidth: 50
                 Layout.fillHeight: true
                 onClicked: {
                     myItem.setMeshClip(checked)
@@ -605,7 +604,6 @@ Page {
                 text: "比例尺"
                 flat: true
                 checkable: true
-                Layout.preferredWidth: 50
                 Layout.fillHeight: true
                 onClicked: {
                     myItem.setScaleBarVisible(checked)
@@ -614,7 +612,6 @@ Page {
             ToolButton {
                 text: "重置视图"
                 flat: true
-                Layout.preferredWidth: 70
                 Layout.fillHeight: true
                 onClicked: myItem.resetCamera()
             }
