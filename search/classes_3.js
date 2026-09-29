@@ -1,7 +1,7 @@
 var searchData=
 [
   ['data_0',['Data',['../structQRenderWindow_1_1Data.html',1,'QRenderWindow']]],
-  ['diagnosticpipeline_1',['DiagnosticPipeline',['../structTopologyDiagnosticActor_1_1DiagnosticPipeline.html',1,'TopologyDiagnosticActor']]],
+  ['diagnosticpipeline_1',['DiagnosticPipeline',['../structGeometryTopologyDiagnosticActor_1_1DiagnosticPipeline.html',1,'GeometryTopologyDiagnosticActor::DiagnosticPipeline'],['../structTopologyDiagnosticActor_1_1DiagnosticPipeline.html',1,'TopologyDiagnosticActor::DiagnosticPipeline']]],
   ['divider_2',['Divider',['../classdock_1_1Divider.html',1,'dock']]],
   ['divideritem_3',['DividerItem',['../classdock_1_1ui_1_1DividerItem.html',1,'dock::ui']]],
   ['dockareaitem_4',['DockAreaItem',['../classdock_1_1ui_1_1DockAreaItem.html',1,'dock::ui']]],

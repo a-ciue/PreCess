@@ -5,12 +5,14 @@ var searchData=
   ['lifecycle_5f_2',['lifecycle_',['../classdock_1_1DockPanel.html#a9378225db5c096138347b36c5c72f0eb',1,'dock::DockPanel']]],
   ['lifetime_5f_3',['lifetime_',['../classcore_1_1EventBus_1_1Subscription.html#ac90497f2500cac1b731d7132743bc472',1,'core::EventBus::Subscription::lifetime_'],['../classcore_1_1EventBus.html#af56b8996ac99a234df7b712f976a536c',1,'core::EventBus::lifetime_'],['../classEventBus_1_1Subscription.html#ac90497f2500cac1b731d7132743bc472',1,'EventBus::Subscription::lifetime_'],['../classEventBus.html#af56b8996ac99a234df7b712f976a536c',1,'EventBus::lifetime_']]],
   ['line_5factor_5f_4',['line_actor_',['../classGeometryActor.html#af5540aa138cd129aa2c90fc04c08190a',1,'GeometryActor']]],
-  ['line_5fonly_5f_5',['line_only_',['../classGeometryActor.html#aeb988547d807bb93817e63cf15b10a17',1,'GeometryActor']]],
-  ['line_5fsub_5fid_5farray_5f_6',['line_sub_id_array_',['../classGeometryActor.html#adac7266b15ce50e6498f71703d927678',1,'GeometryActor']]],
-  ['line_5funits_7',['LINE_UNITS',['../namespacehighlight.html#a481c315803ca4c54d0c27a16f2e95e1f',1,'highlight']]],
-  ['lines_8',['lines',['../structtinyobj_1_1shape__t.html#ac396e29ff9977e87eed5584c38d6cad3',1,'tinyobj::shape_t::lines'],['../structsystems_1_1interaction_1_1AnnotationBatch.html#adb78eea70f7cfb6d0ebd39ae0426a9f0',1,'systems::interaction::AnnotationBatch::lines'],['../structAnnotationBatch.html#adb78eea70f7cfb6d0ebd39ae0426a9f0',1,'AnnotationBatch::lines']]],
-  ['lines_5factor_5f_9',['lines_actor_',['../classInteractionService.html#ae9afa3db7f8a465184dec3d3e70d2736',1,'InteractionService']]],
-  ['lines_5fpoly_5f_10',['lines_poly_',['../classInteractionService.html#ab62bc52ccdcf8e9542967184cf1c5778',1,'InteractionService']]],
-  ['loaded_11',['loaded',['../TestObjMeshIO_8cpp.html#a70067fb23f4ab19d70f4e53c9465eec9',1,'TestObjMeshIO.cpp']]],
-  ['location_12',['location',['../structdock_1_1ZoneGeometry_1_1ZoneRect.html#ac561dbb8bbba9dfe69fc5af80cc85940',1,'dock::ZoneGeometry::ZoneRect']]]
+  ['line_5fdata_5f_5',['line_data_',['../classGeometryTopologyDiagnosticActor.html#adee12afbce0c05f2e50bbc72966e6a7a',1,'GeometryTopologyDiagnosticActor']]],
+  ['line_5fonly_5f_6',['line_only_',['../classGeometryActor.html#aeb988547d807bb93817e63cf15b10a17',1,'GeometryActor']]],
+  ['line_5fsub_5fid_5farray_5f_7',['line_sub_id_array_',['../classGeometryActor.html#adac7266b15ce50e6498f71703d927678',1,'GeometryActor']]],
+  ['line_5fsub_5fids_5f_8',['line_sub_ids_',['../classGeometryTopologyDiagnosticActor.html#a756a0591fda1de7edca3d77cc22c4519',1,'GeometryTopologyDiagnosticActor']]],
+  ['line_5funits_9',['LINE_UNITS',['../namespacehighlight.html#a481c315803ca4c54d0c27a16f2e95e1f',1,'highlight']]],
+  ['lines_10',['lines',['../structtinyobj_1_1shape__t.html#ac396e29ff9977e87eed5584c38d6cad3',1,'tinyobj::shape_t::lines'],['../structsystems_1_1interaction_1_1AnnotationBatch.html#adb78eea70f7cfb6d0ebd39ae0426a9f0',1,'systems::interaction::AnnotationBatch::lines'],['../structAnnotationBatch.html#adb78eea70f7cfb6d0ebd39ae0426a9f0',1,'AnnotationBatch::lines']]],
+  ['lines_5factor_5f_11',['lines_actor_',['../classInteractionService.html#ae9afa3db7f8a465184dec3d3e70d2736',1,'InteractionService']]],
+  ['lines_5fpoly_5f_12',['lines_poly_',['../classInteractionService.html#ab62bc52ccdcf8e9542967184cf1c5778',1,'InteractionService']]],
+  ['loaded_13',['loaded',['../TestObjMeshIO_8cpp.html#a70067fb23f4ab19d70f4e53c9465eec9',1,'TestObjMeshIO.cpp']]],
+  ['location_14',['location',['../structdock_1_1ZoneGeometry_1_1ZoneRect.html#ac561dbb8bbba9dfe69fc5af80cc85940',1,'dock::ZoneGeometry::ZoneRect']]]
 ];

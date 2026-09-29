@@ -257,6 +257,12 @@ Public 成员函数</h2></td></tr>
 <tr class="memdesc:ac7bef67fe487932abf700fb03d55c349"><td class="mdescLeft">&#160;</td><td class="mdescRight">启用或停用一种网格拓扑诊断类别  <br /></td></tr>
 <tr class="memitem:a90620d62046ea5a0b7da22909979a595" id="r_a90620d62046ea5a0b7da22909979a595"><td class="memItemLeft" align="right" valign="top">Q_INVOKABLE void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a90620d62046ea5a0b7da22909979a595">setDihedralAngleRange</a> (double minimum, double maximum)</td></tr>
 <tr class="memdesc:a90620d62046ea5a0b7da22909979a595"><td class="mdescLeft">&#160;</td><td class="mdescRight">设置二面角诊断边的角度范围，单位为度  <br /></td></tr>
+<tr class="memitem:a9ebdc145d9eb1722307bee55f790c4b3" id="r_a9ebdc145d9eb1722307bee55f790c4b3"><td class="memItemLeft" align="right" valign="top">Q_INVOKABLE void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a9ebdc145d9eb1722307bee55f790c4b3">setGeometryTopologyDiagnosticCategoryEnabled</a> (int category, bool enabled)</td></tr>
+<tr class="memdesc:a9ebdc145d9eb1722307bee55f790c4b3"><td class="mdescLeft">&#160;</td><td class="mdescRight">启用或停用一种几何拓扑诊断类别。  <br /></td></tr>
+<tr class="memitem:aa499060c266166d5e210c142132d0b96" id="r_aa499060c266166d5e210c142132d0b96"><td class="memItemLeft" align="right" valign="top">Q_INVOKABLE void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#aa499060c266166d5e210c142132d0b96">setGeometryTopologyDiagnosticSmallEdgeLength</a> (double threshold)</td></tr>
+<tr class="memdesc:aa499060c266166d5e210c142132d0b96"><td class="mdescLeft">&#160;</td><td class="mdescRight">设置几何拓扑诊断的细小边长度阈值。  <br /></td></tr>
+<tr class="memitem:ab65d03c76700bbe8b6d09efccf296703" id="r_ab65d03c76700bbe8b6d09efccf296703"><td class="memItemLeft" align="right" valign="top">Q_INVOKABLE void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ab65d03c76700bbe8b6d09efccf296703">setGeometryTopologyDiagnosticSmallFaceArea</a> (double threshold)</td></tr>
+<tr class="memdesc:ab65d03c76700bbe8b6d09efccf296703"><td class="mdescLeft">&#160;</td><td class="mdescRight">设置几何拓扑诊断的细小面面积阈值。  <br /></td></tr>
 <tr class="memitem:a3af809a7ceb535d3a9f7d465882ddbe9" id="r_a3af809a7ceb535d3a9f7d465882ddbe9"><td class="memItemLeft" align="right" valign="top">Q_INVOKABLE void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a3af809a7ceb535d3a9f7d465882ddbe9">onModelChanged</a> (<a class="el" href="Core_8h.html#a1673229bf7fec9388ac2a829a52d69b3">Index</a> model_id)</td></tr>
 <tr class="memitem:a2edaddf51ed0098d025ec514a3b23fe0" id="r_a2edaddf51ed0098d025ec514a3b23fe0"><td class="memItemLeft" align="right" valign="top">Q_INVOKABLE void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a2edaddf51ed0098d025ec514a3b23fe0">onComponentChanged</a> (<a class="el" href="Core_8h.html#a1673229bf7fec9388ac2a829a52d69b3">Index</a> component_id)</td></tr>
 <tr class="memitem:a61e905ae1619f2bcff8f6536c659c047" id="r_a61e905ae1619f2bcff8f6536c659c047"><td class="memItemLeft" align="right" valign="top">Q_INVOKABLE void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a61e905ae1619f2bcff8f6536c659c047">deleteModel</a> (<a class="el" href="Core_8h.html#a1673229bf7fec9388ac2a829a52d69b3">Index</a> mode_id)</td></tr>
@@ -938,6 +944,74 @@ Private 属性</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+</div>
+</div>
+<a id="a9ebdc145d9eb1722307bee55f790c4b3" name="a9ebdc145d9eb1722307bee55f790c4b3"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a9ebdc145d9eb1722307bee55f790c4b3">&#9670;&#160;</a></span>setGeometryTopologyDiagnosticCategoryEnabled()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void QRenderWindow::setGeometryTopologyDiagnosticCategoryEnabled </td>
+          <td>(</td>
+          <td class="paramtype">int</td>          <td class="paramname"><span class="paramname"><em>category</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">bool</td>          <td class="paramname"><span class="paramname"><em>enabled</em></span>&#160;)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>启用或停用一种几何拓扑诊断类别。 </p>
+<dl class="params"><dt>参数</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">category</td><td>类别序号，依次为边界边、孤立边、非流形边、细小边、细小面、重复面、 自相交、几何干涉、无效拓扑。 </td></tr>
+    <tr><td class="paramname">enabled</td><td>是否启用。 </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="aa499060c266166d5e210c142132d0b96" name="aa499060c266166d5e210c142132d0b96"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aa499060c266166d5e210c142132d0b96">&#9670;&#160;</a></span>setGeometryTopologyDiagnosticSmallEdgeLength()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void QRenderWindow::setGeometryTopologyDiagnosticSmallEdgeLength </td>
+          <td>(</td>
+          <td class="paramtype">double</td>          <td class="paramname"><span class="paramname"><em>threshold</em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>设置几何拓扑诊断的细小边长度阈值。 </p>
+
+</div>
+</div>
+<a id="ab65d03c76700bbe8b6d09efccf296703" name="ab65d03c76700bbe8b6d09efccf296703"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ab65d03c76700bbe8b6d09efccf296703">&#9670;&#160;</a></span>setGeometryTopologyDiagnosticSmallFaceArea()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void QRenderWindow::setGeometryTopologyDiagnosticSmallFaceArea </td>
+          <td>(</td>
+          <td class="paramtype">double</td>          <td class="paramname"><span class="paramname"><em>threshold</em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>设置几何拓扑诊断的细小面面积阈值。 </p>
 
 </div>
 </div>

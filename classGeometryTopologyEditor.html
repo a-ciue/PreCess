@@ -86,12 +86,73 @@ $(function() {
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 id="header-pub-static-methods" class="groupheader"><a id="pub-static-methods" name="pub-static-methods"></a>
 静态 Public 成员函数</h2></td></tr>
+<tr class="memitem:a94a71d526fb63756371658b7d76d2d20" id="r_a94a71d526fb63756371658b7d76d2d20"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="structGeometryTopologyDiagnosticResult.html">GeometryTopologyDiagnosticResult</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a94a71d526fb63756371658b7d76d2d20">diagnoseTopology</a> (const TopoDS_Shape &amp;root, double small_edge_length_threshold, double small_face_area_threshold, const <a class="el" href="structGeometryTopologyDiagnosticOptions.html">GeometryTopologyDiagnosticOptions</a> &amp;options={}, const std::atomic&lt; bool &gt; *cancel=nullptr)</td></tr>
+<tr class="memdesc:a94a71d526fb63756371658b7d76d2d20"><td class="mdescLeft">&#160;</td><td class="mdescRight">计算用于展示和后续清理的几何拓扑诊断结果。  <br /></td></tr>
 <tr class="memitem:a03ac45e0703bde8eb328b36254d5fcd2" id="r_a03ac45e0703bde8eb328b36254d5fcd2"><td class="memItemLeft" align="right" valign="top">static TopoDS_Shape&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a03ac45e0703bde8eb328b36254d5fcd2">removeTopLevelShape</a> (const TopoDS_Shape &amp;root, const TopoDS_Shape &amp;target, bool delete_children)</td></tr>
 <tr class="memdesc:a03ac45e0703bde8eb328b36254d5fcd2"><td class="mdescLeft">&#160;</td><td class="mdescRight">从根形状中删除一个顶层独立 Vertex、Edge、Face 或 Solid。  <br /></td></tr>
 </table>
 <a name="details" id="details"></a><h2 id="header-details" class="groupheader">详细描述</h2>
 <div class="textblock"><p>提供不依赖界面和模型管理的基础 OCC 拓扑编辑函数。 </p>
 </div><a name="doc-func-members" id="doc-func-members"></a><h2 id="header-doc-func-members" class="groupheader">成员函数说明</h2>
+<a id="a94a71d526fb63756371658b7d76d2d20" name="a94a71d526fb63756371658b7d76d2d20"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a94a71d526fb63756371658b7d76d2d20">&#9670;&#160;</a></span>diagnoseTopology()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="structGeometryTopologyDiagnosticResult.html">GeometryTopologyDiagnosticResult</a> GeometryTopologyEditor::diagnoseTopology </td>
+          <td>(</td>
+          <td class="paramtype">const TopoDS_Shape &amp;</td>          <td class="paramname"><span class="paramname"><em>root</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">double</td>          <td class="paramname"><span class="paramname"><em>small_edge_length_threshold</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">double</td>          <td class="paramname"><span class="paramname"><em>small_face_area_threshold</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const <a class="el" href="structGeometryTopologyDiagnosticOptions.html">GeometryTopologyDiagnosticOptions</a> &amp;</td>          <td class="paramname"><span class="paramname"><em>options</em></span><span class="paramdefsep"> = </span><span class="paramdefval">{}</span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const std::atomic&lt; bool &gt; *</td>          <td class="paramname"><span class="paramname"><em>cancel</em></span><span class="paramdefsep"> = </span><span class="paramdefval">nullptr</span>&#160;)</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel static">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>计算用于展示和后续清理的几何拓扑诊断结果。 </p>
+<p>边按相邻面的数量分为孤立边、边界边和非流形边；尺寸诊断按独立的长度、 面积阈值筛选细小边和细小面；重复面、自相交、几何干涉和无效拓扑使用 OCC 数值精度。 自相交检查单 Face 及同一真实 Solid 内部；几何干涉独立检查不同 Solid/自由 Surface， 不根据包围盒推测 Part；不同 Solid 或自由 Surface 之间的面相交即报。</p>
+<dl class="params"><dt>参数</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">root</td><td>要诊断的几何根形状。 </td></tr>
+    <tr><td class="paramname">small_edge_length_threshold</td><td>细小边长度阈值，必须大于零。 </td></tr>
+    <tr><td class="paramname">small_face_area_threshold</td><td>细小面面积阈值，必须大于零。 </td></tr>
+    <tr><td class="paramname">options</td><td>本次需要计算的诊断类别。 </td></tr>
+    <tr><td class="paramname">cancel</td><td>可选的协作式取消标记；置位后在候选对之间抛出 GeometryTopologyDiagnosticCancelled，不会中断单次 OCC 运算。 </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>返回</dt><dd>一次计算得到的全部诊断类别。</dd></dl>
+<p>等价于用无限预算把 <a class="el" href="classGeometryTopologyDiagnosticSession.html" title="可分段推进的一次几何拓扑诊断。">GeometryTopologyDiagnosticSession</a> 一次推进到完成；需要让长诊断 给其它请求让路时，改用会话接口分片推进。 </p>
+
+</div>
+</div>
 <a id="a03ac45e0703bde8eb328b36254d5fcd2" name="a03ac45e0703bde8eb328b36254d5fcd2"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a03ac45e0703bde8eb328b36254d5fcd2">&#9670;&#160;</a></span>removeTopLevelShape()</h2>
 

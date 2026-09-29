@@ -8,7 +8,7 @@ var searchData=
   ['block_5fdatas_5',['block_datas',['../structBlockDatas.html#a54b235eea820f0aed5e723c39cfa7211',1,'BlockDatas']]],
   ['blockid_6',['blockID',['../structPatch.html#a0f0076e44991d5c7303458285215fdd1',1,'Patch']]],
   ['blocks_5f_7',['blocks_',['../structMeshData.html#ad5bf8ed9eb3e17cfadf3077b00c2fa2a',1,'MeshData']]],
-  ['boundary_5fedges_8',['boundary_edges',['../structMeshTopologyDiagnosticResult.html#ac3c00b854af7eeed7d6e7719dc41ff35',1,'MeshTopologyDiagnosticResult']]],
+  ['boundary_5fedges_8',['boundary_edges',['../structMeshTopologyDiagnosticResult.html#ac3c00b854af7eeed7d6e7719dc41ff35',1,'MeshTopologyDiagnosticResult::boundary_edges'],['../structGeometryTopologyDiagnosticResult.html#ada5cecc70ee45e7c7ac7e6916f23c258',1,'GeometryTopologyDiagnosticResult::boundary_edges']]],
   ['boundary_5ffaces_9',['boundary_faces',['../structMeshTopologyDiagnosticResult.html#ae83597a96f6f4e20e530c2eb445a6bde',1,'MeshTopologyDiagnosticResult']]],
   ['box_5fend_5f_10',['box_end_',['../classQRenderWindowStyle.html#aa3620660bc394dd04671252767c17110',1,'QRenderWindowStyle']]],
   ['box_5fselecting_5f_11',['box_selecting_',['../classQRenderWindowStyle.html#a164567cdba8cf6e4cbdf21b15cb99c80',1,'QRenderWindowStyle']]],

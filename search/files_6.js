@@ -21,8 +21,11 @@ var searchData=
   ['geometryselectorhighlight_2eh_18',['GeometrySelectorHighlight.h',['../GeometrySelectorHighlight_8h.html',1,'']]],
   ['geometrysubshapeindex_2ecpp_19',['GeometrySubshapeIndex.cpp',['../GeometrySubshapeIndex_8cpp.html',1,'']]],
   ['geometrysubshapeindex_2eh_20',['GeometrySubshapeIndex.h',['../GeometrySubshapeIndex_8h.html',1,'']]],
-  ['geometrytopologyeditor_2ecpp_21',['GeometryTopologyEditor.cpp',['../GeometryTopologyEditor_8cpp.html',1,'']]],
-  ['geometrytopologyeditor_2eh_22',['GeometryTopologyEditor.h',['../GeometryTopologyEditor_8h.html',1,'']]],
-  ['globalmouserelay_2ecpp_23',['GlobalMouseRelay.cpp',['../GlobalMouseRelay_8cpp.html',1,'']]],
-  ['globalmouserelay_2eh_24',['GlobalMouseRelay.h',['../GlobalMouseRelay_8h.html',1,'']]]
+  ['geometrytopologydiagnosticactor_2ecpp_21',['GeometryTopologyDiagnosticActor.cpp',['../GeometryTopologyDiagnosticActor_8cpp.html',1,'']]],
+  ['geometrytopologydiagnosticactor_2eh_22',['GeometryTopologyDiagnosticActor.h',['../GeometryTopologyDiagnosticActor_8h.html',1,'']]],
+  ['geometrytopologydiagnosticcategory_2eh_23',['GeometryTopologyDiagnosticCategory.h',['../GeometryTopologyDiagnosticCategory_8h.html',1,'']]],
+  ['geometrytopologyeditor_2ecpp_24',['GeometryTopologyEditor.cpp',['../GeometryTopologyEditor_8cpp.html',1,'']]],
+  ['geometrytopologyeditor_2eh_25',['GeometryTopologyEditor.h',['../GeometryTopologyEditor_8h.html',1,'']]],
+  ['globalmouserelay_2ecpp_26',['GlobalMouseRelay.cpp',['../GlobalMouseRelay_8cpp.html',1,'']]],
+  ['globalmouserelay_2eh_27',['GlobalMouseRelay.h',['../GlobalMouseRelay_8h.html',1,'']]]
 ];

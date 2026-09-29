@@ -1,6 +1,6 @@
 var searchData=
 [
-  ['handle_0',['Handle',['../GeometryActor_8h.html#acb9d39434207f27c7d476d3606bc60db',1,'GeometryActor.h']]],
+  ['handle_0',['Handle',['../GeometryActor_8h.html#acb9d39434207f27c7d476d3606bc60db',1,'Handle(IVtkOCC_Shape) OccShapeHandle:&#160;GeometryActor.h'],['../GeometryTopologyDiagnosticActor_8h.html#aed11d91dd8eb556c4cb110373fe2085c',1,'Handle(IVtkOCC_Shape) GeometryDiagnosticOccShapeHandle:&#160;GeometryTopologyDiagnosticActor.h']]],
   ['handle_1',['handle',['../classdock_1_1DragSession.html#a9cc7a0fcba1b4591698d04abff2eb72e',1,'dock::DragSession']]],
   ['handle_5f_2',['handle_',['../classdock_1_1DragSession.html#a9a215e4cca1c69aa8a46e9c027c601a1',1,'dock::DragSession']]],
   ['handlechildvisibility_3',['handleChildVisibility',['../classdock_1_1BoxNode.html#a6aba43ce8847245f02e638e486bf461f',1,'dock::BoxNode']]],

@@ -1,0 +1,1020 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="zh">
+<head>
+<meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=11"/>
+<meta name="generator" content="Doxygen 1.14.0"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>PreCess: GeometryTopologyDiagnosticActor类 参考</title>
+<link href="tabs.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="jquery.js"></script>
+<script type="text/javascript" src="dynsections.js"></script>
+<script type="text/javascript" src="clipboard.js"></script>
+<script type="text/javascript" src="cookie.js"></script>
+<link href="search/search.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="search/searchdata.js"></script>
+<script type="text/javascript" src="search/search.js"></script>
+<link href="doxygen.css" rel="stylesheet" type="text/css" />
+</head>
+<body>
+<div id="top"><!-- do not remove this div, it is closed by doxygen! -->
+<div id="titlearea">
+<table cellspacing="0" cellpadding="0">
+ <tbody>
+ <tr id="projectrow">
+  <td id="projectlogo"><img alt="Logo" src="PreCess.ico"/></td>
+  <td id="projectalign">
+   <div id="projectname">PreCess
+   </div>
+  </td>
+ </tr>
+ </tbody>
+</table>
+</div>
+<!-- end header part -->
+<!-- 制作者 Doxygen 1.14.0 -->
+<script type="text/javascript">
+var searchBox = new SearchBox("searchBox", "search/",'.html');
+</script>
+<script type="text/javascript">
+$(function() { codefold.init(); });
+</script>
+<script type="text/javascript" src="menudata.js"></script>
+<script type="text/javascript" src="menu.js"></script>
+<script type="text/javascript">
+$(function() {
+  initMenu('',true,false,'search.php','搜索',false);
+  $(function() { init_search(); });
+});
+</script>
+<div id="main-nav"></div>
+<!-- window showing the filter options -->
+<div id="MSearchSelectWindow"
+     onmouseover="return searchBox.OnSearchSelectShow()"
+     onmouseout="return searchBox.OnSearchSelectHide()"
+     onkeydown="return searchBox.OnSearchSelectKey(event)">
+</div>
+
+<!-- iframe showing the search results (closed by default) -->
+<div id="MSearchResultsWindow">
+<div id="MSearchResults">
+<div class="SRPage">
+<div id="SRIndex">
+<div id="SRResults"></div>
+<div class="SRStatus" id="Loading">载入中...</div>
+<div class="SRStatus" id="Searching">搜索中...</div>
+<div class="SRStatus" id="NoMatches">未找到</div>
+</div>
+</div>
+</div>
+</div>
+
+</div><!-- top -->
+<div id="doc-content">
+<div class="header">
+  <div class="summary">
+<a href="#nested-classes">类</a> &#124;
+<a href="#pub-methods">Public 成员函数</a> &#124;
+<a href="#pri-methods">Private 成员函数</a> &#124;
+<a href="#pri-attribs">Private 属性</a> &#124;
+<a href="classGeometryTopologyDiagnosticActor-members.html">所有成员列表</a>  </div>
+  <div class="headertitle"><div class="title">GeometryTopologyDiagnosticActor类 参考</div></div>
+</div><!--header-->
+<div class="contents">
+
+<p>计算并显示一个 <a class="el" href="classGeometryActor.html">GeometryActor</a> 对应的 OCC 几何拓扑诊断结果。  
+ <a href="#details">更多...</a></p>
+
+<p><code>#include &lt;<a class="el" href="GeometryTopologyDiagnosticActor_8h_source.html">GeometryTopologyDiagnosticActor.h</a>&gt;</code></p>
+<div class="dynheader">
+GeometryTopologyDiagnosticActor 的协作图:</div>
+<div class="dyncontent">
+<div class="center"><img src="classGeometryTopologyDiagnosticActor__coll__graph.png" border="0" usemap="#aGeometryTopologyDiagnosticActor_coll__map" loading="lazy" alt="Collaboration graph"/></div>
+<map name="aGeometryTopologyDiagnosticActor_coll__map" id="aGeometryTopologyDiagnosticActor_coll__map">
+<area shape="rect" title="计算并显示一个 GeometryActor 对应的 OCC 几何拓扑诊断结果。" alt="" coords="1955,241,2169,281"/>
+<area shape="rect" title=" " alt="" coords="1461,25,1723,65"/>
+<area shape="poly" title=" " alt="" coords="1737,39,1786,44,1836,54,1886,69,1932,91,1975,124,2009,165,2036,206,2054,240,2049,242,2032,209,2005,169,1971,128,1929,96,1884,74,1835,59,1785,50,1736,45"/>
+<area shape="rect" title=" " alt="" coords="1423,161,1761,215"/>
+<area shape="poly" title=" " alt="" coords="1775,193,1853,202,1931,215,2011,239,2009,244,1930,220,1853,207,1775,198"/>
+<area shape="rect" href="structGeometryTopologyDiagnosticActor_1_1DiagnosticPipeline.html" title="保存一种诊断类别的独立静态数据、映射器和 Actor。" alt="" coords="1091,115,1305,155"/>
+<area shape="poly" title=" " alt="" coords="1319,115,1449,106,1605,106,1687,112,1771,124,1853,142,1932,168,1963,183,1993,202,2040,239,2037,243,1990,206,1961,188,1930,173,1851,148,1770,129,1687,118,1604,111,1449,111,1319,121"/>
+<area shape="poly" title=" " alt="" coords="1319,149,1330,151,1423,163,1422,169,1329,156,1318,154"/>
+<area shape="rect" href="structGeometryTopologyDiagnosticActor_1_1SizeMarkerPipeline.html" title="使用固定屏幕点大小标出肉眼难以看到的细小几何。" alt="" coords="1485,240,1699,280"/>
+<area shape="poly" title=" " alt="" coords="1713,258,1955,258,1955,264,1713,263"/>
+<area shape="rect" title=" " alt="" coords="1501,304,1683,344"/>
+<area shape="poly" title=" " alt="" coords="1697,314,1809,303,1930,287,1974,279,1975,284,1931,292,1810,308,1697,319"/>
+<area shape="rect" title=" " alt="" coords="1489,368,1695,408"/>
+<area shape="poly" title=" " alt="" coords="1708,378,1817,363,1874,350,1930,334,1985,308,2031,279,2034,284,1988,313,1932,338,1876,355,1818,368,1709,383"/>
+<area shape="rect" href="structGeometryTopologyDiagnosticResult.html" title="几何拓扑诊断的完整结果。" alt="" coords="1091,365,1305,405"/>
+<area shape="poly" title=" " alt="" coords="1319,383,1489,385,1489,390,1319,389"/>
+<area shape="rect" title=" " alt="" coords="651,260,805,300"/>
+<area shape="poly" title=" " alt="" coords="819,279,938,289,1004,300,1067,316,1121,338,1167,363,1164,368,1119,343,1066,321,1003,306,938,295,819,284"/>
+<area shape="rect" title=" " alt="" coords="5,345,160,385"/>
+<area shape="poly" title=" " alt="" coords="174,354,184,353,228,353,464,350,648,343,832,343,940,348,1067,359,1099,363,1098,368,1066,364,939,354,831,349,648,349,464,355,228,359,184,359,174,359"/>
+<area shape="rect" href="structGeometryDuplicateFaceGroup.html" title="一组在 OCC 数值精度内覆盖相同几何区域的面。" alt="" coords="252,378,469,403"/>
+<area shape="poly" title=" " alt="" coords="174,375,184,376,252,382,251,387,184,381,174,380"/>
+<area shape="rect" title=" " alt="" coords="611,375,845,415"/>
+<area shape="poly" title=" " alt="" coords="858,389,1090,385,1091,390,858,395"/>
+<area shape="poly" title=" " alt="" coords="483,389,611,391,611,396,483,395"/>
+<area shape="rect" title=" " alt="" coords="604,439,852,479"/>
+<area shape="poly" title=" " alt="" coords="866,469,915,469,966,464,1017,454,1065,438,1077,427,1089,415,1115,403,1117,408,1092,420,1081,431,1068,442,1018,459,967,469,915,474,866,475"/>
+<area shape="rect" href="structGeometryIntersectingFacePair.html" title="一对互相穿插的面，自相交与几何干涉共用；单 Face 自交时两个成员相同。" alt="" coords="252,446,469,471"/>
+<area shape="poly" title=" " alt="" coords="483,456,604,456,604,461,483,461"/>
+<area shape="rect" title=" " alt="" coords="651,503,805,543"/>
+<area shape="poly" title=" " alt="" coords="819,540,880,546,945,543,977,538,1009,529,1038,516,1065,498,1073,489,1077,480,1077,460,1077,438,1081,427,1089,415,1104,404,1107,408,1093,419,1086,429,1082,439,1082,460,1082,481,1077,492,1068,502,1041,521,1010,534,978,543,945,549,879,551,819,545"/>
+<area shape="rect" title=" " alt="" coords="1549,434,1635,459"/>
+<area shape="poly" title=" " alt="" coords="1649,447,1710,447,1782,441,1858,425,1895,413,1929,398,1967,372,2000,340,2046,280,2051,283,2004,344,1971,376,1932,402,1896,418,1859,430,1783,446,1710,452,1649,453"/>
+<area shape="rect" title=" " alt="" coords="1129,429,1267,469"/>
+<area shape="poly" title=" " alt="" coords="1281,446,1549,444,1549,450,1281,451"/>
+</map>
+<center><span class="legend">[<a href="graph_legend.html">图例</a>]</span></center></div>
+<table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 id="header-nested-classes" class="groupheader"><a id="nested-classes" name="nested-classes"></a>
+类</h2></td></tr>
+<tr class="memitem:DiagnosticPipeline" id="r_DiagnosticPipeline"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structGeometryTopologyDiagnosticActor_1_1DiagnosticPipeline.html">DiagnosticPipeline</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">保存一种诊断类别的独立静态数据、映射器和 Actor。  <a href="structGeometryTopologyDiagnosticActor_1_1DiagnosticPipeline.html#details">更多...</a><br /></td></tr>
+<tr class="memitem:SizeMarkerPipeline" id="r_SizeMarkerPipeline"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structGeometryTopologyDiagnosticActor_1_1SizeMarkerPipeline.html">SizeMarkerPipeline</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">使用固定屏幕点大小标出肉眼难以看到的细小几何。  <a href="structGeometryTopologyDiagnosticActor_1_1SizeMarkerPipeline.html#details">更多...</a><br /></td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 id="header-pub-methods" class="groupheader"><a id="pub-methods" name="pub-methods"></a>
+Public 成员函数</h2></td></tr>
+<tr class="memitem:aac272eee58873f172cca7d7b7ed99da9" id="r_aac272eee58873f172cca7d7b7ed99da9"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#aac272eee58873f172cca7d7b7ed99da9">GeometryTopologyDiagnosticActor</a> (vtkRenderer *renderer)</td></tr>
+<tr class="memitem:ae72304f02db15eb6c44f37137ce831a6" id="r_ae72304f02db15eb6c44f37137ce831a6"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ae72304f02db15eb6c44f37137ce831a6">~GeometryTopologyDiagnosticActor</a> ()</td></tr>
+<tr class="memitem:a0f650f73bbaff673c65cf95add8654c5" id="r_a0f650f73bbaff673c65cf95add8654c5"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a0f650f73bbaff673c65cf95add8654c5">loadShape</a> (const TopoDS_Shape &amp;shape, const GeometryDiagnosticOccShapeHandle &amp;occ_shape, vtkPolyData *line_data, vtkDataArray *line_sub_ids, vtkPolyData *face_data, vtkDataArray *face_sub_ids)</td></tr>
+<tr class="memdesc:a0f650f73bbaff673c65cf95add8654c5"><td class="mdescLeft">&#160;</td><td class="mdescRight">装载新的 OCC 形状及其已经生成的 VTK 线、面数据。  <br /></td></tr>
+<tr class="memitem:ad75ea10c951279a95603c27f7d3eac97" id="r_ad75ea10c951279a95603c27f7d3eac97"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ad75ea10c951279a95603c27f7d3eac97">setCategoryEnabled</a> (<a class="el" href="GeometryTopologyDiagnosticCategory_8h.html#a61b2e4c53446731aaca3ce264d171be3">GeometryTopologyDiagnosticCategory</a> category, bool enabled)</td></tr>
+<tr class="memdesc:ad75ea10c951279a95603c27f7d3eac97"><td class="mdescLeft">&#160;</td><td class="mdescRight">启用或停用一种几何拓扑诊断类别。  <br /></td></tr>
+<tr class="memitem:a0860d244acd34f0ca685a86799008ae7" id="r_a0860d244acd34f0ca685a86799008ae7"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a0860d244acd34f0ca685a86799008ae7">setCategoryFlagsOnly</a> (const std::array&lt; bool, <a class="el" href="GeometryTopologyDiagnosticCategory_8h.html#aff8180424a63973f34d58f1bea07285b">kGeometryTopologyDiagnosticCategoryCount</a> &gt; &amp;enabled)</td></tr>
+<tr class="memdesc:a0860d244acd34f0ca685a86799008ae7"><td class="mdescLeft">&#160;</td><td class="mdescRight">仅同步全部类别开关，不触发诊断重建；供加载新 Shape 前配置。  <br /></td></tr>
+<tr class="memitem:a9b7a4dcf1bd06f90315fd98b03c0ce09" id="r_a9b7a4dcf1bd06f90315fd98b03c0ce09"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a9b7a4dcf1bd06f90315fd98b03c0ce09">setGeometryVisible</a> (bool visible)</td></tr>
+<tr class="memdesc:a9b7a4dcf1bd06f90315fd98b03c0ce09"><td class="mdescLeft">&#160;</td><td class="mdescRight">设置所属几何组件是否可见。  <br /></td></tr>
+<tr class="memitem:abb874c0396a71a76a8e5ff6fe1baf840" id="r_abb874c0396a71a76a8e5ff6fe1baf840"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#abb874c0396a71a76a8e5ff6fe1baf840">setSmallEdgeLengthThreshold</a> (double threshold)</td></tr>
+<tr class="memdesc:abb874c0396a71a76a8e5ff6fe1baf840"><td class="mdescLeft">&#160;</td><td class="mdescRight">设置细小边诊断使用的长度阈值。  <br /></td></tr>
+<tr class="memitem:acbf4088907028c92143331418a2f5fea" id="r_acbf4088907028c92143331418a2f5fea"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#acbf4088907028c92143331418a2f5fea">setSmallFaceAreaThreshold</a> (double threshold)</td></tr>
+<tr class="memdesc:acbf4088907028c92143331418a2f5fea"><td class="mdescLeft">&#160;</td><td class="mdescRight">设置细小面诊断使用的面积阈值。  <br /></td></tr>
+<tr class="memitem:aa89948288cf79666aa2788ed040c222f" id="r_aa89948288cf79666aa2788ed040c222f"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#aa89948288cf79666aa2788ed040c222f">setComponentLabel</a> (std::string label)</td></tr>
+<tr class="memdesc:aa89948288cf79666aa2788ed040c222f"><td class="mdescLeft">&#160;</td><td class="mdescRight">设置本 Actor 所属组件的显示标签（形如 "2 (Wing)"），只用于日志标注归属。  <br /></td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 id="header-pri-methods" class="groupheader"><a id="pri-methods" name="pri-methods"></a>
+Private 成员函数</h2></td></tr>
+<tr class="memitem:a638251796a0f9575618b2b4e421def46" id="r_a638251796a0f9575618b2b4e421def46"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a638251796a0f9575618b2b4e421def46">ensureDiagnostics</a> (<a class="el" href="GeometryTopologyDiagnosticCategory_8h.html#a61b2e4c53446731aaca3ce264d171be3">GeometryTopologyDiagnosticCategory</a> category)</td></tr>
+<tr class="memdesc:a638251796a0f9575618b2b4e421def46"><td class="mdescLeft">&#160;</td><td class="mdescRight">首次需要显示诊断类别时按类别依赖计算并缓存结果。  <br /></td></tr>
+<tr class="memitem:ad71b30d1428a4b8f6ce947ac2fb19e20" id="r_ad71b30d1428a4b8f6ce947ac2fb19e20"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ad71b30d1428a4b8f6ce947ac2fb19e20">logDiagnosticDetails</a> (const <a class="el" href="structGeometryTopologyDiagnosticResult.html">GeometryTopologyDiagnosticResult</a> &amp;result, const <a class="el" href="structGeometryTopologyDiagnosticOptions.html">GeometryTopologyDiagnosticOptions</a> &amp;options, double elapsed_ms)</td></tr>
+<tr class="memdesc:ad71b30d1428a4b8f6ce947ac2fb19e20"><td class="mdescLeft">&#160;</td><td class="mdescRight">把本次算出的**已启用类别**的计数与具体子形状索引写入日志。  <br /></td></tr>
+<tr class="memitem:adfd582c32efcd1f5bef2e9dc4828345c" id="r_adfd582c32efcd1f5bef2e9dc4828345c"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#adfd582c32efcd1f5bef2e9dc4828345c">logCachedDiagnostics</a> (<a class="el" href="GeometryTopologyDiagnosticCategory_8h.html#a61b2e4c53446731aaca3ce264d171be3">GeometryTopologyDiagnosticCategory</a> category)</td></tr>
+<tr class="memdesc:adfd582c32efcd1f5bef2e9dc4828345c"><td class="mdescLeft">&#160;</td><td class="mdescRight">结果已算过时复用缓存，但仍按统一格式输出一次该类别日志。  <br /></td></tr>
+<tr class="memitem:ac9d247cdfbaa3cb31cdc9fe16c71ecfd" id="r_ac9d247cdfbaa3cb31cdc9fe16c71ecfd"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ac9d247cdfbaa3cb31cdc9fe16c71ecfd">rebuildCategory</a> (<a class="el" href="GeometryTopologyDiagnosticCategory_8h.html#a61b2e4c53446731aaca3ce264d171be3">GeometryTopologyDiagnosticCategory</a> category)</td></tr>
+<tr class="memdesc:ac9d247cdfbaa3cb31cdc9fe16c71ecfd"><td class="mdescLeft">&#160;</td><td class="mdescRight">按缓存结果重建指定类别的独立诊断数据。  <br /></td></tr>
+<tr class="memitem:aa6be235df3b4c63305b3f5a71b6d19fd" id="r_aa6be235df3b4c63305b3f5a71b6d19fd"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#aa6be235df3b4c63305b3f5a71b6d19fd">rebuildSizeMarker</a> (<a class="el" href="GeometryTopologyDiagnosticCategory_8h.html#a61b2e4c53446731aaca3ce264d171be3">GeometryTopologyDiagnosticCategory</a> category)</td></tr>
+<tr class="memdesc:aa6be235df3b4c63305b3f5a71b6d19fd"><td class="mdescLeft">&#160;</td><td class="mdescRight">更新细小边中点或细小面质心的固定屏幕尺寸标记。  <br /></td></tr>
+<tr class="memitem:a23f7500795d2f546a6c4f22a4598d8d1" id="r_a23f7500795d2f546a6c4f22a4598d8d1"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a23f7500795d2f546a6c4f22a4598d8d1">applyVisibility</a> ()</td></tr>
+<tr class="memdesc:a23f7500795d2f546a6c4f22a4598d8d1"><td class="mdescLeft">&#160;</td><td class="mdescRight">同步所有诊断 Actor 的最终可见性。  <br /></td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 id="header-pri-attribs" class="groupheader"><a id="pri-attribs" name="pri-attribs"></a>
+Private 属性</h2></td></tr>
+<tr class="memitem:aa84efda76d02def5fd5bd0536a6f1152" id="r_aa84efda76d02def5fd5bd0536a6f1152"><td class="memItemLeft" align="right" valign="top">vtkRenderer *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#aa84efda76d02def5fd5bd0536a6f1152">renderer_</a> {}</td></tr>
+<tr class="memitem:a4629a3b8c3bb818b8e0b940761496f9c" id="r_a4629a3b8c3bb818b8e0b940761496f9c"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a4629a3b8c3bb818b8e0b940761496f9c">geometry_visible_</a> { true }</td></tr>
+<tr class="memitem:a4a7abdc6b2dd2265803dc83acd6fec57" id="r_a4a7abdc6b2dd2265803dc83acd6fec57"><td class="memItemLeft" align="right" valign="top">double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a4a7abdc6b2dd2265803dc83acd6fec57">small_edge_length_threshold_</a> { 0.01 }</td></tr>
+<tr class="memitem:a43a9e29dd3e2efef690ebcbceb17ea36" id="r_a43a9e29dd3e2efef690ebcbceb17ea36"><td class="memItemLeft" align="right" valign="top">double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a43a9e29dd3e2efef690ebcbceb17ea36">small_face_area_threshold_</a> { 0.01 }</td></tr>
+<tr class="memitem:a91bd68621aa9b16fd15f873220451a2c" id="r_a91bd68621aa9b16fd15f873220451a2c"><td class="memItemLeft" align="right" valign="top">std::array&lt; bool, <a class="el" href="GeometryTopologyDiagnosticCategory_8h.html#aff8180424a63973f34d58f1bea07285b">kGeometryTopologyDiagnosticCategoryCount</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a91bd68621aa9b16fd15f873220451a2c">category_enabled_</a> {}</td></tr>
+<tr class="memitem:a02dc622ed3b3c10234f6c3ae84eff233" id="r_a02dc622ed3b3c10234f6c3ae84eff233"><td class="memItemLeft" align="right" valign="top">std::array&lt; bool, <a class="el" href="GeometryTopologyDiagnosticCategory_8h.html#aff8180424a63973f34d58f1bea07285b">kGeometryTopologyDiagnosticCategoryCount</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a02dc622ed3b3c10234f6c3ae84eff233">category_computed_</a> {}</td></tr>
+<tr class="memitem:a24ab298936127e8f5fdf9665b628af32" id="r_a24ab298936127e8f5fdf9665b628af32"><td class="memItemLeft" align="right" valign="top">std::array&lt; <a class="el" href="structGeometryTopologyDiagnosticActor_1_1DiagnosticPipeline.html">DiagnosticPipeline</a>, <a class="el" href="GeometryTopologyDiagnosticCategory_8h.html#aff8180424a63973f34d58f1bea07285b">kGeometryTopologyDiagnosticCategoryCount</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a24ab298936127e8f5fdf9665b628af32">pipelines_</a></td></tr>
+<tr class="memitem:a270e7c53a5179f47f6d29ec5276396f5" id="r_a270e7c53a5179f47f6d29ec5276396f5"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structGeometryTopologyDiagnosticActor_1_1DiagnosticPipeline.html">DiagnosticPipeline</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a270e7c53a5179f47f6d29ec5276396f5">invalid_edge_pipeline_</a></td></tr>
+<tr class="memitem:a82e3571d5c390d86853206e1cfb185c5" id="r_a82e3571d5c390d86853206e1cfb185c5"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structGeometryTopologyDiagnosticActor_1_1SizeMarkerPipeline.html">SizeMarkerPipeline</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a82e3571d5c390d86853206e1cfb185c5">small_edge_marker_</a></td></tr>
+<tr class="memitem:a30a8eeb5dadf3079034c96e4e1a96a25" id="r_a30a8eeb5dadf3079034c96e4e1a96a25"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structGeometryTopologyDiagnosticActor_1_1SizeMarkerPipeline.html">SizeMarkerPipeline</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a30a8eeb5dadf3079034c96e4e1a96a25">small_face_marker_</a></td></tr>
+<tr class="memitem:aa0bd6f76bc6ed2de5f88bdb2a5e9ac9c" id="r_aa0bd6f76bc6ed2de5f88bdb2a5e9ac9c"><td class="memItemLeft" align="right" valign="top">TopoDS_Shape *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#aa0bd6f76bc6ed2de5f88bdb2a5e9ac9c">shape_</a> {}</td></tr>
+<tr class="memitem:a6b775de9e48e51dec47bc544c3f8a56a" id="r_a6b775de9e48e51dec47bc544c3f8a56a"><td class="memItemLeft" align="right" valign="top">std::unique_ptr&lt; TopoDS_Shape &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a6b775de9e48e51dec47bc544c3f8a56a">owned_shape_</a></td></tr>
+<tr class="memitem:a9442f2bc5b6dfcd01842fbdee370adf4" id="r_a9442f2bc5b6dfcd01842fbdee370adf4"><td class="memItemLeft" align="right" valign="top">GeometryDiagnosticOccShapeHandle&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a9442f2bc5b6dfcd01842fbdee370adf4">occ_shape_</a></td></tr>
+<tr class="memitem:adee12afbce0c05f2e50bbc72966e6a7a" id="r_adee12afbce0c05f2e50bbc72966e6a7a"><td class="memItemLeft" align="right" valign="top">vtkPolyData *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#adee12afbce0c05f2e50bbc72966e6a7a">line_data_</a> {}</td></tr>
+<tr class="memitem:afc1c357d008d4cfc05255c8449389e01" id="r_afc1c357d008d4cfc05255c8449389e01"><td class="memItemLeft" align="right" valign="top">vtkPolyData *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#afc1c357d008d4cfc05255c8449389e01">face_data_</a> {}</td></tr>
+<tr class="memitem:a756a0591fda1de7edca3d77cc22c4519" id="r_a756a0591fda1de7edca3d77cc22c4519"><td class="memItemLeft" align="right" valign="top">vtkDataArray *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a756a0591fda1de7edca3d77cc22c4519">line_sub_ids_</a> {}</td></tr>
+<tr class="memitem:aac83711fdf3ec2ef0b021880b5c99574" id="r_aac83711fdf3ec2ef0b021880b5c99574"><td class="memItemLeft" align="right" valign="top">vtkDataArray *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#aac83711fdf3ec2ef0b021880b5c99574">face_sub_ids_</a> {}</td></tr>
+<tr class="memitem:a4c33b46eab4112d00193b960cea89cef" id="r_a4c33b46eab4112d00193b960cea89cef"><td class="memItemLeft" align="right" valign="top">std::unique_ptr&lt; <a class="el" href="structGeometryTopologyDiagnosticResult.html">GeometryTopologyDiagnosticResult</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a4c33b46eab4112d00193b960cea89cef">diagnostics_</a></td></tr>
+<tr class="memitem:a3c5b8c905fc06a71761082cb4e03ece4" id="r_a3c5b8c905fc06a71761082cb4e03ece4"><td class="memItemLeft" align="right" valign="top">std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a3c5b8c905fc06a71761082cb4e03ece4">component_label_</a></td></tr>
+<tr class="memdesc:a3c5b8c905fc06a71761082cb4e03ece4"><td class="mdescLeft">&#160;</td><td class="mdescRight">所属组件的显示标签（id + 名称），仅用于日志标注结果归属；空表示尚未设置。  <br /></td></tr>
+</table>
+<a name="details" id="details"></a><h2 id="header-details" class="groupheader">详细描述</h2>
+<div class="textblock"><p>计算并显示一个 <a class="el" href="classGeometryActor.html">GeometryActor</a> 对应的 OCC 几何拓扑诊断结果。 </p>
+</div><a name="doc-constructors" id="doc-constructors"></a><h2 id="header-doc-constructors" class="groupheader">构造及析构函数说明</h2>
+<a id="aac272eee58873f172cca7d7b7ed99da9" name="aac272eee58873f172cca7d7b7ed99da9"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aac272eee58873f172cca7d7b7ed99da9">&#9670;&#160;</a></span>GeometryTopologyDiagnosticActor()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">GeometryTopologyDiagnosticActor::GeometryTopologyDiagnosticActor </td>
+          <td>(</td>
+          <td class="paramtype">vtkRenderer *</td>          <td class="paramname"><span class="paramname"><em>renderer</em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel explicit">explicit</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="ae72304f02db15eb6c44f37137ce831a6" name="ae72304f02db15eb6c44f37137ce831a6"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ae72304f02db15eb6c44f37137ce831a6">&#9670;&#160;</a></span>~GeometryTopologyDiagnosticActor()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">GeometryTopologyDiagnosticActor::~GeometryTopologyDiagnosticActor </td>
+          <td>(</td>
+          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a name="doc-func-members" id="doc-func-members"></a><h2 id="header-doc-func-members" class="groupheader">成员函数说明</h2>
+<a id="a23f7500795d2f546a6c4f22a4598d8d1" name="a23f7500795d2f546a6c4f22a4598d8d1"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a23f7500795d2f546a6c4f22a4598d8d1">&#9670;&#160;</a></span>applyVisibility()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void GeometryTopologyDiagnosticActor::applyVisibility </td>
+          <td>(</td>
+          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel private">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>同步所有诊断 Actor 的最终可见性。 </p>
+
+</div>
+</div>
+<a id="a638251796a0f9575618b2b4e421def46" name="a638251796a0f9575618b2b4e421def46"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a638251796a0f9575618b2b4e421def46">&#9670;&#160;</a></span>ensureDiagnostics()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void GeometryTopologyDiagnosticActor::ensureDiagnostics </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="GeometryTopologyDiagnosticCategory_8h.html#a61b2e4c53446731aaca3ce264d171be3">GeometryTopologyDiagnosticCategory</a></td>          <td class="paramname"><span class="paramname"><em>category</em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel private">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>首次需要显示诊断类别时按类别依赖计算并缓存结果。 </p>
+
+</div>
+</div>
+<a id="a0f650f73bbaff673c65cf95add8654c5" name="a0f650f73bbaff673c65cf95add8654c5"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a0f650f73bbaff673c65cf95add8654c5">&#9670;&#160;</a></span>loadShape()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void GeometryTopologyDiagnosticActor::loadShape </td>
+          <td>(</td>
+          <td class="paramtype">const TopoDS_Shape &amp;</td>          <td class="paramname"><span class="paramname"><em>shape</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const GeometryDiagnosticOccShapeHandle &amp;</td>          <td class="paramname"><span class="paramname"><em>occ_shape</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">vtkPolyData *</td>          <td class="paramname"><span class="paramname"><em>line_data</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">vtkDataArray *</td>          <td class="paramname"><span class="paramname"><em>line_sub_ids</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">vtkPolyData *</td>          <td class="paramname"><span class="paramname"><em>face_data</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">vtkDataArray *</td>          <td class="paramname"><span class="paramname"><em>face_sub_ids</em></span>&#160;)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>装载新的 OCC 形状及其已经生成的 VTK 线、面数据。 </p>
+
+</div>
+</div>
+<a id="adfd582c32efcd1f5bef2e9dc4828345c" name="adfd582c32efcd1f5bef2e9dc4828345c"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#adfd582c32efcd1f5bef2e9dc4828345c">&#9670;&#160;</a></span>logCachedDiagnostics()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void GeometryTopologyDiagnosticActor::logCachedDiagnostics </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="GeometryTopologyDiagnosticCategory_8h.html#a61b2e4c53446731aaca3ce264d171be3">GeometryTopologyDiagnosticCategory</a></td>          <td class="paramname"><span class="paramname"><em>category</em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel private">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>结果已算过时复用缓存，但仍按统一格式输出一次该类别日志。 </p>
+
+</div>
+</div>
+<a id="ad71b30d1428a4b8f6ce947ac2fb19e20" name="ad71b30d1428a4b8f6ce947ac2fb19e20"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ad71b30d1428a4b8f6ce947ac2fb19e20">&#9670;&#160;</a></span>logDiagnosticDetails()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void GeometryTopologyDiagnosticActor::logDiagnosticDetails </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="structGeometryTopologyDiagnosticResult.html">GeometryTopologyDiagnosticResult</a> &amp;</td>          <td class="paramname"><span class="paramname"><em>result</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const <a class="el" href="structGeometryTopologyDiagnosticOptions.html">GeometryTopologyDiagnosticOptions</a> &amp;</td>          <td class="paramname"><span class="paramname"><em>options</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">double</td>          <td class="paramname"><span class="paramname"><em>elapsed_ms</em></span>&#160;)</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel private">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>把本次算出的**已启用类别**的计数与具体子形状索引写入日志。 </p>
+<dl class="params"><dt>参数</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">options</td><td>本次实际启用的诊断类别；未启用的类别不写日志，避免以 0 混入。 </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="ac9d247cdfbaa3cb31cdc9fe16c71ecfd" name="ac9d247cdfbaa3cb31cdc9fe16c71ecfd"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ac9d247cdfbaa3cb31cdc9fe16c71ecfd">&#9670;&#160;</a></span>rebuildCategory()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void GeometryTopologyDiagnosticActor::rebuildCategory </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="GeometryTopologyDiagnosticCategory_8h.html#a61b2e4c53446731aaca3ce264d171be3">GeometryTopologyDiagnosticCategory</a></td>          <td class="paramname"><span class="paramname"><em>category</em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel private">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>按缓存结果重建指定类别的独立诊断数据。 </p>
+
+</div>
+</div>
+<a id="aa6be235df3b4c63305b3f5a71b6d19fd" name="aa6be235df3b4c63305b3f5a71b6d19fd"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aa6be235df3b4c63305b3f5a71b6d19fd">&#9670;&#160;</a></span>rebuildSizeMarker()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void GeometryTopologyDiagnosticActor::rebuildSizeMarker </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="GeometryTopologyDiagnosticCategory_8h.html#a61b2e4c53446731aaca3ce264d171be3">GeometryTopologyDiagnosticCategory</a></td>          <td class="paramname"><span class="paramname"><em>category</em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel private">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>更新细小边中点或细小面质心的固定屏幕尺寸标记。 </p>
+
+</div>
+</div>
+<a id="ad75ea10c951279a95603c27f7d3eac97" name="ad75ea10c951279a95603c27f7d3eac97"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ad75ea10c951279a95603c27f7d3eac97">&#9670;&#160;</a></span>setCategoryEnabled()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void GeometryTopologyDiagnosticActor::setCategoryEnabled </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="GeometryTopologyDiagnosticCategory_8h.html#a61b2e4c53446731aaca3ce264d171be3">GeometryTopologyDiagnosticCategory</a></td>          <td class="paramname"><span class="paramname"><em>category</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">bool</td>          <td class="paramname"><span class="paramname"><em>enabled</em></span>&#160;)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>启用或停用一种几何拓扑诊断类别。 </p>
+
+</div>
+</div>
+<a id="a0860d244acd34f0ca685a86799008ae7" name="a0860d244acd34f0ca685a86799008ae7"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a0860d244acd34f0ca685a86799008ae7">&#9670;&#160;</a></span>setCategoryFlagsOnly()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void GeometryTopologyDiagnosticActor::setCategoryFlagsOnly </td>
+          <td>(</td>
+          <td class="paramtype">const std::array&lt; bool, <a class="el" href="GeometryTopologyDiagnosticCategory_8h.html#aff8180424a63973f34d58f1bea07285b">kGeometryTopologyDiagnosticCategoryCount</a> &gt; &amp;</td>          <td class="paramname"><span class="paramname"><em>enabled</em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>仅同步全部类别开关，不触发诊断重建；供加载新 Shape 前配置。 </p>
+
+</div>
+</div>
+<a id="aa89948288cf79666aa2788ed040c222f" name="aa89948288cf79666aa2788ed040c222f"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aa89948288cf79666aa2788ed040c222f">&#9670;&#160;</a></span>setComponentLabel()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void GeometryTopologyDiagnosticActor::setComponentLabel </td>
+          <td>(</td>
+          <td class="paramtype">std::string</td>          <td class="paramname"><span class="paramname"><em>label</em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel inline">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>设置本 Actor 所属组件的显示标签（形如 "2 (Wing)"），只用于日志标注归属。 </p>
+
+</div>
+</div>
+<a id="a9b7a4dcf1bd06f90315fd98b03c0ce09" name="a9b7a4dcf1bd06f90315fd98b03c0ce09"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a9b7a4dcf1bd06f90315fd98b03c0ce09">&#9670;&#160;</a></span>setGeometryVisible()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void GeometryTopologyDiagnosticActor::setGeometryVisible </td>
+          <td>(</td>
+          <td class="paramtype">bool</td>          <td class="paramname"><span class="paramname"><em>visible</em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>设置所属几何组件是否可见。 </p>
+
+</div>
+</div>
+<a id="abb874c0396a71a76a8e5ff6fe1baf840" name="abb874c0396a71a76a8e5ff6fe1baf840"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#abb874c0396a71a76a8e5ff6fe1baf840">&#9670;&#160;</a></span>setSmallEdgeLengthThreshold()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void GeometryTopologyDiagnosticActor::setSmallEdgeLengthThreshold </td>
+          <td>(</td>
+          <td class="paramtype">double</td>          <td class="paramname"><span class="paramname"><em>threshold</em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>设置细小边诊断使用的长度阈值。 </p>
+
+</div>
+</div>
+<a id="acbf4088907028c92143331418a2f5fea" name="acbf4088907028c92143331418a2f5fea"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#acbf4088907028c92143331418a2f5fea">&#9670;&#160;</a></span>setSmallFaceAreaThreshold()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void GeometryTopologyDiagnosticActor::setSmallFaceAreaThreshold </td>
+          <td>(</td>
+          <td class="paramtype">double</td>          <td class="paramname"><span class="paramname"><em>threshold</em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>设置细小面诊断使用的面积阈值。 </p>
+
+</div>
+</div>
+<a name="doc-variable-members" id="doc-variable-members"></a><h2 id="header-doc-variable-members" class="groupheader">类成员变量说明</h2>
+<a id="a02dc622ed3b3c10234f6c3ae84eff233" name="a02dc622ed3b3c10234f6c3ae84eff233"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a02dc622ed3b3c10234f6c3ae84eff233">&#9670;&#160;</a></span>category_computed_</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::array&lt;bool, <a class="el" href="GeometryTopologyDiagnosticCategory_8h.html#aff8180424a63973f34d58f1bea07285b">kGeometryTopologyDiagnosticCategoryCount</a>&gt; GeometryTopologyDiagnosticActor::category_computed_ {}</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel private">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a91bd68621aa9b16fd15f873220451a2c" name="a91bd68621aa9b16fd15f873220451a2c"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a91bd68621aa9b16fd15f873220451a2c">&#9670;&#160;</a></span>category_enabled_</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::array&lt;bool, <a class="el" href="GeometryTopologyDiagnosticCategory_8h.html#aff8180424a63973f34d58f1bea07285b">kGeometryTopologyDiagnosticCategoryCount</a>&gt; GeometryTopologyDiagnosticActor::category_enabled_ {}</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel private">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a3c5b8c905fc06a71761082cb4e03ece4" name="a3c5b8c905fc06a71761082cb4e03ece4"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a3c5b8c905fc06a71761082cb4e03ece4">&#9670;&#160;</a></span>component_label_</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::string GeometryTopologyDiagnosticActor::component_label_</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel private">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>所属组件的显示标签（id + 名称），仅用于日志标注结果归属；空表示尚未设置。 </p>
+
+</div>
+</div>
+<a id="a4c33b46eab4112d00193b960cea89cef" name="a4c33b46eab4112d00193b960cea89cef"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a4c33b46eab4112d00193b960cea89cef">&#9670;&#160;</a></span>diagnostics_</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::unique_ptr&lt;<a class="el" href="structGeometryTopologyDiagnosticResult.html">GeometryTopologyDiagnosticResult</a>&gt; GeometryTopologyDiagnosticActor::diagnostics_</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel private">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="afc1c357d008d4cfc05255c8449389e01" name="afc1c357d008d4cfc05255c8449389e01"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#afc1c357d008d4cfc05255c8449389e01">&#9670;&#160;</a></span>face_data_</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">vtkPolyData* GeometryTopologyDiagnosticActor::face_data_ {}</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel private">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="aac83711fdf3ec2ef0b021880b5c99574" name="aac83711fdf3ec2ef0b021880b5c99574"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aac83711fdf3ec2ef0b021880b5c99574">&#9670;&#160;</a></span>face_sub_ids_</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">vtkDataArray* GeometryTopologyDiagnosticActor::face_sub_ids_ {}</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel private">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a4629a3b8c3bb818b8e0b940761496f9c" name="a4629a3b8c3bb818b8e0b940761496f9c"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a4629a3b8c3bb818b8e0b940761496f9c">&#9670;&#160;</a></span>geometry_visible_</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool GeometryTopologyDiagnosticActor::geometry_visible_ { true }</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel private">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a270e7c53a5179f47f6d29ec5276396f5" name="a270e7c53a5179f47f6d29ec5276396f5"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a270e7c53a5179f47f6d29ec5276396f5">&#9670;&#160;</a></span>invalid_edge_pipeline_</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="structGeometryTopologyDiagnosticActor_1_1DiagnosticPipeline.html">DiagnosticPipeline</a> GeometryTopologyDiagnosticActor::invalid_edge_pipeline_</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel private">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="adee12afbce0c05f2e50bbc72966e6a7a" name="adee12afbce0c05f2e50bbc72966e6a7a"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#adee12afbce0c05f2e50bbc72966e6a7a">&#9670;&#160;</a></span>line_data_</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">vtkPolyData* GeometryTopologyDiagnosticActor::line_data_ {}</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel private">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a756a0591fda1de7edca3d77cc22c4519" name="a756a0591fda1de7edca3d77cc22c4519"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a756a0591fda1de7edca3d77cc22c4519">&#9670;&#160;</a></span>line_sub_ids_</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">vtkDataArray* GeometryTopologyDiagnosticActor::line_sub_ids_ {}</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel private">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a9442f2bc5b6dfcd01842fbdee370adf4" name="a9442f2bc5b6dfcd01842fbdee370adf4"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a9442f2bc5b6dfcd01842fbdee370adf4">&#9670;&#160;</a></span>occ_shape_</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">GeometryDiagnosticOccShapeHandle GeometryTopologyDiagnosticActor::occ_shape_</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel private">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a6b775de9e48e51dec47bc544c3f8a56a" name="a6b775de9e48e51dec47bc544c3f8a56a"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a6b775de9e48e51dec47bc544c3f8a56a">&#9670;&#160;</a></span>owned_shape_</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::unique_ptr&lt;TopoDS_Shape&gt; GeometryTopologyDiagnosticActor::owned_shape_</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel private">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a24ab298936127e8f5fdf9665b628af32" name="a24ab298936127e8f5fdf9665b628af32"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a24ab298936127e8f5fdf9665b628af32">&#9670;&#160;</a></span>pipelines_</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::array&lt;<a class="el" href="structGeometryTopologyDiagnosticActor_1_1DiagnosticPipeline.html">DiagnosticPipeline</a>, <a class="el" href="GeometryTopologyDiagnosticCategory_8h.html#aff8180424a63973f34d58f1bea07285b">kGeometryTopologyDiagnosticCategoryCount</a>&gt; GeometryTopologyDiagnosticActor::pipelines_</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel private">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="aa84efda76d02def5fd5bd0536a6f1152" name="aa84efda76d02def5fd5bd0536a6f1152"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aa84efda76d02def5fd5bd0536a6f1152">&#9670;&#160;</a></span>renderer_</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">vtkRenderer* GeometryTopologyDiagnosticActor::renderer_ {}</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel private">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="aa0bd6f76bc6ed2de5f88bdb2a5e9ac9c" name="aa0bd6f76bc6ed2de5f88bdb2a5e9ac9c"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aa0bd6f76bc6ed2de5f88bdb2a5e9ac9c">&#9670;&#160;</a></span>shape_</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">TopoDS_Shape* GeometryTopologyDiagnosticActor::shape_ {}</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel private">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a4a7abdc6b2dd2265803dc83acd6fec57" name="a4a7abdc6b2dd2265803dc83acd6fec57"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a4a7abdc6b2dd2265803dc83acd6fec57">&#9670;&#160;</a></span>small_edge_length_threshold_</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">double GeometryTopologyDiagnosticActor::small_edge_length_threshold_ { 0.01 }</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel private">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a82e3571d5c390d86853206e1cfb185c5" name="a82e3571d5c390d86853206e1cfb185c5"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a82e3571d5c390d86853206e1cfb185c5">&#9670;&#160;</a></span>small_edge_marker_</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="structGeometryTopologyDiagnosticActor_1_1SizeMarkerPipeline.html">SizeMarkerPipeline</a> GeometryTopologyDiagnosticActor::small_edge_marker_</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel private">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a43a9e29dd3e2efef690ebcbceb17ea36" name="a43a9e29dd3e2efef690ebcbceb17ea36"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a43a9e29dd3e2efef690ebcbceb17ea36">&#9670;&#160;</a></span>small_face_area_threshold_</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">double GeometryTopologyDiagnosticActor::small_face_area_threshold_ { 0.01 }</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel private">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a30a8eeb5dadf3079034c96e4e1a96a25" name="a30a8eeb5dadf3079034c96e4e1a96a25"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a30a8eeb5dadf3079034c96e4e1a96a25">&#9670;&#160;</a></span>small_face_marker_</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="structGeometryTopologyDiagnosticActor_1_1SizeMarkerPipeline.html">SizeMarkerPipeline</a> GeometryTopologyDiagnosticActor::small_face_marker_</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel private">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<hr/>该类的文档由以下文件生成:<ul>
+<li>app/render/<a class="el" href="GeometryTopologyDiagnosticActor_8h_source.html">GeometryTopologyDiagnosticActor.h</a></li>
+<li>app/render/<a class="el" href="GeometryTopologyDiagnosticActor_8cpp.html">GeometryTopologyDiagnosticActor.cpp</a></li>
+</ul>
+</div><!-- contents -->
+<!-- start footer part -->
+<hr class="footer"/><address class="footer"><small>
+制作者&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.14.0
+</small></address>
+</div><!-- doc-content -->
+</body>
+</html>

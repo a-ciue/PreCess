@@ -1,0 +1,18 @@
+<map id="GeometryTopologyDiagnosticResult" name="GeometryTopologyDiagnosticResult">
+<area shape="rect" id="Node000001" title="几何拓扑诊断的完整结果。" alt="" coords="1091,167,1305,207"/>
+<area shape="rect" id="Node000002" title=" " alt="" coords="651,61,805,101"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="819,80,938,91,1004,102,1067,117,1121,139,1167,164,1164,169,1119,144,1066,123,1003,107,938,96,819,86"/>
+<area shape="rect" id="Node000003" title=" " alt="" coords="5,147,160,187"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="174,155,184,155,228,155,464,151,648,145,832,145,940,150,1067,160,1099,164,1098,169,1066,165,939,155,831,150,648,150,464,156,228,160,184,160,174,161"/>
+<area shape="rect" id="Node000005" href="$structGeometryDuplicateFaceGroup.html" title="一组在 OCC 数值精度内覆盖相同几何区域的面。" alt="" coords="252,179,469,205"/>
+<area shape="poly" id="edge5_Node000005_Node000003" title=" " alt="" coords="174,176,184,177,252,183,251,188,184,183,174,182"/>
+<area shape="rect" id="Node000004" title=" " alt="" coords="611,176,845,216"/>
+<area shape="poly" id="edge3_Node000001_Node000004" title=" " alt="" coords="858,191,1090,186,1091,191,858,196"/>
+<area shape="poly" id="edge4_Node000004_Node000005" title=" " alt="" coords="483,191,611,192,611,197,483,196"/>
+<area shape="rect" id="Node000006" title=" " alt="" coords="604,240,852,280"/>
+<area shape="poly" id="edge6_Node000001_Node000006" title=" " alt="" coords="865,260,965,255,1066,239,1114,223,1158,204,1160,209,1116,228,1067,244,965,260,866,266"/>
+<area shape="rect" id="Node000007" href="$structGeometryIntersectingFacePair.html" title="一对互相穿插的面，自相交与几何干涉共用；单 Face 自交时两个成员相同。" alt="" coords="252,247,469,273"/>
+<area shape="poly" id="edge7_Node000006_Node000007" title=" " alt="" coords="483,257,604,257,604,263,483,263"/>
+<area shape="rect" id="Node000008" title=" " alt="" coords="651,304,805,344"/>
+<area shape="poly" id="edge8_Node000001_Node000008" title=" " alt="" coords="819,326,876,325,939,319,1004,308,1066,288,1099,271,1130,249,1177,205,1181,209,1133,253,1102,275,1068,293,1005,313,940,325,876,330,819,331"/>
+</map>

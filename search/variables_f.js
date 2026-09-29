@@ -4,7 +4,7 @@ var searchData=
   ['object_5fcb_1',['object_cb',['../structtinyobj_1_1callback__t.html#a905e0452b155afa871b8ed4bfd45d51f',1,'tinyobj::callback_t']]],
   ['object_5ftree_2',['object_tree',['../structdocktest_1_1PlacedDocks.html#aa61c836e6e2ca727c599c3c00ab95fa2',1,'docktest::PlacedDocks']]],
   ['observer_5f_3',['observer_',['../classQModelManager.html#a3e6a2a98d5ec6d18ff86e04c12d2841d',1,'QModelManager::observer_'],['../classModelLayer.html#a70b5e3ea417a6dee3546d2e8947f3c10',1,'ModelLayer::observer_']]],
-  ['occ_5fshape_5f_4',['occ_shape_',['../classGeometryActor.html#aa6d20972966531ad52080409874f2bc3',1,'GeometryActor']]],
+  ['occ_5fshape_5f_4',['occ_shape_',['../classGeometryActor.html#aa6d20972966531ad52080409874f2bc3',1,'GeometryActor::occ_shape_'],['../classGeometryTopologyDiagnosticActor.html#a9442f2bc5b6dfcd01842fbdee370adf4',1,'GeometryTopologyDiagnosticActor::occ_shape_']]],
   ['on_5falgorithm_5finfos_5fchanged_5f_5',['on_algorithm_infos_changed_',['../classsystems_1_1algo_1_1AlgorithmSystem.html#a19a4f53b1731b8d984f005dbe7f04cce',1,'systems::algo::AlgorithmSystem']]],
   ['on_5fchanged_5f_6',['on_changed_',['../classUndoStack.html#a2432b93d213aff3084a3ef168e5c9f2e',1,'UndoStack']]],
   ['on_5fdialog_5fname_5ffilters_5fchanged_5f_7',['on_dialog_name_filters_changed_',['../classsystems_1_1io_1_1ModelIOSystem.html#a4521a78603d0f5cfc61bf9694b762c6c',1,'systems::io::ModelIOSystem']]],
@@ -26,5 +26,6 @@ var searchData=
   ['original_5fpoint_5fids_5f_23',['original_point_ids_',['../classMeshActor.html#a91bee7bb17cd1d38a1dfc29296b6ecf6',1,'MeshActor']]],
   ['output_5flog_24',['output_log',['../structdocktest_1_1PlacedDocks.html#a392f5759b855855892517e623131e00c',1,'docktest::PlacedDocks']]],
   ['overlay_5f_25',['overlay_',['../classdock_1_1ui_1_1DockRuntime.html#a48727a8da71f9942dbcb84798383ff2b',1,'dock::ui::DockRuntime']]],
-  ['overlay_5frenderer_5f_26',['overlay_renderer_',['../classInteractionService.html#a18993e07e2943e932c224d8e9a83c029',1,'InteractionService::overlay_renderer_'],['../structQRenderWindow_1_1Data.html#a9a49c5edc3b7226b09f92ccfbfc926d8',1,'QRenderWindow::Data::overlay_renderer_']]]
+  ['overlay_5frenderer_5f_26',['overlay_renderer_',['../classInteractionService.html#a18993e07e2943e932c224d8e9a83c029',1,'InteractionService::overlay_renderer_'],['../structQRenderWindow_1_1Data.html#a9a49c5edc3b7226b09f92ccfbfc926d8',1,'QRenderWindow::Data::overlay_renderer_']]],
+  ['owned_5fshape_5f_27',['owned_shape_',['../classGeometryTopologyDiagnosticActor.html#a6b775de9e48e51dec47bc544c3f8a56a',1,'GeometryTopologyDiagnosticActor']]]
 ];

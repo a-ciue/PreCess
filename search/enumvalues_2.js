@@ -7,5 +7,5 @@ var searchData=
   ['componentchanged_4',['ComponentChanged',['../structsystems_1_1feature_1_1ModelEvent.html#a91b904d63c8caf3b41e5fa1942da4c3babf79bcb90f1f410067247646ecf10542',1,'systems::feature::ModelEvent']]],
   ['componentidrole_5',['ComponentIdRole',['../classTreeModel.html#aab6367624db733c58760195c14f7c4b5a4e340a7f798650084f2b87a073fb6e27',1,'TreeModel']]],
   ['componentremoved_6',['ComponentRemoved',['../structStructuralEntry.html#a13ddf8991a341b935c1f72da3fe46749a82032b3786c9cdfce3efaf8fd11d2ede',1,'StructuralEntry::ComponentRemoved'],['../structsystems_1_1feature_1_1ModelEvent.html#a91b904d63c8caf3b41e5fa1942da4c3ba82032b3786c9cdfce3efaf8fd11d2ede',1,'systems::feature::ModelEvent::ComponentRemoved']]],
-  ['count_7',['Count',['../TopologyDiagnosticCategory_8h.html#a123c2e1cd3393fbd4ecdad8e737fae2aae93f994f01c537c4e2f7d8528c3eb5e9',1,'TopologyDiagnosticCategory.h']]]
+  ['count_7',['Count',['../GeometryTopologyDiagnosticCategory_8h.html#a61b2e4c53446731aaca3ce264d171be3ae93f994f01c537c4e2f7d8528c3eb5e9',1,'Count:&#160;GeometryTopologyDiagnosticCategory.h'],['../TopologyDiagnosticCategory_8h.html#a123c2e1cd3393fbd4ecdad8e737fae2aae93f994f01c537c4e2f7d8528c3eb5e9',1,'Count:&#160;TopologyDiagnosticCategory.h']]]
 ];

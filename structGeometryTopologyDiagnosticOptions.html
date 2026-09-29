@@ -1,0 +1,212 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="zh">
+<head>
+<meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=11"/>
+<meta name="generator" content="Doxygen 1.14.0"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>PreCess: GeometryTopologyDiagnosticOptions结构体 参考</title>
+<link href="tabs.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="jquery.js"></script>
+<script type="text/javascript" src="dynsections.js"></script>
+<script type="text/javascript" src="clipboard.js"></script>
+<script type="text/javascript" src="cookie.js"></script>
+<link href="search/search.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="search/searchdata.js"></script>
+<script type="text/javascript" src="search/search.js"></script>
+<link href="doxygen.css" rel="stylesheet" type="text/css" />
+</head>
+<body>
+<div id="top"><!-- do not remove this div, it is closed by doxygen! -->
+<div id="titlearea">
+<table cellspacing="0" cellpadding="0">
+ <tbody>
+ <tr id="projectrow">
+  <td id="projectlogo"><img alt="Logo" src="PreCess.ico"/></td>
+  <td id="projectalign">
+   <div id="projectname">PreCess
+   </div>
+  </td>
+ </tr>
+ </tbody>
+</table>
+</div>
+<!-- end header part -->
+<!-- 制作者 Doxygen 1.14.0 -->
+<script type="text/javascript">
+var searchBox = new SearchBox("searchBox", "search/",'.html');
+</script>
+<script type="text/javascript">
+$(function() { codefold.init(); });
+</script>
+<script type="text/javascript" src="menudata.js"></script>
+<script type="text/javascript" src="menu.js"></script>
+<script type="text/javascript">
+$(function() {
+  initMenu('',true,false,'search.php','搜索',false);
+  $(function() { init_search(); });
+});
+</script>
+<div id="main-nav"></div>
+<!-- window showing the filter options -->
+<div id="MSearchSelectWindow"
+     onmouseover="return searchBox.OnSearchSelectShow()"
+     onmouseout="return searchBox.OnSearchSelectHide()"
+     onkeydown="return searchBox.OnSearchSelectKey(event)">
+</div>
+
+<!-- iframe showing the search results (closed by default) -->
+<div id="MSearchResultsWindow">
+<div id="MSearchResults">
+<div class="SRPage">
+<div id="SRIndex">
+<div id="SRResults"></div>
+<div class="SRStatus" id="Loading">载入中...</div>
+<div class="SRStatus" id="Searching">搜索中...</div>
+<div class="SRStatus" id="NoMatches">未找到</div>
+</div>
+</div>
+</div>
+</div>
+
+</div><!-- top -->
+<div id="doc-content">
+<div class="header">
+  <div class="summary">
+<a href="#pub-attribs">Public 属性</a> &#124;
+<a href="structGeometryTopologyDiagnosticOptions-members.html">所有成员列表</a>  </div>
+  <div class="headertitle"><div class="title">GeometryTopologyDiagnosticOptions结构体 参考</div></div>
+</div><!--header-->
+<div class="contents">
+
+<p>控制一次诊断需要计算的类别，避免只看边时执行昂贵的面两两求交。  
+ <a href="#details">更多...</a></p>
+
+<p><code>#include &lt;<a class="el" href="GeometryTopologyEditor_8h_source.html">GeometryTopologyEditor.h</a>&gt;</code></p>
+<table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 id="header-pub-attribs" class="groupheader"><a id="pub-attribs" name="pub-attribs"></a>
+Public 属性</h2></td></tr>
+<tr class="memitem:a90b107c75b07107a9c13e65cc2338567" id="r_a90b107c75b07107a9c13e65cc2338567"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a90b107c75b07107a9c13e65cc2338567">edge_topology</a> { true }</td></tr>
+<tr class="memitem:a61098a2df2bac2dde6ce9c860fbcd3ce" id="r_a61098a2df2bac2dde6ce9c860fbcd3ce"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a61098a2df2bac2dde6ce9c860fbcd3ce">small_edges</a> { true }</td></tr>
+<tr class="memitem:a27d51b62e9ec4108149ca978beb7fd65" id="r_a27d51b62e9ec4108149ca978beb7fd65"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a27d51b62e9ec4108149ca978beb7fd65">small_faces</a> { true }</td></tr>
+<tr class="memitem:ac3e9d50d1c939056ecc5f481cc8c1fdf" id="r_ac3e9d50d1c939056ecc5f481cc8c1fdf"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ac3e9d50d1c939056ecc5f481cc8c1fdf">duplicate_faces</a> { true }</td></tr>
+<tr class="memitem:a9561b387b7eceef4b468df1bc14c1d99" id="r_a9561b387b7eceef4b468df1bc14c1d99"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a9561b387b7eceef4b468df1bc14c1d99">self_intersecting_faces</a> { true }</td></tr>
+<tr class="memdesc:a9561b387b7eceef4b468df1bc14c1d99"><td class="mdescLeft">&#160;</td><td class="mdescRight">自相交：检查单 Surface 自交及同一 Solid 内部的 Surface 相交。  <br /></td></tr>
+<tr class="memitem:aefae9dba079eb259333e5ff814607384" id="r_aefae9dba079eb259333e5ff814607384"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#aefae9dba079eb259333e5ff814607384">interfering_faces</a> { true }</td></tr>
+<tr class="memitem:a646c1226fae08cc2359ef36a7c78f467" id="r_a646c1226fae08cc2359ef36a7c78f467"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a646c1226fae08cc2359ef36a7c78f467">invalid_topology</a> { true }</td></tr>
+</table>
+<a name="details" id="details"></a><h2 id="header-details" class="groupheader">详细描述</h2>
+<div class="textblock"><p>控制一次诊断需要计算的类别，避免只看边时执行昂贵的面两两求交。 </p>
+</div><a name="doc-variable-members" id="doc-variable-members"></a><h2 id="header-doc-variable-members" class="groupheader">类成员变量说明</h2>
+<a id="ac3e9d50d1c939056ecc5f481cc8c1fdf" name="ac3e9d50d1c939056ecc5f481cc8c1fdf"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ac3e9d50d1c939056ecc5f481cc8c1fdf">&#9670;&#160;</a></span>duplicate_faces</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool GeometryTopologyDiagnosticOptions::duplicate_faces { true }</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a90b107c75b07107a9c13e65cc2338567" name="a90b107c75b07107a9c13e65cc2338567"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a90b107c75b07107a9c13e65cc2338567">&#9670;&#160;</a></span>edge_topology</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool GeometryTopologyDiagnosticOptions::edge_topology { true }</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="aefae9dba079eb259333e5ff814607384" name="aefae9dba079eb259333e5ff814607384"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aefae9dba079eb259333e5ff814607384">&#9670;&#160;</a></span>interfering_faces</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool GeometryTopologyDiagnosticOptions::interfering_faces { true }</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>几何干涉：检查不同 Solid 或自由 Surface 之间的相交；只要面相交就算 （重叠与穿越都算，与前处理器一致）。 </p>
+
+</div>
+</div>
+<a id="a646c1226fae08cc2359ef36a7c78f467" name="a646c1226fae08cc2359ef36a7c78f467"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a646c1226fae08cc2359ef36a7c78f467">&#9670;&#160;</a></span>invalid_topology</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool GeometryTopologyDiagnosticOptions::invalid_topology { true }</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a9561b387b7eceef4b468df1bc14c1d99" name="a9561b387b7eceef4b468df1bc14c1d99"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a9561b387b7eceef4b468df1bc14c1d99">&#9670;&#160;</a></span>self_intersecting_faces</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool GeometryTopologyDiagnosticOptions::self_intersecting_faces { true }</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>自相交：检查单 Surface 自交及同一 Solid 内部的 Surface 相交。 </p>
+
+</div>
+</div>
+<a id="a61098a2df2bac2dde6ce9c860fbcd3ce" name="a61098a2df2bac2dde6ce9c860fbcd3ce"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a61098a2df2bac2dde6ce9c860fbcd3ce">&#9670;&#160;</a></span>small_edges</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool GeometryTopologyDiagnosticOptions::small_edges { true }</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a27d51b62e9ec4108149ca978beb7fd65" name="a27d51b62e9ec4108149ca978beb7fd65"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a27d51b62e9ec4108149ca978beb7fd65">&#9670;&#160;</a></span>small_faces</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool GeometryTopologyDiagnosticOptions::small_faces { true }</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<hr/>该结构体的文档由以下文件生成:<ul>
+<li>model/ops/<a class="el" href="GeometryTopologyEditor_8h_source.html">GeometryTopologyEditor.h</a></li>
+</ul>
+</div><!-- contents -->
+<!-- start footer part -->
+<hr class="footer"/><address class="footer"><small>
+制作者&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.14.0
+</small></address>
+</div><!-- doc-content -->
+</body>
+</html>

@@ -23,7 +23,7 @@ var searchData=
   ['enddrag_20',['endDrag',['../classdock_1_1ui_1_1DividerItem.html#a60832417a644c57ce67983e82355d9c5',1,'dock::ui::DividerItem::endDrag()'],['../classdock_1_1ui_1_1PanelGroupItem.html#a456c750897b72ce064c0c7b759a133ac',1,'dock::ui::PanelGroupItem::endDrag()']]],
   ['engine_21',['engine',['../classdock_1_1ui_1_1DockRuntime.html#a84f6c70bf382a06d23f5cbe3474de736',1,'dock::ui::DockRuntime']]],
   ['ensurebuilt_22',['ensureBuilt',['../classMeshAdjacency.html#a0924607a2d92b94c6af9165718f4b9f9',1,'MeshAdjacency']]],
-  ['ensurediagnostics_23',['ensureDiagnostics',['../classTopologyDiagnosticActor.html#a8392deda5655d3340f5d5ffb2f8ca8f9',1,'TopologyDiagnosticActor']]],
+  ['ensurediagnostics_23',['ensureDiagnostics',['../classGeometryTopologyDiagnosticActor.html#a638251796a0f9575618b2b4e421def46',1,'GeometryTopologyDiagnosticActor::ensureDiagnostics()'],['../classTopologyDiagnosticActor.html#a8392deda5655d3340f5d5ffb2f8ca8f9',1,'TopologyDiagnosticActor::ensureDiagnostics()']]],
   ['ensureedgeglobalids_24',['ensureEdgeGlobalIds',['../classMeshAdjacency.html#ac53565ba70f06b5d93a6f867b789cca8',1,'MeshAdjacency']]],
   ['ensureindexbuilt_25',['ensureIndexBuilt',['../structGeometryData.html#a813025254425b3382c788103d2a432e6',1,'GeometryData']]],
   ['ensureinitialized_26',['ensureInitialized',['../classQPythonRuntime.html#a9eb75fafe223eebaf870026ba5eced5e',1,'QPythonRuntime']]],

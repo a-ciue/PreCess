@@ -10,14 +10,16 @@ var searchData=
   ['listmodels_7',['listModels',['../classQModelQuery.html#a361ee2e438257f8bca90e4f90e614f3f',1,'QModelQuery::listModels()'],['../classsession_1_1SessionQuery.html#a14f4cc091e9afdb7f6dc94483375a305',1,'session::SessionQuery::listModels()']]],
   ['loadcentralitem_8',['loadCentralItem',['../classdock_1_1ui_1_1DockHostItem.html#a0a27767b674b24add8b5334a47aa8b17',1,'dock::ui::DockHostItem']]],
   ['loadfromfile_9',['loadFromFile',['../classObjMeshIO.html#a40e4e86597efe759ff1b4ff89a2279f9',1,'ObjMeshIO']]],
-  ['loadgeometry_10',['loadGeometry',['../classGeometryActorManager.html#afb041971dc0538ea11a39ce2d9472568',1,'GeometryActorManager']]],
+  ['loadgeometry_10',['loadGeometry',['../classGeometryActorManager.html#afb041971dc0538ea11a39ce2d9472568',1,'GeometryActorManager::loadGeometry(const GeometryDataVtk &amp;geometry_data)'],['../classGeometryActorManager.html#a8ebad2ed2ccafe148bc4edb0d204a600',1,'GeometryActorManager::loadGeometry(const GeometryDataVtk &amp;geometry_data, const std::string &amp;component_name)']]],
   ['loadmesh_11',['loadMesh',['../classMeshActorManager.html#aa626bc0f01bdf2423c28c1ca18f08dc2',1,'MeshActorManager']]],
   ['loadmodeldata_12',['loadModelData',['../classMeshActor.html#a70be0e3ea4dc333f6454667209f68f98',1,'MeshActor::loadModelData()'],['../classTopologyDiagnosticActor.html#a9013c89b1dd6191a711917c3d6e4f0e6',1,'TopologyDiagnosticActor::loadModelData()']]],
   ['loadmtl_13',['LoadMtl',['../namespacetinyobj.html#a861cd417f27a4cb95f005a3e1a178f87',1,'tinyobj']]],
   ['loadobj_14',['LoadObj',['../namespacetinyobj.html#a9333d068b046d2510a9a1b0a0f918ea3',1,'tinyobj']]],
   ['loadplugin_15',['loadPlugin',['../classsystems_1_1SystemPluginManager.html#aa79fbff90589e3f0512416d5d65d9bb1',1,'systems::SystemPluginManager']]],
   ['loadpluginsfromdirectory_16',['loadPluginsFromDirectory',['../classsession_1_1Session.html#aabc7b197254c948171e421a5d54fed78',1,'session::Session']]],
-  ['loadshape_17',['loadShape',['../classGeometryActor.html#aef1bf238b45d59679f9c3e2199ca48ab',1,'GeometryActor']]],
+  ['loadshape_17',['loadShape',['../classGeometryActor.html#aef1bf238b45d59679f9c3e2199ca48ab',1,'GeometryActor::loadShape()'],['../classGeometryTopologyDiagnosticActor.html#a0f650f73bbaff673c65cf95add8654c5',1,'GeometryTopologyDiagnosticActor::loadShape()']]],
   ['loadstaticplugins_18',['loadStaticPlugins',['../classsession_1_1Session.html#ac2f5ee2e857b3eb16b595c9c44aa2836',1,'session::Session']]],
-  ['lock_19',['lock',['../classGeometryActorSelectOpFactory.html#a00b635976b810da2b8f65665f154aef9',1,'GeometryActorSelectOpFactory::lock()'],['../classMeshActorSelectOpFactory.html#a13ab4a11c68be637479ab067aecd2525',1,'MeshActorSelectOpFactory::lock()']]]
+  ['lock_19',['lock',['../classGeometryActorSelectOpFactory.html#a00b635976b810da2b8f65665f154aef9',1,'GeometryActorSelectOpFactory::lock()'],['../classMeshActorSelectOpFactory.html#a13ab4a11c68be637479ab067aecd2525',1,'MeshActorSelectOpFactory::lock()']]],
+  ['logcacheddiagnostics_20',['logCachedDiagnostics',['../classGeometryTopologyDiagnosticActor.html#adfd582c32efcd1f5bef2e9dc4828345c',1,'GeometryTopologyDiagnosticActor']]],
+  ['logdiagnosticdetails_21',['logDiagnosticDetails',['../classGeometryTopologyDiagnosticActor.html#ad71b30d1428a4b8f6ce947ac2fb19e20',1,'GeometryTopologyDiagnosticActor']]]
 ];

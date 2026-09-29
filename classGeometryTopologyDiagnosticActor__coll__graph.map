@@ -1,0 +1,37 @@
+<map id="GeometryTopologyDiagnosticActor" name="GeometryTopologyDiagnosticActor">
+<area shape="rect" id="Node000001" title="计算并显示一个 GeometryActor 对应的 OCC 几何拓扑诊断结果。" alt="" coords="1955,241,2169,281"/>
+<area shape="rect" id="Node000002" title=" " alt="" coords="1461,25,1723,65"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="1737,39,1786,44,1836,54,1886,69,1932,91,1975,124,2009,165,2036,206,2054,240,2049,242,2032,209,2005,169,1971,128,1929,96,1884,74,1835,59,1785,50,1736,45"/>
+<area shape="rect" id="Node000003" title=" " alt="" coords="1423,161,1761,215"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="1775,193,1853,202,1931,215,2011,239,2009,244,1930,220,1853,207,1775,198"/>
+<area shape="rect" id="Node000004" href="$structGeometryTopologyDiagnosticActor_1_1DiagnosticPipeline.html" title="保存一种诊断类别的独立静态数据、映射器和 Actor。" alt="" coords="1091,115,1305,155"/>
+<area shape="poly" id="edge4_Node000001_Node000004" title=" " alt="" coords="1319,115,1449,106,1605,106,1687,112,1771,124,1853,142,1932,168,1963,183,1993,202,2040,239,2037,243,1990,206,1961,188,1930,173,1851,148,1770,129,1687,118,1604,111,1449,111,1319,121"/>
+<area shape="poly" id="edge3_Node000003_Node000004" title=" " alt="" coords="1319,149,1330,151,1423,163,1422,169,1329,156,1318,154"/>
+<area shape="rect" id="Node000005" href="$structGeometryTopologyDiagnosticActor_1_1SizeMarkerPipeline.html" title="使用固定屏幕点大小标出肉眼难以看到的细小几何。" alt="" coords="1485,240,1699,280"/>
+<area shape="poly" id="edge5_Node000001_Node000005" title=" " alt="" coords="1713,258,1955,258,1955,264,1713,263"/>
+<area shape="rect" id="Node000006" title=" " alt="" coords="1501,304,1683,344"/>
+<area shape="poly" id="edge6_Node000001_Node000006" title=" " alt="" coords="1697,314,1809,303,1930,287,1974,279,1975,284,1931,292,1810,308,1697,319"/>
+<area shape="rect" id="Node000007" title=" " alt="" coords="1489,368,1695,408"/>
+<area shape="poly" id="edge7_Node000001_Node000007" title=" " alt="" coords="1708,378,1817,363,1874,350,1930,334,1985,308,2031,279,2034,284,1988,313,1932,338,1876,355,1818,368,1709,383"/>
+<area shape="rect" id="Node000008" href="$structGeometryTopologyDiagnosticResult.html" title="几何拓扑诊断的完整结果。" alt="" coords="1091,365,1305,405"/>
+<area shape="poly" id="edge8_Node000007_Node000008" title=" " alt="" coords="1319,383,1489,385,1489,390,1319,389"/>
+<area shape="rect" id="Node000009" title=" " alt="" coords="651,260,805,300"/>
+<area shape="poly" id="edge9_Node000008_Node000009" title=" " alt="" coords="819,279,938,289,1004,300,1067,316,1121,338,1167,363,1164,368,1119,343,1066,321,1003,306,938,295,819,284"/>
+<area shape="rect" id="Node000010" title=" " alt="" coords="5,345,160,385"/>
+<area shape="poly" id="edge10_Node000008_Node000010" title=" " alt="" coords="174,354,184,353,228,353,464,350,648,343,832,343,940,348,1067,359,1099,363,1098,368,1066,364,939,354,831,349,648,349,464,355,228,359,184,359,174,359"/>
+<area shape="rect" id="Node000012" href="$structGeometryDuplicateFaceGroup.html" title="一组在 OCC 数值精度内覆盖相同几何区域的面。" alt="" coords="252,378,469,403"/>
+<area shape="poly" id="edge13_Node000012_Node000010" title=" " alt="" coords="174,375,184,376,252,382,251,387,184,381,174,380"/>
+<area shape="rect" id="Node000011" title=" " alt="" coords="611,375,845,415"/>
+<area shape="poly" id="edge11_Node000008_Node000011" title=" " alt="" coords="858,389,1090,385,1091,390,858,395"/>
+<area shape="poly" id="edge12_Node000011_Node000012" title=" " alt="" coords="483,389,611,391,611,396,483,395"/>
+<area shape="rect" id="Node000013" title=" " alt="" coords="604,439,852,479"/>
+<area shape="poly" id="edge14_Node000008_Node000013" title=" " alt="" coords="866,469,915,469,966,464,1017,454,1065,438,1077,427,1089,415,1115,403,1117,408,1092,420,1081,431,1068,442,1018,459,967,469,915,474,866,475"/>
+<area shape="rect" id="Node000014" href="$structGeometryIntersectingFacePair.html" title="一对互相穿插的面，自相交与几何干涉共用；单 Face 自交时两个成员相同。" alt="" coords="252,446,469,471"/>
+<area shape="poly" id="edge15_Node000013_Node000014" title=" " alt="" coords="483,456,604,456,604,461,483,461"/>
+<area shape="rect" id="Node000015" title=" " alt="" coords="651,503,805,543"/>
+<area shape="poly" id="edge16_Node000008_Node000015" title=" " alt="" coords="819,540,880,546,945,543,977,538,1009,529,1038,516,1065,498,1073,489,1077,480,1077,460,1077,438,1081,427,1089,415,1104,404,1107,408,1093,419,1086,429,1082,439,1082,460,1082,481,1077,492,1068,502,1041,521,1010,534,978,543,945,549,879,551,819,545"/>
+<area shape="rect" id="Node000016" title=" " alt="" coords="1549,434,1635,459"/>
+<area shape="poly" id="edge17_Node000001_Node000016" title=" " alt="" coords="1649,447,1710,447,1782,441,1858,425,1895,413,1929,398,1967,372,2000,340,2046,280,2051,283,2004,344,1971,376,1932,402,1896,418,1859,430,1783,446,1710,452,1649,453"/>
+<area shape="rect" id="Node000017" title=" " alt="" coords="1129,429,1267,469"/>
+<area shape="poly" id="edge18_Node000016_Node000017" title=" " alt="" coords="1281,446,1549,444,1549,450,1281,451"/>
+</map>

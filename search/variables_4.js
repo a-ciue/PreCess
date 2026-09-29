@@ -3,7 +3,7 @@ var searchData=
   ['dashed_0',['dashed',['../structsystems_1_1interaction_1_1AnnotationLine.html#a82d919d5615d703c9825f43736f78ea0',1,'systems::interaction::AnnotationLine']]],
   ['dashed_5factor_5f_1',['dashed_actor_',['../classInteractionService.html#a548e22e6b9ff54747ea609ca0b8b23c2',1,'InteractionService']]],
   ['dashed_5fpoly_5f_2',['dashed_poly_',['../classInteractionService.html#a4554e075e6421a53c37f3310431581e2',1,'InteractionService']]],
-  ['data_3',['data',['../structTopologyDiagnosticActor_1_1DiagnosticPipeline.html#a13daa612894aabbc11de580e2833e6d4',1,'TopologyDiagnosticActor::DiagnosticPipeline']]],
+  ['data_3',['data',['../structGeometryTopologyDiagnosticActor_1_1DiagnosticPipeline.html#aba7cb86e0f8c0bb86b32f044485c93ac',1,'GeometryTopologyDiagnosticActor::DiagnosticPipeline::data'],['../structGeometryTopologyDiagnosticActor_1_1SizeMarkerPipeline.html#af44892b4a5e0f686ffc09af6a9d70671',1,'GeometryTopologyDiagnosticActor::SizeMarkerPipeline::data'],['../structTopologyDiagnosticActor_1_1DiagnosticPipeline.html#a13daa612894aabbc11de580e2833e6d4',1,'TopologyDiagnosticActor::DiagnosticPipeline::data']]],
   ['data_5f_4',['data_',['../classQSelection.html#ae17a23b67b7c87bdb604e930769d517a',1,'QSelection::data_'],['../structQRenderWindow.html#af36bc244b299907aa7fd3660c883bc38',1,'QRenderWindow::data_']]],
   ['deactivate_5fothers_5f_5',['deactivate_others_',['../classsystems_1_1feature_1_1InteractionContext.html#ae4c8144a9b9bf068bea91c867cc76465',1,'systems::feature::InteractionContext']]],
   ['deferred_5fop_6',['deferred_op',['../structsystems_1_1interaction_1_1InteractionState.html#a460b8f85973eca00b5f3c638a78b408e',1,'systems::interaction::InteractionState']]],
@@ -11,7 +11,7 @@ var searchData=
   ['description_8',['description',['../structsystems_1_1algo_1_1AlgorithmInfo.html#a3ed2e0827d56f8602e4ecc4c77ea683e',1,'systems::algo::AlgorithmInfo::description'],['../structsystems_1_1edit_1_1EditInfo.html#a41dd2f34dd56cb5fdb2d3326195a3fc2',1,'systems::edit::EditInfo::description'],['../structsystems_1_1feature_1_1FeatureInfo.html#a608ad717ea11bff1517a669e1f43ae11',1,'systems::feature::FeatureInfo::description'],['../structsystems_1_1feature_1_1HandlerMetaData.html#a40b1b95907c2b795f518831c665b174d',1,'systems::feature::HandlerMetaData::description'],['../structsystems_1_1io_1_1ModelIOInfo.html#a70823a394fc6bcfa4a601cf093ecb7ba',1,'systems::io::ModelIOInfo::description']]],
   ['description_5f_9',['description_',['../classQAlgorithmInfo.html#aa0fd999ab0d1d91828fd58b873e1e45a',1,'QAlgorithmInfo::description_'],['../classQEditInfo.html#a74841088514f1714b987b93d3e2d68f5',1,'QEditInfo::description_'],['../classQFeatureInfo.html#a99a5fd35e42fe29294ecec02d1555bae',1,'QFeatureInfo::description_'],['../classsystems_1_1io_1_1QModelIOInfo.html#a99021cc8e89feb963ebebdbd31945935',1,'systems::io::QModelIOInfo::description_']]],
   ['destroyer_10',['destroyer',['../structsystems_1_1HandlerCreatorDestroyer.html#a3236c6bf1fec789ffffb631d9cc09e0b',1,'systems::HandlerCreatorDestroyer::destroyer'],['../structsystems_1_1SystemHandlerDestroyer.html#a51fc07889a780e77ba48ead7da22cf17',1,'systems::SystemHandlerDestroyer::destroyer']]],
-  ['diagnostics_5f_11',['diagnostics_',['../classTopologyDiagnosticActor.html#a3ff620e740050cf05cf31705abee229d',1,'TopologyDiagnosticActor']]],
+  ['diagnostics_5f_11',['diagnostics_',['../classGeometryTopologyDiagnosticActor.html#a4c33b46eab4112d00193b960cea89cef',1,'GeometryTopologyDiagnosticActor::diagnostics_'],['../classTopologyDiagnosticActor.html#a3ff620e740050cf05cf31705abee229d',1,'TopologyDiagnosticActor::diagnostics_']]],
   ['diffuse_12',['diffuse',['../structtinyobj_1_1material__t.html#a783cdfe69d52d4011bdcad54869ac453',1,'tinyobj::material_t']]],
   ['diffuse_5ftexname_13',['diffuse_texname',['../structtinyobj_1_1material__t.html#ad7f71a301a261fca07d2e50edccc792d',1,'tinyobj::material_t']]],
   ['diffuse_5ftexopt_14',['diffuse_texopt',['../structtinyobj_1_1material__t.html#a170412a1e339856e55d5cec406ecc196',1,'tinyobj::material_t']]],
@@ -33,5 +33,7 @@ var searchData=
   ['drag_5fproxy_5f_30',['drag_proxy_',['../classdock_1_1DragSession.html#a0d3efdfdcae2fe8248d9272311917888',1,'dock::DragSession']]],
   ['dragged_5fpanel_5f_31',['dragged_panel_',['../classdock_1_1DragSession.html#ada7ed21328743a20de0c187672a0f2c0',1,'dock::DragSession']]],
   ['dragging_5f_32',['dragging_',['../classdock_1_1ui_1_1DividerItem.html#a46af178d1deb4c9a4f6ae70335c5a916',1,'dock::ui::DividerItem']]],
-  ['dummy_33',['dummy',['../structtinyobj_1_1material__t.html#a6b1814d1066609178c81d2a4f7b34bd8',1,'tinyobj::material_t']]]
+  ['dummy_33',['dummy',['../structtinyobj_1_1material__t.html#a6b1814d1066609178c81d2a4f7b34bd8',1,'tinyobj::material_t']]],
+  ['duplicate_5fface_5fgroups_34',['duplicate_face_groups',['../structGeometryTopologyDiagnosticResult.html#a8c0ea3d0133dd88777ece754cc359029',1,'GeometryTopologyDiagnosticResult']]],
+  ['duplicate_5ffaces_35',['duplicate_faces',['../structGeometryTopologyDiagnosticOptions.html#ac3e9d50d1c939056ecc5f481cc8c1fdf',1,'GeometryTopologyDiagnosticOptions']]]
 ];

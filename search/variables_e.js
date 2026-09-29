@@ -12,7 +12,7 @@ var searchData=
   ['node_5f_9',['node_',['../classdock_1_1PanelGroup.html#a812aca044f2138388ef8a030f7d55af8',1,'dock::PanelGroup']]],
   ['nodeid_10',['nodeId',['../structTreeNode.html#a76a2f05c583f9e174afc609b720c6e1c',1,'TreeNode']]],
   ['nodetype_11',['nodeType',['../structTreeNode.html#a32f2204c453b9e9b9b4c7013ee4eb9ce',1,'TreeNode']]],
-  ['non_5fmanifold_5fedges_12',['non_manifold_edges',['../structMeshTopologyDiagnosticResult.html#aaf18c5accb9fdf55bf2f7ea8f3ced52b',1,'MeshTopologyDiagnosticResult']]],
+  ['non_5fmanifold_5fedges_12',['non_manifold_edges',['../structMeshTopologyDiagnosticResult.html#aaf18c5accb9fdf55bf2f7ea8f3ced52b',1,'MeshTopologyDiagnosticResult::non_manifold_edges'],['../structGeometryTopologyDiagnosticResult.html#af3e556a72c905981773d5f1bdb4fa5ab',1,'GeometryTopologyDiagnosticResult::non_manifold_edges']]],
   ['non_5fmanifold_5fvertices_13',['non_manifold_vertices',['../structMeshTopologyDiagnosticResult.html#abb383fd94ecb260ef2b37528b36c3670',1,'MeshTopologyDiagnosticResult']]],
   ['normal_5fcb_14',['normal_cb',['../structtinyobj_1_1callback__t.html#aec89406f0dce3b2c27436808d3176c7c',1,'tinyobj::callback_t']]],
   ['normal_5findex_15',['normal_index',['../structtinyobj_1_1index__t.html#acc544f8c9b23b5093d291dcf787a2d77',1,'tinyobj::index_t']]],
