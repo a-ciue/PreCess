@@ -59,6 +59,7 @@ Item{
             enabled: !!(root.activeOp && root.activeOp.info)
             Layout.fillWidth: true
             onClicked:{
+                // 先停止参数监听，执行后的视口清空便不会反向清掉刚提交的参数。
                 App.selection.listeningSelectorIndex = -1
                 if (root.activeOp && root.activeOp.execute) {
                     try {
@@ -389,6 +390,7 @@ Item{
                 target: App.selection
                 enabled: selectStartButton.checked
                 function onSelectionUpdated(selection) {
+                    // 只更新当前监听参数，保持选择会话以便继续增删；null 也须同步到业务层。
                     value = selection
                     root.setParam(index, value)
                 }

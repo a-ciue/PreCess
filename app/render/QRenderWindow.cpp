@@ -523,6 +523,7 @@ QSelection* QRenderWindow::selectedIDs()
 {
     if (!selection_snapshot_)
         return nullptr;
+    // QML 包装对象单独持有副本，其生命周期和可变数据不与跨线程快照共享。
     auto* selection = new QSelection(std::make_unique<Selection>(*selection_snapshot_));
     QJSEngine::setObjectOwnership(selection, QJSEngine::JavaScriptOwnership);
     return selection;
@@ -532,10 +533,12 @@ void QRenderWindow::setSelectionRevision(int revision)
 {
     if (selection_revision_ == revision)
         return;
+    // GUI 先推进版本，使已经排队、尚未送达的旧参数结果立即失效。
     selection_revision_ = revision;
     selection_snapshot_.reset();
     emit selectionRevisionChanged();
     emit selectedChanged(); // 没有渲染窗口时也立即同步空选择
+    // 拾取器及高亮属于渲染线程；与后续发布使用同一版本，避免混入旧选择。
     dispatch_async([this, revision](vtkRenderWindow*, vtkUserData) {
         render_selection_revision_ = revision;
         select_manager_->clearSelection();
@@ -552,6 +555,7 @@ void QRenderWindow::publishSelection()
     std::shared_ptr<const Selection> snapshot = std::move(selection);
     const int revision = render_selection_revision_;
     QMetaObject::invokeMethod(&selection_dispatcher_, [this, snapshot, revision] {
+        // 用户可能在排队期间切换参数或结束选择，旧结果不能覆盖当前参数。
         if (revision != selection_revision_)
             return;
         selection_snapshot_ = snapshot;

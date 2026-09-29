@@ -618,6 +618,7 @@ Page {
             selectionRevision: App.selection.selectionRevision
 
             onSelectedChanged: {
+                // 非参数选择期间的视口刷新、清空只影响高亮，不回写操作参数。
                 if (App.selection.listeningSelectorIndex >= 0)
                     App.selection.selectionUpdated(myItem.selectedIDs)
             }
