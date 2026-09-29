@@ -271,6 +271,13 @@ QQuickVTKItem::vtkUserData QRenderWindow::initializeVTK(vtkRenderWindow* renderW
 void QRenderWindow::destroyingVTK(vtkRenderWindow* renderWindow, vtkUserData userData)
 {
     auto* vtk = Data::SafeDownCast(userData);
+    // 场景图重建会先释放旧 Data，再调用 initializeVTK；服务持有旧 renderer 的
+    // 裸指针，必须在此渲染线程边界销毁，不能拖到下一次 unique_ptr 赋值或 GUI 析构。
+    vtk->style_->SetInteractionService(nullptr);
+    vtk->style_->SetSelectManager(nullptr);
+    interaction_service_.reset();
+    select_manager_.reset();
+    data_ = nullptr;
     if (vtk->renderer_) {
         vtk->renderer_->RemoveAllViewProps();
     }
