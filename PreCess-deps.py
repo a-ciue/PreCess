@@ -9,7 +9,6 @@ import shlex
 import shutil
 import subprocess
 import sys
-import tarfile
 import urllib.request
 import zipfile
 from dataclasses import dataclass
@@ -65,78 +64,6 @@ def detect_host_platform() -> Platform:
         system = "linux"
     arch = "arm64" if platform.machine().lower() in ("arm64", "aarch64") else "x64"
     return Platform(system, arch)
-
-# Gmsh 链接的 OpenCASCADE 工具箱清单（按静态链接依赖顺序排列，TKernel 最后）。
-OCC_TOOLKIT_LIBRARIES = [
-    "TKDESTEP",
-    "TKDEIGES",
-    "TKXSBase",
-    "TKOffset",
-    "TKFeat",
-    "TKFillet",
-    "TKBool",
-    "TKMesh",
-    "TKHLR",
-    "TKBO",
-    "TKPrim",
-    "TKShHealing",
-    "TKTopAlgo",
-    "TKGeomAlgo",
-    "TKBRep",
-    "TKGeomBase",
-    "TKG3d",
-    "TKG2d",
-    "TKMath",
-    "TKernel",
-]
-
-# CGAL 头文件依赖的 Boost 库清单（原生与 wasm 共用）。
-BOOST_INCLUDE_LIBRARIES = ";".join(
-    [
-        "algorithm",
-        "any",
-        "bimap",
-        "bind",
-        "callable_traits",
-        "concept_check",
-        "config",
-        "container",
-        "container_hash",
-        "core",
-        "dynamic_bitset",
-        "foreach",
-        "format",
-        "function",
-        "functional",
-        "graph",
-        "heap",
-        "intrusive",
-        "iterator",
-        "lexical_cast",
-        "logic",
-        "math",
-        "mpl",
-        "multi_array",
-        "multi_index",
-        "multiprecision",
-        "optional",
-        "predef",
-        "preprocessor",
-        "program_options",
-        "property_map",
-        "ptr_container",
-        "random",
-        "range",
-        "smart_ptr",
-        "static_assert",
-        "stl_interfaces",
-        "tuple",
-        "type_traits",
-        "unordered",
-        "utility",
-        "variant",
-    ]
-)
 
 # 思源黑体（SIL OFL 1.1，允许随程序自由嵌入与再分发）：wasm 构建嵌入的 CJK 界面字体。
 SOURCE_HAN_SANS_REF = "2.005R"
@@ -279,13 +206,6 @@ GIT_REPOSITORIES = [
         "v1.6.0",
         "tetgen",
     ),
-    GitRepository(
-        "gmsh",
-        "https://gitlab.onelab.info/gmsh/gmsh.git",
-        "master",
-        "gmsh-occ8",
-        "86596d7902a1b00e23641ac5c904b7c1f880ce9f",
-    ),
 ]
 
 class DependencyError(Exception):
@@ -344,7 +264,8 @@ def clone_repositories(settings: DependenciesSettings) -> None:
             repository.url,
             destination,
         ]
-        # Gmsh 需要先克隆 master 才能取到当前使用的固定开发提交。
+        # 声明 detached_commit 的仓库需完整克隆才能 checkout 固定提交，
+        # 故去掉浅克隆参数。
         if repository.detached_commit:
             command.remove("--depth")
             command.remove("1")
@@ -389,23 +310,15 @@ def download_file(url: str, destination: Path) -> None:
         raise
 
 def download_archives(settings: DependenciesSettings) -> None:
-    downloads = [
-        (
-            # OCCT 的 Windows 预编译第三方库（freetype 等），仅 windows 原生构建需要。
-            "https://github.com/Open-Cascade-SAS/OCCT/releases/download/V8_0_0/3rdparty-vc14-64.zip",
-            settings.source_dir / "OCCT" / "3rdparty-vc14-64-temp.zip",
-        ),
-        (
-            "https://github.com/CGAL/cgal/releases/download/v6.2/CGAL-6.2.zip",
-            settings.source_dir / "CGAL-6.2.zip",
-        ),
-        (
-            "https://github.com/boostorg/boost/releases/download/boost-1.91.0-1/boost-1.91.0-1-cmake.tar.xz",
-            settings.source_dir / "boost-1.91.0-1-cmake.tar.xz",
-        ),
-    ]
-    if settings.platform.system != "windows":
-        downloads = downloads[1:]
+    downloads = []
+    if settings.platform.system == "windows":
+        downloads.append(
+            (
+                # OCCT 的 Windows 预编译第三方库（freetype 等），仅 windows 原生构建需要。
+                "https://github.com/Open-Cascade-SAS/OCCT/releases/download/V8_0_0/3rdparty-vc14-64.zip",
+                settings.source_dir / "OCCT" / "3rdparty-vc14-64-temp.zip",
+            )
+        )
     for url, destination in downloads:
         download_file(url, destination)
 
@@ -419,44 +332,11 @@ def download_wasm_font(settings: DependenciesSettings) -> None:
     for url, file_name in WASM_FONT_DOWNLOADS:
         download_file(url, font_dir / file_name)
 
-def remove_path(path: Path) -> None:
-    if path.is_symlink() or path.is_file():
-        path.unlink()
-    elif path.exists():
-        shutil.rmtree(path)
-
 def extract_zip(archive: Path, destination: Path) -> None:
     print(f"[解压] {archive} -> {destination}")
     destination.mkdir(parents=True, exist_ok=True)
     with zipfile.ZipFile(archive) as zip_file:
         zip_file.extractall(destination)
-
-def extract_boost_archive(archive: Path, destination: Path) -> None:
-    """解压 Boost 归档并去掉一层归档目录。"""
-
-    print(f"[解压] {archive} -> {destination}")
-    destination.parent.mkdir(parents=True, exist_ok=True)
-    excluded_marker = "/libs/decimal/doc/modules/ROOT/examples"
-    with tarfile.open(archive, "r:xz") as archive_file:
-        members = archive_file.getmembers()
-        stripped_members = []
-        for member in members:
-            parts = Path(member.name).parts
-            if len(parts) <= 1:
-                continue
-            if excluded_marker in "/" + member.name:
-                continue
-            member.name = str(Path(*parts[1:]))
-            if member.linkname:
-                link_parts = Path(member.linkname).parts
-                if len(link_parts) > 1:
-                    member.linkname = str(Path(*link_parts[1:]))
-            stripped_members.append(member)
-        try:
-            archive_file.extractall(destination, members=stripped_members, filter="data")
-        except TypeError:
-            # Python 3.11 及更早版本没有 data 过滤器。
-            archive_file.extractall(destination, members=stripped_members)
 
 def prepare_archives(settings: DependenciesSettings) -> None:
     # OCCT 的 vc14 第三方包与解压仅 windows 原生构建需要；Linux 下 freetype
@@ -474,25 +354,6 @@ def prepare_archives(settings: DependenciesSettings) -> None:
             extract_zip(inner_archive, occt_source)
         else:
             print(f"[跳过] 已解压：{third_party_dir}")
-
-    # CGAL 为纯头文件库，按平台各解压一份，保证 CMAKE_PREFIX_PATH 指向平台目录即可发现。
-    cgal_destination = settings.install_dir / "CGAL-6.2"
-    cgal_marker = cgal_destination / "CMakeLists.txt"
-    if not cgal_marker.exists():
-        extract_zip(settings.source_dir / "CGAL-6.2.zip", settings.install_dir)
-        for directory_name in ("data", "demo", "examples", "doc_html"):
-            remove_path(cgal_destination / directory_name)
-    else:
-        print(f"[跳过] 已解压：{cgal_destination}")
-
-    boost_source = settings.source_dir / "boost-src"
-    if not boost_source.exists():
-        extract_boost_archive(
-            settings.source_dir / "boost-1.91.0-1-cmake.tar.xz",
-            boost_source,
-        )
-    else:
-        print(f"[跳过] 已解压：{boost_source}")
 
 def fetch_sources(settings: DependenciesSettings) -> None:
     settings.dependency_dir.mkdir(parents=True, exist_ok=True)
@@ -803,130 +664,6 @@ def build_tetgen(settings: DependenciesSettings) -> None:
     )
     install_configs(settings.install_configs, build_directory)
 
-def occ_import_libraries(settings: DependenciesSettings) -> str:
-    """OCCT 各配置的导入库同名且指向同一个 DLL（TKxxx.dll 无配置后缀），可互换；
-    统一指向 RelWithDebInfo 的 libi，避免生成器表达式在 Ninja Multi-Config
-    下传给 Gmsh 后不被求值、ninja 把带 `$<` 的字面串当路径找的问题。"""
-    cas_root = (settings.install_dir / "OpenCASCADE8.0.0").as_posix()
-    return ";".join(
-        f"{cas_root}/win64/vc14/libi/{library}.lib"
-        for library in OCC_TOOLKIT_LIBRARIES
-    )
-
-# 非 Windows 原生平台下 gmsh 链接 OCCT 共享库时各配置候选的优先顺序：
-# RelWithDebInfo（i 后缀）、Release（无后缀）、Debug（d 后缀），
-# 与 Windows 侧统一指向 libi 的取舍一致。
-OCC_SHARED_LIBRARY_SUFFIX_PRIORITY = {
-    "linux": ("i.so", ".so", "d.so"),
-    "macos": ("i.dylib", ".dylib", "d.dylib"),
-}
-
-def occ_shared_library_candidates(cas_root: Path, library: str, suffix: str) -> list[Path]:
-    """按单一配置后缀收集某工具箱的共享库候选。
-
-    macOS 的版本化命名（如 libTKerneli.8.0.0.dylib）后缀位于版本号之前，
-    须同时按「后缀在前」与「后缀收尾」两种形态匹配。"""
-
-    candidates: set[Path] = set()
-    for pattern in (f"**/lib{library}{suffix}*", f"**/lib{library}*{suffix}"):
-        candidates.update(cas_root.glob(pattern))
-    return sorted(candidates)
-
-def occ_shared_libraries(settings: DependenciesSettings) -> str:
-    """Linux/macOS 下逐工具箱定位 OCCT 共享库（libTKxxx*.so/.dylib），按配置后缀优先级取第一个命中。"""
-    cas_root = settings.install_dir / "OpenCASCADE8.0.0"
-    suffix_priority = OCC_SHARED_LIBRARY_SUFFIX_PRIORITY[settings.platform.system]
-    library_paths = []
-    for library in OCC_TOOLKIT_LIBRARIES:
-        for suffix in suffix_priority:
-            candidates = occ_shared_library_candidates(cas_root, library, suffix)
-            if candidates:
-                library_paths.append(candidates[0].as_posix())
-                break
-        else:
-            raise DependencyError(
-                f"未找到 OpenCASCADE 共享库：{cas_root} 下的 lib{library}{suffix_priority[1]}"
-            )
-    return ";".join(library_paths)
-
-def build_gmsh(settings: DependenciesSettings) -> None:
-    source = settings.source_dir / "gmsh-occ8"
-    build_directory = settings.build_directory(source)
-    # Gmsh 只认 CASROOT 环境变量探测 OpenCASCADE（find_path HINTS ENV CASROOT），
-    # 不消费任何 OCC_INCLUDE_DIR 定义；探测失败时静默关闭 HAVE_OCC，只编译桩实现。
-    environment = {**os.environ, "CASROOT": str(settings.install_dir / "OpenCASCADE8.0.0")}
-    occ_libraries = (
-        occ_import_libraries(settings)
-        if settings.platform.system == "windows"
-        else occ_shared_libraries(settings)
-    )
-    configure_cmake_project(
-        source,
-        build_directory,
-        settings.install_dir / "gmsh-occ8",
-        [
-            ("-DCMAKE_CONFIGURATION_TYPES:STRING", "Debug;Release;RelWithDebInfo"),
-            ("-DCMAKE_DEBUG_POSTFIX:STRING", "d"),
-            ("-DCMAKE_RELWITHDEBINFO_POSTFIX:STRING", "i"),
-            ("-DENABLE_OCC:BOOL", "ON"),
-            ("-DOCC_LIBS:STRING", occ_libraries),
-            ("-DENABLE_OPENMP:BOOL", "OFF"),
-            ("-DBUILD_TESTING:BOOL", "OFF"),
-            ("-DENABLE_BUILD_DYNAMIC:BOOL", "OFF"),
-            ("-DENABLE_BUILD_LIB:BOOL", "OFF"),
-            ("-DENABLE_BUILD_SHARED:BOOL", "ON"),
-        ],
-        settings,
-        environment=environment,
-    )
-    configs = ["Debug"]
-    if settings.build_relwithdebinfo:
-        configs.append("RelWithDebInfo")
-    if settings.build_release:
-        configs.append("Release")
-    install_configs(configs, build_directory)
-    fix_gmsh_occ_paths(settings)
-
-def fix_gmsh_occ_paths(settings: DependenciesSettings) -> None:
-    target_file = settings.install_dir / "gmsh-occ8" / "share" / "gmsh" / "gmshTargets.cmake"
-    if not target_file.exists():
-        raise DependencyError(f"未找到 Gmsh 生成的 CMake 目标文件：{target_file}")
-
-    dependency_prefix = settings.install_dir.as_posix()
-    windows_prefix = str(settings.install_dir)
-    relative_prefix = "${_IMPORT_PREFIX}/../OpenCASCADE8.0.0"
-    content = target_file.read_text(encoding="utf-8")
-    updated = content.replace(
-        f"{dependency_prefix}/OpenCASCADE8.0.0", relative_prefix
-    ).replace(f"{windows_prefix}\\OpenCASCADE8.0.0", relative_prefix)
-    if updated == content:
-        if relative_prefix in content:
-            print("[跳过] OpenCASCADE 路径已经是相对路径")
-            return
-        # 桌面 gmsh 以 shared 库导出（gmsh::shared）：OCCT 是其私有链接依赖，
-        # 不进导出文件；消费方 GmshPlugin 已显式链接所需工具箱，无路径可改写属正常形态。
-        print("[跳过] gmsh 导出未携带 OpenCASCADE 绝对路径，无需改写")
-        return
-    write_text_file(target_file, updated)
-
-def build_boost(settings: DependenciesSettings) -> None:
-    source = settings.source_dir / "boost-src"
-    build_directory = settings.build_directory(source)
-    configure_cmake_project(
-        source,
-        build_directory,
-        settings.install_dir / "boost-1.91.0",
-        [
-            ("-DCMAKE_RELWITHDEBINFO_POSTFIX", "i"),
-            ("-DCMAKE_DEBUG_POSTFIX", "d"),
-            ("-DBUILD_SHARED_LIBS", "ON"),
-            ("-DBOOST_INSTALL_LAYOUT", "system"),
-            ("-DBOOST_INCLUDE_LIBRARIES", BOOST_INCLUDE_LIBRARIES),
-        ],
-        settings,
-    )
-    install_configs(settings.install_configs, build_directory)
-
 def build_native(settings: DependenciesSettings) -> None:
     """构建原生（非 wasm）平台的依赖。"""
 
@@ -964,8 +701,6 @@ def build_native(settings: DependenciesSettings) -> None:
     build_catch2(settings)
     build_libmeshb(settings)
     build_tetgen(settings)
-    build_gmsh(settings)
-    build_boost(settings)
     build_pybind11(settings)
 
 REQUIRED_EMSDK_VERSION = "3.1.56"
@@ -1325,32 +1060,6 @@ def build_occt_wasm(
     install_configs(("Release",), build_directory, environment)
     return install_prefix
 
-def locate_occt_wasm_layout(install_prefix: Path) -> tuple[Path, Path]:
-    """探测 OCCT 交叉安装布局（Unix 布局头文件在 include、库在 lib；
-    Windows 布局头文件在 inc）。"""
-
-    include_dir = install_prefix / "include"
-    if not include_dir.exists():
-        include_dir = require_path(install_prefix / "inc", "OpenCASCADE 头文件目录")
-    candidates = sorted(install_prefix.glob("**/libTKernel*.a")) or sorted(
-        install_prefix.glob("**/TKernel*.a")
-    )
-    if not candidates:
-        raise DependencyError(f"未在 {install_prefix} 中找到 OpenCASCADE 静态库 TKernel")
-    return include_dir, candidates[0].parent
-
-def occ_wasm_libraries(lib_dir: Path) -> str:
-    library_paths = []
-    for library in OCC_TOOLKIT_LIBRARIES:
-        for name in (f"lib{library}.a", f"{library}.a"):
-            candidate = lib_dir / name
-            if candidate.exists():
-                library_paths.append(candidate.as_posix())
-                break
-        else:
-            raise DependencyError(f"未找到 OpenCASCADE 静态库：{lib_dir / f'lib{library}.a'}")
-    return ";".join(library_paths)
-
 def build_spdlog_wasm(settings: DependenciesSettings, environment: dict[str, str]) -> None:
     source = settings.source_dir / "spdlog"
     build_directory = settings.build_directory(source)
@@ -1426,103 +1135,6 @@ def build_tetgen_wasm(settings: DependenciesSettings, environment: dict[str, str
     )
     install_configs(("Release",), build_directory, environment)
 
-def inject_gmsh_occ_static_libraries(
-    settings: DependenciesSettings,
-    occ_lib_dir: Path,
-) -> None:
-    """静态 gmsh 的导出目标不携带链接依赖（gmsh 源码只对 shared 目标挂库），
-    把 OCCT 静态库以相对路径注入 gmsh::lib 的接口链接属性。"""
-
-    target_file = settings.install_dir / "gmsh-occ8" / "share" / "gmsh" / "gmshTargets.cmake"
-    if not target_file.exists():
-        raise DependencyError(f"未找到 Gmsh 生成的 CMake 目标文件：{target_file}")
-
-    content = target_file.read_text(encoding="utf-8")
-    if "INTERFACE_LINK_LIBRARIES" in content:
-        print(f"[跳过] Gmsh 目标已携带链接依赖：{target_file}")
-        return
-
-    occ_root = settings.install_dir / "OpenCASCADE8.0.0"
-    lib_sub_dir = occ_lib_dir.relative_to(occ_root).as_posix()
-    libraries = ";".join(
-        f"${{_IMPORT_PREFIX}}/../OpenCASCADE8.0.0/{lib_sub_dir}/lib{library}.a"
-        for library in OCC_TOOLKIT_LIBRARIES
-    )
-    include_anchor = 'INTERFACE_INCLUDE_DIRECTORIES "${_IMPORT_PREFIX}/include"'
-    if include_anchor not in content:
-        raise DependencyError(f"未在 {target_file} 中找到 gmsh::lib 的接口属性注入点")
-    updated = content.replace(
-        include_anchor,
-        include_anchor + f'\n  INTERFACE_LINK_LIBRARIES "{libraries}"',
-    )
-    write_text_file(target_file, updated)
-    print(f"[注入] 已为 gmsh::lib 写入 OpenCASCADE 静态库链接依赖")
-
-def build_gmsh_wasm(
-    settings: DependenciesSettings,
-    occ_prefix: Path,
-    environment: dict[str, str],
-) -> None:
-    source = settings.source_dir / "gmsh-occ8"
-    build_directory = settings.build_directory(source)
-    _, occ_lib_dir = locate_occt_wasm_layout(occ_prefix)
-    # Gmsh 只认 CASROOT 环境变量探测 OpenCASCADE；探测失败时静默关闭 HAVE_OCC，只编译桩实现。
-    # Emscripten 工具链默认 FIND_ROOT_PATH_MODE_INCLUDE=ONLY，会把 CASROOT 提示路径重根化，
-    # 须放开为 BOTH 才能让 find_path 命中依赖目录。
-    environment = {**environment, "CASROOT": str(occ_prefix)}
-    definitions = [
-        ("-DCMAKE_C_FLAGS", wasm_compile_flags(settings, WASM_EXCEPTION_FLAGS)),
-        ("-DCMAKE_CXX_FLAGS", wasm_compile_flags(settings, WASM_EXCEPTION_FLAGS)),
-        # Emscripten.cmake 默认 MODE_INCLUDE=ONLY 会重根化 find_path 的 CASROOT 提示，须放开。
-        ("-DCMAKE_FIND_ROOT_PATH_MODE_INCLUDE", "BOTH"),
-        ("-DENABLE_OCC:BOOL", "ON"),
-        ("-DOCC_LIBS:STRING", occ_wasm_libraries(occ_lib_dir)),
-        ("-DENABLE_OPENMP:BOOL", "OFF"),
-        # gmsh 的 std::thread 并行先保持关闭，待多线程 ABI 验证通过后再单独开启。
-        ("-DENABLE_MULTITHREADED:BOOL", "OFF"),
-        # HXT 内置一份无命名空间的 tetgen 拷贝（hxt_boundary_recovery），与 TetGenLibPlugin
-        # 链接的 libtet.a 在 wasm 全静态链接下重复符号冲突；HXT 是多线程 3D 算法，单线程
-        # wasm 上无收益，且体网格剖分由 TetGenLibPlugin 提供，直接关闭。
-        ("-DENABLE_HXT:BOOL", "OFF"),
-        ("-DBUILD_TESTING:BOOL", "OFF"),
-        ("-DENABLE_BUILD_DYNAMIC:BOOL", "OFF"),
-        ("-DENABLE_BUILD_LIB:BOOL", "ON"),
-        ("-DENABLE_BUILD_SHARED:BOOL", "OFF"),
-    ]
-    configure_cmake_project(
-        source,
-        build_directory,
-        settings.install_dir / "gmsh-occ8",
-        definitions,
-        settings,
-        environment=environment,
-    )
-    install_configs(("Release",), build_directory, environment)
-    inject_gmsh_occ_static_libraries(settings, occ_lib_dir)
-
-def build_boost_wasm(settings: DependenciesSettings, environment: dict[str, str]) -> None:
-    source = settings.source_dir / "boost-src"
-    build_directory = settings.build_directory(source)
-    configure_cmake_project(
-        source,
-        build_directory,
-        settings.install_dir / "boost-1.91.0",
-        [
-            ("-DCMAKE_RELWITHDEBINFO_POSTFIX", "i"),
-            ("-DCMAKE_DEBUG_POSTFIX", "d"),
-            ("-DBUILD_SHARED_LIBS", "OFF"),
-            ("-DBOOST_INSTALL_LAYOUT", "system"),
-            ("-DBOOST_INCLUDE_LIBRARIES", BOOST_INCLUDE_LIBRARIES),
-            # Emscripten 平台不被 Boost.Config 识别为 posix，显式启用 pthread 路径
-            # （单线程构建下为桩实现，避免 container 等库落入 Windows API 分支）。
-            ("-DCMAKE_C_FLAGS", wasm_compile_flags(settings, "-DBOOST_HAS_PTHREADS", WASM_EXCEPTION_FLAGS)),
-            ("-DCMAKE_CXX_FLAGS", wasm_compile_flags(settings, "-DBOOST_HAS_PTHREADS", WASM_EXCEPTION_FLAGS)),
-        ],
-        settings,
-        environment=environment,
-    )
-    install_configs(("Release",), build_directory, environment)
-
 def build_wasm(settings: DependenciesSettings) -> None:
     """把依赖交叉编译到 WebAssembly（仅 Release；multiple 架构为 -pthread 多线程配方）。"""
 
@@ -1546,13 +1158,11 @@ def build_wasm(settings: DependenciesSettings) -> None:
     build_vtk_wasm(settings, wasm_qt, environment)
     patch_occt_wasm_toolkit_gl2ps(settings)
     patch_occt_wasm_convert_signals(settings)
-    occ_prefix = build_occt_wasm(settings, wasm_qt, environment)
+    build_occt_wasm(settings, wasm_qt, environment)
     build_spdlog_wasm(settings, environment)
     build_catch2_wasm(settings, environment)
     build_libmeshb_wasm(settings, environment)
     build_tetgen_wasm(settings, environment)
-    build_gmsh_wasm(settings, occ_prefix, environment)
-    build_boost_wasm(settings, environment)
 
 def build_dependencies(settings: DependenciesSettings) -> None:
     if settings.platform.is_wasm:

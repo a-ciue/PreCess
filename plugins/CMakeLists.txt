@@ -14,7 +14,6 @@ endif()
 # 插件工程使用同一实现，此处仅提供 in-tree 的输出/安装布局变量（见上）
 include(PreCessPlugin)
 
-add_subdirectory(shared/cgal_support)
 add_subdirectory(io)
 add_subdirectory(algo)
 add_subdirectory(edit)
