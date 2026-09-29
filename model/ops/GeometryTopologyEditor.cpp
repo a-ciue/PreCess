@@ -3096,8 +3096,30 @@ TopoDS_Shape GeometryTopologyEditor::removeShape(
     if (top_level)
         return removeTopLevelShape(root, target, delete_children);
 
-    if (target.ShapeType() == TopAbs_FACE)
-        return removeNestedFace(root, TopoDS::Face(target));
+    if (target.ShapeType() == TopAbs_FACE) {
+        TopoDS_Shape result = removeNestedFace(root, TopoDS::Face(target));
+        if (delete_children)
+            return result;
+
+        // 嵌套面也遵守非级联删除约定：仅将不再被引用的边提升为独立几何。
+        NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher> retained_edges;
+        if (!result.IsNull())
+            TopExp::MapShapes(result, TopAbs_EDGE, retained_edges);
+        NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher> target_edges;
+        TopExp::MapShapes(target, TopAbs_EDGE, target_edges);
+        BRep_Builder builder;
+        TopoDS_Compound compound;
+        builder.MakeCompound(compound);
+        if (!result.IsNull())
+            builder.Add(compound, result);
+        for (int index = 1; index <= target_edges.Extent(); ++index) {
+            if (!retained_edges.Contains(target_edges.FindKey(index)))
+                builder.Add(compound, target_edges.FindKey(index));
+        }
+        if (!BRepCheck_Analyzer(compound).IsValid())
+            throw std::runtime_error("Preserving the deleted face boundary produced invalid topology");
+        return compound;
+    }
 
     throw std::invalid_argument(
         "Nested edges or vertices cannot be deleted alone; delete the owning face instead");
