@@ -7,7 +7,7 @@
 
 namespace systems::feature {
 /**
- * @brief 将补间隙功能注册到 FeatureSystem 的插件入口。
+ * @brief 将局部缝合功能注册到 FeatureSystem 的插件入口。
  */
 class FillGapPlugin : public QObject, public PluginBase {
     Q_OBJECT

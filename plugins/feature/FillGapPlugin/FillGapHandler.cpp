@@ -33,7 +33,7 @@ void FillGapHandler::setup(FeatureRegistrar& reg, FeatureContext& /*ctx*/)
         "请选择一条间隙边界上的自由边" });
     reg.addParameter({ ArgTypeEnum::Float, "缝合容差", "0.01",
         "识别间隙边界与缝合的最大距离，使用当前模型长度单位" });
-    reg.addMenuItem({ "几何/修复", "补间隙", "" });
+    reg.addMenuItem({ "几何/修复", "局部缝合", "" });
 }
 
 std::any FillGapHandler::execute(FeatureContext& ctx)
@@ -81,6 +81,6 @@ std::any FillGapHandler::execute(FeatureContext& ctx)
     } catch (const std::exception& error) {
         spdlog::error("FillGap: {}", error.what());
     }
-    return std::string("补间隙失败，请确认所选边是容差内间隙边界上的自由边；详细原因请查看日志。");
+    return std::string("局部缝合失败，请确认所选边是容差内间隙边界上的自由边；详细原因请查看日志。");
 }
 }

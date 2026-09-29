@@ -38,7 +38,7 @@ using namespace systems::feature;
 
 namespace {
 /**
- * @brief 补间隙插件测试数据，保存组件与种子自由边业务 ID。
+ * @brief 局部缝合插件测试数据，保存组件与种子自由边业务 ID。
  */
 struct FillGapFixture {
     Index component_id { -1 };
@@ -49,7 +49,7 @@ HandlerMetaData handlerMetaData()
 {
     HandlerMetaData meta_data;
     meta_data.name = "FillGap";
-    meta_data.display_name = "补间隙";
+    meta_data.display_name = "局部缝合";
     return meta_data;
 }
 
@@ -154,7 +154,7 @@ TEST_CASE("FillGap feature stitches the gap boundary from one seed edge", "[Fill
     const Index result = std::any_cast<Index>(feature_system.invoke("FillGap"));
     REQUIRE(result == fixture.component_id);
     REQUIRE(countSharedEdges(*model_layer.findComponent(fixture.component_id)) == 1);
-    REQUIRE(undo_stack.undoLabel() == "补间隙");
+    REQUIRE(undo_stack.undoLabel() == "局部缝合");
 
     undo_stack.undo();
     REQUIRE(countSharedEdges(*model_layer.findComponent(fixture.component_id)) == 0);
@@ -178,6 +178,6 @@ TEST_CASE("FillGap feature reports missing partner when tolerance is too small",
         core::ArgObject::create<ArgTypeEnum::Float>(0.001)));
 
     const std::any hint = feature_system.invoke("FillGap");
-    REQUIRE(std::any_cast<std::string>(hint).find("补间隙失败") != std::string::npos);
+    REQUIRE(std::any_cast<std::string>(hint).find("局部缝合失败") != std::string::npos);
     REQUIRE(countSharedEdges(*model_layer.findComponent(fixture.component_id)) == 0);
 }
