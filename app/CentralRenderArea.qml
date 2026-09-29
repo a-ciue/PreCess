@@ -48,7 +48,10 @@ Page {
 
     footer: ToolBar {
         id: toolbar
-        height: 28
+        // 容纳图标 + 文字: 让 footer 高度随内容自适应, 不固定 28 (加图标后被 elide 截断)
+        implicitHeight: 36
+        leftPadding: 4
+        rightPadding: 4
         background: Rectangle {
             color: Theme.surfaceAlt
 
@@ -68,6 +71,9 @@ Page {
 
             ToolButton {
                 id: geoBtn
+                display: ToolButton.IconOnly
+                flat: true
+                Layout.preferredWidth: 32
                 readonly property var geoLabels: [
                     "几何·面·有边", "几何·面·无边", "几何·透·75%", "几何·透·50%",
                     "几何·透·25%", "几何·线·带曲面线", "几何·线·无曲面线", "几何·隐"
@@ -205,6 +211,9 @@ Page {
 
             ToolButton {
                 id: meshBtn
+                display: ToolButton.IconOnly
+                flat: true
+                Layout.preferredWidth: 32
                 readonly property var meshLabels: [
                     "网格·面·带网格线", "网格·面·无线", "网格·透·75%", "网格·透·50%",
                     "网格·透·25%", "网格·线·带内部线", "网格·线·仅表面线", "网格·隐"
@@ -343,6 +352,7 @@ Page {
             ToolButton {
                 id: topologyDiagnosticBtn
                 text: "网格诊断"
+                flat: true
                 Layout.preferredWidth: 70
                 Layout.fillHeight: true
                 onClicked: topologyDiagnosticMenu.visible ? topologyDiagnosticMenu.close() : topologyDiagnosticMenu.open()
@@ -454,6 +464,7 @@ Page {
             ToolButton {
                 id: geometryTopologyDiagnosticBtn
                 text: "几何诊断"
+                flat: true
                 Layout.preferredWidth: 70
                 Layout.fillHeight: true
                 onClicked: geometryTopologyDiagnosticMenu.visible ? geometryTopologyDiagnosticMenu.close() : geometryTopologyDiagnosticMenu.open()
@@ -582,6 +593,7 @@ Page {
 
             ToolButton {
                 text: "裁剪"
+                flat: true
                 checkable: true
                 Layout.preferredWidth: 50
                 Layout.fillHeight: true
@@ -591,6 +603,7 @@ Page {
             }
             ToolButton {
                 text: "比例尺"
+                flat: true
                 checkable: true
                 Layout.preferredWidth: 50
                 Layout.fillHeight: true
@@ -600,6 +613,7 @@ Page {
             }
             ToolButton {
                 text: "重置视图"
+                flat: true
                 Layout.preferredWidth: 70
                 Layout.fillHeight: true
                 onClicked: myItem.resetCamera()
