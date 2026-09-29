@@ -1,0 +1,2 @@
+precess_add_test(TestCollapseEdgePlugin TestCollapseEdgePlugin.cpp)
+precess_test_link_libraries(TestCollapseEdgePlugin CollapseEdgePluginlib FeatureSystem Data)

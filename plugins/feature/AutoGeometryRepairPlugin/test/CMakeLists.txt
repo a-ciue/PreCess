@@ -1,0 +1,2 @@
+precess_add_test(TestAutoGeometryRepairPlugin TestAutoGeometryRepairPlugin.cpp)
+precess_test_link_libraries(TestAutoGeometryRepairPlugin AutoGeometryRepairPluginlib FeatureSystem Data TKBRep TKTopAlgo)

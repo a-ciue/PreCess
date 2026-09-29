@@ -1,0 +1,8 @@
+{
+  "system": "FeatureSystem",
+  "handler": {
+    "name": "AutoGeometryRepair",
+    "display_name": "自动修复间隙",
+    "description": "检测并按全局清理容差自动缝合跨面自由边"
+  }
+}

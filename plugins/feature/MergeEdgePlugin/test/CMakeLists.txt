@@ -1,0 +1,2 @@
+precess_add_test(TestMergeEdgePlugin TestMergeEdgePlugin.cpp)
+precess_test_link_libraries(TestMergeEdgePlugin MergeEdgePluginlib FeatureSystem Data)

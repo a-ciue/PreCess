@@ -6,24 +6,37 @@
 #include <BRepAlgoAPI_Section.hxx>
 #include <BRepBndLib.hxx>
 #include <BRepBuilderAPI_Copy.hxx>
+#include <BRepBuilderAPI_MakeEdge.hxx>
+#include <BRepBuilderAPI_MakeVertex.hxx>
+#include <BRepBuilderAPI_MakeWire.hxx>
+#include <BRepBuilderAPI_Sewing.hxx>
 #include <BRepClass_FaceClassifier.hxx>
 #include <BRepCheck_Analyzer.hxx>
 #include <BRepCheck_Status.hxx>
 #include <BRepExtrema_DistShapeShape.hxx>
 #include <BRepExtrema_SelfIntersection.hxx>
 #include <BRepMesh_IncrementalMesh.hxx>
+#include <BRepFeat_SplitShape.hxx>
 #include <BRepGProp.hxx>
 #include <BRep_Tool.hxx>
 #include <BRep_Builder.hxx>
 #include <BRepTools.hxx>
+#include <BRepTools_ReShape.hxx>
 #include <Bnd_Box.hxx>
+#include <GCPnts_AbscissaPoint.hxx>
+#include <GeomAPI_ProjectPointOnSurf.hxx>
 #include <Geom_BSplineSurface.hxx>
 #include <Geom_BezierSurface.hxx>
+#include <Geom_Curve.hxx>
 #include <Geom_Surface.hxx>
+#include <GeomAbs_CurveType.hxx>
 #include <GeomAbs_SurfaceType.hxx>
 #include <GProp_GProps.hxx>
 #include <Precision.hxx>
 #include <Poly_Triangulation.hxx>
+#include <ShapeBuild_Edge.hxx>
+#include <ShapeFix_Shape.hxx>
+#include <ShapeUpgrade_UnifySameDomain.hxx>
 #include <NCollection_Array1.hxx>
 #include <NCollection_Array2.hxx>
 #include <NCollection_DataMap.hxx>
@@ -39,10 +52,13 @@
 #include <TopoDS_Edge.hxx>
 #include <TopoDS_Face.hxx>
 #include <TopoDS_Iterator.hxx>
+#include <TopoDS_Vertex.hxx>
+#include <TopoDS_Wire.hxx>
 #include <TopoDS.hxx>
 #include <TColStd_PackedMapOfInteger.hxx>
 #include <TopTools_ShapeMapHasher.hxx>
 #include <gp_Pnt.hxx>
+#include <gp_Pnt2d.hxx>
 #include <gp_Cylinder.hxx>
 #include <gp_Dir.hxx>
 #include <gp_Lin.hxx>
@@ -59,7 +75,10 @@
 #include <limits>
 #include <memory>
 #include <numeric>
+#include <optional>
 #include <stdexcept>
+#include <string>
+#include <tuple>
 #include <unordered_map>
 #include <unordered_set>
 #include <utility>
@@ -1494,6 +1513,254 @@ private:
     GeometryTopologyDiagnosticResult result_;
 };
 
+/**
+ * @brief 通过曲线采样、曲面投影和面参数域分类，确认分割边已经位于目标面上。
+ */
+bool isEdgeOnFace(const TopoDS_Edge& edge, const TopoDS_Face& face)
+{
+    const occ::handle<Geom_Surface> surface = BRep_Tool::Surface(face);
+    if (surface.IsNull())
+        return false;
+
+    BRepAdaptor_Curve curve(edge);
+    const double first = curve.FirstParameter();
+    const double last = curve.LastParameter();
+    if (!std::isfinite(first) || !std::isfinite(last) || first >= last)
+        return false;
+
+    constexpr int sample_count = 9;
+    const double tolerance = std::max({
+        BRep_Tool::Tolerance(face),
+        BRep_Tool::Tolerance(edge),
+        Precision::Confusion(),
+    });
+
+    // 同时检查曲线到曲面的距离和投影点是否位于 Face 的有效参数域。
+    for (int sample = 0; sample < sample_count; ++sample) {
+        const double ratio = static_cast<double>(sample) / (sample_count - 1);
+        const gp_Pnt point = curve.Value(first + (last - first) * ratio);
+        GeomAPI_ProjectPointOnSurf projection(point, surface);
+        if (projection.NbPoints() == 0 || projection.LowerDistance() > tolerance)
+            return false;
+
+        double u = 0.0;
+        double v = 0.0;
+        projection.LowerDistanceParameters(u, v);
+        BRepClass_FaceClassifier classifier(face, gp_Pnt2d(u, v), tolerance);
+        const TopAbs_State state = classifier.State();
+        if (state != TopAbs_IN && state != TopAbs_ON)
+            return false;
+    }
+    return true;
+}
+
+/**
+ * @brief 统计根形状中指定类型的不重复子形状数量。
+ */
+int countSubshapes(const TopoDS_Shape& root, TopAbs_ShapeEnum type)
+{
+    NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher> shapes;
+    TopExp::MapShapes(root, type, shapes);
+    return shapes.Extent();
+}
+
+/**
+ * @brief 执行替换后的基础修复，并拒绝空结果或无效 BRep。
+ */
+TopoDS_Shape fixAndValidate(TopoDS_Shape shape, const char* operation)
+{
+    if (shape.IsNull())
+        throw std::runtime_error(std::string(operation) + " returned an empty result");
+    ShapeFix_Shape fixer(shape);
+    fixer.Perform();
+    shape = fixer.Shape();
+    if (shape.IsNull() || !BRepCheck_Analyzer(shape).IsValid())
+        throw std::runtime_error(std::string(operation) + " produced invalid topology");
+    return shape;
+}
+
+/**
+ * @brief 确认目标子形状属于当前根形状。
+ */
+void requireSubshape(
+    const TopoDS_Shape& root,
+    const TopoDS_Shape& shape,
+    TopAbs_ShapeEnum type,
+    const char* message)
+{
+    NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher> shapes;
+    TopExp::MapShapes(root, type, shapes);
+    if (!shapes.Contains(shape))
+        throw std::invalid_argument(message);
+}
+
+/**
+ * @brief 计算一条边的三维弧长；无有效曲线时返回零。
+ */
+double edgeLength(const TopoDS_Edge& edge)
+{
+    try {
+        BRepAdaptor_Curve curve(edge);
+        return GCPnts_AbscissaPoint::Length(curve);
+    } catch (const Standard_Failure&) {
+        return 0.0;
+    }
+}
+
+/**
+ * @brief 判断两条边是否已经共享拓扑顶点，避免把同一边界链的相邻边当作间隙。
+ */
+bool shareTopologicalVertex(const TopoDS_Edge& first, const TopoDS_Edge& second)
+{
+    NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher> first_vertices;
+    TopExp::MapShapes(first, TopAbs_VERTEX, first_vertices);
+    for (TopExp_Explorer vertex(second, TopAbs_VERTEX); vertex.More(); vertex.Next()) {
+        if (first_vertices.Contains(vertex.Current()))
+            return true;
+    }
+    return false;
+}
+
+/**
+ * @brief 以较短边为基准采样，计算其到较长边的最大偏差。
+ *
+ * 单向比较允许一条长边对应多条短边；每个采样点都必须落在容差内，避免仅因
+ * 两条边局部接近或相交就被误判为 Stitch 候选。
+ */
+std::optional<double> stitchMaximumGap(
+    const TopoDS_Edge& first,
+    const TopoDS_Edge& second,
+    double tolerance)
+{
+    if (shareTopologicalVertex(first, second))
+        return std::nullopt;
+
+    const double first_length = edgeLength(first);
+    const double second_length = edgeLength(second);
+    if (first_length <= Precision::Confusion() || second_length <= Precision::Confusion())
+        return std::nullopt;
+
+    const TopoDS_Edge& shorter = first_length <= second_length ? first : second;
+    const TopoDS_Edge& longer = first_length <= second_length ? second : first;
+    BRepAdaptor_Curve curve(shorter);
+    const double first_parameter = curve.FirstParameter();
+    const double last_parameter = curve.LastParameter();
+    if (!std::isfinite(first_parameter) || !std::isfinite(last_parameter)
+        || first_parameter >= last_parameter) {
+        return std::nullopt;
+    }
+
+    constexpr int sample_count = 9;
+    double maximum_gap = 0.0;
+    for (int sample = 0; sample < sample_count; ++sample) {
+        const double ratio = static_cast<double>(sample) / (sample_count - 1);
+        const gp_Pnt point = curve.Value(
+            first_parameter + (last_parameter - first_parameter) * ratio);
+        const TopoDS_Vertex sample_vertex = BRepBuilderAPI_MakeVertex(point);
+        BRepExtrema_DistShapeShape distance(sample_vertex, longer);
+        distance.Perform();
+        if (!distance.IsDone() || distance.Value() > tolerance)
+            return std::nullopt;
+        maximum_gap = std::max(maximum_gap, distance.Value());
+    }
+    return maximum_gap;
+}
+
+/**
+ * @brief 统计根形状中的自由边数量。
+ */
+int countBoundaryEdges(const TopoDS_Shape& root)
+{
+    NCollection_IndexedDataMap<TopoDS_Shape,
+        NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>
+        edge_faces;
+    TopExp::MapShapesAndUniqueAncestors(root, TopAbs_EDGE, TopAbs_FACE, edge_faces);
+    int count = 0;
+    for (int index = 1; index <= edge_faces.Extent(); ++index) {
+        if (uniqueFaceCount(edge_faces.FindFromIndex(index)) == 1)
+            ++count;
+    }
+    return count;
+}
+
+/**
+ * @brief 在完整根形状上下文内 Sewing 指定 Face，保留未参与操作的独立拓扑。
+ */
+std::pair<TopoDS_Shape, int> sewFaces(
+    const TopoDS_Shape& root,
+    const NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher>& faces,
+    double tolerance)
+{
+    if (faces.Extent() < 1)
+        throw std::invalid_argument("At least one face is required for sewing");
+
+    BRepBuilderAPI_Sewing sewing(tolerance, true, true, true, false);
+    sewing.Load(root);
+    for (int index = 1; index <= faces.Extent(); ++index)
+        sewing.Add(faces.FindKey(index));
+    sewing.Perform();
+
+    if (sewing.NbContigousEdges() == 0)
+        throw std::runtime_error("OpenCASCADE did not stitch any boundary edges");
+    TopoDS_Shape result = fixAndValidate(sewing.SewedShape(), "Stitching boundary edges");
+    return { std::move(result), sewing.NbContigousEdges() };
+}
+
+/**
+ * @brief 检查一组边是否构成无分支的连续链。
+ */
+bool isContinuousEdgeChain(const std::vector<TopoDS_Edge>& edges)
+{
+    if (edges.empty())
+        return false;
+
+    std::vector<std::pair<TopoDS_Vertex, TopoDS_Vertex>> endpoints;
+    endpoints.reserve(edges.size());
+    NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher> vertices;
+    std::vector<int> degrees(1, 0);
+    for (const TopoDS_Edge& edge : edges) {
+        TopoDS_Vertex start;
+        TopoDS_Vertex end;
+        TopExp::Vertices(edge, start, end, true);
+        if (start.IsNull() || end.IsNull() || start.IsSame(end))
+            return false;
+        endpoints.emplace_back(start, end);
+        for (const TopoDS_Vertex& vertex : { start, end }) {
+            const int index = vertices.Add(vertex);
+            if (static_cast<size_t>(index) >= degrees.size())
+                degrees.resize(static_cast<size_t>(index) + 1, 0);
+            if (++degrees[static_cast<size_t>(index)] > 2)
+                return false;
+        }
+    }
+
+    std::vector<char> visited(edges.size(), 0);
+    visited.front() = 1;
+    size_t visited_count = 1;
+    bool changed = true;
+    while (changed && visited_count < edges.size()) {
+        changed = false;
+        for (size_t candidate = 0; candidate < edges.size(); ++candidate) {
+            if (visited[candidate] != 0)
+                continue;
+            for (size_t connected = 0; connected < edges.size(); ++connected) {
+                if (visited[connected] == 0)
+                    continue;
+                const auto& first = endpoints[candidate];
+                const auto& second = endpoints[connected];
+                if (first.first.IsSame(second.first) || first.first.IsSame(second.second)
+                    || first.second.IsSame(second.first) || first.second.IsSame(second.second)) {
+                    visited[candidate] = 1;
+                    ++visited_count;
+                    changed = true;
+                    break;
+                }
+            }
+        }
+    }
+    return visited_count == edges.size();
+}
+
 } // namespace
 
 std::unique_ptr<GeometryTopologyDiagnosticSession> GeometryTopologyDiagnosticSession::start(
@@ -1523,6 +1790,787 @@ GeometryTopologyDiagnosticResult GeometryTopologyEditor::diagnoseTopology(
     return session->takeResult();
 }
 
+
+TopoDS_Shape GeometryTopologyEditor::splitEdge(
+    const TopoDS_Shape& root,
+    const TopoDS_Edge& edge,
+    double ratio)
+{
+    if (root.IsNull() || edge.IsNull())
+        throw std::invalid_argument("Geometry root and edge must not be null");
+    if (!std::isfinite(ratio) || ratio <= 0.0 || ratio >= 1.0)
+        throw std::invalid_argument("Split ratio must be between zero and one");
+    requireSubshape(root, edge, TopAbs_EDGE, "Selected edge does not belong to the geometry root");
+
+    try {
+        TopoDS_Vertex start;
+        TopoDS_Vertex end;
+        TopExp::Vertices(edge, start, end, true);
+        double first = 0.0;
+        double last = 0.0;
+        const occ::handle<Geom_Curve> curve = BRep_Tool::Curve(edge, first, last);
+        if (start.IsNull() || end.IsNull() || curve.IsNull()
+            || !std::isfinite(first) || !std::isfinite(last) || first >= last)
+            throw std::invalid_argument("Selected edge has no splittable 3D curve");
+
+        const double parameter = first + (last - first) * ratio;
+        const TopoDS_Vertex middle = BRepBuilderAPI_MakeVertex(curve->Value(parameter));
+        BRepBuilderAPI_MakeEdge first_builder(curve, start, middle, first, parameter);
+        BRepBuilderAPI_MakeEdge second_builder(curve, middle, end, parameter, last);
+        if (!first_builder.IsDone() || !second_builder.IsDone())
+            throw std::runtime_error("OpenCASCADE failed to build split edges");
+
+        BRepBuilderAPI_MakeWire wire_builder;
+        wire_builder.Add(first_builder.Edge());
+        wire_builder.Add(second_builder.Edge());
+        if (!wire_builder.IsDone())
+            throw std::runtime_error("OpenCASCADE failed to build the split wire");
+
+        const int edge_count = countSubshapes(root, TopAbs_EDGE);
+        const int vertex_count = countSubshapes(root, TopAbs_VERTEX);
+        occ::handle<BRepTools_ReShape> reshaper = new BRepTools_ReShape();
+        reshaper->Replace(edge, wire_builder.Wire());
+        TopoDS_Shape result = fixAndValidate(reshaper->Apply(root), "Splitting the edge");
+        if (countSubshapes(result, TopAbs_EDGE) != edge_count + 1
+            || countSubshapes(result, TopAbs_VERTEX) != vertex_count + 1)
+            throw std::runtime_error("Splitting the edge did not create two connected edges");
+        return result;
+    } catch (const Standard_Failure& error) {
+        const char* detail = error.GetMessageString();
+        throw std::runtime_error(detail
+                ? std::string("OpenCASCADE failed to split the edge: ") + detail
+                : "OpenCASCADE failed to split the edge");
+    }
+}
+
+TopoDS_Shape GeometryTopologyEditor::collapseEdge(
+    const TopoDS_Shape& root,
+    const TopoDS_Edge& edge,
+    const gp_Pnt& target_position)
+{
+    if (root.IsNull() || edge.IsNull())
+        throw std::invalid_argument("Geometry root and edge must not be null");
+    if (!std::isfinite(target_position.X()) || !std::isfinite(target_position.Y())
+        || !std::isfinite(target_position.Z()))
+        throw std::invalid_argument("Collapse target position must be finite");
+    requireSubshape(root, edge, TopAbs_EDGE, "Selected edge does not belong to the geometry root");
+
+    try {
+        TopoDS_Vertex start;
+        TopoDS_Vertex end;
+        TopExp::Vertices(edge, start, end, true);
+        if (start.IsNull() || end.IsNull() || start.IsSame(end))
+            throw std::invalid_argument("Selected edge must have two different vertices");
+
+        const gp_Pnt start_point = BRep_Tool::Pnt(start);
+        const gp_Pnt end_point = BRep_Tool::Pnt(end);
+        TopoDS_Vertex destination = BRepBuilderAPI_MakeVertex(target_position);
+        const double destination_tolerance = std::max({
+            BRep_Tool::Tolerance(start),
+            BRep_Tool::Tolerance(end),
+            start_point.Distance(target_position),
+            end_point.Distance(target_position),
+        });
+        BRep_Builder vertex_builder;
+        vertex_builder.UpdateVertex(destination, destination_tolerance);
+
+        const int edge_count = countSubshapes(root, TopAbs_EDGE);
+        const int vertex_count = countSubshapes(root, TopAbs_VERTEX);
+        occ::handle<BRepTools_ReShape> reshaper = new BRepTools_ReShape();
+        reshaper->Remove(edge);
+
+        ShapeBuild_Edge edge_builder;
+        // 保留相邻边原有的 3D Curve 和 pcurve，仅替换其拓扑端点。
+        NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher> root_edges;
+        TopExp::MapShapes(root, TopAbs_EDGE, root_edges);
+        for (int edge_index = 1; edge_index <= root_edges.Extent(); ++edge_index) {
+            const TopoDS_Edge adjacent_edge = TopoDS::Edge(root_edges.FindKey(edge_index));
+            if (adjacent_edge.IsSame(edge))
+                continue;
+
+            TopoDS_Vertex adjacent_start;
+            TopoDS_Vertex adjacent_end;
+            TopExp::Vertices(adjacent_edge, adjacent_start, adjacent_end, true);
+            const bool replace_start = !adjacent_start.IsNull()
+                && (adjacent_start.IsSame(start) || adjacent_start.IsSame(end));
+            const bool replace_end = !adjacent_end.IsNull()
+                && (adjacent_end.IsSame(start) || adjacent_end.IsSame(end));
+            if (!replace_start && !replace_end)
+                continue;
+            if (replace_start && replace_end) {
+                reshaper->Remove(adjacent_edge);
+                continue;
+            }
+
+            const TopoDS_Vertex new_start = replace_start ? destination : adjacent_start;
+            const TopoDS_Vertex new_end = replace_end ? destination : adjacent_end;
+            if (new_start.IsNull() || new_end.IsNull() || new_start.IsSame(new_end))
+                throw std::runtime_error("Collapsing the edge created a degenerate adjacent edge");
+            const TopoDS_Edge rebuilt_edge =
+                edge_builder.CopyReplaceVertices(adjacent_edge, new_start, new_end);
+            if (rebuilt_edge.IsNull())
+                throw std::runtime_error("OpenCASCADE failed to rebuild an adjacent edge");
+            reshaper->Replace(adjacent_edge, rebuilt_edge);
+        }
+
+        TopoDS_Shape raw_result = reshaper->Apply(root);
+
+        // 点和边可能同时是根 Compound 的独立子节点，需要同步移除旧端点并保留目标点。
+        // 孤立边是根中的唯一子节点时，ReShape 会返回空结果，需要直接重建点根。
+        if (raw_result.IsNull()) {
+            BRep_Builder builder;
+            TopoDS_Compound compound;
+            builder.MakeCompound(compound);
+            builder.Add(compound, destination);
+            raw_result = compound;
+        } else if (raw_result.ShapeType() == TopAbs_COMPOUND) {
+            NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher> result_vertices;
+            TopExp::MapShapes(raw_result, TopAbs_VERTEX, result_vertices);
+            bool needs_top_level_destination = !result_vertices.Contains(destination);
+            BRep_Builder builder;
+            TopoDS_Compound compound;
+            builder.MakeCompound(compound);
+            bool has_destination = false;
+            for (TopoDS_Iterator it(raw_result); it.More(); it.Next()) {
+                const TopoDS_Shape& child = it.Value();
+                if (child.ShapeType() == TopAbs_VERTEX
+                    && (child.IsSame(start) || child.IsSame(end))) {
+                    needs_top_level_destination = true;
+                    continue;
+                }
+                builder.Add(compound, child);
+            }
+            if (needs_top_level_destination && !has_destination) {
+                builder.Add(compound, destination);
+                has_destination = true;
+            }
+            raw_result = compound;
+        }
+        TopoDS_Shape result = fixAndValidate(raw_result, "Collapsing the edge");
+        if (countSubshapes(result, TopAbs_EDGE) != edge_count - 1
+            || countSubshapes(result, TopAbs_VERTEX) != vertex_count - 1)
+            throw std::runtime_error("Collapsing the edge did not remove one edge and one vertex");
+        return result;
+    } catch (const Standard_Failure& error) {
+        const char* detail = error.GetMessageString();
+        throw std::runtime_error(detail
+                ? std::string("OpenCASCADE failed to collapse the edge: ") + detail
+                : "OpenCASCADE failed to collapse the edge");
+    }
+}
+
+TopoDS_Vertex GeometryTopologyEditor::recommendCollapseVertex(
+    const TopoDS_Shape& root,
+    const TopoDS_Edge& edge)
+{
+    if (root.IsNull() || edge.IsNull())
+        throw std::invalid_argument("Geometry root and edge must not be null");
+    requireSubshape(root, edge, TopAbs_EDGE, "Selected edge does not belong to the geometry root");
+
+    TopoDS_Vertex start;
+    TopoDS_Vertex end;
+    TopExp::Vertices(edge, start, end, true);
+    if (start.IsNull() || end.IsNull())
+        throw std::invalid_argument("Selected edge must have two vertices");
+
+    using ShapeAncestors = NCollection_IndexedDataMap<TopoDS_Shape,
+        NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>;
+    ShapeAncestors vertex_edges;
+    ShapeAncestors vertex_faces;
+    TopExp::MapShapesAndUniqueAncestors(root, TopAbs_VERTEX, TopAbs_EDGE, vertex_edges);
+    TopExp::MapShapesAndUniqueAncestors(root, TopAbs_VERTEX, TopAbs_FACE, vertex_faces);
+
+    const auto score = [&](const TopoDS_Vertex& vertex) {
+        int curved_count = 0;
+        int edge_count = 0;
+        double total_length = 0.0;
+        if (vertex_edges.Contains(vertex)) {
+            const NCollection_List<TopoDS_Shape>& edges = vertex_edges.FindFromKey(vertex);
+            for (NCollection_List<TopoDS_Shape>::Iterator it(edges); it.More(); it.Next()) {
+                const TopoDS_Edge adjacent = TopoDS::Edge(it.Value());
+                if (adjacent.IsSame(edge))
+                    continue;
+                ++edge_count;
+                BRepAdaptor_Curve curve(adjacent);
+                if (curve.GetType() != GeomAbs_Line)
+                    ++curved_count;
+                try {
+                    total_length += GCPnts_AbscissaPoint::Length(curve);
+                } catch (const Standard_Failure&) {
+                    // 无法计算长度时仍可使用曲线、Face 和邻接数量完成稳定决策。
+                }
+            }
+        }
+        const int face_count = vertex_faces.Contains(vertex)
+            ? vertex_faces.FindFromKey(vertex).Extent()
+            : 0;
+        return std::make_tuple(curved_count, face_count, edge_count, total_length);
+    };
+    return score(end) > score(start) ? end : start;
+}
+
+TopoDS_Shape GeometryTopologyEditor::mergeVertices(
+    const TopoDS_Shape& root,
+    const std::vector<TopoDS_Vertex>& vertices,
+    const gp_Pnt& target_position)
+{
+    if (root.IsNull())
+        throw std::invalid_argument("Geometry root must not be null");
+    if (vertices.size() < 2)
+        throw std::invalid_argument("At least two vertices are required");
+    if (!std::isfinite(target_position.X()) || !std::isfinite(target_position.Y())
+        || !std::isfinite(target_position.Z()))
+        throw std::invalid_argument("Merge target position must be finite");
+
+    NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher> root_vertices;
+    NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher> selected_vertices;
+    TopExp::MapShapes(root, TopAbs_VERTEX, root_vertices);
+    double destination_tolerance = Precision::Confusion();
+    for (const TopoDS_Vertex& vertex : vertices) {
+        if (vertex.IsNull() || !root_vertices.Contains(vertex))
+            throw std::invalid_argument("Selected vertex does not belong to the geometry root");
+        if (selected_vertices.Contains(vertex))
+            throw std::invalid_argument("Selected vertices must not contain duplicates");
+        selected_vertices.Add(vertex);
+        destination_tolerance = std::max({ destination_tolerance,
+            BRep_Tool::Tolerance(vertex), BRep_Tool::Pnt(vertex).Distance(target_position) });
+    }
+
+    try {
+        TopoDS_Vertex destination = BRepBuilderAPI_MakeVertex(target_position);
+        BRep_Builder vertex_builder;
+        vertex_builder.UpdateVertex(destination, destination_tolerance);
+
+        NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher> root_edges;
+        TopExp::MapShapes(root, TopAbs_EDGE, root_edges);
+        int removed_edges = 0;
+        occ::handle<BRepTools_ReShape> reshaper = new BRepTools_ReShape();
+        ShapeBuild_Edge edge_builder;
+        for (int edge_index = 1; edge_index <= root_edges.Extent(); ++edge_index) {
+            const TopoDS_Edge current_edge = TopoDS::Edge(root_edges.FindKey(edge_index));
+            TopoDS_Vertex start;
+            TopoDS_Vertex end;
+            TopExp::Vertices(current_edge, start, end, true);
+            if (!start.IsNull() && !end.IsNull()
+                && selected_vertices.Contains(start) && selected_vertices.Contains(end)) {
+                reshaper->Remove(current_edge);
+                ++removed_edges;
+                continue;
+            }
+            const bool replace_start = !start.IsNull() && selected_vertices.Contains(start);
+            const bool replace_end = !end.IsNull() && selected_vertices.Contains(end);
+            if (!replace_start && !replace_end)
+                continue;
+            const TopoDS_Edge rebuilt_edge = edge_builder.CopyReplaceVertices(
+                current_edge,
+                replace_start ? destination : start,
+                replace_end ? destination : end);
+            if (rebuilt_edge.IsNull())
+                throw std::runtime_error("OpenCASCADE failed to rebuild an adjacent edge");
+            reshaper->Replace(current_edge, rebuilt_edge);
+        }
+
+        TopoDS_Shape raw_result = reshaper->Apply(root);
+        if (raw_result.ShapeType() == TopAbs_COMPOUND) {
+            BRep_Builder builder;
+            TopoDS_Compound compound;
+            builder.MakeCompound(compound);
+            bool removed_top_level_vertex = false;
+            for (TopoDS_Iterator it(raw_result); it.More(); it.Next()) {
+                const TopoDS_Shape& child = it.Value();
+                if (child.ShapeType() == TopAbs_VERTEX && selected_vertices.Contains(child)) {
+                    removed_top_level_vertex = true;
+                    continue;
+                }
+                builder.Add(compound, child);
+            }
+            if (removed_top_level_vertex)
+                builder.Add(compound, destination);
+            raw_result = compound;
+        }
+
+        TopoDS_Shape result = fixAndValidate(raw_result, "Merging the vertices");
+        if (countSubshapes(result, TopAbs_VERTEX)
+                != root_vertices.Extent() - static_cast<int>(vertices.size()) + 1
+            || countSubshapes(result, TopAbs_EDGE) != root_edges.Extent() - removed_edges)
+            throw std::runtime_error("Merging the vertices did not produce the expected topology");
+        return result;
+    } catch (const Standard_Failure& error) {
+        const char* detail = error.GetMessageString();
+        throw std::runtime_error(detail
+                ? std::string("OpenCASCADE failed to merge the vertices: ") + detail
+                : "OpenCASCADE failed to merge the vertices");
+    }
+}
+
+TopoDS_Shape GeometryTopologyEditor::mergeFaces(
+    const TopoDS_Shape& root,
+    const std::vector<TopoDS_Face>& faces)
+{
+    if (root.IsNull())
+        throw std::invalid_argument("Geometry root must not be null");
+    if (faces.size() < 2)
+        throw std::invalid_argument("At least two faces are required");
+
+    NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher> root_faces;
+    NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher> selected_faces;
+    TopExp::MapShapes(root, TopAbs_FACE, root_faces);
+    for (const TopoDS_Face& face : faces) {
+        if (face.IsNull())
+            throw std::invalid_argument("Selected face must not be null");
+        if (!root_faces.Contains(face))
+            throw std::invalid_argument("Selected face does not belong to the geometry root");
+        if (selected_faces.Contains(face))
+            throw std::invalid_argument("Selected faces must not contain duplicates");
+        selected_faces.Add(face);
+    }
+
+    try {
+        using ShapeAncestors = NCollection_IndexedDataMap<TopoDS_Shape,
+            NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>;
+        ShapeAncestors edge_faces;
+        TopExp::MapShapesAndUniqueAncestors(
+            root, TopAbs_EDGE, TopAbs_FACE, edge_faces);
+
+        ShapeUpgrade_UnifySameDomain unifier(root, false, true, false);
+        NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher> shared_edges;
+        // 只有两侧全部属于选择集的公共边允许消失，其余边界一律保留。
+        for (int edge_index = 1; edge_index <= edge_faces.Extent(); ++edge_index) {
+            const NCollection_List<TopoDS_Shape>& ancestors = edge_faces.FindFromIndex(edge_index);
+            bool is_selected_boundary = ancestors.Extent() >= 2;
+            for (NCollection_List<TopoDS_Shape>::Iterator it(ancestors); it.More(); it.Next()) {
+                if (!selected_faces.Contains(it.Value())) {
+                    is_selected_boundary = false;
+                    break;
+                }
+            }
+            if (is_selected_boundary)
+                shared_edges.Add(edge_faces.FindKey(edge_index));
+            else
+                unifier.KeepShape(edge_faces.FindKey(edge_index));
+        }
+        unifier.Build();
+
+        const TopoDS_Shape result = unifier.Shape();
+        if (result.IsNull())
+            throw std::runtime_error("OpenCASCADE returned an empty face merge result");
+
+        // 原子操作的契约是全部选中面合成一个面，部分成功也视为失败。
+        NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher> result_faces;
+        TopExp::MapShapes(result, TopAbs_FACE, result_faces);
+        const int expected_face_count = root_faces.Extent()
+            - static_cast<int>(faces.size()) + 1;
+        if (result_faces.Extent() != expected_face_count)
+            throw std::runtime_error("Selected faces are disconnected or do not share the same domain");
+
+        // 先确认共享边已经从结果 Face 的拓扑边界中消失。
+        if (shared_edges.IsEmpty())
+            throw std::runtime_error("Selected faces do not have a shared edge");
+        for (int face_index = 1; face_index <= result_faces.Extent(); ++face_index) {
+            const TopoDS_Shape& result_face = result_faces.FindKey(face_index);
+            if (!result_face.IsNull()) {
+                NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher> face_edges;
+                TopExp::MapShapes(result_face, TopAbs_EDGE, face_edges);
+                for (int edge_index = 1; edge_index <= shared_edges.Extent(); ++edge_index) {
+                    if (face_edges.Contains(shared_edges.FindKey(edge_index)))
+                        throw std::runtime_error("Merging the faces retained an internal shared edge");
+                }
+            }
+        }
+
+        TopoDS_Shape cleaned_result = result;
+        if (result.ShapeType() == TopAbs_COMPOUND) {
+            BRep_Builder builder;
+            TopoDS_Compound compound;
+            builder.MakeCompound(compound);
+            bool removed_top_level_edge = false;
+            for (TopoDS_Iterator it(result); it.More(); it.Next()) {
+                const TopoDS_Shape& child = it.Value();
+                bool is_shared_edge = child.ShapeType() == TopAbs_EDGE
+                    && shared_edges.Contains(child);
+                // BRepFeat 可能为面内分割边创建新的 TShape，需按几何重合识别原顶层工具边。
+                if (child.ShapeType() == TopAbs_EDGE && !is_shared_edge) {
+                    const TopoDS_Edge child_edge = TopoDS::Edge(child);
+                    for (int edge_index = 1; edge_index <= shared_edges.Extent(); ++edge_index) {
+                        const TopoDS_Edge shared_edge =
+                            TopoDS::Edge(shared_edges.FindKey(edge_index));
+                        if (BRepTools::Compare(child_edge, shared_edge)) {
+                            is_shared_edge = true;
+                            break;
+                        }
+                    }
+                }
+                if (is_shared_edge) {
+                    removed_top_level_edge = true;
+                    continue;
+                }
+                builder.Add(compound, child);
+            }
+            if (removed_top_level_edge)
+                cleaned_result = compound;
+        }
+
+        // 创建出来的分割边可能仍是根 Compound 的独立子节点，合并面时一并消费。
+        NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher> cleaned_edges;
+        TopExp::MapShapes(cleaned_result, TopAbs_EDGE, cleaned_edges);
+        const int expected_edge_count = countSubshapes(root, TopAbs_EDGE) - shared_edges.Extent();
+        if (cleaned_edges.Extent() != expected_edge_count)
+            throw std::runtime_error("Merging the faces did not remove their shared edges");
+        for (int edge_index = 1; edge_index <= shared_edges.Extent(); ++edge_index) {
+            if (cleaned_edges.Contains(shared_edges.FindKey(edge_index)))
+                throw std::runtime_error("Merging the faces retained an internal shared edge");
+        }
+
+        if (!BRepCheck_Analyzer(cleaned_result).IsValid())
+            throw std::runtime_error("Merging the faces produced invalid topology");
+        return cleaned_result;
+    } catch (const Standard_Failure& error) {
+        const char* detail = error.GetMessageString();
+        throw std::runtime_error(detail
+                ? std::string("OpenCASCADE failed to merge the faces: ") + detail
+                : "OpenCASCADE failed to merge the faces");
+    }
+}
+
+TopoDS_Shape GeometryTopologyEditor::mergeEdges(
+    const TopoDS_Shape& root,
+    const std::vector<TopoDS_Edge>& edges)
+{
+    if (root.IsNull())
+        throw std::invalid_argument("Geometry root must not be null");
+    if (edges.size() < 2)
+        throw std::invalid_argument("At least two edges are required");
+
+    NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher> root_edges;
+    NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher> selected_edges;
+    TopExp::MapShapes(root, TopAbs_EDGE, root_edges);
+    for (const TopoDS_Edge& edge : edges) {
+        if (edge.IsNull())
+            throw std::invalid_argument("Selected edge must not be null");
+        if (!root_edges.Contains(edge))
+            throw std::invalid_argument("Selected edge does not belong to the geometry root");
+        if (selected_edges.Contains(edge))
+            throw std::invalid_argument("Selected edges must not contain duplicates");
+        selected_edges.Add(edge);
+    }
+
+    try {
+        using ShapeAncestors = NCollection_IndexedDataMap<TopoDS_Shape,
+            NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>;
+        ShapeAncestors vertex_edges;
+        TopExp::MapShapesAndUniqueAncestors(
+            root, TopAbs_VERTEX, TopAbs_EDGE, vertex_edges);
+
+        ShapeUpgrade_UnifySameDomain unifier(root, true, false, false);
+        // 仅允许两条选中边独占的中间点消失，端点和分支点必须保留。
+        for (int vertex_index = 1; vertex_index <= vertex_edges.Extent(); ++vertex_index) {
+            const NCollection_List<TopoDS_Shape>& ancestors = vertex_edges.FindFromIndex(vertex_index);
+            bool is_selected_joint = ancestors.Extent() == 2;
+            for (NCollection_List<TopoDS_Shape>::Iterator it(ancestors); it.More(); it.Next()) {
+                if (!selected_edges.Contains(it.Value())) {
+                    is_selected_joint = false;
+                    break;
+                }
+            }
+            if (!is_selected_joint)
+                unifier.KeepShape(vertex_edges.FindKey(vertex_index));
+        }
+        unifier.Build();
+
+        const TopoDS_Shape result = unifier.Shape();
+        if (result.IsNull())
+            throw std::runtime_error("OpenCASCADE returned an empty edge merge result");
+
+        // 原子操作的契约是全部选中边合成一条边，部分成功也视为失败。
+        const int expected_edge_count = root_edges.Extent()
+            - static_cast<int>(edges.size()) + 1;
+        if (countSubshapes(result, TopAbs_EDGE) != expected_edge_count)
+            throw std::runtime_error("Selected edges are disconnected or do not share the same domain");
+        if (!BRepCheck_Analyzer(result).IsValid())
+            throw std::runtime_error("Merging the edges produced invalid topology");
+        return result;
+    } catch (const Standard_Failure& error) {
+        const char* detail = error.GetMessageString();
+        throw std::runtime_error(detail
+                ? std::string("OpenCASCADE failed to merge the edges: ") + detail
+                : "OpenCASCADE failed to merge the edges");
+    }
+}
+
+TopoDS_Shape GeometryTopologyEditor::splitFace(
+    const TopoDS_Shape& root,
+    const TopoDS_Face& target_face,
+    const std::vector<TopoDS_Edge>& splitting_edges)
+{
+    if (root.IsNull() || target_face.IsNull())
+        throw std::invalid_argument("Geometry root and target face must not be null");
+    if (splitting_edges.empty())
+        throw std::invalid_argument("At least one splitting edge is required");
+
+    NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher> root_faces;
+    TopExp::MapShapes(root, TopAbs_FACE, root_faces);
+    if (!root_faces.Contains(target_face))
+        throw std::invalid_argument("Target face does not belong to the geometry root");
+
+    try {
+        for (const TopoDS_Edge& edge : splitting_edges) {
+            if (edge.IsNull())
+                throw std::invalid_argument("Splitting edge must not be null");
+            if (!isEdgeOnFace(edge, target_face))
+                throw std::invalid_argument("Splitting edge does not lie on the target face");
+        }
+
+        // BRepFeat 在完整 root 上替换目标 Face，保留其所在 Shell/Solid 及其他根子形状。
+        BRepFeat_SplitShape splitter(root);
+        for (const TopoDS_Edge& edge : splitting_edges)
+            splitter.Add(edge, target_face);
+        splitter.Build();
+
+        if (!splitter.IsDone())
+            throw std::runtime_error("OpenCASCADE failed to split the target face");
+
+        // 没有生成至少两个替代面说明分割边未形成有效切分，禁止产生空效果写回。
+        if (splitter.Modified(target_face).Extent() < 2)
+            throw std::runtime_error("Splitting edges did not divide the target face");
+
+        TopoDS_Shape result = splitter.Shape();
+        if (result.IsNull())
+            throw std::runtime_error("OpenCASCADE returned an empty split result");
+        if (!BRepCheck_Analyzer(result).IsValid())
+            throw std::runtime_error("Splitting the face produced invalid topology");
+        return result;
+    } catch (const Standard_Failure& error) {
+        const char* detail = error.GetMessageString();
+        throw std::runtime_error(detail
+                ? std::string("OpenCASCADE failed to split the face: ") + detail
+                : "OpenCASCADE failed to split the face");
+    }
+}
+
+TopoDS_Shape GeometryTopologyEditor::splitFaceByFaces(
+    const TopoDS_Shape& root,
+    const TopoDS_Face& target_face,
+    const std::vector<TopoDS_Face>& splitting_faces)
+{
+    if (root.IsNull() || target_face.IsNull())
+        throw std::invalid_argument("Geometry root and target face must not be null");
+    if (splitting_faces.empty())
+        throw std::invalid_argument("At least one splitting face is required");
+
+    NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher> root_faces;
+    NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher> tools;
+    TopExp::MapShapes(root, TopAbs_FACE, root_faces);
+    if (!root_faces.Contains(target_face))
+        throw std::invalid_argument("Target face does not belong to the geometry root");
+
+    try {
+        NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher> section_edges;
+        for (const TopoDS_Face& splitting_face : splitting_faces) {
+            if (splitting_face.IsNull() || !root_faces.Contains(splitting_face))
+                throw std::invalid_argument("Splitting face does not belong to the geometry root");
+            if (splitting_face.IsSame(target_face))
+                throw std::invalid_argument("Target face cannot split itself");
+            if (tools.Contains(splitting_face))
+                throw std::invalid_argument("Splitting faces must not contain duplicates");
+            tools.Add(splitting_face);
+
+            // 先求交线再复用边切面原语，确保只修改目标 Face，切割工具保持不变。
+            BRepAlgoAPI_Section section(target_face, splitting_face, false);
+            section.Approximation(true);
+            section.ComputePCurveOn1(true);
+            section.Build();
+            if (!section.IsDone())
+                throw std::runtime_error("OpenCASCADE failed to intersect the splitting face");
+            for (TopExp_Explorer edge(section.Shape(), TopAbs_EDGE); edge.More(); edge.Next())
+                section_edges.Add(edge.Current());
+        }
+
+        if (section_edges.IsEmpty())
+            throw std::runtime_error("Splitting faces do not intersect the target face");
+        std::vector<TopoDS_Edge> edges;
+        edges.reserve(static_cast<size_t>(section_edges.Extent()));
+        for (int index = 1; index <= section_edges.Extent(); ++index)
+            edges.push_back(TopoDS::Edge(section_edges.FindKey(index)));
+        return splitFace(root, target_face, edges);
+    } catch (const Standard_Failure& error) {
+        const char* detail = error.GetMessageString();
+        throw std::runtime_error(detail
+                ? std::string("OpenCASCADE failed to split the face by faces: ") + detail
+                : "OpenCASCADE failed to split the face by faces");
+    }
+}
+
+std::vector<GeometryStitchCandidate> GeometryTopologyEditor::findStitchCandidates(
+    const TopoDS_Shape& root,
+    double tolerance)
+{
+    if (root.IsNull())
+        throw std::invalid_argument("Geometry root must not be null");
+    if (!std::isfinite(tolerance) || tolerance <= 0.0)
+        throw std::invalid_argument("Stitch tolerance must be greater than zero");
+
+    NCollection_IndexedDataMap<TopoDS_Shape,
+        NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>
+        edge_faces;
+    TopExp::MapShapesAndUniqueAncestors(root, TopAbs_EDGE, TopAbs_FACE, edge_faces);
+
+    std::vector<GeometryStitchCandidate> candidates;
+    for (int first_index = 1; first_index <= edge_faces.Extent(); ++first_index) {
+        const NCollection_List<TopoDS_Shape>& first_faces = edge_faces.FindFromIndex(first_index);
+        if (uniqueFaceCount(first_faces) != 1)
+            continue;
+        const TopoDS_Edge first = TopoDS::Edge(edge_faces.FindKey(first_index));
+
+        for (int second_index = first_index + 1;
+             second_index <= edge_faces.Extent(); ++second_index) {
+            const NCollection_List<TopoDS_Shape>& second_faces =
+                edge_faces.FindFromIndex(second_index);
+            if (uniqueFaceCount(second_faces) != 1
+                || first_faces.First().IsSame(second_faces.First())) {
+                continue;
+            }
+
+            const TopoDS_Edge second = TopoDS::Edge(edge_faces.FindKey(second_index));
+            const std::optional<double> maximum_gap =
+                stitchMaximumGap(first, second, tolerance);
+            if (maximum_gap)
+                candidates.push_back({ first, second, *maximum_gap });
+        }
+    }
+    return candidates;
+}
+
+GeometryGapRepairResult GeometryTopologyEditor::repairFreeEdgeGaps(
+    const TopoDS_Shape& root,
+    double tolerance)
+{
+    const std::vector<GeometryStitchCandidate> candidates =
+        findStitchCandidates(root, tolerance);
+    if (candidates.empty())
+        return { root, 0, 0 };
+
+    NCollection_IndexedDataMap<TopoDS_Shape,
+        NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>
+        edge_faces;
+    TopExp::MapShapesAndUniqueAncestors(root, TopAbs_EDGE, TopAbs_FACE, edge_faces);
+    NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher> faces;
+    for (const GeometryStitchCandidate& candidate : candidates) {
+        for (const TopoDS_Edge& edge : { candidate.first, candidate.second }) {
+            if (!edge_faces.Contains(edge))
+                continue;
+            const NCollection_List<TopoDS_Shape>& ancestors = edge_faces.FindFromKey(edge);
+            for (NCollection_List<TopoDS_Shape>::Iterator it(ancestors); it.More(); it.Next())
+                faces.Add(it.Value());
+        }
+    }
+
+    const int boundary_count = countBoundaryEdges(root);
+    auto [result, stitched_edge_count] = sewFaces(root, faces, tolerance);
+    if (countBoundaryEdges(result) >= boundary_count)
+        throw std::runtime_error("Repairing gaps did not reduce the number of free boundary edges");
+    return { std::move(result), candidates.size(), stitched_edge_count };
+}
+
+TopoDS_Shape GeometryTopologyEditor::stitchBoundaryEdges(
+    const TopoDS_Shape& root,
+    const std::vector<TopoDS_Edge>& first_chain,
+    const std::vector<TopoDS_Edge>& second_chain,
+    double tolerance)
+{
+    if (root.IsNull())
+        throw std::invalid_argument("Geometry root must not be null");
+    if (first_chain.empty() || second_chain.empty())
+        throw std::invalid_argument("Both boundary edge chains are required");
+    if (!std::isfinite(tolerance) || tolerance <= 0.0)
+        throw std::invalid_argument("Stitch tolerance must be greater than zero");
+
+    NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher> root_edges;
+    NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher> selected_edges;
+    TopExp::MapShapes(root, TopAbs_EDGE, root_edges);
+
+    using ShapeAncestors = NCollection_IndexedDataMap<TopoDS_Shape,
+        NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>;
+    ShapeAncestors edge_faces;
+    TopExp::MapShapesAndUniqueAncestors(root, TopAbs_EDGE, TopAbs_FACE, edge_faces);
+    NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher> faces_to_sew;
+
+    const auto collect_chain = [&](const std::vector<TopoDS_Edge>& chain) {
+        for (const TopoDS_Edge& edge : chain) {
+            if (edge.IsNull() || !root_edges.Contains(edge))
+                throw std::invalid_argument("Selected boundary edge does not belong to the geometry root");
+            if (selected_edges.Contains(edge))
+                throw std::invalid_argument("Boundary edge chains must not contain duplicate edges");
+            if (!edge_faces.Contains(edge)
+                || uniqueFaceCount(edge_faces.FindFromKey(edge)) != 1) {
+                throw std::invalid_argument("Only free boundary edges can be stitched");
+            }
+            selected_edges.Add(edge);
+            faces_to_sew.Add(edge_faces.FindFromKey(edge).First());
+        }
+    };
+    collect_chain(first_chain);
+    collect_chain(second_chain);
+
+    if (!isContinuousEdgeChain(first_chain) || !isContinuousEdgeChain(second_chain))
+        throw std::invalid_argument("Each selected boundary group must form one continuous chain");
+    if (faces_to_sew.Extent() < 2)
+        throw std::invalid_argument("Boundary edge chains must belong to at least two faces");
+
+    // 两组链必须互相完整覆盖。逐边确认存在容差内的对应边，并比较链总长度，
+    // 既支持一长对多短，又避免只因局部相交就把无关边交给 Sewing。
+    const auto chain_is_covered = [tolerance](
+                                      const std::vector<TopoDS_Edge>& source,
+                                      const std::vector<TopoDS_Edge>& target) {
+        return std::all_of(source.begin(), source.end(), [&](const TopoDS_Edge& edge) {
+            return std::any_of(target.begin(), target.end(), [&](const TopoDS_Edge& candidate) {
+                return stitchMaximumGap(edge, candidate, tolerance).has_value();
+            });
+        });
+    };
+    if (!chain_is_covered(first_chain, second_chain)
+        || !chain_is_covered(second_chain, first_chain)) {
+        throw std::runtime_error("Selected boundary chains are outside the stitch tolerance");
+    }
+    const auto chain_length = [](const std::vector<TopoDS_Edge>& chain) {
+        double length = 0.0;
+        for (const TopoDS_Edge& edge : chain)
+            length += edgeLength(edge);
+        return length;
+    };
+    if (std::abs(chain_length(first_chain) - chain_length(second_chain)) > tolerance)
+        throw std::runtime_error("Selected boundary chains do not cover the same range");
+
+    try {
+        // Load 保留完整根形状及已有连接，Add 只把选择链相邻的 Face 纳入局部 Sewing。
+        BRepBuilderAPI_Sewing sewing(tolerance, true, true, true, false);
+        sewing.Load(root);
+        sewing.SetMinTolerance(std::min(Precision::Confusion(), tolerance));
+        sewing.SetMaxTolerance(tolerance);
+        sewing.SetLocalTolerancesMode(false);
+        for (int face_index = 1; face_index <= faces_to_sew.Extent(); ++face_index)
+            sewing.Add(faces_to_sew.FindKey(face_index));
+        sewing.Perform();
+
+        if (sewing.NbContigousEdges() == 0)
+            throw std::runtime_error("OpenCASCADE did not stitch the selected boundary chains");
+        if (sewing.NbMultipleEdges() != 0)
+            throw std::runtime_error("Stitching the boundary chains created non-manifold edges");
+
+        const TopoDS_Shape result = sewing.SewedShape();
+        if (result.IsNull())
+            throw std::runtime_error("OpenCASCADE returned an empty stitch result");
+        if (countBoundaryEdges(result) >= countBoundaryEdges(root))
+            throw std::runtime_error("Stitching did not reduce the selected free boundaries");
+        if (!BRepCheck_Analyzer(result).IsValid())
+            throw std::runtime_error("Stitching the boundary chains produced invalid topology");
+        return result;
+    } catch (const Standard_Failure& error) {
+        const char* detail = error.GetMessageString();
+        throw std::runtime_error(detail
+                ? std::string("OpenCASCADE failed to stitch the boundary chains: ") + detail
+                : "OpenCASCADE failed to stitch the boundary chains");
+    }
+}
 
 TopoDS_Shape GeometryTopologyEditor::removeTopLevelShape(
     const TopoDS_Shape& root,

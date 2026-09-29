@@ -62,7 +62,7 @@ target_link_libraries(PreCessBase PUBLIC
     Qt6::Core
     VTK::CommonCore VTK::CommonDataModel
     $<COMPILE_ONLY:TKernel>
-    TKernel TKTopAlgo TKBRep TKBool TKPrim TKDESTEP
+    TKernel TKTopAlgo TKBRep TKBool TKFeat TKPrim TKShHealing TKDESTEP
     $<$<BOOL:${MINGW}>:ws2_32>
 )
 # std::execution 并行策略后端（原 DataOps 的链接需求，聚合后收口于此）：

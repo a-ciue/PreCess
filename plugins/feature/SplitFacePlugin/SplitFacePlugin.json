@@ -1,0 +1,8 @@
+{
+  "system": "FeatureSystem",
+  "handler": {
+    "name": "SplitFace",
+    "display_name": "分割面",
+    "description": "使用同一组件中的几何边或相交面分割目标面"
+  }
+}

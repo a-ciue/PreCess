@@ -1,0 +1,2 @@
+precess_add_test(TestSplitEdgePlugin TestSplitEdgePlugin.cpp)
+precess_test_link_libraries(TestSplitEdgePlugin SplitEdgePluginlib FeatureSystem Data)

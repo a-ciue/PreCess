@@ -1,0 +1,8 @@
+{
+  "system": "FeatureSystem",
+  "handler": {
+    "name": "StitchGeometry",
+    "display_name": "几何缝合",
+    "description": "在指定容差内缝合两个几何点或两组自由边界链"
+  }
+}

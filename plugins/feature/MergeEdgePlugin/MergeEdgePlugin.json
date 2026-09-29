@@ -1,0 +1,8 @@
+{
+  "system": "FeatureSystem",
+  "handler": {
+    "name": "MergeEdge",
+    "display_name": "合并边",
+    "description": "将同一组件中连续且同域的多条几何边合并为一条边"
+  }
+}

@@ -18,9 +18,22 @@
 #include "UndoRecorder.h"
 
 #include <algorithm>
+#include <cmath>
 #include <filesystem>
 #include <stdexcept>
 #include <spdlog/spdlog.h>
+
+void ModelLayer::setGeometryCleanupTolerance(double tolerance)
+{
+    if (!std::isfinite(tolerance) || tolerance <= 0.0)
+        throw std::invalid_argument("Geometry cleanup tolerance must be greater than zero");
+    geometry_cleanup_tolerance_ = tolerance;
+}
+
+double ModelLayer::geometryCleanupTolerance() const noexcept
+{
+    return geometry_cleanup_tolerance_;
+}
 
 Index ModelLayer::addModel(const std::string& model_name, ComponentDatas components)
 {

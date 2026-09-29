@@ -1,0 +1,2 @@
+precess_add_test(TestStitchGeometryPlugin TestStitchGeometryPlugin.cpp)
+precess_test_link_libraries(TestStitchGeometryPlugin StitchGeometryPluginlib FeatureSystem Data)

@@ -1,0 +1,8 @@
+{
+  "system": "FeatureSystem",
+  "handler": {
+    "name": "MergeFace",
+    "display_name": "合并面",
+    "description": "将同一组件中连通且同域的多个几何面合并为一个面"
+  }
+}

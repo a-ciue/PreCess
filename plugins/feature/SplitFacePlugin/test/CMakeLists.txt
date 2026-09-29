@@ -1,0 +1,2 @@
+precess_add_test(TestSplitFacePlugin TestSplitFacePlugin.cpp)
+precess_test_link_libraries(TestSplitFacePlugin SplitFacePluginlib FeatureSystem Data)
