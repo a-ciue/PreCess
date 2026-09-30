@@ -4,7 +4,7 @@
  */
 
 import QtQuick
-import QtQuick.Controls
+import QtQuick.Controls.Fusion
 
 ToolButton {
     id: control
@@ -15,6 +15,12 @@ ToolButton {
 
     background: Rectangle {
         radius: Theme.radiusControl
-        color: control.checked ? Theme.primaryTint : control.hovered ? Theme.hoverOverlay : "transparent"
+        // 自定义背景需显式保留按下、禁用和键盘焦点反馈。
+        color: !control.enabled ? "transparent"
+             : control.down ? Theme.primaryTint
+             : control.checked ? Theme.primaryTint
+             : control.hovered ? Theme.hoverOverlay : "transparent"
+        border.width: control.visualFocus ? 1 : 0
+        border.color: Theme.primary
     }
 }

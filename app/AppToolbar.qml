@@ -18,9 +18,10 @@ ColumnLayout {
     property int activeCategory: -1
     property real windowHeight: 600
 
-    // ribbon 页内按钮图标尺寸。页高即 windowHeight/12；图标若绑定 parent.height，
-    // 会与布局隐式尺寸形成反馈环（图标异步加载后触发 recursive rearrange 警告）。
-    readonly property real ribbonIconSize: windowHeight / 12 * 0.65
+    // 限制页高范围，给小窗口保留文字空间，避免大窗口工具栏过度放大。
+    readonly property real ribbonPageHeight: Math.max(64, Math.min(96, windowHeight / 12))
+    // 从独立尺寸推导图标，避免依赖布局分配后的按钮高度形成反馈环。
+    readonly property real ribbonIconSize: Math.round(ribbonPageHeight * 0.5)
 
     signal resetLayoutRequested()
     signal objectTreeToggled()
@@ -385,7 +386,7 @@ ColumnLayout {
     }
 
     StackLayout {
-        implicitHeight: activeCategory >= 0 ? windowHeight / 12 : 0
+        implicitHeight: activeCategory >= 0 ? root.ribbonPageHeight : 0
         visible: activeCategory >= 0
 
         currentIndex: activeCategory

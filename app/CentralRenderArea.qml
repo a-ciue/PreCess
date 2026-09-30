@@ -48,8 +48,8 @@ Page {
 
     footer: ToolBar {
         id: toolbar
-        // 容纳图标 + 文字: 让 footer 高度随内容自适应, 不固定 28 (加图标后被 elide 截断)
-        implicitHeight: 36
+        // 保留最小高度，并随字体和控件隐式高度增长，避免文字被裁切。
+        implicitHeight: Math.max(36, implicitContentHeight + topPadding + bottomPadding)
         leftPadding: 4
         rightPadding: 4
         background: Rectangle {
@@ -361,7 +361,6 @@ Page {
                 id: topologyDiagnosticBtn
                 text: "网格诊断"
                 flat: true
-                Layout.preferredWidth: 70
                 Layout.fillHeight: true
                 onClicked: topologyDiagnosticMenu.visible ? topologyDiagnosticMenu.close() : topologyDiagnosticMenu.open()
 
@@ -473,7 +472,6 @@ Page {
                 id: geometryTopologyDiagnosticBtn
                 text: "几何诊断"
                 flat: true
-                Layout.preferredWidth: 70
                 Layout.fillHeight: true
                 onClicked: geometryTopologyDiagnosticMenu.visible ? geometryTopologyDiagnosticMenu.close() : geometryTopologyDiagnosticMenu.open()
 

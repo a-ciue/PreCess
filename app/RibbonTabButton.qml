@@ -4,14 +4,20 @@
  */
 
 import QtQuick
-import QtQuick.Controls
+import QtQuick.Controls.Fusion
 
 ToolButton {
     id: control
 
     background: Rectangle {
         radius: Theme.radiusControl
-        color: control.checked ? Theme.primaryTint : control.hovered ? Theme.hoverOverlay : "transparent"
+        // 自定义背景需显式保留按下、禁用和键盘焦点反馈。
+        color: !control.enabled ? "transparent"
+             : control.down ? Theme.primaryTint
+             : control.checked ? Theme.primaryTint
+             : control.hovered ? Theme.hoverOverlay : "transparent"
+        border.width: control.visualFocus ? 1 : 0
+        border.color: Theme.primary
 
         // 选中页签的底部强调条
         Rectangle {
@@ -22,7 +28,7 @@ ToolButton {
             }
             height: 2
             radius: 1
-            color: Theme.primary
+            color: control.enabled ? Theme.primary : Theme.textDisabled
             visible: control.checked
         }
     }
@@ -31,7 +37,9 @@ ToolButton {
         text: control.text
         font.pixelSize: Theme.fontSizeBody
         font.weight: control.checked ? Font.DemiBold : Font.Normal
-        color: control.checked ? Theme.primary : control.hovered ? Theme.primaryHover : Theme.textPrimary
+        color: !control.enabled ? Theme.textDisabled
+             : control.down ? Theme.primaryPressed
+             : control.checked ? Theme.primary : control.hovered ? Theme.primaryHover : Theme.textPrimary
         horizontalAlignment: Text.AlignHCenter
         verticalAlignment: Text.AlignVCenter
         elide: Text.ElideRight
