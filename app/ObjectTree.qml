@@ -132,19 +132,6 @@ Pane {
         onExpanded: (row, depth) => toggleExpandRow = row
         onCollapsed: (row, recursively) => toggleExpandRow = row
 
-        // 空模型占位：拖入或打开模型文件后会自动消失。
-        // 折行 + 居中 + 限制最大宽度，避免窄 Pane 下文字向左溢出被裁
-        Label {
-            anchors.centerIn: parent
-            visible: treeModel.rowCount() === 0
-            text: qsTr("拖入或打开\n模型文件以填充对象树")
-            color: Theme.textSecondary
-            font.pixelSize: Theme.fontSizeCaption
-            horizontalAlignment: Text.AlignHCenter
-            wrapMode: Text.WordWrap
-            width: Math.min(implicitWidth, parent.width - Theme.spacingMd)
-        }
-
         delegate: TreeViewDelegate {
             id: viewDelegate
             height: _rowHeight

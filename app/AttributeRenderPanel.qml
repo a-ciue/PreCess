@@ -131,19 +131,6 @@ Item {
             flickDeceleration: 100000
             boundsBehavior: Flickable.StopAtBounds
 
-            // 空模型占位：未选中组件时引导
-            // 折行 + 居中 + 最大宽度保护，避免窄 Pane 溢出
-            Label {
-                anchors.centerIn: parent
-                visible: !parent.count && root.componentName.length === 0
-                text: qsTr("请先在对象树中\n选择组件")
-                color: Theme.textSecondary
-                font.pixelSize: Theme.fontSizeCaption
-                horizontalAlignment: Text.AlignHCenter
-                wrapMode: Text.WordWrap
-                width: Math.min(implicitWidth, parent.width - Theme.spacingMd)
-            }
-
             delegate: Rectangle {
                 id: attrRow
                 required property var modelData

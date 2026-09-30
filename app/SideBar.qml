@@ -134,21 +134,6 @@ Item{
         clip: true
         ColumnLayout{
             anchors.fill: parent
-            // 无活动操作时引导：参数区占位提示用户从工具栏选择操作
-            // 折行 + 居中 + 最大宽度保护，避免窄 Pane 溢出
-            Label {
-                Layout.alignment: Qt.AlignCenter
-                Layout.fillWidth: true
-                Layout.topMargin: Theme.spacingLg
-                Layout.leftMargin: Theme.spacingMd
-                Layout.rightMargin: Theme.spacingMd
-                visible: !(root.activeOp && root.activeOp.info)
-                text: qsTr("从工具栏选择\n操作后在此配置参数")
-                color: Theme.textSecondary
-                font.pixelSize: Theme.fontSizeCaption
-                horizontalAlignment: Text.AlignHCenter
-                wrapMode: Text.WordWrap
-            }
             ListView{
                 id:parameterList
                 Layout.fillHeight: true
