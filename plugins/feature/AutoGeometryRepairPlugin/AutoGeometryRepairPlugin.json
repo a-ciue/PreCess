@@ -3,6 +3,6 @@
   "handler": {
     "name": "AutoGeometryRepair",
     "display_name": "自动修复间隙",
-    "description": "检测并按全局清理容差自动缝合跨面自由边"
+    "description": "选择一个几何组件，检测并按清理容差自动缝合该组件内的跨面自由边"
   }
 }

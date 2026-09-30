@@ -3,7 +3,7 @@
 
 namespace systems::feature {
 /**
- * @brief 自动几何间隙修复功能：检测并按全局清理容差 Stitch 跨面自由边。
+ * @brief 自动几何间隙修复功能：显式选择一个组件，检测并按清理容差缝合该组件内的跨面自由边。
  */
 class AutoGeometryRepairHandler : public FeatureHandler {
 public:

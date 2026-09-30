@@ -9,7 +9,6 @@
 #include "ModelLayer.h"
 
 #include <Standard_Failure.hxx>
-#include <TopAbs_ShapeEnum.hxx>
 #include <TopoDS_Shape.hxx>
 #include <spdlog/spdlog.h>
 
@@ -32,9 +31,9 @@ constexpr size_t kModeParam = 2;
 
 void AutoGeometryRepairHandler::setup(FeatureRegistrar& reg, FeatureContext& /*ctx*/)
 {
-    // 选择任意一个或多个面来确定目标组件；第一阶段统一修复该组件的全部自由边。
-    reg.addParameter({ ArgTypeEnum::Selector, "目标组件", "GeometryFace", "请选择目标组件中的任意几何面" });
-    reg.addParameter({ ArgTypeEnum::Float, "全局清理容差", "0.01", "使用当前模型长度单位，供自动修复和 Stitch 共用" });
+    // 选择范围与执行范围一致：只处理显式选中的一个组件内的全部自由边。
+    reg.addParameter({ ArgTypeEnum::Selector, "目标组件", "Component", "请选择一个几何组件，将检测或修复该组件内的全部自由边" });
+    reg.addParameter({ ArgTypeEnum::Float, "全局清理容差", "0.01", "用于所选组件内的间隙检测和自动缝合，使用模型长度单位" });
     reg.addParameter({ ArgTypeEnum::Combo, "执行模式", "仅检测,检测并修复|0", "仅检测不会修改几何" });
     reg.addMenuItem({ "几何/修复", "自动修复间隙", "" });
 }
@@ -43,9 +42,9 @@ std::any AutoGeometryRepairHandler::execute(FeatureContext& ctx)
 {
     const auto* target_param = ctx.params.value(kTargetParam).get<ArgTypeEnum::Selector>();
     if (!target_param || !*target_param
-        || (*target_param)->type != ElementEnum::GeometryFace
-        || (*target_param)->ids.empty()) {
-        return std::string("请选择目标组件中的任意几何面。");
+        || (*target_param)->type != ElementEnum::Component
+        || (*target_param)->ids.size() != 1) {
+        return std::string("请选择一个几何组件。");
     }
     const double* tolerance = ctx.params.value(kToleranceParam).get<ArgTypeEnum::Float>();
     if (!tolerance || !std::isfinite(*tolerance) || *tolerance <= 0.0)
@@ -55,19 +54,11 @@ std::any AutoGeometryRepairHandler::execute(FeatureContext& ctx)
         return std::string("执行模式参数无效。");
 
     try {
-        std::optional<Index> component_id;
-        for (Index face_id : (*target_param)->ids) {
-            const auto owner =
-                ctx.model.findComponentIdByGeometryShapeId(TopAbs_FACE, face_id);
-            if (!owner)
-                return std::string("所选几何面不属于任何组件。");
-            if (component_id && *owner != *component_id)
-                return std::string("目标面必须属于同一个组件。");
-            component_id = *owner;
-        }
-
-        ComponentData* component = ctx.model.findComponent(*component_id);
-        if (!component || !component->geometry || !component->geometry->rootShape)
+        const Index component_id = (*target_param)->ids.front();
+        ComponentData* component = ctx.model.findComponent(component_id);
+        if (!component)
+            return std::string("所选组件已失效。");
+        if (!component->geometry || !component->geometry->rootShape)
             return std::string("目标组件没有几何。");
         if (component->mapping && !component->mapping->empty())
             return std::string("目标组件已经建立几何-网格映射，不能修改几何拓扑。");
@@ -93,7 +84,7 @@ std::any AutoGeometryRepairHandler::execute(FeatureContext& ctx)
         GeometryGapRepairResult repair =
             GeometryTopologyEditor::repairFreeEdgeGaps(root, cleanup_tolerance);
         auto component_operator = ctx.componentOperator
-            ? ctx.componentOperator(*component_id)
+            ? ctx.componentOperator(component_id)
             : std::nullopt;
         if (!component_operator)
             return std::string("几何操作失败，详细原因请查看日志。");

@@ -29,11 +29,10 @@ using namespace systems::feature;
 
 namespace {
 /**
- * @brief 自动间隙修复测试数据，保存组件和用于定位组件的面 ID。
+ * @brief 自动间隙修复测试数据，保存选择器直接使用的组件 ID。
  */
 struct RepairFixture {
     Index component_id { -1 };
-    GeomFaceId face_id { kInvalidGeomFaceId };
 };
 
 HandlerMetaData handlerMetaData()
@@ -70,10 +69,7 @@ RepairFixture addGappedFaces(ModelLayer& model_layer)
     ComponentData* stored = model_layer.findComponent(component_id);
     REQUIRE(stored != nullptr);
     stored->geometry->ensureIndexBuilt(model_layer.geomRegistry());
-    const auto& index = stored->geometry->index;
-    const int face_local = index.type_maps[index.typeIndex(TopAbs_FACE)].FindIndex(first);
-    REQUIRE(face_local > 0);
-    return { component_id, index.faceGlobalId(face_local) };
+    return { component_id };
 }
 
 int countBoundaryEdges(const ComponentData& component)
@@ -98,22 +94,31 @@ TEST_CASE("AutoGeometryRepair feature detects then repairs free edge gaps", "[Au
     ModelLayer model_layer;
     FeatureSystem feature_system(model_layer, bus);
     const RepairFixture fixture = addGappedFaces(model_layer);
+    const RepairFixture other = addGappedFaces(model_layer);
 
     FeatureSystem::SystemHandlerPtr handler { new AutoGeometryRepairHandler };
     REQUIRE(feature_system.registerHandler(handlerMetaData(), std::move(handler)));
     auto selection = std::make_shared<Selection>();
-    selection->type = ElementEnum::GeometryFace;
-    selection->component_id = fixture.component_id;
-    selection->ids = { fixture.face_id };
+    selection->type = ElementEnum::Component;
+    // component_id 是其他选择类型的归属提示；组件选择必须使用 ids 中的明确目标。
+    selection->component_id = other.component_id;
+    selection->ids = { fixture.component_id };
     REQUIRE(feature_system.setParameter("AutoGeometryRepair", 0,
         core::ArgObject::create<ArgTypeEnum::Selector>(selection)));
     REQUIRE(feature_system.setParameter("AutoGeometryRepair", 1,
         core::ArgObject::create<ArgTypeEnum::Float>(0.01)));
 
+    const auto infos = feature_system.getFeatureInfos();
+    REQUIRE(infos.size() == 1);
+    REQUIRE(infos.front()->arg_types.front().type == ArgTypeEnum::Selector);
+    REQUIRE(infos.front()->arg_types.front().content == "Component");
+    const int untouched = countBoundaryEdges(*model_layer.findComponent(other.component_id));
+    const int original = countBoundaryEdges(*model_layer.findComponent(fixture.component_id));
     const std::string detection = std::any_cast<std::string>(
         feature_system.invoke("AutoGeometryRepair"));
     REQUIRE(detection.find("检测到 1 对") != std::string::npos);
     REQUIRE(model_layer.geometryCleanupTolerance() == 0.01);
+    REQUIRE(countBoundaryEdges(*model_layer.findComponent(fixture.component_id)) == original);
 
     REQUIRE(feature_system.setParameter("AutoGeometryRepair", 2,
         core::ArgObject::create<ArgTypeEnum::Combo>(1)));
@@ -121,4 +126,37 @@ TEST_CASE("AutoGeometryRepair feature detects then repairs free edge gaps", "[Au
     const Index result = std::any_cast<Index>(feature_system.invoke("AutoGeometryRepair"));
     REQUIRE(result == fixture.component_id);
     REQUIRE(countBoundaryEdges(*model_layer.findComponent(fixture.component_id)) < before);
+    REQUIRE(countBoundaryEdges(*model_layer.findComponent(other.component_id)) == untouched);
+}
+
+//! @brief 拒绝旧的面选择、多组件、空选择及失效组件，避免不明确地扩大操作范围。
+TEST_CASE("AutoGeometryRepair requires one explicit valid component", "[AutoGeometryRepairPlugin]")
+{
+    core::EventBus bus;
+    ModelLayer model_layer;
+    FeatureSystem feature_system(model_layer, bus);
+    const auto fixture = addGappedFaces(model_layer);
+    const auto other = addGappedFaces(model_layer);
+    FeatureSystem::SystemHandlerPtr handler { new AutoGeometryRepairHandler };
+    REQUIRE(feature_system.registerHandler(handlerMetaData(), std::move(handler)));
+    REQUIRE(feature_system.setParameter("AutoGeometryRepair", 2,
+        core::ArgObject::create<ArgTypeEnum::Combo>(1)));
+    for (int invalid_case = 0; invalid_case < 4; ++invalid_case) {
+        CAPTURE(invalid_case);
+        auto selection = std::make_shared<Selection>();
+        selection->type = invalid_case == 0 ? ElementEnum::GeometryFace : ElementEnum::Component;
+        selection->ids = { fixture.component_id };
+        if (invalid_case == 1)
+            selection->ids.clear();
+        if (invalid_case == 2)
+            selection->ids.push_back(other.component_id);
+        if (invalid_case == 3)
+            selection->ids = { -1 };
+        REQUIRE(feature_system.setParameter("AutoGeometryRepair", 0,
+            core::ArgObject::create<ArgTypeEnum::Selector>(selection)));
+        const auto message = std::any_cast<std::string>(feature_system.invoke("AutoGeometryRepair"));
+        REQUIRE(message == (invalid_case == 3 ? "所选组件已失效。" : "请选择一个几何组件。"));
+        REQUIRE(countBoundaryEdges(*model_layer.findComponent(fixture.component_id)) == 8);
+        REQUIRE(countBoundaryEdges(*model_layer.findComponent(other.component_id)) == 8);
+    }
 }
