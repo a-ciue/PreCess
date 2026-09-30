@@ -797,6 +797,25 @@ Page {
         }
     }
 
+    // 导入提示只覆盖可视化区域，保留停靠面板内容可见。
+    Rectangle {
+        anchors.fill: renderWindowPage
+        visible: App.importDragActive
+        z: 2
+        color: Qt.rgba(Theme.primary.r, Theme.primary.g, Theme.primary.b, 0.10)
+        border.color: Theme.primary
+        border.width: 2
+        radius: Theme.radiusControl
+
+        Label {
+            anchors.centerIn: parent
+            text: qsTr("松开鼠标以导入模型文件")
+            font.pixelSize: Theme.fontSizeLarge
+            font.bold: true
+            color: Theme.primary
+        }
+    }
+
     Component.onCompleted: {
         App.registry.renderWindow = myItem
         // 注入功能系统适配器：startInteraction 按名称获取 InteractionState

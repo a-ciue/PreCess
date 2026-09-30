@@ -254,6 +254,7 @@ ApplicationWindow {
         id: importDropArea
         anchors.fill: parent
         z: 1
+        onContainsDragChanged: App.importDragActive = containsDrag
 
         // 不做前置过滤：是否可导入由 C++ read 判定（失败会记 error 日志）
         onEntered: {
@@ -274,24 +275,6 @@ ApplicationWindow {
                 App.registry.renderWindow.resetCamera()
             if (failed > 0)
                 outputLogDock.showPanel() // 失败原因由日志面板承载，直接打开便于查看
-        }
-
-        // 拖入可导入文件时的高亮提示
-        Rectangle {
-            anchors.fill: parent
-            visible: importDropArea.containsDrag
-            color: Theme.primaryTint
-            border.color: Theme.primary
-            border.width: 2
-            radius: Theme.radiusControl
-
-            Label {
-                anchors.centerIn: parent
-                text: qsTr("松开鼠标以导入模型文件")
-                font.pixelSize: Theme.fontSizeLarge
-                font.bold: true
-                color: Theme.primary
-            }
         }
     }
 
