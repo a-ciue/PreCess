@@ -48,7 +48,21 @@ Page {
 
     footer: ToolBar {
         id: toolbar
-        height: 25
+        height: 28
+        background: Rectangle {
+            color: Theme.surfaceAlt
+
+            // 与渲染区的细线分隔
+            Rectangle {
+                anchors {
+                    left: parent.left
+                    right: parent.right
+                    top: parent.top
+                }
+                height: 1
+                color: Theme.border
+            }
+        }
         RowLayout {
             anchors.fill: parent
 
@@ -604,8 +618,8 @@ Page {
         Rectangle {
             id: borderRectangle
             anchors.fill: parent
-            border.color: "black"
-            border.width: 3
+            border.color: Theme.borderStrong
+            border.width: 1
             color: "transparent"
             z: 1
         }
@@ -613,7 +627,7 @@ Page {
         QRenderWindow {
             id: myItem
             anchors.fill: parent
-            anchors.margins: 3
+            anchors.margins: 1
             query: QModelManager.query
             selectionRevision: App.selection.selectionRevision
 
@@ -710,66 +724,16 @@ Page {
                 pickedIds = sel ? sel.getAsComponentIds() : []
             }
 
-            implicitWidth: 140
-            width: implicitWidth
-            height: implicitHeight
-
-            padding: 0
-            topPadding: 0
-            bottomPadding: 0
-            leftPadding: 0
-            rightPadding: 0
-
-            property int textLeftInset: 18
-            property int textRightInset: 12
-
-            background: Rectangle {
-                anchors.fill: parent
-                color: "#ffffff"
-                border.color: "#d0d0d0"
-                border.width: 1
-                radius: 4
-            }
-
+            // 视口菜单项：shown 控制显隐（无拾取时显示整组操作，有拾取时显示对象操作）
             component StyledMenuItem: MenuItem {
                 id: control
                 property bool shown: true
 
                 visible: shown
                 enabled: shown
-
-                implicitHeight: shown ? 30 : 0
-                height: implicitHeight
-
-                width: viewportMenu.width
-                implicitWidth: viewportMenu.width
-
-                background: Rectangle {
-                    anchors.fill: parent
-                    color: control.hovered ? "#f0f0f0" : "transparent"
-                }
-
-                contentItem: Text {
-                    anchors.fill: parent
-                    anchors.leftMargin: viewportMenu.textLeftInset
-                    anchors.rightMargin: viewportMenu.textRightInset
-
-                    text: control.text
-                    color: control.hovered ? "#1976d2" : "#333333"
-                    font.pixelSize: 12
-                    font.family: "Microsoft YaHei"
-                    verticalAlignment: Text.AlignVCenter
-                    horizontalAlignment: Text.AlignLeft
-                    elide: Text.ElideRight
-                }
             }
 
-            component StyledSeparator: MenuSeparator {
-                width: viewportMenu.width
-                implicitWidth: viewportMenu.width
-                implicitHeight: 6
-                height: visible ? implicitHeight : 0
-            }
+            component StyledSeparator: MenuSeparator {}
 
             StyledMenuItem {
                 text: "隐藏"

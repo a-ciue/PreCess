@@ -52,12 +52,31 @@ Item{
         anchors.top: parent.top
         anchors.left: parent.left
         anchors.right: parent.right
-        height: 30
+        anchors.margins: Theme.spacingSm
+        height: 36
+        spacing: Theme.spacingSm
+        // 无活动操作时按钮行整体隐藏，避免两个 disabled 按钮占据首行
+        visible: !!(root.activeOp && root.activeOp.info)
         Button{
             id: commitButton
             text: "执行"
             enabled: !!(root.activeOp && root.activeOp.info)
             Layout.fillWidth: true
+            // 主操作：实心强调色按钮
+            background: Rectangle {
+                radius: Theme.radiusControl
+                color: !commitButton.enabled ? Theme.scrollBarIdle
+                     : commitButton.pressed ? Theme.primaryPressed
+                     : commitButton.hovered ? Theme.primaryHover
+                     : Theme.primary
+            }
+            contentItem: Text {
+                text: commitButton.text
+                color: commitButton.enabled ? Theme.textOnPrimary : Theme.textDisabled
+                font.pixelSize: Theme.fontSizeBody
+                horizontalAlignment: Text.AlignHCenter
+                verticalAlignment: Text.AlignVCenter
+            }
             onClicked:{
                 // 先停止参数监听，执行后的视口清空便不会反向清掉刚提交的参数。
                 App.selection.listeningSelectorIndex = -1
@@ -82,7 +101,8 @@ Item{
             ToolTip.delay: 500
             ToolTip.text: qsTr("结束当前操作")
             enabled: !!(root.activeOp && root.activeOp.info)
-            Layout.fillWidth: true
+            flat: true
+            Layout.preferredWidth: 44
             // 确认 = 结束当前操作，取消操作选中；再次执行需重新点选算法
             onClicked: App.activeOperation = null
         }
@@ -92,11 +112,18 @@ Item{
         anchors.top: buttonRow.bottom
         anchors.left: parent.left
         anchors.right: parent.right
+        anchors.margins: Theme.spacingSm
         // 不可见时不占锚定布局高度，避免留下空白
         height: visible ? 80 : 0
         readOnly: true
         text: root.resultText
         wrapMode: TextEdit.Wrap
+        // 执行结果区：浅色凹陷面 + 边框
+        background: Rectangle {
+            radius: Theme.radiusControl
+            color: Theme.surfaceAlt
+            border.color: Theme.border
+        }
         visible: text.length > 0
     }
     Item{
@@ -107,12 +134,27 @@ Item{
         clip: true
         ColumnLayout{
             anchors.fill: parent
+            // 无活动操作时引导：参数区占位提示用户从工具栏选择操作
+            // 折行 + 居中 + 最大宽度保护，避免窄 Pane 溢出
+            Label {
+                Layout.alignment: Qt.AlignCenter
+                Layout.fillWidth: true
+                Layout.topMargin: Theme.spacingLg
+                Layout.leftMargin: Theme.spacingMd
+                Layout.rightMargin: Theme.spacingMd
+                visible: !(root.activeOp && root.activeOp.info)
+                text: qsTr("从工具栏选择\n操作后在此配置参数")
+                color: Theme.textSecondary
+                font.pixelSize: Theme.fontSizeCaption
+                horizontalAlignment: Text.AlignHCenter
+                wrapMode: Text.WordWrap
+            }
             ListView{
                 id:parameterList
                 Layout.fillHeight: true
                 Layout.fillWidth: true
-                Layout.margins: 3
-                spacing: 5
+                Layout.margins: Theme.spacingSm
+                spacing: Theme.spacingSm
                 model: root.activeOp ? root.activeOp.info.arg_types : []
                 delegate:Component{
                     Loader{
@@ -155,7 +197,7 @@ Item{
         id:componentComboBox
         RowLayout{
             id: comboRow
-            spacing: 5
+            spacing: Theme.spacingSm
             width: parameterList.width
             property var value: null
             ListModel{
@@ -164,14 +206,15 @@ Item{
             Text{
                 id:nametext
                 text: model.name
-            }
-            Rectangle{
-                Layout.fillHeight: true
-                Layout.preferredWidth: 1
-                color: "black"
+                Layout.preferredWidth: parameterList.width * 0.38
+                elide: Text.ElideRight
+                color: Theme.textPrimary
+                font.pixelSize: Theme.fontSizeBody
+                verticalAlignment: Text.AlignVCenter
             }
             ComboBox{
                 id:parameterComboBox
+                Layout.fillWidth: true
                 model: comboModel
                 onCurrentIndexChanged: {
                     if (comboRow.parent.initialized) {
@@ -208,20 +251,20 @@ Item{
     Component{
         id:oneNumberBox
         RowLayout{
-            spacing: 5
+            spacing: Theme.spacingSm
             width: parameterList.width
             Text{
                 id:nametext
                 text: model.name
-            }
-            Rectangle{
-                Layout.fillHeight: true
-                Layout.preferredWidth: 1
-                color: "black"
+                Layout.preferredWidth: parameterList.width * 0.38
+                elide: Text.ElideRight
+                color: Theme.textPrimary
+                font.pixelSize: Theme.fontSizeBody
+                verticalAlignment: Text.AlignVCenter
             }
             TextField {
                 id:parameterTextInput
-                Layout.fillWidth: parent.width
+                Layout.fillWidth: true
                 text: model.content
                 onTextChanged:{
                     root.setParam(index, parseFloat(text))
@@ -232,21 +275,21 @@ Item{
     Component{
         id:fileComponent
         RowLayout{
-            spacing: 5
+            spacing: Theme.spacingSm
             width: parameterList.width
             Text{
                 id:nametext
                 text: model.name
-            }
-            Rectangle{
-                Layout.fillHeight: true
-                Layout.preferredWidth: 1
-                color: "black"
+                Layout.preferredWidth: parameterList.width * 0.38
+                elide: Text.ElideRight
+                color: Theme.textPrimary
+                font.pixelSize: Theme.fontSizeBody
+                verticalAlignment: Text.AlignVCenter
             }
             TextArea{
                 id:fileText
                 wrapMode: TextEdit.Wrap
-                Layout.fillWidth: parent.width
+                Layout.fillWidth: true
 
                 Component.onCompleted: {
                     fileText.text = model.content
@@ -257,7 +300,8 @@ Item{
                 }
             }
             Button{
-                text: "...."
+                text: qsTr("浏览…")
+                flat: true
                 onClicked:{
                     parameterFileDialog.open()
                 }
@@ -284,21 +328,21 @@ Item{
         }
     }
     Component{
-        id:textComponent
+        id: textComponent
         RowLayout{
             id: textRow
-            spacing: 5
+            spacing: Theme.spacingSm
             width: parameterList.width
-            readonly property int separatorWidth: 1
-            readonly property real columnWidth: Math.max(0,
-                (width - separatorWidth - 2 * spacing) / 2)
             property var value: fileText.text
             Text{
                 id:nametext
                 text: model.name
-                // 名称与输入框各占可用宽度的一半，拉伸面板后同步扩大。
-                Layout.preferredWidth: textRow.columnWidth
+                // 标签列与其余参数行同宽，拉伸面板后同步扩大
+                Layout.preferredWidth: parameterList.width * 0.38
                 elide: Text.ElideRight
+                color: Theme.textPrimary
+                font.pixelSize: Theme.fontSizeBody
+                verticalAlignment: Text.AlignVCenter
                 ToolTip.visible: nameHover.hovered
                         && (truncated || model.description.length > 0)
                 ToolTip.text: truncated
@@ -309,15 +353,9 @@ Item{
                     id: nameHover
                 }
             }
-            Rectangle{
-                Layout.fillHeight: true
-                Layout.preferredWidth: textRow.separatorWidth
-                color: "black"
-            }
             TextArea{
                 id:fileText
                 wrapMode: TextEdit.Wrap
-                Layout.preferredWidth: textRow.columnWidth
                 Layout.fillWidth: true
                 placeholderText: model.description
                 ToolTip.visible: hovered && model.description.length > 0
@@ -343,7 +381,7 @@ Item{
     Component{
         id: selectorComponent
         RowLayout{
-            spacing: 5
+            spacing: Theme.spacingSm
             width: parameterList.width
             property var value: null
             // 清空参数时传递明确的选择器对象，不让通用转换层解释 null。
@@ -352,20 +390,27 @@ Item{
             Text{
                 id:nametext
                 text: model.name
-            }
-            Rectangle{
-                Layout.fillHeight: true
-                Layout.preferredWidth: 1
-                color: "black"
+                Layout.preferredWidth: parameterList.width * 0.38
+                elide: Text.ElideRight
+                color: Theme.textPrimary
+                font.pixelSize: Theme.fontSizeBody
+                verticalAlignment: Text.AlignVCenter
             }
             Text{
                 id:selectedItems
+                Layout.fillWidth: true
+                elide: Text.ElideRight
                 text: value ? value.size():"无"
+                color: value ? Theme.textPrimary : Theme.textSecondary
+                font.pixelSize: Theme.fontSizeBody
+                verticalAlignment: Text.AlignVCenter
             }
 
             Button{
                 id: selectStartButton
                 text: checked ? "结束选择" : "开始选择"
+                // 拾取进行中：强调色提示当前面板处于监听状态
+                highlighted: App.selection.listeningSelectorIndex === index
                 checked: App.selection.listeningSelectorIndex === index
                 onClicked: {
                     if (!checked) {
@@ -415,17 +460,17 @@ Item{
     Component{
         id: boolComponent
         RowLayout{
-            spacing: 5
+            spacing: Theme.spacingSm
             width: parameterList.width
 
             Text{
                 id:nametext
                 text: model.name
-            }
-            Rectangle{
-                Layout.fillHeight: true
-                Layout.preferredWidth: 1
-                color: "black"
+                Layout.preferredWidth: parameterList.width * 0.38
+                elide: Text.ElideRight
+                color: Theme.textPrimary
+                font.pixelSize: Theme.fontSizeBody
+                verticalAlignment: Text.AlignVCenter
             }
             CheckBox{
                 id: parameterCheckBox
@@ -443,7 +488,7 @@ Item{
     Component{
         id: buttonComponent
         RowLayout{
-            spacing: 5
+            spacing: Theme.spacingSm
             width: parameterList.width
             Button{
                 // Button 是无值触发器：计数器载荷，功能约定忽略值只读参数下标

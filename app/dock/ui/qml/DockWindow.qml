@@ -8,8 +8,13 @@ import QtQuick
 Rectangle {
     id: root
 
-    color: "#f4f4f4"
-    border.color: "#666666"
+    // 浮动窗口底与边框（与 app 侧 Theme 令牌取值保持一致；dock 模块
+    // 刻意不依赖 app，故此处以局部常量对齐配色）
+    readonly property color surfaceWindow: "#F3F4F6"
+    readonly property color windowBorder: "#C3C8CF"
+
+    color: surfaceWindow
+    border.color: windowBorder
     border.width: 1
 
     // 停靠区域宿主：C++ 侧把 DockAreaItem 挂到此处

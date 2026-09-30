@@ -8,12 +8,12 @@
 #include <QQuickVTKItem.h>
 #include <QtQml/QQmlApplicationEngine>
 #include <QtQml/QQmlContext>
+#include <QQuickStyle>
 #include <spdlog/cfg/env.h>
 #ifdef __EMSCRIPTEN__
 #include <QtGui/QFontDatabase>
 #include <QtQuick/QQuickWindow>
 #include <QtQuick/QSGRendererInterface>
-#include <QtQuickControls2/QQuickStyle>
 #include "QWasmBridge.h"
 #endif
 
@@ -25,6 +25,7 @@
 #endif
 
 namespace {
+
 /**
  * @brief 全局按键事件转发器：把按键事件投递到功能系统
  *
@@ -72,6 +73,10 @@ int main(int argc, char* argv[])
     // 持久化身份（QSettings 存储位置）：布局快照等依赖明确的应用名/组织名
     QCoreApplication::setOrganizationName(QStringLiteral("PreCess"));
     QCoreApplication::setApplicationName(QStringLiteral("PreCess"));
+    // 全平台统一 Fusion 运行时样式：QML 一律用运行时样式选择（裸 import
+    // QtQuick.Controls），禁止文件内显式 import 特定样式，避免样式混用。
+    // 调色板在 Main.qml 的 ApplicationWindow 上设置（浅色固定，屏蔽系统深色主题）
+    QQuickStyle::setStyle("Fusion");
 #ifdef __EMSCRIPTEN__
     // wasm 平台需手动加载捆绑的字体，否则无法显示中文
     int font_id = QFontDatabase::addApplicationFont(":/fonts/appfont.bin");
@@ -79,7 +84,6 @@ int main(int argc, char* argv[])
     if (!font_families.isEmpty()) {
         app.setFont(QFont(font_families.first()));
     }
-    QQuickStyle::setStyle("Fusion");
 #endif
     QLogManager::initialize();
 

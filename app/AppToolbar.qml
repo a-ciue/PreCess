@@ -38,7 +38,8 @@ ColumnLayout {
     property bool outputLogOpen: false
     property bool preferencesOpen: false
 
-    // 已知插件名 → 图标映射，未命中则使用 PreCess_extra_plugin.svg
+    // 已知插件名 → 图标映射，未命中则使用已注册的通用插件图标
+    // 按插件名映射当前资源路径，保留既有 toolbar/<group>/ 目录布局
     readonly property var pluginIconMap: ({
         "CreateFacePlugin": "qrc:/images/toolbar/Edit/create_face.svg",
         "DeleteFacePlugin": "qrc:/images/toolbar/Edit/delete_face.svg",
@@ -186,8 +187,12 @@ ColumnLayout {
         modal: true
         anchors.centerIn: Overlay.overlay
         width: 380
-        padding: 12
-        background: Rectangle { color: "#f0f0f0"; border.color: "#ccc" }
+        padding: Theme.spacingMd
+        background: Rectangle {
+            color: Theme.surface
+            border.color: Theme.border
+            radius: Theme.radiusMenu
+        }
 
         function openDialog() {
             typeCombo.model = QModelManager.ioSystem.getModelIOInfo()
@@ -262,26 +267,41 @@ ColumnLayout {
     }
 
     ToolBar {
+        background: Rectangle {
+            color: Theme.surfaceAlt
+
+            // 底部细线分隔页签行与页面内容
+            Rectangle {
+                anchors {
+                    left: parent.left
+                    right: parent.right
+                    bottom: parent.bottom
+                }
+                height: 1
+                color: Theme.border
+            }
+        }
+
         RowLayout {
             Layout.fillWidth: true
             Layout.fillHeight: true
-            spacing: 0
+            spacing: 2
 
-            ToolButton {
+            RibbonTabButton {
                 text: "文件"
                 checkable: true
                 checked: activeCategory === 0
                 onClicked: activeCategory = (activeCategory === 0) ? -1 : 0
             }
 
-            ToolButton {
+            RibbonTabButton {
                 text: qsTr("编辑")
                 checkable: true
                 checked: activeCategory === 1
                 onClicked: activeCategory = (activeCategory === 1) ? -1 : 1
             }
 
-            ToolButton {
+            RibbonTabButton {
                 text: qsTr("算法")
                 checkable: true
                 checked: activeCategory === 2
@@ -291,7 +311,7 @@ ColumnLayout {
             // 功能菜单分页：按 menu_path 第一段（菜单）动态生成分页按钮，页序对应 StackLayout 索引 3 起
             Repeater {
                 model: root.featureMenus
-                ToolButton {
+                RibbonTabButton {
                     required property var modelData
                     required property int index
                     text: modelData.name
@@ -301,23 +321,13 @@ ColumnLayout {
                 }
             }
 
-            ToolButton {
+            RibbonTabButton {
                 id: viewBtn
                 text: "视图"
                 onClicked: viewMenu.popup(viewBtn, 0, viewBtn.height)
                 Menu {
                     id: viewMenu
                     closePolicy: Popup.CloseOnEscape | Popup.CloseOnPressOutsideParent
-                    topPadding: 2
-                    bottomPadding: 2
-
-                    delegate: MenuItem {
-                        implicitHeight: 22
-                        padding: 0
-                        leftPadding: 6
-                        rightPadding: 6
-                        spacing: 0
-                    }
 
                     Action {
                         text: "对象树"
@@ -378,14 +388,14 @@ ColumnLayout {
         RowLayout {
             Layout.fillWidth: true
             Layout.fillHeight: true
+            spacing: 2
 
-            ToolButton {
+            RibbonActionButton {
                 icon.source: "qrc:/images/toolbar/File/import.svg"
                 icon.width: root.ribbonIconSize
                 icon.height: root.ribbonIconSize
                 icon.color: "transparent"
                 Layout.fillHeight: true
-                display: ToolButton.TextUnderIcon
                 text: "导入"
                 onClicked: {
                     if (root.isWasm)
@@ -395,13 +405,12 @@ ColumnLayout {
                 }
             }
 
-            ToolButton {
+            RibbonActionButton {
                 icon.source: "qrc:/images/toolbar/File/export.svg"
                 icon.width: root.ribbonIconSize
                 icon.height: root.ribbonIconSize
                 icon.color: "transparent"
                 Layout.fillHeight: true
-                display: ToolButton.TextUnderIcon
                 text: "导出"
                 onClicked: {
                     if (root.isWasm)
@@ -411,13 +420,12 @@ ColumnLayout {
                 }
             }
 
-            ToolButton {
+            RibbonActionButton {
                 icon.source: "qrc:/images/toolbar/File/preference.svg"
                 icon.width: root.ribbonIconSize
                 icon.height: root.ribbonIconSize
                 icon.color: "transparent"
                 Layout.fillHeight: true
-                display: ToolButton.TextUnderIcon
                 text: "偏好设置"
                 onClicked: preferencesToggled()
             }
@@ -429,8 +437,9 @@ ColumnLayout {
         RowLayout {
             Layout.fillWidth: true
             Layout.fillHeight: true
+            spacing: 2
 
-            ToolButton {
+            RibbonActionButton {
                 text: qsTr("撤销")
                 enabled: QModelManager.undoStack.canUndo
                 Layout.fillHeight: true
@@ -441,7 +450,7 @@ ColumnLayout {
                 onClicked: QModelManager.undoStack.undo()
             }
 
-            ToolButton {
+            RibbonActionButton {
                 text: qsTr("重做")
                 enabled: QModelManager.undoStack.canRedo
                 Layout.fillHeight: true
@@ -459,14 +468,13 @@ ColumnLayout {
 
             Repeater {
                 model: QModelManager.editSystem.editsInfo
-                ToolButton {
+                RibbonActionButton {
                     required property var modelData
                     icon.source: root.getIconForPlugin(modelData.name)
                     icon.width: root.ribbonIconSize
                     icon.height: root.ribbonIconSize
                     icon.color: "transparent"
                     Layout.fillHeight: true
-                    display: ToolButton.TextUnderIcon
                     text: modelData.display_name
                     onClicked: {
                         App.activeOperation = {
@@ -488,17 +496,17 @@ ColumnLayout {
         RowLayout {
             Layout.fillWidth: true
             Layout.fillHeight: true
+            spacing: 2
 
             Repeater {
                 model: QModelManager.algorithmSystem.algorithmsInfo
-                ToolButton {
+                RibbonActionButton {
                     required property var modelData
                     icon.source: root.getIconForPlugin(modelData.name)
                     icon.width: root.ribbonIconSize
                     icon.height: root.ribbonIconSize
                     icon.color: "transparent"
                     Layout.fillHeight: true
-                    display: ToolButton.TextUnderIcon
                     text: modelData.display_name
                     onClicked: root.activatePlugin(QModelManager.algorithmSystem.algorithmsInfo, modelData.name, QModelManager.algorithmSystem)
                 }
@@ -515,6 +523,7 @@ ColumnLayout {
                 required property var modelData
                 Layout.fillWidth: true
                 Layout.fillHeight: true
+                spacing: 2
 
                 Repeater {
                     model: featureMenuPage.modelData.groups
@@ -523,18 +532,17 @@ ColumnLayout {
                         required property var modelData
                         required property int index
                         Layout.fillHeight: true
-                        spacing: 0
+                        spacing: 2
 
                         Repeater {
                             model: featureGroupRow.modelData.items
-                            ToolButton {
+                            RibbonActionButton {
                                 required property var modelData
                                 icon.source: root.getIconForFeature(modelData)
                                 icon.width: root.ribbonIconSize
                                 icon.height: root.ribbonIconSize
                                 icon.color: "transparent"
                                 Layout.fillHeight: true
-                                display: ToolButton.TextUnderIcon
                                 text: modelData.display_name
                                 onClicked: root.activateFeature(modelData)
                             }

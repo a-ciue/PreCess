@@ -17,8 +17,18 @@ Rectangle {
     //! @brief 关联的 PanelGroupItem（C++）
     property var groupView: null
 
+    // 面板外框配色（与 app 侧 Theme 令牌取值保持一致；dock 模块刻意
+    // 仅依赖 Qt、不反向依赖 app，故以局部常量对齐配色）
+    readonly property color panelBorder: "#D9DDE3"
+    readonly property color titleBarSurface: "#F7F8FA"
+    readonly property color titleText: "#2B2F36"
+    readonly property color chromeIcon: "#5A616B"
+    readonly property color chromeHover: "#E2E6EB"
+    readonly property color closeHover: "#D32F2F"
+    readonly property color reorderAccent: "#1976D2"
+
     color: "transparent"
-    border.color: "#b8b8b8"
+    border.color: panelBorder
     border.width: 1
     radius: 2
     clip: true
@@ -43,7 +53,7 @@ Rectangle {
         // 高度与拖拽锚点计算的 DockMetrics::kTitleBarHeight 同源（Tokens.Metric）
         height: visible ? Docking.Tokens.Metric.TitleBarHeight : 0
         visible: root.showTitleBar
-        color: "#eff0f1"
+        color: root.titleBarSurface
 
         // 行内空白：拖动整个分组 / 右键分组菜单
         MouseArea {
@@ -81,7 +91,7 @@ Rectangle {
             text: root.groupView ? root.groupView.title : ""
             elide: Text.ElideRight
             font.pixelSize: 12
-            color: "#333333"
+            color: root.titleText
         }
 
         // 标签模式（多标签）：标签即标题，顶满行高；宽度按内容收缩，空白留给整组拖动
@@ -159,21 +169,21 @@ Rectangle {
                         height: 14
                         radius: 2
                         visible: root.closable
-                        color: tabCloseArea.containsMouse ? "#e81123" : "transparent"
+                        color: tabCloseArea.containsMouse ? root.closeHover : "transparent"
 
                         Rectangle {
                             anchors.centerIn: parent
                             width: 8
                             height: 1
                             rotation: 45
-                            color: tabCloseArea.containsMouse ? "#ffffff" : "#4d4d4d"
+                            color: tabCloseArea.containsMouse ? "#ffffff" : root.chromeIcon
                         }
                         Rectangle {
                             anchors.centerIn: parent
                             width: 8
                             height: 1
                             rotation: -45
-                            color: tabCloseArea.containsMouse ? "#ffffff" : "#4d4d4d"
+                            color: tabCloseArea.containsMouse ? "#ffffff" : root.chromeIcon
                         }
                         MouseArea {
                             id: tabCloseArea
@@ -224,7 +234,7 @@ Rectangle {
                 height: 20
                 radius: 2
                 visible: root.groupView && root.groupView.tabCount > 1
-                color: tabsMenuArea.containsMouse ? "#d8d8d8" : "transparent"
+                color: tabsMenuArea.containsMouse ? root.chromeHover : "transparent"
 
                 Column {
                     anchors.centerIn: parent
@@ -234,7 +244,7 @@ Rectangle {
                         Rectangle {
                             width: 11
                             height: 1
-                            color: "#4d4d4d"
+                            color: root.chromeIcon
                         }
                     }
                 }
@@ -268,7 +278,7 @@ Rectangle {
                 height: 20
                 radius: 2
                 visible: root.floatable
-                color: floatArea.containsMouse ? "#d8d8d8" : "transparent"
+                color: floatArea.containsMouse ? root.chromeHover : "transparent"
 
                 Rectangle {
                     anchors.centerIn: parent
@@ -276,7 +286,7 @@ Rectangle {
                     height: 11
                     color: "transparent"
                     border.width: 1
-                    border.color: "#4d4d4d"
+                    border.color: root.chromeIcon
                 }
                 Rectangle {
                     visible: root.groupView && root.groupView.detached
@@ -287,7 +297,7 @@ Rectangle {
                     }
                     width: 11
                     height: 2
-                    color: "#4d4d4d"
+                    color: root.chromeIcon
                 }
                 MouseArea {
                     id: floatArea
@@ -303,21 +313,21 @@ Rectangle {
                 height: 20
                 radius: 2
                 visible: root.closable
-                color: closeArea.containsMouse ? "#e81123" : "transparent"
+                color: closeArea.containsMouse ? root.closeHover : "transparent"
 
                 Rectangle {
                     anchors.centerIn: parent
                     width: 12
                     height: 1
                     rotation: 45
-                    color: closeArea.containsMouse ? "#ffffff" : "#4d4d4d"
+                    color: closeArea.containsMouse ? "#ffffff" : root.chromeIcon
                 }
                 Rectangle {
                     anchors.centerIn: parent
                     width: 12
                     height: 1
                     rotation: -45
-                    color: closeArea.containsMouse ? "#ffffff" : "#4d4d4d"
+                    color: closeArea.containsMouse ? "#ffffff" : root.chromeIcon
                 }
                 MouseArea {
                     id: closeArea
@@ -371,7 +381,7 @@ Rectangle {
         y: titleBar.y + tabBar.y
         width: 2
         height: tabBar.height
-        color: "#2f6fb5"
+        color: root.reorderAccent
         z: 3
     }
 }

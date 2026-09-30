@@ -54,6 +54,7 @@ RowLayout {
     Button{
         id: selectClearButton
         text: "清除选择"
+        flat: true
         onClicked: root.clearButtonClicked()
         opacity: enabled ? 1.0 : 0.6
     }

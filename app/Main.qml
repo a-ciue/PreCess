@@ -10,10 +10,8 @@
  */
 
 import QtQuick
-import QtQuick.Window
 import QtQuick.Controls
 import QtQuick.Layouts
-import QtQuick.Controls.Fusion
 
 import QtCore
 
@@ -32,7 +30,30 @@ ApplicationWindow {
     height: 600
     visibility: Window.Maximized
     title: qsTr("PreCess")
+    color: Theme.windowBackground
     flags: Qt.platform.os === "wasm" ? (Qt.Window | Qt.FramelessWindowHint) : Qt.Window
+
+    // 固定浅色调色板：Qt 6.5+ 默认调色板跟随系统深浅色主题，系统为深色模式时
+    // Fusion 控件（Pane/Button/TextField 等）会渲染为深色、与浅色主题混杂；
+    // 窗口级调色板自此处向下传播到全部控件与弹窗，取值与 Theme 令牌一致
+    palette.window: Theme.windowBackground
+    palette.windowText: Theme.textPrimary
+    palette.base: Theme.surface
+    palette.alternateBase: Theme.surfaceAlt
+    palette.text: Theme.textPrimary
+    palette.button: Theme.surfaceAlt
+    palette.buttonText: Theme.textPrimary
+    palette.highlight: Theme.primary
+    palette.highlightedText: Theme.textOnPrimary
+    palette.placeholderText: Theme.textDisabled
+    palette.mid: Theme.borderStrong
+    palette.midlight: Theme.border
+    palette.light: Theme.surface
+    palette.dark: Theme.borderStrong
+    palette.shadow: Theme.scrollBarHover
+    palette.link: Theme.primary
+    palette.toolTipBase: Theme.surface
+    palette.toolTipText: Theme.textPrimary
 
     // 布局持久化：JSON 快照存于 QSettings；退出保存，启动恢复
     Settings {
@@ -259,15 +280,17 @@ ApplicationWindow {
         Rectangle {
             anchors.fill: parent
             visible: importDropArea.containsDrag
-            color: Qt.rgba(0.29, 0.56, 0.89, 0.12)
-            border.color: "#4a90e2"
+            color: Theme.primaryTint
+            border.color: Theme.primary
             border.width: 2
+            radius: Theme.radiusControl
 
             Label {
                 anchors.centerIn: parent
                 text: qsTr("松开鼠标以导入模型文件")
-                font.pixelSize: 16
-                color: "#1a6fc4"
+                font.pixelSize: Theme.fontSizeLarge
+                font.bold: true
+                color: Theme.primary
             }
         }
     }
