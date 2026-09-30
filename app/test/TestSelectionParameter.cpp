@@ -22,7 +22,7 @@ public:
 };
 }
 
-TEST_CASE("Selection parameter accepts null and rejects invalid non-null values")
+TEST_CASE("Selection parameter requires typed selections and preserves values on invalid input")
 {
     core::EventBus bus;
     ModelLayer model_layer;
@@ -40,17 +40,33 @@ TEST_CASE("Selection parameter accepts null and rejects invalid non-null values"
     REQUIRE(params != nullptr);
     REQUIRE(*params->value(0).get<ArgTypeEnum::Selector>() == selection.get());
 
-    SECTION("QML null clears the stored selection")
+    SECTION("Empty selection object clears the stored selection")
     {
-        REQUIRE(adaptor.setParameter("SelectionTest", 0, QJSValue(QJSValue::NullValue).toVariant()));
+        QSelection empty_selection;
+        REQUIRE(adaptor.setParameter("SelectionTest", 0, QVariant::fromValue(&empty_selection)));
         const auto* value = params->value(0).get<ArgTypeEnum::Selector>();
         REQUIRE(value != nullptr);
         CHECK_FALSE(*value);
     }
-    SECTION("Invalid QVariant clears the stored selection")
+    SECTION("Typed null selection pointer clears the stored selection")
     {
-        REQUIRE(adaptor.setParameter("SelectionTest", 0, QVariant {}));
+        REQUIRE(adaptor.setParameter("SelectionTest", 0, QVariant::fromValue(static_cast<QSelection*>(nullptr))));
         CHECK_FALSE(*params->value(0).get<ArgTypeEnum::Selector>());
+    }
+    SECTION("Untyped null and mismatched empty values preserve the stored selection")
+    {
+        const QVariant invalid_values[] = {
+            QJSValue(QJSValue::NullValue).toVariant(),
+            QJSValue(QJSValue::UndefinedValue).toVariant(),
+            QVariant {},
+            QVariant::fromValue(static_cast<QObject*>(nullptr)),
+            QVariant::fromValue(static_cast<void*>(nullptr)),
+            QVariant(QString {}),
+        };
+        for (const auto& invalid_value : invalid_values) {
+            CHECK_FALSE(adaptor.setParameter("SelectionTest", 0, invalid_value));
+            CHECK(*params->value(0).get<ArgTypeEnum::Selector>() == selection.get());
+        }
     }
     SECTION("Wrong non-null type preserves the stored selection")
     {

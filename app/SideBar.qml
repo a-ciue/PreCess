@@ -346,6 +346,8 @@ Item{
             spacing: 5
             width: parameterList.width
             property var value: null
+            // 清空参数时传递明确的选择器对象，不让通用转换层解释 null。
+            readonly property QSelection emptySelection: QSelection {}
 
             Text{
                 id:nametext
@@ -393,9 +395,9 @@ Item{
                     // 切换参数的同步通知可能先于 checked 绑定刷新，必须核对当前监听者。
                     if (App.selection.listeningSelectorIndex !== index)
                         return
-                    // 只更新当前监听参数，保持选择会话以便继续增删；null 也须同步到业务层。
+                    // 只更新当前监听参数；视口的 null 在此转换为明确的空选择器。
                     value = selection
-                    root.setParam(index, value)
+                    root.setParam(index, value === null ? emptySelection : value)
                 }
             }
 
@@ -403,7 +405,7 @@ Item{
                 target: App.selection
                 function onSelectionInvalidated() {
                     value = null
-                    root.setParam(index, null)
+                    root.setParam(index, emptySelection)
                     if (App.selection.listeningSelectorIndex === index)
                         App.selection.listeningSelectorIndex = -1
                 }

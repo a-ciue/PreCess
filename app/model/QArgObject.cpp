@@ -43,8 +43,8 @@ std::optional<ArgObject> QArgObject::getValue() const
         if (selection) {
             canConvert = true;
             ret = ArgObject::create<ArgTypeEnum::Selector>(selection->get());
-        } else if (value_.metaType().id() == QMetaType::Nullptr || value_.metaType() == QMetaType::fromType<QSelection*>()) {
-            // 仅显式 null 或空 QSelection 指针表示清空；undefined 和其他类型不兼容。
+        } else if (value_.metaType() == QMetaType::fromType<QSelection*>()) {
+            // 仅接受类型匹配的空选择器指针；普通 null 不具有选择器语义。
             ret = ArgObject::create<ArgTypeEnum::Selector>({});
         } else {
             canConvert = false;
