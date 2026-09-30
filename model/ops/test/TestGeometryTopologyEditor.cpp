@@ -2503,3 +2503,68 @@ TEST_CASE("Local Sewing derives its budget under scaling and translation")
         REQUIRE(serializeRepairShape(root) == before);
     }
 }
+
+//! @brief 真实四边孔洞的粗输入容差不能传播给其他边；所有种子及反向选择均须闭合。
+TEST_CASE("GeometryTopologyEditor patches the remaining imported planar loop")
+{
+    const auto root = readRepairFixture("remaining-patch.brep");
+    REQUIRE(BRepCheck_Analyzer(root).IsValid());
+    const auto before = serializeRepairShape(root);
+    NCollection_IndexedDataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher> edges;
+    TopExp::MapShapesAndUniqueAncestors(root, TopAbs_EDGE, TopAbs_FACE, edges);
+    int seeds = 0;
+    for (int i = 1; i <= edges.Extent(); ++i) {
+        if (edges.FindFromIndex(i).Extent() != 1)
+            continue;
+        ++seeds;
+        for (bool reverse : { false, true }) {
+            CAPTURE(i, reverse);
+            const auto seed = TopoDS::Edge(reverse ? edges.FindKey(i).Reversed() : edges.FindKey(i));
+            const auto result = GeometryTopologyEditor::fillBoundaryLoop(root, seed);
+            REQUIRE(BRepCheck_Analyzer(result).IsValid());
+            REQUIRE(countSubshapes(result, TopAbs_FACE) == 177);
+            REQUIRE(countSubshapes(result, TopAbs_EDGE) == countSubshapes(root, TopAbs_EDGE));
+            NCollection_IndexedDataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher> repaired;
+            TopExp::MapShapesAndUniqueAncestors(result, TopAbs_EDGE, TopAbs_FACE, repaired);
+            for (int j = 1; j <= repaired.Extent(); ++j)
+                REQUIRE(repaired.FindFromIndex(j).Extent() == 2);
+            REQUIRE(serializeRepairShape(root) == before);
+        }
+    }
+    REQUIRE(seeds == 4);
+}
+
+//! @brief 粗容差既不能污染共面边，也不能把轻微翘曲的四边环误压成平面。
+TEST_CASE("GeometryTopologyEditor isolates coarse tolerances when choosing a patch surface")
+{
+    for (double scale : { 0.1, 1.0, 100.0 }) {
+        for (bool bent : { false, true }) {
+            CAPTURE(scale, bent);
+            const std::array<gp_Pnt, 4> points { gp_Pnt(0, 0, 0), gp_Pnt(10 * scale, 0, 0),
+                gp_Pnt(10 * scale, 10 * scale, bent ? 0.001 * scale : 0), gp_Pnt(0, 10 * scale, 0) };
+            BRepBuilderAPI_MakeWire wire;
+            for (size_t i = 0; i < points.size(); ++i)
+                wire.Add(BRepBuilderAPI_MakeEdge(points[i], points[(i + 1) % points.size()]).Edge());
+            const auto root = wire.Wire();
+            const auto seed = TopoDS::Edge(TopExp_Explorer(root, TopAbs_EDGE).Current());
+            BRep_Builder builder;
+            builder.UpdateEdge(seed, 0.01 * scale);
+            // 保持输入的容差层级一致：边端点的容差不能小于该边。
+            for (TopExp_Explorer vertex(seed, TopAbs_VERTEX); vertex.More(); vertex.Next())
+                builder.UpdateVertex(TopoDS::Vertex(vertex.Current()), 0.01 * scale);
+            const auto before = serializeRepairShape(root);
+            const auto result = GeometryTopologyEditor::fillBoundaryLoop(root, seed);
+            REQUIRE(BRepCheck_Analyzer(result).IsValid());
+            REQUIRE(countSubshapes(result, TopAbs_FACE) == 1);
+            const auto face = TopoDS::Face(TopExp_Explorer(result, TopAbs_FACE).Current());
+            REQUIRE((BRepAdaptor_Surface(face).GetType() == GeomAbs_Plane) == !bent);
+            int fine_edges = 0;
+            for (TopExp_Explorer edge(face, TopAbs_EDGE); edge.More(); edge.Next()) {
+                if (BRep_Tool::Tolerance(TopoDS::Edge(edge.Current())) < 0.001 * scale)
+                    ++fine_edges;
+            }
+            REQUIRE(fine_edges == 3);
+            REQUIRE(serializeRepairShape(root) == before);
+        }
+    }
+}

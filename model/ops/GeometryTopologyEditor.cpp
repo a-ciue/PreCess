@@ -8,6 +8,7 @@
 #include <BRepAlgoAPI_Section.hxx>
 #include <BRepBndLib.hxx>
 #include <BRepBuilderAPI_Copy.hxx>
+#include <BRepBuilderAPI_FindPlane.hxx>
 #include <BRepBuilderAPI_MakeEdge.hxx>
 #include <BRepBuilderAPI_MakeFace.hxx>
 #include <BRepBuilderAPI_MakeVertex.hxx>
@@ -41,6 +42,7 @@
 #include <GeomConvert.hxx>
 #include <GeomFill_BSplineCurves.hxx>
 #include <Geom_Surface.hxx>
+#include <Geom_Plane.hxx>
 #include <GeomAbs_CurveType.hxx>
 #include <GeomAbs_SurfaceType.hxx>
 #include <GProp_GProps.hxx>
@@ -3973,9 +3975,13 @@ TopoDS_Face buildPatchFace(const TopoDS_Shape& root,
     const BoundaryAudit audit(wire.Wire(), precision);
     // 共面边界优先保留解析平面，非共面边界使用有序 C0 约束拟合曲面。
     TopoDS_Face patch;
-    BRepBuilderAPI_MakeFace planar(wire.Wire(), true);
-    if (planar.IsDone()) {
-        patch = planar.Face();
+    // 自动找平面会参考所有边的最大容差；另行验证几何后显式指定平面，避免容差传播。
+    BRepBuilderAPI_FindPlane planar(wire.Wire(), fitting_tolerance);
+    if (planar.Found() && isBoundaryOnSurface(wire.Wire(), planar.Plane(), fitting_tolerance)) {
+        BRepBuilderAPI_MakeFace builder(planar.Plane()->Pln(), wire.Wire(), true);
+        if (!builder.IsDone())
+            throw std::runtime_error("Cannot construct a planar patch from its boundary");
+        patch = builder.Face();
     } else {
         const auto surface = buildBoundarySurface(wire.Wire(), precision);
         // 保留原始边作为新面的边界，孤立边也必须接入新面，不能留下拟合器复制的边。

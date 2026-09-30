@@ -169,8 +169,13 @@ void BoundaryAudit::validateFace(const TopoDS_Face& face, const char* operation)
             fail("vertex identity or tolerance budget exceeded");
     }
     for (const auto& [edge, limit] : edges_) {
-        if (!edges.Contains(edge) || BRep_Tool::Tolerance(edge) > limit)
-            fail("edge identity or tolerance budget exceeded");
+        if (!edges.Contains(edge))
+            fail("edge identity changed");
+        if (BRep_Tool::Tolerance(edge) > limit) {
+            std::ostringstream message;
+            message << "edge tolerance=" << BRep_Tool::Tolerance(edge) << ", limit=" << limit;
+            fail(message.str());
+        }
         if (BRep_Tool::Degenerated(edge))
             continue;
         if (!BRep_Tool::SameParameter(edge) || !BRep_Tool::SameRange(edge))
