@@ -615,6 +615,13 @@ Page {
             anchors.fill: parent
             anchors.margins: 3
             query: QModelManager.query
+            selectionRevision: App.selection.selectionRevision
+
+            onSelectedChanged: {
+                // 非参数选择期间的视口刷新、清空只影响高亮，不回写操作参数。
+                if (App.selection.listeningSelectorIndex >= 0)
+                    App.selection.selectionUpdated(myItem.selectedIDs)
+            }
 
             Component.onCompleted: {
                 myItem.setFaceSelectionByAngle(root.faceSelectByAngle, root.faceSelectAngle)
@@ -652,7 +659,6 @@ Page {
                 function onSelectModeChanged() { myItem.setSelectMode(App.selection.selectMode) }
                 function onSelectionInvalidated() {
                     myItem.clearSelection()
-                    selector.selection = null
                 }
             }
 
@@ -670,7 +676,6 @@ Page {
                 // undo/redo 应用后统一清空选择集（Selection 持有的 gid/稳定 id 不作跨 undo 保证）
                 function onApplied() {
                     myItem.clearSelection()
-                    selector.selection = null
                 }
             }
         }
@@ -691,15 +696,6 @@ Page {
             }
 
             onClearButtonClicked: {
-                myItem.clearSelection()
-            }
-
-            onConfirmButtonClicked: {
-                selector.selection = myItem.selectedIDs
-            }
-
-            // 确认后复位选择集：确认即本轮选择结束，避免残留高亮被下一次确认带走
-            onSelectionConfirmed: {
                 myItem.clearSelection()
             }
         }

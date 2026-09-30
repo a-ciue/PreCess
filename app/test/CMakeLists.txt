@@ -24,3 +24,7 @@ precess_test_link_libraries(TestQPythonRuntime
     Qt${VTK_QT_VERSION}::Core
     pythonApp
 )
+
+# QML 选择器参数的空值语义与功能系统同步
+precess_add_test(TestSelectionParameter TestSelectionParameter.cpp)
+precess_test_link_libraries(TestSelectionParameter modelQml QArgType FeatureSystemQml FeatureSystem Qt6::Qml)

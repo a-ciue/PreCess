@@ -59,6 +59,8 @@ Item{
             enabled: !!(root.activeOp && root.activeOp.info)
             Layout.fillWidth: true
             onClicked:{
+                // 先停止参数监听，执行后的视口清空便不会反向清掉刚提交的参数。
+                App.selection.listeningSelectorIndex = -1
                 if (root.activeOp && root.activeOp.execute) {
                     try {
                         const result = root.activeOp.execute(App.selection.activeComponentId, root.parameters)
@@ -344,6 +346,8 @@ Item{
             spacing: 5
             width: parameterList.width
             property var value: null
+            // 清空参数时传递明确的选择器对象，不让通用转换层解释 null。
+            readonly property QSelection emptySelection: QSelection {}
 
             Text{
                 id:nametext
@@ -361,7 +365,7 @@ Item{
 
             Button{
                 id: selectStartButton
-                text: "开始选择"
+                text: checked ? "结束选择" : "开始选择"
                 checked: App.selection.listeningSelectorIndex === index
                 onClicked: {
                     if (!checked) {
@@ -387,10 +391,13 @@ Item{
             Connections {
                 target: App.selection
                 enabled: selectStartButton.checked
-                function onConfirmed(selection) {
+                function onSelectionUpdated(selection) {
+                    // 切换参数的同步通知可能先于 checked 绑定刷新，必须核对当前监听者。
+                    if (App.selection.listeningSelectorIndex !== index)
+                        return
+                    // 只更新当前监听参数；视口的 null 在此转换为明确的空选择器。
                     value = selection
-                    root.setParam(index, value)
-                    App.selection.listeningSelectorIndex = -1
+                    root.setParam(index, value === null ? emptySelection : value)
                 }
             }
 
@@ -398,7 +405,7 @@ Item{
                 target: App.selection
                 function onSelectionInvalidated() {
                     value = null
-                    root.setParam(index, null)
+                    root.setParam(index, emptySelection)
                     if (App.selection.listeningSelectorIndex === index)
                         App.selection.listeningSelectorIndex = -1
                 }
