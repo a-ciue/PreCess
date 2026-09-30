@@ -1,25 +1,27 @@
 <map id="model/systems/feature/FeatureContext.h" name="model/systems/feature/FeatureContext.h">
-<area shape="rect" id="Node000001" title="功能上下文：功能访问软件环境的入口" alt="" coords="1613,5,1786,45"/>
-<area shape="rect" id="Node000002" href="$FeatureSystem_8h.html" title="功能系统：功能的注册、调用与事件路由" alt="" coords="1094,93,1267,133"/>
-<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="1600,46,1268,100,1267,95,1599,40"/>
-<area shape="rect" id="Node000010" href="$TestFeatureSystem_8cpp.html" title=" " alt="" coords="1596,181,1803,221"/>
-<area shape="poly" id="edge11_Node000001_Node000010" title=" " alt="" coords="1702,59,1702,181,1697,181,1697,59"/>
-<area shape="rect" id="Node000011" href="$TestFeatureUndo_8cpp.html" title="FeatureSystem undo 集成测试：Auto 边界自动记录 / Manual 插件自控 / 网关两路" alt="" coords="1827,181,2017,221"/>
-<area shape="poly" id="edge12_Node000001_Node000011" title=" " alt="" coords="1736,52,1899,179,1896,183,1733,56"/>
-<area shape="rect" id="Node000003" href="$QModelManager_8cpp.html" title=" " alt="" coords="233,189,461,214"/>
-<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="1080,125,807,149,474,184,420,191,420,186,474,179,806,144,1080,120"/>
-<area shape="rect" id="Node000004" href="$QFeatureSystemAdaptor_8cpp.html" title=" " alt="" coords="486,181,697,221"/>
-<area shape="poly" id="edge3_Node000002_Node000004" title=" " alt="" coords="1080,131,709,184,697,186,696,180,708,179,1080,126"/>
-<area shape="rect" id="Node000005" href="$QRenderWindow_8cpp.html" title=" " alt="" coords="721,189,952,214"/>
-<area shape="poly" id="edge4_Node000002_Node000005" title=" " alt="" coords="1093,139,883,191,882,186,1091,134"/>
-<area shape="rect" id="Node000006" href="$Session_8cpp.html" title="会话组合根实现：子系统装配、观察者转发桥与有序拆解" alt="" coords="977,189,1174,214"/>
-<area shape="poly" id="edge5_Node000002_Node000006" title=" " alt="" coords="1148,144,1092,190,1088,186,1145,140"/>
-<area shape="rect" id="Node000007" href="$TestSessionPlugins_8cpp.html" title="Session 插件装载冒烟测试：动态插件注册与功能信息（Qt 插件机制，需 QCoreApplication）" alt="" coords="1198,181,1374,221"/>
-<area shape="poly" id="edge6_Node000002_Node000007" title=" " alt="" coords="1216,140,1264,179,1261,183,1213,144"/>
-<area shape="rect" id="Node000008" href="$FeatureSystem_8cpp.html" title=" " alt="" coords="1398,181,1571,221"/>
-<area shape="poly" id="edge7_Node000002_Node000008" title=" " alt="" coords="1262,135,1419,179,1417,184,1260,140"/>
-<area shape="rect" id="Node000009" href="$FeatureSystemRegister_8cpp.html" title=" " alt="" coords="5,181,209,221"/>
-<area shape="poly" id="edge8_Node000002_Node000009" title=" " alt="" coords="1080,121,702,142,462,160,221,184,210,185,209,180,220,179,462,155,702,136,1080,116"/>
-<area shape="poly" id="edge9_Node000002_Node000010" title=" " alt="" coords="1282,129,1596,180,1595,186,1281,134"/>
-<area shape="poly" id="edge10_Node000002_Node000011" title=" " alt="" coords="1281,120,1525,144,1816,179,1826,180,1826,186,1815,184,1524,149,1281,126"/>
+<area shape="rect" id="Node000001" title="功能上下文：功能访问软件环境的入口" alt="" coords="1896,5,2069,45"/>
+<area shape="rect" id="Node000002" href="$FeatureSystem_8h.html" title="功能系统：功能的注册、调用与事件路由" alt="" coords="1217,93,1391,133"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="1883,42,1391,104,1391,98,1882,37"/>
+<area shape="rect" id="Node000011" href="$TestFeatureSystem_8cpp.html" title=" " alt="" coords="1879,181,2086,221"/>
+<area shape="poly" id="edge12_Node000001_Node000011" title=" " alt="" coords="1985,59,1985,181,1980,181,1980,59"/>
+<area shape="rect" id="Node000012" href="$TestFeatureUndo_8cpp.html" title="FeatureSystem undo 集成测试：Auto 边界自动记录 / Manual 插件自控 / 网关两路" alt="" coords="2110,181,2301,221"/>
+<area shape="poly" id="edge13_Node000001_Node000012" title=" " alt="" coords="2019,52,2183,179,2179,183,2016,56"/>
+<area shape="rect" id="Node000003" href="$QModelManager_8cpp.html" title=" " alt="" coords="431,189,659,214"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="1204,127,961,151,672,184,619,191,619,186,672,179,961,146,1203,121"/>
+<area shape="rect" id="Node000004" href="$QFeatureSystemAdaptor_8cpp.html" title=" " alt="" coords="684,181,895,221"/>
+<area shape="poly" id="edge3_Node000002_Node000004" title=" " alt="" coords="1204,134,895,185,894,180,1203,129"/>
+<area shape="rect" id="Node000005" href="$QRenderWindow_8cpp.html" title=" " alt="" coords="919,189,1150,214"/>
+<area shape="poly" id="edge4_Node000002_Node000005" title=" " alt="" coords="1233,140,1071,191,1070,186,1231,135"/>
+<area shape="rect" id="Node000006" href="$TestSelectionParameter_8cpp.html" title="选择器空值从 QML 适配层写入功能参数的回归测试" alt="" coords="1175,189,1433,214"/>
+<area shape="poly" id="edge5_Node000002_Node000006" title=" " alt="" coords="1307,147,1307,188,1301,188,1301,147"/>
+<area shape="rect" id="Node000007" href="$Session_8cpp.html" title="会话组合根实现：子系统装配、观察者转发桥与有序拆解" alt="" coords="1457,189,1655,214"/>
+<area shape="poly" id="edge6_Node000002_Node000007" title=" " alt="" coords="1373,135,1523,186,1522,191,1371,140"/>
+<area shape="rect" id="Node000008" href="$TestSessionPlugins_8cpp.html" title="Session 插件装载冒烟测试：动态插件注册与功能信息（Qt 插件机制，需 QCoreApplication）" alt="" coords="1679,181,1855,221"/>
+<area shape="poly" id="edge7_Node000002_Node000008" title=" " alt="" coords="1405,130,1667,179,1679,181,1678,186,1666,184,1404,136"/>
+<area shape="rect" id="Node000009" href="$FeatureSystem_8cpp.html" title=" " alt="" coords="5,181,179,221"/>
+<area shape="poly" id="edge8_Node000002_Node000009" title=" " alt="" coords="1203,119,1015,125,763,136,478,155,191,184,179,186,179,180,190,179,478,150,763,131,1015,119,1203,114"/>
+<area shape="rect" id="Node000010" href="$FeatureSystemRegister_8cpp.html" title=" " alt="" coords="203,181,407,221"/>
+<area shape="poly" id="edge9_Node000002_Node000010" title=" " alt="" coords="1204,122,856,143,638,161,419,184,408,185,407,180,418,179,638,156,856,138,1203,117"/>
+<area shape="poly" id="edge10_Node000002_Node000011" title=" " alt="" coords="1405,123,1617,147,1867,179,1879,180,1879,186,1866,184,1617,152,1404,128"/>
+<area shape="poly" id="edge11_Node000002_Node000012" title=" " alt="" coords="1405,118,1715,139,1907,157,2099,179,2110,180,2109,185,2098,184,1906,162,1715,145,1404,123"/>
 </map>
