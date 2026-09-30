@@ -22,6 +22,7 @@ ColumnLayout {
     // 会与布局隐式尺寸形成反馈环（图标异步加载后触发 recursive rearrange 警告）。
     readonly property real ribbonIconSize: windowHeight / 12 * 0.65
 
+    signal resetLayoutRequested()
     signal objectTreeToggled()
     signal propertyListToggled()
     signal attributeRenderToggled()
@@ -370,6 +371,11 @@ ColumnLayout {
                         checkable: true
                         checked: preferencesOpen
                         onToggled: preferencesToggled()
+                    }
+                    MenuSeparator {}
+                    Action {
+                        text: qsTr("恢复默认布局")
+                        onTriggered: root.resetLayoutRequested()
                     }
                 }
             }

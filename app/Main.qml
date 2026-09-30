@@ -73,10 +73,17 @@ ApplicationWindow {
         dockHost.placePanel(preferencesDock, Docking.Tokens.DockEdge.Top, objectTreeDock, Qt.size(0, 200), Docking.Tokens.PanelLaunch.Hidden)
     }
 
+    // 保留本次启动的默认布局，供恢复被关闭、拖出屏幕或压缩的面板。
+    property string defaultDockLayout: ""
+
     onClosing: dockSettings.json = dockHost.saveLayout()
 
     header: AppToolbar {
         windowHeight: root.height
+        onResetLayoutRequested: {
+            if (root.defaultDockLayout.length > 0)
+                dockHost.restoreLayout(root.defaultDockLayout)
+        }
         objectTreeOpen: objectTreeDock.shown
         propertyListOpen: sideBarDock.shown
         attributeRenderOpen: attributeRenderDock.shown
@@ -178,6 +185,9 @@ ApplicationWindow {
             uniqueName: "objectTree"
             title: "对象树"
             ObjectTree {
+                // 停靠层以内容的隐式尺寸作为最小尺寸，防止对象树被挤到零高度。
+                implicitWidth: 200
+                implicitHeight: 180
                 anchors.fill: parent
             }
         }
@@ -187,6 +197,8 @@ ApplicationWindow {
             uniqueName: "sideBar"
             title: "操作面板"
             SideBar {
+                implicitWidth: 200
+                implicitHeight: 120
                 anchors.fill: parent
             }
         }
@@ -241,10 +253,13 @@ ApplicationWindow {
         }
 
         Component.onCompleted: {
-            // 先应用声明默认布局，再尝试恢复上次保存的快照
-            root.applyDefaultLayout()
-            if (dockSettings.json.length > 0)
-                dockHost.restoreLayout(dockSettings.json)
+            // 等窗口完成首轮布局后再按实际尺寸分配面板占比。
+            Qt.callLater(function() {
+                root.applyDefaultLayout()
+                root.defaultDockLayout = dockHost.saveLayout()
+                if (dockSettings.json.length > 0)
+                    dockHost.restoreLayout(dockSettings.json)
+            })
         }
     }
 
