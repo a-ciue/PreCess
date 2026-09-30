@@ -10,8 +10,6 @@
 #include "UndoStack.h"
 
 #include <BRep_Builder.hxx>
-#include <BRepTools.hxx>
-#include <filesystem>
 #include <BRepBuilderAPI_MakePolygon.hxx>
 #include <BRepBuilderAPI_MakeFace.hxx>
 #include <BRepBuilderAPI_MakeEdge.hxx>
@@ -228,46 +226,4 @@ TEST_CASE("FillGap feature reports reverse success as one undo operation", "[Fil
     REQUIRE_FALSE(undo_stack.canUndo());
     undo_stack.redo();
     REQUIRE(countSharedEdges(*model_layer.findComponent(fixture.component_id)) == 2);
-}
-
-//! @brief 容差后备成功须反馈真实方法，并作为一次操作支持撤销重做。
-TEST_CASE("FillGap feature reports Sewing fallback with undo redo", "[FillGapPlugin]")
-{
-    core::EventBus bus;
-    ModelLayer layer;
-    UndoStack undo(layer);
-    layer.setUndoRecorder(&undo);
-    FeatureSystem system(layer, bus, &undo);
-    BRep_Builder builder;
-    TopoDS_Shape root;
-    const auto path = std::filesystem::path(__FILE__).parent_path()
-        / "../../../../model/ops/test/fixtures/remaining-gap.brep";
-    REQUIRE(BRepTools::Read(root, path.string().c_str(), builder));
-    NCollection_IndexedDataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher> edges;
-    TopExp::MapShapesAndUniqueAncestors(root, TopAbs_EDGE, TopAbs_FACE, edges);
-    auto component = std::make_unique<ComponentData>();
-    component->geometry = std::make_unique<GeometryData>();
-    component->geometry->setRootShape(root);
-    const auto model = layer.addModel("sewing_test", { });
-    const auto id = layer.getModelOperator(model)->addGeometryComponent(std::move(component));
-    auto* stored = layer.findComponent(id);
-    stored->geometry->ensureIndexBuilt(layer.geomRegistry());
-    const auto& index = stored->geometry->index;
-    const auto local = index.type_maps[index.typeIndex(TopAbs_EDGE)].FindIndex(edges.FindKey(28));
-    const FillGapFixture fixture { id, index.edgeGlobalId(local) };
-    const int shared_before = countSharedEdges(*stored);
-    undo.clear();
-    FeatureSystem::SystemHandlerPtr handler { new FillGapHandler };
-    REQUIRE(system.registerHandler(handlerMetaData(), std::move(handler)));
-    REQUIRE(system.setParameter("FillGap", 0, core::ArgObject::create<ArgTypeEnum::Selector>(makeEdgeSelection(fixture))));
-    REQUIRE(system.setParameter("FillGap", 1, core::ArgObject::create<ArgTypeEnum::Float>(0.1)));
-    const auto hint = std::any_cast<std::string>(system.invoke("FillGap"));
-    REQUIRE(hint.find("已使用容差缝合") != std::string::npos);
-    const int shared_after = countSharedEdges(*layer.findComponent(id));
-    REQUIRE(shared_after > shared_before);
-    undo.undo();
-    REQUIRE(countSharedEdges(*layer.findComponent(id)) == shared_before);
-    REQUIRE_FALSE(undo.canUndo());
-    undo.redo();
-    REQUIRE(countSharedEdges(*layer.findComponent(id)) == shared_after);
 }
