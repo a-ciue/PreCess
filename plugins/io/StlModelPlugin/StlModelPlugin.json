@@ -1,0 +1,7 @@
+{
+    "system": "ModelIOSystem",
+    "handler": {
+        "file_type": "STL stereolithography triangle mesh file",
+        "extensions": [ "stl" ]
+    }
+}

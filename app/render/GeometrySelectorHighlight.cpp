@@ -106,11 +106,22 @@ GeometrySelectionVtk GeometryFaceSelectorHighlight::get() const
     return s;
 }
 
-void GeometryFaceSelectorHighlight::toggle(IVtk_IdType subId, Index geomId)
+void GeometryFaceSelectorHighlight::toggle(IVtk_IdType subId, Index geomId, SelectOp op)
 {
-    auto [it, inserted] = selections_.insert_or_assign(subId, geomId);
-    if (!inserted)
-        selections_.erase(it);
+    auto it = selections_.find(subId);
+    const bool present = (it != selections_.end());
+    switch (op) {
+    case SelectOp::Append:
+        if (!present) selections_.emplace(subId, geomId);
+        break;
+    case SelectOp::Remove:
+        if (present) selections_.erase(it);
+        break;
+    case SelectOp::Toggle:
+        if (present) selections_.erase(it);
+        else selections_.emplace(subId, geomId);
+        break;
+    }
 
     enableHighlight();
 }
@@ -170,11 +181,22 @@ GeometrySelectionVtk GeometryEdgeSelectorHighlight::get() const
     return s;
 }
 
-void GeometryEdgeSelectorHighlight::toggle(IVtk_IdType subId, Index geomId)
+void GeometryEdgeSelectorHighlight::toggle(IVtk_IdType subId, Index geomId, SelectOp op)
 {
-    auto [it, inserted] = selections_.insert_or_assign(subId, geomId);
-    if (!inserted)
-        selections_.erase(it);
+    auto it = selections_.find(subId);
+    const bool present = (it != selections_.end());
+    switch (op) {
+    case SelectOp::Append:
+        if (!present) selections_.emplace(subId, geomId);
+        break;
+    case SelectOp::Remove:
+        if (present) selections_.erase(it);
+        break;
+    case SelectOp::Toggle:
+        if (present) selections_.erase(it);
+        else selections_.emplace(subId, geomId);
+        break;
+    }
 
     enableHighlight();
 }
@@ -234,11 +256,22 @@ GeometrySelectionVtk GeometryVertexSelectorHighlight::get() const
     return s;
 }
 
-void GeometryVertexSelectorHighlight::toggle(IVtk_IdType subId, Index geomId)
+void GeometryVertexSelectorHighlight::toggle(IVtk_IdType subId, Index geomId, SelectOp op)
 {
-    auto [it, inserted] = selections_.insert_or_assign(subId, geomId);
-    if (!inserted)
-        selections_.erase(it);
+    auto it = selections_.find(subId);
+    const bool present = (it != selections_.end());
+    switch (op) {
+    case SelectOp::Append:
+        if (!present) selections_.emplace(subId, geomId);
+        break;
+    case SelectOp::Remove:
+        if (present) selections_.erase(it);
+        break;
+    case SelectOp::Toggle:
+        if (present) selections_.erase(it);
+        else selections_.emplace(subId, geomId);
+        break;
+    }
 
     enableHighlight();
 }
@@ -299,17 +332,30 @@ GeometrySelectionVtk GeometrySolidSelectorHighlight::get() const
     return s;
 }
 
-void GeometrySolidSelectorHighlight::toggleSolid(GeomSolidId solidId, const std::vector<IVtk_IdType>& faceSubIds)
+void GeometrySolidSelectorHighlight::toggleSolid(GeomSolidId solidId, const std::vector<IVtk_IdType>& faceSubIds, SelectOp op)
 {
-    auto [it, inserted] = selections_.insert_or_assign(solidId, solidId);
-    if (!inserted)
-        selections_.erase(it);
+    auto it = selections_.find(solidId);
+    const bool was_present = (it != selections_.end());
+    switch (op) {
+    case SelectOp::Append:
+        if (!was_present) selections_.emplace(solidId, solidId);
+        break;
+    case SelectOp::Remove:
+        if (was_present) selections_.erase(it);
+        break;
+    case SelectOp::Toggle:
+        if (was_present) selections_.erase(it);
+        else selections_.emplace(solidId, solidId);
+        break;
+    }
 
-    for (IVtk_IdType faceSubId : faceSubIds) {
-        if (!inserted)
-            highlighted_face_ids_.erase(faceSubId);
-        else
+    const bool now_present = (selections_.find(solidId) != selections_.end());
+    if (now_present && !was_present) {
+        for (IVtk_IdType faceSubId : faceSubIds)
             highlighted_face_ids_.insert(faceSubId);
+    } else if (!now_present && was_present) {
+        for (IVtk_IdType faceSubId : faceSubIds)
+            highlighted_face_ids_.erase(faceSubId);
     }
 
     enableHighlight();

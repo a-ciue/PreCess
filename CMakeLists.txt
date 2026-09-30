@@ -123,6 +123,10 @@ if(PRECESS_BUILD_PYTHON AND NOT EMSCRIPTEN)
 endif()
 
 find_package("Qt${VTK_QT_VERSION}" REQUIRED COMPONENTS Gui Quick QuickControls2 Svg)
+if(BUILD_TESTING)
+    # QML 交互回归测试使用 QTest 模拟真实鼠标事件
+    find_package("Qt${VTK_QT_VERSION}" REQUIRED COMPONENTS Test)
+endif()
 message(STATUS "QT_VERSION: Qt${VTK_QT_VERSION}")
 qt_policy(SET QTP0001 NEW)
 qt_standard_project_setup()
@@ -192,7 +196,8 @@ set(CPACK_NSIS_DELETE_ICONS_EXTRA
     Delete '$DESKTOP\\\\${MYNAME}.lnk'"
 )
 
-set(SUPPORTED_MESH_EXTS .mesh .meshb .obj .step .stp .iges .igs .vtk .m .ply )
+set(SUPPORTED_MESH_EXTS .mesh .meshb .obj .step .stp .iges .igs .vtk .m .ply
+    .stl .msh .vtp .vtu .off .qhex .inp)
 set(CPACK_NSIS_EXTRA_INSTALL_COMMANDS "")
 set(CPACK_NSIS_EXTRA_UNINSTALL_COMMANDS "")
 

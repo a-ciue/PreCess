@@ -1,8 +1,7 @@
-find_package(KDDockWidgets-qt6 REQUIRED)
-
 add_subdirectory(core)
 add_subdirectory(model)
 add_subdirectory(render)
+add_subdirectory(dock)
 if(BUILD_TESTING)
 add_subdirectory(test)
 endif()
@@ -40,7 +39,7 @@ target_link_libraries(${MYNAME}
     VTK::GUISupportQtQuick
     Qt${VTK_QT_VERSION}::Quick
     Qt${VTK_QT_VERSION}::Svg
-    KDAB::kddockwidgets
+    dock
     spdlog::spdlog
     "$<TARGET_NAME_IF_EXISTS:StaticPlugins>"
 )
@@ -109,7 +108,6 @@ set(DEPENDENCY_DIRECTORIES
     $<TARGET_FILE_DIR:TKernel>
     $<TARGET_FILE_DIR:Qt${VTK_QT_VERSION}::Core>
     $<TARGET_FILE_DIR:spdlog::spdlog>
-    $<TARGET_FILE_DIR:KDAB::kddockwidgets>
 )
 if(freetype_FOUND)
     list(APPEND DEPENDENCY_DIRECTORIES $<TARGET_FILE_DIR:freetype>)

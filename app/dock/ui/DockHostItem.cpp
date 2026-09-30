@@ -1,0 +1,252 @@
+/**
+ * @file DockHostItem.cpp
+ * @brief 主停靠区域视图的实现
+ */
+
+#include "DockHostItem.h"
+
+#include "DockAreaItem.h"
+#include "DockPanelItem.h"
+#include "DockWindowItem.h"
+#include "PanelGroupItem.h"
+#include "PanelContentView.h"
+#include "DockRuntime.h"
+#include "docking/DockPanel.h"
+#include "docking/DockRegion.h"
+#include "docking/DockWindow.h"
+#include "docking/PanelGroup.h"
+#include "docking/DockHost.h"
+#include "docking/DockMetrics.h"
+
+#include <QQuickWindow>
+
+#include <algorithm>
+
+namespace dock::ui {
+
+DockHostItem::DockHostItem(QQuickItem* parent)
+    : QQuickItem(parent)
+{
+}
+
+DockHostItem::~DockHostItem()
+{
+    if (host_ && host_->centralPanel()) {
+        DockRuntime::instance().unregisterPanelContent(host_->centralPanel());
+        DockRuntime::instance().unregisterPanelHome(host_->centralPanel());
+    }
+}
+
+void DockHostItem::setUniqueName(const QString& unique_name)
+{
+    if (unique_name_ == unique_name)
+        return;
+    unique_name_ = unique_name;
+    Q_EMIT uniqueNameChanged();
+}
+
+void DockHostItem::setCentralItemFile(const QUrl& file)
+{
+    if (central_file_ == file)
+        return;
+    central_file_ = file;
+    Q_EMIT centralItemFileChanged();
+}
+
+void DockHostItem::componentComplete()
+{
+    QQuickItem::componentComplete();
+
+    if (unique_name_.isEmpty())
+        unique_name_ = QStringLiteral("DockHost");
+
+    host_ = new dock::DockHost(unique_name_, this);
+    host_->setView(this);
+
+    area_item_ = new DockAreaItem(this);
+    area_item_->setSize(size());
+    area_item_->setRegion(host_->region());
+
+    // 布局整体恢复（含重置）：视图层统一重新同步
+    connect(host_, &dock::DockHost::layoutRestored, this, [this] {
+        if (area_item_)
+            area_item_->sync();
+    });
+
+    watchWindow();
+    loadCentralItem();
+    updateAreaGeometry();
+}
+
+void DockHostItem::geometryChange(const QRectF& new_geometry, const QRectF& old_geometry)
+{
+    QQuickItem::geometryChange(new_geometry, old_geometry);
+    if (area_item_)
+        area_item_->setSize(new_geometry.size());
+    updateAreaGeometry();
+}
+
+void DockHostItem::itemChange(ItemChange change, const ItemChangeData& value)
+{
+    QQuickItem::itemChange(change, value);
+    // 窗口可能晚于 componentComplete 才就绪（动态创建/延迟 reparent）：场景变化时重试监听
+    if (change == QQuickItem::ItemSceneChange)
+        watchWindow();
+}
+
+void DockHostItem::updateAreaGeometry()
+{
+    if (!host_)
+        return;
+
+    const QPoint origin = mapToGlobal(QPointF(0, 0)).toPoint();
+    host_->region()->setGlobalOrigin(origin);
+    host_->setFrame(QRect(QPoint(0, 0), size().toSize()));
+    if (area_item_)
+        area_item_->sync();
+}
+
+void DockHostItem::watchWindow()
+{
+    QQuickWindow* host = window();
+    if (host == watched_window_)
+        return;
+
+    if (watched_window_) {
+        disconnect(watched_window_, nullptr, this, nullptr);
+        watched_window_ = nullptr;
+    }
+    if (!host)
+        return;
+
+    connect(host, &QWindow::xChanged, this, [this] { updateAreaGeometry(); });
+    connect(host, &QWindow::yChanged, this, [this] { updateAreaGeometry(); });
+    watched_window_ = host;
+    updateAreaGeometry();
+}
+
+void DockHostItem::loadCentralItem()
+{
+    if (central_file_.isEmpty() || !host_ || !host_->centralPanel())
+        return;
+
+    QQuickItem* item = DockRuntime::instance().createItemFromUrl(central_file_);
+    if (!item)
+        return;
+
+    DockRuntime::instance().registerPanelContent(host_->centralPanel(), item);
+    // 中央渲染部件的归属宿主：离开分组视图时回到本项（面板声明所在窗口）
+    DockRuntime::instance().registerPanelHome(host_->centralPanel(), this);
+    central_view_ = std::make_unique<PanelContentView>(host_->centralPanel(), item);
+    host_->setCentralContentView(central_view_.get());
+
+    // 中央分组视图可能先于 client 注册创建：立即刷新一次完成挂载
+    if (dock::PanelGroup* central_group = host_->centralGroup()) {
+        if (PanelGroupItem* view = DockRuntime::instance().panelGroupItem(central_group))
+            view->syncFromGroup();
+    }
+}
+
+void DockHostItem::placePanel(QQuickItem* panel, DockEdge edge, QQuickItem* relative_to,
+    QSize preferred_size, PanelLaunch launch)
+{
+    auto* instantiator = qobject_cast<DockPanelItem*>(panel);
+    if (!host_ || !instantiator || !instantiator->panel())
+        return;
+
+    auto* relative_instantiator = qobject_cast<DockPanelItem*>(relative_to);
+    dock::DockPanel* dock = instantiator->panel();
+
+    host_->placePanel(dock, edge,
+        relative_instantiator ? relative_instantiator->panel() : nullptr, preferred_size, launch);
+
+    // 每个面板只绑定一次视图同步；核心层对已分组面板的重复放置会直接拒绝
+    if (!place_watches_.contains(dock)) {
+        place_watches_.insert(dock);
+        connect(dock, &dock::DockPanel::shownChanged, this, [this](bool) {
+            if (area_item_)
+                area_item_->sync();
+        });
+        connect(dock, &dock::DockPanel::detachedChanged, this, [this](bool) {
+            if (area_item_)
+                area_item_->sync();
+        });
+    }
+
+    if (area_item_)
+        area_item_->sync();
+}
+
+QString DockHostItem::saveLayout()
+{
+    return host_ ? QString::fromUtf8(host_->saveLayout()) : QString();
+}
+
+bool DockHostItem::restoreLayout(const QString& layout)
+{
+    if (!host_)
+        return false;
+
+    // 成功与恢复失败的布局重置都会经 DockHost::layoutRestored 驱动区域同步
+    return host_->restoreLayout(layout.toUtf8());
+}
+
+DockObject* DockHostItem::dockObject() const
+{
+    return host_;
+}
+
+void DockHostItem::applyFrame(const QRect& geometry)
+{
+    setPosition(geometry.topLeft());
+    setSize(geometry.size());
+}
+
+QRect DockHostItem::frame() const
+{
+    return QRect(position().toPoint(), size().toSize());
+}
+
+void DockHostItem::applyVisibility(bool visible)
+{
+    setVisible(visible);
+}
+
+bool DockHostItem::isShown() const
+{
+    return isVisible();
+}
+
+QSize DockHostItem::minExtent() const
+{
+    return QSize(0, 0);
+}
+
+QSize DockHostItem::maxExtent() const
+{
+    return QSize(kMaxSizeLimit, kMaxSizeLimit);
+}
+
+void DockHostItem::bringToFront()
+{
+    // 置顶自增设有上限，避免长时间运行后 z 无界增长
+    setZ(std::min(z() + 1.0, DockMetrics::kHostFrontMaxZ));
+}
+
+QPoint DockHostItem::globalOrigin() const
+{
+    return mapToGlobal(QPointF(0, 0)).toPoint();
+}
+
+DockView* DockHostItem::createDockWindow(DockObject* controller)
+{
+    auto* window = qobject_cast<dock::DockWindow*>(controller);
+    if (!window)
+        return nullptr;
+
+    auto* view = new DockWindowItem(window);
+    // 窗口在收到首个有效几何后自行显示（见 DockWindowItem::updateFromController）
+    return view;
+}
+
+}

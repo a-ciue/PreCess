@@ -100,44 +100,65 @@ void SolidSelectorHighlight::select(double posx, double posy)
     picker->Pick(posx, posy, 0, renderer_);
 
     select(posx, posy, picker.GetPointer(), picker->GetActor(),
-        picker->GetCellId(), picker->GetPointId());
+        picker->GetCellId(), picker->GetPointId(), SelectOp::Toggle);
 }
 
 void SolidSelectorHighlight::select(double posx, double posy,
     vtkHardwarePicker* picker, vtkActor* picked_actor,
-    vtkIdType picked_cell_id, vtkIdType /*picked_point_id*/)
+    vtkIdType picked_cell_id, vtkIdType /*picked_point_id*/, SelectOp op)
 {
     if (!picked_actor || picked_cell_id < 0) {
-        clear();
-        spdlog::debug("No cell picked, selection cleared.");
+        if (op == SelectOp::Toggle) {
+            clear();
+            spdlog::debug("No cell picked, selection cleared.");
+        }
         return;
     }
     vtkDataSet* picked_data_set = picker ? picker->GetDataSet() : nullptr;
     if (!picked_data_set) {
-        clear();
+        if (op == SelectOp::Toggle)
+            clear();
         return;
     }
 
     // 获取对应的体id selected_solid_id
     auto solid_id_array = vtkIdTypeArray::SafeDownCast(picked_data_set->GetCellData()->GetArray("vtkOriginalCellIds"));
     if (!solid_id_array) {
-        clear();
-        spdlog::debug("Picked cell id: {}, no solid id array found.", picked_cell_id);
+        if (op == SelectOp::Toggle) {
+            clear();
+            spdlog::debug("Picked cell id: {}, no solid id array found.", picked_cell_id);
+        }
         return;
     }
     vtkIdType selected_solid_id = solid_id_array->GetValue(picked_cell_id);
 
     // 检查该体是否已经被选中
     vtkIdType id_idx = _is_selected(selected_solid_id, *this->selected_ids_);
-    if (id_idx >= 0) {
-        // 取消选中
-        selected_ids_->RemoveTuple(id_idx);
-        spdlog::debug("SolidSelectorHighlight::select: point {} canceled.", selected_solid_id);
-    } else {
-        // 未选中，添加选中
-        selected_ids_->InsertNextValue(selected_solid_id);
-        selected_ids_->ClearLookup(); // 清除查找缓存，确保下一次查找正确
-        spdlog::debug("SolidSelectorHighlight::select: point {} selected.", selected_solid_id);
+    // 按 op 决定单个体选中语义：Append 仅加入；Remove 仅剔除；Toggle 翻转（保持原点击切换语义）
+    switch (op) {
+    case SelectOp::Append:
+        if (id_idx < 0) {
+            selected_ids_->InsertNextValue(selected_solid_id);
+            selected_ids_->ClearLookup();
+            spdlog::debug("SolidSelectorHighlight::select: point {} selected.", selected_solid_id);
+        }
+        break;
+    case SelectOp::Remove:
+        if (id_idx >= 0) {
+            selected_ids_->RemoveTuple(id_idx);
+            spdlog::debug("SolidSelectorHighlight::select: point {} canceled.", selected_solid_id);
+        }
+        break;
+    case SelectOp::Toggle:
+        if (id_idx >= 0) {
+            selected_ids_->RemoveTuple(id_idx);
+            spdlog::debug("SolidSelectorHighlight::select: point {} canceled.", selected_solid_id);
+        } else {
+            selected_ids_->InsertNextValue(selected_solid_id);
+            selected_ids_->ClearLookup(); // 清除查找缓存，确保下一次查找正确
+            spdlog::debug("SolidSelectorHighlight::select: point {} selected.", selected_solid_id);
+        }
+        break;
     }
     this->selected_ids_->Modified();
     enableHighlight();
@@ -158,7 +179,7 @@ void SolidSelectorHighlight::setupHighlightStyle(vtkActor& actor, vtkMapper& map
 
 void SolidSelectorHighlight::selectArea(
     const std::unordered_map<vtkProp*, std::unordered_set<vtkIdType>>& hits,
-    int /*xmin*/, int /*ymin*/, int /*xmax*/, int /*ymax*/)
+    int /*xmin*/, int /*ymin*/, int /*xmax*/, int /*ymax*/, SelectOp op)
 {
     // solid actor 的命中即体表面 render cell id（MeshSelectManager 一次多 actor 拾取、已清空后分发）
     auto it = hits.find(&select_op_.getSolidActor());
@@ -181,18 +202,41 @@ void SolidSelectorHighlight::selectArea(
     if (!orig_cell_ids)
         return;
 
-    // 框选恒为替换：manager 已先清空，命中即本组件的新选择；先按原 solid id 去重再插入
+    // 反查 render cell id -> 原 solid id（去重），再按 op 做集合运算（见下方 switch）
     std::unordered_set<vtkIdType> to_add;
     for (vtkIdType cid : picked) {
         vtkIdType orig = orig_cell_ids->GetValue(cid);
         if (orig >= 0)
             to_add.insert(orig);
     }
-    selected_ids_->ClearLookup();
-    for (vtkIdType orig : to_add) {
-        if (_is_selected(orig, *selected_ids_) < 0)
-            selected_ids_->InsertNextValue(orig);
+    // 按 op 对框内命中的体做集合运算：Append->并集；Remove->差集；Toggle->对称差。
+    std::unordered_set<vtkIdType> cur;
+    for (vtkIdType i = 0; i < selected_ids_->GetNumberOfValues(); ++i)
+        cur.insert(selected_ids_->GetValue(i));
+    std::unordered_set<vtkIdType> result;
+    switch (op) {
+    case SelectOp::Append:
+        result = cur;
+        result.insert(to_add.begin(), to_add.end());
+        break;
+    case SelectOp::Remove:
+        for (auto id : cur)
+            if (to_add.find(id) == to_add.end())
+                result.insert(id);
+        break;
+    case SelectOp::Toggle:
+        for (auto id : cur)
+            if (to_add.find(id) == to_add.end())
+                result.insert(id);
+        for (auto id : to_add)
+            if (cur.find(id) == cur.end())
+                result.insert(id);
+        break;
     }
+    selected_ids_->SetNumberOfValues(0);
+    selected_ids_->ClearLookup();
+    for (vtkIdType orig : result)
+        selected_ids_->InsertNextValue(orig);
     selected_ids_->Modified();
     enableHighlight();
 }

@@ -326,7 +326,7 @@ ColumnLayout {
                         onToggled: objectTreeToggled()
                     }
                     Action {
-                        text: "属性列表"
+                        text: "操作面板"
                         checkable: true
                         checked: propertyListOpen
                         onToggled: propertyListToggled()

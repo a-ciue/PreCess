@@ -74,7 +74,11 @@ Item{
         }
         Button{
             id: confirmButton
-            text: "确认"
+            text: "✓"
+            Accessible.name: qsTr("结束当前操作")
+            ToolTip.visible: hovered
+            ToolTip.delay: 500
+            ToolTip.text: qsTr("结束当前操作")
             enabled: !!(root.activeOp && root.activeOp.info)
             Layout.fillWidth: true
             // 确认 = 结束当前操作，取消操作选中；再次执行需重新点选算法

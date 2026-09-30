@@ -1,6 +1,6 @@
 /**
  * @file Main.qml
- * @brief 程序的交互主界面，使用 KDDockWidgets 可停靠窗口架构
+ * @brief 程序的交互主界面，使用内嵌停靠组件架构
  *
  * @sa ObjectTree.qml
  * @sa Selector.qml
@@ -15,7 +15,9 @@ import QtQuick.Controls
 import QtQuick.Layouts
 import QtQuick.Controls.Fusion
 
-import com.kdab.dockwidgets as KDDW
+import QtCore
+
+import PreCess.Docking as Docking
 
 import app.model
 import app.core
@@ -32,62 +34,82 @@ ApplicationWindow {
     title: qsTr("PreCess")
     flags: Qt.platform.os === "wasm" ? (Qt.Window | Qt.FramelessWindowHint) : Qt.Window
 
+    // 布局持久化：JSON 快照存于 QSettings；退出保存，启动恢复
+    Settings {
+        id: dockSettings
+        category: "DockLayout"
+        property string json
+    }
+
+    //! @brief 声明默认停靠布局（首次启动与恢复前的基础布局）
+    function applyDefaultLayout() {
+        dockHost.placePanel(objectTreeDock, Docking.Tokens.DockEdge.Left, null, Qt.size(250, 0))
+        dockHost.placePanel(sideBarDock, Docking.Tokens.DockEdge.Bottom, objectTreeDock, Qt.size(0, 400))
+        dockHost.placePanel(attributeRenderDock, Docking.Tokens.DockEdge.Bottom, objectTreeDock, Qt.size(0, 300), Docking.Tokens.PanelLaunch.Hidden)
+        dockHost.placePanel(consoleDock, Docking.Tokens.DockEdge.Bottom, null, Qt.size(0, 300), Docking.Tokens.PanelLaunch.Hidden)
+        dockHost.placePanel(pythonConsoleDock, Docking.Tokens.DockEdge.Right, null, Qt.size(450, 0), Docking.Tokens.PanelLaunch.Hidden)
+        dockHost.placePanel(outputLogDock, Docking.Tokens.DockEdge.Bottom, null, Qt.size(0, 300), Docking.Tokens.PanelLaunch.Hidden)
+        dockHost.placePanel(preferencesDock, Docking.Tokens.DockEdge.Top, objectTreeDock, Qt.size(0, 200), Docking.Tokens.PanelLaunch.Hidden)
+    }
+
+    onClosing: dockSettings.json = dockHost.saveLayout()
+
     header: AppToolbar {
         windowHeight: root.height
-        objectTreeOpen: objectTreeDock.isOpen
-        propertyListOpen: sideBarDock.isOpen
-        attributeRenderOpen: attributeRenderDock.isOpen
-        consoleOpen: consoleDock.isOpen
-        pythonConsoleOpen: pythonConsoleDock.isOpen
-        outputLogOpen: outputLogDock.isOpen
-        preferencesOpen: preferencesDock.isOpen
+        objectTreeOpen: objectTreeDock.shown
+        propertyListOpen: sideBarDock.shown
+        attributeRenderOpen: attributeRenderDock.shown
+        consoleOpen: consoleDock.shown
+        pythonConsoleOpen: pythonConsoleDock.shown
+        outputLogOpen: outputLogDock.shown
+        preferencesOpen: preferencesDock.shown
         onObjectTreeToggled: {
-            if (objectTreeDock.isOpen) objectTreeDock.close()
-            else objectTreeDock.show()
+            if (objectTreeDock.shown) objectTreeDock.hidePanel()
+            else objectTreeDock.showPanel()
         }
         onPropertyListToggled: {
-            if (sideBarDock.isOpen) sideBarDock.close()
-            else sideBarDock.show()
+            if (sideBarDock.shown) sideBarDock.hidePanel()
+            else sideBarDock.showPanel()
         }
         onAttributeRenderToggled: {
-            if (attributeRenderDock.isOpen) attributeRenderDock.close()
-            else attributeRenderDock.show()
+            if (attributeRenderDock.shown) attributeRenderDock.hidePanel()
+            else attributeRenderDock.showPanel()
         }
         onConsoleToggled: {
-            if (consoleDock.isOpen) consoleDock.close()
-            else consoleDock.show()
+            if (consoleDock.shown) consoleDock.hidePanel()
+            else consoleDock.showPanel()
         }
         onPythonConsoleToggled: {
-            if (pythonConsoleDock.isOpen) pythonConsoleDock.close()
-            else pythonConsoleDock.show()
+            if (pythonConsoleDock.shown) pythonConsoleDock.hidePanel()
+            else pythonConsoleDock.showPanel()
         }
         onOutputLogToggled: {
-            if (outputLogDock.isOpen) outputLogDock.close()
-            else outputLogDock.show()
+            if (outputLogDock.shown) outputLogDock.hidePanel()
+            else outputLogDock.showPanel()
         }
         onPreferencesToggled: {
-            if (preferencesDock.isOpen) preferencesDock.close()
-            else preferencesDock.show()
+            if (preferencesDock.shown) preferencesDock.hidePanel()
+            else preferencesDock.showPanel()
         }
     }
 
     Shortcut {
         sequence: "F10"
         onActivated: {
-            if (consoleDock.isOpen)
-                consoleDock.close()
+            if (consoleDock.shown)
+                consoleDock.hidePanel()
             else
-                consoleDock.show()
+                consoleDock.showPanel()
         }
     }
 
     Shortcut {
         sequence: "F11"
         onActivated: {
-            if (pythonConsoleDock.isOpen)
-                pythonConsoleDock.close()
+            if (pythonConsoleDock.shown)
+                pythonConsoleDock.hidePanel()
             else
-                pythonConsoleDock.show()
+                pythonConsoleDock.showPanel()
         }
     }
 
@@ -123,14 +145,14 @@ ApplicationWindow {
         }
     }
 
-    KDDW.DockingArea {
-        id: dockingArea
+    Docking.DockHost {
+        id: dockHost
         anchors.fill: parent
-        options: KDDW.KDDockWidgets.MainWindowOption_HasCentralWidget
-        persistentCentralItemFileName: "qrc:/qt/qml/app/CentralRenderArea.qml"
+
+        centralItemFile: "qrc:/qt/qml/app/CentralRenderArea.qml"
         uniqueName: "PreCessMainLayout"
 
-        KDDW.DockWidget {
+        Docking.DockPanel {
             id: objectTreeDock
             uniqueName: "objectTree"
             title: "对象树"
@@ -139,16 +161,16 @@ ApplicationWindow {
             }
         }
 
-        KDDW.DockWidget {
+        Docking.DockPanel {
             id: sideBarDock
             uniqueName: "sideBar"
-            title: "属性列表"
+            title: "操作面板"
             SideBar {
                 anchors.fill: parent
             }
         }
 
-        KDDW.DockWidget {
+        Docking.DockPanel {
             id: attributeRenderDock
             uniqueName: "attributeRender"
             title: "属性渲染"
@@ -157,7 +179,7 @@ ApplicationWindow {
             }
         }
 
-        KDDW.DockWidget {
+        Docking.DockPanel {
             id: consoleDock
             uniqueName: "console"
             title: "JavaScript 控制台"
@@ -167,7 +189,7 @@ ApplicationWindow {
             }
         }
 
-        KDDW.DockWidget {
+        Docking.DockPanel {
             id: pythonConsoleDock
             uniqueName: "pythonConsole"
             title: "Python 控制台"
@@ -177,7 +199,7 @@ ApplicationWindow {
             }
         }
 
-        KDDW.DockWidget {
+        Docking.DockPanel {
             id: outputLogDock
             uniqueName: "outputLog"
             title: "日志"
@@ -187,7 +209,7 @@ ApplicationWindow {
             }
         }
 
-        KDDW.DockWidget {
+        Docking.DockPanel {
             id: preferencesDock
             uniqueName: "preferences"
             title: "偏好设置"
@@ -198,17 +220,13 @@ ApplicationWindow {
         }
 
         Component.onCompleted: {
-            addDockWidget(objectTreeDock, KDDW.KDDockWidgets.Location_OnLeft, null, Qt.size(250, 0))
-            addDockWidget(sideBarDock, KDDW.KDDockWidgets.Location_OnBottom, objectTreeDock, Qt.size(0, 400))
-            addDockWidget(attributeRenderDock, KDDW.KDDockWidgets.Location_OnBottom, objectTreeDock, Qt.size(0, 300), KDDW.KDDockWidgets.StartHidden)
-            addDockWidget(consoleDock, KDDW.KDDockWidgets.Location_OnBottom, null, Qt.size(0, 300), KDDW.KDDockWidgets.StartHidden)
-            addDockWidget(pythonConsoleDock, KDDW.KDDockWidgets.Location_OnRight, null, Qt.size(450, 0), KDDW.KDDockWidgets.StartHidden)
-            addDockWidget(outputLogDock, KDDW.KDDockWidgets.Location_OnBottom, null, Qt.size(0, 300), KDDW.KDDockWidgets.StartHidden)
-            addDockWidget(preferencesDock, KDDW.KDDockWidgets.Location_OnTop, objectTreeDock, Qt.size(0, 200), KDDW.KDDockWidgets.StartHidden)
+            // 先应用声明默认布局，再尝试恢复上次保存的快照
+            root.applyDefaultLayout()
+            if (dockSettings.json.length > 0)
+                dockHost.restoreLayout(dockSettings.json)
         }
     }
 
-    KDDW.LayoutSaver { id: layoutSaver }
 
     // 拖拽导入：一次可拖入多个文件，逐个交给 read；能否导入由 C++ 判定并写日志
     DropArea {
@@ -234,7 +252,7 @@ ApplicationWindow {
             if (failed < drop.urls.length && App.registry.renderWindow)
                 App.registry.renderWindow.resetCamera()
             if (failed > 0)
-                outputLogDock.show() // 失败原因由日志面板承载，直接打开便于查看
+                outputLogDock.showPanel() // 失败原因由日志面板承载，直接打开便于查看
         }
 
         // 拖入可导入文件时的高亮提示

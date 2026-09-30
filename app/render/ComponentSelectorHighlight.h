@@ -26,8 +26,8 @@ public:
         MeshActorManagerSelectOp& mesh_op,
         GeometryActorManagerSelectOp& geom_op);
 
-    void select(double posx, double posy);
-    void selectArea(int xmin, int ymin, int xmax, int ymax);
+    void select(double posx, double posy, SelectOp op = SelectOp::Toggle);
+    void selectArea(int xmin, int ymin, int xmax, int ymax, SelectOp op = SelectOp::Toggle);
     void clear();
     void refreshHighlight();
     SelectionVtk get() const;

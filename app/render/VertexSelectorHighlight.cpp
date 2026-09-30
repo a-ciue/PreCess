@@ -124,38 +124,56 @@ void VertexSelectorHighlight::select(double posx, double posy)
 
 void VertexSelectorHighlight::select(double posx, double posy,
     vtkHardwarePicker* picker, vtkActor* picked_actor,
-    vtkIdType /*picked_cell_id*/, vtkIdType picked_point_id)
+    vtkIdType /*picked_cell_id*/, vtkIdType picked_point_id, SelectOp op)
 {
     // 未命中点（SnapToMeshPoint 取不到）按原语义保留已有选择
     if (!picker || !picked_actor || picked_point_id == -1) {
         spdlog::debug("VertexSelectorHighlight::select: no point picked.");
         return;
     }
-    selectPickedPoint(picker->GetDataSet(), picked_point_id);
+    selectPickedPoint(picker->GetDataSet(), picked_point_id, op);
 }
 
-void VertexSelectorHighlight::selectPickedPoint(vtkDataSet* picked_data_set, vtkIdType picked_point_id)
+void VertexSelectorHighlight::selectPickedPoint(vtkDataSet* picked_data_set, vtkIdType picked_point_id, SelectOp op)
 {
     // 获取对应的点id selected_vertex_id
     auto vertex_id_array = vtkIdTypeArray::SafeDownCast(picked_data_set->GetPointData()->GetArray("vtkOriginalPointIds"));
     if (!vertex_id_array) {
-        clear();
-        spdlog::debug("Picked point id: {}, no vertex id array found.", picked_point_id);
+        if (op == SelectOp::Toggle) {
+            clear();
+            spdlog::debug("Picked point id: {}, no vertex id array found.", picked_point_id);
+        }
         return;
     }
     vtkIdType selected_vertex_id = vertex_id_array->GetValue(picked_point_id);
 
     // 检查该点是否已经被选中
     vtkIdType id_idx = _is_selected(selected_vertex_id, *this->selected_ids_);
-    if (id_idx >= 0) {
-        // 已选中，取消选中
-        selected_ids_->RemoveTuple(id_idx);
-        spdlog::debug("VertexSelectorHighlight::select: point {} deselected.", selected_vertex_id);
-    } else {
-        // 未选中，添加选中
-        selected_ids_->InsertNextValue(selected_vertex_id);
-        selected_ids_->ClearLookup(); // 清除查找缓存，确保下一次查找正确
-        spdlog::debug("VertexSelectorHighlight::select: point {} selected.", selected_vertex_id);
+    // 按 op 决定单个点选中语义：Append 仅加入；Remove 仅剔除；Toggle 翻转（保持原点击切换语义）
+    switch (op) {
+    case SelectOp::Append:
+        if (id_idx < 0) {
+            selected_ids_->InsertNextValue(selected_vertex_id);
+            selected_ids_->ClearLookup();
+            spdlog::debug("VertexSelectorHighlight::select: point {} selected.", selected_vertex_id);
+        }
+        break;
+    case SelectOp::Remove:
+        if (id_idx >= 0) {
+            selected_ids_->RemoveTuple(id_idx);
+            spdlog::debug("VertexSelectorHighlight::select: point {} deselected.", selected_vertex_id);
+        }
+        break;
+    case SelectOp::Toggle:
+        if (id_idx >= 0) {
+            selected_ids_->RemoveTuple(id_idx);
+            spdlog::debug("VertexSelectorHighlight::select: point {} deselected.", selected_vertex_id);
+        } else {
+            selected_ids_->InsertNextValue(selected_vertex_id);
+            selected_ids_->ClearLookup(); // 清除查找缓存，确保下一次查找正确
+            spdlog::debug("VertexSelectorHighlight::select: point {} selected.", selected_vertex_id);
+        }
+        break;
     }
 
     selected_ids_->Modified();
@@ -175,7 +193,7 @@ void VertexSelectorHighlight::setupHighlightStyle(vtkActor& actor, vtkMapper& ma
 
 void VertexSelectorHighlight::selectArea(
     const std::unordered_map<vtkProp*, std::unordered_set<vtkIdType>>& hits,
-    int xmin, int ymin, int xmax, int ymax)
+    int xmin, int ymin, int xmax, int ymax, SelectOp op)
 {
     // 与点选对齐：从 face/edge/solid 三个 actor 的命中 cell 派生点并合并（一次多 actor 拾取结果）。
     std::unordered_set<vtkIdType> local_ids;
@@ -248,12 +266,34 @@ void VertexSelectorHighlight::selectArea(
     if (local_ids.empty())
         return;
 
-    // 框选恒为替换：manager 已先清空，命中即本组件的新选择（set）
-    selected_ids_->ClearLookup();
-    for (vtkIdType v : local_ids) {
-        if (_is_selected(v, *selected_ids_) < 0)
-            selected_ids_->InsertNextValue(v);
+    // 按 op 对框内命中的点做集合运算：Append->并集；Remove->差集；Toggle->对称差。
+    std::unordered_set<vtkIdType> cur;
+    for (vtkIdType i = 0; i < selected_ids_->GetNumberOfValues(); ++i)
+        cur.insert(selected_ids_->GetValue(i));
+    std::unordered_set<vtkIdType> result;
+    switch (op) {
+    case SelectOp::Append:
+        result = cur;
+        result.insert(local_ids.begin(), local_ids.end());
+        break;
+    case SelectOp::Remove:
+        for (auto id : cur)
+            if (local_ids.find(id) == local_ids.end())
+                result.insert(id);
+        break;
+    case SelectOp::Toggle:
+        for (auto id : cur)
+            if (local_ids.find(id) == local_ids.end())
+                result.insert(id);
+        for (auto id : local_ids)
+            if (cur.find(id) == cur.end())
+                result.insert(id);
+        break;
     }
+    selected_ids_->SetNumberOfValues(0);
+    selected_ids_->ClearLookup();
+    for (vtkIdType v : result)
+        selected_ids_->InsertNextValue(v);
     selected_ids_->Modified();
     enableHighlight();
 }

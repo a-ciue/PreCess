@@ -1,0 +1,68 @@
+/**
+ * @file DockView.h
+ * @brief 停靠组件与视图层（QtQuick）之间的抽象接口
+ */
+
+#pragma once
+
+#include <QRect>
+#include <QSize>
+
+namespace dock {
+
+class DockObject;
+
+/**
+ * @brief 视图抽象接口
+ *
+ * 核心层（控制器）通过该接口驱动界面的几何与可见性，
+ * 不依赖任何 QtQuick 类型。视图层（QQuickItem/QQuickWindow）实现该接口。
+ * 视图对象由视图层（QML 引擎）持有，核心层只保存裸指针。
+ */
+class DockView
+{
+public:
+    virtual ~DockView() = default;
+
+    //! @brief 关联的控制器
+    virtual DockObject* dockObject() const = 0;
+
+    //! @brief 应用几何（父视图坐标系）
+    virtual void applyFrame(const QRect& geometry) = 0;
+    //! @brief 当前几何
+    virtual QRect frame() const = 0;
+    //! @brief 应用可见性
+    virtual void applyVisibility(bool visible) = 0;
+    //! @brief 当前可见性
+    virtual bool isShown() const = 0;
+
+    //! @brief 视图最小尺寸
+    virtual QSize minExtent() const = 0;
+    //! @brief 视图最大尺寸提示
+    virtual QSize maxExtent() const = 0;
+
+    //! @brief 激活/置顶视图
+    virtual void bringToFront() = 0;
+
+    //! @brief 视图全局原点（用于拖放命中测试）
+    virtual QPoint globalOrigin() const = 0;
+
+    /**
+     * @brief 标签插入位置查询（拖放用）
+     *
+     * 仅在视图承载的控制器为分组且光标位于其标题栏/标签栏条带时返回有效值：
+     * 0 表示插到第一个标签之前，count 表示追加到末尾；其余位置返回 -1。
+     * 默认实现返回 -1（无标签栏或未知）。
+     */
+    virtual int tabInsertIndexAt(const QPoint& global_pos) const { return -1; }
+
+    /**
+     * @brief 创建浮动窗口视图
+     *
+     * 仅能创建顶层窗口的视图（主窗口视图）需要实现；
+     * controller 为 DockWindow 控制器，返回其视图对象。
+     */
+    virtual DockView* createDockWindow(DockObject* controller) = 0;
+};
+
+}

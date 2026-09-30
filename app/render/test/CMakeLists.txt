@@ -99,3 +99,12 @@ precess_test_link_libraries(TestSelectorHighlightDeselect vtkPart TestDeps spdlo
     VTK::InteractionStyle VTK::CommonColor VTK::RenderingCore VTK::RenderingUI VTK::RenderingOpenGL2 VTK::FiltersGeometry
 )
 vtk_module_autoinit(TARGETS TestSelectorHighlightDeselect MODULES VTK::InteractionStyle VTK::CommonColor VTK::RenderingCore VTK::RenderingUI VTK::RenderingOpenGL2 VTK::FiltersGeometry)
+
+# QQuickVTKItem 场景图重建时先释放依赖旧 renderer 的交互服务。
+precess_add_test(TestRenderWindowLifecycle TestRenderWindowLifecycle.cpp)
+precess_test_link_libraries(TestRenderWindowLifecycle renderQml vtkPart modelQml
+    VTK::GUISupportQtQuick VTK::RenderingOpenGL2 VTK::InteractionStyle
+)
+vtk_module_autoinit(TARGETS TestRenderWindowLifecycle MODULES
+    VTK::GUISupportQtQuick VTK::RenderingOpenGL2 VTK::InteractionStyle
+)
