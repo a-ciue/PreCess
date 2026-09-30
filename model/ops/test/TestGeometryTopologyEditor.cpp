@@ -4,6 +4,8 @@
 
 #include <BRepCheck_Analyzer.hxx>
 #include <BRepTools.hxx>
+#include <BRepBuilderAPI_Transform.hxx>
+#include <gp_Trsf.hxx>
 #include <BRepAdaptor_Curve.hxx>
 #include <BRepAdaptor_Surface.hxx>
 #include <BRepGProp.hxx>
@@ -49,6 +51,7 @@
 #include <catch2/catch_test_macros.hpp>
 
 #include <cmath>
+#include <array>
 #include <filesystem>
 #include <sstream>
 #include <stdexcept>
@@ -2335,4 +2338,65 @@ TEST_CASE("GeometryTopologyEditor splits an imported face using a near surface a
     BRepGProp::SurfaceProperties(result, result_area);
     REQUIRE(result_area.Mass() == Catch::Approx(original_area.Mass()).epsilon(1.0e-6));
     REQUIRE(serializeRepairShape(root) == before);
+}
+
+//! @brief 真实缺陷在单位缩放和平移后仍需得到相同的面数及连接关系，不改写输入。
+TEST_CASE("GeometryTopologyEditor repair preserves topology under scale translation and reversed seeds")
+{
+    std::array<double, 3> reference_areas { -1.0, -1.0, -1.0 };
+    // 只比较拓扑数量不足以验证几何一致性；同时比较去除尺度后的实际曲面面积。
+    const auto check_area = [&](const TopoDS_Shape& shape, double scale, size_t operation) {
+        GProp_GProps properties;
+        BRepGProp::SurfaceProperties(shape, properties);
+        const double normalized = properties.Mass() / (scale * scale);
+        if (reference_areas[operation] < 0.0)
+            reference_areas[operation] = normalized;
+        else
+            REQUIRE(normalized == Catch::Approx(reference_areas[operation]).epsilon(1.e-5));
+    };
+    for (double scale : { 0.01, 1.0, 100.0 }) {
+        CAPTURE(scale);
+        gp_Trsf transform;
+        transform.SetScale(gp_Pnt(0, 0, 0), scale);
+        transform.SetTranslationPart(gp_Vec(10000, -20000, 30000));
+        const auto transformed = [&](const char* file) {
+            return BRepBuilderAPI_Transform(readRepairFixture(file), transform, true).Shape();
+        };
+        {
+            const auto root = transformed("repair-patch.brep");
+            const auto before = serializeRepairShape(root);
+            NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher> edges;
+            TopExp::MapShapes(root, TopAbs_EDGE, edges);
+            const auto result = GeometryTopologyEditor::fillBoundaryLoop(root, TopoDS::Edge(edges(8).Reversed()));
+            REQUIRE(BRepCheck_Analyzer(result).IsValid());
+            REQUIRE(countSubshapes(result, TopAbs_FACE) == 9);
+            check_area(result, scale, 0);
+            REQUIRE(countSharedEdges(result) == countSharedEdges(root) + 4);
+            REQUIRE(serializeRepairShape(root) == before);
+        }
+        {
+            const auto root = transformed("repair-stitch.brep");
+            const auto before = serializeRepairShape(root);
+            NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher> edges;
+            TopExp::MapShapes(root, TopAbs_EDGE, edges);
+            const auto result = GeometryTopologyEditor::stitchGapFromSeedEdge(root, TopoDS::Edge(edges(12).Reversed()), scale);
+            REQUIRE(BRepCheck_Analyzer(result).IsValid());
+            REQUIRE(countSubshapes(result, TopAbs_FACE) == 6);
+            check_area(result, scale, 1);
+            REQUIRE(countSharedEdges(result) > countSharedEdges(root));
+            REQUIRE(serializeRepairShape(root) == before);
+        }
+        {
+            const auto root = transformed("repair-split.brep");
+            const auto before = serializeRepairShape(root);
+            NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher> edges, faces;
+            TopExp::MapShapes(root, TopAbs_EDGE, edges);
+            TopExp::MapShapes(root, TopAbs_FACE, faces);
+            const auto result = GeometryTopologyEditor::splitFace(root, TopoDS::Face(faces(1)), { TopoDS::Edge(edges(10).Reversed()) });
+            REQUIRE(BRepCheck_Analyzer(result).IsValid());
+            REQUIRE(countSubshapes(result, TopAbs_FACE) == 3);
+            check_area(result, scale, 2);
+            REQUIRE(serializeRepairShape(root) == before);
+        }
+    }
 }
