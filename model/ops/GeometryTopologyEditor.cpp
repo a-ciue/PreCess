@@ -30,9 +30,13 @@
 #include <Geom_BSplineSurface.hxx>
 #include <Geom_BezierSurface.hxx>
 #include <Geom_Curve.hxx>
+#include <Geom_CylindricalSurface.hxx>
+#include <gp_Ax3.hxx>
+#include <gp_Circ.hxx>
 #include <Geom_BSplineCurve.hxx>
 #include <Geom_TrimmedCurve.hxx>
 #include <GeomConvert.hxx>
+#include <GeomFill_BSplineCurves.hxx>
 #include <Geom_Surface.hxx>
 #include <GeomAbs_CurveType.hxx>
 #include <GeomAbs_SurfaceType.hxx>
@@ -1540,10 +1544,12 @@ bool isEdgeOnFace(const TopoDS_Edge& edge, const TopoDS_Face& face)
         return false;
 
     constexpr int sample_count = 9;
+    // STEP 的曲线和曲面各自近似后会累积亚微米偏差，使用固定数值精度底线，
+    // 不以用户的间隙搜索距离放宽面域判定。
     const double tolerance = std::max({
         BRep_Tool::Tolerance(face),
         BRep_Tool::Tolerance(edge),
-        Precision::Confusion(),
+        Precision::Confusion() * 10.0,
     });
 
     // 同时检查曲线到曲面的距离和投影点是否位于 Face 的有效参数域。
@@ -1881,6 +1887,93 @@ TopoDS_Edge rebuildMovedEdge(const TopoDS_Edge& edge,
 }
 
 /**
+ * @brief 检查三维边界是否贴合给定支撑曲面；后续构面仍需校验 pcurve 与拓扑有效性。
+ */
+bool isBoundaryOnSurface(const TopoDS_Wire& wire, const occ::handle<Geom_Surface>& surface, double precision)
+{
+    if (surface.IsNull())
+        return false;
+    for (TopExp_Explorer edge(wire, TopAbs_EDGE); edge.More(); edge.Next()) {
+        BRepAdaptor_Curve curve(TopoDS::Edge(edge.Current()));
+        for (int sample = 0; sample <= 16; ++sample) {
+            const double parameter = curve.FirstParameter() + (curve.LastParameter() - curve.FirstParameter()) * sample / 16.0;
+            GeomAPI_ProjectPointOnSurf projection(curve.Value(parameter), surface);
+            if (projection.NbPoints() == 0 || projection.LowerDistance() > precision)
+                return false;
+        }
+    }
+    return true;
+}
+
+/**
+ * @brief 将四条有向边转换为独立 B-Spline，以 Coons 方法构造受全部边界约束的曲面。
+ * @return 不满足四边条件或内核不支持该组曲线时返回空，交由通用拟合处理。
+ */
+occ::handle<Geom_Surface> buildFourBoundarySurface(const TopoDS_Wire& wire, double precision)
+{
+    if (countSubshapes(wire, TopAbs_EDGE) != 4)
+        return { };
+    try {
+        std::vector<occ::handle<Geom_BSplineCurve>> curves;
+        for (BRepTools_WireExplorer edge(wire); edge.More(); edge.Next()) {
+            double first = 0.0;
+            double last = 0.0;
+            const auto curve = BRep_Tool::Curve(edge.Current(), first, last);
+            if (curve.IsNull() || !std::isfinite(first) || !std::isfinite(last) || first >= last)
+                return { };
+            // 只使用边的实际参数区间，并复制曲线，避免次数统一或方向调整污染输入。
+            occ::handle<Geom_TrimmedCurve> trimmed = new Geom_TrimmedCurve(curve, first, last);
+            auto spline = GeomConvert::CurveToBSplineCurve(trimmed);
+            spline = occ::down_cast<Geom_BSplineCurve>(spline->Copy());
+            if (edge.Current().Orientation() == TopAbs_REVERSED)
+                spline->Reverse();
+            spline->IncreaseDegree(3);
+            curves.push_back(spline);
+        }
+        if (curves.size() != 4)
+            return { };
+        // 混合有理与非有理曲线时，内核的参数协调受首边影响；尝试四个起点，
+        // 每次复制以隔离构造器的曲线调整，并始终校验原始三维边界。
+        for (size_t start = 0; start < curves.size(); ++start) {
+            try {
+                std::vector<occ::handle<Geom_BSplineCurve>> ordered;
+                for (size_t offset = 0; offset < curves.size(); ++offset)
+                    ordered.push_back(occ::down_cast<Geom_BSplineCurve>(curves[(start + offset) % curves.size()]->Copy()));
+                GeomFill_BSplineCurves filling(ordered[0], ordered[1], ordered[2], ordered[3], GeomFill_CoonsStyle);
+                const auto surface = filling.Surface();
+                if (isBoundaryOnSurface(wire, surface, precision))
+                    return surface;
+            } catch (const Standard_Failure&) {
+                // 单一起点失败不代表该组边界无法构面。
+            }
+        }
+        return { };
+    } catch (const Standard_Failure&) {
+        return { };
+    }
+}
+
+/**
+ * @brief 优先复用原面支撑；圆弧和母线构成的边界尝试解析圆柱，避免强弯曲面退化为通用拟合。
+ */
+occ::handle<Geom_Surface> findBoundarySupport(const TopoDS_Wire& wire, double precision,
+    const occ::handle<Geom_Surface>& preferred = { })
+{
+    if (isBoundaryOnSurface(wire, preferred, precision))
+        return preferred;
+    for (TopExp_Explorer edge(wire, TopAbs_EDGE); edge.More(); edge.Next()) {
+        BRepAdaptor_Curve curve(TopoDS::Edge(edge.Current()));
+        if (curve.GetType() != GeomAbs_Circle)
+            continue;
+        const auto circle = curve.Circle();
+        occ::handle<Geom_Surface> cylinder = new Geom_CylindricalSurface(gp_Ax3(circle.Position()), circle.Radius());
+        if (isBoundaryOnSurface(wire, cylinder, precision))
+            return cylinder;
+    }
+    return { };
+}
+
+/**
  * @brief 按编辑后的外环和内环重建受影响的面，保留孔洞并限制拟合误差。
  */
 TopoDS_Face rebuildMovedFace(const TopoDS_Face& face, const occ::handle<BRepTools_ReShape>& edits)
@@ -1898,16 +1991,22 @@ TopoDS_Face rebuildMovedFace(const TopoDS_Face& face, const occ::handle<BRepTool
     if (planar.IsDone()) {
         rebuilt = planar.Face();
     } else {
-        BRepFill_Filling filling;
-        filling.SetConstrParam(Precision::PConfusion(), Precision::Confusion());
-        for (BRepTools_WireExplorer edge(outer); edge.More(); edge.Next())
-            filling.Add(TopoDS::Edge(edge.Current()), GeomAbs_C0);
-        filling.Build();
-        if (!filling.IsDone() || filling.G0Error() > 1.0e-5)
-            throw std::runtime_error("Cannot fit the moved face to its boundary");
-        // 使用原编辑边作边界，避免拟合器生成新边后与邻面断开。
+        auto surface = findBoundarySupport(outer, 1.0e-5, BRep_Tool::Surface(forward_face));
+        if (surface.IsNull())
+            surface = buildFourBoundarySurface(outer, 1.0e-5);
+        if (surface.IsNull()) {
+            BRepFill_Filling filling;
+            filling.SetConstrParam(Precision::PConfusion(), Precision::Confusion());
+            for (BRepTools_WireExplorer edge(outer); edge.More(); edge.Next())
+                filling.Add(TopoDS::Edge(edge.Current()), GeomAbs_C0);
+            filling.Build();
+            if (!filling.IsDone() || filling.G0Error() > 1.0e-5)
+                throw std::runtime_error("Cannot fit the moved face to its boundary");
+            surface = BRep_Tool::Surface(filling.Face());
+        }
+        // 复用原边，避免重建面后与其他邻面断开。
         BRep_Builder builder;
-        builder.MakeFace(rebuilt, BRep_Tool::Surface(filling.Face()), Precision::Confusion());
+        builder.MakeFace(rebuilt, surface, Precision::Confusion());
         builder.Add(rebuilt, outer);
     }
     BRepBuilderAPI_MakeFace with_holes(rebuilt);
@@ -2550,22 +2649,56 @@ TopoDS_Shape GeometryTopologyEditor::splitFace(
                 throw std::invalid_argument("Splitting edge does not lie on the target face");
         }
 
-        // BRepFeat 在完整 root 上替换目标 Face，保留其所在 Shell/Solid 及其他根子形状。
-        BRepFeat_SplitShape splitter(root);
-        for (const TopoDS_Edge& edge : splitting_edges)
-            splitter.Add(edge, target_face);
+        // SplitShape 与曲线修复会补写 pcurve，深复制保护原模型及撤销快照。
+        BRepBuilderAPI_Copy copier(root, true, false);
+        const auto working_face = TopoDS::Face(copier.ModifiedShape(target_face));
+        BRepFeat_SplitShape splitter(copier.Shape());
+        NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher> root_shapes;
+        TopExp::MapShapes(root, root_shapes);
+        for (const auto& edge : splitting_edges) {
+            if (root_shapes.Contains(edge)) {
+                splitter.Add(TopoDS::Edge(copier.ModifiedShape(edge)), working_face);
+                continue;
+            }
+            // 外部工具独立复制，但仍须复用其在目标模型内已有的顶点。
+            BRepBuilderAPI_Copy tool_copy(edge, true, false);
+            occ::handle<BRepTools_ReShape> vertices = new BRepTools_ReShape;
+            for (TopExp_Explorer vertex(edge, TopAbs_VERTEX); vertex.More(); vertex.Next()) {
+                if (root_shapes.Contains(vertex.Current()))
+                    vertices->Replace(tool_copy.ModifiedShape(vertex.Current()), copier.ModifiedShape(vertex.Current()));
+            }
+            splitter.Add(TopoDS::Edge(vertices->Apply(tool_copy.Shape())), working_face);
+        }
         splitter.Build();
 
         if (!splitter.IsDone())
             throw std::runtime_error("OpenCASCADE failed to split the target face");
 
         // 没有生成至少两个替代面说明分割边未形成有效切分，禁止产生空效果写回。
-        if (splitter.Modified(target_face).Extent() < 2)
+        if (splitter.Modified(working_face).Extent() < 2)
             throw std::runtime_error("Splitting edges did not divide the target face");
 
         TopoDS_Shape result = splitter.Shape();
         if (result.IsNull())
             throw std::runtime_error("OpenCASCADE returned an empty split result");
+        // 近似曲线端点会使分割输出的面环方向不一致，只修复新生成的面。
+        // 不允许修复过程改变边界边数，也不放宽整模型的精度或修改其他面。
+        occ::handle<BRepTools_ReShape> repairs = new BRepTools_ReShape;
+        for (const auto& replacement : splitter.Modified(working_face)) {
+            if (replacement.ShapeType() != TopAbs_FACE || BRepCheck_Analyzer(replacement).IsValid())
+                continue;
+            const auto split_face = TopoDS::Face(replacement);
+            ShapeFix_Face fixer(split_face);
+            fixer.SetPrecision(Precision::Confusion() * 10.0);
+            fixer.SetMaxTolerance(std::max(Precision::Confusion() * 10.0,
+                BRep_Tool::MaxTolerance(split_face, TopAbs_VERTEX)));
+            fixer.Perform();
+            fixer.FixOrientation();
+            if (countSubshapes(fixer.Face(), TopAbs_EDGE) != countSubshapes(split_face, TopAbs_EDGE))
+                throw std::runtime_error("Repairing the split face changed its boundary edges");
+            repairs->Replace(split_face, fixer.Face());
+        }
+        result = repairs->Apply(result);
         if (!BRepCheck_Analyzer(result).IsValid())
             throw std::runtime_error("Splitting the face produced invalid topology");
         return result;
@@ -2787,7 +2920,38 @@ TopoDS_Shape GeometryTopologyEditor::stitchBoundaryEdges(
         const auto distance = [](const TopoDS_Vertex& a, const TopoDS_Vertex& b) {
             return BRep_Tool::Pnt(a).Distance(BRep_Tool::Pnt(b));
         };
-        if (distance(source_first, target_last) + distance(source_last, target_first)
+        if (source_first.IsSame(source_last) && target_first.IsSame(target_last)) {
+            // 闭环没有固定起点，先循环对齐最近端点，再按起始切向决定走向。
+            auto best = target.begin();
+            double best_distance = std::numeric_limits<double>::infinity();
+            for (auto it = target.begin(); it != target.end(); ++it) {
+                const double gap = distance(source_first, TopExp::FirstVertex(*it, true));
+                if (gap < best_distance) {
+                    best_distance = gap;
+                    best = it;
+                }
+            }
+            std::rotate(target.begin(), best, target.end());
+            const auto start_direction = [](const TopoDS_Edge& edge) {
+                BRepAdaptor_Curve curve(edge);
+                gp_Pnt point;
+                gp_Vec tangent;
+                const bool reverse = edge.Orientation() == TopAbs_REVERSED;
+                curve.D1(reverse ? curve.LastParameter() : curve.FirstParameter(), point, tangent);
+                if (tangent.Magnitude() > Precision::Confusion())
+                    tangent.Normalize();
+                return reverse ? -tangent : tangent;
+            };
+            const auto source_direction = start_direction(source.front());
+            const auto reverse_start = TopoDS::Edge(target.back().Reversed());
+            if (source_direction.Dot(start_direction(reverse_start))
+                > source_direction.Dot(start_direction(target.front()))) {
+                std::reverse(target.begin(), target.end());
+                for (auto& edge : target)
+                    edge.Reverse();
+            }
+            std::tie(target_first, target_last) = patchChainEndpoints(target);
+        } else if (distance(source_first, target_last) + distance(source_last, target_first)
             < distance(source_first, target_first) + distance(source_last, target_last)) {
             std::reverse(target.begin(), target.end());
             for (auto& edge : target)
@@ -3129,6 +3293,48 @@ TopoDS_Shape GeometryTopologyEditor::stitchGapFromSeedEdge(
                     *reversed = true;
                 return result;
             } catch (const std::runtime_error& reverse_error) {
+                // 缺口两端的短边可能分别属于不同邻面。反向不能机械交换整条链，
+                // 而应从对侧重新识别移动面；仅允许重新划分同一组边，禁止跳到别处。
+                NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher> paired_edges;
+                for (const auto& edge : seed_chain)
+                    paired_edges.Add(edge);
+                for (const auto& edge : partner_chain)
+                    paired_edges.Add(edge);
+                const auto opposite_owner = edge_faces.FindFromKey(partner_chain.front()).First();
+                const bool crosses_faces = std::any_of(partner_chain.begin(), partner_chain.end(), [&](const auto& edge) {
+                    return !edge_faces.FindFromKey(edge).First().IsSame(opposite_owner);
+                });
+                for (const auto& opposite_seed : partner_chain) {
+                    if (!crosses_faces)
+                        break;
+                    try {
+                        const auto opposite_chain = expandStitchableFreeChain(root, opposite_seed, distance);
+                        const auto opposite_partners = findGapPartnerChains(root, opposite_chain, distance);
+                        for (const auto& candidate : opposite_partners) {
+                            NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher> candidate_edges;
+                            bool selected_is_stationary = false;
+                            for (const auto& edge : opposite_chain)
+                                candidate_edges.Add(edge);
+                            for (const auto& edge : candidate.edges) {
+                                candidate_edges.Add(edge);
+                                selected_is_stationary = selected_is_stationary || edge.IsSame(seed_edge);
+                            }
+                            if (!selected_is_stationary || candidate_edges.Extent() != paired_edges.Extent())
+                                continue;
+                            bool same_gap = true;
+                            for (const auto& edge : candidate_edges)
+                                same_gap = same_gap && paired_edges.Contains(edge);
+                            if (!same_gap)
+                                continue;
+                            auto result = stitchBoundaryEdges(root, opposite_chain, candidate.edges, distance);
+                            if (reversed)
+                                *reversed = true;
+                            return result;
+                        }
+                    } catch (const std::runtime_error&) {
+                        // 本次几何重建失败，仍以原始模型尝试同一缺口的另一种分组。
+                    }
+                }
                 throw std::runtime_error(std::string("Both stitch directions failed. Selected side: ")
                     + forward_error.what() + "; Opposite side: " + reverse_error.what());
             }
@@ -3550,16 +3756,47 @@ TopoDS_Face buildPatchFace(const TopoDS_Shape& root,
     if (planar.IsDone()) {
         patch = planar.Face();
     } else {
-        BRepFill_Filling filling;
-        filling.SetConstrParam(Precision::PConfusion(), fitting_tolerance);
-        for (const TopoDS_Edge& edge : boundary)
-            filling.Add(edge, GeomAbs_C0);
-        filling.Build();
-        if (!filling.IsDone() || filling.G0Error() > fitting_tolerance)
-            throw std::runtime_error("Cannot fit a patch within the requested tolerance");
+        // 可精确识别的解析面保留原形状；其余四边环使用通用边界插值。
+        auto surface = findBoundarySupport(wire.Wire(), fitting_tolerance);
+        if (surface.IsNull())
+            surface = buildFourBoundarySurface(wire.Wire(), fitting_tolerance);
+        if (surface.IsNull()) {
+            double fitting_error = std::numeric_limits<double>::infinity();
+            bool completed = false;
+            for (int attempt = 0; attempt < 2; ++attempt) {
+                BRepFill_Filling filling;
+                filling.SetConstrParam(Precision::PConfusion(), fitting_tolerance);
+                if (attempt != 0) {
+                    // 重试提高边界离散密度、迭代次数和曲面分段数，不扩大允许误差。
+                    filling.SetResolParam(3, 30, 4, false);
+                    filling.SetApproxParam(8, 36);
+                }
+                for (BRepTools_WireExplorer edge(wire.Wire()); edge.More(); edge.Next())
+                    filling.Add(TopoDS::Edge(edge.Current()), GeomAbs_C0);
+                filling.Build();
+                if (!filling.IsDone())
+                    continue;
+                completed = true;
+                fitting_error = filling.G0Error();
+                if (fitting_error <= fitting_tolerance) {
+                    surface = BRep_Tool::Surface(filling.Face());
+                    break;
+                }
+            }
+            if (surface.IsNull()) {
+                if (!completed)
+                    throw std::runtime_error("Patch surface fitting did not complete after refinement");
+                throw std::runtime_error("Patch boundary fitting error=" + std::to_string(fitting_error)
+                    + ", internal precision=" + std::to_string(fitting_tolerance));
+            }
+        }
+        // 记录输入边的既有精度；只约束本次新增误差，不能拒绝导入时已存在的容差。
+        std::vector<double> edge_tolerance_limits;
+        for (const auto& edge : boundary)
+            edge_tolerance_limits.push_back(std::max(fitting_tolerance * 5.0, BRep_Tool::Tolerance(edge)));
         // 保留原始边作为新面的边界，孤立边也必须接入新面，不能留下拟合器复制的边。
         BRep_Builder builder;
-        builder.MakeFace(patch, BRep_Tool::Surface(filling.Face()), Precision::Confusion());
+        builder.MakeFace(patch, surface, Precision::Confusion());
         builder.Add(patch, wire.Wire());
         ShapeFix_Edge edge_fixer;
         for (const auto& edge : boundary)
@@ -3572,9 +3809,13 @@ TopoDS_Face buildPatchFace(const TopoDS_Shape& root,
         patch = face_fixer.Face();
         NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher> patch_edges;
         TopExp::MapShapes(patch, TopAbs_EDGE, patch_edges);
-        for (const auto& edge : boundary) {
-            if (!patch_edges.Contains(edge) || BRep_Tool::Tolerance(edge) > fitting_tolerance * 5.0)
-                throw std::runtime_error("Cannot attach the original boundary within fitting precision");
+        for (size_t index = 0; index < boundary.size(); ++index) {
+            const auto& edge = boundary[index];
+            if (!patch_edges.Contains(edge))
+                throw std::runtime_error("Patch construction replaced an original boundary edge");
+            if (BRep_Tool::Tolerance(edge) > edge_tolerance_limits[index])
+                throw std::runtime_error("Patch boundary projection tolerance=" + std::to_string(BRep_Tool::Tolerance(edge))
+                    + ", internal limit=" + std::to_string(edge_tolerance_limits[index]));
         }
     }
     if (patch.IsNull() || !BRepCheck_Analyzer(patch).IsValid())
