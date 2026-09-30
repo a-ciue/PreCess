@@ -71,9 +71,13 @@ Page {
 
             ToolButton {
                 id: geoBtn
-                display: ToolButton.IconOnly
+                // 图标独立接入前使用文字入口，避免仅图标模式下按钮为空。
+                display: ToolButton.TextOnly
                 flat: true
-                Layout.preferredWidth: 32
+                Accessible.name: qsTr("几何显示")
+                ToolTip.visible: hovered
+                ToolTip.text: text
+                ToolTip.delay: 500
                 readonly property var geoLabels: [
                     "几何·面·有边", "几何·面·无边", "几何·透·75%", "几何·透·50%",
                     "几何·透·25%", "几何·线·带曲面线", "几何·线·无曲面线", "几何·隐"
@@ -211,9 +215,13 @@ Page {
 
             ToolButton {
                 id: meshBtn
-                display: ToolButton.IconOnly
+                // 图标独立接入前使用文字入口，避免仅图标模式下按钮为空。
+                display: ToolButton.TextOnly
                 flat: true
-                Layout.preferredWidth: 32
+                Accessible.name: qsTr("网格显示")
+                ToolTip.visible: hovered
+                ToolTip.text: text
+                ToolTip.delay: 500
                 readonly property var meshLabels: [
                     "网格·面·带网格线", "网格·面·无线", "网格·透·75%", "网格·透·50%",
                     "网格·透·25%", "网格·线·带内部线", "网格·线·仅表面线", "网格·隐"
