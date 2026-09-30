@@ -2400,3 +2400,106 @@ TEST_CASE("GeometryTopologyEditor repair preserves topology under scale translat
         }
     }
 }
+
+TEST_CASE("Local Sewing real remaining gap")
+{
+    const auto root = readRepairFixture("remaining-gap.brep");
+    const auto before = serializeRepairShape(root);
+    NCollection_IndexedDataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher> edges;
+    TopExp::MapShapesAndUniqueAncestors(root, TopAbs_EDGE, TopAbs_FACE, edges);
+    for (const int seed : { 28, 29, 30, 43, 44, 45, 46, 47, 48, 49, 50 }) {
+        std::string reference;
+        for (const double search : { 0.1, 1.0 }) {
+            bool sewn = false;
+            const auto result = GeometryTopologyEditor::stitchGapFromSeedEdge(root,
+                TopoDS::Edge(edges.FindKey(seed)), search, nullptr, &sewn);
+            REQUIRE(sewn);
+            CAPTURE(seed, search);
+            const auto serialized = serializeRepairShape(result);
+            if (reference.empty())
+                reference = serialized;
+            else
+                REQUIRE(serialized == reference);
+            REQUIRE(BRepCheck_Analyzer(result).IsValid());
+            REQUIRE(countSubshapes(result, TopAbs_FACE) == countSubshapes(root, TopAbs_FACE));
+            NCollection_IndexedDataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher> repaired;
+            TopExp::MapShapesAndUniqueAncestors(result, TopAbs_EDGE, TopAbs_FACE, repaired);
+            for (int i = 1; i <= repaired.Extent(); ++i)
+                REQUIRE(repaired.FindFromIndex(i).Extent() == 2);
+            REQUIRE(serializeRepairShape(root) == before);
+        }
+    }
+    bool sewn = true;
+    REQUIRE_THROWS_AS(GeometryTopologyEditor::stitchGapFromSeedEdge(root,
+                          TopoDS::Edge(edges.FindKey(28)), 0.001, nullptr, &sewn), std::runtime_error);
+    REQUIRE_FALSE(sewn);
+    REQUIRE(serializeRepairShape(root) == before);
+}
+
+TEST_CASE("Local Sewing leaves a second independent gap untouched")
+{
+    const auto local = readRepairFixture("remaining-gap.brep");
+    gp_Trsf translation;
+    translation.SetTranslation(gp_Vec(100, 0, 0));
+    const auto remote = local.Moved(TopLoc_Location(translation));
+    BRep_Builder builder;
+    TopoDS_Compound root;
+    builder.MakeCompound(root);
+    builder.Add(root, local);
+    builder.Add(root, remote);
+    const auto before = serializeRepairShape(root);
+    NCollection_IndexedDataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher> edges;
+    TopExp::MapShapesAndUniqueAncestors(local, TopAbs_EDGE, TopAbs_FACE, edges);
+    bool sewn = false;
+    const auto result = GeometryTopologyEditor::stitchGapFromSeedEdge(root,
+        TopoDS::Edge(edges.FindKey(28)), 1.0, nullptr, &sewn);
+    REQUIRE(sewn);
+    NCollection_IndexedDataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher> repaired;
+    TopExp::MapShapesAndUniqueAncestors(result, TopAbs_EDGE, TopAbs_FACE, repaired);
+    int free_edges = 0;
+    for (int i = 1; i <= repaired.Extent(); ++i) {
+        if (repaired.FindFromIndex(i).Extent() == 1) {
+            ++free_edges;
+            BRepAdaptor_Curve curve(TopoDS::Edge(repaired.FindKey(i)));
+            REQUIRE(curve.Value(curve.FirstParameter()).X() > 90);
+        }
+    }
+    REQUIRE(free_edges == 11);
+    REQUIRE(serializeRepairShape(root) == before);
+}
+
+//! @brief 后备连接预算随几何单位变化，不能退化为只适用于当前 STEP 尺度的常数。
+TEST_CASE("Local Sewing derives its budget under scaling and translation")
+{
+    for (double scale : { 100.0, 0.01 }) {
+        CAPTURE(scale);
+        gp_Trsf transform;
+        transform.SetScale(gp_Pnt(0, 0, 0), scale);
+        transform.SetTranslationPart(gp_Vec(10000, -20000, 30000));
+        const auto root = BRepBuilderAPI_Transform(readRepairFixture("remaining-gap.brep"), transform, true).Shape();
+        const auto before = serializeRepairShape(root);
+        NCollection_IndexedDataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher> edges;
+        TopExp::MapShapesAndUniqueAncestors(root, TopAbs_EDGE, TopAbs_FACE, edges);
+        bool sewn = false;
+        // 该导入模型缩小再远移后，OCC 变换结果本身已无效；不得把无效输入当作成功基线。
+        if (scale == 0.01) {
+            REQUIRE_FALSE(BRepCheck_Analyzer(root).IsValid());
+            REQUIRE_THROWS_AS(GeometryTopologyEditor::stitchGapFromSeedEdge(root,
+                TopoDS::Edge(edges.FindKey(28).Reversed()), scale, nullptr, &sewn), std::runtime_error);
+            REQUIRE_FALSE(sewn);
+            REQUIRE(serializeRepairShape(root) == before);
+            continue;
+        }
+        REQUIRE(BRepCheck_Analyzer(root).IsValid());
+        const auto result = GeometryTopologyEditor::stitchGapFromSeedEdge(root,
+            TopoDS::Edge(edges.FindKey(28).Reversed()), scale, nullptr, &sewn);
+        REQUIRE(sewn);
+        REQUIRE(BRepCheck_Analyzer(result).IsValid());
+        REQUIRE(countSubshapes(result, TopAbs_FACE) == 176);
+        NCollection_IndexedDataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher> repaired;
+        TopExp::MapShapesAndUniqueAncestors(result, TopAbs_EDGE, TopAbs_FACE, repaired);
+        for (int i = 1; i <= repaired.Extent(); ++i)
+            REQUIRE(repaired.FindFromIndex(i).Extent() == 2);
+        REQUIRE(serializeRepairShape(root) == before);
+    }
+}

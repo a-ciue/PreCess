@@ -41,6 +41,7 @@ struct DeviationResult {
 struct DeviationBudget {
     int max_depth = 16;
     int max_evaluations = 16384;
+    double resolution = 0.0; //!< 正数时独立控制几何及残差采样精度，零沿用预检默认策略。
 };
 
 /**

@@ -164,7 +164,7 @@ public:
         const TopoDS_Shape& root,
         double small_edge_length_threshold,
         double small_face_area_threshold,
-        const GeometryTopologyDiagnosticOptions& options = {},
+        const GeometryTopologyDiagnosticOptions& options = { },
         const std::atomic<bool>* cancel = nullptr);
 
     /**
@@ -357,11 +357,12 @@ public:
      * 最大间隙作为搜索上限，按实际跨面配对距离由近到远寻找完整边链。
      * 固定最近完整配对后优先移动选中侧；重建失败则基于原模型尝试反向。
      * 缺口端部边跨邻面时，反向允许重新划分同一组边的移动链，但不改选其他缺口。
-     * 不创建填充面，两侧失败时抛出包含两次原因的异常；拟合精度不随搜索上限放宽。
+     * 不创建填充面。双向失败后按完整边链实测偏差推导内部预算，进行局部 Sewing；拟合精度不随搜索上限放宽。
      *
      * @param root 当前几何根形状。
      * @param seed_edge 间隙边，必须是 root 上的自由边界边。
      * @param tolerance 最大缝合距离，必须为有限正数。
+     * @param sewn 可选输出；容差缝合后备成功时为 true。
      * @param reversed 可选输出；仅反向缝合成功时为 true，失败或正向成功为 false。
      * @return 缝合后的完整根形状。
      *
@@ -372,7 +373,8 @@ public:
         const TopoDS_Shape& root,
         const TopoDS_Edge& seed_edge,
         double tolerance,
-        bool* reversed = nullptr);
+        bool* reversed = nullptr,
+        bool* sewn = nullptr);
 
     /**
      * @brief 填充包含种子边且总弧长最短的闭合边界环，支持平面和非共面边界。

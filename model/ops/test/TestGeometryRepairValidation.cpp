@@ -90,3 +90,19 @@ TEST_CASE("GeometryRepair refuses precision policies that would erase local feat
     const auto edge = GeometryBuilder::makeLine(0, 0, 0, 1.e-5, 0, 0);
     REQUIRE_THROWS_AS(PrecisionPolicy::fromShape(edge), std::runtime_error);
 }
+
+//! @brief 固定测量分辨率后，放大查询上限不得改变采样点或实测最大偏差。
+TEST_CASE("GeometryRepair fixed resolution is independent of the search limit")
+{
+    const auto edge = TopoDS::Edge(GeometryBuilder::makeLine(0, 0, 0, 1, 0, 0));
+    const auto distance = [](const gp_Pnt& p) { return 0.02 * std::exp(-400.0 * std::pow(p.X() - 0.37, 2)); };
+    DeviationBudget budget;
+    budget.resolution = 1.e-6;
+    const auto small = measureCurveDeviation(edge, distance, 0.1, budget);
+    const auto large = measureCurveDeviation(edge, distance, 10, budget);
+    REQUIRE(small.status == DeviationStatus::WithinLimit);
+    REQUIRE(large.status == DeviationStatus::WithinLimit);
+    REQUIRE(small.evaluations == large.evaluations);
+    REQUIRE(small.maximum == large.maximum);
+    REQUIRE(small.maximum > 0.0199);
+}

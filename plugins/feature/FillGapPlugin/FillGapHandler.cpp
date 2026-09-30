@@ -23,8 +23,8 @@
 
 namespace systems::feature {
 namespace {
-constexpr size_t kSeedEdgeParam = 0;
-constexpr size_t kToleranceParam = 1;
+    constexpr size_t kSeedEdgeParam = 0;
+    constexpr size_t kToleranceParam = 1;
 }
 
 void FillGapHandler::setup(FeatureRegistrar& reg, FeatureContext& /*ctx*/)
@@ -32,7 +32,7 @@ void FillGapHandler::setup(FeatureRegistrar& reg, FeatureContext& /*ctx*/)
     reg.addParameter({ ArgTypeEnum::Selector, "间隙边", "GeometryEdge",
         "请选择一条间隙边界上的自由边" });
     reg.addParameter({ ArgTypeEnum::Float, "最大间隙", "0.01",
-        "允许识别和缝合的最大间隙；优先移动选中侧，重建失败则反向重试；使用模型长度单位" });
+        "允许识别和缝合的最大间隙；优先移动选中侧，双向失败后自动尝试局部容差缝合；使用模型长度单位" });
     reg.addMenuItem({ "几何/修复", "局部缝合", "" });
 }
 
@@ -49,8 +49,7 @@ std::any FillGapHandler::execute(FeatureContext& ctx)
 
     try {
         const Index edge_id = (*seed_param)->ids.front();
-        const auto component_id =
-            ctx.model.findComponentIdByGeometryShapeId(TopAbs_EDGE, edge_id);
+        const auto component_id = ctx.model.findComponentIdByGeometryShapeId(TopAbs_EDGE, edge_id);
         if (!component_id)
             return std::string("所选几何边不属于任何组件。");
 
@@ -68,14 +67,17 @@ std::any FillGapHandler::execute(FeatureContext& ctx)
         const double cleanup_tolerance = ctx.model.geometryCleanupTolerance();
         // 先按选中侧到对侧的方向重建几何，再一次写回，形成一条撤销记录。
         bool reversed = false;
+        bool sewn = false;
         TopoDS_Shape result = GeometryTopologyEditor::stitchGapFromSeedEdge(
-            *component->geometry->rootShape, TopoDS::Edge(*edge_shape), cleanup_tolerance, &reversed);
+            *component->geometry->rootShape, TopoDS::Edge(*edge_shape), cleanup_tolerance, &reversed, &sewn);
         auto component_operator = ctx.componentOperator
             ? ctx.componentOperator(*component_id)
             : std::nullopt;
         if (!component_operator)
             return std::string("几何操作失败，详细原因请查看日志。");
         const auto result_id = component_operator->replaceGeometryRoot(std::move(result));
+        if (sewn)
+            return std::string("已使用容差缝合，结果通过连接误差验收；未执行单侧定向移动。");
         if (reversed)
             return std::string("已反向缝合，选中侧保持原位。");
         return result_id;

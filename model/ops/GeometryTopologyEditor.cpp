@@ -2,6 +2,7 @@
 #include "GeometryRepairValidation.h"
 
 #include <BRepAdaptor_Curve.hxx>
+#include <BRepLib_CheckCurveOnSurface.hxx>
 #include <BRepAdaptor_Surface.hxx>
 #include <BRepAlgoAPI_Common.hxx>
 #include <BRepAlgoAPI_Section.hxx>
@@ -28,6 +29,7 @@
 #include <Bnd_Box.hxx>
 #include <GCPnts_AbscissaPoint.hxx>
 #include <GeomAPI_ProjectPointOnSurf.hxx>
+#include <GeomAPI_ProjectPointOnCurve.hxx>
 #include <Geom_BSplineSurface.hxx>
 #include <Geom_BezierSurface.hxx>
 #include <Geom_Curve.hxx>
@@ -1703,6 +1705,225 @@ std::pair<TopoDS_Shape, int> sewFaces(
 }
 
 /**
+ * @brief 求点到边链三维曲线的距离，不使用拓扑容差判定接触；投影未完成时返回未知。
+ */
+double distanceToBoundaryCurves(const gp_Pnt& point, const TopoDS_Shape& boundary)
+{
+    double minimum = std::numeric_limits<double>::infinity();
+    for (TopExp_Explorer it(boundary, TopAbs_EDGE); it.More(); it.Next()) {
+        double first, last;
+        const auto curve = BRep_Tool::Curve(TopoDS::Edge(it.Current()), first, last);
+        if (curve.IsNull())
+            return std::numeric_limits<double>::quiet_NaN();
+        minimum = std::min({ minimum, point.Distance(curve->Value(first)), point.Distance(curve->Value(last)) });
+        GeomAPI_ProjectPointOnCurve projection(point, curve, first, last);
+        if (projection.NbPoints() > 0) {
+            minimum = std::min(minimum, projection.LowerDistance());
+        } else {
+            // 截断区间可能没有内部垂足；用不携带输入粗容差的临时边补查端点情况。
+            const auto nominal = BRepBuilderAPI_MakeEdge(curve, first, last).Edge();
+            BRepExtrema_DistShapeShape distance(BRepBuilderAPI_MakeVertex(point).Vertex(), nominal);
+            distance.Perform();
+            if (!distance.IsDone())
+                return std::numeric_limits<double>::quiet_NaN();
+            minimum = std::min(minimum, distance.Value());
+        }
+    }
+    return minimum;
+}
+
+/**
+ * @brief 以固定局部精度测量两条完整链的双向距离，推导后备连接所需的内部预算。
+ * 搜索上限只用于拒绝过远配对，不作为采样精度或 Sewing 误差预算。
+ */
+double measureLocalConnectionBudget(const std::vector<TopoDS_Edge>& first,
+    const std::vector<TopoDS_Edge>& second, double maximum_gap)
+{
+    BRep_Builder builder;
+    TopoDS_Compound first_shape, second_shape, local;
+    builder.MakeCompound(first_shape);
+    builder.MakeCompound(second_shape);
+    builder.MakeCompound(local);
+    for (const auto& edge : first)
+        builder.Add(first_shape, edge);
+    for (const auto& edge : second)
+        builder.Add(second_shape, edge);
+    builder.Add(local, first_shape);
+    builder.Add(local, second_shape);
+    const auto precision = PrecisionPolicy::fromShape(local);
+    geometry::repair::DeviationBudget sampling;
+    sampling.max_depth = 32;
+    sampling.resolution = precision.fitting;
+    double deviation = 0.0;
+    // 对整条对侧链求最近距离，避免一长对多短时漏测长边未被覆盖的部分。
+    const auto measure = [&](const auto& source, const TopoDS_Shape& target) {
+        for (const auto& edge : source) {
+            const auto result = measureCurveDeviation(edge, [&](const gp_Pnt& point) { return distanceToBoundaryCurves(point, target); }, maximum_gap, sampling);
+            if (result.status != DeviationStatus::WithinLimit)
+                throw std::runtime_error("Cannot verify the complete paired gap within the search limit");
+            deviation = std::max(deviation, result.maximum);
+        }
+    };
+    measure(first, second_shape);
+    measure(second, first_shape);
+    // 小余量来自局部表示精度；不按搜索半径倍增，不读取整个区域的最大输入容差。
+    return deviation + precision.validation;
+}
+
+/**
+ * @brief 在副本中容差缝合同一缺口；只允许选定自由边被合并，逐面验收表示误差。
+ */
+TopoDS_Shape sewLocalGap(const TopoDS_Shape& root,
+    const NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher>& selected,
+    double budget)
+{
+    BRepBuilderAPI_Copy copier(root, true, false);
+    const auto working = copier.Shape();
+    NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher> selected_copies, allowed_vertices;
+    // 保存不可变的原边用于几何验收，不能使用已交给 Sewing 的可写副本作基准。
+    NCollection_DataMap<TopoDS_Shape, TopoDS_Shape, TopTools_ShapeMapHasher> original_edges;
+    for (const auto& edge : selected) {
+        const auto copy = copier.ModifiedShape(edge);
+        selected_copies.Add(copy);
+        original_edges.Bind(copy, edge);
+        TopExp::MapShapes(copy, TopAbs_VERTEX, allowed_vertices);
+    }
+    NCollection_IndexedDataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher> before;
+    TopExp::MapShapesAndUniqueAncestors(working, TopAbs_EDGE, TopAbs_FACE, before);
+    NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher> faces;
+    for (const auto& edge : selected_copies) {
+        for (const auto& face : before.FindFromKey(edge))
+            faces.Add(face);
+    }
+    NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher> original_vertices;
+    TopExp::MapShapes(working, TopAbs_VERTEX, original_vertices);
+    std::vector<double> edge_limits, vertex_limits;
+    for (int i = 1; i <= before.Extent(); ++i)
+        edge_limits.push_back(BRep_Tool::Tolerance(TopoDS::Edge(before.FindKey(i))));
+    for (const auto& vertex : original_vertices)
+        vertex_limits.push_back(BRep_Tool::Tolerance(TopoDS::Vertex(vertex)));
+    // 记录原面支撑面；后备连接只修复边界表示，不允许悄悄变形支撑面。
+    std::vector<std::tuple<TopoDS_Face, occ::handle<Geom_Surface>, TopLoc_Location>> surfaces;
+    for (TopExp_Explorer face(working, TopAbs_FACE); face.More(); face.Next()) {
+        const auto original = TopoDS::Face(face.Current());
+        TopLoc_Location location;
+        const auto surface = BRep_Tool::Surface(original, location);
+        surfaces.emplace_back(original, surface, location);
+    }
+    // 禁用输入容差叠加；搜索半径绝不传入连接器。
+    // 两侧包络相加作为表示误差预算；实际三维位移仍按单侧实测间隙验收。
+    BRepBuilderAPI_Sewing sewing(2.0 * budget, true, true, true, false);
+    sewing.SetLocalTolerancesMode(false);
+    sewing.SetMaxTolerance(2.0 * budget);
+    sewing.Load(working);
+    for (const auto& face : faces)
+        sewing.Add(face);
+    sewing.Perform();
+    const auto result = sewing.SewedShape();
+    if (result.IsNull())
+        throw std::runtime_error("Local Sewing returned an empty shape");
+    if (countSubshapes(result, TopAbs_FACE) != countSubshapes(working, TopAbs_FACE))
+        throw std::runtime_error("Local Sewing changed the face count");
+    if (!BRepCheck_Analyzer(result).IsValid())
+        throw std::runtime_error("Local Sewing produced invalid topology; measured gap=" + std::to_string(budget));
+    for (const auto& [face, surface, location] : surfaces) {
+        const auto mapped = sewing.IsModified(face) ? sewing.Modified(face) : face;
+        TopLoc_Location mapped_location;
+        if (mapped.ShapeType() != TopAbs_FACE
+            || BRep_Tool::Surface(TopoDS::Face(mapped), mapped_location) != surface
+            || mapped_location != location)
+            throw std::runtime_error("Local Sewing changed a supporting surface");
+    }
+    NCollection_IndexedDataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher> after;
+    TopExp::MapShapesAndUniqueAncestors(result, TopAbs_EDGE, TopAbs_FACE, after);
+    NCollection_IndexedDataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher> origins;
+    // 检查修改历史而非仅检查自由边总数，防止用别处的修复冒充选中缺口的成功。
+    for (int i = 1; i <= before.Extent(); ++i) {
+        const auto edge = before.FindKey(i);
+        const auto mapped = sewing.IsModifiedSubShape(edge) ? sewing.ModifiedSubShape(edge) : edge;
+        if (!selected_copies.Contains(edge)) {
+            if (!mapped.IsSame(edge) || !after.Contains(edge)
+                || uniqueFaceCount(after.FindFromKey(edge)) != uniqueFaceCount(before.FindFromIndex(i)))
+                throw std::runtime_error("Local Sewing changed unselected edge=" + std::to_string(i) + ", old owners=" + std::to_string(uniqueFaceCount(before.FindFromIndex(i))) + ", mapped owners=" + std::to_string(after.Contains(mapped) ? uniqueFaceCount(after.FindFromKey(mapped)) : -1) + ", selected=" + std::to_string(selected.Extent()));
+            continue;
+        }
+        NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher> pieces;
+        TopExp::MapShapes(mapped, TopAbs_EDGE, pieces);
+        if (pieces.IsEmpty())
+            throw std::runtime_error("Local Sewing removed a selected edge");
+        for (const auto& piece : pieces) {
+            if (!after.Contains(piece) || uniqueFaceCount(after.FindFromKey(piece)) != 2)
+                throw std::runtime_error("Local Sewing did not close edge=" + std::to_string(i) + ", budget=" + std::to_string(budget) + ", owners=" + std::to_string(after.Contains(piece) ? uniqueFaceCount(after.FindFromKey(piece)) : -1));
+        }
+        // 表示误差允许两侧包络相加，但实际曲线位移仍不能超过已测得的间隙。
+        geometry::repair::DeviationBudget sampling;
+        sampling.max_depth = 32;
+        const auto original = TopoDS::Edge(original_edges.Find(edge));
+        sampling.resolution = PrecisionPolicy::fromShape(original).fitting;
+        const auto measured = measureCurveDeviation(original, [&](const gp_Pnt& point) { return distanceToBoundaryCurves(point, mapped); }, budget, sampling);
+        if (measured.status != DeviationStatus::WithinLimit)
+            throw std::runtime_error("Sewing original displacement=" + std::to_string(measured.maximum)
+                + ", budget=" + std::to_string(budget) + ", edge=" + std::to_string(i)
+                + ", status=" + std::to_string(static_cast<int>(measured.status)));
+        for (const auto& piece : pieces) {
+            if (!origins.Contains(piece))
+                origins.Add(piece, NCollection_List<TopoDS_Shape>());
+            origins.ChangeFromKey(piece).Append(original);
+        }
+    }
+    // 一条结果边可能对应多条短边；反向覆盖检查必须针对完整来源集合。
+    for (int i = 1; i <= origins.Extent(); ++i) {
+        BRep_Builder builder;
+        TopoDS_Compound original;
+        builder.MakeCompound(original);
+        for (const auto& edge : origins.FindFromIndex(i))
+            builder.Add(original, edge);
+        const auto edge = TopoDS::Edge(origins.FindKey(i));
+        geometry::repair::DeviationBudget sampling;
+        sampling.max_depth = 32;
+        sampling.resolution = PrecisionPolicy::fromShape(original).fitting;
+        const auto measured = measureCurveDeviation(edge, [&](const gp_Pnt& point) { return distanceToBoundaryCurves(point, original); }, budget, sampling);
+        if (measured.status != DeviationStatus::WithinLimit)
+            throw std::runtime_error("Sewing result displacement=" + std::to_string(measured.maximum) + ", budget=" + std::to_string(budget) + ", status=" + std::to_string(static_cast<int>(measured.status)));
+    }
+    for (int i = 1; i <= after.Extent(); ++i) {
+        if (uniqueFaceCount(after.FindFromIndex(i)) > 2)
+            throw std::runtime_error("Local Sewing produced a non-manifold edge");
+        const auto edge = TopoDS::Edge(after.FindKey(i));
+        // 未改实体沿用自身原始预算，新边不能继承区域内其他实体的大容差。
+        double limit = 2.0 * budget;
+        if (before.Contains(edge) && !selected_copies.Contains(edge)) {
+            limit = edge_limits[before.FindIndex(edge) - 1];
+        }
+        if (BRep_Tool::Tolerance(edge) > limit)
+            throw std::runtime_error("Local Sewing edge tolerance=" + std::to_string(BRep_Tool::Tolerance(edge)) + ", budget=" + std::to_string(limit));
+        // 未改边保持原身份和容差；不把输入已有的表示误差归因于本次修复。
+        if (before.Contains(edge) && !selected_copies.Contains(edge))
+            continue;
+        for (const auto& owner : after.FindFromIndex(i)) {
+            if (BRep_Tool::Degenerated(edge))
+                continue;
+            if (!BRep_Tool::SameParameter(edge) || !BRep_Tool::SameRange(edge))
+                throw std::runtime_error("Local Sewing produced inconsistent curve parameters");
+            BRepLib_CheckCurveOnSurface check(edge, TopoDS::Face(owner));
+            check.Perform();
+            if (!check.IsDone() || !std::isfinite(check.MaxDistance()) || check.MaxDistance() > limit)
+                throw std::runtime_error("Local Sewing exceeded the curve-on-surface budget");
+        }
+    }
+    NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher> vertices;
+    TopExp::MapShapes(result, TopAbs_VERTEX, vertices);
+    for (const auto& shape : vertices) {
+        const double limit = original_vertices.Contains(shape) && !allowed_vertices.Contains(shape)
+            ? vertex_limits[original_vertices.FindIndex(shape) - 1]
+            : 2.0 * budget;
+        if (BRep_Tool::Tolerance(TopoDS::Vertex(shape)) > limit)
+            throw std::runtime_error("Local Sewing exceeded the vertex tolerance budget");
+    }
+    return result;
+}
+
+/**
  * @brief 检查一组边是否构成无分支的连续链。
  */
 bool isContinuousEdgeChain(const std::vector<TopoDS_Edge>& edges)
@@ -3210,8 +3431,10 @@ std::vector<GeometryGapPartnerChain> GeometryTopologyEditor::findGapPartnerChain
 TopoDS_Shape GeometryTopologyEditor::stitchGapFromSeedEdge(
     const TopoDS_Shape& root,
     const TopoDS_Edge& seed_edge,
-    double tolerance, bool* reversed)
+    double tolerance, bool* reversed, bool* sewn)
 {
+    if (sewn)
+        *sewn = false;
     if (reversed)
         *reversed = false;
     if (root.IsNull() || seed_edge.IsNull())
@@ -3318,8 +3541,21 @@ TopoDS_Shape GeometryTopologyEditor::stitchGapFromSeedEdge(
                         // 本次几何重建失败，仍以原始模型尝试同一缺口的另一种分组。
                     }
                 }
-                throw std::runtime_error(std::string("Both stitch directions failed. Selected side: ")
-                    + forward_error.what() + "; Opposite side: " + reverse_error.what());
+                try {
+                    const double budget = measureLocalConnectionBudget(seed_chain, partner_chain, tolerance);
+                    auto result = sewLocalGap(root, paired_edges, budget);
+                    if (sewn)
+                        *sewn = true;
+                    return result;
+                } catch (const Standard_Failure& error) {
+                    throw std::runtime_error(std::string("Both stitch directions failed. Selected side: ")
+                        + forward_error.what() + "; Opposite side: " + reverse_error.what()
+                        + "; Local Sewing: " + (error.GetMessageString() ? error.GetMessageString() : "kernel failure"));
+                } catch (const std::runtime_error& error) {
+                    throw std::runtime_error(std::string("Both stitch directions failed. Selected side: ")
+                        + forward_error.what() + "; Opposite side: " + reverse_error.what()
+                        + "; Local Sewing: " + error.what());
+                }
             }
         }
     }

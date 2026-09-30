@@ -67,14 +67,16 @@ PrecisionPolicy PrecisionPolicy::fromShape(const TopoDS_Shape& local_shape)
 DeviationResult measureCurveDeviation(const TopoDS_Edge& edge,
     const std::function<double(const gp_Pnt&)>& distance, double limit, const DeviationBudget& budget)
 {
-    if (!std::isfinite(limit) || limit <= 0.0 || budget.max_depth < 0 || budget.max_evaluations < 1)
+    if (!std::isfinite(limit) || limit <= 0.0 || budget.max_depth < 0 || budget.max_evaluations < 1
+        || !std::isfinite(budget.resolution) || budget.resolution < 0.0)
         throw std::invalid_argument("Invalid deviation limit or computation budget");
     DeviationResult result;
     try {
         BRepAdaptor_Curve curve(edge);
         // 几何离散精度与查询距离分开，避免搜索阈值趋近零时把同一曲线耗尽预算。
         // 这里仅做候选预检，最终曲线/曲面一致性仍由 BoundaryAudit 的最大偏差算法验收。
-        const double geometric_resolution = std::max(limit * 0.25, PrecisionPolicy::fromShape(edge).fitting);
+        const double geometric_resolution = budget.resolution > 0.0 ? budget.resolution
+            : std::max(limit * 0.25, PrecisionPolicy::fromShape(edge).fitting);
         if (!std::isfinite(curve.FirstParameter()) || !std::isfinite(curve.LastParameter())
             || curve.FirstParameter() >= curve.LastParameter())
             return result;
@@ -116,7 +118,7 @@ DeviationResult measureCurveDeviation(const TopoDS_Edge& edge,
             const double bend = m.point.Distance(chord_mid);
             const double variation = std::abs(m.deviation - (a.deviation + b.deviation) * 0.5);
             // 至少细分三层；几何或残差尚未平稳时继续细分，不能把深度耗尽当成通过。
-            const double resolution = limit * 0.25;
+            const double resolution = budget.resolution > 0.0 ? budget.resolution : limit * 0.25;
             if (depth >= 3 && bend <= geometric_resolution && variation <= resolution)
                 return true;
             if (depth >= budget.max_depth)
