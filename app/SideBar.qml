@@ -63,6 +63,7 @@ Item{
             text: "执行"
             enabled: !!(root.activeOp && root.activeOp.info)
             Layout.fillWidth: true
+            Layout.fillHeight: true
             // 主操作：实心强调色按钮
             background: Rectangle {
                 radius: Theme.radiusControl
@@ -96,14 +97,29 @@ Item{
         }
         Button{
             id: confirmButton
-            text: "✓"
+            text: qsTr("结束")
             Accessible.name: qsTr("结束当前操作")
             ToolTip.visible: hovered
             ToolTip.delay: 500
             ToolTip.text: qsTr("结束当前操作")
             enabled: !!(root.activeOp && root.activeOp.info)
-            flat: true
-            Layout.preferredWidth: 44
+            Layout.fillHeight: true
+            // 文字与边框明确表达结束动作，避免孤立勾号被误认为勾选状态。
+            background: Rectangle {
+                implicitWidth: 64
+                radius: Theme.radiusControl
+                color: confirmButton.down ? Theme.primaryTint
+                     : confirmButton.hovered ? Theme.hoverOverlay : Theme.surface
+                border.width: confirmButton.visualFocus ? 2 : 1
+                border.color: confirmButton.visualFocus ? Theme.primary : Theme.textSecondary
+            }
+            contentItem: Text {
+                text: confirmButton.text
+                font.pixelSize: Theme.fontSizeBody
+                color: confirmButton.enabled ? Theme.textPrimary : Theme.textDisabled
+                horizontalAlignment: Text.AlignHCenter
+                verticalAlignment: Text.AlignVCenter
+            }
             // 确认 = 结束当前操作，取消操作选中；再次执行需重新点选算法
             onClicked: App.activeOperation = null
         }
