@@ -53,8 +53,8 @@ Item{
         anchors.top: parent.top
         anchors.left: parent.left
         anchors.right: parent.right
-        anchors.margins: Theme.spacingSm
-        height: 36
+        anchors.margins: visible ? Theme.spacingSm : 0
+        height: visible ? 36 : 0
         spacing: Theme.spacingSm
         // 无活动操作时按钮行整体隐藏，避免两个 disabled 按钮占据首行
         visible: !!(root.activeOp && root.activeOp.info)
@@ -143,7 +143,7 @@ Item{
         anchors.top: buttonRow.bottom
         anchors.left: parent.left
         anchors.right: parent.right
-        anchors.margins: Theme.spacingSm
+        anchors.margins: visible ? Theme.spacingSm : 0
         // 不可见时不占锚定布局高度，避免留下空白
         height: visible ? 80 : 0
         readOnly: true
@@ -170,6 +170,8 @@ Item{
                 clip: true
                 // 固定预留滚动条槽，避免遮挡输入框或在滚动条显隐时挤动参数行。
                 contentWidth: Math.max(0, width - parameterScrollBar.implicitWidth - Theme.spacingXs)
+                // 所有参数行共用扣除滚动条后的标签列宽。
+                readonly property real labelColumnWidth: contentWidth * 0.38
                 Layout.fillHeight: true
                 Layout.fillWidth: true
                 Layout.margins: Theme.spacingSm
@@ -226,7 +228,7 @@ Item{
             Text{
                 id:nametext
                 text: model.name
-                Layout.preferredWidth: parameterList.contentWidth * 0.38
+                Layout.preferredWidth: parameterList.labelColumnWidth
                 elide: Text.ElideRight
                 color: Theme.textPrimary
                 font.pixelSize: Theme.fontSizeBody
@@ -276,7 +278,7 @@ Item{
             Text{
                 id:nametext
                 text: model.name
-                Layout.preferredWidth: parameterList.contentWidth * 0.38
+                Layout.preferredWidth: parameterList.labelColumnWidth
                 elide: Text.ElideRight
                 color: Theme.textPrimary
                 font.pixelSize: Theme.fontSizeBody
@@ -311,7 +313,7 @@ Item{
             Text{
                 id:nametext
                 text: model.name
-                Layout.preferredWidth: parameterList.contentWidth * 0.38
+                Layout.preferredWidth: parameterList.labelColumnWidth
                 elide: Text.ElideRight
                 color: Theme.textPrimary
                 font.pixelSize: Theme.fontSizeBody
@@ -380,7 +382,7 @@ Item{
                 id:nametext
                 text: model.name
                 // 标签列与其余参数行同宽，拉伸面板后同步扩大
-                Layout.preferredWidth: parameterList.contentWidth * 0.38
+                Layout.preferredWidth: parameterList.labelColumnWidth
                 elide: Text.ElideRight
                 color: Theme.textPrimary
                 font.pixelSize: Theme.fontSizeBody
@@ -443,7 +445,7 @@ Item{
             Text{
                 id:nametext
                 text: model.name
-                Layout.preferredWidth: parameterList.contentWidth * 0.38
+                Layout.preferredWidth: parameterList.labelColumnWidth
                 elide: Text.ElideRight
                 color: Theme.textPrimary
                 font.pixelSize: Theme.fontSizeBody
@@ -519,7 +521,7 @@ Item{
             Text{
                 id:nametext
                 text: model.name
-                Layout.preferredWidth: parameterList.contentWidth * 0.38
+                Layout.preferredWidth: parameterList.labelColumnWidth
                 elide: Text.ElideRight
                 color: Theme.textPrimary
                 font.pixelSize: Theme.fontSizeBody

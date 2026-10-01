@@ -10,6 +10,7 @@ Rectangle {
 
     // 浮动窗口底与边框（与 app 侧 Theme 令牌取值保持一致；dock 模块
     // 刻意不依赖 app，故此处以局部常量对齐配色）
+    // 修改这些配色时须同步检查 app/Theme.qml 中的对应令牌。
     readonly property color surfaceWindow: "#F3F4F6"
     readonly property color windowBorder: "#C3C8CF"
 

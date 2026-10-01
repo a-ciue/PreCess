@@ -19,6 +19,7 @@ Rectangle {
 
     // 面板外框配色（与 app 侧 Theme 令牌取值保持一致；dock 模块刻意
     // 仅依赖 Qt、不反向依赖 app，故以局部常量对齐配色）
+    // 修改这些配色时须同步检查 app/Theme.qml 中的对应令牌。
     readonly property color panelBorder: "#D9DDE3"
     readonly property color titleBarSurface: "#F7F8FA"
     readonly property color titleText: "#2B2F36"

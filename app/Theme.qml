@@ -3,7 +3,7 @@
  * @brief 全局设计令牌单例：语义色、字号、间距与圆角
  *
  * 颜色一律按角色命名（primary / surface / border / textXxx），
- * 界面文件禁止再散落硬编码色值；改主题只改本文件。
+ * 应用界面统一引用本文件；独立 dock 模块的局部配色需同步检查。
  * 字号按紧凑桌面工具取模数音阶：基准 13px、小二度（1.125）取整。
  */
 
@@ -11,6 +11,7 @@ pragma Singleton
 import QtQuick
 
 QtObject {
+    // 修改配色时同步检查 dock/ui/qml/PanelGroup.qml 与 DockWindow.qml 的局部配色。
     // ---- 交互色（延续既有交互蓝 #1976D2）----
     readonly property color primary: "#1976D2"
     readonly property color primaryHover: "#1565C0"
