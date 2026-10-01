@@ -4,6 +4,7 @@
  */
 
 import QtQuick
+import QtQuick.Shapes
 import QtQuick.Controls.Fusion
 import QtQuick.Layouts
 import QtQuick.Dialogs
@@ -498,21 +499,28 @@ Item{
                 id: parameterCheckBox
                 // 加大勾选区域，以实色背景区分已选状态；保留控件自身的键盘和无障碍行为。
                 indicator: Rectangle {
-                    implicitWidth: 20
-                    implicitHeight: 20
+                    implicitWidth: 24
+                    implicitHeight: 24
                     x: parameterCheckBox.leftPadding
                     y: parameterCheckBox.topPadding + (parameterCheckBox.availableHeight - height) / 2
-                    radius: Theme.radiusparameterCheckBox
-                    color: parameterCheckBox.checked ? (parameterCheckBox.enabled ? Theme.primary : Theme.textDisabled) : Theme.surface
-                    border.width: parameterCheckBox.visualFocus ? 2 : 1
-                    border.color: parameterCheckBox.visualFocus ? Theme.primary : Theme.borderStrong
-                    Text {
-                        anchors.centerIn: parent
-                        text: "✓"
+                    radius: Theme.radiusControl
+                    color: parameterCheckBox.checked ? (parameterCheckBox.enabled ? Theme.primaryPressed : Theme.textSecondary) : Theme.surface
+                    border.width: 2
+                    border.color: parameterCheckBox.checked || parameterCheckBox.visualFocus ? Theme.primaryPressed : Theme.textSecondary
+                    Shape {
+                        anchors.fill: parent
                         visible: parameterCheckBox.checked
-                        color: Theme.textOnPrimary
-                        font.pixelSize: 16
-                        font.bold: true
+                        ShapePath {
+                            strokeColor: Theme.textOnPrimary
+                            strokeWidth: 3
+                            fillColor: "transparent"
+                            capStyle: ShapePath.RoundCap
+                            joinStyle: ShapePath.RoundJoin
+                            startX: 5
+                            startY: 12
+                            PathLine { x: 10; y: 17 }
+                            PathLine { x: 19; y: 7 }
+                        }
                     }
                 }
 
