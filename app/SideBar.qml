@@ -97,28 +97,42 @@ Item{
         }
         Button{
             id: confirmButton
-            text: qsTr("结束")
+            text: "✓"
             Accessible.name: qsTr("结束当前操作")
             ToolTip.visible: hovered
             ToolTip.delay: 500
             ToolTip.text: qsTr("结束当前操作")
             enabled: !!(root.activeOp && root.activeOp.info)
             Layout.fillHeight: true
-            // 文字与边框明确表达结束动作，避免孤立勾号被误认为勾选状态。
+            // 保留对号语义，用有边界的按钮与粗线标记提升辨识度。
             background: Rectangle {
-                implicitWidth: 64
+                implicitWidth: 44
                 radius: Theme.radiusControl
                 color: confirmButton.down ? Theme.primaryTint
                      : confirmButton.hovered ? Theme.hoverOverlay : Theme.surface
                 border.width: confirmButton.visualFocus ? 2 : 1
                 border.color: confirmButton.visualFocus ? Theme.primary : Theme.textSecondary
             }
-            contentItem: Text {
-                text: confirmButton.text
-                font.pixelSize: Theme.fontSizeBody
-                color: confirmButton.enabled ? Theme.textPrimary : Theme.textDisabled
-                horizontalAlignment: Text.AlignHCenter
-                verticalAlignment: Text.AlignVCenter
+            contentItem: Item {
+                implicitWidth: 24
+                implicitHeight: 24
+                // 直接绘制对号，避免字体替代导致笔画偏细。
+                Shape {
+                    anchors.centerIn: parent
+                    width: 24
+                    height: 24
+                    ShapePath {
+                        strokeColor: confirmButton.enabled ? Theme.primaryPressed : Theme.textDisabled
+                        strokeWidth: 3
+                        fillColor: "transparent"
+                        capStyle: ShapePath.RoundCap
+                        joinStyle: ShapePath.RoundJoin
+                        startX: 5
+                        startY: 12
+                        PathLine { x: 10; y: 17 }
+                        PathLine { x: 19; y: 7 }
+                    }
+                }
             }
             // 确认 = 结束当前操作，取消操作选中；再次执行需重新点选算法
             onClicked: App.activeOperation = null
