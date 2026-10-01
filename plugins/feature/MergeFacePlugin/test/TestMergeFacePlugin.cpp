@@ -192,8 +192,8 @@ TEST_CASE("MergeFace feature merges selected faces and records one undo operatio
     REQUIRE(feature_system.setParameter("MergeFace", 0,
         core::ArgObject::create<ArgTypeEnum::Selector>(makeFaceSelection(fixture))));
 
-    const Index result = std::any_cast<Index>(feature_system.invoke("MergeFace"));
-    REQUIRE(result == fixture.component_id);
+    const std::string result = std::any_cast<std::string>(feature_system.invoke("MergeFace"));
+    REQUIRE(result.find("成功") != std::string::npos);
     REQUIRE(countFaces(*model_layer.findComponent(fixture.component_id)) == 6);
     REQUIRE(countEdges(*model_layer.findComponent(fixture.component_id)) == 12);
     REQUIRE(countMergedBottomFaceEdges(*model_layer.findComponent(fixture.component_id)) == 4);

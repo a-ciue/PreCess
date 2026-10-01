@@ -124,8 +124,8 @@ TEST_CASE("MergePoints feature merges two vertices at midpoint", "[MergePointsPl
     REQUIRE(feature_system.setParameter("MergePoints", 2,
         core::ArgObject::create<ArgTypeEnum::Combo>(2)));
 
-    const Index result = std::any_cast<Index>(feature_system.invoke("MergePoints"));
-    REQUIRE(result == fixture.component_id);
+    const std::string result = std::any_cast<std::string>(feature_system.invoke("MergePoints"));
+    REQUIRE(result.find("成功") != std::string::npos);
     REQUIRE(countVertices(*model_layer.findComponent(fixture.component_id)) == 1);
     REQUIRE(undo_stack.undoLabel() == "点合并");
     NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher> vertices;
@@ -158,6 +158,6 @@ TEST_CASE("MergePoints feature merges distant points without a distance paramete
             makeVertexSelection(fixture, fixture.vertex_ids[1]))));
 
     const std::any hint = feature_system.invoke("MergePoints");
-    REQUIRE(std::any_cast<Index>(hint) == fixture.component_id);
+    REQUIRE(std::any_cast<std::string>(hint).find("成功") != std::string::npos);
     REQUIRE(countVertices(*model_layer.findComponent(fixture.component_id)) == 1);
 }

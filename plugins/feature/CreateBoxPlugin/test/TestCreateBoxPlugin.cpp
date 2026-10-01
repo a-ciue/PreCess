@@ -9,6 +9,7 @@
 #include <catch2/catch_test_macros.hpp>
 
 #include <any>
+#include <string>
 
 using namespace systems;
 using namespace systems::feature;
@@ -20,6 +21,21 @@ HandlerMetaData boxMetaData()
     meta_data.name = "CreateBox";
     meta_data.display_name = "创建长方体";
     return meta_data;
+}
+}
+
+
+namespace {
+//! @brief 从「创建…成功（组件 N）」中解析组件 id，供测试定位新建组件。
+Index parseComponentId(const std::string& message)
+{
+    REQUIRE(message.find("成功") != std::string::npos);
+    const auto end = message.find_last_of("0123456789");
+    REQUIRE(end != std::string::npos);
+    auto start = end;
+    while (start > 0 && message[start - 1] >= '0' && message[start - 1] <= '9')
+        --start;
+    return static_cast<Index>(std::stoll(message.substr(start, end - start + 1)));
 }
 }
 
@@ -66,9 +82,9 @@ TEST_CASE("CreateBox execute writes geometry per write target", "[CreateBoxPlugi
 
     // 写入目标 2：新建临时模型承载，execute 返回新组件 id
     REQUIRE(feature_system.setParameter("CreateBox", 6, core::ArgObject::create<ArgTypeEnum::Combo>(2)));
-    const std::any result = feature_system.invoke("CreateBox");
-    const Index temp_component_id = std::any_cast<Index>(result);
-    REQUIRE(temp_component_id >= 0);
+    const std::string create_message = std::any_cast<std::string>(feature_system.invoke("CreateBox"));
+    REQUIRE(create_message.find("创建长方体成功") == 0);
+    const Index temp_component_id = parseComponentId(create_message);
     const auto* temp_component = model_layer.findComponent(temp_component_id);
     REQUIRE(temp_component != nullptr);
     REQUIRE(temp_component->name == "Box_3");

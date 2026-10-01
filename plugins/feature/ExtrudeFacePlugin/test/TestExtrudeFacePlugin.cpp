@@ -69,8 +69,8 @@ TEST_CASE("ExtrudeFace execute appends extruded solid to source component", "[Ex
     REQUIRE(feature_system.setParameter("ExtrudeFace", 0,
         core::ArgObject::create<ArgTypeEnum::Selector>(selection)));
 
-    const Index result_component_id = std::any_cast<Index>(feature_system.invoke("ExtrudeFace"));
-    REQUIRE(result_component_id == component_id); // 写回源组件
+    const std::string result_message = std::any_cast<std::string>(feature_system.invoke("ExtrudeFace"));
+    REQUIRE(result_message.find("成功") != std::string::npos); // 写回源组件
 
     // 源面保留，拉伸结果以截面副本追加（拓扑独立）：6 源面 + 6 棱柱面，2 个实体
     component->geometry->ensureIndexBuilt(model_layer.geomRegistry());

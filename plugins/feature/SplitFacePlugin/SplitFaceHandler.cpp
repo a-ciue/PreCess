@@ -105,7 +105,8 @@ std::any SplitFaceHandler::execute(FeatureContext& ctx)
             : std::nullopt;
         if (!component_operator)
             return std::string("几何操作失败，详细原因请查看日志。");
-        return component_operator->replaceGeometryRoot(std::move(result));
+        component_operator->replaceGeometryRoot(std::move(result));
+        return std::string("分割面成功");
     } catch (const Standard_Failure& error) {
         const char* detail = error.GetMessageString();
         spdlog::error("SplitFace: {}", detail ? detail : "OpenCASCADE error");

@@ -75,12 +75,12 @@ std::any FillGapHandler::execute(FeatureContext& ctx)
             : std::nullopt;
         if (!component_operator)
             return std::string("几何操作失败，详细原因请查看日志。");
-        const auto result_id = component_operator->replaceGeometryRoot(std::move(result));
+        component_operator->replaceGeometryRoot(std::move(result));
         if (sewn)
-            return std::string("已使用容差缝合，结果通过连接误差验收；未执行单侧定向移动。");
+            return std::string("补间隙成功：已使用容差缝合，结果通过连接误差验收；未执行单侧定向移动。");
         if (reversed)
-            return std::string("已反向缝合，选中侧保持原位。");
-        return result_id;
+            return std::string("补间隙成功：已反向缝合，选中侧保持原位。");
+        return std::string("补间隙成功");
     } catch (const Standard_Failure& error) {
         const char* detail = error.GetMessageString();
         spdlog::error("FillGap: {}", detail ? detail : "OpenCASCADE error");

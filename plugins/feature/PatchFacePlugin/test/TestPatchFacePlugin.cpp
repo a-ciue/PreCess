@@ -133,11 +133,7 @@ TEST_CASE("PatchFace feature fills a boundary loop with undo and redo", "[PatchF
         REQUIRE(feature_system.setParameter("PatchFace", 0,
             core::ArgObject::create<ArgTypeEnum::Selector>(makeEdgeSelection(fixture))));
         const auto result = feature_system.invoke("PatchFace");
-        if (result.type() == typeid(std::string)) {
-            INFO(std::any_cast<std::string>(result));
-            FAIL("PatchFace failed");
-        }
-        REQUIRE(std::any_cast<Index>(result) == fixture.component_id);
+        REQUIRE(std::any_cast<std::string>(result).find("成功") != std::string::npos);
         const auto* component = model_layer.findComponent(fixture.component_id);
         REQUIRE(component->geometry->index.face_local_to_global.size() == (isolated ? 2 : 7));
         REQUIRE(countSharedEdges(*component) == (isolated ? 0 : 12));

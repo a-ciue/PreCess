@@ -125,8 +125,8 @@ TEST_CASE("MergeEdge feature merges selected edges and records one undo operatio
     REQUIRE(feature_system.setParameter("MergeEdge", 0,
         core::ArgObject::create<ArgTypeEnum::Selector>(makeEdgeSelection(fixture))));
 
-    const Index result = std::any_cast<Index>(feature_system.invoke("MergeEdge"));
-    REQUIRE(result == fixture.component_id);
+    const std::string result = std::any_cast<std::string>(feature_system.invoke("MergeEdge"));
+    REQUIRE(result.find("成功") != std::string::npos);
     REQUIRE(countEdges(*model_layer.findComponent(fixture.component_id)) == 1);
     REQUIRE(undo_stack.undoLabel() == "合并边");
 

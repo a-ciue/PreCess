@@ -90,7 +90,9 @@ std::any AutoGeometryRepairHandler::execute(FeatureContext& ctx)
             return std::string("几何操作失败，详细原因请查看日志。");
         spdlog::info("AutoGeometryRepair: {} candidates, {} stitched edges",
             repair.candidate_count, repair.stitched_edge_count);
-        return component_operator->replaceGeometryRoot(std::move(repair.shape));
+        component_operator->replaceGeometryRoot(std::move(repair.shape));
+        return std::string("自动修复间隙成功，候选 ") + std::to_string(repair.candidate_count)
+            + " 对，已缝合 " + std::to_string(repair.stitched_edge_count) + " 条边";
     } catch (const Standard_Failure& error) {
         const char* detail = error.GetMessageString();
         spdlog::error("AutoGeometryRepair: {}", detail ? detail : "OpenCASCADE error");

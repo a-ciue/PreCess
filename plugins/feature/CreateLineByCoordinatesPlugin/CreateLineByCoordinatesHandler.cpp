@@ -78,7 +78,8 @@ std::any CreateLineByCoordinatesHandler::execute(FeatureContext& ctx)
             auto component_operator = ctx.model.getComponentOperator(target_component_id);
             if (!component_operator)
                 return std::string("几何操作失败，详细原因请查看日志。");
-            return component_operator->appendGeometryShape(std::move(shape));
+            component_operator->appendGeometryShape(std::move(shape));
+            return std::string("创建直线成功");
         }
 
         // 新建几何组件；无目标模型时先经 addModel 新建临时模型承载
@@ -94,7 +95,8 @@ std::any CreateLineByCoordinatesHandler::execute(FeatureContext& ctx)
             return std::string("几何操作失败，详细原因请查看日志。");
         const Index component_id = model_operator->addGeometryComponent(std::move(component));
         ++next_line_number_; // 新建组件，推进编号
-        return component_id;
+        return std::string("创建直线成功（组件 ")
+            + std::to_string(component_id) + "）";
     } catch (const Standard_Failure& error) {
         const char* detail = error.GetMessageString();
         spdlog::error("CreateLineByCoordinates: {}", detail ? detail : "OpenCASCADE error");

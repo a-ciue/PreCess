@@ -46,8 +46,10 @@ std::any SplitEdgeHandler::execute(FeatureContext& ctx)
         TopoDS_Shape result = GeometryTopologyEditor::splitEdge(
             *component->geometry->rootShape, TopoDS::Edge(*shape), *ratio);
         auto op = ctx.componentOperator ? ctx.componentOperator(*component_id) : std::nullopt;
-        return op ? std::any(op->replaceGeometryRoot(std::move(result)))
-                  : std::any(std::string("几何操作失败，详细原因请查看日志。"));
+        if (!op)
+            return std::string("几何操作失败，详细原因请查看日志。");
+        op->replaceGeometryRoot(std::move(result));
+        return std::string("分割边成功");
     } catch (const std::exception& error) {
         spdlog::error("SplitEdge: {}", error.what());
         return std::string("几何边分割失败，详细原因请查看日志。");

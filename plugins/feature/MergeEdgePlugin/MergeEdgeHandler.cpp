@@ -70,7 +70,8 @@ std::any MergeEdgeHandler::execute(FeatureContext& ctx)
             : std::nullopt;
         if (!component_operator)
             return std::string("几何操作失败，详细原因请查看日志。");
-        return component_operator->replaceGeometryRoot(std::move(result));
+        component_operator->replaceGeometryRoot(std::move(result));
+        return std::string("合并边成功");
     } catch (const Standard_Failure& error) {
         const char* detail = error.GetMessageString();
         spdlog::error("MergeEdge: {}", detail ? detail : "OpenCASCADE error");

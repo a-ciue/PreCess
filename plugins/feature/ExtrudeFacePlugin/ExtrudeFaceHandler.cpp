@@ -81,7 +81,8 @@ std::any ExtrudeFaceHandler::execute(FeatureContext& ctx)
         auto component_operator = ctx.model.getComponentOperator(*component_id);
         if (!component_operator)
             return std::string("几何操作失败，详细原因请查看日志。");
-        return component_operator->appendGeometryShape(std::move(solid));
+        component_operator->appendGeometryShape(std::move(solid));
+        return std::string("拉伸面成功");
     } catch (const Standard_Failure& error) {
         const char* detail = error.GetMessageString();
         spdlog::error("ExtrudeFace: {}", detail ? detail : "OpenCASCADE error");

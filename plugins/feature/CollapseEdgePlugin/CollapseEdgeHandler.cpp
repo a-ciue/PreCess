@@ -75,8 +75,10 @@ std::any CollapseEdgeHandler::execute(FeatureContext& ctx)
         TopoDS_Shape result = GeometryTopologyEditor::collapseEdge(
             *component->geometry->rootShape, selected_edge, target_position);
         auto op = ctx.componentOperator ? ctx.componentOperator(*component_id) : std::nullopt;
-        return op ? std::any(op->replaceGeometryRoot(std::move(result)))
-                  : std::any(std::string("几何操作失败，详细原因请查看日志。"));
+        if (!op)
+            return std::string("几何操作失败，详细原因请查看日志。");
+        op->replaceGeometryRoot(std::move(result));
+        return std::string("压缩边成功");
     } catch (const Standard_Failure& error) {
         const char* detail = error.GetMessageString();
         spdlog::error("CollapseEdge: {}", detail ? detail : "OpenCASCADE error");

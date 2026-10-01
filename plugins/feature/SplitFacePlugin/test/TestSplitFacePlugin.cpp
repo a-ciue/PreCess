@@ -208,8 +208,8 @@ TEST_CASE("SplitFace feature splits one face and records one undo operation", "[
         core::ArgObject::create<ArgTypeEnum::Selector>(makeSelection(
             ElementEnum::GeometryEdge, fixture.component_id, fixture.splitting_edge_id))));
 
-    const Index result = std::any_cast<Index>(feature_system.invoke("SplitFace"));
-    REQUIRE(result == fixture.component_id);
+    const std::string result = std::any_cast<std::string>(feature_system.invoke("SplitFace"));
+    REQUIRE(result.find("成功") != std::string::npos);
     REQUIRE(countFaces(*model_layer.findComponent(fixture.component_id)) == 2);
     REQUIRE(undo_stack.undoLabel() == "分割面");
 
@@ -258,8 +258,8 @@ TEST_CASE("SplitFace feature splits a face with an intersecting face", "[SplitFa
         core::ArgObject::create<ArgTypeEnum::Selector>(makeSelection(
             ElementEnum::GeometryFace, fixture.component_id, fixture.tool_face_id))));
 
-    const Index result = std::any_cast<Index>(feature_system.invoke("SplitFace"));
-    REQUIRE(result == fixture.component_id);
+    const std::string result = std::any_cast<std::string>(feature_system.invoke("SplitFace"));
+    REQUIRE(result.find("成功") != std::string::npos);
     REQUIRE(countFaces(*model_layer.findComponent(fixture.component_id)) == 3);
 }
 

@@ -174,8 +174,8 @@ TEST_CASE("FillGap feature stitches the gap boundary from one seed edge", "[Fill
     REQUIRE(feature_system.setParameter("FillGap", 1,
         core::ArgObject::create<ArgTypeEnum::Float>(0.01)));
 
-    const Index result = std::any_cast<Index>(feature_system.invoke("FillGap"));
-    REQUIRE(result == fixture.component_id);
+    const std::string result = std::any_cast<std::string>(feature_system.invoke("FillGap"));
+    REQUIRE(result.find("成功") != std::string::npos);
     REQUIRE(countSharedEdges(*model_layer.findComponent(fixture.component_id)) == 1);
     REQUIRE(undo_stack.undoLabel() == "局部缝合");
 
@@ -219,7 +219,7 @@ TEST_CASE("FillGap feature reports reverse success as one undo operation", "[Fil
     REQUIRE(feature_system.registerHandler(handlerMetaData(), std::move(handler)));
     REQUIRE(feature_system.setParameter("FillGap", 0, core::ArgObject::create<ArgTypeEnum::Selector>(makeEdgeSelection(fixture))));
     const auto result = feature_system.invoke("FillGap");
-    REQUIRE(std::any_cast<std::string>(result) == "已反向缝合，选中侧保持原位。");
+    REQUIRE(std::any_cast<std::string>(result).find("已反向缝合") != std::string::npos);
     REQUIRE(countSharedEdges(*model_layer.findComponent(fixture.component_id)) == 2);
     undo_stack.undo();
     REQUIRE(countSharedEdges(*model_layer.findComponent(fixture.component_id)) == 0);

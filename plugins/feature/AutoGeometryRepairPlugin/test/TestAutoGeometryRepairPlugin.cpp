@@ -123,8 +123,8 @@ TEST_CASE("AutoGeometryRepair feature detects then repairs free edge gaps", "[Au
     REQUIRE(feature_system.setParameter("AutoGeometryRepair", 2,
         core::ArgObject::create<ArgTypeEnum::Combo>(1)));
     const int before = countBoundaryEdges(*model_layer.findComponent(fixture.component_id));
-    const Index result = std::any_cast<Index>(feature_system.invoke("AutoGeometryRepair"));
-    REQUIRE(result == fixture.component_id);
+    const std::string result = std::any_cast<std::string>(feature_system.invoke("AutoGeometryRepair"));
+    REQUIRE(result.find("成功") != std::string::npos);
     REQUIRE(countBoundaryEdges(*model_layer.findComponent(fixture.component_id)) < before);
     REQUIRE(countBoundaryEdges(*model_layer.findComponent(other.component_id)) == untouched);
 }

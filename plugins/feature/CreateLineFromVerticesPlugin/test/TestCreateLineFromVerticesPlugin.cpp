@@ -69,8 +69,8 @@ TEST_CASE("CreateLineFromVertices execute appends shared-topology line to source
     REQUIRE(feature_system.setParameter("CreateLineFromVertices", 0,
         core::ArgObject::create<ArgTypeEnum::Selector>(selection)));
 
-    const Index result_component_id = std::any_cast<Index>(feature_system.invoke("CreateLineFromVertices"));
-    REQUIRE(result_component_id == component_id); // 写回源组件
+    const std::string result_message = std::any_cast<std::string>(feature_system.invoke("CreateLineFromVertices"));
+    REQUIRE(result_message.find("成功") != std::string::npos); // 写回源组件
 
     // 直线边共享既有顶点：边数 12 + 1
     component->geometry->ensureIndexBuilt(model_layer.geomRegistry());

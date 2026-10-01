@@ -65,7 +65,8 @@ std::any CreateLineFromVerticesHandler::execute(FeatureContext& ctx)
         if (!component_operator)
             return std::string("几何操作失败，详细原因请查看日志。");
         ++next_line_number_;
-        return component_operator->appendGeometryShape(std::move(line));
+        component_operator->appendGeometryShape(std::move(line));
+        return std::string("由点创建线成功");
     } catch (const Standard_Failure& error) {
         const char* detail = error.GetMessageString();
         spdlog::error("CreateLineFromVertices: {}", detail ? detail : "OpenCASCADE error");

@@ -91,7 +91,8 @@ std::any DeleteGeometryHandler::execute(FeatureContext& ctx)
             return std::string("目标组件没有几何。");
 
         // 替换几何根（写入即标脏），undo 记录与通知由 invoke 操作边界负责
-        return component_operator->replaceGeometryRoot(std::move(result));
+        component_operator->replaceGeometryRoot(std::move(result));
+        return std::string("删除几何成功");
     } catch (const Standard_Failure& error) {
         const char* detail = error.GetMessageString();
         spdlog::error("DeleteGeometry: {}", detail ? detail : "OpenCASCADE error");
