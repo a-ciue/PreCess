@@ -4,7 +4,7 @@
  */
 
 import QtQuick
-import QtQuick.Controls
+import QtQuick.Controls.Fusion
 import QtQuick.Layouts
 import QtQuick.Dialogs
 
@@ -136,6 +136,9 @@ Item{
             anchors.fill: parent
             ListView{
                 id:parameterList
+                clip: true
+                // 固定预留滚动条槽，避免遮挡输入框或在滚动条显隐时挤动参数行。
+                contentWidth: Math.max(0, width - parameterScrollBar.implicitWidth - Theme.spacingXs)
                 Layout.fillHeight: true
                 Layout.fillWidth: true
                 Layout.margins: Theme.spacingSm
@@ -172,6 +175,7 @@ Item{
                     }
                 }
                 ScrollBar.vertical: ScrollBar {
+                    id: parameterScrollBar
                     policy: ScrollBar.AsNeeded
                 }
             }
@@ -183,7 +187,7 @@ Item{
         RowLayout{
             id: comboRow
             spacing: Theme.spacingSm
-            width: parameterList.width
+            width: parameterList.contentWidth
             property var value: null
             ListModel{
                 id: comboModel
@@ -191,7 +195,7 @@ Item{
             Text{
                 id:nametext
                 text: model.name
-                Layout.preferredWidth: parameterList.width * 0.38
+                Layout.preferredWidth: parameterList.contentWidth * 0.38
                 elide: Text.ElideRight
                 color: Theme.textPrimary
                 font.pixelSize: Theme.fontSizeBody
@@ -237,11 +241,11 @@ Item{
         id:oneNumberBox
         RowLayout{
             spacing: Theme.spacingSm
-            width: parameterList.width
+            width: parameterList.contentWidth
             Text{
                 id:nametext
                 text: model.name
-                Layout.preferredWidth: parameterList.width * 0.38
+                Layout.preferredWidth: parameterList.contentWidth * 0.38
                 elide: Text.ElideRight
                 color: Theme.textPrimary
                 font.pixelSize: Theme.fontSizeBody
@@ -249,6 +253,17 @@ Item{
             }
             TextField {
                 id:parameterTextInput
+                Layout.minimumWidth: 0
+                Layout.minimumHeight: 28
+                padding: 6
+                color: enabled ? Theme.textPrimary : Theme.textDisabled
+                placeholderTextColor: Theme.textSecondary
+                background: Rectangle {
+                    radius: Theme.radiusControl
+                    color: parent.enabled ? Theme.surface : Theme.surfaceAlt
+                    border.width: parent.activeFocus ? 2 : 1
+                    border.color: parent.activeFocus ? Theme.primary : Theme.borderStrong
+                }
                 Layout.fillWidth: true
                 text: model.content
                 onTextChanged:{
@@ -261,11 +276,11 @@ Item{
         id:fileComponent
         RowLayout{
             spacing: Theme.spacingSm
-            width: parameterList.width
+            width: parameterList.contentWidth
             Text{
                 id:nametext
                 text: model.name
-                Layout.preferredWidth: parameterList.width * 0.38
+                Layout.preferredWidth: parameterList.contentWidth * 0.38
                 elide: Text.ElideRight
                 color: Theme.textPrimary
                 font.pixelSize: Theme.fontSizeBody
@@ -273,6 +288,17 @@ Item{
             }
             TextArea{
                 id:fileText
+                Layout.minimumWidth: 0
+                Layout.minimumHeight: 28
+                padding: 6
+                color: enabled ? Theme.textPrimary : Theme.textDisabled
+                placeholderTextColor: Theme.textSecondary
+                background: Rectangle {
+                    radius: Theme.radiusControl
+                    color: parent.enabled ? Theme.surface : Theme.surfaceAlt
+                    border.width: parent.activeFocus ? 2 : 1
+                    border.color: parent.activeFocus ? Theme.primary : Theme.borderStrong
+                }
                 wrapMode: TextEdit.Wrap
                 Layout.fillWidth: true
 
@@ -317,13 +343,13 @@ Item{
         RowLayout{
             id: textRow
             spacing: Theme.spacingSm
-            width: parameterList.width
+            width: parameterList.contentWidth
             property var value: fileText.text
             Text{
                 id:nametext
                 text: model.name
                 // 标签列与其余参数行同宽，拉伸面板后同步扩大
-                Layout.preferredWidth: parameterList.width * 0.38
+                Layout.preferredWidth: parameterList.contentWidth * 0.38
                 elide: Text.ElideRight
                 color: Theme.textPrimary
                 font.pixelSize: Theme.fontSizeBody
@@ -340,6 +366,17 @@ Item{
             }
             TextArea{
                 id:fileText
+                Layout.minimumWidth: 0
+                Layout.minimumHeight: 28
+                padding: 6
+                color: enabled ? Theme.textPrimary : Theme.textDisabled
+                placeholderTextColor: Theme.textSecondary
+                background: Rectangle {
+                    radius: Theme.radiusControl
+                    color: parent.enabled ? Theme.surface : Theme.surfaceAlt
+                    border.width: parent.activeFocus ? 2 : 1
+                    border.color: parent.activeFocus ? Theme.primary : Theme.borderStrong
+                }
                 wrapMode: TextEdit.Wrap
                 Layout.fillWidth: true
                 placeholderText: model.description
@@ -367,7 +404,7 @@ Item{
         id: selectorComponent
         RowLayout{
             spacing: Theme.spacingSm
-            width: parameterList.width
+            width: parameterList.contentWidth
             property var value: null
             // 清空参数时传递明确的选择器对象，不让通用转换层解释 null。
             readonly property QSelection emptySelection: QSelection {}
@@ -375,7 +412,7 @@ Item{
             Text{
                 id:nametext
                 text: model.name
-                Layout.preferredWidth: parameterList.width * 0.38
+                Layout.preferredWidth: parameterList.contentWidth * 0.38
                 elide: Text.ElideRight
                 color: Theme.textPrimary
                 font.pixelSize: Theme.fontSizeBody
@@ -446,12 +483,12 @@ Item{
         id: boolComponent
         RowLayout{
             spacing: Theme.spacingSm
-            width: parameterList.width
+            width: parameterList.contentWidth
 
             Text{
                 id:nametext
                 text: model.name
-                Layout.preferredWidth: parameterList.width * 0.38
+                Layout.preferredWidth: parameterList.contentWidth * 0.38
                 elide: Text.ElideRight
                 color: Theme.textPrimary
                 font.pixelSize: Theme.fontSizeBody
@@ -459,6 +496,25 @@ Item{
             }
             CheckBox{
                 id: parameterCheckBox
+                // 加大勾选区域，以实色背景区分已选状态；保留控件自身的键盘和无障碍行为。
+                indicator: Rectangle {
+                    implicitWidth: 20
+                    implicitHeight: 20
+                    x: parameterCheckBox.leftPadding
+                    y: parameterCheckBox.topPadding + (parameterCheckBox.availableHeight - height) / 2
+                    radius: Theme.radiusparameterCheckBox
+                    color: parameterCheckBox.checked ? (parameterCheckBox.enabled ? Theme.primary : Theme.textDisabled) : Theme.surface
+                    border.width: parameterCheckBox.visualFocus ? 2 : 1
+                    border.color: parameterCheckBox.visualFocus ? Theme.primary : Theme.borderStrong
+                    Text {
+                        anchors.centerIn: parent
+                        text: "✓"
+                        visible: parameterCheckBox.checked
+                        color: Theme.textOnPrimary
+                        font.pixelSize: 16
+                        font.bold: true
+                    }
+                }
 
                 Component.onCompleted: {
                     checked = (model.content === "true")
@@ -474,7 +530,7 @@ Item{
         id: buttonComponent
         RowLayout{
             spacing: Theme.spacingSm
-            width: parameterList.width
+            width: parameterList.contentWidth
             Button{
                 // Button 是无值触发器：计数器载荷，功能约定忽略值只读参数下标
                 text: model.name
