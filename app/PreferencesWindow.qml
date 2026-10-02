@@ -144,6 +144,7 @@ Item {
                 icon.source: "qrc:/images/toolbar/Panels/plugin-register.svg"
                 icon.width: 16
                 icon.height: 16
+                icon.color: "transparent"
                 text: "注册"
                 flat: true
                 implicitWidth: 70
@@ -155,6 +156,7 @@ Item {
                 icon.source: "qrc:/images/toolbar/Panels/plugin-unregister.svg"
                 icon.width: 16
                 icon.height: 16
+                icon.color: "transparent"
                 text: "注销"
                 flat: true
                 implicitWidth: 70
@@ -179,6 +181,7 @@ Item {
                 icon.source: "qrc:/images/toolbar/Common/restore-defaults.svg"
                 icon.width: 16
                 icon.height: 16
+                icon.color: "transparent"
                 text: "恢复默认"
                 flat: true
                 implicitWidth: 70

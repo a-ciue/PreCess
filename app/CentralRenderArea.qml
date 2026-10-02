@@ -609,6 +609,7 @@ Page {
                 icon.source: "qrc:/images/toolbar/Viewport/clip.svg"
                 icon.width: 16
                 icon.height: 16
+                icon.color: "transparent"
                 text: "裁剪"
                 flat: true
                 checkable: true
@@ -621,6 +622,7 @@ Page {
                 icon.source: "qrc:/images/toolbar/Viewport/scale-bar.svg"
                 icon.width: 16
                 icon.height: 16
+                icon.color: "transparent"
                 text: "比例尺"
                 flat: true
                 checkable: true
@@ -633,6 +635,7 @@ Page {
                 icon.source: "qrc:/images/toolbar/Viewport/reset-view.svg"
                 icon.width: 16
                 icon.height: 16
+                icon.color: "transparent"
                 text: "重置视图"
                 flat: true
                 Layout.fillHeight: true
