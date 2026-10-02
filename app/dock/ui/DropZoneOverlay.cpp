@@ -7,6 +7,7 @@
 
 #include "DockRuntime.h"
 
+#include <QJSValue>
 #include <QQuickItem>
 #include <QVariantList>
 #include <QVariantMap>
@@ -116,7 +117,14 @@ bool DropZoneOverlay::isActive() const
 
 int DropZoneOverlay::zoneCount() const
 {
-    return root_item_ ? root_item_->property("zones").toList().size() : 0;
+    if (!root_item_)
+        return 0;
+
+    // QML var 列表可能返回 QJSValue，须先转换为原生 QVariantList。
+    const QVariant zones = root_item_->property("zones");
+    if (zones.metaType() == QMetaType::fromType<QJSValue>())
+        return zones.value<QJSValue>().toVariant().toList().size();
+    return zones.toList().size();
 }
 
 }
