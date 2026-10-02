@@ -24,6 +24,7 @@ qt_add_resources(${MYNAME} "images"
         toolbar/Geometry/extrude.svg
         toolbar/Geometry/delete-geometry.svg
         toolbar/Function/grid_quality.svg
+        # 保留旧资源路径供外部插件兼容；应用自身已使用 toolbar/Measure/。
         toolbar/Tools/measure.svg
         toolbar/Tools/size_marking.svg
         toolbar/Common/cancel.svg
