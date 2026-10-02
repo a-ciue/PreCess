@@ -200,11 +200,14 @@ endif()
 # 6) 构建 wasm 平台，捆绑字体，生成 HTML 壳，并安装网页侧全部产物
 if(EMSCRIPTEN)
 set(APPNAME ${MYNAME})
+# 显示品牌与构建产物名分离，保留 PreCess 的文件名及接口。
+set(DISPLAY_NAME "ZenithGrid")
 # 与 Qt6WasmMacros 的默认导出名规则保持一致（<target>_entry）
 string(REGEX REPLACE "[^a-zA-Z0-9_]" "_" wasm_target_name "${MYNAME}")
 set(APPEXPORTNAME "${wasm_target_name}_entry")
 string(TIMESTAMP CACHE_ID "%Y%m%d%H%M%S" UTC)
 configure_file("${CMAKE_SOURCE_DIR}/resource/pwa/index.html" "${CMAKE_CURRENT_BINARY_DIR}/index.html" @ONLY)
+configure_file("${CMAKE_SOURCE_DIR}/resource/pwa/manifest.json" "${CMAKE_CURRENT_BINARY_DIR}/manifest.json" @ONLY)
 configure_file("${CMAKE_SOURCE_DIR}/resource/pwa/sw.js" "${CMAKE_CURRENT_BINARY_DIR}/sw.js" @ONLY)
 
 # 捆绑字体资源，生成 qrc:/fonts/appfont.bin
@@ -255,7 +258,7 @@ install(FILES "${CMAKE_CURRENT_SOURCE_DIR}/../resource/PreCess.ico"
     COMPONENT ${MYNAME}
 )
 install(FILES
-    "${CMAKE_SOURCE_DIR}/resource/pwa/manifest.json"
+    "${CMAKE_CURRENT_BINARY_DIR}/manifest.json"
     "${CMAKE_CURRENT_BINARY_DIR}/sw.js"
     DESTINATION ${CMAKE_INSTALL_BINDIR}
     COMPONENT ${MYNAME}

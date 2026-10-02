@@ -4,7 +4,7 @@
     <meta charset="utf-8">
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
     <meta name="viewport" content="width=device-width, height=device-height, user-scalable=0"/>
-    <title>ZenithGrid</title>
+    <title>@DISPLAY_NAME@</title>
     <link rel="icon" type="image/x-icon" href="PreCess.ico">
     <link rel="manifest" href="manifest.json">
     <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
@@ -64,7 +64,7 @@
             <path class="tile" style="--i:5; --dx:-30px; --dy:6px" d="M0 93h70v94H0Z"/>
             <path class="tile" style="--i:6; --dx:-24px; --dy:28px" d="M0 195h70v77H0Z"/>
         </svg>
-        <div id="qtstatus">正在加载 ZenithGrid ...</div>
+        <div id="qtstatus">正在加载 @DISPLAY_NAME@ ...</div>
         <div id="qtprogress"><div id="qtprogressbar"></div></div>
         <noscript>JavaScript 已禁用，请启用 JavaScript 后使用本应用。</noscript>
     </figure>
@@ -136,7 +136,7 @@
             }
 
             try {
-                status.textContent = '正在加载 ZenithGrid ...';
+                status.textContent = '正在加载 @DISPLAY_NAME@ ...';
                 await setupServiceWorker();
                 const module = WebAssembly.compile(await downloadWasm('@APPNAME@.wasm'));
                 const instance = await qtLoad({
