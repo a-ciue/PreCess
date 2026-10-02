@@ -605,3 +605,65 @@ TEST_CASE("DockQml: docking area loads from QML and lays out docks")
     area_item->setParentItem(nullptr);
     delete root;
 }
+
+TEST_CASE("DockQml: object tree remains usable after small startup and layout restore")
+{
+    testApplication();
+    docktest::DockSessionCleanup cleanup;
+    QQmlEngine engine;
+    dock::init(&engine);
+    QQmlComponent component(&engine);
+    component.setData(R"QML(
+        import QtQuick
+        import PreCess.Docking as Docking
+        Docking.DockHost {
+            id: host
+            width: 800
+            height: 360
+            uniqueName: "smallStartup"
+            centralItemFile: "qrc:/precess/dock/test/CentralStub.qml"
+            Docking.DockPanel {
+                id: tree
+                uniqueName: "tree"
+                Item { implicitWidth: 200; implicitHeight: 180; anchors.fill: parent }
+            }
+            Docking.DockPanel {
+                id: operations
+                uniqueName: "operations"
+                Item { implicitWidth: 200; implicitHeight: 120; anchors.fill: parent }
+            }
+            Component.onCompleted: {
+                host.placePanel(tree, Docking.Tokens.DockEdge.Left, null, Qt.size(250, 0))
+                host.placePanel(operations, Docking.Tokens.DockEdge.Bottom, tree, Qt.size(0, 400))
+            }
+        }
+    )QML",
+        QUrl());
+    INFO(component.errorString().toStdString());
+    std::unique_ptr<QObject> root(component.create());
+    REQUIRE(root != nullptr);
+    auto* host_item = qobject_cast<dock::ui::DockHostItem*>(root.get());
+    REQUIRE(host_item != nullptr);
+    dock::DockPanel* tree = nullptr;
+    for (auto* panel : dock::DockCatalog::self().panels()) {
+        if (panel->uniqueName() == QStringLiteral("tree"))
+            tree = panel;
+    }
+    REQUIRE(tree != nullptr);
+    auto* client = dock::ui::DockRuntime::instance().panelContentItem(tree);
+    REQUIRE(client != nullptr);
+    CHECK(tree->group()->node()->geometry().height() >= 180);
+    CHECK(client->height() > 100);
+
+    // 小窗口完成初始化后最大化，关闭面板并恢复默认快照，内容仍可见可用。
+    host_item->setHeight(900);
+    const QString initial_layout = host_item->saveLayout();
+    tree->hidePanel();
+    CHECK_FALSE(tree->isShown());
+    REQUIRE(host_item->restoreLayout(initial_layout));
+    QCoreApplication::processEvents();
+    CHECK(tree->isShown());
+    CHECK(client->isVisible());
+    CHECK(client->width() >= 198);
+    CHECK(client->height() > 100);
+}

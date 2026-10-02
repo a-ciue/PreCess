@@ -1,7 +1,11 @@
-import QtQuick 6.3
-import QtQuick.Controls 2.15
-import QtQuick.Controls.Basic
-import QtQuick.Layouts 1.15
+/**
+ * @file ObjectTree.qml
+ * @brief 对象树面板：模型/组件/网格与几何节点的展示、显隐与右键管理
+ */
+
+import QtQuick
+import QtQuick.Controls
+import QtQuick.Layouts
 
 import app.core
 import app.model
@@ -59,8 +63,19 @@ Pane {
     Rectangle {
         id: headerBar
         anchors { left: parent.left; right: parent.right; top: parent.top }
-        height: 28
-        color: "#f5f5f5"
+        height: 30
+        color: Theme.surfaceAlt
+
+        // 表头与内容区的细线分隔
+        Rectangle {
+            anchors {
+                left: parent.left
+                right: parent.right
+                bottom: parent.bottom
+            }
+            height: 1
+            color: Theme.border
+        }
 
         Row {
             anchors { right: parent.right; rightMargin: 6; verticalCenter: parent.verticalCenter }
@@ -73,6 +88,8 @@ Pane {
                 implicitWidth: 26
                 implicitHeight: 26
                 display: ToolButton.IconOnly
+                flat: true
+                Accessible.name: qsTr("显示全部")
 
                 ToolTip.visible: hovered
                 ToolTip.text: qsTr("显示全部")
@@ -88,6 +105,8 @@ Pane {
                 implicitWidth: 26
                 implicitHeight: 26
                 display: ToolButton.IconOnly
+                flat: true
+                Accessible.name: qsTr("隐藏全部")
 
                 ToolTip.visible: hovered
                 ToolTip.text: qsTr("隐藏全部")
@@ -117,8 +136,8 @@ Pane {
             id: viewDelegate
             height: _rowHeight
 
-            readonly property real _padding: 5
-            readonly property real _rowHeight: 18
+            readonly property real _padding: 6
+            readonly property real _rowHeight: 22
             readonly property real _indentWidth: 20
             readonly property bool _isActiveModel:
                 viewDelegate.depth === 0
@@ -139,7 +158,9 @@ Pane {
 
             background: Rectangle {
                 anchors.fill: parent
-                color: viewDelegate.hovered ? "#f0f0f0" : "transparent"
+                color: viewDelegate.selected ? Theme.primaryTint
+                     : viewDelegate.hovered ? Theme.hoverOverlay
+                     : "transparent"
             }
 
             indicator: Rectangle {
@@ -170,7 +191,7 @@ Pane {
                 Text {
                     anchors.centerIn: parent
                     text: "▼"
-                    color: viewDelegate.model.isVisible ? "black" : "#aaaaaa"
+                    color: viewDelegate.model.isVisible ? Theme.textSecondary : Theme.textDisabled
                     font.pixelSize: 10
                 }
             }
@@ -183,9 +204,9 @@ Pane {
                     Layout.fillWidth: true
                     Layout.minimumWidth: 50
                     text: viewDelegate.model.name || "N/A"
-                    color: viewDelegate.model.isVisible ? "black" : "#aaaaaa"
-                    font.pixelSize: 13
-                    font.family: "Consolas"
+                    color: viewDelegate.model.isVisible ? Theme.textPrimary : Theme.textDisabled
+                    font.pixelSize: Theme.fontSizeBody
+                    font.family: Theme.monoFamily
                     font.weight: viewDelegate._isActiveModel
                                  || viewDelegate._isActiveComponent
                                  ? Font.Bold : Font.Normal
@@ -203,8 +224,8 @@ Pane {
                     id: valueText
                     text: viewDelegate.model.number ? " (" + viewDelegate.model.number + ")" : ""
                     visible: text !== ""
-                    color: viewDelegate.model.isVisible ? "black" : "#aaaaaa"
-                    font.pixelSize: 11
+                    color: viewDelegate.model.isVisible ? Theme.textSecondary : Theme.textDisabled
+                    font.pixelSize: Theme.fontSizeSmall
                 }
 
                 Item {
@@ -297,55 +318,15 @@ Pane {
             Menu {
                 id: contextMenu
 
-                background: Rectangle {
-                    color: "#ffffff"
-                    border.color: "#d0d0d0"
-                    border.width: 1
-                    radius: 4
-                    implicitWidth: 100
-                }
-
                 MenuItem {
-                    id: hideItem
                     text: "隐藏"
-                    implicitHeight: 30
-
-                    background: Rectangle {
-                        color: hideItem.hovered ? "#f0f0f0" : "transparent"
-                    }
-
-                    contentItem: Text {
-                        text: hideItem.text
-                        color: hideItem.hovered ? "#1976d2" : "#333333"
-                        font.pixelSize: 12
-                        font.family: "Microsoft YaHei"
-                        leftPadding: 15
-                        verticalAlignment: Text.AlignVCenter
-                    }
-
                     onTriggered: objectTree.hideNode(
                         viewDelegate.model.nodeId, viewDelegate.depth,
                         viewDelegate.model.nodeType, viewDelegate.model.componentId)
                 }
 
                 MenuItem {
-                    id: isolateItem
                     text: "隔离"
-                    implicitHeight: 30
-
-                    background: Rectangle {
-                        color: isolateItem.hovered ? "#f0f0f0" : "transparent"
-                    }
-
-                    contentItem: Text {
-                        text: isolateItem.text
-                        color: isolateItem.hovered ? "#1976d2" : "#333333"
-                        font.pixelSize: 12
-                        font.family: "Microsoft YaHei"
-                        leftPadding: 15
-                        verticalAlignment: Text.AlignVCenter
-                    }
-
                     onTriggered: {
                         if (viewDelegate.depth === 0)
                             objectTree.isolateModel(viewDelegate.model.nodeId)
@@ -360,23 +341,7 @@ Pane {
                 }
 
                 MenuItem {
-                    id: showItem
                     text: "显示"
-                    implicitHeight: 30
-
-                    background: Rectangle {
-                        color: showItem.hovered ? "#f0f0f0" : "transparent"
-                    }
-
-                    contentItem: Text {
-                        text: showItem.text
-                        color: showItem.hovered ? "#1976d2" : "#333333"
-                        font.pixelSize: 12
-                        font.family: "Microsoft YaHei"
-                        leftPadding: 15
-                        verticalAlignment: Text.AlignVCenter
-                    }
-
                     onTriggered: objectTree.showNode(
                         viewDelegate.model.nodeId, viewDelegate.depth,
                         viewDelegate.model.nodeType, viewDelegate.model.componentId)
@@ -384,22 +349,21 @@ Pane {
 
                 MenuSeparator {}
 
+                // 破坏性操作：文字与悬停底色用危险色，与其余菜单项区分
                 MenuItem {
                     id: deleteItem
                     text: "删除"
-                    implicitHeight: 30
-
-                    background: Rectangle {
-                        color: deleteItem.hovered ? "#ffebee" : "transparent"
-                    }
 
                     contentItem: Text {
                         text: deleteItem.text
-                        color: deleteItem.hovered ? "#d32f2f" : "#c62828"
-                        font.pixelSize: 12
-                        font.family: "Microsoft YaHei"
-                        leftPadding: 15
+                        color: Theme.danger
+                        font.pixelSize: Theme.fontSizeCaption
                         verticalAlignment: Text.AlignVCenter
+                        leftPadding: deleteItem.padding
+                    }
+
+                    background: Rectangle {
+                        color: deleteItem.hovered ? Theme.dangerTint : "transparent"
                     }
 
                     onTriggered: {
@@ -423,7 +387,7 @@ Pane {
             contentItem: Rectangle {
                 implicitWidth: 8
                 radius: 4
-                color: parent.hovered ? "#c0c0c0" : "#e0e0e0"
+                color: parent.hovered ? Theme.scrollBarHover : Theme.scrollBarIdle
             }
         }
     }

@@ -4,8 +4,9 @@
  */
 
 import QtQuick
+import QtQuick.Shapes
 import QtQuick.Layouts
-import QtQuick.Controls
+import QtQuick.Controls.Fusion
 import app.core
 
 RowLayout {
@@ -53,11 +54,39 @@ RowLayout {
     }
     Button{
         id: selectClearButton
-        text: "清除选择"
+        text: qsTr("清除选择")
+        flat: false
         onClicked: root.clearButtonClicked()
         opacity: enabled ? 1.0 : 0.6
     }
     CheckBox {
+        id: angleSpreadCheckBox
+        // 加大勾选区域，以实色背景区分已选状态；保留控件自身的键盘和无障碍行为。
+        indicator: Rectangle {
+            implicitWidth: 24
+            implicitHeight: 24
+            x: angleSpreadCheckBox.leftPadding
+            y: angleSpreadCheckBox.topPadding + (angleSpreadCheckBox.availableHeight - height) / 2
+            radius: Theme.radiusControl
+            color: angleSpreadCheckBox.checked ? (angleSpreadCheckBox.enabled ? Theme.primaryPressed : Theme.textSecondary) : Theme.surface
+            border.width: 2
+            border.color: angleSpreadCheckBox.checked || angleSpreadCheckBox.visualFocus ? Theme.primaryPressed : Theme.textSecondary
+            Shape {
+                anchors.fill: parent
+                visible: angleSpreadCheckBox.checked
+                ShapePath {
+                    strokeColor: Theme.textOnPrimary
+                    strokeWidth: 3
+                    fillColor: "transparent"
+                    capStyle: ShapePath.RoundCap
+                    joinStyle: ShapePath.RoundJoin
+                    startX: 5
+                    startY: 12
+                    PathLine { x: 10; y: 17 }
+                    PathLine { x: 19; y: 7 }
+                }
+            }
+        }
         text: "按角度扩散"
         checked: root.faceSelectByAngle
         visible: App.selection.selectMode === "Face"

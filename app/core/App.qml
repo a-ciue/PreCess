@@ -15,6 +15,7 @@ QtObject {
     }
 
     property var activeOperation: null
+    property bool importDragActive: false
     property var registry: ({})
 
     signal modelVisibilityUpdated(int modelId, bool visible)
