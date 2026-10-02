@@ -71,8 +71,12 @@ Page {
 
             ToolButton {
                 id: geoBtn
-                // 图标独立接入前使用文字入口，避免仅图标模式下按钮为空。
-                display: ToolButton.TextOnly
+                icon.source: "qrc:/images/toolbar/Viewport/geometry.svg"
+                icon.width: 20
+                icon.height: 20
+                icon.color: "transparent"
+                display: ToolButton.IconOnly
+                Layout.preferredWidth: 32
                 flat: true
                 Accessible.name: qsTr("几何显示")
                 ToolTip.visible: hovered
@@ -215,8 +219,12 @@ Page {
 
             ToolButton {
                 id: meshBtn
-                // 图标独立接入前使用文字入口，避免仅图标模式下按钮为空。
-                display: ToolButton.TextOnly
+                icon.source: "qrc:/images/toolbar/Viewport/mesh.svg"
+                icon.width: 20
+                icon.height: 20
+                icon.color: "transparent"
+                display: ToolButton.IconOnly
+                Layout.preferredWidth: 32
                 flat: true
                 Accessible.name: qsTr("网格显示")
                 ToolTip.visible: hovered
@@ -598,6 +606,9 @@ Page {
             }
 
             ToolButton {
+                icon.source: "qrc:/images/toolbar/Viewport/clip.svg"
+                icon.width: 16
+                icon.height: 16
                 text: "裁剪"
                 flat: true
                 checkable: true
@@ -607,6 +618,9 @@ Page {
                 }
             }
             ToolButton {
+                icon.source: "qrc:/images/toolbar/Viewport/scale-bar.svg"
+                icon.width: 16
+                icon.height: 16
                 text: "比例尺"
                 flat: true
                 checkable: true
@@ -616,6 +630,9 @@ Page {
                 }
             }
             ToolButton {
+                icon.source: "qrc:/images/toolbar/Viewport/reset-view.svg"
+                icon.width: 16
+                icon.height: 16
                 text: "重置视图"
                 flat: true
                 Layout.fillHeight: true

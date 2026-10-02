@@ -27,7 +27,7 @@ void ScalePreviewHandler::setup(FeatureRegistrar& reg, FeatureContext& ctx)
     reg.addParameter({ ArgTypeEnum::Button, "预览", "", "开启预览：beginStaged 捕获 before₀ 并开始监听参数变化" });
     reg.addParameter({ ArgTypeEnum::Button, "取消", "", "取消预览：回滚到 before₀，不成记录" });
     // 菜单选项注册：归入 "示例" 菜单分页的默认分组（菜单触发 = 确认预览成一条 undo 记录）
-    reg.addMenuItem({ "示例", "缩放预览演示" });
+    reg.addMenuItem({ "示例", "缩放预览演示", "qrc:/images/toolbar/Panels/scale-preview.svg" });
 
     ctx_ = &ctx;
 

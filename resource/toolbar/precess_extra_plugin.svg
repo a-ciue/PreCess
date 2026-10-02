@@ -1,11 +1,1 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="4 6 87.5 99">
-<!-- SVG created with Arrow, by QuiverAI (https://quiver.ai) -->
-  <style type="text/css">.cls-0 {fill:#163A65;}</style>
-  <rect class="cls-0" x="9.6" y="10.5" width="23.5" height="27.8"/>
-  <rect class="cls-0" x="35.9" y="10.5" width="23.3" height="19.7"/>
-  <path class="cls-0" d="m61.9 10.5v20.4c2.2 1 5.5 3.4 7.4 6.7h17v-27.1h-24.4z"/>
-  <path class="cls-0" d="m70.7 41c0.2 1.1 0.2 1.9 0.2 2.9 0.1 4.8-3.1 9.7-9 12.7v16.1h12.2l12-10.7v-21h-15.4z"/>
-  <polygon class="cls-0" points="32.9 41 9.6 41 9.6 72.3 32.9 72.3"/>
-  <rect class="cls-0" x="9.6" y="75.3" width="23.5" height="25.2"/>
-  <polygon class="cls-0" points="35.9 57 35.9 72.7 58.9 72.6 59 56.9"/>
-</svg>
+<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><title>插件 / 扩展</title><defs><linearGradient id="plugin-silver" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#8CA7B0"/><stop offset="1" stop-color="#536F7C"/></linearGradient><linearGradient id="plugin-teal" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#3CBFC6"/><stop offset="1" stop-color="#087C8B"/></linearGradient></defs><g fill="none" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><g stroke="url(#plugin-silver)"><path d="M8 3v4m8-4v4M5 7h14v6a7 7 0 0 1-14 0Z" fill="url(#plugin-silver)" fill-opacity="0.09" /></g><g stroke="url(#plugin-teal)"><path d="M12 20v1" /></g></g></svg>

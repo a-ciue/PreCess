@@ -82,7 +82,7 @@ Pane {
             spacing: 2
 
             ToolButton {
-                icon.source: "qrc:/images/modeltree/show.svg"
+                icon.source: "qrc:/images/toolbar/Viewport/show-all.svg"
                 icon.width: 20
                 icon.height: 20
                 implicitWidth: 26
@@ -99,7 +99,7 @@ Pane {
                 }
 
             ToolButton {
-                icon.source: "qrc:/images/modeltree/hide.svg"
+                icon.source: "qrc:/images/toolbar/Viewport/hide-all.svg"
                 icon.width: 20
                 icon.height: 20
                 implicitWidth: 26

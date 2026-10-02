@@ -54,6 +54,10 @@ RowLayout {
     }
     Button{
         id: selectClearButton
+        icon.source: "qrc:/images/toolbar/Selection/clear-selection.svg"
+        icon.width: 16
+        icon.height: 16
+        icon.color: "transparent"
         text: qsTr("清除选择")
         flat: false
         onClicked: root.clearButtonClicked()

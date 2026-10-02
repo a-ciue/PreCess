@@ -192,7 +192,7 @@ void MeshRepairHandler::setup(FeatureRegistrar& reg, FeatureContext&)
         "补洞,自交检测,退化清理|0",
         "选择要执行的网格修复操作",
     });
-    reg.addMenuItem({ "功能/网格", "网格修复" });
+    reg.addMenuItem({ "功能/网格", "网格修复", "qrc:/images/toolbar/Mesh/mesh-repair.svg" });
 }
 
 std::any MeshRepairHandler::execute(FeatureContext& ctx)

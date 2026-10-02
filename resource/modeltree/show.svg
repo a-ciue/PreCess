@@ -1,4 +1,1 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="#000000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-  <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
-  <circle cx="12" cy="12" r="3"/>
-</svg>
+<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><title>显示</title><defs><linearGradient id="show-silver" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#8CA7B0"/><stop offset="1" stop-color="#536F7C"/></linearGradient><linearGradient id="show-teal" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#3CBFC6"/><stop offset="1" stop-color="#087C8B"/></linearGradient></defs><g fill="none" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><g stroke="url(#show-silver)"><path d="M3 12c5-8 13-8 18 0-5 8-13 8-18 0Z" fill="url(#show-silver)" fill-opacity="0.09" /></g><g stroke="url(#show-teal)"><circle cx="12" cy="12" r="2.5" fill="url(#show-teal)" fill-opacity="0.09" /></g></g></svg>

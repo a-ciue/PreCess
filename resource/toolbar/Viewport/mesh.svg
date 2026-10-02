@@ -1,0 +1,3 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><title>网格显示</title><defs><linearGradient id="mesh-silver" gradientUnits="userSpaceOnUse" x1="3" y1="3" x2="21" y2="21"><stop stop-color="#8CA7B0"/><stop offset="1" stop-color="#536F7C"/></linearGradient><linearGradient id="mesh-teal" gradientUnits="userSpaceOnUse" x1="3" y1="3" x2="21" y2="21"><stop stop-color="#3CBFC6"/><stop offset="1" stop-color="#087C8B"/></linearGradient></defs><g fill="none" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><g stroke="url(#mesh-silver)"><rect x="4" y="4" width="16" height="16" rx="1" fill="url(#mesh-silver)" fill-opacity="0.09" />
+  </g><g stroke="url(#mesh-teal)"><path d="M9 4v16m6-16v16M4 9h16M4 15h16" />
+    </g></g></svg>

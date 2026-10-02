@@ -344,6 +344,9 @@ Item{
                 }
             }
             Button{
+                icon.source: "qrc:/images/toolbar/Panels/browse-file.svg"
+                icon.width: 14
+                icon.height: 14
                 text: qsTr("浏览…")
                 flat: true
                 onClicked:{

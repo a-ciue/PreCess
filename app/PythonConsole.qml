@@ -65,6 +65,9 @@ Item {
             spacing: 4
 
             Button {
+                icon.source: "qrc:/images/toolbar/Panels/help.svg"
+                icon.width: 14
+                icon.height: 14
                 text: "帮助"
                 flat: true
                 onClicked: {
@@ -76,6 +79,9 @@ Item {
             }
 
             Button {
+                icon.source: "qrc:/images/toolbar/Panels/clear-console.svg"
+                icon.width: 14
+                icon.height: 14
                 text: "清空窗口"
                 flat: true
                 onClicked: {

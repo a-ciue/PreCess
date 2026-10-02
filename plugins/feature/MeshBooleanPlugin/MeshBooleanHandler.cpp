@@ -399,7 +399,7 @@ void MeshBooleanHandler::setup(FeatureRegistrar& reg, FeatureContext&)
         "并集,交集,差集(A−B),差集(B−A)|0",
         "选择布尔运算类型：并集 / 交集 / 差集(A−B) / 差集(B−A)",
     });
-    reg.addMenuItem({ "功能/网格", "网格布尔" });
+    reg.addMenuItem({ "功能/网格", "网格布尔", "qrc:/images/toolbar/Mesh/mesh-boolean.svg" });
 }
 
 std::any MeshBooleanHandler::execute(FeatureContext& ctx)

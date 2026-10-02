@@ -255,6 +255,9 @@ Item {
                     Layout.minimumWidth: 0
                 }
                 Button {
+                    icon.source: "qrc:/images/toolbar/Panels/texture.svg"
+                    icon.width: 14
+                    icon.height: 14
                     text: "..."
                     flat: true
                     Layout.preferredWidth: 28
@@ -313,6 +316,9 @@ Item {
             }
 
             Button {
+                icon.source: "qrc:/images/toolbar/Panels/cancel-render.svg"
+                icon.width: 14
+                icon.height: 14
                 text: "取消属性渲染"
                 flat: true
                 enabled: App.selection.activeComponentId >= 0 && App.registry.renderWindow

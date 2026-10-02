@@ -34,7 +34,7 @@ void CreatePointHandler::setup(FeatureRegistrar& reg, FeatureContext& /*ctx*/)
     reg.addParameter({ ArgTypeEnum::Float, "Z 坐标", "0", "" });
     reg.addParameter({ ArgTypeEnum::Combo, "写入目标",
         "添加到当前 Component,新建 Component,新建 Model|0", "选择几何创建结果的组织位置" });
-    reg.addMenuItem({ "几何", "创建点", "qrc:/images/toolbar/Geometry/point.svg" });
+    reg.addMenuItem({ "几何", "创建点", "qrc:/images/toolbar/Geometry/create-point.svg" });
 }
 
 std::any CreatePointHandler::execute(FeatureContext& ctx)

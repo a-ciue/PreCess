@@ -1,6 +1,6 @@
 'use strict';
 
-const CACHE_NAME = 'precess-wasm-@CACHE_ID@';
+const CACHE_NAME = 'zenithgrid-wasm-@CACHE_ID@';
 
 const PRECACHE_URLS = [
     './',

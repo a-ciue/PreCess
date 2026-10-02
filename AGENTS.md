@@ -1,4 +1,4 @@
-# AGENTS.md — PreCess 前蔚处理 AI 协作开发提示词
+# AGENTS.md — ZenithGrid 前蔚处理 AI 协作开发提示词
 
 > 本文件是面向 AI 编程助手（Codex / Copilot / Cursor 等）与人类贡献者的统一开发规范。
 > 作用范围为整个仓库。提交代码前请遵循本文件，并参考 Wiki《代码提交规范》《项目文件结构》《项目贡献者指南》。

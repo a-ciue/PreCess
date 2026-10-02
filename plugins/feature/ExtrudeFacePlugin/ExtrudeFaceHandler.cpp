@@ -36,7 +36,7 @@ void ExtrudeFaceHandler::setup(FeatureRegistrar& reg, FeatureContext& /*ctx*/)
     reg.addParameter({ ArgTypeEnum::Float, "方向 Y", "0", "方向不能为零向量" });
     reg.addParameter({ ArgTypeEnum::Float, "方向 Z", "1", "方向不能为零向量" });
     reg.addParameter({ ArgTypeEnum::Float, "长度", "10", "必须大于几何容差" });
-    reg.addMenuItem({ "几何", "拉伸面为实体", "qrc:/images/toolbar/Geometry/stretched_surface.svg" });
+    reg.addMenuItem({ "几何", "拉伸面为实体", "qrc:/images/toolbar/Geometry/extrude.svg" });
 }
 
 std::any ExtrudeFaceHandler::execute(FeatureContext& ctx)
