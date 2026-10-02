@@ -30,7 +30,9 @@ self.addEventListener('activate', (event) => {
     event.waitUntil((async () => {
         const names = await caches.keys();
         await Promise.all(names
-            .filter((name) => name !== CACHE_NAME)
+            // 仅清理本应用的新旧品牌缓存，避免删除同源其他应用的数据。
+            .filter((name) => name !== CACHE_NAME
+                && (name.startsWith('precess-wasm-') || name.startsWith('zenithgrid-wasm-')))
             .map((name) => caches.delete(name)));
         await self.clients.claim();
     })());
