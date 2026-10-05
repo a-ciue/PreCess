@@ -674,8 +674,15 @@ TEST_CASE("ScalePreview reports intermediate progress and observes worker heartb
     }
     std::vector<double> progress;
     std::thread::id reporting_thread;
-    f.session.setTaskCallbacks({ }, [&](systems::job::Job& job, double ratio, const std::string&) {
-        reporting_thread = std::this_thread::get_id();
+    std::thread::id commit_thread;
+    std::string final_text;
+    f.session.setTaskCallbacks({ }, [&](systems::job::Job& job, double ratio, const std::string& text) {
+        if (job.state() == systems::job::JobState::Running)
+            reporting_thread = std::this_thread::get_id();
+        else {
+            commit_thread = std::this_thread::get_id();
+            final_text = text;
+        }
         progress.push_back(ratio);
         if (cancel && ratio > 0 && ratio < 1)
             job.cancel();
@@ -695,12 +702,15 @@ TEST_CASE("ScalePreview reports intermediate progress and observes worker heartb
     REQUIRE(progress[1] < 1);
     REQUIRE(job->masked() == !preview);
     if (cancel) {
+        REQUIRE(final_text.empty());
         REQUIRE(job->state() == systems::job::JobState::Cancelled);
         REQUIRE(firstVertex(f.mgr, target) == kOriginal);
         if (preview)
             REQUIRE(f.system.setParameter(kFeatureName, kParamCancel, core::ArgObject::create<ArgTypeEnum::Button>(1)));
         REQUIRE_FALSE(f.stack.canUndo());
     } else {
+        REQUIRE(commit_thread == std::this_thread::get_id());
+        REQUIRE(final_text == (preview ? "缩放预览已更新" : "缩放完成"));
         REQUIRE(job->state() == systems::job::JobState::Done);
         REQUIRE(progress.back() == 1);
         REQUIRE(firstVertex(f.mgr, target) == std::array<double, 3> { 2, 4, 6 });

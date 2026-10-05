@@ -535,7 +535,7 @@ std::any MeshBooleanHandler::execute(FeatureContext& ctx)
             return BooleanInput { model.findComponent(a)->mesh->clone(), model.findComponent(b)->mesh->clone(), op, name };
         },
         computeBoolean,
-        [&ctx](ModelLayer& model, BooleanResult& result) {
+        [](ModelLayer& model, BooleanResult& result, systems::job::ProgressFn report) {
             if (result.mesh) {
                 auto component = std::make_unique<ComponentData>();
                 component->name = result.name;
@@ -544,7 +544,7 @@ std::any MeshBooleanHandler::execute(FeatureContext& ctx)
                 components.push_back(std::move(component));
                 model.addModel(result.name, std::move(components));
             }
-            ctx.publishResult(std::move(result.text));
+            report(1.0, result.text);
         },
         true);
     return std::string(job ? "正在计算网格布尔…" : "无法启动网格布尔任务（任务忙碌或宿主未配置后台执行器）");

@@ -115,11 +115,18 @@ std::any ScalePreviewHandler::execute(FeatureContext& ctx)
         return { };
     }
     const double factor = scale_;
-    auto job = ctx.runTypedWriteback(kPreviewLabel, active_target_, [](const ComponentOperator& op) { return op.mesh()->vertex_positions_; }, [factor](PreviewPositions& input, systems::job::ProgressFn report) {
+    auto job = ctx.runTypedWriteback(
+        kPreviewLabel, active_target_,
+        [](const ComponentOperator& op) { return op.mesh()->vertex_positions_; }, [factor](PreviewPositions& input, systems::job::ProgressFn report) {
             report(0.0, "缩放计算中");
             PreviewPositions out;
             scaleInto(input, factor, out, [&report](double ratio) { report(ratio, "缩放计算中"); });
-            return out; }, [](ComponentOperator& op, PreviewPositions& out) { op.editableMesh(MeshEditKind::NonTopology).vertex_positions_ = std::move(out); }, true);
+            return out; },
+        [](ComponentOperator& op, PreviewPositions& out, systems::job::ProgressFn report) {
+            op.editableMesh(MeshEditKind::NonTopology).vertex_positions_ = std::move(out);
+            report(1.0, "缩放完成");
+        },
+        true);
     if (!job)
         spdlog::warn("ScalePreview: direct scale rejected (job channel unavailable or target missing)");
     return { };
@@ -172,9 +179,10 @@ void ScalePreviewHandler::submitPreviewJob(FeatureContext& ctx)
             PreviewPositions out;
             scaleInto(state->base, factor, out,
                 [&report](double ratio) { report(ratio, kComputingLabel); });
-            return PreviewResult { std::move(out), factor }; }, [this, state](ComponentOperator& op, PreviewResult& result) {
+            return PreviewResult { std::move(out), factor }; }, [this, state](ComponentOperator& op, PreviewResult& result, systems::job::ProgressFn report) {
             // 框架保证 handler、目标与发布时的预览身份，取消后不触达回写。
-            writePreview(*state, result, op); });
+            writePreview(*state, result, op);
+            report(1.0, "缩放预览已更新"); });
     if (job) {
         preview_job_ = std::move(job);
         spdlog::debug("ScalePreview: preview job submitted");

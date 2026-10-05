@@ -645,7 +645,7 @@ TEST_CASE("IO registration stays immutable through preparation computation commi
                                           computing.release();
                                           resume.acquire();
                                       },
-            check_rejection };
+            [&](ProgressFn) { check_rejection(); } };
     });
     REQUIRE(job);
     CHECK(computing.try_acquire_for(std::chrono::seconds(5)));

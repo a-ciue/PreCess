@@ -47,12 +47,12 @@ TEST_CASE("Shared task status keeps cancellation and busy state until GUI comple
     REQUIRE(timer);
     QMetaObject::invokeMethod(timer, "timeout", Qt::DirectConnection);
     REQUIRE(status.getProgress() == 0.7);
-    REQUIRE(status.getProgressLabel() == "latest");
+    REQUIRE(status.getMessage() == "latest");
     REQUIRE_FALSE(runner.run("refused", [&] { return systems::job::JobWork { [](ProgressFn) { }, { } }; }, { }));
     REQUIRE(started == 1);
     REQUIRE(status.getProgress() == 0.7);
     status.cancel();
-    REQUIRE(status.getProgressLabel() == QString::fromUtf8("正在取消…"));
+    REQUIRE(status.getMessage() == QString::fromUtf8("正在取消…"));
     REQUIRE(model.writesPending());
     REQUIRE(status.isWritePending());
     completion();
@@ -79,7 +79,9 @@ TEST_CASE("Masked typed feature keeps progress and GUI events available until wr
                     worker_thread = std::this_thread::get_id();
                     report(0.5, "计算中");
                     input.front()[0] *= 2;
-                    return std::move(input); }, [](ComponentOperator& op, auto& result) { op.editableMesh(MeshEditKind::NonTopology).vertex_positions_ = std::move(result); }, true);
+                    return std::move(input); }, [](ComponentOperator& op, auto& result, ProgressFn report) {
+                    op.editableMesh(MeshEditKind::NonTopology).vertex_positions_ = std::move(result);
+                    report(1.0, "安装完成"); }, true);
             return { };
         }
     };
@@ -121,7 +123,7 @@ TEST_CASE("Masked typed feature keeps progress and GUI events available until wr
     REQUIRE(timer);
     QMetaObject::invokeMethod(timer, "timeout", Qt::DirectConnection);
     REQUIRE(status.getProgress() == 0.5);
-    REQUIRE(status.getProgressLabel() == QString::fromUtf8("计算中"));
+    REQUIRE(status.getMessage() == QString::fromUtf8("计算中"));
     bool cancelled = false;
     SECTION("success") { }
     SECTION("cancel before GUI commit")
@@ -137,6 +139,7 @@ TEST_CASE("Masked typed feature keeps progress and GUI events available until wr
     REQUIRE_FALSE(model.writesPending());
     REQUIRE(model.findComponent(target)->mesh->vertex_positions_.front()[0] == (cancelled ? 1 : 2));
     REQUIRE(undo.canUndo() == !cancelled);
+    REQUIRE(status.getMessage() == QString::fromUtf8(cancelled ? "已取消" : "安装完成"));
 }
 
 TEST_CASE("Shared task status reports inline failures and preserves a successor", "[QTaskStatus]")
@@ -152,19 +155,97 @@ TEST_CASE("Shared task status reports inline failures and preserves a successor"
     auto failed = runner.run("fail", [&] { return systems::job::JobWork { [](ProgressFn) { throw std::runtime_error("compute failed"); }, { }, true }; }, { });
     REQUIRE(failed->state() == JobState::Failed);
     REQUIRE(error == "compute failed");
+    REQUIRE(status.getMessage() == QString::fromUtf8("执行失败：compute failed"));
     REQUIRE_FALSE(status.isRunning());
     std::shared_ptr<Job> successor;
     QObject::connect(&status, &QTaskStatus::taskFinished, [&] {
-        if (!successor)
+        if (!successor) {
+            REQUIRE(status.getMessage() == "first completed");
             successor = runner.run("successor", [&] { return systems::job::JobWork { [](ProgressFn report) { report(0.4, "next"); }, { } }; }, { });
+        }
     });
-    auto first = runner.run("first", [&] { return systems::job::JobWork { [](ProgressFn) { }, { } }; }, { });
+    auto first = runner.run("first", [&] { return systems::job::JobWork { [](ProgressFn report) { report(1.0, "first completed"); }, { } }; }, { });
     queue.take()();
     REQUIRE(first->state() == JobState::Done);
     REQUIRE(successor);
     REQUIRE(status.isRunning());
     REQUIRE(status.getProgress() == 0.0);
+    REQUIRE(status.getMessage().isEmpty());
     queue.take()();
     REQUIRE_FALSE(status.isRunning());
     REQUIRE(status.getProgress() == 1.0);
+    REQUIRE(status.getMessage() == "next");
+}
+
+TEST_CASE("Short jobs preserve commit feedback and terminal outcomes without a timer tick", "[QTaskStatus][report]")
+{
+    ensureApplication();
+    QTaskStatus status;
+    OwnerQueue queue;
+    session::Session session(nullptr, queue.dispatcher());
+    auto& runner = *session.jobRunner();
+    status.bindSession(session);
+    bool fail_commit = false, cancel_before_commit = false, cancel_in_commit = false;
+    SECTION("success") { }
+    SECTION("commit failure overrides success text") { fail_commit = true; }
+    SECTION("queued cancellation suppresses write") { cancel_before_commit = true; }
+    SECTION("commit reporting does not interrupt an already started write") { cancel_in_commit = true; }
+    bool applied = false;
+    auto job = runner.run("short", [&] {
+        return JobWork { [](ProgressFn report) { report(0.8, "computed"); }, [&](ProgressFn report) {
+                            applied = true;
+                            if (cancel_in_commit)
+                                status.cancel();
+                            report(1.0, "installed");
+                            if (fail_commit)
+                                throw std::runtime_error("install failed"); } };
+    });
+    auto completion = queue.take();
+    REQUIRE(status.getMessage().isEmpty()); // No event pump or timer refresh.
+    status.showMessage("asynchronous startup return");
+    REQUIRE(status.getMessage().isEmpty());
+    if (cancel_before_commit)
+        status.cancel();
+    completion();
+    REQUIRE(applied == !cancel_before_commit);
+    const auto expected_state = fail_commit ? JobState::Failed : cancel_before_commit ? JobState::Cancelled
+                                                                                      : JobState::Done;
+    REQUIRE(job->state() == expected_state);
+    REQUIRE_FALSE(status.isRunning());
+    REQUIRE_FALSE(session.model().writesPending());
+    const auto expected_message = fail_commit ? QString::fromUtf8("执行失败：install failed") : cancel_before_commit ? QString::fromUtf8("已取消")
+                                                                                                                     : QString("installed");
+    REQUIRE(status.getMessage() == expected_message);
+    // A late timer tick cannot replace the terminal feedback.
+    QMetaObject::invokeMethod(status.findChild<QTimer*>(), "timeout", Qt::DirectConnection);
+    REQUIRE(status.getMessage() == expected_message);
+}
+
+TEST_CASE("Synchronous UI feedback shares the status text without creating a job", "[QTaskStatus][report]")
+{
+    ensureApplication();
+    QTaskStatus status;
+    REQUIRE(QMetaObject::invokeMethod(&status, "showMessage", Qt::DirectConnection, Q_ARG(QString, "select a face")));
+    REQUIRE(status.getMessage() == "select a face");
+    REQUIRE(QMetaObject::invokeMethod(&status, "reportFailure", Qt::DirectConnection, Q_ARG(QString, "invalid input")));
+    REQUIRE(status.getMessage() == QString::fromUtf8("执行失败：invalid input"));
+    status.showMessage({ });
+    REQUIRE(status.getMessage() == QString::fromUtf8("执行失败：invalid input"));
+    REQUIRE_FALSE(status.isRunning());
+    REQUIRE_FALSE(status.isWritePending());
+}
+
+TEST_CASE("Successful jobs without feedback show completion and clear the previous message", "[QTaskStatus][report]")
+{
+    ensureApplication();
+    QTaskStatus status;
+    OwnerQueue queue;
+    session::Session session(nullptr, queue.dispatcher());
+    status.bindSession(session);
+    status.showMessage("old result");
+    auto job = session.jobRunner()->run("quiet", [] { return JobWork { [](ProgressFn) { } }; });
+    REQUIRE(status.getMessage().isEmpty());
+    queue.take()();
+    REQUIRE(job->state() == JobState::Done);
+    REQUIRE(status.getMessage() == QString::fromUtf8("已完成"));
 }

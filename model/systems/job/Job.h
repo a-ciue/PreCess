@@ -47,9 +47,9 @@ class Job; // 前置声明：下方 JobProgressFn / JobFinishedFn 引用本类
 
 //! 任务体只计算；业务成果由类型化执行闭包持有，失败抛异常。
 using JobTaskFn = std::function<void(ProgressFn)>;
-//! GUI 提交段；仅计算成功且未取消时执行，失败抛异常。
-using JobCommitFn = std::function<void()>;
-//! 进度回调（在执行任务体的线程触发）
+//! GUI 提交段；仅计算成功且未取消时执行，失败抛异常；report 只展示，不增加取消点。
+using JobCommitFn = std::function<void(ProgressFn)>;
+//! 进度回调（计算在线程内触发，提交在所属线程触发）
 using JobProgressFn = std::function<void(Job&, double, const std::string&)>;
 //! 终态回调（在所属线程触发一次；单槽在回调前已让出）
 using JobFinishedFn = std::function<void(Job&)>;

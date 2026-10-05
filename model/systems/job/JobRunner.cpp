@@ -196,7 +196,11 @@ void JobRunner::complete(std::shared_ptr<Job> job, bool inline_compute)
                 stack_->resumeOperation(std::move(*operation_->capture));
                 operation_->capture.reset();
             }
-            job->commit();
+            job->commit([this, &job](double value, const std::string& label) {
+                // 提交一旦开始就原子完成，展示上报不再检查取消。
+                if (on_progress_)
+                    on_progress_(*job, value, label);
+            });
         } catch (const std::exception& e) {
             error = e.what();
         } catch (...) {

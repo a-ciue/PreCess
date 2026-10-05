@@ -15,7 +15,6 @@ import app.model.systems.algo
 Item{
     id: root
     property var parameters: []
-    property var resultText: ""
 
     readonly property var activeOp: App.activeOperation
 
@@ -24,7 +23,6 @@ Item{
         // 创建类操作直接提供默认参数，避免依赖 ListView delegate 的延迟初始化时机。
         parameters = root.activeOp && root.activeOp.defaultParameters
                 ? root.activeOp.defaultParameters.slice() : []
-        resultText = ""
         // 活动操作是功能则进入该功能（interactive 的交互随之一并上线），否则退出当前功能
         // （幂等，守卫在功能系统内；进入/退出经 FeatureHandler::activate/deactivate 通知功能）
         var isFeature = !!(activeOp && activeOp.isFeature)
@@ -41,10 +39,6 @@ Item{
     // 功能侧回写参数值（如交互结果文本）→ 同步到面板显示
     Connections {
         target: QModelManager.featureSystem
-        function onResultReady(feature, text) {
-            if (root.activeOp && root.activeOp.isFeature && root.activeOp.info.name === feature)
-                root.resultText = text
-        }
         function onParamValueChanged(feature, index, value) {
             if (root.activeOp && root.activeOp.info && root.activeOp.info.name === feature)
                 root.parameters[index] = value
@@ -66,10 +60,10 @@ Item{
                 if (root.activeOp && root.activeOp.execute) {
                     try {
                         const result = root.activeOp.execute(App.selection.activeComponentId, root.parameters)
-                        root.resultText = result === undefined || result === null
-                                        ? "" : String(result)
+                        if (result !== undefined && result !== null)
+                            QModelManager.taskStatus.showMessage(String(result))
                     } catch (error) {
-                        root.resultText = qsTr("执行失败：") + error
+                        QModelManager.taskStatus.reportFailure(String(error))
                     }
                 }
                 if (App.registry.renderWindow)
@@ -89,20 +83,8 @@ Item{
             onClicked: App.activeOperation = null
         }
     }
-    TextArea {
-        id: resultArea
-        anchors.top: buttonRow.bottom
-        anchors.left: parent.left
-        anchors.right: parent.right
-        // 不可见时不占锚定布局高度，避免留下空白
-        height: visible ? 80 : 0
-        readOnly: true
-        text: root.resultText
-        wrapMode: TextEdit.Wrap
-        visible: text.length > 0
-    }
     Item{
-        anchors.top: resultArea.bottom
+        anchors.top: buttonRow.bottom
         anchors.left: parent.left
         anchors.right: parent.right
         anchors.bottom: parent.bottom

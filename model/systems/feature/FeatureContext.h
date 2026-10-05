@@ -29,12 +29,12 @@ struct FeatureContext;
 using ModelJobTaskFn = std::function<void(ComponentOperator& shadow_target, systems::job::ProgressFn report)>;
 
 //! GUI 回写段：框架在发布前校验目标，在持有操作占用的提交段交付就绪写面。
-using WritebackFn = std::function<void(ComponentOperator&)>;
+using WritebackFn = std::function<void(ComponentOperator&, systems::job::ProgressFn)>;
 //! GUI 准备段：框架持有模型操作占用，按目标只读捕获输入，返回纯计算任务。
 using CaptureJobFn = std::function<systems::job::JobTaskFn(const ComponentOperator&)>;
 //! GUI 准备与提交覆盖整个模型层；worker 仍只拿自持输入和结果。
 using LayerCaptureJobFn = std::function<systems::job::JobTaskFn(const ModelLayer&)>;
-using LayerWritebackFn = std::function<void(ModelLayer&)>;
+using LayerWritebackFn = std::function<void(ModelLayer&, systems::job::ProgressFn)>;
 
 /**
  * @brief 临时预览视图：插件控制两次 execute 之间的开层、重试和取消。
@@ -82,8 +82,6 @@ struct FeatureContext {
     std::optional<Index> activeComponent() const;
     //! @brief 按身份查询所属模型的组件操作句柄。
     std::optional<ComponentOperator> componentOperator(Index component_id) const;
-    //! @brief GUI 收尾发布最终结果文本，宿主按所属功能展示。
-    void publishResult(std::string text);
     UndoContext undo; //> undo 上下文（插件层接口入口；语义见 UndoContext 注释）
     /**
      * @brief 纯计算任务；不得持活模型句柄，无模型回写与 undo 记录。
@@ -106,7 +104,7 @@ struct FeatureContext {
         requires std::is_invocable_v<Compute, systems::job::ProgressFn>
         && !std::is_void_v<std::invoke_result_t<Compute, systems::job::ProgressFn>>
         && std::is_invocable_v<Write, ComponentOperator&,
-            std::invoke_result_t<Compute, systems::job::ProgressFn>&>
+            std::invoke_result_t<Compute, systems::job::ProgressFn>&, systems::job::ProgressFn>
     std::shared_ptr<systems::job::Job> runTypedWriteback(
         std::string label, Index component_id, Compute compute, Write write, bool masked = false)
     {
@@ -117,6 +115,7 @@ struct FeatureContext {
      * @brief GUI 捕获输入 → worker 计算 → GUI 回写。插件只提供业务函数，不传递通用结果包。
      * 框架先占用并交付只读目标；compute 抛异常或取消则不调用 write。
      * 正式／预览归属在发布时固定；预览回写只进入原身份的层。
+     * compute/write 都接收 report；计算上报是取消心跳，提交上报只更新展示。
      * masked 仅控制交互遮罩，不改变模型占用、取消与记账规则。
      */
     template <typename Capture, typename Compute, typename Write>
@@ -138,7 +137,7 @@ struct FeatureContext {
                     [compute, payload](systems::job::ProgressFn report) mutable {
                         payload->result.emplace(compute(*payload->input, std::move(report)));
                     }
-                }; }, [write = std::move(write), payload](ComponentOperator& op) mutable { write(op, *payload->result); }, masked);
+                }; }, [write = std::move(write), payload](ComponentOperator& op, systems::job::ProgressFn report) mutable { write(op, *payload->result, std::move(report)); }, masked);
     }
 
     /**
@@ -164,7 +163,7 @@ struct FeatureContext {
                     [compute, payload](systems::job::ProgressFn report) mutable {
                         payload->result.emplace(compute(*payload->input, std::move(report)));
                     }
-                }; }, [write = std::move(write), payload](ModelLayer& layer) mutable { write(layer, *payload->result); }, masked);
+                }; }, [write = std::move(write), payload](ModelLayer& layer, systems::job::ProgressFn report) mutable { write(layer, *payload->result, std::move(report)); }, masked);
     }
 
 private:

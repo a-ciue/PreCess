@@ -1,10 +1,10 @@
 #include "ExtrudeFaceHandler.h"
 #include "ComponentData.h"
-#include "GeometryData.h"
 #include "FeatureContext.h"
 #include "FeatureParams.h"
 #include "FeatureRegistrar.h"
 #include "GeometryBuilder.h"
+#include "GeometryData.h"
 
 #include <BRepBuilderAPI_Copy.hxx>
 #include <Standard_Failure.hxx>
@@ -79,7 +79,9 @@ std::any ExtrudeFaceHandler::execute(FeatureContext& ctx)
             return std::string("所选几何面已失效。");
 
         const TopoDS_Face source = TopoDS::Face(*source_shape);
-        auto job = ctx.runTypedWriteback("拉伸面为实体", *component_id, [source](const ComponentOperator&) {
+        auto job = ctx.runTypedWriteback(
+            "拉伸面为实体", *component_id,
+            [source](const ComponentOperator&) {
                 // 几何隔离由插件负责；worker 不访问模型和渲染器共享的旧 TShape。
                 return TopoDS::Face(BRepBuilderAPI_Copy(source, true, false).Shape()); }, [direction_x, direction_y, direction_z, length](TopoDS_Face& input, systems::job::ProgressFn report) {
                 report(0.1, "构造拉伸实体并检查拓扑");
@@ -90,9 +92,12 @@ std::any ExtrudeFaceHandler::execute(FeatureContext& ctx)
                 } catch (const Standard_Failure& error) {
                     const char* detail = error.GetMessageString();
                     throw std::runtime_error(detail ? detail : "OpenCASCADE extrusion failed");
-                } }, [&ctx](ComponentOperator& target, TopoDS_Shape& solid) {
+                } },
+            [](ComponentOperator& target, TopoDS_Shape& solid, systems::job::ProgressFn report) {
                 target.appendGeometryShape(std::move(solid));
-                ctx.publishResult("拉伸完成：已将实体追加到源组件。"); }, true);
+                report(1.0, "拉伸完成：已将实体追加到源组件。");
+            },
+            true);
         return std::string(job ? "正在计算拉伸…" : "无法启动拉伸任务（任务忙碌或宿主未配置后台执行器）");
     } catch (const Standard_Failure& error) {
         const char* detail = error.GetMessageString();

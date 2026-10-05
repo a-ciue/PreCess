@@ -88,16 +88,18 @@ TEST_CASE("ExtrudeFace execute appends extruded solid to source component", "[Ex
     const auto owner_thread = std::this_thread::get_id();
     std::thread::id compute_thread;
     double latest_progress = 0;
-    runner.setOnProgress([&](job::Job&, double progress, const std::string&) {
-        compute_thread = std::this_thread::get_id();
-        latest_progress = progress;
-    });
     int results = 0;
-    auto subscription = bus.subscribe<FeatureResultEvent>([&](const FeatureResultEvent& event) {
-        REQUIRE(std::this_thread::get_id() == owner_thread);
-        REQUIRE(event.feature == "ExtrudeFace");
-        REQUIRE(event.text.find("拉伸完成") != std::string::npos);
-        ++results;
+    runner.setOnProgress([&](job::Job& task, double progress, const std::string& text) {
+        if (task.state() == job::JobState::Running) {
+            compute_thread = std::this_thread::get_id();
+            latest_progress = progress;
+        } else {
+            REQUIRE(task.state() == job::JobState::Committing);
+            REQUIRE(std::this_thread::get_id() == owner_thread);
+            REQUIRE(text.find("拉伸完成") != std::string::npos);
+            REQUIRE(progress == 1.0);
+            ++results;
+        }
     });
     REQUIRE(std::any_cast<std::string>(feature_system.invoke("ExtrudeFace")) == "正在计算拉伸…");
     auto task = runner.currentJob();
@@ -167,7 +169,10 @@ TEST_CASE("ExtrudeFace cancellation and compute failure discard the result", "[E
     if (missing_runner)
         system.setJobRunner(nullptr);
     int results = 0;
-    auto subscription = bus.subscribe<FeatureResultEvent>([&](const FeatureResultEvent&) { ++results; });
+    runner.setOnProgress([&](job::Job& task, double, const std::string&) {
+        if (task.state() == job::JobState::Committing)
+            ++results;
+    });
     const auto response = std::any_cast<std::string>(system.invoke("ExtrudeFace"));
     auto task = runner.currentJob();
     if (missing_runner) {

@@ -214,7 +214,7 @@ systems::job::JobWork AlgorithmSystem::prepareAlgorithm(const std::string& uniqu
     return systems::job::JobWork { [this, prep](ProgressFn report) {
                                       computeShadow(*prep, std::move(report));
                                   },
-        [this, prep, owner] {
+        [this, prep, owner](ProgressFn) {
             ModelScope scope(*model_manager_, undo_stack_, prep->label, ModelScope::Kind::Command, owner);
             applyShadow(*prep);
         } };

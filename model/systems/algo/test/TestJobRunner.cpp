@@ -21,7 +21,7 @@ TEST_CASE("Inline task computes and completes on owner without dispatch", "[JobR
     runner.setOnProgress([&](Job&, double value, const std::string&) { CHECK(value == 0.5); ++progress; });
     runner.setOnFinished([&](Job&) { ++finished; });
     auto job = runner.run("inline", [&] { return systems::job::JobWork { [&](ProgressFn report) {
-        report(0.5, "half"); value = 42; }, [&] { CHECK(value == 42); }, true }; }, { });
+        report(0.5, "half"); value = 42; }, [&](ProgressFn) { CHECK(value == 42); }, true }; }, { });
     REQUIRE(job->state() == JobState::Done);
     REQUIRE(progress == 1);
     REQUIRE(finished == 1);
@@ -35,14 +35,14 @@ TEST_CASE("Computation and commit failures preserve their errors", "[JobRunner]"
     bool applied = false;
     SECTION("throw")
     {
-        auto job = runner.run("throw", [&] { return systems::job::JobWork { [](ProgressFn) -> void { throw std::runtime_error("compute failed"); }, [&]() { applied = true; }, true }; }, { });
+        auto job = runner.run("throw", [&] { return systems::job::JobWork { [](ProgressFn) -> void { throw std::runtime_error("compute failed"); }, [&](ProgressFn) { applied = true; }, true }; }, { });
         REQUIRE(job->state() == JobState::Failed);
         REQUIRE(job->error() == "compute failed");
     }
 
     SECTION("commit throw")
     {
-        auto job = runner.run("commit", [&] { return systems::job::JobWork { [](ProgressFn) { }, []() { throw std::runtime_error("commit failed"); }, true }; }, { });
+        auto job = runner.run("commit", [&] { return systems::job::JobWork { [](ProgressFn) { }, [](ProgressFn) { throw std::runtime_error("commit failed"); }, true }; }, { });
         REQUIRE(job->state() == JobState::Failed);
         REQUIRE(job->error() == "commit failed");
     }
@@ -71,7 +71,7 @@ TEST_CASE("Computed result retains slot and model authority until one owner comp
     const auto owner = std::this_thread::get_id();
     std::thread::id compute_thread, commit_thread, finish_thread;
     runner.setOnFinished([&](Job&) { finish_thread = std::this_thread::get_id(); CHECK_FALSE(model.writesPending()); });
-    auto job = runner.run("first", [&] { return systems::job::JobWork { [&](ProgressFn) { compute_thread = std::this_thread::get_id(); }, [&]() { commit_thread = std::this_thread::get_id(); CHECK(runner.currentJob()); } }; }, { });
+    auto job = runner.run("first", [&] { return systems::job::JobWork { [&](ProgressFn) { compute_thread = std::this_thread::get_id(); }, [&](ProgressFn) { commit_thread = std::this_thread::get_id(); CHECK(runner.currentJob()); } }; }, { });
     auto notification = queue.take();
     REQUIRE(compute_thread != owner);
     REQUIRE(job->state() == JobState::Running);
@@ -94,7 +94,7 @@ TEST_CASE("Queued cancellation discards result and still drains cleanup", "[JobR
     JobRunner runner(model, nullptr, queue.dispatcher());
     bool applied = false;
     int cleaned = 0;
-    auto job = runner.run("queued", [&] { return systems::job::JobWork { [](ProgressFn) { }, [&]() { applied = true; } }; }, { });
+    auto job = runner.run("queued", [&] { return systems::job::JobWork { [](ProgressFn) { }, [&](ProgressFn) { applied = true; } }; }, { });
     auto fn = queue.take();
     REQUIRE(runner.deferUntilFinished([&] {
         CHECK(model.writesPending());
@@ -150,7 +150,7 @@ TEST_CASE("Stop joins without GUI processing and late callback is harmless", "[J
     std::function<void()> late;
     {
         JobRunner runner(model, nullptr, queue.dispatcher());
-        job = runner.run("stop", [&] { return systems::job::JobWork { [](ProgressFn) { }, [&]() { applied = true; } }; }, { });
+        job = runner.run("stop", [&] { return systems::job::JobWork { [](ProgressFn) { }, [&](ProgressFn) { applied = true; } }; }, { });
         late = queue.take();
         REQUIRE(runner.deferUntilFinished([&] { CHECK(model.writesPending()); cleaned = true; }));
         runner.stop();
@@ -252,7 +252,7 @@ TEST_CASE("Completion rejects an open boundary once; inline child shares it", "[
     JobRunner runner(model, &stack, queue.dispatcher());
     bool applied = false;
     stack.beginOperation("outer");
-    auto job = runner.run("async", [&] { return systems::job::JobWork { [](ProgressFn) { }, [&]() { applied = true; } }; }, { });
+    auto job = runner.run("async", [&] { return systems::job::JobWork { [](ProgressFn) { }, [&](ProgressFn) { applied = true; } }; }, { });
     auto fn = queue.take();
     fn();
     stack.commitOperation();
@@ -261,7 +261,7 @@ TEST_CASE("Completion rejects an open boundary once; inline child shares it", "[
     REQUIRE(job->error().find("boundary") != std::string::npos);
     {
         ModelScope outer(model, &stack, "inline outer");
-        auto child = runner.run("child", [&] { return systems::job::JobWork { [](ProgressFn) { }, [&]() { applied = true; }, true }; }, { });
+        auto child = runner.run("child", [&] { return systems::job::JobWork { [](ProgressFn) { }, [&](ProgressFn) { applied = true; }, true }; }, { });
         REQUIRE(child->state() == JobState::Done);
     }
     REQUIRE(applied);
@@ -282,7 +282,7 @@ TEST_CASE("Stop joins computing worker and cleans on owner without an event pump
         std::unique_lock lock(mutex);
         entered = true;
         changed.notify_all();
-        changed.wait(lock, [&] { return released; }); }, []() { FAIL("stop must not apply result"); } }; }, { });
+        changed.wait(lock, [&] { return released; }); }, [](ProgressFn) { FAIL("stop must not apply result"); } }; }, { });
     {
         std::unique_lock lock(mutex);
         REQUIRE(changed.wait_for(lock, std::chrono::seconds(5), [&] { return entered; }));
@@ -327,7 +327,7 @@ TEST_CASE("Task and apply captures are destroyed on owner before handler cleanup
     SECTION("successful apply") { }
     SECTION("failed compute result") { fail = true; }
     auto job = runner.run("captures", [&] { return systems::job::JobWork { [payload, fail](ProgressFn) {
-        if (fail) throw std::runtime_error("failed"); }, [payload] { } }; }, { });
+        if (fail) throw std::runtime_error("failed"); }, [payload](ProgressFn) { } }; }, { });
     payload.reset();
     auto completion = queue.take();
     REQUIRE_FALSE(alive.expired());
@@ -403,7 +403,7 @@ TEST_CASE("Cancellation after commit starts preserves the actual commit outcome"
         ++finished;
     });
     auto job = runner.run("commit cancellation", [&] {
-        return JobWork { [](ProgressFn) { }, [&] {
+        return JobWork { [](ProgressFn) { }, [&](ProgressFn) {
                             auto current = runner.currentJob();
                             CHECK(current->state() == JobState::Committing);
                             CHECK(model.writesPending());

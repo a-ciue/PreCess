@@ -323,12 +323,12 @@ std::shared_ptr<systems::job::Job> FeatureSystem::submitWriteJob(std::string lab
         auto work = prepare();
         if (!work.task)
             return work;
-        work.commit = [this, apply = std::move(work.commit), label, owner, preview_scope] {
+        work.commit = [this, apply = std::move(work.commit), label, owner, preview_scope](systems::job::ProgressFn report) {
             ModelScope scope(*model_layer_, undo_stack_, label,
                 preview_scope ? ModelScope::Kind::Preview : ModelScope::Kind::Execute, owner);
             if (preview_scope && undo_stack_->scopeId() != *preview_scope)
                 throw ModelOperationBusy("FeatureSystem: preview result no longer owns its scope");
-            apply();
+            apply(std::move(report));
         };
         return work; }, { owner, masked, false, !preview_scope });
 }
@@ -348,11 +348,11 @@ std::shared_ptr<systems::job::Job> FeatureSystem::submitCapturedWriteback(std::s
         auto target = model_layer_->getComponentOperator(component_id);
         if (!target)
             return systems::job::JobTaskFn { };
-        return capture(*target); }, [component_id, write = std::move(write)](ModelLayer& layer) {
+        return capture(*target); }, [component_id, write = std::move(write)](ModelLayer& layer, systems::job::ProgressFn report) {
         auto target = layer.getComponentOperator(component_id);
         if (!target)
             throw std::runtime_error("FeatureSystem: occupied writeback target disappeared");
-        write(*target); }, owner, masked);
+        write(*target, std::move(report)); }, owner, masked);
 }
 
 std::shared_ptr<systems::job::Job> FeatureSystem::submitCapturedWriteback(std::string label,
@@ -370,7 +370,7 @@ std::shared_ptr<systems::job::Job> FeatureSystem::submitCapturedWriteback(std::s
     }
     return submitWriteJob(std::move(label), owner, [this, capture = std::move(capture), write = std::move(write)] {
         // 已占用且无写授权；插件捕获误写在模型底层拒绝。
-        return systems::job::JobWork { capture(*model_layer_), [this, write] { write(*model_layer_); } }; }, preview_scope, masked);
+        return systems::job::JobWork { capture(*model_layer_), [this, write](systems::job::ProgressFn report) { write(*model_layer_, std::move(report)); } }; }, preview_scope, masked);
 }
 
 std::shared_ptr<systems::job::Job> FeatureSystem::submitModelJob(std::string label, Index component_id,
@@ -387,7 +387,7 @@ std::shared_ptr<systems::job::Job> FeatureSystem::submitModelJob(std::string lab
             auto target = shadow->target();
             task(target, std::move(report));
             shadow->finishCompute();
-        }, [this, shadow] { shadow->apply(*model_layer_); } }; }, std::nullopt, true);
+        }, [this, shadow](systems::job::ProgressFn) { shadow->apply(*model_layer_); } }; }, std::nullopt, true);
 }
 
 bool FeatureSystem::deferCleanup(std::function<void()> cleanup)

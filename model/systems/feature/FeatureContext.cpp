@@ -81,12 +81,6 @@ std::optional<ComponentOperator> FeatureContext::componentOperator(Index compone
     return model.getComponentOperator(component_id);
 }
 
-void FeatureContext::publishResult(std::string text)
-{
-    model.assertOwnerThread();
-    events.bus().publish(FeatureResultEvent { owner_, std::move(text) });
-}
-
 std::shared_ptr<systems::job::Job> FeatureContext::runJob(std::string label, systems::job::JobTaskFn task)
 {
     UndoStack::OwnerScope owner_scope(system_.undo_stack_, owner_);

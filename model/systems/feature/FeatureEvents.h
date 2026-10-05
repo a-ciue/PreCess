@@ -12,12 +12,6 @@
 #include <utility>
 
 namespace systems::feature {
-//! @brief 功能的异步结果文本，由 GUI 提交段发布。
-struct FeatureResultEvent {
-    std::string feature;
-    std::string text;
-};
-
 /**
  * @brief 键盘按键事件
  *

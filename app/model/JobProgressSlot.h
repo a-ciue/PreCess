@@ -1,6 +1,6 @@
 /**
  * @file JobProgressSlot.h
- * @brief 进度槽：worker 只写、GUI 定频轮询的进度合流点（替代每报一次跨线程投递）
+ * @brief 进度槽：计算与提交共用，GUI 定频轮询（替代每报一次跨线程投递）
  *
  * 轮询模型：worker 侧 report 每次调用仅写槽（短锁拷贝，近乎零成本），GUI 侧 QTimer
  * 定频 poll 取最新快照落地——N 次上报折叠为 ≤时长/轮询周期 次 UI 更新，事件队列不再
@@ -8,7 +8,7 @@
  *
  * 契约：
  * - last-wins 合并：中间帧自然丢弃，poll 只见最新值；
- * - 成对一致：value 与 label 在同一把锁下拷出，不会读到"新值配旧标签"；
+ * - 成对一致：value 与有效 label 在同一把锁下拷出；空 label 只更新数值、沿用文字；
  * - 终态门闩：close() 后 poll 恒空、write 被丢弃——"终态之后无进度事件"由本类保证
  *   （GUI 侧先 close 再呈现终态，随后到达的迟到写入一律作废）；
  * - reset()：新任务开始时清空待投递残留并解除门闩。
@@ -23,7 +23,7 @@
 class JobProgressSlot {
 public:
     /**
-     * @brief worker 线程写入最新进度（close 后的迟到写入被丢弃）
+     * @brief 计算或提交线程写入最新进度（close 后的迟到写入被丢弃）
      */
     void write(double value, std::string label)
     {
@@ -31,7 +31,9 @@ public:
         if (closed_)
             return;
         value_ = value;
-        label_ = std::move(label);
+        // 只更新百分比时沿用上一句状态文字。
+        if (!label.empty())
+            label_ = std::move(label);
         dirty_ = true;
     }
 

@@ -24,7 +24,7 @@ class QTaskStatus : public QObject {
     QML_UNCREATABLE("QTaskStatus is provided by C++")
     Q_PROPERTY(bool running READ isRunning NOTIFY runningChanged)
     Q_PROPERTY(double progress READ getProgress NOTIFY progressChanged)
-    Q_PROPERTY(QString progressLabel READ getProgressLabel NOTIFY progressChanged)
+    Q_PROPERTY(QString message READ getMessage NOTIFY progressChanged)
     Q_PROPERTY(bool writePending READ isWritePending NOTIFY busyChanged)
     Q_PROPERTY(bool frozenBusy READ isFrozenBusy NOTIFY busyChanged)
 public:
@@ -32,11 +32,13 @@ public:
     //! @brief 空闲时一次装配唯一 Runner；模型操作与展示采用同一任务来源。
     void bindSession(session::Session& session);
     //! @brief 准备阶段异常尚未产生任务，宿主仍可显示失败。
-    void reportFailure(const QString& error);
+    Q_INVOKABLE void reportFailure(const QString& error);
+    //! @brief 展示同步执行反馈；任务运行时保留 Runner 的状态文字。
+    Q_INVOKABLE void showMessage(const QString& text);
     Q_INVOKABLE void cancel();
     bool isRunning() const { return running_; }
     double getProgress() const { return progress_; }
-    QString getProgressLabel() const { return progress_label_; }
+    QString getMessage() const { return message_; }
     bool isWritePending() const { return running_; }
     bool isFrozenBusy() const { return running_ && masked_; }
 signals:
@@ -51,11 +53,12 @@ signals:
 private:
     void startJob(systems::job::Job& job);
     void finishJob(systems::job::Job& job);
+    bool consumeProgress();
     systems::job::JobRunner* runner_ { nullptr };
     JobProgressSlot progress_slot_;
     QTimer* progress_timer_ { nullptr };
     double progress_ { 0.0 };
-    QString progress_label_;
+    QString message_;
     bool running_ { false };
     bool masked_ { false };
     bool cancel_requested_ { false };

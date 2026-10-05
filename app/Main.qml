@@ -138,20 +138,6 @@ ApplicationWindow {
         onActivated: QModelManager.undoStack.redo()
     }
 
-    // 全局任务统一反馈；算法与功能使用同一状态源。
-    Connections {
-        target: QModelManager.taskStatus
-        function onTaskStarted() {
-            statusBar.statusMessage = "";
-        }
-        function onTaskFailed(error) {
-            statusBar.statusMessage = qsTr("执行失败：") + error;
-        }
-        function onTaskCancelled() {
-            statusBar.statusMessage = qsTr("已取消");
-        }
-    }
-
     Connections {
         target: App.selection
         function onActiveModelIdChanged() {

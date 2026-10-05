@@ -10,11 +10,11 @@ namespace systems::job {
 /**
  * @brief 进度上报回调
  * @param value 完成度，取值 0~1
- * @param label 当前阶段描述（展示给用户，可为空串）
+ * @param label 当前阶段或执行反馈（展示给用户，空串沿用上一句文字）
  *
- * 上下文（HandlerContext / FeatureContext）提供 no-op 默认实现，任务可无条件调用、无需判空；
- * 由上层（如 QML 适配器）注入真实实现：更新进度属性并驱动界面刷新。
- * 心跳语义：任务执行期间回调被调用即视为心跳（取消检查在此进行）。
+ * Runner 在计算与 GUI 提交段提供有效回调，无展示方也可直接调用，无需判空。
+ * 计算段每次上报是取消心跳；提交段只更新展示，不中断已经开始的提交。
+ * 回调只在当前执行段内使用，不跨任务保存。同步算法的默认回调为空操作。
  */
 using ProgressFn = std::function<void(double value, const std::string& label)>;
 }

@@ -92,13 +92,6 @@ void QFeatureSystemAdaptor::notifyScalarAttributeDisplayRequested(
     QMetaObject::invokeMethod(this, [this, component_id, q_attribute_name]() { emit scalarAttributeDisplayRequested(component_id, q_attribute_name); }, Qt::QueuedConnection);
 }
 
-void QFeatureSystemAdaptor::notifyResult(const std::string& feature, const std::string& text)
-{
-    const auto q_feature = QString::fromStdString(feature);
-    const auto q_text = QString::fromStdString(text);
-    QMetaObject::invokeMethod(this, [this, q_feature, q_text] { emit resultReady(q_feature, q_text); }, Qt::QueuedConnection);
-}
-
 bool QFeatureSystemAdaptor::setParameter(const QString& unique_name, int index, const QVariant& value)
 {
     const FeatureParams* params = feature_system_->params(unique_name.toStdString());

@@ -223,9 +223,11 @@ struct Fixture {
     std::string invokeText()
     {
         std::string final_text;
-        auto subscription = bus.subscribe<FeatureResultEvent>([&](const FeatureResultEvent& e) {
-            REQUIRE(e.feature == "MeshBoolean");
-            final_text = e.text;
+        runner.setOnProgress([&](systems::job::Job& job, double value, const std::string& text) {
+            if (job.state() == systems::job::JobState::Committing) {
+                REQUIRE(value == 1.0);
+                final_text = text;
+            }
         });
         const std::any result = feature_system.invoke("MeshBoolean");
         if (auto job = runner.currentJob()) {
@@ -233,8 +235,10 @@ struct Fixture {
             queue.take()();
             REQUIRE(job->state() == systems::job::JobState::Done);
             REQUIRE_FALSE(final_text.empty());
+            runner.setOnProgress({ });
             return final_text;
         }
+        runner.setOnProgress({ });
         REQUIRE(result.type() == typeid(std::string));
         return std::any_cast<const std::string&>(result);
     }
@@ -308,7 +312,10 @@ TEST_CASE("MeshBoolean cancellation discards queued result without publishing te
     fx.selectA(addClosedBoxComponent(fx.model_layer, "A", 0, 0, 0, 1.0));
     fx.selectB(addClosedBoxComponent(fx.model_layer, "B", 0.5, 0.5, 0.5, 1.0));
     int results = 0;
-    auto subscription = fx.bus.subscribe<FeatureResultEvent>([&](const FeatureResultEvent&) { ++results; });
+    fx.runner.setOnProgress([&](systems::job::Job& job, double, const std::string&) {
+        if (job.state() == systems::job::JobState::Committing)
+            ++results;
+    });
     fx.feature_system.invoke("MeshBoolean");
     auto job = fx.runner.currentJob();
     REQUIRE(job);

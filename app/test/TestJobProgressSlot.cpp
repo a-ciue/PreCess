@@ -99,3 +99,21 @@ TEST_CASE("Progress slot: concurrent writes and polls stay consistent", "[JobPro
     REQUIRE(label == "w-" + std::to_string(kWrites));
     REQUIRE(polls <= kWrites); // 合并：轮询次数不超过写入次数
 }
+TEST_CASE("Progress-only updates preserve the latest nonempty status text", "[JobProgressSlot]")
+{
+    JobProgressSlot slot;
+    slot.write(0.1, "computing");
+    slot.write(0.5, "");
+    double value;
+    std::string label;
+    REQUIRE(slot.poll(value, label));
+    REQUIRE(value == 0.5);
+    REQUIRE(label == "computing");
+    slot.write(1.0, "installed");
+    REQUIRE(slot.poll(value, label));
+    REQUIRE(label == "installed");
+    slot.reset();
+    slot.write(0.2, "");
+    REQUIRE(slot.poll(value, label));
+    REQUIRE(label.empty());
+}

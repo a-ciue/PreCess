@@ -1,5 +1,5 @@
 /** @file QTaskStatus.cpp
- * @brief worker 只写一个进度槽，GUI 统一呈现所有任务。
+ * @brief 计算与提交共用一个进度槽，GUI 统一呈现执行反馈。
  */
 #include "QTaskStatus.h"
 #include "JobRunner.h"
@@ -13,14 +13,8 @@ QTaskStatus::QTaskStatus(QObject* parent)
     progress_timer_ = new QTimer(this);
     progress_timer_->setInterval(33);
     connect(progress_timer_, &QTimer::timeout, this, [this] {
-        double value;
-        std::string label;
-        if (!progress_slot_.poll(value, label))
-            return;
-        progress_ = qBound(0.0, value, 1.0);
-        if (!cancel_requested_)
-            progress_label_ = QString::fromStdString(label);
-        emit progressChanged();
+        if (consumeProgress())
+            emit progressChanged();
     });
 }
 void QTaskStatus::bindSession(session::Session& session)
@@ -39,7 +33,7 @@ void QTaskStatus::startJob(systems::job::Job& job)
     progress_slot_.reset();
     progress_timer_->start();
     progress_ = 0.0;
-    progress_label_.clear();
+    message_.clear();
     cancel_requested_ = false;
     running_ = true;
     masked_ = job.masked();
@@ -50,24 +44,52 @@ void QTaskStatus::startJob(systems::job::Job& job)
 }
 void QTaskStatus::finishJob(systems::job::Job& job)
 {
+    // worker 已退出、GUI 提交已结束；短任务也必须消费最后一句反馈。
+    cancel_requested_ = false;
+    consumeProgress();
     progress_slot_.close();
     progress_timer_->stop();
     running_ = false;
-    cancel_requested_ = false;
-    if (job.state() == systems::job::JobState::Done)
+    const auto state = job.state();
+    if (state == systems::job::JobState::Done) {
         progress_ = 1.0;
+        if (message_.isEmpty())
+            message_ = tr("已完成");
+    } else if (state == systems::job::JobState::Failed)
+        message_ = tr("执行失败：") + QString::fromStdString(job.error());
+    else if (state == systems::job::JobState::Cancelled)
+        message_ = tr("已取消");
     emit runningChanged();
     emit progressChanged();
     emit busyChanged();
-    if (job.state() == systems::job::JobState::Failed)
-        reportFailure(QString::fromStdString(job.error()));
-    else if (job.state() == systems::job::JobState::Cancelled)
+    if (state == systems::job::JobState::Failed)
+        emit taskFailed(QString::fromStdString(job.error()));
+    else if (state == systems::job::JobState::Cancelled)
         emit taskCancelled();
     emit taskFinished();
 }
 void QTaskStatus::reportFailure(const QString& error)
 {
+    showMessage(tr("执行失败：") + error);
     emit taskFailed(error);
+}
+void QTaskStatus::showMessage(const QString& text)
+{
+    if (running_ || text.isEmpty())
+        return;
+    message_ = text;
+    emit progressChanged();
+}
+bool QTaskStatus::consumeProgress()
+{
+    double value;
+    std::string label;
+    if (!progress_slot_.poll(value, label))
+        return false;
+    progress_ = qBound(0.0, value, 1.0);
+    if (!cancel_requested_ && !label.empty())
+        message_ = QString::fromStdString(label);
+    return true;
 }
 void QTaskStatus::cancel()
 {
@@ -77,7 +99,7 @@ void QTaskStatus::cancel()
     if (!job)
         return;
     cancel_requested_ = true;
-    progress_label_ = tr("正在取消…");
+    message_ = tr("正在取消…");
     emit progressChanged();
     job->cancel();
 }
