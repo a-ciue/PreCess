@@ -10,10 +10,8 @@
  */
 
 import QtQuick
-import QtQuick.Window
 import QtQuick.Controls
 import QtQuick.Layouts
-import QtQuick.Controls.Fusion
 
 import QtCore
 
@@ -33,11 +31,34 @@ ApplicationWindow {
     height: 600
     visibility: Window.Maximized
     title: qsTr("PreCess")
+    color: Theme.windowBackground
     flags: Qt.platform.os === "wasm" ? (Qt.Window | Qt.FramelessWindowHint) : Qt.Window
 
     // 冻结任务忙碌态（聚合位经共享任务状态源单点暴露）：算法执行 ∨ 功能冻结任务——
     // 忙碌遮罩、快捷键与工具栏禁用据此驱动；自由任务不置位（不打断用户操作）
     readonly property bool frozenBusy: QModelManager.taskStatus.frozenBusy
+
+    // 固定浅色调色板：Qt 6.5+ 默认调色板跟随系统深浅色主题，系统为深色模式时
+    // Fusion 控件（Pane/Button/TextField 等）会渲染为深色、与浅色主题混杂；
+    // 窗口级调色板自此处向下传播到全部控件与弹窗，取值与 Theme 令牌一致
+    palette.window: Theme.windowBackground
+    palette.windowText: Theme.textPrimary
+    palette.base: Theme.surface
+    palette.alternateBase: Theme.surfaceAlt
+    palette.text: Theme.textPrimary
+    palette.button: Theme.surfaceAlt
+    palette.buttonText: Theme.textPrimary
+    palette.highlight: Theme.primary
+    palette.highlightedText: Theme.textOnPrimary
+    palette.placeholderText: Theme.textDisabled
+    palette.mid: Theme.borderStrong
+    palette.midlight: Theme.border
+    palette.light: Theme.surface
+    palette.dark: Theme.borderStrong
+    palette.shadow: Theme.scrollBarHover
+    palette.link: Theme.primary
+    palette.toolTipBase: Theme.surface
+    palette.toolTipText: Theme.textPrimary
 
     // 布局持久化：JSON 快照存于 QSettings；退出保存，启动恢复
     Settings {
@@ -57,10 +78,17 @@ ApplicationWindow {
         dockHost.placePanel(preferencesDock, Docking.Tokens.DockEdge.Top, objectTreeDock, Qt.size(0, 200), Docking.Tokens.PanelLaunch.Hidden)
     }
 
+    // 保留本次启动的默认布局，供恢复被关闭、拖出屏幕或压缩的面板。
+    property string defaultDockLayout: ""
+
     onClosing: dockSettings.json = dockHost.saveLayout()
 
     header: AppToolbar {
         windowHeight: root.height
+        onResetLayoutRequested: {
+            if (root.defaultDockLayout.length > 0)
+                dockHost.restoreLayout(root.defaultDockLayout)
+        }
         objectTreeOpen: objectTreeDock.shown
         propertyListOpen: sideBarDock.shown
         attributeRenderOpen: attributeRenderDock.shown
@@ -172,6 +200,9 @@ ApplicationWindow {
             uniqueName: "objectTree"
             title: "对象树"
             ObjectTree {
+                // 停靠层以内容的隐式尺寸作为最小尺寸，防止对象树被挤到零高度。
+                implicitWidth: 200
+                implicitHeight: 180
                 anchors.fill: parent
             }
         }
@@ -181,6 +212,8 @@ ApplicationWindow {
             uniqueName: "sideBar"
             title: "操作面板"
             SideBar {
+                implicitWidth: 200
+                implicitHeight: 120
                 anchors.fill: parent
             }
         }
@@ -235,10 +268,13 @@ ApplicationWindow {
         }
 
         Component.onCompleted: {
-            // 先应用声明默认布局，再尝试恢复上次保存的快照
-            root.applyDefaultLayout()
-            if (dockSettings.json.length > 0)
-                dockHost.restoreLayout(dockSettings.json)
+            // 等窗口完成首轮布局后再按实际尺寸分配面板占比。
+            Qt.callLater(function() {
+                root.applyDefaultLayout()
+                root.defaultDockLayout = dockHost.saveLayout()
+                if (dockSettings.json.length > 0)
+                    dockHost.restoreLayout(dockSettings.json)
+            })
         }
     }
 
@@ -248,6 +284,7 @@ ApplicationWindow {
         id: importDropArea
         anchors.fill: parent
         z: 1
+        onContainsDragChanged: App.importDragActive = containsDrag
 
         // 不做前置过滤：是否可导入由 C++ read 判定（失败会记 error 日志）
         onEntered: {
@@ -273,22 +310,6 @@ ApplicationWindow {
                 App.registry.renderWindow.resetCamera()
             if (failed > 0)
                 outputLogDock.showPanel() // 失败原因由日志面板承载，直接打开便于查看
-        }
-
-        // 拖入可导入文件时的高亮提示
-        Rectangle {
-            anchors.fill: parent
-            visible: importDropArea.containsDrag
-            color: Qt.rgba(0.29, 0.56, 0.89, 0.12)
-            border.color: "#4a90e2"
-            border.width: 2
-
-            Label {
-                anchors.centerIn: parent
-                text: qsTr("松开鼠标以导入模型文件")
-                font.pixelSize: 16
-                color: "#1a6fc4"
-            }
         }
     }
 

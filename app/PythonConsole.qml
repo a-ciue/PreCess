@@ -53,9 +53,9 @@ Item {
             TextArea {
                 id: outputText
                 readOnly: true
-                color: "#333333"
-                font.family: "Courier New"
-                font.pixelSize: 12
+                color: Theme.textPrimary
+                font.family: Theme.monoFamily
+                font.pixelSize: Theme.fontSizeCaption
                 wrapMode: TextArea.Wrap
             }
         }
@@ -97,8 +97,8 @@ Item {
             Text {
                 id: promptText
                 text: ">"
-                color: "#1976d2"
-                font.pixelSize: 14
+                color: Theme.primary
+                font.pixelSize: Theme.fontSizeLarge
                 font.bold: true
             }
 
@@ -106,9 +106,9 @@ Item {
                 id: inputField
                 Layout.fillWidth: true
                 placeholderText: "输入 Python 代码..."
-                color: "#333333"
-                font.family: "Courier New"
-                font.pixelSize: 12
+                color: Theme.textPrimary
+                font.family: Theme.monoFamily
+                font.pixelSize: Theme.fontSizeCaption
 
                 Keys.onUpPressed: {
                     if (history.length > 0) {

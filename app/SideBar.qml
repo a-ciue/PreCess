@@ -4,7 +4,8 @@
  */
 
 import QtQuick
-import QtQuick.Controls
+import QtQuick.Shapes
+import QtQuick.Controls.Fusion
 import QtQuick.Layouts
 import QtQuick.Dialogs
 
@@ -50,13 +51,35 @@ Item{
         anchors.top: parent.top
         anchors.left: parent.left
         anchors.right: parent.right
-        height: 30
+        anchors.margins: visible ? Theme.spacingSm : 0
+        height: visible ? 36 : 0
+        spacing: Theme.spacingSm
+        // 无活动操作时按钮行整体隐藏，避免两个 disabled 按钮占据首行
+        visible: !!(root.activeOp && root.activeOp.info)
         Button{
             id: commitButton
             text: "执行"
             enabled: !!(root.activeOp && root.activeOp.info)
             Layout.fillWidth: true
+            Layout.fillHeight: true
+            // 主操作：实心强调色按钮
+            background: Rectangle {
+                radius: Theme.radiusControl
+                color: !commitButton.enabled ? Theme.scrollBarIdle
+                     : commitButton.pressed ? Theme.primaryPressed
+                     : commitButton.hovered ? Theme.primaryHover
+                     : Theme.primary
+            }
+            contentItem: Text {
+                text: commitButton.text
+                color: commitButton.enabled ? Theme.textOnPrimary : Theme.textDisabled
+                font.pixelSize: Theme.fontSizeBody
+                horizontalAlignment: Text.AlignHCenter
+                verticalAlignment: Text.AlignVCenter
+            }
             onClicked:{
+                // 先停止参数监听，执行后的视口清空便不会反向清掉刚提交的参数。
+                App.selection.listeningSelectorIndex = -1
                 if (root.activeOp && root.activeOp.execute) {
                     try {
                         const result = root.activeOp.execute(App.selection.activeComponentId, root.parameters)
@@ -78,7 +101,37 @@ Item{
             ToolTip.delay: 500
             ToolTip.text: qsTr("结束当前操作")
             enabled: !!(root.activeOp && root.activeOp.info)
-            Layout.fillWidth: true
+            Layout.fillHeight: true
+            // 保留对号语义，用有边界的按钮与粗线标记提升辨识度。
+            background: Rectangle {
+                implicitWidth: 44
+                radius: Theme.radiusControl
+                color: confirmButton.down ? Theme.primaryTint
+                     : confirmButton.hovered ? Theme.hoverOverlay : Theme.surface
+                border.width: confirmButton.visualFocus ? 2 : 1
+                border.color: confirmButton.visualFocus ? Theme.primary : Theme.textSecondary
+            }
+            contentItem: Item {
+                implicitWidth: 24
+                implicitHeight: 24
+                // 直接绘制对号，避免字体替代导致笔画偏细。
+                Shape {
+                    anchors.centerIn: parent
+                    width: 24
+                    height: 24
+                    ShapePath {
+                        strokeColor: confirmButton.enabled ? Theme.primaryPressed : Theme.textDisabled
+                        strokeWidth: 3
+                        fillColor: "transparent"
+                        capStyle: ShapePath.RoundCap
+                        joinStyle: ShapePath.RoundJoin
+                        startX: 5
+                        startY: 12
+                        PathLine { x: 10; y: 17 }
+                        PathLine { x: 19; y: 7 }
+                    }
+                }
+            }
             // 确认 = 结束当前操作，取消操作选中；再次执行需重新点选算法
             onClicked: App.activeOperation = null
         }
@@ -93,10 +146,15 @@ Item{
             anchors.fill: parent
             ListView{
                 id:parameterList
+                clip: true
+                // 固定预留滚动条槽，避免遮挡输入框或在滚动条显隐时挤动参数行。
+                contentWidth: Math.max(0, width - parameterScrollBar.implicitWidth - Theme.spacingXs)
+                // 所有参数行共用扣除滚动条后的标签列宽。
+                readonly property real labelColumnWidth: contentWidth * 0.38
                 Layout.fillHeight: true
                 Layout.fillWidth: true
-                Layout.margins: 3
-                spacing: 5
+                Layout.margins: Theme.spacingSm
+                spacing: Theme.spacingSm
                 model: root.activeOp ? root.activeOp.info.arg_types : []
                 delegate:Component{
                     Loader{
@@ -129,6 +187,7 @@ Item{
                     }
                 }
                 ScrollBar.vertical: ScrollBar {
+                    id: parameterScrollBar
                     policy: ScrollBar.AsNeeded
                 }
             }
@@ -139,8 +198,8 @@ Item{
         id:componentComboBox
         RowLayout{
             id: comboRow
-            spacing: 5
-            width: parameterList.width
+            spacing: Theme.spacingSm
+            width: parameterList.contentWidth
             property var value: null
             ListModel{
                 id: comboModel
@@ -148,14 +207,15 @@ Item{
             Text{
                 id:nametext
                 text: model.name
-            }
-            Rectangle{
-                Layout.fillHeight: true
-                Layout.preferredWidth: 1
-                color: "black"
+                Layout.preferredWidth: parameterList.labelColumnWidth
+                elide: Text.ElideRight
+                color: Theme.textPrimary
+                font.pixelSize: Theme.fontSizeBody
+                verticalAlignment: Text.AlignVCenter
             }
             ComboBox{
                 id:parameterComboBox
+                Layout.fillWidth: true
                 model: comboModel
                 onCurrentIndexChanged: {
                     if (comboRow.parent.initialized) {
@@ -192,20 +252,31 @@ Item{
     Component{
         id:oneNumberBox
         RowLayout{
-            spacing: 5
-            width: parameterList.width
+            spacing: Theme.spacingSm
+            width: parameterList.contentWidth
             Text{
                 id:nametext
                 text: model.name
-            }
-            Rectangle{
-                Layout.fillHeight: true
-                Layout.preferredWidth: 1
-                color: "black"
+                Layout.preferredWidth: parameterList.labelColumnWidth
+                elide: Text.ElideRight
+                color: Theme.textPrimary
+                font.pixelSize: Theme.fontSizeBody
+                verticalAlignment: Text.AlignVCenter
             }
             TextField {
                 id:parameterTextInput
-                Layout.fillWidth: parent.width
+                Layout.minimumWidth: 0
+                Layout.minimumHeight: 28
+                padding: 6
+                color: enabled ? Theme.textPrimary : Theme.textDisabled
+                placeholderTextColor: Theme.textSecondary
+                background: Rectangle {
+                    radius: Theme.radiusControl
+                    color: parent.enabled ? Theme.surface : Theme.surfaceAlt
+                    border.width: parent.activeFocus ? 2 : 1
+                    border.color: parent.activeFocus ? Theme.primary : Theme.borderStrong
+                }
+                Layout.fillWidth: true
                 text: model.content
                 onTextChanged:{
                     // Int 走整数语义（parseInt 截断小数）；Float 保持 parseFloat
@@ -217,21 +288,32 @@ Item{
     Component{
         id:fileComponent
         RowLayout{
-            spacing: 5
-            width: parameterList.width
+            spacing: Theme.spacingSm
+            width: parameterList.contentWidth
             Text{
                 id:nametext
                 text: model.name
-            }
-            Rectangle{
-                Layout.fillHeight: true
-                Layout.preferredWidth: 1
-                color: "black"
+                Layout.preferredWidth: parameterList.labelColumnWidth
+                elide: Text.ElideRight
+                color: Theme.textPrimary
+                font.pixelSize: Theme.fontSizeBody
+                verticalAlignment: Text.AlignVCenter
             }
             TextArea{
                 id:fileText
+                Layout.minimumWidth: 0
+                Layout.minimumHeight: 28
+                padding: 6
+                color: enabled ? Theme.textPrimary : Theme.textDisabled
+                placeholderTextColor: Theme.textSecondary
+                background: Rectangle {
+                    radius: Theme.radiusControl
+                    color: parent.enabled ? Theme.surface : Theme.surfaceAlt
+                    border.width: parent.activeFocus ? 2 : 1
+                    border.color: parent.activeFocus ? Theme.primary : Theme.borderStrong
+                }
                 wrapMode: TextEdit.Wrap
-                Layout.fillWidth: parent.width
+                Layout.fillWidth: true
 
                 Component.onCompleted: {
                     fileText.text = model.content
@@ -242,7 +324,8 @@ Item{
                 }
             }
             Button{
-                text: "...."
+                text: qsTr("浏览…")
+                flat: true
                 onClicked:{
                     parameterFileDialog.open()
                 }
@@ -269,21 +352,21 @@ Item{
         }
     }
     Component{
-        id:textComponent
+        id: textComponent
         RowLayout{
             id: textRow
-            spacing: 5
-            width: parameterList.width
-            readonly property int separatorWidth: 1
-            readonly property real columnWidth: Math.max(0,
-                (width - separatorWidth - 2 * spacing) / 2)
+            spacing: Theme.spacingSm
+            width: parameterList.contentWidth
             property var value: fileText.text
             Text{
                 id:nametext
                 text: model.name
-                // 名称与输入框各占可用宽度的一半，拉伸面板后同步扩大。
-                Layout.preferredWidth: textRow.columnWidth
+                // 标签列与其余参数行同宽，拉伸面板后同步扩大
+                Layout.preferredWidth: parameterList.labelColumnWidth
                 elide: Text.ElideRight
+                color: Theme.textPrimary
+                font.pixelSize: Theme.fontSizeBody
+                verticalAlignment: Text.AlignVCenter
                 ToolTip.visible: nameHover.hovered
                         && (truncated || model.description.length > 0)
                 ToolTip.text: truncated
@@ -294,15 +377,20 @@ Item{
                     id: nameHover
                 }
             }
-            Rectangle{
-                Layout.fillHeight: true
-                Layout.preferredWidth: textRow.separatorWidth
-                color: "black"
-            }
             TextArea{
                 id:fileText
+                Layout.minimumWidth: 0
+                Layout.minimumHeight: 28
+                padding: 6
+                color: enabled ? Theme.textPrimary : Theme.textDisabled
+                placeholderTextColor: Theme.textSecondary
+                background: Rectangle {
+                    radius: Theme.radiusControl
+                    color: parent.enabled ? Theme.surface : Theme.surfaceAlt
+                    border.width: parent.activeFocus ? 2 : 1
+                    border.color: parent.activeFocus ? Theme.primary : Theme.borderStrong
+                }
                 wrapMode: TextEdit.Wrap
-                Layout.preferredWidth: textRow.columnWidth
                 Layout.fillWidth: true
                 placeholderText: model.description
                 ToolTip.visible: hovered && model.description.length > 0
@@ -328,27 +416,36 @@ Item{
     Component{
         id: selectorComponent
         RowLayout{
-            spacing: 5
-            width: parameterList.width
+            spacing: Theme.spacingSm
+            width: parameterList.contentWidth
             property var value: null
+            // 清空参数时传递明确的选择器对象，不让通用转换层解释 null。
+            readonly property QSelection emptySelection: QSelection {}
 
             Text{
                 id:nametext
                 text: model.name
-            }
-            Rectangle{
-                Layout.fillHeight: true
-                Layout.preferredWidth: 1
-                color: "black"
+                Layout.preferredWidth: parameterList.labelColumnWidth
+                elide: Text.ElideRight
+                color: Theme.textPrimary
+                font.pixelSize: Theme.fontSizeBody
+                verticalAlignment: Text.AlignVCenter
             }
             Text{
                 id:selectedItems
+                Layout.fillWidth: true
+                elide: Text.ElideRight
                 text: value ? value.size():"无"
+                color: value ? Theme.textPrimary : Theme.textSecondary
+                font.pixelSize: Theme.fontSizeBody
+                verticalAlignment: Text.AlignVCenter
             }
 
             Button{
                 id: selectStartButton
-                text: "开始选择"
+                text: checked ? "结束选择" : "开始选择"
+                // 拾取进行中：强调色提示当前面板处于监听状态
+                highlighted: App.selection.listeningSelectorIndex === index
                 checked: App.selection.listeningSelectorIndex === index
                 onClicked: {
                     if (!checked) {
@@ -374,10 +471,13 @@ Item{
             Connections {
                 target: App.selection
                 enabled: selectStartButton.checked
-                function onConfirmed(selection) {
+                function onSelectionUpdated(selection) {
+                    // 切换参数的同步通知可能先于 checked 绑定刷新，必须核对当前监听者。
+                    if (App.selection.listeningSelectorIndex !== index)
+                        return
+                    // 只更新当前监听参数；视口的 null 在此转换为明确的空选择器。
                     value = selection
-                    root.setParam(index, value)
-                    App.selection.listeningSelectorIndex = -1
+                    root.setParam(index, value === null ? emptySelection : value)
                 }
             }
 
@@ -385,7 +485,7 @@ Item{
                 target: App.selection
                 function onSelectionInvalidated() {
                     value = null
-                    root.setParam(index, null)
+                    root.setParam(index, emptySelection)
                     if (App.selection.listeningSelectorIndex === index)
                         App.selection.listeningSelectorIndex = -1
                 }
@@ -395,20 +495,46 @@ Item{
     Component{
         id: boolComponent
         RowLayout{
-            spacing: 5
-            width: parameterList.width
+            spacing: Theme.spacingSm
+            width: parameterList.contentWidth
 
             Text{
                 id:nametext
                 text: model.name
-            }
-            Rectangle{
-                Layout.fillHeight: true
-                Layout.preferredWidth: 1
-                color: "black"
+                Layout.preferredWidth: parameterList.labelColumnWidth
+                elide: Text.ElideRight
+                color: Theme.textPrimary
+                font.pixelSize: Theme.fontSizeBody
+                verticalAlignment: Text.AlignVCenter
             }
             CheckBox{
                 id: parameterCheckBox
+                // 加大勾选区域，以实色背景区分已选状态；保留控件自身的键盘和无障碍行为。
+                indicator: Rectangle {
+                    implicitWidth: 24
+                    implicitHeight: 24
+                    x: parameterCheckBox.leftPadding
+                    y: parameterCheckBox.topPadding + (parameterCheckBox.availableHeight - height) / 2
+                    radius: Theme.radiusControl
+                    color: parameterCheckBox.checked ? (parameterCheckBox.enabled ? Theme.primaryPressed : Theme.textSecondary) : Theme.surface
+                    border.width: 2
+                    border.color: parameterCheckBox.checked || parameterCheckBox.visualFocus ? Theme.primaryPressed : Theme.textSecondary
+                    Shape {
+                        anchors.fill: parent
+                        visible: parameterCheckBox.checked
+                        ShapePath {
+                            strokeColor: Theme.textOnPrimary
+                            strokeWidth: 3
+                            fillColor: "transparent"
+                            capStyle: ShapePath.RoundCap
+                            joinStyle: ShapePath.RoundJoin
+                            startX: 5
+                            startY: 12
+                            PathLine { x: 10; y: 17 }
+                            PathLine { x: 19; y: 7 }
+                        }
+                    }
+                }
 
                 Component.onCompleted: {
                     checked = (model.content === "true")
@@ -423,8 +549,8 @@ Item{
     Component{
         id: buttonComponent
         RowLayout{
-            spacing: 5
-            width: parameterList.width
+            spacing: Theme.spacingSm
+            width: parameterList.contentWidth
             Button{
                 // Button 是无值触发器：计数器载荷，功能约定忽略值只读参数下标
                 text: model.name

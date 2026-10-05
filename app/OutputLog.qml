@@ -30,9 +30,9 @@ Item {
                 id: outputText
                 readOnly: true
                 textFormat: TextEdit.RichText
-                color: "#333333"
-                font.family: "Courier New"
-                font.pixelSize: 12
+                color: Theme.textPrimary
+                font.family: Theme.monoFamily
+                font.pixelSize: Theme.fontSizeCaption
                 wrapMode: TextArea.Wrap
                 text: ""
 

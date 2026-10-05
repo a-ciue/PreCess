@@ -12,6 +12,8 @@ if(WIN32)
     set(app_resource "${CMAKE_SOURCE_DIR}/resource/PreCess.rc")
 endif()
 qt_add_executable(${MYNAME} MACOSX_BUNDLE main.cpp ${app_resource})
+# 设计令牌单例需在 qt_add_qml_module 之前显式标记（qmldir 生成时读取该属性）
+set_source_files_properties(Theme.qml PROPERTIES QT_QML_SINGLETON_TYPE TRUE)
 # 设置编译完成的组件在 qrc:/qt/qml
 qt_add_qml_module(${MYNAME}
         URI app
@@ -33,12 +35,16 @@ qt_add_qml_module(${MYNAME}
             PythonConsole.qml
             PreferencesWindow.qml
             OutputLog.qml
+            Theme.qml
+            RibbonTabButton.qml
+            RibbonActionButton.qml
 )
 target_link_libraries(${MYNAME}
     PRIVATE
     renderQml renderQmlplugin modelQml modelQmlplugin
     VTK::GUISupportQtQuick
     Qt${VTK_QT_VERSION}::Quick
+    Qt${VTK_QT_VERSION}::QuickControls2
     Qt${VTK_QT_VERSION}::Svg
     dock
     spdlog::spdlog

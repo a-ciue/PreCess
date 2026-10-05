@@ -38,3 +38,7 @@ precess_add_test(TestQTaskStatus
 set_target_properties(TestQTaskStatus PROPERTIES AUTOMOC ON)
 target_include_directories(TestQTaskStatus PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}/../model")
 precess_test_link_libraries(TestQTaskStatus Session Qt${VTK_QT_VERSION}::Core Qt${VTK_QT_VERSION}::Qml)
+
+# QML 选择器参数的空值语义与功能系统同步
+precess_add_test(TestSelectionParameter TestSelectionParameter.cpp)
+precess_test_link_libraries(TestSelectionParameter modelQml QArgType FeatureSystemQml FeatureSystem Qt6::Qml)

@@ -1,6 +1,5 @@
 import QtQuick
 import QtQuick.Controls
-import QtQuick.Controls.Basic as Basic
 import QtQuick.Layouts
 import QtQuick.Dialogs
 
@@ -104,15 +103,18 @@ Item {
 
         RowLayout {
             Layout.fillWidth: true
-            spacing: 4
+            spacing: Theme.spacingXs
             Label {
                 text: "组件"
+                color: Theme.textSecondary
                 Layout.preferredWidth: 32
             }
             Label {
                 Layout.fillWidth: true
                 Layout.minimumWidth: 0
                 text: root.componentName.length > 0 ? root.componentName : "未选择"
+                color: root.componentName.length > 0 ? Theme.textPrimary : Theme.textSecondary
+                font.bold: root.componentName.length > 0
                 elide: Text.ElideRight
             }
         }
@@ -123,19 +125,24 @@ Item {
             Layout.fillHeight: true
             Layout.minimumHeight: 60
             clip: true
+            spacing: Theme.spacingXs
             model: root.attributes
             currentIndex: root.selectedIndex
             flickDeceleration: 100000
             boundsBehavior: Flickable.StopAtBounds
 
             delegate: Rectangle {
+                id: attrRow
                 required property var modelData
                 required property int index
 
                 width: attributeList.width
                 height: 34
-                color: root.selectedIndex === index ? "#cfe8ff" : "transparent"
-                border.color: "#d0d0d0"
+                radius: Theme.radiusControl
+                color: root.selectedIndex === index ? Theme.primaryTint
+                     : attributeMouse.hovered ? Theme.hoverOverlay
+                     : Theme.surface
+                border.color: root.selectedIndex === index ? Theme.primary : Theme.border
                 border.width: 1
 
                 RowLayout {
@@ -178,7 +185,7 @@ Item {
                 }
             }
 
-            ScrollBar.vertical: Basic.ScrollBar {
+            ScrollBar.vertical: ScrollBar {
                 policy: ScrollBar.AsNeeded
                 padding: 0
                 background: Rectangle {
@@ -188,7 +195,7 @@ Item {
                 contentItem: Rectangle {
                     implicitWidth: 8
                     radius: 4
-                    color: parent.hovered ? "#c0c0c0" : "#e0e0e0"
+                    color: parent.hovered ? Theme.scrollBarHover : Theme.scrollBarIdle
                 }
             }
         }
@@ -249,6 +256,7 @@ Item {
                 }
                 Button {
                     text: "..."
+                    flat: true
                     Layout.preferredWidth: 28
                     onClicked: textureFileDialog.open()
                 }
@@ -272,10 +280,27 @@ Item {
 
         RowLayout {
             Layout.fillWidth: true
+            spacing: Theme.spacingSm
 
             Button {
+                id: applyButton
                 text: "应用"
                 enabled: root.canApply()
+                // 主操作：实心强调色按钮
+                background: Rectangle {
+                    radius: Theme.radiusControl
+                    color: !applyButton.enabled ? Theme.scrollBarIdle
+                         : applyButton.pressed ? Theme.primaryPressed
+                         : applyButton.hovered ? Theme.primaryHover
+                         : Theme.primary
+                }
+                contentItem: Text {
+                    text: applyButton.text
+                    color: applyButton.enabled ? Theme.textOnPrimary : Theme.textDisabled
+                    font.pixelSize: Theme.fontSizeBody
+                    horizontalAlignment: Text.AlignHCenter
+                    verticalAlignment: Text.AlignVCenter
+                }
                 onClicked: {
                     let attr = root.selectedAttribute()
                     if (attr)
@@ -289,6 +314,7 @@ Item {
 
             Button {
                 text: "取消属性渲染"
+                flat: true
                 enabled: App.selection.activeComponentId >= 0 && App.registry.renderWindow
                 onClicked: App.registry.renderWindow.cancelComponentAttri(App.selection.activeComponentId)
             }
