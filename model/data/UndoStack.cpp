@@ -188,15 +188,11 @@ void UndoStack::commitOperation()
         return;
     Capture frame = std::move(*operation_);
     operation_.reset();
-    if (frame.finish_preview && preview_ && frame.owner == preview_->owner) {
-        if (frame.empty())
-            frame.label = preview_->label;
-        mergeComponentEntries(frame.components, std::move(preview_->components));
-        frame.structural.insert(frame.structural.end(),
-            std::make_move_iterator(preview_->structural.begin()),
-            std::make_move_iterator(preview_->structural.end()));
-        preview_.reset();
-    }
+    if (frame.delegated)
+        return;
+    if (frame.empty() && frame.finish_preview && preview_ && frame.owner == preview_->owner)
+        frame.label = preview_->label;
+    absorbPreview(frame);
     if (!frame.empty()) {
         for (auto& entry : frame.components)
             if (ComponentData* c = model_->findComponent(entry.component_id))
@@ -208,6 +204,43 @@ void UndoStack::commitOperation()
     } else if (on_changed_) {
         on_changed_();
     }
+}
+
+void UndoStack::absorbPreview(Capture& capture)
+{
+    if (!capture.finish_preview || !preview_ || capture.owner != preview_->owner)
+        return;
+    mergeComponentEntries(capture.components, std::move(preview_->components));
+    capture.structural.insert(capture.structural.end(),
+        std::make_move_iterator(preview_->structural.begin()),
+        std::make_move_iterator(preview_->structural.end()));
+    preview_.reset();
+}
+
+UndoStack::Capture UndoStack::detachOperation()
+{
+    Capture capture = std::move(*operation_);
+    absorbPreview(capture);
+    operation_.emplace();
+    operation_->delegated = true;
+    return capture;
+}
+
+void UndoStack::resumeOperation(Capture capture)
+{
+    operation_ = std::move(capture);
+    operation_depth_ = 0; // GUI 提交的 ModelScope 开启唯一同步写段。
+}
+
+void UndoStack::discardOperation(Capture& capture)
+{
+    {
+        ApplyingGuard guard(applying_);
+        rollbackChanges(capture.components, capture.structural);
+    }
+    model_->flushNotifications();
+    if (on_changed_)
+        on_changed_();
 }
 
 // —— 插件层（带回滚点的层，savepoint 语义）——
@@ -460,6 +493,8 @@ void UndoStack::onComponentDirty(Index component_id, const ComponentData& data)
     // 恢复不记账；其余首次写捕前像，钩子不改变模型或捕获归属。
     if (applying_ || recording_pause_depth_)
         return;
+    if (operation_)
+        operation_->writes_started = true;
 
     Capture* target = captureTarget();
     if (!target)
@@ -586,6 +621,8 @@ UndoStack::Capture* UndoStack::captureTarget()
 
 void UndoStack::recordStructural(StructuralEntry entry)
 {
+    if (operation_)
+        operation_->writes_started = true;
     Capture* target = captureTarget();
     if (target) {
         target->structural.push_back(std::move(entry));

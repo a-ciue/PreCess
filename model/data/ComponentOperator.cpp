@@ -44,6 +44,22 @@ Index ComponentOperator::modelId() const noexcept
     return model_id_;
 }
 
+void ComponentOperator::setName(std::string name)
+{
+    if (component_->name == name)
+        return;
+    mgr_->markComponentDirty(component_id_, MeshEditKind::NonTopology);
+    component_->name = std::move(name);
+}
+
+void ComponentOperator::setMaterialId(Index material_id)
+{
+    if (component_->material_id == material_id)
+        return;
+    mgr_->markComponentDirty(component_id_, MeshEditKind::NonTopology);
+    component_->material_id = material_id;
+}
+
 ModelData* ComponentOperator::model() const
 {
     return mgr_->modelById(model_id_);

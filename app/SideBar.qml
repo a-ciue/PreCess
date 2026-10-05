@@ -41,6 +41,10 @@ Item{
     // 功能侧回写参数值（如交互结果文本）→ 同步到面板显示
     Connections {
         target: QModelManager.featureSystem
+        function onResultReady(feature, text) {
+            if (root.activeOp && root.activeOp.isFeature && root.activeOp.info.name === feature)
+                root.resultText = text
+        }
         function onParamValueChanged(feature, index, value) {
             if (root.activeOp && root.activeOp.info && root.activeOp.info.name === feature)
                 root.parameters[index] = value

@@ -184,6 +184,8 @@ private:
     //! @brief 类型化入口的内部目标捕获与回写装配。
     std::shared_ptr<systems::job::Job> submitCapturedWriteback(std::string label, Index component_id,
         CaptureJobFn capture, WritebackFn write, const std::string& owner, bool masked);
+    std::shared_ptr<systems::job::Job> submitCapturedWriteback(std::string label,
+        LayerCaptureJobFn capture, LayerWritebackFn write, const std::string& owner, bool masked);
     //! @brief 冻结任务提交（FeatureContext::runModelJob 的实现）：影子 copy-in → worker → GUI 提交
     std::shared_ptr<systems::job::Job> submitModelJob(std::string label, Index component_id, ModelJobTaskFn task, const std::string& owner);
     //! @brief 生命周期清理边界（deactivate/teardown）：回调返回后统一 flush（异常时先 flush 再重抛）；

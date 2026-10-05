@@ -24,6 +24,9 @@
 #include <vector>
 
 class ModelLayer;
+namespace systems::job {
+class JobRunner;
+}
 
 class UndoStack : public UndoRecorder {
 public:
@@ -159,16 +162,25 @@ public:
     void setOnChanged(std::function<void()> callback);
 
 private:
+    friend class systems::job::JobRunner;
     /** @brief 正式与预览使用同一种捕获数据，各自只保留一个实例。 */
     struct Capture {
         std::string label;
         std::string owner; //!< 开帧时的所有者（功能唯一名；空 = 无归属：框架/QML/裸调用）——预览抢占的判据
         bool finish_preview { false }; //!< execute 收尾吸收并关闭临时层
+        bool writes_started { false }; //!< 本次同步边界实际写入，不含进入前的旧预览
+        bool delegated { false }; //!< 捕获已交给任务；同步作用域只退出深度，不入栈
         std::uint64_t scope_id { 0 }; //!< 层身份，迟到回写不得借用后来新开的层
         std::vector<ComponentEntry> components; //!< 本帧捕获的组件写（first-dirty before + 收尾 after）
         std::vector<StructuralEntry> structural; //!< 本帧结构操作（层帧内 = 层的捕获，随层回滚/提交）
         bool empty() const { return components.empty() && structural.empty(); }
     };
+
+    //! @brief 后台续接使用现有捕获；只由唯一 Runner 在模型占用期调用。
+    Capture detachOperation();
+    void resumeOperation(Capture capture);
+    void discardOperation(Capture& capture);
+    void absorbPreview(Capture& capture);
 
     //! @brief 回滚本预览，关闭或清空捕获保持同一身份；不产生历史或 redo。
     void restorePreview(bool close);

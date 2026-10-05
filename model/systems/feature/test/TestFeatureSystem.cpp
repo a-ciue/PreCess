@@ -7,6 +7,7 @@
 #include "FeatureHandler.h"
 #include "FeatureRegistrar.h"
 #include "FeatureSystem.h"
+#include "GeometryData.h"
 #include "InteractionState.h"
 #include "Job.h"
 #include "JobRunner.h"
@@ -16,6 +17,7 @@
 #include "ModelLayer.h"
 #include "UndoStack.h"
 #include "test/OwnerQueue.h"
+#include <BRepPrimAPI_MakeBox.hxx>
 
 #include <array>
 #include <catch2/catch_test_macros.hpp>
@@ -30,6 +32,21 @@
 
 using namespace systems::feature;
 using namespace std::chrono_literals;
+
+namespace {
+class LayerJobFeature : public FeatureHandler {
+public:
+    FeatureContext* context = nullptr;
+    void setup(FeatureRegistrar&, FeatureContext& ctx) override { context = &ctx; }
+    std::function<void(FeatureContext&)> action;
+    std::shared_ptr<systems::job::Job> job;
+    std::any execute(FeatureContext& ctx) override
+    {
+        action(ctx);
+        return { };
+    }
+};
+}
 
 namespace {
 // worker 只投递，测试线程负责 GUI 提交；真实模型测试不豁免线程亲和。
@@ -1322,7 +1339,7 @@ TEST_CASE("Free job writeback applies on caller thread inside undo boundary", "[
     REQUIRE(apply_ran);
     REQUIRE(pointCount(model_layer, comp) == 4); // 回写生效
     REQUIRE(undo.canUndo()); // undo 边界成记录
-    REQUIRE(undo.undoLabel().value_or("") == "回写任务"); // label = 任务名
+    REQUIRE(undo.undoLabel().value_or("") == "回写任务功能"); // 延续 execute 标签
 
     undo.undo(); // 记录可撤销 → 回写走正规 undo 语义
     REQUIRE(pointCount(model_layer, comp) == 3);
@@ -1484,7 +1501,7 @@ TEST_CASE("Writeback job receives resolved write surface inside undo boundary", 
     REQUIRE(write_ran);
     REQUIRE(pointCount(model_layer, comp) == 4); // 框架写面回写生效
     REQUIRE(undo.canUndo()); // undo 边界成记录（提交段在边界内执行）
-    REQUIRE(undo.undoLabel().value_or("") == "绑定回写任务"); // label = 任务名
+    REQUIRE(undo.undoLabel().value_or("") == "绑定回写功能"); // 延续 execute 标签
 
     undo.undo(); // 记录可撤销 → 回写走正规 undo 语义
     REQUIRE(pointCount(model_layer, comp) == 3);
@@ -2108,7 +2125,7 @@ TEST_CASE("Typed writeback passes compute result straight to write", "[FeatureSy
     REQUIRE(raw->received == 7); // compute 返回值经框架槽直传 write
     REQUIRE(pointCount(model_layer, comp) == 4); // 回写生效（坐标 = payload）
     REQUIRE(undo.canUndo());
-    REQUIRE(undo.undoLabel().value_or("") == "类型化回写任务");
+    REQUIRE(undo.undoLabel().value_or("") == "类型化回写功能");
 }
 
 TEST_CASE("Typed writeback skips write when compute throws", "[FeatureSystem]")
@@ -3597,4 +3614,314 @@ TEST_CASE("Existing interaction contexts use the current host refresh callback",
     handler->context->interaction.requestRefresh();
     REQUIRE(new_refreshes == 2);
     REQUIRE(old_refreshes == 1);
+}
+
+TEST_CASE("Layer writeback continues preview as one execute record", "[FeatureSystem][layer][operation]")
+{
+    ModelLayer model;
+    const auto a = addTriangleComponent(model);
+    const auto b = addTriangleComponent(model);
+    UndoStack undo(model);
+    model.setUndoRecorder(&undo);
+    OwnerQueue queue;
+    systems::job::JobRunner runner(model, &undo, queue.dispatcher());
+    core::EventBus bus;
+    FeatureSystem system(model, bus, &undo);
+    system.setJobRunner(&runner);
+    auto* handler = new LayerJobFeature;
+    auto metadata = makeMetaData();
+    REQUIRE(system.registerHandler(metadata, FeatureSystem::SystemHandlerPtr { handler }));
+    bool fail_compute = false;
+    bool cancel = false;
+    bool fail_execute = false;
+    bool fail_write = false;
+    SECTION("success") { }
+    SECTION("compute failure") { fail_compute = true; }
+    SECTION("cancel after compute") { cancel = true; }
+    SECTION("execute throws after publication") { fail_execute = true; }
+    SECTION("partial commit stays undoable") { fail_write = true; }
+    const auto owner_thread = std::this_thread::get_id();
+    Index added_model = -1;
+    handler->action = [&](FeatureContext& ctx) {
+        handler->job = ctx.runTypedWriteback("worker label", [&](const ModelLayer& layer) {
+                REQUIRE(std::this_thread::get_id() == owner_thread);
+                return layer.findComponent(a)->mesh->vertex_count_ + layer.findComponent(b)->mesh->vertex_count_; }, [=](Index& input, systems::job::ProgressFn) {
+                if (fail_compute)
+                    throw std::runtime_error("compute failure");
+                if (std::this_thread::get_id() == owner_thread)
+                    throw std::runtime_error("expected worker");
+                return input; }, [&](ModelLayer& layer, Index& result) {
+                REQUIRE(std::this_thread::get_id() == owner_thread);
+                layer.getComponentOperator(a)->setName("new name");
+                layer.getComponentOperator(b)->setMaterialId(result);
+                added_model = layer.addModel("result", { });
+                if (fail_write)
+                    throw std::runtime_error("write failure"); });
+        if (fail_execute)
+            throw std::runtime_error("execute failure");
+    };
+    {
+        UndoStack::OwnerScope owner(&undo, metadata.name);
+        REQUIRE(undo.beginScope("preview"));
+        model.getComponentOperator(a)->appendPoint({ 9, 0, 0 });
+    }
+    if (fail_execute)
+        REQUIRE_THROWS(system.invoke(metadata.name));
+    else
+        system.invoke(metadata.name);
+    REQUIRE(handler->job);
+    REQUIRE_FALSE(undo.inOperation());
+    REQUIRE_FALSE(undo.scopeActive());
+    REQUIRE_FALSE(undo.canUndo());
+    REQUIRE_FALSE(undo.undo());
+    REQUIRE_THROWS(model.getComponentOperator(b)->setMaterialId(42));
+    auto complete = queue.take();
+    if (cancel)
+        handler->job->cancel();
+    complete();
+    REQUIRE_FALSE(model.writesPending());
+    REQUIRE_FALSE(undo.inOperation());
+    if (fail_compute || cancel || fail_execute) {
+        REQUIRE(pointCount(model, a) == 3);
+        REQUIRE_FALSE(undo.canUndo());
+        REQUIRE(added_model == -1);
+    } else {
+        REQUIRE(pointCount(model, a) == 4);
+        REQUIRE(undo.undoLabel() == metadata.display_name);
+        REQUIRE(model.findComponent(b)->material_id == 7);
+        REQUIRE(undo.undo());
+        REQUIRE(pointCount(model, a) == 3);
+        REQUIRE(model.findComponent(b)->material_id == -1);
+        REQUIRE_FALSE(model.modelById(added_model));
+        REQUIRE_FALSE(undo.canUndo());
+        REQUIRE(undo.redo());
+        REQUIRE(pointCount(model, a) == 4);
+        REQUIRE(model.modelById(added_model));
+    }
+}
+
+TEST_CASE("Repeated preview component writes before publication are refused", "[FeatureSystem][layer][operation]")
+{
+    ModelLayer model;
+    const auto target = addTriangleComponent(model);
+    UndoStack undo(model);
+    model.setUndoRecorder(&undo);
+    OwnerQueue queue;
+    systems::job::JobRunner runner(model, &undo, queue.dispatcher());
+    core::EventBus bus;
+    FeatureSystem system(model, bus, &undo);
+    system.setJobRunner(&runner);
+    auto* handler = new LayerJobFeature;
+    const auto metadata = makeMetaData();
+    REQUIRE(system.registerHandler(metadata, FeatureSystem::SystemHandlerPtr { handler }));
+    handler->action = [&](FeatureContext& ctx) {
+        ctx.model.getComponentOperator(target)->appendPoint({ 8, 0, 0 });
+        handler->job = ctx.runTypedWriteback("refused", [](const ModelLayer&) { return 0; }, [](int&, systems::job::ProgressFn) { return 1; }, [](ModelLayer&, int&) { });
+    };
+    {
+        UndoStack::OwnerScope owner(&undo, metadata.name);
+        undo.beginScope("preview");
+        model.getComponentOperator(target)->appendPoint({ 9, 0, 0 });
+    }
+    system.invoke(metadata.name);
+    REQUIRE_FALSE(handler->job);
+    REQUIRE_FALSE(model.writesPending());
+    REQUIRE(undo.undo());
+    REQUIRE(pointCount(model, target) == 3);
+    REQUIRE_FALSE(undo.canUndo());
+}
+
+TEST_CASE("Component writeback installs plugin geometry without a mesh", "[FeatureSystem][layer][geometry]")
+{
+    ModelLayer model;
+    ComponentDatas components;
+    components.push_back(std::make_unique<ComponentData>());
+    const auto model_id = model.addModel("empty component", std::move(components));
+    const auto target = model.modelById(model_id)->componentIds().front();
+    UndoStack undo(model);
+    model.setUndoRecorder(&undo);
+    OwnerQueue queue;
+    systems::job::JobRunner runner(model, &undo, queue.dispatcher());
+    core::EventBus bus;
+    FeatureSystem system(model, bus, &undo);
+    system.setJobRunner(&runner);
+    auto* handler = new LayerJobFeature;
+    const auto metadata = makeMetaData();
+    REQUIRE(system.registerHandler(metadata, FeatureSystem::SystemHandlerPtr { handler }));
+    handler->action = [&](FeatureContext& ctx) {
+        handler->job = ctx.runTypedWriteback("box", target, [](const ComponentOperator&) { return 2.0; }, [](double& size, systems::job::ProgressFn) { return TopoDS_Shape(BRepPrimAPI_MakeBox(size, size, size).Shape()); }, [](ComponentOperator& op, TopoDS_Shape& shape) { op.appendGeometryShape(std::move(shape)); });
+    };
+    system.invoke(metadata.name);
+    REQUIRE(handler->job);
+    queue.take()();
+    REQUIRE(handler->job->state() == systems::job::JobState::Done);
+    REQUIRE(model.findComponent(target)->geometry);
+    REQUIRE(undo.undo());
+    REQUIRE_FALSE(model.findComponent(target)->geometry);
+    REQUIRE(undo.redo());
+    REQUIRE(model.findComponent(target)->geometry);
+}
+
+TEST_CASE("Layer preview jobs remain temporary across event callbacks", "[FeatureSystem][layer][preview]")
+{
+    ModelLayer model;
+    const auto target = addTriangleComponent(model);
+    UndoStack undo(model);
+    model.setUndoRecorder(&undo);
+    OwnerQueue queue;
+    systems::job::JobRunner runner(model, &undo, queue.dispatcher());
+    core::EventBus bus;
+    FeatureSystem system(model, bus, &undo);
+    system.setJobRunner(&runner);
+    auto* handler = new LayerJobFeature;
+    const auto metadata = makeMetaData();
+    REQUIRE(system.registerHandler(metadata, FeatureSystem::SystemHandlerPtr { handler }));
+    handler->action = [](FeatureContext&) { };
+    Index added = -1;
+    {
+        UndoStack::OwnerScope owner(&undo, metadata.name);
+        REQUIRE(undo.beginScope("preview"));
+        UndoStack::PreviewAccess callback(&undo);
+        handler->job = handler->context->runTypedWriteback("preview worker", [](const ModelLayer&) { return 42; }, [](int& value, systems::job::ProgressFn) { return value; }, [&](ModelLayer& layer, int& value) {
+                layer.getComponentOperator(target)->setMaterialId(value);
+                layer.getComponentOperator(target)->editableGeometryMeshMap().geometry_edge_to_mesh_point_ids[1] = { 0, 1 };
+                added = layer.addModel("preview model", { }); });
+    }
+    REQUIRE(handler->job);
+    queue.take()();
+    REQUIRE(handler->job->state() == systems::job::JobState::Done);
+    REQUIRE(undo.scopeActive());
+    REQUIRE(undo.canUndo()); // 临时层可撤回，尚无正式记录。
+    REQUIRE(model.modelById(added));
+    bool confirm = false;
+    SECTION("event preview cancellation") { }
+    SECTION("execute confirmation") { confirm = true; }
+    if (confirm) {
+        system.invoke(metadata.name);
+        REQUIRE_FALSE(undo.scopeActive());
+        REQUIRE(undo.canUndo());
+        REQUIRE(undo.undo());
+    } else {
+        UndoStack::OwnerScope owner(&undo, metadata.name);
+        undo.cancelScope();
+    }
+    REQUIRE_FALSE(model.modelById(added));
+    REQUIRE(model.findComponent(target)->material_id == -1);
+    REQUIRE_FALSE(model.findComponent(target)->mapping);
+    REQUIRE_FALSE(undo.canUndo());
+    if (confirm) {
+        REQUIRE(undo.redo());
+        REQUIRE(model.findComponent(target)->material_id == 42);
+        REQUIRE(model.modelById(added));
+        REQUIRE(model.findComponent(target)->mapping);
+    }
+}
+
+TEST_CASE("Formal job cancellation rolls back adopted structural preview", "[FeatureSystem][layer][preview]")
+{
+    ModelLayer model;
+    const auto target = addTriangleComponent(model);
+    const auto source_model = model.getComponentOperator(target)->modelId();
+    UndoStack undo(model);
+    model.setUndoRecorder(&undo);
+    OwnerQueue queue;
+    systems::job::JobRunner runner(model, &undo, queue.dispatcher());
+    core::EventBus bus;
+    FeatureSystem system(model, bus, &undo);
+    system.setJobRunner(&runner);
+    auto* handler = new LayerJobFeature;
+    const auto metadata = makeMetaData();
+    REQUIRE(system.registerHandler(metadata, FeatureSystem::SystemHandlerPtr { handler }));
+    handler->action = [&](FeatureContext& ctx) {
+        handler->job = ctx.runTypedWriteback("cancel", [](const ModelLayer&) { return 0; }, [](int&, systems::job::ProgressFn) { return 0; }, [](ModelLayer&, int&) { });
+    };
+    Index temporary = -1;
+    {
+        UndoStack::OwnerScope owner(&undo, metadata.name);
+        undo.beginScope("structural preview");
+        temporary = model.addModel("temporary", { });
+        model.getComponentOperator(target)->appendPoint({ 9, 0, 0 });
+        model.removeModel(source_model);
+    }
+    system.invoke(metadata.name);
+    REQUIRE(handler->job);
+    auto completion = queue.take();
+    handler->job->cancel();
+    completion();
+    REQUIRE_FALSE(model.modelById(temporary));
+    REQUIRE(model.modelById(source_model));
+    REQUIRE(pointCount(model, target) == 3);
+    REQUIRE_FALSE(undo.canUndo());
+    REQUIRE_FALSE(undo.scopeActive());
+}
+
+TEST_CASE("Writeback preparation failure leaves execute preview on synchronous path", "[FeatureSystem][layer][operation]")
+{
+    ModelLayer model;
+    const auto target = addTriangleComponent(model);
+    UndoStack undo(model);
+    model.setUndoRecorder(&undo);
+    OwnerQueue queue;
+    systems::job::JobRunner runner(model, &undo, queue.dispatcher());
+    core::EventBus bus;
+    FeatureSystem system(model, bus, &undo);
+    system.setJobRunner(&runner);
+    auto* handler = new LayerJobFeature;
+    const auto metadata = makeMetaData();
+    REQUIRE(system.registerHandler(metadata, FeatureSystem::SystemHandlerPtr { handler }));
+    bool missing = false;
+    SECTION("capture throws") { }
+    SECTION("missing target") { missing = true; }
+    handler->action = [&](FeatureContext& ctx) {
+        handler->job = ctx.runTypedWriteback("prepare", missing ? -1 : target, [](const ComponentOperator&) -> int { throw std::runtime_error("capture failed"); }, [](int&, systems::job::ProgressFn) { return 0; }, [](ComponentOperator&, int&) { });
+    };
+    {
+        UndoStack::OwnerScope owner(&undo, metadata.name);
+        undo.beginScope("preview");
+        model.getComponentOperator(target)->appendPoint({ 9, 0, 0 });
+    }
+    if (missing)
+        system.invoke(metadata.name);
+    else
+        REQUIRE_THROWS(system.invoke(metadata.name));
+    REQUIRE_FALSE(handler->job);
+    REQUIRE_FALSE(model.writesPending());
+    REQUIRE_FALSE(undo.inOperation());
+    REQUIRE_FALSE(undo.scopeActive());
+    REQUIRE(undo.undo());
+    REQUIRE(pointCount(model, target) == 3);
+    REQUIRE_FALSE(undo.canUndo());
+}
+
+TEST_CASE("Background executes fold into one feature session", "[FeatureSystem][layer][session]")
+{
+    ModelLayer model;
+    const auto target = addTriangleComponent(model);
+    UndoStack undo(model);
+    model.setUndoRecorder(&undo);
+    OwnerQueue queue;
+    systems::job::JobRunner runner(model, &undo, queue.dispatcher());
+    core::EventBus bus;
+    FeatureSystem system(model, bus, &undo);
+    system.setJobRunner(&runner);
+    auto* handler = new LayerJobFeature;
+    const auto metadata = makeMetaData();
+    REQUIRE(system.registerHandler(metadata, FeatureSystem::SystemHandlerPtr { handler }));
+    handler->action = [&](FeatureContext& ctx) {
+        handler->job = ctx.runTypedWriteback("background", target, [](systems::job::ProgressFn) { return 1; }, [](ComponentOperator& op, int&) { op.appendPoint({ 7, 0, 0 }); });
+    };
+    REQUIRE(system.setFeatureActive(metadata.name));
+    for (int i = 0; i < 2; ++i) {
+        system.invoke(metadata.name);
+        REQUIRE(handler->job);
+        queue.take()();
+    }
+    REQUIRE(pointCount(model, target) == 5);
+    REQUIRE(system.setFeatureActive(""));
+    REQUIRE(undo.undoLabel() == metadata.display_name);
+    REQUIRE(undo.undo());
+    REQUIRE(pointCount(model, target) == 3);
+    REQUIRE_FALSE(undo.canUndo());
+    REQUIRE(undo.redo());
+    REQUIRE(pointCount(model, target) == 5);
 }

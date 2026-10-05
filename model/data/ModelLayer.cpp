@@ -49,7 +49,7 @@ Index ModelLayer::addModel(const std::string& model_name, ComponentDatas compone
 
 std::unique_ptr<ModelSnapshot> ModelLayer::takeModelSnapshot(Index model_id) const
 {
-    ModelData* model = modelById(model_id);
+    const ModelData* model = modelById(model_id);
     if (!model)
         throw std::runtime_error("Model not exist");
 
@@ -58,7 +58,7 @@ std::unique_ptr<ModelSnapshot> ModelLayer::takeModelSnapshot(Index model_id) con
     snapshot->name = model->model_name_;
     snapshot->components.reserve(model->componentIds().size());
     for (Index cid : model->componentIds()) {
-        if (ComponentData* c = findComponent(cid))
+        if (const ComponentData* c = findComponent(cid))
             snapshot->components.push_back(c->clone());
     }
     return snapshot;
@@ -214,7 +214,12 @@ std::optional<ModelOperator> ModelLayer::getModelOperator(Index model_id)
     return { };
 }
 
-ModelData* ModelLayer::modelById(Index model_id) const
+ModelData* ModelLayer::modelById(Index model_id)
+{
+    return const_cast<ModelData*>(std::as_const(*this).modelById(model_id));
+}
+
+const ModelData* ModelLayer::modelById(Index model_id) const
 {
     auto it = models_.find(model_id);
     if (it == models_.end())
@@ -247,7 +252,12 @@ Index ModelLayer::allocateComponentId() noexcept
     return next_component_id_++;
 }
 
-ComponentData* ModelLayer::findComponent(Index component_id) const
+ComponentData* ModelLayer::findComponent(Index component_id)
+{
+    return const_cast<ComponentData*>(std::as_const(*this).findComponent(component_id));
+}
+
+const ComponentData* ModelLayer::findComponent(Index component_id) const
 {
     auto it = components_.find(component_id);
     return it == components_.end() ? nullptr : it->second.get();

@@ -85,8 +85,11 @@ public:
      * @param attribute_name 模型中的标量属性名
      */
     void notifyScalarAttributeDisplayRequested(Index component_id, const std::string& attribute_name);
+    //! @brief 排队展示功能最终结果，等待模型收尾完成。
+    void notifyResult(const std::string& feature, const std::string& text);
 
 signals:
+    void resultReady(QString feature, QString text);
     void featuresInfoChanged();
     //! @brief 功能请求在指定 Component 上渲染标量属性
     void scalarAttributeDisplayRequested(int component_id, QString attribute_name);

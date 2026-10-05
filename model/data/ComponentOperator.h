@@ -2,8 +2,9 @@
 #include "Core.h"
 
 #include <array>
-#include <source_location>
 #include <memory>
+#include <source_location>
+#include <string>
 #include <vector>
 
 class ModelLayer;
@@ -52,6 +53,10 @@ public:
 
     //! @brief 只读访问 Geometry↔Mesh 映射；尚未创建时返回 nullptr
     const GeometryMeshMap* geometryMeshMap() const noexcept;
+
+    //! @brief 写前捕获组件元数据，通知在操作边界统一发送。
+    void setName(std::string name);
+    void setMaterialId(Index material_id);
 
     ModelLayer& manager() const noexcept { return *mgr_; }
 

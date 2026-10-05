@@ -18,13 +18,16 @@
 #include "ComponentData.h"
 #include "Core.h"
 #include "EventBus.h"
+#include "FeatureEvents.h"
 #include "FeatureInfo.h"
 #include "FeatureSystem.h"
+#include "JobRunner.h"
 #include "MeshBooleanHandler.h"
 #include "MeshData.h"
 #include "ModelData.h"
 #include "ModelLayer.h"
 #include "Selection.h"
+#include "test/OwnerQueue.h"
 
 #include <catch2/catch_test_macros.hpp>
 #include <catch2/catch_approx.hpp>
@@ -185,10 +188,13 @@ std::shared_ptr<Selection> makeComponentSelection(Index component_id)
 struct Fixture {
     core::EventBus bus;
     ModelLayer model_layer;
+    OwnerQueue queue;
+    systems::job::JobRunner runner { model_layer, nullptr, queue.dispatcher() };
     FeatureSystem feature_system { model_layer, bus };
 
     Fixture()
     {
+        feature_system.setJobRunner(&runner);
         FeatureSystem::SystemHandlerPtr handler { new MeshBooleanHandler };
         REQUIRE(feature_system.registerHandler(booleanMetaData(), std::move(handler)));
     }
@@ -216,7 +222,19 @@ struct Fixture {
 
     std::string invokeText()
     {
+        std::string final_text;
+        auto subscription = bus.subscribe<FeatureResultEvent>([&](const FeatureResultEvent& e) {
+            REQUIRE(e.feature == "MeshBoolean");
+            final_text = e.text;
+        });
         const std::any result = feature_system.invoke("MeshBoolean");
+        if (auto job = runner.currentJob()) {
+            REQUIRE(model_layer.writesFrozen());
+            queue.take()();
+            REQUIRE(job->state() == systems::job::JobState::Done);
+            REQUIRE_FALSE(final_text.empty());
+            return final_text;
+        }
         REQUIRE(result.type() == typeid(std::string));
         return std::any_cast<const std::string&>(result);
     }
@@ -282,6 +300,37 @@ TEST_CASE("MeshBoolean returns guidance when operands are missing or identical",
     fx.selectB(a);
     // A 与 B 相同 → 拒绝
     REQUIRE(fx.invokeText().find("请选择两个不同的 Component") != std::string::npos);
+}
+
+TEST_CASE("MeshBoolean cancellation discards queued result without publishing text", "[MeshBooleanPlugin][job]")
+{
+    Fixture fx;
+    fx.selectA(addClosedBoxComponent(fx.model_layer, "A", 0, 0, 0, 1.0));
+    fx.selectB(addClosedBoxComponent(fx.model_layer, "B", 0.5, 0.5, 0.5, 1.0));
+    int results = 0;
+    auto subscription = fx.bus.subscribe<FeatureResultEvent>([&](const FeatureResultEvent&) { ++results; });
+    fx.feature_system.invoke("MeshBoolean");
+    auto job = fx.runner.currentJob();
+    REQUIRE(job);
+    REQUIRE(fx.model_layer.writesFrozen());
+    auto completion = fx.queue.take();
+    REQUIRE_FALSE(resultMeshOf(fx.model_layer, "A_Model_并集_B_Model"));
+    job->cancel();
+    completion();
+    REQUIRE(job->state() == systems::job::JobState::Cancelled);
+    REQUIRE_FALSE(fx.model_layer.writesPending());
+    REQUIRE_FALSE(resultMeshOf(fx.model_layer, "A_Model_并集_B_Model"));
+    REQUIRE(results == 0);
+}
+
+TEST_CASE("MeshBoolean does not fall back to blocking computation without a runner", "[MeshBooleanPlugin][job]")
+{
+    Fixture fx;
+    fx.feature_system.setJobRunner(nullptr);
+    fx.selectA(addClosedBoxComponent(fx.model_layer, "A", 0, 0, 0, 1.0));
+    fx.selectB(addClosedBoxComponent(fx.model_layer, "B", 0.5, 0.5, 0.5, 1.0));
+    REQUIRE(fx.invokeText().find("无法启动") != std::string::npos);
+    REQUIRE_FALSE(resultMeshOf(fx.model_layer, "A_Model_并集_B_Model"));
 }
 
 TEST_CASE("MeshBoolean union of overlapping boxes generates a separate result model", "[MeshBooleanPlugin]")

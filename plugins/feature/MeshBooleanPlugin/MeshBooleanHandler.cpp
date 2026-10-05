@@ -11,12 +11,12 @@
 // CGAL 头文件必须置于所有 OCC 相关头文件之前：
 // OCC 的 Standard_Handle.hxx 将 Handle 定义为宏（Handle(X) -> opencascade::handle<X>），
 // 若先引入 OCC，宏会污染后续解析的 CGAL/Handle.h 类声明，造成大片级联语法错误
-#include <CGAL/boost/graph/helpers.h>
 #include <CGAL/Polygon_mesh_processing/corefinement.h>
+#include <CGAL/Polygon_mesh_processing/internal/Corefinement/Self_intersection_exception.h>
 #include <CGAL/Polygon_mesh_processing/orientation.h>
 #include <CGAL/Polygon_mesh_processing/self_intersections.h>
-#include <CGAL/Polygon_mesh_processing/internal/Corefinement/Self_intersection_exception.h>
 #include <CGAL/Side_of_triangle_mesh.h>
+#include <CGAL/boost/graph/helpers.h>
 
 #include "MeshBooleanHandler.h"
 
@@ -39,9 +39,9 @@
 #include <sstream>
 #include <string>
 
-namespace systems::feature {
-
 namespace {
+
+using namespace systems::feature;
 
 //! @brief 参数下标：对象 A / 对象 B 选择器、运算类型
 constexpr std::size_t kComponentAParam = 0;
@@ -60,10 +60,14 @@ enum class BoolOp {
 const char* boolOpDisplayName(BoolOp op)
 {
     switch (op) {
-    case BoolOp::Union:          return "并集";
-    case BoolOp::Intersection:   return "交集";
-    case BoolOp::DifferenceAB:   return "差集(A−B)";
-    case BoolOp::DifferenceBA:   return "差集(B−A)";
+    case BoolOp::Union:
+        return "并集";
+    case BoolOp::Intersection:
+        return "交集";
+    case BoolOp::DifferenceAB:
+        return "差集(A−B)";
+    case BoolOp::DifferenceBA:
+        return "差集(B−A)";
     }
     return "未知运算";
 }
@@ -72,10 +76,14 @@ const char* boolOpDisplayName(BoolOp op)
 const char* boolOpShortName(BoolOp op)
 {
     switch (op) {
-    case BoolOp::Union:          return "并集";
-    case BoolOp::Intersection:   return "交集";
-    case BoolOp::DifferenceAB:   return "差集A-B";
-    case BoolOp::DifferenceBA:   return "差集B-A";
+    case BoolOp::Union:
+        return "并集";
+    case BoolOp::Intersection:
+        return "交集";
+    case BoolOp::DifferenceAB:
+        return "差集A-B";
+    case BoolOp::DifferenceBA:
+        return "差集B-A";
     }
     return "布尔结果";
 }
@@ -167,48 +175,52 @@ std::optional<std::string> surfaceMeshPrecheck(const MeshData& mesh, const char*
 std::string buildSuccessText(BoolOp op, const std::string& name, const MeshData& mesh)
 {
     const std::size_t faces = mesh.face_vertices_offset_.empty()
-        ? 0 : mesh.face_vertices_offset_.size() - 1;
+        ? 0
+        : mesh.face_vertices_offset_.size() - 1;
     std::ostringstream oss;
     oss << boolOpDisplayName(op) << "完成：已生成新模型「" << name
         << "」（顶点 " << mesh.vertex_count_ << " / 三角面 " << faces << "）";
     return oss.str();
 }
 
-/**
- * @brief 用布尔结果创建一个独立的新模型（模型名 = 组件名），返回新模型 id
- *
- * 结果不覆盖任何操作数：对象 A / B 保持原样，结果以新模型的形式加入模型层，
- * 便于与原对象对比、单独导出或删除。addModel 属结构操作，通知与 undo 记录即时生成。
- */
-Index createResultModel(FeatureContext& ctx, const std::string& name, std::unique_ptr<MeshData> mesh)
-{
-    auto component = std::make_unique<ComponentData>();
-    component->name = name;
-    component->mesh = std::move(mesh);
+//! @brief 自持输入与结果；计算段不访问真实模型。
+struct BooleanInput {
+    std::unique_ptr<MeshData> mesh_a;
+    std::unique_ptr<MeshData> mesh_b;
+    BoolOp op;
+    std::string name;
+};
 
-    ComponentDatas components;
-    components.push_back(std::move(component));
-    return ctx.model.addModel(name, std::move(components));
+struct BooleanResult {
+    std::string name;
+    std::unique_ptr<MeshData> mesh;
+    std::string text;
+};
+
+void setResultMesh(BooleanResult& output, const std::string& name, std::unique_ptr<MeshData> mesh)
+{
+    output.name = name;
+    output.mesh = std::move(mesh);
 }
 
 //! @brief 布尔结果网格（EPECK 精确网格）→ 新模型
-std::string writeBackExact(FeatureContext& ctx, BoolOp op,
+std::string prepareExactResult(BooleanResult& output, BoolOp op,
     const std::string& name, const CgalExactMesh& result)
 {
     auto out_mesh = std::make_unique<MeshData>();
     fromSurfaceMesh(result, *out_mesh);
     std::string text = buildSuccessText(op, name, *out_mesh);
-    createResultModel(ctx, name, std::move(out_mesh));
+    setResultMesh(output, name, std::move(out_mesh));
     return text;
 }
 
 //! @brief 以某个操作数的网格副本作为结果新建模型（"结果即 A" / "结果即 B" 的场景）
-std::string writeBackCopy(FeatureContext& ctx, BoolOp op,
+std::string prepareCopiedResult(BooleanResult& output, BoolOp op,
     const std::string& name, const MeshData& src)
 {
     auto mesh_copy = src.clone();
     std::string text = buildSuccessText(op, name, *mesh_copy);
-    createResultModel(ctx, name, std::move(mesh_copy));
+    setResultMesh(output, name, std::move(mesh_copy));
     return text;
 }
 
@@ -259,7 +271,7 @@ std::unique_ptr<MeshData> mergeSurfaceShells(const MeshData& lhs, const MeshData
  *
  * @pre 已通过闭合/自交/朝向规整校验；两表面存在相交
  */
-std::string computeIntersecting(FeatureContext& ctx, BoolOp op, const std::string& name,
+std::string computeIntersecting(BooleanResult& output, BoolOp op, const std::string& name,
     CgalExactMesh& sm_a, CgalExactMesh& sm_b)
 {
     namespace PMP = CGAL::Polygon_mesh_processing;
@@ -287,10 +299,10 @@ std::string computeIntersecting(FeatureContext& ctx, BoolOp op, const std::strin
 
     if (!ok || out.number_of_vertices() == 0 || out.number_of_faces() == 0) {
         return std::string("布尔运算失败：结果为空或将为非流形结构"
-            "（两对象可能仅相切/共面接触），未生成新模型");
+                           "（两对象可能仅相切/共面接触），未生成新模型");
     }
 
-    return writeBackExact(ctx, op, name, out);
+    return prepareExactResult(output, op, name, out);
 }
 
 /**
@@ -300,19 +312,15 @@ std::string computeIntersecting(FeatureContext& ctx, BoolOp op, const std::strin
  * （凭"一顶点是否落入另一闭合壳体内部"判定，边界无交点时整壳同侧，取首顶点即可）。
  * 每种运算按体积语义推导结果：有结果则新建模型承载，结果为空则不创建。
  */
-std::string computeNonIntersecting(FeatureContext& ctx, BoolOp op, const std::string& name,
+std::string computeNonIntersecting(BooleanResult& output, BoolOp op, const std::string& name,
     const MeshData& mesh_a, const MeshData& mesh_b,
     const CgalExactMesh& sm_a, const CgalExactMesh& sm_b)
 {
     const CgalExactPoint3 p_a = sm_a.point(*sm_a.vertices().begin());
     const CgalExactPoint3 p_b = sm_b.point(*sm_b.vertices().begin());
 
-    const bool b_inside_a
-        = CGAL::Side_of_triangle_mesh<CgalExactMesh, CgalExactKernel>(sm_a)(p_b)
-            == CGAL::ON_BOUNDED_SIDE;
-    const bool a_inside_b
-        = CGAL::Side_of_triangle_mesh<CgalExactMesh, CgalExactKernel>(sm_b)(p_a)
-            == CGAL::ON_BOUNDED_SIDE;
+    const bool b_inside_a = CGAL::Side_of_triangle_mesh<CgalExactMesh, CgalExactKernel>(sm_a)(p_b) == CGAL::ON_BOUNDED_SIDE;
+    const bool a_inside_b = CGAL::Side_of_triangle_mesh<CgalExactMesh, CgalExactKernel>(sm_b)(p_a) == CGAL::ON_BOUNDED_SIDE;
 
     const char* sep_note = "两对象互不相交";
 
@@ -322,16 +330,16 @@ std::string computeNonIntersecting(FeatureContext& ctx, BoolOp op, const std::st
         case BoolOp::Union: {
             auto merged = mergeSurfaceShells(mesh_a, mesh_b);
             std::string text = buildSuccessText(op, name, *merged);
-            createResultModel(ctx, name, std::move(merged));
+            setResultMesh(output, name, std::move(merged));
             return text + "（" + sep_note + "，结果含两个独立壳体）";
         }
         case BoolOp::Intersection:
             return std::string("交集为空：") + sep_note + "，未生成新模型";
         case BoolOp::DifferenceAB:
-            return writeBackCopy(ctx, op, name, mesh_a)
+            return prepareCopiedResult(output, op, name, mesh_a)
                 + "（" + sep_note + "，结果即对象 A）";
         case BoolOp::DifferenceBA:
-            return writeBackCopy(ctx, op, name, mesh_b)
+            return prepareCopiedResult(output, op, name, mesh_b)
                 + "（" + sep_note + "，结果即对象 B）";
         }
     }
@@ -340,15 +348,15 @@ std::string computeNonIntersecting(FeatureContext& ctx, BoolOp op, const std::st
     if (b_inside_a) {
         switch (op) {
         case BoolOp::Union:
-            return writeBackCopy(ctx, op, name, mesh_a)
+            return prepareCopiedResult(output, op, name, mesh_a)
                 + "（对象 B 完全位于对象 A 内部，结果即对象 A）";
         case BoolOp::Intersection:
-            return writeBackCopy(ctx, op, name, mesh_b)
+            return prepareCopiedResult(output, op, name, mesh_b)
                 + "（对象 B 完全位于对象 A 内部，结果即对象 B）";
         case BoolOp::DifferenceAB: {
             auto merged = mergeSurfaceShells(mesh_a, mesh_b);
             std::string text = buildSuccessText(op, name, *merged);
-            createResultModel(ctx, name, std::move(merged));
+            setResultMesh(output, name, std::move(merged));
             return text + "（对象 B 完全位于对象 A 内部，结果为挖去 B 的空腔壳体）";
         }
         case BoolOp::DifferenceBA:
@@ -359,17 +367,17 @@ std::string computeNonIntersecting(FeatureContext& ctx, BoolOp op, const std::st
     // A 完全位于 B 内部（B 含 A）
     switch (op) {
     case BoolOp::Union:
-        return writeBackCopy(ctx, op, name, mesh_b)
+        return prepareCopiedResult(output, op, name, mesh_b)
             + "（对象 A 完全位于对象 B 内部，结果即对象 B）";
     case BoolOp::Intersection:
-        return writeBackCopy(ctx, op, name, mesh_a)
+        return prepareCopiedResult(output, op, name, mesh_a)
             + "（对象 A 完全位于对象 B 内部，结果即对象 A）";
     case BoolOp::DifferenceAB:
         return std::string("差集(A−B) 为空：对象 A 完全位于对象 B 内部，未生成新模型");
     case BoolOp::DifferenceBA: {
         auto merged = mergeSurfaceShells(mesh_b, mesh_a);
         std::string text = buildSuccessText(op, name, *merged);
-        createResultModel(ctx, name, std::move(merged));
+        setResultMesh(output, name, std::move(merged));
         return text + "（对象 A 完全位于对象 B 内部，结果为挖去 A 的空腔壳体）";
     }
     }
@@ -377,7 +385,86 @@ std::string computeNonIntersecting(FeatureContext& ctx, BoolOp op, const std::st
     return std::string("未知运算");
 }
 
+std::string computeBooleanText(BooleanResult& output, BooleanInput& input, systems::job::ProgressFn report)
+{
+    const auto& mesh_a = *input.mesh_a;
+    const auto& mesh_b = *input.mesh_b;
+    const auto op = input.op;
+    // 作用域内 CGAL 断言失败 → 抛 C++ 异常（详见 CgalExceptionGuard 注释）
+    cgalsupport::CgalExceptionGuard cgal_guard;
+
+    report(0.05, "转换布尔输入");
+    try {
+        // 精确内核：布尔求交为精确构造，避免 EPIC 的 double 舍入污染结果
+        CgalExactMesh sm_a = toExactSurfaceMesh(mesh_a);
+        CgalExactMesh sm_b = toExactSurfaceMesh(mesh_b);
+
+        const std::size_t faces_a = mesh_a.face_vertices_offset_.empty()
+            ? 0
+            : mesh_a.face_vertices_offset_.size() - 1;
+        const std::size_t faces_b = mesh_b.face_vertices_offset_.empty()
+            ? 0
+            : mesh_b.face_vertices_offset_.size() - 1;
+        if (sm_a.number_of_faces() != faces_a)
+            return std::string("对象 A 的网格含非流形边（一条边被多于两个面共用），不支持布尔运算");
+        if (sm_b.number_of_faces() != faces_b)
+            return std::string("对象 B 的网格含非流形边（一条边被多于两个面共用），不支持布尔运算");
+
+        // corefinement 以"网格包围的体积"为操作对象：要求闭合（水密）三角网格
+        if (!CGAL::is_closed(sm_a))
+            return std::string("对象 A 不是闭合（水密）网格：布尔运算要求两个闭合三角网格，"
+                               "请先使用「网格修复 - 补洞」或重新网格化");
+        if (!CGAL::is_closed(sm_b))
+            return std::string("对象 B 不是闭合（水密）网格：布尔运算要求两个闭合三角网格，"
+                               "请先使用「网格修复 - 补洞」或重新网格化");
+
+        report(0.2, "检查网格自交");
+        // 自交网格会令 corefinement 输出错误结果或触发自交异常，先拦下给出可定位提示
+        if (CGAL::Polygon_mesh_processing::does_self_intersect(sm_a))
+            return std::string("对象 A 存在自相交面：请先使用「网格修复 - 自交检测」定位并修复");
+        if (CGAL::Polygon_mesh_processing::does_self_intersect(sm_b))
+            return std::string("对象 B 存在自相交面：请先使用「网格修复 - 自交检测」定位并修复");
+
+        // 规整朝向：按"包围体积"语义使各闭合壳体朝外（布尔运算的前置约定）
+        CGAL::Polygon_mesh_processing::orient_to_bound_a_volume(sm_a);
+        CGAL::Polygon_mesh_processing::orient_to_bound_a_volume(sm_b);
+
+        // 结果模型名：跨模型取模型名、同模型取组件名，避免 OBJ 组名（常为 ???）进入名字
+        const std::string& result_name = input.name;
+
+        report(0.4, "计算网格布尔");
+        // 两表面相交 → corefinement 主路径；不相交 → 包含/分离退化场景
+        if (CGAL::Polygon_mesh_processing::do_intersect(sm_a, sm_b))
+            return computeIntersecting(output, op, result_name, sm_a, sm_b);
+        return computeNonIntersecting(output, op, result_name, mesh_a, mesh_b, sm_a, sm_b);
+    } catch (const CGAL::Polygon_mesh_processing::Corefinement::Self_intersection_exception& e) {
+        // 输入在相交带内存在自交时由 throw_on_self_intersection(true) 抛出
+        spdlog::error("[MeshBoolean] 自交异常: op={}, error={}", boolOpDisplayName(op), e.what());
+        return std::string("网格布尔失败：输入网格在相交区域检测到自相交，网格未修改");
+    } catch (const CGAL::Failure_exception& e) {
+        // CGAL 内部拓扑/几何不变量违反（如 non-manifold）：给 UI 用户温和文案，细节留日志
+        spdlog::error("[MeshBoolean] CGAL 拓扑不变量违反: op={}, lib={}, expr={}, file={}:{}",
+            boolOpDisplayName(op), e.library(), e.expression(), e.filename(), e.line_number());
+        return std::string("网格布尔失败：当前网格拓扑不符合运算前提（建议检查是否存在非流形结构）");
+    } catch (const systems::job::JobCancelledException&) {
+        throw;
+    } catch (const std::exception& e) {
+        spdlog::error("[MeshBoolean] CGAL 操作异常: op={}, error={}", boolOpDisplayName(op), e.what());
+        return std::string("网格布尔失败：") + e.what();
+    }
+}
+
+BooleanResult computeBoolean(BooleanInput& input, systems::job::ProgressFn report)
+{
+    BooleanResult result;
+    result.text = computeBooleanText(result, input, report);
+    report(1.0, "布尔计算完成");
+    return result;
+}
+
 } // namespace
+
+namespace systems::feature {
 
 void MeshBooleanHandler::setup(FeatureRegistrar& reg, FeatureContext&)
 {
@@ -441,61 +528,26 @@ std::any MeshBooleanHandler::execute(FeatureContext& ctx)
     if (auto err = surfaceMeshPrecheck(mesh_b, "B"))
         return *err;
 
-    // 作用域内 CGAL 断言失败 → 抛 C++ 异常（详见 CgalExceptionGuard 注释）
-    cgalsupport::CgalExceptionGuard cgal_guard;
-
-    try {
-        // 精确内核：布尔求交为精确构造，避免 EPIC 的 double 舍入污染结果
-        CgalExactMesh sm_a = toExactSurfaceMesh(mesh_a);
-        CgalExactMesh sm_b = toExactSurfaceMesh(mesh_b);
-
-        const std::size_t faces_a = mesh_a.face_vertices_offset_.empty()
-            ? 0 : mesh_a.face_vertices_offset_.size() - 1;
-        const std::size_t faces_b = mesh_b.face_vertices_offset_.empty()
-            ? 0 : mesh_b.face_vertices_offset_.size() - 1;
-        if (sm_a.number_of_faces() != faces_a)
-            return std::string("对象 A 的网格含非流形边（一条边被多于两个面共用），不支持布尔运算");
-        if (sm_b.number_of_faces() != faces_b)
-            return std::string("对象 B 的网格含非流形边（一条边被多于两个面共用），不支持布尔运算");
-
-        // corefinement 以"网格包围的体积"为操作对象：要求闭合（水密）三角网格
-        if (!CGAL::is_closed(sm_a))
-            return std::string("对象 A 不是闭合（水密）网格：布尔运算要求两个闭合三角网格，"
-                "请先使用「网格修复 - 补洞」或重新网格化");
-        if (!CGAL::is_closed(sm_b))
-            return std::string("对象 B 不是闭合（水密）网格：布尔运算要求两个闭合三角网格，"
-                "请先使用「网格修复 - 补洞」或重新网格化");
-
-        // 自交网格会令 corefinement 输出错误结果或触发自交异常，先拦下给出可定位提示
-        if (CGAL::Polygon_mesh_processing::does_self_intersect(sm_a))
-            return std::string("对象 A 存在自相交面：请先使用「网格修复 - 自交检测」定位并修复");
-        if (CGAL::Polygon_mesh_processing::does_self_intersect(sm_b))
-            return std::string("对象 B 存在自相交面：请先使用「网格修复 - 自交检测」定位并修复");
-
-        // 规整朝向：按"包围体积"语义使各闭合壳体朝外（布尔运算的前置约定）
-        CGAL::Polygon_mesh_processing::orient_to_bound_a_volume(sm_a);
-        CGAL::Polygon_mesh_processing::orient_to_bound_a_volume(sm_b);
-
-        // 结果模型名：跨模型取模型名、同模型取组件名，避免 OBJ 组名（常为 ???）进入名字
-        const std::string result_name = resultName(*comp_op_a, op, *comp_op_b);
-
-        // 两表面相交 → corefinement 主路径；不相交 → 包含/分离退化场景
-        if (CGAL::Polygon_mesh_processing::do_intersect(sm_a, sm_b))
-            return computeIntersecting(ctx, op, result_name, sm_a, sm_b);
-        return computeNonIntersecting(ctx, op, result_name, mesh_a, mesh_b, sm_a, sm_b);
-    } catch (const CGAL::Polygon_mesh_processing::Corefinement::Self_intersection_exception& e) {
-        // 输入在相交带内存在自交时由 throw_on_self_intersection(true) 抛出
-        spdlog::error("[MeshBoolean] 自交异常: op={}, error={}", boolOpDisplayName(op), e.what());
-        return std::string("网格布尔失败：输入网格在相交区域检测到自相交，网格未修改");
-    } catch (const CGAL::Failure_exception& e) {
-        // CGAL 内部拓扑/几何不变量违反（如 non-manifold）：给 UI 用户温和文案，细节留日志
-        spdlog::error("[MeshBoolean] CGAL 拓扑不变量违反: op={}, lib={}, expr={}, file={}:{}",
-            boolOpDisplayName(op), e.library(), e.expression(), e.filename(), e.line_number());
-        return std::string("网格布尔失败：当前网格拓扑不符合运算前提（建议检查是否存在非流形结构）");
-    } catch (const std::exception& e) {
-        spdlog::error("[MeshBoolean] CGAL 操作异常: op={}, error={}", boolOpDisplayName(op), e.what());
-        return std::string("网格布尔失败：") + e.what();
-    }
+    const std::string name = resultName(*comp_op_a, op, *comp_op_b);
+    const auto job = ctx.runTypedWriteback(
+        "网格布尔",
+        [a = *a_id, b = *b_id, op, name](const ModelLayer& model) {
+            return BooleanInput { model.findComponent(a)->mesh->clone(), model.findComponent(b)->mesh->clone(), op, name };
+        },
+        computeBoolean,
+        [&ctx](ModelLayer& model, BooleanResult& result) {
+            if (result.mesh) {
+                auto component = std::make_unique<ComponentData>();
+                component->name = result.name;
+                component->mesh = std::move(result.mesh);
+                ComponentDatas components;
+                components.push_back(std::move(component));
+                model.addModel(result.name, std::move(components));
+            }
+            ctx.publishResult(std::move(result.text));
+        },
+        true);
+    return std::string(job ? "正在计算网格布尔…" : "无法启动网格布尔任务（任务忙碌或宿主未配置后台执行器）");
 }
 
 } // namespace systems::feature

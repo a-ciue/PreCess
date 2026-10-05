@@ -12,6 +12,7 @@
 namespace systems::job {
 struct JobRunner::ModelOperation {
     std::unique_ptr<ModelLayer::WriteOperation> lease;
+    std::optional<UndoStack::Capture> capture;
 };
 JobRunner::JobRunner(ModelLayer& model, UndoStack* stack, std::function<void(std::function<void()>)> dispatcher)
     : dispatcher_(std::move(dispatcher))
@@ -42,7 +43,7 @@ std::shared_ptr<Job> JobRunner::run(std::string name, JobPrepareFn prepare,
     JobOptions options)
 {
     assertOwnerThread();
-    if (stopping_ || slot_ || (stack_ && stack_->hasPendingOperationWrites()))
+    if (stopping_ || slot_ || (stack_ && (options.continue_operation ? stack_->operation_ && stack_->operation_->writes_started : stack_->hasPendingOperationWrites())))
         return nullptr;
     auto job = std::make_shared<Job>(std::move(name), std::move(options.owner), options.masked);
     auto lease = model_.beginWriteOperation(options.masked);
@@ -76,6 +77,8 @@ std::shared_ptr<Job> JobRunner::run(std::string name, JobPrepareFn prepare,
         } else {
             if (!worker_.joinable())
                 worker_ = std::thread(&JobRunner::workerLoop, this);
+            if (options.continue_operation && stack_ && stack_->operation_)
+                operation_->capture = stack_->detachOperation();
             notifyLifecycle(on_started_, *job);
             {
                 std::lock_guard lock(sync_);
@@ -189,6 +192,10 @@ void JobRunner::complete(std::shared_ptr<Job> job, bool inline_compute)
             assert(job->state() == JobState::Running);
             job->setState(JobState::Committing);
             ModelLayer::WritePrivilege privilege(model_, operation_->lease.get());
+            if (operation_->capture) {
+                stack_->resumeOperation(std::move(*operation_->capture));
+                operation_->capture.reset();
+            }
             job->commit();
         } catch (const std::exception& e) {
             error = e.what();
@@ -197,6 +204,16 @@ void JobRunner::complete(std::shared_ptr<Job> job, bool inline_compute)
         }
         if (!error.empty())
             terminal = JobState::Failed;
+    }
+    if (operation_->capture) {
+        try {
+            ModelLayer::WritePrivilege privilege(model_, operation_->lease.get());
+            stack_->discardOperation(*operation_->capture);
+        } catch (const std::exception& e) {
+            error = e.what();
+            terminal = JobState::Failed;
+        }
+        operation_->capture.reset();
     }
     // 计算与应用已退出；先在 GUI 销毁插件闭包，再执行可能注销 handler 的清理。
     job->task = { };

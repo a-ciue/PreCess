@@ -32,6 +32,9 @@ using ModelJobTaskFn = std::function<void(ComponentOperator& shadow_target, syst
 using WritebackFn = std::function<void(ComponentOperator&)>;
 //! GUI 准备段：框架持有模型操作占用，按目标只读捕获输入，返回纯计算任务。
 using CaptureJobFn = std::function<systems::job::JobTaskFn(const ComponentOperator&)>;
+//! GUI 准备与提交覆盖整个模型层；worker 仍只拿自持输入和结果。
+using LayerCaptureJobFn = std::function<systems::job::JobTaskFn(const ModelLayer&)>;
+using LayerWritebackFn = std::function<void(ModelLayer&)>;
 
 /**
  * @brief 临时预览视图：插件控制两次 execute 之间的开层、重试和取消。
@@ -79,6 +82,8 @@ struct FeatureContext {
     std::optional<Index> activeComponent() const;
     //! @brief 按身份查询所属模型的组件操作句柄。
     std::optional<ComponentOperator> componentOperator(Index component_id) const;
+    //! @brief GUI 收尾发布最终结果文本，宿主按所属功能展示。
+    void publishResult(std::string text);
     UndoContext undo; //> undo 上下文（插件层接口入口；语义见 UndoContext 注释）
     /**
      * @brief 纯计算任务；不得持活模型句柄，无模型回写与 undo 记录。
@@ -136,10 +141,38 @@ struct FeatureContext {
                 }; }, [write = std::move(write), payload](ComponentOperator& op) mutable { write(op, *payload->result); }, masked);
     }
 
+    /**
+     * @brief 通用模型层回写：GUI 捕获多目标输入，worker 计算，GUI 安装结果。
+     * 不要求已有目标或网格；模型增删、几何结果及多组件写共用原操作归属。
+     * 几何内部处理和输入生命周期由插件维护，框架不自动复制底层形状。
+     */
+    template <typename Capture, typename Compute, typename Write>
+        requires std::is_invocable_v<Capture, const ModelLayer&>
+    std::shared_ptr<systems::job::Job> runTypedWriteback(
+        std::string label, Capture capture, Compute compute, Write write, bool masked = false)
+    {
+        using Input = std::decay_t<std::invoke_result_t<Capture, const ModelLayer&>>;
+        using Result = std::decay_t<std::invoke_result_t<Compute, Input&, systems::job::ProgressFn>>;
+        struct Payload {
+            std::optional<Input> input;
+            std::optional<Result> result;
+        };
+        auto payload = std::make_shared<Payload>();
+        return runCapturedWriteback(std::move(label), [capture = std::move(capture), compute = std::move(compute), payload](const ModelLayer& layer) {
+                payload->input.emplace(capture(layer));
+                return systems::job::JobTaskFn {
+                    [compute, payload](systems::job::ProgressFn report) mutable {
+                        payload->result.emplace(compute(*payload->input, std::move(report)));
+                    }
+                }; }, [write = std::move(write), payload](ModelLayer& layer) mutable { write(layer, *payload->result); }, masked);
+    }
+
 private:
     //! @brief 类型化入口复用系统的目标捕获、占用与提交规则。
     std::shared_ptr<systems::job::Job> runCapturedWriteback(std::string label, Index component_id,
         CaptureJobFn capture, WritebackFn write, bool masked);
+    std::shared_ptr<systems::job::Job> runCapturedWriteback(std::string label,
+        LayerCaptureJobFn capture, LayerWritebackFn write, bool masked);
     FeatureSystem& system_;
     const std::string owner_;
 };

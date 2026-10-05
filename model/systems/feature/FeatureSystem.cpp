@@ -148,7 +148,15 @@ std::any FeatureSystem::invoke(const std::string& unique_name)
     // 自己的 execute 使用并在收尾吸收预览；其他正式操作开边界即撤销
     ModelScope scope(*model_layer_, undo_stack_, entry.info.display_name,
         ModelScope::Kind::Execute, unique_name);
-    return entry.handler->execute(entry.context);
+    const auto previous_job = job_runner_ ? job_runner_->currentJob() : nullptr;
+    try {
+        return entry.handler->execute(entry.context);
+    } catch (...) {
+        if (job_runner_)
+            if (auto job = job_runner_->currentJob(); job && job != previous_job && job->owner() == unique_name)
+                job->cancel();
+        throw;
+    }
 }
 
 void FeatureSystem::flushAfterCallback(const std::function<void()>& fn)
@@ -322,7 +330,7 @@ std::shared_ptr<systems::job::Job> FeatureSystem::submitWriteJob(std::string lab
                 throw ModelOperationBusy("FeatureSystem: preview result no longer owns its scope");
             apply();
         };
-        return work; }, { owner, masked });
+        return work; }, { owner, masked, false, !preview_scope });
 }
 
 std::shared_ptr<systems::job::Job> FeatureSystem::submitFreeJob(std::string name,
@@ -336,6 +344,20 @@ std::shared_ptr<systems::job::Job> FeatureSystem::submitFreeJob(std::string name
 std::shared_ptr<systems::job::Job> FeatureSystem::submitCapturedWriteback(std::string label,
     Index component_id, CaptureJobFn capture, WritebackFn write, const std::string& owner, bool masked)
 {
+    return submitCapturedWriteback(std::move(label), [this, component_id, capture = std::move(capture)](const ModelLayer&) {
+        auto target = model_layer_->getComponentOperator(component_id);
+        if (!target)
+            return systems::job::JobTaskFn { };
+        return capture(*target); }, [component_id, write = std::move(write)](ModelLayer& layer) {
+        auto target = layer.getComponentOperator(component_id);
+        if (!target)
+            throw std::runtime_error("FeatureSystem: occupied writeback target disappeared");
+        write(*target); }, owner, masked);
+}
+
+std::shared_ptr<systems::job::Job> FeatureSystem::submitCapturedWriteback(std::string label,
+    LayerCaptureJobFn capture, LayerWritebackFn write, const std::string& owner, bool masked)
+{
     std::optional<std::uint64_t> preview_scope;
     if (undo_stack_) {
         // 同步 execute 内发布属于正式操作；事件只能回写自己的有效预览。
@@ -346,17 +368,9 @@ std::shared_ptr<systems::job::Job> FeatureSystem::submitCapturedWriteback(std::s
             preview_scope = id;
         }
     }
-    return submitWriteJob(std::move(label), owner, [this, component_id, capture = std::move(capture), write = std::move(write)] {
-        auto target = model_layer_->getComponentOperator(component_id);
-        if (!target || !target->mesh())
-            return systems::job::JobWork { };
+    return submitWriteJob(std::move(label), owner, [this, capture = std::move(capture), write = std::move(write)] {
         // 已占用且无写授权；插件捕获误写在模型底层拒绝。
-        return systems::job::JobWork { capture(*target), [this, component_id, write]() {
-                                          auto target = model_layer_->getComponentOperator(component_id);
-                                          if (!target || !target->mesh())
-                                              throw std::runtime_error("FeatureSystem: occupied writeback target disappeared");
-                                          write(*target);
-                                      } }; }, preview_scope, masked);
+        return systems::job::JobWork { capture(*model_layer_), [this, write] { write(*model_layer_); } }; }, preview_scope, masked);
 }
 
 std::shared_ptr<systems::job::Job> FeatureSystem::submitModelJob(std::string label, Index component_id,

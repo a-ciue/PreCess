@@ -25,6 +25,7 @@ struct JobOptions {
     std::string owner;
     bool masked { false };
     bool prepare_command { false }; //!< 准备输入前回滚旧预览
+    bool continue_operation { false }; //!< Feature 正式回写接续当前 execute 捕获
 };
 /**
  * @brief 所属线程管理一个在飞任务；worker 不等待 GUI。

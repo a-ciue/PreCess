@@ -72,6 +72,7 @@ private:
     std::unique_ptr<QModelObserver> observer_;
     std::unique_ptr<QModelQuery> query_;
     core::EventBus::Subscription param_bridge_sub_; //> 参数变更桥接订阅（随成员析构自动退订）
+    core::EventBus::Subscription result_bridge_sub_; //> 功能异步结果展示
     core::EventBus::Subscription scalar_attribute_display_bridge_sub_; //> 标量属性显示请求桥接订阅
     // Session 停任务后再销毁展示对象；适配器在会话拆解期间仍可接收通知。
     std::unique_ptr<QTaskStatus> task_status_; //> 共享任务状态源（状态栏统一绑定）

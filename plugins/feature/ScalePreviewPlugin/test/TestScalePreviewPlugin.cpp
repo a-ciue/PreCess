@@ -451,7 +451,7 @@ TEST_CASE("ScalePreview execute without session scales directly and records undo
     REQUIRE(firstVertex(f.mgr, cid) == std::array<double, 3> { 2.0, 4.0, 6.0 });
     REQUIRE_FALSE(f.stack.scopeActive()); // 一次性路径不开会话
     REQUIRE(f.stack.canUndo());
-    REQUIRE(f.stack.undoLabel() == "缩放预览");
+    REQUIRE(f.stack.undoLabel() == "缩放预览演示");
 
     // undo 恰恢复原值、栈清空 = 恰一条记录
     f.stack.undo();
@@ -475,7 +475,7 @@ TEST_CASE("ScalePreview session keeps steps undoable and collapses them at switc
     f.system.invoke(kFeatureName);
     f.settle();
     REQUIRE(firstVertex(f.mgr, cid) == std::array<double, 3> { 2.0, 4.0, 6.0 });
-    REQUIRE(f.stack.undoLabel() == "缩放预览");
+    REQUIRE(f.stack.undoLabel() == "缩放预览演示");
 
     // 第二步：改因子再执行（增量缩放）→ 会话期两条记录彼此独立
     REQUIRE(f.system.setParameter(kFeatureName, kParamScale, core::ArgObject::create<ArgTypeEnum::Float>(3.0)));
@@ -490,7 +490,7 @@ TEST_CASE("ScalePreview session keeps steps undoable and collapses them at switc
     REQUIRE(firstVertex(f.mgr, cid) == std::array<double, 3> { 6.0, 12.0, 18.0 });
 
     // 退出功能 = 收尾折叠：两步压成一条 → 一步撤回会话前状态
-    // 折叠条目用功能显示名；每次直接执行的 job 标签沿用“缩放预览”。
+    // 折叠条目用功能显示名；每次 execute 和会话折叠均使用功能显示名。
     REQUIRE(f.system.setFeatureActive(""));
     REQUIRE(f.stack.undoLabel() == "缩放预览演示");
     f.stack.undo();

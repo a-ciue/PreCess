@@ -112,10 +112,12 @@ public:
      * @return 对应模型名称的 ModelOperator 对象指针
      */
     std::optional<ModelOperator> getModelOperator(Index model_id);
-    ModelData* modelById(Index model_id) const;
+    ModelData* modelById(Index model_id);
+    const ModelData* modelById(Index model_id) const;
     std::optional<ComponentOperator> getComponentOperator(Index component_id);
 
-    ComponentData* findComponent(Index component_id) const;
+    ComponentData* findComponent(Index component_id);
+    const ComponentData* findComponent(Index component_id) const;
 
     /**
      * @brief 根据几何形状类型和全局 ID 查找所属 Component。
