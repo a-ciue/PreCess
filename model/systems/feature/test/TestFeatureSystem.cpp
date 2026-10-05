@@ -1968,6 +1968,94 @@ HandlerMetaData makeTypedWritebackMeta()
 }
 }
 
+TEST_CASE("Typed writeback presentation preserves both payload overloads and operation ownership", "[FeatureSystem][operation]")
+{
+    class Feature final : public FeatureHandler {
+    public:
+        Index target;
+        bool captured { false };
+        bool masked { false };
+        std::thread::id capture_thread, compute_thread, write_thread;
+        std::shared_ptr<systems::job::Job> job;
+        std::any execute(FeatureContext& ctx) override
+        {
+            auto compute = [this](std::unique_ptr<int>& input, systems::job::ProgressFn report) {
+                compute_thread = std::this_thread::get_id();
+                report(0.5, "half");
+                ++*input;
+                return std::move(input);
+            };
+            auto write = [this](ComponentOperator& op, std::unique_ptr<int>& result) {
+                write_thread = std::this_thread::get_id();
+                op.appendPoint({ double(*result), 0, 0 });
+            };
+            if (captured) {
+                auto capture = [this](const ComponentOperator& op) {
+                    capture_thread = std::this_thread::get_id();
+                    return std::make_unique<int>(int(op.mesh()->vertex_positions_.size()));
+                };
+                if (masked)
+                    job = ctx.runTypedWriteback("typed", target, capture, compute, write, true);
+                else
+                    job = ctx.runTypedWriteback("typed", target, capture, compute, write);
+            } else {
+                auto prepared = [compute](systems::job::ProgressFn report) {
+                    auto input = std::make_unique<int>(3);
+                    return compute(input, std::move(report));
+                };
+                if (masked)
+                    job = ctx.runTypedWriteback("typed", target, prepared, write, true);
+                else
+                    job = ctx.runTypedWriteback("typed", target, prepared, write);
+            }
+            return { };
+        }
+    };
+    OwnerQueue queue;
+    ModelLayer model;
+    const auto target = addTriangleComponent(model);
+    UndoStack undo(model);
+    model.setUndoRecorder(&undo);
+    core::EventBus bus;
+    FeatureSystem system(model, bus, &undo);
+    systems::job::JobRunner runner(model, &undo, queue.dispatcher());
+    system.setJobRunner(&runner);
+    auto handler = std::make_unique<Feature>();
+    auto* raw = handler.get();
+    raw->target = target;
+    SECTION("prepared default") { }
+    SECTION("prepared masked") { raw->masked = true; }
+    SECTION("captured default") { raw->captured = true; }
+    SECTION("captured masked")
+    {
+        raw->captured = true;
+        raw->masked = true;
+    }
+    REQUIRE(system.registerHandler({ "TypedPresentation", "类型化展示" },
+        FeatureSystem::SystemHandlerPtr { handler.release() }));
+    system.invoke("TypedPresentation");
+    auto completion = queue.take();
+    const auto owner_thread = std::this_thread::get_id();
+    REQUIRE(raw->job);
+    REQUIRE(raw->job->masked() == raw->masked);
+    REQUIRE(model.writesPending());
+    REQUIRE(model.writesFrozen() == raw->masked);
+    REQUIRE_FALSE(undo.inOperation());
+    REQUIRE_FALSE(undo.canUndo());
+    REQUIRE(pointCount(model, target) == 3);
+    REQUIRE(raw->compute_thread != owner_thread);
+    if (raw->captured)
+        REQUIRE(raw->capture_thread == owner_thread);
+    completion();
+    REQUIRE(raw->write_thread == owner_thread);
+    REQUIRE(raw->job->state() == systems::job::JobState::Done);
+    REQUIRE_FALSE(model.writesPending());
+    REQUIRE(pointCount(model, target) == 4);
+    REQUIRE(undo.undo());
+    REQUIRE(pointCount(model, target) == 3);
+    REQUIRE_FALSE(undo.canUndo());
+}
+
 TEST_CASE("Typed writeback passes compute result straight to write", "[FeatureSystem]")
 {
     core::EventBus bus;

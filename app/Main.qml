@@ -325,7 +325,7 @@ ApplicationWindow {
             anchors.centerIn: parent
             font.pixelSize: 15
             color: "#444441"
-            text: qsTr("算法执行中，请稍候…")
+            text: qsTr("任务执行中，请稍候…")
         }
     }
 

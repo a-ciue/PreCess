@@ -95,7 +95,7 @@ Rectangle {
     }
 
     // 软冻结显形：带回写任务"回写未落地期"写闸拒改（可看不可改）；
-    // 撤销仍可用（取消+续行语义，pending 经停止回调即时释放）
+    // 占用期 undo/redo 拒绝；取消仅请求停止，GUI 收尾结束后才释放占用。
     Label {
         anchors.left: progressPct.right
         anchors.leftMargin: 10

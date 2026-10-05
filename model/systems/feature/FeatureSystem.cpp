@@ -334,7 +334,7 @@ std::shared_ptr<systems::job::Job> FeatureSystem::submitFreeJob(std::string name
 }
 
 std::shared_ptr<systems::job::Job> FeatureSystem::submitCapturedWriteback(std::string label,
-    Index component_id, CaptureJobFn capture, WritebackFn write, const std::string& owner)
+    Index component_id, CaptureJobFn capture, WritebackFn write, const std::string& owner, bool masked)
 {
     std::optional<std::uint64_t> preview_scope;
     if (undo_stack_) {
@@ -356,7 +356,7 @@ std::shared_ptr<systems::job::Job> FeatureSystem::submitCapturedWriteback(std::s
                                           if (!target || !target->mesh())
                                               throw std::runtime_error("FeatureSystem: occupied writeback target disappeared");
                                           write(*target);
-                                      } }; }, preview_scope);
+                                      } }; }, preview_scope, masked);
 }
 
 std::shared_ptr<systems::job::Job> FeatureSystem::submitModelJob(std::string label, Index component_id,

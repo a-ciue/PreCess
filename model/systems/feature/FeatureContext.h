@@ -96,26 +96,28 @@ struct FeatureContext {
     FeatureContext(FeatureSystem& system, std::string owner, FeatureEventGateway& events,
         FeatureParams& params, InteractionContext& interaction);
 
-    /** @brief 输入已准备的类型化回写；目标校验、提交归属与 undo 均由框架负责。 */
+    /** @brief 输入已准备的类型化回写；masked 仅控制交互遮罩，默认不遮罩。 */
     template <typename Compute, typename Write>
         requires std::is_invocable_v<Compute, systems::job::ProgressFn>
         && !std::is_void_v<std::invoke_result_t<Compute, systems::job::ProgressFn>>
         && std::is_invocable_v<Write, ComponentOperator&,
             std::invoke_result_t<Compute, systems::job::ProgressFn>&>
     std::shared_ptr<systems::job::Job> runTypedWriteback(
-        std::string label, Index component_id, Compute compute, Write write)
+        std::string label, Index component_id, Compute compute, Write write, bool masked = false)
     {
-        return runTypedWriteback(std::move(label), component_id, [](const ComponentOperator&) { return 0; }, [compute = std::move(compute)](int&, systems::job::ProgressFn report) mutable { return compute(std::move(report)); }, std::move(write));
+        return runTypedWriteback(std::move(label), component_id, [](const ComponentOperator&) { return 0; }, [compute = std::move(compute)](int&, systems::job::ProgressFn report) mutable { return compute(std::move(report)); }, std::move(write), masked);
     }
 
     /**
      * @brief GUI 捕获输入 → worker 计算 → GUI 回写。插件只提供业务函数，不传递通用结果包。
      * 框架先占用并交付只读目标；compute 抛异常或取消则不调用 write。
      * 正式／预览归属在发布时固定；预览回写只进入原身份的层。
+     * masked 仅控制交互遮罩，不改变模型占用、取消与记账规则。
      */
     template <typename Capture, typename Compute, typename Write>
+        requires std::is_invocable_v<Capture, const ComponentOperator&>
     std::shared_ptr<systems::job::Job> runTypedWriteback(
-        std::string label, Index component_id, Capture capture, Compute compute, Write write)
+        std::string label, Index component_id, Capture capture, Compute compute, Write write, bool masked = false)
     {
         using Input = std::decay_t<std::invoke_result_t<Capture, const ComponentOperator&>>;
         using Result = std::decay_t<std::invoke_result_t<Compute, Input&, systems::job::ProgressFn>>;
@@ -131,13 +133,13 @@ struct FeatureContext {
                     [compute, payload](systems::job::ProgressFn report) mutable {
                         payload->result.emplace(compute(*payload->input, std::move(report)));
                     }
-                }; }, [write = std::move(write), payload](ComponentOperator& op) mutable { write(op, *payload->result); });
+                }; }, [write = std::move(write), payload](ComponentOperator& op) mutable { write(op, *payload->result); }, masked);
     }
 
 private:
     //! @brief 类型化入口复用系统的目标捕获、占用与提交规则。
     std::shared_ptr<systems::job::Job> runCapturedWriteback(std::string label, Index component_id,
-        CaptureJobFn capture, WritebackFn write);
+        CaptureJobFn capture, WritebackFn write, bool masked);
     FeatureSystem& system_;
     const std::string owner_;
 };

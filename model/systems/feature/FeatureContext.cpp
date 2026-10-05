@@ -94,9 +94,9 @@ std::shared_ptr<systems::job::Job> FeatureContext::runModelJob(std::string label
 }
 
 std::shared_ptr<systems::job::Job> FeatureContext::runCapturedWriteback(std::string label, Index component_id,
-    CaptureJobFn capture, WritebackFn write)
+    CaptureJobFn capture, WritebackFn write, bool masked)
 {
     UndoStack::OwnerScope owner_scope(system_.undo_stack_, owner_);
-    return system_.submitCapturedWriteback(std::move(label), component_id, std::move(capture), std::move(write), owner_);
+    return system_.submitCapturedWriteback(std::move(label), component_id, std::move(capture), std::move(write), owner_, masked);
 }
 }

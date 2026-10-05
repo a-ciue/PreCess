@@ -5,7 +5,6 @@
 #include "FeatureHandler.h"
 
 #include <array>
-#include <atomic>
 #include <functional>
 #include <memory>
 #include <optional>
@@ -29,9 +28,9 @@ class FeatureContext;
  * 失败/忙碌路径：执行器未注入或单槽被占 → 按框架契约直接丢弃（不计算、不写模型）——
  * 异步 Session 装配执行器，单槽忙是正常背压；
  * 不得在 GUI 线程补算（绕过任务系统管辖，且占槽任务必开软冻结窗、补算写入必被写闸拒绝）；
- * 本功能任务在飞期间的因子变更置 pending，任务体循环重算至因子稳定；回写段收尾
- * 复核最新因子（与计算值不一致时按最新值就地重算，兜底提交窗口期到达的最后一笔
- * 变更）。确认（execute）在预览任务在飞时拒绝，待终态（回写必已落地）后重试。
+ * 每轮任务固定因子，GUI 只落计算结果；终态后模型通知回放按最新参数接续下一轮。
+ * 未开预览直接 execute 也走后台计算，并启用交互遮罩；成功提交才形成正式记录。
+ * 确认（execute）在预览任务在飞时拒绝，待终态后重试。
  */
 class ScalePreviewHandler : public FeatureHandler {
 public:
@@ -46,8 +45,7 @@ private:
     //! 预览共享状态：两次 execute 之间存活（任务闭包经 shared_ptr 持有；任务作废经 cancel，退出由框架取消）
     struct PreviewState {
         PreviewPositions base; //!< 会话起点 before₀ 坐标（发布后只读）
-        std::atomic<double> factor { 1.0 }; //!< 最新缩放因子（回写段收尾复核用）
-        std::atomic<bool> pending { false }; //!< 在飞期间又来新因子：任务体循环重算
+        std::optional<double> applied_factor; //!< 已落地的因子，只在 GUI 访问
     };
 
     //! 单轮预览计算结果（任务体产出，经 runTypedWriteback 由框架直传回写段——免共享状态发布）
@@ -59,33 +57,30 @@ private:
     /**
      * @brief 缩放核心（全库唯一缩放循环）：base 每点乘因子 f 写入 out——尺寸随 base
      *
-     * out 可与 base 同址（就地缩放：逐点同址读写安全，同尺寸调整无重分配）。
-     * on_chunk 非空时每满一块回调进度比 (已处理/总数)、收尾回调 1.0——供工作线程
-     * 任务体做心跳；空 = 纯计算，回调检查短路零开销
+     * 仅由 worker 调用；每满一块回调进度比、收尾回调 1.0，均为取消检查点。
      */
     static void scaleInto(const PreviewPositions& base, double f, PreviewPositions& out,
-        std::function<void(double)> on_chunk = nullptr);
+        std::function<void(double)> on_chunk);
 
     //! 预览任务是否在飞（已提交未到终态）
     bool previewInFlight() const;
 
-    // 状态同步统一入口：从参数集同步"缩放因子"（写入共享状态供在飞任务读取），
+    // 状态同步统一入口：从参数集同步最新缩放因子，
     // 并解析活动组件写面缓存（execute/开预览直接用——解析不散落在各调用点）
     void syncParams(FeatureContext& ctx);
     // 开层并按当前因子提交预览任务（已有层先回滚 before₀ 再重启）
     void startPreview(FeatureContext& ctx);
-    // 提交类型化预览回写任务（本功能任务在飞 → 置 pending 由任务体重算；
-    // 槽忙/无执行器 → 框架契约丢弃——会话与 base 保留，槽空后下笔因子变更自然接上）
+    // 提交单轮预览；本功能任务在飞时仅保留最新参数，终态模型通知再接续。
     void submitPreviewJob(FeatureContext& ctx);
-    // 终态回写（GUI 线程）：框架保证预览归属，插件复核基准尺寸与最新因子。
-    // 结果仍对应最新因子则移动落地，否则按最新因子重算。
+    // 终态回写（GUI 线程）：框架保证预览归属，插件复核基准尺寸并移动结果。
     // op = 框架解析好的目标写面（组件存在、网格在场由框架保证）
-    void writePreview(const PreviewState& state, PreviewResult& result, ComponentOperator& op);
+    void writePreview(PreviewState& state, PreviewResult& result, ComponentOperator& op);
     // 作废在飞预览任务（cancel 令牌，通道拦截排队回写；功能退出另有框架取消兜底）
     void abandonPreviewJob();
 
     FeatureContext* ctx_ { nullptr }; //> 功能上下文（生命周期由 FeatureSystem 管理，先于此 handler 销毁）
     core::EventBus::Subscription param_sub_; //> 参数变更事件订阅
+    core::EventBus::Subscription model_sub_; //!< 终态模型通知接续预览计算
     double scale_ { 1.0 }; //> "缩放因子"参数的当前值
     Index active_target_ { -1 }; //> 活动组件 id（syncParams 解析；仅同步后的同一事件内使用）
     std::optional<ComponentOperator> active_op_; //!< 活动组件写面缓存（syncParams 每次刷新——组件删除发生在事件之间，下次同步必先刷新，不会持旧悬垂值）

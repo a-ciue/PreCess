@@ -9,6 +9,7 @@
 
 #include <spdlog/spdlog.h>
 
+#include <cmath>
 #include <cstddef>
 #include <utility>
 
@@ -20,7 +21,7 @@ namespace {
     constexpr std::size_t kParamPreview = 1;
     constexpr std::size_t kParamCancel = 2;
     // 分块粒度：每满一块一次心跳（进度/取消检查点，任务可被红叉中断）
-    constexpr std::size_t kChunkPoints = 1u << 20;
+    constexpr std::size_t kChunkPoints = 1u << 16;
     constexpr const char* kComputingLabel = "缩放预览计算中";
 }
 
@@ -64,6 +65,18 @@ void ScalePreviewHandler::setup(FeatureRegistrar& reg, FeatureContext& ctx)
         }
     });
 
+    // Session 在任务释放占用后回放模型通知，接续不跨越正式 execute 边界。
+    model_sub_ = ctx.events.subscribe<ModelEvent>([this](const ModelEvent& e) {
+        if (!ctx_ || !preview_ || !ctx_->undo.scopeActive()
+            || e.kind != ModelEvent::Kind::ComponentChanged || e.component_id != preview_component_
+            || !preview_->applied_factor)
+            return;
+        const double applied = *preview_->applied_factor;
+        // NaN 也是可解析的浮点参数；相同 NaN 不应因不等于自身而无限接续。
+        if (scale_ != applied && !(std::isnan(scale_) && std::isnan(applied)))
+            submitPreviewJob(*ctx_);
+    });
+
     spdlog::info("ScalePreview: setup");
 }
 
@@ -90,24 +103,25 @@ std::any ScalePreviewHandler::execute(FeatureContext& ctx)
     if (ctx.undo.scopeActive()) {
         spdlog::info("ScalePreview: confirm via execute (scope=true)");
         preview_.reset();
+        preview_job_.reset();
         return { };
     }
-    // 无会话（未点预览直接执行）：直接按当前因子缩放并记一条 undo 记录——
-    // 语义为对当前坐标的增量缩放（无会话即无 before₀ 绝对因子基准）；非阻塞预览仍走"预览"按钮。
+    // 无预览时对当前坐标增量缩放；计算后台执行，提交由框架记账。
+    abandonPreviewJob();
     syncParams(ctx); // 参数与目标写面一并刷新
     spdlog::info("ScalePreview: no scope session, applying scale {} directly", scale_);
     if (!active_op_) {
         spdlog::warn("ScalePreview: no active component or mesh (direct scale)");
         return { };
     }
-    // 开层后同步缩放；框架在 execute 收尾确认，不需插件提交。
-    if (!ctx.undo.beginScope(kPreviewLabel)) {
-        spdlog::warn("ScalePreview: beginScope refused (no undo stack or restore in progress), direct scale skipped");
-        return { };
-    }
-    MeshData& mesh = active_op_->editableMesh(MeshEditKind::NonTopology);
-    scaleInto(mesh.vertex_positions_, scale_, mesh.vertex_positions_); // 就地缩放（同址）
-    // 层由框架在 execute 收尾并入记录并关闭。
+    const double factor = scale_;
+    auto job = ctx.runTypedWriteback(kPreviewLabel, active_target_, [](const ComponentOperator& op) { return op.mesh()->vertex_positions_; }, [factor](PreviewPositions& input, systems::job::ProgressFn report) {
+            report(0.0, "缩放计算中");
+            PreviewPositions out;
+            scaleInto(input, factor, out, [&report](double ratio) { report(ratio, "缩放计算中"); });
+            return out; }, [](ComponentOperator& op, PreviewPositions& out) { op.editableMesh(MeshEditKind::NonTopology).vertex_positions_ = std::move(out); }, true);
+    if (!job)
+        spdlog::warn("ScalePreview: direct scale rejected (job channel unavailable or target missing)");
     return { };
 }
 
@@ -134,7 +148,6 @@ void ScalePreviewHandler::startPreview(FeatureContext& ctx)
     // 拷贝后每轮因子变更不再需要 revertScope（重算自 before₀、覆盖式回写）
     auto state = std::make_shared<PreviewState>();
     state->base = active_op_->mesh()->vertex_positions_;
-    state->factor.store(scale_);
     preview_ = std::move(state);
     preview_component_ = active_target_;
 
@@ -143,29 +156,23 @@ void ScalePreviewHandler::startPreview(FeatureContext& ctx)
 
 void ScalePreviewHandler::submitPreviewJob(FeatureContext& ctx)
 {
-    if (!preview_)
+    if (!preview_ || !ctx.undo.scopeActive())
         return;
-    // 本功能任务在飞：置 pending——任务体一轮算完后按最新因子循环重算（自然背压）
-    if (previewInFlight()) {
-        preview_->pending.store(true);
+    // 参数保留最新值，终态通知在槽已释放后接续，不在 GUI 补算。
+    if (previewInFlight())
         return;
-    }
 
     auto state = preview_;
+    const double factor = scale_;
     auto job = ctx.runTypedWriteback(kPreviewLabel, preview_component_,
         // 任务体在 worker 只读 state（"读须发布前拷贝"契约），不解引用 handler；
         // 结果经框架槽自任务体直传回写段（免共享状态发布）
-        [state](systems::job::ProgressFn report) {
-            double computed = 0.0;
+        [state, factor](systems::job::ProgressFn report) {
+            report(0.0, kComputingLabel);
             PreviewPositions out;
-            // 分块缩放（缩放核心经 on_chunk 每块心跳 + 收尾 1.0）；在飞期间来了新因子
-            // 则循环重算，直到一轮内无新变更（自然背压）。静态调用不捕获 handler
-            do {
-                computed = state->factor.load();
-                scaleInto(state->base, computed, out,
-                    [&report](double ratio) { report(ratio, kComputingLabel); });
-            } while (state->pending.exchange(false));
-            return PreviewResult { std::move(out), computed }; }, [this, state](ComponentOperator& op, PreviewResult& result) {
+            scaleInto(state->base, factor, out,
+                [&report](double ratio) { report(ratio, kComputingLabel); });
+            return PreviewResult { std::move(out), factor }; }, [this, state](ComponentOperator& op, PreviewResult& result) {
             // 框架保证 handler、目标与发布时的预览身份，取消后不触达回写。
             writePreview(*state, result, op); });
     if (job) {
@@ -180,7 +187,7 @@ void ScalePreviewHandler::submitPreviewJob(FeatureContext& ctx)
     }
 }
 
-void ScalePreviewHandler::writePreview(const PreviewState& state, PreviewResult& result, ComponentOperator& op)
+void ScalePreviewHandler::writePreview(PreviewState& state, PreviewResult& result, ComponentOperator& op)
 {
     // 目标解析已收归框架（runTypedWriteback 提交段保证组件存在、网格在场）
     // 尺寸守卫先于标脏（写前标脏契约：幂等提前返回路径不得标脏）：
@@ -191,16 +198,10 @@ void ScalePreviewHandler::writePreview(const PreviewState& state, PreviewResult&
         return;
     }
 
-    // 收尾复核最新因子：提交窗口期到达的最后一笔变更按最新值写（兜底竞态）
-    const double f_eff = state.factor.load();
     MeshData& mesh = op.editableMesh(MeshEditKind::NonTopology);
-    if (f_eff == result.computed) {
-        mesh.vertex_positions_ = std::move(result.out); // 类型化成功结果直接移动落地。
-    } else {
-        // 工作线程结果已过期（罕见收尾竞态）：按最新因子就地重算写入
-        scaleInto(base, f_eff, mesh.vertex_positions_);
-    }
-    spdlog::info("ScalePreview: preview component {} scaled by {}", preview_component_, f_eff);
+    mesh.vertex_positions_ = std::move(result.out);
+    state.applied_factor = result.computed;
+    spdlog::info("ScalePreview: preview component {} scaled by {}", preview_component_, result.computed);
 }
 
 void ScalePreviewHandler::abandonPreviewJob()
@@ -208,6 +209,7 @@ void ScalePreviewHandler::abandonPreviewJob()
     if (previewInFlight())
         preview_job_->cancel(); // 心跳/返回后/排队期拦截生效；排队中的回写由任务通道令牌拦下
     preview_job_.reset();
+    preview_.reset();
 }
 
 bool ScalePreviewHandler::previewInFlight() const
@@ -220,8 +222,6 @@ void ScalePreviewHandler::syncParams(FeatureContext& ctx)
     if (const auto* v = ctx.params.value(kParamScale).get<ArgTypeEnum::Float>()) {
         scale_ = *v;
     }
-    if (preview_)
-        preview_->factor.store(scale_); // 在飞任务与回写段读共享因子
 
     // 活动组件写面解析（与参数同为"从上下文刷新本类状态"）：execute/开预览直接用本缓存。
     // 缓存只在同步调用后的同一事件内使用——GUI 单线程，组件删除发生在事件之间，
@@ -242,13 +242,12 @@ void ScalePreviewHandler::scaleInto(const PreviewPositions& base, double f, Prev
     std::function<void(double)> on_chunk)
 {
     const std::size_t n = base.size();
-    out.resize(n); // 同址调用（就地缩放）时尺寸相同：无重分配，base 引用保持有效
+    out.resize(n);
     for (std::size_t i = 0; i < n; ++i) {
         out[i] = { base[i][0] * f, base[i][1] * f, base[i][2] * f };
-        if (on_chunk && (i + 1) % kChunkPoints == 0)
+        if ((i + 1) % kChunkPoints == 0)
             on_chunk(static_cast<double>(i + 1) / static_cast<double>(n));
     }
-    if (on_chunk)
-        on_chunk(1.0); // 收尾进度（任务体每轮心跳收口）
+    on_chunk(1.0); // 收尾进度（任务体每轮心跳收口）
 }
 }

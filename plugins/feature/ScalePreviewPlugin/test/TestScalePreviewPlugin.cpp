@@ -10,17 +10,21 @@
 #include "ModelObserver.h"
 #include "ModelScope.h"
 #include "ScalePreviewHandler.h"
+#include "Session.h"
 #include "UndoStack.h"
 
 #include <catch2/catch_test_macros.hpp>
 
 #include <array>
 #include <chrono>
+#include <cmath>
 #include <condition_variable>
 #include <functional>
+#include <limits>
 #include <memory>
 #include <mutex>
 #include <string>
+#include <thread>
 #include <vector>
 
 using namespace systems;
@@ -108,23 +112,27 @@ struct ScalePreviewFixture {
     std::vector<std::function<void()>> queued; //!< 排队的提交闭包（回写段）
 
     CountingObserver obs;
-    ModelLayer mgr { &obs };
-    core::EventBus bus;
-    UndoStack stack { mgr };
-    systems::job::JobRunner runner;
-    FeatureSystem system { mgr, bus, &stack };
+    session::Session session;
+    ModelLayer& mgr;
+    core::EventBus& bus;
+    UndoStack& stack;
+    systems::job::JobRunner& runner;
+    FeatureSystem& system;
 
     ScalePreviewFixture()
-        : runner(mgr, &stack, [this](std::function<void()> fn) {
+        : session(&obs, [this](std::function<void()> fn) {
             // 分发器：提交闭包排队，由 settle 在测试主线程执行（= 生产 GUI 执行回写段，
             // 写闸线程亲和依赖此点）
             std::lock_guard lock(mutex);
             queued.push_back(std::move(fn));
             cv.notify_all();
         })
+        , mgr(session.model())
+        , bus(session.events())
+        , stack(session.undoStack())
+        , runner(*session.jobRunner())
+        , system(session.featureSystem())
     {
-        mgr.setUndoRecorder(&stack);
-        system.setJobRunner(&runner);
     }
 
     ~ScalePreviewFixture() { runner.stop(); } // 与宿主一致：先停任务，再拆模型。
@@ -367,7 +375,7 @@ TEST_CASE("ScalePreview discards preview while slot occupied then recovers", "[S
     std::condition_variable bc;
     bool release = false;
     bool blocker_done = false;
-    f.runner.setOnFinished([&](systems::job::Job&) { // 终态回调先于/晚于让槽？——finish 先让槽再触发本回调，
+    f.session.setTaskCallbacks({ }, { }, [&](systems::job::Job&) {
         std::lock_guard lk(bm); // 本标志为真时槽必已空（见 JobRunner::finish 顺序）
         blocker_done = true;
         bc.notify_all();
@@ -399,9 +407,7 @@ TEST_CASE("ScalePreview discards preview while slot occupied then recovers", "[S
 
 TEST_CASE("ScalePreview factor change during in-flight preview lands latest factor", "[ScalePreviewPlugin]")
 {
-    // 在飞窗口确定性复现：预览任务的提交闭包排队等 GUI 泵（状态 Running，非终态），
-    // 此时改因子 → 置 pending 且不追发新任务；回写段收尾复核最新因子（f_eff ≠ computed
-    // → 就地按最新值重算）——最后一笔变更必落模型
+    // 第一轮完成、GUI 尚未提交时变更参数；旧结果先落地，终态回放接续 worker。
     ScalePreviewFixture f;
     const Index cid = f.setupFeature();
     REQUIRE(f.system.setParameter(kFeatureName, kParamScale, core::ArgObject::create<ArgTypeEnum::Float>(2.0)));
@@ -410,6 +416,9 @@ TEST_CASE("ScalePreview factor change during in-flight preview lands latest fact
     REQUIRE(f.system.setParameter(kFeatureName, kParamScale, core::ArgObject::create<ArgTypeEnum::Float>(3.0)));
 
     complete();
+    REQUIRE(firstVertex(f.mgr, cid) == std::array<double, 3> { 2.0, 4.0, 6.0 });
+    REQUIRE(f.runner.currentJob());
+    REQUIRE_FALSE(f.runner.currentJob()->masked());
     f.settle();
     REQUIRE(firstVertex(f.mgr, cid) == std::array<double, 3> { 3.0, 6.0, 9.0 }); // 3.0 生效而非 2.0
     REQUIRE(f.stack.scopeActive()); // 层保持（预览写归层不杀层）
@@ -424,9 +433,21 @@ TEST_CASE("ScalePreview execute without session scales directly and records undo
     REQUIRE(f.system.setParameter(kFeatureName, kParamScale, core::ArgObject::create<ArgTypeEnum::Float>(2.0)));
     REQUIRE(firstVertex(f.mgr, cid) == kOriginal);
     REQUIRE_FALSE(f.stack.scopeActive());
+    const auto gids = f.mgr.findComponent(cid)->point_global_ids_;
 
-    // 直接执行：同步按因子缩放 + 成一条 undo 记录（原行为 commitScope 空转、无任何反馈）
+    // 直接执行只发布后台任务，GUI 回写前模型与历史均不变。
     f.system.invoke(kFeatureName);
+    auto job = f.runner.currentJob();
+    REQUIRE(job);
+    REQUIRE(job->masked());
+    REQUIRE(f.mgr.writesFrozen());
+    REQUIRE(firstVertex(f.mgr, cid) == kOriginal);
+    REQUIRE_FALSE(f.stack.inOperation());
+    REQUIRE_FALSE(f.stack.canUndo());
+    REQUIRE_FALSE(f.stack.undo());
+    f.settle();
+    REQUIRE(job->state() == systems::job::JobState::Done);
+    REQUIRE(f.mgr.findComponent(cid)->point_global_ids_ == gids);
     REQUIRE(firstVertex(f.mgr, cid) == std::array<double, 3> { 2.0, 4.0, 6.0 });
     REQUIRE_FALSE(f.stack.scopeActive()); // 一次性路径不开会话
     REQUIRE(f.stack.canUndo());
@@ -436,6 +457,9 @@ TEST_CASE("ScalePreview execute without session scales directly and records undo
     f.stack.undo();
     REQUIRE(firstVertex(f.mgr, cid) == kOriginal);
     REQUIRE_FALSE(f.stack.canUndo());
+    REQUIRE(f.stack.redo());
+    REQUIRE(firstVertex(f.mgr, cid) == std::array<double, 3> { 2.0, 4.0, 6.0 });
+    REQUIRE(f.mgr.findComponent(cid)->point_global_ids_ == gids);
 }
 
 TEST_CASE("ScalePreview session keeps steps undoable and collapses them at switch-out", "[ScalePreviewPlugin][session]")
@@ -449,12 +473,14 @@ TEST_CASE("ScalePreview session keeps steps undoable and collapses them at switc
     // 第一步：无预览会话 → 直接按 2.0 缩放，自成一条记录
     REQUIRE(f.system.setParameter(kFeatureName, kParamScale, core::ArgObject::create<ArgTypeEnum::Float>(2.0)));
     f.system.invoke(kFeatureName);
+    f.settle();
     REQUIRE(firstVertex(f.mgr, cid) == std::array<double, 3> { 2.0, 4.0, 6.0 });
     REQUIRE(f.stack.undoLabel() == "缩放预览");
 
     // 第二步：改因子再执行（增量缩放）→ 会话期两条记录彼此独立
     REQUIRE(f.system.setParameter(kFeatureName, kParamScale, core::ArgObject::create<ArgTypeEnum::Float>(3.0)));
     f.system.invoke(kFeatureName);
+    f.settle();
     REQUIRE(firstVertex(f.mgr, cid) == std::array<double, 3> { 6.0, 12.0, 18.0 });
 
     // 会话期逐步可撤：一次撤销只退回上一步，redo 再做回来（记录带着会话标回栈顶）
@@ -464,7 +490,7 @@ TEST_CASE("ScalePreview session keeps steps undoable and collapses them at switc
     REQUIRE(firstVertex(f.mgr, cid) == std::array<double, 3> { 6.0, 12.0, 18.0 });
 
     // 退出功能 = 收尾折叠：两步压成一条 → 一步撤回会话前状态
-    // （折叠条目用功能显示名；会话期单条记录的名字是层标签"缩放预览"——空边界吸收层标签）
+    // 折叠条目用功能显示名；每次直接执行的 job 标签沿用“缩放预览”。
     REQUIRE(f.system.setFeatureActive(""));
     REQUIRE(f.stack.undoLabel() == "缩放预览演示");
     f.stack.undo();
@@ -498,5 +524,206 @@ TEST_CASE("ScalePreview cancellation before queued write discards the completed 
     REQUIRE_FALSE(f.mgr.writesPending());
     REQUIRE_FALSE(f.stack.scopeActive());
     REQUIRE(firstVertex(f.mgr, target) == kOriginal);
+    REQUIRE_FALSE(f.stack.canUndo());
+}
+
+TEST_CASE("ScalePreview direct execution cancellation and missing runner never scale on GUI", "[ScalePreviewPlugin][operation]")
+{
+    ScalePreviewFixture f;
+    const auto target = f.setupFeature();
+    REQUIRE(f.system.setParameter(kFeatureName, kParamScale, core::ArgObject::create<ArgTypeEnum::Float>(2.0)));
+    SECTION("queued cancellation")
+    {
+        f.system.invoke(kFeatureName);
+        auto job = f.runner.currentJob();
+        auto complete = f.takeCompletion();
+        job->cancel();
+        REQUIRE(f.mgr.writesPending());
+        REQUIRE(f.mgr.writesFrozen());
+        complete();
+        REQUIRE(job->state() == systems::job::JobState::Cancelled);
+    }
+    SECTION("runner unavailable")
+    {
+        f.system.setJobRunner(nullptr);
+        f.system.invoke(kFeatureName);
+        REQUIRE_FALSE(f.runner.currentJob());
+    }
+    REQUIRE(firstVertex(f.mgr, target) == kOriginal);
+    REQUIRE_FALSE(f.mgr.writesPending());
+    REQUIRE_FALSE(f.stack.scopeActive());
+    REQUIRE_FALSE(f.stack.canUndo());
+}
+
+TEST_CASE("ScalePreview follow-up keeps only latest factor without GUI recomputation", "[ScalePreviewPlugin][session]")
+{
+    ScalePreviewFixture f;
+    const auto target = f.setupFeature();
+    int started = 0;
+    f.session.setTaskCallbacks([&](systems::job::Job& job) {
+        CHECK_FALSE(job.masked());
+        ++started;
+    });
+    REQUIRE(f.system.setParameter(kFeatureName, kParamScale, core::ArgObject::create<ArgTypeEnum::Float>(2.0)));
+    REQUIRE(f.system.setParameter(kFeatureName, kParamPreview, core::ArgObject::create<ArgTypeEnum::Button>(1)));
+    auto complete = f.takeCompletion();
+    REQUIRE(f.system.setParameter(kFeatureName, kParamScale, core::ArgObject::create<ArgTypeEnum::Float>(3.0)));
+    REQUIRE(f.system.setParameter(kFeatureName, kParamScale, core::ArgObject::create<ArgTypeEnum::Float>(4.0)));
+    double expected = 4.0;
+    SECTION("latest value") { }
+    SECTION("back to computed value")
+    {
+        expected = 2.0;
+        REQUIRE(f.system.setParameter(kFeatureName, kParamScale, core::ArgObject::create<ArgTypeEnum::Float>(2.0)));
+    }
+    REQUIRE(started == 1);
+    complete();
+    REQUIRE(firstVertex(f.mgr, target) == std::array<double, 3> { 2, 4, 6 });
+    REQUIRE(started == (expected == 2.0 ? 1 : 2));
+    f.settle();
+    REQUIRE(firstVertex(f.mgr, target) == std::array<double, 3> { expected, expected * 2, expected * 3 });
+    f.system.invoke(kFeatureName); // 所有中间结果仅归预览，确认只成一条记录。
+    REQUIRE_FALSE(f.stack.scopeActive());
+    REQUIRE(f.stack.undo());
+    REQUIRE(firstVertex(f.mgr, target) == kOriginal);
+    REQUIRE_FALSE(f.stack.canUndo());
+    f.bus.publish(ModelEvent { ModelEvent::Kind::ComponentChanged, -1, target });
+    REQUIRE_FALSE(f.runner.currentJob());
+}
+
+TEST_CASE("ScalePreview queued follow-up ends with its original layer", "[ScalePreviewPlugin][session]")
+{
+    ScalePreviewFixture f;
+    const auto target = f.setupFeature();
+    REQUIRE(f.system.setFeatureActive(kFeatureName));
+    REQUIRE(f.system.setParameter(kFeatureName, kParamScale, core::ArgObject::create<ArgTypeEnum::Float>(2.0)));
+    REQUIRE(f.system.setParameter(kFeatureName, kParamPreview, core::ArgObject::create<ArgTypeEnum::Button>(1)));
+    auto first = f.takeCompletion();
+    REQUIRE(f.system.setParameter(kFeatureName, kParamScale, core::ArgObject::create<ArgTypeEnum::Float>(3.0)));
+    first();
+    auto follow_up = f.runner.currentJob();
+    REQUIRE(follow_up);
+    auto second = f.takeCompletion();
+    // 接续任务占用中 execute 不得确认尚未落地的最新参数。
+    f.system.invoke(kFeatureName);
+    REQUIRE(f.stack.scopeActive());
+    SECTION("cancel")
+    {
+        REQUIRE(f.system.setParameter(kFeatureName, kParamCancel, core::ArgObject::create<ArgTypeEnum::Button>(1)));
+    }
+    SECTION("feature exit") { REQUIRE(f.system.setFeatureActive("")); }
+    REQUIRE(follow_up->isCancellationRequested());
+    second();
+    REQUIRE_FALSE(f.runner.currentJob());
+    REQUIRE_FALSE(f.stack.scopeActive());
+    REQUIRE(firstVertex(f.mgr, target) == kOriginal);
+    REQUIRE_FALSE(f.stack.canUndo());
+
+    // 后来的新层不借用旧任务结果或旧起点。
+    REQUIRE(f.system.setParameter(kFeatureName, kParamScale, core::ArgObject::create<ArgTypeEnum::Float>(4.0)));
+    REQUIRE(f.system.setParameter(kFeatureName, kParamPreview, core::ArgObject::create<ArgTypeEnum::Button>(2)));
+    f.settle();
+    REQUIRE(firstVertex(f.mgr, target) == std::array<double, 3> { 4, 8, 12 });
+}
+
+TEST_CASE("ScalePreview unrelated notifications and NaN do not loop", "[ScalePreviewPlugin][session]")
+{
+    ScalePreviewFixture f;
+    const auto target = f.setupFeature();
+    int started = 0;
+    f.session.setTaskCallbacks([&](systems::job::Job&) { ++started; });
+    REQUIRE(f.system.setParameter(kFeatureName, kParamScale,
+        core::ArgObject::create<ArgTypeEnum::Float>(std::numeric_limits<double>::quiet_NaN())));
+    REQUIRE(f.system.setParameter(kFeatureName, kParamPreview, core::ArgObject::create<ArgTypeEnum::Button>(1)));
+    f.settle();
+    REQUIRE(started == 1);
+    REQUIRE(std::isnan(firstVertex(f.mgr, target)[0]));
+    f.bus.publish(ModelEvent { ModelEvent::Kind::ComponentChanged, -1, target + 1 });
+    f.bus.publish(ModelEvent { ModelEvent::Kind::ModelChanged, -1, target });
+    REQUIRE_FALSE(f.runner.currentJob());
+    REQUIRE(f.system.setParameter(kFeatureName, kParamCancel, core::ArgObject::create<ArgTypeEnum::Button>(1)));
+    REQUIRE(firstVertex(f.mgr, target) == kOriginal);
+    REQUIRE_FALSE(f.stack.canUndo());
+}
+
+TEST_CASE("ScalePreview reports intermediate progress and observes worker heartbeat cancellation", "[ScalePreviewPlugin][progress]")
+{
+    ScalePreviewFixture f;
+    Index target;
+    {
+        ModelScope initialization(f.mgr, &f.stack, { }, ModelScope::Kind::Cleanup);
+        auto component = std::make_unique<ComponentData>();
+        component->mesh = std::make_unique<MeshData>();
+        component->mesh->init();
+        component->mesh->vertex_positions_.assign((1u << 17) + 1, kOriginal);
+        ComponentDatas components;
+        components.push_back(std::move(component));
+        const auto model_id = f.mgr.addModel("progress mesh", std::move(components));
+        target = f.mgr.modelById(model_id)->componentIds().front();
+    }
+    f.setupFeatureOn(target);
+    bool preview = false;
+    bool cancel = false;
+    SECTION("direct success") { }
+    SECTION("preview success") { preview = true; }
+    SECTION("direct cancellation") { cancel = true; }
+    SECTION("preview cancellation")
+    {
+        preview = true;
+        cancel = true;
+    }
+    std::vector<double> progress;
+    std::thread::id reporting_thread;
+    f.session.setTaskCallbacks({ }, [&](systems::job::Job& job, double ratio, const std::string&) {
+        reporting_thread = std::this_thread::get_id();
+        progress.push_back(ratio);
+        if (cancel && ratio > 0 && ratio < 1)
+            job.cancel();
+    });
+    REQUIRE(f.system.setParameter(kFeatureName, kParamScale, core::ArgObject::create<ArgTypeEnum::Float>(2.0)));
+    if (preview)
+        REQUIRE(f.system.setParameter(kFeatureName, kParamPreview, core::ArgObject::create<ArgTypeEnum::Button>(1)));
+    else
+        f.system.invoke(kFeatureName);
+    auto job = f.runner.currentJob();
+    REQUIRE(job);
+    f.settle();
+    REQUIRE(reporting_thread != std::this_thread::get_id());
+    REQUIRE(progress.size() >= 2);
+    REQUIRE(progress.front() == 0);
+    REQUIRE(progress[1] > 0);
+    REQUIRE(progress[1] < 1);
+    REQUIRE(job->masked() == !preview);
+    if (cancel) {
+        REQUIRE(job->state() == systems::job::JobState::Cancelled);
+        REQUIRE(firstVertex(f.mgr, target) == kOriginal);
+        if (preview)
+            REQUIRE(f.system.setParameter(kFeatureName, kParamCancel, core::ArgObject::create<ArgTypeEnum::Button>(1)));
+        REQUIRE_FALSE(f.stack.canUndo());
+    } else {
+        REQUIRE(job->state() == systems::job::JobState::Done);
+        REQUIRE(progress.back() == 1);
+        REQUIRE(firstVertex(f.mgr, target) == std::array<double, 3> { 2, 4, 6 });
+    }
+}
+
+TEST_CASE("ScalePreview compute failure does not write or restart preview", "[ScalePreviewPlugin][session]")
+{
+    ScalePreviewFixture f;
+    const auto target = f.setupFeature();
+    int started = 0;
+    f.session.setTaskCallbacks([&](systems::job::Job&) { ++started; },
+        [](systems::job::Job&, double, const std::string&) { throw std::runtime_error("progress observer failed"); });
+    REQUIRE(f.system.setParameter(kFeatureName, kParamScale, core::ArgObject::create<ArgTypeEnum::Float>(2.0)));
+    REQUIRE(f.system.setParameter(kFeatureName, kParamPreview, core::ArgObject::create<ArgTypeEnum::Button>(1)));
+    auto job = f.runner.currentJob();
+    auto complete = f.takeCompletion();
+    REQUIRE(f.system.setParameter(kFeatureName, kParamScale, core::ArgObject::create<ArgTypeEnum::Float>(3.0)));
+    complete();
+    REQUIRE(job->state() == systems::job::JobState::Failed);
+    REQUIRE(started == 1);
+    REQUIRE_FALSE(f.runner.currentJob());
+    REQUIRE(firstVertex(f.mgr, target) == kOriginal);
+    REQUIRE(f.system.setParameter(kFeatureName, kParamCancel, core::ArgObject::create<ArgTypeEnum::Button>(1)));
     REQUIRE_FALSE(f.stack.canUndo());
 }
