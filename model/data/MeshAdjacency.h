@@ -122,6 +122,14 @@ public:
     //! @brief 按 gid_by_stable_id_ 原值定向回收边 gid（配合快照恢复，仅作用持久层，不触发边表重建）
     void reclaimEdgeGlobalIds(MeshIDMap& map, Index component_id);
 
+    /**
+     * @brief 全局边 id 全部重置为待分配（-1），不动稳定 id 结构与发号映射
+     *
+     * 跨层移植快照（算法影子执行）时用：目标层水位与源层无关，原 gid 直接
+     * reclaim 会越界；置 -1 后 reclaim 跳过、ensureEdgeGlobalIds 按目标层水位补发。
+     */
+    void stripEdgeGlobalIds();
+
     //! @brief 使懒重建部分失效，下次查询时基于最新拓扑重建（持久稳定 id 层保留）
     void invalidate() noexcept;
 

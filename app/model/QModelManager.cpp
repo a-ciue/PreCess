@@ -20,18 +20,24 @@ QModelManager::QModelManager(std::string_view argv0, QObject* parent)
 {
     // 1) 会话组合根：模型层 + undo 栈 + 事件总线 + 四系统（内部经转发观察者桥接 ModelEvent）
     observer_ = std::make_unique<QModelObserver>();
-    session_ = std::make_unique<session::Session>(observer_.get());
+    session_ = std::make_unique<session::Session>(observer_.get(), [this](std::function<void()> fn) {
+        QMetaObject::invokeMethod(this, std::move(fn));
+    });
 
     query_ = std::make_unique<QModelQuery>(&session_->query(), this);
 
-    // 2) Qt 适配器包装会话内子系统
-    algo_adaptor_ = std::make_unique<systems::algo::QAlgorithmSystemAdaptor>(session_->algorithmSystem());
+    // 2) 共享任务基建：全局单槽执行器（算法与功能任务共用一个坑）+ 状态栏统一数据源。
+    // 提交闭包经本对象（GUI 线程）分发：工作线程投递时为 Queued，事件循环空闲即可执行
+    task_status_ = std::make_unique<QTaskStatus>();
+    // 3) Qt 适配器包装会话内子系统
+    algo_adaptor_ = std::make_unique<systems::algo::QAlgorithmSystemAdaptor>(session_->algorithmSystem(), *task_status_);
     io_adaptor_ = std::make_unique<systems::io::QModelIOSystemAdaptor>(session_->ioSystem());
     edit_adaptor_ = std::make_unique<systems::edit::QEditSystemAdaptor>(session_->editSystem());
     feature_adaptor_ = std::make_unique<systems::feature::QFeatureSystemAdaptor>(session_->featureSystem());
     undo_adaptor_ = std::make_unique<QUndoStackAdaptor>(session_->undoStack());
+    task_status_->bindSession(*session_);
 
-    // 功能上下文的活动模型/组件由 UI 同步到适配器，功能经 provider 动态获取
+    // 功能上下文的活动模型/组件由 UI 同步到适配器，功能经 provider 动态获取；
     session_->featureSystem().setActiveModelProvider([this]() { return feature_adaptor_->activeModel(); });
     session_->featureSystem().setActiveComponentProvider([this]() { return feature_adaptor_->activeComponent(); });
 
@@ -86,11 +92,14 @@ QModelManager::QModelManager(std::string_view argv0, QObject* parent)
 
 QModelManager::~QModelManager()
 {
+    // 0) 先停全局单槽执行器：等待在飞任务自然结束、拒收新任务——此后任何回调不再触发，
+    //    适配器/会话随后析构均无并发回调悬垂问题
+    session_->stopJobs();
     // 先关 Python 运行时（丢弃 precess.current 活会话引用并终结解释器）：
     // Python 侧以引用策略持有活会话，会话先析构会在终结前留下悬垂
     python_runtime_.reset();
     // 显式再拆会话（停功能系统、断 undo 钩子）：此刻 Qt 适配器均存活，
-    // staged 清理路径经 on_changed_ 回调 undo_adaptor_ 发信号安全；其余成员按声明逆序析构
+    // 层清理路径经 on_changed_ 回调 undo_adaptor_ 发信号安全；其余成员按声明逆序析构
     session_.reset();
 }
 
@@ -107,12 +116,20 @@ void QModelManager::removeComponent(int id)
 
 void QModelManager::removeMesh(int componentId)
 {
-    session_->removeMesh(componentId);
+    try {
+        session_->removeMesh(componentId);
+    } catch (const ModelOperationBusy& e) {
+        spdlog::warn("QModelManager: {}", e.what());
+    }
 }
 
 void QModelManager::removeGeometry(int componentId)
 {
-    session_->removeGeometry(componentId);
+    try {
+        session_->removeGeometry(componentId);
+    } catch (const ModelOperationBusy& e) {
+        spdlog::warn("QModelManager: {}", e.what());
+    }
 }
 
 ModelLayer* QModelManager::getModelManager()
@@ -163,6 +180,11 @@ QUndoStackAdaptor* QModelManager::getUndoStackAdaptor() const
 QPythonRuntime* QModelManager::getPythonRuntime() const
 {
     return python_runtime_.get();
+}
+
+QTaskStatus* QModelManager::getTaskStatus() const
+{
+    return task_status_.get();
 }
 
 #ifdef _WIN32

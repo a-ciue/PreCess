@@ -10,3 +10,6 @@ if (BUILD_TESTING)
     target_compile_definitions(TestSessionPlugins PRIVATE
         PRECESS_PLUGIN_DIR="${CMAKE_BINARY_DIR}/plugins")
 endif()
+
+precess_add_test(TestSessionJobs TestSessionJobs.cpp)
+precess_test_link_libraries(TestSessionJobs Session)

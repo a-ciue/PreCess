@@ -49,32 +49,32 @@ ModelData* ComponentOperator::model() const
     return mgr_->modelById(model_id_);
 }
 
-MeshData& ComponentOperator::editableMesh(MeshEditKind kind)
+MeshData& ComponentOperator::editableMesh(MeshEditKind kind, std::source_location loc)
 {
     if (!component_ || !component_->mesh)
         throw std::runtime_error("ComponentOperator::editableMesh: component has no mesh");
 
     // 写必脏：获取可写入口即标脏（Topology 失效邻接懒表 + 记入待通知集合）
-    mgr_->markComponentDirty(component_id_, kind);
+    mgr_->markComponentDirty(component_id_, kind, loc);
     return *component_->mesh;
 }
 
-GeometryMeshMap& ComponentOperator::editableGeometryMeshMap()
+GeometryMeshMap& ComponentOperator::editableGeometryMeshMap(std::source_location loc)
 {
     if (!component_)
         throw std::runtime_error("ComponentOperator::editableGeometryMeshMap: null component");
 
-    mgr_->markComponentDirty(component_id_, MeshEditKind::NonTopology);
+    mgr_->markComponentDirty(component_id_, MeshEditKind::NonTopology, loc);
     return component_->ensureMapping();
 }
 
-Index ComponentOperator::appendPoint(std::array<double, 3> pos)
+Index ComponentOperator::appendPoint(std::array<double, 3> pos, std::source_location loc)
 {
     if (!component_ || !component_->mesh)
         throw std::runtime_error("ComponentOperator::appendPoint: component has no mesh");
 
     // 写前标脏：须早于加点，使 undo 钩子克隆到不含新点的 before-image
-    mgr_->markComponentDirty(component_id_, MeshEditKind::Topology);
+    mgr_->markComponentDirty(component_id_, MeshEditKind::Topology, loc);
 
     // 运行期加点原子四连：坐标、vertex_count_、gid 分配、gid 伴生表追加
     MeshData& mesh_data = *component_->mesh;
@@ -87,7 +87,7 @@ Index ComponentOperator::appendPoint(std::array<double, 3> pos)
     return local_id;
 }
 
-Index ComponentOperator::appendFace(const std::vector<Index>& local_point_ids)
+Index ComponentOperator::appendFace(const std::vector<Index>& local_point_ids, std::source_location loc)
 {
     if (!component_ || !component_->mesh)
         throw std::runtime_error("ComponentOperator::appendFace: component has no mesh");
@@ -101,7 +101,7 @@ Index ComponentOperator::appendFace(const std::vector<Index>& local_point_ids)
     }
 
     // 写前标脏：须早于任何数据修改（含 offset 补 {0}），使 undo 钩子克隆到不含新面的 before-image
-    mgr_->markComponentDirty(component_id_, MeshEditKind::Topology);
+    mgr_->markComponentDirty(component_id_, MeshEditKind::Topology, loc);
 
     // 空 offset 数组先补 {0}，保持 offset 单调序列完整
     if (mesh_data.face_vertices_offset_.empty())
@@ -115,7 +115,7 @@ Index ComponentOperator::appendFace(const std::vector<Index>& local_point_ids)
     return face_id;
 }
 
-void ComponentOperator::replaceMesh(std::unique_ptr<MeshData> mesh)
+void ComponentOperator::replaceMesh(std::unique_ptr<MeshData> mesh, std::source_location loc)
 {
     if (!mesh)
         throw std::invalid_argument("ComponentOperator::replaceMesh: null mesh");
@@ -123,7 +123,7 @@ void ComponentOperator::replaceMesh(std::unique_ptr<MeshData> mesh)
     // 写前标脏：须早于 gid 释放与网格替换，使 undo 钩子克隆到真正的 before-image。
     // 顺序为「写前标脏 → 释放旧 gid → 就位 → ensure 补缺」：before 快照须含完整
     // point_global_ids_，restoreSnapshot 才能按原值 reclaim 拿回 gid。
-    mgr_->markComponentDirty(component_id_, MeshEditKind::Topology);
+    mgr_->markComponentDirty(component_id_, MeshEditKind::Topology, loc);
 
     // 释放旧网格占用的点/边 gid
     if (component_->mesh) {
@@ -140,7 +140,7 @@ void ComponentOperator::replaceMesh(std::unique_ptr<MeshData> mesh)
     component_->mapping.reset();
 }
 
-Index ComponentOperator::materializeEdge(Index p0, Index p1)
+Index ComponentOperator::materializeEdge(Index p0, Index p1, std::source_location loc)
 {
     MeshData* mesh_data = component_ && component_->mesh ? component_->mesh.get() : nullptr;
     if (!mesh_data)
@@ -158,7 +158,7 @@ Index ComponentOperator::materializeEdge(Index p0, Index p1)
     // 写前标脏：须早于写入，使 undo 钩子克隆到不含新边的 before-image。
     // 位置须在幂等早退之后——否则幂等路径未改数据却捕获 before-image，
     // 会在操作边界 commit 时入栈一条 before==after 的空记录。
-    mgr_->markComponentDirty(component_id_, MeshEditKind::Topology);
+    mgr_->markComponentDirty(component_id_, MeshEditKind::Topology, loc);
 
     const Index cell_index = static_cast<Index>(mesh_data->edge_vertices_.size() / 2);
     mesh_data->edge_vertices_.push_back(p0);
@@ -177,10 +177,14 @@ std::unique_ptr<ComponentData> ComponentOperator::takeSnapshot() const
     return component_->clone();
 }
 
-void ComponentOperator::restoreSnapshot(const ComponentData& snapshot)
+void ComponentOperator::restoreSnapshot(const ComponentData& snapshot, std::source_location loc)
 {
     if (!component_)
         throw std::runtime_error("ComponentOperator::restoreSnapshot: null component");
+
+    // 写前标脏（契约：before-image 必须在任何数据修改之前捕获）：首次标脏克隆当前状态，
+    // 通知延迟到操作边界 flush
+    mgr_->markComponentDirty(component_id_, MeshEditKind::Topology, loc);
 
     // gid 对账：先释放现有点/边 gid 与旧几何索引，再按快照原值 reclaim
     component_->releasePointGlobalIds(mgr_->pointIdMap());
@@ -191,15 +195,15 @@ void ComponentOperator::restoreSnapshot(const ComponentData& snapshot)
     component_->restoreFrom(snapshot);
 
     component_->reclaimPointGlobalIds(mgr_->pointIdMap());
+    component_->ensurePointGlobalIds(mgr_->pointIdMap()); // 幂等补缺：gid 重置移植场景按本层水位重新发号
     component_->mesh_adjacency.reclaimEdgeGlobalIds(mgr_->edgeIdMap(), component_id_);
+    if (component_->mesh)
+        component_->mesh_adjacency.ensureEdgeGlobalIds(mgr_->edgeIdMap(), component_id_, *component_->mesh); // 同上
     if (component_->geometry)
         component_->geometry->ensureIndexBuilt(mgr_->geomRegistry()); // gid 向量随快照保留，此处按原值 reclaim
-
-    // 标脏：失效邻接懒表，通知延迟到操作边界 flush
-    mgr_->markComponentDirty(component_id_, MeshEditKind::Topology);
 }
 
-Index ComponentOperator::appendGeometryShape(TopoDS_Shape shape)
+Index ComponentOperator::appendGeometryShape(TopoDS_Shape shape, std::source_location loc)
 {
     if (shape.IsNull())
         throw std::invalid_argument("Geometry shape is null");
@@ -208,7 +212,7 @@ Index ComponentOperator::appendGeometryShape(TopoDS_Shape shape)
     if (!component_->geometry
         || !component_->geometry->rootShape
         || component_->geometry->rootShape->IsNull()) {
-        mgr_->markComponentDirty(component_id_, MeshEditKind::Topology);
+        mgr_->markComponentDirty(component_id_, MeshEditKind::Topology, loc);
         if (!component_->geometry)
             component_->geometry = std::make_unique<GeometryData>();
         if (component_->geometry->index.built)
@@ -221,7 +225,7 @@ Index ComponentOperator::appendGeometryShape(TopoDS_Shape shape)
     if (component_->mapping && !component_->mapping->empty())
         throw std::invalid_argument("Target component already contains geometry-mesh mapping");
 
-    mgr_->markComponentDirty(component_id_, MeshEditKind::Topology);
+    mgr_->markComponentDirty(component_id_, MeshEditKind::Topology, loc);
     // 根形状改变后旧业务 ID 不再有效，必须释放并重新建立索引。
     component_->geometry->index.release(mgr_->geomRegistry());
     component_->geometry->appendRootShape(std::move(shape));
@@ -229,14 +233,14 @@ Index ComponentOperator::appendGeometryShape(TopoDS_Shape shape)
     return component_id_;
 }
 
-Index ComponentOperator::replaceGeometryRoot(TopoDS_Shape shape)
+Index ComponentOperator::replaceGeometryRoot(TopoDS_Shape shape, std::source_location loc)
 {
     if (!component_ || !component_->geometry || !component_->geometry->rootShape)
         throw std::invalid_argument("Target component has no geometry");
     if (component_->mapping && !component_->mapping->empty())
         throw std::invalid_argument("Target component already contains geometry-mesh mapping");
 
-    mgr_->markComponentDirty(component_id_, MeshEditKind::Topology);
+    mgr_->markComponentDirty(component_id_, MeshEditKind::Topology, loc);
     // 根形状变化会使原有业务 ID 失效，先释放旧索引再写入新拓扑。
     component_->geometry->index.release(mgr_->geomRegistry());
     if (shape.IsNull()) {
@@ -249,14 +253,14 @@ Index ComponentOperator::replaceGeometryRoot(TopoDS_Shape shape)
     return component_id_;
 }
 
-void ComponentOperator::removeMesh()
+void ComponentOperator::removeMesh(std::source_location loc)
 {
     if (!component_ || !component_->mesh)
         return;
 
     // 写前标脏：须早于 gid 释放与 mesh 清空，使 undo 钩子克隆到仍含完整网格与
     // point_global_ids_ 的 before-image（撤销时才能恢复网格并 reclaim 原 gid）
-    mgr_->markComponentDirty(component_id_, MeshEditKind::Topology);
+    mgr_->markComponentDirty(component_id_, MeshEditKind::Topology, loc);
 
     component_->releasePointGlobalIds(mgr_->pointIdMap());
     component_->mesh_adjacency.releaseEdgeGlobalIds(mgr_->edgeIdMap());
@@ -264,12 +268,12 @@ void ComponentOperator::removeMesh()
     component_->mapping.reset();
 }
 
-void ComponentOperator::removeGeometry()
+void ComponentOperator::removeGeometry(std::source_location loc)
 {
     if (!component_ || !component_->geometry)
         return;
 
-    mgr_->markComponentDirty(component_id_, MeshEditKind::Topology);
+    mgr_->markComponentDirty(component_id_, MeshEditKind::Topology, loc);
     component_->geometry->index.release(mgr_->geomRegistry());
     component_->geometry.reset();
     component_->mapping.reset();

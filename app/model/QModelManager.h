@@ -8,6 +8,7 @@
 #include "QModelQuery.h"
 #include "QPythonRuntime.h"
 #include "QSystemPluginManager.h"
+#include "QTaskStatus.h"
 #include "QUndoStackAdaptor.h"
 #include <memory>
 #include <string>
@@ -31,6 +32,7 @@ class QModelManager : public QObject {
     Q_PROPERTY(systems::feature::QFeatureSystemAdaptor* featureSystem READ getFeatureSystemAdaptor CONSTANT)
     Q_PROPERTY(QUndoStackAdaptor* undoStack READ getUndoStackAdaptor CONSTANT)
     Q_PROPERTY(QPythonRuntime* pythonRuntime READ getPythonRuntime CONSTANT)
+    Q_PROPERTY(QTaskStatus* taskStatus READ getTaskStatus CONSTANT)
 public:
     explicit QModelManager(std::string_view argv0, QObject* parent = nullptr);
     ~QModelManager();
@@ -49,6 +51,7 @@ public:
     systems::QSystemPluginManager* getSystemPluginManager() const;
     QUndoStackAdaptor* getUndoStackAdaptor() const;
     QPythonRuntime* getPythonRuntime() const;
+    QTaskStatus* getTaskStatus() const;
 
     static std::string_view argv0; //> 命令行参数 argv[0]，用于插件加载等需要程序路径的场景，由 main 函数在程序启动时设置，被传入 ModelManager 构造函数以供其使用
     /**
@@ -70,6 +73,8 @@ private:
     std::unique_ptr<QModelQuery> query_;
     core::EventBus::Subscription param_bridge_sub_; //> 参数变更桥接订阅（随成员析构自动退订）
     core::EventBus::Subscription scalar_attribute_display_bridge_sub_; //> 标量属性显示请求桥接订阅
+    // Session 停任务后再销毁展示对象；适配器在会话拆解期间仍可接收通知。
+    std::unique_ptr<QTaskStatus> task_status_; //> 共享任务状态源（状态栏统一绑定）
     std::unique_ptr<systems::algo::QAlgorithmSystemAdaptor> algo_adaptor_;
     std::unique_ptr<systems::io::QModelIOSystemAdaptor> io_adaptor_;
     std::unique_ptr<systems::edit::QEditSystemAdaptor> edit_adaptor_;

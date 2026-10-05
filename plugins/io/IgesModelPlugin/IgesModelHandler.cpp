@@ -35,7 +35,7 @@ std::optional<ModelPayload> IgesModelHandler::read_model(const fs::path& path,
 
     IGESCAFControl_Reader reader;
     // 使用UTF-8编码字符串路径，配合C++17 std::filesystem处理中文路径
-    IFSelect_ReturnStatus stat = reader.ReadFile(path.u8string().c_str());
+    IFSelect_ReturnStatus stat = reader.ReadFile(pathUtf8(path).c_str());
     if (stat != IFSelect_RetDone) {
         spdlog::error("Failed to read IGES file: {}", path.string());
         return std::nullopt;
@@ -109,7 +109,7 @@ void IgesModelHandler::write_components(const ModelLayer& mgr,
     writer.ComputeModel();
 
     // 写入文件，使用UTF-8编码字符串路径
-    Standard_Boolean writeStatus = writer.Write(path.u8string().c_str());
+    Standard_Boolean writeStatus = writer.Write(pathUtf8(path).c_str());
     if (!writeStatus) {
         spdlog::error("IgesModelHandler: Failed to write IGES file: {}", path.string());
         return;

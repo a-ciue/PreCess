@@ -23,6 +23,7 @@ import app.model
 import app.core
 import app.model.systems
 import app.model.systems.io
+import app.model.systems.algo
 
 import app.render
 
@@ -33,6 +34,10 @@ ApplicationWindow {
     visibility: Window.Maximized
     title: qsTr("PreCess")
     flags: Qt.platform.os === "wasm" ? (Qt.Window | Qt.FramelessWindowHint) : Qt.Window
+
+    // 冻结任务忙碌态（聚合位经共享任务状态源单点暴露）：算法执行 ∨ 功能冻结任务——
+    // 忙碌遮罩、快捷键与工具栏禁用据此驱动；自由任务不置位（不打断用户操作）
+    readonly property bool frozenBusy: QModelManager.taskStatus.frozenBusy
 
     // 布局持久化：JSON 快照存于 QSettings；退出保存，启动恢复
     Settings {
@@ -93,8 +98,15 @@ ApplicationWindow {
         }
     }
 
+    // 底部状态栏：进度/取消红叉/百分比/回写待定徽标——控件独立（TaskStatusBar.qml），
+    // 数据源统一 QModelManager.taskStatus（共享任务状态源，不点名具体系统）
+    footer: TaskStatusBar {
+        id: statusBar
+    }
+
     Shortcut {
         sequence: "F10"
+        enabled: !root.frozenBusy
         onActivated: {
             if (consoleDock.shown)
                 consoleDock.hidePanel()
@@ -105,6 +117,7 @@ ApplicationWindow {
 
     Shortcut {
         sequence: "F11"
+        enabled: !root.frozenBusy
         onActivated: {
             if (pythonConsoleDock.shown)
                 pythonConsoleDock.hidePanel()
@@ -113,14 +126,30 @@ ApplicationWindow {
         }
     }
 
-    // 撤销/重做快捷键（栈空时适配器内部空转）
+    // 撤销/重做快捷键（栈空时适配器内部空转；算法执行期间禁用防重入）
     Shortcut {
         sequence: "Ctrl+Z"
+        enabled: !root.frozenBusy
         onActivated: QModelManager.undoStack.undo()
     }
     Shortcut {
         sequence: "Ctrl+Y"
+        enabled: !root.frozenBusy
         onActivated: QModelManager.undoStack.redo()
+    }
+
+    // 全局任务统一反馈；算法与功能使用同一状态源。
+    Connections {
+        target: QModelManager.taskStatus
+        function onTaskStarted() {
+            statusBar.statusMessage = "";
+        }
+        function onTaskFailed(error) {
+            statusBar.statusMessage = qsTr("执行失败：") + error;
+        }
+        function onTaskCancelled() {
+            statusBar.statusMessage = qsTr("已取消");
+        }
     }
 
     Connections {
@@ -242,6 +271,11 @@ ApplicationWindow {
             drop.accepted = drop.urls.length > 0
             if (drop.urls.length === 0)
                 return
+            // 算法执行期间拒绝导入：模型须保持冻结
+            if (root.frozenBusy) {
+                drop.accepted = false
+                return
+            }
 
             // 逐个导入并记录失败项，全部导入结束后统一重置视角
             let failed = 0
@@ -269,6 +303,29 @@ ApplicationWindow {
                 font.pixelSize: 16
                 color: "#1a6fc4"
             }
+        }
+    }
+
+    // 算法执行期间的忙碌遮罩：吞掉鼠标交互并给出"阻塞中"反馈（footer 状态栏在遮罩之外）
+    Rectangle {
+        id: busyMask
+        z: 100
+        visible: root.frozenBusy
+        anchors.top: root.header.bottom
+        anchors.bottom: root.footer.top
+        anchors.left: parent.left
+        anchors.right: parent.right
+        color: Qt.rgba(0.93, 0.93, 0.93, 0.55)
+
+        MouseArea {
+            anchors.fill: parent
+        }
+
+        Label {
+            anchors.centerIn: parent
+            font.pixelSize: 15
+            color: "#444441"
+            text: qsTr("算法执行中，请稍候…")
         }
     }
 

@@ -25,6 +25,7 @@ target_sources(PreCessBase PRIVATE
     $<TARGET_OBJECTS:Data>
     $<TARGET_OBJECTS:DataOps>
     $<TARGET_OBJECTS:IOSystem>
+    $<TARGET_OBJECTS:Job>
     $<TARGET_OBJECTS:AlgorithmSystem>
     $<TARGET_OBJECTS:EditSystem>
     $<TARGET_OBJECTS:FeatureSystem>
@@ -46,6 +47,7 @@ set(_precess_module_dirs
     model/systems
     model/systems/core
     model/systems/io
+    model/systems/job
     model/systems/algo
     model/systems/edit
     model/systems/feature

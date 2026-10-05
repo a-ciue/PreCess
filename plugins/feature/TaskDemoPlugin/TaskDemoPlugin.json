@@ -1,0 +1,8 @@
+{
+  "system": "FeatureSystem",
+  "handler": {
+    "name": "TaskDemo",
+    "display_name": "任务演示",
+    "description": "演示任务双通道：0=自由任务（不写模型、不打断操作，状态栏看进度/红叉）；1=冻结任务（影子写面加点、忙碌遮罩、可撤销）。执行前经参数选择模式与目标组件"
+  }
+}

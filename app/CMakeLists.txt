@@ -22,6 +22,7 @@ qt_add_qml_module(${MYNAME}
             QLogManager.cpp
         QML_FILES
             Main.qml
+            TaskStatusBar.qml
             AppToolbar.qml
             AttributeRenderPanel.qml
             CentralRenderArea.qml

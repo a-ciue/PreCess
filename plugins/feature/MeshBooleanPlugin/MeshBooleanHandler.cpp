@@ -416,10 +416,10 @@ std::any MeshBooleanHandler::execute(FeatureContext& ctx)
     if (*a_id == *b_id)
         return std::string("对象 A 与对象 B 相同，请选择两个不同的 Component");
 
-    auto comp_op_a = ctx.componentOperator ? ctx.componentOperator(*a_id) : std::nullopt;
+    auto comp_op_a = ctx.componentOperator(*a_id);
     if (!comp_op_a || !comp_op_a->mesh())
         return std::string("对象 A 没有网格数据（网格布尔仅支持网格模型）");
-    auto comp_op_b = ctx.componentOperator ? ctx.componentOperator(*b_id) : std::nullopt;
+    auto comp_op_b = ctx.componentOperator(*b_id);
     if (!comp_op_b || !comp_op_b->mesh())
         return std::string("对象 B 没有网格数据（网格布尔仅支持网格模型）");
 

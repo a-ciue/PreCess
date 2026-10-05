@@ -23,7 +23,6 @@ namespace systems::feature {
 namespace {
 using Vec3 = std::array<double, 3>;
 
-constexpr const char* kFeatureName = "MeasurePlugin"; //> 插件 json 注册名，过滤 ParameterChangedEvent 用
 
 constexpr double kEps = 1e-9;
 
@@ -94,8 +93,8 @@ void MeasureHandler::setup(FeatureRegistrar& reg, FeatureContext& ctx)
 
     // "清除"按钮经 ParameterChangedEvent 触发：清理作为刷新前置操作，延迟到渲染线程安全执行
     param_sub_ = ctx.events.subscribe<ParameterChangedEvent>([this, interaction = &ctx.interaction](const ParameterChangedEvent& e) {
-        // 按功能名过滤：其他功能的参数变更不触发本功能清空
-        if (e.feature != kFeatureName || e.param_index != 0)
+        // 网关已限定本功能参数流；插件只识别清除按钮。
+        if (e.param_index != 0)
             return;
         interaction->deferRefresh([this] { this->clear(); });
     });

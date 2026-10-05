@@ -26,6 +26,8 @@ class QFeatureSystemAdaptor : public QObject {
     Q_PROPERTY(QList<QFeatureInfo*> featuresInfo READ getFeaturesInfo NOTIFY featuresInfoChanged)
 public:
     QFeatureSystemAdaptor(FeatureSystem& feature_system);
+    ~QFeatureSystemAdaptor() override;
+
     /**
      * @brief 菜单触发的功能调用
      * @param unique_name 功能唯一名称
@@ -92,7 +94,7 @@ signals:
     void paramValueChanged(QString feature, int index, QVariant value);
 
 private:
-    FeatureSystem* feature_system_; //> 功能系统的引用
+    FeatureSystem* feature_system_;
     Index active_model_id_ { -1 };
     Index active_component_id_ { -1 };
 };

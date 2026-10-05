@@ -42,7 +42,7 @@ void ExtrudeFaceHandler::setup(FeatureRegistrar& reg, FeatureContext& /*ctx*/)
 std::any ExtrudeFaceHandler::execute(FeatureContext& ctx)
 {
     // 依赖已有拓扑的操作写回其来源 Component（对象树选中态提示）
-    const auto component_id = ctx.activeComponent ? ctx.activeComponent() : std::nullopt;
+    const auto component_id = ctx.activeComponent();
     if (!component_id)
         return std::string("请先选择目标 Component。");
 

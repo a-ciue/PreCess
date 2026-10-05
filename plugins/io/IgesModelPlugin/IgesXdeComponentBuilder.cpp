@@ -71,7 +71,7 @@ static void collectLeafShapes(
 
 std::optional<ModelPayload> IgesXdeComponentBuilder::buildModelData(
     TDocStd_Document& doc,
-    const std::string& modelName)
+    const std::u8string& modelName)
 {
     Handle(XCAFDoc_ShapeTool) shapeTool = XCAFDoc_DocumentTool::ShapeTool(doc.Main());
     if (shapeTool.IsNull()) {
@@ -142,7 +142,7 @@ std::optional<ModelPayload> IgesXdeComponentBuilder::buildModelData(
     }
 
     spdlog::info("[IGES-XDE] model '{}' created {} components",
-        modelName, comps.size());
+        u8Narrow(modelName), comps.size());
 
     return ModelPayload{modelName, std::move(comps)};
 }

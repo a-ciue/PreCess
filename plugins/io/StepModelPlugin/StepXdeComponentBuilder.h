@@ -12,6 +12,6 @@ class StepXdeComponentBuilder {
 public:
     static std::optional<ModelPayload> buildModelData(
         TDocStd_Document& doc,
-        const std::string& modelName);
+        const std::u8string& modelName);
 };
 }

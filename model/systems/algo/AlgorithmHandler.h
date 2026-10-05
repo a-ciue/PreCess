@@ -4,6 +4,7 @@
  */
 #ifndef ALGORITHM_HANDLER_H
 #define ALGORITHM_HANDLER_H
+#include "JobProgress.h"
 #include "ArgType.h"
 #include "ComponentOperator.h"
 
@@ -22,9 +23,14 @@ class ModelIOSystemBase;
 }
 
 namespace systems::algo {
+//! 进度回调别名：任务系统（systems::job）定义公共类型，算法侧沿用短名
+using ProgressFn = systems::job::ProgressFn;
+
 struct HandlerContext {
     io::ModelIOSystemBase& io_system;
     ComponentOperator& cur_component;
+    //! 进度上报（0~1 + 阶段名）：默认 no-op，AlgorithmSystem::call 用上层注入的回调覆写；handler 无条件调用即可
+    ProgressFn report_progress = [](double, const std::string&) { };
 };
 /**
  * @brief 算法系统的功能接口，继承他来实现具体的算法功能

@@ -24,3 +24,17 @@ precess_test_link_libraries(TestQPythonRuntime
     Qt${VTK_QT_VERSION}::Core
     pythonApp
 )
+
+# JobProgressSlot 进度槽（纯 C++ 头文件，无 Qt 依赖）
+precess_add_test(TestJobProgressSlot TestJobProgressSlot.cpp)
+target_include_directories(TestJobProgressSlot PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}/../model")
+
+# 单槽任务的 Qt 状态合流，直接编译展示对象以避免链接应用目标。
+precess_add_test(TestQTaskStatus
+    TestQTaskStatus.cpp
+    "${CMAKE_CURRENT_SOURCE_DIR}/../model/QTaskStatus.cpp"
+    "${CMAKE_CURRENT_SOURCE_DIR}/../model/QTaskStatus.h"
+)
+set_target_properties(TestQTaskStatus PROPERTIES AUTOMOC ON)
+target_include_directories(TestQTaskStatus PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}/../model")
+precess_test_link_libraries(TestQTaskStatus Session Qt${VTK_QT_VERSION}::Core Qt${VTK_QT_VERSION}::Qml)

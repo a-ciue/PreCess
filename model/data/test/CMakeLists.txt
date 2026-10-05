@@ -33,4 +33,7 @@ precess_add_test(TestDirtyNotify TestDirtyNotify.cpp)
 precess_test_link_libraries(TestDirtyNotify Data)
 
 precess_add_test(TestUndoStack TestUndoStack.cpp)
-precess_test_link_libraries(TestUndoStack Data)
+precess_test_link_libraries(TestUndoStack Data TKPrim TKBRep TKTopAlgo)
+
+precess_add_test(TestModelScope TestModelScope.cpp)
+precess_test_link_libraries(TestModelScope Data)

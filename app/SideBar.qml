@@ -124,7 +124,7 @@ Item{
                             if(model.type === QArgType.Combo){           //多选一
                                 return componentComboBox
                             }
-                            if(model.type === QArgType.Float){           //数字框
+                            if(model.type === QArgType.Float || model.type === QArgType.Int){ //数字框（浮点/整数）
                                 return oneNumberBox
                             }
                             if(model.type === QArgType.Selector){           //选择器
@@ -222,7 +222,8 @@ Item{
                 Layout.fillWidth: parent.width
                 text: model.content
                 onTextChanged:{
-                    root.setParam(index, parseFloat(text))
+                    // Int 走整数语义（parseInt 截断小数）；Float 保持 parseFloat
+                    root.setParam(index, model.type === QArgType.Int ? parseInt(text) : parseFloat(text))
                 }
             }
         }

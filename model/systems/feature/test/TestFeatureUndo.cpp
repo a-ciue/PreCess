@@ -1,36 +1,50 @@
 /**
  * @file TestFeatureUndo.cpp
- * @brief FeatureSystem undo 集成测试：Auto 边界自动记录 / Manual 插件自控 / 网关两路
+ * @brief FeatureSystem undo 集成测试：边界自动记录 / 插件层会话 / 网关包装
  */
+#include "ComponentData.h"
+#include "ComponentOperator.h"
 #include "EventBus.h"
 #include "FeatureContext.h"
 #include "FeatureEvents.h"
 #include "FeatureHandler.h"
+#include "FeatureRegistrar.h"
 #include "FeatureSystem.h"
-#include "ComponentData.h"
-#include "ComponentOperator.h"
 #include "MeshData.h"
 #include "ModelLayer.h"
 #include "ModelObserver.h"
+#include "ModelScope.h"
 #include "UndoStack.h"
 
 #include <catch2/catch_test_macros.hpp>
+#include <catch2/matchers/catch_matchers.hpp>
 
 #include <array>
 #include <memory>
+#include <stdexcept>
 #include <string>
 
+struct UndoStackTestPeer {
+    static std::size_t undoCount(const UndoStack& stack) { return stack.undo_.size(); }
+    static std::size_t redoCount(const UndoStack& stack) { return stack.redo_.size(); }
+};
 using namespace systems::feature;
 
 namespace {
 struct CountingObserver : ModelObserver {
     int component_changed_count { 0 };
+    bool fail_component_notification { false };
 
     void notifyModelChanged(Index) override { }
     void notifyModelAdded(Index) override { }
     void notifyModelRemoved(Index) override { }
     void notifyComponentRemoved(Index) override { }
-    void notifyComponentChanged(Index) override { ++component_changed_count; }
+    void notifyComponentChanged(Index) override
+    {
+        ++component_changed_count;
+        if (fail_component_notification)
+            throw std::runtime_error("observer failure");
+    }
     void notifyModelNameChanged(Index, const std::string&) override { }
     void notifyGeometryLoadFailed(const std::string&) override { }
 };
@@ -38,8 +52,11 @@ struct CountingObserver : ModelObserver {
 struct TestEvent { };
 
 //! @brief 构造一个简单三角形面片组件并入池，返回 component_id
-Index addTriangleComponent(ModelLayer& mgr)
+Index addTriangleComponent(ModelLayer& mgr, UndoStack& stack)
 {
+    std::optional<ModelScope> scope;
+    if (!stack.inOperation() && !stack.scopeActive())
+        scope.emplace(mgr, &stack, "添加模型");
     auto mesh = std::make_unique<MeshData>();
     mesh->init();
     mesh->vertex_positions_ = { { 0, 0, 0 }, { 1, 0, 0 }, { 0, 1, 0 } };
@@ -66,21 +83,19 @@ void writeVertex(FeatureContext& ctx, Index component_id)
     md.vertex_positions_[0] = { 5.0, 5.0, 5.0 };
 }
 
-//! @brief execute 内写模型的功能（Auto/Manual 由元数据决定）
+//! @brief execute 内写模型的功能（统一边界自动记录）
 class WritingFeatureHandler : public FeatureHandler {
 public:
     std::any execute(FeatureContext& ctx) override
     {
         ++execute_count;
-        automatic_mode = ctx.undo.automatic;
         if (component_id >= 0)
             writeVertex(ctx, component_id);
-        return {};
+        return { };
     }
 
     Index component_id { -1 };
     int execute_count { 0 };
-    bool automatic_mode { false };
 };
 
 //! @brief setup 内经 ctx.events 订阅事件、回调内写模型的功能
@@ -90,40 +105,43 @@ public:
     {
         context = &ctx;
         sub = ctx.events.subscribe<TestEvent>([this](const TestEvent&) {
-            if (component_id >= 0)
+            if (component_id >= 0) {
+                if (open_preview && !context->undo.scopeActive())
+                    context->undo.beginScope("事件预览");
                 writeVertex(*context, component_id);
+            }
         });
     }
 
     Index component_id { -1 };
+    bool open_preview { true };
     FeatureContext* context { nullptr };
     core::EventBus::Subscription sub;
 };
 
-//! @brief execute 内经 ctx.undo 的 staged 会话写模型的 Manual 功能
-class StagedFeatureHandler : public FeatureHandler {
+//! @brief execute 内经 ctx.undo 的层会话写模型的功能
+class ScopeFeatureHandler : public FeatureHandler {
 public:
     std::any execute(FeatureContext& ctx) override
     {
         if (component_id < 0)
-            return {};
-        if (!ctx.undo.beginStaged(label, component_id))
-            return {};
+            return { };
+        if (!ctx.undo.beginScope(label))
+            return { };
         writeVertex(ctx, component_id);
-        ctx.undo.commitStaged();
-        return {};
+        // 框架在 execute 收尾吸收并关闭预览。
+        return { };
     }
 
     Index component_id { -1 };
-    std::string label { "staged操作" };
+    std::string label { "层操作" };
 };
 
-HandlerMetaData makeMeta(const std::string& name, bool undo_manual)
+HandlerMetaData makeMeta(const std::string& name)
 {
     HandlerMetaData meta;
     meta.name = name;
     meta.display_name = "显示_" + name;
-    meta.undo_manual = undo_manual;
     return meta;
 }
 
@@ -142,18 +160,17 @@ struct FeatureUndoFixture {
 TEST_CASE("FeatureSystem auto feature invoke produces an undo record", "[FeatureSystem][undo]")
 {
     FeatureUndoFixture f;
-    const Index cid = addTriangleComponent(f.mgr);
+    const Index cid = addTriangleComponent(f.mgr, f.stack);
     f.stack.clear();
 
     auto* raw = new WritingFeatureHandler;
     raw->component_id = cid;
     FeatureSystem::SystemHandlerPtr handler { raw };
-    REQUIRE(f.system.registerHandler(makeMeta("AutoFeature", false), std::move(handler)));
+    REQUIRE(f.system.registerHandler(makeMeta("AutoFeature"), std::move(handler)));
 
     f.system.invoke("AutoFeature");
     REQUIRE(raw->execute_count == 1);
-    REQUIRE(raw->automatic_mode); // Auto 功能 undo.automatic 为 true
-    REQUIRE(f.stack.canUndo());
+    REQUIRE(f.stack.canUndo()); // 统一边界自动记录
     REQUIRE(f.stack.undoLabel() == "显示_AutoFeature");
 
     // 记录可用：undo 恢复写前状态
@@ -162,132 +179,397 @@ TEST_CASE("FeatureSystem auto feature invoke produces an undo record", "[Feature
         == std::array<double, 3> { 0.0, 0.0, 0.0 });
 }
 
-TEST_CASE("FeatureSystem manual feature invoke produces no record but still flushes", "[FeatureSystem][undo]")
+TEST_CASE("Feature invoke opens unified boundary; write evicts open scope and records", "[FeatureSystem][undo]")
 {
     FeatureUndoFixture f;
-    const Index cid = addTriangleComponent(f.mgr);
+    const Index cid = addTriangleComponent(f.mgr, f.stack);
     f.stack.clear();
     const int notify_before = f.obs.component_changed_count;
+
+    // 层开在深度 0（如事件回调外的会话起点）
+    REQUIRE(f.stack.beginScope("预览"));
+    auto* raw = new WritingFeatureHandler;
+    raw->component_id = cid;
+    FeatureSystem::SystemHandlerPtr handler { raw };
+    REQUIRE(f.system.registerHandler(makeMeta("UnifiedFeature"), std::move(handler)));
+
+    // 统一边界（无模式分支）：invoke 恒开边界——边界内的写越过层 → 驱逐层
+    // （回滚 before₀）→ 写归边界 → 收尾统一入栈（框架是全局栈唯一入栈者）
+    f.system.invoke("UnifiedFeature");
+    REQUIRE(raw->execute_count == 1);
+    // 层未写过 → 驱逐为纯弹帧（first-dirty 无捕获、无回滚写）→ 仅 invoke 边界收尾 flush
+    REQUIRE(f.obs.component_changed_count == notify_before + 1);
+    REQUIRE_FALSE(f.stack.scopeActive()); // 层被越界写驱逐（纯弹帧关闭）
+    REQUIRE(f.stack.canUndo()); // 写经统一边界成记录
+    REQUIRE(f.stack.undoLabel() == "显示_UnifiedFeature");
+    f.stack.undo();
+    REQUIRE(f.mgr.findComponent(cid)->mesh->vertex_positions_[0]
+        == std::array<double, 3> { 0.0, 0.0, 0.0 });
+}
+
+TEST_CASE("Event previews do not record until execute finalization", "[FeatureSystem][undo][preview]")
+{
+    FeatureUndoFixture f;
+    const Index cid = addTriangleComponent(f.mgr, f.stack);
+    f.stack.clear();
+    auto* raw = new EventWritingFeatureHandler;
+    raw->component_id = cid;
+    REQUIRE(f.system.registerHandler(makeMeta("Preview"), FeatureSystem::SystemHandlerPtr { raw }));
+    f.bus.publish(TestEvent { });
+    f.bus.publish(TestEvent { });
+    REQUIRE(f.stack.scopeActive());
+    REQUIRE(UndoStackTestPeer::undoCount(f.stack) == 0);
+    REQUIRE(f.mgr.findComponent(cid)->mesh->vertex_positions_[0] == std::array<double, 3> { 5, 5, 5 });
+    // execute 没有新增写：已有预览仍须成为一条完整记录。
+    f.system.invoke("Preview");
+    REQUIRE_FALSE(f.stack.scopeActive());
+    REQUIRE(UndoStackTestPeer::undoCount(f.stack) == 1);
+    REQUIRE(f.stack.undo());
+    REQUIRE(f.mgr.findComponent(cid)->mesh->vertex_positions_[0] == std::array<double, 3> { 0, 0, 0 });
+    REQUIRE(f.stack.redo());
+    REQUIRE(f.mgr.findComponent(cid)->mesh->vertex_positions_[0] == std::array<double, 3> { 5, 5, 5 });
+}
+
+TEST_CASE("Read-only events from any owner leave preview intact", "[FeatureSystem][undo][preview]")
+{
+    FeatureUndoFixture f;
+    const Index cid = addTriangleComponent(f.mgr, f.stack);
+    f.stack.clear();
+    auto* raw = new EventWritingFeatureHandler;
+    REQUIRE(f.system.registerHandler(makeMeta("Bystander"), FeatureSystem::SystemHandlerPtr { raw }));
+    REQUIRE(f.stack.beginScope("foreign preview"));
+    f.mgr.getComponentOperator(cid)->editableMesh().vertex_positions_[0] = { 5, 5, 5 };
+    f.bus.publish(TestEvent { });
+    REQUIRE(f.stack.scopeActive());
+    REQUIRE(UndoStackTestPeer::undoCount(f.stack) == 0);
+    REQUIRE(f.mgr.findComponent(cid)->mesh->vertex_positions_[0] == std::array<double, 3> { 5, 5, 5 });
+    f.stack.cancelScope();
+    REQUIRE(f.mgr.findComponent(cid)->mesh->vertex_positions_[0] == std::array<double, 3> { 0, 0, 0 });
+}
+
+TEST_CASE("Event cannot write without its own preview or steal a foreign preview", "[FeatureSystem][undo][preview]")
+{
+    FeatureUndoFixture f;
+    const Index cid = addTriangleComponent(f.mgr, f.stack);
+    f.stack.clear();
+    auto* raw = new EventWritingFeatureHandler;
+    raw->component_id = cid;
+    raw->open_preview = false;
+    REQUIRE(f.system.registerHandler(makeMeta("Writer"), FeatureSystem::SystemHandlerPtr { raw }));
+    f.bus.publish(TestEvent { });
+    REQUIRE_FALSE(f.stack.scopeActive());
+    REQUIRE(UndoStackTestPeer::undoCount(f.stack) == 0);
+    REQUIRE(f.mgr.findComponent(cid)->mesh->vertex_positions_[0] == std::array<double, 3> { 0, 0, 0 });
+    REQUIRE(f.stack.beginScope("foreign"));
+    f.mgr.getComponentOperator(cid)->editableMesh().vertex_positions_[0] = { 2, 2, 2 };
+    raw->open_preview = true;
+    f.bus.publish(TestEvent { });
+    REQUIRE(f.stack.scopeActive());
+    REQUIRE(UndoStackTestPeer::undoCount(f.stack) == 0);
+    REQUIRE(f.mgr.findComponent(cid)->mesh->vertex_positions_[0] == std::array<double, 3> { 2, 2, 2 });
+}
+
+TEST_CASE("Feature records via plugin scope inside invoke boundary", "[FeatureSystem][undo]")
+{
+    FeatureUndoFixture f;
+    const Index cid = addTriangleComponent(f.mgr, f.stack);
+    f.stack.clear();
+
+    auto* raw = new ScopeFeatureHandler;
+    raw->component_id = cid;
+    FeatureSystem::SystemHandlerPtr handler { raw };
+    REQUIRE(f.system.registerHandler(makeMeta("ScopeFeature"), std::move(handler)));
+
+    f.system.invoke("ScopeFeature");
+    REQUIRE(f.stack.canUndo());
+    REQUIRE(f.stack.undoLabel() == "层操作");
+    REQUIRE_FALSE(f.stack.scopeActive()); // commitScope 后层已关闭
+
+    f.stack.undo();
+    REQUIRE(f.mgr.findComponent(cid)->mesh->vertex_positions_[0]
+        == std::array<double, 3> { 0.0, 0.0, 0.0 });
+}
+
+TEST_CASE("Feature session collapses its records into one entry at deactivate", "[FeatureSystem][undo]")
+{
+    FeatureUndoFixture f;
+    const Index cid = addTriangleComponent(f.mgr, f.stack);
+    f.stack.clear();
 
     auto* raw = new WritingFeatureHandler;
     raw->component_id = cid;
     FeatureSystem::SystemHandlerPtr handler { raw };
-    REQUIRE(f.system.registerHandler(makeMeta("ManualFeature", true), std::move(handler)));
+    REQUIRE(f.system.registerHandler(makeMeta("SessionFeature"), std::move(handler)));
 
-    f.system.invoke("ManualFeature");
-    REQUIRE(raw->execute_count == 1);
-    REQUIRE_FALSE(raw->automatic_mode); // Manual 功能 undo.automatic 为 false
-    // 无记录（插件未走 staged），但 invoke 边界 flush 照发
-    REQUIRE_FALSE(f.stack.canUndo());
-    REQUIRE(f.obs.component_changed_count == notify_before + 1);
-}
-
-TEST_CASE("FeatureEventGateway wraps callbacks with undo boundary per mode", "[FeatureSystem][undo]")
-{
-    FeatureUndoFixture f;
-    const Index cid = addTriangleComponent(f.mgr);
-    f.stack.clear();
-
-    // Auto 功能：网关回调包 beginOperation/commitOperation，事件写模型成一条记录
-    auto* auto_raw = new EventWritingFeatureHandler;
-    auto_raw->component_id = cid;
-    FeatureSystem::SystemHandlerPtr auto_handler { auto_raw };
-    REQUIRE(f.system.registerHandler(makeMeta("AutoEvent", false), std::move(auto_handler)));
-
-    f.bus.publish(TestEvent {});
+    // 进入功能 = 开会话：会话期内每步仍是独立记录、可逐步撤销
+    REQUIRE(f.system.setFeatureActive("SessionFeature"));
+    f.system.invoke("SessionFeature");
+    f.system.invoke("SessionFeature");
     REQUIRE(f.stack.canUndo());
-    REQUIRE(f.stack.undoLabel() == "显示_AutoEvent");
+    REQUIRE(f.stack.undoLabel() == "显示_SessionFeature");
 
-    // Manual 功能：网关回调只 flush，不成记录。先注销 Auto 功能，避免其回调同事件干扰断言
-    f.system.unregisterHandler(makeMeta("AutoEvent", false));
-    f.stack.clear();
-    const int notify_before = f.obs.component_changed_count;
-    auto* manual_raw = new EventWritingFeatureHandler;
-    manual_raw->component_id = cid;
-    FeatureSystem::SystemHandlerPtr manual_handler { manual_raw };
-    REQUIRE(f.system.registerHandler(makeMeta("ManualEvent", true), std::move(manual_handler)));
-
-    f.bus.publish(TestEvent {});
-    REQUIRE_FALSE(f.stack.canUndo()); // Auto 的记录已被 clear，Manual 不成记录
-    REQUIRE(f.obs.component_changed_count == notify_before + 1); // 通知照发
-}
-
-TEST_CASE("Auto feature read-only event callback does not cancel an open staged session", "[FeatureSystem][undo]")
-{
-    FeatureUndoFixture f;
-    const Index cid = addTriangleComponent(f.mgr);
-    f.stack.clear();
-
-    // 模拟 ScalePreview 场景：Manual 功能已开 staged 会话并写入预览（会话保持打开）
-    REQUIRE(f.stack.beginStaged("预览", cid));
-    {
-        auto op = f.mgr.getComponentOperator(cid);
-        REQUIRE(op.has_value());
-        op->editableMesh().vertex_positions_[0] = { 5.0, 5.0, 5.0 };
-    }
-
-    // Auto 功能的只读事件订阅（如 FeatureDemo 打日志）：经网关包操作边界但无写入
-    auto* raw = new EventWritingFeatureHandler; // component_id 默认 -1：只读回调
-    FeatureSystem::SystemHandlerPtr handler { raw };
-    REQUIRE(f.system.registerHandler(makeMeta("BystanderFeature", false), std::move(handler)));
-
-    f.bus.publish(TestEvent {});
-    // 旁观回调不得误杀 staged：会话与预览状态保持，且空边界不成记录
-    REQUIRE(f.stack.stagedActive());
+    // 退出功能 = 收尾折叠：两次执行压成一条 → 一步撤回会话前状态
+    REQUIRE(f.system.setFeatureActive(""));
+    f.stack.undo();
     REQUIRE(f.mgr.findComponent(cid)->mesh->vertex_positions_[0]
-        == std::array<double, 3> { 5.0, 5.0, 5.0 });
-    REQUIRE(f.stack.undoLabel() == "预览");
-
-    f.stack.cancelStaged(); // 清理会话，避免影响后续断言
+        == std::array<double, 3> { 0.0, 0.0, 0.0 });
+    REQUIRE_FALSE(f.stack.canUndo()); // 未折叠的话这里还剩一条
 }
 
-TEST_CASE("Auto feature event callback that writes cancels staged and records before-image", "[FeatureSystem][undo]")
+TEST_CASE("Execute retains earliest preview image and closes scope on exception", "[FeatureSystem][undo][preview]")
+{
+    class ContinuingHandler : public FeatureHandler {
+    public:
+        Index cid;
+        bool fail { false };
+        std::any execute(FeatureContext& ctx) override
+        {
+            ctx.componentOperator(cid)->editableMesh().vertex_positions_[0] = { 9, 9, 9 };
+            if (fail)
+                throw std::runtime_error("execute failure");
+            return { };
+        }
+    };
+    FeatureUndoFixture f;
+    const Index cid = addTriangleComponent(f.mgr, f.stack);
+    f.stack.clear();
+    auto* raw = new ContinuingHandler;
+    raw->cid = cid;
+    REQUIRE(f.system.registerHandler(makeMeta("Continue"), FeatureSystem::SystemHandlerPtr { raw }));
+    SECTION("normal") { }
+    SECTION("exception") { raw->fail = true; }
+    {
+        UndoStack::OwnerScope owner(&f.stack, "Continue");
+        REQUIRE(f.stack.beginScope("preview"));
+        f.mgr.getComponentOperator(cid)->editableMesh().vertex_positions_[0] = { 5, 5, 5 };
+    }
+    if (raw->fail)
+        REQUIRE_THROWS_AS(f.system.invoke("Continue"), std::runtime_error);
+    else
+        f.system.invoke("Continue");
+    REQUIRE_FALSE(f.stack.scopeActive());
+    REQUIRE(UndoStackTestPeer::undoCount(f.stack) == 1);
+    REQUIRE(f.stack.undo());
+    REQUIRE(f.mgr.findComponent(cid)->mesh->vertex_positions_[0] == std::array<double, 3> { 0, 0, 0 });
+    REQUIRE(f.stack.redo());
+    REQUIRE(f.mgr.findComponent(cid)->mesh->vertex_positions_[0] == std::array<double, 3> { 9, 9, 9 });
+}
+
+TEST_CASE("Preview events preserve redo until execute commits", "[FeatureSystem][undo][preview]")
 {
     FeatureUndoFixture f;
-    const Index cid = addTriangleComponent(f.mgr);
+    const Index cid = addTriangleComponent(f.mgr, f.stack);
     f.stack.clear();
-
-    REQUIRE(f.stack.beginStaged("预览", cid));
-    {
-        auto op = f.mgr.getComponentOperator(cid);
-        REQUIRE(op.has_value());
-        op->editableMesh().vertex_positions_[0] = { 5.0, 5.0, 5.0 };
-    }
-
-    // Auto 功能事件回调真实写模型：隐式 cancel 旧预览，写操作正常成记录
+    f.stack.beginOperation("seed");
+    f.mgr.getComponentOperator(cid)->appendPoint({ 1, 1, 1 });
+    f.stack.commitOperation();
+    REQUIRE(f.stack.undo());
     auto* raw = new EventWritingFeatureHandler;
     raw->component_id = cid;
-    FeatureSystem::SystemHandlerPtr handler { raw };
-    REQUIRE(f.system.registerHandler(makeMeta("WritingEvent", false), std::move(handler)));
-
-    f.bus.publish(TestEvent {});
-    REQUIRE_FALSE(f.stack.stagedActive());
-    REQUIRE(f.stack.canUndo());
-    REQUIRE(f.stack.undoLabel() == "显示_WritingEvent");
-
-    // before-image 是回滚后的 before₀：undo 后无预览残留
-    f.stack.undo();
-    REQUIRE(f.mgr.findComponent(cid)->mesh->vertex_positions_[0]
-        == std::array<double, 3> { 0.0, 0.0, 0.0 });
+    REQUIRE(f.system.registerHandler(makeMeta("Preview"), FeatureSystem::SystemHandlerPtr { raw }));
+    f.bus.publish(TestEvent { });
+    REQUIRE(UndoStackTestPeer::redoCount(f.stack) == 1);
+    REQUIRE(UndoStackTestPeer::undoCount(f.stack) == 0);
+    f.system.invoke("Preview");
+    REQUIRE(UndoStackTestPeer::redoCount(f.stack) == 0);
+    REQUIRE(UndoStackTestPeer::undoCount(f.stack) == 1);
 }
 
-TEST_CASE("Manual feature controls recording via ctx.undo staged session", "[FeatureSystem][undo]")
+TEST_CASE("Event callback cannot mutate history or borrow an outer boundary", "[FeatureSystem][undo][preview]")
 {
     FeatureUndoFixture f;
-    const Index cid = addTriangleComponent(f.mgr);
+    const Index cid = addTriangleComponent(f.mgr, f.stack);
     f.stack.clear();
+    FeatureEventGateway gateway(f.bus, f.mgr, &f.stack, "callback");
+    auto sub = gateway.subscribe<TestEvent>([&](const TestEvent&) {
+        REQUIRE_THROWS_AS(f.stack.beginOperation("event"), ModelOperationBusy);
+        REQUIRE_THROWS_AS(f.stack.clear(), ModelOperationBusy);
+        REQUIRE_FALSE(f.stack.undo());
+        REQUIRE_THROWS_AS(f.mgr.removeComponent(cid), ModelOperationBusy);
+        REQUIRE_THROWS_AS(f.mgr.addModel("forbidden", { }), ModelOperationBusy);
+        REQUIRE_THROWS_AS(f.mgr.getComponentOperator(cid)->appendPoint({ 1, 1, 1 }), ModelOperationBusy);
+    });
+    f.stack.beginOperation("outer");
+    f.bus.publish(TestEvent { });
+    f.stack.commitOperation();
+    REQUIRE(UndoStackTestPeer::undoCount(f.stack) == 0);
+    REQUIRE(f.mgr.findComponent(cid)->mesh->vertex_positions_.size() == 3);
+}
 
-    auto* raw = new StagedFeatureHandler;
-    raw->component_id = cid;
-    FeatureSystem::SystemHandlerPtr handler { raw };
-    REQUIRE(f.system.registerHandler(makeMeta("StagedFeature", true), std::move(handler)));
+TEST_CASE("Execute absorbs preview structural changes in order", "[FeatureSystem][undo][preview]")
+{
+    class RemovingHandler : public FeatureHandler {
+    public:
+        Index cid;
+        std::any execute(FeatureContext& ctx) override
+        {
+            ctx.model.removeComponent(cid);
+            return { };
+        }
+    };
+    FeatureUndoFixture f;
+    const Index original = addTriangleComponent(f.mgr, f.stack);
+    f.stack.clear();
+    auto* raw = new RemovingHandler;
+    raw->cid = original;
+    REQUIRE(f.system.registerHandler(makeMeta("Structure"), FeatureSystem::SystemHandlerPtr { raw }));
+    Index added;
+    {
+        UndoStack::OwnerScope owner(&f.stack, "Structure");
+        REQUIRE(f.stack.beginScope("preview structures"));
+        added = addTriangleComponent(f.mgr, f.stack);
+        f.mgr.getComponentOperator(original)->appendPoint({ 3, 3, 3 });
+    }
+    f.system.invoke("Structure");
+    REQUIRE_FALSE(f.stack.scopeActive());
+    REQUIRE(UndoStackTestPeer::undoCount(f.stack) == 1);
+    REQUIRE_FALSE(f.mgr.findComponent(original));
+    REQUIRE(f.stack.undo());
+    REQUIRE_FALSE(f.mgr.findComponent(added));
+    REQUIRE(f.mgr.findComponent(original)->mesh->vertex_positions_.size() == 3);
+    REQUIRE(f.stack.redo());
+    REQUIRE(f.mgr.findComponent(added));
+    REQUIRE_FALSE(f.mgr.findComponent(original));
+}
 
-    f.system.invoke("StagedFeature");
-    REQUIRE(f.stack.canUndo());
-    REQUIRE(f.stack.undoLabel() == "staged操作");
-    REQUIRE_FALSE(f.stack.stagedActive()); // commitStaged 后会话已关闭
+TEST_CASE("Nested synchronous boundary keeps execute preview before-image", "[FeatureSystem][undo][preview]")
+{
+    class NestedHandler : public FeatureHandler {
+    public:
+        UndoStack* stack;
+        Index cid;
+        std::any execute(FeatureContext& ctx) override
+        {
+            ModelScope nested(ctx.model, stack, "nested operation");
+            ctx.componentOperator(cid)->appendPoint({ 9, 9, 9 });
+            return { };
+        }
+    };
+    FeatureUndoFixture f;
+    const Index cid = addTriangleComponent(f.mgr, f.stack);
+    f.stack.clear();
+    auto* raw = new NestedHandler;
+    raw->stack = &f.stack;
+    raw->cid = cid;
+    REQUIRE(f.system.registerHandler(makeMeta("Nested"), FeatureSystem::SystemHandlerPtr { raw }));
+    {
+        UndoStack::OwnerScope owner(&f.stack, "Nested");
+        REQUIRE(f.stack.beginScope("preview"));
+        f.mgr.getComponentOperator(cid)->appendPoint({ 5, 5, 5 });
+    }
+    f.system.invoke("Nested");
+    REQUIRE_FALSE(f.stack.scopeActive());
+    REQUIRE(UndoStackTestPeer::undoCount(f.stack) == 1);
+    REQUIRE(f.mgr.findComponent(cid)->mesh->vertex_positions_.size() == 5);
+    REQUIRE(f.stack.undo());
+    REQUIRE(f.mgr.findComponent(cid)->mesh->vertex_positions_.size() == 3);
+    REQUIRE(f.stack.redo());
+    REQUIRE(f.mgr.findComponent(cid)->mesh->vertex_positions_.size() == 5);
+}
 
-    f.stack.undo();
-    REQUIRE(f.mgr.findComponent(cid)->mesh->vertex_positions_[0]
-        == std::array<double, 3> { 0.0, 0.0, 0.0 });
+TEST_CASE("Event exception flushes preview without committing history", "[FeatureSystem][undo][preview]")
+{
+    FeatureUndoFixture f;
+    const Index cid = addTriangleComponent(f.mgr, f.stack);
+    f.stack.clear();
+    const int notifications = f.obs.component_changed_count;
+    FeatureEventGateway gateway(f.bus, f.mgr, &f.stack, "callback");
+    auto sub = gateway.subscribe<TestEvent>([&](const TestEvent&) {
+        REQUIRE(f.stack.beginScope("partial preview"));
+        f.mgr.getComponentOperator(cid)->appendPoint({ 5, 5, 5 });
+        throw std::runtime_error("event failure");
+    });
+    REQUIRE_THROWS_AS(f.bus.publish(TestEvent { }), std::runtime_error);
+    REQUIRE(f.stack.scopeActive());
+    REQUIRE(UndoStackTestPeer::undoCount(f.stack) == 0);
+    REQUIRE(f.obs.component_changed_count == notifications + 1);
+    f.stack.cancelScope();
+    REQUIRE_FALSE(f.stack.canUndo());
+    REQUIRE(f.mgr.findComponent(cid)->mesh->vertex_positions_.size() == 3);
+}
+
+TEST_CASE("Key routing flushes previews without replacing business exceptions", "[FeatureSystem][undo][key]")
+{
+    class KeyPreviewHandler : public FeatureHandler {
+    public:
+        void setup(FeatureRegistrar& reg, FeatureContext& ctx) override
+        {
+            context = &ctx;
+            reg.addKeyBinding({ 'P', 0 });
+        }
+        bool onKeyEvent(const KeyEvent&) override
+        {
+            context->undo.beginScope("key preview");
+            writeVertex(*context, component_id);
+            if (fail_route)
+                throw std::runtime_error("key failure");
+            return true;
+        }
+        FeatureContext* context { nullptr };
+        Index component_id { -1 };
+        bool fail_route { false };
+    };
+
+    bool fail_route = false;
+    bool fail_notification = false;
+    SECTION("successful route") { }
+    SECTION("route fails") { fail_route = true; }
+    SECTION("notification failure preserves route failure")
+    {
+        fail_route = true;
+        fail_notification = true;
+    }
+    SECTION("notification failure preserves successful consumption") { fail_notification = true; }
+
+    FeatureUndoFixture f;
+    const Index cid = addTriangleComponent(f.mgr, f.stack);
+    f.stack.clear();
+    auto handler = std::make_unique<KeyPreviewHandler>();
+    handler->component_id = cid;
+    handler->fail_route = fail_route;
+    REQUIRE(f.system.registerHandler(makeMeta("Key"), FeatureSystem::SystemHandlerPtr { handler.release() }));
+    const int notifications = f.obs.component_changed_count;
+    f.obs.fail_component_notification = fail_notification;
+    if (fail_route)
+        REQUIRE_THROWS_WITH(f.system.dispatchKeyEvent(KeyEvent { 'P', 0, true }), "key failure");
+    else
+        REQUIRE(f.system.dispatchKeyEvent(KeyEvent { 'P', 0, true }));
+
+    REQUIRE(f.obs.component_changed_count == notifications + 1);
+    REQUIRE(f.stack.scopeActive());
+    REQUIRE_FALSE(f.stack.inOperation());
+    REQUIRE(UndoStackTestPeer::undoCount(f.stack) == 0);
+    REQUIRE(f.mgr.findComponent(cid)->mesh->vertex_positions_[0] == std::array<double, 3> { 5, 5, 5 });
+    f.obs.fail_component_notification = false;
+    f.system.invoke("Key");
+    REQUIRE_FALSE(f.stack.scopeActive());
+    REQUIRE(UndoStackTestPeer::undoCount(f.stack) == 1);
+    REQUIRE(f.stack.undo());
+    REQUIRE(f.mgr.findComponent(cid)->mesh->vertex_positions_[0] == std::array<double, 3> { 0, 0, 0 });
+    REQUIRE_FALSE(f.stack.canUndo());
+}
+
+TEST_CASE("Raw key publication failure stays outside routing notification scope", "[FeatureSystem][undo][key]")
+{
+    FeatureUndoFixture f;
+    const Index cid = addTriangleComponent(f.mgr, f.stack);
+    f.stack.clear();
+    REQUIRE(f.stack.beginScope("pending preview"));
+    f.mgr.getComponentOperator(cid)->appendPoint({ 5, 5, 5 });
+    const int notifications = f.obs.component_changed_count;
+    auto subscription = f.bus.subscribe<KeyEvent>([](const KeyEvent&) {
+        throw std::runtime_error("raw key failure");
+    });
+    REQUIRE_THROWS_WITH(f.system.dispatchKeyEvent(KeyEvent { 'P', 0, true }), "raw key failure");
+    REQUIRE(f.obs.component_changed_count == notifications);
+    REQUIRE(f.stack.scopeActive());
+    REQUIRE(UndoStackTestPeer::undoCount(f.stack) == 0);
+    // 原始发布失败未进入路由边界，待通知仍由下一次通知边界消费。
+    {
+        ModelScope notify(f.mgr, &f.stack, { }, ModelScope::Kind::Notify);
+    }
+    REQUIRE(f.obs.component_changed_count == notifications + 1);
+    f.stack.cancelScope();
+    REQUIRE_FALSE(f.stack.canUndo());
+    REQUIRE(f.mgr.findComponent(cid)->mesh->vertex_positions_.size() == 3);
 }
