@@ -1,29 +1,35 @@
 #include "QAlgorithmSystemAdaptor.h"
 #include "AlgorithmSystem.h"
+#include "Job.h"
 #include "QAlgorithmInfo.h"
 #include "QArgObject.h"
+#include "QTaskStatus.h"
 #include <spdlog/spdlog.h>
+#include <stdexcept>
 
 namespace systems::algo {
-QAlgorithmSystemAdaptor::QAlgorithmSystemAdaptor(AlgorithmSystem& algo_system)
+QAlgorithmSystemAdaptor::QAlgorithmSystemAdaptor(AlgorithmSystem& algo_system,
+    QTaskStatus& task_status)
     : algo_system_(&algo_system)
+    , task_status_(&task_status)
 {
     algo_system.setOnAlgorithmInfosChanged([this]() {
         emit algorithmsInfoChanged();
     });
 }
+QAlgorithmSystemAdaptor::~QAlgorithmSystemAdaptor() = default;
 
-QVariant QAlgorithmSystemAdaptor::call(const QString& unique_name, Index model, const QVariantList& args)
+void QAlgorithmSystemAdaptor::call(const QString& unique_name, Index model, const QVariantList& args)
 {
     std::optional arg_types = algo_system_->getArgTypes(unique_name.toStdString());
     if (!arg_types) {
         spdlog::error("AlgorithmSystemAdaptor::call: Algorithm {} not found", unique_name.toStdString());
-        return {};
+        return;
     }
     if (args.size() < arg_types->size()) {
         spdlog::error("AlgorithmSystemAdaptor::call: Algorithm {} requires {} arguments, but {} were provided",
             unique_name.toStdString(), arg_types->size(), args.size());
-        return {};
+        return;
     }
 
     // 转换到C++标准库类型，并检验所需类型
@@ -39,12 +45,17 @@ QVariant QAlgorithmSystemAdaptor::call(const QString& unique_name, Index model, 
             converted_args.push_back(*value);
         } else {
             spdlog::error("AlgorithmSystemAdaptor::call: Argument {} not valid", type.name);
-            return {};
+            return;
         }
     }
 
-    auto result = algo_system_->call(unique_name.toStdString(), model, std::move(converted_args));
-    return {};
+    try {
+        if (!algo_system_->callAsync(unique_name.toStdString(), model, std::move(converted_args)))
+            spdlog::warn("AlgorithmSystemAdaptor: job rejected while another operation is pending");
+    } catch (const std::exception& e) {
+        spdlog::error("AlgorithmSystemAdaptor: {}", e.what());
+        task_status_->reportFailure(QString::fromStdString(e.what()));
+    }
 }
 
 QList<QAlgorithmInfo*> QAlgorithmSystemAdaptor::getAlgorithmsInfo() const
@@ -63,4 +74,5 @@ QList<QAlgorithmInfo*> QAlgorithmSystemAdaptor::getAlgorithmsInfo() const
     }
     return infos;
 }
+
 }

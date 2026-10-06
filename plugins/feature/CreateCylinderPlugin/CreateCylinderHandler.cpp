@@ -65,8 +65,8 @@ std::any CreateCylinderHandler::execute(FeatureContext& ctx)
     const int write_target = target_param ? static_cast<int>(*target_param) : -1;
 
     // 活动模型/组件是对象树选中态提示，仅作缺省目标；提示语与原几何界面一致
-    const auto active_model = ctx.activeModel ? ctx.activeModel() : std::nullopt;
-    const auto active_component = ctx.activeComponent ? ctx.activeComponent() : std::nullopt;
+    const auto active_model = ctx.activeModel();
+    const auto active_component = ctx.activeComponent();
     Index target_model_id = -1;
     Index target_component_id = -1;
     if (write_target == 0) {

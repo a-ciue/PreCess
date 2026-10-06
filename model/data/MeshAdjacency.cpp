@@ -149,6 +149,13 @@ void MeshAdjacency::reclaimEdgeGlobalIds(MeshIDMap& map, Index component_id)
     }
 }
 
+void MeshAdjacency::stripEdgeGlobalIds()
+{
+    // 稳定 id 结构保留，仅把 gid 层重置为待分配（-1 = 见 ensureEdgeGlobalIds 补发）
+    for (Index& gid : gid_by_stable_id_)
+        gid = -1;
+}
+
 void MeshAdjacency::invalidate() noexcept
 {
     dirty_ = true;

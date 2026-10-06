@@ -3,7 +3,8 @@
 
 namespace systems::feature {
 /**
- * @brief 拉伸面为实体功能：选择一个几何面沿指定方向和长度拉伸为实体，源面保留
+ * @brief 拉伸面为实体：插件复制截面、后台计算，GUI 追加实体，源面保留。
+ * @note 宿主须装配共享 JobRunner；最终反馈经 GUI 回写的 report 展示。
  */
 class ExtrudeFaceHandler : public FeatureHandler {
 public:

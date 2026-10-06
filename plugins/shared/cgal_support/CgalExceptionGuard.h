@@ -29,8 +29,8 @@ namespace cgalsupport {
  * 触发时抛 CGAL::Failure_exception 链，可被外层 try/catch 捕获并转成业务文案。
  *
  * @warning CGAL 的 Failure_behaviour 是进程级全局状态，本守卫切换全局并在
- *          析构时还原。**当前假设使用方在单线程同步路径下执行**（如 GUI 线程
- *          同步调用）；若将来出现并发 CGAL 入口（多线程 / 多插件并行调用 PMP），
+ *          析构时还原。使用方须串行调用：GUI 同步功能与共享单槽 JobRunner
+ *          通过模型操作占用互斥；若宿主另有并发 CGAL 入口（自建线程等），
  *          必须在调用方用互斥锁或线程局部存储隔离，否则互相覆盖 error_behaviour。
  *
  * @code

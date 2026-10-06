@@ -30,9 +30,9 @@ Item {
             TextArea {
                 id: outputText
                 readOnly: true
-                color: "#333333"
-                font.family: "Courier New"
-                font.pixelSize: 12
+                color: Theme.textPrimary
+                font.family: Theme.monoFamily
+                font.pixelSize: Theme.fontSizeCaption
                 wrapMode: TextArea.Wrap
                 text: "=== PreCess JavaScript 控制台 ===\n" +
                       "按 F10 切换控制台显示\n" +
@@ -46,8 +46,8 @@ Item {
 
             Text {
                 text: ">"
-                color: "#1976d2"
-                font.pixelSize: 14
+                color: Theme.primary
+                font.pixelSize: Theme.fontSizeLarge
                 font.bold: true
             }
 
@@ -55,9 +55,9 @@ Item {
                 id: inputField
                 Layout.fillWidth: true
                 placeholderText: "输入 JavaScript 代码..."
-                color: "#333333"
-                font.family: "Courier New"
-                font.pixelSize: 12
+                color: Theme.textPrimary
+                font.family: Theme.monoFamily
+                font.pixelSize: Theme.fontSizeCaption
 
                 property var history: []
                 property int historyIndex: -1
@@ -140,6 +140,7 @@ Item {
 
             Button {
                 text: "清空窗口"
+                flat: true
                 onClicked: outputText.text = "=== PreCess JavaScript 控制台 ===\n\n"
             }
         }

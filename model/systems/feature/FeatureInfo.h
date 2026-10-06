@@ -20,11 +20,12 @@ struct MenuContribution {
 };
 
 /**
- * @brief 按键绑定：按键事件匹配时定向回调功能的 onKeyEvent
+ * @brief 按键绑定：明确声明正式 execute，或定向预览/非模型 onKeyEvent 回调
  */
 struct KeyBinding {
     int key { 0 }; //> Qt::Key 键码（int 存储）
     int modifiers { 0 }; //> Qt::KeyboardModifiers 组合（int 存储）
+    bool execute { false }; //> true = 明确的 execute 快捷命令；false = 预览/非模型事件回调
 };
 
 /**

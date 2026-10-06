@@ -12,7 +12,6 @@ public:
     void teardown(FeatureContext& ctx) override;
     void activate(FeatureContext& ctx) override;
     std::any execute(FeatureContext& ctx) override;
-    bool onKeyEvent(const KeyEvent& event) override;
 
 private:
     // 从参数集同步当前参数值

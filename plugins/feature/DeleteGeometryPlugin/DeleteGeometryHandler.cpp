@@ -84,9 +84,7 @@ std::any DeleteGeometryHandler::execute(FeatureContext& ctx)
         TopoDS_Shape result = GeometryTopologyEditor::removeShape(
             *component->geometry->rootShape, target, delete_children);
 
-        auto component_operator = ctx.componentOperator
-            ? ctx.componentOperator(*component_id)
-            : std::nullopt;
+        auto component_operator = ctx.componentOperator(*component_id);
         if (!component_operator)
             return std::string("目标组件没有几何。");
 

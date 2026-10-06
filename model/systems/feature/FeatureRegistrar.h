@@ -27,7 +27,7 @@ public:
      */
     void addMenuItem(MenuContribution item) { menus_.push_back(std::move(item)); }
     /**
-     * @brief 注册一个按键绑定，命中后回调功能的 onKeyEvent()
+     * @brief 注册按键绑定：execute=true 走正式执行，否则为预览/非模型 onKeyEvent 回调
      */
     void addKeyBinding(KeyBinding binding) { key_bindings_.push_back(binding); }
 

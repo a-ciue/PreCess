@@ -37,6 +37,7 @@ struct StructuralEntry {
 //! @brief 一次操作 = 一条记录
 struct UndoRecord {
     std::string label;
+    std::string session; //!< 功能会话标（会话期成的记录 = 会话所有者名；空 = 无会话）——收尾折叠成一条用
     std::vector<ComponentEntry> components;
     std::vector<StructuralEntry> structural;
 

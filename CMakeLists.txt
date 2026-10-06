@@ -2,9 +2,9 @@ cmake_minimum_required(VERSION 3.17)
 
 set(MYNAME PreCess)
 
-project(${MYNAME} VERSION 0.4.0)
+project(${MYNAME} VERSION 0.5.0)
 
-set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 # 项目以异常作错误处理机制：MSVC 缺省（无 /EH）下 catch 能捕获但不展开栈（C4530），

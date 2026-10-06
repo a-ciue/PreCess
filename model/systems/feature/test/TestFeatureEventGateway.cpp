@@ -1,7 +1,7 @@
-#include "EventBus.h"
-#include "FeatureEventGateway.h"
 #include "ComponentData.h"
 #include "ComponentOperator.h"
+#include "EventBus.h"
+#include "FeatureEventGateway.h"
 #include "MeshData.h"
 #include "ModelLayer.h"
 #include "ModelObserver.h"
@@ -72,7 +72,7 @@ TEST_CASE("FeatureEventGateway flushes notifications after handler returns", "[F
         REQUIRE(obs.component_changed_count == count_after_add);
     });
 
-    bus.publish(TestEvent {});
+    bus.publish(TestEvent { });
     // 回调返回后（操作边界）通知已发
     REQUIRE(obs.component_changed_count == count_after_add + 1);
     REQUIRE(obs.last_component_changed == component_id);
@@ -95,7 +95,7 @@ TEST_CASE("FeatureEventGateway flushes before rethrowing handler exception", "[F
         throw std::runtime_error("handler failure");
     });
 
-    REQUIRE_THROWS_AS(bus.publish(TestEvent {}), std::runtime_error);
+    REQUIRE_THROWS_AS(bus.publish(TestEvent { }), std::runtime_error);
     REQUIRE(obs.component_changed_count == count_after_add + 1);
     REQUIRE(obs.last_component_changed == component_id);
 }
@@ -111,7 +111,7 @@ TEST_CASE("FeatureEventGateway flushes nothing when handler does not write", "[F
 
     // 回调不写模型：flush 空转，无通知
     auto sub = gateway.subscribe<TestEvent>([](const TestEvent&) { });
-    bus.publish(TestEvent {});
+    bus.publish(TestEvent { });
     REQUIRE(obs.component_changed_count == count_after_add);
 }
 
@@ -125,7 +125,7 @@ TEST_CASE("flushNotifications is reentrant-safe through observer-event-gateway c
         void notifyComponentChanged(Index component_id) override
         {
             CountingObserver::notifyComponentChanged(component_id);
-            bus->publish(TestEvent {}); //> 模拟 QModelManager 的 ModelEvent 桥接
+            bus->publish(TestEvent { }); //> 模拟 QModelManager 的 ModelEvent 桥接
         }
     };
 
@@ -148,4 +148,42 @@ TEST_CASE("flushNotifications is reentrant-safe through observer-event-gateway c
     // 恰好通知一次：重入不递归、不重复通知
     REQUIRE(obs.component_changed_count == count_after_add + 1);
     REQUIRE(obs.last_component_changed == component_id);
+}
+TEST_CASE("Deferred model notification is discarded after unsubscribe", "[FeatureEventGateway][operation]")
+{
+    ModelLayer model;
+    core::EventBus bus;
+    std::vector<std::function<void()>> queued;
+    FeatureEventGateway gateway(bus, model, nullptr, { },
+        [&](std::function<void()> callback) { queued.push_back(std::move(callback)); });
+    int delivered = 0;
+    auto subscription = gateway.subscribe<ModelEvent>([&](const ModelEvent&) { ++delivered; });
+    auto operation = model.beginWriteOperation();
+    bus.publish(ModelEvent { });
+    REQUIRE(queued.size() == 1);
+    subscription.reset();
+    operation->release();
+    queued.front()();
+    REQUIRE(delivered == 0);
+}
+
+TEST_CASE("Ordinary gateway event is synchronous and need not be copyable", "[FeatureEventGateway][operation]")
+{
+    struct MoveOnlyEvent {
+        std::unique_ptr<int> value;
+    };
+    ModelLayer model;
+    core::EventBus bus;
+    int deferred = 0;
+    FeatureEventGateway gateway(bus, model, nullptr, { }, [&](std::function<void()>) { ++deferred; });
+    int delivered = 0;
+    auto subscription = gateway.subscribe<MoveOnlyEvent>([&](const MoveOnlyEvent& event) { delivered = *event.value; });
+    auto operation = model.beginWriteOperation();
+    bus.publish(MoveOnlyEvent { std::make_unique<int>(42) });
+    REQUIRE(delivered == 42);
+    REQUIRE(deferred == 0);
+    REQUIRE(operation->active());
+    subscription.reset();
+    bus.publish(MoveOnlyEvent { std::make_unique<int>(99) });
+    REQUIRE(delivered == 42);
 }

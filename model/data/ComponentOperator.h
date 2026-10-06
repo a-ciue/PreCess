@@ -3,6 +3,8 @@
 
 #include <array>
 #include <memory>
+#include <source_location>
+#include <string>
 #include <vector>
 
 class ModelLayer;
@@ -52,6 +54,10 @@ public:
     //! @brief 只读访问 Geometry↔Mesh 映射；尚未创建时返回 nullptr
     const GeometryMeshMap* geometryMeshMap() const noexcept;
 
+    //! @brief 写前捕获组件元数据，通知在操作边界统一发送。
+    void setName(std::string name);
+    void setMaterialId(Index material_id);
+
     ModelLayer& manager() const noexcept { return *mgr_; }
 
     Index modelId() const noexcept;
@@ -62,13 +68,13 @@ public:
      * @param kind 修改类别，默认 Topology；仅写属性等附着数据时传 NonTopology 避免过度失效
      * @throw std::runtime_error 组件无网格
      */
-    MeshData& editableMesh(MeshEditKind kind = MeshEditKind::Topology);
+    MeshData& editableMesh(MeshEditKind kind = MeshEditKind::Topology, std::source_location loc = std::source_location::current());
 
     //! @brief 申请可写 Geometry↔Mesh 映射（获取即标脏，确保映射修改进入 Undo 快照）
-    GeometryMeshMap& editableGeometryMeshMap();
+    GeometryMeshMap& editableGeometryMeshMap(std::source_location loc = std::source_location::current());
 
     //! @brief 运行期加点：写前标脏后执行原子四连（push、vertex_count_ 同步、pointIdMap 分配 gid、point_global_ids_ 追加）
-    Index appendPoint(std::array<double, 3> pos);
+    Index appendPoint(std::array<double, 3> pos, std::source_location loc = std::source_location::current());
 
     /**
      * @brief 追加面单元：写前标脏后追加（空 face_vertices_offset_ 先补 {0}）
@@ -76,10 +82,10 @@ public:
      * @return 新面单元序号
      * @throw std::invalid_argument 点数为 0 或局部 id 越界
      */
-    Index appendFace(const std::vector<Index>& local_point_ids);
+    Index appendFace(const std::vector<Index>& local_point_ids, std::source_location loc = std::source_location::current());
 
     //! @brief 整网格替换（gid 纪律内建：写前标脏 → 释放旧点/边 gid → 就位 → ensure 点/边 gid）
-    void replaceMesh(std::unique_ptr<MeshData> mesh);
+    void replaceMesh(std::unique_ptr<MeshData> mesh, std::source_location loc = std::source_location::current());
 
     /**
      * @brief 把一条几何边物化为边单元（写入 edge_vertices_），使其可挂属性、参与边渲染
@@ -94,7 +100,7 @@ public:
      * @throw std::runtime_error 组件无网格
      * @throw std::invalid_argument 端点非法（负值或两端点相同）
      */
-    Index materializeEdge(Index p0, Index p1);
+    Index materializeEdge(Index p0, Index p1, std::source_location loc = std::source_location::current());
 
     //! @brief 取组件当前状态的深拷贝快照（撤销重做/预览机制的统一原语）
     std::unique_ptr<ComponentData> takeSnapshot() const;
@@ -107,22 +113,22 @@ public:
      *       通知不即时发出，由操作边界 flushNotifications() 统一发出。
      * @throw std::runtime_error gid 对账失败（reclaim 冲突）
      */
-    void restoreSnapshot(const ComponentData& snapshot);
+    void restoreSnapshot(const ComponentData& snapshot, std::source_location loc = std::source_location::current());
 
     /**
      * @brief 将新形状写入当前组件；无几何时初始化，否则追加并重建子形状索引。
      * @return 当前组件 ID。
      */
-    Index appendGeometryShape(TopoDS_Shape shape);
+    Index appendGeometryShape(TopoDS_Shape shape, std::source_location loc = std::source_location::current());
 
     /**
      * @brief 替换当前组件的几何根形状，并重建子形状索引；空 Shape 表示移除 Geometry。
      * @return 当前组件 ID。
      */
-    Index replaceGeometryRoot(TopoDS_Shape shape);
+    Index replaceGeometryRoot(TopoDS_Shape shape, std::source_location loc = std::source_location::current());
 
-    void removeMesh();
-    void removeGeometry();
+    void removeMesh(std::source_location loc = std::source_location::current());
+    void removeGeometry(std::source_location loc = std::source_location::current());
 
 private:
     Index component_id_ { -1 };

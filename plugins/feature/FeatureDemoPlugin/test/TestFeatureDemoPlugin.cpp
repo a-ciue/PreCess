@@ -4,6 +4,7 @@
 #include "FeatureSystem.h"
 #include "MeshData.h"
 #include "ModelLayer.h"
+#include "UndoStack.h"
 
 #include <catch2/catch_test_macros.hpp>
 
@@ -60,4 +61,29 @@ TEST_CASE("FeatureDemo execute scales active component mesh via context", "[Feat
     // 顶点坐标常驻组件 MeshData，直接验证就地缩放结果
     REQUIRE(component->mesh->vertex_positions_.size() == 1);
     REQUIRE(component->mesh->vertex_positions_[0] == std::array<double, 3> { 2.0, 4.0, 6.0 });
+}
+
+TEST_CASE("FeatureDemo previews parameters and execute shortcut confirms one operation", "[FeatureDemoPlugin][preview]")
+{
+    core::EventBus bus;
+    ModelLayer model;
+    const Index cid = addSingleComponentModel(model);
+    UndoStack undo(model);
+    model.setUndoRecorder(&undo);
+    FeatureSystem system(model, bus, &undo);
+    REQUIRE(system.registerHandler(demoMetaData(), FeatureSystem::SystemHandlerPtr { new FeatureDemoHandler }));
+    system.setActiveComponentProvider([cid] { return std::optional<Index> { cid }; });
+    REQUIRE(system.setParameter("FeatureDemo", 1, core::ArgObject::create<ArgTypeEnum::Bool>(true)));
+    REQUIRE(system.setParameter("FeatureDemo", 0, core::ArgObject::create<ArgTypeEnum::Float>(2.0)));
+    REQUIRE(undo.scopeActive());
+    REQUIRE(model.findComponent(cid)->mesh->vertex_positions_[0] == std::array<double, 3> { 2, 4, 6 });
+    REQUIRE(system.setParameter("FeatureDemo", 0, core::ArgObject::create<ArgTypeEnum::Float>(3.0)));
+    REQUIRE(model.findComponent(cid)->mesh->vertex_positions_[0] == std::array<double, 3> { 3, 6, 9 });
+    REQUIRE(system.dispatchKeyEvent(KeyEvent { 'D', 0x04000000, true }));
+    REQUIRE_FALSE(undo.scopeActive());
+    REQUIRE(undo.undo());
+    REQUIRE(model.findComponent(cid)->mesh->vertex_positions_[0] == std::array<double, 3> { 1, 2, 3 });
+    REQUIRE_FALSE(undo.canUndo());
+    REQUIRE(undo.redo());
+    REQUIRE(model.findComponent(cid)->mesh->vertex_positions_[0] == std::array<double, 3> { 3, 6, 9 });
 }
