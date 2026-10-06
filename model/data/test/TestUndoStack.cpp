@@ -21,8 +21,13 @@
 #include <memory>
 #include <stdexcept>
 #include <string>
+#include <type_traits>
 #include <utility>
 #include <vector>
+
+// 类型特征须准确拒绝复制，避免 Python 绑定生成快照复制路径。
+static_assert(!std::is_copy_constructible_v<UndoStack>);
+static_assert(!std::is_copy_assignable_v<UndoStack>);
 
 namespace {
 struct CountingObserver : ModelObserver {

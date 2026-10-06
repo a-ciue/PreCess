@@ -34,6 +34,9 @@ public:
     static constexpr std::size_t kMaxDepth = 32;
 
     explicit UndoStack(ModelLayer& model);
+    //! @brief 栈绑定模型且独占撤销快照，不可复制。
+    UndoStack(const UndoStack&) = delete;
+    UndoStack& operator=(const UndoStack&) = delete;
 
     /**
      * @brief 所有者上下文守卫：功能入口（invoke / 按键路由 / 事件回调）进入时压入功能
