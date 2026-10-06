@@ -63,12 +63,13 @@ std::any AutoGeometryRepairHandler::execute(FeatureContext& ctx)
         if (component->mapping && !component->mapping->empty())
             return std::string("目标组件已经建立几何-网格映射，不能修改几何拓扑。");
 
+        // 检测与修复共用会话参数记忆；仅检测仍不修改几何，也不产生撤销记录。
         ctx.model.setGeometryCleanupTolerance(*tolerance);
         const double cleanup_tolerance = ctx.model.geometryCleanupTolerance();
         const TopoDS_Shape& root = *component->geometry->rootShape;
-        const std::vector<GeometryStitchCandidate> candidates =
-            GeometryTopologyEditor::findStitchCandidates(root, cleanup_tolerance);
         if (*mode == 0) {
+            const std::vector<GeometryStitchCandidate> candidates =
+                GeometryTopologyEditor::findStitchCandidates(root, cleanup_tolerance);
             double maximum_gap = 0.0;
             for (const GeometryStitchCandidate& candidate : candidates)
                 maximum_gap = std::max(maximum_gap, candidate.maximum_gap);
@@ -78,11 +79,10 @@ std::any AutoGeometryRepairHandler::execute(FeatureContext& ctx)
                 message << "，最大间隙 " << std::setprecision(6) << maximum_gap;
             return message.str();
         }
-        if (candidates.empty())
-            return std::string("未找到全局清理容差内可修复的跨面自由边。");
-
         GeometryGapRepairResult repair =
             GeometryTopologyEditor::repairFreeEdgeGaps(root, cleanup_tolerance);
+        if (repair.candidate_count == 0)
+            return std::string("未找到全局清理容差内可修复的跨面自由边。");
         auto component_operator = ctx.componentOperator(component_id);
         if (!component_operator)
             return std::string("几何操作失败，详细原因请查看日志。");

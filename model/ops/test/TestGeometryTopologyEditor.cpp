@@ -16,6 +16,8 @@
 #include <TopExp_Explorer.hxx>
 #include <TopoDS.hxx>
 #include <TopoDS_Compound.hxx>
+#include <TopoDS_CompSolid.hxx>
+#include <TopoDS_Iterator.hxx>
 #include <TopoDS_Edge.hxx>
 #include <NCollection_IndexedMap.hxx>
 #include <TopoDS_Face.hxx>
@@ -351,6 +353,21 @@ TEST_CASE("GeometryTopologyEditor finds and repairs free edge gaps")
     REQUIRE(result.stitched_edge_count >= 1);
     REQUIRE(countSubshapes(result.shape, TopAbs_EDGE) < countSubshapes(root, TopAbs_EDGE));
     REQUIRE(BRepCheck_Analyzer(result.shape).IsValid());
+}
+
+//! @brief 远处分散边界不得干扰近邻配对，同时提供候选搜索的固定规模性能样本。
+TEST_CASE("GeometryTopologyEditor filters distant boundaries without losing a nearby pair")
+{
+    BRep_Builder builder;
+    TopoDS_Compound root;
+    builder.MakeCompound(root);
+    builder.Add(root, GeometryBuilder::makeRectangleFace(0, 0, 0, 10, 5, CoordinatePlane::XY));
+    builder.Add(root, GeometryBuilder::makeRectangleFace(10.005, 0, 0, 10, 5, CoordinatePlane::XY));
+    for (int index = 1; index <= 60; ++index)
+        builder.Add(root, GeometryBuilder::makeRectangleFace(index * 100.0, 100, 0, 10, 5, CoordinatePlane::XY));
+    const auto candidates = GeometryTopologyEditor::findStitchCandidates(root, 0.01);
+    REQUIRE(candidates.size() == 1);
+    REQUIRE(candidates.front().maximum_gap == Catch::Approx(0.005).margin(1.e-6));
 }
 
 TEST_CASE("GeometryTopologyEditor stitches two free boundary edges within tolerance")
@@ -1421,6 +1438,50 @@ TEST_CASE("GeometryTopologyEditor removes a nested face from a solid")
     // 缺面后 Solid 不再闭合，结果应为 Shell 而非无效 Solid。
     REQUIRE(countSubshapes(result, TopAbs_SOLID) == 0);
     REQUIRE(BRepCheck_Analyzer(result).IsValid());
+}
+
+//! @brief 删除局部面只降级受影响的实体组合，保留其他组合的类型、身份和层级。
+TEST_CASE("GeometryTopologyEditor preserves unaffected compsolids when removing a face")
+{
+    BRep_Builder builder;
+    const auto box = GeometryBuilder::makeBox(0, 0, 0, 10, 20, 30);
+    const auto other = GeometryBuilder::makeBox(100, 0, 0, 10, 20, 30);
+    TopoDS_CompSolid compsolid;
+    builder.MakeCompSolid(compsolid);
+    builder.Add(compsolid, box);
+    TopoDS_Compound wrapper;
+    builder.MakeCompound(wrapper);
+    builder.Add(wrapper, compsolid);
+    TopoDS_Compound root;
+    builder.MakeCompound(root);
+    builder.Add(root, wrapper);
+    builder.Add(root, other);
+    REQUIRE(BRepCheck_Analyzer(root).IsValid());
+
+    SECTION("unaffected compsolid retains identity and wrapper") {
+        const auto face = TopoDS::Face(TopExp_Explorer(other, TopAbs_FACE).Current());
+        const auto result = GeometryTopologyEditor::removeShape(root, face, true);
+        NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher> groups;
+        bool retained_wrapper = false;
+        for (TopoDS_Iterator it(result); it.More(); it.Next())
+            retained_wrapper = retained_wrapper || it.Value().IsSame(wrapper);
+        REQUIRE(retained_wrapper);
+        TopExp::MapShapes(result, TopAbs_COMPSOLID, groups);
+        REQUIRE(groups.Contains(compsolid));
+        REQUIRE(countSubshapes(result, TopAbs_SOLID) == 1);
+        REQUIRE(countSubshapes(result, TopAbs_FACE) == 11);
+        REQUIRE(BRepCheck_Analyzer(result).IsValid());
+    }
+    SECTION("affected compsolid becomes a compound containing a shell") {
+        const auto face = TopoDS::Face(TopExp_Explorer(box, TopAbs_FACE).Current());
+        const auto result = GeometryTopologyEditor::removeShape(root, face, true);
+        REQUIRE(countSubshapes(result, TopAbs_COMPSOLID) == 0);
+        REQUIRE(countSubshapes(result, TopAbs_SOLID) == 1);
+        REQUIRE(countSubshapes(result, TopAbs_FACE) == 11);
+        REQUIRE(BRepCheck_Analyzer(result).IsValid());
+    }
+    REQUIRE(countSubshapes(root, TopAbs_SOLID) == 2);
+    REQUIRE(BRepCheck_Analyzer(root).IsValid());
 }
 
 TEST_CASE("GeometryTopologyEditor removes a nested face from an open shell")

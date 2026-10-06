@@ -66,6 +66,7 @@
 #include <NCollection_IndexedMap.hxx>
 #include <NCollection_List.hxx>
 #include <TopoDS_Compound.hxx>
+#include <TopoDS_CompSolid.hxx>
 #include <TopoDS_Edge.hxx>
 #include <TopoDS_Face.hxx>
 #include <TopoDS_Iterator.hxx>
@@ -92,6 +93,7 @@
 #include <execution>
 #include <limits>
 #include <memory>
+#include <map>
 #include <numeric>
 #include <optional>
 #include <queue>
@@ -1666,6 +1668,50 @@ std::optional<double> stitchMaximumGap(
     return result.maximum;
 }
 
+/** @brief 单次搜索内缓存边界框和有序边对结果，不跨模型修改或搜索容差复用。 */
+class StitchSearchCache {
+public:
+    /** @brief 固定本轮搜索容差，保持自适应偏差验收的原有语义。 */
+    explicit StitchSearchCache(double tolerance)
+        : tolerance_(tolerance)
+    {
+    }
+
+    /** @brief 先排除边界框分离的边对，再缓存昂贵的曲线覆盖检查。 */
+    std::optional<double> maximumGap(const TopoDS_Edge& first, const TopoDS_Edge& second)
+    {
+        const int first_id = cacheBox(first);
+        const int second_id = cacheBox(second);
+        Bnd_Box expanded = boxes_.FindFromIndex(first_id);
+        expanded.Enlarge(tolerance_);
+        const Bnd_Box& second_box = boxes_.FindFromIndex(second_id);
+        if (!expanded.IsVoid() && !second_box.IsVoid() && expanded.IsOut(second_box))
+            return std::nullopt;
+        // 等长边以第一个参数为采样源，不能将反向配对视为同一个结果。
+        const auto key = std::make_pair(first_id, second_id);
+        const auto found = gaps_.find(key);
+        if (found != gaps_.end())
+            return found->second;
+        return gaps_.emplace(key, stitchMaximumGap(first, second, tolerance_)).first->second;
+    }
+
+private:
+    /** @brief 使用曲线几何计算保守边界框，避免依赖显示网格的离散精度。 */
+    int cacheBox(const TopoDS_Edge& edge)
+    {
+        const int existing = boxes_.FindIndex(edge);
+        if (existing != 0)
+            return existing;
+        Bnd_Box box;
+        BRepBndLib::AddOptimal(edge, box, false, true);
+        return boxes_.Add(edge, box);
+    }
+
+    double tolerance_;
+    NCollection_IndexedDataMap<TopoDS_Shape, Bnd_Box, TopTools_ShapeMapHasher> boxes_;
+    std::map<std::pair<int, int>, std::optional<double>> gaps_;
+};
+
 /**
  * @brief 统计根形状中的自由边数量。
  */
@@ -2495,7 +2541,6 @@ TopoDS_Shape GeometryTopologyEditor::collapseEdge(
             BRep_Builder builder;
             TopoDS_Compound compound;
             builder.MakeCompound(compound);
-            bool has_destination = false;
             for (TopoDS_Iterator it(raw_result); it.More(); it.Next()) {
                 const TopoDS_Shape& child = it.Value();
                 if (child.ShapeType() == TopAbs_VERTEX
@@ -2505,9 +2550,8 @@ TopoDS_Shape GeometryTopologyEditor::collapseEdge(
                 }
                 builder.Add(compound, child);
             }
-            if (needs_top_level_destination && !has_destination) {
+            if (needs_top_level_destination) {
                 builder.Add(compound, destination);
-                has_destination = true;
             }
             raw_result = compound;
         }
@@ -2967,6 +3011,7 @@ std::vector<GeometryStitchCandidate> GeometryTopologyEditor::findStitchCandidate
     const TopoDS_Shape& root,
     double tolerance)
 {
+    StitchSearchCache search(tolerance);
     if (root.IsNull())
         throw std::invalid_argument("Geometry root must not be null");
     if (!std::isfinite(tolerance) || tolerance <= 0.0)
@@ -2995,7 +3040,7 @@ std::vector<GeometryStitchCandidate> GeometryTopologyEditor::findStitchCandidate
 
             const TopoDS_Edge second = TopoDS::Edge(edge_faces.FindKey(second_index));
             const std::optional<double> maximum_gap =
-                stitchMaximumGap(first, second, tolerance);
+                search.maximumGap(first, second);
             if (maximum_gap)
                 candidates.push_back({ first, second, *maximum_gap });
         }
@@ -3040,6 +3085,7 @@ TopoDS_Shape GeometryTopologyEditor::stitchBoundaryEdges(
     const std::vector<TopoDS_Edge>& second_chain,
     double tolerance)
 {
+    StitchSearchCache search(tolerance);
     if (root.IsNull())
         throw std::invalid_argument("Geometry root must not be null");
     if (first_chain.empty() || second_chain.empty())
@@ -3081,12 +3127,12 @@ TopoDS_Shape GeometryTopologyEditor::stitchBoundaryEdges(
 
     // 两组链必须互相完整覆盖。逐边确认存在容差内的对应边，并比较链总长度，
     // 既支持一长对多短，又避免只因局部相交就把无关边交给 Sewing。
-    const auto chain_is_covered = [tolerance](
+    const auto chain_is_covered = [&search](
                                       const std::vector<TopoDS_Edge>& source,
                                       const std::vector<TopoDS_Edge>& target) {
         return std::all_of(source.begin(), source.end(), [&](const TopoDS_Edge& edge) {
             return std::any_of(target.begin(), target.end(), [&](const TopoDS_Edge& candidate) {
-                return stitchMaximumGap(edge, candidate, tolerance).has_value();
+                return search.maximumGap(edge, candidate).has_value();
             });
         });
     };
@@ -3214,6 +3260,7 @@ std::vector<TopoDS_Edge> GeometryTopologyEditor::expandStitchableFreeChain(
     const TopoDS_Edge& seed,
     double tolerance)
 {
+    StitchSearchCache search(tolerance);
     if (root.IsNull() || seed.IsNull())
         throw std::invalid_argument("Geometry root and seed edge must not be null");
     if (!std::isfinite(tolerance) || tolerance <= 0.0)
@@ -3245,7 +3292,7 @@ std::vector<TopoDS_Edge> GeometryTopologyEditor::expandStitchableFreeChain(
             if (candidate.IsSame(edge)
                 || edge_faces.FindFromKey(edge).First().IsSame(edge_faces.FindFromKey(candidate).First()))
                 continue;
-            if (stitchMaximumGap(edge, candidate, tolerance).has_value())
+            if (search.maximumGap(edge, candidate).has_value())
                 return true;
         }
         return false;
@@ -3271,7 +3318,7 @@ std::vector<TopoDS_Edge> GeometryTopologyEditor::expandStitchableFreeChain(
     while (changed) {
         changed = false;
         for (const TopoDS_Edge& candidate : free_edges) {
-            if (in_chain.Contains(candidate) || !has_stitch_partner(candidate))
+            if (in_chain.Contains(candidate))
                 continue;
             bool same_side = false;
             bool touches = false;
@@ -3283,7 +3330,8 @@ std::vector<TopoDS_Edge> GeometryTopologyEditor::expandStitchableFreeChain(
                 if (!candidate_face.IsNull() && candidate_face.IsSame(existing_face))
                     same_side = true;
             }
-            if (!touches || !same_side)
+            // 先做廉价的拓扑邻接检查，避免为不可能入链的远处边搜索对侧。
+            if (!touches || !same_side || !has_stitch_partner(candidate))
                 continue;
             std::vector<TopoDS_Edge> next = chain;
             next.push_back(candidate);
@@ -3302,6 +3350,7 @@ std::vector<GeometryGapPartnerChain> GeometryTopologyEditor::findGapPartnerChain
     const std::vector<TopoDS_Edge>& seed_chain,
     double tolerance)
 {
+    StitchSearchCache search(tolerance);
     if (root.IsNull())
         throw std::invalid_argument("Geometry root must not be null");
     if (seed_chain.empty())
@@ -3339,7 +3388,7 @@ std::vector<GeometryGapPartnerChain> GeometryTopologyEditor::findGapPartnerChain
             continue;
         for (const TopoDS_Edge& seed_edge : seed_chain) {
             if (!edge_faces.FindFromKey(seed_edge).First().IsSame(edge_faces.FindFromKey(candidate).First())
-                && stitchMaximumGap(seed_edge, candidate, tolerance).has_value()) {
+                && search.maximumGap(seed_edge, candidate).has_value()) {
                 partner_edges.push_back(candidate);
                 break;
             }
@@ -3383,12 +3432,12 @@ std::vector<GeometryGapPartnerChain> GeometryTopologyEditor::findGapPartnerChain
         if (!isContinuousEdgeChain(component))
             continue;
 
-        const auto chain_is_covered = [tolerance](
+        const auto chain_is_covered = [&search](
                                           const std::vector<TopoDS_Edge>& source,
                                           const std::vector<TopoDS_Edge>& target) {
             return std::all_of(source.begin(), source.end(), [&](const TopoDS_Edge& edge) {
                 return std::any_of(target.begin(), target.end(), [&](const TopoDS_Edge& candidate) {
-                    return stitchMaximumGap(edge, candidate, tolerance).has_value();
+                    return search.maximumGap(edge, candidate).has_value();
                 });
             });
         };
@@ -3411,7 +3460,7 @@ std::vector<GeometryGapPartnerChain> GeometryTopologyEditor::findGapPartnerChain
                 double best_gap = tolerance;
                 for (const TopoDS_Edge& candidate : target) {
                     const std::optional<double> gap =
-                        stitchMaximumGap(edge, candidate, tolerance);
+                        search.maximumGap(edge, candidate);
                     if (gap)
                         best_gap = std::min(best_gap, *gap);
                 }
@@ -3435,6 +3484,7 @@ TopoDS_Shape GeometryTopologyEditor::stitchGapFromSeedEdge(
     const TopoDS_Edge& seed_edge,
     double tolerance, bool* reversed, bool* sewn)
 {
+    StitchSearchCache search(tolerance);
     if (sewn)
         *sewn = false;
     if (reversed)
@@ -3462,7 +3512,7 @@ TopoDS_Shape GeometryTopologyEditor::stitchGapFromSeedEdge(
             if (uniqueFaceCount(second_faces) != 1 || second_faces.First().IsSame(seed_face))
                 continue;
             const auto candidate = TopoDS::Edge(edge_faces.FindKey(second));
-            const auto gap = stitchMaximumGap(edge, candidate, tolerance);
+            const auto gap = search.maximumGap(edge, candidate);
             if (!gap)
                 continue;
             const double distance = std::min(tolerance, *gap + Precision::Confusion());
@@ -3663,13 +3713,18 @@ TopoDS_Shape demoteOpenSolids(const TopoDS_Shape& shape)
     if (shape.IsNull())
         return {};
     if (shape.ShapeType() == TopAbs_SOLID) {
-        if (BRep_Tool::IsClosed(shape))
-            return shape;
         std::vector<TopoDS_Shape> parts;
-        for (TopoDS_Iterator it(shape); it.More(); it.Next())
+        bool closed_shells = true;
+        // Solid 的 IsClosed 只读取标志；真正的闭合性必须检查其 Shell 的自由边。
+        for (TopoDS_Iterator it(shape); it.More(); it.Next()) {
             parts.push_back(it.Value());
+            closed_shells = closed_shells && it.Value().ShapeType() == TopAbs_SHELL
+                && BRep_Tool::IsClosed(it.Value());
+        }
         if (parts.empty())
             return {};
+        if (closed_shells)
+            return shape;
         if (parts.size() == 1)
             return parts.front();
         BRep_Builder builder;
@@ -3680,25 +3735,36 @@ TopoDS_Shape demoteOpenSolids(const TopoDS_Shape& shape)
         return compound;
     }
     if (shape.ShapeType() == TopAbs_COMPOUND || shape.ShapeType() == TopAbs_COMPSOLID) {
-        BRep_Builder builder;
-        TopoDS_Compound compound;
-        builder.MakeCompound(compound);
-        int count = 0;
+        std::vector<TopoDS_Shape> children;
+        bool changed = false;
+        bool only_solids = true;
         for (TopoDS_Iterator it(shape); it.More(); it.Next()) {
             const TopoDS_Shape child = demoteOpenSolids(it.Value());
+            changed = changed || child.IsNull() || !child.IsSame(it.Value());
             if (child.IsNull())
                 continue;
-            if (child.ShapeType() == TopAbs_COMPOUND) {
-                for (TopoDS_Iterator inner(child); inner.More(); inner.Next()) {
-                    builder.Add(compound, inner.Value());
-                    ++count;
-                }
-            } else {
-                builder.Add(compound, child);
-                ++count;
-            }
+            only_solids = only_solids && child.ShapeType() == TopAbs_SOLID;
+            children.push_back(child);
         }
-        return count == 0 ? TopoDS_Shape() : TopoDS_Shape(compound);
+        // 未受影响的组合保持身份和层级；缺面实体变成壳后才取消 COMPSOLID 约束。
+        if (!changed)
+            return shape;
+        if (children.empty())
+            return {};
+        BRep_Builder builder;
+        TopoDS_Shape result;
+        if (shape.ShapeType() == TopAbs_COMPSOLID && only_solids) {
+            TopoDS_CompSolid compsolid;
+            builder.MakeCompSolid(compsolid);
+            result = compsolid;
+        } else {
+            TopoDS_Compound compound;
+            builder.MakeCompound(compound);
+            result = compound;
+        }
+        for (const TopoDS_Shape& child : children)
+            builder.Add(result, child);
+        return result;
     }
     return shape;
 }
