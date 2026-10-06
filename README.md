@@ -118,12 +118,22 @@
 * [![Catch2][Catch2]][Catch2-url]
 
 **插件层三方依赖**（gmsh、CGAL、Boost、TetGen）已全部随插件拆分至独立仓库
-`ZenithGridToolkit`，由该工程获取与构建，本仓库不再构建任何插件专属依赖：
+`ZenithGridAddons`，由该工程获取与构建，本仓库不再构建任何插件专属依赖：
 
 > 已外置：`GmshPlugin`（Gmsh 渐进式网格划分）、`TetGenPlugin` / `TetGenLibPlugin`
 > （TetGen 体网格剖分）、`MeshBooleanPlugin` / `MeshRepairPlugin`（网格布尔 / 网格修复）
 > 与共用转换层 `cgal_support`；`.msh` 格式 IO 插件 `GmshModelPlugin` 自带解析器、
 > 不依赖三方库，保留在本仓库。
+
+**插件来源与构建方式**（命令见 [examples/README.md](examples/README.md)）：
+
+| 插件来源 | 随主程序构建 | 使用已安装 SDK 独立构建 |
+| --- | --- | --- |
+| 项目内插件 plugins/ | 主工程注册，自动构建与安装 | 未提供独立入口 |
+| 两用示例 examples/ | PRECESS_BUILD_EXAMPLES=ON，默认 OFF | 同一份源码保留独立入口，随 SDK 分发 |
+| ZenithGridAddons | 独立仓库，不纳入主工程 | 使用 SDK 与配套依赖 |
+
+随主程序构建的项目内插件和示例共用输出、安装目录；共享头变更后全部重建。SDK 独立开发按 ABI 提示核对兼容性及目标安装目录，开发 skill 随 Development 组件分发。
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 

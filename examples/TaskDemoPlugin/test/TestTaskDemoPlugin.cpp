@@ -8,7 +8,7 @@
 #include "ModelLayer.h"
 #include "TaskDemoHandler.h"
 #include "UndoStack.h"
-#include "test/OwnerQueue.h"
+#include "OwnerQueue.h"
 #include <catch2/catch_test_macros.hpp>
 #include <stdexcept>
 

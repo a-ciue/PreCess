@@ -3,7 +3,7 @@
 # 与 PreCessABI.cmake 的版本钉对配合：即使引导失效，错配也会在配置期报错。
 # 许可证边界外依赖（如 libMeshb）不在此引导：SDK 不为其提供任何查找支持，
 # 相关插件工程自行 find_package 并承担许可证义务（gmsh/CGAL/TetGen 插件已随
-# ZenithGridToolkit 独立仓库外置）。
+# ZenithGridAddons 独立仓库外置）。
 set(_precess_find_hints
     spdlog_DIR "@spdlog_DIR@"
     OpenCASCADE_DIR "@OpenCASCADE_DIR@"

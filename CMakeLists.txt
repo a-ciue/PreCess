@@ -139,6 +139,9 @@ include(PreCessPluginTesting)
 add_subdirectory(core)
 add_subdirectory(model)
 add_subdirectory(python)
+
+# 示例默认仅作为 SDK 源码分发；开发框架时可显式启用并运行原有测试。
+option(PRECESS_BUILD_EXAMPLES "构建 SDK 示例插件与其测试" OFF)
 add_subdirectory(plugins)
 
 add_subdirectory(app)
@@ -250,7 +253,7 @@ cpack_add_component(AllPlugins
 # 不挂安装类型（选 Full 不连带）、不 DEPENDS 主程序——可纯 SDK 单独安装
 cpack_add_component(Development
     DISPLAY_NAME "${MYNAME} 插件 SDK"
-    DESCRIPTION "插件开发文件（头文件、模型层库、CMake 包配置），供 find_package(PreCess) 独立构建插件"
+    DESCRIPTION "插件开发文件（头文件、模型层库、CMake 包配置、示例源码与开发 skill），供 find_package(PreCess) 独立构建插件"
     DISABLED
 )
 cpack_add_install_type(Full)

@@ -19,6 +19,11 @@ add_subdirectory(algo)
 add_subdirectory(edit)
 add_subdirectory(feature)
 
+# 继承与正式插件相同的输出、安装及静态导入作用域。
+if(PRECESS_BUILD_EXAMPLES)
+    add_subdirectory("${PROJECT_SOURCE_DIR}/examples" "${CMAKE_BINARY_DIR}/examples")
+endif()
+
 # 生成静态插件导入文件，作为接口库 StaticPlugins 被主程序链接
 get_property(static_plugins GLOBAL PROPERTY STATIC_PLUGINS)
 if(NOT static_plugins)
