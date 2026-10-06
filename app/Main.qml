@@ -326,6 +326,14 @@ ApplicationWindow {
 
         MouseArea {
             anchors.fill: parent
+            // 默认只接收左键，右键、中键和滚轮须在遮罩内明确拦截。
+            acceptedButtons: Qt.AllButtons
+            onWheel: (wheel) => { wheel.accepted = true; }
+        }
+
+        // hover 独立于鼠标按键分发，显式阻止下层渲染控件与 HoverHandler。
+        HoverHandler {
+            blocking: true
         }
 
         Label {

@@ -55,3 +55,11 @@ qt_add_resources(TestUndoQml undo_ui
     PREFIX "/undo-ui"
     BASE "${CMAKE_CURRENT_SOURCE_DIR}/.."
     FILES ../Theme.qml ../SideBar.qml ../ObjectTree.qml ../CentralRenderArea.qml ../Selector.qml)
+
+# 验证主窗口实际遮罩的覆盖范围和鼠标拦截，保留状态栏取消入口。
+precess_add_test(TestBusyMask TestBusyMask.cpp)
+precess_test_link_libraries(TestBusyMask Qt6::QuickControls2)
+qt_add_resources(TestBusyMask busy_mask
+    PREFIX "/busy-mask"
+    BASE "${CMAKE_CURRENT_SOURCE_DIR}/.."
+    FILES ../Main.qml)
