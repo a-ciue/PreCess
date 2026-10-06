@@ -20,6 +20,7 @@
 #include <map>
 #include <memory>
 #include <optional>
+#include <regex>
 #include <vector>
 
 namespace fs = std::filesystem;
@@ -240,7 +241,7 @@ TEST_CASE("MModelHandler::read_model() preserves Edge attributes", "[MModelHandl
                               "Edge 748 42 {loop_id=(2) direction=(1 0 -1)}\n"
                               "Edge 748 1946\n";
 
-    // Edge 只有两个端点编号；延后映射应同时兼容边记录出现在顶点之前和之后。
+    // Edge 只有两个端点编号；两遍读取应兼容边记录出现在顶点之前、之后或中间。
     std::ofstream output(path);
     REQUIRE(output.is_open());
     SECTION("Edges after vertices")
@@ -251,6 +252,12 @@ TEST_CASE("MModelHandler::read_model() preserves Edge attributes", "[MModelHandl
     SECTION("Edges before vertices")
     {
         output << edges << vertices << "Face 7 1946 748 42 {g=(5)}\n";
+    }
+    SECTION("Edges between vertices")
+    {
+        const size_t first_vertex_end = vertices.find('\n') + 1;
+        output << vertices.substr(0, first_vertex_end) << edges << vertices.substr(first_vertex_end)
+               << "Face 7 1946 748 42 {g=(5)}\n";
     }
     output.close();
 
@@ -405,9 +412,14 @@ TEST_CASE("MModelHandler::boolean flags round-trip", "[MModelHandler][Attributes
     std::string line;
     bool has_sharp_true = false;
     bool has_sharp_false = false;
+    // 独立验证 sharp 的数值属性语法，允许括号、等号前后任意空白。
+    const std::regex sharp_trait(R"((?:\{|\s)sharp\s*=\s*\(\s*([01])\s*\))");
     while (std::getline(input, line)) {
-        has_sharp_true = has_sharp_true || line.find(" sharp=(1)") != std::string::npos;
-        has_sharp_false = has_sharp_false || line.find(" sharp=(0)") != std::string::npos;
+        std::smatch match;
+        if (std::regex_search(line, match, sharp_trait)) {
+            has_sharp_true = has_sharp_true || match[1] == "1";
+            has_sharp_false = has_sharp_false || match[1] == "0";
+        }
     }
     REQUIRE(has_sharp_true);
     REQUIRE(has_sharp_false);
@@ -419,4 +431,64 @@ TEST_CASE("MModelHandler::boolean flags round-trip", "[MModelHandler][Attributes
     REQUIRE(exported_mesh->face_attributes_ == expected_face_attributes);
     REQUIRE(exported_mesh->edge_attributes_ == expected_edge_attributes);
     REQUIRE(exported_mesh->edge_vertices_ == mesh->edge_vertices_);
+}
+
+TEST_CASE("MModelHandler::read_model() filters malformed flag names", "[MModelHandler][Attributes]")
+{
+    systems::io::MModelHandler io;
+    const fs::path path = core::TempFile::instance().path().string() + "_invalid_flags.m";
+    std::ofstream output(path);
+    REQUIRE(output.is_open());
+    // 首字母合法仍可能是畸形名称；过滤后须保留后面的合法标记和数值属性。
+    output << "Vertex 4 0 0 0 {corner b(1) 123 9flag .noise bad-name ; () _protected flag2 value.name=(2)}\n"
+              "Vertex 6911 1 0 0\n"
+              "Vertex 42 0 1 0\n"
+              "Face 1 4 6911 42 {selected bad!name group=(3)}\n"
+              "Edge 4 6911 {a b(1) sharp loop_id=(9)}\n";
+    output.close();
+
+    const auto payload = io.read_model(path, { });
+    REQUIRE(payload.has_value());
+    const MeshData* mesh = requireReadableMeshModel(*payload);
+    const std::map<std::string, std::vector<double>> expected_vertex_attributes = {
+        { "v_corner_1", { 1.0, 0.0, 0.0 } }, { "v__protected_1", { 1.0, 0.0, 0.0 } },
+        { "v_flag2_1", { 1.0, 0.0, 0.0 } }, { "v_value.name_1", { 2.0, 0.0, 0.0 } }
+    };
+    const std::map<std::string, std::vector<double>> expected_face_attributes = {
+        { "f_selected_1", { 1.0 } }, { "f_group_1", { 3.0 } }
+    };
+    const std::map<std::string, std::vector<double>> expected_edge_attributes = {
+        { "e_a_1", { 1.0 } }, { "e_sharp_1", { 1.0 } }, { "e_loop_id_1", { 9.0 } }
+    };
+    REQUIRE(mesh->vertex_attributes_ == expected_vertex_attributes);
+    REQUIRE(mesh->face_attributes_ == expected_face_attributes);
+    REQUIRE(mesh->edge_attributes_ == expected_edge_attributes);
+}
+
+TEST_CASE("MModelHandler::read_model() preserves many forward-referenced Edge records", "[MModelHandler][Edge]")
+{
+    systems::io::MModelHandler io;
+    const fs::path path = core::TempFile::instance().path().string() + "_many_edges.m";
+    std::ofstream output(path);
+    REQUIRE(output.is_open());
+    constexpr size_t edge_count = 4096;
+    // 批量边先于顶点且方向交替，序号属性必须与原始记录逐条对齐。
+    for (size_t i = 0; i < edge_count; ++i)
+        output << (i % 2 == 0 ? "Edge 4 6911" : "Edge 6911 4") << " {sequence=(" << i << ")}\n";
+    // 最后一行不带换行，验证扫描到 EOF 后第二遍仍能正确重新读取。
+    output << "Vertex 4 0 0 0\nVertex 6911 1 0 0";
+    output.close();
+
+    const auto payload = io.read_model(path, { });
+    REQUIRE(payload.has_value());
+    const MeshData* mesh = requireReadableMeshModel(*payload);
+    REQUIRE(mesh->edge_vertices_.size() == edge_count * 2);
+    const auto& sequences = mesh->edge_attributes_.at("e_sequence_1");
+    REQUIRE(sequences.size() == edge_count);
+    for (size_t i = 0; i < edge_count; ++i) {
+        CAPTURE(i);
+        REQUIRE(mesh->edge_vertices_[i * 2] == static_cast<Index>(i % 2));
+        REQUIRE(mesh->edge_vertices_[i * 2 + 1] == static_cast<Index>(1 - i % 2));
+        REQUIRE(sequences[i] == static_cast<double>(i));
+    }
 }

@@ -16,6 +16,7 @@
 #include <map>
 #include <spdlog/spdlog.h>
 #include <sstream>
+#include <stdexcept>
 #include <string>
 #include <unordered_map>
 #include <vector>
@@ -47,6 +48,23 @@ std::string traitText(const std::string& line)
 }
 
 /**
+ * @brief 校验无值标记名称：首字符为 ASCII 字母或下划线，其余为字母、数字或下划线
+ * @param key 待校验的完整标记名称
+ * @return 名称符合无值标记规则时返回 true
+ */
+bool isFlagName(const std::string& key)
+{
+    const auto is_letter = [](unsigned char ch) {
+        return (ch >= 'a' && ch <= 'z') || (ch >= 'A' && ch <= 'Z');
+    };
+    if (key.empty() || (!is_letter(key.front()) && key.front() != '_'))
+        return false;
+    return std::all_of(key.begin() + 1, key.end(), [&](unsigned char ch) {
+        return is_letter(ch) || (ch >= '0' && ch <= '9') || ch == '_';
+    });
+}
+
+/**
  * @brief 解析 .m 属性段中的数值属性与无值标记；无值标记按单分量数值 1 存储
  */
 std::unordered_map<std::string, std::vector<double>> parseStringAttributes(const std::string& text)
@@ -69,7 +87,10 @@ std::unordered_map<std::string, std::vector<double>> parseStringAttributes(const
             ++pos;
         if (pos >= text.size() || text[pos] != '=') {
             // 无等号的 key 表示布尔真；pos 已指向下一属性，不能再跳过其内容。
-            result[key] = { 1.0 };
+            if (isFlagName(key))
+                result[key] = { 1.0 };
+            else
+                spdlog::debug("MModelHandler: skip malformed flag name: {}", key);
             continue;
         }
         ++pos;
@@ -217,8 +238,8 @@ std::optional<ModelPayload> MModelHandler::read_model(const fs::path& path, cons
     std::unordered_map<std::string, size_t> vertex_attribute_components;
     std::unordered_map<std::string, size_t> face_attribute_components;
     std::unordered_map<std::string, size_t> edge_attribute_components;
-    std::vector<std::string> edge_lines;
 
+    // 第一遍读取顶点和面，建立完整的文件顶点编号映射，不缓存 Edge 原始文本。
     std::string line;
     while (std::getline(ifs, line)) {
         std::istringstream line_stream(line);
@@ -277,27 +298,33 @@ std::optional<ModelPayload> MModelHandler::read_model(const fs::path& path, cons
                 face_attribute_components,
                 parseStringAttributes(traitText(line)),
                 face_index);
-        } else if (keyword == "Edge") {
-            // Edge 以两个文件顶点编号标识端点；延后处理以支持顶点尚未声明的记录。
-            edge_lines.push_back(line);
         }
-        // 其余行（Corner 等记录）暂不支持，忽略。
+        // Edge 在第二遍处理，其余行（Corner 等记录）暂不支持。
     }
+    if (ifs.bad())
+        throw std::runtime_error("MModelHandler: failed to read input file: " + path.string());
 
-    // 按文件中的边记录顺序建立显式边单元，属性下标与边单元下标保持一致。
-    for (const std::string& edge_line : edge_lines) {
-        std::istringstream edge_stream(edge_line);
+    // 清除 EOF 并回到文件开头，第二遍按记录顺序流式读边，支持 Edge 先于 Vertex。
+    ifs.clear();
+    ifs.seekg(0, std::ios::beg);
+    if (!ifs)
+        throw std::runtime_error("MModelHandler: failed to rewind input file: " + path.string());
+    while (std::getline(ifs, line)) {
+        std::istringstream edge_stream(line);
         std::string keyword;
+        if (!(edge_stream >> keyword) || keyword != "Edge")
+            continue;
+
         Index v0 { }, v1 { };
-        if (!(edge_stream >> keyword >> v0 >> v1)) {
-            spdlog::warn("MModelHandler: malformed Edge line, skip: {}", edge_line);
+        if (!(edge_stream >> v0 >> v1)) {
+            spdlog::warn("MModelHandler: malformed Edge line, skip: {}", line);
             continue;
         }
 
         const auto first = vertex_index_map.find(v0);
         const auto second = vertex_index_map.find(v1);
         if (first == vertex_index_map.end() || second == vertex_index_map.end() || v0 == v1) {
-            spdlog::warn("MModelHandler: Edge references unknown or identical vertices, skip: {}", edge_line);
+            spdlog::warn("MModelHandler: Edge references unknown or identical vertices, skip: {}", line);
             continue;
         }
 
@@ -308,9 +335,11 @@ std::optional<ModelPayload> MModelHandler::read_model(const fs::path& path, cons
             "e_",
             mesh_data->edge_attributes_,
             edge_attribute_components,
-            parseStringAttributes(traitText(edge_line)),
+            parseStringAttributes(traitText(line)),
             edge_index);
     }
+    if (ifs.bad())
+        throw std::runtime_error("MModelHandler: failed to read input file: " + path.string());
 
     mesh_data->vertex_count_ = static_cast<Index>(mesh_data->vertex_positions_.size());
     // 属性数组补齐：未声明该属性的元素补 0
