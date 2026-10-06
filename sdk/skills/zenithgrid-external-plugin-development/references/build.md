@@ -40,4 +40,4 @@ cmake --install build --prefix "<目标主程序安装目录>" --component AllPl
 - 动态插件输出到 build/plugins。上面显式指定相对 DESTINATION plugins，安装到目标前缀的 plugins/；macOS 使用实际 .app/Contents/plugins。
 - 未传 DESTINATION 时，SDK 默认目录按 SDK 前缀解析，通常为绝对路径，--prefix 无法将其改指另一套主程序。安装前核对目标路径，不依赖 -DPRECESS_PLUGIN_INSTALL_DIR 覆盖默认值。
 - 在匹配主程序中检查注册、功能执行和 undo/redo；后台功能再检查取消与终态。必要时补齐配套 DLL 搜索路径。仅构建和测试成功不能宣称加载验证通过。
-- CPack 使用相对 DESTINATION，绝对目录会绕过 staging。ZenithGridAddons 使用 ZENITH_PACKAGE_BUILD=ON；插件自身 project(VERSION ...) 是发布版本，与 SDK 版本分开维护。
+- CPack 使用相对 DESTINATION，绝对目录会绕过 staging。插件自身 project(VERSION ...) 是发布版本，与 SDK 版本分开维护。
