@@ -7,6 +7,9 @@ project(${MYNAME} VERSION 0.5.0)
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
+# 插件构建语境由入口统一声明，子目录不再通过目标或目录位置推断。
+set(PRECESS_PLUGIN_IN_TREE TRUE)
+
 # 项目以异常作错误处理机制：MSVC 缺省（无 /EH）下 catch 能捕获但不展开栈（C4530），
 # 捕获异常后继续执行会状态错乱（如 unordered_set 迭代器损坏），须显式启用 /EHsc
 # 源码统一 UTF-8 无 BOM：MSVC 在代码页 936 下按 GBK 误读会报 C4819，须显式指定源字符集；

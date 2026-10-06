@@ -1,12 +1,12 @@
 add_custom_target(AllPlugins)
-set(PLUGINS_BUILD_DIR "${CMAKE_CURRENT_BINARY_DIR}")
 
 if(APPLE)
     set(plugins_destination "${MYNAME}.app/Contents/plugins")
     set(plugins_output_dir "${CMAKE_BINARY_DIR}/app/${MYNAME}.app/Contents/plugins")
 else()
     set(plugins_destination "plugins")
-    set(plugins_output_dir "${PLUGINS_BUILD_DIR}")
+    # 正式插件和 examples 共用主程序扫描的构建目录。
+    set(plugins_output_dir "${CMAKE_BINARY_DIR}/plugins")
 endif()
 
 # 插件装配 API（_add_plugin / precess_add_*_plugin / precess_plugin_link_libraries /

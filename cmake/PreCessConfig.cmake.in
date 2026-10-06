@@ -41,6 +41,8 @@ set(PRECESS_PLUGIN_INSTALL_DIR "${PRECESS_PLUGIN_INSTALL_DIR}" CACHE PATH
     "外部插件默认安装目录（PreCess 运行时扫描路径）")
 
 # ⑥ 插件构建 API 与组件解析
+# SDK 导入统一声明外部插件构建语境，与主工程入口的 TRUE 对应。
+set(PRECESS_PLUGIN_IN_TREE FALSE)
 # 边界内自定义 Find 模块随包安装（Findfreetype）：加入模块路径使插件工程可直接
 # find_package(freetype) 命中与 PreCess 同款实现；许可证边界外的 Find 模块
 # 刻意不随包（如 tetgen 的 Find 模块随 ZenithGridToolkit 工程自带）——
