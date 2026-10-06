@@ -133,6 +133,8 @@
 
 ## 🚀快速构建项目
 
+需要 CMake 3.27+；插件测试辅助接口使用该版本引入的生成器表达式。
+
 #### Windows用户
 
 1. 在本项目[发行版页面](https://gitee.com/precess/PreCess/releases)，下载带预编译依赖包`PreCess-deps`与项目源码`PreCess`，并解压放置在相同目录`<path>`

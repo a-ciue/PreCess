@@ -130,7 +130,7 @@
 
 ## 8. 构建、测试与验证
 
-- **构建系统**：CMake + Ninja，预设见 `CMakePresets.json`（仓库模板，机器无关）与 `CMakeUserPresets.json`（本机覆盖，不入库，见 `.gitignore`）。
+- **构建系统**：CMake 3.27+ 与 Ninja，预设见 `CMakePresets.json`（仓库模板，机器无关）与 `CMakeUserPresets.json`（本机覆盖，不入库，见 `.gitignore`）。
 - **C++ 标准**：C++20（`CMAKE_CXX_STANDARD 20`，REQUIRED；source_location 写入口诊断、stop_source 取消、char8_t/u8string 迁移等已依赖，不回退）。
 - **官方 Windows 打包工具链**：MSVC 14.30 x64。构建与执行 SDK 安装、CPack 前加载该版本（`vcvars64.bat -vcvars_ver=14.30`，或 `Enter-VsDevShell` 的 `-arch=x64 -host_arch=x64 -vcvars_ver=14.30`），并核对编译器版本。此项是 SDK 官方打包要求。
 - **项目内插件（plugins/）**：由主工程子目录注册，直接使用 `precess_add_*_plugin`，继承目标与依赖，无需声明 `project()`、查找 SDK 或调用 `precess_plugin_install`；装配函数自动加入 AllPlugins 并安装。
