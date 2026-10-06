@@ -100,7 +100,7 @@ std::unordered_map<std::string, std::vector<double>> parseStringAttributes(const
 /**
  * @brief 将解析出的属性按 <前缀><key>_<分量数> 命名写入属性表，缺失元素补 0
  *
- * 前缀约定同 MeshData：顶点属性 "v_"、面属性 "f_"。
+ * 前缀约定同 MeshData：顶点属性 "v_"、面属性 "f_"、边属性 "e_"。
  */
 void appendAttributes(
     const std::string& prefix,
@@ -214,6 +214,8 @@ std::optional<ModelPayload> MModelHandler::read_model(const fs::path& path, cons
     std::unordered_map<Index, Index> vertex_index_map;
     std::unordered_map<std::string, size_t> vertex_attribute_components;
     std::unordered_map<std::string, size_t> face_attribute_components;
+    std::unordered_map<std::string, size_t> edge_attribute_components;
+    std::vector<std::string> edge_lines;
 
     std::string line;
     while (std::getline(ifs, line)) {
@@ -273,8 +275,39 @@ std::optional<ModelPayload> MModelHandler::read_model(const fs::path& path, cons
                 face_attribute_components,
                 parseStringAttributes(traitText(line)),
                 face_index);
+        } else if (keyword == "Edge") {
+            // Edge 以两个文件顶点编号标识端点；延后处理以支持顶点尚未声明的记录。
+            edge_lines.push_back(line);
         }
-        // 其余行（Edge / Corner 等仅承载属性的记录）不携带几何信息，忽略
+        // 其余行（Corner 等记录）暂不支持，忽略。
+    }
+
+    // 按文件中的边记录顺序建立显式边单元，属性下标与边单元下标保持一致。
+    for (const std::string& edge_line : edge_lines) {
+        std::istringstream edge_stream(edge_line);
+        std::string keyword;
+        Index v0 { }, v1 { };
+        if (!(edge_stream >> keyword >> v0 >> v1)) {
+            spdlog::warn("MModelHandler: malformed Edge line, skip: {}", edge_line);
+            continue;
+        }
+
+        const auto first = vertex_index_map.find(v0);
+        const auto second = vertex_index_map.find(v1);
+        if (first == vertex_index_map.end() || second == vertex_index_map.end() || v0 == v1) {
+            spdlog::warn("MModelHandler: Edge references unknown or identical vertices, skip: {}", edge_line);
+            continue;
+        }
+
+        const size_t edge_index = mesh_data->edge_vertices_.size() / 2;
+        mesh_data->edge_vertices_.push_back(first->second);
+        mesh_data->edge_vertices_.push_back(second->second);
+        appendAttributes(
+            "e_",
+            mesh_data->edge_attributes_,
+            edge_attribute_components,
+            parseStringAttributes(traitText(edge_line)),
+            edge_index);
     }
 
     mesh_data->vertex_count_ = static_cast<Index>(mesh_data->vertex_positions_.size());
@@ -284,6 +317,9 @@ std::optional<ModelPayload> MModelHandler::read_model(const fs::path& path, cons
     const size_t face_count = mesh_data->face_vertices_offset_.size() - 1;
     for (auto& [name, values] : mesh_data->face_attributes_)
         values.resize(face_count * face_attribute_components[name], 0.0);
+    const size_t edge_count = mesh_data->edge_vertices_.size() / 2;
+    for (auto& [name, values] : mesh_data->edge_attributes_)
+        values.resize(edge_count * edge_attribute_components[name], 0.0);
 
     auto c = std::make_unique<ComponentData>();
     c->id = -1;
