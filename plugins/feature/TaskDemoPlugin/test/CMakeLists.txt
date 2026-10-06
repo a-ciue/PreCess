@@ -1,2 +1,0 @@
-precess_add_test(TestTaskDemoPlugin TestTaskDemoPlugin.cpp)
-precess_test_link_libraries(TestTaskDemoPlugin TaskDemoPluginlib FeatureSystem Data)

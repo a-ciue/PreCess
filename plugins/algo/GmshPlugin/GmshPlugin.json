@@ -1,7 +1,0 @@
-{
-  "system": "AlgorithmSystem",
-  "handler": {
-    "name": "GmshPlugin",
-    "display_name": "Gmsh渐进式划分网格"
-  }
-}

@@ -1,0 +1,2 @@
+precess_add_test(TestScalePreviewPlugin TestScalePreviewPlugin.cpp)
+precess_test_link_libraries(TestScalePreviewPlugin ScalePreviewPluginlib Qt6::Core)

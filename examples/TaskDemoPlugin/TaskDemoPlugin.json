@@ -1,0 +1,8 @@
+{
+  "system": "FeatureSystem",
+  "handler": {
+    "name": "TaskDemo",
+    "display_name": "任务演示",
+    "description": "演示三类任务：0=纯计算；1=影子组件加点；2=类型化回写。所有任务占用模型操作直到真实终态，进度与取消统一进入状态栏；写任务使用活动网格组件（教学简化）"
+  }
+}
