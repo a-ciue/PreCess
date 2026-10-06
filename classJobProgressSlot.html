@@ -1,0 +1,356 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="zh">
+<head>
+<meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=11"/>
+<meta name="generator" content="Doxygen 1.14.0"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>PreCess: JobProgressSlot类 参考</title>
+<link href="tabs.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="jquery.js"></script>
+<script type="text/javascript" src="dynsections.js"></script>
+<script type="text/javascript" src="clipboard.js"></script>
+<script type="text/javascript" src="cookie.js"></script>
+<link href="search/search.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="search/searchdata.js"></script>
+<script type="text/javascript" src="search/search.js"></script>
+<link href="doxygen.css" rel="stylesheet" type="text/css" />
+</head>
+<body>
+<div id="top"><!-- do not remove this div, it is closed by doxygen! -->
+<div id="titlearea">
+<table cellspacing="0" cellpadding="0">
+ <tbody>
+ <tr id="projectrow">
+  <td id="projectlogo"><img alt="Logo" src="PreCess.ico"/></td>
+  <td id="projectalign">
+   <div id="projectname">PreCess
+   </div>
+  </td>
+ </tr>
+ </tbody>
+</table>
+</div>
+<!-- end header part -->
+<!-- 制作者 Doxygen 1.14.0 -->
+<script type="text/javascript">
+var searchBox = new SearchBox("searchBox", "search/",'.html');
+</script>
+<script type="text/javascript">
+$(function() { codefold.init(); });
+</script>
+<script type="text/javascript" src="menudata.js"></script>
+<script type="text/javascript" src="menu.js"></script>
+<script type="text/javascript">
+$(function() {
+  initMenu('',true,false,'search.php','搜索',false);
+  $(function() { init_search(); });
+});
+</script>
+<div id="main-nav"></div>
+<!-- window showing the filter options -->
+<div id="MSearchSelectWindow"
+     onmouseover="return searchBox.OnSearchSelectShow()"
+     onmouseout="return searchBox.OnSearchSelectHide()"
+     onkeydown="return searchBox.OnSearchSelectKey(event)">
+</div>
+
+<!-- iframe showing the search results (closed by default) -->
+<div id="MSearchResultsWindow">
+<div id="MSearchResults">
+<div class="SRPage">
+<div id="SRIndex">
+<div id="SRResults"></div>
+<div class="SRStatus" id="Loading">载入中...</div>
+<div class="SRStatus" id="Searching">搜索中...</div>
+<div class="SRStatus" id="NoMatches">未找到</div>
+</div>
+</div>
+</div>
+</div>
+
+</div><!-- top -->
+<div id="doc-content">
+<div class="header">
+  <div class="summary">
+<a href="#pub-methods">Public 成员函数</a> &#124;
+<a href="#pri-attribs">Private 属性</a> &#124;
+<a href="classJobProgressSlot-members.html">所有成员列表</a>  </div>
+  <div class="headertitle"><div class="title">JobProgressSlot类 参考</div></div>
+</div><!--header-->
+<div class="contents">
+
+<p><code>#include &lt;<a class="el" href="JobProgressSlot_8h_source.html">JobProgressSlot.h</a>&gt;</code></p>
+<div class="dynheader">
+JobProgressSlot 的协作图:</div>
+<div class="dyncontent">
+<div class="center"><img src="classJobProgressSlot__coll__graph.png" border="0" usemap="#aJobProgressSlot_coll__map" loading="lazy" alt="Collaboration graph"/></div>
+<map name="aJobProgressSlot_coll__map" id="aJobProgressSlot_coll__map">
+<area shape="rect" title=" " alt="" coords="39,191,162,216"/>
+<area shape="rect" title=" " alt="" coords="5,95,97,120"/>
+<area shape="poly" title=" " alt="" coords="56,132,67,165,87,189,83,192,62,168,51,134"/>
+<area shape="rect" title=" " alt="" coords="121,95,208,120"/>
+<area shape="poly" title=" " alt="" coords="151,133,111,192,106,189,147,130"/>
+<area shape="rect" title=" " alt="" coords="95,5,234,45"/>
+<area shape="poly" title=" " alt="" coords="167,59,167,94,162,94,162,59"/>
+</map>
+<center><span class="legend">[<a href="graph_legend.html">图例</a>]</span></center></div>
+<table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 id="header-pub-methods" class="groupheader"><a id="pub-methods" name="pub-methods"></a>
+Public 成员函数</h2></td></tr>
+<tr class="memitem:a49584de69f526484aab05d85ee698aa3" id="r_a49584de69f526484aab05d85ee698aa3"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a49584de69f526484aab05d85ee698aa3">write</a> (double value, std::string label)</td></tr>
+<tr class="memdesc:a49584de69f526484aab05d85ee698aa3"><td class="mdescLeft">&#160;</td><td class="mdescRight">计算或提交线程写入最新进度（close 后的迟到写入被丢弃）  <br /></td></tr>
+<tr class="memitem:a0eb1e7b969112d37bd2cdbf056cba615" id="r_a0eb1e7b969112d37bd2cdbf056cba615"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a0eb1e7b969112d37bd2cdbf056cba615">poll</a> (double &amp;value, std::string &amp;label)</td></tr>
+<tr class="memdesc:a0eb1e7b969112d37bd2cdbf056cba615"><td class="mdescLeft">&#160;</td><td class="mdescRight">GUI 线程轮询：有未消费新值返回 true 并拷出快照；无新值或已 close 返回 false  <br /></td></tr>
+<tr class="memitem:af0f6b7a897559e0a3f803d506e051b1c" id="r_af0f6b7a897559e0a3f803d506e051b1c"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#af0f6b7a897559e0a3f803d506e051b1c">close</a> ()</td></tr>
+<tr class="memdesc:af0f6b7a897559e0a3f803d506e051b1c"><td class="mdescLeft">&#160;</td><td class="mdescRight">任务终态门闩（GUI 线程，先于终态呈现调用）：此后 poll 不发、write 丢弃  <br /></td></tr>
+<tr class="memitem:a948e848b7e9405946c1895f3fad11f9f" id="r_a948e848b7e9405946c1895f3fad11f9f"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a948e848b7e9405946c1895f3fad11f9f">reset</a> ()</td></tr>
+<tr class="memdesc:a948e848b7e9405946c1895f3fad11f9f"><td class="mdescLeft">&#160;</td><td class="mdescRight">新任务开始（GUI 线程）：清空上一任务残留并解除门闩  <br /></td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 id="header-pri-attribs" class="groupheader"><a id="pri-attribs" name="pri-attribs"></a>
+Private 属性</h2></td></tr>
+<tr class="memitem:afb0c7a8ad01828305148c171ace32791" id="r_afb0c7a8ad01828305148c171ace32791"><td class="memItemLeft" align="right" valign="top">std::mutex&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#afb0c7a8ad01828305148c171ace32791">mutex_</a></td></tr>
+<tr class="memitem:ad5cb1188dc40ab3ac118bf7be5c7cc41" id="r_ad5cb1188dc40ab3ac118bf7be5c7cc41"><td class="memItemLeft" align="right" valign="top">double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ad5cb1188dc40ab3ac118bf7be5c7cc41">value_</a> { 0.0 }</td></tr>
+<tr class="memitem:ac76d1f0a5d3ea69a3ca09a4d5629f45f" id="r_ac76d1f0a5d3ea69a3ca09a4d5629f45f"><td class="memItemLeft" align="right" valign="top">std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ac76d1f0a5d3ea69a3ca09a4d5629f45f">label_</a></td></tr>
+<tr class="memitem:a893ed678694311ab8eb2b20febbf7bd1" id="r_a893ed678694311ab8eb2b20febbf7bd1"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a893ed678694311ab8eb2b20febbf7bd1">dirty_</a> { false }</td></tr>
+<tr class="memitem:a8d916a8cc813686d31c702b09672a2e1" id="r_a8d916a8cc813686d31c702b09672a2e1"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a8d916a8cc813686d31c702b09672a2e1">closed_</a> { false }</td></tr>
+</table>
+<a name="doc-func-members" id="doc-func-members"></a><h2 id="header-doc-func-members" class="groupheader">成员函数说明</h2>
+<a id="af0f6b7a897559e0a3f803d506e051b1c" name="af0f6b7a897559e0a3f803d506e051b1c"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#af0f6b7a897559e0a3f803d506e051b1c">&#9670;&#160;</a></span>close()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void JobProgressSlot::close </td>
+          <td>(</td>
+          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel inline">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>任务终态门闩（GUI 线程，先于终态呈现调用）：此后 poll 不发、write 丢弃 </p>
+
+</div>
+</div>
+<a id="a0eb1e7b969112d37bd2cdbf056cba615" name="a0eb1e7b969112d37bd2cdbf056cba615"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a0eb1e7b969112d37bd2cdbf056cba615">&#9670;&#160;</a></span>poll()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool JobProgressSlot::poll </td>
+          <td>(</td>
+          <td class="paramtype">double &amp;</td>          <td class="paramname"><span class="paramname"><em>value</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">std::string &amp;</td>          <td class="paramname"><span class="paramname"><em>label</em></span>&#160;)</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel inline">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>GUI 线程轮询：有未消费新值返回 true 并拷出快照；无新值或已 close 返回 false </p>
+
+</div>
+</div>
+<a id="a948e848b7e9405946c1895f3fad11f9f" name="a948e848b7e9405946c1895f3fad11f9f"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a948e848b7e9405946c1895f3fad11f9f">&#9670;&#160;</a></span>reset()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void JobProgressSlot::reset </td>
+          <td>(</td>
+          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel inline">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>新任务开始（GUI 线程）：清空上一任务残留并解除门闩 </p>
+
+</div>
+</div>
+<a id="a49584de69f526484aab05d85ee698aa3" name="a49584de69f526484aab05d85ee698aa3"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a49584de69f526484aab05d85ee698aa3">&#9670;&#160;</a></span>write()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void JobProgressSlot::write </td>
+          <td>(</td>
+          <td class="paramtype">double</td>          <td class="paramname"><span class="paramname"><em>value</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">std::string</td>          <td class="paramname"><span class="paramname"><em>label</em></span>&#160;)</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel inline">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>计算或提交线程写入最新进度（close 后的迟到写入被丢弃） </p>
+
+</div>
+</div>
+<a name="doc-variable-members" id="doc-variable-members"></a><h2 id="header-doc-variable-members" class="groupheader">类成员变量说明</h2>
+<a id="a8d916a8cc813686d31c702b09672a2e1" name="a8d916a8cc813686d31c702b09672a2e1"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a8d916a8cc813686d31c702b09672a2e1">&#9670;&#160;</a></span>closed_</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool JobProgressSlot::closed_ { false }</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel private">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a893ed678694311ab8eb2b20febbf7bd1" name="a893ed678694311ab8eb2b20febbf7bd1"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a893ed678694311ab8eb2b20febbf7bd1">&#9670;&#160;</a></span>dirty_</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool JobProgressSlot::dirty_ { false }</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel private">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="ac76d1f0a5d3ea69a3ca09a4d5629f45f" name="ac76d1f0a5d3ea69a3ca09a4d5629f45f"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ac76d1f0a5d3ea69a3ca09a4d5629f45f">&#9670;&#160;</a></span>label_</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::string JobProgressSlot::label_</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel private">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="afb0c7a8ad01828305148c171ace32791" name="afb0c7a8ad01828305148c171ace32791"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#afb0c7a8ad01828305148c171ace32791">&#9670;&#160;</a></span>mutex_</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::mutex JobProgressSlot::mutex_</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel private">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="ad5cb1188dc40ab3ac118bf7be5c7cc41" name="ad5cb1188dc40ab3ac118bf7be5c7cc41"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ad5cb1188dc40ab3ac118bf7be5c7cc41">&#9670;&#160;</a></span>value_</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">double JobProgressSlot::value_ { 0.0 }</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel private">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<hr/>该类的文档由以下文件生成:<ul>
+<li>app/model/<a class="el" href="JobProgressSlot_8h_source.html">JobProgressSlot.h</a></li>
+</ul>
+</div><!-- contents -->
+<!-- start footer part -->
+<hr class="footer"/><address class="footer"><small>
+制作者&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.14.0
+</small></address>
+</div><!-- doc-content -->
+</body>
+</html>

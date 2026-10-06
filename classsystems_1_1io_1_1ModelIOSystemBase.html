@@ -92,9 +92,11 @@ $(function() {
 <div class="dyncontent">
 <div class="center"><img src="classsystems_1_1io_1_1ModelIOSystemBase__inherit__graph.png" border="0" usemap="#asystems_1_1io_1_1ModelIOSystemBase_inherit__map" loading="lazy" alt="Inheritance graph"/></div>
 <map name="asystems_1_1io_1_1ModelIOSystemBase_inherit__map" id="asystems_1_1io_1_1ModelIOSystemBase_inherit__map">
-<area shape="rect" title="ModelIOSystem接口基类，出于插件开发而设计的接口基类。" alt="" coords="5,5,245,31"/>
-<area shape="rect" href="classsystems_1_1io_1_1ModelIOSystem.html" title="模型IO系统，每种文件格式只能注册一个处理器" alt="" coords="21,79,229,104"/>
-<area shape="poly" title=" " alt="" coords="128,44,128,79,123,79,123,44"/>
+<area shape="rect" title="ModelIOSystem接口基类，出于插件开发而设计的接口基类。" alt="" coords="125,5,365,31"/>
+<area shape="rect" href="classsystems_1_1algo_1_1ShadowIOSystem.html" title="影子 IO 适配：read 解析后进收养清单（不落真实层）； write* 经 id 映射转发真实系统（算法执行期模型冻结，真实层仅被只读访问）" alt="" coords="5,79,240,104"/>
+<area shape="poly" title=" " alt="" coords="215,40,144,81,141,76,213,35"/>
+<area shape="rect" href="classsystems_1_1io_1_1ModelIOSystem.html" title="模型IO系统，每种文件格式只能注册一个处理器" alt="" coords="264,79,472,104"/>
+<area shape="poly" title=" " alt="" coords="278,35,349,76,347,81,275,40"/>
 </map>
 <center><span class="legend">[<a href="graph_legend.html">图例</a>]</span></center></div>
 <table class="memberdecls">
@@ -174,7 +176,7 @@ Public 成员函数</h2></td></tr>
 <dl class="section return"><dt>返回</dt><dd>读取并添加模型成功返回true；文件类型未注册或文件内容无法解析为模型时返回false </dd></dl>
 <dl class="section note"><dt>注解</dt><dd>失败不抛异常，由调用方自行决定是中断还是继续（如算法插件读回结果文件时常选择继续） </dd></dl>
 
-<p>在 <a class="el" href="classsystems_1_1io_1_1ModelIOSystem.html#a4a1e2dfc62c8de223436c999d810ccd5">systems::io::ModelIOSystem</a> 内被实现.</p>
+<p>在 <a class="el" href="classModelIOSystem.html#a4a1e2dfc62c8de223436c999d810ccd5">ModelIOSystem</a>, <a class="el" href="classsystems_1_1algo_1_1ShadowIOSystem.html#a4c647786875e812313fd1120310bb414">systems::algo::ShadowIOSystem</a> , 以及 <a class="el" href="classsystems_1_1io_1_1ModelIOSystem.html#a4a1e2dfc62c8de223436c999d810ccd5">systems::io::ModelIOSystem</a> 内被实现.</p>
 
 </div>
 </div>
@@ -215,7 +217,7 @@ Public 成员函数</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p>在 <a class="el" href="classsystems_1_1io_1_1ModelIOSystem.html#a5b3ca6c65457cf47801ca9fd44ce21db">systems::io::ModelIOSystem</a> 内被实现.</p>
+<p>在 <a class="el" href="classModelIOSystem.html#a5b3ca6c65457cf47801ca9fd44ce21db">ModelIOSystem</a>, <a class="el" href="classsystems_1_1algo_1_1ShadowIOSystem.html#a6de53f8117f94a16dae065faf1f4b244">systems::algo::ShadowIOSystem</a> , 以及 <a class="el" href="classsystems_1_1io_1_1ModelIOSystem.html#a5b3ca6c65457cf47801ca9fd44ce21db">systems::io::ModelIOSystem</a> 内被实现.</p>
 
 </div>
 </div>
@@ -256,7 +258,7 @@ Public 成员函数</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p>在 <a class="el" href="classsystems_1_1io_1_1ModelIOSystem.html#a6b22d6ee8ad557fa06a8f76940c1446c">systems::io::ModelIOSystem</a> 内被实现.</p>
+<p>在 <a class="el" href="classModelIOSystem.html#a6b22d6ee8ad557fa06a8f76940c1446c">ModelIOSystem</a>, <a class="el" href="classsystems_1_1algo_1_1ShadowIOSystem.html#a468a76bab52f090835e84559078f6b7f">systems::algo::ShadowIOSystem</a> , 以及 <a class="el" href="classsystems_1_1io_1_1ModelIOSystem.html#a6b22d6ee8ad557fa06a8f76940c1446c">systems::io::ModelIOSystem</a> 内被实现.</p>
 
 </div>
 </div>

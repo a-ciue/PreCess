@@ -1,0 +1,19 @@
+<map id="model/systems/job/Job.h" name="model/systems/job/Job.h">
+<area shape="rect" id="Node000001" title="任务单元：状态、错误、取消令牌与执行闭包（线程模型的任务载体）" alt="" coords="181,5,364,31"/>
+<area shape="rect" id="Node000002" href="$JobProgress_8h.html" title="进度上报回调类型：model 层（任务系统）与上层 UI 适配层的公共契约" alt="" coords="43,79,153,104"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="246,33,140,76,138,71,244,28"/>
+<area shape="rect" id="Node000003" title=" " alt="" coords="5,152,92,177"/>
+<area shape="poly" id="edge5_Node000001_Node000003" title=" " alt="" coords="182,33,91,51,54,65,32,80,26,94,26,108,36,139,31,140,21,109,21,92,28,77,52,60,89,46,181,27"/>
+<area shape="rect" id="Node000004" title=" " alt="" coords="139,152,198,177"/>
+<area shape="poly" id="edge8_Node000001_Node000004" title=" " alt="" coords="263,33,220,80,183,141,178,139,216,77,259,29"/>
+<area shape="rect" id="Node000005" title=" " alt="" coords="229,79,316,104"/>
+<area shape="poly" id="edge4_Node000001_Node000005" title=" " alt="" coords="275,31,275,65,270,65,270,31"/>
+<area shape="rect" id="Node000006" title=" " alt="" coords="341,79,405,104"/>
+<area shape="poly" id="edge6_Node000001_Node000006" title=" " alt="" coords="290,29,347,68,344,73,287,33"/>
+<area shape="rect" id="Node000007" title=" " alt="" coords="429,79,522,104"/>
+<area shape="poly" id="edge7_Node000001_Node000007" title=" " alt="" coords="306,28,431,72,429,77,304,33"/>
+<area shape="rect" id="Node000008" title=" " alt="" coords="547,79,609,104"/>
+<area shape="poly" id="edge9_Node000001_Node000008" title=" " alt="" coords="325,28,534,76,532,81,324,33"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="92,106,67,142,62,139,88,103"/>
+<area shape="poly" id="edge3_Node000002_Node000004" title=" " alt="" coords="112,102,150,140,146,144,108,106"/>
+</map>

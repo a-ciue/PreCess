@@ -109,7 +109,7 @@ systems::feature::FeatureRegistrar 的协作图:</div>
 <area shape="poly" title=" " alt="" coords="679,136,782,134,782,139,679,142"/>
 <area shape="rect" title=" " alt="" coords="804,177,977,217"/>
 <area shape="poly" title=" " alt="" coords="991,181,1123,159,1160,151,1161,156,1125,164,992,186"/>
-<area shape="rect" href="structsystems_1_1feature_1_1KeyBinding.html" title="按键绑定：按键事件匹配时定向回调功能的 onKeyEvent" alt="" coords="431,185,644,210"/>
+<area shape="rect" href="structsystems_1_1feature_1_1KeyBinding.html" title="按键绑定：明确声明正式 execute，或定向预览/非模型 onKeyEvent 回调" alt="" coords="431,185,644,210"/>
 <area shape="poly" title=" " alt="" coords="658,195,804,195,804,200,658,200"/>
 </map>
 <center><span class="legend">[<a href="graph_legend.html">图例</a>]</span></center></div>
@@ -121,7 +121,7 @@ Public 成员函数</h2></td></tr>
 <tr class="memitem:ae6229110772c883b63af615f04503c66" id="r_ae6229110772c883b63af615f04503c66"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ae6229110772c883b63af615f04503c66">addMenuItem</a> (<a class="el" href="structsystems_1_1feature_1_1MenuContribution.html">MenuContribution</a> item)</td></tr>
 <tr class="memdesc:ae6229110772c883b63af615f04503c66"><td class="mdescLeft">&#160;</td><td class="mdescRight">注册一个菜单项，点击后触发功能的 execute()  <br /></td></tr>
 <tr class="memitem:a0aba93c1f2ac3140c880ec4b872b8c70" id="r_a0aba93c1f2ac3140c880ec4b872b8c70"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a0aba93c1f2ac3140c880ec4b872b8c70">addKeyBinding</a> (<a class="el" href="structsystems_1_1feature_1_1KeyBinding.html">KeyBinding</a> binding)</td></tr>
-<tr class="memdesc:a0aba93c1f2ac3140c880ec4b872b8c70"><td class="mdescLeft">&#160;</td><td class="mdescRight">注册一个按键绑定，命中后回调功能的 onKeyEvent()  <br /></td></tr>
+<tr class="memdesc:a0aba93c1f2ac3140c880ec4b872b8c70"><td class="mdescLeft">&#160;</td><td class="mdescRight">注册按键绑定：execute=true 走正式执行，否则为预览/非模型 onKeyEvent 回调  <br /></td></tr>
 <tr class="memitem:ad2fb1c3ee0265abf1c839add3fe390c3" id="r_ad2fb1c3ee0265abf1c839add3fe390c3"><td class="memItemLeft" align="right" valign="top">const std::vector&lt; <a class="el" href="structcore_1_1ArgType.html">core::ArgType</a> &gt; &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ad2fb1c3ee0265abf1c839add3fe390c3">argTypes</a> () const noexcept</td></tr>
 <tr class="memitem:ad00acdb1bda0e2f75072f7a0f26ea86f" id="r_ad00acdb1bda0e2f75072f7a0f26ea86f"><td class="memItemLeft" align="right" valign="top">const std::vector&lt; <a class="el" href="structsystems_1_1feature_1_1MenuContribution.html">MenuContribution</a> &gt; &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ad00acdb1bda0e2f75072f7a0f26ea86f">menuItems</a> () const noexcept</td></tr>
 <tr class="memitem:a2798edca4724a88c35fde9ebac999e8a" id="r_a2798edca4724a88c35fde9ebac999e8a"><td class="memItemLeft" align="right" valign="top">const std::vector&lt; <a class="el" href="structsystems_1_1feature_1_1KeyBinding.html">KeyBinding</a> &gt; &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a2798edca4724a88c35fde9ebac999e8a">keyBindings</a> () const noexcept</td></tr>
@@ -159,7 +159,7 @@ Private 属性</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p>注册一个按键绑定，命中后回调功能的 onKeyEvent() </p>
+<p>注册按键绑定：execute=true 走正式执行，否则为预览/非模型 onKeyEvent 回调 </p>
 
 </div>
 </div>

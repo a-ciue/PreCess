@@ -15,6 +15,6 @@
 <area shape="poly" id="edge6_Node000006_Node000007" title=" " alt="" coords="679,136,782,134,782,139,679,142"/>
 <area shape="rect" id="Node000008" title=" " alt="" coords="804,177,977,217"/>
 <area shape="poly" id="edge8_Node000001_Node000008" title=" " alt="" coords="991,181,1123,159,1160,151,1161,156,1125,164,992,186"/>
-<area shape="rect" id="Node000009" href="$structsystems_1_1feature_1_1KeyBinding.html" title="按键绑定：按键事件匹配时定向回调功能的 onKeyEvent" alt="" coords="431,185,644,210"/>
+<area shape="rect" id="Node000009" href="$structsystems_1_1feature_1_1KeyBinding.html" title="按键绑定：明确声明正式 execute，或定向预览/非模型 onKeyEvent 回调" alt="" coords="431,185,644,210"/>
 <area shape="poly" id="edge9_Node000008_Node000009" title=" " alt="" coords="658,195,804,195,804,200,658,200"/>
 </map>

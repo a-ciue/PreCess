@@ -1,0 +1,140 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="zh">
+<head>
+<meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=11"/>
+<meta name="generator" content="Doxygen 1.14.0"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>PreCess: model/data/ModelScope.h 源文件</title>
+<link href="tabs.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="jquery.js"></script>
+<script type="text/javascript" src="dynsections.js"></script>
+<script type="text/javascript" src="clipboard.js"></script>
+<script type="text/javascript" src="cookie.js"></script>
+<link href="search/search.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="search/searchdata.js"></script>
+<script type="text/javascript" src="search/search.js"></script>
+<link href="doxygen.css" rel="stylesheet" type="text/css" />
+</head>
+<body>
+<div id="top"><!-- do not remove this div, it is closed by doxygen! -->
+<div id="titlearea">
+<table cellspacing="0" cellpadding="0">
+ <tbody>
+ <tr id="projectrow">
+  <td id="projectlogo"><img alt="Logo" src="PreCess.ico"/></td>
+  <td id="projectalign">
+   <div id="projectname">PreCess
+   </div>
+  </td>
+ </tr>
+ </tbody>
+</table>
+</div>
+<!-- end header part -->
+<!-- 制作者 Doxygen 1.14.0 -->
+<script type="text/javascript">
+var searchBox = new SearchBox("searchBox", "search/",'.html');
+</script>
+<script type="text/javascript">
+$(function() { codefold.init(); });
+</script>
+<script type="text/javascript" src="menudata.js"></script>
+<script type="text/javascript" src="menu.js"></script>
+<script type="text/javascript">
+$(function() {
+  initMenu('',true,false,'search.php','搜索',false);
+  $(function() { init_search(); });
+});
+</script>
+<div id="main-nav"></div>
+<!-- window showing the filter options -->
+<div id="MSearchSelectWindow"
+     onmouseover="return searchBox.OnSearchSelectShow()"
+     onmouseout="return searchBox.OnSearchSelectHide()"
+     onkeydown="return searchBox.OnSearchSelectKey(event)">
+</div>
+
+<!-- iframe showing the search results (closed by default) -->
+<div id="MSearchResultsWindow">
+<div id="MSearchResults">
+<div class="SRPage">
+<div id="SRIndex">
+<div id="SRResults"></div>
+<div class="SRStatus" id="Loading">载入中...</div>
+<div class="SRStatus" id="Searching">搜索中...</div>
+<div class="SRStatus" id="NoMatches">未找到</div>
+</div>
+</div>
+</div>
+</div>
+
+<div id="nav-path" class="navpath">
+  <ul>
+<li class="navelem"><a href="dir_3f14f6767c31cb4a1d22c13c18cc6fc3.html">model</a></li><li class="navelem"><a href="dir_84846e69b963a5367080adb8af90c8fe.html">data</a></li>  </ul>
+</div>
+</div><!-- top -->
+<div id="doc-content">
+<div class="header">
+  <div class="headertitle"><div class="title">ModelScope.h</div></div>
+</div><!--header-->
+<div class="contents">
+<a href="ModelScope_8h.html">浏览该文件的文档.</a><div class="fragment"><div class="line"><a id="l00001" name="l00001"></a><span class="lineno">    1</span></div>
+<div class="line"><a id="l00005" name="l00005"></a><span class="lineno">    5</span><span class="preprocessor">#pragma once</span></div>
+<div class="line"><a id="l00006" name="l00006"></a><span class="lineno">    6</span><span class="preprocessor">#include &quot;<a class="code" href="ModelLayer_8h.html">ModelLayer.h</a>&quot;</span></div>
+<div class="line"><a id="l00007" name="l00007"></a><span class="lineno">    7</span><span class="preprocessor">#include &quot;<a class="code" href="UndoStack_8h.html">UndoStack.h</a>&quot;</span></div>
+<div class="line"><a id="l00008" name="l00008"></a><span class="lineno">    8</span> </div>
+<div class="line"><a id="l00009" name="l00009"></a><span class="lineno">    9</span><span class="preprocessor">#include &lt;optional&gt;</span></div>
+<div class="line"><a id="l00010" name="l00010"></a><span class="lineno">   10</span><span class="preprocessor">#include &lt;string&gt;</span></div>
+<div class="line"><a id="l00011" name="l00011"></a><span class="lineno">   11</span></div>
+<div class="foldopen" id="foldopen00021" data-start="{" data-end="};">
+<div class="line"><a id="l00021" name="l00021"></a><span class="lineno"><a class="line" href="classModelScope.html">   21</a></span><span class="keyword">class </span><a class="code hl_function" href="classModelScope.html#aec6320254bdeac58d24a8fc3a64307ff">ModelScope</a> {</div>
+<div class="line"><a id="l00022" name="l00022"></a><span class="lineno">   22</span><span class="keyword">public</span>:</div>
+<div class="line"><a id="l00023" name="l00023"></a><span class="lineno"><a class="line" href="classModelScope.html#af84f5477753184e30ded611449f66953aee97be03cb04119af45014d815621ce1">   23</a></span>    <span class="keyword">enum class</span> <a class="code hl_enumeration" href="classModelScope.html#af84f5477753184e30ded611449f66953">Kind</a> { <a class="code hl_enumvalue" href="classModelScope.html#af84f5477753184e30ded611449f66953aee97be03cb04119af45014d815621ce1">Command</a>,</div>
+<div class="line"><a id="l00024" name="l00024"></a><span class="lineno"><a class="line" href="classModelScope.html#af84f5477753184e30ded611449f66953a40cd014b7b6251e3a22e6a45a73a64e1">   24</a></span>        <a class="code hl_enumvalue" href="classModelScope.html#af84f5477753184e30ded611449f66953a40cd014b7b6251e3a22e6a45a73a64e1">Execute</a>,</div>
+<div class="line"><a id="l00025" name="l00025"></a><span class="lineno"><a class="line" href="classModelScope.html#af84f5477753184e30ded611449f66953a31fde7b05ac8952dacf4af8a704074ec">   25</a></span>        <a class="code hl_enumvalue" href="classModelScope.html#af84f5477753184e30ded611449f66953a31fde7b05ac8952dacf4af8a704074ec">Preview</a>,</div>
+<div class="line"><a id="l00026" name="l00026"></a><span class="lineno"><a class="line" href="classModelScope.html#af84f5477753184e30ded611449f66953aaaf9ed605d0193362321ba0def15c9b7">   26</a></span>        <a class="code hl_enumvalue" href="classModelScope.html#af84f5477753184e30ded611449f66953aaaf9ed605d0193362321ba0def15c9b7">Notify</a>,</div>
+<div class="line"><a id="l00027" name="l00027"></a><span class="lineno"><a class="line" href="classModelScope.html#af84f5477753184e30ded611449f66953a8c6384dda98d8864d00e29dc96179970">   27</a></span>        <a class="code hl_enumvalue" href="classModelScope.html#af84f5477753184e30ded611449f66953a8c6384dda98d8864d00e29dc96179970">Cleanup</a> };</div>
+<div class="line"><a id="l00029" name="l00029"></a><span class="lineno">   29</span>    <a class="code hl_function" href="classModelScope.html#aec6320254bdeac58d24a8fc3a64307ff">ModelScope</a>(<a class="code hl_class" href="classModelLayer.html">ModelLayer</a>&amp; layer, <a class="code hl_class" href="classUndoStack.html">UndoStack</a>* stack, std::string label,</div>
+<div class="line"><a id="l00030" name="l00030"></a><span class="lineno">   30</span>        <a class="code hl_enumeration" href="classModelScope.html#af84f5477753184e30ded611449f66953">Kind</a> kind = <a class="code hl_enumvalue" href="classModelScope.html#af84f5477753184e30ded611449f66953aee97be03cb04119af45014d815621ce1">Kind::Command</a>, std::string owner = { });</div>
+<div class="line"><a id="l00031" name="l00031"></a><span class="lineno">   31</span>    <a class="code hl_function" href="classModelScope.html#a41cf73381b7fbdcb6c4fd8c3e23340d6">~ModelScope</a>();</div>
+<div class="line"><a id="l00032" name="l00032"></a><span class="lineno">   32</span> </div>
+<div class="line"><a id="l00033" name="l00033"></a><span class="lineno"><a class="line" href="classModelScope.html#a23650f08d96d64fc70f717b8dba605c2">   33</a></span>    <a class="code hl_function" href="classModelScope.html#a23650f08d96d64fc70f717b8dba605c2">ModelScope</a>(<span class="keyword">const</span> <a class="code hl_function" href="classModelScope.html#aec6320254bdeac58d24a8fc3a64307ff">ModelScope</a>&amp;) = <span class="keyword">delete</span>;</div>
+<div class="line"><a id="l00034" name="l00034"></a><span class="lineno"><a class="line" href="classModelScope.html#a575bd578f9ca4ad320752c4c6109f16f">   34</a></span>    <a class="code hl_function" href="classModelScope.html#aec6320254bdeac58d24a8fc3a64307ff">ModelScope</a>&amp; <a class="code hl_function" href="classModelScope.html#a575bd578f9ca4ad320752c4c6109f16f">operator=</a>(<span class="keyword">const</span> <a class="code hl_function" href="classModelScope.html#aec6320254bdeac58d24a8fc3a64307ff">ModelScope</a>&amp;) = <span class="keyword">delete</span>;</div>
+<div class="line"><a id="l00035" name="l00035"></a><span class="lineno">   35</span> </div>
+<div class="line"><a id="l00036" name="l00036"></a><span class="lineno">   36</span><span class="keyword">private</span>:</div>
+<div class="line"><a id="l00037" name="l00037"></a><span class="lineno"><a class="line" href="classModelScope.html#a388a97b257b8b101872b0ed0446503f5">   37</a></span>    <a class="code hl_class" href="classUndoStack_1_1OwnerScope.html">UndoStack::OwnerScope</a> <a class="code hl_variable" href="classModelScope.html#a388a97b257b8b101872b0ed0446503f5">owner_scope_</a>;</div>
+<div class="line"><a id="l00038" name="l00038"></a><span class="lineno"><a class="line" href="classModelScope.html#ac97a655d1880e697342b688527a252ea">   38</a></span>    std::optional&lt;UndoStack::PreviewAccess&gt; <a class="code hl_variable" href="classModelScope.html#ac97a655d1880e697342b688527a252ea">preview_access_</a>;</div>
+<div class="line"><a id="l00039" name="l00039"></a><span class="lineno"><a class="line" href="classModelScope.html#ac5a47ffa08d174a2f0ced4b37796d48b">   39</a></span>    std::optional&lt;UndoStack::RecordingPause&gt; <a class="code hl_variable" href="classModelScope.html#ac5a47ffa08d174a2f0ced4b37796d48b">recording_pause_</a>;</div>
+<div class="line"><a id="l00040" name="l00040"></a><span class="lineno"><a class="line" href="classModelScope.html#ac79dbe87c84b29423f24da900e238eb9">   40</a></span>    <a class="code hl_class" href="classModelLayer.html">ModelLayer</a>* <a class="code hl_variable" href="classModelScope.html#ac79dbe87c84b29423f24da900e238eb9">layer_</a>;</div>
+<div class="line"><a id="l00041" name="l00041"></a><span class="lineno"><a class="line" href="classModelScope.html#ad0a7eb9059a65478f228db8b6f1dd0b0">   41</a></span>    <a class="code hl_class" href="classUndoStack.html">UndoStack</a>* <a class="code hl_variable" href="classModelScope.html#ad0a7eb9059a65478f228db8b6f1dd0b0">stack_</a>; </div>
+<div class="line"><a id="l00042" name="l00042"></a><span class="lineno">   42</span>};</div>
+</div>
+<div class="ttc" id="aModelLayer_8h_html"><div class="ttname"><a href="ModelLayer_8h.html">ModelLayer.h</a></div><div class="ttdoc">负责管理多个模型实例的类</div></div>
+<div class="ttc" id="aUndoStack_8h_html"><div class="ttname"><a href="UndoStack_8h.html">UndoStack.h</a></div><div class="ttdoc">一个正式历史栈与临时预览捕获：事件不入栈，execute 收尾吸收预览。</div></div>
+<div class="ttc" id="aclassModelLayer_html"><div class="ttname"><a href="classModelLayer.html">ModelLayer</a></div><div class="ttdoc">负责管理多个 ModelData 实例的类</div><div class="ttdef"><b>定义</b> ModelLayer.h:50</div></div>
+<div class="ttc" id="aclassModelScope_html_a23650f08d96d64fc70f717b8dba605c2"><div class="ttname"><a href="classModelScope.html#a23650f08d96d64fc70f717b8dba605c2">ModelScope::ModelScope</a></div><div class="ttdeci">ModelScope(const ModelScope &amp;)=delete</div></div>
+<div class="ttc" id="aclassModelScope_html_a388a97b257b8b101872b0ed0446503f5"><div class="ttname"><a href="classModelScope.html#a388a97b257b8b101872b0ed0446503f5">ModelScope::owner_scope_</a></div><div class="ttdeci">UndoStack::OwnerScope owner_scope_</div><div class="ttdef"><b>定义</b> ModelScope.h:37</div></div>
+<div class="ttc" id="aclassModelScope_html_a41cf73381b7fbdcb6c4fd8c3e23340d6"><div class="ttname"><a href="classModelScope.html#a41cf73381b7fbdcb6c4fd8c3e23340d6">ModelScope::~ModelScope</a></div><div class="ttdeci">~ModelScope()</div><div class="ttdef"><b>定义</b> ModelScope.cpp:23</div></div>
+<div class="ttc" id="aclassModelScope_html_a575bd578f9ca4ad320752c4c6109f16f"><div class="ttname"><a href="classModelScope.html#a575bd578f9ca4ad320752c4c6109f16f">ModelScope::operator=</a></div><div class="ttdeci">ModelScope &amp; operator=(const ModelScope &amp;)=delete</div></div>
+<div class="ttc" id="aclassModelScope_html_ac5a47ffa08d174a2f0ced4b37796d48b"><div class="ttname"><a href="classModelScope.html#ac5a47ffa08d174a2f0ced4b37796d48b">ModelScope::recording_pause_</a></div><div class="ttdeci">std::optional&lt; UndoStack::RecordingPause &gt; recording_pause_</div><div class="ttdef"><b>定义</b> ModelScope.h:39</div></div>
+<div class="ttc" id="aclassModelScope_html_ac79dbe87c84b29423f24da900e238eb9"><div class="ttname"><a href="classModelScope.html#ac79dbe87c84b29423f24da900e238eb9">ModelScope::layer_</a></div><div class="ttdeci">ModelLayer * layer_</div><div class="ttdef"><b>定义</b> ModelScope.h:40</div></div>
+<div class="ttc" id="aclassModelScope_html_ac97a655d1880e697342b688527a252ea"><div class="ttname"><a href="classModelScope.html#ac97a655d1880e697342b688527a252ea">ModelScope::preview_access_</a></div><div class="ttdeci">std::optional&lt; UndoStack::PreviewAccess &gt; preview_access_</div><div class="ttdef"><b>定义</b> ModelScope.h:38</div></div>
+<div class="ttc" id="aclassModelScope_html_ad0a7eb9059a65478f228db8b6f1dd0b0"><div class="ttname"><a href="classModelScope.html#ad0a7eb9059a65478f228db8b6f1dd0b0">ModelScope::stack_</a></div><div class="ttdeci">UndoStack * stack_</div><div class="ttdoc">正式入口且非空（构造时裁决）</div><div class="ttdef"><b>定义</b> ModelScope.h:41</div></div>
+<div class="ttc" id="aclassModelScope_html_aec6320254bdeac58d24a8fc3a64307ff"><div class="ttname"><a href="classModelScope.html#aec6320254bdeac58d24a8fc3a64307ff">ModelScope::ModelScope</a></div><div class="ttdeci">ModelScope(ModelLayer &amp;layer, UndoStack *stack, std::string label, Kind kind=Kind::Command, std::string owner={ })</div><div class="ttdoc">固定框架入口；Execute 吸收预览，Preview 只允许本 owner 预览写，Notify 只 flush。</div><div class="ttdef"><b>定义</b> ModelScope.cpp:9</div></div>
+<div class="ttc" id="aclassModelScope_html_af84f5477753184e30ded611449f66953"><div class="ttname"><a href="classModelScope.html#af84f5477753184e30ded611449f66953">ModelScope::Kind</a></div><div class="ttdeci">Kind</div><div class="ttdef"><b>定义</b> ModelScope.h:23</div></div>
+<div class="ttc" id="aclassModelScope_html_af84f5477753184e30ded611449f66953a31fde7b05ac8952dacf4af8a704074ec"><div class="ttname"><a href="classModelScope.html#af84f5477753184e30ded611449f66953a31fde7b05ac8952dacf4af8a704074ec">ModelScope::Kind::Preview</a></div><div class="ttdeci">@ Preview</div><div class="ttdef"><b>定义</b> ModelScope.h:25</div></div>
+<div class="ttc" id="aclassModelScope_html_af84f5477753184e30ded611449f66953a40cd014b7b6251e3a22e6a45a73a64e1"><div class="ttname"><a href="classModelScope.html#af84f5477753184e30ded611449f66953a40cd014b7b6251e3a22e6a45a73a64e1">ModelScope::Kind::Execute</a></div><div class="ttdeci">@ Execute</div><div class="ttdef"><b>定义</b> ModelScope.h:24</div></div>
+<div class="ttc" id="aclassModelScope_html_af84f5477753184e30ded611449f66953a8c6384dda98d8864d00e29dc96179970"><div class="ttname"><a href="classModelScope.html#af84f5477753184e30ded611449f66953a8c6384dda98d8864d00e29dc96179970">ModelScope::Kind::Cleanup</a></div><div class="ttdeci">@ Cleanup</div><div class="ttdef"><b>定义</b> ModelScope.h:27</div></div>
+<div class="ttc" id="aclassModelScope_html_af84f5477753184e30ded611449f66953aaaf9ed605d0193362321ba0def15c9b7"><div class="ttname"><a href="classModelScope.html#af84f5477753184e30ded611449f66953aaaf9ed605d0193362321ba0def15c9b7">ModelScope::Kind::Notify</a></div><div class="ttdeci">@ Notify</div><div class="ttdef"><b>定义</b> ModelScope.h:26</div></div>
+<div class="ttc" id="aclassModelScope_html_af84f5477753184e30ded611449f66953aee97be03cb04119af45014d815621ce1"><div class="ttname"><a href="classModelScope.html#af84f5477753184e30ded611449f66953aee97be03cb04119af45014d815621ce1">ModelScope::Kind::Command</a></div><div class="ttdeci">@ Command</div><div class="ttdef"><b>定义</b> ModelScope.h:23</div></div>
+<div class="ttc" id="aclassUndoStack_1_1OwnerScope_html"><div class="ttname"><a href="classUndoStack_1_1OwnerScope.html">UndoStack::OwnerScope</a></div><div class="ttdoc">所有者上下文守卫：功能入口（invoke / 按键路由 / 事件回调）进入时压入功能 唯一名，析构弹出——嵌套安全（各功能的入口可相互重入）</div><div class="ttdef"><b>定义</b> UndoStack.h:47</div></div>
+<div class="ttc" id="aclassUndoStack_html"><div class="ttname"><a href="classUndoStack.html">UndoStack</a></div><div class="ttdef"><b>定义</b> UndoStack.h:31</div></div>
+</div><!-- fragment --></div><!-- contents -->
+<!-- start footer part -->
+<hr class="footer"/><address class="footer"><small>
+制作者&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.14.0
+</small></address>
+</div><!-- doc-content -->
+</body>
+</html>

@@ -1,0 +1,214 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="zh">
+<head>
+<meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=11"/>
+<meta name="generator" content="Doxygen 1.14.0"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>PreCess: ModelLayer::WriteAuthority结构体 参考</title>
+<link href="tabs.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="jquery.js"></script>
+<script type="text/javascript" src="dynsections.js"></script>
+<script type="text/javascript" src="clipboard.js"></script>
+<script type="text/javascript" src="cookie.js"></script>
+<link href="search/search.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="search/searchdata.js"></script>
+<script type="text/javascript" src="search/search.js"></script>
+<link href="doxygen.css" rel="stylesheet" type="text/css" />
+</head>
+<body>
+<div id="top"><!-- do not remove this div, it is closed by doxygen! -->
+<div id="titlearea">
+<table cellspacing="0" cellpadding="0">
+ <tbody>
+ <tr id="projectrow">
+  <td id="projectlogo"><img alt="Logo" src="PreCess.ico"/></td>
+  <td id="projectalign">
+   <div id="projectname">PreCess
+   </div>
+  </td>
+ </tr>
+ </tbody>
+</table>
+</div>
+<!-- end header part -->
+<!-- 制作者 Doxygen 1.14.0 -->
+<script type="text/javascript">
+var searchBox = new SearchBox("searchBox", "search/",'.html');
+</script>
+<script type="text/javascript">
+$(function() { codefold.init(); });
+</script>
+<script type="text/javascript" src="menudata.js"></script>
+<script type="text/javascript" src="menu.js"></script>
+<script type="text/javascript">
+$(function() {
+  initMenu('',true,false,'search.php','搜索',false);
+  $(function() { init_search(); });
+});
+</script>
+<div id="main-nav"></div>
+<!-- window showing the filter options -->
+<div id="MSearchSelectWindow"
+     onmouseover="return searchBox.OnSearchSelectShow()"
+     onmouseout="return searchBox.OnSearchSelectHide()"
+     onkeydown="return searchBox.OnSearchSelectKey(event)">
+</div>
+
+<!-- iframe showing the search results (closed by default) -->
+<div id="MSearchResultsWindow">
+<div id="MSearchResults">
+<div class="SRPage">
+<div id="SRIndex">
+<div id="SRResults"></div>
+<div class="SRStatus" id="Loading">载入中...</div>
+<div class="SRStatus" id="Searching">搜索中...</div>
+<div class="SRStatus" id="NoMatches">未找到</div>
+</div>
+</div>
+</div>
+</div>
+
+<div id="nav-path" class="navpath">
+  <ul>
+<li class="navelem"><a href="classModelLayer.html">ModelLayer</a></li><li class="navelem"><a href="structModelLayer_1_1WriteAuthority.html">WriteAuthority</a></li>  </ul>
+</div>
+</div><!-- top -->
+<div id="doc-content">
+<div class="header">
+  <div class="summary">
+<a href="#pub-attribs">Public 属性</a> &#124;
+<a href="structModelLayer_1_1WriteAuthority-members.html">所有成员列表</a>  </div>
+  <div class="headertitle"><div class="title">ModelLayer::WriteAuthority结构体 参考</div></div>
+</div><!--header-->
+<div class="contents">
+
+<p>写权限状态（堆上共享）：含线程亲和、冻结窗口与框架特权深度  
+ <a href="#details">更多...</a></p>
+<table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 id="header-pub-attribs" class="groupheader"><a id="pub-attribs" name="pub-attribs"></a>
+Public 属性</h2></td></tr>
+<tr class="memitem:a68b05b1e9ceb9df2eca0aa811ff0034d" id="r_a68b05b1e9ceb9df2eca0aa811ff0034d"><td class="memItemLeft" align="right" valign="top">std::thread::id&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a68b05b1e9ceb9df2eca0aa811ff0034d">owner_thread</a> { std::this_thread::get_id() }</td></tr>
+<tr class="memdesc:a68b05b1e9ceb9df2eca0aa811ff0034d"><td class="mdescLeft">&#160;</td><td class="mdescRight">undo 记账线程（构造线程，不变）  <br /></td></tr>
+<tr class="memitem:ab9efc7fd17857979a4c5e57cd51ad1f5" id="r_ab9efc7fd17857979a4c5e57cd51ad1f5"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ab9efc7fd17857979a4c5e57cd51ad1f5">offthread_ok</a> { false }</td></tr>
+<tr class="memdesc:ab9efc7fd17857979a4c5e57cd51ad1f5"><td class="mdescLeft">&#160;</td><td class="mdescRight">影子层豁免线程闸（构造后一次性置位）  <br /></td></tr>
+<tr class="memitem:af23efd5381645988fdaaa724c78656c4" id="r_af23efd5381645988fdaaa724c78656c4"><td class="memItemLeft" align="right" valign="top">std::uint64_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#af23efd5381645988fdaaa724c78656c4">operation</a> { 0 }</td></tr>
+<tr class="memdesc:af23efd5381645988fdaaa724c78656c4"><td class="mdescLeft">&#160;</td><td class="mdescRight">当前操作身份，0 表示空闲  <br /></td></tr>
+<tr class="memitem:add201accbf2ee08a3ead61770f933e78" id="r_add201accbf2ee08a3ead61770f933e78"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#add201accbf2ee08a3ead61770f933e78">masked</a> { false }</td></tr>
+<tr class="memdesc:add201accbf2ee08a3ead61770f933e78"><td class="mdescLeft">&#160;</td><td class="mdescRight">当前操作的展示类别  <br /></td></tr>
+<tr class="memitem:a3da2850503ff8f018496e0a2cd5c0e0f" id="r_a3da2850503ff8f018496e0a2cd5c0e0f"><td class="memItemLeft" align="right" valign="top">std::uint64_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a3da2850503ff8f018496e0a2cd5c0e0f">next_operation</a> { 0 }</td></tr>
+<tr class="memdesc:a3da2850503ff8f018496e0a2cd5c0e0f"><td class="mdescLeft">&#160;</td><td class="mdescRight">仅由模型所属线程发号  <br /></td></tr>
+<tr class="memitem:a57a93d46b17bfed7b754abe7cd58afe0" id="r_a57a93d46b17bfed7b754abe7cd58afe0"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a57a93d46b17bfed7b754abe7cd58afe0">privilege</a> { 0 }</td></tr>
+<tr class="memdesc:a57a93d46b17bfed7b754abe7cd58afe0"><td class="mdescLeft">&#160;</td><td class="mdescRight">框架写特权深度（仅持特权线程自身增减）  <br /></td></tr>
+</table>
+<a name="details" id="details"></a><h2 id="header-details" class="groupheader">详细描述</h2>
+<div class="textblock"><p>写权限状态（堆上共享）：含线程亲和、冻结窗口与框架特权深度 </p>
+<p>所有占用／授权变更均在所属线程，worker 只访问独立影子，不需要原子释放协议。 移动模型时共享控制块，既有操作凭证仍能按原身份释放。 </p>
+</div><a name="doc-variable-members" id="doc-variable-members"></a><h2 id="header-doc-variable-members" class="groupheader">类成员变量说明</h2>
+<a id="add201accbf2ee08a3ead61770f933e78" name="add201accbf2ee08a3ead61770f933e78"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#add201accbf2ee08a3ead61770f933e78">&#9670;&#160;</a></span>masked</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool ModelLayer::WriteAuthority::masked { false }</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>当前操作的展示类别 </p>
+
+</div>
+</div>
+<a id="a3da2850503ff8f018496e0a2cd5c0e0f" name="a3da2850503ff8f018496e0a2cd5c0e0f"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a3da2850503ff8f018496e0a2cd5c0e0f">&#9670;&#160;</a></span>next_operation</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::uint64_t ModelLayer::WriteAuthority::next_operation { 0 }</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>仅由模型所属线程发号 </p>
+
+</div>
+</div>
+<a id="ab9efc7fd17857979a4c5e57cd51ad1f5" name="ab9efc7fd17857979a4c5e57cd51ad1f5"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ab9efc7fd17857979a4c5e57cd51ad1f5">&#9670;&#160;</a></span>offthread_ok</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool ModelLayer::WriteAuthority::offthread_ok { false }</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>影子层豁免线程闸（构造后一次性置位） </p>
+
+</div>
+</div>
+<a id="af23efd5381645988fdaaa724c78656c4" name="af23efd5381645988fdaaa724c78656c4"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#af23efd5381645988fdaaa724c78656c4">&#9670;&#160;</a></span>operation</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::uint64_t ModelLayer::WriteAuthority::operation { 0 }</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>当前操作身份，0 表示空闲 </p>
+
+</div>
+</div>
+<a id="a68b05b1e9ceb9df2eca0aa811ff0034d" name="a68b05b1e9ceb9df2eca0aa811ff0034d"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a68b05b1e9ceb9df2eca0aa811ff0034d">&#9670;&#160;</a></span>owner_thread</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::thread::id ModelLayer::WriteAuthority::owner_thread { std::this_thread::get_id() }</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>undo 记账线程（构造线程，不变） </p>
+
+</div>
+</div>
+<a id="a57a93d46b17bfed7b754abe7cd58afe0" name="a57a93d46b17bfed7b754abe7cd58afe0"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a57a93d46b17bfed7b754abe7cd58afe0">&#9670;&#160;</a></span>privilege</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">int ModelLayer::WriteAuthority::privilege { 0 }</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>框架写特权深度（仅持特权线程自身增减） </p>
+
+</div>
+</div>
+<hr/>该结构体的文档由以下文件生成:<ul>
+<li>model/data/<a class="el" href="ModelLayer_8h_source.html">ModelLayer.h</a></li>
+</ul>
+</div><!-- contents -->
+<!-- start footer part -->
+<hr class="footer"/><address class="footer"><small>
+制作者&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.14.0
+</small></address>
+</div><!-- doc-content -->
+</body>
+</html>

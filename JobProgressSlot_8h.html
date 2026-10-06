@@ -1,0 +1,155 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="zh">
+<head>
+<meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=11"/>
+<meta name="generator" content="Doxygen 1.14.0"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>PreCess: app/model/JobProgressSlot.h 文件参考</title>
+<link href="tabs.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="jquery.js"></script>
+<script type="text/javascript" src="dynsections.js"></script>
+<script type="text/javascript" src="clipboard.js"></script>
+<script type="text/javascript" src="cookie.js"></script>
+<link href="search/search.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="search/searchdata.js"></script>
+<script type="text/javascript" src="search/search.js"></script>
+<link href="doxygen.css" rel="stylesheet" type="text/css" />
+</head>
+<body>
+<div id="top"><!-- do not remove this div, it is closed by doxygen! -->
+<div id="titlearea">
+<table cellspacing="0" cellpadding="0">
+ <tbody>
+ <tr id="projectrow">
+  <td id="projectlogo"><img alt="Logo" src="PreCess.ico"/></td>
+  <td id="projectalign">
+   <div id="projectname">PreCess
+   </div>
+  </td>
+ </tr>
+ </tbody>
+</table>
+</div>
+<!-- end header part -->
+<!-- 制作者 Doxygen 1.14.0 -->
+<script type="text/javascript">
+var searchBox = new SearchBox("searchBox", "search/",'.html');
+</script>
+<script type="text/javascript">
+$(function() { codefold.init(); });
+</script>
+<script type="text/javascript" src="menudata.js"></script>
+<script type="text/javascript" src="menu.js"></script>
+<script type="text/javascript">
+$(function() {
+  initMenu('',true,false,'search.php','搜索',false);
+  $(function() { init_search(); });
+});
+</script>
+<div id="main-nav"></div>
+<!-- window showing the filter options -->
+<div id="MSearchSelectWindow"
+     onmouseover="return searchBox.OnSearchSelectShow()"
+     onmouseout="return searchBox.OnSearchSelectHide()"
+     onkeydown="return searchBox.OnSearchSelectKey(event)">
+</div>
+
+<!-- iframe showing the search results (closed by default) -->
+<div id="MSearchResultsWindow">
+<div id="MSearchResults">
+<div class="SRPage">
+<div id="SRIndex">
+<div id="SRResults"></div>
+<div class="SRStatus" id="Loading">载入中...</div>
+<div class="SRStatus" id="Searching">搜索中...</div>
+<div class="SRStatus" id="NoMatches">未找到</div>
+</div>
+</div>
+</div>
+</div>
+
+<div id="nav-path" class="navpath">
+  <ul>
+<li class="navelem"><a href="dir_d422163b96683743ed3963d4aac17747.html">app</a></li><li class="navelem"><a href="dir_7264f15838153470b7a2e9ca1ba7b2a9.html">model</a></li>  </ul>
+</div>
+</div><!-- top -->
+<div id="doc-content">
+<div class="header">
+  <div class="summary">
+<a href="#nested-classes">类</a>  </div>
+  <div class="headertitle"><div class="title">JobProgressSlot.h 文件参考</div></div>
+</div><!--header-->
+<div class="contents">
+
+<p>进度槽：计算与提交共用，GUI 定频轮询（替代每报一次跨线程投递）  
+<a href="#details">更多...</a></p>
+<div class="textblock"><code>#include &lt;mutex&gt;</code><br />
+<code>#include &lt;string&gt;</code><br />
+<code>#include &lt;utility&gt;</code><br />
+</div><div class="textblock"><div class="dynheader">
+JobProgressSlot.h 的引用(Include)关系图:</div>
+<div class="dyncontent">
+<div class="center"><img src="JobProgressSlot_8h__incl.png" border="0" usemap="#aapp_2model_2JobProgressSlot_8h" loading="lazy" alt=""/></div>
+<map name="aapp_2model_2JobProgressSlot_8h" id="aapp_2model_2JobProgressSlot_8h">
+<area shape="rect" title="进度槽：计算与提交共用，GUI 定频轮询（替代每报一次跨线程投递）" alt="" coords="19,5,227,31"/>
+<area shape="rect" title=" " alt="" coords="5,79,69,104"/>
+<area shape="poly" title=" " alt="" coords="111,33,63,72,60,68,107,29"/>
+<area shape="rect" title=" " alt="" coords="93,79,152,104"/>
+<area shape="poly" title=" " alt="" coords="125,31,125,65,120,65,120,31"/>
+<area shape="rect" title=" " alt="" coords="177,79,237,104"/>
+<area shape="poly" title=" " alt="" coords="138,29,184,67,181,72,134,33"/>
+</map>
+</div>
+</div><div class="textblock"><div class="dynheader">
+此图展示该文件被哪些文件直接或间接地引用了:</div>
+<div class="dyncontent">
+<div class="center"><img src="JobProgressSlot_8h__dep__incl.png" border="0" usemap="#aapp_2model_2JobProgressSlot_8hdep" loading="lazy" alt=""/></div>
+<map name="aapp_2model_2JobProgressSlot_8hdep" id="aapp_2model_2JobProgressSlot_8hdep">
+<area shape="rect" title="进度槽：计算与提交共用，GUI 定频轮询（替代每报一次跨线程投递）" alt="" coords="733,5,941,31"/>
+<area shape="rect" href="QTaskStatus_8h.html" title="全局单槽任务的 Qt 展示：唯一进度合流、忙状态、取消入口与终态反馈。" alt="" coords="639,86,826,111"/>
+<area shape="poly" title=" " alt="" coords="812,41,750,88,746,84,809,37"/>
+<area shape="rect" href="TestJobProgressSlot_8cpp.html" title="JobProgressSlot 单元测试：last&#45;wins 合并、value/label 成对、终态门闩、并发写读" alt="" coords="850,79,1031,119"/>
+<area shape="poly" title=" " alt="" coords="864,37,917,76,914,81,861,41"/>
+<area shape="rect" href="QModelManager_8h.html" title=" " alt="" coords="275,174,489,199"/>
+<area shape="poly" title=" " alt="" coords="673,117,429,177,428,171,672,112"/>
+<area shape="rect" href="QTaskStatus_8cpp.html" title="计算与提交共用一个进度槽，GUI 统一呈现执行反馈。" alt="" coords="513,174,715,199"/>
+<area shape="poly" title=" " alt="" coords="707,122,632,176,629,172,704,117"/>
+<area shape="rect" href="QAlgorithmSystemAdaptor_8cpp.html" title=" " alt="" coords="739,167,966,207"/>
+<area shape="poly" title=" " alt="" coords="762,117,828,164,825,169,759,122"/>
+<area shape="rect" href="TestQTaskStatus_8cpp.html" title="共享 Runner 的展示、取消与后继任务回归。" alt="" coords="991,174,1203,199"/>
+<area shape="poly" title=" " alt="" coords="795,112,1049,171,1048,177,794,117"/>
+<area shape="rect" href="main_8cpp.html" title=" " alt="" coords="5,255,116,280"/>
+<area shape="poly" title=" " alt="" coords="323,205,108,257,107,252,322,200"/>
+<area shape="rect" href="QModelManager_8cpp.html" title=" " alt="" coords="140,255,368,280"/>
+<area shape="poly" title=" " alt="" coords="353,209,274,257,272,252,350,204"/>
+<area shape="rect" href="TestQModelDeletion_8cpp.html" title="Qt 删除入口的忙时拒绝与撤销状态通知回归测试" alt="" coords="393,255,630,280"/>
+<area shape="poly" title=" " alt="" coords="414,204,494,252,491,257,411,209"/>
+<area shape="rect" href="TestUndoQml_8cpp.html" title="实际 QML 删除与选择器失效路径回归测试" alt="" coords="655,255,848,280"/>
+<area shape="poly" title=" " alt="" coords="450,200,698,252,697,257,448,205"/>
+</map>
+</div>
+</div>
+<p><a href="JobProgressSlot_8h_source.html">浏览该文件的源代码.</a></p>
+<table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 id="header-nested-classes" class="groupheader"><a id="nested-classes" name="nested-classes"></a>
+类</h2></td></tr>
+<tr class="memitem:JobProgressSlot" id="r_JobProgressSlot"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classJobProgressSlot.html">JobProgressSlot</a></td></tr>
+</table>
+<a name="details" id="details"></a><h2 id="header-details" class="groupheader">详细描述</h2>
+<div class="textblock"><p>进度槽：计算与提交共用，GUI 定频轮询（替代每报一次跨线程投递） </p>
+<p>轮询模型：worker 侧 report 每次调用仅写槽（短锁拷贝，近乎零成本），GUI 侧 QTimer 定频 poll 取最新快照落地——N 次上报折叠为 ≤时长/轮询周期 次 UI 更新，事件队列不再 被进度投递灌满；label→QString 转换也随之移到轮询侧（每轮询 1 次，替代每报 1 次）。</p>
+<p>契约：</p><ul>
+<li>last-wins 合并：中间帧自然丢弃，poll 只见最新值；</li>
+<li>成对一致：value 与有效 label 在同一把锁下拷出；空 label 只更新数值、沿用文字；</li>
+<li>终态门闩：close() 后 poll 恒空、write 被丢弃——"终态之后无进度事件"由本类保证 （GUI 侧先 close 再呈现终态，随后到达的迟到写入一律作废）；</li>
+<li>reset()：新任务开始时清空待投递残留并解除门闩。 </li>
+</ul>
+</div></div><!-- contents -->
+<!-- start footer part -->
+<hr class="footer"/><address class="footer"><small>
+制作者&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.14.0
+</small></address>
+</div><!-- doc-content -->
+</body>
+</html>

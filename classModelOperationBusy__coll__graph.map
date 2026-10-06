@@ -1,0 +1,7 @@
+<map id="ModelOperationBusy" name="ModelOperationBusy">
+<area shape="rect" id="Node000001" title="框架忙碌拒绝：桥接层统一处理，插件无需自行捕获。" alt="" coords="5,152,164,177"/>
+<area shape="rect" id="Node000002" title=" " alt="" coords="15,79,154,104"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="87,118,87,152,82,152,82,118"/>
+<area shape="rect" id="Node000003" title=" " alt="" coords="27,5,142,31"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="87,44,87,79,82,79,82,44"/>
+</map>

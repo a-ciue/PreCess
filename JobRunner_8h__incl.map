@@ -1,0 +1,29 @@
+<map id="model/systems/job/JobRunner.h" name="model/systems/job/JobRunner.h">
+<area shape="rect" id="Node000001" title="单槽执行器：worker 只计算，所属线程一次完成提交、清理和释放。" alt="" coords="572,5,799,31"/>
+<area shape="rect" id="Node000002" href="$Job_8h.html" title="任务单元：状态、错误、取消令牌与执行闭包（线程模型的任务载体）" alt="" coords="317,79,371,104"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="631,33,385,84,384,79,630,28"/>
+<area shape="rect" id="Node000004" title=" " alt="" coords="449,225,535,251"/>
+<area shape="poly" id="edge12_Node000001_Node000004" title=" " alt="" coords="682,32,607,179,575,204,540,222,537,218,572,200,603,176,677,30"/>
+<area shape="rect" id="Node000007" title=" " alt="" coords="529,152,593,177"/>
+<area shape="poly" id="edge14_Node000001_Node000007" title=" " alt="" coords="669,33,642,54,614,80,592,111,575,141,570,138,587,108,610,77,638,50,666,29"/>
+<area shape="rect" id="Node000010" title=" " alt="" coords="669,79,811,104"/>
+<area shape="poly" id="edge11_Node000001_Node000010" title=" " alt="" coords="696,29,725,66,721,69,692,33"/>
+<area shape="rect" id="Node000011" title=" " alt="" coords="836,79,913,104"/>
+<area shape="poly" id="edge13_Node000001_Node000011" title=" " alt="" coords="717,28,832,71,830,76,715,33"/>
+<area shape="rect" id="Node000012" title=" " alt="" coords="937,79,1001,104"/>
+<area shape="poly" id="edge15_Node000001_Node000012" title=" " alt="" coords="732,28,925,76,923,81,731,33"/>
+<area shape="rect" id="Node000003" href="$JobProgress_8h.html" title="进度上报回调类型：model 层（任务系统）与上层 UI 适配层的公共契约" alt="" coords="343,152,454,177"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="355,103,383,140,379,143,351,106"/>
+<area shape="poly" id="edge6_Node000002_Node000004" title=" " alt="" coords="372,97,421,116,446,131,467,150,484,180,492,211,487,212,479,182,463,154,442,135,418,120,370,102"/>
+<area shape="rect" id="Node000005" title=" " alt="" coords="163,225,221,251"/>
+<area shape="poly" id="edge9_Node000002_Node000005" title=" " alt="" coords="317,96,245,100,153,109,69,126,37,139,17,154,9,169,12,182,24,194,43,204,96,220,150,229,149,235,95,225,41,209,21,198,7,185,3,169,12,150,34,134,67,121,153,104,244,94,316,91"/>
+<area shape="rect" id="Node000006" title=" " alt="" coords="27,152,114,177"/>
+<area shape="poly" id="edge5_Node000002_Node000006" title=" " alt="" coords="317,102,128,151,126,146,315,97"/>
+<area shape="poly" id="edge7_Node000002_Node000007" title=" " alt="" coords="372,99,517,146,515,151,371,104"/>
+<area shape="rect" id="Node000008" title=" " alt="" coords="139,152,232,177"/>
+<area shape="poly" id="edge8_Node000002_Node000008" title=" " alt="" coords="319,106,225,149,222,144,317,102"/>
+<area shape="rect" id="Node000009" title=" " alt="" coords="257,152,319,177"/>
+<area shape="poly" id="edge10_Node000002_Node000009" title=" " alt="" coords="337,106,308,143,303,140,333,103"/>
+<area shape="poly" id="edge3_Node000003_Node000004" title=" " alt="" coords="415,175,467,215,464,219,412,179"/>
+<area shape="poly" id="edge4_Node000003_Node000005" title=" " alt="" coords="366,180,235,225,234,220,364,175"/>
+</map>

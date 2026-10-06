@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['session_3a_3asessionquery_0',['SessionQuery',['../classModelLayer.html#ad4e70668b1a1bd1051e233b733ce384c',1,'ModelLayer']]]
+  ['jobrunner_0',['JobRunner',['../classsystems_1_1job_1_1Job.html#a2996c8e766af3463bab4f904b3dd4369',1,'systems::job::Job']]]
 ];

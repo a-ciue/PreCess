@@ -1,6 +1,25 @@
 var searchData=
 [
   ['javascriptconsole_2eqml_0',['JavaScriptConsole.qml',['../JavaScriptConsole_8qml.html',1,'']]],
-  ['joint_5fand_5fweight_5ft_1',['joint_and_weight_t',['../structtinyobj_1_1joint__and__weight__t.html',1,'tinyobj']]],
-  ['joint_5fid_2',['joint_id',['../structtinyobj_1_1joint__and__weight__t.html#a17727aa846ad88914958883588822247',1,'tinyobj::joint_and_weight_t']]]
+  ['job_1',['Job',['../classsystems_1_1job_1_1Job.html',1,'systems::job::Job'],['../classsystems_1_1job_1_1Job.html#af3810a2f5e3dd61607ee62f58fef710f',1,'systems::job::Job::Job()']]],
+  ['job_2eh_2',['Job.h',['../Job_8h.html',1,'']]],
+  ['job_5frunner_5f_3',['job_runner_',['../classsession_1_1Session.html#ac828493e35c4d174697e0a31659d8e91',1,'session::Session::job_runner_'],['../classsystems_1_1algo_1_1AlgorithmSystem.html#ab9d73b13c1c70f259babbb03b7a0a84d',1,'systems::algo::AlgorithmSystem::job_runner_'],['../classsystems_1_1feature_1_1FeatureSystem.html#abfe98863d9e97e566819ac2f9132601d',1,'systems::feature::FeatureSystem::job_runner_']]],
+  ['jobcancelledexception_4',['JobCancelledException',['../classsystems_1_1job_1_1JobCancelledException.html',1,'systems::job']]],
+  ['jobcommitfn_5',['JobCommitFn',['../namespacesystems_1_1job.html#a71fc7b421856670dc6effb842cb2ef37',1,'systems::job']]],
+  ['jobfinishedfn_6',['JobFinishedFn',['../namespacesystems_1_1job.html#a2af5878d29208ac612981ea6c1e15087',1,'systems::job']]],
+  ['joboptions_7',['JobOptions',['../structsystems_1_1job_1_1JobOptions.html',1,'systems::job']]],
+  ['jobpreparefn_8',['JobPrepareFn',['../namespacesystems_1_1job.html#ad2801383588054d6a506a9d1a04e49a3',1,'systems::job']]],
+  ['jobprogress_2eh_9',['JobProgress.h',['../JobProgress_8h.html',1,'']]],
+  ['jobprogressfn_10',['JobProgressFn',['../namespacesystems_1_1job.html#a62b9db7222639d1e30366a1d75475e42',1,'systems::job']]],
+  ['jobprogressslot_11',['JobProgressSlot',['../classJobProgressSlot.html',1,'']]],
+  ['jobprogressslot_2eh_12',['JobProgressSlot.h',['../JobProgressSlot_8h.html',1,'']]],
+  ['jobrunner_13',['JobRunner',['../classsystems_1_1job_1_1JobRunner.html',1,'systems::job::JobRunner'],['../classsystems_1_1job_1_1Job.html#a2996c8e766af3463bab4f904b3dd4369',1,'systems::job::Job::JobRunner()'],['../classsystems_1_1job_1_1JobRunner.html#a4765888d1b32e5b043decfca082555d6',1,'systems::job::JobRunner::JobRunner(ModelLayer &amp;model, UndoStack *stack, std::function&lt; void(std::function&lt; void()&gt;)&gt; dispatcher)'],['../classsystems_1_1job_1_1JobRunner.html#a86b05e7c5d36bf25061d1f9d081e2edb',1,'systems::job::JobRunner::JobRunner(const JobRunner &amp;)=delete']]],
+  ['jobrunner_14',['jobRunner',['../classsession_1_1Session.html#a889ef84b85a783430bfaf4822a2f9575',1,'session::Session']]],
+  ['jobrunner_2ecpp_15',['JobRunner.cpp',['../JobRunner_8cpp.html',1,'']]],
+  ['jobrunner_2eh_16',['JobRunner.h',['../JobRunner_8h.html',1,'']]],
+  ['jobstate_17',['JobState',['../namespacesystems_1_1job.html#a45c525b96932d154a9b69c350f29e2b2',1,'systems::job']]],
+  ['jobtaskfn_18',['JobTaskFn',['../namespacesystems_1_1job.html#ae2006917203a4b569c4fe083d45939cc',1,'systems::job']]],
+  ['jobwork_19',['JobWork',['../structsystems_1_1job_1_1JobWork.html',1,'systems::job']]],
+  ['joint_5fand_5fweight_5ft_20',['joint_and_weight_t',['../structtinyobj_1_1joint__and__weight__t.html',1,'tinyobj']]],
+  ['joint_5fid_21',['joint_id',['../structtinyobj_1_1joint__and__weight__t.html#a17727aa846ad88914958883588822247',1,'tinyobj::joint_and_weight_t']]]
 ];

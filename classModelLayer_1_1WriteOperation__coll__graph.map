@@ -1,0 +1,7 @@
+<map id="ModelLayer::WriteOperation" name="ModelLayer::WriteOperation">
+<area shape="rect" id="Node000001" title="模型操作占用：身份绑定，只有本操作能够释放；取消不释放。" alt="" coords="8,212,213,237"/>
+<area shape="rect" id="Node000002" title=" " alt="" coords="5,101,216,141"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="113,155,113,212,108,212,108,155"/>
+<area shape="rect" id="Node000003" href="$structModelLayer_1_1WriteAuthority.html" title="写权限状态（堆上共享）：含线程亲和、冻结窗口与框架特权深度" alt="" coords="10,5,211,31"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="113,45,113,101,108,101,108,45"/>
+</map>

@@ -1,0 +1,116 @@
+<map id="systems::algo::ShadowIOSystem" name="systems::algo::ShadowIOSystem">
+<area shape="rect" id="Node000001" title="影子 IO 适配：read 解析后进收养清单（不落真实层）； write* 经 id 映射转发真实系统（算法执行期模型冻结，真实层仅被只读访问）" alt="" coords="2879,693,3113,718"/>
+<area shape="rect" id="Node000002" href="$classsystems_1_1io_1_1ModelIOSystemBase.html" title="ModelIOSystem接口基类，出于插件开发而设计的接口基类。" alt="" coords="2165,695,2405,721"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="2419,705,2878,703,2878,708,2419,710"/>
+<area shape="rect" id="Node000065" href="$classsystems_1_1io_1_1ModelIOSystem.html" title="模型IO系统，每种文件格式只能注册一个处理器" alt="" coords="2560,827,2768,853"/>
+<area shape="poly" id="edge45_Node000065_Node000002" title=" " alt="" coords="2392,721,2456,735,2520,755,2591,790,2646,825,2643,829,2588,795,2518,760,2455,740,2391,726"/>
+<area shape="rect" id="Node000003" href="$structsystems_1_1algo_1_1PreparedAlgorithm.html" title=" " alt="" coords="2543,378,2785,403"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="2690,411,2983,691,2979,694,2687,415"/>
+<area shape="rect" id="Node000004" title=" " alt="" coords="265,854,352,879"/>
+<area shape="poly" id="edge3_Node000003_Node000004" title=" " alt="" coords="332,842,446,743,507,701,568,658,592,636,684,586,759,555,838,532,941,508,1084,483,1272,461,1493,442,1729,427,2192,404,2542,391,2543,397,2193,409,1730,432,1493,448,1273,466,1084,488,942,513,840,537,761,560,686,591,595,641,571,662,510,705,450,747,335,846"/>
+<area shape="rect" id="Node000019" href="$classModelData.html" title="Model主要负责处理模型数据，先更新模型数据，再更新ModelActor调函数" alt="" coords="640,753,733,778"/>
+<area shape="poly" id="edge19_Node000019_Node000004" title=" " alt="" coords="340,845,389,818,447,795,498,782,550,773,640,764,640,770,550,778,499,787,449,800,392,823,343,849"/>
+<area shape="rect" id="Node000023" href="$structComponentData.html" title="模型的组成单元：一个 ComponentData 表示模型中的一个物体部件" alt="" coords="623,399,751,425"/>
+<area shape="poly" id="edge24_Node000023_Node000004" title=" " alt="" coords="316,840,335,793,363,733,400,668,446,609,477,583,505,568,534,555,568,533,629,473,673,423,677,427,633,477,571,537,537,559,508,573,480,587,450,613,404,671,368,735,340,795,321,842"/>
+<area shape="poly" id="edge46_Node000065_Node000004" title=" " alt="" coords="365,850,448,836,509,834,569,836,780,840,917,843,1056,854,1163,868,1270,882,1408,895,1564,904,1720,907,2287,907,2381,901,2474,886,2557,867,2621,850,2622,855,2558,873,2475,891,2382,906,2287,912,1720,912,1564,910,1408,900,1270,887,1162,873,1055,860,917,848,780,845,569,841,509,839,448,841,366,855"/>
+<area shape="rect" id="Node000066" href="$classUndoStack.html" title=" " alt="" coords="2239,1018,2331,1043"/>
+<area shape="poly" id="edge51_Node000066_Node000004" title=" " alt="" coords="329,889,379,952,412,987,450,1018,510,1062,560,1094,585,1105,613,1113,685,1120,1937,1120,1983,1118,2030,1111,2120,1090,2198,1064,2255,1041,2257,1046,2200,1069,2121,1095,2031,1116,1984,1123,1937,1125,685,1125,612,1119,583,1110,557,1099,507,1067,446,1022,409,991,375,956,324,892"/>
+<area shape="rect" id="Node000068" href="$structUndoRecord.html" title="一次操作 = 一条记录" alt="" coords="636,1223,737,1249"/>
+<area shape="poly" id="edge54_Node000068_Node000004" title=" " alt="" coords="316,892,328,953,352,1032,369,1073,391,1113,418,1150,449,1182,520,1200,636,1224,635,1229,519,1205,447,1186,414,1154,386,1116,364,1075,346,1033,323,954,311,893"/>
+<area shape="rect" id="Node000075" title=" " alt="" coords="1824,950,2048,1005"/>
+<area shape="poly" id="edge58_Node000075_Node000004" title=" " alt="" coords="330,889,379,943,412,971,449,994,487,1008,519,1012,593,1013,713,1024,868,1031,1142,1028,1618,1007,1823,988,1824,994,1619,1012,1142,1033,868,1036,713,1029,593,1019,518,1018,486,1013,447,998,409,976,375,947,326,892"/>
+<area shape="rect" id="Node000077" href="$structsystems_1_1io_1_1ModelIOInfo.html" title="模型层文件读写支持的文件类型信息" alt="" coords="959,947,1143,973"/>
+<area shape="poly" id="edge61_Node000077_Node000004" title=" " alt="" coords="343,885,389,912,451,944,521,974,594,996,650,1005,708,1009,823,1003,926,988,1004,970,1005,975,927,993,824,1009,708,1014,650,1010,593,1001,519,979,448,949,387,917,340,889"/>
+<area shape="rect" id="Node000078" title=" " alt="" coords="593,854,780,879"/>
+<area shape="poly" id="edge63_Node000078_Node000004" title=" " alt="" coords="366,864,593,864,593,869,366,869"/>
+<area shape="rect" id="Node000005" title=" " alt="" coords="5,847,144,887"/>
+<area shape="poly" id="edge4_Node000004_Node000005" title=" " alt="" coords="158,864,265,864,265,869,158,869"/>
+<area shape="rect" id="Node000006" href="$classsystems_1_1algo_1_1AlgorithmHandler.html" title="算法系统的功能接口，继承他来实现具体的算法功能" alt="" coords="2193,341,2378,381"/>
+<area shape="poly" id="edge5_Node000003_Node000006" title=" " alt="" coords="2392,367,2543,379,2542,384,2392,372"/>
+<area shape="rect" id="Node000007" title=" " alt="" coords="2214,277,2357,317"/>
+<area shape="poly" id="edge6_Node000003_Node000007" title=" " alt="" coords="2371,310,2519,343,2626,375,2625,380,2518,348,2370,315"/>
+<area shape="rect" id="Node000008" href="$classcore_1_1ArgObject.html" title="实例化的参数类型，存储参数对象的容器" alt="" coords="1875,285,1997,310"/>
+<area shape="poly" id="edge7_Node000007_Node000008" title=" " alt="" coords="2011,295,2214,295,2214,300,2011,300"/>
+<area shape="rect" id="Node000009" href="$classsystems_1_1job_1_1ShadowComponent.html" title=" " alt="" coords="2166,457,2405,482"/>
+<area shape="poly" id="edge8_Node000003_Node000009" title=" " alt="" coords="2418,471,2469,466,2518,457,2553,446,2587,431,2641,401,2644,406,2589,436,2555,451,2519,463,2469,472,2419,476"/>
+<area shape="rect" id="Node000010" href="$classModelObserver.html" title=" " alt="" coords="1453,473,1574,498"/>
+<area shape="poly" id="edge9_Node000009_Node000010" title=" " alt="" coords="1588,473,1642,468,1783,462,1924,460,2166,463,2166,468,1924,466,1783,468,1643,473,1588,478"/>
+<area shape="rect" id="Node000011" href="$classModelLayer.html" title="负责管理多个 ModelData 实例的类" alt="" coords="1887,615,1985,641"/>
+<area shape="poly" id="edge34_Node000011_Node000010" title=" " alt="" coords="1588,488,1707,501,1762,511,1801,522,1839,542,1874,567,1925,613,1921,617,1871,571,1837,546,1799,526,1761,516,1706,507,1588,494"/>
+<area shape="poly" id="edge10_Node000009_Node000011" title=" " alt="" coords="1976,607,2255,480,2257,485,1979,612"/>
+<area shape="poly" id="edge47_Node000065_Node000011" title=" " alt="" coords="1968,646,2054,700,2109,728,2166,752,2269,782,2374,805,2474,820,2560,830,2559,835,2473,825,2373,810,2267,788,2164,757,2107,733,2052,704,1965,651"/>
+<area shape="poly" id="edge50_Node000066_Node000011" title=" " alt="" coords="1952,652,2000,729,2034,773,2074,811,2092,821,2109,824,2127,829,2143,842,2155,863,2159,884,2154,923,2151,960,2155,978,2167,997,2182,1010,2200,1018,2240,1027,2238,1033,2199,1023,2180,1014,2163,1000,2150,980,2145,961,2149,922,2154,884,2150,865,2139,846,2124,833,2108,829,2090,826,2070,815,2030,776,1995,732,1948,655"/>
+<area shape="rect" id="Node000012" href="$classGeometryRegistry.html" title=" " alt="" coords="1443,322,1584,347"/>
+<area shape="poly" id="edge11_Node000011_Node000012" title=" " alt="" coords="1568,349,1680,395,1743,428,1802,467,1843,505,1880,546,1929,614,1925,617,1876,550,1840,509,1798,471,1740,433,1678,400,1566,354"/>
+<area shape="rect" id="Node000013" title=" " alt="" coords="958,386,1145,441"/>
+<area shape="poly" id="edge12_Node000012_Node000013" title=" " alt="" coords="1158,396,1384,360,1457,345,1458,350,1384,365,1159,402"/>
+<area shape="rect" id="Node000014" title=" " alt="" coords="963,150,1139,205"/>
+<area shape="poly" id="edge13_Node000012_Node000014" title=" " alt="" coords="1153,182,1208,190,1267,202,1328,220,1385,244,1398,255,1410,266,1491,320,1488,324,1406,270,1395,259,1383,249,1326,225,1266,208,1207,195,1152,187"/>
+<area shape="rect" id="Node000015" title=" " alt="" coords="965,229,1138,283"/>
+<area shape="poly" id="edge14_Node000012_Node000015" title=" " alt="" coords="1152,267,1384,304,1458,319,1457,325,1384,309,1151,272"/>
+<area shape="rect" id="Node000016" title=" " alt="" coords="963,307,1139,362"/>
+<area shape="poly" id="edge15_Node000012_Node000016" title=" " alt="" coords="1153,332,1443,332,1443,337,1153,337"/>
+<area shape="rect" id="Node000017" title=" " alt="" coords="1432,758,1595,813"/>
+<area shape="poly" id="edge16_Node000011_Node000017" title=" " alt="" coords="1608,780,1703,766,1752,754,1799,736,1837,714,1872,688,1922,639,1925,643,1875,692,1840,719,1801,741,1753,759,1704,772,1609,785"/>
+<area shape="rect" id="Node000018" title=" " alt="" coords="941,766,1161,791"/>
+<area shape="poly" id="edge17_Node000017_Node000018" title=" " alt="" coords="1175,778,1432,782,1432,787,1175,783"/>
+<area shape="poly" id="edge18_Node000018_Node000019" title=" " alt="" coords="747,765,941,772,941,777,747,770"/>
+<area shape="rect" id="Node000020" title=" " alt="" coords="230,526,387,551"/>
+<area shape="poly" id="edge35_Node000011_Node000020" title=" " alt="" coords="401,536,685,536,1515,536,1659,532,1722,537,1801,555,1835,567,1867,582,1918,613,1915,618,1864,587,1833,572,1799,560,1721,543,1659,538,1515,541,685,541,401,541"/>
+<area shape="poly" id="edge20_Node000019_Node000020" title=" " alt="" coords="340,557,449,631,568,700,662,750,659,755,565,704,447,636,337,562"/>
+<area shape="poly" id="edge28_Node000023_Node000020" title=" " alt="" coords="383,520,473,498,568,467,619,445,662,422,664,427,621,449,570,472,474,503,385,526"/>
+<area shape="rect" id="Node000021" title=" " alt="" coords="1414,202,1613,257"/>
+<area shape="poly" id="edge21_Node000011_Node000021" title=" " alt="" coords="1627,256,1672,272,1718,294,1762,321,1802,353,1831,385,1856,421,1895,497,1921,567,1934,615,1929,616,1916,568,1890,500,1851,424,1827,388,1798,357,1759,325,1715,299,1670,277,1625,261"/>
+<area shape="rect" id="Node000022" title=" " alt="" coords="947,85,1156,125"/>
+<area shape="poly" id="edge22_Node000021_Node000022" title=" " alt="" coords="1170,106,1276,119,1331,131,1385,147,1435,171,1479,200,1476,204,1433,176,1383,152,1330,136,1275,124,1169,111"/>
+<area shape="poly" id="edge23_Node000022_Node000023" title=" " alt="" coords="702,386,738,334,793,266,861,196,899,163,940,135,964,123,966,128,943,140,903,168,865,200,797,270,743,337,706,389"/>
+<area shape="rect" id="Node000024" title=" " alt="" coords="201,313,416,338"/>
+<area shape="poly" id="edge25_Node000023_Node000024" title=" " alt="" coords="430,336,500,348,570,364,617,380,659,397,657,402,616,385,569,369,499,353,430,342"/>
+<area shape="rect" id="Node000033" title=" " alt="" coords="209,363,408,403"/>
+<area shape="poly" id="edge26_Node000023_Node000033" title=" " alt="" coords="422,389,623,404,622,410,421,394"/>
+<area shape="rect" id="Node000042" title=" " alt="" coords="209,427,408,467"/>
+<area shape="poly" id="edge27_Node000023_Node000042" title=" " alt="" coords="421,440,569,428,622,421,623,426,570,433,422,445"/>
+<area shape="rect" id="Node000052" title=" " alt="" coords="1437,629,1589,669"/>
+<area shape="poly" id="edge29_Node000011_Node000052" title=" " alt="" coords="1603,653,1698,655,1800,651,1886,637,1887,642,1800,656,1698,660,1603,658"/>
+<area shape="rect" id="Node000053" href="$classMeshIDMap.html" title=" " alt="" coords="1464,579,1563,605"/>
+<area shape="poly" id="edge30_Node000011_Node000053" title=" " alt="" coords="1577,595,1887,621,1886,627,1576,600"/>
+<area shape="rect" id="Node000054" title=" " alt="" coords="945,651,1157,691"/>
+<area shape="poly" id="edge31_Node000053_Node000054" title=" " alt="" coords="1171,665,1275,653,1330,643,1383,628,1407,615,1463,598,1464,604,1409,620,1385,633,1331,648,1276,658,1171,670"/>
+<area shape="rect" id="Node000055" title=" " alt="" coords="595,651,778,691"/>
+<area shape="poly" id="edge32_Node000054_Node000055" title=" " alt="" coords="792,668,945,668,945,673,792,673"/>
+<area shape="rect" id="Node000056" title=" " alt="" coords="980,587,1123,627"/>
+<area shape="poly" id="edge33_Node000053_Node000056" title=" " alt="" coords="1137,601,1463,591,1464,596,1137,607"/>
+<area shape="rect" id="Node000057" href="$classUndoRecorder.html" title="undo 记录钩子（ModelLayer 回调，UndoStack 实现）" alt="" coords="1456,837,1571,862"/>
+<area shape="poly" id="edge36_Node000011_Node000057" title=" " alt="" coords="1584,842,1706,829,1761,818,1799,804,1823,787,1845,766,1883,720,1910,674,1927,640,1932,642,1915,677,1887,723,1849,770,1826,791,1801,809,1762,823,1707,834,1585,848"/>
+<area shape="poly" id="edge49_Node000066_Node000057" title=" " alt="" coords="1585,856,1800,888,1926,906,1980,917,2049,936,2083,949,2108,962,2166,990,2242,1015,2240,1020,2164,994,2106,966,2081,954,2047,941,1979,922,1925,912,1800,893,1584,861"/>
+<area shape="rect" id="Node000058" title=" " alt="" coords="1408,693,1619,733"/>
+<area shape="poly" id="edge37_Node000011_Node000058" title=" " alt="" coords="1632,708,1715,700,1799,684,1860,662,1910,638,1913,643,1862,667,1801,689,1716,705,1633,713"/>
+<area shape="rect" id="Node000059" href="$structModelLayer_1_1WriteAuthority.html" title="写权限状态（堆上共享）：含线程亲和、冻结窗口与框架特权深度" alt="" coords="951,715,1152,741"/>
+<area shape="poly" id="edge38_Node000058_Node000059" title=" " alt="" coords="1166,722,1408,714,1408,719,1166,727"/>
+<area shape="rect" id="Node000060" title=" " alt="" coords="2179,170,2391,195"/>
+<area shape="poly" id="edge39_Node000003_Node000060" title=" " alt="" coords="2329,199,2417,241,2520,295,2590,338,2646,376,2643,380,2588,343,2517,300,2415,246,2326,203"/>
+<area shape="rect" id="Node000061" href="$structModelPayload.html" title=" " alt="" coords="1879,70,1993,95"/>
+<area shape="poly" id="edge40_Node000060_Node000061" title=" " alt="" coords="1995,97,2241,167,2239,173,1994,102"/>
+<area shape="rect" id="Node000062" title=" " alt="" coords="1462,70,1565,95"/>
+<area shape="poly" id="edge41_Node000061_Node000062" title=" " alt="" coords="1579,80,1879,80,1879,85,1579,85"/>
+<area shape="rect" id="Node000063" title=" " alt="" coords="982,21,1121,61"/>
+<area shape="poly" id="edge42_Node000062_Node000063" title=" " alt="" coords="1135,46,1462,75,1462,81,1134,51"/>
+<area shape="rect" id="Node000064" title=" " alt="" coords="1414,5,1613,45"/>
+<area shape="poly" id="edge43_Node000061_Node000064" title=" " alt="" coords="1627,31,1800,52,1880,67,1879,73,1800,57,1626,37"/>
+<area shape="poly" id="edge44_Node000001_Node000065" title=" " alt="" coords="2708,820,2963,716,2965,721,2710,825"/>
+<area shape="poly" id="edge48_Node000065_Node000066" title=" " alt="" coords="2346,1035,2386,1036,2430,1033,2475,1024,2517,1008,2543,993,2566,973,2606,929,2636,885,2654,851,2659,854,2640,888,2610,932,2570,977,2546,997,2520,1013,2477,1030,2431,1038,2386,1041,2346,1040"/>
+<area shape="rect" id="Node000067" title=" " alt="" coords="1185,1203,1384,1229"/>
+<area shape="poly" id="edge52_Node000066_Node000067" title=" " alt="" coords="1398,1224,1549,1231,1641,1230,1738,1225,1840,1214,1943,1197,2044,1173,2140,1139,2181,1117,2217,1091,2270,1042,2274,1046,2221,1095,2183,1122,2142,1144,2045,1178,1944,1203,1841,1220,1739,1230,1641,1235,1549,1236,1397,1230"/>
+<area shape="poly" id="edge53_Node000067_Node000068" title=" " alt="" coords="752,1231,1185,1217,1185,1222,752,1237"/>
+<area shape="rect" id="Node000069" title=" " alt="" coords="193,1226,424,1251"/>
+<area shape="poly" id="edge55_Node000068_Node000069" title=" " alt="" coords="438,1236,569,1235,636,1234,636,1239,569,1240,438,1241"/>
+<area shape="rect" id="Node000071" title=" " alt="" coords="199,1279,418,1305"/>
+<area shape="poly" id="edge56_Node000068_Node000071" title=" " alt="" coords="431,1281,569,1263,640,1246,642,1251,570,1268,432,1286"/>
+<area shape="poly" id="edge57_Node000065_Node000075" title=" " alt="" coords="2062,984,2163,985,2279,978,2401,960,2460,945,2518,926,2555,908,2590,888,2644,851,2647,855,2593,893,2557,913,2520,930,2462,950,2402,965,2280,984,2163,990,2062,989"/>
+<area shape="rect" id="Node000076" href="$structsystems_1_1io_1_1ModelIOSystem_1_1IOEntry.html" title="文件格式处理器与信息共同持有，占用期注册表保持只读。" alt="" coords="1409,957,1617,997"/>
+<area shape="poly" id="edge59_Node000075_Node000076" title=" " alt="" coords="1631,975,1824,975,1824,980,1631,980"/>
+<area shape="poly" id="edge60_Node000076_Node000077" title=" " alt="" coords="1157,961,1409,971,1409,976,1157,967"/>
+<area shape="poly" id="edge62_Node000077_Node000078" title=" " alt="" coords="794,870,856,879,918,893,980,918,1030,945,1028,949,978,923,917,899,855,884,794,876"/>
+<area shape="rect" id="Node000079" title=" " alt="" coords="615,904,758,944"/>
+<area shape="poly" id="edge64_Node000077_Node000079" title=" " alt="" coords="772,932,804,936,959,950,959,956,804,941,772,938"/>
+</map>

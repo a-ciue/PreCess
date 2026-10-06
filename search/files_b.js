@@ -44,5 +44,7 @@ var searchData=
   ['modeloperator_2eh_41',['ModelOperator.h',['../ModelOperator_8h.html',1,'']]],
   ['modeloperatorbase_2eh_42',['ModelOperatorBase.h',['../ModelOperatorBase_8h.html',1,'']]],
   ['modelpayload_2eh_43',['ModelPayload.h',['../ModelPayload_8h.html',1,'']]],
-  ['modelsnapshot_2eh_44',['ModelSnapshot.h',['../ModelSnapshot_8h.html',1,'']]]
+  ['modelscope_2ecpp_44',['ModelScope.cpp',['../ModelScope_8cpp.html',1,'']]],
+  ['modelscope_2eh_45',['ModelScope.h',['../ModelScope_8h.html',1,'']]],
+  ['modelsnapshot_2eh_46',['ModelSnapshot.h',['../ModelSnapshot_8h.html',1,'']]]
 ];

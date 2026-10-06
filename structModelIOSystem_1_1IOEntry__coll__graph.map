@@ -1,0 +1,17 @@
+<map id="ModelIOSystem::IOEntry" name="ModelIOSystem::IOEntry">
+<area shape="rect" id="Node000001" title="文件格式处理器与信息共同持有，占用期注册表保持只读。" alt="" coords="57,573,238,599"/>
+<area shape="rect" id="Node000002" href="$structsystems_1_1io_1_1ModelIOInfo.html" title="模型层文件读写支持的文件类型信息" alt="" coords="55,477,239,503"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="150,517,150,573,145,573,145,517"/>
+<area shape="rect" id="Node000003" title=" " alt="" coords="156,95,243,120"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="168,129,129,154,86,189,46,231,29,255,15,281,8,311,12,340,25,369,43,396,90,443,132,475,128,479,86,447,39,399,20,371,7,342,3,310,10,279,24,253,42,228,83,185,126,150,165,125"/>
+<area shape="rect" id="Node000005" title=" " alt="" coords="106,289,293,314"/>
+<area shape="poly" id="edge5_Node000005_Node000003" title=" " alt="" coords="202,133,202,288,197,288,197,133"/>
+<area shape="rect" id="Node000007" href="$structcore_1_1ArgType.html" title="描述算法需要的某个参数的类型，UI根据该类型来生成对应的参数控件" alt="" coords="261,231,372,256"/>
+<area shape="poly" id="edge8_Node000007_Node000003" title=" " alt="" coords="251,124,276,142,292,164,304,188,317,229,312,231,299,190,288,167,272,146,247,128"/>
+<area shape="rect" id="Node000004" title=" " alt="" coords="130,5,269,45"/>
+<area shape="poly" id="edge3_Node000003_Node000004" title=" " alt="" coords="202,59,202,94,197,94,197,59"/>
+<area shape="poly" id="edge4_Node000002_Node000005" title=" " alt="" coords="178,325,163,348,153,383,148,419,149,477,143,477,143,419,147,382,158,346,174,322"/>
+<area shape="rect" id="Node000006" title=" " alt="" coords="252,347,395,387"/>
+<area shape="poly" id="edge6_Node000002_Node000006" title=" " alt="" coords="286,397,166,479,163,475,283,392"/>
+<area shape="poly" id="edge7_Node000006_Node000007" title=" " alt="" coords="321,270,325,346,320,347,315,270"/>
+</map>

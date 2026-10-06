@@ -78,11 +78,13 @@ $(function() {
 <div class="header">
   <div class="summary">
 <a href="#nested-classes">类</a> &#124;
-<a href="#namespaces">命名空间</a>  </div>
+<a href="#namespaces">命名空间</a> &#124;
+<a href="#typedef-members">类型定义</a>  </div>
   <div class="headertitle"><div class="title">AlgorithmHandler.h 文件参考</div></div>
 </div><!--header-->
 <div class="contents">
-<div class="textblock"><code>#include &quot;<a class="el" href="ArgType_8h_source.html">ArgType.h</a>&quot;</code><br />
+<div class="textblock"><code>#include &quot;<a class="el" href="JobProgress_8h_source.html">JobProgress.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="ArgType_8h_source.html">ArgType.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="ComponentOperator_8h_source.html">ComponentOperator.h</a>&quot;</code><br />
 <code>#include &lt;any&gt;</code><br />
 <code>#include &lt;optional&gt;</code><br />
@@ -93,37 +95,45 @@ AlgorithmHandler.h 的引用(Include)关系图:</div>
 <div class="dyncontent">
 <div class="center"><img src="AlgorithmHandler_8h__incl.png" border="0" usemap="#amodel_2systems_2algo_2AlgorithmHandler_8h" loading="lazy" alt=""/></div>
 <map name="amodel_2systems_2algo_2AlgorithmHandler_8h" id="amodel_2systems_2algo_2AlgorithmHandler_8h">
-<area shape="rect" title=" " alt="" coords="506,5,661,45"/>
-<area shape="rect" href="ArgType_8h.html" title="用于模型层描述功能参数类型" alt="" coords="106,93,192,119"/>
-<area shape="poly" title=" " alt="" coords="506,43,206,97,206,92,505,38"/>
-<area shape="rect" title=" " alt="" coords="264,240,322,265"/>
-<area shape="poly" title=" " alt="" coords="524,48,477,68,430,95,393,128,359,165,310,230,305,227,355,161,389,124,427,91,474,63,522,43"/>
-<area shape="rect" href="ComponentOperator_8h.html" title=" " alt="" coords="441,93,606,119"/>
-<area shape="poly" title=" " alt="" coords="571,47,543,84,539,81,567,44"/>
-<area shape="rect" title=" " alt="" coords="603,240,666,265"/>
-<area shape="poly" title=" " alt="" coords="598,45,621,93,634,165,637,226,632,227,629,166,616,94,594,47"/>
-<area shape="rect" title=" " alt="" coords="682,93,728,119"/>
-<area shape="poly" title=" " alt="" coords="614,43,677,84,674,88,612,48"/>
-<area shape="rect" title=" " alt="" coords="753,93,828,119"/>
-<area shape="poly" title=" " alt="" coords="634,43,748,86,746,91,632,48"/>
-<area shape="rect" title=" " alt="" coords="25,167,116,192"/>
-<area shape="poly" title=" " alt="" coords="138,121,95,159,91,156,134,117"/>
-<area shape="poly" title=" " alt="" coords="106,119,66,131,30,147,18,157,10,167,9,178,15,190,30,202,53,213,116,229,187,240,250,246,250,251,187,245,115,234,51,218,27,207,11,194,4,179,5,165,14,153,28,143,64,126,105,114"/>
-<area shape="rect" href="private__ArgTypeEnum_8h.html" title="参数类型枚举类定义，只被ArgType.h和QArgType.h.in使用。" alt="" coords="140,167,316,192"/>
-<area shape="poly" title=" " alt="" coords="163,117,207,156,203,159,160,121"/>
-<area shape="rect" href="Core_8h.html" title=" " alt="" coords="441,167,505,192"/>
-<area shape="poly" title=" " alt="" coords="517,121,491,157,487,154,513,117"/>
-<area shape="rect" title=" " alt="" coords="522,240,578,265"/>
-<area shape="poly" title=" " alt="" coords="528,119,548,226,543,227,523,120"/>
-<area shape="rect" title=" " alt="" coords="346,240,424,265"/>
-<area shape="poly" title=" " alt="" coords="499,121,464,141,431,168,410,198,396,228,391,226,406,195,427,165,461,136,496,117"/>
-<area shape="poly" title=" " alt="" coords="535,117,619,227,615,230,531,121"/>
-<area shape="poly" title=" " alt="" coords="445,195,336,237,334,232,443,190"/>
-<area shape="poly" title=" " alt="" coords="487,190,529,229,526,232,484,194"/>
-<area shape="rect" title=" " alt="" coords="448,240,498,265"/>
-<area shape="poly" title=" " alt="" coords="476,192,476,226,470,226,470,192"/>
-<area shape="poly" title=" " alt="" coords="460,194,412,233,408,229,457,190"/>
-<area shape="poly" title=" " alt="" coords="500,190,596,232,594,237,498,194"/>
+<area shape="rect" title=" " alt="" coords="700,5,855,45"/>
+<area shape="rect" href="JobProgress_8h.html" title="进度上报回调类型：model 层（任务系统）与上层 UI 适配层的公共契约" alt="" coords="369,93,480,119"/>
+<area shape="poly" title=" " alt="" coords="701,46,490,93,489,88,700,41"/>
+<area shape="rect" title=" " alt="" coords="488,240,547,265"/>
+<area shape="poly" title=" " alt="" coords="750,48,675,99,592,169,537,231,533,227,588,165,672,95,747,43"/>
+<area shape="rect" href="ArgType_8h.html" title="用于模型层描述功能参数类型" alt="" coords="150,93,237,119"/>
+<area shape="poly" title=" " alt="" coords="701,40,251,100,250,94,700,34"/>
+<area shape="rect" href="ComponentOperator_8h.html" title=" " alt="" coords="695,93,860,119"/>
+<area shape="poly" title=" " alt="" coords="780,46,780,79,775,79,775,46"/>
+<area shape="rect" title=" " alt="" coords="948,240,1010,265"/>
+<area shape="poly" title=" " alt="" coords="810,43,874,91,911,125,941,165,959,196,973,226,968,228,954,199,937,168,907,129,871,95,806,48"/>
+<area shape="rect" title=" " alt="" coords="1046,93,1093,119"/>
+<area shape="poly" title=" " alt="" coords="848,43,1034,92,1032,97,847,48"/>
+<area shape="rect" title=" " alt="" coords="1118,93,1192,119"/>
+<area shape="poly" title=" " alt="" coords="856,39,1105,90,1104,96,855,44"/>
+<area shape="rect" title=" " alt="" coords="342,167,429,192"/>
+<area shape="poly" title=" " alt="" coords="420,120,401,156,396,153,416,118"/>
+<area shape="poly" title=" " alt="" coords="434,118,505,227,501,230,430,121"/>
+<area shape="poly" title=" " alt="" coords="151,115,96,125,43,140,24,151,12,162,9,175,17,190,40,202,84,212,213,229,358,240,475,247,475,252,358,246,213,234,83,217,38,207,13,194,4,176,7,160,21,146,41,135,95,119,150,110"/>
+<area shape="rect" title=" " alt="" coords="227,167,318,192"/>
+<area shape="poly" title=" " alt="" coords="208,117,251,156,248,159,205,121"/>
+<area shape="rect" href="private__ArgTypeEnum_8h.html" title="参数类型枚举类定义，只被ArgType.h和QArgType.h.in使用。" alt="" coords="27,167,203,192"/>
+<area shape="poly" title=" " alt="" coords="183,121,140,159,136,156,179,117"/>
+<area shape="poly" title=" " alt="" coords="745,121,692,142,635,169,585,201,544,233,540,229,582,197,633,164,690,137,743,116"/>
+<area shape="rect" href="Core_8h.html" title=" " alt="" coords="806,167,870,192"/>
+<area shape="poly" title=" " alt="" coords="790,117,821,154,817,158,786,121"/>
+<area shape="rect" title=" " alt="" coords="640,240,696,265"/>
+<area shape="poly" title=" " alt="" coords="718,121,678,139,661,152,647,168,642,182,642,197,655,227,650,229,637,198,636,181,642,165,657,148,675,134,716,116"/>
+<area shape="rect" title=" " alt="" coords="846,240,923,265"/>
+<area shape="poly" title=" " alt="" coords="818,116,854,135,871,149,884,165,893,196,892,227,887,227,888,197,879,168,867,152,851,139,816,121"/>
+<area shape="poly" title=" " alt="" coords="814,116,860,136,907,165,940,195,966,227,962,230,936,199,904,169,857,141,812,121"/>
+<area shape="rect" title=" " alt="" coords="657,167,781,192"/>
+<area shape="poly" title=" " alt="" coords="770,121,739,158,735,155,766,117"/>
+<area shape="poly" title=" " alt="" coords="806,191,793,195,561,245,560,240,792,189,805,186"/>
+<area shape="poly" title=" " alt="" coords="812,194,710,237,708,232,810,190"/>
+<area shape="rect" title=" " alt="" coords="771,240,822,265"/>
+<area shape="poly" title=" " alt="" coords="833,194,812,229,808,227,829,191"/>
+<area shape="poly" title=" " alt="" coords="848,191,872,227,867,230,843,194"/>
+<area shape="poly" title=" " alt="" coords="862,190,945,231,943,236,859,194"/>
 </map>
 </div>
 </div><div class="textblock"><div class="dynheader">
@@ -131,9 +141,17 @@ AlgorithmHandler.h 的引用(Include)关系图:</div>
 <div class="dyncontent">
 <div class="center"><img src="AlgorithmHandler_8h__dep__incl.png" border="0" usemap="#amodel_2systems_2algo_2AlgorithmHandler_8hdep" loading="lazy" alt=""/></div>
 <map name="amodel_2systems_2algo_2AlgorithmHandler_8hdep" id="amodel_2systems_2algo_2AlgorithmHandler_8hdep">
-<area shape="rect" title=" " alt="" coords="11,5,166,45"/>
-<area shape="rect" href="AlgorithmSystem_8cpp.html" title=" " alt="" coords="5,93,172,133"/>
-<area shape="poly" title=" " alt="" coords="91,59,91,93,86,93,86,59"/>
+<area shape="rect" title=" " alt="" coords="410,5,565,45"/>
+<area shape="rect" href="TestSessionJobs_8cpp.html" title="无 Qt 宿主的任务拥有关系、终态重放与拆解回归。" alt="" coords="5,93,161,133"/>
+<area shape="poly" title=" " alt="" coords="397,48,162,98,161,93,396,43"/>
+<area shape="rect" href="AlgorithmSystem_8cpp.html" title=" " alt="" coords="185,93,352,133"/>
+<area shape="poly" title=" " alt="" coords="427,53,318,96,316,91,426,48"/>
+<area shape="rect" href="TestAlgorithmSystem_8cpp.html" title=" " alt="" coords="377,93,598,133"/>
+<area shape="poly" title=" " alt="" coords="490,59,490,93,485,93,485,59"/>
+<area shape="rect" href="TestAlgorithmSystemShadow_8cpp.html" title=" " alt="" coords="623,93,893,133"/>
+<area shape="poly" title=" " alt="" coords="561,47,700,91,698,96,559,52"/>
+<area shape="rect" href="TestFeatureSystem_8cpp.html" title=" " alt="" coords="917,93,1124,133"/>
+<area shape="poly" title=" " alt="" coords="579,38,906,91,917,92,916,98,906,96,578,44"/>
 </map>
 </div>
 </div>
@@ -152,6 +170,11 @@ AlgorithmHandler.h 的引用(Include)关系图:</div>
 <tr class="memitem:systems_3A_3Aio" id="r_systems_3A_3Aio"><td class="memItemLeft" align="right" valign="top">namespace &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacesystems_1_1io.html">systems::io</a></td></tr>
 <tr class="memdesc:namespacesystems_1_1io"><td class="mdescLeft">&#160;</td><td class="mdescRight"><a class="el" href="ModelIOSystemRegister_8h.html">ModelIOSystemRegister.h</a> <br /></td></tr>
 <tr class="memitem:systems_3A_3Aalgo" id="r_systems_3A_3Aalgo"><td class="memItemLeft" align="right" valign="top">namespace &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacesystems_1_1algo.html">systems::algo</a></td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 id="header-typedef-members" class="groupheader"><a id="typedef-members" name="typedef-members"></a>
+类型定义</h2></td></tr>
+<tr class="memitem:a47898515a2091e48ff5c46388254233d" id="r_a47898515a2091e48ff5c46388254233d"><td class="memItemLeft" align="right" valign="top">using&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacesystems_1_1algo.html#a47898515a2091e48ff5c46388254233d">systems::algo::ProgressFn</a> = <a class="el" href="namespacesystems_1_1job.html#a68d9b6556b0d0b4d3b1dd89c36e872cd">systems::job::ProgressFn</a></td></tr>
+<tr class="memdesc:a47898515a2091e48ff5c46388254233d"><td class="mdescLeft">&#160;</td><td class="mdescRight">进度回调别名：任务系统（systems::job）定义公共类型，算法侧沿用短名  <br /></td></tr>
 </table>
 <a name="details" id="details"></a><h2 id="header-details" class="groupheader">详细描述</h2>
 <div class="textblock"><dl class="section author"><dt>作者</dt><dd>张家僮(<a href="#" onclick="location.href='mai'+'lto:'+'htx'+'z_'+'6a6'+'@1'+'63.'+'co'+'m'; return false;">htxz_<span class="obfuscator">.nosp@m.</span>6a6@<span class="obfuscator">.nosp@m.</span>163.c<span class="obfuscator">.nosp@m.</span>om</a>) </dd></dl>

@@ -91,6 +91,7 @@ $(function() {
 <code>#include &quot;<a class="el" href="QModelQuery_8h_source.html">QModelQuery.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="QPythonRuntime_8h_source.html">QPythonRuntime.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="QSystemPluginManager_8h_source.html">QSystemPluginManager.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="QTaskStatus_8h_source.html">QTaskStatus.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="QUndoStackAdaptor_8h_source.html">QUndoStackAdaptor.h</a>&quot;</code><br />
 <code>#include &lt;memory&gt;</code><br />
 <code>#include &lt;string&gt;</code><br />
@@ -100,111 +101,122 @@ QModelManager.h 的引用(Include)关系图:</div>
 <div class="dyncontent">
 <div class="center"><img src="QModelManager_8h__incl.png" border="0" usemap="#aapp_2model_2QModelManager_8h" loading="lazy" alt=""/></div>
 <map name="aapp_2model_2QModelManager_8h" id="aapp_2model_2QModelManager_8h">
-<area shape="rect" title=" " alt="" coords="1299,5,1513,31"/>
-<area shape="rect" href="EventBus_8h.html" title="类型安全的轻量级事件总线（发布/订阅）" alt="" coords="343,225,437,251"/>
-<area shape="poly" title=" " alt="" coords="1299,22,1079,26,816,35,691,42,584,52,503,65,476,73,458,81,431,109,413,144,401,181,395,212,390,211,396,179,408,142,427,106,455,77,474,68,502,60,584,47,691,37,815,29,1078,20,1299,17"/>
-<area shape="rect" title=" " alt="" coords="801,299,878,324"/>
-<area shape="poly" title=" " alt="" coords="1299,24,1109,31,888,42,696,58,628,69,590,81,562,101,543,123,536,148,538,161,544,176,566,205,590,222,655,248,723,275,788,295,786,300,722,280,653,253,587,226,562,209,540,179,533,163,531,147,539,120,559,97,587,76,627,64,695,53,888,36,1109,25,1299,19"/>
-<area shape="rect" href="QAlgorithmSystemAdaptor_8h.html" title=" " alt="" coords="884,79,1091,104"/>
-<area shape="poly" title=" " alt="" coords="1339,33,1068,79,1068,74,1338,28"/>
-<area shape="rect" title=" " alt="" coords="911,299,970,324"/>
-<area shape="poly" title=" " alt="" coords="1299,24,1140,28,954,38,780,55,709,67,656,81,621,94,595,106,573,124,554,153,550,165,553,176,570,188,602,202,697,236,898,296,897,301,695,241,600,207,567,192,549,179,544,165,549,151,569,120,592,101,619,89,655,76,708,62,779,50,953,33,1139,23,1299,18"/>
-<area shape="rect" href="QEditSystemAdaptor_8h.html" title=" " alt="" coords="1115,79,1283,104"/>
-<area shape="poly" title=" " alt="" coords="1374,33,1247,77,1245,72,1372,28"/>
-<area shape="rect" href="QFeatureSystemAdaptor_8h.html" title=" " alt="" coords="667,79,859,104"/>
-<area shape="poly" title=" " alt="" coords="1303,33,873,81,873,75,1302,28"/>
-<area shape="rect" href="QModelIOSystemAdaptor_8h.html" title=" " alt="" coords="1307,79,1505,104"/>
-<area shape="poly" title=" " alt="" coords="1409,31,1409,65,1403,65,1403,31"/>
-<area shape="rect" href="QModelObserver_8h.html" title=" " alt="" coords="2313,79,2456,104"/>
-<area shape="poly" title=" " alt="" coords="1513,24,2234,76,2299,81,2299,86,2234,81,1513,30"/>
-<area shape="rect" href="QModelQuery_8h.html" title="模型层查询的 QML 适配器" alt="" coords="1529,79,1651,104"/>
-<area shape="poly" title=" " alt="" coords="1437,28,1548,71,1546,76,1435,33"/>
-<area shape="rect" href="QPythonRuntime_8h.html" title=" " alt="" coords="2078,79,2222,104"/>
-<area shape="poly" title=" " alt="" coords="1513,25,1761,46,2065,76,2064,81,1760,51,1513,30"/>
-<area shape="rect" href="QSystemPluginManager_8h.html" title=" " alt="" coords="1675,79,1865,104"/>
-<area shape="poly" title=" " alt="" coords="1465,28,1698,73,1697,79,1464,33"/>
-<area shape="rect" href="QUndoStackAdaptor_8h.html" title="undo 栈的 QML 适配器：暴露撤销/重做入口与栈状态" alt="" coords="1889,79,2053,104"/>
-<area shape="poly" title=" " alt="" coords="1497,28,1875,75,1875,81,1496,33"/>
-<area shape="rect" title=" " alt="" coords="2480,79,2577,104"/>
-<area shape="poly" title=" " alt="" coords="1513,18,1692,23,1927,32,2194,49,2466,76,2466,81,2193,55,1927,38,1692,28,1513,23"/>
-<area shape="rect" title=" " alt="" coords="349,299,434,324"/>
-<area shape="poly" title=" " alt="" coords="393,251,394,285,388,285,388,251"/>
-<area shape="rect" title=" " alt="" coords="458,299,525,324"/>
-<area shape="poly" title=" " alt="" coords="408,248,465,288,462,293,405,253"/>
-<area shape="rect" title=" " alt="" coords="549,299,636,324"/>
-<area shape="poly" title=" " alt="" coords="423,248,548,292,546,297,422,253"/>
-<area shape="poly" title=" " alt="" coords="438,245,457,248,770,296,788,299,787,304,770,301,456,253,437,250"/>
+<area shape="rect" title=" " alt="" coords="1386,5,1599,31"/>
+<area shape="rect" href="EventBus_8h.html" title="类型安全的轻量级事件总线（发布/订阅）" alt="" coords="241,225,336,251"/>
+<area shape="poly" title=" " alt="" coords="1386,24,1106,30,763,42,465,59,367,69,337,75,322,81,310,94,301,109,290,145,287,180,288,211,283,212,282,180,285,144,296,107,306,91,319,76,335,70,366,64,464,53,762,36,1106,25,1386,19"/>
+<area shape="rect" title=" " alt="" coords="797,299,874,324"/>
+<area shape="poly" title=" " alt="" coords="1386,25,867,45,613,61,523,71,469,81,435,93,408,106,386,124,367,153,364,166,368,179,379,192,396,204,446,227,510,248,657,280,783,301,782,306,656,285,509,253,444,232,393,209,375,196,363,182,359,167,362,151,382,120,405,101,433,88,468,76,522,65,613,56,867,39,1386,20"/>
+<area shape="rect" href="QAlgorithmSystemAdaptor_8h.html" title="算法声明与调用的 Qt 适配；任务状态由 QTaskStatus 统一提供。" alt="" coords="889,79,1096,104"/>
+<area shape="poly" title=" " alt="" coords="1413,33,1087,79,1086,74,1412,28"/>
+<area shape="rect" title=" " alt="" coords="2185,299,2243,324"/>
+<area shape="poly" title=" " alt="" coords="1600,20,1888,32,2247,55,2418,72,2566,93,2675,119,2711,134,2733,150,2741,166,2737,182,2724,196,2704,209,2645,233,2569,254,2397,287,2257,308,2257,302,2396,282,2568,249,2644,228,2702,204,2721,192,2732,179,2735,167,2729,154,2709,139,2673,124,2565,99,2418,78,2247,60,1888,37,1599,25"/>
+<area shape="rect" href="QEditSystemAdaptor_8h.html" title=" " alt="" coords="697,79,865,104"/>
+<area shape="poly" title=" " alt="" coords="1386,32,879,81,878,76,1386,26"/>
+<area shape="rect" href="QFeatureSystemAdaptor_8h.html" title=" " alt="" coords="481,79,673,104"/>
+<area shape="poly" title=" " alt="" coords="1386,29,1076,50,687,81,686,76,1076,45,1385,23"/>
+<area shape="rect" href="QModelIOSystemAdaptor_8h.html" title=" " alt="" coords="1121,79,1318,104"/>
+<area shape="poly" title=" " alt="" coords="1449,33,1277,78,1276,73,1448,28"/>
+<area shape="rect" href="QModelObserver_8h.html" title=" " alt="" coords="2237,79,2380,104"/>
+<area shape="poly" title=" " alt="" coords="1600,26,2186,76,2224,79,2223,85,2186,81,1599,31"/>
+<area shape="rect" href="QModelQuery_8h.html" title="模型层查询的 QML 适配器" alt="" coords="1343,79,1464,104"/>
+<area shape="poly" title=" " alt="" coords="1480,33,1430,72,1427,68,1477,29"/>
+<area shape="rect" href="QPythonRuntime_8h.html" title=" " alt="" coords="2030,79,2174,104"/>
+<area shape="poly" title=" " alt="" coords="1600,28,2017,76,2016,81,1599,33"/>
+<area shape="rect" href="QSystemPluginManager_8h.html" title=" " alt="" coords="1489,79,1678,104"/>
+<area shape="poly" title=" " alt="" coords="1509,29,1559,68,1556,72,1506,33"/>
+<area shape="rect" href="QTaskStatus_8h.html" title="全局单槽任务的 Qt 展示：唯一进度合流、忙状态、取消入口与终态反馈。" alt="" coords="1891,79,2006,104"/>
+<area shape="poly" title=" " alt="" coords="1569,28,1878,76,1877,81,1568,33"/>
+<area shape="rect" href="QUndoStackAdaptor_8h.html" title="undo 栈的 QML 适配器：暴露撤销/重做入口与栈状态" alt="" coords="1703,79,1867,104"/>
+<area shape="poly" title=" " alt="" coords="1540,28,1725,73,1724,78,1539,33"/>
+<area shape="rect" title=" " alt="" coords="2795,79,2892,104"/>
+<area shape="poly" title=" " alt="" coords="1599,17,1815,21,2107,30,2439,48,2776,76,2781,77,2780,82,2775,81,2439,53,2107,36,1815,26,1599,23"/>
+<area shape="rect" title=" " alt="" coords="375,299,461,324"/>
+<area shape="poly" title=" " alt="" coords="311,248,386,289,383,294,308,253"/>
+<area shape="rect" title=" " alt="" coords="485,299,551,324"/>
+<area shape="poly" title=" " alt="" coords="326,248,472,293,471,298,325,253"/>
 <area shape="rect" title=" " alt="" coords="5,299,92,324"/>
-<area shape="poly" title=" " alt="" coords="343,252,106,301,105,296,342,247"/>
-<area shape="rect" title=" " alt="" coords="116,299,240,324"/>
-<area shape="poly" title=" " alt="" coords="357,253,226,297,224,292,355,248"/>
-<area shape="rect" title=" " alt="" coords="264,299,324,324"/>
-<area shape="poly" title=" " alt="" coords="376,253,322,292,319,288,373,249"/>
-<area shape="rect" title=" " alt="" coords="696,299,759,324"/>
-<area shape="poly" title=" " alt="" coords="438,247,683,298,682,303,437,252"/>
-<area shape="rect" href="Core_8h.html" title=" " alt="" coords="993,225,1057,251"/>
-<area shape="poly" title=" " alt="" coords="960,106,934,120,910,136,897,156,896,166,900,176,916,194,936,208,980,226,978,231,933,213,912,198,896,179,891,166,892,154,907,133,931,115,957,102"/>
-<area shape="rect" title=" " alt="" coords="911,152,989,177"/>
-<area shape="poly" title=" " alt="" coords="984,106,965,141,960,139,979,103"/>
-<area shape="rect" title=" " alt="" coords="1065,152,1320,177"/>
-<area shape="poly" title=" " alt="" coords="1021,101,1147,145,1146,150,1019,107"/>
-<area shape="poly" title=" " alt="" coords="996,253,883,296,881,291,994,248"/>
-<area shape="poly" title=" " alt="" coords="993,250,773,302,771,297,992,244"/>
-<area shape="rect" title=" " alt="" coords="1073,299,1129,324"/>
-<area shape="poly" title=" " alt="" coords="1039,249,1080,287,1076,291,1035,253"/>
-<area shape="rect" title=" " alt="" coords="998,299,1049,324"/>
-<area shape="poly" title=" " alt="" coords="1027,251,1026,285,1021,285,1022,251"/>
-<area shape="poly" title=" " alt="" coords="1013,253,967,292,963,287,1009,249"/>
-<area shape="poly" title=" " alt="" coords="1142,106,1095,124,1074,137,1055,154,1038,182,1030,213,1025,211,1033,180,1051,150,1070,133,1093,120,1140,102"/>
-<area shape="poly" title=" " alt="" coords="1160,107,1003,151,1002,146,1159,101"/>
-<area shape="poly" title=" " alt="" coords="1201,105,1198,139,1192,138,1196,104"/>
-<area shape="poly" title=" " alt="" coords="780,102,828,136,890,175,983,218,980,223,887,180,825,141,777,106"/>
-<area shape="poly" title=" " alt="" coords="775,103,924,286,920,289,771,106"/>
-<area shape="poly" title=" " alt="" coords="794,102,908,145,906,149,792,107"/>
-<area shape="poly" title=" " alt="" coords="833,101,1110,147,1109,152,832,107"/>
-<area shape="rect" title=" " alt="" coords="564,152,635,177"/>
-<area shape="poly" title=" " alt="" coords="738,106,640,149,637,144,736,102"/>
-<area shape="rect" title=" " alt="" coords="659,152,734,177"/>
-<area shape="poly" title=" " alt="" coords="754,106,719,144,715,140,750,103"/>
-<area shape="poly" title=" " alt="" coords="1424,102,1442,118,1458,137,1467,158,1466,169,1460,179,1432,199,1392,214,1341,224,1284,232,1167,239,1071,240,1071,235,1167,234,1284,227,1340,219,1390,208,1430,194,1456,176,1461,167,1461,159,1454,140,1438,121,1420,106"/>
-<area shape="poly" title=" " alt="" coords="1373,107,1241,150,1239,145,1371,101"/>
-<area shape="rect" title=" " alt="" coords="1649,152,1699,177"/>
-<area shape="poly" title=" " alt="" coords="1452,101,1636,149,1636,150,1635,155,1635,155,1451,107"/>
-<area shape="rect" title=" " alt="" coords="1345,152,1446,177"/>
-<area shape="poly" title=" " alt="" coords="1407,105,1402,139,1396,138,1402,104"/>
-<area shape="poly" title=" " alt="" coords="2388,105,2383,142,2375,163,2361,180,2339,187,2299,194,2168,206,1781,223,1361,234,1071,239,1070,233,1361,229,1781,218,2168,201,2298,189,2338,182,2358,175,2371,160,2378,141,2382,104"/>
-<area shape="rect" href="ModelObserver_8h.html" title=" " alt="" coords="2423,152,2555,177"/>
-<area shape="poly" title=" " alt="" coords="2403,102,2462,142,2459,146,2400,106"/>
-<area shape="rect" title=" " alt="" coords="2091,152,2166,177"/>
-<area shape="poly" title=" " alt="" coords="2344,107,2180,152,2179,147,2343,101"/>
-<area shape="rect" title=" " alt="" coords="2718,152,2857,177"/>
-<area shape="poly" title=" " alt="" coords="2450,101,2710,147,2709,152,2449,107"/>
-<area shape="rect" title=" " alt="" coords="2579,152,2694,177"/>
-<area shape="poly" title=" " alt="" coords="2426,101,2583,146,2582,151,2424,107"/>
-<area shape="poly" title=" " alt="" coords="2423,178,2404,180,1999,208,1606,226,1279,235,1070,239,1070,234,1278,230,1606,220,1999,203,2403,175,2422,173"/>
-<area shape="poly" title=" " alt="" coords="2462,180,2358,218,2291,238,2222,253,2036,279,1877,290,1736,290,1605,284,1473,277,1333,274,1173,281,986,301,984,302,983,296,986,296,1173,276,1333,269,1474,272,1605,278,1737,284,1877,285,2035,274,2222,248,2290,233,2357,213,2460,175"/>
-<area shape="poly" title=" " alt="" coords="1633,102,1669,115,1701,132,1713,142,1720,154,1721,166,1713,179,1700,188,1678,196,1614,209,1528,219,1430,226,1226,236,1070,239,1070,234,1226,230,1429,221,1528,214,1613,204,1677,191,1697,183,1709,175,1716,165,1715,155,1709,146,1698,136,1667,119,1631,107"/>
-<area shape="poly" title=" " alt="" coords="1530,105,1517,107,1285,132,1053,155,1003,160,1003,155,1052,149,1285,127,1516,101,1529,100"/>
-<area shape="poly" title=" " alt="" coords="1651,100,1664,101,1778,115,1869,123,1961,132,2078,149,2077,155,1960,137,1869,128,1778,120,1663,107,1650,105"/>
-<area shape="rect" title=" " alt="" coords="1521,152,1624,177"/>
-<area shape="poly" title=" " alt="" coords="1590,105,1581,140,1576,138,1585,104"/>
-<area shape="rect" title=" " alt="" coords="1775,152,1853,177"/>
-<area shape="poly" title=" " alt="" coords="1627,101,1766,145,1764,150,1625,107"/>
-<area shape="poly" title=" " alt="" coords="2163,103,2184,139,2188,160,2180,179,2151,198,2102,215,2037,229,1958,241,1769,260,1556,273,1145,289,991,295,900,301,893,302,892,297,899,296,991,289,1145,283,1556,267,1768,254,1957,235,2036,223,2101,209,2148,193,2176,176,2183,159,2179,141,2158,106"/>
-<area shape="poly" title=" " alt="" coords="2149,105,2139,140,2133,138,2144,104"/>
-<area shape="rect" title=" " alt="" coords="1996,152,2067,177"/>
-<area shape="poly" title=" " alt="" coords="2132,106,2064,147,2061,142,2130,102"/>
-<area shape="rect" title=" " alt="" coords="2241,152,2347,177"/>
-<area shape="poly" title=" " alt="" coords="2174,102,2259,143,2257,148,2172,106"/>
-<area shape="poly" title=" " alt="" coords="1678,107,1300,153,1299,148,1677,101"/>
-<area shape="poly" title=" " alt="" coords="1756,106,1702,146,1699,141,1753,102"/>
-<area shape="poly" title=" " alt="" coords="1833,101,2078,149,2077,154,1832,107"/>
-<area shape="poly" title=" " alt="" coords="1813,101,1983,148,1982,153,1811,107"/>
-<area shape="rect" title=" " alt="" coords="1878,152,1971,177"/>
-<area shape="poly" title=" " alt="" coords="1796,102,1888,144,1886,149,1794,106"/>
-<area shape="poly" title=" " alt="" coords="1890,105,1877,107,1334,154,1333,149,1876,101,1889,100"/>
-<area shape="poly" title=" " alt="" coords="1998,102,2092,144,2090,149,1996,106"/>
-<area shape="poly" title=" " alt="" coords="1983,103,2015,140,2011,143,1979,106"/>
+<area shape="poly" title=" " alt="" coords="251,253,102,297,100,292,249,248"/>
+<area shape="poly" title=" " alt="" coords="337,245,356,248,594,280,783,302,782,307,594,285,355,253,336,250"/>
+<area shape="rect" title=" " alt="" coords="116,299,203,324"/>
+<area shape="poly" title=" " alt="" coords="269,253,194,294,192,289,267,248"/>
+<area shape="rect" title=" " alt="" coords="227,299,351,324"/>
+<area shape="poly" title=" " alt="" coords="291,251,291,285,286,285,286,251"/>
+<area shape="rect" title=" " alt="" coords="1552,299,1612,324"/>
+<area shape="poly" title=" " alt="" coords="336,239,1539,305,1538,310,336,245"/>
+<area shape="rect" title=" " alt="" coords="603,299,665,324"/>
+<area shape="poly" title=" " alt="" coords="337,246,589,298,588,303,336,252"/>
+<area shape="rect" href="Core_8h.html" title=" " alt="" coords="974,225,1038,251"/>
+<area shape="poly" title=" " alt="" coords="945,107,911,118,881,134,871,144,864,154,863,164,868,176,887,196,910,211,961,228,959,233,908,215,883,200,864,179,858,165,859,152,866,140,878,130,909,114,944,102"/>
+<area shape="rect" title=" " alt="" coords="724,152,803,177"/>
+<area shape="poly" title=" " alt="" coords="957,107,815,150,813,145,955,101"/>
+<area shape="rect" title=" " alt="" coords="879,152,1133,177"/>
+<area shape="poly" title=" " alt="" coords="997,104,1004,138,999,139,992,105"/>
+<area shape="poly" title=" " alt="" coords="980,253,877,296,875,291,978,248"/>
+<area shape="poly" title=" " alt="" coords="974,248,679,304,678,299,973,243"/>
+<area shape="rect" title=" " alt="" coords="951,299,1007,324"/>
+<area shape="poly" title=" " alt="" coords="1004,252,991,287,986,285,999,250"/>
+<area shape="rect" title=" " alt="" coords="1031,299,1082,324"/>
+<area shape="poly" title=" " alt="" coords="1017,249,1043,286,1038,289,1012,253"/>
+<area shape="poly" title=" " alt="" coords="1038,237,1570,254,1910,272,2057,283,2171,296,2171,302,2056,288,1910,277,1570,259,1038,243"/>
+<area shape="poly" title=" " alt="" coords="761,106,739,121,719,139,709,158,709,167,713,176,729,188,754,199,820,215,894,226,960,232,960,237,894,231,819,221,752,204,726,193,709,179,704,168,703,157,715,135,736,117,758,102"/>
+<area shape="poly" title=" " alt="" coords="780,105,772,140,767,138,775,104"/>
+<area shape="poly" title=" " alt="" coords="818,101,957,145,956,150,816,107"/>
+<area shape="poly" title=" " alt="" coords="591,102,638,138,669,158,702,175,770,198,841,214,961,231,960,236,840,220,769,203,700,180,666,163,635,143,588,106"/>
+<area shape="poly" title=" " alt="" coords="585,102,611,139,629,159,650,175,693,199,730,215,765,226,798,232,871,239,962,248,1144,267,1299,274,1437,273,1565,269,1694,264,1832,265,1988,274,2171,296,2171,302,1987,279,1832,270,1694,270,1565,274,1437,279,1299,280,1144,273,962,253,870,244,798,237,763,231,728,220,690,203,647,180,625,163,606,142,581,106"/>
+<area shape="poly" title=" " alt="" coords="608,102,721,145,719,149,606,107"/>
+<area shape="poly" title=" " alt="" coords="646,101,924,147,923,152,645,107"/>
+<area shape="rect" title=" " alt="" coords="476,152,547,177"/>
+<area shape="poly" title=" " alt="" coords="568,106,533,144,529,140,564,103"/>
+<area shape="rect" title=" " alt="" coords="377,152,451,177"/>
+<area shape="poly" title=" " alt="" coords="552,106,454,149,452,144,549,102"/>
+<area shape="poly" title=" " alt="" coords="1214,106,1186,142,1146,179,1099,207,1052,226,1050,221,1097,202,1143,175,1182,138,1209,103"/>
+<area shape="poly" title=" " alt="" coords="1186,107,1054,150,1053,145,1184,101"/>
+<area shape="rect" title=" " alt="" coords="1385,152,1435,177"/>
+<area shape="poly" title=" " alt="" coords="1251,102,1372,147,1371,152,1249,107"/>
+<area shape="rect" title=" " alt="" coords="1209,152,1310,177"/>
+<area shape="poly" title=" " alt="" coords="1228,103,1248,139,1244,141,1224,106"/>
+<area shape="poly" title=" " alt="" coords="2303,106,2272,144,2249,164,2223,180,2194,188,2149,196,2023,209,1675,227,1308,236,1052,239,1052,234,1308,230,1675,221,2023,204,2149,191,2193,183,2221,175,2246,160,2268,140,2299,102"/>
+<area shape="rect" href="ModelObserver_8h.html" title=" " alt="" coords="2448,152,2580,177"/>
+<area shape="poly" title=" " alt="" coords="2343,101,2469,145,2467,150,2341,107"/>
+<area shape="rect" title=" " alt="" coords="1807,152,1882,177"/>
+<area shape="poly" title=" " alt="" coords="2237,104,2080,125,1896,155,1895,155,1894,149,1895,149,2080,120,2237,99"/>
+<area shape="rect" title=" " alt="" coords="2285,152,2423,177"/>
+<area shape="poly" title=" " alt="" coords="2318,103,2342,139,2337,142,2314,106"/>
+<area shape="rect" title=" " alt="" coords="2605,152,2719,177"/>
+<area shape="poly" title=" " alt="" coords="2366,101,2592,147,2591,152,2365,107"/>
+<area shape="poly" title=" " alt="" coords="2448,179,2436,180,2227,197,2015,210,1607,228,1267,236,1052,239,1052,234,1266,231,1606,223,2015,205,2227,192,2435,175,2448,173"/>
+<area shape="poly" title=" " alt="" coords="2491,180,2251,295,2249,290,2489,175"/>
+<area shape="poly" title=" " alt="" coords="1398,106,1369,143,1348,163,1323,180,1253,209,1179,227,1109,236,1052,239,1052,234,1108,231,1178,221,1251,204,1321,175,1344,159,1365,139,1394,102"/>
+<area shape="poly" title=" " alt="" coords="1343,105,1330,107,1098,132,866,155,817,160,816,155,866,149,1098,127,1330,101,1342,100"/>
+<area shape="poly" title=" " alt="" coords="1465,99,1477,101,1634,123,1794,149,1793,155,1633,128,1476,107,1464,105"/>
+<area shape="rect" title=" " alt="" coords="1460,152,1563,177"/>
+<area shape="poly" title=" " alt="" coords="1422,102,1484,142,1481,147,1419,106"/>
+<area shape="rect" title=" " alt="" coords="1587,152,1665,177"/>
+<area shape="poly" title=" " alt="" coords="1440,101,1578,145,1576,150,1438,107"/>
+<area shape="poly" title=" " alt="" coords="2093,106,2051,144,2022,164,1991,180,1519,236,888,307,888,301,1518,231,1989,175,2020,159,2048,140,2089,102"/>
+<area shape="poly" title=" " alt="" coords="2061,107,1896,152,1894,147,2060,101"/>
+<area shape="rect" title=" " alt="" coords="1907,152,1977,177"/>
+<area shape="poly" title=" " alt="" coords="2077,106,1982,149,1980,144,2075,102"/>
+<area shape="rect" title=" " alt="" coords="2103,152,2210,177"/>
+<area shape="poly" title=" " alt="" coords="2113,103,2142,140,2137,143,2109,106"/>
+<area shape="poly" title=" " alt="" coords="1491,107,1113,153,1112,148,1490,101"/>
+<area shape="poly" title=" " alt="" coords="1556,106,1449,150,1447,145,1554,102"/>
+<area shape="poly" title=" " alt="" coords="1626,101,1795,147,1793,152,1625,107"/>
+<area shape="poly" title=" " alt="" coords="1648,101,1894,149,1893,155,1647,107"/>
+<area shape="rect" title=" " alt="" coords="1690,152,1783,177"/>
+<area shape="poly" title=" " alt="" coords="1609,102,1700,144,1698,149,1607,106"/>
+<area shape="poly" title=" " alt="" coords="1892,105,1880,107,1573,130,1147,157,1147,152,1572,124,1879,101,1891,100"/>
+<area shape="poly" title=" " alt="" coords="1933,106,1875,146,1872,142,1930,102"/>
+<area shape="poly" title=" " alt="" coords="1950,105,1947,139,1942,138,1945,104"/>
+<area shape="rect" href="JobProgressSlot_8h.html" title="进度槽：计算与提交共用，GUI 定频轮询（替代每报一次跨线程投递）" alt="" coords="2104,225,2239,251"/>
+<area shape="poly" title=" " alt="" coords="1968,102,2143,215,2140,220,1965,106"/>
+<area shape="poly" title=" " alt="" coords="2104,251,2085,253,1626,308,1625,302,2084,248,2103,246"/>
+<area shape="poly" title=" " alt="" coords="2181,250,2202,286,2198,288,2176,252"/>
+<area shape="rect" title=" " alt="" coords="2097,299,2161,324"/>
+<area shape="poly" title=" " alt="" coords="2167,252,2145,288,2140,286,2162,250"/>
+<area shape="poly" title=" " alt="" coords="1703,105,1690,107,1147,155,1147,150,1690,101,1702,100"/>
+<area shape="poly" title=" " alt="" coords="1797,103,1828,140,1824,143,1793,106"/>
+<area shape="poly" title=" " alt="" coords="1811,102,1905,144,1903,149,1809,106"/>
 </map>
 </div>
 </div><div class="textblock"><div class="dynheader">
@@ -212,11 +224,15 @@ QModelManager.h 的引用(Include)关系图:</div>
 <div class="dyncontent">
 <div class="center"><img src="QModelManager_8h__dep__incl.png" border="0" usemap="#aapp_2model_2QModelManager_8hdep" loading="lazy" alt=""/></div>
 <map name="aapp_2model_2QModelManager_8hdep" id="aapp_2model_2QModelManager_8hdep">
-<area shape="rect" title=" " alt="" coords="50,5,263,31"/>
+<area shape="rect" title=" " alt="" coords="275,5,489,31"/>
 <area shape="rect" href="main_8cpp.html" title=" " alt="" coords="5,79,116,104"/>
-<area shape="poly" title=" " alt="" coords="132,41,78,81,75,76,129,37"/>
+<area shape="poly" title=" " alt="" coords="318,36,113,81,112,76,317,31"/>
 <area shape="rect" href="QModelManager_8cpp.html" title=" " alt="" coords="140,79,368,104"/>
-<area shape="poly" title=" " alt="" coords="185,37,240,76,237,81,182,41"/>
+<area shape="poly" title=" " alt="" coords="351,40,276,81,274,76,348,35"/>
+<area shape="rect" href="TestQModelDeletion_8cpp.html" title="Qt 删除入口的忙时拒绝与撤销状态通知回归测试" alt="" coords="393,79,630,104"/>
+<area shape="poly" title=" " alt="" coords="416,35,491,76,489,81,414,40"/>
+<area shape="rect" href="TestUndoQml_8cpp.html" title="实际 QML 删除与选择器失效路径回归测试" alt="" coords="655,79,848,104"/>
+<area shape="poly" title=" " alt="" coords="455,31,692,76,691,81,454,36"/>
 </map>
 </div>
 </div>

@@ -1,0 +1,443 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="zh">
+<head>
+<meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=11"/>
+<meta name="generator" content="Doxygen 1.14.0"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>PreCess: systems::feature::UndoContext类 参考</title>
+<link href="tabs.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="jquery.js"></script>
+<script type="text/javascript" src="dynsections.js"></script>
+<script type="text/javascript" src="clipboard.js"></script>
+<script type="text/javascript" src="cookie.js"></script>
+<link href="search/search.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="search/searchdata.js"></script>
+<script type="text/javascript" src="search/search.js"></script>
+<link href="doxygen.css" rel="stylesheet" type="text/css" />
+</head>
+<body>
+<div id="top"><!-- do not remove this div, it is closed by doxygen! -->
+<div id="titlearea">
+<table cellspacing="0" cellpadding="0">
+ <tbody>
+ <tr id="projectrow">
+  <td id="projectlogo"><img alt="Logo" src="PreCess.ico"/></td>
+  <td id="projectalign">
+   <div id="projectname">PreCess
+   </div>
+  </td>
+ </tr>
+ </tbody>
+</table>
+</div>
+<!-- end header part -->
+<!-- 制作者 Doxygen 1.14.0 -->
+<script type="text/javascript">
+var searchBox = new SearchBox("searchBox", "search/",'.html');
+</script>
+<script type="text/javascript">
+$(function() { codefold.init(); });
+</script>
+<script type="text/javascript" src="menudata.js"></script>
+<script type="text/javascript" src="menu.js"></script>
+<script type="text/javascript">
+$(function() {
+  initMenu('',true,false,'search.php','搜索',false);
+  $(function() { init_search(); });
+});
+</script>
+<div id="main-nav"></div>
+<!-- window showing the filter options -->
+<div id="MSearchSelectWindow"
+     onmouseover="return searchBox.OnSearchSelectShow()"
+     onmouseout="return searchBox.OnSearchSelectHide()"
+     onkeydown="return searchBox.OnSearchSelectKey(event)">
+</div>
+
+<!-- iframe showing the search results (closed by default) -->
+<div id="MSearchResultsWindow">
+<div id="MSearchResults">
+<div class="SRPage">
+<div id="SRIndex">
+<div id="SRResults"></div>
+<div class="SRStatus" id="Loading">载入中...</div>
+<div class="SRStatus" id="Searching">搜索中...</div>
+<div class="SRStatus" id="NoMatches">未找到</div>
+</div>
+</div>
+</div>
+</div>
+
+<div id="nav-path" class="navpath">
+  <ul>
+<li class="navelem"><a href="namespacesystems.html">systems</a></li><li class="navelem"><a href="namespacesystems_1_1feature.html">feature</a></li><li class="navelem"><a href="classsystems_1_1feature_1_1UndoContext.html">UndoContext</a></li>  </ul>
+</div>
+</div><!-- top -->
+<div id="doc-content">
+<div class="header">
+  <div class="summary">
+<a href="#pub-methods">Public 成员函数</a> &#124;
+<a href="#pri-methods">Private 成员函数</a> &#124;
+<a href="#pri-attribs">Private 属性</a> &#124;
+<a href="#friends">友元</a> &#124;
+<a href="classsystems_1_1feature_1_1UndoContext-members.html">所有成员列表</a>  </div>
+  <div class="headertitle"><div class="title">systems::feature::UndoContext类 参考</div></div>
+</div><!--header-->
+<div class="contents">
+
+<p>临时预览视图：插件控制两次 execute 之间的开层、重试和取消。  
+ <a href="#details">更多...</a></p>
+
+<p><code>#include &lt;<a class="el" href="FeatureContext_8h_source.html">FeatureContext.h</a>&gt;</code></p>
+<div class="dynheader">
+systems::feature::UndoContext 的协作图:</div>
+<div class="dyncontent">
+<div class="center"><img src="classsystems_1_1feature_1_1UndoContext__coll__graph.png" border="0" usemap="#asystems_1_1feature_1_1UndoContext_coll__map" loading="lazy" alt="Collaboration graph"/></div>
+<map name="asystems_1_1feature_1_1UndoContext_coll__map" id="asystems_1_1feature_1_1UndoContext_coll__map">
+<area shape="rect" title="临时预览视图：插件控制两次 execute 之间的开层、重试和取消。" alt="" coords="520,993,745,1018"/>
+<area shape="rect" href="structsystems_1_1feature_1_1FeatureContext.html" title="功能上下文，由 FeatureSystem 装配并在 setup()/activate()/execute() 时传给功能" alt="" coords="3061,1213,3251,1253"/>
+<area shape="poly" title=" " alt="" coords="688,1019,824,1059,1018,1111,1243,1162,1360,1185,1475,1203,1690,1226,1859,1234,2245,1231,2799,1231,3061,1231,3061,1236,2799,1236,2245,1236,1858,1239,1690,1232,1474,1208,1359,1190,1242,1168,1016,1116,823,1064,687,1024"/>
+<area shape="rect" href="classsystems_1_1feature_1_1FeatureSystem.html" title="功能系统：管理功能插件的注册、注销、调用与事件路由" alt="" coords="4089,779,4279,819"/>
+<area shape="poly" title=" " alt="" coords="4075,801,3817,801,2975,801,2827,805,2679,813,2496,816,2417,819,2315,828,2203,844,2117,863,2031,883,1919,901,1725,924,1574,937,1228,960,746,999,745,994,1228,955,1574,931,1725,919,1918,896,2030,877,2116,858,2202,839,2314,823,2417,814,2496,811,2679,808,2827,800,2975,796,3817,796,4075,796"/>
+<area shape="rect" href="classsystems_1_1feature_1_1InteractionContext.html" title="视口交互上下文（FeatureContext 成员）：功能在 setup() 中经它订阅交互回调" alt="" coords="4391,1244,4601,1284"/>
+<area shape="poly" title=" " alt="" coords="4209,829,4483,1242,4479,1245,4204,832"/>
+<area shape="poly" title=" " alt="" coords="4146,829,4108,852,4066,872,4016,888,3972,896,3895,902,3819,907,3775,915,3725,929,3495,1051,3195,1216,3192,1211,3492,1046,3723,924,3774,909,3818,901,3895,897,3971,891,4015,882,4064,867,4106,847,4143,825"/>
+<area shape="rect" title=" " alt="" coords="229,942,315,967"/>
+<area shape="poly" title=" " alt="" coords="311,971,342,983,375,993,448,1004,520,1007,520,1012,447,1009,374,999,340,989,309,976"/>
+<area shape="poly" title=" " alt="" coords="303,973,337,993,376,1011,415,1022,446,1026,520,1028,812,1043,1059,1049,1276,1050,1479,1047,1899,1035,2146,1030,2439,1028,2978,1028,3240,1033,3444,1041,3542,1043,3647,1040,3766,1032,3906,1017,3990,1011,4025,1002,4064,981,4104,943,4135,898,4158,854,4173,818,4178,820,4163,856,4140,901,4108,946,4067,985,4027,1007,3991,1016,3907,1023,3766,1037,3647,1045,3542,1048,3443,1047,3240,1039,2978,1033,2439,1033,2146,1035,1899,1040,1479,1052,1276,1056,1059,1055,812,1048,520,1033,446,1031,414,1027,374,1016,334,998,300,977"/>
+<area shape="rect" href="classModelData.html" title="Model主要负责处理模型数据，先更新模型数据，再更新ModelActor调函数" alt="" coords="586,335,679,361"/>
+<area shape="poly" title=" " alt="" coords="286,929,621,360,626,362,290,931"/>
+<area shape="rect" href="structComponentData.html" title="模型的组成单元：一个 ComponentData 表示模型中的一个物体部件" alt="" coords="569,757,697,782"/>
+<area shape="poly" title=" " alt="" coords="309,933,605,780,608,785,311,938"/>
+<area shape="rect" href="classUndoStack.html" title=" " alt="" coords="2394,533,2486,558"/>
+<area shape="poly" title=" " alt="" coords="271,928,278,807,289,723,310,633,340,541,360,497,384,454,411,415,443,379,478,347,519,320,553,305,584,297,612,296,640,299,698,310,731,315,769,317,984,317,1106,317,1228,320,1341,321,1390,325,1452,340,1476,354,1541,371,1597,380,1695,385,1794,384,1852,389,1919,399,2394,530,2393,535,1918,404,1851,394,1794,390,1694,390,1596,386,1540,376,1474,358,1450,345,1389,331,1341,326,1228,325,1106,322,984,323,769,323,731,321,697,316,639,304,612,301,585,302,555,310,521,325,482,351,446,382,415,418,388,457,365,499,345,543,315,634,295,724,283,807,276,928"/>
+<area shape="rect" href="structUndoRecord.html" title="一次操作 = 一条记录" alt="" coords="582,234,683,259"/>
+<area shape="poly" title=" " alt="" coords="271,928,275,795,288,604,301,507,319,417,342,344,357,316,373,294,402,282,457,270,581,250,582,256,458,275,404,287,376,298,361,319,347,346,324,419,306,508,294,605,280,795,276,928"/>
+<area shape="rect" title=" " alt="" coords="3724,939,3907,1008"/>
+<area shape="poly" title=" " alt="" coords="329,952,1839,948,3513,948,3623,952,3724,960,3723,966,3622,957,3513,953,1839,953,329,957"/>
+<area shape="rect" href="structsystems_1_1feature_1_1FeatureInfo.html" title="功能信息：元数据与 setup() 声明的聚合，供 UI 查询" alt="" coords="769,1411,984,1437"/>
+<area shape="poly" title=" " alt="" coords="277,981,285,1082,303,1220,316,1288,332,1350,352,1400,364,1418,376,1431,404,1450,433,1465,496,1484,562,1491,629,1488,694,1478,753,1464,843,1434,845,1439,755,1469,695,1483,630,1493,562,1496,495,1489,431,1470,401,1455,373,1435,360,1421,348,1402,327,1352,310,1290,297,1220,280,1083,272,981"/>
+<area shape="rect" href="classsystems_1_1feature_1_1FeatureEventGateway.html" title="包装事件订阅：回调只写自己的预览，结束或异常时 flush，不创建操作记录。" alt="" coords="2703,1071,2892,1111"/>
+<area shape="poly" title=" " alt="" coords="287,978,331,1060,365,1111,406,1163,453,1211,507,1251,536,1266,567,1278,598,1285,631,1288,1353,1288,1585,1291,1767,1295,1854,1293,1947,1288,2053,1277,2177,1260,2340,1228,2498,1186,2637,1143,2740,1108,2742,1113,2639,1148,2500,1191,2341,1233,2178,1265,2053,1283,1947,1293,1854,1299,1767,1300,1585,1297,1353,1293,631,1293,597,1291,565,1283,534,1271,504,1255,450,1215,402,1166,361,1114,327,1063,282,981"/>
+<area shape="poly" title=" " alt="" coords="278,981,286,1035,302,1105,332,1179,352,1214,377,1245,435,1299,462,1317,490,1330,519,1340,551,1345,631,1349,1353,1349,1603,1346,1858,1337,2352,1306,2773,1270,3061,1241,3061,1247,2774,1276,2353,1311,1859,1342,1603,1351,1353,1355,631,1355,551,1351,518,1345,488,1335,459,1322,432,1303,373,1248,347,1217,327,1182,297,1107,280,1036,273,981"/>
+<area shape="rect" href="classsystems_1_1job_1_1Job.html" title="任务单元：持有执行体、提交体、取消令牌与状态" alt="" coords="1993,79,2127,105"/>
+<area shape="poly" title=" " alt="" coords="270,928,271,782,282,568,294,458,313,358,338,276,354,244,373,221,388,211,413,203,485,188,684,164,1008,141,1295,120,1577,106,1993,91,1993,96,1578,111,1296,126,1008,147,684,170,485,193,414,208,390,216,376,225,359,247,343,278,318,359,300,459,288,569,276,782,276,928"/>
+<area shape="rect" title=" " alt="" coords="5,935,144,975"/>
+<area shape="poly" title=" " alt="" coords="157,952,228,952,228,957,157,957"/>
+<area shape="rect" title=" " alt="" coords="2357,474,2523,499"/>
+<area shape="poly" title=" " alt="" coords="2537,491,2660,497,2796,500,3817,500,3893,503,3952,516,4006,543,4067,589,4109,635,4142,687,4165,738,4179,777,4174,779,4160,740,4137,690,4105,638,4064,593,4004,547,3950,521,3892,508,3817,505,2796,505,2660,502,2537,496"/>
+<area shape="rect" href="classsystems_1_1job_1_1JobRunner.html" title="所属线程管理一个在飞任务；worker 不等待 GUI。 发布、准备、查询、清理、终态与 stop 均在构造线程。 异步运行须向该线程投递；计算结束后保持槽与模型占用直到 GUI 收尾。" alt="" coords="2708,365,2887,390"/>
+<area shape="poly" title=" " alt="" coords="2537,482,2607,474,2678,455,2708,440,2737,423,2780,388,2784,392,2740,427,2711,445,2680,460,2608,479,2538,488"/>
+<area shape="rect" href="classModelLayer.html" title="负责管理多个 ModelData 实例的类" alt="" coords="2011,623,2109,649"/>
+<area shape="poly" title=" " alt="" coords="2123,637,2267,643,2439,647,3817,647,3868,651,3919,661,3968,677,4015,696,4097,739,4156,776,4153,781,4095,743,4013,701,3967,682,3918,666,3867,656,3817,652,2439,652,2267,649,2123,642"/>
+<area shape="poly" title=" " alt="" coords="2122,619,2393,554,2394,559,2123,624"/>
+<area shape="poly" title=" " alt="" coords="2095,654,2765,1068,2762,1073,2092,658"/>
+<area shape="poly" title=" " alt="" coords="2123,649,2202,665,2275,675,2338,677,2448,674,2500,674,2554,681,2613,698,2680,727,2750,766,2807,804,2853,842,2893,884,2928,930,2962,982,3040,1111,3048,1130,3050,1147,3054,1163,3063,1180,3082,1197,3105,1211,3102,1216,3079,1201,3059,1183,3049,1165,3045,1148,3043,1132,3035,1113,2957,984,2923,933,2889,887,2850,846,2804,808,2747,770,2677,732,2611,703,2553,687,2499,680,2448,679,2338,682,2274,680,2201,671,2122,654"/>
+<area shape="poly" title=" " alt="" coords="2084,612,2125,577,2180,535,2244,494,2314,459,2388,437,2492,417,2707,386,2708,391,2493,422,2389,443,2316,464,2247,498,2183,540,2128,581,2087,616"/>
+<area shape="rect" href="classGeometryRegistry.html" title=" " alt="" coords="1535,553,1677,578"/>
+<area shape="poly" title=" " alt="" coords="1691,569,1800,580,1919,597,2016,621,2015,626,1918,603,1799,585,1690,574"/>
+<area shape="rect" title=" " alt="" coords="1025,542,1211,597"/>
+<area shape="poly" title=" " alt="" coords="1225,566,1535,563,1535,569,1225,571"/>
+<area shape="rect" title=" " alt="" coords="1030,621,1206,675"/>
+<area shape="poly" title=" " alt="" coords="1219,633,1330,617,1450,595,1474,588,1535,575,1536,580,1475,593,1451,600,1331,622,1220,639"/>
+<area shape="rect" title=" " alt="" coords="1031,385,1205,439"/>
+<area shape="poly" title=" " alt="" coords="1219,422,1352,446,1411,462,1452,479,1461,487,1465,495,1476,511,1515,534,1556,550,1554,555,1513,539,1473,515,1461,498,1457,490,1449,484,1409,467,1351,451,1218,427"/>
+<area shape="rect" title=" " alt="" coords="1030,463,1206,518"/>
+<area shape="poly" title=" " alt="" coords="1220,502,1451,536,1535,550,1535,555,1450,541,1219,507"/>
+<area shape="rect" title=" " alt="" coords="1525,447,1687,502"/>
+<area shape="poly" title=" " alt="" coords="1701,487,1808,511,1865,528,1920,548,1990,585,2043,621,2040,625,1987,590,1918,553,1863,533,1806,516,1700,492"/>
+<area shape="rect" title=" " alt="" coords="1008,335,1228,361"/>
+<area shape="poly" title=" " alt="" coords="1226,360,1451,393,1510,417,1562,445,1559,450,1508,422,1450,399,1225,365"/>
+<area shape="poly" title=" " alt="" coords="693,345,1008,345,1008,351,693,351"/>
+<area shape="rect" title=" " alt="" coords="193,94,351,119"/>
+<area shape="poly" title=" " alt="" coords="330,88,374,80,435,76,496,80,641,97,753,118,864,141,1008,164,1133,176,1230,181,1328,189,1451,209,1534,230,1597,251,1738,304,1791,318,1835,326,1876,340,1920,370,1950,400,1976,434,2017,508,2044,575,2058,622,2053,624,2038,577,2012,510,1972,437,1946,404,1917,374,1873,344,1833,331,1790,323,1737,309,1595,256,1532,235,1450,215,1327,194,1230,186,1132,182,1008,169,863,146,752,123,640,102,496,85,435,81,375,85,331,93"/>
+<area shape="poly" title=" " alt="" coords="365,105,444,114,476,122,498,134,511,150,516,167,515,200,511,234,514,251,522,269,539,290,560,307,603,333,600,338,557,312,535,294,518,272,509,253,506,234,510,200,511,168,506,153,494,138,474,127,443,119,364,111"/>
+<area shape="poly" title=" " alt="" coords="308,124,376,162,412,175,442,181,471,192,498,217,511,237,518,256,521,291,519,327,523,372,551,489,583,602,630,756,625,757,578,604,546,490,517,372,513,327,516,291,513,257,506,239,494,220,468,196,441,186,410,180,374,166,305,129"/>
+<area shape="rect" title=" " alt="" coords="1507,667,1705,722"/>
+<area shape="poly" title=" " alt="" coords="1719,681,1918,657,2010,642,2011,648,1919,663,1720,686"/>
+<area shape="rect" title=" " alt="" coords="1013,749,1223,789"/>
+<area shape="poly" title=" " alt="" coords="1236,788,1288,791,1343,789,1398,780,1449,762,1457,756,1461,749,1465,741,1473,733,1505,716,1508,720,1476,737,1469,744,1465,751,1461,759,1452,766,1399,785,1344,795,1288,797,1236,793"/>
+<area shape="poly" title=" " alt="" coords="711,767,1013,767,1013,772,711,772"/>
+<area shape="rect" title=" " alt="" coords="1530,747,1682,787"/>
+<area shape="poly" title=" " alt="" coords="1696,754,1803,736,1861,722,1918,705,1984,676,2037,646,2040,651,1987,681,1920,711,1863,728,1804,741,1696,760"/>
+<area shape="rect" href="classMeshIDMap.html" title=" " alt="" coords="1557,811,1655,837"/>
+<area shape="poly" title=" " alt="" coords="1669,828,1725,830,1789,827,1855,815,1917,792,1963,760,2002,719,2031,679,2050,647,2054,650,2035,681,2006,722,1967,764,1920,797,1856,821,1789,832,1725,836,1669,834"/>
+<area shape="rect" title=" " alt="" coords="1012,813,1224,853"/>
+<area shape="poly" title=" " alt="" coords="1238,828,1556,822,1556,828,1238,834"/>
+<area shape="rect" title=" " alt="" coords="1047,877,1189,917"/>
+<area shape="poly" title=" " alt="" coords="1203,892,1321,881,1386,871,1450,856,1474,845,1556,828,1557,833,1475,851,1452,861,1387,876,1322,886,1203,897"/>
+<area shape="rect" href="classModelObserver.html" title=" " alt="" coords="1545,861,1667,886"/>
+<area shape="poly" title=" " alt="" coords="1679,885,1734,891,1796,891,1859,881,1889,871,1917,858,1947,836,1972,810,1994,781,2012,750,2039,691,2053,648,2058,650,2044,693,2017,752,1998,783,1976,814,1950,840,1920,862,1891,876,1860,886,1796,896,1734,897,1678,891"/>
+<area shape="rect" href="classUndoRecorder.html" title="undo 记录钩子（ModelLayer 回调，UndoStack 实现）" alt="" coords="1549,319,1663,345"/>
+<area shape="poly" title=" " alt="" coords="1652,347,1797,410,1870,445,1920,475,1963,513,2001,554,2052,622,2048,625,1997,558,1960,517,1917,479,1867,450,1795,415,1650,352"/>
+<area shape="poly" title=" " alt="" coords="1677,322,1826,311,2009,306,2099,310,2180,320,2246,336,2272,348,2292,362,2306,380,2312,398,2307,436,2302,473,2305,491,2317,509,2333,523,2352,532,2394,542,2393,547,2351,537,2330,527,2313,512,2301,493,2297,473,2302,435,2306,399,2302,382,2289,366,2270,353,2244,341,2179,325,2098,316,2009,312,1827,316,1678,327"/>
+<area shape="rect" title=" " alt="" coords="1501,603,1711,643"/>
+<area shape="poly" title=" " alt="" coords="1725,623,2010,632,2010,637,1725,629"/>
+<area shape="rect" href="structModelLayer_1_1WriteAuthority.html" title="写权限状态（堆上共享）：含线程亲和、冻结窗口与框架特权深度" alt="" coords="1017,699,1219,725"/>
+<area shape="poly" title=" " alt="" coords="1227,695,1450,657,1522,640,1524,645,1451,663,1228,700"/>
+<area shape="rect" href="classcore_1_1EventBus.html" title="类型安全的轻量级事件总线，以事件类型为键分发事件" alt="" coords="2381,1079,2499,1105"/>
+<area shape="poly" title=" " alt="" coords="2508,1073,2565,1057,2663,1022,2738,989,2814,958,2915,929,3088,894,3235,872,3365,860,3487,854,3741,844,3890,834,4065,815,4089,811,4090,817,4066,820,3891,839,3741,850,3488,859,3366,865,3235,878,3089,900,2917,935,2816,963,2740,994,2665,1027,2566,1063,2509,1078"/>
+<area shape="poly" title=" " alt="" coords="2513,1089,2702,1088,2702,1094,2513,1094"/>
+<area shape="rect" title=" " alt="" coords="1943,1117,2177,1187"/>
+<area shape="poly" title=" " alt="" coords="2191,1129,2380,1099,2381,1104,2192,1134"/>
+<area shape="rect" title=" " alt="" coords="1475,1153,1737,1193"/>
+<area shape="poly" title=" " alt="" coords="1751,1166,1919,1159,1942,1157,1943,1163,1919,1164,1751,1171"/>
+<area shape="rect" title=" " alt="" coords="1957,1053,2163,1093"/>
+<area shape="poly" title=" " alt="" coords="2177,1076,2380,1086,2380,1092,2177,1082"/>
+<area shape="rect" href="structcore_1_1EventBus_1_1LifetimeToken.html" title=" " alt="" coords="1515,1089,1697,1129"/>
+<area shape="poly" title=" " alt="" coords="1710,1098,1957,1079,1958,1084,1711,1104"/>
+<area shape="poly" title=" " alt="" coords="2500,554,2635,575,2715,583,2796,587,3817,587,3889,585,3948,585,4003,596,4033,609,4067,628,4106,662,4138,703,4162,744,4177,777,4172,779,4157,746,4134,706,4102,666,4064,633,4031,614,4001,602,3947,590,3889,590,3817,592,2796,592,2715,589,2634,581,2499,560"/>
+<area shape="poly" title=" " alt="" coords="2455,569,2476,609,2506,657,2545,707,2591,750,2614,761,2636,763,2658,767,2680,781,2710,815,2734,854,2754,895,2769,936,2788,1014,2797,1070,2792,1071,2783,1015,2764,938,2749,897,2730,856,2706,818,2677,785,2656,772,2635,768,2613,766,2588,754,2541,711,2502,660,2471,611,2450,572"/>
+<area shape="poly" title=" " alt="" coords="2500,544,2541,542,2587,536,2633,524,2677,506,2714,479,2745,447,2786,389,2791,392,2749,450,2718,483,2680,510,2635,529,2588,541,2541,547,2500,549"/>
+<area shape="rect" title=" " alt="" coords="1252,218,1451,243"/>
+<area shape="poly" title=" " alt="" coords="1465,237,2178,295,2212,298,2241,299,2267,306,2293,326,2307,350,2312,374,2310,397,2305,420,2300,442,2299,465,2303,487,2317,509,2333,523,2352,532,2394,542,2393,547,2351,537,2330,527,2313,512,2298,489,2293,465,2295,442,2300,419,2305,396,2307,374,2302,352,2289,330,2264,310,2240,304,2212,303,2177,300,1464,242"/>
+<area shape="poly" title=" " alt="" coords="697,243,1252,230,1252,236,697,248"/>
+<area shape="poly" title=" " alt="" coords="3920,975,3994,966,4030,955,4064,940,4100,914,4130,881,4154,847,4170,818,4175,820,4158,849,4134,884,4104,918,4067,945,4032,961,3995,971,3921,980"/>
+<area shape="rect" href="structsystems_1_1feature_1_1FeatureSystem_1_1FeatureEntry.html" title=" " alt="" coords="3417,1275,3607,1315"/>
+<area shape="poly" title=" " alt="" coords="3539,1263,3779,1007,3783,1010,3543,1266"/>
+<area shape="poly" title=" " alt="" coords="998,1418,1350,1412,3157,1412,3203,1409,3250,1401,3339,1375,3417,1342,3475,1312,3478,1317,3419,1347,3341,1380,3251,1406,3204,1414,3157,1417,1350,1417,998,1423"/>
+<area shape="rect" href="classsystems_1_1feature_1_1FeatureParams.html" title="功能的持久参数集：参数类型与当前值一一对应" alt="" coords="2703,1329,2892,1369"/>
+<area shape="poly" title=" " alt="" coords="2906,1341,3037,1332,3417,1301,3418,1306,3038,1337,2906,1346"/>
+<area shape="poly" title=" " alt="" coords="2905,1337,2971,1325,3036,1306,3087,1280,3128,1251,3131,1256,3089,1284,3038,1310,2972,1330,2906,1343"/>
+<area shape="rect" href="structsystems_1_1interaction_1_1InteractionState.html" title="单个功能的视口交互状态：回调订阅（功能写入）+ 标注与结果（渲染层拉取）" alt="" coords="3079,1467,3233,1507"/>
+<area shape="poly" title=" " alt="" coords="3247,1480,3332,1470,3367,1463,3392,1454,3430,1423,3461,1385,3484,1346,3500,1314,3505,1316,3489,1349,3465,1388,3434,1427,3395,1458,3369,1468,3333,1476,3248,1485"/>
+<area shape="poly" title=" " alt="" coords="3247,1490,3372,1496,3511,1499,4185,1499,4237,1492,4285,1473,4330,1446,4371,1412,4407,1376,4438,1341,4480,1283,4484,1286,4442,1344,4411,1380,4375,1416,4333,1450,4288,1478,4238,1497,4186,1504,3511,1504,3372,1501,3247,1495"/>
+<area shape="poly" title=" " alt="" coords="4377,1270,3607,1294,3607,1289,4377,1265"/>
+<area shape="poly" title=" " alt="" coords="4377,1249,4283,1240,4185,1236,3511,1236,3251,1236,3251,1231,3511,1231,4185,1231,4284,1235,4377,1244"/>
+<area shape="poly" title=" " alt="" coords="2907,1091,2972,1098,3038,1109,3165,1145,3287,1190,3393,1236,3471,1272,3469,1277,3391,1240,3285,1195,3163,1151,3037,1115,2971,1103,2906,1097"/>
+<area shape="poly" title=" " alt="" coords="2862,1113,3106,1211,3104,1216,2860,1118"/>
+<area shape="poly" title=" " alt="" coords="3219,1256,3275,1272,3347,1284,3417,1290,3417,1295,3346,1289,3274,1277,3218,1261"/>
+<area shape="poly" title=" " alt="" coords="2878,390,3008,408,3081,415,3155,417,3817,417,3892,417,3952,421,3980,428,4008,439,4037,457,4067,482,4098,516,4123,555,4143,597,4158,640,4177,720,4184,778,4179,779,4171,721,4153,642,4138,599,4119,558,4094,519,4064,486,4033,462,4006,444,3979,433,3952,426,3892,422,3817,423,3155,423,3081,420,3007,413,2878,395"/>
+<area shape="rect" title=" " alt="" coords="2315,132,2565,172"/>
+<area shape="poly" title=" " alt="" coords="2580,152,2632,165,2680,188,2704,207,2725,230,2758,280,2781,328,2795,363,2790,365,2776,330,2754,282,2721,233,2700,211,2677,193,2630,170,2578,157"/>
+<area shape="rect" href="structsystems_1_1job_1_1JobRunner_1_1ModelOperation.html" title=" " alt="" coords="1971,132,2149,172"/>
+<area shape="poly" title=" " alt="" coords="2163,149,2314,149,2314,155,2163,155"/>
+<area shape="rect" title=" " alt="" coords="2345,68,2535,108"/>
+<area shape="poly" title=" " alt="" coords="2549,84,2617,97,2650,110,2680,129,2708,155,2732,186,2751,220,2766,254,2787,319,2797,364,2791,365,2782,320,2762,256,2746,222,2728,189,2705,158,2677,133,2648,115,2616,102,2548,89"/>
+<area shape="poly" title=" " alt="" coords="2141,88,2345,86,2345,92,2141,94"/>
+<area shape="rect" title=" " alt="" coords="1513,23,1699,63"/>
+<area shape="poly" title=" " alt="" coords="1713,35,1876,28,2059,25,3817,25,3878,33,3932,53,3979,85,4020,126,4055,176,4085,232,4110,293,4130,357,4159,487,4176,610,4183,711,4185,778,4180,779,4178,711,4171,610,4154,488,4125,358,4105,295,4080,235,4051,179,4016,130,3976,89,3929,58,3877,38,3817,31,2059,31,1876,34,1713,40"/>
+<area shape="poly" title=" " alt="" coords="1713,60,1762,67,1884,79,1993,86,1993,91,1884,84,1761,72,1713,65"/>
+<area shape="rect" title=" " alt="" coords="1560,162,1652,187"/>
+<area shape="poly" title=" " alt="" coords="1666,180,1919,217,2134,246,2301,266,2468,291,2679,336,2763,362,2761,367,2678,341,2467,296,2300,271,2133,251,1918,223,1665,186"/>
+<area shape="poly" title=" " alt="" coords="1666,175,1806,174,1872,167,1898,161,1917,154,1925,146,1929,138,1932,128,1941,118,1966,105,1992,96,1994,102,1968,110,1944,122,1937,130,1933,140,1929,149,1920,158,1900,166,1873,172,1806,179,1666,180"/>
+<area shape="rect" title=" " alt="" coords="2394,343,2486,369"/>
+<area shape="poly" title=" " alt="" coords="2500,357,2708,369,2707,375,2499,362"/>
+</map>
+<center><span class="legend">[<a href="graph_legend.html">图例</a>]</span></center></div>
+<table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 id="header-pub-methods" class="groupheader"><a id="pub-methods" name="pub-methods"></a>
+Public 成员函数</h2></td></tr>
+<tr class="memitem:a1950b94eeb32e6b15a18f11ca36e1e9f" id="r_a1950b94eeb32e6b15a18f11ca36e1e9f"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a1950b94eeb32e6b15a18f11ca36e1e9f">beginScope</a> (std::string label)</td></tr>
+<tr class="memdesc:a1950b94eeb32e6b15a18f11ca36e1e9f"><td class="mdescLeft">&#160;</td><td class="mdescRight">开启本功能预览，捕获覆盖层内组件与结构修改；无栈返回 false。  <br /></td></tr>
+<tr class="memitem:afa37d9153af3087f657c8a7268470a4d" id="r_afa37d9153af3087f657c8a7268470a4d"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#afa37d9153af3087f657c8a7268470a4d">cancelScope</a> ()</td></tr>
+<tr class="memdesc:afa37d9153af3087f657c8a7268470a4d"><td class="mdescLeft">&#160;</td><td class="mdescRight">回滚关闭本功能预览；忙时请求取消并由框架延后清理。  <br /></td></tr>
+<tr class="memitem:a329137c8c371d1f63a2b76123c6fccf2" id="r_a329137c8c371d1f63a2b76123c6fccf2"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a329137c8c371d1f63a2b76123c6fccf2">revertScope</a> ()</td></tr>
+<tr class="memdesc:a329137c8c371d1f63a2b76123c6fccf2"><td class="mdescLeft">&#160;</td><td class="mdescRight">回滚本功能预览，保持层身份供重试。  <br /></td></tr>
+<tr class="memitem:a056fcea5359c3deebd3dce6f4a805563" id="r_a056fcea5359c3deebd3dce6f4a805563"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a056fcea5359c3deebd3dce6f4a805563">scopeActive</a> () const</td></tr>
+<tr class="memdesc:a056fcea5359c3deebd3dce6f4a805563"><td class="mdescLeft">&#160;</td><td class="mdescRight">本功能是否有进行中的预览。  <br /></td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 id="header-pri-methods" class="groupheader"><a id="pri-methods" name="pri-methods"></a>
+Private 成员函数</h2></td></tr>
+<tr class="memitem:aeb9a9231ac8824872a571fb6d6ccc266" id="r_aeb9a9231ac8824872a571fb6d6ccc266"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#aeb9a9231ac8824872a571fb6d6ccc266">UndoContext</a> (<a class="el" href="classsystems_1_1feature_1_1FeatureSystem.html">FeatureSystem</a> &amp;<a class="el" href="TestFeatureSystem_8cpp.html#a14a836ee7331e7487d2d7f94df86c5bc">system</a>, std::string owner)</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 id="header-pri-attribs" class="groupheader"><a id="pri-attribs" name="pri-attribs"></a>
+Private 属性</h2></td></tr>
+<tr class="memitem:a7ad931180f6c0d883295788d25d2d028" id="r_a7ad931180f6c0d883295788d25d2d028"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classsystems_1_1feature_1_1FeatureSystem.html">FeatureSystem</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a7ad931180f6c0d883295788d25d2d028">system_</a></td></tr>
+<tr class="memitem:afb65be07b89ea82e30181c30a84ae61b" id="r_afb65be07b89ea82e30181c30a84ae61b"><td class="memItemLeft" align="right" valign="top">const std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#afb65be07b89ea82e30181c30a84ae61b">owner_</a></td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 id="header-friends" class="groupheader"><a id="friends" name="friends"></a>
+友元</h2></td></tr>
+<tr class="memitem:a17e82bc7aa3ccd09d50a8c364584887c" id="r_a17e82bc7aa3ccd09d50a8c364584887c"><td class="memItemLeft" align="right" valign="top">struct&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a17e82bc7aa3ccd09d50a8c364584887c">FeatureContext</a></td></tr>
+</table>
+<a name="details" id="details"></a><h2 id="header-details" class="groupheader">详细描述</h2>
+<div class="textblock"><p>临时预览视图：插件控制两次 execute 之间的开层、重试和取消。 </p>
+<p>捕获由 <a class="el" href="classUndoStack.html">UndoStack</a> 持有。事件回调只更新自己的层，不维护正式历史； execute 收尾由框架吸收层的最早前像与最终效果，关闭层并形成操作记录。 插件无需提交层或配对正式操作边界。 </p>
+</div><a name="doc-constructors" id="doc-constructors"></a><h2 id="header-doc-constructors" class="groupheader">构造及析构函数说明</h2>
+<a id="aeb9a9231ac8824872a571fb6d6ccc266" name="aeb9a9231ac8824872a571fb6d6ccc266"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aeb9a9231ac8824872a571fb6d6ccc266">&#9670;&#160;</a></span>UndoContext()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">systems::feature::UndoContext::UndoContext </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="classsystems_1_1feature_1_1FeatureSystem.html">FeatureSystem</a> &amp;</td>          <td class="paramname"><span class="paramname"><em>system</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">std::string</td>          <td class="paramname"><span class="paramname"><em>owner</em></span>&#160;)</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel private">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a name="doc-func-members" id="doc-func-members"></a><h2 id="header-doc-func-members" class="groupheader">成员函数说明</h2>
+<a id="a1950b94eeb32e6b15a18f11ca36e1e9f" name="a1950b94eeb32e6b15a18f11ca36e1e9f"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a1950b94eeb32e6b15a18f11ca36e1e9f">&#9670;&#160;</a></span>beginScope()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool systems::feature::UndoContext::beginScope </td>
+          <td>(</td>
+          <td class="paramtype">std::string</td>          <td class="paramname"><span class="paramname"><em>label</em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>开启本功能预览，捕获覆盖层内组件与结构修改；无栈返回 false。 </p>
+
+</div>
+</div>
+<a id="afa37d9153af3087f657c8a7268470a4d" name="afa37d9153af3087f657c8a7268470a4d"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#afa37d9153af3087f657c8a7268470a4d">&#9670;&#160;</a></span>cancelScope()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void systems::feature::UndoContext::cancelScope </td>
+          <td>(</td>
+          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>回滚关闭本功能预览；忙时请求取消并由框架延后清理。 </p>
+
+</div>
+</div>
+<a id="a329137c8c371d1f63a2b76123c6fccf2" name="a329137c8c371d1f63a2b76123c6fccf2"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a329137c8c371d1f63a2b76123c6fccf2">&#9670;&#160;</a></span>revertScope()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void systems::feature::UndoContext::revertScope </td>
+          <td>(</td>
+          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>回滚本功能预览，保持层身份供重试。 </p>
+
+</div>
+</div>
+<a id="a056fcea5359c3deebd3dce6f4a805563" name="a056fcea5359c3deebd3dce6f4a805563"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a056fcea5359c3deebd3dce6f4a805563">&#9670;&#160;</a></span>scopeActive()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool systems::feature::UndoContext::scopeActive </td>
+          <td>(</td>
+          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>本功能是否有进行中的预览。 </p>
+
+</div>
+</div>
+<a name="doc-related-members" id="doc-related-members"></a><h2 id="header-doc-related-members" class="groupheader">友元及相关符号说明</h2>
+<a id="a17e82bc7aa3ccd09d50a8c364584887c" name="a17e82bc7aa3ccd09d50a8c364584887c"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a17e82bc7aa3ccd09d50a8c364584887c">&#9670;&#160;</a></span>FeatureContext</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">friend struct <a class="el" href="structsystems_1_1feature_1_1FeatureContext.html">FeatureContext</a></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel friend">friend</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a name="doc-variable-members" id="doc-variable-members"></a><h2 id="header-doc-variable-members" class="groupheader">类成员变量说明</h2>
+<a id="afb65be07b89ea82e30181c30a84ae61b" name="afb65be07b89ea82e30181c30a84ae61b"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#afb65be07b89ea82e30181c30a84ae61b">&#9670;&#160;</a></span>owner_</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">const std::string systems::feature::UndoContext::owner_</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel private">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a7ad931180f6c0d883295788d25d2d028" name="a7ad931180f6c0d883295788d25d2d028"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a7ad931180f6c0d883295788d25d2d028">&#9670;&#160;</a></span>system_</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classsystems_1_1feature_1_1FeatureSystem.html">FeatureSystem</a>&amp; systems::feature::UndoContext::system_</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel private">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<hr/>该类的文档由以下文件生成:<ul>
+<li>model/systems/feature/<a class="el" href="FeatureContext_8h_source.html">FeatureContext.h</a></li>
+<li>model/systems/feature/<a class="el" href="FeatureContext_8cpp.html">FeatureContext.cpp</a></li>
+</ul>
+</div><!-- contents -->
+<!-- start footer part -->
+<hr class="footer"/><address class="footer"><small>
+制作者&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.14.0
+</small></address>
+</div><!-- doc-content -->
+</body>
+</html>

@@ -1,0 +1,7 @@
+<map id="model/systems/job/JobProgress.h" name="model/systems/job/JobProgress.h">
+<area shape="rect" id="Node000001" title="进度上报回调类型：model 层（任务系统）与上层 UI 适配层的公共契约" alt="" coords="5,5,244,31"/>
+<area shape="rect" id="Node000002" title=" " alt="" coords="33,79,120,104"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="119,33,94,69,90,66,115,30"/>
+<area shape="rect" id="Node000003" title=" " alt="" coords="145,79,203,104"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="135,29,160,66,156,69,131,33"/>
+</map>

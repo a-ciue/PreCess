@@ -1,0 +1,161 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="zh">
+<head>
+<meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=11"/>
+<meta name="generator" content="Doxygen 1.14.0"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>PreCess: app/model/QTaskStatus.h 文件参考</title>
+<link href="tabs.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="jquery.js"></script>
+<script type="text/javascript" src="dynsections.js"></script>
+<script type="text/javascript" src="clipboard.js"></script>
+<script type="text/javascript" src="cookie.js"></script>
+<link href="search/search.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="search/searchdata.js"></script>
+<script type="text/javascript" src="search/search.js"></script>
+<link href="doxygen.css" rel="stylesheet" type="text/css" />
+</head>
+<body>
+<div id="top"><!-- do not remove this div, it is closed by doxygen! -->
+<div id="titlearea">
+<table cellspacing="0" cellpadding="0">
+ <tbody>
+ <tr id="projectrow">
+  <td id="projectlogo"><img alt="Logo" src="PreCess.ico"/></td>
+  <td id="projectalign">
+   <div id="projectname">PreCess
+   </div>
+  </td>
+ </tr>
+ </tbody>
+</table>
+</div>
+<!-- end header part -->
+<!-- 制作者 Doxygen 1.14.0 -->
+<script type="text/javascript">
+var searchBox = new SearchBox("searchBox", "search/",'.html');
+</script>
+<script type="text/javascript">
+$(function() { codefold.init(); });
+</script>
+<script type="text/javascript" src="menudata.js"></script>
+<script type="text/javascript" src="menu.js"></script>
+<script type="text/javascript">
+$(function() {
+  initMenu('',true,false,'search.php','搜索',false);
+  $(function() { init_search(); });
+});
+</script>
+<div id="main-nav"></div>
+<!-- window showing the filter options -->
+<div id="MSearchSelectWindow"
+     onmouseover="return searchBox.OnSearchSelectShow()"
+     onmouseout="return searchBox.OnSearchSelectHide()"
+     onkeydown="return searchBox.OnSearchSelectKey(event)">
+</div>
+
+<!-- iframe showing the search results (closed by default) -->
+<div id="MSearchResultsWindow">
+<div id="MSearchResults">
+<div class="SRPage">
+<div id="SRIndex">
+<div id="SRResults"></div>
+<div class="SRStatus" id="Loading">载入中...</div>
+<div class="SRStatus" id="Searching">搜索中...</div>
+<div class="SRStatus" id="NoMatches">未找到</div>
+</div>
+</div>
+</div>
+</div>
+
+<div id="nav-path" class="navpath">
+  <ul>
+<li class="navelem"><a href="dir_d422163b96683743ed3963d4aac17747.html">app</a></li><li class="navelem"><a href="dir_7264f15838153470b7a2e9ca1ba7b2a9.html">model</a></li>  </ul>
+</div>
+</div><!-- top -->
+<div id="doc-content">
+<div class="header">
+  <div class="summary">
+<a href="#nested-classes">类</a> &#124;
+<a href="#namespaces">命名空间</a>  </div>
+  <div class="headertitle"><div class="title">QTaskStatus.h 文件参考</div></div>
+</div><!--header-->
+<div class="contents">
+
+<p>全局单槽任务的 Qt 展示：唯一进度合流、忙状态、取消入口与终态反馈。  
+<a href="#details">更多...</a></p>
+<div class="textblock"><code>#include &quot;<a class="el" href="JobProgressSlot_8h_source.html">JobProgressSlot.h</a>&quot;</code><br />
+<code>#include &lt;QObject&gt;</code><br />
+<code>#include &lt;QString&gt;</code><br />
+<code>#include &lt;QtQmlIntegration/qqmlintegration.h&gt;</code><br />
+</div><div class="textblock"><div class="dynheader">
+QTaskStatus.h 的引用(Include)关系图:</div>
+<div class="dyncontent">
+<div class="center"><img src="QTaskStatus_8h__incl.png" border="0" usemap="#aapp_2model_2QTaskStatus_8h" loading="lazy" alt=""/></div>
+<map name="aapp_2model_2QTaskStatus_8h" id="aapp_2model_2QTaskStatus_8h">
+<area shape="rect" title="全局单槽任务的 Qt 展示：唯一进度合流、忙状态、取消入口与终态反馈。" alt="" coords="207,5,393,31"/>
+<area shape="rect" href="JobProgressSlot_8h.html" title="进度槽：计算与提交共用，GUI 定频轮询（替代每报一次跨线程投递）" alt="" coords="55,79,190,104"/>
+<area shape="poly" title=" " alt="" coords="272,33,165,76,163,71,271,28"/>
+<area shape="rect" title=" " alt="" coords="215,79,289,104"/>
+<area shape="poly" title=" " alt="" coords="294,33,270,69,265,66,290,30"/>
+<area shape="rect" title=" " alt="" coords="314,79,385,104"/>
+<area shape="poly" title=" " alt="" coords="310,29,336,66,331,69,306,33"/>
+<area shape="rect" title=" " alt="" coords="409,79,663,104"/>
+<area shape="poly" title=" " alt="" coords="339,28,485,72,484,77,337,33"/>
+<area shape="rect" title=" " alt="" coords="5,152,69,177"/>
+<area shape="poly" title=" " alt="" coords="111,106,63,145,60,141,107,102"/>
+<area shape="rect" title=" " alt="" coords="93,152,152,177"/>
+<area shape="poly" title=" " alt="" coords="125,104,125,138,120,138,120,104"/>
+<area shape="rect" title=" " alt="" coords="177,152,237,177"/>
+<area shape="poly" title=" " alt="" coords="138,102,184,141,181,145,134,106"/>
+</map>
+</div>
+</div><div class="textblock"><div class="dynheader">
+此图展示该文件被哪些文件直接或间接地引用了:</div>
+<div class="dyncontent">
+<div class="center"><img src="QTaskStatus_8h__dep__incl.png" border="0" usemap="#aapp_2model_2QTaskStatus_8hdep" loading="lazy" alt=""/></div>
+<map name="aapp_2model_2QTaskStatus_8hdep" id="aapp_2model_2QTaskStatus_8hdep">
+<area shape="rect" title="全局单槽任务的 Qt 展示：唯一进度合流、忙状态、取消入口与终态反馈。" alt="" coords="639,5,826,31"/>
+<area shape="rect" href="QModelManager_8h.html" title=" " alt="" coords="275,86,489,111"/>
+<area shape="poly" title=" " alt="" coords="669,36,434,89,432,83,668,31"/>
+<area shape="rect" href="QTaskStatus_8cpp.html" title="计算与提交共用一个进度槽，GUI 统一呈现执行反馈。" alt="" coords="513,86,715,111"/>
+<area shape="poly" title=" " alt="" coords="705,41,633,88,630,84,702,36"/>
+<area shape="rect" href="QAlgorithmSystemAdaptor_8cpp.html" title=" " alt="" coords="739,79,966,119"/>
+<area shape="poly" title=" " alt="" coords="763,36,825,76,822,81,760,41"/>
+<area shape="rect" href="TestQTaskStatus_8cpp.html" title="共享 Runner 的展示、取消与后继任务回归。" alt="" coords="991,86,1203,111"/>
+<area shape="poly" title=" " alt="" coords="799,31,1044,83,1043,89,798,36"/>
+<area shape="rect" href="main_8cpp.html" title=" " alt="" coords="5,167,116,192"/>
+<area shape="poly" title=" " alt="" coords="323,117,108,169,107,164,322,112"/>
+<area shape="rect" href="QModelManager_8cpp.html" title=" " alt="" coords="140,167,368,192"/>
+<area shape="poly" title=" " alt="" coords="353,121,274,169,272,164,350,116"/>
+<area shape="rect" href="TestQModelDeletion_8cpp.html" title="Qt 删除入口的忙时拒绝与撤销状态通知回归测试" alt="" coords="393,167,630,192"/>
+<area shape="poly" title=" " alt="" coords="414,116,494,164,491,169,411,121"/>
+<area shape="rect" href="TestUndoQml_8cpp.html" title="实际 QML 删除与选择器失效路径回归测试" alt="" coords="655,167,848,192"/>
+<area shape="poly" title=" " alt="" coords="450,112,698,164,697,169,448,117"/>
+</map>
+</div>
+</div>
+<p><a href="QTaskStatus_8h_source.html">浏览该文件的源代码.</a></p>
+<table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 id="header-nested-classes" class="groupheader"><a id="nested-classes" name="nested-classes"></a>
+类</h2></td></tr>
+<tr class="memitem:QTaskStatus" id="r_QTaskStatus"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classQTaskStatus.html">QTaskStatus</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">GUI 展示对象；宿主必须先 stop Runner，再销毁本对象。  <a href="classQTaskStatus.html#details">更多...</a><br /></td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 id="header-namespaces" class="groupheader"><a id="namespaces" name="namespaces"></a>
+命名空间</h2></td></tr>
+<tr class="memitem:session" id="r_session"><td class="memItemLeft" align="right" valign="top">namespace &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacesession.html">session</a></td></tr>
+<tr class="memitem:systems" id="r_systems"><td class="memItemLeft" align="right" valign="top">namespace &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacesystems.html">systems</a></td></tr>
+<tr class="memitem:systems_3A_3Ajob" id="r_systems_3A_3Ajob"><td class="memItemLeft" align="right" valign="top">namespace &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacesystems_1_1job.html">systems::job</a></td></tr>
+</table>
+<a name="details" id="details"></a><h2 id="header-details" class="groupheader">详细描述</h2>
+<div class="textblock"><p>全局单槽任务的 Qt 展示：唯一进度合流、忙状态、取消入口与终态反馈。 </p>
+</div></div><!-- contents -->
+<!-- start footer part -->
+<hr class="footer"/><address class="footer"><small>
+制作者&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.14.0
+</small></address>
+</div><!-- doc-content -->
+</body>
+</html>

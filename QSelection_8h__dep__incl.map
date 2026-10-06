@@ -1,13 +1,15 @@
 <map id="app/core/QSelection.h" name="app/core/QSelection.h">
-<area shape="rect" id="Node000001" title=" " alt="" coords="229,5,393,31"/>
+<area shape="rect" id="Node000001" title=" " alt="" coords="303,5,467,31"/>
 <area shape="rect" id="Node000002" href="$QArgObject_8cpp.html" title=" " alt="" coords="5,79,201,104"/>
-<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="266,38,138,81,136,76,264,33"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="327,37,150,81,148,76,326,31"/>
 <area shape="rect" id="Node000003" href="$QRenderWindow_8cpp.html" title=" " alt="" coords="124,159,355,185"/>
-<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="294,43,268,80,252,123,244,159,239,158,247,121,264,77,289,40"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="331,38,297,55,268,80,256,100,249,121,242,160,237,159,243,120,251,97,264,77,294,51,329,33"/>
 <area shape="rect" id="Node000004" href="$QRenderWindow_8h.html" title=" " alt="" coords="277,79,492,104"/>
-<area shape="poly" id="edge3_Node000001_Node000004" title=" " alt="" coords="335,38,375,77,371,80,331,42"/>
+<area shape="poly" id="edge3_Node000001_Node000004" title=" " alt="" coords="387,44,387,79,382,79,382,44"/>
 <area shape="rect" id="Node000006" href="$TestSelectionParameter_8cpp.html" title="选择器空值从 QML 适配层写入功能参数的回归测试" alt="" coords="517,79,775,104"/>
-<area shape="poly" id="edge6_Node000001_Node000006" title=" " alt="" coords="379,31,592,76,591,81,378,36"/>
+<area shape="poly" id="edge6_Node000001_Node000006" title=" " alt="" coords="441,32,604,76,603,81,439,37"/>
+<area shape="rect" id="Node000007" href="$TestUndoQml_8cpp.html" title="实际 QML 删除与选择器失效路径回归测试" alt="" coords="800,79,993,104"/>
+<area shape="poly" id="edge7_Node000001_Node000007" title=" " alt="" coords="481,30,815,76,814,81,480,35"/>
 <area shape="poly" id="edge4_Node000004_Node000003" title=" " alt="" coords="353,113,262,161,260,157,350,108"/>
 <area shape="rect" id="Node000005" href="$TestRenderWindowLifecycle_8cpp.html" title="视口场景图销毁与重建的资源生命周期回归测试" alt="" coords="379,152,577,192"/>
 <area shape="poly" id="edge5_Node000004_Node000005" title=" " alt="" coords="411,111,457,150,454,154,407,115"/>

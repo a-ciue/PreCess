@@ -195,7 +195,7 @@ Public 属性</h2></td></tr>
 <tr class="memitem:a69aba3b53d3d9ed3d7460a81e05d6ea9" id="r_a69aba3b53d3d9ed3d7460a81e05d6ea9"><td class="memItemLeft" align="right" valign="top">std::unique_ptr&lt; <a class="el" href="structGeometryMeshMap.html">GeometryMeshMap</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a69aba3b53d3d9ed3d7460a81e05d6ea9">mapping</a></td></tr>
 <tr class="memdesc:a69aba3b53d3d9ed3d7460a81e05d6ea9"><td class="mdescLeft">&#160;</td><td class="mdescRight">Geometry↔网格对应关系（可选，随快照保存）  <br /></td></tr>
 <tr class="memitem:a7654b30242b6cdd684e4dd0f6b11b2ce" id="r_a7654b30242b6cdd684e4dd0f6b11b2ce"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classMeshAdjacency.html">MeshAdjacency</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a7654b30242b6cdd684e4dd0f6b11b2ce">mesh_adjacency</a></td></tr>
-<tr class="memdesc:a7654b30242b6cdd684e4dd0f6b11b2ce"><td class="mdescLeft">&#160;</td><td class="mdescRight">网格邻接查询索引（派生缓存，Topology 类标脏时经 <a class="el" href="classModelLayer.html#acd0aab202acc541ca43338fef559234c" title="标记组件数据已修改（写路径自动调用；Topology 类立即失效邻接懒表并记入待通知集合）">ModelLayer::markComponentDirty</a> 失效）  <br /></td></tr>
+<tr class="memdesc:a7654b30242b6cdd684e4dd0f6b11b2ce"><td class="mdescLeft">&#160;</td><td class="mdescRight">网格邻接查询索引（派生缓存，Topology 类标脏时经 <a class="el" href="classModelLayer.html#a8d5b3617c745ce6c527a544d3d9e66fc" title="标记组件数据已修改（写路径自动调用；Topology 类立即失效邻接懒表并记入待通知集合）">ModelLayer::markComponentDirty</a> 失效）  <br /></td></tr>
 <tr class="memitem:a3de48b085bbf22ce958762d5aa15354b" id="r_a3de48b085bbf22ce958762d5aa15354b"><td class="memItemLeft" align="right" valign="top">std::vector&lt; <a class="el" href="Core_8h.html#a1673229bf7fec9388ac2a829a52d69b3">Index</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a3de48b085bbf22ce958762d5aa15354b">point_global_ids_</a></td></tr>
 <tr class="memdesc:a3de48b085bbf22ce958762d5aa15354b"><td class="mdescLeft">&#160;</td><td class="mdescRight">局部点 id -&gt; 全局点 id（gid 经 <a class="el" href="classModelLayer.html#a19ed3df9982488b982f865c9b3ebfa2a">ModelLayer::pointIdMap()</a> 分配，-1 = 待分配）  <br /></td></tr>
 <tr class="memitem:afae3de55f858f6cbe90434711f9f7436" id="r_afae3de55f858f6cbe90434711f9f7436"><td class="memItemLeft" align="right" valign="top"><a class="el" href="Core_8h.html#a1673229bf7fec9388ac2a829a52d69b3">Index</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#afae3de55f858f6cbe90434711f9f7436">material_id</a> { -1 }</td></tr>
@@ -521,7 +521,7 @@ Public 属性</h2></td></tr>
 </div><div class="memdoc">
 
 <p>用快照覆盖本组件数据（保留本组件 id 不变） </p>
-<dl class="section note"><dt>注解</dt><dd>不触碰 <a class="el" href="classModelLayer.html" title="负责管理多个 ModelData 实例的类">ModelLayer</a> 的 MeshIDMap；gid 对账由 <a class="el" href="classComponentOperator.html#ac6f99d3fdc52bdf62e32c3dbd153ea9a" title="恢复快照：gid 对账（释放现有点/边 gid → 覆盖数据 → 按快照原值 reclaim）后标脏">ComponentOperator::restoreSnapshot</a> 负责。 mesh_adjacency 拷贝只带持久身份层，懒表自动置 dirty（见 <a class="el" href="classMeshAdjacency.html">MeshAdjacency</a> 拷贝语义）。 </dd></dl>
+<dl class="section note"><dt>注解</dt><dd>不触碰 <a class="el" href="classModelLayer.html" title="负责管理多个 ModelData 实例的类">ModelLayer</a> 的 MeshIDMap；gid 对账由 <a class="el" href="classComponentOperator.html#a587c25ba6f1c24e23f52d3643f0c3f67" title="恢复快照：gid 对账（释放现有点/边 gid → 覆盖数据 → 按快照原值 reclaim）后标脏">ComponentOperator::restoreSnapshot</a> 负责。 mesh_adjacency 拷贝只带持久身份层，懒表自动置 dirty（见 <a class="el" href="classMeshAdjacency.html">MeshAdjacency</a> 拷贝语义）。 </dd></dl>
 
 </div>
 </div>
@@ -616,7 +616,7 @@ Public 属性</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p>网格邻接查询索引（派生缓存，Topology 类标脏时经 <a class="el" href="classModelLayer.html#acd0aab202acc541ca43338fef559234c" title="标记组件数据已修改（写路径自动调用；Topology 类立即失效邻接懒表并记入待通知集合）">ModelLayer::markComponentDirty</a> 失效） </p>
+<p>网格邻接查询索引（派生缓存，Topology 类标脏时经 <a class="el" href="classModelLayer.html#a8d5b3617c745ce6c527a544d3d9e66fc" title="标记组件数据已修改（写路径自动调用；Topology 类立即失效邻接懒表并记入待通知集合）">ModelLayer::markComponentDirty</a> 失效） </p>
 
 </div>
 </div>

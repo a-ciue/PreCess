@@ -1,0 +1,696 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="zh">
+<head>
+<meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=11"/>
+<meta name="generator" content="Doxygen 1.14.0"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>PreCess: model/data/test/TestModelScope.cpp 文件参考</title>
+<link href="tabs.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="jquery.js"></script>
+<script type="text/javascript" src="dynsections.js"></script>
+<script type="text/javascript" src="clipboard.js"></script>
+<script type="text/javascript" src="cookie.js"></script>
+<link href="search/search.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="search/searchdata.js"></script>
+<script type="text/javascript" src="search/search.js"></script>
+<link href="doxygen.css" rel="stylesheet" type="text/css" />
+</head>
+<body>
+<div id="top"><!-- do not remove this div, it is closed by doxygen! -->
+<div id="titlearea">
+<table cellspacing="0" cellpadding="0">
+ <tbody>
+ <tr id="projectrow">
+  <td id="projectlogo"><img alt="Logo" src="PreCess.ico"/></td>
+  <td id="projectalign">
+   <div id="projectname">PreCess
+   </div>
+  </td>
+ </tr>
+ </tbody>
+</table>
+</div>
+<!-- end header part -->
+<!-- 制作者 Doxygen 1.14.0 -->
+<script type="text/javascript">
+var searchBox = new SearchBox("searchBox", "search/",'.html');
+</script>
+<script type="text/javascript">
+$(function() { codefold.init(); });
+</script>
+<script type="text/javascript" src="menudata.js"></script>
+<script type="text/javascript" src="menu.js"></script>
+<script type="text/javascript">
+$(function() {
+  initMenu('',true,false,'search.php','搜索',false);
+  $(function() { init_search(); });
+});
+</script>
+<div id="main-nav"></div>
+<!-- window showing the filter options -->
+<div id="MSearchSelectWindow"
+     onmouseover="return searchBox.OnSearchSelectShow()"
+     onmouseout="return searchBox.OnSearchSelectHide()"
+     onkeydown="return searchBox.OnSearchSelectKey(event)">
+</div>
+
+<!-- iframe showing the search results (closed by default) -->
+<div id="MSearchResultsWindow">
+<div id="MSearchResults">
+<div class="SRPage">
+<div id="SRIndex">
+<div id="SRResults"></div>
+<div class="SRStatus" id="Loading">载入中...</div>
+<div class="SRStatus" id="Searching">搜索中...</div>
+<div class="SRStatus" id="NoMatches">未找到</div>
+</div>
+</div>
+</div>
+</div>
+
+<div id="nav-path" class="navpath">
+  <ul>
+<li class="navelem"><a href="dir_3f14f6767c31cb4a1d22c13c18cc6fc3.html">model</a></li><li class="navelem"><a href="dir_84846e69b963a5367080adb8af90c8fe.html">data</a></li><li class="navelem"><a href="dir_a2500666a617fcb70f7565c3cb90ec66.html">test</a></li>  </ul>
+</div>
+</div><!-- top -->
+<div id="doc-content">
+<div class="header">
+  <div class="summary">
+<a href="#func-members">函数</a> &#124;
+<a href="#var-members">变量</a>  </div>
+  <div class="headertitle"><div class="title">TestModelScope.cpp 文件参考</div></div>
+</div><!--header-->
+<div class="contents">
+
+<p><a class="el" href="classModelScope.html" title="模型操作作用域：undo 边界与通知 flush 的组合生命周期">ModelScope</a> 单元测试：空操作零记录、异常路径收尾、固定入口与同步嵌套、特权越闸与关窗  
+<a href="#details">更多...</a></p>
+<div class="textblock"><code>#include &quot;<a class="el" href="ComponentData_8h_source.html">ComponentData.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="ComponentOperator_8h_source.html">ComponentOperator.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="MeshData_8h_source.html">MeshData.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="MeshIDMap_8h_source.html">MeshIDMap.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="ModelLayer_8h_source.html">ModelLayer.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="ModelObserver_8h_source.html">ModelObserver.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="ModelScope_8h_source.html">ModelScope.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="UndoStack_8h_source.html">UndoStack.h</a>&quot;</code><br />
+<code>#include &lt;catch2/catch_test_macros.hpp&gt;</code><br />
+<code>#include &lt;array&gt;</code><br />
+<code>#include &lt;memory&gt;</code><br />
+<code>#include &lt;source_location&gt;</code><br />
+<code>#include &lt;stdexcept&gt;</code><br />
+<code>#include &lt;string&gt;</code><br />
+<code>#include &lt;thread&gt;</code><br />
+<code>#include &lt;utility&gt;</code><br />
+<code>#include &lt;vector&gt;</code><br />
+</div><div class="textblock"><div class="dynheader">
+TestModelScope.cpp 的引用(Include)关系图:</div>
+<div class="dyncontent">
+<div class="center"><img src="TestModelScope_8cpp__incl.png" border="0" usemap="#amodel_2data_2test_2TestModelScope_8cpp" loading="lazy" alt=""/></div>
+<map name="amodel_2data_2test_2TestModelScope_8cpp" id="amodel_2data_2test_2TestModelScope_8cpp">
+<area shape="rect" title="ModelScope 单元测试：空操作零记录、异常路径收尾、固定入口与同步嵌套、特权越闸与关窗" alt="" coords="497,5,692,45"/>
+<area shape="rect" href="ComponentData_8h.html" title=" " alt="" coords="1899,460,2039,485"/>
+<area shape="poly" title=" " alt="" coords="692,33,868,54,1100,93,1227,120,1357,153,1485,192,1609,238,1712,288,1808,347,1889,405,1946,449,1943,453,1886,409,1805,352,1710,293,1607,242,1483,197,1355,158,1226,125,1099,98,868,60,692,38"/>
+<area shape="rect" title=" " alt="" coords="505,680,561,705"/>
+<area shape="poly" title=" " alt="" coords="497,29,376,33,241,43,177,51,119,63,72,77,39,95,21,113,12,131,9,152,8,178,8,547,9,574,12,595,21,612,39,630,74,648,123,662,184,672,251,680,385,688,491,689,491,694,385,693,250,685,183,678,122,667,72,653,36,634,17,616,7,596,3,574,3,547,3,178,3,151,7,129,17,110,36,91,70,72,118,58,176,46,240,37,376,27,497,24"/>
+<area shape="rect" title=" " alt="" coords="863,680,940,705"/>
+<area shape="poly" title=" " alt="" coords="497,37,300,58,207,75,142,96,109,111,82,127,65,147,60,161,59,178,59,547,62,575,71,596,87,613,110,630,144,637,214,645,427,662,849,686,848,691,426,667,214,650,143,642,108,634,83,617,66,599,56,577,53,547,53,178,55,159,60,144,79,123,107,107,140,91,206,70,299,53,497,31"/>
+<area shape="rect" title=" " alt="" coords="2499,680,2557,705"/>
+<area shape="poly" title=" " alt="" coords="692,25,1152,30,1794,41,2401,61,2622,75,2700,82,2752,91,2819,100,2879,107,2904,114,2924,127,2937,148,2941,178,2941,548,2938,562,2929,577,2898,602,2851,623,2795,642,2674,671,2572,688,2571,683,2673,666,2794,637,2849,618,2895,597,2925,573,2933,560,2936,547,2936,178,2932,150,2920,131,2902,119,2878,112,2818,105,2752,96,2700,88,2622,80,2400,66,1794,47,1152,35,692,30"/>
+<area shape="rect" title=" " alt="" coords="1761,680,1823,705"/>
+<area shape="poly" title=" " alt="" coords="692,26,1176,39,1502,50,1841,66,2160,86,2428,111,2532,125,2612,140,2663,157,2677,167,2683,177,2683,401,2674,425,2652,455,2581,525,2495,591,2455,617,2421,634,2370,650,2302,662,2136,679,1966,689,1837,693,1837,688,1966,684,2136,674,2302,657,2369,644,2419,630,2452,612,2492,587,2577,521,2648,451,2670,422,2677,400,2677,179,2673,170,2661,162,2611,146,2531,130,2427,116,2159,91,1840,71,1502,56,1176,44,692,31"/>
+<area shape="rect" href="MeshData_8h.html" title=" " alt="" coords="939,533,1039,559"/>
+<area shape="poly" title=" " alt="" coords="603,45,634,124,688,240,725,305,767,369,815,429,868,483,904,508,942,526,940,531,901,512,865,487,811,433,763,372,720,307,684,243,629,126,599,47"/>
+<area shape="rect" href="ComponentOperator_8h.html" title=" " alt="" coords="344,533,509,559"/>
+<area shape="poly" title=" " alt="" coords="498,43,390,63,280,93,232,111,194,132,169,154,162,166,160,178,160,254,167,302,186,347,214,388,248,425,286,457,324,485,391,525,389,529,321,489,282,461,244,429,209,391,181,350,162,304,155,254,155,178,157,164,165,151,191,127,230,106,278,88,389,58,497,38"/>
+<area shape="rect" title=" " alt="" coords="145,607,269,632"/>
+<area shape="poly" title=" " alt="" coords="497,32,431,38,357,50,281,68,208,96,170,111,138,125,126,134,117,145,111,159,109,178,109,474,117,511,135,544,158,573,182,596,179,600,155,577,130,547,112,513,104,474,104,178,106,158,113,142,123,130,136,121,168,106,206,91,279,63,356,45,430,33,497,27"/>
+<area shape="rect" href="MeshIDMap_8h.html" title=" " alt="" coords="446,240,557,265"/>
+<area shape="poly" title=" " alt="" coords="589,46,514,228,509,226,584,44"/>
+<area shape="rect" title=" " alt="" coords="195,313,255,339"/>
+<area shape="poly" title=" " alt="" coords="528,48,456,75,375,115,335,141,297,170,264,204,236,241,226,270,225,300,219,300,221,269,231,239,260,200,294,166,332,136,372,110,454,70,526,43"/>
+<area shape="rect" href="ModelLayer_8h.html" title="负责管理多个模型实例的类" alt="" coords="948,167,1057,192"/>
+<area shape="poly" title=" " alt="" coords="646,43,960,159,958,164,644,48"/>
+<area shape="rect" title=" " alt="" coords="246,240,333,265"/>
+<area shape="poly" title=" " alt="" coords="571,48,317,234,314,230,568,43"/>
+<area shape="rect" title=" " alt="" coords="357,240,421,265"/>
+<area shape="poly" title=" " alt="" coords="579,47,411,232,407,228,576,44"/>
+<area shape="rect" href="ModelObserver_8h.html" title=" " alt="" coords="2769,533,2901,559"/>
+<area shape="poly" title=" " alt="" coords="693,24,1144,24,1771,31,2083,39,2360,51,2574,68,2650,79,2699,91,2741,104,2776,118,2790,128,2801,140,2808,157,2811,178,2811,401,2817,465,2830,520,2825,521,2812,466,2805,401,2805,178,2803,158,2797,143,2787,132,2774,123,2739,109,2698,96,2649,84,2574,73,2360,57,2083,44,1770,36,1144,29,693,29"/>
+<area shape="rect" href="ModelScope_8h.html" title="模型操作作用域（RAII）：模型写段的记账与通知收尾" alt="" coords="1747,93,1861,119"/>
+<area shape="poly" title=" " alt="" coords="692,27,1141,46,1433,65,1728,91,1734,91,1734,97,1728,96,1432,70,1140,52,692,32"/>
+<area shape="rect" href="UndoStack_8h.html" title="一个正式历史栈与临时预览捕获：事件不入栈，execute 收尾吸收预览。" alt="" coords="2155,240,2259,265"/>
+<area shape="poly" title=" " alt="" coords="692,24,955,27,1296,37,1470,45,1631,57,1769,72,1874,91,1965,120,2051,159,2125,198,2179,230,2176,235,2122,203,2048,164,1963,125,1873,96,1769,77,1631,62,1470,51,1296,42,955,33,692,30"/>
+<area shape="rect" title=" " alt="" coords="2976,93,3195,119"/>
+<area shape="poly" title=" " alt="" coords="692,25,1059,29,1617,39,2278,59,2957,91,2962,91,2962,96,2957,96,2278,64,1616,45,1059,34,692,30"/>
+<area shape="rect" href="Core_8h.html" title=" " alt="" coords="1261,607,1325,632"/>
+<area shape="poly" title=" " alt="" coords="1904,488,1651,536,1495,571,1339,609,1339,609,1338,604,1338,604,1494,566,1650,531,1903,483"/>
+<area shape="poly" title=" " alt="" coords="1995,483,2019,497,2041,516,2054,537,2054,549,2049,560,2027,586,2005,604,1981,615,1957,621,1902,626,1836,635,1756,647,1650,658,1395,675,954,693,954,687,1395,669,1650,652,1756,642,1836,629,1902,621,1956,616,1979,610,2002,599,2023,582,2044,557,2049,547,2049,538,2037,519,2016,502,1992,488"/>
+<area shape="poly" title=" " alt="" coords="2010,483,2060,502,2112,531,2139,557,2156,583,2172,607,2200,630,2236,647,2274,661,2352,679,2426,687,2485,690,2485,695,2425,693,2351,684,2272,666,2234,652,2197,634,2168,611,2151,586,2135,561,2109,535,2058,507,2008,488"/>
+<area shape="poly" title=" " alt="" coords="2015,483,2049,495,2079,512,2090,522,2097,533,2098,546,2093,560,2068,591,2038,616,2005,637,1969,654,1898,677,1837,689,1836,684,1897,672,1967,649,2002,632,2035,612,2064,587,2088,557,2093,546,2092,535,2086,525,2076,516,2047,500,2013,488"/>
+<area shape="poly" title=" " alt="" coords="1899,482,1053,543,1053,537,1899,476"/>
+<area shape="rect" title=" " alt="" coords="1350,607,1474,632"/>
+<area shape="poly" title=" " alt="" coords="1926,488,1470,606,1468,601,1924,483"/>
+<area shape="rect" href="MeshAdjacency_8h.html" title="网格邻接查询索引——统一边表 + 稳定边 id" alt="" coords="1899,533,2034,559"/>
+<area shape="poly" title=" " alt="" coords="1972,486,1970,520,1965,520,1966,486"/>
+<area shape="poly" title=" " alt="" coords="1262,632,1250,635,1053,661,859,679,575,693,575,688,858,673,1052,656,1249,629,1261,627"/>
+<area shape="rect" title=" " alt="" coords="1268,680,1319,705"/>
+<area shape="poly" title=" " alt="" coords="1296,632,1296,666,1291,666,1291,632"/>
+<area shape="poly" title=" " alt="" coords="1262,632,1250,635,1088,665,954,686,953,681,1087,660,1249,629,1261,627"/>
+<area shape="poly" title=" " alt="" coords="1326,627,1339,629,1446,641,1588,652,1928,669,2485,688,2485,693,1928,675,1588,657,1446,647,1338,635,1325,632"/>
+<area shape="poly" title=" " alt="" coords="1326,627,1339,629,1568,665,1747,685,1747,690,1567,670,1338,635,1325,632"/>
+<area shape="poly" title=" " alt="" coords="1040,556,1248,604,1247,609,1039,561"/>
+<area shape="poly" title=" " alt="" coords="954,561,576,681,574,676,952,556"/>
+<area shape="poly" title=" " alt="" coords="992,559,987,594,973,633,955,656,934,674,930,670,951,652,968,631,982,593,986,559"/>
+<area shape="poly" title=" " alt="" coords="999,557,1032,595,1055,614,1081,629,1150,640,1295,649,1720,667,2485,688,2485,693,1720,672,1295,655,1150,645,1079,635,1052,619,1028,599,995,561"/>
+<area shape="poly" title=" " alt="" coords="1040,553,1337,603,1336,608,1039,558"/>
+<area shape="rect" title=" " alt="" coords="547,607,661,632"/>
+<area shape="poly" title=" " alt="" coords="939,559,676,608,675,602,938,554"/>
+<area shape="rect" title=" " alt="" coords="1697,607,1772,632"/>
+<area shape="poly" title=" " alt="" coords="1040,549,1684,611,1683,616,1039,555"/>
+<area shape="poly" title=" " alt="" coords="1899,556,1583,584,1339,609,1339,609,1338,604,1338,604,1582,579,1899,550"/>
+<area shape="poly" title=" " alt="" coords="1950,561,1879,599,1833,619,1785,635,1600,649,1237,666,576,692,575,687,1236,661,1599,643,1783,629,1831,614,1877,594,1947,556"/>
+<area shape="poly" title=" " alt="" coords="1956,561,1872,634,1820,674,1817,670,1869,630,1952,557"/>
+<area shape="poly" title=" " alt="" coords="1900,559,1488,611,1487,606,1899,553"/>
+<area shape="poly" title=" " alt="" coords="1930,561,1786,605,1784,600,1929,556"/>
+<area shape="rect" title=" " alt="" coords="2211,607,2277,632"/>
+<area shape="poly" title=" " alt="" coords="2012,556,2198,604,2197,609,2011,561"/>
+<area shape="poly" title=" " alt="" coords="510,549,883,571,1089,586,1248,604,1247,610,1088,592,883,576,509,554"/>
+<area shape="poly" title=" " alt="" coords="417,561,404,576,392,594,387,613,392,631,412,652,437,667,465,678,492,684,491,689,464,683,435,672,408,656,387,633,382,613,387,592,399,573,412,557"/>
+<area shape="poly" title=" " alt="" coords="427,559,427,595,431,614,442,630,471,648,513,662,566,673,625,680,747,688,849,689,849,695,747,693,625,686,565,678,512,667,468,653,438,634,427,616,421,596,422,559"/>
+<area shape="poly" title=" " alt="" coords="441,557,489,598,515,618,535,629,621,637,819,645,1420,663,2485,688,2485,693,1420,668,819,650,620,642,534,635,512,622,486,602,437,561"/>
+<area shape="poly" title=" " alt="" coords="434,558,455,595,472,615,492,630,552,640,679,650,1056,668,1747,688,1746,693,1056,673,679,656,551,646,490,634,468,619,451,598,429,561"/>
+<area shape="poly" title=" " alt="" coords="392,561,256,605,254,600,391,556"/>
+<area shape="poly" title=" " alt="" coords="521,263,636,336,700,380,749,416,799,449,868,483,918,500,960,507,1001,514,1053,531,1075,544,1097,556,1165,579,1249,603,1247,608,1163,584,1095,561,1073,548,1051,536,1000,520,959,513,917,505,866,488,796,453,746,420,697,384,633,341,518,268"/>
+<area shape="poly" title=" " alt="" coords="475,268,357,324,283,365,212,413,152,466,130,493,114,521,105,548,105,576,114,603,133,630,195,636,354,644,846,661,1747,687,1747,693,846,667,353,649,195,641,131,634,109,606,99,577,100,548,109,519,125,490,148,462,209,409,280,361,354,319,473,263"/>
+<area shape="poly" title=" " alt="" coords="506,265,517,328,536,411,568,513,597,593,592,595,563,515,531,413,512,329,501,266"/>
+<area shape="poly" title=" " alt="" coords="458,268,270,316,268,311,456,263"/>
+<area shape="poly" title=" " alt="" coords="948,188,842,205,782,221,724,242,593,299,539,323,491,350,448,381,408,420,371,470,334,534,328,560,334,584,350,605,373,625,433,656,493,678,491,683,431,661,370,629,346,609,329,586,323,560,330,532,366,467,404,416,444,377,488,345,537,319,591,294,722,238,780,216,841,200,947,183"/>
+<area shape="poly" title=" " alt="" coords="1002,193,989,229,977,250,962,267,941,281,920,288,882,291,844,294,825,302,806,315,777,348,764,379,748,461,735,511,729,552,730,571,734,590,744,610,759,630,779,648,801,662,850,679,848,684,799,666,776,652,755,634,739,612,729,592,724,572,723,552,730,510,743,459,759,378,773,345,802,311,823,297,843,289,881,286,919,283,938,276,958,263,973,247,984,227,997,191"/>
+<area shape="poly" title=" " alt="" coords="1058,181,1195,192,1277,202,1360,216,1437,234,1500,258,1525,272,1544,288,1556,305,1560,324,1560,401,1562,441,1568,474,1578,502,1592,528,1632,575,1687,630,1717,654,1750,672,1748,676,1715,658,1684,634,1628,579,1588,531,1574,505,1563,475,1557,441,1555,401,1555,325,1551,307,1540,291,1522,276,1498,263,1435,240,1359,221,1277,207,1194,197,1057,186"/>
+<area shape="poly" title=" " alt="" coords="1058,184,1171,200,1303,227,1363,246,1412,268,1446,294,1455,309,1459,324,1459,474,1455,508,1447,541,1427,595,1422,593,1442,539,1450,507,1453,474,1453,325,1450,311,1442,297,1409,272,1361,251,1301,232,1170,205,1057,189"/>
+<area shape="poly" title=" " alt="" coords="1058,181,1352,200,1497,217,1548,227,1577,238,1619,276,1652,321,1679,371,1699,423,1725,521,1735,593,1730,594,1719,522,1694,425,1674,374,1648,324,1615,280,1575,242,1547,232,1496,222,1352,205,1057,186"/>
+<area shape="poly" title=" " alt="" coords="1058,177,1162,178,1300,186,1455,204,1533,219,1609,237,1742,281,1841,326,1936,381,2053,458,2103,493,2151,531,2224,595,2221,599,2148,535,2100,497,2051,462,1933,386,1839,330,1740,286,1607,243,1532,224,1454,209,1299,191,1161,183,1058,182"/>
+<area shape="poly" title=" " alt="" coords="998,194,970,231,951,251,928,268,901,281,877,289,833,294,788,298,764,304,737,316,702,338,678,361,655,386,623,414,534,478,458,528,455,524,531,474,620,410,651,382,674,357,699,334,735,311,763,299,788,293,832,289,876,284,899,276,925,263,947,247,966,227,993,191"/>
+<area shape="poly" title=" " alt="" coords="948,188,823,205,750,221,678,243,558,285,465,324,424,348,382,377,338,414,290,462,264,494,244,530,217,594,212,592,239,528,260,491,286,458,335,410,379,373,421,343,463,319,556,280,677,237,748,216,822,200,947,182"/>
+<area shape="poly" title=" " alt="" coords="948,191,571,244,570,239,947,186"/>
+<area shape="rect" href="ModelData_8h.html" title="负责管理和操作网格模型数据的核心类" alt="" coords="1049,387,1154,412"/>
+<area shape="poly" title=" " alt="" coords="1058,180,1091,185,1126,196,1159,213,1185,238,1194,257,1195,277,1191,296,1182,316,1156,351,1128,379,1124,376,1152,348,1177,313,1186,294,1190,276,1189,258,1181,242,1155,217,1124,201,1090,190,1057,185"/>
+<area shape="rect" href="GeometryRegistry_8h.html" title=" " alt="" coords="1166,533,1317,559"/>
+<area shape="poly" title=" " alt="" coords="1058,178,1096,183,1136,193,1175,211,1207,238,1230,272,1245,309,1254,349,1259,389,1257,464,1249,520,1244,520,1252,463,1253,389,1249,350,1240,311,1225,274,1203,242,1172,216,1135,198,1095,188,1057,184"/>
+<area shape="rect" href="ModelOperator_8h.html" title=" " alt="" coords="1040,240,1171,265"/>
+<area shape="poly" title=" " alt="" coords="1021,190,1079,230,1076,234,1018,194"/>
+<area shape="rect" title=" " alt="" coords="734,240,914,265"/>
+<area shape="poly" title=" " alt="" coords="975,195,867,237,865,232,973,190"/>
+<area shape="poly" title=" " alt="" coords="948,186,693,204,523,221,347,243,346,237,522,215,692,199,948,181"/>
+<area shape="poly" title=" " alt="" coords="948,186,727,204,584,220,435,243,434,237,583,215,727,199,948,181"/>
+<area shape="poly" title=" " alt="" coords="1155,402,1886,462,1885,467,1154,408"/>
+<area shape="poly" title=" " alt="" coords="1087,414,1030,455,976,488,942,498,911,501,855,498,830,497,805,501,782,513,760,535,756,545,760,558,782,594,810,625,842,651,871,671,868,675,838,655,807,629,777,597,755,560,750,545,755,532,779,509,804,496,829,492,855,492,911,496,941,493,974,483,1027,450,1084,410"/>
+<area shape="poly" title=" " alt="" coords="1100,413,1084,449,1070,470,1054,487,1036,499,1019,505,986,508,956,513,943,521,930,535,919,556,917,573,922,585,935,595,979,612,1038,629,1110,638,1260,647,1699,665,2485,688,2485,693,1699,670,1260,653,1110,644,1037,635,978,617,933,600,918,588,911,574,914,555,926,532,939,517,954,508,985,503,1018,500,1034,494,1050,483,1066,466,1079,447,1095,411"/>
+<area shape="poly" title=" " alt="" coords="1135,410,1690,600,1688,605,1134,415"/>
+<area shape="rect" href="Selection_8h.html" title=" " alt="" coords="769,533,863,559"/>
+<area shape="poly" title=" " alt="" coords="1095,414,1065,450,1044,470,1020,488,958,511,877,533,876,528,957,506,1017,483,1040,466,1061,447,1091,411"/>
+<area shape="rect" title=" " alt="" coords="894,460,962,485"/>
+<area shape="poly" title=" " alt="" coords="1074,414,970,457,968,452,1072,410"/>
+<area shape="poly" title=" " alt="" coords="864,549,1030,569,1248,604,1248,609,1029,574,863,555"/>
+<area shape="poly" title=" " alt="" coords="824,558,846,595,863,615,884,630,935,643,1026,655,1279,673,1550,683,1747,688,1747,693,1549,688,1278,678,1025,660,934,649,882,634,860,618,842,598,819,561"/>
+<area shape="poly" title=" " alt="" coords="1252,557,1279,594,1275,597,1248,561"/>
+<area shape="poly" title=" " alt="" coords="1270,556,1373,599,1371,604,1268,561"/>
+<area shape="rect" title=" " alt="" coords="1091,607,1237,632"/>
+<area shape="poly" title=" " alt="" coords="1231,561,1189,599,1185,595,1227,557"/>
+<area shape="poly" title=" " alt="" coords="1040,267,913,291,860,304,832,316,816,334,800,361,770,430,751,502,747,534,749,558,761,598,786,630,818,655,854,672,851,677,815,659,782,634,756,600,744,559,742,534,745,501,765,428,795,358,812,331,829,311,859,299,912,286,1039,262"/>
+<area shape="poly" title=" " alt="" coords="1115,264,1131,297,1136,318,1135,339,1119,376,1114,374,1129,338,1131,318,1126,299,1111,267"/>
+<area shape="rect" href="ModelOperatorBase_8h.html" title=" " alt="" coords="957,313,1120,339"/>
+<area shape="poly" title=" " alt="" coords="1096,267,1061,305,1057,301,1092,264"/>
+<area shape="rect" title=" " alt="" coords="843,313,933,339"/>
+<area shape="poly" title=" " alt="" coords="1071,268,937,312,935,306,1070,263"/>
+<area shape="poly" title=" " alt="" coords="1012,341,962,366,909,401,889,421,877,442,875,463,885,484,907,506,930,518,953,523,977,524,1032,521,1063,523,1097,531,1156,556,1255,599,1253,604,1154,561,1095,536,1062,528,1032,526,977,529,952,529,928,523,904,510,880,487,870,463,872,440,885,418,906,397,959,362,1010,336"/>
+<area shape="poly" title=" " alt="" coords="1051,337,1084,374,1080,378,1047,341"/>
+<area shape="poly" title=" " alt="" coords="2769,551,2479,556,2065,566,1646,584,1471,595,1339,609,1339,609,1338,604,1338,604,1471,590,1646,578,2065,561,2479,550,2768,545"/>
+<area shape="poly" title=" " alt="" coords="2828,561,2797,597,2775,617,2751,634,2705,656,2657,672,2571,689,2570,684,2656,666,2703,651,2748,630,2772,613,2793,593,2824,557"/>
+<area shape="poly" title=" " alt="" coords="1861,110,2082,137,2225,161,2372,192,2509,230,2571,252,2624,277,2669,303,2704,332,2726,364,2733,398,2733,548,2729,576,2716,600,2698,622,2674,640,2622,667,2571,684,2570,679,2620,662,2671,635,2694,618,2712,597,2724,574,2728,547,2728,398,2721,366,2700,336,2666,308,2622,281,2569,257,2508,235,2371,197,2224,166,2081,143,1861,115"/>
+<area shape="poly" title=" " alt="" coords="1800,120,1777,176,1767,213,1763,251,1763,474,1756,540,1744,594,1739,593,1751,539,1757,474,1757,251,1762,212,1772,174,1795,118"/>
+<area shape="poly" title=" " alt="" coords="1747,115,1071,175,1071,169,1747,110"/>
+<area shape="poly" title=" " alt="" coords="1837,116,2163,233,2161,238,1835,121"/>
+<area shape="poly" title=" " alt="" coords="2155,267,2068,287,1970,316,1776,391,1590,473,1433,549,1328,603,1326,598,1431,544,1588,469,1774,386,1968,311,2066,282,2154,262"/>
+<area shape="poly" title=" " alt="" coords="2155,257,2118,261,2080,271,2045,289,2017,315,2007,331,2003,346,2005,375,2019,404,2039,432,2060,461,2076,492,2081,524,2077,542,2069,560,2042,594,2012,613,1977,623,1933,635,1871,645,1767,654,1482,671,955,692,954,687,1482,666,1767,649,1871,639,1931,629,1975,618,2010,608,2038,590,2064,557,2072,540,2075,524,2071,493,2056,464,2035,435,2015,406,2000,377,1998,345,2003,329,2013,312,2042,284,2079,266,2117,256,2154,252"/>
+<area shape="poly" title=" " alt="" coords="2259,251,2348,254,2452,262,2502,270,2546,280,2582,294,2606,311,2635,351,2651,390,2657,428,2654,466,2644,505,2628,545,2584,633,2570,654,2554,672,2550,668,2566,651,2579,631,2623,543,2639,503,2649,465,2652,428,2646,391,2630,354,2602,315,2579,299,2544,285,2501,275,2451,267,2348,259,2259,256"/>
+<area shape="poly" title=" " alt="" coords="2213,265,2296,533,2296,559,2298,580,2302,598,2302,616,2291,634,2267,646,2223,657,2096,673,1837,692,1837,687,2095,668,2222,651,2265,641,2288,630,2297,614,2297,599,2293,581,2291,559,2291,534,2208,266"/>
+<area shape="poly" title=" " alt="" coords="2200,267,2169,302,2127,341,2101,357,2079,368,2029,389,1957,422,1926,438,1890,462,1849,496,1811,533,1754,598,1750,594,1807,529,1845,492,1886,458,1923,433,1954,417,2027,384,2077,363,2098,353,2124,337,2166,299,2196,264"/>
+<area shape="poly" title=" " alt="" coords="2260,261,2310,276,2363,301,2389,317,2412,337,2431,359,2445,386,2452,422,2446,456,2428,488,2403,518,2373,544,2341,568,2282,603,2279,598,2338,563,2370,540,2400,514,2424,485,2441,454,2447,422,2440,388,2426,362,2408,340,2385,321,2361,306,2308,281,2258,266"/>
+<area shape="rect" href="UndoRecord_8h.html" title="撤销/重做记录模型：一次操作 = 一条记录" alt="" coords="2245,313,2358,339"/>
+<area shape="poly" title=" " alt="" coords="2223,263,2276,303,2273,307,2220,267"/>
+<area shape="rect" href="UndoRecorder_8h.html" title="模型层 undo 记录钩子接口" alt="" coords="1293,387,1419,412"/>
+<area shape="poly" title=" " alt="" coords="2155,265,1843,316,1433,387,1432,382,1842,311,2154,260"/>
+<area shape="rect" title=" " alt="" coords="2434,313,2505,339"/>
+<area shape="poly" title=" " alt="" coords="2250,263,2421,309,2420,314,2248,268"/>
+<area shape="rect" title=" " alt="" coords="2529,313,2591,339"/>
+<area shape="poly" title=" " alt="" coords="2260,260,2374,281,2516,310,2515,316,2372,286,2259,265"/>
+<area shape="rect" title=" " alt="" coords="2026,313,2113,339"/>
+<area shape="poly" title=" " alt="" coords="2186,268,2105,309,2103,305,2183,263"/>
+<area shape="poly" title=" " alt="" coords="2245,337,2161,356,2115,370,2072,389,2027,419,1991,452,1988,448,2024,415,2069,384,2113,365,2159,350,2244,332"/>
+<area shape="poly" title=" " alt="" coords="2289,341,2195,411,2127,453,2053,488,1985,508,1900,527,1698,558,1496,585,1339,609,1339,609,1338,604,1338,604,1495,579,1698,553,1899,521,1984,503,2051,483,2124,448,2192,407,2286,337"/>
+<area shape="poly" title=" " alt="" coords="2299,340,2287,387,2287,412,2291,446,2299,477,2317,532,2322,558,2321,583,2312,608,2291,634,2239,640,2111,648,1711,665,954,692,954,687,1711,659,2111,642,2239,635,2288,630,2307,606,2316,582,2317,558,2312,534,2294,479,2286,447,2281,412,2281,386,2294,338"/>
+<area shape="poly" title=" " alt="" coords="2359,329,2427,341,2464,352,2500,366,2532,384,2558,408,2575,437,2581,471,2581,547,2578,582,2568,615,2544,669,2539,667,2563,613,2572,581,2576,547,2576,472,2570,438,2554,411,2529,389,2498,371,2463,357,2426,347,2358,334"/>
+<area shape="poly" title=" " alt="" coords="2359,333,2406,351,2427,366,2445,385,2465,421,2477,456,2481,491,2477,525,2465,557,2446,586,2419,612,2385,634,2339,651,2276,665,2121,683,1960,691,1837,694,1837,688,1960,686,2120,677,2275,660,2338,646,2383,630,2416,608,2442,583,2460,555,2471,524,2475,491,2471,457,2460,423,2441,388,2424,370,2403,356,2357,338"/>
+<area shape="rect" href="ModelSnapshot_8h.html" title="模型级结构快照（undo/redo 原语）" alt="" coords="2295,387,2430,412"/>
+<area shape="poly" title=" " alt="" coords="2313,337,2346,374,2342,378,2309,341"/>
+<area shape="poly" title=" " alt="" coords="2300,415,2047,460,2046,455,2299,409"/>
+<area shape="poly" title=" " alt="" coords="2374,411,2430,490,2465,546,2498,606,2523,666,2518,668,2494,608,2461,549,2425,493,2369,414"/>
+<area shape="poly" title=" " alt="" coords="1358,412,1352,476,1344,518,1332,560,1312,596,1308,594,1327,558,1339,517,1347,475,1353,412"/>
+</map>
+</div>
+</div><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 id="header-func-members" class="groupheader"><a id="func-members" name="func-members"></a>
+函数</h2></td></tr>
+<tr class="memitem:a3a8e484e4c6416640810e8c9ed66c19b" id="r_a3a8e484e4c6416640810e8c9ed66c19b"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a3a8e484e4c6416640810e8c9ed66c19b">TEST_CASE</a> (&quot;ModelScope discards an empty operation as zero record&quot;, &quot;[ModelScope]&quot;)</td></tr>
+<tr class="memitem:aa4394a90e4dc5867d513a47384299f30" id="r_aa4394a90e4dc5867d513a47384299f30"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#aa4394a90e4dc5867d513a47384299f30">TEST_CASE</a> (&quot;Boundary-less component <a class="el" href="TestFeatureSystem_8cpp.html#ad6fae20171c3c7cc1a32c899b095376e">write</a> rejects before data or adjacency changes&quot;, &quot;[ModelScope][operation]&quot;)</td></tr>
+<tr class="memitem:a7b3ee5e472bea6a85a81a3644260a19a" id="r_a7b3ee5e472bea6a85a81a3644260a19a"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a7b3ee5e472bea6a85a81a3644260a19a">TEST_CASE</a> (&quot;ModelScope commits record and flushes notifications on normal exit&quot;, &quot;[ModelScope]&quot;)</td></tr>
+<tr class="memitem:a923e2628f1aecd295cfe6cca1356c084" id="r_a923e2628f1aecd295cfe6cca1356c084"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a923e2628f1aecd295cfe6cca1356c084">writeVertex</a> (f.mgr, <a class="el" href="#a1b63986c5d77457ae6526b1593308e79">cid</a>, 0, { 7.0, 7.0, 7.0 })</td></tr>
+<tr class="memitem:a6a58464735dcd7603ce2a3d1a2e906cf" id="r_a6a58464735dcd7603ce2a3d1a2e906cf"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a6a58464735dcd7603ce2a3d1a2e906cf">catch</a> (const std::exception &amp;e)</td></tr>
+<tr class="memitem:a65a6999d8e5c3ac58d789a5d2cf5e97c" id="r_a65a6999d8e5c3ac58d789a5d2cf5e97c"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a65a6999d8e5c3ac58d789a5d2cf5e97c">REQUIRE</a> (<a class="el" href="#ab47e747981865f793aaa0823a3e7f15f">caught</a>==&quot;body failed&quot;)</td></tr>
+<tr class="memitem:a8c7b37b2b009f0a629489449c8f1d70e" id="r_a8c7b37b2b009f0a629489449c8f1d70e"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a8c7b37b2b009f0a629489449c8f1d70e">REQUIRE</a> (f.stack.canUndo())</td></tr>
+<tr class="memitem:a53fc9b5d613440cf2098f980fc2b63e9" id="r_a53fc9b5d613440cf2098f980fc2b63e9"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a53fc9b5d613440cf2098f980fc2b63e9">REQUIRE</a> (f.obs.component_changed_count==1)</td></tr>
+<tr class="memitem:a8c8514ed562580011b2cfc585ca2a528" id="r_a8c8514ed562580011b2cfc585ca2a528"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a8c8514ed562580011b2cfc585ca2a528">TEST_CASE</a> (&quot;ModelScope nested commands share one record and flush at their exits&quot;, &quot;[ModelScope]&quot;)</td></tr>
+<tr class="memitem:af75a630fe14ef3543788bdfbba168621" id="r_af75a630fe14ef3543788bdfbba168621"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#af75a630fe14ef3543788bdfbba168621">TEST_CASE</a> (&quot;ModelScope with empty stack degrades to flush only&quot;, &quot;[ModelScope]&quot;)</td></tr>
+<tr class="memitem:a2bed9c56be1c2dc2289244048ed8bb13" id="r_a2bed9c56be1c2dc2289244048ed8bb13"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a2bed9c56be1c2dc2289244048ed8bb13">TEST_CASE</a> (&quot;Model operation release is identity bound and does not unlock its successor&quot;, &quot;[ModelScope][operation]&quot;)</td></tr>
+<tr class="memitem:a760cde398816bf4dc2283f7394a5dd7c" id="r_a760cde398816bf4dc2283f7394a5dd7c"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a760cde398816bf4dc2283f7394a5dd7c">TEST_CASE</a> (&quot;Operation authority survives model movement and model destruction&quot;, &quot;[ModelScope][operation]&quot;)</td></tr>
+<tr class="memitem:a2db419f5c4e58fd9b0dc76f72122f32e" id="r_a2db419f5c4e58fd9b0dc76f72122f32e"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a2db419f5c4e58fd9b0dc76f72122f32e">TEST_CASE</a> (&quot;Model operation accepts its GUI <a class="el" href="TestFeatureSystem_8cpp.html#ad6fae20171c3c7cc1a32c899b095376e">write</a> segment and rejects missing or foreign authority&quot;, &quot;[ModelScope][operation]&quot;)</td></tr>
+<tr class="memitem:a72274f39a1971cb6e603719dcb926ec7" id="r_a72274f39a1971cb6e603719dcb926ec7"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a72274f39a1971cb6e603719dcb926ec7">TEST_CASE</a> (&quot;GUI privilege never grants worker access to the real model&quot;, &quot;[ModelScope][operation]&quot;)</td></tr>
+<tr class="memitem:af141cf7304b6db12801629037235c650" id="r_af141cf7304b6db12801629037235c650"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#af141cf7304b6db12801629037235c650">TEST_CASE</a> (&quot;ModelScope swallows teardown exceptions without replacing the original&quot;, &quot;[ModelScope]&quot;)</td></tr>
+<tr class="memitem:a9ee61258437b3ee7a6db5d31ad4d87ff" id="r_a9ee61258437b3ee7a6db5d31ad4d87ff"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a9ee61258437b3ee7a6db5d31ad4d87ff">TEST_CASE</a> (&quot;Notification observer cannot inherit completed commit <a class="el" href="TestFeatureSystem_8cpp.html#ad6fae20171c3c7cc1a32c899b095376e">write</a> authority&quot;, &quot;[ModelScope][operation]&quot;)</td></tr>
+<tr class="memitem:aaeaec7a702e620e662f7a7e01a187e6b" id="r_aaeaec7a702e620e662f7a7e01a187e6b"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#aaeaec7a702e620e662f7a7e01a187e6b">TEST_CASE</a> (&quot;ModelScope rejects a formal boundary while another operation owns the model&quot;, &quot;[ModelScope][operation]&quot;)</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 id="header-var-members" class="groupheader"><a id="var-members" name="var-members"></a>
+变量</h2></td></tr>
+<tr class="memitem:a1b63986c5d77457ae6526b1593308e79" id="r_a1b63986c5d77457ae6526b1593308e79"><td class="memItemLeft" align="right" valign="top">const <a class="el" href="Core_8h.html#a1673229bf7fec9388ac2a829a52d69b3">Index</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a1b63986c5d77457ae6526b1593308e79">cid</a> = f.addTriangle()</td></tr>
+<tr class="memitem:ab47e747981865f793aaa0823a3e7f15f" id="r_ab47e747981865f793aaa0823a3e7f15f"><td class="memItemLeft" align="right" valign="top">std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ab47e747981865f793aaa0823a3e7f15f">caught</a></td></tr>
+<tr class="memitem:abe4cc9788f52e49485473dc699537388" id="r_abe4cc9788f52e49485473dc699537388"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#abe4cc9788f52e49485473dc699537388">try</a></td></tr>
+</table>
+<a name="details" id="details"></a><h2 id="header-details" class="groupheader">详细描述</h2>
+<div class="textblock"><p><a class="el" href="classModelScope.html" title="模型操作作用域：undo 边界与通知 flush 的组合生命周期">ModelScope</a> 单元测试：空操作零记录、异常路径收尾、固定入口与同步嵌套、特权越闸与关窗 </p>
+</div><a name="doc-func-members" id="doc-func-members"></a><h2 id="header-doc-func-members" class="groupheader">函数说明</h2>
+<a id="a6a58464735dcd7603ce2a3d1a2e906cf" name="a6a58464735dcd7603ce2a3d1a2e906cf"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a6a58464735dcd7603ce2a3d1a2e906cf">&#9670;&#160;</a></span>catch()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">catch </td>
+          <td>(</td>
+          <td class="paramtype">const std::exception &amp;</td>          <td class="paramname"><span class="paramname"><em>e</em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a65a6999d8e5c3ac58d789a5d2cf5e97c" name="a65a6999d8e5c3ac58d789a5d2cf5e97c"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a65a6999d8e5c3ac58d789a5d2cf5e97c">&#9670;&#160;</a></span>REQUIRE() <span class="overload">[1/3]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">REQUIRE </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="#ab47e747981865f793aaa0823a3e7f15f">caught</a></td>          <td class="paramname"><span class="paramname"><em></em></span><span class="paramdefsep"> = </span><span class="paramdefval">=&quot;body&#160;failed&quot;</span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a53fc9b5d613440cf2098f980fc2b63e9" name="a53fc9b5d613440cf2098f980fc2b63e9"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a53fc9b5d613440cf2098f980fc2b63e9">&#9670;&#160;</a></span>REQUIRE() <span class="overload">[2/3]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">REQUIRE </td>
+          <td>(</td>
+          <td class="paramtype">f.obs.</td>          <td class="paramname"><span class="paramname"><em>component_changed_count</em></span><span class="paramdefsep"> = </span><span class="paramdefval">=1</span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a8c7b37b2b009f0a629489449c8f1d70e" name="a8c7b37b2b009f0a629489449c8f1d70e"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a8c7b37b2b009f0a629489449c8f1d70e">&#9670;&#160;</a></span>REQUIRE() <span class="overload">[3/3]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">REQUIRE </td>
+          <td>(</td>
+          <td class="paramtype">f.stack.</td>          <td class="paramname"><span class="paramname"><em>canUndo</em></span>()</td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="aa4394a90e4dc5867d513a47384299f30" name="aa4394a90e4dc5867d513a47384299f30"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aa4394a90e4dc5867d513a47384299f30">&#9670;&#160;</a></span>TEST_CASE() <span class="overload">[1/12]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">TEST_CASE </td>
+          <td>(</td>
+          <td class="paramtype">&quot;Boundary-less component <a class="el" href="TestFeatureSystem_8cpp.html#ad6fae20171c3c7cc1a32c899b095376e">write</a> rejects before data or adjacency changes&quot;</td>          <td class="paramname"><span class="paramname"><em></em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">&quot;&quot;</td>          <td class="paramname"><span class="paramname"><em></em></span>[ModelScope][operation]&#160;)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a72274f39a1971cb6e603719dcb926ec7" name="a72274f39a1971cb6e603719dcb926ec7"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a72274f39a1971cb6e603719dcb926ec7">&#9670;&#160;</a></span>TEST_CASE() <span class="overload">[2/12]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">TEST_CASE </td>
+          <td>(</td>
+          <td class="paramtype">&quot;GUI privilege never grants worker access to the real model&quot;</td>          <td class="paramname"><span class="paramname"><em></em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">&quot;&quot;</td>          <td class="paramname"><span class="paramname"><em></em></span>[ModelScope][operation]&#160;)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a2db419f5c4e58fd9b0dc76f72122f32e" name="a2db419f5c4e58fd9b0dc76f72122f32e"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a2db419f5c4e58fd9b0dc76f72122f32e">&#9670;&#160;</a></span>TEST_CASE() <span class="overload">[3/12]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">TEST_CASE </td>
+          <td>(</td>
+          <td class="paramtype">&quot;Model operation accepts its GUI <a class="el" href="TestFeatureSystem_8cpp.html#ad6fae20171c3c7cc1a32c899b095376e">write</a> segment and rejects missing or foreign authority&quot;</td>          <td class="paramname"><span class="paramname"><em></em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">&quot;&quot;</td>          <td class="paramname"><span class="paramname"><em></em></span>[ModelScope][operation]&#160;)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a2bed9c56be1c2dc2289244048ed8bb13" name="a2bed9c56be1c2dc2289244048ed8bb13"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a2bed9c56be1c2dc2289244048ed8bb13">&#9670;&#160;</a></span>TEST_CASE() <span class="overload">[4/12]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">TEST_CASE </td>
+          <td>(</td>
+          <td class="paramtype">&quot;Model operation release is identity bound and does not unlock its successor&quot;</td>          <td class="paramname"><span class="paramname"><em></em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">&quot;&quot;</td>          <td class="paramname"><span class="paramname"><em></em></span>[ModelScope][operation]&#160;)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a7b3ee5e472bea6a85a81a3644260a19a" name="a7b3ee5e472bea6a85a81a3644260a19a"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a7b3ee5e472bea6a85a81a3644260a19a">&#9670;&#160;</a></span>TEST_CASE() <span class="overload">[5/12]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">TEST_CASE </td>
+          <td>(</td>
+          <td class="paramtype">&quot;ModelScope commits record and flushes notifications on normal exit&quot;</td>          <td class="paramname"><span class="paramname"><em></em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">&quot;&quot;</td>          <td class="paramname"><span class="paramname"><em></em></span>[ModelScope]&#160;)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a3a8e484e4c6416640810e8c9ed66c19b" name="a3a8e484e4c6416640810e8c9ed66c19b"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a3a8e484e4c6416640810e8c9ed66c19b">&#9670;&#160;</a></span>TEST_CASE() <span class="overload">[6/12]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">TEST_CASE </td>
+          <td>(</td>
+          <td class="paramtype">&quot;ModelScope discards an empty operation as zero record&quot;</td>          <td class="paramname"><span class="paramname"><em></em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">&quot;&quot;</td>          <td class="paramname"><span class="paramname"><em></em></span>[ModelScope]&#160;)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a8c8514ed562580011b2cfc585ca2a528" name="a8c8514ed562580011b2cfc585ca2a528"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a8c8514ed562580011b2cfc585ca2a528">&#9670;&#160;</a></span>TEST_CASE() <span class="overload">[7/12]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">TEST_CASE </td>
+          <td>(</td>
+          <td class="paramtype">&quot;ModelScope nested commands share one record and flush at their exits&quot;</td>          <td class="paramname"><span class="paramname"><em></em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">&quot;&quot;</td>          <td class="paramname"><span class="paramname"><em></em></span>[ModelScope]&#160;)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="aaeaec7a702e620e662f7a7e01a187e6b" name="aaeaec7a702e620e662f7a7e01a187e6b"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aaeaec7a702e620e662f7a7e01a187e6b">&#9670;&#160;</a></span>TEST_CASE() <span class="overload">[8/12]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">TEST_CASE </td>
+          <td>(</td>
+          <td class="paramtype">&quot;ModelScope rejects a formal boundary while another operation owns the model&quot;</td>          <td class="paramname"><span class="paramname"><em></em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">&quot;&quot;</td>          <td class="paramname"><span class="paramname"><em></em></span>[ModelScope][operation]&#160;)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="af141cf7304b6db12801629037235c650" name="af141cf7304b6db12801629037235c650"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#af141cf7304b6db12801629037235c650">&#9670;&#160;</a></span>TEST_CASE() <span class="overload">[9/12]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">TEST_CASE </td>
+          <td>(</td>
+          <td class="paramtype">&quot;ModelScope swallows teardown exceptions without replacing the original&quot;</td>          <td class="paramname"><span class="paramname"><em></em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">&quot;&quot;</td>          <td class="paramname"><span class="paramname"><em></em></span>[ModelScope]&#160;)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="af75a630fe14ef3543788bdfbba168621" name="af75a630fe14ef3543788bdfbba168621"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#af75a630fe14ef3543788bdfbba168621">&#9670;&#160;</a></span>TEST_CASE() <span class="overload">[10/12]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">TEST_CASE </td>
+          <td>(</td>
+          <td class="paramtype">&quot;ModelScope with empty stack degrades to flush only&quot;</td>          <td class="paramname"><span class="paramname"><em></em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">&quot;&quot;</td>          <td class="paramname"><span class="paramname"><em></em></span>[ModelScope]&#160;)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a9ee61258437b3ee7a6db5d31ad4d87ff" name="a9ee61258437b3ee7a6db5d31ad4d87ff"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a9ee61258437b3ee7a6db5d31ad4d87ff">&#9670;&#160;</a></span>TEST_CASE() <span class="overload">[11/12]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">TEST_CASE </td>
+          <td>(</td>
+          <td class="paramtype">&quot;Notification observer cannot inherit completed commit <a class="el" href="TestFeatureSystem_8cpp.html#ad6fae20171c3c7cc1a32c899b095376e">write</a> authority&quot;</td>          <td class="paramname"><span class="paramname"><em></em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">&quot;&quot;</td>          <td class="paramname"><span class="paramname"><em></em></span>[ModelScope][operation]&#160;)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a760cde398816bf4dc2283f7394a5dd7c" name="a760cde398816bf4dc2283f7394a5dd7c"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a760cde398816bf4dc2283f7394a5dd7c">&#9670;&#160;</a></span>TEST_CASE() <span class="overload">[12/12]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">TEST_CASE </td>
+          <td>(</td>
+          <td class="paramtype">&quot;Operation authority survives model movement and model destruction&quot;</td>          <td class="paramname"><span class="paramname"><em></em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">&quot;&quot;</td>          <td class="paramname"><span class="paramname"><em></em></span>[ModelScope][operation]&#160;)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a923e2628f1aecd295cfe6cca1356c084" name="a923e2628f1aecd295cfe6cca1356c084"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a923e2628f1aecd295cfe6cca1356c084">&#9670;&#160;</a></span>writeVertex()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">writeVertex </td>
+          <td>(</td>
+          <td class="paramtype">f.</td>          <td class="paramname"><span class="paramname"><em>mgr</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="#a1b63986c5d77457ae6526b1593308e79">cid</a></td>          <td class="paramname"><span class="paramname"><em></em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">0</td>          <td class="paramname"><span class="paramname"><em></em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">{ 7.0, 7.0, 7.0 }</td>          <td class="paramname"><span class="paramname"><em></em></span>&#160;)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a name="doc-var-members" id="doc-var-members"></a><h2 id="header-doc-var-members" class="groupheader">变量说明</h2>
+<a id="ab47e747981865f793aaa0823a3e7f15f" name="ab47e747981865f793aaa0823a3e7f15f"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ab47e747981865f793aaa0823a3e7f15f">&#9670;&#160;</a></span>caught</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::string caught</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a1b63986c5d77457ae6526b1593308e79" name="a1b63986c5d77457ae6526b1593308e79"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a1b63986c5d77457ae6526b1593308e79">&#9670;&#160;</a></span>cid</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">const <a class="el" href="Core_8h.html#a1673229bf7fec9388ac2a829a52d69b3">Index</a> cid = f.addTriangle()</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="abe4cc9788f52e49485473dc699537388" name="abe4cc9788f52e49485473dc699537388"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#abe4cc9788f52e49485473dc699537388">&#9670;&#160;</a></span>try</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">try</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<b>初始值:</b><div class="fragment"><div class="line">{</div>
+<div class="line">        <a class="code hl_class" href="classModelScope.html">ModelScope</a> scope(f.mgr, &amp;f.stack, <span class="stringliteral">&quot;部分写入&quot;</span>)</div>
+<div class="ttc" id="aclassModelScope_html"><div class="ttname"><a href="classModelScope.html">ModelScope</a></div><div class="ttdoc">模型操作作用域：undo 边界与通知 flush 的组合生命周期</div><div class="ttdef"><b>定义</b> ModelScope.h:21</div></div>
+</div><!-- fragment -->
+</div>
+</div>
+</div><!-- contents -->
+<!-- start footer part -->
+<hr class="footer"/><address class="footer"><small>
+制作者&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.14.0
+</small></address>
+</div><!-- doc-content -->
+</body>
+</html>

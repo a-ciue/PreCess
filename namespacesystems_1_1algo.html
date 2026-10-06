@@ -77,7 +77,8 @@ $(function() {
 <div id="doc-content">
 <div class="header">
   <div class="summary">
-<a href="#nested-classes">类</a>  </div>
+<a href="#nested-classes">类</a> &#124;
+<a href="#typedef-members">类型定义</a>  </div>
   <div class="headertitle"><div class="title">systems::algo 命名空间参考</div></div>
 </div><!--header-->
 <div class="contents">
@@ -94,13 +95,37 @@ $(function() {
 <tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">实例化的参数类型，存储参数对象的容器  <a href="classsystems_1_1algo_1_1ArgObject.html#details">更多...</a><br /></td></tr>
 <tr class="memitem:HandlerContext" id="r_HandlerContext"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structsystems_1_1algo_1_1HandlerContext.html">HandlerContext</a></td></tr>
 <tr class="memitem:HandlerMetaData" id="r_HandlerMetaData"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structsystems_1_1algo_1_1HandlerMetaData.html">HandlerMetaData</a></td></tr>
+<tr class="memitem:PreparedAlgorithm" id="r_PreparedAlgorithm"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structsystems_1_1algo_1_1PreparedAlgorithm.html">PreparedAlgorithm</a></td></tr>
 <tr class="memitem:QAlgorithmSystemAdaptor" id="r_QAlgorithmSystemAdaptor"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsystems_1_1algo_1_1QAlgorithmSystemAdaptor.html">QAlgorithmSystemAdaptor</a></td></tr>
-<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">算法系统的QML适配器，负责C++的算法系统功能暴露给QML、Qt类型与C++类型的转换  <a href="classsystems_1_1algo_1_1QAlgorithmSystemAdaptor.html#details">更多...</a><br /></td></tr>
+<tr class="memitem:ShadowIOSystem" id="r_ShadowIOSystem"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsystems_1_1algo_1_1ShadowIOSystem.html">ShadowIOSystem</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">影子 IO 适配：read 解析后进收养清单（不落真实层）； write* 经 id 映射转发真实系统（算法执行期模型冻结，真实层仅被只读访问）  <a href="classsystems_1_1algo_1_1ShadowIOSystem.html#details">更多...</a><br /></td></tr>
 <tr class="memitem:string" id="r_string"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsystems_1_1algo_1_1string.html">string</a></td></tr>
 <tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">STL class  <a href="classsystems_1_1algo_1_1string.html#details">更多...</a><br /></td></tr>
 <tr class="memitem:vector" id="r_vector"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsystems_1_1algo_1_1vector.html">vector</a></td></tr>
 <tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">STL class  <a href="classsystems_1_1algo_1_1vector.html#details">更多...</a><br /></td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 id="header-typedef-members" class="groupheader"><a id="typedef-members" name="typedef-members"></a>
+类型定义</h2></td></tr>
+<tr class="memitem:a47898515a2091e48ff5c46388254233d" id="r_a47898515a2091e48ff5c46388254233d"><td class="memItemLeft" align="right" valign="top">using&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a47898515a2091e48ff5c46388254233d">ProgressFn</a> = <a class="el" href="namespacesystems_1_1job.html#a68d9b6556b0d0b4d3b1dd89c36e872cd">systems::job::ProgressFn</a></td></tr>
+<tr class="memdesc:a47898515a2091e48ff5c46388254233d"><td class="mdescLeft">&#160;</td><td class="mdescRight">进度回调别名：任务系统（systems::job）定义公共类型，算法侧沿用短名  <br /></td></tr>
 </table>
+<a name="doc-typedef-members" id="doc-typedef-members"></a><h2 id="header-doc-typedef-members" class="groupheader">类型定义说明</h2>
+<a id="a47898515a2091e48ff5c46388254233d" name="a47898515a2091e48ff5c46388254233d"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a47898515a2091e48ff5c46388254233d">&#9670;&#160;</a></span>ProgressFn</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">using <a class="el" href="#a47898515a2091e48ff5c46388254233d">systems::algo::ProgressFn</a> = <a class="el" href="namespacesystems_1_1job.html#a68d9b6556b0d0b4d3b1dd89c36e872cd">systems::job::ProgressFn</a></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>进度回调别名：任务系统（systems::job）定义公共类型，算法侧沿用短名 </p>
+
+</div>
+</div>
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>

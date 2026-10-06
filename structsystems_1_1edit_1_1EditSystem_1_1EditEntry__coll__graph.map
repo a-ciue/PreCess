@@ -1,0 +1,14 @@
+<map id="systems::edit::EditSystem::EditEntry" name="systems::edit::EditSystem::EditEntry">
+<area shape="rect" id="Node000001" title="同一注册的处理器与信息共同持有，扩容不改变信息地址。" alt="" coords="5,573,197,613"/>
+<area shape="rect" id="Node000002" href="$structsystems_1_1edit_1_1EditInfo.html" title="某个模型编辑操作的描述" alt="" coords="17,477,185,503"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="104,517,104,573,99,573,99,517"/>
+<area shape="rect" id="Node000003" title=" " alt="" coords="58,95,145,120"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="101,134,93,226,91,343,103,477,97,478,85,343,87,226,96,134"/>
+<area shape="rect" id="Node000006" href="$structcore_1_1ArgType.html" title="描述算法需要的某个参数的类型，UI根据该类型来生成对应的参数控件" alt="" coords="137,231,247,256"/>
+<area shape="poly" id="edge6_Node000006_Node000003" title=" " alt="" coords="119,130,186,229,182,232,115,133"/>
+<area shape="rect" id="Node000004" title=" " alt="" coords="32,5,171,45"/>
+<area shape="poly" id="edge3_Node000003_Node000004" title=" " alt="" coords="104,59,104,94,99,94,99,59"/>
+<area shape="rect" id="Node000005" title=" " alt="" coords="129,367,271,407"/>
+<area shape="poly" id="edge4_Node000002_Node000005" title=" " alt="" coords="174,419,114,479,111,475,170,415"/>
+<area shape="poly" id="edge5_Node000005_Node000006" title=" " alt="" coords="196,270,202,366,196,367,191,270"/>
+</map>

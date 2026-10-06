@@ -19,8 +19,9 @@ var searchData=
   ['qrenderwindowstyle_16',['QRenderWindowStyle',['../classQRenderWindowStyle.html',1,'']]],
   ['qselection_17',['QSelection',['../classQSelection.html',1,'']]],
   ['qsystempluginmanager_18',['QSystemPluginManager',['../classsystems_1_1QSystemPluginManager.html',1,'systems']]],
-  ['qtlogsink_19',['QtLogSink',['../classQtLogSink.html',1,'']]],
-  ['qtlogsink_3c_20std_3a_3amutex_20_3e_20',['QtLogSink&lt; std::mutex &gt;',['../classQtLogSink.html',1,'']]],
-  ['qundostackadaptor_21',['QUndoStackAdaptor',['../classQUndoStackAdaptor.html',1,'']]],
-  ['qwasmbridge_22',['QWasmBridge',['../classQWasmBridge.html',1,'']]]
+  ['qtaskstatus_19',['QTaskStatus',['../classQTaskStatus.html',1,'']]],
+  ['qtlogsink_20',['QtLogSink',['../classQtLogSink.html',1,'']]],
+  ['qtlogsink_3c_20std_3a_3amutex_20_3e_21',['QtLogSink&lt; std::mutex &gt;',['../classQtLogSink.html',1,'']]],
+  ['qundostackadaptor_22',['QUndoStackAdaptor',['../classQUndoStackAdaptor.html',1,'']]],
+  ['qwasmbridge_23',['QWasmBridge',['../classQWasmBridge.html',1,'']]]
 ];

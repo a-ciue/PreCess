@@ -36,8 +36,10 @@ var searchData=
   ['qselection_2eh_33',['QSelection.h',['../QSelection_8h.html',1,'']]],
   ['qsystempluginmanager_2ecpp_34',['QSystemPluginManager.cpp',['../QSystemPluginManager_8cpp.html',1,'']]],
   ['qsystempluginmanager_2eh_35',['QSystemPluginManager.h',['../QSystemPluginManager_8h.html',1,'']]],
-  ['qundostackadaptor_2ecpp_36',['QUndoStackAdaptor.cpp',['../QUndoStackAdaptor_8cpp.html',1,'']]],
-  ['qundostackadaptor_2eh_37',['QUndoStackAdaptor.h',['../QUndoStackAdaptor_8h.html',1,'']]],
-  ['qwasmbridge_2ecpp_38',['QWasmBridge.cpp',['../QWasmBridge_8cpp.html',1,'']]],
-  ['qwasmbridge_2eh_39',['QWasmBridge.h',['../QWasmBridge_8h.html',1,'']]]
+  ['qtaskstatus_2ecpp_36',['QTaskStatus.cpp',['../QTaskStatus_8cpp.html',1,'']]],
+  ['qtaskstatus_2eh_37',['QTaskStatus.h',['../QTaskStatus_8h.html',1,'']]],
+  ['qundostackadaptor_2ecpp_38',['QUndoStackAdaptor.cpp',['../QUndoStackAdaptor_8cpp.html',1,'']]],
+  ['qundostackadaptor_2eh_39',['QUndoStackAdaptor.h',['../QUndoStackAdaptor_8h.html',1,'']]],
+  ['qwasmbridge_2ecpp_40',['QWasmBridge.cpp',['../QWasmBridge_8cpp.html',1,'']]],
+  ['qwasmbridge_2eh_41',['QWasmBridge.h',['../QWasmBridge_8h.html',1,'']]]
 ];

@@ -1,0 +1,268 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="zh">
+<head>
+<meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=11"/>
+<meta name="generator" content="Doxygen 1.14.0"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>PreCess: model/systems/job/Job.h 文件参考</title>
+<link href="tabs.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="jquery.js"></script>
+<script type="text/javascript" src="dynsections.js"></script>
+<script type="text/javascript" src="clipboard.js"></script>
+<script type="text/javascript" src="cookie.js"></script>
+<link href="search/search.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="search/searchdata.js"></script>
+<script type="text/javascript" src="search/search.js"></script>
+<link href="doxygen.css" rel="stylesheet" type="text/css" />
+</head>
+<body>
+<div id="top"><!-- do not remove this div, it is closed by doxygen! -->
+<div id="titlearea">
+<table cellspacing="0" cellpadding="0">
+ <tbody>
+ <tr id="projectrow">
+  <td id="projectlogo"><img alt="Logo" src="PreCess.ico"/></td>
+  <td id="projectalign">
+   <div id="projectname">PreCess
+   </div>
+  </td>
+ </tr>
+ </tbody>
+</table>
+</div>
+<!-- end header part -->
+<!-- 制作者 Doxygen 1.14.0 -->
+<script type="text/javascript">
+var searchBox = new SearchBox("searchBox", "search/",'.html');
+</script>
+<script type="text/javascript">
+$(function() { codefold.init(); });
+</script>
+<script type="text/javascript" src="menudata.js"></script>
+<script type="text/javascript" src="menu.js"></script>
+<script type="text/javascript">
+$(function() {
+  initMenu('',true,false,'search.php','搜索',false);
+  $(function() { init_search(); });
+});
+</script>
+<div id="main-nav"></div>
+<!-- window showing the filter options -->
+<div id="MSearchSelectWindow"
+     onmouseover="return searchBox.OnSearchSelectShow()"
+     onmouseout="return searchBox.OnSearchSelectHide()"
+     onkeydown="return searchBox.OnSearchSelectKey(event)">
+</div>
+
+<!-- iframe showing the search results (closed by default) -->
+<div id="MSearchResultsWindow">
+<div id="MSearchResults">
+<div class="SRPage">
+<div id="SRIndex">
+<div id="SRResults"></div>
+<div class="SRStatus" id="Loading">载入中...</div>
+<div class="SRStatus" id="Searching">搜索中...</div>
+<div class="SRStatus" id="NoMatches">未找到</div>
+</div>
+</div>
+</div>
+</div>
+
+<div id="nav-path" class="navpath">
+  <ul>
+<li class="navelem"><a href="dir_3f14f6767c31cb4a1d22c13c18cc6fc3.html">model</a></li><li class="navelem"><a href="dir_2daa03e0cb702fa035b1e0c62ad50ba5.html">systems</a></li><li class="navelem"><a href="dir_16a0a9d713a1d3553ec258549348003f.html">job</a></li>  </ul>
+</div>
+</div><!-- top -->
+<div id="doc-content">
+<div class="header">
+  <div class="summary">
+<a href="#nested-classes">类</a> &#124;
+<a href="#namespaces">命名空间</a> &#124;
+<a href="#typedef-members">类型定义</a> &#124;
+<a href="#enum-members">枚举</a> &#124;
+<a href="#func-members">函数</a>  </div>
+  <div class="headertitle"><div class="title">Job.h 文件参考</div></div>
+</div><!--header-->
+<div class="contents">
+
+<p>任务单元：状态、错误、取消令牌与执行闭包（线程模型的任务载体）  
+<a href="#details">更多...</a></p>
+<div class="textblock"><code>#include &quot;<a class="el" href="JobProgress_8h_source.html">JobProgress.h</a>&quot;</code><br />
+<code>#include &lt;exception&gt;</code><br />
+<code>#include &lt;functional&gt;</code><br />
+<code>#include &lt;mutex&gt;</code><br />
+<code>#include &lt;stop_token&gt;</code><br />
+<code>#include &lt;string&gt;</code><br />
+<code>#include &lt;vector&gt;</code><br />
+</div><div class="textblock"><div class="dynheader">
+Job.h 的引用(Include)关系图:</div>
+<div class="dyncontent">
+<div class="center"><img src="Job_8h__incl.png" border="0" usemap="#amodel_2systems_2job_2Job_8h" loading="lazy" alt=""/></div>
+<map name="amodel_2systems_2job_2Job_8h" id="amodel_2systems_2job_2Job_8h">
+<area shape="rect" title="任务单元：状态、错误、取消令牌与执行闭包（线程模型的任务载体）" alt="" coords="181,5,364,31"/>
+<area shape="rect" href="JobProgress_8h.html" title="进度上报回调类型：model 层（任务系统）与上层 UI 适配层的公共契约" alt="" coords="43,79,153,104"/>
+<area shape="poly" title=" " alt="" coords="246,33,140,76,138,71,244,28"/>
+<area shape="rect" title=" " alt="" coords="5,152,92,177"/>
+<area shape="poly" title=" " alt="" coords="182,33,91,51,54,65,32,80,26,94,26,108,36,139,31,140,21,109,21,92,28,77,52,60,89,46,181,27"/>
+<area shape="rect" title=" " alt="" coords="139,152,198,177"/>
+<area shape="poly" title=" " alt="" coords="263,33,220,80,183,141,178,139,216,77,259,29"/>
+<area shape="rect" title=" " alt="" coords="229,79,316,104"/>
+<area shape="poly" title=" " alt="" coords="275,31,275,65,270,65,270,31"/>
+<area shape="rect" title=" " alt="" coords="341,79,405,104"/>
+<area shape="poly" title=" " alt="" coords="290,29,347,68,344,73,287,33"/>
+<area shape="rect" title=" " alt="" coords="429,79,522,104"/>
+<area shape="poly" title=" " alt="" coords="306,28,431,72,429,77,304,33"/>
+<area shape="rect" title=" " alt="" coords="547,79,609,104"/>
+<area shape="poly" title=" " alt="" coords="325,28,534,76,532,81,324,33"/>
+<area shape="poly" title=" " alt="" coords="92,106,67,142,62,139,88,103"/>
+<area shape="poly" title=" " alt="" coords="112,102,150,140,146,144,108,106"/>
+</map>
+</div>
+</div><div class="textblock"><div class="dynheader">
+此图展示该文件被哪些文件直接或间接地引用了:</div>
+<div class="dyncontent">
+<div class="center"><img src="Job_8h__dep__incl.png" border="0" usemap="#amodel_2systems_2job_2Job_8hdep" loading="lazy" alt=""/></div>
+<map name="amodel_2systems_2job_2Job_8hdep" id="amodel_2systems_2job_2Job_8hdep">
+<area shape="rect" title="任务单元：状态、错误、取消令牌与执行闭包（线程模型的任务载体）" alt="" coords="2183,5,2366,31"/>
+<area shape="rect" href="QAlgorithmSystemAdaptor_8cpp.html" title=" " alt="" coords="5,255,232,295"/>
+<area shape="poly" title=" " alt="" coords="2170,33,1370,120,813,186,244,257,232,259,232,254,244,252,813,180,1370,115,2169,28"/>
+<area shape="rect" href="Session_8h.html" title="会话组合根：模型层、undo 栈、事件总线与四个系统的装配与有序拆解（不依赖 Qt）" alt="" coords="1703,174,1886,199"/>
+<area shape="poly" title=" " alt="" coords="2229,38,2101,81,1828,176,1826,171,2099,76,2227,33"/>
+<area shape="rect" href="AlgorithmSystem_8h.html" title=" " alt="" coords="1911,167,2065,207"/>
+<area shape="poly" title=" " alt="" coords="2245,40,2022,169,2019,164,2242,35"/>
+<area shape="rect" href="TestFeatureSystem_8cpp.html" title=" " alt="" coords="3453,255,3659,295"/>
+<area shape="poly" title=" " alt="" coords="2346,31,3462,252,3461,257,2345,36"/>
+<area shape="rect" href="FeatureContext_8h.html" title="功能上下文：功能访问软件环境的入口" alt="" coords="4351,79,4524,119"/>
+<area shape="poly" title=" " alt="" coords="2380,20,4351,92,4350,97,2380,26"/>
+<area shape="rect" href="JobRunner_8h.html" title="单槽执行器：worker 只计算，所属线程一次完成提交、清理和释放。" alt="" coords="2335,174,2561,199"/>
+<area shape="poly" title=" " alt="" coords="2298,38,2438,172,2434,176,2295,42"/>
+<area shape="rect" href="QModelManager_8cpp.html" title=" " alt="" coords="1163,262,1391,287"/>
+<area shape="poly" title=" " alt="" coords="1713,204,1347,265,1346,259,1712,199"/>
+<area shape="rect" href="QTaskStatus_8cpp.html" title="计算与提交共用一个进度槽，GUI 统一呈现执行反馈。" alt="" coords="693,262,896,287"/>
+<area shape="poly" title=" " alt="" coords="1690,196,1342,217,1126,235,908,257,858,265,857,259,908,252,1125,229,1342,212,1689,190"/>
+<area shape="rect" href="TestQPythonRuntime_8cpp.html" title="QPythonRuntime 主线程投递测试：precess.app.call_later 的延时回调经 QTimer 回到 GUI 线程执行" alt="" coords="256,262,499,287"/>
+<area shape="poly" title=" " alt="" coords="1690,193,1182,212,848,230,511,257,451,265,450,259,510,252,848,225,1181,206,1690,188"/>
+<area shape="rect" href="TestQTaskStatus_8cpp.html" title="共享 Runner 的展示、取消与后继任务回归。" alt="" coords="2818,262,3030,287"/>
+<area shape="poly" title=" " alt="" coords="1864,199,1899,204,2036,218,2153,225,2352,230,2551,233,2668,240,2806,252,2860,259,2859,265,2805,257,2667,245,2551,239,2352,235,2153,230,2036,223,1898,209,1864,204"/>
+<area shape="rect" href="Session_8cpp.html" title="会话组合根实现：子系统装配、观察者转发桥与有序拆解" alt="" coords="2148,262,2345,287"/>
+<area shape="poly" title=" " alt="" coords="1869,199,2187,259,2186,265,1868,205"/>
+<area shape="rect" href="TestSession_8cpp.html" title="Session 组合根测试（子系统装配、观察者转发与 ModelEvent 桥接、有序拆解）" alt="" coords="523,255,669,295"/>
+<area shape="poly" title=" " alt="" coords="1689,192,1500,196,1249,206,966,226,682,257,669,259,669,254,681,252,966,221,1249,201,1500,191,1689,186"/>
+<area shape="rect" href="TestSessionJobs_8cpp.html" title="无 Qt 宿主的任务拥有关系、终态重放与拆解回归。" alt="" coords="2370,255,2526,295"/>
+<area shape="poly" title=" " alt="" coords="1868,199,1899,204,2028,219,2128,227,2229,235,2358,252,2370,254,2370,259,2357,257,2228,241,2128,232,2027,225,1898,209,1867,204"/>
+<area shape="rect" href="TestSessionPlugins_8cpp.html" title="Session 插件装载冒烟测试：动态插件注册与功能信息（Qt 插件机制，需 QCoreApplication）" alt="" coords="3055,255,3231,295"/>
+<area shape="poly" title=" " alt="" coords="1864,199,1899,204,2072,220,2220,227,2471,227,2722,228,2869,236,3043,252,3055,254,3054,259,3042,257,2869,241,2722,233,2471,233,2220,232,2072,225,1898,209,1863,204"/>
+<area shape="poly" title=" " alt="" coords="1897,209,1646,233,1432,243,1244,244,1069,241,894,236,706,234,494,240,244,257,232,258,232,253,244,252,494,235,706,229,894,231,1069,235,1244,239,1432,238,1645,227,1897,204"/>
+<area shape="poly" title=" " alt="" coords="1897,209,1757,227,1648,236,1540,243,1403,257,1350,265,1349,259,1402,252,1539,238,1648,230,1757,221,1897,204"/>
+<area shape="poly" title=" " alt="" coords="2059,208,2213,259,2211,265,2057,214"/>
+<area shape="poly" title=" " alt="" coords="2080,201,2358,252,2370,255,2369,260,2357,257,2079,206"/>
+<area shape="rect" href="AlgorithmSystem_8cpp.html" title=" " alt="" coords="1415,255,1582,295"/>
+<area shape="poly" title=" " alt="" coords="1897,209,1744,234,1595,257,1583,259,1582,254,1594,252,1743,229,1897,204"/>
+<area shape="rect" href="AlgorithmSystemRegister_8cpp.html" title=" " alt="" coords="920,255,1139,295"/>
+<area shape="poly" title=" " alt="" coords="1897,209,1687,230,1522,236,1358,241,1151,257,1139,259,1139,253,1150,252,1358,236,1522,231,1686,225,1897,204"/>
+<area shape="rect" href="TestAlgorithmSystem_8cpp.html" title=" " alt="" coords="1607,255,1828,295"/>
+<area shape="poly" title=" " alt="" coords="1916,213,1777,257,1776,252,1915,208"/>
+<area shape="rect" href="TestAlgorithmSystemShadow_8cpp.html" title=" " alt="" coords="1853,255,2123,295"/>
+<area shape="poly" title=" " alt="" coords="1991,221,1991,254,1985,254,1985,221"/>
+<area shape="poly" title=" " alt="" coords="2079,191,2323,204,2637,215,2882,218,3127,227,3440,252,3453,253,3452,259,3440,257,3126,232,2882,224,2637,220,2323,209,2079,196"/>
+<area shape="poly" title=" " alt="" coords="4337,116,4183,139,4011,169,3802,215,3629,257,3627,252,3801,209,4010,164,4182,134,4336,111"/>
+<area shape="rect" href="TestUndoQml_8cpp.html" title="实际 QML 删除与选择器失效路径回归测试" alt="" coords="5082,262,5275,287"/>
+<area shape="poly" title=" " alt="" coords="4531,119,5131,259,5129,265,4530,124"/>
+<area shape="rect" href="FeatureContext_8cpp.html" title="固定功能服务：查询宿主，任务与预览按构造身份交给框架。" alt="" coords="5300,255,5473,295"/>
+<area shape="poly" title=" " alt="" coords="4538,114,4827,164,5300,254,5299,259,4826,169,4537,119"/>
+<area shape="rect" href="FeatureSystem_8h.html" title="功能系统：功能的注册、调用与事件路由" alt="" coords="4023,167,4196,207"/>
+<area shape="poly" title=" " alt="" coords="4353,125,4182,169,4180,164,4352,120"/>
+<area shape="rect" href="TestFeatureUndo_8cpp.html" title="FeatureSystem undo 集成测试：边界自动记录 / 插件层会话 / 网关包装" alt="" coords="5498,255,5689,295"/>
+<area shape="poly" title=" " alt="" coords="4538,110,4946,164,5216,206,5486,252,5498,254,5497,259,5485,257,5215,211,4945,169,4537,115"/>
+<area shape="poly" title=" " alt="" coords="4009,191,3495,197,2741,209,1970,229,1647,242,1403,257,1344,265,1343,259,1402,252,1647,236,1970,223,2741,204,3495,192,4009,186"/>
+<area shape="poly" title=" " alt="" coords="4009,194,3587,214,3316,232,3043,257,2989,265,2989,259,3042,252,3316,227,3587,208,4008,188"/>
+<area shape="poly" title=" " alt="" coords="4009,190,3726,191,3318,200,2843,220,2598,236,2359,257,2307,265,2306,259,2358,252,2598,231,2842,214,3318,194,3726,186,4009,185"/>
+<area shape="poly" title=" " alt="" coords="4009,193,3269,214,2847,233,2672,245,2539,257,2526,259,2526,254,2538,252,2672,239,2847,228,3269,209,4009,187"/>
+<area shape="poly" title=" " alt="" coords="4009,195,3669,215,3456,233,3243,257,3231,259,3231,254,3242,252,3456,228,3668,210,4008,190"/>
+<area shape="poly" title=" " alt="" coords="4010,206,3672,257,3660,259,3659,254,3672,252,4009,200"/>
+<area shape="poly" title=" " alt="" coords="4210,189,4589,209,4829,227,5071,252,5120,259,5119,265,5070,257,4829,233,4589,214,4210,194"/>
+<area shape="poly" title=" " alt="" coords="4210,187,4409,191,4677,202,4981,222,5288,252,5300,254,5299,259,5288,257,4980,227,4676,208,4408,197,4210,192"/>
+<area shape="rect" href="QFeatureSystemAdaptor_8cpp.html" title=" " alt="" coords="3881,255,4092,295"/>
+<area shape="poly" title=" " alt="" coords="4073,217,4015,257,4012,252,4070,212"/>
+<area shape="rect" href="QRenderWindow_8cpp.html" title=" " alt="" coords="4117,262,4347,287"/>
+<area shape="poly" title=" " alt="" coords="4149,213,4217,260,4214,264,4146,217"/>
+<area shape="rect" href="TestSelectionParameter_8cpp.html" title="选择器空值从 QML 适配层写入功能参数的回归测试" alt="" coords="4372,262,4631,287"/>
+<area shape="poly" title=" " alt="" coords="4209,207,4450,259,4449,265,4208,212"/>
+<area shape="rect" href="FeatureSystem_8cpp.html" title=" " alt="" coords="3684,255,3857,295"/>
+<area shape="poly" title=" " alt="" coords="4022,213,3845,257,3844,252,4021,207"/>
+<area shape="rect" href="FeatureSystemRegister_8cpp.html" title=" " alt="" coords="4655,255,4859,295"/>
+<area shape="poly" title=" " alt="" coords="4210,197,4643,252,4655,254,4654,259,4642,257,4209,202"/>
+<area shape="rect" href="InteractionContext_8cpp.html" title="视口交互上下文实现" alt="" coords="4883,255,5058,295"/>
+<area shape="poly" title=" " alt="" coords="4210,191,4507,213,4690,230,4872,252,4883,254,4883,259,4872,257,4689,235,4507,218,4210,196"/>
+<area shape="poly" title=" " alt="" coords="4210,186,4438,190,4755,200,5118,220,5304,234,5486,252,5498,253,5497,259,5485,257,5303,240,5117,225,4754,206,4438,195,4210,191"/>
+<area shape="poly" title=" " alt="" coords="2321,197,2077,209,1748,219,1492,222,1236,231,1086,241,908,257,855,265,855,259,908,252,1085,236,1236,225,1492,217,1748,214,2077,204,2321,192"/>
+<area shape="poly" title=" " alt="" coords="2525,199,2861,259,2860,265,2525,204"/>
+<area shape="poly" title=" " alt="" coords="2409,207,2275,264,2273,259,2407,202"/>
+<area shape="poly" title=" " alt="" coords="2451,213,2451,254,2445,254,2445,213"/>
+<area shape="poly" title=" " alt="" coords="2575,197,2794,220,3043,252,3055,254,3054,259,3042,257,2794,225,2575,202"/>
+<area shape="poly" title=" " alt="" coords="2321,196,1991,217,1793,234,1595,257,1583,259,1582,254,1594,252,1792,229,1991,211,2320,191"/>
+<area shape="poly" title=" " alt="" coords="2321,203,2097,227,1842,257,1829,259,1828,254,1841,252,2097,222,2321,198"/>
+<area shape="poly" title=" " alt="" coords="2373,205,2089,257,2088,252,2373,199"/>
+<area shape="poly" title=" " alt="" coords="2575,190,2963,211,3201,229,3440,252,3453,254,3452,259,3440,257,3201,234,2962,216,2575,195"/>
+<area shape="poly" title=" " alt="" coords="2575,187,2784,192,3058,203,3364,222,3672,252,3684,254,3683,259,3672,257,3364,227,3057,208,2784,197,2575,192"/>
+<area shape="rect" href="TestJobRunner_8cpp.html" title=" " alt="" coords="3255,255,3428,295"/>
+<area shape="poly" title=" " alt="" coords="2575,192,2880,213,3062,230,3243,252,3255,254,3254,259,3242,257,3061,236,2880,219,2575,197"/>
+<area shape="rect" href="JobRunner_8cpp.html" title="计算结果先发布，再投递一次所属线程收尾；stop 复用收尾。" alt="" coords="2551,262,2793,287"/>
+<area shape="poly" title=" " alt="" coords="2492,202,2643,259,2641,264,2490,207"/>
+</map>
+</div>
+</div>
+<p><a href="Job_8h_source.html">浏览该文件的源代码.</a></p>
+<table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 id="header-nested-classes" class="groupheader"><a id="nested-classes" name="nested-classes"></a>
+类</h2></td></tr>
+<tr class="memitem:systems_3A_3Ajob_3A_3AJobCancelledException" id="r_systems_3A_3Ajob_3A_3AJobCancelledException"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsystems_1_1job_1_1JobCancelledException.html">systems::job::JobCancelledException</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">心跳点取消异常：由包裹进度回调抛出  <a href="classsystems_1_1job_1_1JobCancelledException.html#details">更多...</a><br /></td></tr>
+<tr class="memitem:systems_3A_3Ajob_3A_3AJob" id="r_systems_3A_3Ajob_3A_3AJob"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsystems_1_1job_1_1Job.html">systems::job::Job</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">任务单元：持有执行体、提交体、取消令牌与状态  <a href="classsystems_1_1job_1_1Job.html#details">更多...</a><br /></td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 id="header-namespaces" class="groupheader"><a id="namespaces" name="namespaces"></a>
+命名空间</h2></td></tr>
+<tr class="memitem:systems" id="r_systems"><td class="memItemLeft" align="right" valign="top">namespace &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacesystems.html">systems</a></td></tr>
+<tr class="memitem:systems_3A_3Ajob" id="r_systems_3A_3Ajob"><td class="memItemLeft" align="right" valign="top">namespace &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacesystems_1_1job.html">systems::job</a></td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 id="header-typedef-members" class="groupheader"><a id="typedef-members" name="typedef-members"></a>
+类型定义</h2></td></tr>
+<tr class="memitem:ae2006917203a4b569c4fe083d45939cc" id="r_ae2006917203a4b569c4fe083d45939cc"><td class="memItemLeft" align="right" valign="top">using&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacesystems_1_1job.html#ae2006917203a4b569c4fe083d45939cc">systems::job::JobTaskFn</a> = std::function&lt;void(<a class="el" href="namespacesystems_1_1job.html#a68d9b6556b0d0b4d3b1dd89c36e872cd">ProgressFn</a>)&gt;</td></tr>
+<tr class="memdesc:ae2006917203a4b569c4fe083d45939cc"><td class="mdescLeft">&#160;</td><td class="mdescRight">任务体只计算；业务成果由类型化执行闭包持有，失败抛异常。  <br /></td></tr>
+<tr class="memitem:a71fc7b421856670dc6effb842cb2ef37" id="r_a71fc7b421856670dc6effb842cb2ef37"><td class="memItemLeft" align="right" valign="top">using&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacesystems_1_1job.html#a71fc7b421856670dc6effb842cb2ef37">systems::job::JobCommitFn</a> = std::function&lt;void(<a class="el" href="namespacesystems_1_1job.html#a68d9b6556b0d0b4d3b1dd89c36e872cd">ProgressFn</a>)&gt;</td></tr>
+<tr class="memdesc:a71fc7b421856670dc6effb842cb2ef37"><td class="mdescLeft">&#160;</td><td class="mdescRight">GUI 提交段；仅计算成功且未取消时执行，失败抛异常；report 只展示，不增加取消点。  <br /></td></tr>
+<tr class="memitem:a62b9db7222639d1e30366a1d75475e42" id="r_a62b9db7222639d1e30366a1d75475e42"><td class="memItemLeft" align="right" valign="top">using&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacesystems_1_1job.html#a62b9db7222639d1e30366a1d75475e42">systems::job::JobProgressFn</a> = std::function&lt;void(<a class="el" href="classsystems_1_1job_1_1Job.html">Job</a>&amp;, double, const std::string&amp;)&gt;</td></tr>
+<tr class="memdesc:a62b9db7222639d1e30366a1d75475e42"><td class="mdescLeft">&#160;</td><td class="mdescRight">进度回调（计算在线程内触发，提交在所属线程触发）  <br /></td></tr>
+<tr class="memitem:a2af5878d29208ac612981ea6c1e15087" id="r_a2af5878d29208ac612981ea6c1e15087"><td class="memItemLeft" align="right" valign="top">using&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacesystems_1_1job.html#a2af5878d29208ac612981ea6c1e15087">systems::job::JobFinishedFn</a> = std::function&lt;void(<a class="el" href="classsystems_1_1job_1_1Job.html">Job</a>&amp;)&gt;</td></tr>
+<tr class="memdesc:a2af5878d29208ac612981ea6c1e15087"><td class="mdescLeft">&#160;</td><td class="mdescRight">终态回调（在所属线程触发一次；单槽在回调前已让出）  <br /></td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 id="header-enum-members" class="groupheader"><a id="enum-members" name="enum-members"></a>
+枚举</h2></td></tr>
+<tr class="memitem:a45c525b96932d154a9b69c350f29e2b2" id="r_a45c525b96932d154a9b69c350f29e2b2"><td class="memItemLeft" align="right" valign="top">enum class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacesystems_1_1job.html#a45c525b96932d154a9b69c350f29e2b2">systems::job::JobState</a> { <br />
+&#160;&#160;<a class="el" href="namespacesystems_1_1job.html#a45c525b96932d154a9b69c350f29e2b2a5bda814c4aedb126839228f1a3d92f09">systems::job::Running</a>
+, <a class="el" href="namespacesystems_1_1job.html#a45c525b96932d154a9b69c350f29e2b2aa902153e49f7698c3e9726d12d6389bd">systems::job::Committing</a>
+, <a class="el" href="namespacesystems_1_1job.html#a45c525b96932d154a9b69c350f29e2b2af92965e2c8a7afb3c1b9a5c09a263636">systems::job::Done</a>
+, <a class="el" href="namespacesystems_1_1job.html#a45c525b96932d154a9b69c350f29e2b2ad7c8c85bf79bbe1b7188497c32c3b0ca">systems::job::Failed</a>
+, <br />
+&#160;&#160;<a class="el" href="namespacesystems_1_1job.html#a45c525b96932d154a9b69c350f29e2b2aa149e85a44aeec9140e92733d9ed694e">systems::job::Cancelled</a>
+<br />
+ }</td></tr>
+<tr class="memdesc:a45c525b96932d154a9b69c350f29e2b2"><td class="mdescLeft">&#160;</td><td class="mdescRight">任务状态；由执行器固定的提交和收尾路径推进  <a href="namespacesystems_1_1job.html#a45c525b96932d154a9b69c350f29e2b2">更多...</a><br /></td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 id="header-func-members" class="groupheader"><a id="func-members" name="func-members"></a>
+函数</h2></td></tr>
+<tr class="memitem:ad5c00cdf8cfa567913fcf73a4ec5344d" id="r_ad5c00cdf8cfa567913fcf73a4ec5344d"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacesystems_1_1job.html#ad5c00cdf8cfa567913fcf73a4ec5344d">systems::job::isTerminal</a> (<a class="el" href="namespacesystems_1_1job.html#a45c525b96932d154a9b69c350f29e2b2">JobState</a> state) noexcept</td></tr>
+<tr class="memdesc:ad5c00cdf8cfa567913fcf73a4ec5344d"><td class="mdescLeft">&#160;</td><td class="mdescRight">终态判定  <br /></td></tr>
+</table>
+<a name="details" id="details"></a><h2 id="header-details" class="groupheader">详细描述</h2>
+<div class="textblock"><p>任务单元：状态、错误、取消令牌与执行闭包（线程模型的任务载体） </p>
+</div></div><!-- contents -->
+<!-- start footer part -->
+<hr class="footer"/><address class="footer"><small>
+制作者&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.14.0
+</small></address>
+</div><!-- doc-content -->
+</body>
+</html>

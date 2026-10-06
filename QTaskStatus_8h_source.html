@@ -1,0 +1,191 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="zh">
+<head>
+<meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=11"/>
+<meta name="generator" content="Doxygen 1.14.0"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>PreCess: app/model/QTaskStatus.h 源文件</title>
+<link href="tabs.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="jquery.js"></script>
+<script type="text/javascript" src="dynsections.js"></script>
+<script type="text/javascript" src="clipboard.js"></script>
+<script type="text/javascript" src="cookie.js"></script>
+<link href="search/search.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="search/searchdata.js"></script>
+<script type="text/javascript" src="search/search.js"></script>
+<link href="doxygen.css" rel="stylesheet" type="text/css" />
+</head>
+<body>
+<div id="top"><!-- do not remove this div, it is closed by doxygen! -->
+<div id="titlearea">
+<table cellspacing="0" cellpadding="0">
+ <tbody>
+ <tr id="projectrow">
+  <td id="projectlogo"><img alt="Logo" src="PreCess.ico"/></td>
+  <td id="projectalign">
+   <div id="projectname">PreCess
+   </div>
+  </td>
+ </tr>
+ </tbody>
+</table>
+</div>
+<!-- end header part -->
+<!-- 制作者 Doxygen 1.14.0 -->
+<script type="text/javascript">
+var searchBox = new SearchBox("searchBox", "search/",'.html');
+</script>
+<script type="text/javascript">
+$(function() { codefold.init(); });
+</script>
+<script type="text/javascript" src="menudata.js"></script>
+<script type="text/javascript" src="menu.js"></script>
+<script type="text/javascript">
+$(function() {
+  initMenu('',true,false,'search.php','搜索',false);
+  $(function() { init_search(); });
+});
+</script>
+<div id="main-nav"></div>
+<!-- window showing the filter options -->
+<div id="MSearchSelectWindow"
+     onmouseover="return searchBox.OnSearchSelectShow()"
+     onmouseout="return searchBox.OnSearchSelectHide()"
+     onkeydown="return searchBox.OnSearchSelectKey(event)">
+</div>
+
+<!-- iframe showing the search results (closed by default) -->
+<div id="MSearchResultsWindow">
+<div id="MSearchResults">
+<div class="SRPage">
+<div id="SRIndex">
+<div id="SRResults"></div>
+<div class="SRStatus" id="Loading">载入中...</div>
+<div class="SRStatus" id="Searching">搜索中...</div>
+<div class="SRStatus" id="NoMatches">未找到</div>
+</div>
+</div>
+</div>
+</div>
+
+<div id="nav-path" class="navpath">
+  <ul>
+<li class="navelem"><a href="dir_d422163b96683743ed3963d4aac17747.html">app</a></li><li class="navelem"><a href="dir_7264f15838153470b7a2e9ca1ba7b2a9.html">model</a></li>  </ul>
+</div>
+</div><!-- top -->
+<div id="doc-content">
+<div class="header">
+  <div class="headertitle"><div class="title">QTaskStatus.h</div></div>
+</div><!--header-->
+<div class="contents">
+<a href="QTaskStatus_8h.html">浏览该文件的文档.</a><div class="fragment"><div class="line"><a id="l00001" name="l00001"></a><span class="lineno">    1</span></div>
+<div class="line"><a id="l00005" name="l00005"></a><span class="lineno">    5</span><span class="preprocessor">#pragma once</span></div>
+<div class="line"><a id="l00006" name="l00006"></a><span class="lineno">    6</span><span class="preprocessor">#include &quot;<a class="code" href="JobProgressSlot_8h.html">JobProgressSlot.h</a>&quot;</span></div>
+<div class="line"><a id="l00007" name="l00007"></a><span class="lineno">    7</span><span class="preprocessor">#include &lt;QObject&gt;</span></div>
+<div class="line"><a id="l00008" name="l00008"></a><span class="lineno">    8</span><span class="preprocessor">#include &lt;QString&gt;</span></div>
+<div class="line"><a id="l00009" name="l00009"></a><span class="lineno">    9</span><span class="preprocessor">#include &lt;QtQmlIntegration/qqmlintegration.h&gt;</span></div>
+<div class="line"><a id="l00010" name="l00010"></a><span class="lineno">   10</span> </div>
+<div class="line"><a id="l00011" name="l00011"></a><span class="lineno">   11</span><span class="keyword">class </span>QTimer;</div>
+<div class="line"><a id="l00012" name="l00012"></a><span class="lineno">   12</span><span class="keyword">namespace </span><a class="code hl_namespace" href="namespacesession.html">session</a> {</div>
+<div class="line"><a id="l00013" name="l00013"></a><span class="lineno">   13</span><span class="keyword">class </span><a class="code hl_class" href="classsession_1_1Session.html">Session</a>;</div>
+<div class="line"><a id="l00014" name="l00014"></a><span class="lineno">   14</span>}</div>
+<div class="foldopen" id="foldopen00015" data-start="{" data-end="}">
+<div class="line"><a id="l00015" name="l00015"></a><span class="lineno"><a class="line" href="namespacesystems.html">   15</a></span><span class="keyword">namespace </span><a class="code hl_namespace" href="namespacesystems_1_1job.html">systems::job</a> {</div>
+<div class="line"><a id="l00016" name="l00016"></a><span class="lineno">   16</span><span class="keyword">class </span>Job;</div>
+<div class="line"><a id="l00017" name="l00017"></a><span class="lineno">   17</span><span class="keyword">class </span>JobRunner;</div>
+<div class="line"><a id="l00018" name="l00018"></a><span class="lineno">   18</span>}</div>
+</div>
+<div class="line"><a id="l00019" name="l00019"></a><span class="lineno">   19</span></div>
+<div class="foldopen" id="foldopen00021" data-start="{" data-end="};">
+<div class="line"><a id="l00021" name="l00021"></a><span class="lineno"><a class="line" href="classQTaskStatus.html">   21</a></span><span class="keyword">class </span><a class="code hl_function" href="classQTaskStatus.html#afb8a77c350ca5d52dab1474e140747e4">QTaskStatus</a> : <span class="keyword">public</span> QObject {</div>
+<div class="line"><a id="l00022" name="l00022"></a><span class="lineno">   22</span>    Q_OBJECT</div>
+<div class="line"><a id="l00023" name="l00023"></a><span class="lineno">   23</span>    QML_ELEMENT</div>
+<div class="line"><a id="l00024" name="l00024"></a><span class="lineno">   24</span>    QML_UNCREATABLE(<span class="stringliteral">&quot;QTaskStatus is provided by C++&quot;</span>)</div>
+<div class="line"><a id="l00025" name="l00025"></a><span class="lineno"><a class="line" href="classQTaskStatus.html#a84f335451a1f26c9d38ab7c808e0d64a">   25</a></span>    Q_PROPERTY(<span class="keywordtype">bool</span> <a class="code hl_property" href="classQTaskStatus.html#a84f335451a1f26c9d38ab7c808e0d64a">running</a> READ <a class="code hl_function" href="classQTaskStatus.html#a73844e3dbdc0c2c77039cf6628be224c">isRunning</a> NOTIFY <a class="code hl_signal" href="classQTaskStatus.html#ae6ed65917881cf7ea94470ea713134fa">runningChanged</a>)</div>
+<div class="line"><a id="l00026" name="l00026"></a><span class="lineno"><a class="line" href="classQTaskStatus.html#a56f426caa712a853846ccd363c429462">   26</a></span>    Q_PROPERTY(<span class="keywordtype">double</span> <a class="code hl_property" href="classQTaskStatus.html#a56f426caa712a853846ccd363c429462">progress</a> READ <a class="code hl_function" href="classQTaskStatus.html#a389c9b43f1565ff581b78699935a0b14">getProgress</a> NOTIFY <a class="code hl_signal" href="classQTaskStatus.html#a54f342931db9752d9d62b101f7eac626">progressChanged</a>)</div>
+<div class="line"><a id="l00027" name="l00027"></a><span class="lineno"><a class="line" href="classQTaskStatus.html#aaff0bb82bb4ee05a155f5f2014fef54e">   27</a></span>    Q_PROPERTY(QString <a class="code hl_property" href="classQTaskStatus.html#aaff0bb82bb4ee05a155f5f2014fef54e">message</a> READ <a class="code hl_function" href="classQTaskStatus.html#aef2a0ef34342e1324ed14086733be560">getMessage</a> NOTIFY <a class="code hl_signal" href="classQTaskStatus.html#a54f342931db9752d9d62b101f7eac626">progressChanged</a>)</div>
+<div class="line"><a id="l00028" name="l00028"></a><span class="lineno"><a class="line" href="classQTaskStatus.html#a33765497fd9776656a58c1c7da593b00">   28</a></span>    Q_PROPERTY(<span class="keywordtype">bool</span> <a class="code hl_property" href="classQTaskStatus.html#a33765497fd9776656a58c1c7da593b00">writePending</a> READ <a class="code hl_function" href="classQTaskStatus.html#a3e927232fe3193583993fa47eed5a7d6">isWritePending</a> NOTIFY <a class="code hl_signal" href="classQTaskStatus.html#a64372caa9076395bf5d88cbb826a0312">busyChanged</a>)</div>
+<div class="line"><a id="l00029" name="l00029"></a><span class="lineno"><a class="line" href="classQTaskStatus.html#a90c42f8fb4d3dfa43256aa79fe4b6503">   29</a></span>    Q_PROPERTY(<span class="keywordtype">bool</span> <a class="code hl_property" href="classQTaskStatus.html#a90c42f8fb4d3dfa43256aa79fe4b6503">frozenBusy</a> READ <a class="code hl_function" href="classQTaskStatus.html#a1751e89a76b13e1d18689b1dc63520cb">isFrozenBusy</a> NOTIFY <a class="code hl_signal" href="classQTaskStatus.html#a64372caa9076395bf5d88cbb826a0312">busyChanged</a>)</div>
+<div class="line"><a id="l00030" name="l00030"></a><span class="lineno">   30</span>public:</div>
+<div class="line"><a id="l00031" name="l00031"></a><span class="lineno">   31</span>    explicit <a class="code hl_function" href="classQTaskStatus.html#afb8a77c350ca5d52dab1474e140747e4">QTaskStatus</a>(QObject* parent = <span class="keywordtype">nullptr</span>);</div>
+<div class="line"><a id="l00033" name="l00033"></a><span class="lineno">   33</span>    <span class="keywordtype">void</span> <a class="code hl_function" href="classQTaskStatus.html#a6da850287a78e76fc7a4cb9a4d7c7c42">bindSession</a>(<a class="code hl_namespace" href="namespacesession.html">session</a>::Session&amp; <a class="code hl_namespace" href="namespacesession.html">session</a>);</div>
+<div class="line"><a id="l00035" name="l00035"></a><span class="lineno">   35</span>    Q_INVOKABLE <span class="keywordtype">void</span> <a class="code hl_function" href="classQTaskStatus.html#a146eefb8b91412d57f07ebc132322007">reportFailure</a>(const QString&amp; error);</div>
+<div class="line"><a id="l00037" name="l00037"></a><span class="lineno">   37</span>    Q_INVOKABLE <span class="keywordtype">void</span> <a class="code hl_function" href="classQTaskStatus.html#a380a7755f2ac7e65c8c58824d200417b">showMessage</a>(const QString&amp; text);</div>
+<div class="line"><a id="l00038" name="l00038"></a><span class="lineno">   38</span>    Q_INVOKABLE <span class="keywordtype">void</span> <a class="code hl_function" href="classQTaskStatus.html#aa552743365d5d9db1182f6260755666f">cancel</a>();</div>
+<div class="line"><a id="l00039" name="l00039"></a><span class="lineno"><a class="line" href="classQTaskStatus.html#a73844e3dbdc0c2c77039cf6628be224c">   39</a></span>    <span class="keywordtype">bool</span> <a class="code hl_function" href="classQTaskStatus.html#a73844e3dbdc0c2c77039cf6628be224c">isRunning</a>()<span class="keyword"> const </span>{ <span class="keywordflow">return</span> <a class="code hl_variable" href="classQTaskStatus.html#a23e35681e38f642e7eee27560dc827f0">running_</a>; }</div>
+<div class="line"><a id="l00040" name="l00040"></a><span class="lineno"><a class="line" href="classQTaskStatus.html#a389c9b43f1565ff581b78699935a0b14">   40</a></span>    <span class="keywordtype">double</span> <a class="code hl_function" href="classQTaskStatus.html#a389c9b43f1565ff581b78699935a0b14">getProgress</a>()<span class="keyword"> const </span>{ <span class="keywordflow">return</span> <a class="code hl_variable" href="classQTaskStatus.html#af34293ddb98b7ac31d6de68716b5d51f">progress_</a>; }</div>
+<div class="line"><a id="l00041" name="l00041"></a><span class="lineno"><a class="line" href="classQTaskStatus.html#aef2a0ef34342e1324ed14086733be560">   41</a></span>    QString <a class="code hl_function" href="classQTaskStatus.html#aef2a0ef34342e1324ed14086733be560">getMessage</a>()<span class="keyword"> const </span>{ <span class="keywordflow">return</span> <a class="code hl_variable" href="classQTaskStatus.html#a6e2f0c3c39aa29d2427ba31171aefbf8">message_</a>; }</div>
+<div class="line"><a id="l00042" name="l00042"></a><span class="lineno"><a class="line" href="classQTaskStatus.html#a3e927232fe3193583993fa47eed5a7d6">   42</a></span>    <span class="keywordtype">bool</span> <a class="code hl_function" href="classQTaskStatus.html#a3e927232fe3193583993fa47eed5a7d6">isWritePending</a>()<span class="keyword"> const </span>{ <span class="keywordflow">return</span> <a class="code hl_variable" href="classQTaskStatus.html#a23e35681e38f642e7eee27560dc827f0">running_</a>; }</div>
+<div class="line"><a id="l00043" name="l00043"></a><span class="lineno"><a class="line" href="classQTaskStatus.html#a1751e89a76b13e1d18689b1dc63520cb">   43</a></span>    <span class="keywordtype">bool</span> <a class="code hl_function" href="classQTaskStatus.html#a1751e89a76b13e1d18689b1dc63520cb">isFrozenBusy</a>()<span class="keyword"> const </span>{ <span class="keywordflow">return</span> <a class="code hl_variable" href="classQTaskStatus.html#a23e35681e38f642e7eee27560dc827f0">running_</a> &amp;&amp; <a class="code hl_variable" href="classQTaskStatus.html#a9ff275d777fe9714adb2abcfcce7ab40">masked_</a>; }</div>
+<div class="line"><a id="l00044" name="l00044"></a><span class="lineno">   44</span>signals:</div>
+<div class="line"><a id="l00045" name="l00045"></a><span class="lineno"><a class="line" href="classQTaskStatus.html#ae6ed65917881cf7ea94470ea713134fa">   45</a></span>    <span class="keywordtype">void</span> <a class="code hl_signal" href="classQTaskStatus.html#ae6ed65917881cf7ea94470ea713134fa">runningChanged</a>();</div>
+<div class="line"><a id="l00046" name="l00046"></a><span class="lineno"><a class="line" href="classQTaskStatus.html#a54f342931db9752d9d62b101f7eac626">   46</a></span>    <span class="keywordtype">void</span> <a class="code hl_signal" href="classQTaskStatus.html#a54f342931db9752d9d62b101f7eac626">progressChanged</a>();</div>
+<div class="line"><a id="l00047" name="l00047"></a><span class="lineno"><a class="line" href="classQTaskStatus.html#a64372caa9076395bf5d88cbb826a0312">   47</a></span>    <span class="keywordtype">void</span> <a class="code hl_signal" href="classQTaskStatus.html#a64372caa9076395bf5d88cbb826a0312">busyChanged</a>();</div>
+<div class="line"><a id="l00048" name="l00048"></a><span class="lineno"><a class="line" href="classQTaskStatus.html#a035137a49a6db4ae938bcdf39253c0f5">   48</a></span>    <span class="keywordtype">void</span> <a class="code hl_signal" href="classQTaskStatus.html#a035137a49a6db4ae938bcdf39253c0f5">taskStarted</a>();</div>
+<div class="line"><a id="l00049" name="l00049"></a><span class="lineno"><a class="line" href="classQTaskStatus.html#a0eda057642cb5c9e13d7a5ccff4804e1">   49</a></span>    <span class="keywordtype">void</span> <a class="code hl_signal" href="classQTaskStatus.html#a0eda057642cb5c9e13d7a5ccff4804e1">taskFinished</a>();</div>
+<div class="line"><a id="l00050" name="l00050"></a><span class="lineno"><a class="line" href="classQTaskStatus.html#accfb465e498eda53f78d3b6b4bfa6a94">   50</a></span>    <span class="keywordtype">void</span> <a class="code hl_signal" href="classQTaskStatus.html#accfb465e498eda53f78d3b6b4bfa6a94">taskFailed</a>(<span class="keyword">const</span> QString&amp; error);</div>
+<div class="line"><a id="l00051" name="l00051"></a><span class="lineno"><a class="line" href="classQTaskStatus.html#a74457e9804d04f84a476d022f3a4f834">   51</a></span>    <span class="keywordtype">void</span> <a class="code hl_signal" href="classQTaskStatus.html#a74457e9804d04f84a476d022f3a4f834">taskCancelled</a>();</div>
+<div class="line"><a id="l00052" name="l00052"></a><span class="lineno">   52</span> </div>
+<div class="line"><a id="l00053" name="l00053"></a><span class="lineno">   53</span><span class="keyword">private</span>:</div>
+<div class="line"><a id="l00054" name="l00054"></a><span class="lineno">   54</span>    <span class="keywordtype">void</span> <a class="code hl_function" href="classQTaskStatus.html#af94b29c42c7fab7643b711f63270395c">startJob</a>(<a class="code hl_class" href="classsystems_1_1job_1_1Job.html">systems::job::Job</a>&amp; job);</div>
+<div class="line"><a id="l00055" name="l00055"></a><span class="lineno">   55</span>    <span class="keywordtype">void</span> <a class="code hl_function" href="classQTaskStatus.html#a00bcf6cebed3d280a8cc4af6783be048">finishJob</a>(<a class="code hl_class" href="classsystems_1_1job_1_1Job.html">systems::job::Job</a>&amp; job);</div>
+<div class="line"><a id="l00056" name="l00056"></a><span class="lineno">   56</span>    <span class="keywordtype">bool</span> <a class="code hl_function" href="classQTaskStatus.html#a0952a7ff4f9868d6d32b9239516b899e">consumeProgress</a>();</div>
+<div class="line"><a id="l00057" name="l00057"></a><span class="lineno"><a class="line" href="classQTaskStatus.html#a7adf6d6fb712ac186fb86e8273873822">   57</a></span>    <a class="code hl_class" href="classsystems_1_1job_1_1JobRunner.html">systems::job::JobRunner</a>* <a class="code hl_variable" href="classQTaskStatus.html#a7adf6d6fb712ac186fb86e8273873822">runner_</a> { <span class="keyword">nullptr</span> };</div>
+<div class="line"><a id="l00058" name="l00058"></a><span class="lineno"><a class="line" href="classQTaskStatus.html#ae0412b79b1b2c747adc2b3e84679dd55">   58</a></span>    <a class="code hl_class" href="classJobProgressSlot.html">JobProgressSlot</a> <a class="code hl_variable" href="classQTaskStatus.html#ae0412b79b1b2c747adc2b3e84679dd55">progress_slot_</a>;</div>
+<div class="line"><a id="l00059" name="l00059"></a><span class="lineno"><a class="line" href="classQTaskStatus.html#a4814239dff7f6569545c2a1fb9e1755d">   59</a></span>    QTimer* <a class="code hl_variable" href="classQTaskStatus.html#a4814239dff7f6569545c2a1fb9e1755d">progress_timer_</a> { <span class="keyword">nullptr</span> };</div>
+<div class="line"><a id="l00060" name="l00060"></a><span class="lineno"><a class="line" href="classQTaskStatus.html#af34293ddb98b7ac31d6de68716b5d51f">   60</a></span>    <span class="keywordtype">double</span> <a class="code hl_variable" href="classQTaskStatus.html#af34293ddb98b7ac31d6de68716b5d51f">progress_</a> { 0.0 };</div>
+<div class="line"><a id="l00061" name="l00061"></a><span class="lineno"><a class="line" href="classQTaskStatus.html#a6e2f0c3c39aa29d2427ba31171aefbf8">   61</a></span>    QString <a class="code hl_variable" href="classQTaskStatus.html#a6e2f0c3c39aa29d2427ba31171aefbf8">message_</a>;</div>
+<div class="line"><a id="l00062" name="l00062"></a><span class="lineno"><a class="line" href="classQTaskStatus.html#a23e35681e38f642e7eee27560dc827f0">   62</a></span>    <span class="keywordtype">bool</span> <a class="code hl_variable" href="classQTaskStatus.html#a23e35681e38f642e7eee27560dc827f0">running_</a> { <span class="keyword">false</span> };</div>
+<div class="line"><a id="l00063" name="l00063"></a><span class="lineno"><a class="line" href="classQTaskStatus.html#a9ff275d777fe9714adb2abcfcce7ab40">   63</a></span>    <span class="keywordtype">bool</span> <a class="code hl_variable" href="classQTaskStatus.html#a9ff275d777fe9714adb2abcfcce7ab40">masked_</a> { <span class="keyword">false</span> };</div>
+<div class="line"><a id="l00064" name="l00064"></a><span class="lineno"><a class="line" href="classQTaskStatus.html#a89c5d39dd1ddeb9f14f59049e1f71290">   64</a></span>    <span class="keywordtype">bool</span> <a class="code hl_variable" href="classQTaskStatus.html#a89c5d39dd1ddeb9f14f59049e1f71290">cancel_requested_</a> { <span class="keyword">false</span> };</div>
+<div class="line"><a id="l00065" name="l00065"></a><span class="lineno">   65</span>};</div>
+</div>
+<div class="ttc" id="aJobProgressSlot_8h_html"><div class="ttname"><a href="JobProgressSlot_8h.html">JobProgressSlot.h</a></div><div class="ttdoc">进度槽：计算与提交共用，GUI 定频轮询（替代每报一次跨线程投递）</div></div>
+<div class="ttc" id="aclassJobProgressSlot_html"><div class="ttname"><a href="classJobProgressSlot.html">JobProgressSlot</a></div><div class="ttdef"><b>定义</b> JobProgressSlot.h:23</div></div>
+<div class="ttc" id="aclassQTaskStatus_html_a00bcf6cebed3d280a8cc4af6783be048"><div class="ttname"><a href="classQTaskStatus.html#a00bcf6cebed3d280a8cc4af6783be048">QTaskStatus::finishJob</a></div><div class="ttdeci">void finishJob(systems::job::Job &amp;job)</div><div class="ttdef"><b>定义</b> QTaskStatus.cpp:45</div></div>
+<div class="ttc" id="aclassQTaskStatus_html_a035137a49a6db4ae938bcdf39253c0f5"><div class="ttname"><a href="classQTaskStatus.html#a035137a49a6db4ae938bcdf39253c0f5">QTaskStatus::taskStarted</a></div><div class="ttdeci">void taskStarted()</div></div>
+<div class="ttc" id="aclassQTaskStatus_html_a0952a7ff4f9868d6d32b9239516b899e"><div class="ttname"><a href="classQTaskStatus.html#a0952a7ff4f9868d6d32b9239516b899e">QTaskStatus::consumeProgress</a></div><div class="ttdeci">bool consumeProgress()</div><div class="ttdef"><b>定义</b> QTaskStatus.cpp:83</div></div>
+<div class="ttc" id="aclassQTaskStatus_html_a0eda057642cb5c9e13d7a5ccff4804e1"><div class="ttname"><a href="classQTaskStatus.html#a0eda057642cb5c9e13d7a5ccff4804e1">QTaskStatus::taskFinished</a></div><div class="ttdeci">void taskFinished()</div></div>
+<div class="ttc" id="aclassQTaskStatus_html_a146eefb8b91412d57f07ebc132322007"><div class="ttname"><a href="classQTaskStatus.html#a146eefb8b91412d57f07ebc132322007">QTaskStatus::reportFailure</a></div><div class="ttdeci">Q_INVOKABLE void reportFailure(const QString &amp;error)</div><div class="ttdoc">准备阶段异常尚未产生任务，宿主仍可显示失败。</div><div class="ttdef"><b>定义</b> QTaskStatus.cpp:71</div></div>
+<div class="ttc" id="aclassQTaskStatus_html_a1751e89a76b13e1d18689b1dc63520cb"><div class="ttname"><a href="classQTaskStatus.html#a1751e89a76b13e1d18689b1dc63520cb">QTaskStatus::isFrozenBusy</a></div><div class="ttdeci">bool isFrozenBusy() const</div><div class="ttdef"><b>定义</b> QTaskStatus.h:43</div></div>
+<div class="ttc" id="aclassQTaskStatus_html_a23e35681e38f642e7eee27560dc827f0"><div class="ttname"><a href="classQTaskStatus.html#a23e35681e38f642e7eee27560dc827f0">QTaskStatus::running_</a></div><div class="ttdeci">bool running_</div><div class="ttdef"><b>定义</b> QTaskStatus.h:62</div></div>
+<div class="ttc" id="aclassQTaskStatus_html_a33765497fd9776656a58c1c7da593b00"><div class="ttname"><a href="classQTaskStatus.html#a33765497fd9776656a58c1c7da593b00">QTaskStatus::writePending</a></div><div class="ttdeci">bool writePending</div><div class="ttdef"><b>定义</b> QTaskStatus.h:28</div></div>
+<div class="ttc" id="aclassQTaskStatus_html_a380a7755f2ac7e65c8c58824d200417b"><div class="ttname"><a href="classQTaskStatus.html#a380a7755f2ac7e65c8c58824d200417b">QTaskStatus::showMessage</a></div><div class="ttdeci">Q_INVOKABLE void showMessage(const QString &amp;text)</div><div class="ttdoc">展示同步执行反馈；任务运行时保留 Runner 的状态文字。</div><div class="ttdef"><b>定义</b> QTaskStatus.cpp:76</div></div>
+<div class="ttc" id="aclassQTaskStatus_html_a389c9b43f1565ff581b78699935a0b14"><div class="ttname"><a href="classQTaskStatus.html#a389c9b43f1565ff581b78699935a0b14">QTaskStatus::getProgress</a></div><div class="ttdeci">double getProgress() const</div><div class="ttdef"><b>定义</b> QTaskStatus.h:40</div></div>
+<div class="ttc" id="aclassQTaskStatus_html_a3e927232fe3193583993fa47eed5a7d6"><div class="ttname"><a href="classQTaskStatus.html#a3e927232fe3193583993fa47eed5a7d6">QTaskStatus::isWritePending</a></div><div class="ttdeci">bool isWritePending() const</div><div class="ttdef"><b>定义</b> QTaskStatus.h:42</div></div>
+<div class="ttc" id="aclassQTaskStatus_html_a4814239dff7f6569545c2a1fb9e1755d"><div class="ttname"><a href="classQTaskStatus.html#a4814239dff7f6569545c2a1fb9e1755d">QTaskStatus::progress_timer_</a></div><div class="ttdeci">QTimer * progress_timer_</div><div class="ttdef"><b>定义</b> QTaskStatus.h:59</div></div>
+<div class="ttc" id="aclassQTaskStatus_html_a54f342931db9752d9d62b101f7eac626"><div class="ttname"><a href="classQTaskStatus.html#a54f342931db9752d9d62b101f7eac626">QTaskStatus::progressChanged</a></div><div class="ttdeci">void progressChanged()</div></div>
+<div class="ttc" id="aclassQTaskStatus_html_a56f426caa712a853846ccd363c429462"><div class="ttname"><a href="classQTaskStatus.html#a56f426caa712a853846ccd363c429462">QTaskStatus::progress</a></div><div class="ttdeci">double progress</div><div class="ttdef"><b>定义</b> QTaskStatus.h:26</div></div>
+<div class="ttc" id="aclassQTaskStatus_html_a64372caa9076395bf5d88cbb826a0312"><div class="ttname"><a href="classQTaskStatus.html#a64372caa9076395bf5d88cbb826a0312">QTaskStatus::busyChanged</a></div><div class="ttdeci">void busyChanged()</div></div>
+<div class="ttc" id="aclassQTaskStatus_html_a6da850287a78e76fc7a4cb9a4d7c7c42"><div class="ttname"><a href="classQTaskStatus.html#a6da850287a78e76fc7a4cb9a4d7c7c42">QTaskStatus::bindSession</a></div><div class="ttdeci">void bindSession(session::Session &amp;session)</div><div class="ttdoc">空闲时一次装配唯一 Runner；模型操作与展示采用同一任务来源。</div><div class="ttdef"><b>定义</b> QTaskStatus.cpp:20</div></div>
+<div class="ttc" id="aclassQTaskStatus_html_a6e2f0c3c39aa29d2427ba31171aefbf8"><div class="ttname"><a href="classQTaskStatus.html#a6e2f0c3c39aa29d2427ba31171aefbf8">QTaskStatus::message_</a></div><div class="ttdeci">QString message_</div><div class="ttdef"><b>定义</b> QTaskStatus.h:61</div></div>
+<div class="ttc" id="aclassQTaskStatus_html_a73844e3dbdc0c2c77039cf6628be224c"><div class="ttname"><a href="classQTaskStatus.html#a73844e3dbdc0c2c77039cf6628be224c">QTaskStatus::isRunning</a></div><div class="ttdeci">bool isRunning() const</div><div class="ttdef"><b>定义</b> QTaskStatus.h:39</div></div>
+<div class="ttc" id="aclassQTaskStatus_html_a74457e9804d04f84a476d022f3a4f834"><div class="ttname"><a href="classQTaskStatus.html#a74457e9804d04f84a476d022f3a4f834">QTaskStatus::taskCancelled</a></div><div class="ttdeci">void taskCancelled()</div></div>
+<div class="ttc" id="aclassQTaskStatus_html_a7adf6d6fb712ac186fb86e8273873822"><div class="ttname"><a href="classQTaskStatus.html#a7adf6d6fb712ac186fb86e8273873822">QTaskStatus::runner_</a></div><div class="ttdeci">systems::job::JobRunner * runner_</div><div class="ttdef"><b>定义</b> QTaskStatus.h:57</div></div>
+<div class="ttc" id="aclassQTaskStatus_html_a84f335451a1f26c9d38ab7c808e0d64a"><div class="ttname"><a href="classQTaskStatus.html#a84f335451a1f26c9d38ab7c808e0d64a">QTaskStatus::running</a></div><div class="ttdeci">QML_ELEMENTbool running</div><div class="ttdef"><b>定义</b> QTaskStatus.h:25</div></div>
+<div class="ttc" id="aclassQTaskStatus_html_a89c5d39dd1ddeb9f14f59049e1f71290"><div class="ttname"><a href="classQTaskStatus.html#a89c5d39dd1ddeb9f14f59049e1f71290">QTaskStatus::cancel_requested_</a></div><div class="ttdeci">bool cancel_requested_</div><div class="ttdef"><b>定义</b> QTaskStatus.h:64</div></div>
+<div class="ttc" id="aclassQTaskStatus_html_a90c42f8fb4d3dfa43256aa79fe4b6503"><div class="ttname"><a href="classQTaskStatus.html#a90c42f8fb4d3dfa43256aa79fe4b6503">QTaskStatus::frozenBusy</a></div><div class="ttdeci">bool frozenBusy</div><div class="ttdef"><b>定义</b> QTaskStatus.h:29</div></div>
+<div class="ttc" id="aclassQTaskStatus_html_a9ff275d777fe9714adb2abcfcce7ab40"><div class="ttname"><a href="classQTaskStatus.html#a9ff275d777fe9714adb2abcfcce7ab40">QTaskStatus::masked_</a></div><div class="ttdeci">bool masked_</div><div class="ttdef"><b>定义</b> QTaskStatus.h:63</div></div>
+<div class="ttc" id="aclassQTaskStatus_html_aa552743365d5d9db1182f6260755666f"><div class="ttname"><a href="classQTaskStatus.html#aa552743365d5d9db1182f6260755666f">QTaskStatus::cancel</a></div><div class="ttdeci">Q_INVOKABLE void cancel()</div><div class="ttdef"><b>定义</b> QTaskStatus.cpp:94</div></div>
+<div class="ttc" id="aclassQTaskStatus_html_aaff0bb82bb4ee05a155f5f2014fef54e"><div class="ttname"><a href="classQTaskStatus.html#aaff0bb82bb4ee05a155f5f2014fef54e">QTaskStatus::message</a></div><div class="ttdeci">QString message</div><div class="ttdef"><b>定义</b> QTaskStatus.h:27</div></div>
+<div class="ttc" id="aclassQTaskStatus_html_accfb465e498eda53f78d3b6b4bfa6a94"><div class="ttname"><a href="classQTaskStatus.html#accfb465e498eda53f78d3b6b4bfa6a94">QTaskStatus::taskFailed</a></div><div class="ttdeci">void taskFailed(const QString &amp;error)</div></div>
+<div class="ttc" id="aclassQTaskStatus_html_ae0412b79b1b2c747adc2b3e84679dd55"><div class="ttname"><a href="classQTaskStatus.html#ae0412b79b1b2c747adc2b3e84679dd55">QTaskStatus::progress_slot_</a></div><div class="ttdeci">JobProgressSlot progress_slot_</div><div class="ttdef"><b>定义</b> QTaskStatus.h:58</div></div>
+<div class="ttc" id="aclassQTaskStatus_html_ae6ed65917881cf7ea94470ea713134fa"><div class="ttname"><a href="classQTaskStatus.html#ae6ed65917881cf7ea94470ea713134fa">QTaskStatus::runningChanged</a></div><div class="ttdeci">void runningChanged()</div></div>
+<div class="ttc" id="aclassQTaskStatus_html_aef2a0ef34342e1324ed14086733be560"><div class="ttname"><a href="classQTaskStatus.html#aef2a0ef34342e1324ed14086733be560">QTaskStatus::getMessage</a></div><div class="ttdeci">QString getMessage() const</div><div class="ttdef"><b>定义</b> QTaskStatus.h:41</div></div>
+<div class="ttc" id="aclassQTaskStatus_html_af34293ddb98b7ac31d6de68716b5d51f"><div class="ttname"><a href="classQTaskStatus.html#af34293ddb98b7ac31d6de68716b5d51f">QTaskStatus::progress_</a></div><div class="ttdeci">double progress_</div><div class="ttdef"><b>定义</b> QTaskStatus.h:60</div></div>
+<div class="ttc" id="aclassQTaskStatus_html_af94b29c42c7fab7643b711f63270395c"><div class="ttname"><a href="classQTaskStatus.html#af94b29c42c7fab7643b711f63270395c">QTaskStatus::startJob</a></div><div class="ttdeci">void startJob(systems::job::Job &amp;job)</div><div class="ttdef"><b>定义</b> QTaskStatus.cpp:31</div></div>
+<div class="ttc" id="aclassQTaskStatus_html_afb8a77c350ca5d52dab1474e140747e4"><div class="ttname"><a href="classQTaskStatus.html#afb8a77c350ca5d52dab1474e140747e4">QTaskStatus::QTaskStatus</a></div><div class="ttdeci">QTaskStatus(QObject *parent=nullptr)</div><div class="ttdef"><b>定义</b> QTaskStatus.cpp:10</div></div>
+<div class="ttc" id="aclasssession_1_1Session_html"><div class="ttname"><a href="classsession_1_1Session.html">session::Session</a></div><div class="ttdef"><b>定义</b> Session.h:46</div></div>
+<div class="ttc" id="aclasssystems_1_1job_1_1JobRunner_html"><div class="ttname"><a href="classsystems_1_1job_1_1JobRunner.html">systems::job::JobRunner</a></div><div class="ttdoc">所属线程管理一个在飞任务；worker 不等待 GUI。 发布、准备、查询、清理、终态与 stop 均在构造线程。 异步运行须向该线程投递；计算结束后保持槽与模型占用直到 GUI 收尾。</div><div class="ttdef"><b>定义</b> JobRunner.h:35</div></div>
+<div class="ttc" id="aclasssystems_1_1job_1_1Job_html"><div class="ttname"><a href="classsystems_1_1job_1_1Job.html">systems::job::Job</a></div><div class="ttdoc">任务单元：持有执行体、提交体、取消令牌与状态</div><div class="ttdef"><b>定义</b> Job.h:63</div></div>
+<div class="ttc" id="anamespacesession_html"><div class="ttname"><a href="namespacesession.html">session</a></div><div class="ttdef"><b>定义</b> QModelManager.h:17</div></div>
+<div class="ttc" id="anamespacesystems_1_1job_html"><div class="ttname"><a href="namespacesystems_1_1job.html">systems::job</a></div><div class="ttdef"><b>定义</b> QTaskStatus.h:15</div></div>
+</div><!-- fragment --></div><!-- contents -->
+<!-- start footer part -->
+<hr class="footer"/><address class="footer"><small>
+制作者&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.14.0
+</small></address>
+</div><!-- doc-content -->
+</body>
+</html>

@@ -1,7 +1,4 @@
 var searchData=
 [
-  ['selectionvtk_0',['SelectionVtk',['../ComponentSelectorHighlight_8h.html#a4ed5d94ee6c8a2c1894e4b4193672691',1,'ComponentSelectorHighlight.h']]],
-  ['subscriptionid_1',['SubscriptionId',['../classcore_1_1EventBus.html#a7a540118e7e4ff6ea441137e382905ad',1,'core::EventBus::SubscriptionId'],['../classEventBus.html#a7a540118e7e4ff6ea441137e382905ad',1,'EventBus::SubscriptionId']]],
-  ['systemhandler_2',['SystemHandler',['../classsystems_1_1algo_1_1AlgorithmSystem.html#aae6db223bd7e8ed813e7e2a1a2b60f09',1,'systems::algo::AlgorithmSystem::SystemHandler'],['../classsystems_1_1edit_1_1EditSystem.html#a56e5739d717fb0491480b3ef4b43e320',1,'systems::edit::EditSystem::SystemHandler'],['../classsystems_1_1feature_1_1FeatureSystem.html#aa490bd1439fee0958e0a6eb4da3ed4c4',1,'systems::feature::FeatureSystem::SystemHandler'],['../classsystems_1_1io_1_1ModelIOSystem.html#ad86f8f38d7038872c8608ff8d621c836',1,'systems::io::ModelIOSystem::SystemHandler']]],
-  ['systemhandlerptr_3',['SystemHandlerPtr',['../classsystems_1_1algo_1_1AlgorithmSystem.html#a0d8434a13e322022619cd021ead7dd13',1,'systems::algo::AlgorithmSystem::SystemHandlerPtr'],['../classsystems_1_1edit_1_1EditSystem.html#a7c04463044f0a2fd3638a10073e6a828',1,'systems::edit::EditSystem::SystemHandlerPtr'],['../classsystems_1_1feature_1_1FeatureSystem.html#a8b70c725ce4577e617f7e7699278c1d3',1,'systems::feature::FeatureSystem::SystemHandlerPtr'],['../classsystems_1_1io_1_1ModelIOSystem.html#a82372625957ca3c4eda01c687d94fb3c',1,'systems::io::ModelIOSystem::SystemHandlerPtr'],['../namespacesystems.html#a9cec77b8a54a3e8546f9c1cc01542eac',1,'systems::SystemHandlerPtr']]]
+  ['real_5ft_0',['real_t',['../namespacetinyobj.html#ad5ca7469ff56bf0d8423120cfd99adce',1,'tinyobj']]]
 ];

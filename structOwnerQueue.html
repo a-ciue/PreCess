@@ -1,0 +1,212 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="zh">
+<head>
+<meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=11"/>
+<meta name="generator" content="Doxygen 1.14.0"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>PreCess: OwnerQueue结构体 参考</title>
+<link href="tabs.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="jquery.js"></script>
+<script type="text/javascript" src="dynsections.js"></script>
+<script type="text/javascript" src="clipboard.js"></script>
+<script type="text/javascript" src="cookie.js"></script>
+<link href="search/search.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="search/searchdata.js"></script>
+<script type="text/javascript" src="search/search.js"></script>
+<link href="doxygen.css" rel="stylesheet" type="text/css" />
+</head>
+<body>
+<div id="top"><!-- do not remove this div, it is closed by doxygen! -->
+<div id="titlearea">
+<table cellspacing="0" cellpadding="0">
+ <tbody>
+ <tr id="projectrow">
+  <td id="projectlogo"><img alt="Logo" src="PreCess.ico"/></td>
+  <td id="projectalign">
+   <div id="projectname">PreCess
+   </div>
+  </td>
+ </tr>
+ </tbody>
+</table>
+</div>
+<!-- end header part -->
+<!-- 制作者 Doxygen 1.14.0 -->
+<script type="text/javascript">
+var searchBox = new SearchBox("searchBox", "search/",'.html');
+</script>
+<script type="text/javascript">
+$(function() { codefold.init(); });
+</script>
+<script type="text/javascript" src="menudata.js"></script>
+<script type="text/javascript" src="menu.js"></script>
+<script type="text/javascript">
+$(function() {
+  initMenu('',true,false,'search.php','搜索',false);
+  $(function() { init_search(); });
+});
+</script>
+<div id="main-nav"></div>
+<!-- window showing the filter options -->
+<div id="MSearchSelectWindow"
+     onmouseover="return searchBox.OnSearchSelectShow()"
+     onmouseout="return searchBox.OnSearchSelectHide()"
+     onkeydown="return searchBox.OnSearchSelectKey(event)">
+</div>
+
+<!-- iframe showing the search results (closed by default) -->
+<div id="MSearchResultsWindow">
+<div id="MSearchResults">
+<div class="SRPage">
+<div id="SRIndex">
+<div id="SRResults"></div>
+<div class="SRStatus" id="Loading">载入中...</div>
+<div class="SRStatus" id="Searching">搜索中...</div>
+<div class="SRStatus" id="NoMatches">未找到</div>
+</div>
+</div>
+</div>
+</div>
+
+</div><!-- top -->
+<div id="doc-content">
+<div class="header">
+  <div class="summary">
+<a href="#pub-methods">Public 成员函数</a> &#124;
+<a href="#pub-attribs">Public 属性</a> &#124;
+<a href="structOwnerQueue-members.html">所有成员列表</a>  </div>
+  <div class="headertitle"><div class="title">OwnerQueue结构体 参考</div></div>
+</div><!--header-->
+<div class="contents">
+
+<p><code>#include &lt;<a class="el" href="OwnerQueue_8h_source.html">OwnerQueue.h</a>&gt;</code></p>
+<div class="dynheader">
+OwnerQueue 的协作图:</div>
+<div class="dyncontent">
+<div class="center"><img src="structOwnerQueue__coll__graph.png" border="0" usemap="#aOwnerQueue_coll__map" loading="lazy" alt="Collaboration graph"/></div>
+<map name="aOwnerQueue_coll__map" id="aOwnerQueue_coll__map">
+<area shape="rect" title=" " alt="" coords="79,116,186,141"/>
+<area shape="rect" title=" " alt="" coords="5,13,97,38"/>
+<area shape="poly" title=" " alt="" coords="71,47,126,114,121,118,67,50"/>
+<area shape="rect" title=" " alt="" coords="122,5,309,45"/>
+<area shape="poly" title=" " alt="" coords="193,58,144,118,140,114,189,54"/>
+</map>
+<center><span class="legend">[<a href="graph_legend.html">图例</a>]</span></center></div>
+<table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 id="header-pub-methods" class="groupheader"><a id="pub-methods" name="pub-methods"></a>
+Public 成员函数</h2></td></tr>
+<tr class="memitem:aa08bb7d32e023f6f247915e6c67a60f8" id="r_aa08bb7d32e023f6f247915e6c67a60f8"><td class="memItemLeft" align="right" valign="top">auto&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#aa08bb7d32e023f6f247915e6c67a60f8">dispatcher</a> ()</td></tr>
+<tr class="memitem:a571454c2ab5ebd8e2cedfa3a52758ebd" id="r_a571454c2ab5ebd8e2cedfa3a52758ebd"><td class="memItemLeft" align="right" valign="top">std::function&lt; void()&gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a571454c2ab5ebd8e2cedfa3a52758ebd">take</a> ()</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 id="header-pub-attribs" class="groupheader"><a id="pub-attribs" name="pub-attribs"></a>
+Public 属性</h2></td></tr>
+<tr class="memitem:aeb80adc6727f46714e42f123d60d0272" id="r_aeb80adc6727f46714e42f123d60d0272"><td class="memItemLeft" align="right" valign="top">std::mutex&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#aeb80adc6727f46714e42f123d60d0272">mutex</a></td></tr>
+<tr class="memitem:a28e4c844bfcd4a87848dcf43b89fca5f" id="r_a28e4c844bfcd4a87848dcf43b89fca5f"><td class="memItemLeft" align="right" valign="top">std::condition_variable&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a28e4c844bfcd4a87848dcf43b89fca5f">changed</a></td></tr>
+<tr class="memitem:afeb156557f6020b635b7530d71e00ce4" id="r_afeb156557f6020b635b7530d71e00ce4"><td class="memItemLeft" align="right" valign="top">std::vector&lt; std::function&lt; void()&gt; &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#afeb156557f6020b635b7530d71e00ce4">pending</a></td></tr>
+</table>
+<a name="doc-func-members" id="doc-func-members"></a><h2 id="header-doc-func-members" class="groupheader">成员函数说明</h2>
+<a id="aa08bb7d32e023f6f247915e6c67a60f8" name="aa08bb7d32e023f6f247915e6c67a60f8"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aa08bb7d32e023f6f247915e6c67a60f8">&#9670;&#160;</a></span>dispatcher()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">auto OwnerQueue::dispatcher </td>
+          <td>(</td>
+          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel inline">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a571454c2ab5ebd8e2cedfa3a52758ebd" name="a571454c2ab5ebd8e2cedfa3a52758ebd"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a571454c2ab5ebd8e2cedfa3a52758ebd">&#9670;&#160;</a></span>take()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::function&lt; void()&gt; OwnerQueue::take </td>
+          <td>(</td>
+          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel inline">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a name="doc-variable-members" id="doc-variable-members"></a><h2 id="header-doc-variable-members" class="groupheader">类成员变量说明</h2>
+<a id="a28e4c844bfcd4a87848dcf43b89fca5f" name="a28e4c844bfcd4a87848dcf43b89fca5f"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a28e4c844bfcd4a87848dcf43b89fca5f">&#9670;&#160;</a></span>changed</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::condition_variable OwnerQueue::changed</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="aeb80adc6727f46714e42f123d60d0272" name="aeb80adc6727f46714e42f123d60d0272"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aeb80adc6727f46714e42f123d60d0272">&#9670;&#160;</a></span>mutex</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::mutex OwnerQueue::mutex</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="afeb156557f6020b635b7530d71e00ce4" name="afeb156557f6020b635b7530d71e00ce4"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#afeb156557f6020b635b7530d71e00ce4">&#9670;&#160;</a></span>pending</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::vector&lt;std::function&lt;void()&gt; &gt; OwnerQueue::pending</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<hr/>该结构体的文档由以下文件生成:<ul>
+<li>model/systems/job/test/<a class="el" href="OwnerQueue_8h_source.html">OwnerQueue.h</a></li>
+</ul>
+</div><!-- contents -->
+<!-- start footer part -->
+<hr class="footer"/><address class="footer"><small>
+制作者&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.14.0
+</small></address>
+</div><!-- doc-content -->
+</body>
+</html>

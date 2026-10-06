@@ -1,0 +1,114 @@
+<map id="UndoStack::PreviewAccess" name="UndoStack::PreviewAccess">
+<area shape="rect" id="Node000001" title="事件与预览回写访问：只允许写自己的临时层，不允许修改正式历史。" alt="" coords="3937,535,4135,561"/>
+<area shape="rect" id="Node000002" href="$classUndoStack.html" title=" " alt="" coords="3747,535,3839,561"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="3852,545,3937,545,3937,551,3852,551"/>
+<area shape="rect" id="Node000003" href="$classUndoRecorder.html" title="undo 记录钩子（ModelLayer 回调，UndoStack 实现）" alt="" coords="2497,10,2612,35"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="2625,15,2787,7,2979,3,3553,3,3595,8,3633,22,3665,45,3693,75,3717,110,3736,150,3765,239,3783,331,3791,418,3794,535,3789,535,3786,418,3777,332,3760,240,3731,152,3712,113,3689,78,3662,49,3630,27,3594,13,3553,8,2979,8,2787,12,2626,21"/>
+<area shape="rect" id="Node000004" href="$classModelLayer.html" title="负责管理多个 ModelData 实例的类" alt="" coords="2931,410,3030,435"/>
+<area shape="poly" id="edge47_Node000004_Node000003" title=" " alt="" coords="2626,33,2843,75,2881,114,2911,159,2934,208,2952,258,2973,349,2981,409,2976,410,2968,350,2947,259,2929,210,2906,162,2877,117,2840,80,2625,38"/>
+<area shape="poly" id="edge3_Node000002_Node000004" title=" " alt="" coords="3044,430,3747,538,3746,544,3043,435"/>
+<area shape="rect" id="Node000005" href="$classGeometryRegistry.html" title=" " alt="" coords="2484,439,2625,465"/>
+<area shape="poly" id="edge4_Node000004_Node000005" title=" " alt="" coords="2639,448,2841,437,2931,427,2931,432,2842,443,2640,453"/>
+<area shape="rect" id="Node000006" title=" " alt="" coords="2054,386,2241,441"/>
+<area shape="poly" id="edge5_Node000005_Node000006" title=" " alt="" coords="2255,421,2484,443,2483,448,2254,426"/>
+<area shape="rect" id="Node000007" title=" " alt="" coords="2059,465,2235,519"/>
+<area shape="poly" id="edge6_Node000005_Node000007" title=" " alt="" coords="2249,481,2425,464,2483,458,2484,463,2426,469,2250,486"/>
+<area shape="rect" id="Node000008" title=" " alt="" coords="2061,543,2234,598"/>
+<area shape="poly" id="edge7_Node000005_Node000008" title=" " alt="" coords="2247,550,2334,531,2424,505,2480,484,2527,462,2529,467,2482,489,2426,511,2336,536,2248,556"/>
+<area shape="rect" id="Node000009" title=" " alt="" coords="2059,307,2235,362"/>
+<area shape="poly" id="edge8_Node000005_Node000009" title=" " alt="" coords="2250,339,2339,357,2384,373,2427,395,2435,403,2440,411,2444,418,2451,424,2485,439,2483,444,2448,429,2439,421,2435,413,2431,406,2424,400,2382,378,2338,363,2249,344"/>
+<area shape="rect" id="Node000010" title=" " alt="" coords="1855,422,2017,477"/>
+<area shape="poly" id="edge9_Node000004_Node000010" title=" " alt="" coords="1953,489,1967,521,1986,554,2012,585,2043,608,2071,622,2097,628,2120,630,2143,629,2192,619,2253,608,2357,594,2462,574,2663,523,2831,472,2944,433,2946,438,2833,477,2664,529,2463,579,2358,599,2254,613,2193,624,2144,634,2120,636,2096,634,2069,627,2040,613,2008,589,1982,557,1962,523,1948,491"/>
+<area shape="rect" id="Node000011" title=" " alt="" coords="1263,245,1483,270"/>
+<area shape="poly" id="edge10_Node000010_Node000011" title=" " alt="" coords="1425,272,1855,419,1854,424,1423,277"/>
+<area shape="rect" id="Node000012" href="$classModelData.html" title="Model主要负责处理模型数据，先更新模型数据，再更新ModelActor调函数" alt="" coords="815,130,908,155"/>
+<area shape="poly" id="edge11_Node000011_Node000012" title=" " alt="" coords="922,153,1316,242,1314,247,921,159"/>
+<area shape="rect" id="Node000013" title=" " alt="" coords="193,902,280,927"/>
+<area shape="poly" id="edge50_Node000002_Node000013" title=" " alt="" coords="248,940,274,1007,293,1048,318,1089,347,1127,381,1158,421,1179,442,1185,465,1187,3552,1187,3577,1181,3600,1164,3623,1138,3644,1103,3683,1013,3716,908,3743,799,3764,697,3787,560,3792,561,3769,698,3748,800,3721,910,3688,1015,3649,1105,3627,1141,3604,1168,3579,1186,3553,1192,465,1192,442,1190,419,1184,378,1162,343,1131,313,1092,289,1051,269,1010,243,942"/>
+<area shape="poly" id="edge12_Node000012_Node000013" title=" " alt="" coords="236,888,244,738,265,518,282,405,305,301,335,216,352,184,371,159,396,139,423,122,483,99,546,88,611,87,675,93,733,103,825,127,823,133,732,108,674,98,611,92,547,93,484,104,426,127,399,143,375,163,356,187,339,219,310,303,287,406,270,519,249,738,241,888"/>
+<area shape="rect" id="Node000018" href="$structComponentData.html" title="模型的组成单元：一个 ComponentData 表示模型中的一个物体部件" alt="" coords="1675,807,1803,833"/>
+<area shape="poly" id="edge18_Node000018_Node000013" title=" " alt="" coords="293,905,497,880,757,855,1024,838,1287,828,1675,818,1675,823,1287,833,1025,844,758,860,498,885,294,910"/>
+<area shape="rect" id="Node000026" title=" " alt="" coords="375,796,559,836"/>
+<area shape="poly" id="edge27_Node000026_Node000013" title=" " alt="" coords="256,890,277,870,303,852,338,837,374,827,375,832,339,842,305,857,281,874,260,894"/>
+<area shape="rect" id="Node000056" href="$structUndoRecord.html" title="一次操作 = 一条记录" alt="" coords="3233,853,3335,878"/>
+<area shape="poly" id="edge53_Node000056_Node000013" title=" " alt="" coords="256,937,278,970,306,1004,343,1041,376,1067,414,1082,465,1087,2982,1087,3034,1080,3082,1061,3127,1033,3168,999,3204,964,3234,929,3272,876,3277,880,3238,933,3208,968,3172,1003,3131,1037,3085,1065,3035,1085,2982,1092,465,1092,413,1087,374,1072,339,1045,302,1007,274,973,251,940"/>
+<area shape="rect" id="Node000062" href="$structModelSnapshot.html" title="模型级结构快照：整模型的深拷贝，用于撤销/恢复结构操作" alt="" coords="405,1026,528,1051"/>
+<area shape="poly" id="edge61_Node000062_Node000013" title=" " alt="" coords="264,934,313,973,375,1011,408,1023,406,1028,372,1016,310,978,261,939"/>
+<area shape="rect" id="Node000014" title=" " alt="" coords="5,895,144,935"/>
+<area shape="poly" id="edge13_Node000013_Node000014" title=" " alt="" coords="157,912,193,912,193,917,157,917"/>
+<area shape="rect" id="Node000015" title=" " alt="" coords="388,174,545,199"/>
+<area shape="poly" id="edge46_Node000004_Node000015" title=" " alt="" coords="556,166,558,165,566,156,569,147,573,137,582,127,620,106,653,93,684,86,715,83,779,86,860,89,2556,89,2643,94,2679,100,2711,109,2742,123,2773,141,2843,194,2870,219,2894,248,2934,310,2961,368,2977,409,2973,411,2957,370,2929,313,2890,252,2866,223,2840,198,2770,146,2740,128,2709,114,2677,105,2643,99,2556,95,860,95,779,91,715,88,685,91,655,98,622,111,586,131,578,139,574,149,571,159,562,169,559,170"/>
+<area shape="poly" id="edge14_Node000012_Node000015" title=" " alt="" coords="558,172,584,169,814,145,815,150,584,175,559,178"/>
+<area shape="poly" id="edge39_Node000018_Node000015" title=" " alt="" coords="559,196,669,215,712,226,735,237,752,264,757,291,754,319,747,346,740,372,737,398,742,423,759,447,776,460,797,470,851,483,916,489,988,491,1131,490,1192,493,1239,501,1356,541,1443,581,1525,632,1626,705,1686,758,1729,805,1725,809,1683,762,1622,709,1523,637,1441,586,1354,546,1238,507,1191,498,1131,495,988,496,916,494,850,488,795,475,773,464,755,451,737,425,732,398,735,371,742,344,749,318,752,292,747,266,732,241,710,231,668,221,558,202"/>
+<area shape="rect" id="Node000020" href="$structMeshData.html" title=" " alt="" coords="817,607,905,633"/>
+<area shape="poly" id="edge22_Node000020_Node000015" title=" " alt="" coords="472,213,480,273,498,351,513,392,532,431,556,468,586,499,604,512,621,518,655,521,691,519,712,522,734,530,768,547,800,567,848,605,844,609,797,572,765,551,732,534,711,527,691,525,655,526,620,524,601,517,582,503,552,471,527,434,508,394,493,352,474,274,467,214"/>
+<area shape="rect" id="Node000042" href="$classMeshAdjacency.html" title=" " alt="" coords="1311,409,1435,434"/>
+<area shape="poly" id="edge38_Node000042_Node000015" title=" " alt="" coords="540,169,587,166,638,168,689,179,713,189,735,203,746,219,748,237,749,253,759,267,777,278,799,287,855,298,921,303,992,304,1133,306,1193,310,1240,321,1277,340,1311,363,1361,407,1357,411,1308,368,1274,345,1238,327,1192,316,1133,311,992,309,920,308,854,303,798,292,774,283,755,271,744,255,743,237,741,221,732,207,710,194,687,184,638,173,587,171,541,175"/>
+<area shape="rect" id="Node000016" title=" " alt="" coords="2455,674,2654,729"/>
+<area shape="poly" id="edge15_Node000004_Node000016" title=" " alt="" coords="2668,713,2712,712,2756,707,2800,695,2840,675,2871,650,2897,619,2919,585,2937,549,2962,482,2974,435,2979,436,2967,484,2942,552,2924,588,2902,622,2875,654,2843,680,2802,700,2757,712,2712,718,2668,718"/>
+<area shape="rect" id="Node000017" title=" " alt="" coords="2043,800,2252,840"/>
+<area shape="poly" id="edge16_Node000016_Node000017" title=" " alt="" coords="2211,793,2277,769,2454,721,2456,726,2278,775,2212,798"/>
+<area shape="rect" id="Node000058" href="$structComponentEntry.html" title="组件数据变更（双向快照）" alt="" coords="2489,807,2620,833"/>
+<area shape="poly" id="edge56_Node000058_Node000017" title=" " alt="" coords="2266,817,2489,817,2489,823,2266,823"/>
+<area shape="rect" id="Node000060" href="$structStructuralEntry.html" title="结构变更（四选一）" alt="" coords="2495,861,2614,886"/>
+<area shape="poly" id="edge62_Node000060_Node000017" title=" " alt="" coords="2247,840,2278,845,2393,859,2495,867,2495,873,2393,865,2277,851,2246,845"/>
+<area shape="poly" id="edge17_Node000017_Node000018" title=" " alt="" coords="1817,817,2042,817,2042,823,1817,823"/>
+<area shape="rect" id="Node000019" title=" " alt="" coords="1265,670,1480,695"/>
+<area shape="poly" id="edge19_Node000018_Node000019" title=" " alt="" coords="1421,698,1705,805,1703,810,1419,703"/>
+<area shape="poly" id="edge20_Node000019_Node000020" title=" " alt="" coords="919,624,1268,667,1268,673,919,630"/>
+<area shape="poly" id="edge35_Node000042_Node000020" title=" " alt="" coords="919,611,986,600,1067,583,1154,558,1237,524,1274,503,1308,478,1357,432,1361,436,1311,482,1277,507,1240,529,1156,563,1068,588,987,606,920,616"/>
+<area shape="rect" id="Node000021" title=" " alt="" coords="383,508,551,548"/>
+<area shape="poly" id="edge21_Node000020_Node000021" title=" " alt="" coords="565,548,585,552,734,583,817,605,816,610,733,588,583,557,563,553"/>
+<area shape="rect" id="Node000023" title=" " alt="" coords="384,572,549,612"/>
+<area shape="poly" id="edge23_Node000020_Node000023" title=" " alt="" coords="563,603,584,605,711,613,817,617,817,622,711,619,584,611,563,609"/>
+<area shape="rect" id="Node000024" title=" " alt="" coords="390,637,543,691"/>
+<area shape="poly" id="edge24_Node000020_Node000024" title=" " alt="" coords="557,657,733,641,816,627,817,632,734,647,557,662"/>
+<area shape="rect" id="Node000025" title=" " alt="" coords="390,715,543,770"/>
+<area shape="poly" id="edge25_Node000020_Node000025" title=" " alt="" coords="557,727,643,709,732,683,791,657,838,631,841,635,793,662,734,688,644,714,558,732"/>
+<area shape="poly" id="edge26_Node000020_Node000026" title=" " alt="" coords="572,834,612,836,654,833,694,825,732,810,747,798,763,779,798,728,851,631,856,634,802,731,767,783,750,802,735,814,696,830,654,839,612,841,572,839"/>
+<area shape="rect" id="Node000028" title=" " alt="" coords="1273,921,1472,961"/>
+<area shape="poly" id="edge28_Node000018_Node000028" title=" " alt="" coords="1486,933,1555,921,1623,900,1653,885,1680,867,1723,831,1726,835,1684,871,1655,890,1625,905,1556,926,1486,938"/>
+<area shape="rect" id="Node000029" href="$structGeometryData.html" title=" " alt="" coords="802,929,921,954"/>
+<area shape="poly" id="edge29_Node000028_Node000029" title=" " alt="" coords="935,939,1273,939,1273,944,935,944"/>
+<area shape="rect" id="Node000030" title=" " alt="" coords="375,961,558,1001"/>
+<area shape="poly" id="edge30_Node000029_Node000030" title=" " alt="" coords="572,974,733,960,801,950,802,955,734,965,572,979"/>
+<area shape="rect" id="Node000031" href="$structGeometrySubshapeIndex.html" title=" " alt="" coords="373,911,560,937"/>
+<area shape="poly" id="edge31_Node000029_Node000031" title=" " alt="" coords="574,926,802,936,802,941,574,931"/>
+<area shape="rect" id="Node000037" title=" " alt="" coords="1273,857,1472,897"/>
+<area shape="poly" id="edge32_Node000018_Node000037" title=" " alt="" coords="1486,874,1554,869,1623,859,1669,846,1709,830,1711,835,1670,851,1625,864,1555,875,1486,880"/>
+<area shape="rect" id="Node000038" href="$structGeometryMeshMap.html" title="Geometry 子形状与 MeshData 局部拓扑之间的通用映射" alt="" coords="786,869,937,894"/>
+<area shape="poly" id="edge33_Node000037_Node000038" title=" " alt="" coords="951,878,1273,875,1273,881,951,883"/>
+<area shape="poly" id="edge34_Node000018_Node000042" title=" " alt="" coords="1448,409,1492,409,1539,415,1585,429,1626,454,1663,495,1692,542,1712,594,1726,647,1739,743,1741,807,1736,807,1734,743,1721,648,1707,596,1687,545,1659,498,1622,458,1583,434,1538,420,1492,415,1448,415"/>
+<area shape="rect" id="Node000043" title=" " alt="" coords="757,331,965,371"/>
+<area shape="poly" id="edge36_Node000042_Node000043" title=" " alt="" coords="980,349,1105,356,1239,375,1294,389,1341,406,1339,411,1292,394,1238,380,1105,362,979,354"/>
+<area shape="rect" id="Node000046" title=" " alt="" coords="773,397,950,437"/>
+<area shape="poly" id="edge37_Node000042_Node000046" title=" " alt="" coords="964,417,989,417,1310,419,1310,424,989,423,964,422"/>
+<area shape="rect" id="Node000047" title=" " alt="" coords="2479,375,2631,415"/>
+<area shape="poly" id="edge40_Node000004_Node000047" title=" " alt="" coords="2644,398,2931,417,2931,422,2644,403"/>
+<area shape="rect" id="Node000048" href="$classMeshIDMap.html" title=" " alt="" coords="2505,201,2604,226"/>
+<area shape="poly" id="edge41_Node000004_Node000048" title=" " alt="" coords="2618,222,2726,251,2786,273,2843,300,2882,326,2918,356,2970,408,2966,412,2915,360,2879,331,2840,305,2784,278,2724,256,2617,228"/>
+<area shape="rect" id="Node000049" title=" " alt="" coords="2041,193,2253,233"/>
+<area shape="poly" id="edge42_Node000048_Node000049" title=" " alt="" coords="2267,211,2505,211,2505,216,2267,216"/>
+<area shape="rect" id="Node000050" title=" " alt="" coords="1648,193,1831,233"/>
+<area shape="poly" id="edge43_Node000049_Node000050" title=" " alt="" coords="1845,211,2041,211,2041,216,1845,216"/>
+<area shape="rect" id="Node000051" title=" " alt="" coords="2076,129,2219,169"/>
+<area shape="poly" id="edge44_Node000048_Node000051" title=" " alt="" coords="2233,156,2426,183,2505,199,2504,204,2425,188,2232,161"/>
+<area shape="rect" id="Node000052" href="$classModelObserver.html" title=" " alt="" coords="2494,753,2615,778"/>
+<area shape="poly" id="edge45_Node000004_Node000052" title=" " alt="" coords="2629,776,2680,780,2735,777,2790,765,2816,755,2840,741,2876,708,2905,668,2928,624,2946,578,2967,493,2976,435,2981,436,2973,494,2951,580,2933,626,2910,670,2880,711,2843,745,2818,760,2792,770,2736,783,2680,785,2629,782"/>
+<area shape="rect" id="Node000053" title=" " alt="" coords="2449,277,2660,317"/>
+<area shape="poly" id="edge48_Node000004_Node000053" title=" " alt="" coords="2650,318,2842,372,2946,407,2944,412,2841,377,2648,323"/>
+<area shape="rect" id="Node000054" href="$structModelLayer_1_1WriteAuthority.html" title="写权限状态（堆上共享）：含线程亲和、冻结窗口与框架特权深度" alt="" coords="2047,258,2248,283"/>
+<area shape="poly" id="edge49_Node000053_Node000054" title=" " alt="" coords="2262,275,2449,288,2449,293,2261,281"/>
+<area shape="rect" id="Node000055" title=" " alt="" coords="3452,783,3651,809"/>
+<area shape="poly" id="edge51_Node000002_Node000055" title=" " alt="" coords="3573,771,3777,559,3781,563,3576,775"/>
+<area shape="poly" id="edge52_Node000055_Node000056" title=" " alt="" coords="3347,847,3501,806,3502,811,3348,852"/>
+<area shape="rect" id="Node000057" title=" " alt="" coords="2865,807,3096,833"/>
+<area shape="poly" id="edge54_Node000056_Node000057" title=" " alt="" coords="3109,832,3210,847,3234,851,3233,857,3209,852,3109,837"/>
+<area shape="poly" id="edge55_Node000057_Node000058" title=" " alt="" coords="2634,817,2865,817,2865,823,2634,823"/>
+<area shape="rect" id="Node000059" title=" " alt="" coords="2871,861,3090,886"/>
+<area shape="poly" id="edge57_Node000056_Node000059" title=" " alt="" coords="3104,872,3209,869,3233,868,3233,873,3209,875,3104,877"/>
+<area shape="poly" id="edge58_Node000059_Node000060" title=" " alt="" coords="2628,871,2871,871,2871,876,2628,876"/>
+<area shape="rect" id="Node000061" title=" " alt="" coords="989,1005,1239,1030"/>
+<area shape="poly" id="edge59_Node000060_Node000061" title=" " alt="" coords="1252,1006,1402,999,1564,996,2149,996,2206,992,2263,983,2319,969,2372,952,2465,915,2529,884,2531,888,2467,920,2374,957,2320,974,2264,988,2206,998,2149,1001,1564,1001,1402,1005,1253,1011"/>
+<area shape="poly" id="edge60_Node000061_Node000062" title=" " alt="" coords="541,1034,989,1019,989,1024,542,1039"/>
+</map>

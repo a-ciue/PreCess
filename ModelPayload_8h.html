@@ -77,58 +77,62 @@ $(function() {
 <div id="doc-content">
 <div class="header">
   <div class="summary">
-<a href="#nested-classes">类</a>  </div>
+<a href="#nested-classes">类</a> &#124;
+<a href="#func-members">函数</a>  </div>
   <div class="headertitle"><div class="title">ModelPayload.h 文件参考</div></div>
 </div><!--header-->
 <div class="contents">
 <div class="textblock"><code>#include &quot;<a class="el" href="ComponentData_8h_source.html">ComponentData.h</a>&quot;</code><br />
+<code>#include &lt;filesystem&gt;</code><br />
 <code>#include &lt;string&gt;</code><br />
 </div><div class="textblock"><div class="dynheader">
 ModelPayload.h 的引用(Include)关系图:</div>
 <div class="dyncontent">
 <div class="center"><img src="ModelPayload_8h__incl.png" border="0" usemap="#amodel_2systems_2io_2ModelPayload_8h" loading="lazy" alt=""/></div>
 <map name="amodel_2systems_2io_2ModelPayload_8h" id="amodel_2systems_2io_2ModelPayload_8h">
-<area shape="rect" title=" " alt="" coords="5,5,251,31"/>
-<area shape="rect" href="ComponentData_8h.html" title=" " alt="" coords="298,79,438,104"/>
-<area shape="poly" title=" " alt="" coords="167,28,317,72,315,77,166,33"/>
-<area shape="rect" title=" " alt="" coords="39,299,97,324"/>
-<area shape="poly" title=" " alt="" coords="128,31,76,286,71,285,123,30"/>
-<area shape="rect" href="Core_8h.html" title=" " alt="" coords="345,225,409,251"/>
-<area shape="poly" title=" " alt="" coords="365,105,353,138,350,157,352,177,366,212,361,214,347,178,345,157,348,136,360,103"/>
-<area shape="rect" title=" " alt="" coords="251,299,328,324"/>
-<area shape="poly" title=" " alt="" coords="326,107,281,123,230,148,183,182,163,203,146,227,142,240,144,252,152,263,164,272,199,288,238,299,236,304,197,293,161,277,148,266,139,254,136,240,142,224,159,200,179,178,228,143,278,118,324,102"/>
-<area shape="poly" title=" " alt="" coords="299,106,239,124,210,138,183,154,149,185,120,221,81,287,77,285,116,218,145,181,180,150,208,133,238,119,297,101"/>
-<area shape="rect" title=" " alt="" coords="855,299,918,324"/>
-<area shape="poly" title=" " alt="" coords="438,94,585,110,669,127,751,149,831,172,861,190,889,224,895,239,898,255,896,285,890,285,892,255,890,240,884,227,858,194,829,177,750,155,668,132,584,116,438,99"/>
-<area shape="rect" href="MeshData_8h.html" title=" " alt="" coords="362,152,462,177"/>
-<area shape="poly" title=" " alt="" coords="378,103,400,139,395,142,373,106"/>
-<area shape="rect" title=" " alt="" coords="485,225,609,251"/>
-<area shape="poly" title=" " alt="" coords="395,102,434,122,475,150,507,181,533,213,529,216,503,185,472,154,431,127,393,106"/>
-<area shape="rect" href="MeshAdjacency_8h.html" title="网格邻接查询索引——统一边表 + 稳定边 id" alt="" coords="603,152,738,177"/>
-<area shape="poly" title=" " alt="" coords="417,101,609,146,608,151,416,107"/>
-<area shape="rect" title=" " alt="" coords="427,299,483,324"/>
-<area shape="poly" title=" " alt="" coords="392,249,434,287,430,291,388,253"/>
-<area shape="rect" title=" " alt="" coords="352,299,403,324"/>
-<area shape="poly" title=" " alt="" coords="380,251,380,285,375,285,375,251"/>
-<area shape="poly" title=" " alt="" coords="365,253,316,292,313,288,362,249"/>
-<area shape="poly" title=" " alt="" coords="345,249,111,303,110,298,344,244"/>
-<area shape="poly" title=" " alt="" coords="410,241,842,301,841,306,409,246"/>
-<area shape="poly" title=" " alt="" coords="409,179,391,214,387,212,404,176"/>
-<area shape="poly" title=" " alt="" coords="418,177,450,285,445,286,413,179"/>
-<area shape="poly" title=" " alt="" coords="394,180,364,200,335,227,315,257,301,287,296,285,311,254,331,224,361,196,391,175"/>
-<area shape="poly" title=" " alt="" coords="362,171,314,176,258,186,200,203,145,228,110,257,85,289,80,285,107,253,143,223,198,198,257,181,313,170,361,165"/>
-<area shape="poly" title=" " alt="" coords="435,175,514,216,511,221,432,180"/>
-<area shape="rect" title=" " alt="" coords="156,225,271,251"/>
-<area shape="poly" title=" " alt="" coords="381,180,260,223,258,218,379,175"/>
-<area shape="rect" title=" " alt="" coords="633,225,708,251"/>
-<area shape="poly" title=" " alt="" coords="454,175,621,220,619,225,453,180"/>
-<area shape="poly" title=" " alt="" coords="624,180,423,228,422,223,623,175"/>
-<area shape="poly" title=" " alt="" coords="688,175,705,191,720,210,728,231,727,242,722,252,707,265,684,276,624,292,556,303,497,310,496,304,556,298,623,287,682,271,704,260,718,249,722,241,723,232,716,213,701,194,684,179"/>
-<area shape="poly" title=" " alt="" coords="739,169,771,175,804,186,836,202,863,223,874,237,881,253,888,284,883,286,876,255,869,240,859,227,833,206,802,191,770,181,738,174"/>
-<area shape="poly" title=" " alt="" coords="652,180,580,221,577,216,649,175"/>
-<area shape="poly" title=" " alt="" coords="673,178,673,212,668,212,668,178"/>
-<area shape="rect" title=" " alt="" coords="783,225,849,251"/>
-<area shape="poly" title=" " alt="" coords="695,175,781,217,779,222,693,180"/>
+<area shape="rect" title=" " alt="" coords="212,5,457,31"/>
+<area shape="rect" href="ComponentData_8h.html" title=" " alt="" coords="265,79,405,104"/>
+<area shape="poly" title=" " alt="" coords="337,31,337,65,332,65,332,31"/>
+<area shape="rect" title=" " alt="" coords="5,299,64,324"/>
+<area shape="poly" title=" " alt="" coords="310,33,220,80,167,114,116,154,85,187,62,226,50,257,42,286,37,284,45,255,58,224,81,184,113,150,164,110,218,76,308,28"/>
+<area shape="rect" title=" " alt="" coords="429,79,520,104"/>
+<area shape="poly" title=" " alt="" coords="358,28,441,70,439,75,356,33"/>
+<area shape="rect" href="Core_8h.html" title=" " alt="" coords="312,225,376,251"/>
+<area shape="poly" title=" " alt="" coords="331,105,320,138,317,157,319,177,332,212,327,214,313,178,312,157,315,136,326,103"/>
+<area shape="rect" title=" " alt="" coords="217,299,295,324"/>
+<area shape="poly" title=" " alt="" coords="292,107,247,123,197,148,149,182,129,203,113,227,108,240,111,252,118,263,131,272,165,288,205,299,203,304,164,293,128,277,114,266,106,254,103,240,108,224,125,200,146,178,194,143,245,118,291,102"/>
+<area shape="poly" title=" " alt="" coords="265,106,206,124,177,138,150,154,116,185,87,221,48,287,43,285,83,218,112,181,146,150,174,133,204,119,264,101"/>
+<area shape="rect" title=" " alt="" coords="822,299,885,324"/>
+<area shape="poly" title=" " alt="" coords="405,100,718,149,798,172,828,190,856,224,862,239,864,255,862,285,857,285,859,255,857,240,851,227,825,194,795,177,717,155,405,106"/>
+<area shape="rect" href="MeshData_8h.html" title=" " alt="" coords="329,152,429,177"/>
+<area shape="poly" title=" " alt="" coords="344,103,367,139,362,142,340,106"/>
+<area shape="rect" title=" " alt="" coords="451,225,575,251"/>
+<area shape="poly" title=" " alt="" coords="362,102,401,122,442,150,474,181,500,213,495,216,470,185,438,154,398,127,359,106"/>
+<area shape="rect" href="MeshAdjacency_8h.html" title="网格邻接查询索引——统一边表 + 稳定边 id" alt="" coords="570,152,705,177"/>
+<area shape="poly" title=" " alt="" coords="384,101,576,146,575,151,383,107"/>
+<area shape="rect" title=" " alt="" coords="393,299,449,324"/>
+<area shape="poly" title=" " alt="" coords="358,249,400,287,397,291,355,253"/>
+<area shape="rect" title=" " alt="" coords="319,299,369,324"/>
+<area shape="poly" title=" " alt="" coords="347,251,347,285,341,285,341,251"/>
+<area shape="poly" title=" " alt="" coords="332,253,283,292,279,288,328,249"/>
+<area shape="poly" title=" " alt="" coords="312,249,78,303,77,298,311,244"/>
+<area shape="poly" title=" " alt="" coords="377,241,809,301,808,306,376,246"/>
+<area shape="poly" title=" " alt="" coords="375,179,358,214,353,212,371,176"/>
+<area shape="poly" title=" " alt="" coords="385,177,417,285,411,286,380,179"/>
+<area shape="poly" title=" " alt="" coords="360,180,331,200,302,227,282,257,268,287,263,285,277,254,298,224,328,196,357,175"/>
+<area shape="poly" title=" " alt="" coords="329,171,281,176,225,186,167,203,112,228,77,257,51,289,47,285,73,253,109,223,165,198,223,181,280,170,328,165"/>
+<area shape="poly" title=" " alt="" coords="402,175,480,216,478,221,399,180"/>
+<area shape="rect" title=" " alt="" coords="123,225,237,251"/>
+<area shape="poly" title=" " alt="" coords="348,180,226,223,225,218,346,175"/>
+<area shape="rect" title=" " alt="" coords="600,225,675,251"/>
+<area shape="poly" title=" " alt="" coords="421,175,587,220,586,225,420,180"/>
+<area shape="poly" title=" " alt="" coords="591,180,390,228,388,223,590,175"/>
+<area shape="poly" title=" " alt="" coords="654,175,671,191,687,210,695,231,694,242,689,252,673,265,651,276,590,292,523,303,463,310,463,304,522,298,589,287,649,271,671,260,685,249,689,241,690,232,682,213,667,194,651,179"/>
+<area shape="poly" title=" " alt="" coords="706,169,738,175,771,186,802,202,830,223,840,237,848,253,855,284,849,286,842,255,836,240,826,227,799,206,769,191,736,181,705,174"/>
+<area shape="poly" title=" " alt="" coords="619,180,547,221,544,216,616,175"/>
+<area shape="poly" title=" " alt="" coords="640,178,640,212,635,212,635,178"/>
+<area shape="rect" title=" " alt="" coords="749,225,816,251"/>
+<area shape="poly" title=" " alt="" coords="662,175,748,217,746,222,660,180"/>
 </map>
 </div>
 </div><div class="textblock"><div class="dynheader">
@@ -136,11 +140,35 @@ ModelPayload.h 的引用(Include)关系图:</div>
 <div class="dyncontent">
 <div class="center"><img src="ModelPayload_8h__dep__incl.png" border="0" usemap="#amodel_2systems_2io_2ModelPayload_8hdep" loading="lazy" alt=""/></div>
 <map name="amodel_2systems_2io_2ModelPayload_8hdep" id="amodel_2systems_2io_2ModelPayload_8hdep">
-<area shape="rect" title=" " alt="" coords="19,5,264,31"/>
-<area shape="rect" href="ModelIOHandler_8h.html" title=" " alt="" coords="12,79,271,104"/>
-<area shape="poly" title=" " alt="" coords="144,44,144,79,139,79,139,44"/>
-<area shape="rect" href="ModelIOSystem_8cpp.html" title=" " alt="" coords="5,152,277,177"/>
-<area shape="poly" title=" " alt="" coords="144,118,144,152,139,152,139,118"/>
+<area shape="rect" title=" " alt="" coords="291,5,537,31"/>
+<area shape="rect" href="AlgorithmSystem_8cpp.html" title=" " alt="" coords="5,152,172,192"/>
+<area shape="poly" title=" " alt="" coords="379,39,130,154,128,149,376,34"/>
+<area shape="rect" href="TestAlgorithmSystemShadow_8cpp.html" title=" " alt="" coords="196,152,467,192"/>
+<area shape="poly" title=" " alt="" coords="391,42,374,60,359,80,344,118,336,153,331,151,339,116,354,77,370,56,387,38"/>
+<area shape="rect" href="ModelIOHandler_8h.html" title=" " alt="" coords="369,79,627,104"/>
+<area shape="poly" title=" " alt="" coords="440,38,486,76,483,80,436,42"/>
+<area shape="rect" href="ModelIOSystem_8h.html" title=" " alt="" coords="967,79,1224,104"/>
+<area shape="poly" title=" " alt="" coords="537,29,986,76,985,81,536,35"/>
+<area shape="poly" title=" " alt="" coords="463,112,373,154,371,149,460,107"/>
+<area shape="rect" href="ModelIOSystem_8cpp.html" title=" " alt="" coords="490,159,762,185"/>
+<area shape="poly" title=" " alt="" coords="530,109,608,157,606,161,527,113"/>
+<area shape="poly" title=" " alt="" coords="953,99,602,116,393,132,184,155,173,156,172,151,183,149,392,127,602,110,953,94"/>
+<area shape="poly" title=" " alt="" coords="953,108,478,155,467,156,466,151,478,149,953,102"/>
+<area shape="poly" title=" " alt="" coords="1014,109,695,162,694,157,1013,104"/>
+<area shape="rect" href="QModelManager_8cpp.html" title=" " alt="" coords="1955,159,2183,185"/>
+<area shape="poly" title=" " alt="" coords="1238,97,1561,116,1942,149,1998,157,1997,162,1942,155,1560,122,1238,102"/>
+<area shape="rect" href="QModelIOSystemAdaptor_8cpp.html" title=" " alt="" coords="2207,152,2423,192"/>
+<area shape="poly" title=" " alt="" coords="1238,93,1667,110,1931,126,2196,149,2207,151,2207,156,2195,155,1931,132,1667,115,1238,98"/>
+<area shape="rect" href="Session_8cpp.html" title="会话组合根实现：子系统装配、观察者转发桥与有序拆解" alt="" coords="786,159,983,185"/>
+<area shape="poly" title=" " alt="" coords="1053,111,916,162,914,157,1051,106"/>
+<area shape="rect" href="TestSessionPlugins_8cpp.html" title="Session 插件装载冒烟测试：动态插件注册与功能信息（Qt 插件机制，需 QCoreApplication）" alt="" coords="1007,152,1183,192"/>
+<area shape="poly" title=" " alt="" coords="1098,118,1098,152,1093,152,1093,118"/>
+<area shape="rect" href="TestAlgorithmSystem_8cpp.html" title=" " alt="" coords="1207,152,1429,192"/>
+<area shape="poly" title=" " alt="" coords="1142,106,1265,149,1264,154,1140,111"/>
+<area shape="rect" href="TestFeatureSystem_8cpp.html" title=" " alt="" coords="1453,152,1660,192"/>
+<area shape="poly" title=" " alt="" coords="1176,104,1454,151,1453,156,1175,109"/>
+<area shape="rect" href="ModelIOSystemRegister_8cpp.html" title=" " alt="" coords="1685,152,1930,192"/>
+<area shape="poly" title=" " alt="" coords="1232,103,1673,149,1685,151,1684,156,1672,155,1231,108"/>
 </map>
 </div>
 </div>
@@ -149,7 +177,71 @@ ModelPayload.h 的引用(Include)关系图:</div>
 <tr class="heading"><td colspan="2"><h2 id="header-nested-classes" class="groupheader"><a id="nested-classes" name="nested-classes"></a>
 类</h2></td></tr>
 <tr class="memitem:ModelPayload" id="r_ModelPayload"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structModelPayload.html">ModelPayload</a></td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 id="header-func-members" class="groupheader"><a id="func-members" name="func-members"></a>
+函数</h2></td></tr>
+<tr class="memitem:a6f8f001de21d22ccb161f6f2263cacfc" id="r_a6f8f001de21d22ccb161f6f2263cacfc"><td class="memItemLeft" align="right" valign="top">std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a6f8f001de21d22ccb161f6f2263cacfc">u8Narrow</a> (const std::u8string &amp;s)</td></tr>
+<tr class="memdesc:a6f8f001de21d22ccb161f6f2263cacfc"><td class="mdescLeft">&#160;</td><td class="mdescRight">std::u8string（UTF-8 字节）→ std::string（同字节 reinterpret，中文名安全）  <br /></td></tr>
+<tr class="memitem:af66fd221d76dfb42c1b9a6b02d809270" id="r_af66fd221d76dfb42c1b9a6b02d809270"><td class="memItemLeft" align="right" valign="top">std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#af66fd221d76dfb42c1b9a6b02d809270">pathUtf8</a> (const <a class="el" href="TestObjMeshIO_8cpp.html#ab972f994f7bb41f885fdf2268e4a8799">std::filesystem::path</a> &amp;<a class="el" href="TestObjMeshIO_8cpp.html#ab972f994f7bb41f885fdf2268e4a8799">path</a>)</td></tr>
+<tr class="memdesc:af66fd221d76dfb42c1b9a6b02d809270"><td class="mdescLeft">&#160;</td><td class="mdescRight">fs::path → UTF-8 std::string（保留字节语义，中文路径安全）  <br /></td></tr>
 </table>
+<a name="doc-func-members" id="doc-func-members"></a><h2 id="header-doc-func-members" class="groupheader">函数说明</h2>
+<a id="af66fd221d76dfb42c1b9a6b02d809270" name="af66fd221d76dfb42c1b9a6b02d809270"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#af66fd221d76dfb42c1b9a6b02d809270">&#9670;&#160;</a></span>pathUtf8()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::string pathUtf8 </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="TestObjMeshIO_8cpp.html#ab972f994f7bb41f885fdf2268e4a8799">std::filesystem::path</a> &amp;</td>          <td class="paramname"><span class="paramname"><em>path</em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel inline">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>fs::path → UTF-8 std::string（保留字节语义，中文路径安全） </p>
+<dl class="section note"><dt>注解</dt><dd>C++20 起 path::u8string() 返回 std::u8string——载荷填充已直用原生 u8string； 本 helper 服务仍需窄串的场景（OCCT/文件流 API 等） </dd></dl>
+
+</div>
+</div>
+<a id="a6f8f001de21d22ccb161f6f2263cacfc" name="a6f8f001de21d22ccb161f6f2263cacfc"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a6f8f001de21d22ccb161f6f2263cacfc">&#9670;&#160;</a></span>u8Narrow()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::string u8Narrow </td>
+          <td>(</td>
+          <td class="paramtype">const std::u8string &amp;</td>          <td class="paramname"><span class="paramname"><em>s</em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel inline">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>std::u8string（UTF-8 字节）→ std::string（同字节 reinterpret，中文名安全） </p>
+<dl class="section note"><dt>注解</dt><dd>消费侧转换：模型层 addModel 生态仍为 std::string，仅在载荷出入口各转一次 </dd></dl>
+
+</div>
+</div>
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>

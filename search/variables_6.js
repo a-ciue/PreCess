@@ -26,12 +26,13 @@ var searchData=
   ['feature_5fsystem_5f_23',['feature_system_',['../classsystems_1_1feature_1_1QFeatureSystemAdaptor.html#a4a84799be9789b5282e5e1bbb20397d6',1,'systems::feature::QFeatureSystemAdaptor::feature_system_'],['../classsession_1_1Session.html#a72c708fa5f9f8573909d8ead389c3eb8',1,'session::Session::feature_system_']]],
   ['features_5f_24',['features_',['../classdock_1_1DockPanel.html#a0515b0419cfe00242ef53519f740b09d',1,'dock::DockPanel']]],
   ['file_5ftype_25',['file_type',['../structsystems_1_1io_1_1HandlerMetaData.html#a0fd2bd481588605b64368f0b2f012b06',1,'systems::io::HandlerMetaData']]],
-  ['file_5ftype_5finfos_5f_26',['file_type_infos_',['../classsystems_1_1io_1_1ModelIOSystem.html#aa77c1911fef7c74aec38980081657431',1,'systems::io::ModelIOSystem']]],
-  ['first_27',['first',['../structGeometryIntersectingFacePair.html#a7e8156fcbc459369f8225bafff034b64',1,'GeometryIntersectingFacePair']]],
-  ['floatable_5f_28',['floatable_',['../classdock_1_1ui_1_1DockPanelItem.html#a9e157d149ad6d24b42d7e75aad7e780c',1,'dock::ui::DockPanelItem']]],
-  ['floating_5forigins_5f_29',['floating_origins_',['../classdock_1_1DragSession.html#a4c492de128c2956d144ccd8212446a4d',1,'dock::DragSession']]],
-  ['floating_5fviews_30',['floating_views',['../classdocktest_1_1StubView.html#a7ba99669eb10d20f4f67e7b169d14e21',1,'docktest::StubView']]],
-  ['floating_5fwatchers_5f_31',['floating_watchers_',['../classdock_1_1DragSession.html#a1866d0f4b3c67ed7fcb291f9e7bbe813',1,'dock::DragSession']]],
-  ['floatvalues_32',['floatValues',['../structtinyobj_1_1tag__t.html#a6e531cc0a0d53b6334cf55da4bb62ffc',1,'tinyobj::tag_t']]],
-  ['free_5fids_5f_33',['free_ids_',['../classMeshIDMap.html#af77c63a66105df837cd430116bd84fde',1,'MeshIDMap']]]
+  ['finalizers_26',['finalizers',['../classsystems_1_1job_1_1Job.html#a41bccdfae00780d70c0f17873ee68bb3',1,'systems::job::Job']]],
+  ['finish_5fpreview_27',['finish_preview',['../structUndoStack_1_1Capture.html#a43d6e61527433032d91b4c531e482d4a',1,'UndoStack::Capture']]],
+  ['first_28',['first',['../structGeometryIntersectingFacePair.html#a7e8156fcbc459369f8225bafff034b64',1,'GeometryIntersectingFacePair']]],
+  ['floatable_5f_29',['floatable_',['../classdock_1_1ui_1_1DockPanelItem.html#a9e157d149ad6d24b42d7e75aad7e780c',1,'dock::ui::DockPanelItem']]],
+  ['floating_5forigins_5f_30',['floating_origins_',['../classdock_1_1DragSession.html#a4c492de128c2956d144ccd8212446a4d',1,'dock::DragSession']]],
+  ['floating_5fviews_31',['floating_views',['../classdocktest_1_1StubView.html#a7ba99669eb10d20f4f67e7b169d14e21',1,'docktest::StubView']]],
+  ['floating_5fwatchers_5f_32',['floating_watchers_',['../classdock_1_1DragSession.html#a1866d0f4b3c67ed7fcb291f9e7bbe813',1,'dock::DragSession']]],
+  ['floatvalues_33',['floatValues',['../structtinyobj_1_1tag__t.html#a6e531cc0a0d53b6334cf55da4bb62ffc',1,'tinyobj::tag_t']]],
+  ['free_5fids_5f_34',['free_ids_',['../classMeshIDMap.html#af77c63a66105df837cd430116bd84fde',1,'MeshIDMap']]]
 ];

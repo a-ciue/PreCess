@@ -1,0 +1,310 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="zh">
+<head>
+<meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=11"/>
+<meta name="generator" content="Doxygen 1.14.0"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>PreCess: systems::job 命名空间参考</title>
+<link href="tabs.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="jquery.js"></script>
+<script type="text/javascript" src="dynsections.js"></script>
+<script type="text/javascript" src="clipboard.js"></script>
+<script type="text/javascript" src="cookie.js"></script>
+<link href="search/search.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="search/searchdata.js"></script>
+<script type="text/javascript" src="search/search.js"></script>
+<link href="doxygen.css" rel="stylesheet" type="text/css" />
+</head>
+<body>
+<div id="top"><!-- do not remove this div, it is closed by doxygen! -->
+<div id="titlearea">
+<table cellspacing="0" cellpadding="0">
+ <tbody>
+ <tr id="projectrow">
+  <td id="projectlogo"><img alt="Logo" src="PreCess.ico"/></td>
+  <td id="projectalign">
+   <div id="projectname">PreCess
+   </div>
+  </td>
+ </tr>
+ </tbody>
+</table>
+</div>
+<!-- end header part -->
+<!-- 制作者 Doxygen 1.14.0 -->
+<script type="text/javascript">
+var searchBox = new SearchBox("searchBox", "search/",'.html');
+</script>
+<script type="text/javascript">
+$(function() { codefold.init(); });
+</script>
+<script type="text/javascript" src="menudata.js"></script>
+<script type="text/javascript" src="menu.js"></script>
+<script type="text/javascript">
+$(function() {
+  initMenu('',true,false,'search.php','搜索',false);
+  $(function() { init_search(); });
+});
+</script>
+<div id="main-nav"></div>
+<!-- window showing the filter options -->
+<div id="MSearchSelectWindow"
+     onmouseover="return searchBox.OnSearchSelectShow()"
+     onmouseout="return searchBox.OnSearchSelectHide()"
+     onkeydown="return searchBox.OnSearchSelectKey(event)">
+</div>
+
+<!-- iframe showing the search results (closed by default) -->
+<div id="MSearchResultsWindow">
+<div id="MSearchResults">
+<div class="SRPage">
+<div id="SRIndex">
+<div id="SRResults"></div>
+<div class="SRStatus" id="Loading">载入中...</div>
+<div class="SRStatus" id="Searching">搜索中...</div>
+<div class="SRStatus" id="NoMatches">未找到</div>
+</div>
+</div>
+</div>
+</div>
+
+<div id="nav-path" class="navpath">
+  <ul>
+<li class="navelem"><a href="namespacesystems.html">systems</a></li><li class="navelem"><a href="namespacesystems_1_1job.html">job</a></li>  </ul>
+</div>
+</div><!-- top -->
+<div id="doc-content">
+<div class="header">
+  <div class="summary">
+<a href="#nested-classes">类</a> &#124;
+<a href="#typedef-members">类型定义</a> &#124;
+<a href="#enum-members">枚举</a> &#124;
+<a href="#func-members">函数</a>  </div>
+  <div class="headertitle"><div class="title">systems::job 命名空间参考</div></div>
+</div><!--header-->
+<div class="contents">
+<table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 id="header-nested-classes" class="groupheader"><a id="nested-classes" name="nested-classes"></a>
+类</h2></td></tr>
+<tr class="memitem:Job" id="r_Job"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsystems_1_1job_1_1Job.html">Job</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">任务单元：持有执行体、提交体、取消令牌与状态  <a href="classsystems_1_1job_1_1Job.html#details">更多...</a><br /></td></tr>
+<tr class="memitem:JobCancelledException" id="r_JobCancelledException"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsystems_1_1job_1_1JobCancelledException.html">JobCancelledException</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">心跳点取消异常：由包裹进度回调抛出  <a href="classsystems_1_1job_1_1JobCancelledException.html#details">更多...</a><br /></td></tr>
+<tr class="memitem:JobOptions" id="r_JobOptions"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structsystems_1_1job_1_1JobOptions.html">JobOptions</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">发布时固定的归属与展示策略；owner 不授予写权。  <a href="structsystems_1_1job_1_1JobOptions.html#details">更多...</a><br /></td></tr>
+<tr class="memitem:JobRunner" id="r_JobRunner"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsystems_1_1job_1_1JobRunner.html">JobRunner</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">所属线程管理一个在飞任务；worker 不等待 GUI。 发布、准备、查询、清理、终态与 stop 均在构造线程。 异步运行须向该线程投递；计算结束后保持槽与模型占用直到 GUI 收尾。  <a href="classsystems_1_1job_1_1JobRunner.html#details">更多...</a><br /></td></tr>
+<tr class="memitem:JobWork" id="r_JobWork"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structsystems_1_1job_1_1JobWork.html">JobWork</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">GUI 准备结果；空 task 表示拒绝，inline_compute 用于不可影子化的同步算法。  <a href="structsystems_1_1job_1_1JobWork.html#details">更多...</a><br /></td></tr>
+<tr class="memitem:ShadowComponent" id="r_ShadowComponent"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsystems_1_1job_1_1ShadowComponent.html">ShadowComponent</a></td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 id="header-typedef-members" class="groupheader"><a id="typedef-members" name="typedef-members"></a>
+类型定义</h2></td></tr>
+<tr class="memitem:ae2006917203a4b569c4fe083d45939cc" id="r_ae2006917203a4b569c4fe083d45939cc"><td class="memItemLeft" align="right" valign="top">using&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ae2006917203a4b569c4fe083d45939cc">JobTaskFn</a> = std::function&lt;void(<a class="el" href="#a68d9b6556b0d0b4d3b1dd89c36e872cd">ProgressFn</a>)&gt;</td></tr>
+<tr class="memdesc:ae2006917203a4b569c4fe083d45939cc"><td class="mdescLeft">&#160;</td><td class="mdescRight">任务体只计算；业务成果由类型化执行闭包持有，失败抛异常。  <br /></td></tr>
+<tr class="memitem:a71fc7b421856670dc6effb842cb2ef37" id="r_a71fc7b421856670dc6effb842cb2ef37"><td class="memItemLeft" align="right" valign="top">using&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a71fc7b421856670dc6effb842cb2ef37">JobCommitFn</a> = std::function&lt;void(<a class="el" href="#a68d9b6556b0d0b4d3b1dd89c36e872cd">ProgressFn</a>)&gt;</td></tr>
+<tr class="memdesc:a71fc7b421856670dc6effb842cb2ef37"><td class="mdescLeft">&#160;</td><td class="mdescRight">GUI 提交段；仅计算成功且未取消时执行，失败抛异常；report 只展示，不增加取消点。  <br /></td></tr>
+<tr class="memitem:a62b9db7222639d1e30366a1d75475e42" id="r_a62b9db7222639d1e30366a1d75475e42"><td class="memItemLeft" align="right" valign="top">using&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a62b9db7222639d1e30366a1d75475e42">JobProgressFn</a> = std::function&lt;void(<a class="el" href="classsystems_1_1job_1_1Job.html">Job</a>&amp;, double, const std::string&amp;)&gt;</td></tr>
+<tr class="memdesc:a62b9db7222639d1e30366a1d75475e42"><td class="mdescLeft">&#160;</td><td class="mdescRight">进度回调（计算在线程内触发，提交在所属线程触发）  <br /></td></tr>
+<tr class="memitem:a2af5878d29208ac612981ea6c1e15087" id="r_a2af5878d29208ac612981ea6c1e15087"><td class="memItemLeft" align="right" valign="top">using&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a2af5878d29208ac612981ea6c1e15087">JobFinishedFn</a> = std::function&lt;void(<a class="el" href="classsystems_1_1job_1_1Job.html">Job</a>&amp;)&gt;</td></tr>
+<tr class="memdesc:a2af5878d29208ac612981ea6c1e15087"><td class="mdescLeft">&#160;</td><td class="mdescRight">终态回调（在所属线程触发一次；单槽在回调前已让出）  <br /></td></tr>
+<tr class="memitem:a68d9b6556b0d0b4d3b1dd89c36e872cd" id="r_a68d9b6556b0d0b4d3b1dd89c36e872cd"><td class="memItemLeft" align="right" valign="top">using&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a68d9b6556b0d0b4d3b1dd89c36e872cd">ProgressFn</a> = std::function&lt;void(double value, const std::string&amp; label)&gt;</td></tr>
+<tr class="memdesc:a68d9b6556b0d0b4d3b1dd89c36e872cd"><td class="mdescLeft">&#160;</td><td class="mdescRight">进度上报回调  <br /></td></tr>
+<tr class="memitem:ad2801383588054d6a506a9d1a04e49a3" id="r_ad2801383588054d6a506a9d1a04e49a3"><td class="memItemLeft" align="right" valign="top">using&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ad2801383588054d6a506a9d1a04e49a3">JobPrepareFn</a> = std::function&lt;<a class="el" href="structsystems_1_1job_1_1JobWork.html">JobWork</a>()&gt;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 id="header-enum-members" class="groupheader"><a id="enum-members" name="enum-members"></a>
+枚举</h2></td></tr>
+<tr class="memitem:a45c525b96932d154a9b69c350f29e2b2" id="r_a45c525b96932d154a9b69c350f29e2b2"><td class="memItemLeft" align="right" valign="top">enum class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a45c525b96932d154a9b69c350f29e2b2">JobState</a> { <br />
+&#160;&#160;<a class="el" href="#a45c525b96932d154a9b69c350f29e2b2a5bda814c4aedb126839228f1a3d92f09">Running</a>
+, <a class="el" href="#a45c525b96932d154a9b69c350f29e2b2aa902153e49f7698c3e9726d12d6389bd">Committing</a>
+, <a class="el" href="#a45c525b96932d154a9b69c350f29e2b2af92965e2c8a7afb3c1b9a5c09a263636">Done</a>
+, <a class="el" href="#a45c525b96932d154a9b69c350f29e2b2ad7c8c85bf79bbe1b7188497c32c3b0ca">Failed</a>
+, <br />
+&#160;&#160;<a class="el" href="#a45c525b96932d154a9b69c350f29e2b2aa149e85a44aeec9140e92733d9ed694e">Cancelled</a>
+<br />
+ }</td></tr>
+<tr class="memdesc:a45c525b96932d154a9b69c350f29e2b2"><td class="mdescLeft">&#160;</td><td class="mdescRight">任务状态；由执行器固定的提交和收尾路径推进  <a href="#a45c525b96932d154a9b69c350f29e2b2">更多...</a><br /></td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 id="header-func-members" class="groupheader"><a id="func-members" name="func-members"></a>
+函数</h2></td></tr>
+<tr class="memitem:ad5c00cdf8cfa567913fcf73a4ec5344d" id="r_ad5c00cdf8cfa567913fcf73a4ec5344d"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ad5c00cdf8cfa567913fcf73a4ec5344d">isTerminal</a> (<a class="el" href="#a45c525b96932d154a9b69c350f29e2b2">JobState</a> state) noexcept</td></tr>
+<tr class="memdesc:ad5c00cdf8cfa567913fcf73a4ec5344d"><td class="mdescLeft">&#160;</td><td class="mdescRight">终态判定  <br /></td></tr>
+</table>
+<a name="doc-typedef-members" id="doc-typedef-members"></a><h2 id="header-doc-typedef-members" class="groupheader">类型定义说明</h2>
+<a id="a71fc7b421856670dc6effb842cb2ef37" name="a71fc7b421856670dc6effb842cb2ef37"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a71fc7b421856670dc6effb842cb2ef37">&#9670;&#160;</a></span>JobCommitFn</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">using <a class="el" href="#a71fc7b421856670dc6effb842cb2ef37">systems::job::JobCommitFn</a> = std::function&lt;void(<a class="el" href="#a68d9b6556b0d0b4d3b1dd89c36e872cd">ProgressFn</a>)&gt;</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>GUI 提交段；仅计算成功且未取消时执行，失败抛异常；report 只展示，不增加取消点。 </p>
+
+</div>
+</div>
+<a id="a2af5878d29208ac612981ea6c1e15087" name="a2af5878d29208ac612981ea6c1e15087"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a2af5878d29208ac612981ea6c1e15087">&#9670;&#160;</a></span>JobFinishedFn</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">using <a class="el" href="#a2af5878d29208ac612981ea6c1e15087">systems::job::JobFinishedFn</a> = std::function&lt;void(<a class="el" href="classsystems_1_1job_1_1Job.html">Job</a>&amp;)&gt;</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>终态回调（在所属线程触发一次；单槽在回调前已让出） </p>
+
+</div>
+</div>
+<a id="ad2801383588054d6a506a9d1a04e49a3" name="ad2801383588054d6a506a9d1a04e49a3"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ad2801383588054d6a506a9d1a04e49a3">&#9670;&#160;</a></span>JobPrepareFn</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">using <a class="el" href="#ad2801383588054d6a506a9d1a04e49a3">systems::job::JobPrepareFn</a> = std::function&lt;<a class="el" href="structsystems_1_1job_1_1JobWork.html">JobWork</a>()&gt;</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a62b9db7222639d1e30366a1d75475e42" name="a62b9db7222639d1e30366a1d75475e42"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a62b9db7222639d1e30366a1d75475e42">&#9670;&#160;</a></span>JobProgressFn</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">using <a class="el" href="#a62b9db7222639d1e30366a1d75475e42">systems::job::JobProgressFn</a> = std::function&lt;void(<a class="el" href="classsystems_1_1job_1_1Job.html">Job</a>&amp;, double, const std::string&amp;)&gt;</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>进度回调（计算在线程内触发，提交在所属线程触发） </p>
+
+</div>
+</div>
+<a id="ae2006917203a4b569c4fe083d45939cc" name="ae2006917203a4b569c4fe083d45939cc"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ae2006917203a4b569c4fe083d45939cc">&#9670;&#160;</a></span>JobTaskFn</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">using <a class="el" href="#ae2006917203a4b569c4fe083d45939cc">systems::job::JobTaskFn</a> = std::function&lt;void(<a class="el" href="#a68d9b6556b0d0b4d3b1dd89c36e872cd">ProgressFn</a>)&gt;</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>任务体只计算；业务成果由类型化执行闭包持有，失败抛异常。 </p>
+
+</div>
+</div>
+<a id="a68d9b6556b0d0b4d3b1dd89c36e872cd" name="a68d9b6556b0d0b4d3b1dd89c36e872cd"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a68d9b6556b0d0b4d3b1dd89c36e872cd">&#9670;&#160;</a></span>ProgressFn</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">using <a class="el" href="#a68d9b6556b0d0b4d3b1dd89c36e872cd">systems::job::ProgressFn</a> = std::function&lt;void(double value, const std::string&amp; label)&gt;</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>进度上报回调 </p>
+<dl class="params"><dt>参数</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">value</td><td>完成度，取值 0~1 </td></tr>
+    <tr><td class="paramname">label</td><td>当前阶段或执行反馈（展示给用户，空串沿用上一句文字）</td></tr>
+  </table>
+  </dd>
+</dl>
+<p>Runner 在计算与 GUI 提交段提供有效回调，无展示方也可直接调用，无需判空。 计算段每次上报是取消心跳；提交段只更新展示，不中断已经开始的提交。 回调只在当前执行段内使用，不跨任务保存。同步算法的默认回调为空操作。 </p>
+
+</div>
+</div>
+<a name="doc-enum-members" id="doc-enum-members"></a><h2 id="header-doc-enum-members" class="groupheader">枚举类型说明</h2>
+<a id="a45c525b96932d154a9b69c350f29e2b2" name="a45c525b96932d154a9b69c350f29e2b2"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a45c525b96932d154a9b69c350f29e2b2">&#9670;&#160;</a></span>JobState</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">enum class <a class="el" href="#a45c525b96932d154a9b69c350f29e2b2">systems::job::JobState</a></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel strong">strong</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>任务状态；由执行器固定的提交和收尾路径推进 </p>
+<p>Running → Committing → Done / Failed；Running 也可直接 Done / Failed / Cancelled，终态不可再迁。 无 Queued 态：调度为单工作进程 + 无队列——提交即占坑（Running）或被拒绝。 </p>
+<table class="fieldtable">
+<tr><th colspan="2">枚举值</th></tr><tr><td class="fieldname"><a id="a45c525b96932d154a9b69c350f29e2b2a5bda814c4aedb126839228f1a3d92f09" name="a45c525b96932d154a9b69c350f29e2b2a5bda814c4aedb126839228f1a3d92f09"></a>Running&#160;</td><td class="fielddoc"><p>执行中（占坑即此态：任务体执行或等待工作进程拾取） </p>
+</td></tr>
+<tr><td class="fieldname"><a id="a45c525b96932d154a9b69c350f29e2b2aa902153e49f7698c3e9726d12d6389bd" name="a45c525b96932d154a9b69c350f29e2b2aa902153e49f7698c3e9726d12d6389bd"></a>Committing&#160;</td><td class="fielddoc"><p>结果提交中（在提交分发线程，通常为 GUI 线程） </p>
+</td></tr>
+<tr><td class="fieldname"><a id="a45c525b96932d154a9b69c350f29e2b2af92965e2c8a7afb3c1b9a5c09a263636" name="a45c525b96932d154a9b69c350f29e2b2af92965e2c8a7afb3c1b9a5c09a263636"></a>Done&#160;</td><td class="fielddoc"><p>成功完成 </p>
+</td></tr>
+<tr><td class="fieldname"><a id="a45c525b96932d154a9b69c350f29e2b2ad7c8c85bf79bbe1b7188497c32c3b0ca" name="a45c525b96932d154a9b69c350f29e2b2ad7c8c85bf79bbe1b7188497c32c3b0ca"></a>Failed&#160;</td><td class="fielddoc"><p>任务体或提交失败 </p>
+</td></tr>
+<tr><td class="fieldname"><a id="a45c525b96932d154a9b69c350f29e2b2aa149e85a44aeec9140e92733d9ed694e" name="a45c525b96932d154a9b69c350f29e2b2aa149e85a44aeec9140e92733d9ed694e"></a>Cancelled&#160;</td><td class="fielddoc"><p>心跳点取消（含占坑后、执行前取消） </p>
+</td></tr>
+</table>
+
+</div>
+</div>
+<a name="doc-func-members" id="doc-func-members"></a><h2 id="header-doc-func-members" class="groupheader">函数说明</h2>
+<a id="ad5c00cdf8cfa567913fcf73a4ec5344d" name="ad5c00cdf8cfa567913fcf73a4ec5344d"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ad5c00cdf8cfa567913fcf73a4ec5344d">&#9670;&#160;</a></span>isTerminal()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool systems::job::isTerminal </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="#a45c525b96932d154a9b69c350f29e2b2">JobState</a></td>          <td class="paramname"><span class="paramname"><em>state</em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel inline">inline</span><span class="mlabel noexcept">noexcept</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>终态判定 </p>
+
+</div>
+</div>
+</div><!-- contents -->
+<!-- start footer part -->
+<hr class="footer"/><address class="footer"><small>
+制作者&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.14.0
+</small></address>
+</div><!-- doc-content -->
+</body>
+</html>

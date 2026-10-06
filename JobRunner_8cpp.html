@@ -1,0 +1,276 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="zh">
+<head>
+<meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=11"/>
+<meta name="generator" content="Doxygen 1.14.0"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>PreCess: model/systems/job/JobRunner.cpp 文件参考</title>
+<link href="tabs.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="jquery.js"></script>
+<script type="text/javascript" src="dynsections.js"></script>
+<script type="text/javascript" src="clipboard.js"></script>
+<script type="text/javascript" src="cookie.js"></script>
+<link href="search/search.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="search/searchdata.js"></script>
+<script type="text/javascript" src="search/search.js"></script>
+<link href="doxygen.css" rel="stylesheet" type="text/css" />
+</head>
+<body>
+<div id="top"><!-- do not remove this div, it is closed by doxygen! -->
+<div id="titlearea">
+<table cellspacing="0" cellpadding="0">
+ <tbody>
+ <tr id="projectrow">
+  <td id="projectlogo"><img alt="Logo" src="PreCess.ico"/></td>
+  <td id="projectalign">
+   <div id="projectname">PreCess
+   </div>
+  </td>
+ </tr>
+ </tbody>
+</table>
+</div>
+<!-- end header part -->
+<!-- 制作者 Doxygen 1.14.0 -->
+<script type="text/javascript">
+var searchBox = new SearchBox("searchBox", "search/",'.html');
+</script>
+<script type="text/javascript">
+$(function() { codefold.init(); });
+</script>
+<script type="text/javascript" src="menudata.js"></script>
+<script type="text/javascript" src="menu.js"></script>
+<script type="text/javascript">
+$(function() {
+  initMenu('',true,false,'search.php','搜索',false);
+  $(function() { init_search(); });
+});
+</script>
+<div id="main-nav"></div>
+<!-- window showing the filter options -->
+<div id="MSearchSelectWindow"
+     onmouseover="return searchBox.OnSearchSelectShow()"
+     onmouseout="return searchBox.OnSearchSelectHide()"
+     onkeydown="return searchBox.OnSearchSelectKey(event)">
+</div>
+
+<!-- iframe showing the search results (closed by default) -->
+<div id="MSearchResultsWindow">
+<div id="MSearchResults">
+<div class="SRPage">
+<div id="SRIndex">
+<div id="SRResults"></div>
+<div class="SRStatus" id="Loading">载入中...</div>
+<div class="SRStatus" id="Searching">搜索中...</div>
+<div class="SRStatus" id="NoMatches">未找到</div>
+</div>
+</div>
+</div>
+</div>
+
+<div id="nav-path" class="navpath">
+  <ul>
+<li class="navelem"><a href="dir_3f14f6767c31cb4a1d22c13c18cc6fc3.html">model</a></li><li class="navelem"><a href="dir_2daa03e0cb702fa035b1e0c62ad50ba5.html">systems</a></li><li class="navelem"><a href="dir_16a0a9d713a1d3553ec258549348003f.html">job</a></li>  </ul>
+</div>
+</div><!-- top -->
+<div id="doc-content">
+<div class="header">
+  <div class="summary">
+<a href="#nested-classes">类</a> &#124;
+<a href="#namespaces">命名空间</a>  </div>
+  <div class="headertitle"><div class="title">JobRunner.cpp 文件参考</div></div>
+</div><!--header-->
+<div class="contents">
+
+<p>计算结果先发布，再投递一次所属线程收尾；stop 复用收尾。  
+<a href="#details">更多...</a></p>
+<div class="textblock"><code>#include &quot;<a class="el" href="JobRunner_8h_source.html">JobRunner.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="ModelLayer_8h_source.html">ModelLayer.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="UndoStack_8h_source.html">UndoStack.h</a>&quot;</code><br />
+<code>#include &lt;cassert&gt;</code><br />
+<code>#include &lt;spdlog/spdlog.h&gt;</code><br />
+<code>#include &lt;stdexcept&gt;</code><br />
+<code>#include &lt;utility&gt;</code><br />
+</div><div class="textblock"><div class="dynheader">
+JobRunner.cpp 的引用(Include)关系图:</div>
+<div class="dyncontent">
+<div class="center"><img src="JobRunner_8cpp__incl.png" border="0" usemap="#amodel_2systems_2job_2JobRunner_8cpp" loading="lazy" alt=""/></div>
+<map name="amodel_2systems_2job_2JobRunner_8cpp" id="amodel_2systems_2job_2JobRunner_8cpp">
+<area shape="rect" title="计算结果先发布，再投递一次所属线程收尾；stop 复用收尾。" alt="" coords="2900,5,3143,31"/>
+<area shape="rect" href="JobRunner_8h.html" title="单槽执行器：worker 只计算，所属线程一次完成提交、清理和释放。" alt="" coords="540,372,639,397"/>
+<area shape="poly" title=" " alt="" coords="2900,23,2337,31,1962,39,1574,53,1209,71,903,95,784,110,693,127,636,145,622,155,617,164,617,239,611,305,599,360,594,358,606,304,612,239,612,163,618,151,634,140,692,122,783,105,903,90,1209,66,1574,47,1962,34,2337,25,2900,18"/>
+<area shape="rect" href="ModelLayer_8h.html" title="负责管理多个模型实例的类" alt="" coords="2463,79,2572,104"/>
+<area shape="poly" title=" " alt="" coords="2941,33,2586,83,2585,78,2940,28"/>
+<area shape="rect" title=" " alt="" coords="3051,519,3111,544"/>
+<area shape="poly" title=" " alt="" coords="3035,29,3056,52,3079,83,3098,121,3105,163,3105,386,3100,451,3090,506,3085,505,3095,450,3100,386,3100,164,3092,123,3074,86,3052,55,3031,33"/>
+<area shape="rect" title=" " alt="" coords="2978,152,3065,177"/>
+<area shape="poly" title=" " alt="" coords="3024,31,3024,138,3019,138,3019,31"/>
+<area shape="rect" href="UndoStack_8h.html" title="一个正式历史栈与临时预览捕获：事件不入栈，execute 收尾吸收预览。" alt="" coords="1085,152,1189,177"/>
+<area shape="poly" title=" " alt="" coords="2900,27,2601,42,2182,68,1699,105,1208,155,1203,155,1203,150,1208,149,1699,100,2182,63,2601,37,2899,22"/>
+<area shape="rect" title=" " alt="" coords="3140,79,3209,104"/>
+<area shape="poly" title=" " alt="" coords="3047,28,3138,70,3136,75,3045,33"/>
+<area shape="rect" title=" " alt="" coords="3234,79,3358,104"/>
+<area shape="poly" title=" " alt="" coords="3066,28,3239,73,3238,78,3065,33"/>
+<area shape="rect" href="Job_8h.html" title="任务单元：状态、错误、取消令牌与执行闭包（线程模型的任务载体）" alt="" coords="495,445,550,471"/>
+<area shape="poly" title=" " alt="" coords="580,399,545,437,541,433,576,396"/>
+<area shape="rect" title=" " alt="" coords="38,592,125,617"/>
+<area shape="poly" title=" " alt="" coords="540,395,433,413,302,440,239,457,181,476,135,498,105,521,96,533,90,548,84,578,79,578,85,547,91,531,101,517,133,493,179,471,237,452,301,435,432,408,539,390"/>
+<area shape="rect" title=" " alt="" coords="560,519,624,544"/>
+<area shape="poly" title=" " alt="" coords="592,398,594,505,589,505,587,398"/>
+<area shape="rect" title=" " alt="" coords="329,445,471,471"/>
+<area shape="poly" title=" " alt="" coords="560,400,445,443,443,438,558,395"/>
+<area shape="rect" title=" " alt="" coords="1221,592,1299,617"/>
+<area shape="poly" title=" " alt="" coords="607,395,717,468,788,510,819,526,862,541,956,566,1051,582,1208,598,1207,604,1050,588,955,571,861,547,817,531,785,515,715,473,604,400"/>
+<area shape="rect" title=" " alt="" coords="728,445,792,471"/>
+<area shape="poly" title=" " alt="" coords="618,395,721,438,719,442,616,400"/>
+<area shape="rect" href="JobProgress_8h.html" title="进度上报回调类型：model 层（任务系统）与上层 UI 适配层的公共契约" alt="" coords="374,519,485,544"/>
+<area shape="poly" title=" " alt="" coords="509,473,457,512,454,508,506,469"/>
+<area shape="poly" title=" " alt="" coords="496,471,485,473,430,481,382,483,299,477,261,477,221,482,180,495,134,521,119,533,108,548,92,580,87,578,103,545,115,529,130,516,178,491,220,477,260,471,300,472,382,477,430,476,483,468,494,465"/>
+<area shape="rect" title=" " alt="" coords="953,592,1012,617"/>
+<area shape="poly" title=" " alt="" coords="525,470,530,507,537,526,550,542,579,558,621,571,729,589,845,598,939,601,939,606,845,603,728,594,619,577,576,563,546,546,533,529,525,508,520,471"/>
+<area shape="rect" title=" " alt="" coords="145,519,231,544"/>
+<area shape="poly" title=" " alt="" coords="496,470,485,473,367,499,245,521,244,516,366,493,483,468,495,465"/>
+<area shape="poly" title=" " alt="" coords="536,469,573,507,569,511,532,473"/>
+<area shape="rect" title=" " alt="" coords="256,519,349,544"/>
+<area shape="poly" title=" " alt="" coords="496,471,352,517,350,512,494,466"/>
+<area shape="rect" title=" " alt="" coords="2725,592,2787,617"/>
+<area shape="poly" title=" " alt="" coords="551,459,1640,541,2275,577,2711,599,2711,604,2275,583,1640,547,550,464"/>
+<area shape="poly" title=" " alt="" coords="374,547,139,594,138,589,373,541"/>
+<area shape="poly" title=" " alt="" coords="485,539,504,541,940,596,939,601,504,547,484,544"/>
+<area shape="poly" title=" " alt="" coords="2573,97,2728,121,2824,140,2921,164,3011,192,3085,226,3115,245,3137,265,3151,287,3156,310,3156,459,3153,508,3144,527,3126,546,3101,560,3066,572,2977,589,2882,599,2801,604,2801,599,2881,594,2977,584,3065,567,3099,556,3122,542,3139,524,3148,506,3151,459,3151,310,3146,289,3133,268,3111,249,3083,231,3009,197,2920,169,2823,145,2728,126,2572,102"/>
+<area shape="poly" title=" " alt="" coords="2462,97,2298,102,2080,113,1864,130,1775,142,1709,155,1617,184,1549,216,1397,301,1353,326,1306,340,1266,343,1229,350,1211,359,1191,374,1159,413,1150,433,1145,453,1145,474,1150,496,1172,543,1193,566,1220,584,1217,588,1190,570,1167,545,1145,498,1140,475,1140,453,1145,431,1154,410,1187,370,1208,354,1228,345,1265,337,1305,334,1351,322,1395,296,1546,211,1615,179,1707,149,1775,136,1864,125,2079,108,2298,97,2462,91"/>
+<area shape="poly" title=" " alt="" coords="2463,95,2242,97,1933,105,1773,112,1623,122,1494,136,1398,155,1341,175,1299,198,1258,225,1202,253,1139,277,1076,301,917,377,794,441,792,436,915,372,1074,296,1137,272,1200,248,1255,220,1296,194,1338,170,1397,149,1493,131,1622,117,1772,107,1933,99,2242,92,2462,90"/>
+<area shape="rect" href="ModelData_8h.html" title="负责管理和操作网格模型数据的核心类" alt="" coords="1679,299,1785,324"/>
+<area shape="poly" title=" " alt="" coords="2463,97,2106,116,1925,133,1861,143,1825,154,1793,182,1769,218,1752,254,1741,286,1736,285,1747,252,1764,215,1789,179,1823,150,1860,138,1925,127,2105,111,2462,92"/>
+<area shape="rect" title=" " alt="" coords="2173,592,2229,617"/>
+<area shape="poly" title=" " alt="" coords="2563,102,2611,119,2661,147,2683,165,2700,186,2712,210,2716,236,2716,386,2712,423,2701,455,2682,484,2659,508,2630,529,2598,547,2525,575,2446,592,2368,602,2243,607,2243,602,2368,597,2445,587,2523,569,2596,543,2627,525,2655,504,2678,480,2696,453,2707,421,2711,386,2711,237,2707,211,2696,188,2679,169,2658,151,2609,124,2561,107"/>
+<area shape="rect" title=" " alt="" coords="1651,519,1775,544"/>
+<area shape="poly" title=" " alt="" coords="2463,95,2416,99,2364,109,2312,127,2264,154,2253,165,2246,177,2238,201,2231,227,2212,253,2127,286,1951,350,1775,413,1693,447,1688,461,1688,476,1700,506,1695,508,1683,477,1682,460,1689,443,1773,409,1949,345,2125,281,2209,249,2227,225,2233,200,2241,174,2249,162,2261,150,2309,122,2363,104,2416,94,2462,90"/>
+<area shape="rect" title=" " alt="" coords="1197,519,1272,544"/>
+<area shape="poly" title=" " alt="" coords="2463,97,2118,115,1927,132,1848,143,1789,155,1684,192,1553,250,1425,315,1331,374,1295,406,1268,447,1253,477,1243,506,1238,505,1248,475,1263,444,1291,403,1328,370,1422,311,1550,245,1682,187,1787,149,1847,137,1926,127,2118,110,2462,92"/>
+<area shape="rect" title=" " alt="" coords="2040,519,2107,544"/>
+<area shape="poly" title=" " alt="" coords="2514,106,2496,140,2469,179,2431,218,2397,243,2361,267,2319,301,2192,418,2096,511,2093,507,2188,414,2316,297,2358,263,2394,239,2427,214,2465,176,2492,137,2510,103"/>
+<area shape="rect" href="ComponentOperator_8h.html" title=" " alt="" coords="2511,445,2676,471"/>
+<area shape="poly" title=" " alt="" coords="2531,103,2550,125,2571,157,2589,195,2596,236,2596,313,2596,432,2591,432,2591,313,2591,237,2584,197,2567,160,2545,129,2527,106"/>
+<area shape="rect" title=" " alt="" coords="2694,519,2818,544"/>
+<area shape="poly" title=" " alt="" coords="2573,92,2620,97,2675,107,2732,124,2785,150,2876,211,2911,240,2940,270,2965,304,2987,344,3029,444,3033,459,3029,472,3016,483,2997,493,2948,508,2889,519,2832,526,2832,521,2889,514,2946,503,2995,488,3013,479,3024,469,3028,459,3024,446,2982,346,2961,307,2936,274,2907,244,2873,215,2783,154,2730,129,2674,112,2620,102,2572,97"/>
+<area shape="rect" href="GeometryRegistry_8h.html" title=" " alt="" coords="2217,445,2367,471"/>
+<area shape="poly" title=" " alt="" coords="2523,103,2537,160,2543,198,2545,237,2545,313,2541,340,2530,365,2512,385,2490,403,2437,429,2382,445,2380,440,2436,424,2487,398,2509,381,2525,362,2536,339,2540,312,2540,237,2538,199,2532,161,2518,105"/>
+<area shape="rect" href="MeshIDMap_8h.html" title=" " alt="" coords="2903,445,3014,471"/>
+<area shape="poly" title=" " alt="" coords="2573,94,2643,105,2682,115,2719,129,2752,148,2779,171,2797,201,2804,236,2804,312,2807,334,2815,354,2843,389,2880,417,2917,437,2915,442,2877,422,2839,393,2810,357,2802,336,2799,313,2799,237,2792,203,2775,175,2749,152,2717,134,2680,120,2642,110,2572,99"/>
+<area shape="rect" href="ModelOperator_8h.html" title=" " alt="" coords="1836,152,1967,177"/>
+<area shape="poly" title=" " alt="" coords="2462,102,1980,157,1980,152,2462,96"/>
+<area shape="rect" title=" " alt="" coords="2274,152,2454,177"/>
+<area shape="poly" title=" " alt="" coords="2494,106,2402,149,2400,144,2492,102"/>
+<area shape="poly" title=" " alt="" coords="2572,97,2745,119,2959,149,2965,150,2964,156,2958,155,2744,124,2572,102"/>
+<area shape="poly" title=" " alt="" coords="1679,316,1608,321,1520,330,1424,348,1330,375,1280,396,1230,421,1138,480,1061,538,1007,584,1004,580,1058,534,1135,476,1228,417,1277,391,1328,369,1423,342,1519,325,1608,315,1679,311"/>
+<area shape="poly" title=" " alt="" coords="1680,324,1541,350,1479,363,1445,374,1415,396,1386,422,1337,479,1299,536,1274,581,1269,578,1295,533,1333,476,1383,418,1411,392,1443,370,1478,358,1539,345,1679,319"/>
+<area shape="rect" href="ComponentData_8h.html" title=" " alt="" coords="1455,372,1595,397"/>
+<area shape="poly" title=" " alt="" coords="1700,327,1573,370,1571,365,1698,321"/>
+<area shape="poly" title=" " alt="" coords="1680,323,1492,351,1369,374,1330,404,1296,440,1269,477,1249,508,1245,505,1264,474,1292,436,1326,400,1367,370,1492,346,1679,318"/>
+<area shape="rect" href="Selection_8h.html" title=" " alt="" coords="2391,445,2486,471"/>
+<area shape="poly" title=" " alt="" coords="1786,321,2378,442,2377,447,1785,326"/>
+<area shape="rect" title=" " alt="" coords="1722,372,1790,397"/>
+<area shape="poly" title=" " alt="" coords="1738,323,1750,358,1745,360,1733,325"/>
+<area shape="poly" title=" " alt="" coords="1510,400,1285,546,1216,570,1145,586,1026,603,1025,597,1144,581,1214,564,1283,542,1507,395"/>
+<area shape="poly" title=" " alt="" coords="1596,388,1711,395,1925,399,2202,402,2344,406,2477,413,2595,425,2689,443,2735,453,2772,464,2804,482,2833,518,2837,538,2829,557,2812,573,2793,587,2790,583,2809,569,2824,554,2832,537,2828,520,2801,486,2770,469,2733,459,2687,448,2594,430,2477,418,2344,411,2202,407,1925,405,1711,400,1596,393"/>
+<area shape="poly" title=" " alt="" coords="1515,399,1466,447,1442,475,1426,499,1408,521,1380,546,1343,570,1304,589,1302,584,1340,566,1377,542,1404,518,1421,496,1438,472,1462,444,1511,396"/>
+<area shape="rect" href="Core_8h.html" title=" " alt="" coords="2131,519,2195,544"/>
+<area shape="poly" title=" " alt="" coords="1596,395,1715,415,1850,443,1998,480,2118,514,2117,519,1996,485,1849,448,1714,421,1595,400"/>
+<area shape="rect" href="MeshData_8h.html" title=" " alt="" coords="1475,445,1575,471"/>
+<area shape="poly" title=" " alt="" coords="1528,398,1528,432,1523,432,1523,398"/>
+<area shape="poly" title=" " alt="" coords="1542,396,1689,508,1686,512,1539,400"/>
+<area shape="rect" href="MeshAdjacency_8h.html" title="网格邻接查询索引——统一边表 + 稳定边 id" alt="" coords="1702,445,1837,471"/>
+<area shape="poly" title=" " alt="" coords="1565,395,1718,439,1716,444,1564,400"/>
+<area shape="poly" title=" " alt="" coords="2131,544,2119,547,1026,604,1026,598,2118,541,2130,539"/>
+<area shape="poly" title=" " alt="" coords="2195,539,2208,541,2352,563,2494,580,2711,598,2711,603,2493,585,2351,569,2208,547,2194,544"/>
+<area shape="poly" title=" " alt="" coords="2131,544,2119,547,1884,576,1653,594,1452,603,1312,606,1312,600,1452,597,1652,589,1884,571,2118,541,2130,539"/>
+<area shape="poly" title=" " alt="" coords="2171,543,2191,579,2186,581,2167,546"/>
+<area shape="rect" title=" " alt="" coords="2099,592,2149,617"/>
+<area shape="poly" title=" " alt="" coords="2159,546,2139,581,2134,579,2154,543"/>
+<area shape="poly" title=" " alt="" coords="1505,473,1428,509,1329,547,1246,568,1162,583,1026,602,1025,597,1161,578,1245,562,1327,541,1426,504,1502,468"/>
+<area shape="poly" title=" " alt="" coords="1533,471,1542,506,1541,527,1533,546,1518,558,1496,568,1439,584,1373,595,1313,602,1312,597,1372,590,1437,579,1494,563,1515,553,1529,542,1536,526,1537,507,1528,472"/>
+<area shape="poly" title=" " alt="" coords="1576,461,1844,484,1997,500,2118,516,2117,521,1996,505,1844,490,1575,466"/>
+<area shape="poly" title=" " alt="" coords="1538,469,1581,507,1610,526,1641,542,1715,565,1779,578,1838,582,1894,581,2012,577,2080,579,2160,590,2160,595,2080,585,2012,582,1894,586,1838,587,1779,583,1714,570,1639,546,1607,531,1578,511,1535,473"/>
+<area shape="poly" title=" " alt="" coords="1556,468,1671,511,1669,516,1555,473"/>
+<area shape="rect" title=" " alt="" coords="1901,519,2016,544"/>
+<area shape="poly" title=" " alt="" coords="1576,465,1888,516,1887,521,1575,470"/>
+<area shape="poly" title=" " alt="" coords="1479,473,1286,520,1285,515,1478,468"/>
+<area shape="poly" title=" " alt="" coords="1785,469,1839,510,1890,542,1963,560,2061,574,2176,584,2300,591,2539,599,2711,601,2711,606,2539,604,2299,597,2176,589,2060,579,1962,565,1888,546,1836,514,1782,473"/>
+<area shape="poly" title=" " alt="" coords="1838,467,1964,487,2118,516,2117,521,1963,492,1837,472"/>
+<area shape="poly" title=" " alt="" coords="1778,469,1805,506,1824,526,1847,542,1889,561,1926,573,1961,578,1995,580,2068,580,2111,582,2160,589,2159,595,2111,588,2068,585,1995,585,1961,583,1925,578,1887,566,1844,546,1821,530,1801,510,1774,473"/>
+<area shape="poly" title=" " alt="" coords="1762,473,1733,509,1729,506,1758,469"/>
+<area shape="poly" title=" " alt="" coords="1702,471,1286,526,1286,521,1701,466"/>
+<area shape="poly" title=" " alt="" coords="1821,468,2027,516,2026,521,1820,473"/>
+<area shape="poly" title=" " alt="" coords="2465,468,2719,584,2717,589,2463,473"/>
+<area shape="poly" title=" " alt="" coords="2395,473,2208,521,2207,516,2394,468"/>
+<area shape="poly" title=" " alt="" coords="2572,473,2489,511,2434,531,2378,547,2265,564,2124,575,1795,586,1466,590,1209,595,1026,604,1026,598,1209,589,1466,584,1795,581,2124,570,2264,558,2377,541,2433,526,2487,506,2570,468"/>
+<area shape="poly" title=" " alt="" coords="2607,469,2684,542,2732,582,2729,586,2681,546,2603,473"/>
+<area shape="poly" title=" " alt="" coords="2584,473,2538,511,2507,531,2473,547,2400,560,2275,571,1932,589,1570,600,1312,605,1312,600,1570,594,1932,583,2275,566,2399,555,2471,541,2504,526,2535,507,2580,469"/>
+<area shape="poly" title=" " alt="" coords="2511,472,2369,493,2208,521,2208,521,2207,516,2208,516,2368,488,2510,467"/>
+<area shape="poly" title=" " alt="" coords="2589,472,2565,509,2546,530,2524,546,2489,564,2451,578,2374,596,2302,605,2243,607,2243,602,2301,600,2373,591,2450,573,2487,559,2521,542,2542,526,2560,506,2585,469"/>
+<area shape="poly" title=" " alt="" coords="2621,468,2718,511,2716,515,2618,473"/>
+<area shape="poly" title=" " alt="" coords="2272,473,2197,514,2195,509,2270,468"/>
+<area shape="poly" title=" " alt="" coords="2217,471,1789,523,1789,518,2216,466"/>
+<area shape="rect" title=" " alt="" coords="2219,519,2365,544"/>
+<area shape="poly" title=" " alt="" coords="2295,471,2295,505,2289,505,2289,471"/>
+<area shape="poly" title=" " alt="" coords="2969,470,2984,505,2986,526,2978,546,2966,556,2949,565,2903,581,2801,600,2800,595,2902,575,2947,560,2963,552,2974,542,2980,526,2979,507,2964,472"/>
+<area shape="poly" title=" " alt="" coords="2903,465,2550,488,2352,505,2208,521,2208,521,2207,516,2208,516,2352,499,2549,483,2903,460"/>
+<area shape="poly" title=" " alt="" coords="2903,465,2476,489,2224,505,2030,521,2029,516,2224,500,2476,483,2903,459"/>
+<area shape="poly" title=" " alt="" coords="2980,468,3051,509,3048,514,2977,473"/>
+<area shape="poly" title=" " alt="" coords="1867,180,1668,244,1397,327,1343,335,1298,337,1278,339,1258,345,1238,356,1218,374,1186,414,1171,454,1169,474,1171,495,1188,543,1204,565,1226,583,1223,587,1201,569,1183,545,1166,496,1163,474,1165,452,1182,411,1214,370,1235,351,1256,340,1276,334,1297,331,1342,330,1395,321,1667,239,1866,175"/>
+<area shape="poly" title=" " alt="" coords="1881,180,1847,201,1810,227,1778,259,1751,289,1747,286,1774,255,1806,223,1844,196,1878,175"/>
+<area shape="rect" href="ModelOperatorBase_8h.html" title=" " alt="" coords="1820,225,1983,251"/>
+<area shape="poly" title=" " alt="" coords="1904,178,1904,212,1899,212,1899,178"/>
+<area shape="rect" title=" " alt="" coords="2108,225,2199,251"/>
+<area shape="poly" title=" " alt="" coords="1943,175,2100,219,2098,224,1941,180"/>
+<area shape="poly" title=" " alt="" coords="1875,253,1773,296,1771,291,1873,248"/>
+<area shape="poly" title=" " alt="" coords="1914,249,2145,506,2141,510,1910,253"/>
+<area shape="poly" title=" " alt="" coords="1085,170,823,179,646,188,462,202,289,220,143,244,87,259,44,275,17,292,10,301,8,310,8,459,13,494,27,527,45,557,63,580,59,583,41,560,22,530,8,496,3,460,3,310,5,299,13,288,41,270,85,254,142,239,288,215,461,196,645,183,822,173,1085,164"/>
+<area shape="poly" title=" " alt="" coords="1085,170,1026,175,954,185,877,202,802,228,726,256,712,265,702,276,696,290,693,310,693,386,697,431,704,449,718,469,742,494,769,516,829,551,889,576,941,591,939,596,887,581,826,556,766,520,738,498,714,472,699,451,691,432,688,386,688,310,691,289,698,273,709,261,724,251,800,223,875,197,953,180,1025,170,1085,165"/>
+<area shape="poly" title=" " alt="" coords="1190,164,1371,169,1617,179,1863,196,1965,208,2042,223,2070,235,2097,248,2152,262,2199,269,2281,273,2364,276,2412,283,2467,296,2567,324,2643,351,2715,387,2801,443,2836,465,2865,487,2876,499,2882,513,2881,528,2874,545,2860,563,2841,577,2801,595,2799,591,2839,573,2856,559,2870,543,2876,527,2876,514,2871,502,2862,491,2833,469,2799,448,2712,392,2641,356,2565,330,2466,301,2411,288,2363,282,2281,278,2198,274,2151,267,2095,253,2068,240,2041,228,1964,214,1863,202,1617,184,1371,174,1190,170"/>
+<area shape="poly" title=" " alt="" coords="1086,179,1045,197,1027,210,1012,227,998,238,976,240,921,228,863,206,817,193,805,194,801,202,807,220,825,251,908,360,1066,542,1097,567,1133,584,1172,594,1208,599,1207,605,1171,599,1132,589,1094,572,1062,546,904,363,821,254,802,222,796,201,802,190,818,188,865,201,923,223,976,235,996,233,1009,223,1024,206,1043,192,1084,174"/>
+<area shape="poly" title=" " alt="" coords="1190,167,1303,179,1456,203,1628,241,1715,266,1798,296,1872,335,1968,394,2137,508,2134,513,1965,399,1869,339,1796,301,1713,271,1627,246,1455,208,1302,185,1189,173"/>
+<area shape="poly" title=" " alt="" coords="1090,180,1052,198,1035,211,1022,227,1019,238,1023,250,1040,291,1062,331,1114,405,1168,465,1213,508,1209,511,1164,469,1110,408,1057,334,1035,294,1017,252,1014,238,1018,224,1032,207,1049,193,1088,175"/>
+<area shape="poly" title=" " alt="" coords="1190,171,1285,191,1392,223,1485,265,1553,306,1621,349,1712,395,1780,420,1850,443,2032,511,2030,516,1848,448,1779,425,1710,400,1618,353,1550,311,1482,270,1390,228,1284,196,1189,177"/>
+<area shape="rect" href="UndoRecord_8h.html" title="撤销/重做记录模型：一次操作 = 一条记录" alt="" coords="1265,225,1378,251"/>
+<area shape="poly" title=" " alt="" coords="1168,175,1279,218,1277,223,1166,180"/>
+<area shape="rect" href="UndoRecorder_8h.html" title="模型层 undo 记录钩子接口" alt="" coords="2329,299,2455,324"/>
+<area shape="poly" title=" " alt="" coords="1190,165,1362,170,1595,181,1827,198,1923,209,1995,223,2025,235,2053,248,2121,266,2191,281,2316,299,2315,305,2190,286,2120,271,2051,253,2022,240,1994,228,1922,215,1826,203,1595,186,1362,175,1190,170"/>
+<area shape="rect" title=" " alt="" coords="1031,225,1102,251"/>
+<area shape="poly" title=" " alt="" coords="1128,180,1090,218,1086,214,1124,176"/>
+<area shape="rect" title=" " alt="" coords="1126,225,1189,251"/>
+<area shape="poly" title=" " alt="" coords="1143,177,1153,211,1148,213,1138,178"/>
+<area shape="poly" title=" " alt="" coords="1273,253,1178,283,1121,306,1061,335,1002,371,948,413,900,463,864,520,860,532,862,543,880,563,909,579,941,591,939,596,906,584,876,568,857,546,855,532,859,518,896,459,944,409,999,366,1058,330,1118,301,1176,278,1272,248"/>
+<area shape="poly" title=" " alt="" coords="1379,243,1798,296,2276,367,2597,416,2753,443,2797,461,2836,481,2850,494,2859,508,2860,526,2853,545,2830,572,2801,590,2799,585,2827,567,2848,543,2855,525,2853,510,2846,497,2833,485,2795,466,2751,448,2596,421,2275,372,1797,301,1378,249"/>
+<area shape="poly" title=" " alt="" coords="1291,253,1244,273,1195,301,1148,333,1113,361,1087,396,1067,446,1061,475,1063,498,1073,520,1093,542,1118,562,1148,577,1208,594,1207,599,1146,582,1116,567,1089,546,1069,523,1058,500,1055,474,1061,445,1083,393,1109,357,1145,328,1192,296,1242,268,1289,248"/>
+<area shape="poly" title=" " alt="" coords="1339,249,1499,362,1496,366,1336,253"/>
+<area shape="poly" title=" " alt="" coords="1347,248,1499,315,1603,357,1711,395,1768,411,1813,420,1858,428,1915,443,2027,478,2120,511,2119,516,2025,483,1914,448,1857,434,1812,425,1767,416,1710,400,1602,362,1497,320,1345,253"/>
+<area shape="rect" href="ModelSnapshot_8h.html" title="模型级结构快照（undo/redo 原语）" alt="" coords="1205,299,1339,324"/>
+<area shape="poly" title=" " alt="" coords="1315,253,1290,289,1286,286,1311,249"/>
+<area shape="poly" title=" " alt="" coords="1205,322,1094,341,1046,356,1015,374,998,397,987,423,979,451,975,479,975,534,980,578,975,579,970,535,970,479,974,450,982,421,994,394,1012,370,1043,351,1093,336,1204,317"/>
+<area shape="poly" title=" " alt="" coords="1313,321,1472,366,1470,371,1312,327"/>
+<area shape="poly" title=" " alt="" coords="2371,326,2293,373,2248,407,2207,447,2188,477,2174,507,2169,505,2183,474,2203,444,2244,403,2290,369,2368,322"/>
+</map>
+</div>
+</div><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 id="header-nested-classes" class="groupheader"><a id="nested-classes" name="nested-classes"></a>
+类</h2></td></tr>
+<tr class="memitem:systems_3A_3Ajob_3A_3AJobRunner_3A_3AModelOperation" id="r_systems_3A_3Ajob_3A_3AJobRunner_3A_3AModelOperation"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structsystems_1_1job_1_1JobRunner_1_1ModelOperation.html">systems::job::JobRunner::ModelOperation</a></td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 id="header-namespaces" class="groupheader"><a id="namespaces" name="namespaces"></a>
+命名空间</h2></td></tr>
+<tr class="memitem:systems" id="r_systems"><td class="memItemLeft" align="right" valign="top">namespace &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacesystems.html">systems</a></td></tr>
+<tr class="memitem:systems_3A_3Ajob" id="r_systems_3A_3Ajob"><td class="memItemLeft" align="right" valign="top">namespace &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacesystems_1_1job.html">systems::job</a></td></tr>
+</table>
+<a name="details" id="details"></a><h2 id="header-details" class="groupheader">详细描述</h2>
+<div class="textblock"><p>计算结果先发布，再投递一次所属线程收尾；stop 复用收尾。 </p>
+</div></div><!-- contents -->
+<!-- start footer part -->
+<hr class="footer"/><address class="footer"><small>
+制作者&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.14.0
+</small></address>
+</div><!-- doc-content -->
+</body>
+</html>

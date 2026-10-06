@@ -1,0 +1,9 @@
+<map id="app/model/JobProgressSlot.h" name="app/model/JobProgressSlot.h">
+<area shape="rect" id="Node000001" title="进度槽：计算与提交共用，GUI 定频轮询（替代每报一次跨线程投递）" alt="" coords="19,5,227,31"/>
+<area shape="rect" id="Node000002" title=" " alt="" coords="5,79,69,104"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="111,33,63,72,60,68,107,29"/>
+<area shape="rect" id="Node000003" title=" " alt="" coords="93,79,152,104"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="125,31,125,65,120,65,120,31"/>
+<area shape="rect" id="Node000004" title=" " alt="" coords="177,79,237,104"/>
+<area shape="poly" id="edge3_Node000001_Node000004" title=" " alt="" coords="138,29,184,67,181,72,134,33"/>
+</map>

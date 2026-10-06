@@ -1,0 +1,673 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="zh">
+<head>
+<meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=11"/>
+<meta name="generator" content="Doxygen 1.14.0"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>PreCess: systems::job::Job类 参考</title>
+<link href="tabs.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="jquery.js"></script>
+<script type="text/javascript" src="dynsections.js"></script>
+<script type="text/javascript" src="clipboard.js"></script>
+<script type="text/javascript" src="cookie.js"></script>
+<link href="search/search.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="search/searchdata.js"></script>
+<script type="text/javascript" src="search/search.js"></script>
+<link href="doxygen.css" rel="stylesheet" type="text/css" />
+</head>
+<body>
+<div id="top"><!-- do not remove this div, it is closed by doxygen! -->
+<div id="titlearea">
+<table cellspacing="0" cellpadding="0">
+ <tbody>
+ <tr id="projectrow">
+  <td id="projectlogo"><img alt="Logo" src="PreCess.ico"/></td>
+  <td id="projectalign">
+   <div id="projectname">PreCess
+   </div>
+  </td>
+ </tr>
+ </tbody>
+</table>
+</div>
+<!-- end header part -->
+<!-- 制作者 Doxygen 1.14.0 -->
+<script type="text/javascript">
+var searchBox = new SearchBox("searchBox", "search/",'.html');
+</script>
+<script type="text/javascript">
+$(function() { codefold.init(); });
+</script>
+<script type="text/javascript" src="menudata.js"></script>
+<script type="text/javascript" src="menu.js"></script>
+<script type="text/javascript">
+$(function() {
+  initMenu('',true,false,'search.php','搜索',false);
+  $(function() { init_search(); });
+});
+</script>
+<div id="main-nav"></div>
+<!-- window showing the filter options -->
+<div id="MSearchSelectWindow"
+     onmouseover="return searchBox.OnSearchSelectShow()"
+     onmouseout="return searchBox.OnSearchSelectHide()"
+     onkeydown="return searchBox.OnSearchSelectKey(event)">
+</div>
+
+<!-- iframe showing the search results (closed by default) -->
+<div id="MSearchResultsWindow">
+<div id="MSearchResults">
+<div class="SRPage">
+<div id="SRIndex">
+<div id="SRResults"></div>
+<div class="SRStatus" id="Loading">载入中...</div>
+<div class="SRStatus" id="Searching">搜索中...</div>
+<div class="SRStatus" id="NoMatches">未找到</div>
+</div>
+</div>
+</div>
+</div>
+
+<div id="nav-path" class="navpath">
+  <ul>
+<li class="navelem"><a href="namespacesystems.html">systems</a></li><li class="navelem"><a href="namespacesystems_1_1job.html">job</a></li><li class="navelem"><a href="classsystems_1_1job_1_1Job.html">Job</a></li>  </ul>
+</div>
+</div><!-- top -->
+<div id="doc-content">
+<div class="header">
+  <div class="summary">
+<a href="#pub-methods">Public 成员函数</a> &#124;
+<a href="#pri-methods">Private 成员函数</a> &#124;
+<a href="#pri-attribs">Private 属性</a> &#124;
+<a href="#friends">友元</a> &#124;
+<a href="classsystems_1_1job_1_1Job-members.html">所有成员列表</a>  </div>
+  <div class="headertitle"><div class="title">systems::job::Job类 参考</div></div>
+</div><!--header-->
+<div class="contents">
+
+<p>任务单元：持有执行体、提交体、取消令牌与状态  
+ <a href="#details">更多...</a></p>
+
+<p><code>#include &lt;<a class="el" href="Job_8h_source.html">Job.h</a>&gt;</code></p>
+<div class="dynheader">
+systems::job::Job 的协作图:</div>
+<div class="dyncontent">
+<div class="center"><img src="classsystems_1_1job_1_1Job__coll__graph.png" border="0" usemap="#asystems_1_1job_1_1Job_coll__map" loading="lazy" alt="Collaboration graph"/></div>
+<map name="asystems_1_1job_1_1Job_coll__map" id="asystems_1_1job_1_1Job_coll__map">
+<area shape="rect" title="任务单元：持有执行体、提交体、取消令牌与状态" alt="" coords="193,245,327,271"/>
+<area shape="rect" title=" " alt="" coords="5,95,192,135"/>
+<area shape="poly" title=" " alt="" coords="120,144,150,182,188,219,230,243,228,248,185,223,146,186,116,148"/>
+<area shape="rect" title=" " alt="" coords="217,102,303,127"/>
+<area shape="poly" title=" " alt="" coords="263,141,263,245,257,245,257,141"/>
+<area shape="rect" title=" " alt="" coords="191,5,329,45"/>
+<area shape="poly" title=" " alt="" coords="263,59,263,102,257,102,257,59"/>
+<area shape="rect" title=" " alt="" coords="327,102,419,127"/>
+<area shape="poly" title=" " alt="" coords="368,142,351,182,323,223,307,237,289,248,286,243,304,233,319,220,346,180,363,140"/>
+</map>
+<center><span class="legend">[<a href="graph_legend.html">图例</a>]</span></center></div>
+<table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 id="header-pub-methods" class="groupheader"><a id="pub-methods" name="pub-methods"></a>
+Public 成员函数</h2></td></tr>
+<tr class="memitem:af3810a2f5e3dd61607ee62f58fef710f" id="r_af3810a2f5e3dd61607ee62f58fef710f"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#af3810a2f5e3dd61607ee62f58fef710f">Job</a> (std::string <a class="el" href="#a55aae2ec747b1fb61728ce23c822d9c0">name</a>, std::string <a class="el" href="#a14f2ceea26d8f35f94bce83dfa7880b9">owner</a>={ }, bool <a class="el" href="#a61ac82614380c87120b474a527ea495c">masked</a>=false)</td></tr>
+<tr class="memitem:a55aae2ec747b1fb61728ce23c822d9c0" id="r_a55aae2ec747b1fb61728ce23c822d9c0"><td class="memItemLeft" align="right" valign="top">const std::string &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a55aae2ec747b1fb61728ce23c822d9c0">name</a> () const noexcept</td></tr>
+<tr class="memitem:a14f2ceea26d8f35f94bce83dfa7880b9" id="r_a14f2ceea26d8f35f94bce83dfa7880b9"><td class="memItemLeft" align="right" valign="top">const std::string &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a14f2ceea26d8f35f94bce83dfa7880b9">owner</a> () const noexcept</td></tr>
+<tr class="memitem:a61ac82614380c87120b474a527ea495c" id="r_a61ac82614380c87120b474a527ea495c"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a61ac82614380c87120b474a527ea495c">masked</a> () const noexcept</td></tr>
+<tr class="memitem:a44586252c992126ad8440f9d595df7a1" id="r_a44586252c992126ad8440f9d595df7a1"><td class="memItemLeft" align="right" valign="top"><a class="el" href="namespacesystems_1_1job.html#a45c525b96932d154a9b69c350f29e2b2">JobState</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a44586252c992126ad8440f9d595df7a1">state</a> () const</td></tr>
+<tr class="memitem:a21e926ce01b921a401ae6ad871f430b6" id="r_a21e926ce01b921a401ae6ad871f430b6"><td class="memItemLeft" align="right" valign="top">std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a21e926ce01b921a401ae6ad871f430b6">error</a> () const</td></tr>
+<tr class="memitem:a3cbe0090086f4a427ce6b3f0a0bbaeed" id="r_a3cbe0090086f4a427ce6b3f0a0bbaeed"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a3cbe0090086f4a427ce6b3f0a0bbaeed">isCancellationRequested</a> () const noexcept</td></tr>
+<tr class="memdesc:a3cbe0090086f4a427ce6b3f0a0bbaeed"><td class="mdescLeft">&#160;</td><td class="mdescRight">只读取消请求；请求不代表任务已退出或占用已释放。  <br /></td></tr>
+<tr class="memitem:ae4fe9939e29348c48c483f6eb85c30cb" id="r_ae4fe9939e29348c48c483f6eb85c30cb"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ae4fe9939e29348c48c483f6eb85c30cb">cancel</a> () noexcept</td></tr>
+<tr class="memdesc:ae4fe9939e29348c48c483f6eb85c30cb"><td class="mdescLeft">&#160;</td><td class="mdescRight">请求取消（线程安全，任意时刻可调；任务体于下次心跳感知）  <br /></td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 id="header-pri-methods" class="groupheader"><a id="pri-methods" name="pri-methods"></a>
+Private 成员函数</h2></td></tr>
+<tr class="memitem:abd64d6c44994e8b1a2eb18322302a2ee" id="r_abd64d6c44994e8b1a2eb18322302a2ee"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#abd64d6c44994e8b1a2eb18322302a2ee">setState</a> (<a class="el" href="namespacesystems_1_1job.html#a45c525b96932d154a9b69c350f29e2b2">JobState</a> <a class="el" href="#a44586252c992126ad8440f9d595df7a1">state</a>)</td></tr>
+<tr class="memdesc:abd64d6c44994e8b1a2eb18322302a2ee"><td class="mdescLeft">&#160;</td><td class="mdescRight">仅供执行器的提交与终态两个固定位置写入状态。  <br /></td></tr>
+<tr class="memitem:af4084920ea2ab541d47a519f6a0519d7" id="r_af4084920ea2ab541d47a519f6a0519d7"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#af4084920ea2ab541d47a519f6a0519d7">setError</a> (std::string <a class="el" href="#a21e926ce01b921a401ae6ad871f430b6">error</a>)</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 id="header-pri-attribs" class="groupheader"><a id="pri-attribs" name="pri-attribs"></a>
+Private 属性</h2></td></tr>
+<tr class="memitem:a41bccdfae00780d70c0f17873ee68bb3" id="r_a41bccdfae00780d70c0f17873ee68bb3"><td class="memItemLeft" align="right" valign="top">std::vector&lt; std::function&lt; void()&gt; &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a41bccdfae00780d70c0f17873ee68bb3">finalizers</a></td></tr>
+<tr class="memdesc:a41bccdfae00780d70c0f17873ee68bb3"><td class="mdescLeft">&#160;</td><td class="mdescRight">GUI 清理，仅由所属线程登记和消费  <br /></td></tr>
+<tr class="memitem:a3a25f41b0ae625092e20e5d3fd946eef" id="r_a3a25f41b0ae625092e20e5d3fd946eef"><td class="memItemLeft" align="right" valign="top"><a class="el" href="namespacesystems_1_1job.html#ae2006917203a4b569c4fe083d45939cc">JobTaskFn</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a3a25f41b0ae625092e20e5d3fd946eef">task</a></td></tr>
+<tr class="memitem:ae8389aaebcf382dbe9d83cc09c0be0cc" id="r_ae8389aaebcf382dbe9d83cc09c0be0cc"><td class="memItemLeft" align="right" valign="top"><a class="el" href="namespacesystems_1_1job.html#a71fc7b421856670dc6effb842cb2ef37">JobCommitFn</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ae8389aaebcf382dbe9d83cc09c0be0cc">commit</a></td></tr>
+<tr class="memitem:a251271d02fe7d6bd087047d3af88d227" id="r_a251271d02fe7d6bd087047d3af88d227"><td class="memItemLeft" align="right" valign="top">const std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a251271d02fe7d6bd087047d3af88d227">name_</a></td></tr>
+<tr class="memitem:aa88117af35187bba3d96d694e173bcf5" id="r_aa88117af35187bba3d96d694e173bcf5"><td class="memItemLeft" align="right" valign="top">const std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#aa88117af35187bba3d96d694e173bcf5">owner_</a></td></tr>
+<tr class="memitem:a837a1ab81b69efc3d2309db174ee21ad" id="r_a837a1ab81b69efc3d2309db174ee21ad"><td class="memItemLeft" align="right" valign="top">const bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a837a1ab81b69efc3d2309db174ee21ad">masked_</a></td></tr>
+<tr class="memitem:a9e231fb952089c6d77fe9a7d1bcb2f9b" id="r_a9e231fb952089c6d77fe9a7d1bcb2f9b"><td class="memItemLeft" align="right" valign="top">std::mutex&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a9e231fb952089c6d77fe9a7d1bcb2f9b">mutex_</a></td></tr>
+<tr class="memitem:a59c50de2e1c1634316d47ea5c27120b5" id="r_a59c50de2e1c1634316d47ea5c27120b5"><td class="memItemLeft" align="right" valign="top"><a class="el" href="namespacesystems_1_1job.html#a45c525b96932d154a9b69c350f29e2b2">JobState</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a59c50de2e1c1634316d47ea5c27120b5">state_</a> { <a class="el" href="namespacesystems_1_1job.html#a45c525b96932d154a9b69c350f29e2b2a5bda814c4aedb126839228f1a3d92f09">JobState::Running</a> }</td></tr>
+<tr class="memitem:a350dbfe0aa24994c832a6955cf296fd3" id="r_a350dbfe0aa24994c832a6955cf296fd3"><td class="memItemLeft" align="right" valign="top">std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a350dbfe0aa24994c832a6955cf296fd3">error_</a></td></tr>
+<tr class="memitem:a76092fbbea234f870f47c843ad189974" id="r_a76092fbbea234f870f47c843ad189974"><td class="memItemLeft" align="right" valign="top">std::stop_source&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a76092fbbea234f870f47c843ad189974">stop_source_</a></td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 id="header-friends" class="groupheader"><a id="friends" name="friends"></a>
+友元</h2></td></tr>
+<tr class="memitem:a2996c8e766af3463bab4f904b3dd4369" id="r_a2996c8e766af3463bab4f904b3dd4369"><td class="memItemLeft" align="right" valign="top">class&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a2996c8e766af3463bab4f904b3dd4369">JobRunner</a></td></tr>
+</table>
+<a name="details" id="details"></a><h2 id="header-details" class="groupheader">详细描述</h2>
+<div class="textblock"><p>任务单元：持有执行体、提交体、取消令牌与状态 </p>
+<p>状态迁移仅由 Runner 的固定收尾路径推进，读写由互斥保护；Runner 与调用方约定： 只有 Runner 驱动状态迁移；调用方只读状态与错误。 </p>
+</div><a name="doc-constructors" id="doc-constructors"></a><h2 id="header-doc-constructors" class="groupheader">构造及析构函数说明</h2>
+<a id="af3810a2f5e3dd61607ee62f58fef710f" name="af3810a2f5e3dd61607ee62f58fef710f"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#af3810a2f5e3dd61607ee62f58fef710f">&#9670;&#160;</a></span>Job()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">systems::job::Job::Job </td>
+          <td>(</td>
+          <td class="paramtype">std::string</td>          <td class="paramname"><span class="paramname"><em>name</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">std::string</td>          <td class="paramname"><span class="paramname"><em>owner</em></span><span class="paramdefsep"> = </span><span class="paramdefval">{&#160;}</span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">bool</td>          <td class="paramname"><span class="paramname"><em>masked</em></span><span class="paramdefsep"> = </span><span class="paramdefval">false</span>&#160;)</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel inline">inline</span><span class="mlabel explicit">explicit</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a name="doc-func-members" id="doc-func-members"></a><h2 id="header-doc-func-members" class="groupheader">成员函数说明</h2>
+<a id="ae4fe9939e29348c48c483f6eb85c30cb" name="ae4fe9939e29348c48c483f6eb85c30cb"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ae4fe9939e29348c48c483f6eb85c30cb">&#9670;&#160;</a></span>cancel()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void systems::job::Job::cancel </td>
+          <td>(</td>
+          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel inline">inline</span><span class="mlabel noexcept">noexcept</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>请求取消（线程安全，任意时刻可调；任务体于下次心跳感知） </p>
+
+</div>
+</div>
+<a id="a21e926ce01b921a401ae6ad871f430b6" name="a21e926ce01b921a401ae6ad871f430b6"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a21e926ce01b921a401ae6ad871f430b6">&#9670;&#160;</a></span>error()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::string systems::job::Job::error </td>
+          <td>(</td>
+          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel inline">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a3cbe0090086f4a427ce6b3f0a0bbaeed" name="a3cbe0090086f4a427ce6b3f0a0bbaeed"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a3cbe0090086f4a427ce6b3f0a0bbaeed">&#9670;&#160;</a></span>isCancellationRequested()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool systems::job::Job::isCancellationRequested </td>
+          <td>(</td>
+          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel inline">inline</span><span class="mlabel noexcept">noexcept</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>只读取消请求；请求不代表任务已退出或占用已释放。 </p>
+
+</div>
+</div>
+<a id="a61ac82614380c87120b474a527ea495c" name="a61ac82614380c87120b474a527ea495c"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a61ac82614380c87120b474a527ea495c">&#9670;&#160;</a></span>masked()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool systems::job::Job::masked </td>
+          <td>(</td>
+          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel inline">inline</span><span class="mlabel noexcept">noexcept</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a55aae2ec747b1fb61728ce23c822d9c0" name="a55aae2ec747b1fb61728ce23c822d9c0"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a55aae2ec747b1fb61728ce23c822d9c0">&#9670;&#160;</a></span>name()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">const std::string &amp; systems::job::Job::name </td>
+          <td>(</td>
+          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel inline">inline</span><span class="mlabel noexcept">noexcept</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a14f2ceea26d8f35f94bce83dfa7880b9" name="a14f2ceea26d8f35f94bce83dfa7880b9"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a14f2ceea26d8f35f94bce83dfa7880b9">&#9670;&#160;</a></span>owner()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">const std::string &amp; systems::job::Job::owner </td>
+          <td>(</td>
+          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel inline">inline</span><span class="mlabel noexcept">noexcept</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="af4084920ea2ab541d47a519f6a0519d7" name="af4084920ea2ab541d47a519f6a0519d7"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#af4084920ea2ab541d47a519f6a0519d7">&#9670;&#160;</a></span>setError()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void systems::job::Job::setError </td>
+          <td>(</td>
+          <td class="paramtype">std::string</td>          <td class="paramname"><span class="paramname"><em>error</em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel inline">inline</span><span class="mlabel private">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="abd64d6c44994e8b1a2eb18322302a2ee" name="abd64d6c44994e8b1a2eb18322302a2ee"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#abd64d6c44994e8b1a2eb18322302a2ee">&#9670;&#160;</a></span>setState()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void systems::job::Job::setState </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="namespacesystems_1_1job.html#a45c525b96932d154a9b69c350f29e2b2">JobState</a></td>          <td class="paramname"><span class="paramname"><em>state</em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel inline">inline</span><span class="mlabel private">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>仅供执行器的提交与终态两个固定位置写入状态。 </p>
+
+</div>
+</div>
+<a id="a44586252c992126ad8440f9d595df7a1" name="a44586252c992126ad8440f9d595df7a1"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a44586252c992126ad8440f9d595df7a1">&#9670;&#160;</a></span>state()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="namespacesystems_1_1job.html#a45c525b96932d154a9b69c350f29e2b2">JobState</a> systems::job::Job::state </td>
+          <td>(</td>
+          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel inline">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a name="doc-related-members" id="doc-related-members"></a><h2 id="header-doc-related-members" class="groupheader">友元及相关符号说明</h2>
+<a id="a2996c8e766af3463bab4f904b3dd4369" name="a2996c8e766af3463bab4f904b3dd4369"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a2996c8e766af3463bab4f904b3dd4369">&#9670;&#160;</a></span>JobRunner</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">friend class <a class="el" href="classsystems_1_1job_1_1JobRunner.html">JobRunner</a></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel friend">friend</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a name="doc-variable-members" id="doc-variable-members"></a><h2 id="header-doc-variable-members" class="groupheader">类成员变量说明</h2>
+<a id="ae8389aaebcf382dbe9d83cc09c0be0cc" name="ae8389aaebcf382dbe9d83cc09c0be0cc"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ae8389aaebcf382dbe9d83cc09c0be0cc">&#9670;&#160;</a></span>commit</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="namespacesystems_1_1job.html#a71fc7b421856670dc6effb842cb2ef37">JobCommitFn</a> systems::job::Job::commit</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel private">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a350dbfe0aa24994c832a6955cf296fd3" name="a350dbfe0aa24994c832a6955cf296fd3"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a350dbfe0aa24994c832a6955cf296fd3">&#9670;&#160;</a></span>error_</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::string systems::job::Job::error_</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel private">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a41bccdfae00780d70c0f17873ee68bb3" name="a41bccdfae00780d70c0f17873ee68bb3"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a41bccdfae00780d70c0f17873ee68bb3">&#9670;&#160;</a></span>finalizers</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::vector&lt;std::function&lt;void()&gt; &gt; systems::job::Job::finalizers</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel private">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>GUI 清理，仅由所属线程登记和消费 </p>
+
+</div>
+</div>
+<a id="a837a1ab81b69efc3d2309db174ee21ad" name="a837a1ab81b69efc3d2309db174ee21ad"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a837a1ab81b69efc3d2309db174ee21ad">&#9670;&#160;</a></span>masked_</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">const bool systems::job::Job::masked_</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel private">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a9e231fb952089c6d77fe9a7d1bcb2f9b" name="a9e231fb952089c6d77fe9a7d1bcb2f9b"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a9e231fb952089c6d77fe9a7d1bcb2f9b">&#9670;&#160;</a></span>mutex_</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::mutex systems::job::Job::mutex_</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel mutable">mutable</span><span class="mlabel private">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a251271d02fe7d6bd087047d3af88d227" name="a251271d02fe7d6bd087047d3af88d227"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a251271d02fe7d6bd087047d3af88d227">&#9670;&#160;</a></span>name_</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">const std::string systems::job::Job::name_</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel private">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="aa88117af35187bba3d96d694e173bcf5" name="aa88117af35187bba3d96d694e173bcf5"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aa88117af35187bba3d96d694e173bcf5">&#9670;&#160;</a></span>owner_</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">const std::string systems::job::Job::owner_</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel private">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a59c50de2e1c1634316d47ea5c27120b5" name="a59c50de2e1c1634316d47ea5c27120b5"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a59c50de2e1c1634316d47ea5c27120b5">&#9670;&#160;</a></span>state_</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="namespacesystems_1_1job.html#a45c525b96932d154a9b69c350f29e2b2">JobState</a> systems::job::Job::state_ { <a class="el" href="namespacesystems_1_1job.html#a45c525b96932d154a9b69c350f29e2b2a5bda814c4aedb126839228f1a3d92f09">JobState::Running</a> }</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel private">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a76092fbbea234f870f47c843ad189974" name="a76092fbbea234f870f47c843ad189974"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a76092fbbea234f870f47c843ad189974">&#9670;&#160;</a></span>stop_source_</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::stop_source systems::job::Job::stop_source_</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel private">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a3a25f41b0ae625092e20e5d3fd946eef" name="a3a25f41b0ae625092e20e5d3fd946eef"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a3a25f41b0ae625092e20e5d3fd946eef">&#9670;&#160;</a></span>task</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="namespacesystems_1_1job.html#ae2006917203a4b569c4fe083d45939cc">JobTaskFn</a> systems::job::Job::task</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel private">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<hr/>该类的文档由以下文件生成:<ul>
+<li>model/systems/job/<a class="el" href="Job_8h_source.html">Job.h</a></li>
+</ul>
+</div><!-- contents -->
+<!-- start footer part -->
+<hr class="footer"/><address class="footer"><small>
+制作者&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.14.0
+</small></address>
+</div><!-- doc-content -->
+</body>
+</html>

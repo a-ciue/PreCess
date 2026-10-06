@@ -1,0 +1,240 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="zh">
+<head>
+<meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=11"/>
+<meta name="generator" content="Doxygen 1.14.0"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>PreCess: model/systems/job/Job.h 源文件</title>
+<link href="tabs.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="jquery.js"></script>
+<script type="text/javascript" src="dynsections.js"></script>
+<script type="text/javascript" src="clipboard.js"></script>
+<script type="text/javascript" src="cookie.js"></script>
+<link href="search/search.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="search/searchdata.js"></script>
+<script type="text/javascript" src="search/search.js"></script>
+<link href="doxygen.css" rel="stylesheet" type="text/css" />
+</head>
+<body>
+<div id="top"><!-- do not remove this div, it is closed by doxygen! -->
+<div id="titlearea">
+<table cellspacing="0" cellpadding="0">
+ <tbody>
+ <tr id="projectrow">
+  <td id="projectlogo"><img alt="Logo" src="PreCess.ico"/></td>
+  <td id="projectalign">
+   <div id="projectname">PreCess
+   </div>
+  </td>
+ </tr>
+ </tbody>
+</table>
+</div>
+<!-- end header part -->
+<!-- 制作者 Doxygen 1.14.0 -->
+<script type="text/javascript">
+var searchBox = new SearchBox("searchBox", "search/",'.html');
+</script>
+<script type="text/javascript">
+$(function() { codefold.init(); });
+</script>
+<script type="text/javascript" src="menudata.js"></script>
+<script type="text/javascript" src="menu.js"></script>
+<script type="text/javascript">
+$(function() {
+  initMenu('',true,false,'search.php','搜索',false);
+  $(function() { init_search(); });
+});
+</script>
+<div id="main-nav"></div>
+<!-- window showing the filter options -->
+<div id="MSearchSelectWindow"
+     onmouseover="return searchBox.OnSearchSelectShow()"
+     onmouseout="return searchBox.OnSearchSelectHide()"
+     onkeydown="return searchBox.OnSearchSelectKey(event)">
+</div>
+
+<!-- iframe showing the search results (closed by default) -->
+<div id="MSearchResultsWindow">
+<div id="MSearchResults">
+<div class="SRPage">
+<div id="SRIndex">
+<div id="SRResults"></div>
+<div class="SRStatus" id="Loading">载入中...</div>
+<div class="SRStatus" id="Searching">搜索中...</div>
+<div class="SRStatus" id="NoMatches">未找到</div>
+</div>
+</div>
+</div>
+</div>
+
+<div id="nav-path" class="navpath">
+  <ul>
+<li class="navelem"><a href="dir_3f14f6767c31cb4a1d22c13c18cc6fc3.html">model</a></li><li class="navelem"><a href="dir_2daa03e0cb702fa035b1e0c62ad50ba5.html">systems</a></li><li class="navelem"><a href="dir_16a0a9d713a1d3553ec258549348003f.html">job</a></li>  </ul>
+</div>
+</div><!-- top -->
+<div id="doc-content">
+<div class="header">
+  <div class="headertitle"><div class="title">Job.h</div></div>
+</div><!--header-->
+<div class="contents">
+<a href="Job_8h.html">浏览该文件的文档.</a><div class="fragment"><div class="line"><a id="l00001" name="l00001"></a><span class="lineno">    1</span></div>
+<div class="line"><a id="l00005" name="l00005"></a><span class="lineno">    5</span><span class="preprocessor">#pragma once</span></div>
+<div class="line"><a id="l00006" name="l00006"></a><span class="lineno">    6</span><span class="preprocessor">#include &quot;<a class="code" href="JobProgress_8h.html">JobProgress.h</a>&quot;</span></div>
+<div class="line"><a id="l00007" name="l00007"></a><span class="lineno">    7</span> </div>
+<div class="line"><a id="l00008" name="l00008"></a><span class="lineno">    8</span><span class="preprocessor">#include &lt;exception&gt;</span></div>
+<div class="line"><a id="l00009" name="l00009"></a><span class="lineno">    9</span><span class="preprocessor">#include &lt;functional&gt;</span></div>
+<div class="line"><a id="l00010" name="l00010"></a><span class="lineno">   10</span><span class="preprocessor">#include &lt;mutex&gt;</span></div>
+<div class="line"><a id="l00011" name="l00011"></a><span class="lineno">   11</span><span class="preprocessor">#include &lt;stop_token&gt;</span></div>
+<div class="line"><a id="l00012" name="l00012"></a><span class="lineno">   12</span><span class="preprocessor">#include &lt;string&gt;</span></div>
+<div class="line"><a id="l00013" name="l00013"></a><span class="lineno">   13</span><span class="preprocessor">#include &lt;vector&gt;</span></div>
+<div class="line"><a id="l00014" name="l00014"></a><span class="lineno">   14</span> </div>
+<div class="line"><a id="l00015" name="l00015"></a><span class="lineno">   15</span><span class="keyword">namespace </span><a class="code hl_namespace" href="namespacesystems_1_1job.html">systems::job</a> {</div>
+<div class="line"><a id="l00016" name="l00016"></a><span class="lineno">   16</span></div>
+<div class="foldopen" id="foldopen00023" data-start="{" data-end="};">
+<div class="line"><a id="l00023" name="l00023"></a><span class="lineno"><a class="line" href="namespacesystems_1_1job.html#a45c525b96932d154a9b69c350f29e2b2">   23</a></span><span class="keyword">enum class</span> <a class="code hl_enumeration" href="namespacesystems_1_1job.html#a45c525b96932d154a9b69c350f29e2b2">JobState</a> {</div>
+<div class="line"><a id="l00024" name="l00024"></a><span class="lineno"><a class="line" href="namespacesystems_1_1job.html#a45c525b96932d154a9b69c350f29e2b2a5bda814c4aedb126839228f1a3d92f09">   24</a></span>    <a class="code hl_enumvalue" href="namespacesystems_1_1job.html#a45c525b96932d154a9b69c350f29e2b2a5bda814c4aedb126839228f1a3d92f09">Running</a>, </div>
+<div class="line"><a id="l00025" name="l00025"></a><span class="lineno"><a class="line" href="namespacesystems_1_1job.html#a45c525b96932d154a9b69c350f29e2b2aa902153e49f7698c3e9726d12d6389bd">   25</a></span>    <a class="code hl_enumvalue" href="namespacesystems_1_1job.html#a45c525b96932d154a9b69c350f29e2b2aa902153e49f7698c3e9726d12d6389bd">Committing</a>, </div>
+<div class="line"><a id="l00026" name="l00026"></a><span class="lineno"><a class="line" href="namespacesystems_1_1job.html#a45c525b96932d154a9b69c350f29e2b2af92965e2c8a7afb3c1b9a5c09a263636">   26</a></span>    <a class="code hl_enumvalue" href="namespacesystems_1_1job.html#a45c525b96932d154a9b69c350f29e2b2af92965e2c8a7afb3c1b9a5c09a263636">Done</a>, </div>
+<div class="line"><a id="l00027" name="l00027"></a><span class="lineno"><a class="line" href="namespacesystems_1_1job.html#a45c525b96932d154a9b69c350f29e2b2ad7c8c85bf79bbe1b7188497c32c3b0ca">   27</a></span>    <a class="code hl_enumvalue" href="namespacesystems_1_1job.html#a45c525b96932d154a9b69c350f29e2b2ad7c8c85bf79bbe1b7188497c32c3b0ca">Failed</a>, </div>
+<div class="line"><a id="l00028" name="l00028"></a><span class="lineno"><a class="line" href="namespacesystems_1_1job.html#a45c525b96932d154a9b69c350f29e2b2aa149e85a44aeec9140e92733d9ed694e">   28</a></span>    <a class="code hl_enumvalue" href="namespacesystems_1_1job.html#a45c525b96932d154a9b69c350f29e2b2aa149e85a44aeec9140e92733d9ed694e">Cancelled</a>, </div>
+<div class="line"><a id="l00029" name="l00029"></a><span class="lineno">   29</span>};</div>
+</div>
+<div class="line"><a id="l00030" name="l00030"></a><span class="lineno">   30</span></div>
+<div class="foldopen" id="foldopen00032" data-start="{" data-end="}">
+<div class="line"><a id="l00032" name="l00032"></a><span class="lineno"><a class="line" href="namespacesystems_1_1job.html#ad5c00cdf8cfa567913fcf73a4ec5344d">   32</a></span><span class="keyword">inline</span> <span class="keywordtype">bool</span> <a class="code hl_function" href="namespacesystems_1_1job.html#ad5c00cdf8cfa567913fcf73a4ec5344d">isTerminal</a>(<a class="code hl_enumeration" href="namespacesystems_1_1job.html#a45c525b96932d154a9b69c350f29e2b2">JobState</a> state) <span class="keyword">noexcept</span></div>
+<div class="line"><a id="l00033" name="l00033"></a><span class="lineno">   33</span>{</div>
+<div class="line"><a id="l00034" name="l00034"></a><span class="lineno">   34</span>    <span class="keywordflow">return</span> state == <a class="code hl_enumvalue" href="namespacesystems_1_1job.html#a45c525b96932d154a9b69c350f29e2b2af92965e2c8a7afb3c1b9a5c09a263636">JobState::Done</a> || state == <a class="code hl_enumvalue" href="namespacesystems_1_1job.html#a45c525b96932d154a9b69c350f29e2b2ad7c8c85bf79bbe1b7188497c32c3b0ca">JobState::Failed</a> || state == <a class="code hl_enumvalue" href="namespacesystems_1_1job.html#a45c525b96932d154a9b69c350f29e2b2aa149e85a44aeec9140e92733d9ed694e">JobState::Cancelled</a>;</div>
+<div class="line"><a id="l00035" name="l00035"></a><span class="lineno">   35</span>}</div>
+</div>
+<div class="line"><a id="l00036" name="l00036"></a><span class="lineno">   36</span></div>
+<div class="foldopen" id="foldopen00041" data-start="{" data-end="};">
+<div class="line"><a id="l00041" name="l00041"></a><span class="lineno"><a class="line" href="classsystems_1_1job_1_1JobCancelledException.html">   41</a></span><span class="keyword">class </span><a class="code hl_class" href="classsystems_1_1job_1_1JobCancelledException.html">JobCancelledException</a> : <span class="keyword">public</span> std::exception {</div>
+<div class="line"><a id="l00042" name="l00042"></a><span class="lineno">   42</span><span class="keyword">public</span>:</div>
+<div class="line"><a id="l00043" name="l00043"></a><span class="lineno"><a class="line" href="classsystems_1_1job_1_1JobCancelledException.html#a789e39534754d775ba997f6eb9529137">   43</a></span>    <span class="keyword">const</span> <span class="keywordtype">char</span>* <a class="code hl_function" href="classsystems_1_1job_1_1JobCancelledException.html#a789e39534754d775ba997f6eb9529137">what</a>() const noexcept<span class="keyword"> override </span>{ <span class="keywordflow">return</span> <span class="stringliteral">&quot;job cancelled&quot;</span>; }</div>
+<div class="line"><a id="l00044" name="l00044"></a><span class="lineno">   44</span>};</div>
+</div>
+<div class="line"><a id="l00045" name="l00045"></a><span class="lineno">   45</span> </div>
+<div class="line"><a id="l00046" name="l00046"></a><span class="lineno">   46</span><span class="keyword">class </span>Job; <span class="comment">// 前置声明：下方 JobProgressFn / JobFinishedFn 引用本类</span></div>
+<div class="line"><a id="l00047" name="l00047"></a><span class="lineno">   47</span></div>
+<div class="line"><a id="l00049" name="l00049"></a><span class="lineno"><a class="line" href="namespacesystems_1_1job.html#ae2006917203a4b569c4fe083d45939cc">   49</a></span><span class="keyword">using </span><a class="code hl_typedef" href="namespacesystems_1_1job.html#ae2006917203a4b569c4fe083d45939cc">JobTaskFn</a> = std::function&lt;void(<a class="code hl_typedef" href="namespacesystems_1_1job.html#a68d9b6556b0d0b4d3b1dd89c36e872cd">ProgressFn</a>)&gt;;</div>
+<div class="line"><a id="l00051" name="l00051"></a><span class="lineno"><a class="line" href="namespacesystems_1_1job.html#a71fc7b421856670dc6effb842cb2ef37">   51</a></span><span class="keyword">using </span><a class="code hl_typedef" href="namespacesystems_1_1job.html#a71fc7b421856670dc6effb842cb2ef37">JobCommitFn</a> = std::function&lt;void(<a class="code hl_typedef" href="namespacesystems_1_1job.html#a68d9b6556b0d0b4d3b1dd89c36e872cd">ProgressFn</a>)&gt;;</div>
+<div class="line"><a id="l00053" name="l00053"></a><span class="lineno"><a class="line" href="namespacesystems_1_1job.html#a62b9db7222639d1e30366a1d75475e42">   53</a></span><span class="keyword">using </span><a class="code hl_typedef" href="namespacesystems_1_1job.html#a62b9db7222639d1e30366a1d75475e42">JobProgressFn</a> = std::function&lt;void(<a class="code hl_class" href="classsystems_1_1job_1_1Job.html">Job</a>&amp;, <span class="keywordtype">double</span>, <span class="keyword">const</span> std::string&amp;)&gt;;</div>
+<div class="line"><a id="l00055" name="l00055"></a><span class="lineno"><a class="line" href="namespacesystems_1_1job.html#a2af5878d29208ac612981ea6c1e15087">   55</a></span><span class="keyword">using </span><a class="code hl_typedef" href="namespacesystems_1_1job.html#a2af5878d29208ac612981ea6c1e15087">JobFinishedFn</a> = std::function&lt;void(<a class="code hl_class" href="classsystems_1_1job_1_1Job.html">Job</a>&amp;)&gt;;</div>
+<div class="line"><a id="l00056" name="l00056"></a><span class="lineno">   56</span></div>
+<div class="foldopen" id="foldopen00063" data-start="{" data-end="};">
+<div class="line"><a id="l00063" name="l00063"></a><span class="lineno"><a class="line" href="classsystems_1_1job_1_1Job.html">   63</a></span><span class="keyword">class </span><a class="code hl_function" href="classsystems_1_1job_1_1Job.html#af3810a2f5e3dd61607ee62f58fef710f">Job</a> {</div>
+<div class="line"><a id="l00064" name="l00064"></a><span class="lineno">   64</span><span class="keyword">public</span>:</div>
+<div class="foldopen" id="foldopen00065" data-start="{" data-end="}">
+<div class="line"><a id="l00065" name="l00065"></a><span class="lineno"><a class="line" href="classsystems_1_1job_1_1Job.html#af3810a2f5e3dd61607ee62f58fef710f">   65</a></span>    <span class="keyword">explicit</span> <a class="code hl_function" href="classsystems_1_1job_1_1Job.html#af3810a2f5e3dd61607ee62f58fef710f">Job</a>(std::string <a class="code hl_function" href="classsystems_1_1job_1_1Job.html#a55aae2ec747b1fb61728ce23c822d9c0">name</a>, std::string <a class="code hl_function" href="classsystems_1_1job_1_1Job.html#a14f2ceea26d8f35f94bce83dfa7880b9">owner</a> = { }, <span class="keywordtype">bool</span> <a class="code hl_function" href="classsystems_1_1job_1_1Job.html#a61ac82614380c87120b474a527ea495c">masked</a> = <span class="keyword">false</span>)</div>
+<div class="line"><a id="l00066" name="l00066"></a><span class="lineno">   66</span>        : <a class="code hl_variable" href="classsystems_1_1job_1_1Job.html#a251271d02fe7d6bd087047d3af88d227">name_</a>(std::move(<a class="code hl_variable" href="TestComponentModel_8cpp.html#a4f5452c5c19395231dec92c40e3d10e1">name</a>))</div>
+<div class="line"><a id="l00067" name="l00067"></a><span class="lineno">   67</span>        , <a class="code hl_variable" href="classsystems_1_1job_1_1Job.html#aa88117af35187bba3d96d694e173bcf5">owner_</a>(std::move(<a class="code hl_function" href="classsystems_1_1job_1_1Job.html#a14f2ceea26d8f35f94bce83dfa7880b9">owner</a>))</div>
+<div class="line"><a id="l00068" name="l00068"></a><span class="lineno">   68</span>        , <a class="code hl_variable" href="classsystems_1_1job_1_1Job.html#a837a1ab81b69efc3d2309db174ee21ad">masked_</a>(<a class="code hl_function" href="classsystems_1_1job_1_1Job.html#a61ac82614380c87120b474a527ea495c">masked</a>)</div>
+<div class="line"><a id="l00069" name="l00069"></a><span class="lineno">   69</span>    {</div>
+<div class="line"><a id="l00070" name="l00070"></a><span class="lineno">   70</span>    }</div>
+</div>
+<div class="line"><a id="l00071" name="l00071"></a><span class="lineno">   71</span> </div>
+<div class="line"><a id="l00072" name="l00072"></a><span class="lineno"><a class="line" href="classsystems_1_1job_1_1Job.html#a55aae2ec747b1fb61728ce23c822d9c0">   72</a></span>    <span class="keyword">const</span> std::string&amp; <a class="code hl_function" href="classsystems_1_1job_1_1Job.html#a55aae2ec747b1fb61728ce23c822d9c0">name</a>() const noexcept { <span class="keywordflow">return</span> <a class="code hl_variable" href="classsystems_1_1job_1_1Job.html#a251271d02fe7d6bd087047d3af88d227">name_</a>; }</div>
+<div class="line"><a id="l00073" name="l00073"></a><span class="lineno"><a class="line" href="classsystems_1_1job_1_1Job.html#a14f2ceea26d8f35f94bce83dfa7880b9">   73</a></span>    <span class="keyword">const</span> std::string&amp; <a class="code hl_function" href="classsystems_1_1job_1_1Job.html#a14f2ceea26d8f35f94bce83dfa7880b9">owner</a>() const noexcept { <span class="keywordflow">return</span> <a class="code hl_variable" href="classsystems_1_1job_1_1Job.html#aa88117af35187bba3d96d694e173bcf5">owner_</a>; }</div>
+<div class="line"><a id="l00074" name="l00074"></a><span class="lineno"><a class="line" href="classsystems_1_1job_1_1Job.html#a61ac82614380c87120b474a527ea495c">   74</a></span>    <span class="keywordtype">bool</span> <a class="code hl_function" href="classsystems_1_1job_1_1Job.html#a61ac82614380c87120b474a527ea495c">masked</a>() const noexcept { <span class="keywordflow">return</span> <a class="code hl_variable" href="classsystems_1_1job_1_1Job.html#a837a1ab81b69efc3d2309db174ee21ad">masked_</a>; }</div>
+<div class="foldopen" id="foldopen00075" data-start="{" data-end="}">
+<div class="line"><a id="l00075" name="l00075"></a><span class="lineno"><a class="line" href="classsystems_1_1job_1_1Job.html#a44586252c992126ad8440f9d595df7a1">   75</a></span>    <a class="code hl_enumeration" href="namespacesystems_1_1job.html#a45c525b96932d154a9b69c350f29e2b2">JobState</a> <a class="code hl_function" href="classsystems_1_1job_1_1Job.html#a44586252c992126ad8440f9d595df7a1">state</a>()<span class="keyword"> const</span></div>
+<div class="line"><a id="l00076" name="l00076"></a><span class="lineno">   76</span><span class="keyword">    </span>{</div>
+<div class="line"><a id="l00077" name="l00077"></a><span class="lineno">   77</span>        std::lock_guard lock(<a class="code hl_variable" href="classsystems_1_1job_1_1Job.html#a9e231fb952089c6d77fe9a7d1bcb2f9b">mutex_</a>);</div>
+<div class="line"><a id="l00078" name="l00078"></a><span class="lineno">   78</span>        <span class="keywordflow">return</span> <a class="code hl_variable" href="classsystems_1_1job_1_1Job.html#a59c50de2e1c1634316d47ea5c27120b5">state_</a>;</div>
+<div class="line"><a id="l00079" name="l00079"></a><span class="lineno">   79</span>    }</div>
+</div>
+<div class="foldopen" id="foldopen00080" data-start="{" data-end="}">
+<div class="line"><a id="l00080" name="l00080"></a><span class="lineno"><a class="line" href="classsystems_1_1job_1_1Job.html#a21e926ce01b921a401ae6ad871f430b6">   80</a></span>    std::string <a class="code hl_function" href="classsystems_1_1job_1_1Job.html#a21e926ce01b921a401ae6ad871f430b6">error</a>()<span class="keyword"> const</span></div>
+<div class="line"><a id="l00081" name="l00081"></a><span class="lineno">   81</span><span class="keyword">    </span>{</div>
+<div class="line"><a id="l00082" name="l00082"></a><span class="lineno">   82</span>        std::lock_guard lock(<a class="code hl_variable" href="classsystems_1_1job_1_1Job.html#a9e231fb952089c6d77fe9a7d1bcb2f9b">mutex_</a>);</div>
+<div class="line"><a id="l00083" name="l00083"></a><span class="lineno">   83</span>        <span class="keywordflow">return</span> <a class="code hl_variable" href="classsystems_1_1job_1_1Job.html#a350dbfe0aa24994c832a6955cf296fd3">error_</a>;</div>
+<div class="line"><a id="l00084" name="l00084"></a><span class="lineno">   84</span>    }</div>
+</div>
+<div class="line"><a id="l00085" name="l00085"></a><span class="lineno">   85</span></div>
+<div class="line"><a id="l00086" name="l00086"></a><span class="lineno"><a class="line" href="classsystems_1_1job_1_1Job.html#a3cbe0090086f4a427ce6b3f0a0bbaeed">   86</a></span>    <span class="keywordtype">bool</span> <a class="code hl_function" href="classsystems_1_1job_1_1Job.html#a3cbe0090086f4a427ce6b3f0a0bbaeed">isCancellationRequested</a>() const noexcept { <span class="keywordflow">return</span> <a class="code hl_variable" href="classsystems_1_1job_1_1Job.html#a76092fbbea234f870f47c843ad189974">stop_source_</a>.stop_requested(); }</div>
+<div class="line"><a id="l00087" name="l00087"></a><span class="lineno">   87</span></div>
+<div class="line"><a id="l00089" name="l00089"></a><span class="lineno"><a class="line" href="classsystems_1_1job_1_1Job.html#ae4fe9939e29348c48c483f6eb85c30cb">   89</a></span>    <span class="keywordtype">void</span> <a class="code hl_function" href="classsystems_1_1job_1_1Job.html#ae4fe9939e29348c48c483f6eb85c30cb">cancel</a>() noexcept { <a class="code hl_variable" href="classsystems_1_1job_1_1Job.html#a76092fbbea234f870f47c843ad189974">stop_source_</a>.request_stop(); }</div>
+<div class="line"><a id="l00090" name="l00090"></a><span class="lineno">   90</span> </div>
+<div class="line"><a id="l00091" name="l00091"></a><span class="lineno">   91</span><span class="keyword">private</span>:</div>
+<div class="line"><a id="l00092" name="l00092"></a><span class="lineno"><a class="line" href="classsystems_1_1job_1_1Job.html#a2996c8e766af3463bab4f904b3dd4369">   92</a></span>    <span class="keyword">friend</span> <span class="keyword">class </span><a class="code hl_friend" href="classsystems_1_1job_1_1Job.html#a2996c8e766af3463bab4f904b3dd4369">JobRunner</a>;</div>
+<div class="foldopen" id="foldopen00094" data-start="{" data-end="}">
+<div class="line"><a id="l00094" name="l00094"></a><span class="lineno"><a class="line" href="classsystems_1_1job_1_1Job.html#abd64d6c44994e8b1a2eb18322302a2ee">   94</a></span>    <span class="keywordtype">void</span> <a class="code hl_function" href="classsystems_1_1job_1_1Job.html#abd64d6c44994e8b1a2eb18322302a2ee">setState</a>(<a class="code hl_enumeration" href="namespacesystems_1_1job.html#a45c525b96932d154a9b69c350f29e2b2">JobState</a> <a class="code hl_function" href="classsystems_1_1job_1_1Job.html#a44586252c992126ad8440f9d595df7a1">state</a>)</div>
+<div class="line"><a id="l00095" name="l00095"></a><span class="lineno">   95</span>    {</div>
+<div class="line"><a id="l00096" name="l00096"></a><span class="lineno">   96</span>        std::lock_guard lock(<a class="code hl_variable" href="classsystems_1_1job_1_1Job.html#a9e231fb952089c6d77fe9a7d1bcb2f9b">mutex_</a>);</div>
+<div class="line"><a id="l00097" name="l00097"></a><span class="lineno">   97</span>        <a class="code hl_variable" href="classsystems_1_1job_1_1Job.html#a59c50de2e1c1634316d47ea5c27120b5">state_</a> = <a class="code hl_function" href="classsystems_1_1job_1_1Job.html#a44586252c992126ad8440f9d595df7a1">state</a>;</div>
+<div class="line"><a id="l00098" name="l00098"></a><span class="lineno">   98</span>    }</div>
+</div>
+<div class="line"><a id="l00099" name="l00099"></a><span class="lineno">   99</span> </div>
+<div class="foldopen" id="foldopen00100" data-start="{" data-end="}">
+<div class="line"><a id="l00100" name="l00100"></a><span class="lineno"><a class="line" href="classsystems_1_1job_1_1Job.html#af4084920ea2ab541d47a519f6a0519d7">  100</a></span>    <span class="keywordtype">void</span> <a class="code hl_function" href="classsystems_1_1job_1_1Job.html#af4084920ea2ab541d47a519f6a0519d7">setError</a>(std::string <a class="code hl_function" href="classsystems_1_1job_1_1Job.html#a21e926ce01b921a401ae6ad871f430b6">error</a>)</div>
+<div class="line"><a id="l00101" name="l00101"></a><span class="lineno">  101</span>    {</div>
+<div class="line"><a id="l00102" name="l00102"></a><span class="lineno">  102</span>        std::lock_guard lock(<a class="code hl_variable" href="classsystems_1_1job_1_1Job.html#a9e231fb952089c6d77fe9a7d1bcb2f9b">mutex_</a>);</div>
+<div class="line"><a id="l00103" name="l00103"></a><span class="lineno">  103</span>        <a class="code hl_variable" href="classsystems_1_1job_1_1Job.html#a350dbfe0aa24994c832a6955cf296fd3">error_</a> = std::move(<a class="code hl_function" href="classsystems_1_1job_1_1Job.html#a21e926ce01b921a401ae6ad871f430b6">error</a>);</div>
+<div class="line"><a id="l00104" name="l00104"></a><span class="lineno">  104</span>    }</div>
+</div>
+<div class="line"><a id="l00105" name="l00105"></a><span class="lineno">  105</span> </div>
+<div class="line"><a id="l00106" name="l00106"></a><span class="lineno"><a class="line" href="classsystems_1_1job_1_1Job.html#a41bccdfae00780d70c0f17873ee68bb3">  106</a></span>    std::vector&lt;std::function&lt;void()&gt;&gt; <a class="code hl_variable" href="classsystems_1_1job_1_1Job.html#a41bccdfae00780d70c0f17873ee68bb3">finalizers</a>; </div>
+<div class="line"><a id="l00107" name="l00107"></a><span class="lineno">  107</span> </div>
+<div class="line"><a id="l00108" name="l00108"></a><span class="lineno">  108</span>    <span class="comment">// 任务执行要素由提交方在占坑前填入，执行期只读</span></div>
+<div class="line"><a id="l00109" name="l00109"></a><span class="lineno"><a class="line" href="classsystems_1_1job_1_1Job.html#a3a25f41b0ae625092e20e5d3fd946eef">  109</a></span>    <a class="code hl_typedef" href="namespacesystems_1_1job.html#ae2006917203a4b569c4fe083d45939cc">JobTaskFn</a> <a class="code hl_variable" href="classsystems_1_1job_1_1Job.html#a3a25f41b0ae625092e20e5d3fd946eef">task</a>;</div>
+<div class="line"><a id="l00110" name="l00110"></a><span class="lineno"><a class="line" href="classsystems_1_1job_1_1Job.html#ae8389aaebcf382dbe9d83cc09c0be0cc">  110</a></span>    <a class="code hl_typedef" href="namespacesystems_1_1job.html#a71fc7b421856670dc6effb842cb2ef37">JobCommitFn</a> <a class="code hl_variable" href="classsystems_1_1job_1_1Job.html#ae8389aaebcf382dbe9d83cc09c0be0cc">commit</a>;</div>
+<div class="line"><a id="l00111" name="l00111"></a><span class="lineno">  111</span> </div>
+<div class="line"><a id="l00112" name="l00112"></a><span class="lineno"><a class="line" href="classsystems_1_1job_1_1Job.html#a251271d02fe7d6bd087047d3af88d227">  112</a></span>    <span class="keyword">const</span> std::string <a class="code hl_variable" href="classsystems_1_1job_1_1Job.html#a251271d02fe7d6bd087047d3af88d227">name_</a>;</div>
+<div class="line"><a id="l00113" name="l00113"></a><span class="lineno"><a class="line" href="classsystems_1_1job_1_1Job.html#aa88117af35187bba3d96d694e173bcf5">  113</a></span>    <span class="keyword">const</span> std::string <a class="code hl_variable" href="classsystems_1_1job_1_1Job.html#aa88117af35187bba3d96d694e173bcf5">owner_</a>;</div>
+<div class="line"><a id="l00114" name="l00114"></a><span class="lineno"><a class="line" href="classsystems_1_1job_1_1Job.html#a837a1ab81b69efc3d2309db174ee21ad">  114</a></span>    <span class="keyword">const</span> <span class="keywordtype">bool</span> <a class="code hl_variable" href="classsystems_1_1job_1_1Job.html#a837a1ab81b69efc3d2309db174ee21ad">masked_</a>;</div>
+<div class="line"><a id="l00115" name="l00115"></a><span class="lineno"><a class="line" href="classsystems_1_1job_1_1Job.html#a9e231fb952089c6d77fe9a7d1bcb2f9b">  115</a></span>    <span class="keyword">mutable</span> std::mutex <a class="code hl_variable" href="classsystems_1_1job_1_1Job.html#a9e231fb952089c6d77fe9a7d1bcb2f9b">mutex_</a>;</div>
+<div class="line"><a id="l00116" name="l00116"></a><span class="lineno"><a class="line" href="classsystems_1_1job_1_1Job.html#a59c50de2e1c1634316d47ea5c27120b5">  116</a></span>    <a class="code hl_enumeration" href="namespacesystems_1_1job.html#a45c525b96932d154a9b69c350f29e2b2">JobState</a> <a class="code hl_variable" href="classsystems_1_1job_1_1Job.html#a59c50de2e1c1634316d47ea5c27120b5">state_</a> { <a class="code hl_enumvalue" href="namespacesystems_1_1job.html#a45c525b96932d154a9b69c350f29e2b2a5bda814c4aedb126839228f1a3d92f09">JobState::Running</a> };</div>
+<div class="line"><a id="l00117" name="l00117"></a><span class="lineno"><a class="line" href="classsystems_1_1job_1_1Job.html#a350dbfe0aa24994c832a6955cf296fd3">  117</a></span>    std::string <a class="code hl_variable" href="classsystems_1_1job_1_1Job.html#a350dbfe0aa24994c832a6955cf296fd3">error_</a>;</div>
+<div class="line"><a id="l00118" name="l00118"></a><span class="lineno"><a class="line" href="classsystems_1_1job_1_1Job.html#a76092fbbea234f870f47c843ad189974">  118</a></span>    std::stop_source <a class="code hl_variable" href="classsystems_1_1job_1_1Job.html#a76092fbbea234f870f47c843ad189974">stop_source_</a>;</div>
+<div class="line"><a id="l00119" name="l00119"></a><span class="lineno">  119</span>};</div>
+</div>
+<div class="line"><a id="l00120" name="l00120"></a><span class="lineno">  120</span>}</div>
+<div class="ttc" id="aJobProgress_8h_html"><div class="ttname"><a href="JobProgress_8h.html">JobProgress.h</a></div><div class="ttdoc">进度上报回调类型：model 层（任务系统）与上层 UI 适配层的公共契约</div></div>
+<div class="ttc" id="aTestComponentModel_8cpp_html_a4f5452c5c19395231dec92c40e3d10e1"><div class="ttname"><a href="TestComponentModel_8cpp.html#a4f5452c5c19395231dec92c40e3d10e1">name</a></div><div class="ttdeci">c1 name</div><div class="ttdef"><b>定义</b> TestComponentModel.cpp:80</div></div>
+<div class="ttc" id="aclasssystems_1_1job_1_1JobCancelledException_html"><div class="ttname"><a href="classsystems_1_1job_1_1JobCancelledException.html">systems::job::JobCancelledException</a></div><div class="ttdoc">心跳点取消异常：由包裹进度回调抛出</div><div class="ttdef"><b>定义</b> Job.h:41</div></div>
+<div class="ttc" id="aclasssystems_1_1job_1_1JobCancelledException_html_a789e39534754d775ba997f6eb9529137"><div class="ttname"><a href="classsystems_1_1job_1_1JobCancelledException.html#a789e39534754d775ba997f6eb9529137">systems::job::JobCancelledException::what</a></div><div class="ttdeci">const char * what() const noexcept override</div><div class="ttdef"><b>定义</b> Job.h:43</div></div>
+<div class="ttc" id="aclasssystems_1_1job_1_1Job_html"><div class="ttname"><a href="classsystems_1_1job_1_1Job.html">systems::job::Job</a></div><div class="ttdoc">任务单元：持有执行体、提交体、取消令牌与状态</div><div class="ttdef"><b>定义</b> Job.h:63</div></div>
+<div class="ttc" id="aclasssystems_1_1job_1_1Job_html_a14f2ceea26d8f35f94bce83dfa7880b9"><div class="ttname"><a href="classsystems_1_1job_1_1Job.html#a14f2ceea26d8f35f94bce83dfa7880b9">systems::job::Job::owner</a></div><div class="ttdeci">const std::string &amp; owner() const noexcept</div><div class="ttdef"><b>定义</b> Job.h:73</div></div>
+<div class="ttc" id="aclasssystems_1_1job_1_1Job_html_a21e926ce01b921a401ae6ad871f430b6"><div class="ttname"><a href="classsystems_1_1job_1_1Job.html#a21e926ce01b921a401ae6ad871f430b6">systems::job::Job::error</a></div><div class="ttdeci">std::string error() const</div><div class="ttdef"><b>定义</b> Job.h:80</div></div>
+<div class="ttc" id="aclasssystems_1_1job_1_1Job_html_a251271d02fe7d6bd087047d3af88d227"><div class="ttname"><a href="classsystems_1_1job_1_1Job.html#a251271d02fe7d6bd087047d3af88d227">systems::job::Job::name_</a></div><div class="ttdeci">const std::string name_</div><div class="ttdef"><b>定义</b> Job.h:112</div></div>
+<div class="ttc" id="aclasssystems_1_1job_1_1Job_html_a2996c8e766af3463bab4f904b3dd4369"><div class="ttname"><a href="classsystems_1_1job_1_1Job.html#a2996c8e766af3463bab4f904b3dd4369">systems::job::Job::JobRunner</a></div><div class="ttdeci">friend class JobRunner</div><div class="ttdef"><b>定义</b> Job.h:92</div></div>
+<div class="ttc" id="aclasssystems_1_1job_1_1Job_html_a350dbfe0aa24994c832a6955cf296fd3"><div class="ttname"><a href="classsystems_1_1job_1_1Job.html#a350dbfe0aa24994c832a6955cf296fd3">systems::job::Job::error_</a></div><div class="ttdeci">std::string error_</div><div class="ttdef"><b>定义</b> Job.h:117</div></div>
+<div class="ttc" id="aclasssystems_1_1job_1_1Job_html_a3a25f41b0ae625092e20e5d3fd946eef"><div class="ttname"><a href="classsystems_1_1job_1_1Job.html#a3a25f41b0ae625092e20e5d3fd946eef">systems::job::Job::task</a></div><div class="ttdeci">JobTaskFn task</div><div class="ttdef"><b>定义</b> Job.h:109</div></div>
+<div class="ttc" id="aclasssystems_1_1job_1_1Job_html_a3cbe0090086f4a427ce6b3f0a0bbaeed"><div class="ttname"><a href="classsystems_1_1job_1_1Job.html#a3cbe0090086f4a427ce6b3f0a0bbaeed">systems::job::Job::isCancellationRequested</a></div><div class="ttdeci">bool isCancellationRequested() const noexcept</div><div class="ttdoc">只读取消请求；请求不代表任务已退出或占用已释放。</div><div class="ttdef"><b>定义</b> Job.h:86</div></div>
+<div class="ttc" id="aclasssystems_1_1job_1_1Job_html_a41bccdfae00780d70c0f17873ee68bb3"><div class="ttname"><a href="classsystems_1_1job_1_1Job.html#a41bccdfae00780d70c0f17873ee68bb3">systems::job::Job::finalizers</a></div><div class="ttdeci">std::vector&lt; std::function&lt; void()&gt; &gt; finalizers</div><div class="ttdoc">GUI 清理，仅由所属线程登记和消费</div><div class="ttdef"><b>定义</b> Job.h:106</div></div>
+<div class="ttc" id="aclasssystems_1_1job_1_1Job_html_a44586252c992126ad8440f9d595df7a1"><div class="ttname"><a href="classsystems_1_1job_1_1Job.html#a44586252c992126ad8440f9d595df7a1">systems::job::Job::state</a></div><div class="ttdeci">JobState state() const</div><div class="ttdef"><b>定义</b> Job.h:75</div></div>
+<div class="ttc" id="aclasssystems_1_1job_1_1Job_html_a55aae2ec747b1fb61728ce23c822d9c0"><div class="ttname"><a href="classsystems_1_1job_1_1Job.html#a55aae2ec747b1fb61728ce23c822d9c0">systems::job::Job::name</a></div><div class="ttdeci">const std::string &amp; name() const noexcept</div><div class="ttdef"><b>定义</b> Job.h:72</div></div>
+<div class="ttc" id="aclasssystems_1_1job_1_1Job_html_a59c50de2e1c1634316d47ea5c27120b5"><div class="ttname"><a href="classsystems_1_1job_1_1Job.html#a59c50de2e1c1634316d47ea5c27120b5">systems::job::Job::state_</a></div><div class="ttdeci">JobState state_</div><div class="ttdef"><b>定义</b> Job.h:116</div></div>
+<div class="ttc" id="aclasssystems_1_1job_1_1Job_html_a61ac82614380c87120b474a527ea495c"><div class="ttname"><a href="classsystems_1_1job_1_1Job.html#a61ac82614380c87120b474a527ea495c">systems::job::Job::masked</a></div><div class="ttdeci">bool masked() const noexcept</div><div class="ttdef"><b>定义</b> Job.h:74</div></div>
+<div class="ttc" id="aclasssystems_1_1job_1_1Job_html_a76092fbbea234f870f47c843ad189974"><div class="ttname"><a href="classsystems_1_1job_1_1Job.html#a76092fbbea234f870f47c843ad189974">systems::job::Job::stop_source_</a></div><div class="ttdeci">std::stop_source stop_source_</div><div class="ttdef"><b>定义</b> Job.h:118</div></div>
+<div class="ttc" id="aclasssystems_1_1job_1_1Job_html_a837a1ab81b69efc3d2309db174ee21ad"><div class="ttname"><a href="classsystems_1_1job_1_1Job.html#a837a1ab81b69efc3d2309db174ee21ad">systems::job::Job::masked_</a></div><div class="ttdeci">const bool masked_</div><div class="ttdef"><b>定义</b> Job.h:114</div></div>
+<div class="ttc" id="aclasssystems_1_1job_1_1Job_html_a9e231fb952089c6d77fe9a7d1bcb2f9b"><div class="ttname"><a href="classsystems_1_1job_1_1Job.html#a9e231fb952089c6d77fe9a7d1bcb2f9b">systems::job::Job::mutex_</a></div><div class="ttdeci">std::mutex mutex_</div><div class="ttdef"><b>定义</b> Job.h:115</div></div>
+<div class="ttc" id="aclasssystems_1_1job_1_1Job_html_aa88117af35187bba3d96d694e173bcf5"><div class="ttname"><a href="classsystems_1_1job_1_1Job.html#aa88117af35187bba3d96d694e173bcf5">systems::job::Job::owner_</a></div><div class="ttdeci">const std::string owner_</div><div class="ttdef"><b>定义</b> Job.h:113</div></div>
+<div class="ttc" id="aclasssystems_1_1job_1_1Job_html_abd64d6c44994e8b1a2eb18322302a2ee"><div class="ttname"><a href="classsystems_1_1job_1_1Job.html#abd64d6c44994e8b1a2eb18322302a2ee">systems::job::Job::setState</a></div><div class="ttdeci">void setState(JobState state)</div><div class="ttdoc">仅供执行器的提交与终态两个固定位置写入状态。</div><div class="ttdef"><b>定义</b> Job.h:94</div></div>
+<div class="ttc" id="aclasssystems_1_1job_1_1Job_html_ae4fe9939e29348c48c483f6eb85c30cb"><div class="ttname"><a href="classsystems_1_1job_1_1Job.html#ae4fe9939e29348c48c483f6eb85c30cb">systems::job::Job::cancel</a></div><div class="ttdeci">void cancel() noexcept</div><div class="ttdoc">请求取消（线程安全，任意时刻可调；任务体于下次心跳感知）</div><div class="ttdef"><b>定义</b> Job.h:89</div></div>
+<div class="ttc" id="aclasssystems_1_1job_1_1Job_html_ae8389aaebcf382dbe9d83cc09c0be0cc"><div class="ttname"><a href="classsystems_1_1job_1_1Job.html#ae8389aaebcf382dbe9d83cc09c0be0cc">systems::job::Job::commit</a></div><div class="ttdeci">JobCommitFn commit</div><div class="ttdef"><b>定义</b> Job.h:110</div></div>
+<div class="ttc" id="aclasssystems_1_1job_1_1Job_html_af3810a2f5e3dd61607ee62f58fef710f"><div class="ttname"><a href="classsystems_1_1job_1_1Job.html#af3810a2f5e3dd61607ee62f58fef710f">systems::job::Job::Job</a></div><div class="ttdeci">Job(std::string name, std::string owner={ }, bool masked=false)</div><div class="ttdef"><b>定义</b> Job.h:65</div></div>
+<div class="ttc" id="aclasssystems_1_1job_1_1Job_html_af4084920ea2ab541d47a519f6a0519d7"><div class="ttname"><a href="classsystems_1_1job_1_1Job.html#af4084920ea2ab541d47a519f6a0519d7">systems::job::Job::setError</a></div><div class="ttdeci">void setError(std::string error)</div><div class="ttdef"><b>定义</b> Job.h:100</div></div>
+<div class="ttc" id="anamespacesystems_1_1job_html"><div class="ttname"><a href="namespacesystems_1_1job.html">systems::job</a></div><div class="ttdef"><b>定义</b> QTaskStatus.h:15</div></div>
+<div class="ttc" id="anamespacesystems_1_1job_html_a2af5878d29208ac612981ea6c1e15087"><div class="ttname"><a href="namespacesystems_1_1job.html#a2af5878d29208ac612981ea6c1e15087">systems::job::JobFinishedFn</a></div><div class="ttdeci">std::function&lt; void(Job &amp;)&gt; JobFinishedFn</div><div class="ttdoc">终态回调（在所属线程触发一次；单槽在回调前已让出）</div><div class="ttdef"><b>定义</b> Job.h:55</div></div>
+<div class="ttc" id="anamespacesystems_1_1job_html_a45c525b96932d154a9b69c350f29e2b2"><div class="ttname"><a href="namespacesystems_1_1job.html#a45c525b96932d154a9b69c350f29e2b2">systems::job::JobState</a></div><div class="ttdeci">JobState</div><div class="ttdoc">任务状态；由执行器固定的提交和收尾路径推进</div><div class="ttdef"><b>定义</b> Job.h:23</div></div>
+<div class="ttc" id="anamespacesystems_1_1job_html_a45c525b96932d154a9b69c350f29e2b2a5bda814c4aedb126839228f1a3d92f09"><div class="ttname"><a href="namespacesystems_1_1job.html#a45c525b96932d154a9b69c350f29e2b2a5bda814c4aedb126839228f1a3d92f09">systems::job::JobState::Running</a></div><div class="ttdeci">@ Running</div><div class="ttdoc">执行中（占坑即此态：任务体执行或等待工作进程拾取）</div><div class="ttdef"><b>定义</b> Job.h:24</div></div>
+<div class="ttc" id="anamespacesystems_1_1job_html_a45c525b96932d154a9b69c350f29e2b2aa149e85a44aeec9140e92733d9ed694e"><div class="ttname"><a href="namespacesystems_1_1job.html#a45c525b96932d154a9b69c350f29e2b2aa149e85a44aeec9140e92733d9ed694e">systems::job::JobState::Cancelled</a></div><div class="ttdeci">@ Cancelled</div><div class="ttdoc">心跳点取消（含占坑后、执行前取消）</div><div class="ttdef"><b>定义</b> Job.h:28</div></div>
+<div class="ttc" id="anamespacesystems_1_1job_html_a45c525b96932d154a9b69c350f29e2b2aa902153e49f7698c3e9726d12d6389bd"><div class="ttname"><a href="namespacesystems_1_1job.html#a45c525b96932d154a9b69c350f29e2b2aa902153e49f7698c3e9726d12d6389bd">systems::job::JobState::Committing</a></div><div class="ttdeci">@ Committing</div><div class="ttdoc">结果提交中（在提交分发线程，通常为 GUI 线程）</div><div class="ttdef"><b>定义</b> Job.h:25</div></div>
+<div class="ttc" id="anamespacesystems_1_1job_html_a45c525b96932d154a9b69c350f29e2b2ad7c8c85bf79bbe1b7188497c32c3b0ca"><div class="ttname"><a href="namespacesystems_1_1job.html#a45c525b96932d154a9b69c350f29e2b2ad7c8c85bf79bbe1b7188497c32c3b0ca">systems::job::JobState::Failed</a></div><div class="ttdeci">@ Failed</div><div class="ttdoc">任务体或提交失败</div><div class="ttdef"><b>定义</b> Job.h:27</div></div>
+<div class="ttc" id="anamespacesystems_1_1job_html_a45c525b96932d154a9b69c350f29e2b2af92965e2c8a7afb3c1b9a5c09a263636"><div class="ttname"><a href="namespacesystems_1_1job.html#a45c525b96932d154a9b69c350f29e2b2af92965e2c8a7afb3c1b9a5c09a263636">systems::job::JobState::Done</a></div><div class="ttdeci">@ Done</div><div class="ttdoc">成功完成</div><div class="ttdef"><b>定义</b> Job.h:26</div></div>
+<div class="ttc" id="anamespacesystems_1_1job_html_a62b9db7222639d1e30366a1d75475e42"><div class="ttname"><a href="namespacesystems_1_1job.html#a62b9db7222639d1e30366a1d75475e42">systems::job::JobProgressFn</a></div><div class="ttdeci">std::function&lt; void(Job &amp;, double, const std::string &amp;)&gt; JobProgressFn</div><div class="ttdoc">进度回调（计算在线程内触发，提交在所属线程触发）</div><div class="ttdef"><b>定义</b> Job.h:53</div></div>
+<div class="ttc" id="anamespacesystems_1_1job_html_a68d9b6556b0d0b4d3b1dd89c36e872cd"><div class="ttname"><a href="namespacesystems_1_1job.html#a68d9b6556b0d0b4d3b1dd89c36e872cd">systems::job::ProgressFn</a></div><div class="ttdeci">std::function&lt; void(double value, const std::string &amp;label)&gt; ProgressFn</div><div class="ttdoc">进度上报回调</div><div class="ttdef"><b>定义</b> JobProgress.h:19</div></div>
+<div class="ttc" id="anamespacesystems_1_1job_html_a71fc7b421856670dc6effb842cb2ef37"><div class="ttname"><a href="namespacesystems_1_1job.html#a71fc7b421856670dc6effb842cb2ef37">systems::job::JobCommitFn</a></div><div class="ttdeci">std::function&lt; void(ProgressFn)&gt; JobCommitFn</div><div class="ttdoc">GUI 提交段；仅计算成功且未取消时执行，失败抛异常；report 只展示，不增加取消点。</div><div class="ttdef"><b>定义</b> Job.h:51</div></div>
+<div class="ttc" id="anamespacesystems_1_1job_html_ad5c00cdf8cfa567913fcf73a4ec5344d"><div class="ttname"><a href="namespacesystems_1_1job.html#ad5c00cdf8cfa567913fcf73a4ec5344d">systems::job::isTerminal</a></div><div class="ttdeci">bool isTerminal(JobState state) noexcept</div><div class="ttdoc">终态判定</div><div class="ttdef"><b>定义</b> Job.h:32</div></div>
+<div class="ttc" id="anamespacesystems_1_1job_html_ae2006917203a4b569c4fe083d45939cc"><div class="ttname"><a href="namespacesystems_1_1job.html#ae2006917203a4b569c4fe083d45939cc">systems::job::JobTaskFn</a></div><div class="ttdeci">std::function&lt; void(ProgressFn)&gt; JobTaskFn</div><div class="ttdoc">任务体只计算；业务成果由类型化执行闭包持有，失败抛异常。</div><div class="ttdef"><b>定义</b> Job.h:49</div></div>
+</div><!-- fragment --></div><!-- contents -->
+<!-- start footer part -->
+<hr class="footer"/><address class="footer"><small>
+制作者&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.14.0
+</small></address>
+</div><!-- doc-content -->
+</body>
+</html>

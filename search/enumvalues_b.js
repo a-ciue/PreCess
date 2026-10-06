@@ -8,5 +8,6 @@ var searchData=
   ['nonmanifoldedge_5',['NonManifoldEdge',['../GeometryTopologyDiagnosticCategory_8h.html#a61b2e4c53446731aaca3ce264d171be3a1adb79d9384c186250f4685e6e359657',1,'NonManifoldEdge:&#160;GeometryTopologyDiagnosticCategory.h'],['../TopologyDiagnosticCategory_8h.html#a123c2e1cd3393fbd4ecdad8e737fae2aa1adb79d9384c186250f4685e6e359657',1,'NonManifoldEdge:&#160;TopologyDiagnosticCategory.h']]],
   ['nonmanifoldvertex_6',['NonManifoldVertex',['../TopologyDiagnosticCategory_8h.html#a123c2e1cd3393fbd4ecdad8e737fae2aabd4169d5ab68d08bf41948eab41f882f',1,'TopologyDiagnosticCategory.h']]],
   ['nontopology_7',['NonTopology',['../ComponentOperator_8h.html#aaa4581396b959b0a0f7d487174d19308a8bbaff4a7b7cc5b924fbc5f285586951',1,'ComponentOperator.h']]],
-  ['numberrole_8',['NumberRole',['../classTreeModel.html#aab6367624db733c58760195c14f7c4b5a6191c5b5d65179da8aabb55b65768920',1,'TreeModel']]]
+  ['notify_8',['Notify',['../classModelScope.html#af84f5477753184e30ded611449f66953aaaf9ed605d0193362321ba0def15c9b7',1,'ModelScope']]],
+  ['numberrole_9',['NumberRole',['../classTreeModel.html#aab6367624db733c58760195c14f7c4b5a6191c5b5d65179da8aabb55b65768920',1,'TreeModel']]]
 ];

@@ -11,7 +11,7 @@ var searchData=
   ['kgeometrytopologydiagnosticcategorycount_8',['kGeometryTopologyDiagnosticCategoryCount',['../GeometryTopologyDiagnosticCategory_8h.html#aff8180424a63973f34d58f1bea07285b',1,'GeometryTopologyDiagnosticCategory.h']]],
   ['kgrouplayerz_9',['kGroupLayerZ',['../structdock_1_1DockMetrics.html#a8dfce48c95694a159977cff0c66b038f',1,'dock::DockMetrics']]],
   ['khostfrontmaxz_10',['kHostFrontMaxZ',['../structdock_1_1DockMetrics.html#aff095c1dfd5d80425bc1a30b5f650e24',1,'dock::DockMetrics']]],
-  ['kind_11',['Kind',['../structStructuralEntry.html#a13ddf8991a341b935c1f72da3fe46749',1,'StructuralEntry::Kind'],['../structsystems_1_1feature_1_1ModelEvent.html#a91b904d63c8caf3b41e5fa1942da4c3b',1,'systems::feature::ModelEvent::Kind']]],
+  ['kind_11',['Kind',['../classModelScope.html#af84f5477753184e30ded611449f66953',1,'ModelScope::Kind'],['../structStructuralEntry.html#a13ddf8991a341b935c1f72da3fe46749',1,'StructuralEntry::Kind'],['../structsystems_1_1feature_1_1ModelEvent.html#a91b904d63c8caf3b41e5fa1942da4c3b',1,'systems::feature::ModelEvent::Kind']]],
   ['kind_12',['kind',['../structStructuralEntry.html#adb3cedba5f1dfb948392ffafc740cfcd',1,'StructuralEntry::kind'],['../structsystems_1_1feature_1_1ModelEvent.html#a9995be6e6971aea7215d812e325aaf0b',1,'systems::feature::ModelEvent::kind']]],
   ['kinvalidcomponent_13',['kInvalidComponent',['../classMeshIDMap.html#aeaf508fd7d5909b90310cbad38399796',1,'MeshIDMap']]],
   ['kinvalidgeomedgeid_14',['kInvalidGeomEdgeId',['../Core_8h.html#a3bb54d671f5f88a16049fac0fe2a5758',1,'Core.h']]],

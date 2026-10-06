@@ -77,17 +77,19 @@ $(function() {
 <div id="doc-content">
 <div class="header">
   <div class="summary">
-<a href="#nested-classes">类</a>  </div>
+<a href="#nested-classes">类</a> &#124;
+<a href="#namespaces">命名空间</a>  </div>
   <div class="headertitle"><div class="title">UndoStack.h 文件参考</div></div>
 </div><!--header-->
 <div class="contents">
 
-<p>撤销/重做栈：混合记录模式（默认边界自动 + Manual 插件自控）  
+<p>一个正式历史栈与临时预览捕获：事件不入栈，execute 收尾吸收预览。  
 <a href="#details">更多...</a></p>
 <div class="textblock"><code>#include &quot;<a class="el" href="Core_8h_source.html">Core.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="UndoRecord_8h_source.html">UndoRecord.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="UndoRecorder_8h_source.html">UndoRecorder.h</a>&quot;</code><br />
 <code>#include &lt;cstddef&gt;</code><br />
+<code>#include &lt;cstdint&gt;</code><br />
 <code>#include &lt;deque&gt;</code><br />
 <code>#include &lt;functional&gt;</code><br />
 <code>#include &lt;memory&gt;</code><br />
@@ -99,70 +101,71 @@ UndoStack.h 的引用(Include)关系图:</div>
 <div class="dyncontent">
 <div class="center"><img src="UndoStack_8h__incl.png" border="0" usemap="#amodel_2data_2UndoStack_8h" loading="lazy" alt=""/></div>
 <map name="amodel_2data_2UndoStack_8h" id="amodel_2data_2UndoStack_8h">
-<area shape="rect" title="撤销/重做栈：混合记录模式（默认边界自动 + Manual 插件自控）" alt="" coords="1043,5,1226,31"/>
-<area shape="rect" href="Core_8h.html" title=" " alt="" coords="1027,372,1091,397"/>
-<area shape="poly" title=" " alt="" coords="1134,31,1120,88,1114,125,1112,163,1112,239,1108,274,1099,307,1075,361,1070,359,1094,305,1103,273,1107,239,1107,163,1109,125,1115,87,1129,30"/>
-<area shape="rect" title=" " alt="" coords="321,445,399,471"/>
-<area shape="poly" title=" " alt="" coords="1043,24,862,29,640,39,427,56,340,68,274,81,214,92,161,101,140,108,123,120,113,138,109,164,109,239,115,277,131,311,154,341,184,367,216,390,250,410,313,438,311,443,248,415,213,395,180,372,150,344,126,313,110,278,104,240,104,163,108,136,119,116,137,104,159,96,213,87,273,76,339,62,427,51,640,34,862,24,1043,18"/>
-<area shape="rect" title=" " alt="" coords="128,445,187,471"/>
-<area shape="poly" title=" " alt="" coords="1043,22,836,24,575,32,323,50,220,64,142,81,92,94,49,105,32,113,19,125,11,141,8,164,8,312,11,334,19,354,46,389,82,417,118,437,115,442,79,421,42,393,14,357,6,335,3,313,3,163,6,139,15,121,29,109,47,100,91,88,141,76,219,58,322,44,575,26,836,18,1043,16"/>
-<area shape="rect" title=" " alt="" coords="1147,445,1210,471"/>
-<area shape="poly" title=" " alt="" coords="1155,29,1219,76,1255,111,1286,151,1307,191,1312,237,1312,313,1309,334,1302,354,1278,390,1246,419,1215,440,1212,436,1243,415,1274,386,1297,352,1304,333,1307,313,1307,237,1302,193,1282,153,1251,115,1216,80,1152,33"/>
-<area shape="rect" href="UndoRecord_8h.html" title="撤销/重做记录模型：一次操作 = 一条记录" alt="" coords="743,79,857,104"/>
-<area shape="poly" title=" " alt="" coords="1081,33,868,78,867,73,1080,28"/>
-<area shape="rect" title=" " alt="" coords="397,372,472,397"/>
-<area shape="poly" title=" " alt="" coords="1043,26,802,40,509,67,374,86,262,108,219,121,187,135,167,149,160,164,160,239,166,273,183,301,209,323,242,341,278,355,315,365,384,377,383,382,314,371,276,360,239,346,206,328,179,304,161,275,155,240,155,163,163,146,184,130,217,116,261,103,373,80,509,62,802,35,1043,21"/>
-<area shape="rect" href="UndoRecorder_8h.html" title="模型层 undo 记录钩子接口" alt="" coords="1147,152,1272,177"/>
-<area shape="poly" title=" " alt="" coords="1143,30,1199,138,1195,141,1138,32"/>
-<area shape="rect" title=" " alt="" coords="1310,79,1381,104"/>
-<area shape="poly" title=" " alt="" coords="1169,28,1299,72,1298,77,1168,33"/>
-<area shape="rect" title=" " alt="" coords="1405,79,1467,104"/>
-<area shape="poly" title=" " alt="" coords="1187,28,1392,76,1390,81,1185,33"/>
-<area shape="rect" title=" " alt="" coords="1491,79,1578,104"/>
-<area shape="poly" title=" " alt="" coords="1205,28,1478,76,1477,81,1204,33"/>
-<area shape="rect" title=" " alt="" coords="957,445,1013,471"/>
-<area shape="poly" title=" " alt="" coords="1048,400,1009,438,1005,434,1045,396"/>
-<area shape="rect" title=" " alt="" coords="1037,445,1088,471"/>
-<area shape="poly" title=" " alt="" coords="1062,398,1064,432,1059,432,1057,398"/>
-<area shape="poly" title=" " alt="" coords="1027,393,964,400,413,455,413,449,964,395,1026,387"/>
-<area shape="poly" title=" " alt="" coords="1027,393,964,400,637,426,310,448,201,456,200,451,309,443,637,421,964,395,1026,388"/>
-<area shape="poly" title=" " alt="" coords="1079,395,1148,436,1146,440,1077,400"/>
-<area shape="poly" title=" " alt="" coords="812,102,1041,360,1037,363,808,106"/>
-<area shape="poly" title=" " alt="" coords="747,107,682,125,616,154,532,200,468,241,441,265,416,293,392,329,369,373,361,403,360,432,355,431,356,402,364,371,388,326,412,290,437,261,464,237,529,196,613,150,680,120,745,101"/>
-<area shape="poly" title=" " alt="" coords="744,105,658,124,565,155,455,200,371,240,334,264,296,293,211,374,188,404,171,434,166,432,184,401,207,370,293,289,331,259,369,235,453,195,563,149,657,119,743,100"/>
-<area shape="poly" title=" " alt="" coords="828,102,899,137,994,194,1043,231,1091,272,1133,319,1169,371,1180,401,1183,431,1177,431,1174,402,1164,373,1129,322,1087,276,1040,235,991,198,897,141,826,107"/>
-<area shape="rect" href="ComponentData_8h.html" title=" " alt="" coords="677,225,817,251"/>
-<area shape="poly" title=" " alt="" coords="799,105,776,178,761,214,756,212,771,176,794,104"/>
-<area shape="rect" href="ModelSnapshot_8h.html" title="模型级结构快照（undo/redo 原语）" alt="" coords="627,152,762,177"/>
-<area shape="poly" title=" " alt="" coords="785,106,724,147,722,142,782,102"/>
-<area shape="poly" title=" " alt="" coords="795,248,861,268,932,296,988,329,1035,361,1032,366,985,333,930,301,859,273,793,253"/>
-<area shape="poly" title=" " alt="" coords="677,248,607,260,529,283,490,300,452,320,418,344,387,374,372,402,365,432,359,430,367,400,383,370,414,340,449,315,487,295,527,278,606,255,676,243"/>
-<area shape="poly" title=" " alt="" coords="677,249,565,268,504,282,444,301,368,333,296,372,186,440,184,435,293,367,366,329,442,296,502,277,564,263,676,244"/>
-<area shape="poly" title=" " alt="" coords="817,243,892,255,977,278,1021,295,1063,315,1103,340,1139,370,1161,400,1174,431,1169,433,1156,403,1135,374,1100,345,1061,320,1019,300,975,283,890,260,817,248"/>
-<area shape="rect" href="MeshData_8h.html" title=" " alt="" coords="558,299,658,324"/>
-<area shape="poly" title=" " alt="" coords="726,253,644,295,642,290,723,248"/>
-<area shape="rect" title=" " alt="" coords="737,372,861,397"/>
-<area shape="poly" title=" " alt="" coords="752,250,775,323,790,358,785,361,769,325,747,252"/>
-<area shape="rect" href="MeshAdjacency_8h.html" title="网格邻接查询索引——统一边表 + 稳定边 id" alt="" coords="785,299,919,324"/>
-<area shape="poly" title=" " alt="" coords="765,248,825,289,822,293,762,253"/>
-<area shape="poly" title=" " alt="" coords="659,318,1013,374,1013,379,658,323"/>
-<area shape="poly" title=" " alt="" coords="601,326,583,361,581,379,587,396,611,413,648,427,695,437,747,444,855,452,943,454,943,460,854,458,746,450,694,442,647,432,609,418,583,399,575,380,578,359,597,323"/>
-<area shape="poly" title=" " alt="" coords="594,326,547,361,485,400,400,442,398,438,483,395,544,356,591,322"/>
-<area shape="poly" title=" " alt="" coords="561,327,386,375,285,410,199,443,197,438,283,405,385,369,559,322"/>
-<area shape="poly" title=" " alt="" coords="640,322,756,364,754,369,638,327"/>
-<area shape="rect" title=" " alt="" coords="597,372,712,397"/>
-<area shape="poly" title=" " alt="" coords="618,323,642,359,637,362,613,326"/>
-<area shape="poly" title=" " alt="" coords="581,326,477,369,475,364,579,322"/>
-<area shape="poly" title=" " alt="" coords="886,321,1014,365,1013,370,884,327"/>
-<area shape="poly" title=" " alt="" coords="892,322,931,340,950,354,966,370,981,400,987,431,982,432,976,402,962,374,946,358,928,345,889,326"/>
-<area shape="poly" title=" " alt="" coords="920,315,1010,332,1059,348,1104,370,1140,399,1166,432,1162,435,1136,403,1101,374,1057,353,1009,337,919,320"/>
-<area shape="poly" title=" " alt="" coords="845,326,818,363,813,360,841,323"/>
-<area shape="poly" title=" " alt="" coords="785,327,486,377,485,372,785,321"/>
-<area shape="rect" title=" " alt="" coords="885,372,952,397"/>
-<area shape="poly" title=" " alt="" coords="865,323,900,360,897,364,861,326"/>
-<area shape="poly" title=" " alt="" coords="658,180,578,207,472,249,356,305,299,338,246,374,209,406,178,437,174,433,205,402,242,370,296,333,354,300,470,244,576,202,656,175"/>
-<area shape="poly" title=" " alt="" coords="705,176,732,213,728,216,701,179"/>
-<area shape="poly" title=" " alt="" coords="1208,179,1180,244,1157,286,1130,326,1088,366,1085,362,1126,322,1153,283,1175,242,1203,177"/>
+<area shape="rect" title="一个正式历史栈与临时预览捕获：事件不入栈，execute 收尾吸收预览。" alt="" coords="1037,5,1219,31"/>
+<area shape="rect" href="Core_8h.html" title=" " alt="" coords="195,372,259,397"/>
+<area shape="poly" title=" " alt="" coords="1037,25,786,39,478,65,335,83,217,106,172,119,138,133,116,148,109,164,109,239,112,259,118,278,140,312,168,341,197,362,194,367,165,345,136,315,113,280,106,260,104,239,104,163,112,145,135,129,170,114,216,101,334,78,477,59,785,33,1036,20"/>
+<area shape="rect" title=" " alt="" coords="68,445,145,471"/>
+<area shape="poly" title=" " alt="" coords="1037,25,616,43,391,59,299,70,228,81,189,87,150,89,78,92,49,98,27,111,13,131,8,164,8,312,15,350,34,383,58,412,82,435,78,438,54,416,29,386,10,351,3,313,3,163,8,129,24,107,48,93,78,87,149,84,188,82,228,76,298,64,391,54,615,37,1037,19"/>
+<area shape="rect" title=" " alt="" coords="1099,445,1157,471"/>
+<area shape="poly" title=" " alt="" coords="1140,29,1155,51,1169,78,1188,124,1200,162,1205,202,1200,251,1188,303,1173,354,1142,433,1137,431,1168,352,1183,302,1195,250,1199,202,1195,163,1183,126,1164,80,1150,54,1135,32"/>
+<area shape="rect" title=" " alt="" coords="854,445,917,471"/>
+<area shape="poly" title=" " alt="" coords="1132,31,1136,94,1132,191,1123,246,1109,300,1086,353,1054,399,1027,422,995,439,962,449,931,455,930,450,960,444,993,434,1024,418,1050,396,1081,350,1104,299,1118,245,1127,190,1131,94,1127,31"/>
+<area shape="rect" href="UndoRecord_8h.html" title="撤销/重做记录模型：一次操作 = 一条记录" alt="" coords="801,79,914,104"/>
+<area shape="poly" title=" " alt="" coords="1085,33,915,78,914,73,1084,28"/>
+<area shape="rect" title=" " alt="" coords="672,372,747,397"/>
+<area shape="poly" title=" " alt="" coords="1118,33,993,156,900,242,799,326,741,367,738,362,796,322,896,238,990,152,1115,29"/>
+<area shape="rect" title=" " alt="" coords="973,372,1040,397"/>
+<area shape="poly" title=" " alt="" coords="1135,30,1149,78,1155,128,1149,178,1135,256,1122,289,1098,326,1073,350,1046,368,1043,363,1070,346,1094,322,1118,286,1130,255,1144,177,1149,128,1144,79,1130,32"/>
+<area shape="rect" href="UndoRecorder_8h.html" title="模型层 undo 记录钩子接口" alt="" coords="144,152,269,177"/>
+<area shape="poly" title=" " alt="" coords="1056,33,284,154,283,149,1055,28"/>
+<area shape="rect" title=" " alt="" coords="1279,79,1350,104"/>
+<area shape="poly" title=" " alt="" coords="1159,28,1272,71,1271,76,1157,33"/>
+<area shape="rect" title=" " alt="" coords="1374,79,1437,104"/>
+<area shape="poly" title=" " alt="" coords="1175,28,1361,76,1360,81,1173,33"/>
+<area shape="rect" title=" " alt="" coords="1461,79,1547,104"/>
+<area shape="poly" title=" " alt="" coords="1193,28,1447,76,1446,81,1192,33"/>
+<area shape="rect" title=" " alt="" coords="407,445,463,471"/>
+<area shape="poly" title=" " alt="" coords="260,394,394,440,392,445,258,399"/>
+<area shape="rect" title=" " alt="" coords="201,445,252,471"/>
+<area shape="poly" title=" " alt="" coords="229,398,229,432,224,432,224,398"/>
+<area shape="poly" title=" " alt="" coords="209,400,140,440,137,436,206,395"/>
+<area shape="poly" title=" " alt="" coords="259,392,271,395,409,408,647,424,1085,451,1085,457,647,430,409,413,270,400,258,398"/>
+<area shape="poly" title=" " alt="" coords="259,392,271,395,435,419,597,435,841,452,840,457,596,441,434,424,270,400,258,397"/>
+<area shape="poly" title=" " alt="" coords="829,107,637,184,507,240,377,301,258,367,256,363,375,296,505,235,635,179,827,102"/>
+<area shape="poly" title=" " alt="" coords="813,107,710,135,568,178,408,234,249,301,179,328,151,344,125,373,113,402,109,432,103,431,107,401,120,371,148,340,176,324,247,296,406,229,566,173,708,130,811,102"/>
+<area shape="poly" title=" " alt="" coords="886,102,923,122,962,150,1015,203,1052,250,1081,302,1112,371,1122,402,1128,431,1122,432,1117,403,1107,373,1076,304,1047,253,1011,207,958,154,921,126,883,107"/>
+<area shape="poly" title=" " alt="" coords="885,102,915,121,929,135,940,151,953,189,958,229,956,269,949,309,926,381,901,434,896,432,921,379,944,308,951,269,953,229,948,190,935,153,925,138,912,125,882,106"/>
+<area shape="rect" href="ComponentData_8h.html" title=" " alt="" coords="647,225,787,251"/>
+<area shape="poly" title=" " alt="" coords="841,106,811,127,781,154,755,185,734,215,729,212,750,181,777,150,808,123,838,102"/>
+<area shape="rect" href="ModelSnapshot_8h.html" title="模型级结构快照（undo/redo 原语）" alt="" coords="790,152,925,177"/>
+<area shape="poly" title=" " alt="" coords="860,104,860,138,855,138,855,104"/>
+<area shape="poly" title=" " alt="" coords="648,253,546,272,435,301,406,313,377,326,269,370,267,365,375,322,404,308,434,296,545,267,647,247"/>
+<area shape="poly" title=" " alt="" coords="648,250,523,267,374,294,303,311,238,330,185,351,148,374,127,402,115,433,110,431,123,400,145,370,183,346,236,325,301,306,373,289,522,262,647,245"/>
+<area shape="poly" title=" " alt="" coords="766,248,827,266,901,292,979,326,1054,370,1088,401,1115,432,1110,436,1084,404,1050,374,977,331,899,297,825,271,764,253"/>
+<area shape="poly" title=" " alt="" coords="739,249,769,269,799,297,825,331,847,368,878,431,873,434,843,370,821,334,795,300,766,273,736,253"/>
+<area shape="rect" href="MeshData_8h.html" title=" " alt="" coords="446,299,546,324"/>
+<area shape="poly" title=" " alt="" coords="683,253,545,297,544,292,681,248"/>
+<area shape="rect" title=" " alt="" coords="523,372,647,397"/>
+<area shape="poly" title=" " alt="" coords="700,253,670,274,641,300,618,331,600,361,595,358,613,328,637,297,667,269,697,249"/>
+<area shape="rect" href="MeshAdjacency_8h.html" title="网格邻接查询索引——统一边表 + 稳定边 id" alt="" coords="650,299,785,324"/>
+<area shape="poly" title=" " alt="" coords="720,251,720,285,715,285,715,251"/>
+<area shape="poly" title=" " alt="" coords="453,327,273,374,272,369,452,321"/>
+<area shape="poly" title=" " alt="" coords="492,325,469,373,446,433,441,431,464,371,487,323"/>
+<area shape="poly" title=" " alt="" coords="446,315,390,319,322,328,251,346,184,374,149,403,123,435,119,432,145,399,181,370,249,340,321,323,389,313,446,310"/>
+<area shape="poly" title=" " alt="" coords="497,325,497,361,503,380,514,395,538,402,592,410,756,427,1085,451,1085,457,755,432,591,416,537,408,510,399,498,382,492,361,492,325"/>
+<area shape="poly" title=" " alt="" coords="512,322,562,361,558,365,509,326"/>
+<area shape="rect" title=" " alt="" coords="283,372,397,397"/>
+<area shape="poly" title=" " alt="" coords="472,326,379,369,377,364,470,322"/>
+<area shape="poly" title=" " alt="" coords="531,321,663,365,661,370,529,327"/>
+<area shape="poly" title=" " alt="" coords="650,322,483,341,272,375,272,369,482,336,650,316"/>
+<area shape="poly" title=" " alt="" coords="732,322,747,338,761,357,768,378,766,389,761,399,741,414,712,426,635,444,550,454,477,458,477,453,549,448,634,438,710,421,738,410,757,396,761,387,762,379,756,360,743,341,729,326"/>
+<area shape="poly" title=" " alt="" coords="738,322,804,370,868,433,864,437,801,374,734,326"/>
+<area shape="poly" title=" " alt="" coords="697,326,620,368,618,363,695,322"/>
+<area shape="poly" title=" " alt="" coords="719,325,715,359,709,358,713,324"/>
+<area shape="poly" title=" " alt="" coords="764,321,960,369,959,374,763,327"/>
+<area shape="poly" title=" " alt="" coords="875,175,971,251,1031,308,1086,370,1106,401,1121,431,1116,434,1101,404,1082,374,1027,311,967,255,872,179"/>
+<area shape="poly" title=" " alt="" coords="836,180,753,221,751,217,834,175"/>
+<area shape="poly" title=" " alt="" coords="210,177,227,358,222,358,205,178"/>
 </map>
 </div>
 </div><div class="textblock"><div class="dynheader">
@@ -170,54 +173,102 @@ UndoStack.h 的引用(Include)关系图:</div>
 <div class="dyncontent">
 <div class="center"><img src="UndoStack_8h__dep__incl.png" border="0" usemap="#amodel_2data_2UndoStack_8hdep" loading="lazy" alt=""/></div>
 <map name="amodel_2data_2UndoStack_8hdep" id="amodel_2data_2UndoStack_8hdep">
-<area shape="rect" title="撤销/重做栈：混合记录模式（默认边界自动 + Manual 插件自控）" alt="" coords="2096,5,2279,31"/>
-<area shape="rect" href="QModelManager_8cpp.html" title=" " alt="" coords="5,350,233,375"/>
-<area shape="poly" title=" " alt="" coords="2082,25,1761,41,1564,57,1366,81,1183,112,997,148,641,227,346,302,160,353,159,347,344,297,639,222,996,143,1182,106,1366,76,1563,52,1761,35,2082,19"/>
-<area shape="rect" href="QUndoStackAdaptor_8cpp.html" title=" " alt="" coords="2061,86,2313,111"/>
-<area shape="poly" title=" " alt="" coords="2190,44,2190,86,2185,86,2185,44"/>
-<area shape="rect" href="UndoStack_8cpp.html" title="撤销/重做栈实现（语义见 UndoStack.h 文件头注释）" alt="" coords="2338,86,2535,111"/>
-<area shape="poly" title=" " alt="" coords="2237,32,2401,83,2400,89,2236,37"/>
-<area shape="rect" href="TestUndoStack_8cpp.html" title="UndoStack 单元测试：边界自动记录、结构记录、staged 会话、执行路径完备性" alt="" coords="2559,79,2749,119"/>
-<area shape="poly" title=" " alt="" coords="2271,30,2548,76,2560,78,2559,83,2547,81,2270,35"/>
-<area shape="rect" href="Session_8cpp.html" title="会话组合根实现：子系统装配、观察者转发桥与有序拆解" alt="" coords="258,350,455,375"/>
-<area shape="poly" title=" " alt="" coords="2083,28,1856,47,1723,62,1590,81,1324,131,1119,180,915,233,652,297,408,353,407,347,651,292,914,228,1118,174,1323,126,1590,76,1722,57,1855,42,2082,23"/>
-<area shape="rect" href="TestSession_8cpp.html" title="Session 组合根测试（子系统装配、观察者转发与 ModelEvent 桥接、有序拆解）" alt="" coords="2773,79,2919,119"/>
-<area shape="poly" title=" " alt="" coords="2293,24,2509,44,2761,76,2773,78,2773,83,2760,81,2509,49,2292,29"/>
-<area shape="rect" href="AlgorithmSystem_8cpp.html" title=" " alt="" coords="2943,79,3109,119"/>
-<area shape="poly" title=" " alt="" coords="2293,21,2581,40,2756,55,2932,76,2943,78,2942,83,2931,81,2756,61,2581,45,2292,27"/>
-<area shape="rect" href="EditSystem_8cpp.html" title=" " alt="" coords="3133,79,3284,119"/>
-<area shape="poly" title=" " alt="" coords="2292,18,2453,23,2660,33,2891,50,3122,76,3134,78,3133,83,3122,81,2890,55,2660,38,2453,28,2292,24"/>
-<area shape="rect" href="FeatureEventGateway_8h.html" title="功能事件网关：功能事件回调的操作边界" alt="" coords="1601,79,1781,119"/>
-<area shape="poly" title=" " alt="" coords="2102,35,1782,86,1781,80,2101,30"/>
-<area shape="rect" href="FeatureSystem_8cpp.html" title=" " alt="" coords="2129,343,2302,383"/>
-<area shape="poly" title=" " alt="" coords="2112,37,2078,54,2052,80,2047,98,2053,118,2082,187,2122,250,2164,303,2198,340,2194,344,2160,306,2118,253,2078,189,2047,120,2042,98,2048,77,2075,50,2109,33"/>
-<area shape="rect" href="TestFeatureUndo_8cpp.html" title="FeatureSystem undo 集成测试：Auto 边界自动记录 / Manual 插件自控 / 网关两路" alt="" coords="1913,343,2104,383"/>
-<area shape="poly" title=" " alt="" coords="2105,37,2069,54,2040,80,2021,112,2008,148,2001,185,1997,223,2000,292,2007,342,2002,343,1994,292,1992,222,1995,184,2003,146,2016,110,2036,77,2066,50,2103,33"/>
-<area shape="rect" href="FeatureContext_8h.html" title="功能上下文：功能访问软件环境的入口" alt="" coords="1487,167,1661,207"/>
-<area shape="poly" title=" " alt="" coords="1656,129,1602,169,1598,164,1653,125"/>
-<area shape="rect" href="FeatureSystem_8h.html" title="功能系统：功能的注册、调用与事件路由" alt="" coords="1270,255,1443,295"/>
-<area shape="poly" title=" " alt="" coords="1589,125,1532,143,1477,169,1446,189,1418,212,1375,256,1371,253,1415,209,1443,185,1474,164,1530,138,1587,120"/>
-<area shape="rect" href="TestFeatureEventGateway_8cpp.html" title=" " alt="" coords="1685,167,1935,207"/>
-<area shape="poly" title=" " alt="" coords="1730,125,1785,164,1782,169,1727,129"/>
-<area shape="poly" title=" " alt="" coords="1514,214,1405,257,1403,252,1513,209"/>
-<area shape="rect" href="TestFeatureSystem_8cpp.html" title=" " alt="" coords="1683,343,1889,383"/>
-<area shape="poly" title=" " alt="" coords="1610,214,1765,340,1761,345,1606,218"/>
-<area shape="poly" title=" " alt="" coords="1635,209,1962,340,1960,345,1633,214"/>
-<area shape="poly" title=" " alt="" coords="1256,282,817,302,533,320,246,345,189,353,189,347,246,340,533,315,817,296,1256,276"/>
-<area shape="poly" title=" " alt="" coords="1257,283,907,304,688,322,468,345,418,353,418,347,467,340,687,317,907,299,1256,278"/>
-<area shape="rect" href="QFeatureSystemAdaptor_8cpp.html" title=" " alt="" coords="1447,343,1658,383"/>
-<area shape="poly" title=" " alt="" coords="1413,298,1511,340,1509,345,1411,303"/>
-<area shape="rect" href="QRenderWindow_8cpp.html" title=" " alt="" coords="480,350,711,375"/>
-<area shape="poly" title=" " alt="" coords="1257,288,1014,312,724,345,670,353,669,347,723,340,1013,307,1256,283"/>
-<area shape="rect" href="TestSelectionParameter_8cpp.html" title="选择器空值从 QML 适配层写入功能参数的回归测试" alt="" coords="735,350,994,375"/>
-<area shape="poly" title=" " alt="" coords="1257,296,931,353,930,347,1256,291"/>
-<area shape="rect" href="TestSessionPlugins_8cpp.html" title="Session 插件装载冒烟测试：动态插件注册与功能信息（Qt 插件机制，需 QCoreApplication）" alt="" coords="1018,343,1194,383"/>
-<area shape="poly" title=" " alt="" coords="1290,302,1162,345,1160,340,1288,297"/>
-<area shape="poly" title=" " alt="" coords="1457,279,1754,301,1935,318,2117,340,2129,342,2128,347,2116,345,1935,323,1753,306,1457,284"/>
-<area shape="rect" href="FeatureSystemRegister_8cpp.html" title=" " alt="" coords="1219,343,1423,383"/>
-<area shape="poly" title=" " alt="" coords="1346,309,1331,343,1326,341,1341,306"/>
-<area shape="poly" title=" " alt="" coords="1457,293,1692,340,1691,345,1456,299"/>
-<area shape="poly" title=" " alt="" coords="1457,284,1663,308,1902,340,1913,342,1912,347,1902,345,1662,313,1457,289"/>
+<area shape="rect" title="一个正式历史栈与临时预览捕获：事件不入栈，execute 收尾吸收预览。" alt="" coords="2704,5,2887,31"/>
+<area shape="rect" href="QModelManager_8cpp.html" title=" " alt="" coords="5,438,233,463"/>
+<area shape="poly" title=" " alt="" coords="2690,21,2179,21,1463,27,1104,34,786,45,539,60,452,70,395,81,328,96,270,109,248,120,230,134,219,156,215,186,215,276,213,302,206,327,183,374,156,413,133,440,129,436,152,410,179,371,201,326,208,301,210,276,210,185,214,154,226,131,245,115,269,104,327,90,393,76,451,65,538,55,785,40,1104,29,1462,22,2179,16,2690,16"/>
+<area shape="rect" href="QUndoStackAdaptor_8cpp.html" title=" " alt="" coords="3169,86,3421,111"/>
+<area shape="poly" title=" " alt="" coords="2882,30,3223,83,3222,89,2881,35"/>
+<area shape="rect" href="TestQModelDeletion_8cpp.html" title="Qt 删除入口的忙时拒绝与撤销状态通知回归测试" alt="" coords="3446,86,3683,111"/>
+<area shape="poly" title=" " alt="" coords="2901,25,3145,46,3434,76,3490,83,3489,89,3434,81,3144,51,2900,30"/>
+<area shape="rect" href="TestQTaskStatus_8cpp.html" title="共享 Runner 的展示、取消与后继任务回归。" alt="" coords="660,438,872,463"/>
+<area shape="poly" title=" " alt="" coords="2690,23,2314,27,1796,36,1278,54,1062,66,898,81,835,86,778,85,678,81,633,86,591,100,549,126,508,168,503,177,502,185,508,205,542,241,615,309,755,436,751,440,611,313,538,245,504,208,497,186,498,176,504,165,546,122,588,95,632,81,677,76,778,80,835,81,898,76,1061,61,1277,48,1796,31,2314,21,2690,17"/>
+<area shape="rect" href="ModelScope_8h.html" title="模型操作作用域（RAII）：模型写段的记账与通知收尾" alt="" coords="1673,86,1864,111"/>
+<area shape="poly" title=" " alt="" coords="2691,30,1865,93,1864,87,2690,25"/>
+<area shape="rect" href="TestModelScope_8cpp.html" title="ModelScope 单元测试：空操作零记录、异常路径收尾、固定入口与同步嵌套、特权越闸与关窗" alt="" coords="518,167,713,207"/>
+<area shape="poly" title=" " alt="" coords="2690,23,1905,40,1458,57,1271,69,1130,81,1007,100,886,123,687,169,686,164,884,118,1006,94,1130,76,1271,63,1457,52,1905,35,2690,18"/>
+<area shape="rect" href="TestUndoStack_8cpp.html" title="UndoStack 单元测试：边界自动记录、结构记录、插件层会话、执行路径完备性" alt="" coords="737,167,926,207"/>
+<area shape="poly" title=" " alt="" coords="2690,21,2454,22,2128,29,1754,47,1563,62,1376,81,1246,100,1118,123,908,169,907,164,1117,118,1245,95,1375,76,1562,57,1754,42,2128,24,2454,16,2690,16"/>
+<area shape="rect" href="Session_8cpp.html" title="会话组合根实现：子系统装配、观察者转发桥与有序拆解" alt="" coords="258,438,455,463"/>
+<area shape="poly" title=" " alt="" coords="2690,23,2180,29,1474,40,830,57,612,69,543,75,507,81,453,98,409,115,392,126,379,141,370,160,367,185,367,276,365,370,360,438,355,438,359,369,362,276,362,185,365,159,374,138,388,122,406,110,452,93,505,76,543,69,612,63,830,52,1474,35,2180,23,2690,18"/>
+<area shape="rect" href="TestSession_8cpp.html" title="Session 组合根测试（子系统装配、观察者转发与 ModelEvent 桥接、有序拆解）" alt="" coords="951,167,1096,207"/>
+<area shape="poly" title=" " alt="" coords="2691,24,2242,39,1953,56,1661,81,1502,102,1346,126,1097,173,1096,168,1345,121,1502,96,1660,76,1953,51,2242,34,2690,18"/>
+<area shape="rect" href="TestSessionJobs_8cpp.html" title="无 Qt 宿主的任务拥有关系、终态重放与拆解回归。" alt="" coords="480,431,636,471"/>
+<area shape="poly" title=" " alt="" coords="2690,22,2187,24,1494,32,1155,39,864,50,652,64,585,72,551,81,531,95,516,112,505,132,497,154,491,203,495,255,506,308,522,357,551,429,546,431,517,358,501,309,490,256,486,203,492,153,500,130,512,109,528,91,549,76,584,67,651,58,863,44,1155,34,1494,27,2187,19,2690,17"/>
+<area shape="rect" href="AlgorithmSystem_8cpp.html" title=" " alt="" coords="2107,167,2273,207"/>
+<area shape="poly" title=" " alt="" coords="2741,37,2577,81,2258,169,2257,164,2576,76,2739,32"/>
+<area shape="rect" href="TestAlgorithmSystemShadow_8cpp.html" title=" " alt="" coords="2297,167,2568,207"/>
+<area shape="poly" title=" " alt="" coords="2759,39,2475,169,2473,164,2757,34"/>
+<area shape="rect" href="TestJobRunner_8cpp.html" title=" " alt="" coords="2593,167,2766,207"/>
+<area shape="poly" title=" " alt="" coords="2782,43,2695,168,2690,165,2777,40"/>
+<area shape="rect" href="EditSystem_8cpp.html" title=" " alt="" coords="2791,167,2941,207"/>
+<area shape="poly" title=" " alt="" coords="2808,42,2860,165,2856,167,2803,44"/>
+<area shape="rect" href="FeatureContext_8cpp.html" title="固定功能服务：查询宿主，任务与预览按构造身份交给框架。" alt="" coords="2514,431,2687,471"/>
+<area shape="poly" title=" " alt="" coords="2832,35,2881,65,2929,105,2948,129,2960,154,2963,181,2955,208,2927,251,2893,290,2854,324,2812,354,2729,402,2656,433,2654,428,2726,397,2810,350,2851,320,2889,286,2923,248,2950,206,2958,180,2955,156,2943,132,2925,109,2878,69,2829,39"/>
+<area shape="rect" href="FeatureSystem_8cpp.html" title=" " alt="" coords="3158,431,3331,471"/>
+<area shape="poly" title=" " alt="" coords="2901,20,2941,26,2983,37,3024,54,3061,77,3103,117,3139,164,3169,214,3193,266,3227,362,3244,430,3239,431,3222,364,3189,268,3164,217,3135,166,3099,120,3058,81,3022,58,2982,42,2940,31,2900,25"/>
+<area shape="rect" href="TestFeatureSystem_8cpp.html" title=" " alt="" coords="2712,431,2919,471"/>
+<area shape="poly" title=" " alt="" coords="2880,31,2952,50,2981,62,3000,77,3014,101,3023,126,3025,151,3023,177,3007,229,2979,280,2944,328,2906,371,2840,433,2836,429,2902,367,2940,325,2975,277,3003,227,3018,176,3020,151,3017,127,3010,103,2996,80,2979,67,2951,55,2878,36"/>
+<area shape="rect" href="TestFeatureUndo_8cpp.html" title="FeatureSystem undo 集成测试：边界自动记录 / 插件层会话 / 网关包装" alt="" coords="2943,431,3133,471"/>
+<area shape="poly" title=" " alt="" coords="2894,30,2975,49,3008,62,3029,77,3057,120,3073,168,3080,219,3080,271,3074,320,3066,365,3047,431,3042,430,3061,364,3069,320,3075,271,3075,220,3068,170,3052,122,3025,81,3005,66,2973,54,2893,36"/>
+<area shape="rect" href="UndoStack_8cpp.html" title="撤销/重做栈实现（语义见 UndoStack.h 文件头注释）" alt="" coords="3707,86,3905,111"/>
+<area shape="poly" title=" " alt="" coords="2901,20,3254,38,3474,54,3696,76,3746,83,3745,89,3695,81,3474,59,3254,43,2901,25"/>
+<area shape="rect" href="TestAlgorithmSystem_8cpp.html" title=" " alt="" coords="3929,79,4150,119"/>
+<area shape="poly" title=" " alt="" coords="2901,19,3344,35,3629,52,3917,76,3929,77,3928,83,3916,81,3629,57,3344,40,2901,24"/>
+<area shape="rect" href="TestEditSystem_8cpp.html" title=" " alt="" coords="4175,79,4357,119"/>
+<area shape="poly" title=" " alt="" coords="2901,16,3129,19,3442,27,3800,45,3983,59,4162,76,4175,78,4174,83,4162,81,3982,64,3799,50,3442,32,3129,24,2900,22"/>
+<area shape="rect" href="JobRunner_8cpp.html" title="计算结果先发布，再投递一次所属线程收尾；stop 复用收尾。" alt="" coords="4382,86,4625,111"/>
+<area shape="poly" title=" " alt="" coords="2901,17,3159,20,3523,29,3943,46,4370,76,4432,83,4432,89,4370,81,3943,52,3523,34,3159,25,2900,22"/>
+<area shape="poly" title=" " alt="" coords="1701,117,1630,138,1558,169,1533,189,1507,209,1415,255,1318,295,1220,331,1124,363,950,411,823,441,822,435,949,406,1122,357,1218,326,1316,290,1412,250,1505,204,1530,185,1555,164,1629,133,1700,112"/>
+<area shape="rect" href="ModelScope_8cpp.html" title="ModelScope 实现：收尾与退出原因无关，两动作各自兜异常" alt="" coords="1773,174,1980,199"/>
+<area shape="poly" title=" " alt="" coords="1796,118,1864,172,1860,176,1792,122"/>
+<area shape="poly" title=" " alt="" coords="1659,106,1248,125,987,144,725,169,713,171,713,165,724,164,987,138,1248,120,1659,101"/>
+<area shape="poly" title=" " alt="" coords="1660,108,1336,130,1137,147,938,169,926,171,926,166,938,164,1137,142,1336,124,1659,103"/>
+<area shape="poly" title=" " alt="" coords="1660,113,1351,143,1218,158,1154,169,1140,178,1132,187,1123,198,1109,209,1003,247,794,315,394,440,393,435,792,310,1002,242,1106,204,1119,194,1128,184,1137,174,1152,164,1217,153,1350,138,1659,107"/>
+<area shape="poly" title=" " alt="" coords="1660,112,1367,140,1116,169,1096,173,1096,167,1115,164,1366,135,1659,107"/>
+<area shape="poly" title=" " alt="" coords="1660,113,1394,141,1277,156,1211,169,1194,178,1182,187,1154,209,1006,282,855,346,720,397,617,433,615,428,718,392,853,341,1004,277,1151,204,1179,183,1191,173,1209,164,1276,151,1394,135,1660,107"/>
+<area shape="poly" title=" " alt="" coords="1839,111,2107,166,2106,171,1838,117"/>
+<area shape="poly" title=" " alt="" coords="1871,110,2297,165,2297,171,1870,116"/>
+<area shape="poly" title=" " alt="" coords="1878,103,2194,124,2387,142,2580,164,2593,166,2592,171,2579,169,2386,147,2194,129,1878,108"/>
+<area shape="poly" title=" " alt="" coords="1878,99,2051,105,2275,117,2526,136,2778,164,2791,166,2790,171,2778,169,2526,141,2275,122,2051,110,1878,105"/>
+<area shape="rect" href="FeatureEventGateway_8h.html" title="功能事件网关：预览写归属、订阅存活与通知 flush，不维护正式 undo 历史" alt="" coords="1569,167,1749,207"/>
+<area shape="poly" title=" " alt="" coords="1745,122,1685,169,1682,164,1741,118"/>
+<area shape="poly" title=" " alt="" coords="1863,111,1951,132,1997,146,2041,164,2057,175,2068,186,2079,196,2095,204,2150,222,2201,235,2293,247,2377,247,2456,239,2536,231,2621,226,2717,231,2827,252,2885,269,2944,291,3054,340,3149,389,3216,428,3213,433,3146,394,3052,345,2942,296,2883,274,2825,257,2716,237,2621,231,2537,236,2457,245,2377,252,2293,252,2200,240,2149,227,2093,209,2076,200,2064,190,2054,179,2038,169,1995,151,1950,137,1862,116"/>
+<area shape="poly" title=" " alt="" coords="1838,112,1913,133,1993,164,2010,175,2022,186,2034,196,2051,204,2105,221,2155,232,2247,240,2330,237,2408,227,2487,217,2570,214,2662,223,2712,235,2767,252,2808,269,2847,291,2920,340,2980,389,3022,429,3018,432,2976,393,2917,344,2844,295,2805,274,2765,257,2711,240,2661,229,2570,219,2487,222,2409,232,2330,242,2247,246,2155,237,2104,226,2049,209,2031,200,2018,190,2007,179,1990,169,1912,138,1836,117"/>
+<area shape="rect" href="ModelIOSystem_8cpp.html" title=" " alt="" coords="1222,174,1494,199"/>
+<area shape="poly" title=" " alt="" coords="1701,117,1413,177,1412,171,1700,112"/>
+<area shape="rect" href="FeatureContext_8h.html" title="功能上下文：功能访问软件环境的入口" alt="" coords="2306,255,2479,295"/>
+<area shape="poly" title=" " alt="" coords="1763,204,2065,241,2306,264,2305,269,2065,246,1762,210"/>
+<area shape="rect" href="FeatureSystem_8h.html" title="功能系统：功能的注册、调用与事件路由" alt="" coords="1670,343,1843,383"/>
+<area shape="poly" title=" " alt="" coords="1679,217,1748,341,1744,344,1674,220"/>
+<area shape="rect" href="TestFeatureEventGateway_8cpp.html" title=" " alt="" coords="2503,255,2754,295"/>
+<area shape="poly" title=" " alt="" coords="1764,204,1968,224,2129,231,2288,237,2492,252,2503,253,2503,259,2491,257,2288,242,2128,236,1968,229,1763,210"/>
+<area shape="rect" href="TestUndoQml_8cpp.html" title="实际 QML 删除与选择器失效路径回归测试" alt="" coords="2296,438,2489,463"/>
+<area shape="poly" title=" " alt="" coords="2395,309,2395,438,2390,438,2390,309"/>
+<area shape="poly" title=" " alt="" coords="2428,302,2580,428,2576,433,2424,306"/>
+<area shape="poly" title=" " alt="" coords="2292,292,1844,352,1843,347,2292,287"/>
+<area shape="poly" title=" " alt="" coords="2452,297,2770,428,2768,433,2450,302"/>
+<area shape="poly" title=" " alt="" coords="2476,296,2969,428,2967,433,2475,301"/>
+<area shape="poly" title=" " alt="" coords="1656,368,1408,372,1059,383,656,402,246,433,188,441,187,435,246,428,655,397,1059,377,1408,367,1656,362"/>
+<area shape="poly" title=" " alt="" coords="1656,376,1550,385,1363,398,1216,406,1071,415,884,433,831,441,831,435,883,428,1070,410,1216,400,1362,393,1550,380,1656,371"/>
+<area shape="poly" title=" " alt="" coords="1656,368,1441,373,1146,384,809,403,468,433,417,441,416,435,467,428,808,398,1146,378,1441,368,1656,363"/>
+<area shape="poly" title=" " alt="" coords="1656,368,1468,372,1217,383,934,403,648,433,637,435,636,430,647,428,933,397,1217,378,1468,367,1656,362"/>
+<area shape="poly" title=" " alt="" coords="1858,373,2055,397,2284,428,2329,435,2328,441,2283,433,2054,402,1857,378"/>
+<area shape="poly" title=" " alt="" coords="1857,367,2147,389,2324,406,2501,428,2514,430,2513,435,2500,433,2323,412,2146,395,1857,373"/>
+<area shape="rect" href="QFeatureSystemAdaptor_8cpp.html" title=" " alt="" coords="895,431,1106,471"/>
+<area shape="poly" title=" " alt="" coords="1657,375,1411,399,1118,433,1107,435,1106,430,1118,428,1411,394,1656,370"/>
+<area shape="rect" href="QRenderWindow_8cpp.html" title=" " alt="" coords="1131,438,1361,463"/>
+<area shape="poly" title=" " alt="" coords="1657,383,1314,441,1314,435,1656,378"/>
+<area shape="rect" href="TestSelectionParameter_8cpp.html" title="选择器空值从 QML 适配层写入功能参数的回归测试" alt="" coords="1386,438,1645,463"/>
+<area shape="poly" title=" " alt="" coords="1692,390,1548,440,1547,435,1690,385"/>
+<area shape="rect" href="TestSessionPlugins_8cpp.html" title="Session 插件装载冒烟测试：动态插件注册与功能信息（Qt 插件机制，需 QCoreApplication）" alt="" coords="1669,431,1845,471"/>
+<area shape="poly" title=" " alt="" coords="1759,397,1759,430,1754,430,1754,397"/>
+<area shape="poly" title=" " alt="" coords="1857,361,2087,365,2407,374,2773,394,2961,409,3145,428,3158,430,3157,435,3144,433,2961,414,2773,399,2407,380,2087,370,1857,367"/>
+<area shape="rect" href="FeatureSystemRegister_8cpp.html" title=" " alt="" coords="1869,431,2073,471"/>
+<area shape="poly" title=" " alt="" coords="1817,385,1925,428,1923,433,1815,390"/>
+<area shape="rect" href="InteractionContext_8cpp.html" title="视口交互上下文实现" alt="" coords="2097,431,2272,471"/>
+<area shape="poly" title=" " alt="" coords="1858,381,2098,429,2097,435,1857,387"/>
+<area shape="poly" title=" " alt="" coords="1857,365,2228,386,2463,404,2700,428,2712,430,2711,435,2699,433,2463,410,2228,392,1857,371"/>
+<area shape="poly" title=" " alt="" coords="1857,363,2055,369,2321,380,2624,399,2930,428,2942,430,2942,435,2930,433,2624,405,2321,386,2055,374,1857,369"/>
 </map>
 </div>
 </div>
@@ -226,21 +277,23 @@ UndoStack.h 的引用(Include)关系图:</div>
 <tr class="heading"><td colspan="2"><h2 id="header-nested-classes" class="groupheader"><a id="nested-classes" name="nested-classes"></a>
 类</h2></td></tr>
 <tr class="memitem:UndoStack" id="r_UndoStack"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classUndoStack.html">UndoStack</a></td></tr>
-<tr class="memitem:UndoStack_3A_3AStagedSession" id="r_UndoStack_3A_3AStagedSession"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structUndoStack_1_1StagedSession.html">UndoStack::StagedSession</a></td></tr>
-<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">staged 会话状态（全局唯一，规则见文件头注释）  <a href="structUndoStack_1_1StagedSession.html#details">更多...</a><br /></td></tr>
+<tr class="memitem:UndoStack_3A_3AOwnerScope" id="r_UndoStack_3A_3AOwnerScope"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classUndoStack_1_1OwnerScope.html">UndoStack::OwnerScope</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">所有者上下文守卫：功能入口（invoke / 按键路由 / 事件回调）进入时压入功能 唯一名，析构弹出——嵌套安全（各功能的入口可相互重入）  <a href="classUndoStack_1_1OwnerScope.html#details">更多...</a><br /></td></tr>
+<tr class="memitem:UndoStack_3A_3APreviewAccess" id="r_UndoStack_3A_3APreviewAccess"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classUndoStack_1_1PreviewAccess.html">UndoStack::PreviewAccess</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">事件与预览回写访问：只允许写自己的临时层，不允许修改正式历史。  <a href="classUndoStack_1_1PreviewAccess.html#details">更多...</a><br /></td></tr>
+<tr class="memitem:UndoStack_3A_3ARecordingPause" id="r_UndoStack_3A_3ARecordingPause"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classUndoStack_1_1RecordingPause.html">UndoStack::RecordingPause</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">框架生命周期清理／初始化：不生成历史，仍受线程和在飞写权限制。  <a href="classUndoStack_1_1RecordingPause.html#details">更多...</a><br /></td></tr>
+<tr class="memitem:UndoStack_3A_3ACapture" id="r_UndoStack_3A_3ACapture"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structUndoStack_1_1Capture.html">UndoStack::Capture</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">正式与预览使用同一种捕获数据，各自只保留一个实例。  <a href="structUndoStack_1_1Capture.html#details">更多...</a><br /></td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 id="header-namespaces" class="groupheader"><a id="namespaces" name="namespaces"></a>
+命名空间</h2></td></tr>
+<tr class="memitem:systems" id="r_systems"><td class="memItemLeft" align="right" valign="top">namespace &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacesystems.html">systems</a></td></tr>
+<tr class="memitem:systems_3A_3Ajob" id="r_systems_3A_3Ajob"><td class="memItemLeft" align="right" valign="top">namespace &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacesystems_1_1job.html">systems::job</a></td></tr>
 </table>
 <a name="details" id="details"></a><h2 id="header-details" class="groupheader">详细描述</h2>
-<div class="textblock"><p>撤销/重做栈：混合记录模式（默认边界自动 + Manual 插件自控） </p>
-<p>混合记录模式：</p><ul>
-<li>默认边界自动记录：操作边界（beginOperation/commitOperation）内组件首次标脏经 <a class="el" href="classModelLayer.html" title="负责管理多个 ModelData 实例的类">ModelLayer</a> 写前钩子捕获 before-image，commit 补 after-image 成一条记录；结构操作 边界内并入当前操作、边界外即时自成记录。简单操作零插件代码。</li>
-<li>Manual 插件自控：feature 元数据声明 "undo": "manual" 后边界不再自动捕获/提交， 插件经 staged 会话显式控制——分阶段操作是栈的一等概念，before-image 由栈持有： beginStaged（栈捕获 before₀）→ apply/preview（可反复，重试经 revertStaged 回滚）→ commitStaged（before₀+当前状态记一条）/ cancelStaged（回滚不记录）； undo 与预览恢复共享同一份 before-image。</li>
-</ul>
-<p>staged 会话规则（v1 单组件，无快照链——逐步回退需求由 Auto 模式"每次执行一条记录"覆盖）：</p><ul>
-<li>staged 打开时 undo() = cancelStaged()（恢复 before₀ 并关闭，消费本次，全局栈不动）； redo() 空转。</li>
-<li>staged 打开时的隐式 cancelStaged() 兜底挂在真实写入点（onComponentDirty 首次标脏、 四个结构钩子），而非 beginOperation：纯旁观回调（只读事件订阅同样走 操作边界）不误杀进行中的预览；旧功能后续 staged 调用发现会话已关 → 空转容忍 （beginStaged 除外：会话冲突抛 std::runtime_error）。</li>
-<li>导出为只读所见即所得（含预览态）；stagedActive() 暴露 QML 供界面禁用入口。</li>
-<li>staged 未关功能被停用属插件职责（deactivate 时关闭），写入点隐式 cancel 兜底。 </li>
-</ul>
+<div class="textblock"><p>一个正式历史栈与临时预览捕获：事件不入栈，execute 收尾吸收预览。 </p>
+<p>正式边界首次写捕 before-image，收尾补 after-image，空操作丢弃。 预览层可跨事件存活，revertScope 回起点并保持层，cancelScope 回滚关闭。 同所有者 execute 继续预览捕获，收尾吸收并关闭层；其他正式操作抢占时回滚层。 事件与后台预览回写只能写自己的层，不借用正式边界或修改历史。 功能会话只给正式记录打标，deactivate 折叠栈顶连续同标项，不跨过其他操作。 任务占用期拒绝 undo/redo 与非授权写；取消不提前释放占用。 </p>
 </div></div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>

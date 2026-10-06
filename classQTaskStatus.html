@@ -1,0 +1,1052 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="zh">
+<head>
+<meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=11"/>
+<meta name="generator" content="Doxygen 1.14.0"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>PreCess: QTaskStatus类 参考</title>
+<link href="tabs.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="jquery.js"></script>
+<script type="text/javascript" src="dynsections.js"></script>
+<script type="text/javascript" src="clipboard.js"></script>
+<script type="text/javascript" src="cookie.js"></script>
+<link href="search/search.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="search/searchdata.js"></script>
+<script type="text/javascript" src="search/search.js"></script>
+<link href="doxygen.css" rel="stylesheet" type="text/css" />
+</head>
+<body>
+<div id="top"><!-- do not remove this div, it is closed by doxygen! -->
+<div id="titlearea">
+<table cellspacing="0" cellpadding="0">
+ <tbody>
+ <tr id="projectrow">
+  <td id="projectlogo"><img alt="Logo" src="PreCess.ico"/></td>
+  <td id="projectalign">
+   <div id="projectname">PreCess
+   </div>
+  </td>
+ </tr>
+ </tbody>
+</table>
+</div>
+<!-- end header part -->
+<!-- 制作者 Doxygen 1.14.0 -->
+<script type="text/javascript">
+var searchBox = new SearchBox("searchBox", "search/",'.html');
+</script>
+<script type="text/javascript">
+$(function() { codefold.init(); });
+</script>
+<script type="text/javascript" src="menudata.js"></script>
+<script type="text/javascript" src="menu.js"></script>
+<script type="text/javascript">
+$(function() {
+  initMenu('',true,false,'search.php','搜索',false);
+  $(function() { init_search(); });
+});
+</script>
+<div id="main-nav"></div>
+<!-- window showing the filter options -->
+<div id="MSearchSelectWindow"
+     onmouseover="return searchBox.OnSearchSelectShow()"
+     onmouseout="return searchBox.OnSearchSelectHide()"
+     onkeydown="return searchBox.OnSearchSelectKey(event)">
+</div>
+
+<!-- iframe showing the search results (closed by default) -->
+<div id="MSearchResultsWindow">
+<div id="MSearchResults">
+<div class="SRPage">
+<div id="SRIndex">
+<div id="SRResults"></div>
+<div class="SRStatus" id="Loading">载入中...</div>
+<div class="SRStatus" id="Searching">搜索中...</div>
+<div class="SRStatus" id="NoMatches">未找到</div>
+</div>
+</div>
+</div>
+</div>
+
+</div><!-- top -->
+<div id="doc-content">
+<div class="header">
+  <div class="summary">
+<a href="#signals">信号</a> &#124;
+<a href="#pub-methods">Public 成员函数</a> &#124;
+<a href="#properties">属性</a> &#124;
+<a href="#pri-methods">Private 成员函数</a> &#124;
+<a href="#pri-attribs">Private 属性</a> &#124;
+<a href="classQTaskStatus-members.html">所有成员列表</a>  </div>
+  <div class="headertitle"><div class="title">QTaskStatus类 参考</div></div>
+</div><!--header-->
+<div class="contents">
+
+<p>GUI 展示对象；宿主必须先 stop Runner，再销毁本对象。  
+ <a href="#details">更多...</a></p>
+
+<p><code>#include &lt;<a class="el" href="QTaskStatus_8h_source.html">QTaskStatus.h</a>&gt;</code></p>
+<div class="dynheader">
+类 QTaskStatus 继承关系图:</div>
+<div class="dyncontent">
+<div class="center"><img src="classQTaskStatus__inherit__graph.png" border="0" usemap="#aQTaskStatus_inherit__map" loading="lazy" alt="Inheritance graph"/></div>
+<map name="aQTaskStatus_inherit__map" id="aQTaskStatus_inherit__map">
+<area shape="rect" title="GUI 展示对象；宿主必须先 stop Runner，再销毁本对象。" alt="" coords="5,79,108,104"/>
+<area shape="rect" title=" " alt="" coords="19,5,94,31"/>
+<area shape="poly" title=" " alt="" coords="59,44,59,79,54,79,54,44"/>
+</map>
+<center><span class="legend">[<a href="graph_legend.html">图例</a>]</span></center></div>
+<div class="dynheader">
+QTaskStatus 的协作图:</div>
+<div class="dyncontent">
+<div class="center"><img src="classQTaskStatus__coll__graph.png" border="0" usemap="#aQTaskStatus_coll__map" loading="lazy" alt="Collaboration graph"/></div>
+<map name="aQTaskStatus_coll__map" id="aQTaskStatus_coll__map">
+<area shape="rect" title="GUI 展示对象；宿主必须先 stop Runner，再销毁本对象。" alt="" coords="3867,56,3969,81"/>
+<area shape="rect" title=" " alt="" coords="3635,5,3709,31"/>
+<area shape="poly" title=" " alt="" coords="3724,24,3843,47,3869,53,3868,59,3842,53,3723,29"/>
+<area shape="rect" href="classsystems_1_1job_1_1JobRunner.html" title="所属线程管理一个在飞任务；worker 不等待 GUI。 发布、准备、查询、清理、终态与 stop 均在构造线程。 异步运行须向该线程投递；计算结束后保持槽与模型占用直到 GUI 收尾。" alt="" coords="3583,244,3761,269"/>
+<area shape="poly" title=" " alt="" coords="3700,233,3898,80,3901,84,3703,237"/>
+<area shape="rect" title=" " alt="" coords="3223,157,3390,183"/>
+<area shape="poly" title=" " alt="" coords="3404,176,3481,188,3559,206,3607,223,3647,242,3645,246,3605,228,3558,211,3480,193,3404,182"/>
+<area shape="rect" href="classModelLayer.html" title="负责管理多个 ModelData 实例的类" alt="" coords="2257,676,2355,701"/>
+<area shape="poly" title=" " alt="" coords="2348,668,2408,645,2486,621,2573,602,2663,594,3308,594,3343,591,3377,583,3410,569,3441,552,3497,508,3547,455,3589,399,3622,346,3663,268,3667,271,3627,348,3593,402,3551,458,3501,512,3444,557,3412,574,3379,588,3344,596,3308,599,2663,599,2574,607,2487,626,2410,650,2350,673"/>
+<area shape="rect" href="classUndoStack.html" title=" " alt="" coords="3261,423,3353,448"/>
+<area shape="poly" title=" " alt="" coords="2326,664,2377,618,2409,595,2444,576,2495,561,2581,543,2818,503,3260,439,3261,444,2819,508,2582,548,2496,566,2446,580,2412,599,2380,622,2330,668"/>
+<area shape="rect" href="classGeometryRegistry.html" title=" " alt="" coords="1809,615,1951,640"/>
+<area shape="poly" title=" " alt="" coords="1965,635,2167,662,2257,677,2256,682,2166,667,1964,640"/>
+<area shape="rect" title=" " alt="" coords="1375,625,1562,680"/>
+<area shape="poly" title=" " alt="" coords="1576,643,1809,629,1809,634,1576,649"/>
+<area shape="rect" title=" " alt="" coords="1381,704,1557,759"/>
+<area shape="poly" title=" " alt="" coords="1570,718,1659,700,1705,687,1749,669,1761,660,1773,650,1808,637,1810,642,1776,655,1764,664,1752,674,1707,692,1660,706,1571,724"/>
+<area shape="rect" title=" " alt="" coords="1382,468,1555,523"/>
+<area shape="poly" title=" " alt="" coords="1570,509,1659,530,1752,558,1811,585,1859,612,1857,617,1809,590,1750,563,1658,535,1568,515"/>
+<area shape="rect" title=" " alt="" coords="1381,547,1557,601"/>
+<area shape="poly" title=" " alt="" coords="1570,582,1751,605,1809,613,1809,619,1750,610,1570,588"/>
+<area shape="rect" title=" " alt="" coords="1799,664,1961,719"/>
+<area shape="poly" title=" " alt="" coords="1975,688,2256,686,2257,692,1975,693"/>
+<area shape="rect" title=" " alt="" coords="1359,783,1579,808"/>
+<area shape="poly" title=" " alt="" coords="1580,778,1664,762,1750,739,1774,729,1805,716,1807,721,1776,734,1752,745,1665,767,1581,783"/>
+<area shape="rect" href="classModelData.html" title="Model主要负责处理模型数据，先更新模型数据，再更新ModelActor调函数" alt="" coords="1103,783,1197,808"/>
+<area shape="poly" title=" " alt="" coords="1210,793,1359,793,1359,798,1210,798"/>
+<area shape="rect" title=" " alt="" coords="743,363,829,388"/>
+<area shape="poly" title=" " alt="" coords="809,397,1140,781,1136,784,805,400"/>
+<area shape="rect" href="structComponentData.html" title="模型的组成单元：一个 ComponentData 表示模型中的一个物体部件" alt="" coords="1086,1095,1214,1120"/>
+<area shape="poly" title=" " alt="" coords="797,400,830,502,887,655,965,833,1011,921,1061,1006,1100,1055,1136,1092,1132,1096,1096,1059,1056,1009,1006,924,960,835,882,657,825,504,792,402"/>
+<area shape="poly" title=" " alt="" coords="843,359,981,332,1065,322,1149,318,2987,318,3015,321,3049,330,3131,358,3279,420,3277,425,3129,363,3048,335,3014,326,2987,323,1149,323,1065,327,982,338,844,364"/>
+<area shape="rect" href="structUndoRecord.html" title="一次操作 = 一条记录" alt="" coords="2613,647,2715,672"/>
+<area shape="poly" title=" " alt="" coords="843,377,1546,437,1939,474,2167,502,2304,535,2437,575,2631,644,2629,649,2435,580,2303,540,2166,507,1938,479,1546,442,843,383"/>
+<area shape="rect" href="classsystems_1_1job_1_1Job.html" title="任务单元：持有执行体、提交体、取消令牌与状态" alt="" coords="2919,193,3053,219"/>
+<area shape="poly" title=" " alt="" coords="811,352,868,310,949,261,995,238,1045,220,1096,208,1149,203,2665,203,2919,203,2919,209,2665,209,1149,209,1097,213,1047,225,997,243,951,265,871,314,814,356"/>
+<area shape="rect" href="classJobProgressSlot.html" title=" " alt="" coords="2925,56,3047,81"/>
+<area shape="poly" title=" " alt="" coords="796,349,841,265,875,213,917,160,965,110,1020,69,1050,53,1081,40,1114,33,1149,30,2665,30,2735,32,2805,39,2925,55,2924,60,2804,44,2735,38,2665,35,1149,35,1115,38,1083,46,1052,58,1023,73,969,114,921,163,880,216,846,268,801,351"/>
+<area shape="rect" title=" " alt="" coords="365,355,504,395"/>
+<area shape="poly" title=" " alt="" coords="518,373,743,373,743,378,518,378"/>
+<area shape="rect" title=" " alt="" coords="5,1023,163,1048"/>
+<area shape="poly" title=" " alt="" coords="145,1017,276,990,355,979,433,975,1470,975,1826,991,1941,993,2044,990,2123,983,2149,976,2165,968,2173,955,2178,935,2180,884,2181,830,2183,808,2188,790,2208,761,2233,736,2281,699,2284,704,2237,740,2212,764,2193,792,2188,809,2186,831,2186,884,2183,936,2178,957,2168,972,2151,981,2124,988,2045,996,1941,998,1826,996,1470,981,433,981,355,985,277,995,146,1022"/>
+<area shape="poly" title=" " alt="" coords="107,1011,142,982,186,957,314,909,449,872,584,843,715,822,837,808,946,800,1103,793,1103,798,946,805,838,814,716,828,585,848,450,877,316,914,188,962,145,986,110,1015"/>
+<area shape="poly" title=" " alt="" coords="177,1032,339,1034,552,1041,793,1056,1035,1081,1097,1092,1096,1097,1034,1086,792,1061,552,1047,339,1040,177,1038"/>
+<area shape="rect" href="structMeshData.html" title=" " alt="" coords="391,1271,479,1296"/>
+<area shape="poly" title=" " alt="" coords="90,1062,100,1152,119,1272,132,1332,148,1385,167,1428,188,1455,225,1476,259,1482,295,1474,335,1454,356,1439,373,1420,401,1375,419,1330,428,1296,433,1297,424,1332,406,1377,378,1423,359,1443,337,1459,297,1479,259,1487,223,1481,185,1459,162,1430,143,1387,127,1333,114,1273,95,1153,85,1062"/>
+<area shape="rect" href="classMeshAdjacency.html" title=" " alt="" coords="724,1092,848,1117"/>
+<area shape="poly" title=" " alt="" coords="119,1053,224,1107,291,1134,361,1154,402,1161,434,1161,509,1154,630,1136,733,1115,734,1120,631,1142,510,1159,434,1167,401,1166,359,1159,289,1139,222,1112,116,1057"/>
+<area shape="rect" title=" " alt="" coords="1781,857,1979,912"/>
+<area shape="poly" title=" " alt="" coords="1993,888,2037,884,2082,875,2126,860,2165,837,2174,827,2178,816,2181,804,2189,790,2238,737,2285,699,2288,704,2242,741,2193,793,2186,806,2183,818,2179,830,2168,841,2128,865,2083,880,2037,889,1993,893"/>
+<area shape="rect" title=" " alt="" coords="1364,1070,1573,1110"/>
+<area shape="poly" title=" " alt="" coords="1542,1063,1661,1017,1714,992,1749,969,1757,958,1760,947,1764,935,1773,923,1790,910,1793,914,1777,927,1768,937,1765,949,1762,961,1753,973,1716,997,1663,1022,1544,1068"/>
+<area shape="rect" href="structComponentEntry.html" title="组件数据变更（双向快照）" alt="" coords="1815,1123,1945,1148"/>
+<area shape="poly" title=" " alt="" coords="1538,1112,1603,1127,1715,1137,1815,1136,1815,1142,1714,1142,1602,1133,1537,1117"/>
+<area shape="rect" href="structStructuralEntry.html" title="结构变更（四选一）" alt="" coords="1821,1049,1939,1075"/>
+<area shape="poly" title=" " alt="" coords="1587,1081,1750,1070,1820,1064,1820,1070,1751,1075,1587,1086"/>
+<area shape="poly" title=" " alt="" coords="1227,1100,1363,1093,1364,1098,1228,1106"/>
+<area shape="rect" title=" " alt="" coords="679,1271,893,1296"/>
+<area shape="poly" title=" " alt="" coords="907,1273,972,1259,1003,1248,1033,1233,1069,1207,1099,1175,1139,1119,1143,1122,1103,1179,1072,1211,1036,1238,1006,1252,973,1264,908,1279"/>
+<area shape="poly" title=" " alt="" coords="492,1281,679,1281,679,1286,492,1286"/>
+<area shape="poly" title=" " alt="" coords="491,1264,653,1214,660,1205,664,1195,664,1173,664,1151,668,1139,677,1128,698,1114,723,1105,725,1111,701,1118,680,1132,673,1142,669,1152,669,1173,669,1195,665,1207,656,1219,493,1270"/>
+<area shape="rect" title=" " alt="" coords="687,1142,885,1182"/>
+<area shape="poly" title=" " alt="" coords="899,1149,1034,1131,1100,1117,1101,1123,1035,1137,900,1155"/>
+<area shape="rect" title=" " alt="" coords="687,1206,885,1246"/>
+<area shape="poly" title=" " alt="" coords="899,1210,966,1195,1034,1174,1088,1147,1130,1118,1133,1122,1091,1151,1036,1179,968,1200,900,1215"/>
+<area shape="poly" title=" " alt="" coords="862,1103,917,1103,1086,1104,1086,1110,917,1109,862,1108"/>
+<area shape="rect" title=" " alt="" coords="1804,793,1956,833"/>
+<area shape="poly" title=" " alt="" coords="1970,811,2066,803,2117,794,2166,780,2203,762,2237,741,2289,700,2292,704,2240,745,2205,767,2168,784,2118,799,2066,809,1970,817"/>
+<area shape="rect" href="classMeshIDMap.html" title=" " alt="" coords="1831,743,1929,768"/>
+<area shape="poly" title=" " alt="" coords="1943,754,2048,750,2108,745,2166,735,2225,719,2275,699,2277,704,2227,724,2167,741,2108,750,2049,756,1943,759"/>
+<area shape="rect" title=" " alt="" coords="1363,897,1575,937"/>
+<area shape="poly" title=" " alt="" coords="1560,936,1608,941,1658,939,1707,928,1729,917,1749,903,1760,889,1764,875,1761,844,1758,812,1762,795,1773,779,1799,761,1830,753,1831,759,1802,766,1777,783,1767,797,1763,812,1767,844,1770,876,1765,892,1752,907,1732,922,1709,933,1659,945,1608,947,1559,942"/>
+<area shape="rect" title=" " alt="" coords="1059,891,1241,931"/>
+<area shape="poly" title=" " alt="" coords="1255,910,1363,912,1363,918,1255,916"/>
+<area shape="rect" title=" " alt="" coords="1397,833,1540,873"/>
+<area shape="poly" title=" " alt="" coords="1554,869,1602,874,1653,873,1704,862,1727,853,1749,840,1759,827,1761,812,1762,795,1773,779,1800,763,1830,755,1831,760,1802,768,1777,783,1767,797,1766,812,1764,829,1752,844,1730,858,1705,867,1654,878,1602,879,1553,875"/>
+<area shape="rect" href="classModelObserver.html" title=" " alt="" coords="1819,936,1941,961"/>
+<area shape="poly" title=" " alt="" coords="1954,960,2007,963,2063,959,2118,944,2143,932,2165,915,2176,901,2181,887,2181,858,2178,826,2181,809,2188,790,2209,761,2234,736,2282,699,2285,704,2238,740,2213,764,2193,793,2186,810,2184,826,2186,858,2187,888,2181,904,2169,919,2145,936,2120,949,2064,964,2007,968,1954,965"/>
+<area shape="rect" href="classUndoRecorder.html" title="undo 记录钩子（ModelLayer 回调，UndoStack 实现）" alt="" coords="1823,423,1937,448"/>
+<area shape="poly" title=" " alt="" coords="1898,458,1943,520,1975,552,2011,578,2051,595,2086,599,2123,601,2168,611,2234,643,2287,674,2284,678,2232,647,2166,617,2122,606,2086,604,2050,600,2008,583,1971,556,1939,523,1894,462"/>
+<area shape="poly" title=" " alt="" coords="1951,433,2305,433,2987,433,3261,433,3261,438,2987,438,2305,438,1951,438"/>
+<area shape="rect" title=" " alt="" coords="1775,358,1985,398"/>
+<area shape="poly" title=" " alt="" coords="1973,401,1987,408,2039,439,2089,475,2180,553,2252,624,2296,674,2292,678,2248,628,2176,557,2086,479,2036,443,1984,412,1970,406"/>
+<area shape="rect" href="classModelLayer_1_1WriteOperation.html" title="模型操作占用：身份绑定，只有本操作能够释放；取消不释放。" alt="" coords="2203,365,2409,391"/>
+<area shape="poly" title=" " alt="" coords="1999,375,2203,375,2203,381,1999,381"/>
+<area shape="rect" href="structModelLayer_1_1WriteAuthority.html" title="写权限状态（堆上共享）：含线程亲和、冻结窗口与框架特权深度" alt="" coords="1368,361,1569,387"/>
+<area shape="poly" title=" " alt="" coords="1583,372,1775,374,1774,380,1583,378"/>
+<area shape="poly" title=" " alt="" coords="3366,428,3459,410,3510,394,3557,372,3591,348,3620,319,3660,268,3664,271,3624,322,3594,352,3560,376,3512,399,3460,415,3367,433"/>
+<area shape="rect" title=" " alt="" coords="2887,524,3085,549"/>
+<area shape="poly" title=" " alt="" coords="3050,549,3103,553,3130,551,3156,545,3199,525,3238,498,3292,446,3296,450,3241,502,3202,529,3158,550,3131,556,3103,558,3050,554"/>
+<area shape="poly" title=" " alt="" coords="2706,639,2886,566,2943,547,2944,552,2888,571,2708,644"/>
+<area shape="rect" title=" " alt="" coords="2191,1007,2421,1032"/>
+<area shape="poly" title=" " alt="" coords="2328,995,2648,670,2652,674,2332,999"/>
+<area shape="poly" title=" " alt="" coords="1959,1132,2059,1122,2113,1113,2166,1098,2201,1083,2235,1065,2287,1030,2290,1034,2237,1070,2203,1088,2168,1103,2115,1118,2060,1128,1960,1137"/>
+<area shape="rect" title=" " alt="" coords="2197,803,2415,828"/>
+<area shape="poly" title=" " alt="" coords="2340,794,2444,741,2542,700,2625,670,2627,675,2544,705,2446,746,2343,798"/>
+<area shape="poly" title=" " alt="" coords="1953,1062,2074,1059,2129,1051,2165,1038,2175,1030,2179,1020,2188,994,2248,897,2294,827,2298,830,2252,900,2193,996,2184,1022,2179,1033,2168,1043,2130,1056,2075,1064,1954,1067"/>
+<area shape="rect" title=" " alt="" coords="3181,326,3432,366"/>
+<area shape="poly" title=" " alt="" coords="3445,344,3502,337,3558,323,3586,312,3612,297,3654,267,3657,272,3615,301,3588,317,3559,329,3503,342,3446,349"/>
+<area shape="rect" href="structsystems_1_1job_1_1JobRunner_1_1ModelOperation.html" title=" " alt="" coords="2897,243,3075,283"/>
+<area shape="poly" title=" " alt="" coords="3089,281,3158,299,3182,309,3230,323,3228,328,3180,314,3157,305,3088,286"/>
+<area shape="rect" title=" " alt="" coords="2559,358,2769,398"/>
+<area shape="poly" title=" " alt="" coords="2733,351,2928,281,2930,286,2735,356"/>
+<area shape="poly" title=" " alt="" coords="2422,375,2558,375,2558,381,2422,381"/>
+<area shape="rect" title=" " alt="" coords="3212,259,3401,299"/>
+<area shape="poly" title=" " alt="" coords="3416,292,3486,295,3558,290,3601,280,3639,267,3641,272,3602,285,3559,295,3486,301,3415,297"/>
+<area shape="poly" title=" " alt="" coords="3064,219,3158,239,3229,257,3228,262,3157,245,3063,224"/>
+<area shape="rect" title=" " alt="" coords="2571,243,2757,283"/>
+<area shape="poly" title=" " alt="" coords="2771,262,2817,256,2862,245,2873,237,2885,229,2922,216,2923,221,2888,234,2876,242,2864,250,2818,261,2772,267"/>
+<area shape="rect" title=" " alt="" coords="2618,107,2710,132"/>
+<area shape="poly" title=" " alt="" coords="2724,117,3027,123,3228,130,3432,142,3497,142,3526,145,3560,157,3592,176,3621,199,3662,242,3659,246,3618,203,3589,180,3558,162,3524,151,3497,148,3432,147,3228,135,3027,128,2724,122"/>
+<area shape="poly" title=" " alt="" coords="2716,134,2794,158,2926,191,2925,196,2793,163,2715,139"/>
+<area shape="poly" title=" " alt="" coords="2723,107,2924,76,2925,81,2724,113"/>
+<area shape="rect" title=" " alt="" coords="3261,208,3353,233"/>
+<area shape="poly" title=" " alt="" coords="3366,224,3583,245,3582,251,3366,229"/>
+<area shape="poly" title=" " alt="" coords="3061,66,3866,66,3866,71,3061,71"/>
+</map>
+<center><span class="legend">[<a href="graph_legend.html">图例</a>]</span></center></div>
+<table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 id="header-signals" class="groupheader"><a id="signals" name="signals"></a>
+信号</h2></td></tr>
+<tr class="memitem:ae6ed65917881cf7ea94470ea713134fa" id="r_ae6ed65917881cf7ea94470ea713134fa"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ae6ed65917881cf7ea94470ea713134fa">runningChanged</a> ()</td></tr>
+<tr class="memitem:a54f342931db9752d9d62b101f7eac626" id="r_a54f342931db9752d9d62b101f7eac626"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a54f342931db9752d9d62b101f7eac626">progressChanged</a> ()</td></tr>
+<tr class="memitem:a64372caa9076395bf5d88cbb826a0312" id="r_a64372caa9076395bf5d88cbb826a0312"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a64372caa9076395bf5d88cbb826a0312">busyChanged</a> ()</td></tr>
+<tr class="memitem:a035137a49a6db4ae938bcdf39253c0f5" id="r_a035137a49a6db4ae938bcdf39253c0f5"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a035137a49a6db4ae938bcdf39253c0f5">taskStarted</a> ()</td></tr>
+<tr class="memitem:a0eda057642cb5c9e13d7a5ccff4804e1" id="r_a0eda057642cb5c9e13d7a5ccff4804e1"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a0eda057642cb5c9e13d7a5ccff4804e1">taskFinished</a> ()</td></tr>
+<tr class="memitem:accfb465e498eda53f78d3b6b4bfa6a94" id="r_accfb465e498eda53f78d3b6b4bfa6a94"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#accfb465e498eda53f78d3b6b4bfa6a94">taskFailed</a> (const QString &amp;error)</td></tr>
+<tr class="memitem:a74457e9804d04f84a476d022f3a4f834" id="r_a74457e9804d04f84a476d022f3a4f834"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a74457e9804d04f84a476d022f3a4f834">taskCancelled</a> ()</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 id="header-pub-methods" class="groupheader"><a id="pub-methods" name="pub-methods"></a>
+Public 成员函数</h2></td></tr>
+<tr class="memitem:afb8a77c350ca5d52dab1474e140747e4" id="r_afb8a77c350ca5d52dab1474e140747e4"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#afb8a77c350ca5d52dab1474e140747e4">QTaskStatus</a> (QObject *parent=nullptr)</td></tr>
+<tr class="memitem:a6da850287a78e76fc7a4cb9a4d7c7c42" id="r_a6da850287a78e76fc7a4cb9a4d7c7c42"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a6da850287a78e76fc7a4cb9a4d7c7c42">bindSession</a> (<a class="el" href="classsession_1_1Session.html">session::Session</a> &amp;session)</td></tr>
+<tr class="memdesc:a6da850287a78e76fc7a4cb9a4d7c7c42"><td class="mdescLeft">&#160;</td><td class="mdescRight">空闲时一次装配唯一 Runner；模型操作与展示采用同一任务来源。  <br /></td></tr>
+<tr class="memitem:a146eefb8b91412d57f07ebc132322007" id="r_a146eefb8b91412d57f07ebc132322007"><td class="memItemLeft" align="right" valign="top">Q_INVOKABLE void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a146eefb8b91412d57f07ebc132322007">reportFailure</a> (const QString &amp;error)</td></tr>
+<tr class="memdesc:a146eefb8b91412d57f07ebc132322007"><td class="mdescLeft">&#160;</td><td class="mdescRight">准备阶段异常尚未产生任务，宿主仍可显示失败。  <br /></td></tr>
+<tr class="memitem:a380a7755f2ac7e65c8c58824d200417b" id="r_a380a7755f2ac7e65c8c58824d200417b"><td class="memItemLeft" align="right" valign="top">Q_INVOKABLE void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a380a7755f2ac7e65c8c58824d200417b">showMessage</a> (const QString &amp;text)</td></tr>
+<tr class="memdesc:a380a7755f2ac7e65c8c58824d200417b"><td class="mdescLeft">&#160;</td><td class="mdescRight">展示同步执行反馈；任务运行时保留 Runner 的状态文字。  <br /></td></tr>
+<tr class="memitem:aa552743365d5d9db1182f6260755666f" id="r_aa552743365d5d9db1182f6260755666f"><td class="memItemLeft" align="right" valign="top">Q_INVOKABLE void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#aa552743365d5d9db1182f6260755666f">cancel</a> ()</td></tr>
+<tr class="memitem:a73844e3dbdc0c2c77039cf6628be224c" id="r_a73844e3dbdc0c2c77039cf6628be224c"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a73844e3dbdc0c2c77039cf6628be224c">isRunning</a> () const</td></tr>
+<tr class="memitem:a389c9b43f1565ff581b78699935a0b14" id="r_a389c9b43f1565ff581b78699935a0b14"><td class="memItemLeft" align="right" valign="top">double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a389c9b43f1565ff581b78699935a0b14">getProgress</a> () const</td></tr>
+<tr class="memitem:aef2a0ef34342e1324ed14086733be560" id="r_aef2a0ef34342e1324ed14086733be560"><td class="memItemLeft" align="right" valign="top">QString&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#aef2a0ef34342e1324ed14086733be560">getMessage</a> () const</td></tr>
+<tr class="memitem:a3e927232fe3193583993fa47eed5a7d6" id="r_a3e927232fe3193583993fa47eed5a7d6"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a3e927232fe3193583993fa47eed5a7d6">isWritePending</a> () const</td></tr>
+<tr class="memitem:a1751e89a76b13e1d18689b1dc63520cb" id="r_a1751e89a76b13e1d18689b1dc63520cb"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a1751e89a76b13e1d18689b1dc63520cb">isFrozenBusy</a> () const</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 id="header-properties" class="groupheader"><a id="properties" name="properties"></a>
+属性</h2></td></tr>
+<tr class="memitem:a84f335451a1f26c9d38ab7c808e0d64a" id="r_a84f335451a1f26c9d38ab7c808e0d64a"><td class="memItemLeft" align="right" valign="top">QML_ELEMENTbool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a84f335451a1f26c9d38ab7c808e0d64a">running</a></td></tr>
+<tr class="memitem:a56f426caa712a853846ccd363c429462" id="r_a56f426caa712a853846ccd363c429462"><td class="memItemLeft" align="right" valign="top">double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a56f426caa712a853846ccd363c429462">progress</a></td></tr>
+<tr class="memitem:aaff0bb82bb4ee05a155f5f2014fef54e" id="r_aaff0bb82bb4ee05a155f5f2014fef54e"><td class="memItemLeft" align="right" valign="top">QString&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#aaff0bb82bb4ee05a155f5f2014fef54e">message</a></td></tr>
+<tr class="memitem:a33765497fd9776656a58c1c7da593b00" id="r_a33765497fd9776656a58c1c7da593b00"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a33765497fd9776656a58c1c7da593b00">writePending</a></td></tr>
+<tr class="memitem:a90c42f8fb4d3dfa43256aa79fe4b6503" id="r_a90c42f8fb4d3dfa43256aa79fe4b6503"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a90c42f8fb4d3dfa43256aa79fe4b6503">frozenBusy</a></td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 id="header-pri-methods" class="groupheader"><a id="pri-methods" name="pri-methods"></a>
+Private 成员函数</h2></td></tr>
+<tr class="memitem:af94b29c42c7fab7643b711f63270395c" id="r_af94b29c42c7fab7643b711f63270395c"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#af94b29c42c7fab7643b711f63270395c">startJob</a> (<a class="el" href="classsystems_1_1job_1_1Job.html">systems::job::Job</a> &amp;job)</td></tr>
+<tr class="memitem:a00bcf6cebed3d280a8cc4af6783be048" id="r_a00bcf6cebed3d280a8cc4af6783be048"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a00bcf6cebed3d280a8cc4af6783be048">finishJob</a> (<a class="el" href="classsystems_1_1job_1_1Job.html">systems::job::Job</a> &amp;job)</td></tr>
+<tr class="memitem:a0952a7ff4f9868d6d32b9239516b899e" id="r_a0952a7ff4f9868d6d32b9239516b899e"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a0952a7ff4f9868d6d32b9239516b899e">consumeProgress</a> ()</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 id="header-pri-attribs" class="groupheader"><a id="pri-attribs" name="pri-attribs"></a>
+Private 属性</h2></td></tr>
+<tr class="memitem:a7adf6d6fb712ac186fb86e8273873822" id="r_a7adf6d6fb712ac186fb86e8273873822"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classsystems_1_1job_1_1JobRunner.html">systems::job::JobRunner</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a7adf6d6fb712ac186fb86e8273873822">runner_</a> { nullptr }</td></tr>
+<tr class="memitem:ae0412b79b1b2c747adc2b3e84679dd55" id="r_ae0412b79b1b2c747adc2b3e84679dd55"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classJobProgressSlot.html">JobProgressSlot</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ae0412b79b1b2c747adc2b3e84679dd55">progress_slot_</a></td></tr>
+<tr class="memitem:a4814239dff7f6569545c2a1fb9e1755d" id="r_a4814239dff7f6569545c2a1fb9e1755d"><td class="memItemLeft" align="right" valign="top">QTimer *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a4814239dff7f6569545c2a1fb9e1755d">progress_timer_</a> { nullptr }</td></tr>
+<tr class="memitem:af34293ddb98b7ac31d6de68716b5d51f" id="r_af34293ddb98b7ac31d6de68716b5d51f"><td class="memItemLeft" align="right" valign="top">double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#af34293ddb98b7ac31d6de68716b5d51f">progress_</a> { 0.0 }</td></tr>
+<tr class="memitem:a6e2f0c3c39aa29d2427ba31171aefbf8" id="r_a6e2f0c3c39aa29d2427ba31171aefbf8"><td class="memItemLeft" align="right" valign="top">QString&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a6e2f0c3c39aa29d2427ba31171aefbf8">message_</a></td></tr>
+<tr class="memitem:a23e35681e38f642e7eee27560dc827f0" id="r_a23e35681e38f642e7eee27560dc827f0"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a23e35681e38f642e7eee27560dc827f0">running_</a> { false }</td></tr>
+<tr class="memitem:a9ff275d777fe9714adb2abcfcce7ab40" id="r_a9ff275d777fe9714adb2abcfcce7ab40"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a9ff275d777fe9714adb2abcfcce7ab40">masked_</a> { false }</td></tr>
+<tr class="memitem:a89c5d39dd1ddeb9f14f59049e1f71290" id="r_a89c5d39dd1ddeb9f14f59049e1f71290"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a89c5d39dd1ddeb9f14f59049e1f71290">cancel_requested_</a> { false }</td></tr>
+</table>
+<a name="details" id="details"></a><h2 id="header-details" class="groupheader">详细描述</h2>
+<div class="textblock"><p>GUI 展示对象；宿主必须先 stop Runner，再销毁本对象。 </p>
+</div><a name="doc-constructors" id="doc-constructors"></a><h2 id="header-doc-constructors" class="groupheader">构造及析构函数说明</h2>
+<a id="afb8a77c350ca5d52dab1474e140747e4" name="afb8a77c350ca5d52dab1474e140747e4"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#afb8a77c350ca5d52dab1474e140747e4">&#9670;&#160;</a></span>QTaskStatus()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">QTaskStatus::QTaskStatus </td>
+          <td>(</td>
+          <td class="paramtype">QObject *</td>          <td class="paramname"><span class="paramname"><em>parent</em></span><span class="paramdefsep"> = </span><span class="paramdefval">nullptr</span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel explicit">explicit</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a name="doc-func-members" id="doc-func-members"></a><h2 id="header-doc-func-members" class="groupheader">成员函数说明</h2>
+<a id="a6da850287a78e76fc7a4cb9a4d7c7c42" name="a6da850287a78e76fc7a4cb9a4d7c7c42"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a6da850287a78e76fc7a4cb9a4d7c7c42">&#9670;&#160;</a></span>bindSession()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void QTaskStatus::bindSession </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="classsession_1_1Session.html">session::Session</a> &amp;</td>          <td class="paramname"><span class="paramname"><em>session</em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>空闲时一次装配唯一 Runner；模型操作与展示采用同一任务来源。 </p>
+
+</div>
+</div>
+<a id="a64372caa9076395bf5d88cbb826a0312" name="a64372caa9076395bf5d88cbb826a0312"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a64372caa9076395bf5d88cbb826a0312">&#9670;&#160;</a></span>busyChanged</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void QTaskStatus::busyChanged </td>
+          <td>(</td>
+          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel signal">signal</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="aa552743365d5d9db1182f6260755666f" name="aa552743365d5d9db1182f6260755666f"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aa552743365d5d9db1182f6260755666f">&#9670;&#160;</a></span>cancel()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void QTaskStatus::cancel </td>
+          <td>(</td>
+          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a0952a7ff4f9868d6d32b9239516b899e" name="a0952a7ff4f9868d6d32b9239516b899e"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a0952a7ff4f9868d6d32b9239516b899e">&#9670;&#160;</a></span>consumeProgress()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool QTaskStatus::consumeProgress </td>
+          <td>(</td>
+          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel private">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a00bcf6cebed3d280a8cc4af6783be048" name="a00bcf6cebed3d280a8cc4af6783be048"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a00bcf6cebed3d280a8cc4af6783be048">&#9670;&#160;</a></span>finishJob()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void QTaskStatus::finishJob </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="classsystems_1_1job_1_1Job.html">systems::job::Job</a> &amp;</td>          <td class="paramname"><span class="paramname"><em>job</em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel private">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="aef2a0ef34342e1324ed14086733be560" name="aef2a0ef34342e1324ed14086733be560"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aef2a0ef34342e1324ed14086733be560">&#9670;&#160;</a></span>getMessage()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">QString QTaskStatus::getMessage </td>
+          <td>(</td>
+          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel inline">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a389c9b43f1565ff581b78699935a0b14" name="a389c9b43f1565ff581b78699935a0b14"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a389c9b43f1565ff581b78699935a0b14">&#9670;&#160;</a></span>getProgress()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">double QTaskStatus::getProgress </td>
+          <td>(</td>
+          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel inline">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a1751e89a76b13e1d18689b1dc63520cb" name="a1751e89a76b13e1d18689b1dc63520cb"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a1751e89a76b13e1d18689b1dc63520cb">&#9670;&#160;</a></span>isFrozenBusy()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool QTaskStatus::isFrozenBusy </td>
+          <td>(</td>
+          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel inline">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a73844e3dbdc0c2c77039cf6628be224c" name="a73844e3dbdc0c2c77039cf6628be224c"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a73844e3dbdc0c2c77039cf6628be224c">&#9670;&#160;</a></span>isRunning()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool QTaskStatus::isRunning </td>
+          <td>(</td>
+          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel inline">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a3e927232fe3193583993fa47eed5a7d6" name="a3e927232fe3193583993fa47eed5a7d6"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a3e927232fe3193583993fa47eed5a7d6">&#9670;&#160;</a></span>isWritePending()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool QTaskStatus::isWritePending </td>
+          <td>(</td>
+          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel inline">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a54f342931db9752d9d62b101f7eac626" name="a54f342931db9752d9d62b101f7eac626"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a54f342931db9752d9d62b101f7eac626">&#9670;&#160;</a></span>progressChanged</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void QTaskStatus::progressChanged </td>
+          <td>(</td>
+          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel signal">signal</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a146eefb8b91412d57f07ebc132322007" name="a146eefb8b91412d57f07ebc132322007"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a146eefb8b91412d57f07ebc132322007">&#9670;&#160;</a></span>reportFailure()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void QTaskStatus::reportFailure </td>
+          <td>(</td>
+          <td class="paramtype">const QString &amp;</td>          <td class="paramname"><span class="paramname"><em>error</em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>准备阶段异常尚未产生任务，宿主仍可显示失败。 </p>
+
+</div>
+</div>
+<a id="ae6ed65917881cf7ea94470ea713134fa" name="ae6ed65917881cf7ea94470ea713134fa"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ae6ed65917881cf7ea94470ea713134fa">&#9670;&#160;</a></span>runningChanged</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void QTaskStatus::runningChanged </td>
+          <td>(</td>
+          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel signal">signal</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a380a7755f2ac7e65c8c58824d200417b" name="a380a7755f2ac7e65c8c58824d200417b"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a380a7755f2ac7e65c8c58824d200417b">&#9670;&#160;</a></span>showMessage()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void QTaskStatus::showMessage </td>
+          <td>(</td>
+          <td class="paramtype">const QString &amp;</td>          <td class="paramname"><span class="paramname"><em>text</em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>展示同步执行反馈；任务运行时保留 Runner 的状态文字。 </p>
+
+</div>
+</div>
+<a id="af94b29c42c7fab7643b711f63270395c" name="af94b29c42c7fab7643b711f63270395c"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#af94b29c42c7fab7643b711f63270395c">&#9670;&#160;</a></span>startJob()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void QTaskStatus::startJob </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="classsystems_1_1job_1_1Job.html">systems::job::Job</a> &amp;</td>          <td class="paramname"><span class="paramname"><em>job</em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel private">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a74457e9804d04f84a476d022f3a4f834" name="a74457e9804d04f84a476d022f3a4f834"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a74457e9804d04f84a476d022f3a4f834">&#9670;&#160;</a></span>taskCancelled</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void QTaskStatus::taskCancelled </td>
+          <td>(</td>
+          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel signal">signal</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="accfb465e498eda53f78d3b6b4bfa6a94" name="accfb465e498eda53f78d3b6b4bfa6a94"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#accfb465e498eda53f78d3b6b4bfa6a94">&#9670;&#160;</a></span>taskFailed</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void QTaskStatus::taskFailed </td>
+          <td>(</td>
+          <td class="paramtype">const QString &amp;</td>          <td class="paramname"><span class="paramname"><em>error</em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel signal">signal</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a0eda057642cb5c9e13d7a5ccff4804e1" name="a0eda057642cb5c9e13d7a5ccff4804e1"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a0eda057642cb5c9e13d7a5ccff4804e1">&#9670;&#160;</a></span>taskFinished</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void QTaskStatus::taskFinished </td>
+          <td>(</td>
+          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel signal">signal</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a035137a49a6db4ae938bcdf39253c0f5" name="a035137a49a6db4ae938bcdf39253c0f5"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a035137a49a6db4ae938bcdf39253c0f5">&#9670;&#160;</a></span>taskStarted</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void QTaskStatus::taskStarted </td>
+          <td>(</td>
+          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel signal">signal</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a name="doc-variable-members" id="doc-variable-members"></a><h2 id="header-doc-variable-members" class="groupheader">类成员变量说明</h2>
+<a id="a89c5d39dd1ddeb9f14f59049e1f71290" name="a89c5d39dd1ddeb9f14f59049e1f71290"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a89c5d39dd1ddeb9f14f59049e1f71290">&#9670;&#160;</a></span>cancel_requested_</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool QTaskStatus::cancel_requested_ { false }</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel private">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a9ff275d777fe9714adb2abcfcce7ab40" name="a9ff275d777fe9714adb2abcfcce7ab40"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a9ff275d777fe9714adb2abcfcce7ab40">&#9670;&#160;</a></span>masked_</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool QTaskStatus::masked_ { false }</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel private">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a6e2f0c3c39aa29d2427ba31171aefbf8" name="a6e2f0c3c39aa29d2427ba31171aefbf8"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a6e2f0c3c39aa29d2427ba31171aefbf8">&#9670;&#160;</a></span>message_</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">QString QTaskStatus::message_</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel private">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="af34293ddb98b7ac31d6de68716b5d51f" name="af34293ddb98b7ac31d6de68716b5d51f"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#af34293ddb98b7ac31d6de68716b5d51f">&#9670;&#160;</a></span>progress_</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">double QTaskStatus::progress_ { 0.0 }</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel private">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="ae0412b79b1b2c747adc2b3e84679dd55" name="ae0412b79b1b2c747adc2b3e84679dd55"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ae0412b79b1b2c747adc2b3e84679dd55">&#9670;&#160;</a></span>progress_slot_</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classJobProgressSlot.html">JobProgressSlot</a> QTaskStatus::progress_slot_</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel private">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a4814239dff7f6569545c2a1fb9e1755d" name="a4814239dff7f6569545c2a1fb9e1755d"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a4814239dff7f6569545c2a1fb9e1755d">&#9670;&#160;</a></span>progress_timer_</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">QTimer* QTaskStatus::progress_timer_ { nullptr }</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel private">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a7adf6d6fb712ac186fb86e8273873822" name="a7adf6d6fb712ac186fb86e8273873822"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a7adf6d6fb712ac186fb86e8273873822">&#9670;&#160;</a></span>runner_</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classsystems_1_1job_1_1JobRunner.html">systems::job::JobRunner</a>* QTaskStatus::runner_ { nullptr }</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel private">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a23e35681e38f642e7eee27560dc827f0" name="a23e35681e38f642e7eee27560dc827f0"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a23e35681e38f642e7eee27560dc827f0">&#9670;&#160;</a></span>running_</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool QTaskStatus::running_ { false }</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel private">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a name="doc-property-members" id="doc-property-members"></a><h2 id="header-doc-property-members" class="groupheader">属性说明</h2>
+<a id="a90c42f8fb4d3dfa43256aa79fe4b6503" name="a90c42f8fb4d3dfa43256aa79fe4b6503"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a90c42f8fb4d3dfa43256aa79fe4b6503">&#9670;&#160;</a></span>frozenBusy</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool QTaskStatus::frozenBusy</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel read">read</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="aaff0bb82bb4ee05a155f5f2014fef54e" name="aaff0bb82bb4ee05a155f5f2014fef54e"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aaff0bb82bb4ee05a155f5f2014fef54e">&#9670;&#160;</a></span>message</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">QString QTaskStatus::message</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel read">read</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a56f426caa712a853846ccd363c429462" name="a56f426caa712a853846ccd363c429462"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a56f426caa712a853846ccd363c429462">&#9670;&#160;</a></span>progress</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">double QTaskStatus::progress</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel read">read</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a84f335451a1f26c9d38ab7c808e0d64a" name="a84f335451a1f26c9d38ab7c808e0d64a"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a84f335451a1f26c9d38ab7c808e0d64a">&#9670;&#160;</a></span>running</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">QML_ELEMENTbool QTaskStatus::running</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel read">read</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a33765497fd9776656a58c1c7da593b00" name="a33765497fd9776656a58c1c7da593b00"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a33765497fd9776656a58c1c7da593b00">&#9670;&#160;</a></span>writePending</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool QTaskStatus::writePending</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel read">read</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<hr/>该类的文档由以下文件生成:<ul>
+<li>app/model/<a class="el" href="QTaskStatus_8h_source.html">QTaskStatus.h</a></li>
+<li>app/model/<a class="el" href="QTaskStatus_8cpp.html">QTaskStatus.cpp</a></li>
+</ul>
+</div><!-- contents -->
+<!-- start footer part -->
+<hr class="footer"/><address class="footer"><small>
+制作者&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.14.0
+</small></address>
+</div><!-- doc-content -->
+</body>
+</html>

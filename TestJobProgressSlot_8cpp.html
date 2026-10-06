@@ -1,0 +1,280 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="zh">
+<head>
+<meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=11"/>
+<meta name="generator" content="Doxygen 1.14.0"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>PreCess: app/test/TestJobProgressSlot.cpp 文件参考</title>
+<link href="tabs.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="jquery.js"></script>
+<script type="text/javascript" src="dynsections.js"></script>
+<script type="text/javascript" src="clipboard.js"></script>
+<script type="text/javascript" src="cookie.js"></script>
+<link href="search/search.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="search/searchdata.js"></script>
+<script type="text/javascript" src="search/search.js"></script>
+<link href="doxygen.css" rel="stylesheet" type="text/css" />
+</head>
+<body>
+<div id="top"><!-- do not remove this div, it is closed by doxygen! -->
+<div id="titlearea">
+<table cellspacing="0" cellpadding="0">
+ <tbody>
+ <tr id="projectrow">
+  <td id="projectlogo"><img alt="Logo" src="PreCess.ico"/></td>
+  <td id="projectalign">
+   <div id="projectname">PreCess
+   </div>
+  </td>
+ </tr>
+ </tbody>
+</table>
+</div>
+<!-- end header part -->
+<!-- 制作者 Doxygen 1.14.0 -->
+<script type="text/javascript">
+var searchBox = new SearchBox("searchBox", "search/",'.html');
+</script>
+<script type="text/javascript">
+$(function() { codefold.init(); });
+</script>
+<script type="text/javascript" src="menudata.js"></script>
+<script type="text/javascript" src="menu.js"></script>
+<script type="text/javascript">
+$(function() {
+  initMenu('',true,false,'search.php','搜索',false);
+  $(function() { init_search(); });
+});
+</script>
+<div id="main-nav"></div>
+<!-- window showing the filter options -->
+<div id="MSearchSelectWindow"
+     onmouseover="return searchBox.OnSearchSelectShow()"
+     onmouseout="return searchBox.OnSearchSelectHide()"
+     onkeydown="return searchBox.OnSearchSelectKey(event)">
+</div>
+
+<!-- iframe showing the search results (closed by default) -->
+<div id="MSearchResultsWindow">
+<div id="MSearchResults">
+<div class="SRPage">
+<div id="SRIndex">
+<div id="SRResults"></div>
+<div class="SRStatus" id="Loading">载入中...</div>
+<div class="SRStatus" id="Searching">搜索中...</div>
+<div class="SRStatus" id="NoMatches">未找到</div>
+</div>
+</div>
+</div>
+</div>
+
+<div id="nav-path" class="navpath">
+  <ul>
+<li class="navelem"><a href="dir_d422163b96683743ed3963d4aac17747.html">app</a></li><li class="navelem"><a href="dir_effe5c348e70d16252aa6de5fa9356c9.html">test</a></li>  </ul>
+</div>
+</div><!-- top -->
+<div id="doc-content">
+<div class="header">
+  <div class="summary">
+<a href="#func-members">函数</a>  </div>
+  <div class="headertitle"><div class="title">TestJobProgressSlot.cpp 文件参考</div></div>
+</div><!--header-->
+<div class="contents">
+
+<p><a class="el" href="classJobProgressSlot.html">JobProgressSlot</a> 单元测试：last-wins 合并、value/label 成对、终态门闩、并发写读  
+<a href="#details">更多...</a></p>
+<div class="textblock"><code>#include &quot;<a class="el" href="JobProgressSlot_8h_source.html">JobProgressSlot.h</a>&quot;</code><br />
+<code>#include &lt;catch2/catch_test_macros.hpp&gt;</code><br />
+<code>#include &lt;string&gt;</code><br />
+<code>#include &lt;thread&gt;</code><br />
+</div><div class="textblock"><div class="dynheader">
+TestJobProgressSlot.cpp 的引用(Include)关系图:</div>
+<div class="dyncontent">
+<div class="center"><img src="TestJobProgressSlot_8cpp__incl.png" border="0" usemap="#aapp_2test_2TestJobProgressSlot_8cpp" loading="lazy" alt=""/></div>
+<map name="aapp_2test_2TestJobProgressSlot_8cpp" id="aapp_2test_2TestJobProgressSlot_8cpp">
+<area shape="rect" title="JobProgressSlot 单元测试：last&#45;wins 合并、value/label 成对、终态门闩、并发写读" alt="" coords="207,5,388,45"/>
+<area shape="rect" href="JobProgressSlot_8h.html" title="进度槽：计算与提交共用，GUI 定频轮询（替代每报一次跨线程投递）" alt="" coords="51,93,186,119"/>
+<area shape="poly" title=" " alt="" coords="256,48,158,90,156,85,253,43"/>
+<area shape="rect" title=" " alt="" coords="189,167,248,192"/>
+<area shape="poly" title=" " alt="" coords="284,47,252,95,228,155,223,153,247,92,279,44"/>
+<area shape="rect" title=" " alt="" coords="261,93,480,119"/>
+<area shape="poly" title=" " alt="" coords="317,44,352,81,348,85,313,47"/>
+<area shape="rect" title=" " alt="" coords="504,93,568,119"/>
+<area shape="poly" title=" " alt="" coords="355,43,492,87,490,92,354,48"/>
+<area shape="rect" title=" " alt="" coords="5,167,69,192"/>
+<area shape="poly" title=" " alt="" coords="107,121,63,160,59,156,104,117"/>
+<area shape="poly" title=" " alt="" coords="136,117,193,156,190,161,133,121"/>
+<area shape="rect" title=" " alt="" coords="94,167,154,192"/>
+<area shape="poly" title=" " alt="" coords="122,119,125,153,119,153,117,119"/>
+</map>
+</div>
+</div><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 id="header-func-members" class="groupheader"><a id="func-members" name="func-members"></a>
+函数</h2></td></tr>
+<tr class="memitem:a4bf275ab367ef770c0aa0781d59350bd" id="r_a4bf275ab367ef770c0aa0781d59350bd"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a4bf275ab367ef770c0aa0781d59350bd">TEST_CASE</a> (&quot;Progress slot: poll without <a class="el" href="TestFeatureSystem_8cpp.html#ad6fae20171c3c7cc1a32c899b095376e">write</a> returns false&quot;, &quot;[JobProgressSlot]&quot;)</td></tr>
+<tr class="memitem:ab2231cb18d505c095715e969d1464d30" id="r_ab2231cb18d505c095715e969d1464d30"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ab2231cb18d505c095715e969d1464d30">TEST_CASE</a> (&quot;Progress slot: last-wins coalescing across N writes&quot;, &quot;[JobProgressSlot]&quot;)</td></tr>
+<tr class="memitem:a4506acfa3d54fbd2d8fd693a5619f441" id="r_a4506acfa3d54fbd2d8fd693a5619f441"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a4506acfa3d54fbd2d8fd693a5619f441">TEST_CASE</a> (&quot;Progress slot: value and label stay paired&quot;, &quot;[JobProgressSlot]&quot;)</td></tr>
+<tr class="memitem:accdc7f3f0964ec00b7fd603d7abff3cf" id="r_accdc7f3f0964ec00b7fd603d7abff3cf"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#accdc7f3f0964ec00b7fd603d7abff3cf">TEST_CASE</a> (&quot;Progress slot: close gates poll and drops late writes&quot;, &quot;[JobProgressSlot]&quot;)</td></tr>
+<tr class="memitem:aadbe7290230ad3e8143d184a0ac2fe3a" id="r_aadbe7290230ad3e8143d184a0ac2fe3a"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#aadbe7290230ad3e8143d184a0ac2fe3a">TEST_CASE</a> (&quot;Progress slot: reset clears residue and reopens after close&quot;, &quot;[JobProgressSlot]&quot;)</td></tr>
+<tr class="memitem:afecca518d84b036d15bdabf787765526" id="r_afecca518d84b036d15bdabf787765526"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#afecca518d84b036d15bdabf787765526">TEST_CASE</a> (&quot;Progress slot: concurrent writes and polls stay consistent&quot;, &quot;[JobProgressSlot]&quot;)</td></tr>
+<tr class="memitem:a87f9c96713620ffd81b077d036b50898" id="r_a87f9c96713620ffd81b077d036b50898"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a87f9c96713620ffd81b077d036b50898">TEST_CASE</a> (&quot;Progress-only updates preserve the latest nonempty status text&quot;, &quot;[JobProgressSlot]&quot;)</td></tr>
+</table>
+<a name="details" id="details"></a><h2 id="header-details" class="groupheader">详细描述</h2>
+<div class="textblock"><p><a class="el" href="classJobProgressSlot.html">JobProgressSlot</a> 单元测试：last-wins 合并、value/label 成对、终态门闩、并发写读 </p>
+</div><a name="doc-func-members" id="doc-func-members"></a><h2 id="header-doc-func-members" class="groupheader">函数说明</h2>
+<a id="accdc7f3f0964ec00b7fd603d7abff3cf" name="accdc7f3f0964ec00b7fd603d7abff3cf"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#accdc7f3f0964ec00b7fd603d7abff3cf">&#9670;&#160;</a></span>TEST_CASE() <span class="overload">[1/7]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">TEST_CASE </td>
+          <td>(</td>
+          <td class="paramtype">&quot;Progress slot: close gates poll and drops late writes&quot;</td>          <td class="paramname"><span class="paramname"><em></em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">&quot;&quot;</td>          <td class="paramname"><span class="paramname"><em></em></span>[JobProgressSlot]&#160;)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="afecca518d84b036d15bdabf787765526" name="afecca518d84b036d15bdabf787765526"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#afecca518d84b036d15bdabf787765526">&#9670;&#160;</a></span>TEST_CASE() <span class="overload">[2/7]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">TEST_CASE </td>
+          <td>(</td>
+          <td class="paramtype">&quot;Progress slot: concurrent writes and polls stay consistent&quot;</td>          <td class="paramname"><span class="paramname"><em></em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">&quot;&quot;</td>          <td class="paramname"><span class="paramname"><em></em></span>[JobProgressSlot]&#160;)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="ab2231cb18d505c095715e969d1464d30" name="ab2231cb18d505c095715e969d1464d30"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ab2231cb18d505c095715e969d1464d30">&#9670;&#160;</a></span>TEST_CASE() <span class="overload">[3/7]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">TEST_CASE </td>
+          <td>(</td>
+          <td class="paramtype">&quot;Progress slot: last-wins coalescing across N writes&quot;</td>          <td class="paramname"><span class="paramname"><em></em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">&quot;&quot;</td>          <td class="paramname"><span class="paramname"><em></em></span>[JobProgressSlot]&#160;)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a4bf275ab367ef770c0aa0781d59350bd" name="a4bf275ab367ef770c0aa0781d59350bd"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a4bf275ab367ef770c0aa0781d59350bd">&#9670;&#160;</a></span>TEST_CASE() <span class="overload">[4/7]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">TEST_CASE </td>
+          <td>(</td>
+          <td class="paramtype">&quot;Progress slot: poll without <a class="el" href="TestFeatureSystem_8cpp.html#ad6fae20171c3c7cc1a32c899b095376e">write</a> returns false&quot;</td>          <td class="paramname"><span class="paramname"><em></em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">&quot;&quot;</td>          <td class="paramname"><span class="paramname"><em></em></span>[JobProgressSlot]&#160;)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="aadbe7290230ad3e8143d184a0ac2fe3a" name="aadbe7290230ad3e8143d184a0ac2fe3a"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aadbe7290230ad3e8143d184a0ac2fe3a">&#9670;&#160;</a></span>TEST_CASE() <span class="overload">[5/7]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">TEST_CASE </td>
+          <td>(</td>
+          <td class="paramtype">&quot;Progress slot: reset clears residue and reopens after close&quot;</td>          <td class="paramname"><span class="paramname"><em></em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">&quot;&quot;</td>          <td class="paramname"><span class="paramname"><em></em></span>[JobProgressSlot]&#160;)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a4506acfa3d54fbd2d8fd693a5619f441" name="a4506acfa3d54fbd2d8fd693a5619f441"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a4506acfa3d54fbd2d8fd693a5619f441">&#9670;&#160;</a></span>TEST_CASE() <span class="overload">[6/7]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">TEST_CASE </td>
+          <td>(</td>
+          <td class="paramtype">&quot;Progress slot: value and label stay paired&quot;</td>          <td class="paramname"><span class="paramname"><em></em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">&quot;&quot;</td>          <td class="paramname"><span class="paramname"><em></em></span>[JobProgressSlot]&#160;)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a87f9c96713620ffd81b077d036b50898" name="a87f9c96713620ffd81b077d036b50898"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a87f9c96713620ffd81b077d036b50898">&#9670;&#160;</a></span>TEST_CASE() <span class="overload">[7/7]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">TEST_CASE </td>
+          <td>(</td>
+          <td class="paramtype">&quot;Progress-only updates preserve the latest nonempty status text&quot;</td>          <td class="paramname"><span class="paramname"><em></em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">&quot;&quot;</td>          <td class="paramname"><span class="paramname"><em></em></span>[JobProgressSlot]&#160;)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+</div><!-- contents -->
+<!-- start footer part -->
+<hr class="footer"/><address class="footer"><small>
+制作者&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.14.0
+</small></address>
+</div><!-- doc-content -->
+</body>
+</html>

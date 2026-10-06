@@ -1,23 +1,28 @@
 <map id="app/model/QModelQuery.h" name="app/model/QModelQuery.h">
-<area shape="rect" id="Node000001" title="模型层查询的 QML 适配器" alt="" coords="376,5,571,31"/>
+<area shape="rect" id="Node000001" title="模型层查询的 QML 适配器" alt="" coords="528,5,723,31"/>
 <area shape="rect" id="Node000002" href="$TreeModel_8cpp.html" title=" " alt="" coords="5,159,149,185"/>
-<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="362,24,281,29,198,39,128,56,102,67,85,80,75,99,72,120,76,158,71,159,66,120,70,97,81,77,100,63,127,51,197,34,280,24,362,18"/>
-<area shape="rect" id="Node000003" href="$TreeModel_8h.html" title=" " alt="" coords="95,79,225,104"/>
-<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="410,36,211,81,210,76,409,31"/>
-<area shape="rect" id="Node000004" href="$QModelManager_8h.html" title=" " alt="" coords="249,79,463,104"/>
-<area shape="poly" id="edge4_Node000001_Node000004" title=" " alt="" coords="444,40,377,81,374,76,441,35"/>
-<area shape="rect" id="Node000007" href="$QModelQuery_8cpp.html" title="模型层查询的 QML 适配器实现（逻辑委托给 SessionQuery）" alt="" coords="487,79,697,104"/>
-<area shape="poly" id="edge7_Node000001_Node000007" title=" " alt="" coords="506,35,574,76,571,81,503,40"/>
-<area shape="rect" id="Node000008" href="$QRenderWindow_8cpp.html" title=" " alt="" coords="619,159,850,185"/>
-<area shape="poly" id="edge8_Node000001_Node000008" title=" " alt="" coords="568,30,653,50,688,62,711,77,725,96,733,119,738,159,732,160,728,120,720,99,708,81,685,67,651,55,567,36"/>
-<area shape="rect" id="Node000009" href="$QRenderWindow_8h.html" title=" " alt="" coords="773,79,987,104"/>
-<area shape="poly" id="edge9_Node000001_Node000009" title=" " alt="" coords="552,30,815,76,814,81,552,36"/>
-<area shape="poly" id="edge3_Node000003_Node000002" title=" " alt="" coords="140,115,91,161,88,157,136,112"/>
-<area shape="rect" id="Node000005" href="$main_8cpp.html" title=" " alt="" coords="213,159,323,185"/>
-<area shape="poly" id="edge5_Node000004_Node000005" title=" " alt="" coords="335,115,283,161,279,157,331,111"/>
-<area shape="rect" id="Node000006" href="$QModelManager_8cpp.html" title=" " alt="" coords="347,159,575,185"/>
-<area shape="poly" id="edge6_Node000004_Node000006" title=" " alt="" coords="384,110,447,157,444,161,381,114"/>
-<area shape="poly" id="edge10_Node000009_Node000008" title=" " alt="" coords="848,113,757,161,755,157,845,108"/>
-<area shape="rect" id="Node000010" href="$TestRenderWindowLifecycle_8cpp.html" title="视口场景图销毁与重建的资源生命周期回归测试" alt="" coords="875,152,1072,192"/>
-<area shape="poly" id="edge11_Node000009_Node000010" title=" " alt="" coords="906,111,953,150,949,154,903,115"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="514,31,334,51,252,65,194,81,162,99,132,121,89,161,86,157,129,117,159,94,192,76,251,59,334,45,514,25"/>
+<area shape="rect" id="Node000003" href="$TreeModel_8h.html" title=" " alt="" coords="206,79,335,104"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="556,36,329,81,328,76,555,31"/>
+<area shape="rect" id="Node000005" href="$QModelManager_8h.html" title=" " alt="" coords="401,79,615,104"/>
+<area shape="poly" id="edge5_Node000001_Node000005" title=" " alt="" coords="596,40,529,81,526,76,593,35"/>
+<area shape="rect" id="Node000009" href="$QModelQuery_8cpp.html" title="模型层查询的 QML 适配器实现（逻辑委托给 SessionQuery）" alt="" coords="639,79,849,104"/>
+<area shape="poly" id="edge10_Node000001_Node000009" title=" " alt="" coords="658,35,726,76,723,81,655,40"/>
+<area shape="rect" id="Node000010" href="$QRenderWindow_8cpp.html" title=" " alt="" coords="1041,159,1271,185"/>
+<area shape="poly" id="edge11_Node000001_Node000010" title=" " alt="" coords="688,31,861,76,1122,157,1121,162,859,81,686,37"/>
+<area shape="rect" id="Node000011" href="$QRenderWindow_8h.html" title=" " alt="" coords="1049,79,1263,104"/>
+<area shape="poly" id="edge12_Node000001_Node000011" title=" " alt="" coords="725,30,1071,76,1070,81,724,35"/>
+<area shape="poly" id="edge3_Node000003_Node000002" title=" " alt="" coords="231,111,106,162,104,157,229,107"/>
+<area shape="rect" id="Node000004" href="$TestUndoQml_8cpp.html" title="实际 QML 删除与选择器失效路径回归测试" alt="" coords="174,159,367,185"/>
+<area shape="poly" id="edge4_Node000003_Node000004" title=" " alt="" coords="273,118,273,159,268,159,268,118"/>
+<area shape="poly" id="edge9_Node000005_Node000004" title=" " alt="" coords="461,111,306,162,304,157,460,106"/>
+<area shape="rect" id="Node000006" href="$main_8cpp.html" title=" " alt="" coords="391,159,502,185"/>
+<area shape="poly" id="edge6_Node000005_Node000006" title=" " alt="" coords="493,116,458,161,454,157,489,113"/>
+<area shape="rect" id="Node000007" href="$QModelManager_8cpp.html" title=" " alt="" coords="526,159,754,185"/>
+<area shape="poly" id="edge7_Node000005_Node000007" title=" " alt="" coords="540,109,622,157,619,161,538,113"/>
+<area shape="rect" id="Node000008" href="$TestQModelDeletion_8cpp.html" title="Qt 删除入口的忙时拒绝与撤销状态通知回归测试" alt="" coords="779,159,1016,185"/>
+<area shape="poly" id="edge8_Node000005_Node000008" title=" " alt="" coords="579,104,841,157,840,162,578,109"/>
+<area shape="poly" id="edge13_Node000011_Node000010" title=" " alt="" coords="1159,118,1159,159,1153,159,1153,118"/>
+<area shape="rect" id="Node000012" href="$TestRenderWindowLifecycle_8cpp.html" title="视口场景图销毁与重建的资源生命周期回归测试" alt="" coords="1296,152,1493,192"/>
+<area shape="poly" id="edge14_Node000011_Node000012" title=" " alt="" coords="1204,106,1338,149,1336,154,1203,111"/>
 </map>

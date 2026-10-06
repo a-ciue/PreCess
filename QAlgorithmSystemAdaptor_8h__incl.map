@@ -1,5 +1,5 @@
 <map id="app/model/systems/algo/QAlgorithmSystemAdaptor.h" name="app/model/systems/algo/QAlgorithmSystemAdaptor.h">
-<area shape="rect" id="Node000001" title=" " alt="" coords="189,5,400,45"/>
+<area shape="rect" id="Node000001" title="算法声明与调用的 Qt 适配；任务状态由 QTaskStatus 统一提供。" alt="" coords="189,5,400,45"/>
 <area shape="rect" id="Node000002" href="$Core_8h.html" title=" " alt="" coords="167,93,231,119"/>
 <area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="273,48,225,87,222,82,270,43"/>
 <area shape="rect" id="Node000008" title=" " alt="" coords="255,93,334,119"/>

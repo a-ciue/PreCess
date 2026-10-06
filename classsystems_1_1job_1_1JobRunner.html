@@ -1,0 +1,1058 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="zh">
+<head>
+<meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=11"/>
+<meta name="generator" content="Doxygen 1.14.0"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>PreCess: systems::job::JobRunner类 参考</title>
+<link href="tabs.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="jquery.js"></script>
+<script type="text/javascript" src="dynsections.js"></script>
+<script type="text/javascript" src="clipboard.js"></script>
+<script type="text/javascript" src="cookie.js"></script>
+<link href="search/search.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="search/searchdata.js"></script>
+<script type="text/javascript" src="search/search.js"></script>
+<link href="doxygen.css" rel="stylesheet" type="text/css" />
+</head>
+<body>
+<div id="top"><!-- do not remove this div, it is closed by doxygen! -->
+<div id="titlearea">
+<table cellspacing="0" cellpadding="0">
+ <tbody>
+ <tr id="projectrow">
+  <td id="projectlogo"><img alt="Logo" src="PreCess.ico"/></td>
+  <td id="projectalign">
+   <div id="projectname">PreCess
+   </div>
+  </td>
+ </tr>
+ </tbody>
+</table>
+</div>
+<!-- end header part -->
+<!-- 制作者 Doxygen 1.14.0 -->
+<script type="text/javascript">
+var searchBox = new SearchBox("searchBox", "search/",'.html');
+</script>
+<script type="text/javascript">
+$(function() { codefold.init(); });
+</script>
+<script type="text/javascript" src="menudata.js"></script>
+<script type="text/javascript" src="menu.js"></script>
+<script type="text/javascript">
+$(function() {
+  initMenu('',true,false,'search.php','搜索',false);
+  $(function() { init_search(); });
+});
+</script>
+<div id="main-nav"></div>
+<!-- window showing the filter options -->
+<div id="MSearchSelectWindow"
+     onmouseover="return searchBox.OnSearchSelectShow()"
+     onmouseout="return searchBox.OnSearchSelectHide()"
+     onkeydown="return searchBox.OnSearchSelectKey(event)">
+</div>
+
+<!-- iframe showing the search results (closed by default) -->
+<div id="MSearchResultsWindow">
+<div id="MSearchResults">
+<div class="SRPage">
+<div id="SRIndex">
+<div id="SRResults"></div>
+<div class="SRStatus" id="Loading">载入中...</div>
+<div class="SRStatus" id="Searching">搜索中...</div>
+<div class="SRStatus" id="NoMatches">未找到</div>
+</div>
+</div>
+</div>
+</div>
+
+<div id="nav-path" class="navpath">
+  <ul>
+<li class="navelem"><a href="namespacesystems.html">systems</a></li><li class="navelem"><a href="namespacesystems_1_1job.html">job</a></li><li class="navelem"><a href="classsystems_1_1job_1_1JobRunner.html">JobRunner</a></li>  </ul>
+</div>
+</div><!-- top -->
+<div id="doc-content">
+<div class="header">
+  <div class="summary">
+<a href="#nested-classes">类</a> &#124;
+<a href="#pub-methods">Public 成员函数</a> &#124;
+<a href="#pri-methods">Private 成员函数</a> &#124;
+<a href="#pri-static-methods">静态 Private 成员函数</a> &#124;
+<a href="#pri-attribs">Private 属性</a> &#124;
+<a href="classsystems_1_1job_1_1JobRunner-members.html">所有成员列表</a>  </div>
+  <div class="headertitle"><div class="title">systems::job::JobRunner类 参考</div></div>
+</div><!--header-->
+<div class="contents">
+
+<p>所属线程管理一个在飞任务；worker 不等待 GUI。 发布、准备、查询、清理、终态与 stop 均在构造线程。 异步运行须向该线程投递；计算结束后保持槽与模型占用直到 GUI 收尾。  
+ <a href="#details">更多...</a></p>
+
+<p><code>#include &lt;<a class="el" href="JobRunner_8h_source.html">JobRunner.h</a>&gt;</code></p>
+<div class="dynheader">
+systems::job::JobRunner 的协作图:</div>
+<div class="dyncontent">
+<div class="center"><img src="classsystems_1_1job_1_1JobRunner__coll__graph.png" border="0" usemap="#asystems_1_1job_1_1JobRunner_coll__map" loading="lazy" alt="Collaboration graph"/></div>
+<map name="asystems_1_1job_1_1JobRunner_coll__map" id="asystems_1_1job_1_1JobRunner_coll__map">
+<area shape="rect" title="所属线程管理一个在飞任务；worker 不等待 GUI。 发布、准备、查询、清理、终态与 stop 均在构造线程。 异步运行须向该线程投递；计算结束后保持槽与模型占用直到 GUI 收尾。" alt="" coords="3616,549,3795,574"/>
+<area shape="rect" title=" " alt="" coords="3282,173,3449,198"/>
+<area shape="poly" title=" " alt="" coords="3462,176,3496,179,3531,186,3564,199,3594,218,3629,256,3656,301,3676,349,3690,398,3704,488,3707,548,3702,549,3699,489,3685,399,3671,351,3651,303,3625,259,3590,222,3562,203,3530,191,3496,184,3462,181"/>
+<area shape="rect" href="classModelLayer.html" title="负责管理多个 ModelData 实例的类" alt="" coords="2315,303,2414,329"/>
+<area shape="poly" title=" " alt="" coords="2428,309,2562,301,2721,297,3367,297,3397,300,3427,306,3484,329,3536,363,3583,402,3623,445,3656,486,3698,547,3694,550,3652,489,3619,448,3579,406,3533,367,3482,334,3426,311,3397,305,3367,303,2721,303,2563,307,2428,314"/>
+<area shape="rect" href="classUndoStack.html" title=" " alt="" coords="3319,549,3411,574"/>
+<area shape="poly" title=" " alt="" coords="2428,328,3320,548,3319,553,2427,334"/>
+<area shape="rect" href="classGeometryRegistry.html" title=" " alt="" coords="1868,414,2009,439"/>
+<area shape="poly" title=" " alt="" coords="2023,420,2121,409,2173,399,2224,385,2291,357,2343,326,2346,331,2293,362,2226,391,2175,404,2121,414,2023,426"/>
+<area shape="rect" title=" " alt="" coords="1434,494,1621,549"/>
+<area shape="poly" title=" " alt="" coords="1633,499,1809,461,1896,437,1897,442,1810,467,1634,505"/>
+<area shape="rect" title=" " alt="" coords="1439,258,1615,313"/>
+<area shape="poly" title=" " alt="" coords="1629,286,1675,293,1723,305,1769,323,1811,350,1821,363,1824,376,1827,388,1835,399,1851,409,1869,416,1867,421,1849,414,1832,403,1822,390,1819,377,1816,365,1808,354,1767,328,1721,310,1674,298,1629,291"/>
+<area shape="rect" title=" " alt="" coords="1441,337,1614,391"/>
+<area shape="poly" title=" " alt="" coords="1628,374,1810,400,1873,411,1873,417,1809,405,1627,379"/>
+<area shape="rect" title=" " alt="" coords="1439,415,1615,470"/>
+<area shape="poly" title=" " alt="" coords="1629,436,1868,427,1868,432,1629,441"/>
+<area shape="rect" title=" " alt="" coords="1857,497,2020,551"/>
+<area shape="poly" title=" " alt="" coords="2033,507,2128,483,2177,465,2224,443,2264,415,2301,383,2351,327,2355,331,2304,387,2268,420,2227,448,2179,470,2130,488,2034,513"/>
+<area shape="rect" title=" " alt="" coords="1417,573,1637,598"/>
+<area shape="poly" title=" " alt="" coords="1651,586,1730,582,1809,571,1877,549,1879,554,1810,576,1730,587,1652,591"/>
+<area shape="rect" href="classModelData.html" title="Model主要负责处理模型数据，先更新模型数据，再更新ModelActor调函数" alt="" coords="1162,573,1255,598"/>
+<area shape="poly" title=" " alt="" coords="1269,583,1417,583,1417,588,1269,588"/>
+<area shape="rect" title=" " alt="" coords="801,649,888,674"/>
+<area shape="poly" title=" " alt="" coords="895,642,975,619,1075,600,1161,588,1162,593,1076,605,977,624,896,647"/>
+<area shape="rect" href="structComponentData.html" title="模型的组成单元：一个 ComponentData 表示模型中的一个物体部件" alt="" coords="1145,910,1273,935"/>
+<area shape="poly" title=" " alt="" coords="877,680,917,713,954,756,962,772,965,787,968,800,978,813,1005,829,1032,832,1060,833,1094,843,1151,875,1194,908,1191,912,1148,880,1092,848,1060,839,1031,838,1004,834,974,817,963,802,960,788,957,774,950,759,913,717,874,684"/>
+<area shape="poly" title=" " alt="" coords="902,655,1331,634,1631,624,1937,620,3046,620,3124,615,3200,602,3324,571,3325,577,3201,608,3124,620,3046,625,1937,625,1631,630,1331,639,902,661"/>
+<area shape="rect" href="structUndoRecord.html" title="一次操作 = 一条记录" alt="" coords="2672,707,2773,733"/>
+<area shape="poly" title=" " alt="" coords="902,660,1661,681,1924,681,2128,675,2332,675,2452,681,2594,693,2672,706,2671,711,2593,699,2452,687,2332,681,2128,680,1924,686,1661,687,901,666"/>
+<area shape="rect" href="classsystems_1_1job_1_1Job.html" title="任务单元：持有执行体、提交体、取消令牌与状态" alt="" coords="2978,961,3111,986"/>
+<area shape="poly" title=" " alt="" coords="902,668,1000,689,1127,725,1195,749,1264,777,1332,810,1395,847,1407,861,1419,874,1476,901,1526,918,1573,928,1617,932,1713,932,1833,937,1989,948,2145,949,2724,949,2860,954,2978,964,2978,969,2860,960,2724,955,2145,955,1989,954,1833,943,1713,938,1617,937,1572,933,1525,924,1474,906,1416,878,1403,865,1392,851,1329,814,1262,782,1193,754,1125,730,999,695,901,673"/>
+<area shape="rect" title=" " alt="" coords="395,592,533,632"/>
+<area shape="poly" title=" " alt="" coords="547,618,714,639,802,652,801,657,713,644,547,624"/>
+<area shape="rect" title=" " alt="" coords="5,687,163,713"/>
+<area shape="poly" title=" " alt="" coords="86,673,95,615,112,533,138,438,175,338,198,290,224,244,254,202,287,165,325,134,366,110,412,95,463,89,1360,89,1438,91,1499,97,1638,115,1724,123,1810,135,2019,171,2149,197,2226,216,2264,236,2299,259,2351,301,2348,305,2296,263,2261,240,2224,221,2148,202,2018,176,1809,140,1723,129,1637,120,1499,103,1438,97,1360,95,463,95,413,100,368,115,328,138,291,168,258,205,228,247,202,292,180,340,143,439,117,534,100,616,91,674"/>
+<area shape="poly" title=" " alt="" coords="117,678,222,625,289,598,359,577,475,558,594,547,712,543,825,545,1025,559,1162,576,1161,581,1024,564,825,551,712,549,594,552,476,563,361,583,291,603,224,629,119,683"/>
+<area shape="poly" title=" " alt="" coords="87,726,90,787,104,865,116,905,134,943,158,978,189,1006,195,1018,195,1031,198,1035,204,1040,240,1047,317,1049,451,1043,658,1026,952,997,1023,988,1093,969,1140,952,1181,933,1183,938,1142,957,1094,975,1024,993,952,1003,658,1032,452,1048,317,1054,239,1052,202,1045,194,1039,190,1032,190,1020,185,1010,154,981,130,946,111,907,99,866,85,787,82,727"/>
+<area shape="rect" href="structMeshData.html" title=" " alt="" coords="420,961,508,986"/>
+<area shape="poly" title=" " alt="" coords="88,726,93,782,108,853,121,889,138,923,160,954,188,979,217,995,248,1004,281,1008,314,1007,377,998,428,984,430,989,378,1003,314,1013,281,1013,247,1009,215,1000,185,984,156,957,133,926,116,891,103,854,88,783,83,727"/>
+<area shape="rect" href="classMeshAdjacency.html" title=" " alt="" coords="783,883,907,909"/>
+<area shape="poly" title=" " alt="" coords="149,682,195,677,246,679,295,691,317,702,338,717,351,734,356,753,351,790,346,827,350,843,362,859,378,864,415,869,530,878,783,891,782,896,529,883,414,874,377,869,358,864,345,846,340,827,345,790,350,753,346,737,334,721,315,706,293,696,245,684,196,683,150,688"/>
+<area shape="rect" title=" " alt="" coords="1839,711,2038,766"/>
+<area shape="poly" title=" " alt="" coords="1955,698,1973,663,1998,624,2029,587,2067,556,2089,545,2109,541,2147,541,2184,542,2203,537,2224,526,2251,504,2275,479,2314,422,2341,368,2356,328,2361,330,2346,370,2318,425,2279,482,2254,508,2227,530,2205,542,2185,547,2147,546,2110,546,2090,550,2069,561,2033,591,2003,627,1978,665,1960,700"/>
+<area shape="rect" title=" " alt="" coords="1423,824,1632,864"/>
+<area shape="poly" title=" " alt="" coords="1577,815,1617,797,1661,781,1751,760,1838,746,1839,751,1752,765,1662,787,1619,802,1579,820"/>
+<area shape="rect" href="structComponentEntry.html" title="组件数据变更（双向快照）" alt="" coords="1873,839,2004,865"/>
+<area shape="poly" title=" " alt="" coords="1636,864,1662,867,1735,871,1809,867,1873,860,1873,865,1810,872,1735,876,1661,872,1635,869"/>
+<area shape="rect" href="structStructuralEntry.html" title="结构变更（四选一）" alt="" coords="1879,790,1998,815"/>
+<area shape="poly" title=" " alt="" coords="1645,826,1661,824,1879,804,1879,810,1662,829,1646,831"/>
+<area shape="poly" title=" " alt="" coords="1274,904,1445,861,1446,867,1275,909"/>
+<area shape="rect" title=" " alt="" coords="737,962,952,987"/>
+<area shape="poly" title=" " alt="" coords="966,966,1093,951,1166,933,1168,938,1094,956,966,971"/>
+<area shape="poly" title=" " alt="" coords="522,971,737,972,737,977,522,976"/>
+<area shape="poly" title=" " alt="" coords="521,959,591,944,782,906,783,911,593,949,522,964"/>
+<area shape="rect" title=" " alt="" coords="745,1064,944,1104"/>
+<area shape="poly" title=" " alt="" coords="958,1093,1027,1087,1060,1079,1092,1066,1131,1037,1162,1000,1185,963,1199,935,1204,937,1189,966,1166,1003,1134,1041,1095,1070,1062,1084,1027,1093,958,1099"/>
+<area shape="rect" href="structGeometryData.html" title=" " alt="" coords="405,1071,523,1097"/>
+<area shape="poly" title=" " alt="" coords="537,1081,745,1081,745,1087,537,1087"/>
+<area shape="rect" title=" " alt="" coords="745,769,944,809"/>
+<area shape="poly" title=" " alt="" coords="886,815,929,842,977,865,1150,907,1149,913,975,871,926,846,883,819"/>
+<area shape="rect" href="structGeometryMeshMap.html" title="Geometry 子形状与 MeshData 局部拓扑之间的通用映射" alt="" coords="389,657,539,682"/>
+<area shape="poly" title=" " alt="" coords="553,667,633,675,674,684,714,696,746,711,776,730,823,767,820,771,773,734,743,716,712,701,673,689,632,680,553,672"/>
+<area shape="poly" title=" " alt="" coords="913,909,976,919,1064,923,1144,923,1144,928,1064,929,976,924,913,914"/>
+<area shape="rect" title=" " alt="" coords="360,707,568,747"/>
+<area shape="poly" title=" " alt="" coords="535,749,569,763,711,828,819,881,817,886,709,833,567,768,533,754"/>
+<area shape="rect" title=" " alt="" coords="1863,349,2015,389"/>
+<area shape="poly" title=" " alt="" coords="2028,361,2123,353,2225,341,2315,325,2316,330,2226,347,2124,359,2029,367"/>
+<area shape="rect" href="classMeshIDMap.html" title=" " alt="" coords="1889,202,1988,227"/>
+<area shape="poly" title=" " alt="" coords="1984,230,2069,259,2316,305,2315,310,2067,264,1982,235"/>
+<area shape="rect" title=" " alt="" coords="1421,193,1633,233"/>
+<area shape="poly" title=" " alt="" coords="1647,211,1889,212,1889,217,1647,216"/>
+<area shape="rect" title=" " alt="" coords="1117,193,1300,233"/>
+<area shape="poly" title=" " alt="" coords="1314,211,1421,211,1421,216,1314,216"/>
+<area shape="rect" title=" " alt="" coords="1456,129,1599,169"/>
+<area shape="poly" title=" " alt="" coords="1613,156,1810,184,1889,200,1888,206,1809,189,1612,161"/>
+<area shape="rect" href="classModelObserver.html" title=" " alt="" coords="1878,299,1999,325"/>
+<area shape="poly" title=" " alt="" coords="2013,311,2068,312,2315,313,2315,319,2068,317,2013,316"/>
+<area shape="rect" href="classUndoRecorder.html" title="undo 记录钩子（ModelLayer 回调，UndoStack 实现）" alt="" coords="1881,101,1996,126"/>
+<area shape="poly" title=" " alt="" coords="1998,127,2045,143,2069,152,2113,161,2149,163,2184,167,2227,183,2269,210,2306,243,2356,301,2352,305,2302,247,2265,215,2224,188,2183,172,2148,168,2112,166,2067,157,2043,148,1996,133"/>
+<area shape="poly" title=" " alt="" coords="2010,110,2113,114,2226,129,2403,173,2580,227,2752,288,2913,352,3182,469,3340,546,3338,551,3179,474,2911,357,2750,293,2579,232,2401,178,2225,135,2112,119,2010,115"/>
+<area shape="rect" title=" " alt="" coords="1833,8,2044,48"/>
+<area shape="poly" title=" " alt="" coords="2015,50,2148,95,2227,124,2274,169,2313,219,2342,267,2360,302,2355,304,2337,269,2308,222,2270,172,2224,129,2146,100,2013,55"/>
+<area shape="rect" href="classModelLayer_1_1WriteOperation.html" title="模型操作占用：身份绑定，只有本操作能够释放；取消不释放。" alt="" coords="2262,34,2467,59"/>
+<area shape="poly" title=" " alt="" coords="2058,31,2262,40,2262,45,2057,36"/>
+<area shape="rect" href="structModelLayer_1_1WriteAuthority.html" title="写权限状态（堆上共享）：含线程亲和、冻结窗口与框架特权深度" alt="" coords="1427,15,1628,41"/>
+<area shape="poly" title=" " alt="" coords="1641,25,1833,25,1833,31,1641,31"/>
+<area shape="poly" title=" " alt="" coords="3425,559,3616,559,3616,564,3425,564"/>
+<area shape="rect" title=" " alt="" coords="2945,682,3144,707"/>
+<area shape="poly" title=" " alt="" coords="3157,695,3187,690,3215,682,3259,658,3298,628,3352,572,3356,576,3301,632,3262,663,3217,686,3188,695,3158,700"/>
+<area shape="poly" title=" " alt="" coords="2787,712,2944,700,2945,705,2787,718"/>
+<area shape="rect" title=" " alt="" coords="2249,782,2480,807"/>
+<area shape="poly" title=" " alt="" coords="2462,777,2593,752,2678,730,2679,735,2594,757,2463,782"/>
+<area shape="poly" title=" " alt="" coords="2017,843,2117,834,2225,820,2307,805,2308,810,2226,825,2117,839,2018,849"/>
+<area shape="rect" title=" " alt="" coords="2255,721,2474,746"/>
+<area shape="poly" title=" " alt="" coords="2488,726,2672,719,2672,725,2488,731"/>
+<area shape="poly" title=" " alt="" coords="2011,788,2285,743,2286,749,2012,794"/>
+<area shape="rect" title=" " alt="" coords="3240,223,3491,263"/>
+<area shape="poly" title=" " alt="" coords="3505,241,3552,255,3594,279,3624,310,3648,345,3667,384,3682,424,3699,497,3706,548,3700,549,3694,498,3677,425,3662,386,3644,348,3620,313,3590,283,3550,260,3504,247"/>
+<area shape="rect" href="structsystems_1_1job_1_1JobRunner_1_1ModelOperation.html" title=" " alt="" coords="2955,181,3134,221"/>
+<area shape="poly" title=" " alt="" coords="3148,212,3240,224,3240,229,3147,217"/>
+<area shape="rect" title=" " alt="" coords="2617,120,2828,160"/>
+<area shape="poly" title=" " alt="" coords="2842,160,2955,182,2954,187,2841,165"/>
+<area shape="poly" title=" " alt="" coords="2428,60,2646,117,2644,123,2427,65"/>
+<area shape="rect" title=" " alt="" coords="3271,857,3460,897"/>
+<area shape="poly" title=" " alt="" coords="3396,846,3689,572,3692,576,3400,850"/>
+<area shape="poly" title=" " alt="" coords="3100,954,3296,895,3298,900,3102,959"/>
+<area shape="rect" title=" " alt="" coords="2629,989,2816,1029"/>
+<area shape="poly" title=" " alt="" coords="2829,1000,2921,991,2977,982,2978,988,2922,996,2830,1005"/>
+<area shape="rect" title=" " alt="" coords="2677,1066,2769,1091"/>
+<area shape="poly" title=" " alt="" coords="2782,1078,2920,1076,3008,1068,3104,1055,3205,1034,3305,1003,3401,961,3446,936,3489,907,3533,868,3572,823,3606,775,3634,725,3676,634,3698,573,3703,575,3681,636,3639,727,3610,777,3576,827,3537,872,3492,911,3449,941,3403,966,3307,1008,3206,1039,3105,1060,3009,1074,2920,1081,2782,1084"/>
+<area shape="poly" title=" " alt="" coords="2782,1064,2849,1047,2920,1025,3017,984,3019,989,2922,1031,2850,1052,2783,1069"/>
+<area shape="rect" title=" " alt="" coords="3319,1130,3411,1155"/>
+<area shape="poly" title=" " alt="" coords="3425,1156,3466,1161,3510,1161,3553,1153,3572,1144,3590,1131,3606,1114,3620,1090,3644,1024,3663,943,3677,854,3695,684,3701,574,3706,575,3700,684,3683,855,3668,944,3649,1026,3625,1092,3610,1117,3594,1135,3575,1148,3555,1158,3510,1167,3465,1167,3424,1161"/>
+</map>
+<center><span class="legend">[<a href="graph_legend.html">图例</a>]</span></center></div>
+<table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 id="header-nested-classes" class="groupheader"><a id="nested-classes" name="nested-classes"></a>
+类</h2></td></tr>
+<tr class="memitem:ModelOperation" id="r_ModelOperation"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structsystems_1_1job_1_1JobRunner_1_1ModelOperation.html">ModelOperation</a></td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 id="header-pub-methods" class="groupheader"><a id="pub-methods" name="pub-methods"></a>
+Public 成员函数</h2></td></tr>
+<tr class="memitem:a4765888d1b32e5b043decfca082555d6" id="r_a4765888d1b32e5b043decfca082555d6"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a4765888d1b32e5b043decfca082555d6">JobRunner</a> (<a class="el" href="classModelLayer.html">ModelLayer</a> &amp;model, <a class="el" href="classUndoStack.html">UndoStack</a> *stack, std::function&lt; void(std::function&lt; void()&gt;)&gt; dispatcher)</td></tr>
+<tr class="memdesc:a4765888d1b32e5b043decfca082555d6"><td class="mdescLeft">&#160;</td><td class="mdescRight">构造即绑定模型宿主与所属线程分发器；同步宿主无需执行器。  <br /></td></tr>
+<tr class="memitem:af9a4790452b0565f51cf6e21f3c8ba58" id="r_af9a4790452b0565f51cf6e21f3c8ba58"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#af9a4790452b0565f51cf6e21f3c8ba58">~JobRunner</a> ()</td></tr>
+<tr class="memitem:a86b05e7c5d36bf25061d1f9d081e2edb" id="r_a86b05e7c5d36bf25061d1f9d081e2edb"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a86b05e7c5d36bf25061d1f9d081e2edb">JobRunner</a> (const <a class="el" href="classsystems_1_1job_1_1JobRunner.html">JobRunner</a> &amp;)=delete</td></tr>
+<tr class="memitem:ae4ec6ba1e7825c75113db3e0c5db1e98" id="r_ae4ec6ba1e7825c75113db3e0c5db1e98"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classsystems_1_1job_1_1JobRunner.html">JobRunner</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ae4ec6ba1e7825c75113db3e0c5db1e98">operator=</a> (const <a class="el" href="classsystems_1_1job_1_1JobRunner.html">JobRunner</a> &amp;)=delete</td></tr>
+<tr class="memitem:afec8ac9b872d10181192b070610e4c65" id="r_afec8ac9b872d10181192b070610e4c65"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#afec8ac9b872d10181192b070610e4c65">assertHost</a> (const <a class="el" href="classModelLayer.html">ModelLayer</a> &amp;model, const <a class="el" href="classUndoStack.html">UndoStack</a> *stack) const</td></tr>
+<tr class="memdesc:afec8ac9b872d10181192b070610e4c65"><td class="mdescLeft">&#160;</td><td class="mdescRight">外借执行器注入系统时验证宿主一致，不修改绑定。  <br /></td></tr>
+<tr class="memitem:aa520ff0f1974e42e3573ae17d1eb4146" id="r_aa520ff0f1974e42e3573ae17d1eb4146"><td class="memItemLeft" align="right" valign="top">std::shared_ptr&lt; <a class="el" href="classsystems_1_1job_1_1Job.html">Job</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#aa520ff0f1974e42e3573ae17d1eb4146">run</a> (std::string <a class="el" href="TestComponentModel_8cpp.html#a4f5452c5c19395231dec92c40e3d10e1">name</a>, <a class="el" href="namespacesystems_1_1job.html#ad2801383588054d6a506a9d1a04e49a3">JobPrepareFn</a> prepare, <a class="el" href="structsystems_1_1job_1_1JobOptions.html">JobOptions</a> options={ })</td></tr>
+<tr class="memdesc:aa520ff0f1974e42e3573ae17d1eb4146"><td class="mdescLeft">&#160;</td><td class="mdescRight">先占用，再在所属线程准备；准备异常自动释放。  <br /></td></tr>
+<tr class="memitem:a682ad8b24d1c832f9bf1cd88018b1509" id="r_a682ad8b24d1c832f9bf1cd88018b1509"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a682ad8b24d1c832f9bf1cd88018b1509">deferUntilFinished</a> (std::function&lt; void()&gt; cleanup)</td></tr>
+<tr class="memitem:ab003aa38f6e69bf63bf485ee788d2ffb" id="r_ab003aa38f6e69bf63bf485ee788d2ffb"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ab003aa38f6e69bf63bf485ee788d2ffb">stop</a> ()</td></tr>
+<tr class="memdesc:ab003aa38f6e69bf63bf485ee788d2ffb"><td class="mdescLeft">&#160;</td><td class="mdescRight">请求取消并 join；所属线程调用同一个收尾入口，不泵事件。  <br /></td></tr>
+<tr class="memitem:ae251131624b94d2e4cc1693cdffc2923" id="r_ae251131624b94d2e4cc1693cdffc2923"><td class="memItemLeft" align="right" valign="top">std::shared_ptr&lt; <a class="el" href="classsystems_1_1job_1_1Job.html">Job</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ae251131624b94d2e4cc1693cdffc2923">currentJob</a> () const</td></tr>
+<tr class="memitem:a1f5b041298c17e9fb8157c5981349a05" id="r_a1f5b041298c17e9fb8157c5981349a05"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a1f5b041298c17e9fb8157c5981349a05">setOnStarted</a> (<a class="el" href="namespacesystems_1_1job.html#a2af5878d29208ac612981ea6c1e15087">JobFinishedFn</a> callback)</td></tr>
+<tr class="memdesc:a1f5b041298c17e9fb8157c5981349a05"><td class="mdescLeft">&#160;</td><td class="mdescRight">宿主统一任务展示；只在所属线程空闲时装配，回调对象须活到 stop 返回。  <br /></td></tr>
+<tr class="memitem:a94337cb4015a8f53dcae1dd779a2b230" id="r_a94337cb4015a8f53dcae1dd779a2b230"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a94337cb4015a8f53dcae1dd779a2b230">setOnProgress</a> (<a class="el" href="namespacesystems_1_1job.html#a62b9db7222639d1e30366a1d75475e42">JobProgressFn</a> callback)</td></tr>
+<tr class="memitem:ab5c4fb2fa308aa2a22bcbec80cade5cf" id="r_ab5c4fb2fa308aa2a22bcbec80cade5cf"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ab5c4fb2fa308aa2a22bcbec80cade5cf">setOnFinished</a> (<a class="el" href="namespacesystems_1_1job.html#a2af5878d29208ac612981ea6c1e15087">JobFinishedFn</a> callback)</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 id="header-pri-methods" class="groupheader"><a id="pri-methods" name="pri-methods"></a>
+Private 成员函数</h2></td></tr>
+<tr class="memitem:ac96a09d1c2d3b4d15afa2884d76d4cfc" id="r_ac96a09d1c2d3b4d15afa2884d76d4cfc"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ac96a09d1c2d3b4d15afa2884d76d4cfc">assertOwnerThread</a> () const</td></tr>
+<tr class="memitem:a4789d83a1bc3cccd682b076c7ff1ed15" id="r_a4789d83a1bc3cccd682b076c7ff1ed15"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a4789d83a1bc3cccd682b076c7ff1ed15">assertObserverChangeAllowed</a> () const</td></tr>
+<tr class="memitem:a4b902ff471c35f588929d73089a04794" id="r_a4b902ff471c35f588929d73089a04794"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a4b902ff471c35f588929d73089a04794">workerLoop</a> ()</td></tr>
+<tr class="memitem:a9a35e8ff98e4913fb0d1d0813d468e0e" id="r_a9a35e8ff98e4913fb0d1d0813d468e0e"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a9a35e8ff98e4913fb0d1d0813d468e0e">compute</a> (const std::shared_ptr&lt; <a class="el" href="classsystems_1_1job_1_1Job.html">Job</a> &gt; &amp;job)</td></tr>
+<tr class="memitem:a7f7a9d6adee2146598e8319e2a0dafa6" id="r_a7f7a9d6adee2146598e8319e2a0dafa6"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a7f7a9d6adee2146598e8319e2a0dafa6">complete</a> (std::shared_ptr&lt; <a class="el" href="classsystems_1_1job_1_1Job.html">Job</a> &gt; job, bool inline_compute=false)</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 id="header-pri-static-methods" class="groupheader"><a id="pri-static-methods" name="pri-static-methods"></a>
+静态 Private 成员函数</h2></td></tr>
+<tr class="memitem:adf8eeb457d77fd743bf1b6fe083602cd" id="r_adf8eeb457d77fd743bf1b6fe083602cd"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#adf8eeb457d77fd743bf1b6fe083602cd">notifyLifecycle</a> (<a class="el" href="namespacesystems_1_1job.html#a2af5878d29208ac612981ea6c1e15087">JobFinishedFn</a> callback, <a class="el" href="classsystems_1_1job_1_1Job.html">Job</a> &amp;job)</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 id="header-pri-attribs" class="groupheader"><a id="pri-attribs" name="pri-attribs"></a>
+Private 属性</h2></td></tr>
+<tr class="memitem:a5cfa7f16848d17ea4c93579075b5059b" id="r_a5cfa7f16848d17ea4c93579075b5059b"><td class="memItemLeft" align="right" valign="top">const std::thread::id&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a5cfa7f16848d17ea4c93579075b5059b">owner_thread_</a> { std::this_thread::get_id() }</td></tr>
+<tr class="memitem:aeabd506142e9d326dc90c774c94e9a66" id="r_aeabd506142e9d326dc90c774c94e9a66"><td class="memItemLeft" align="right" valign="top">std::shared_ptr&lt; int &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#aeabd506142e9d326dc90c774c94e9a66">lifetime_</a> { std::make_shared&lt;int&gt;(0) }</td></tr>
+<tr class="memitem:a7cc6356e7608885cde2ef11843463f91" id="r_a7cc6356e7608885cde2ef11843463f91"><td class="memItemLeft" align="right" valign="top">std::function&lt; void(std::function&lt; void()&gt;)&gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a7cc6356e7608885cde2ef11843463f91">dispatcher_</a></td></tr>
+<tr class="memitem:aacc45faccdc013b818132ae12629076c" id="r_aacc45faccdc013b818132ae12629076c"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classModelLayer.html">ModelLayer</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#aacc45faccdc013b818132ae12629076c">model_</a></td></tr>
+<tr class="memitem:a7cc5100ff407b6f6203f888e6d6a082c" id="r_a7cc5100ff407b6f6203f888e6d6a082c"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classUndoStack.html">UndoStack</a> *const&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a7cc5100ff407b6f6203f888e6d6a082c">stack_</a></td></tr>
+<tr class="memitem:a373cbfe3afd61db9082f0fffedaa37dd" id="r_a373cbfe3afd61db9082f0fffedaa37dd"><td class="memItemLeft" align="right" valign="top">std::unique_ptr&lt; <a class="el" href="structsystems_1_1job_1_1JobRunner_1_1ModelOperation.html">ModelOperation</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a373cbfe3afd61db9082f0fffedaa37dd">operation_</a></td></tr>
+<tr class="memitem:a77d70e701b27a40a02d03acc8e8ab7ad" id="r_a77d70e701b27a40a02d03acc8e8ab7ad"><td class="memItemLeft" align="right" valign="top">std::shared_ptr&lt; <a class="el" href="classsystems_1_1job_1_1Job.html">Job</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a77d70e701b27a40a02d03acc8e8ab7ad">slot_</a></td></tr>
+<tr class="memdesc:a77d70e701b27a40a02d03acc8e8ab7ad"><td class="mdescLeft">&#160;</td><td class="mdescRight">仅所属线程访问；计算完成不让槽  <br /></td></tr>
+<tr class="memitem:a435abe8d79fafabd61eac877e6262119" id="r_a435abe8d79fafabd61eac877e6262119"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a435abe8d79fafabd61eac877e6262119">completing_</a> { false }</td></tr>
+<tr class="memitem:a0a23ccd66c922121d0380090637f0320" id="r_a0a23ccd66c922121d0380090637f0320"><td class="memItemLeft" align="right" valign="top">std::mutex&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a0a23ccd66c922121d0380090637f0320">sync_</a></td></tr>
+<tr class="memitem:a0b2128b35c9dd76f2bdee2fc572074fc" id="r_a0b2128b35c9dd76f2bdee2fc572074fc"><td class="memItemLeft" align="right" valign="top">std::condition_variable&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a0b2128b35c9dd76f2bdee2fc572074fc">ready_</a></td></tr>
+<tr class="memitem:aa1192c73613397c055ad93f55a82f61e" id="r_aa1192c73613397c055ad93f55a82f61e"><td class="memItemLeft" align="right" valign="top">std::shared_ptr&lt; <a class="el" href="classsystems_1_1job_1_1Job.html">Job</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#aa1192c73613397c055ad93f55a82f61e">work_</a></td></tr>
+<tr class="memdesc:aa1192c73613397c055ad93f55a82f61e"><td class="mdescLeft">&#160;</td><td class="mdescRight">单次计算交付，受 sync_ 保护  <br /></td></tr>
+<tr class="memitem:a39031df3fd565f9dca2a9912ab5a9364" id="r_a39031df3fd565f9dca2a9912ab5a9364"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a39031df3fd565f9dca2a9912ab5a9364">stopping_</a> { false }</td></tr>
+<tr class="memdesc:a39031df3fd565f9dca2a9912ab5a9364"><td class="mdescLeft">&#160;</td><td class="mdescRight">所属线程写，worker 在 sync_ 内读  <br /></td></tr>
+<tr class="memitem:abf355df9fb4c1d30371009bce1d69e15" id="r_abf355df9fb4c1d30371009bce1d69e15"><td class="memItemLeft" align="right" valign="top">std::thread&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#abf355df9fb4c1d30371009bce1d69e15">worker_</a></td></tr>
+<tr class="memitem:acb52eb30f130f6badf79a36ce720e82d" id="r_acb52eb30f130f6badf79a36ce720e82d"><td class="memItemLeft" align="right" valign="top"><a class="el" href="namespacesystems_1_1job.html#a2af5878d29208ac612981ea6c1e15087">JobFinishedFn</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#acb52eb30f130f6badf79a36ce720e82d">on_started_</a></td></tr>
+<tr class="memitem:a9ac5225c0d800a56c1ba1de37d11f964" id="r_a9ac5225c0d800a56c1ba1de37d11f964"><td class="memItemLeft" align="right" valign="top"><a class="el" href="namespacesystems_1_1job.html#a62b9db7222639d1e30366a1d75475e42">JobProgressFn</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a9ac5225c0d800a56c1ba1de37d11f964">on_progress_</a></td></tr>
+<tr class="memitem:adec7a68f02d0092825a5a03707a2b1e9" id="r_adec7a68f02d0092825a5a03707a2b1e9"><td class="memItemLeft" align="right" valign="top"><a class="el" href="namespacesystems_1_1job.html#a2af5878d29208ac612981ea6c1e15087">JobFinishedFn</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#adec7a68f02d0092825a5a03707a2b1e9">on_finished_</a></td></tr>
+</table>
+<a name="details" id="details"></a><h2 id="header-details" class="groupheader">详细描述</h2>
+<div class="textblock"><p>所属线程管理一个在飞任务；worker 不等待 GUI。 发布、准备、查询、清理、终态与 stop 均在构造线程。 异步运行须向该线程投递；计算结束后保持槽与模型占用直到 GUI 收尾。 </p>
+</div><a name="doc-constructors" id="doc-constructors"></a><h2 id="header-doc-constructors" class="groupheader">构造及析构函数说明</h2>
+<a id="a4765888d1b32e5b043decfca082555d6" name="a4765888d1b32e5b043decfca082555d6"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a4765888d1b32e5b043decfca082555d6">&#9670;&#160;</a></span>JobRunner() <span class="overload">[1/2]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">systems::job::JobRunner::JobRunner </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="classModelLayer.html">ModelLayer</a> &amp;</td>          <td class="paramname"><span class="paramname"><em>model</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="classUndoStack.html">UndoStack</a> *</td>          <td class="paramname"><span class="paramname"><em>stack</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">std::function&lt; void(std::function&lt; void()&gt;)&gt;</td>          <td class="paramname"><span class="paramname"><em>dispatcher</em></span>&#160;)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>构造即绑定模型宿主与所属线程分发器；同步宿主无需执行器。 </p>
+
+</div>
+</div>
+<a id="af9a4790452b0565f51cf6e21f3c8ba58" name="af9a4790452b0565f51cf6e21f3c8ba58"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#af9a4790452b0565f51cf6e21f3c8ba58">&#9670;&#160;</a></span>~JobRunner()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">systems::job::JobRunner::~JobRunner </td>
+          <td>(</td>
+          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a86b05e7c5d36bf25061d1f9d081e2edb" name="a86b05e7c5d36bf25061d1f9d081e2edb"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a86b05e7c5d36bf25061d1f9d081e2edb">&#9670;&#160;</a></span>JobRunner() <span class="overload">[2/2]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">systems::job::JobRunner::JobRunner </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="classsystems_1_1job_1_1JobRunner.html">JobRunner</a> &amp;</td>          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel delete">delete</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a name="doc-func-members" id="doc-func-members"></a><h2 id="header-doc-func-members" class="groupheader">成员函数说明</h2>
+<a id="afec8ac9b872d10181192b070610e4c65" name="afec8ac9b872d10181192b070610e4c65"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#afec8ac9b872d10181192b070610e4c65">&#9670;&#160;</a></span>assertHost()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void systems::job::JobRunner::assertHost </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="classModelLayer.html">ModelLayer</a> &amp;</td>          <td class="paramname"><span class="paramname"><em>model</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const <a class="el" href="classUndoStack.html">UndoStack</a> *</td>          <td class="paramname"><span class="paramname"><em>stack</em></span>&#160;) const</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>外借执行器注入系统时验证宿主一致，不修改绑定。 </p>
+
+</div>
+</div>
+<a id="a4789d83a1bc3cccd682b076c7ff1ed15" name="a4789d83a1bc3cccd682b076c7ff1ed15"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a4789d83a1bc3cccd682b076c7ff1ed15">&#9670;&#160;</a></span>assertObserverChangeAllowed()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void systems::job::JobRunner::assertObserverChangeAllowed </td>
+          <td>(</td>
+          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel private">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="ac96a09d1c2d3b4d15afa2884d76d4cfc" name="ac96a09d1c2d3b4d15afa2884d76d4cfc"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ac96a09d1c2d3b4d15afa2884d76d4cfc">&#9670;&#160;</a></span>assertOwnerThread()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void systems::job::JobRunner::assertOwnerThread </td>
+          <td>(</td>
+          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel private">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a7f7a9d6adee2146598e8319e2a0dafa6" name="a7f7a9d6adee2146598e8319e2a0dafa6"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a7f7a9d6adee2146598e8319e2a0dafa6">&#9670;&#160;</a></span>complete()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void systems::job::JobRunner::complete </td>
+          <td>(</td>
+          <td class="paramtype">std::shared_ptr&lt; <a class="el" href="classsystems_1_1job_1_1Job.html">Job</a> &gt;</td>          <td class="paramname"><span class="paramname"><em>job</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">bool</td>          <td class="paramname"><span class="paramname"><em>inline_compute</em></span><span class="paramdefsep"> = </span><span class="paramdefval">false</span>&#160;)</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel private">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a9a35e8ff98e4913fb0d1d0813d468e0e" name="a9a35e8ff98e4913fb0d1d0813d468e0e"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a9a35e8ff98e4913fb0d1d0813d468e0e">&#9670;&#160;</a></span>compute()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void systems::job::JobRunner::compute </td>
+          <td>(</td>
+          <td class="paramtype">const std::shared_ptr&lt; <a class="el" href="classsystems_1_1job_1_1Job.html">Job</a> &gt; &amp;</td>          <td class="paramname"><span class="paramname"><em>job</em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel private">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="ae251131624b94d2e4cc1693cdffc2923" name="ae251131624b94d2e4cc1693cdffc2923"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ae251131624b94d2e4cc1693cdffc2923">&#9670;&#160;</a></span>currentJob()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::shared_ptr&lt; <a class="el" href="classsystems_1_1job_1_1Job.html">Job</a> &gt; systems::job::JobRunner::currentJob </td>
+          <td>(</td>
+          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a682ad8b24d1c832f9bf1cd88018b1509" name="a682ad8b24d1c832f9bf1cd88018b1509"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a682ad8b24d1c832f9bf1cd88018b1509">&#9670;&#160;</a></span>deferUntilFinished()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool systems::job::JobRunner::deferUntilFinished </td>
+          <td>(</td>
+          <td class="paramtype">std::function&lt; void()&gt;</td>          <td class="paramname"><span class="paramname"><em>cleanup</em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="adf8eeb457d77fd743bf1b6fe083602cd" name="adf8eeb457d77fd743bf1b6fe083602cd"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#adf8eeb457d77fd743bf1b6fe083602cd">&#9670;&#160;</a></span>notifyLifecycle()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void systems::job::JobRunner::notifyLifecycle </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="namespacesystems_1_1job.html#a2af5878d29208ac612981ea6c1e15087">JobFinishedFn</a></td>          <td class="paramname"><span class="paramname"><em>callback</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="classsystems_1_1job_1_1Job.html">Job</a> &amp;</td>          <td class="paramname"><span class="paramname"><em>job</em></span>&#160;)</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel static">static</span><span class="mlabel private">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="ae4ec6ba1e7825c75113db3e0c5db1e98" name="ae4ec6ba1e7825c75113db3e0c5db1e98"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ae4ec6ba1e7825c75113db3e0c5db1e98">&#9670;&#160;</a></span>operator=()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classsystems_1_1job_1_1JobRunner.html">JobRunner</a> &amp; systems::job::JobRunner::operator= </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="classsystems_1_1job_1_1JobRunner.html">JobRunner</a> &amp;</td>          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel delete">delete</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="aa520ff0f1974e42e3573ae17d1eb4146" name="aa520ff0f1974e42e3573ae17d1eb4146"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aa520ff0f1974e42e3573ae17d1eb4146">&#9670;&#160;</a></span>run()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::shared_ptr&lt; <a class="el" href="classsystems_1_1job_1_1Job.html">Job</a> &gt; systems::job::JobRunner::run </td>
+          <td>(</td>
+          <td class="paramtype">std::string</td>          <td class="paramname"><span class="paramname"><em>name</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="namespacesystems_1_1job.html#ad2801383588054d6a506a9d1a04e49a3">JobPrepareFn</a></td>          <td class="paramname"><span class="paramname"><em>prepare</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="structsystems_1_1job_1_1JobOptions.html">JobOptions</a></td>          <td class="paramname"><span class="paramname"><em>options</em></span><span class="paramdefsep"> = </span><span class="paramdefval">{&#160;}</span>&#160;)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>先占用，再在所属线程准备；准备异常自动释放。 </p>
+
+</div>
+</div>
+<a id="ab5c4fb2fa308aa2a22bcbec80cade5cf" name="ab5c4fb2fa308aa2a22bcbec80cade5cf"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ab5c4fb2fa308aa2a22bcbec80cade5cf">&#9670;&#160;</a></span>setOnFinished()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void systems::job::JobRunner::setOnFinished </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="namespacesystems_1_1job.html#a2af5878d29208ac612981ea6c1e15087">JobFinishedFn</a></td>          <td class="paramname"><span class="paramname"><em>callback</em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a94337cb4015a8f53dcae1dd779a2b230" name="a94337cb4015a8f53dcae1dd779a2b230"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a94337cb4015a8f53dcae1dd779a2b230">&#9670;&#160;</a></span>setOnProgress()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void systems::job::JobRunner::setOnProgress </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="namespacesystems_1_1job.html#a62b9db7222639d1e30366a1d75475e42">JobProgressFn</a></td>          <td class="paramname"><span class="paramname"><em>callback</em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a1f5b041298c17e9fb8157c5981349a05" name="a1f5b041298c17e9fb8157c5981349a05"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a1f5b041298c17e9fb8157c5981349a05">&#9670;&#160;</a></span>setOnStarted()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void systems::job::JobRunner::setOnStarted </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="namespacesystems_1_1job.html#a2af5878d29208ac612981ea6c1e15087">JobFinishedFn</a></td>          <td class="paramname"><span class="paramname"><em>callback</em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>宿主统一任务展示；只在所属线程空闲时装配，回调对象须活到 stop 返回。 </p>
+
+</div>
+</div>
+<a id="ab003aa38f6e69bf63bf485ee788d2ffb" name="ab003aa38f6e69bf63bf485ee788d2ffb"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ab003aa38f6e69bf63bf485ee788d2ffb">&#9670;&#160;</a></span>stop()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void systems::job::JobRunner::stop </td>
+          <td>(</td>
+          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>请求取消并 join；所属线程调用同一个收尾入口，不泵事件。 </p>
+
+</div>
+</div>
+<a id="a4b902ff471c35f588929d73089a04794" name="a4b902ff471c35f588929d73089a04794"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a4b902ff471c35f588929d73089a04794">&#9670;&#160;</a></span>workerLoop()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void systems::job::JobRunner::workerLoop </td>
+          <td>(</td>
+          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel private">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a name="doc-variable-members" id="doc-variable-members"></a><h2 id="header-doc-variable-members" class="groupheader">类成员变量说明</h2>
+<a id="a435abe8d79fafabd61eac877e6262119" name="a435abe8d79fafabd61eac877e6262119"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a435abe8d79fafabd61eac877e6262119">&#9670;&#160;</a></span>completing_</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool systems::job::JobRunner::completing_ { false }</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel private">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a7cc6356e7608885cde2ef11843463f91" name="a7cc6356e7608885cde2ef11843463f91"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a7cc6356e7608885cde2ef11843463f91">&#9670;&#160;</a></span>dispatcher_</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::function&lt;void(std::function&lt;void()&gt;)&gt; systems::job::JobRunner::dispatcher_</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel private">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="aeabd506142e9d326dc90c774c94e9a66" name="aeabd506142e9d326dc90c774c94e9a66"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aeabd506142e9d326dc90c774c94e9a66">&#9670;&#160;</a></span>lifetime_</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::shared_ptr&lt;int&gt; systems::job::JobRunner::lifetime_ { std::make_shared&lt;int&gt;(0) }</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel private">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="aacc45faccdc013b818132ae12629076c" name="aacc45faccdc013b818132ae12629076c"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aacc45faccdc013b818132ae12629076c">&#9670;&#160;</a></span>model_</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classModelLayer.html">ModelLayer</a>&amp; systems::job::JobRunner::model_</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel private">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="adec7a68f02d0092825a5a03707a2b1e9" name="adec7a68f02d0092825a5a03707a2b1e9"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#adec7a68f02d0092825a5a03707a2b1e9">&#9670;&#160;</a></span>on_finished_</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="namespacesystems_1_1job.html#a2af5878d29208ac612981ea6c1e15087">JobFinishedFn</a> systems::job::JobRunner::on_finished_</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel private">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a9ac5225c0d800a56c1ba1de37d11f964" name="a9ac5225c0d800a56c1ba1de37d11f964"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a9ac5225c0d800a56c1ba1de37d11f964">&#9670;&#160;</a></span>on_progress_</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="namespacesystems_1_1job.html#a62b9db7222639d1e30366a1d75475e42">JobProgressFn</a> systems::job::JobRunner::on_progress_</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel private">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="acb52eb30f130f6badf79a36ce720e82d" name="acb52eb30f130f6badf79a36ce720e82d"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#acb52eb30f130f6badf79a36ce720e82d">&#9670;&#160;</a></span>on_started_</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="namespacesystems_1_1job.html#a2af5878d29208ac612981ea6c1e15087">JobFinishedFn</a> systems::job::JobRunner::on_started_</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel private">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a373cbfe3afd61db9082f0fffedaa37dd" name="a373cbfe3afd61db9082f0fffedaa37dd"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a373cbfe3afd61db9082f0fffedaa37dd">&#9670;&#160;</a></span>operation_</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::unique_ptr&lt;<a class="el" href="structsystems_1_1job_1_1JobRunner_1_1ModelOperation.html">ModelOperation</a>&gt; systems::job::JobRunner::operation_</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel private">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a5cfa7f16848d17ea4c93579075b5059b" name="a5cfa7f16848d17ea4c93579075b5059b"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a5cfa7f16848d17ea4c93579075b5059b">&#9670;&#160;</a></span>owner_thread_</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">const std::thread::id systems::job::JobRunner::owner_thread_ { std::this_thread::get_id() }</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel private">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a0b2128b35c9dd76f2bdee2fc572074fc" name="a0b2128b35c9dd76f2bdee2fc572074fc"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a0b2128b35c9dd76f2bdee2fc572074fc">&#9670;&#160;</a></span>ready_</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::condition_variable systems::job::JobRunner::ready_</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel private">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a77d70e701b27a40a02d03acc8e8ab7ad" name="a77d70e701b27a40a02d03acc8e8ab7ad"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a77d70e701b27a40a02d03acc8e8ab7ad">&#9670;&#160;</a></span>slot_</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::shared_ptr&lt;<a class="el" href="classsystems_1_1job_1_1Job.html">Job</a>&gt; systems::job::JobRunner::slot_</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel private">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>仅所属线程访问；计算完成不让槽 </p>
+
+</div>
+</div>
+<a id="a7cc5100ff407b6f6203f888e6d6a082c" name="a7cc5100ff407b6f6203f888e6d6a082c"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a7cc5100ff407b6f6203f888e6d6a082c">&#9670;&#160;</a></span>stack_</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classUndoStack.html">UndoStack</a>* const systems::job::JobRunner::stack_</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel private">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a39031df3fd565f9dca2a9912ab5a9364" name="a39031df3fd565f9dca2a9912ab5a9364"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a39031df3fd565f9dca2a9912ab5a9364">&#9670;&#160;</a></span>stopping_</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool systems::job::JobRunner::stopping_ { false }</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel private">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>所属线程写，worker 在 sync_ 内读 </p>
+
+</div>
+</div>
+<a id="a0a23ccd66c922121d0380090637f0320" name="a0a23ccd66c922121d0380090637f0320"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a0a23ccd66c922121d0380090637f0320">&#9670;&#160;</a></span>sync_</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::mutex systems::job::JobRunner::sync_</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel private">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="aa1192c73613397c055ad93f55a82f61e" name="aa1192c73613397c055ad93f55a82f61e"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aa1192c73613397c055ad93f55a82f61e">&#9670;&#160;</a></span>work_</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::shared_ptr&lt;<a class="el" href="classsystems_1_1job_1_1Job.html">Job</a>&gt; systems::job::JobRunner::work_</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel private">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>单次计算交付，受 sync_ 保护 </p>
+
+</div>
+</div>
+<a id="abf355df9fb4c1d30371009bce1d69e15" name="abf355df9fb4c1d30371009bce1d69e15"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#abf355df9fb4c1d30371009bce1d69e15">&#9670;&#160;</a></span>worker_</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::thread systems::job::JobRunner::worker_</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel private">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<hr/>该类的文档由以下文件生成:<ul>
+<li>model/systems/job/<a class="el" href="JobRunner_8h_source.html">JobRunner.h</a></li>
+<li>model/systems/job/<a class="el" href="JobRunner_8cpp.html">JobRunner.cpp</a></li>
+</ul>
+</div><!-- contents -->
+<!-- start footer part -->
+<hr class="footer"/><address class="footer"><small>
+制作者&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.14.0
+</small></address>
+</div><!-- doc-content -->
+</body>
+</html>

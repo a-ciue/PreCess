@@ -155,6 +155,8 @@ Public 成员函数</h2></td></tr>
 <tr class="memdesc:ad772f20bb0bb25ec122c2ce3929ced12"><td class="mdescLeft">&#160;</td><td class="mdescRight">释放全部全局边 id 并重置持久身份层（组件移除/整网格替换时调用）  <br /></td></tr>
 <tr class="memitem:ae5ef1f455a6c1843130a5b9a36043a06" id="r_ae5ef1f455a6c1843130a5b9a36043a06"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ae5ef1f455a6c1843130a5b9a36043a06">reclaimEdgeGlobalIds</a> (<a class="el" href="classMeshIDMap.html">MeshIDMap</a> &amp;map, <a class="el" href="Core_8h.html#a1673229bf7fec9388ac2a829a52d69b3">Index</a> component_id)</td></tr>
 <tr class="memdesc:ae5ef1f455a6c1843130a5b9a36043a06"><td class="mdescLeft">&#160;</td><td class="mdescRight">按 gid_by_stable_id_ 原值定向回收边 gid（配合快照恢复，仅作用持久层，不触发边表重建）  <br /></td></tr>
+<tr class="memitem:ac48b3a5c87b537b68abaafe48b533b6a" id="r_ac48b3a5c87b537b68abaafe48b533b6a"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ac48b3a5c87b537b68abaafe48b533b6a">stripEdgeGlobalIds</a> ()</td></tr>
+<tr class="memdesc:ac48b3a5c87b537b68abaafe48b533b6a"><td class="mdescLeft">&#160;</td><td class="mdescRight">全局边 id 全部重置为待分配（-1），不动稳定 id 结构与发号映射  <br /></td></tr>
 <tr class="memitem:a096c68e2ba945edea2fa361ce279c20e" id="r_a096c68e2ba945edea2fa361ce279c20e"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a096c68e2ba945edea2fa361ce279c20e">invalidate</a> () noexcept</td></tr>
 <tr class="memdesc:a096c68e2ba945edea2fa361ce279c20e"><td class="mdescLeft">&#160;</td><td class="mdescRight">使懒重建部分失效，下次查询时基于最新拓扑重建（持久稳定 id 层保留）  <br /></td></tr>
 </table><table class="memberdecls">
@@ -579,6 +581,26 @@ Private 属性</h2></td></tr>
 </div><div class="memdoc">
 
 <p>释放全部全局边 id 并重置持久身份层（组件移除/整网格替换时调用） </p>
+
+</div>
+</div>
+<a id="ac48b3a5c87b537b68abaafe48b533b6a" name="ac48b3a5c87b537b68abaafe48b533b6a"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ac48b3a5c87b537b68abaafe48b533b6a">&#9670;&#160;</a></span>stripEdgeGlobalIds()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void MeshAdjacency::stripEdgeGlobalIds </td>
+          <td>(</td>
+          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>全局边 id 全部重置为待分配（-1），不动稳定 id 结构与发号映射 </p>
+<p>跨层移植快照（算法影子执行）时用：目标层水位与源层无关，原 gid 直接 reclaim 会越界；置 -1 后 reclaim 跳过、ensureEdgeGlobalIds 按目标层水位补发。 </p>
 
 </div>
 </div>

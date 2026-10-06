@@ -1,0 +1,19 @@
+<map id="app/model/QTaskStatus.h" name="app/model/QTaskStatus.h">
+<area shape="rect" id="Node000001" title="全局单槽任务的 Qt 展示：唯一进度合流、忙状态、取消入口与终态反馈。" alt="" coords="639,5,826,31"/>
+<area shape="rect" id="Node000002" href="$QModelManager_8h.html" title=" " alt="" coords="275,86,489,111"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="669,36,434,89,432,83,668,31"/>
+<area shape="rect" id="Node000007" href="$QTaskStatus_8cpp.html" title="计算与提交共用一个进度槽，GUI 统一呈现执行反馈。" alt="" coords="513,86,715,111"/>
+<area shape="poly" id="edge6_Node000001_Node000007" title=" " alt="" coords="705,41,633,88,630,84,702,36"/>
+<area shape="rect" id="Node000008" href="$QAlgorithmSystemAdaptor_8cpp.html" title=" " alt="" coords="739,79,966,119"/>
+<area shape="poly" id="edge7_Node000001_Node000008" title=" " alt="" coords="763,36,825,76,822,81,760,41"/>
+<area shape="rect" id="Node000009" href="$TestQTaskStatus_8cpp.html" title="共享 Runner 的展示、取消与后继任务回归。" alt="" coords="991,86,1203,111"/>
+<area shape="poly" id="edge8_Node000001_Node000009" title=" " alt="" coords="799,31,1044,83,1043,89,798,36"/>
+<area shape="rect" id="Node000003" href="$main_8cpp.html" title=" " alt="" coords="5,167,116,192"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="323,117,108,169,107,164,322,112"/>
+<area shape="rect" id="Node000004" href="$QModelManager_8cpp.html" title=" " alt="" coords="140,167,368,192"/>
+<area shape="poly" id="edge3_Node000002_Node000004" title=" " alt="" coords="353,121,274,169,272,164,350,116"/>
+<area shape="rect" id="Node000005" href="$TestQModelDeletion_8cpp.html" title="Qt 删除入口的忙时拒绝与撤销状态通知回归测试" alt="" coords="393,167,630,192"/>
+<area shape="poly" id="edge4_Node000002_Node000005" title=" " alt="" coords="414,116,494,164,491,169,411,121"/>
+<area shape="rect" id="Node000006" href="$TestUndoQml_8cpp.html" title="实际 QML 删除与选择器失效路径回归测试" alt="" coords="655,167,848,192"/>
+<area shape="poly" id="edge5_Node000002_Node000006" title=" " alt="" coords="450,112,698,164,697,169,448,117"/>
+</map>

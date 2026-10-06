@@ -99,6 +99,8 @@ Public 成员函数</h2></td></tr>
 <tr class="memitem:aeab708d1704c16dc3253ff0c6f4fdad7" id="r_aeab708d1704c16dc3253ff0c6f4fdad7"><td class="memItemLeft" align="right" valign="top">virtual&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#aeab708d1704c16dc3253ff0c6f4fdad7">~UndoRecorder</a> ()=default</td></tr>
 <tr class="memitem:a9c8287f6a18cfbd63056cd6f4984ca04" id="r_a9c8287f6a18cfbd63056cd6f4984ca04"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a9c8287f6a18cfbd63056cd6f4984ca04">onComponentDirty</a> (<a class="el" href="Core_8h.html#a1673229bf7fec9388ac2a829a52d69b3">Index</a> component_id, const <a class="el" href="structComponentData.html">ComponentData</a> &amp;data)=0</td></tr>
 <tr class="memdesc:a9c8287f6a18cfbd63056cd6f4984ca04"><td class="mdescLeft">&#160;</td><td class="mdescRight">组件写前标脏回调（数据尚未修改，操作边界内首次标脏捕获 before-image）  <br /></td></tr>
+<tr class="memitem:a16ebb97b18972de208913a66b5b26654" id="r_a16ebb97b18972de208913a66b5b26654"><td class="memItemLeft" align="right" valign="top">virtual bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a16ebb97b18972de208913a66b5b26654">allowsUnrecordedWrite</a> () const</td></tr>
+<tr class="memdesc:a16ebb97b18972de208913a66b5b26654"><td class="mdescLeft">&#160;</td><td class="mdescRight">组件与结构写共同的归属判定；事件只允许访问本 owner 预览  <br /></td></tr>
 <tr class="memitem:a72fd83aaf5a46ac3c3243c5f935fa3d1" id="r_a72fd83aaf5a46ac3c3243c5f935fa3d1"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a72fd83aaf5a46ac3c3243c5f935fa3d1">onModelAdded</a> (<a class="el" href="Core_8h.html#a1673229bf7fec9388ac2a829a52d69b3">Index</a> model_id)=0</td></tr>
 <tr class="memdesc:a72fd83aaf5a46ac3c3243c5f935fa3d1"><td class="mdescLeft">&#160;</td><td class="mdescRight">addModel 完成后回调  <br /></td></tr>
 <tr class="memitem:a9883c8e665c8f03ee61e70a3eb78ec95" id="r_a9883c8e665c8f03ee61e70a3eb78ec95"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a9883c8e665c8f03ee61e70a3eb78ec95">onModelRemoving</a> (const <a class="el" href="classModelData.html">ModelData</a> &amp;model)=0</td></tr>
@@ -138,6 +140,36 @@ Public 成员函数</h2></td></tr>
 </div>
 </div>
 <a name="doc-func-members" id="doc-func-members"></a><h2 id="header-doc-func-members" class="groupheader">成员函数说明</h2>
+<a id="a16ebb97b18972de208913a66b5b26654" name="a16ebb97b18972de208913a66b5b26654"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a16ebb97b18972de208913a66b5b26654">&#9670;&#160;</a></span>allowsUnrecordedWrite()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">virtual bool UndoRecorder::allowsUnrecordedWrite </td>
+          <td>(</td>
+          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel inline">inline</span><span class="mlabel virtual">virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>组件与结构写共同的归属判定；事件只允许访问本 owner 预览 </p>
+<p>有归属 = 操作边界内、undo/redo 恢复中、或层（预览会话）自写——三种路径各自 有记账/取消机制。返回 false 时模型层在写前直接拒绝：无归属写既不产生可撤销 记录也不触发预览取消，属必须封死的违规路径（源码全量排查与告警日志均证明 生产代码树零流量，违规只可能来自新增代码踩线）。 默认放行：无归属判定能力的记录器实现不受本判定约束。 </p>
+
+<p>被 <a class="el" href="classUndoStack.html#a20159fc94db4e79a70575303acc5f58c">UndoStack</a> 重载.</p>
+
+</div>
+</div>
 <a id="a01f6b16f4d86e378f0c03ed6d8498bf2" name="a01f6b16f4d86e378f0c03ed6d8498bf2"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a01f6b16f4d86e378f0c03ed6d8498bf2">&#9670;&#160;</a></span>onComponentAdded()</h2>
 

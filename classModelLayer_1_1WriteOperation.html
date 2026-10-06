@@ -1,0 +1,368 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="zh">
+<head>
+<meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=11"/>
+<meta name="generator" content="Doxygen 1.14.0"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>PreCess: ModelLayer::WriteOperation类 参考</title>
+<link href="tabs.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="jquery.js"></script>
+<script type="text/javascript" src="dynsections.js"></script>
+<script type="text/javascript" src="clipboard.js"></script>
+<script type="text/javascript" src="cookie.js"></script>
+<link href="search/search.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="search/searchdata.js"></script>
+<script type="text/javascript" src="search/search.js"></script>
+<link href="doxygen.css" rel="stylesheet" type="text/css" />
+</head>
+<body>
+<div id="top"><!-- do not remove this div, it is closed by doxygen! -->
+<div id="titlearea">
+<table cellspacing="0" cellpadding="0">
+ <tbody>
+ <tr id="projectrow">
+  <td id="projectlogo"><img alt="Logo" src="PreCess.ico"/></td>
+  <td id="projectalign">
+   <div id="projectname">PreCess
+   </div>
+  </td>
+ </tr>
+ </tbody>
+</table>
+</div>
+<!-- end header part -->
+<!-- 制作者 Doxygen 1.14.0 -->
+<script type="text/javascript">
+var searchBox = new SearchBox("searchBox", "search/",'.html');
+</script>
+<script type="text/javascript">
+$(function() { codefold.init(); });
+</script>
+<script type="text/javascript" src="menudata.js"></script>
+<script type="text/javascript" src="menu.js"></script>
+<script type="text/javascript">
+$(function() {
+  initMenu('',true,false,'search.php','搜索',false);
+  $(function() { init_search(); });
+});
+</script>
+<div id="main-nav"></div>
+<!-- window showing the filter options -->
+<div id="MSearchSelectWindow"
+     onmouseover="return searchBox.OnSearchSelectShow()"
+     onmouseout="return searchBox.OnSearchSelectHide()"
+     onkeydown="return searchBox.OnSearchSelectKey(event)">
+</div>
+
+<!-- iframe showing the search results (closed by default) -->
+<div id="MSearchResultsWindow">
+<div id="MSearchResults">
+<div class="SRPage">
+<div id="SRIndex">
+<div id="SRResults"></div>
+<div class="SRStatus" id="Loading">载入中...</div>
+<div class="SRStatus" id="Searching">搜索中...</div>
+<div class="SRStatus" id="NoMatches">未找到</div>
+</div>
+</div>
+</div>
+</div>
+
+<div id="nav-path" class="navpath">
+  <ul>
+<li class="navelem"><a href="classModelLayer.html">ModelLayer</a></li><li class="navelem"><a href="classModelLayer_1_1WriteOperation.html">WriteOperation</a></li>  </ul>
+</div>
+</div><!-- top -->
+<div id="doc-content">
+<div class="header">
+  <div class="summary">
+<a href="#pub-methods">Public 成员函数</a> &#124;
+<a href="#pri-attribs">Private 属性</a> &#124;
+<a href="#friends">友元</a> &#124;
+<a href="classModelLayer_1_1WriteOperation-members.html">所有成员列表</a>  </div>
+  <div class="headertitle"><div class="title">ModelLayer::WriteOperation类 参考</div></div>
+</div><!--header-->
+<div class="contents">
+
+<p>模型操作占用：身份绑定，只有本操作能够释放；取消不释放。  
+ <a href="#details">更多...</a></p>
+
+<p><code>#include &lt;<a class="el" href="ModelLayer_8h_source.html">ModelLayer.h</a>&gt;</code></p>
+<div class="dynheader">
+ModelLayer::WriteOperation 的协作图:</div>
+<div class="dyncontent">
+<div class="center"><img src="classModelLayer_1_1WriteOperation__coll__graph.png" border="0" usemap="#aModelLayer_1_1WriteOperation_coll__map" loading="lazy" alt="Collaboration graph"/></div>
+<map name="aModelLayer_1_1WriteOperation_coll__map" id="aModelLayer_1_1WriteOperation_coll__map">
+<area shape="rect" title="模型操作占用：身份绑定，只有本操作能够释放；取消不释放。" alt="" coords="8,212,213,237"/>
+<area shape="rect" title=" " alt="" coords="5,101,216,141"/>
+<area shape="poly" title=" " alt="" coords="113,155,113,212,108,212,108,155"/>
+<area shape="rect" href="structModelLayer_1_1WriteAuthority.html" title="写权限状态（堆上共享）：含线程亲和、冻结窗口与框架特权深度" alt="" coords="10,5,211,31"/>
+<area shape="poly" title=" " alt="" coords="113,45,113,101,108,101,108,45"/>
+</map>
+<center><span class="legend">[<a href="graph_legend.html">图例</a>]</span></center></div>
+<table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 id="header-pub-methods" class="groupheader"><a id="pub-methods" name="pub-methods"></a>
+Public 成员函数</h2></td></tr>
+<tr class="memitem:aadfb0df78bb499498c0b906731e7ac70" id="r_aadfb0df78bb499498c0b906731e7ac70"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#aadfb0df78bb499498c0b906731e7ac70">WriteOperation</a> (std::shared_ptr&lt; <a class="el" href="structModelLayer_1_1WriteAuthority.html">WriteAuthority</a> &gt; authority, std::uint64_t <a class="el" href="TestComponentModel_8cpp.html#a39f48d78b28941e045e423f59f774459">id</a>)</td></tr>
+<tr class="memitem:a98891654d35bcb07f6325216d5e19e26" id="r_a98891654d35bcb07f6325216d5e19e26"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a98891654d35bcb07f6325216d5e19e26">~WriteOperation</a> ()</td></tr>
+<tr class="memitem:ab4df4f157f7716dac1760b87c8a2daa3" id="r_ab4df4f157f7716dac1760b87c8a2daa3"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ab4df4f157f7716dac1760b87c8a2daa3">release</a> () noexcept</td></tr>
+<tr class="memitem:a2576e9177a80f0613c6252ee47242f63" id="r_a2576e9177a80f0613c6252ee47242f63"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a2576e9177a80f0613c6252ee47242f63">active</a> () const noexcept</td></tr>
+<tr class="memitem:a67cf63cf1a748d4ed6ea1abbe534db7f" id="r_a67cf63cf1a748d4ed6ea1abbe534db7f"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a67cf63cf1a748d4ed6ea1abbe534db7f">WriteOperation</a> (const <a class="el" href="classModelLayer_1_1WriteOperation.html">WriteOperation</a> &amp;)=delete</td></tr>
+<tr class="memitem:a7acaa39c03cf56e27756eab64e1e41ae" id="r_a7acaa39c03cf56e27756eab64e1e41ae"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classModelLayer_1_1WriteOperation.html">WriteOperation</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a7acaa39c03cf56e27756eab64e1e41ae">operator=</a> (const <a class="el" href="classModelLayer_1_1WriteOperation.html">WriteOperation</a> &amp;)=delete</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 id="header-pri-attribs" class="groupheader"><a id="pri-attribs" name="pri-attribs"></a>
+Private 属性</h2></td></tr>
+<tr class="memitem:a2f8bb3e7000dea61762db01e932a4a0d" id="r_a2f8bb3e7000dea61762db01e932a4a0d"><td class="memItemLeft" align="right" valign="top">std::shared_ptr&lt; <a class="el" href="structModelLayer_1_1WriteAuthority.html">WriteAuthority</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a2f8bb3e7000dea61762db01e932a4a0d">authority_</a></td></tr>
+<tr class="memitem:a1fe0abf1d1410624a2216f85d5b01ec9" id="r_a1fe0abf1d1410624a2216f85d5b01ec9"><td class="memItemLeft" align="right" valign="top">std::uint64_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a1fe0abf1d1410624a2216f85d5b01ec9">id_</a></td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 id="header-friends" class="groupheader"><a id="friends" name="friends"></a>
+友元</h2></td></tr>
+<tr class="memitem:af15a9c987032fa53bd0a8126f95f3f2d" id="r_af15a9c987032fa53bd0a8126f95f3f2d"><td class="memItemLeft" align="right" valign="top">class&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#af15a9c987032fa53bd0a8126f95f3f2d">ModelLayer</a></td></tr>
+<tr class="memitem:a6706790d6ce1179fd63cb05ccd151992" id="r_a6706790d6ce1179fd63cb05ccd151992"><td class="memItemLeft" align="right" valign="top">class&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a6706790d6ce1179fd63cb05ccd151992">WritePrivilege</a></td></tr>
+</table>
+<a name="details" id="details"></a><h2 id="header-details" class="groupheader">详细描述</h2>
+<div class="textblock"><p>模型操作占用：身份绑定，只有本操作能够释放；取消不释放。 </p>
+<dl class="section note"><dt>注解</dt><dd>申请、查询、释放与析构均属于模型所属线程；worker 不持有此凭证。 </dd></dl>
+</div><a name="doc-constructors" id="doc-constructors"></a><h2 id="header-doc-constructors" class="groupheader">构造及析构函数说明</h2>
+<a id="aadfb0df78bb499498c0b906731e7ac70" name="aadfb0df78bb499498c0b906731e7ac70"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aadfb0df78bb499498c0b906731e7ac70">&#9670;&#160;</a></span>WriteOperation() <span class="overload">[1/2]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">ModelLayer::WriteOperation::WriteOperation </td>
+          <td>(</td>
+          <td class="paramtype">std::shared_ptr&lt; <a class="el" href="structModelLayer_1_1WriteAuthority.html">WriteAuthority</a> &gt;</td>          <td class="paramname"><span class="paramname"><em>authority</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">std::uint64_t</td>          <td class="paramname"><span class="paramname"><em>id</em></span>&#160;)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a98891654d35bcb07f6325216d5e19e26" name="a98891654d35bcb07f6325216d5e19e26"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a98891654d35bcb07f6325216d5e19e26">&#9670;&#160;</a></span>~WriteOperation()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">ModelLayer::WriteOperation::~WriteOperation </td>
+          <td>(</td>
+          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a67cf63cf1a748d4ed6ea1abbe534db7f" name="a67cf63cf1a748d4ed6ea1abbe534db7f"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a67cf63cf1a748d4ed6ea1abbe534db7f">&#9670;&#160;</a></span>WriteOperation() <span class="overload">[2/2]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">ModelLayer::WriteOperation::WriteOperation </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="classModelLayer_1_1WriteOperation.html">WriteOperation</a> &amp;</td>          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel delete">delete</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a name="doc-func-members" id="doc-func-members"></a><h2 id="header-doc-func-members" class="groupheader">成员函数说明</h2>
+<a id="a2576e9177a80f0613c6252ee47242f63" name="a2576e9177a80f0613c6252ee47242f63"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a2576e9177a80f0613c6252ee47242f63">&#9670;&#160;</a></span>active()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool ModelLayer::WriteOperation::active </td>
+          <td>(</td>
+          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel noexcept">noexcept</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a7acaa39c03cf56e27756eab64e1e41ae" name="a7acaa39c03cf56e27756eab64e1e41ae"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a7acaa39c03cf56e27756eab64e1e41ae">&#9670;&#160;</a></span>operator=()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classModelLayer_1_1WriteOperation.html">WriteOperation</a> &amp; ModelLayer::WriteOperation::operator= </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="classModelLayer_1_1WriteOperation.html">WriteOperation</a> &amp;</td>          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel delete">delete</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="ab4df4f157f7716dac1760b87c8a2daa3" name="ab4df4f157f7716dac1760b87c8a2daa3"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ab4df4f157f7716dac1760b87c8a2daa3">&#9670;&#160;</a></span>release()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void ModelLayer::WriteOperation::release </td>
+          <td>(</td>
+          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel noexcept">noexcept</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a name="doc-related-members" id="doc-related-members"></a><h2 id="header-doc-related-members" class="groupheader">友元及相关符号说明</h2>
+<a id="af15a9c987032fa53bd0a8126f95f3f2d" name="af15a9c987032fa53bd0a8126f95f3f2d"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#af15a9c987032fa53bd0a8126f95f3f2d">&#9670;&#160;</a></span>ModelLayer</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">friend class <a class="el" href="classModelLayer.html">ModelLayer</a></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel friend">friend</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a6706790d6ce1179fd63cb05ccd151992" name="a6706790d6ce1179fd63cb05ccd151992"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a6706790d6ce1179fd63cb05ccd151992">&#9670;&#160;</a></span>WritePrivilege</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">friend class <a class="el" href="classModelLayer_1_1WritePrivilege.html">WritePrivilege</a></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel friend">friend</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a name="doc-variable-members" id="doc-variable-members"></a><h2 id="header-doc-variable-members" class="groupheader">类成员变量说明</h2>
+<a id="a2f8bb3e7000dea61762db01e932a4a0d" name="a2f8bb3e7000dea61762db01e932a4a0d"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a2f8bb3e7000dea61762db01e932a4a0d">&#9670;&#160;</a></span>authority_</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::shared_ptr&lt;<a class="el" href="structModelLayer_1_1WriteAuthority.html">WriteAuthority</a>&gt; ModelLayer::WriteOperation::authority_</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel private">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a1fe0abf1d1410624a2216f85d5b01ec9" name="a1fe0abf1d1410624a2216f85d5b01ec9"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a1fe0abf1d1410624a2216f85d5b01ec9">&#9670;&#160;</a></span>id_</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::uint64_t ModelLayer::WriteOperation::id_</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel private">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<hr/>该类的文档由以下文件生成:<ul>
+<li>model/data/<a class="el" href="ModelLayer_8h_source.html">ModelLayer.h</a></li>
+<li>model/data/<a class="el" href="ModelLayer_8cpp.html">ModelLayer.cpp</a></li>
+</ul>
+</div><!-- contents -->
+<!-- start footer part -->
+<hr class="footer"/><address class="footer"><small>
+制作者&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.14.0
+</small></address>
+</div><!-- doc-content -->
+</body>
+</html>

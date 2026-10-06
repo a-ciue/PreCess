@@ -9,10 +9,12 @@ var searchData=
   ['session_2eh_6',['Session.h',['../Session_8h.html',1,'']]],
   ['sessionquery_2ecpp_7',['SessionQuery.cpp',['../SessionQuery_8cpp.html',1,'']]],
   ['sessionquery_2eh_8',['SessionQuery.h',['../SessionQuery_8h.html',1,'']]],
-  ['sidebar_2eqml_9',['SideBar.qml',['../SideBar_8qml.html',1,'']]],
-  ['solidselectorhighlight_2ecpp_10',['SolidSelectorHighlight.cpp',['../SolidSelectorHighlight_8cpp.html',1,'']]],
-  ['systemhandlerptr_2eh_11',['SystemHandlerPtr.h',['../SystemHandlerPtr_8h.html',1,'']]],
-  ['systempluginmanager_2ecpp_12',['SystemPluginManager.cpp',['../SystemPluginManager_8cpp.html',1,'']]],
-  ['systempluginmanager_2eh_13',['SystemPluginManager.h',['../SystemPluginManager_8h.html',1,'']]],
-  ['systemregisterbase_2eh_14',['SystemRegisterBase.h',['../SystemRegisterBase_8h.html',1,'']]]
+  ['shadowcomponent_2ecpp_9',['ShadowComponent.cpp',['../ShadowComponent_8cpp.html',1,'']]],
+  ['shadowcomponent_2eh_10',['ShadowComponent.h',['../ShadowComponent_8h.html',1,'']]],
+  ['sidebar_2eqml_11',['SideBar.qml',['../SideBar_8qml.html',1,'']]],
+  ['solidselectorhighlight_2ecpp_12',['SolidSelectorHighlight.cpp',['../SolidSelectorHighlight_8cpp.html',1,'']]],
+  ['systemhandlerptr_2eh_13',['SystemHandlerPtr.h',['../SystemHandlerPtr_8h.html',1,'']]],
+  ['systempluginmanager_2ecpp_14',['SystemPluginManager.cpp',['../SystemPluginManager_8cpp.html',1,'']]],
+  ['systempluginmanager_2eh_15',['SystemPluginManager.h',['../SystemPluginManager_8h.html',1,'']]],
+  ['systemregisterbase_2eh_16',['SystemRegisterBase.h',['../SystemRegisterBase_8h.html',1,'']]]
 ];

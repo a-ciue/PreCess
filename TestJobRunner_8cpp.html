@@ -1,0 +1,662 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="zh">
+<head>
+<meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=11"/>
+<meta name="generator" content="Doxygen 1.14.0"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>PreCess: model/systems/algo/test/TestJobRunner.cpp 文件参考</title>
+<link href="tabs.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="jquery.js"></script>
+<script type="text/javascript" src="dynsections.js"></script>
+<script type="text/javascript" src="clipboard.js"></script>
+<script type="text/javascript" src="cookie.js"></script>
+<link href="search/search.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="search/searchdata.js"></script>
+<script type="text/javascript" src="search/search.js"></script>
+<link href="doxygen.css" rel="stylesheet" type="text/css" />
+</head>
+<body>
+<div id="top"><!-- do not remove this div, it is closed by doxygen! -->
+<div id="titlearea">
+<table cellspacing="0" cellpadding="0">
+ <tbody>
+ <tr id="projectrow">
+  <td id="projectlogo"><img alt="Logo" src="PreCess.ico"/></td>
+  <td id="projectalign">
+   <div id="projectname">PreCess
+   </div>
+  </td>
+ </tr>
+ </tbody>
+</table>
+</div>
+<!-- end header part -->
+<!-- 制作者 Doxygen 1.14.0 -->
+<script type="text/javascript">
+var searchBox = new SearchBox("searchBox", "search/",'.html');
+</script>
+<script type="text/javascript">
+$(function() { codefold.init(); });
+</script>
+<script type="text/javascript" src="menudata.js"></script>
+<script type="text/javascript" src="menu.js"></script>
+<script type="text/javascript">
+$(function() {
+  initMenu('',true,false,'search.php','搜索',false);
+  $(function() { init_search(); });
+});
+</script>
+<div id="main-nav"></div>
+<!-- window showing the filter options -->
+<div id="MSearchSelectWindow"
+     onmouseover="return searchBox.OnSearchSelectShow()"
+     onmouseout="return searchBox.OnSearchSelectHide()"
+     onkeydown="return searchBox.OnSearchSelectKey(event)">
+</div>
+
+<!-- iframe showing the search results (closed by default) -->
+<div id="MSearchResultsWindow">
+<div id="MSearchResults">
+<div class="SRPage">
+<div id="SRIndex">
+<div id="SRResults"></div>
+<div class="SRStatus" id="Loading">载入中...</div>
+<div class="SRStatus" id="Searching">搜索中...</div>
+<div class="SRStatus" id="NoMatches">未找到</div>
+</div>
+</div>
+</div>
+</div>
+
+<div id="nav-path" class="navpath">
+  <ul>
+<li class="navelem"><a href="dir_3f14f6767c31cb4a1d22c13c18cc6fc3.html">model</a></li><li class="navelem"><a href="dir_2daa03e0cb702fa035b1e0c62ad50ba5.html">systems</a></li><li class="navelem"><a href="dir_49a612e62f0d95b2306847c8f56a657d.html">algo</a></li><li class="navelem"><a href="dir_fe75c0e4433703afbd9412c833302770.html">test</a></li>  </ul>
+</div>
+</div><!-- top -->
+<div id="doc-content">
+<div class="header">
+  <div class="summary">
+<a href="#func-members">函数</a>  </div>
+  <div class="headertitle"><div class="title">TestJobRunner.cpp 文件参考</div></div>
+</div><!--header-->
+<div class="contents">
+<div class="textblock"><code>#include &quot;<a class="el" href="JobRunner_8h_source.html">JobRunner.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="ModelLayer_8h_source.html">ModelLayer.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="ModelScope_8h_source.html">ModelScope.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="UndoStack_8h_source.html">UndoStack.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="OwnerQueue_8h_source.html">test/OwnerQueue.h</a>&quot;</code><br />
+<code>#include &lt;atomic&gt;</code><br />
+<code>#include &lt;catch2/catch_test_macros.hpp&gt;</code><br />
+<code>#include &lt;chrono&gt;</code><br />
+<code>#include &lt;condition_variable&gt;</code><br />
+<code>#include &lt;mutex&gt;</code><br />
+<code>#include &lt;stdexcept&gt;</code><br />
+<code>#include &lt;thread&gt;</code><br />
+</div><div class="textblock"><div class="dynheader">
+TestJobRunner.cpp 的引用(Include)关系图:</div>
+<div class="dyncontent">
+<div class="center"><img src="TestJobRunner_8cpp__incl.png" border="0" usemap="#amodel_2systems_2algo_2test_2TestJobRunner_8cpp" loading="lazy" alt=""/></div>
+<map name="amodel_2systems_2algo_2test_2TestJobRunner_8cpp" id="amodel_2systems_2algo_2test_2TestJobRunner_8cpp">
+<area shape="rect" title=" " alt="" coords="2115,5,2288,45"/>
+<area shape="rect" href="JobRunner_8h.html" title="单槽执行器：worker 只计算，所属线程一次完成提交、清理和释放。" alt="" coords="539,167,637,192"/>
+<area shape="poly" title=" " alt="" coords="2114,29,1775,30,1319,37,1094,46,896,58,744,74,691,84,657,96,640,108,624,123,602,156,597,153,620,120,636,104,655,91,690,79,743,69,895,52,1093,40,1319,32,1775,24,2114,24"/>
+<area shape="rect" title=" " alt="" coords="611,313,675,339"/>
+<area shape="poly" title=" " alt="" coords="2114,31,1960,37,1755,49,1524,68,1292,96,1200,112,1129,127,967,169,889,183,826,190,797,196,768,205,737,220,702,242,674,270,656,302,651,299,670,267,698,238,734,215,766,200,796,191,826,185,888,178,966,164,1128,122,1199,106,1292,91,1524,62,1755,43,1959,32,2114,26"/>
+<area shape="rect" title=" " alt="" coords="2622,240,2765,265"/>
+<area shape="poly" title=" " alt="" coords="2204,45,2206,78,2214,117,2229,157,2241,175,2255,190,2609,238,2608,243,2252,194,2236,178,2224,160,2208,119,2201,78,2199,46"/>
+<area shape="rect" title=" " alt="" coords="712,240,776,265"/>
+<area shape="poly" title=" " alt="" coords="2114,33,1812,52,1622,71,1432,96,1244,131,1060,172,790,241,789,236,1059,167,1243,125,1432,91,1622,65,1811,47,2114,28"/>
+<area shape="rect" href="ModelLayer_8h.html" title="负责管理多个模型实例的类" alt="" coords="2081,167,2191,192"/>
+<area shape="poly" title=" " alt="" coords="2196,47,2149,155,2144,153,2191,45"/>
+<area shape="rect" title=" " alt="" coords="2789,240,2875,265"/>
+<area shape="poly" title=" " alt="" coords="2231,43,2360,124,2430,164,2482,190,2560,212,2625,221,2691,226,2775,237,2775,242,2690,232,2624,226,2559,217,2480,194,2427,169,2357,129,2228,48"/>
+<area shape="rect" href="ModelScope_8h.html" title="模型操作作用域（RAII）：模型写段的记账与通知收尾" alt="" coords="1478,93,1591,119"/>
+<area shape="poly" title=" " alt="" coords="2115,39,1606,99,1605,94,2114,34"/>
+<area shape="rect" href="UndoStack_8h.html" title="一个正式历史栈与临时预览捕获：事件不入栈，execute 收尾吸收预览。" alt="" coords="1325,240,1429,265"/>
+<area shape="poly" title=" " alt="" coords="2115,33,1944,41,1742,54,1565,73,1503,84,1468,96,1437,124,1413,159,1397,196,1386,227,1381,226,1392,194,1409,157,1433,120,1465,91,1502,78,1564,67,1742,49,1944,36,2114,27"/>
+<area shape="rect" href="OwnerQueue_8h.html" title="测试用所属线程队列：worker 只投递，主线程明确消费一次收尾。" alt="" coords="2265,167,2412,192"/>
+<area shape="poly" title=" " alt="" coords="2221,44,2321,154,2317,158,2217,48"/>
+<area shape="rect" title=" " alt="" coords="2951,240,3017,265"/>
+<area shape="poly" title=" " alt="" coords="2267,43,2938,235,2937,241,2266,48"/>
+<area shape="rect" title=" " alt="" coords="2537,93,2604,119"/>
+<area shape="poly" title=" " alt="" coords="2289,42,2519,91,2524,92,2523,97,2518,96,2288,47"/>
+<area shape="rect" title=" " alt="" coords="2628,93,2847,119"/>
+<area shape="poly" title=" " alt="" coords="2288,37,2646,89,2645,94,2288,42"/>
+<area shape="rect" href="Job_8h.html" title="任务单元：状态、错误、取消令牌与执行闭包（线程模型的任务载体）" alt="" coords="390,240,445,265"/>
+<area shape="poly" title=" " alt="" coords="562,194,458,237,456,232,560,190"/>
+<area shape="rect" title=" " alt="" coords="449,387,535,412"/>
+<area shape="poly" title=" " alt="" coords="583,194,557,241,526,313,503,374,498,372,521,311,552,239,579,191"/>
+<area shape="poly" title=" " alt="" coords="595,192,636,300,631,301,590,193"/>
+<area shape="poly" title=" " alt="" coords="638,180,2608,246,2608,251,637,185"/>
+<area shape="rect" title=" " alt="" coords="923,680,1000,705"/>
+<area shape="poly" title=" " alt="" coords="589,192,565,370,558,479,560,525,565,558,582,600,595,615,615,630,637,640,669,650,748,666,909,685,909,690,747,671,667,655,635,645,612,634,591,619,578,603,560,559,554,525,553,479,560,369,583,192"/>
+<area shape="poly" title=" " alt="" coords="614,190,707,232,705,237,612,194"/>
+<area shape="rect" href="JobProgress_8h.html" title="进度上报回调类型：model 层（任务系统）与上层 UI 适配层的公共契约" alt="" coords="323,313,434,339"/>
+<area shape="poly" title=" " alt="" coords="413,267,394,303,389,300,409,264"/>
+<area shape="poly" title=" " alt="" coords="426,265,482,373,477,375,421,267"/>
+<area shape="rect" title=" " alt="" coords="501,680,560,705"/>
+<area shape="poly" title=" " alt="" coords="391,265,350,284,330,298,313,315,299,335,291,353,288,398,288,547,294,578,309,605,332,627,361,645,427,670,488,683,487,688,425,675,359,649,329,631,305,608,289,580,283,548,283,398,286,352,294,333,309,312,327,294,347,279,389,260"/>
+<area shape="rect" title=" " alt="" coords="43,313,130,339"/>
+<area shape="poly" title=" " alt="" coords="390,263,144,315,143,310,389,257"/>
+<area shape="poly" title=" " alt="" coords="446,260,598,308,597,313,444,265"/>
+<area shape="rect" title=" " alt="" coords="155,313,248,339"/>
+<area shape="poly" title=" " alt="" coords="391,265,250,312,248,307,389,260"/>
+<area shape="rect" title=" " alt="" coords="1845,680,1907,705"/>
+<area shape="poly" title=" " alt="" coords="445,253,843,275,1068,293,1150,302,1198,311,1264,342,1343,392,1422,445,1484,483,1535,506,1585,531,1623,558,1650,582,1678,605,1716,630,1776,657,1832,676,1831,681,1774,662,1713,634,1674,609,1647,586,1620,562,1583,536,1533,511,1481,488,1419,449,1341,397,1261,347,1197,316,1149,307,1067,298,842,281,445,258"/>
+<area shape="poly" title=" " alt="" coords="398,336,464,377,461,382,395,341"/>
+<area shape="poly" title=" " alt="" coords="381,339,381,471,381,547,383,573,387,593,396,610,413,630,430,646,449,658,490,677,487,682,446,663,426,650,409,634,392,613,382,595,377,574,376,547,376,471,376,339"/>
+<area shape="poly" title=" " alt="" coords="2192,186,2266,205,2306,219,2344,238,2407,270,2427,291,2433,306,2435,325,2435,400,2440,429,2455,448,2504,483,2528,497,2550,503,2571,512,2589,532,2593,546,2589,560,2570,590,2548,609,2521,622,2486,635,2405,660,2335,673,2271,677,2210,676,2082,671,2008,673,1921,683,1921,678,2007,668,2082,665,2210,671,2271,672,2334,668,2404,655,2484,629,2519,617,2545,604,2565,587,2584,558,2588,546,2584,535,2568,516,2548,508,2526,502,2501,488,2451,452,2435,431,2429,401,2429,325,2428,307,2422,294,2404,274,2341,242,2304,224,2265,210,2190,192"/>
+<area shape="poly" title=" " alt="" coords="2081,186,1812,201,1436,228,1249,246,1085,267,960,290,917,303,891,316,850,349,815,386,789,424,771,464,762,505,765,546,780,588,807,630,829,650,855,665,910,682,908,687,853,670,826,654,803,634,775,591,760,547,757,504,765,462,784,421,811,382,846,345,888,311,915,298,958,285,1084,262,1249,241,1436,223,1812,196,2081,181"/>
+<area shape="poly" title=" " alt="" coords="2081,184,1452,203,1073,220,914,231,795,243,790,243,789,238,794,237,914,225,1072,215,1451,197,2081,179"/>
+<area shape="rect" href="ModelData_8h.html" title="负责管理和操作网格模型数据的核心类" alt="" coords="1754,387,1859,412"/>
+<area shape="poly" title=" " alt="" coords="2082,190,2002,207,1959,222,1919,242,1884,271,1855,307,1833,343,1818,375,1814,373,1829,341,1851,304,1880,267,1916,238,1957,217,2000,202,2080,184"/>
+<area shape="rect" title=" " alt="" coords="2007,680,2063,705"/>
+<area shape="poly" title=" " alt="" coords="2191,185,2379,211,2466,225,2516,237,2690,316,2774,359,2847,405,2877,430,2902,455,2921,482,2932,510,2936,539,2931,570,2916,601,2890,634,2873,645,2844,654,2761,669,2650,680,2523,687,2265,694,2076,694,2076,689,2264,688,2523,682,2650,675,2760,664,2843,649,2870,640,2886,630,2911,598,2926,568,2931,539,2927,511,2916,484,2898,459,2873,434,2844,409,2771,364,2687,321,2514,243,2465,231,2378,216,2190,190"/>
+<area shape="rect" title=" " alt="" coords="1210,607,1334,632"/>
+<area shape="poly" title=" " alt="" coords="2081,186,1971,192,1834,203,1705,219,1652,230,1613,242,1574,263,1526,292,1422,369,1371,413,1326,456,1291,498,1268,534,1262,564,1266,593,1261,594,1257,564,1263,532,1286,495,1322,453,1367,409,1418,365,1523,288,1571,258,1611,238,1651,225,1704,214,1834,197,1970,186,2081,180"/>
+<area shape="rect" title=" " alt="" coords="1727,607,1801,632"/>
+<area shape="poly" title=" " alt="" coords="2155,190,2187,216,2221,253,2235,273,2243,295,2244,318,2237,340,2208,375,2163,411,2105,449,2041,487,1908,555,1804,603,1802,599,1906,550,2038,482,2103,445,2160,407,2204,371,2232,337,2239,317,2238,296,2230,276,2217,256,2184,220,2152,194"/>
+<area shape="rect" title=" " alt="" coords="933,607,1000,632"/>
+<area shape="poly" title=" " alt="" coords="2082,194,1988,214,1883,243,1817,268,1446,361,1204,424,1120,448,1080,462,1046,493,1017,528,979,595,975,593,1013,526,1042,489,1077,458,1118,443,1202,419,1445,356,1815,263,1882,237,1987,209,2081,189"/>
+<area shape="rect" href="ComponentOperator_8h.html" title=" " alt="" coords="2649,533,2815,559"/>
+<area shape="poly" title=" " alt="" coords="2191,185,2346,210,2414,224,2452,238,2471,257,2481,276,2485,298,2485,325,2485,400,2489,427,2500,449,2516,469,2537,485,2588,511,2643,528,2641,533,2586,516,2534,490,2512,472,2495,452,2484,428,2480,401,2480,325,2479,298,2476,278,2467,260,2449,242,2413,229,2345,215,2191,191"/>
+<area shape="rect" title=" " alt="" coords="2751,607,2875,632"/>
+<area shape="poly" title=" " alt="" coords="2191,186,2360,212,2437,226,2481,238,2657,382,2829,532,2834,548,2834,565,2827,595,2822,593,2828,564,2828,549,2824,535,2654,386,2479,242,2436,231,2359,217,2190,191"/>
+<area shape="rect" href="GeometryRegistry_8h.html" title=" " alt="" coords="2170,533,2321,559"/>
+<area shape="poly" title=" " alt="" coords="2191,190,2238,208,2261,221,2281,238,2298,258,2308,277,2312,298,2313,325,2313,401,2309,436,2296,470,2265,524,2261,521,2292,468,2303,435,2308,400,2308,325,2307,299,2303,279,2293,261,2277,242,2257,226,2235,212,2189,195"/>
+<area shape="rect" href="MeshIDMap_8h.html" title=" " alt="" coords="2463,533,2574,559"/>
+<area shape="poly" title=" " alt="" coords="2192,188,2247,205,2303,231,2327,249,2346,270,2359,296,2364,324,2364,400,2367,422,2375,442,2403,477,2440,505,2477,525,2475,530,2437,510,2399,481,2370,445,2362,424,2359,401,2359,325,2354,297,2342,274,2323,253,2300,236,2245,210,2190,193"/>
+<area shape="rect" href="ModelOperator_8h.html" title=" " alt="" coords="1929,240,2060,265"/>
+<area shape="poly" title=" " alt="" coords="2114,194,2031,236,2029,231,2112,190"/>
+<area shape="rect" title=" " alt="" coords="1623,240,1803,265"/>
+<area shape="poly" title=" " alt="" coords="2082,192,1795,240,1795,235,2081,187"/>
+<area shape="poly" title=" " alt="" coords="2191,183,2254,189,2513,209,2628,218,2776,237,2775,243,2628,224,2513,214,2253,195,2191,189"/>
+<area shape="poly" title=" " alt="" coords="1754,406,1410,425,1218,442,1139,452,1079,463,975,493,897,525,820,563,721,609,569,677,567,672,719,604,818,558,895,521,973,488,1078,457,1138,446,1218,436,1410,420,1753,400"/>
+<area shape="poly" title=" " alt="" coords="1754,405,1397,423,1215,440,1151,451,1115,462,1091,480,1075,498,1056,538,1041,582,1030,607,1014,634,983,671,979,668,1010,630,1026,605,1037,580,1051,536,1071,495,1088,476,1112,458,1149,445,1214,435,1396,418,1754,400"/>
+<area shape="rect" href="ComponentData_8h.html" title=" " alt="" coords="1126,460,1266,485"/>
+<area shape="poly" title=" " alt="" coords="1754,409,1280,464,1279,459,1753,404"/>
+<area shape="poly" title=" " alt="" coords="1774,414,1741,433,1726,446,1714,461,1709,480,1714,494,1726,506,1743,515,1779,527,1798,531,1803,549,1801,566,1785,597,1781,594,1796,565,1798,549,1794,535,1777,532,1741,520,1723,510,1709,497,1704,480,1710,459,1722,442,1738,429,1771,410"/>
+<area shape="rect" href="Selection_8h.html" title=" " alt="" coords="2345,533,2439,559"/>
+<area shape="poly" title=" " alt="" coords="1854,409,2333,527,2332,533,1852,415"/>
+<area shape="rect" title=" " alt="" coords="1874,460,1942,485"/>
+<area shape="poly" title=" " alt="" coords="1824,410,1882,450,1879,454,1821,414"/>
+<area shape="poly" title=" " alt="" coords="1162,488,574,680,572,675,1160,483"/>
+<area shape="poly" title=" " alt="" coords="1194,486,1185,515,1179,554,1181,595,1188,614,1199,630,1211,638,1232,645,1295,658,1379,668,1476,675,1677,685,1831,688,1831,693,1677,690,1476,681,1378,673,1294,663,1230,650,1209,643,1195,634,1183,616,1176,596,1174,554,1180,514,1189,485"/>
+<area shape="poly" title=" " alt="" coords="1179,488,1151,509,1122,535,1103,561,1091,585,1079,608,1058,634,1029,657,999,676,996,671,1026,653,1054,630,1075,605,1086,582,1098,558,1118,532,1148,504,1176,484"/>
+<area shape="rect" href="Core_8h.html" title=" " alt="" coords="1913,607,1977,632"/>
+<area shape="poly" title=" " alt="" coords="1267,482,1550,531,1900,605,1899,610,1549,536,1266,488"/>
+<area shape="rect" href="MeshData_8h.html" title=" " alt="" coords="1437,533,1537,559"/>
+<area shape="poly" title=" " alt="" coords="1243,483,1427,527,1426,533,1242,488"/>
+<area shape="poly" title=" " alt="" coords="1200,485,1208,519,1224,557,1252,595,1248,598,1219,560,1203,520,1195,486"/>
+<area shape="rect" href="MeshAdjacency_8h.html" title="网格邻接查询索引——统一边表 + 稳定边 id" alt="" coords="1278,533,1413,559"/>
+<area shape="poly" title=" " alt="" coords="1221,483,1310,525,1307,530,1219,488"/>
+<area shape="poly" title=" " alt="" coords="1913,626,1814,635,1437,657,1072,674,574,693,573,687,1072,668,1437,651,1813,629,1913,621"/>
+<area shape="poly" title=" " alt="" coords="1936,634,1899,672,1895,668,1932,630"/>
+<area shape="poly" title=" " alt="" coords="1913,626,1814,635,1014,691,1014,685,1813,629,1913,621"/>
+<area shape="poly" title=" " alt="" coords="1961,630,2011,669,2008,673,1958,634"/>
+<area shape="rect" title=" " alt="" coords="1932,680,1983,705"/>
+<area shape="poly" title=" " alt="" coords="1950,632,1956,666,1950,667,1945,633"/>
+<area shape="poly" title=" " alt="" coords="1469,561,1346,634,1298,643,1216,652,991,669,574,692,574,687,991,664,1216,647,1297,638,1344,630,1467,556"/>
+<area shape="poly" title=" " alt="" coords="1479,561,1444,598,1419,618,1392,634,1360,645,1318,655,1215,671,1014,691,1014,685,1215,666,1317,650,1359,640,1390,630,1416,614,1441,594,1476,557"/>
+<area shape="poly" title=" " alt="" coords="1537,553,1556,556,1900,609,1899,614,1556,561,1537,558"/>
+<area shape="poly" title=" " alt="" coords="1513,556,1602,592,1715,629,1791,646,1852,655,1914,663,1994,677,1993,683,1914,668,1851,660,1790,652,1714,635,1600,597,1511,561"/>
+<area shape="poly" title=" " alt="" coords="1453,561,1321,605,1319,600,1451,556"/>
+<area shape="rect" title=" " alt="" coords="2172,607,2287,632"/>
+<area shape="poly" title=" " alt="" coords="1537,548,1799,567,2159,604,2158,609,1799,573,1537,553"/>
+<area shape="poly" title=" " alt="" coords="1532,556,1714,603,1713,608,1531,561"/>
+<area shape="poly" title=" " alt="" coords="1364,556,1425,593,1465,613,1506,629,1595,654,1684,670,1831,686,1830,692,1684,675,1593,659,1504,635,1462,618,1422,598,1361,561"/>
+<area shape="poly" title=" " alt="" coords="1413,554,1426,556,1900,611,1899,616,1425,561,1413,560"/>
+<area shape="poly" title=" " alt="" coords="1379,556,1490,592,1633,629,1732,646,1811,654,1891,661,1994,677,1993,683,1891,666,1810,659,1731,652,1631,635,1489,597,1377,561"/>
+<area shape="poly" title=" " alt="" coords="1335,561,1296,599,1292,595,1331,557"/>
+<area shape="poly" title=" " alt="" coords="1413,556,1713,607,1713,612,1412,561"/>
+<area shape="poly" title=" " alt="" coords="1285,561,1014,612,1013,607,1284,556"/>
+<area shape="poly" title=" " alt="" coords="2385,561,2351,598,2327,618,2300,634,2247,655,2201,667,2158,673,2117,674,2030,673,1980,675,1921,683,1921,678,1979,670,2030,667,2117,668,2157,667,2200,662,2245,650,2297,630,2324,614,2347,594,2381,557"/>
+<area shape="poly" title=" " alt="" coords="2345,559,2334,561,2237,575,2162,584,2087,593,1991,609,1991,609,1990,604,1990,604,2086,588,2161,578,2237,570,2333,556,2344,554"/>
+<area shape="poly" title=" " alt="" coords="2682,561,2609,581,2531,609,2509,623,2486,635,574,693,573,687,2485,629,2506,618,2528,604,2607,576,2680,556"/>
+<area shape="poly" title=" " alt="" coords="2725,561,2687,598,2661,619,2632,634,2567,652,2484,663,2390,669,2288,671,2086,674,1996,677,1921,683,1921,678,1996,671,2086,668,2288,666,2389,664,2484,658,2566,647,2630,630,2658,614,2684,594,2721,557"/>
+<area shape="poly" title=" " alt="" coords="2713,561,2634,599,2583,619,2530,635,2432,646,2265,657,1811,675,1014,693,1014,688,1811,669,2265,652,2431,641,2529,629,2581,614,2632,594,2710,556"/>
+<area shape="poly" title=" " alt="" coords="2649,557,1991,609,1991,609,1990,604,1990,604,2649,551"/>
+<area shape="poly" title=" " alt="" coords="2731,560,2715,598,2701,618,2683,634,2647,646,2585,656,2411,673,2077,692,2077,687,2410,668,2584,651,2646,641,2680,630,2697,614,2711,595,2726,558"/>
+<area shape="poly" title=" " alt="" coords="2747,557,2792,596,2788,600,2743,561"/>
+<area shape="poly" title=" " alt="" coords="2196,561,1991,609,1991,609,1990,604,1990,604,2195,556"/>
+<area shape="poly" title=" " alt="" coords="2170,555,1348,615,1347,610,2170,550"/>
+<area shape="rect" title=" " alt="" coords="2002,607,2147,632"/>
+<area shape="poly" title=" " alt="" coords="2219,561,2116,604,2114,599,2217,556"/>
+<area shape="poly" title=" " alt="" coords="2497,561,2414,602,2337,635,2276,649,2224,658,2132,665,2039,669,1921,683,1921,678,2039,663,2132,660,2223,653,2275,644,2335,629,2412,597,2495,556"/>
+<area shape="poly" title=" " alt="" coords="2463,560,2452,561,2323,576,2221,582,2120,591,1991,609,1991,609,1990,604,1990,604,2119,585,2221,577,2322,570,2452,556,2463,554"/>
+<area shape="poly" title=" " alt="" coords="2473,561,2290,606,2289,601,2472,556"/>
+<area shape="rect" title=" " alt="" coords="2413,607,2473,632"/>
+<area shape="poly" title=" " alt="" coords="2508,561,2467,599,2463,595,2505,557"/>
+<area shape="poly" title=" " alt="" coords="1929,263,1774,283,1560,321,1440,347,1318,379,1196,418,1080,462,1022,488,979,515,962,532,947,552,924,607,923,623,926,639,943,668,939,671,921,641,917,624,919,606,943,549,958,528,975,511,1019,483,1078,458,1195,413,1317,374,1439,342,1559,316,1773,278,1929,258"/>
+<area shape="poly" title=" " alt="" coords="1968,268,1927,288,1884,315,1851,346,1825,377,1821,374,1848,343,1881,311,1924,283,1966,263"/>
+<area shape="rect" href="ModelOperatorBase_8h.html" title=" " alt="" coords="1895,313,2057,339"/>
+<area shape="poly" title=" " alt="" coords="1994,266,1985,301,1980,300,1989,265"/>
+<area shape="rect" title=" " alt="" coords="2132,313,2223,339"/>
+<area shape="poly" title=" " alt="" coords="2025,263,2136,306,2134,311,2023,268"/>
+<area shape="poly" title=" " alt="" coords="1950,341,1848,384,1846,379,1948,336"/>
+<area shape="poly" title=" " alt="" coords="1980,339,1985,431,1982,495,1973,559,1960,595,1955,594,1968,558,1977,494,1979,431,1975,339"/>
+<area shape="poly" title=" " alt="" coords="1478,112,1131,129,638,159,399,179,197,202,118,214,58,227,20,240,11,246,8,252,8,547,12,564,23,580,41,595,64,608,126,631,200,650,281,664,360,674,488,686,488,691,359,680,280,669,199,655,124,636,62,613,38,599,19,584,7,566,3,548,3,251,7,243,18,235,57,221,117,209,196,196,398,174,638,154,1131,123,1478,107"/>
+<area shape="poly" title=" " alt="" coords="1592,111,2068,167,2067,173,1591,117"/>
+<area shape="poly" title=" " alt="" coords="1537,119,1537,251,1537,400,1543,432,1557,452,1579,465,1607,473,1670,491,1701,507,1729,532,1748,562,1760,593,1755,595,1743,565,1725,535,1698,511,1668,496,1605,478,1577,470,1554,456,1538,434,1532,401,1532,251,1532,119"/>
+<area shape="poly" title=" " alt="" coords="1524,121,1402,232,1398,228,1520,117"/>
+<area shape="poly" title=" " alt="" coords="1326,260,1115,279,981,295,846,316,549,387,548,381,845,311,980,290,1115,274,1325,255"/>
+<area shape="poly" title=" " alt="" coords="1325,259,1096,277,975,294,926,304,890,316,778,371,735,398,698,428,664,463,632,503,564,608,549,638,539,668,534,666,544,636,559,605,628,500,660,459,694,424,732,394,775,366,888,311,925,299,974,288,1095,272,1325,254"/>
+<area shape="poly" title=" " alt="" coords="1395,263,1524,356,1713,483,1758,504,1777,514,1798,531,1824,565,1845,601,1871,666,1866,668,1840,603,1819,568,1794,535,1774,518,1755,509,1711,488,1521,361,1391,268"/>
+<area shape="poly" title=" " alt="" coords="1326,262,1203,281,1132,296,1061,316,986,340,929,364,904,381,881,401,859,428,836,461,811,507,799,549,800,569,804,589,814,609,830,630,847,646,867,659,910,677,908,682,865,664,844,650,826,634,810,612,799,591,794,570,794,548,806,505,831,459,854,424,877,397,901,376,926,360,984,335,1059,311,1130,291,1202,276,1325,257"/>
+<area shape="poly" title=" " alt="" coords="1430,254,1801,276,1983,293,2043,302,2071,311,2084,329,2092,347,2097,387,2089,428,2071,469,2046,508,2019,544,1969,599,1965,595,2015,541,2042,505,2066,466,2084,426,2092,386,2087,349,2080,332,2068,315,2042,307,1982,298,1800,282,1430,259"/>
+<area shape="poly" title=" " alt="" coords="1383,265,1398,307,1425,366,1465,429,1490,458,1518,483,1541,497,1562,505,1604,509,1647,511,1671,518,1696,531,1729,561,1753,593,1748,596,1725,564,1693,536,1669,523,1646,517,1604,514,1561,510,1539,502,1514,487,1486,462,1461,432,1421,368,1393,309,1378,267"/>
+<area shape="poly" title=" " alt="" coords="1379,266,1373,302,1365,322,1353,341,1325,361,1286,377,1188,405,1090,431,1050,446,1020,462,988,493,971,534,965,564,966,593,961,593,960,564,965,533,984,490,1017,458,1047,441,1088,426,1187,400,1284,372,1322,356,1349,337,1360,320,1368,300,1374,265"/>
+<area shape="rect" href="UndoRecord_8h.html" title="撤销/重做记录模型：一次操作 = 一条记录" alt="" coords="1073,313,1186,339"/>
+<area shape="poly" title=" " alt="" coords="1338,268,1183,312,1182,307,1337,263"/>
+<area shape="rect" href="UndoRecorder_8h.html" title="模型层 undo 记录钩子接口" alt="" coords="1724,460,1849,485"/>
+<area shape="poly" title=" " alt="" coords="1403,263,1504,311,1581,346,1656,384,1760,450,1758,455,1653,389,1578,351,1502,316,1401,268"/>
+<area shape="rect" title=" " alt="" coords="1269,313,1339,339"/>
+<area shape="poly" title=" " alt="" coords="1367,268,1328,306,1324,302,1363,264"/>
+<area shape="rect" title=" " alt="" coords="902,313,965,339"/>
+<area shape="poly" title=" " alt="" coords="1325,263,1172,285,984,316,979,317,978,312,984,311,1171,280,1325,258"/>
+<area shape="poly" title=" " alt="" coords="1073,341,992,360,904,389,831,420,778,450,728,486,666,535,623,569,586,608,545,669,541,666,582,605,620,565,662,531,724,482,775,446,829,416,902,384,990,355,1072,336"/>
+<area shape="poly" title=" " alt="" coords="1144,337,1233,405,1297,447,1365,483,1416,499,1458,505,1500,511,1551,531,1584,555,1605,581,1626,606,1659,630,1702,650,1749,665,1832,683,1831,688,1747,670,1701,655,1656,634,1623,610,1601,584,1580,559,1548,536,1499,516,1457,510,1415,504,1363,488,1294,451,1230,410,1141,341"/>
+<area shape="poly" title=" " alt="" coords="1073,340,1009,358,976,372,945,389,899,420,866,449,841,484,819,534,814,556,818,577,829,597,844,615,883,648,925,672,922,676,880,652,840,619,824,600,813,579,809,556,813,533,836,482,862,446,896,416,943,384,974,367,1007,353,1072,335"/>
+<area shape="poly" title=" " alt="" coords="1137,338,1187,446,1183,449,1132,340"/>
+<area shape="poly" title=" " alt="" coords="1173,336,1351,384,1713,483,1766,492,1811,495,1852,505,1875,515,1899,531,1924,560,1940,592,1935,594,1920,563,1896,535,1872,520,1851,510,1810,501,1766,497,1711,488,1350,389,1172,341"/>
+<area shape="rect" href="ModelSnapshot_8h.html" title="模型级结构快照（undo/redo 原语）" alt="" coords="957,387,1091,412"/>
+<area shape="poly" title=" " alt="" coords="1114,341,1054,381,1051,377,1111,336"/>
+<area shape="poly" title=" " alt="" coords="964,415,892,433,817,462,734,512,659,570,596,627,552,672,549,668,592,623,655,566,731,507,815,458,891,428,963,409"/>
+<area shape="poly" title=" " alt="" coords="1053,410,1156,452,1154,457,1051,414"/>
+<area shape="poly" title=" " alt="" coords="1836,483,1903,504,1932,517,1950,532,1957,547,1960,563,1956,594,1951,593,1954,563,1952,548,1946,535,1929,522,1902,509,1834,488"/>
+<area shape="poly" title=" " alt="" coords="2265,190,2203,195,1978,205,1787,206,1460,201,1304,206,1139,223,954,258,850,284,738,316,713,328,688,341,616,366,550,386,548,381,615,361,686,336,711,323,736,311,849,279,952,253,1138,218,1304,201,1460,195,1787,200,1978,200,2203,189,2265,185"/>
+<area shape="poly" title=" " alt="" coords="2266,190,2203,195,1916,202,1548,206,1180,216,1023,226,896,243,837,256,778,274,682,310,680,305,777,269,836,251,896,237,1022,221,1180,210,1548,200,1916,197,2203,189,2265,185"/>
+<area shape="poly" title=" " alt="" coords="2413,181,2690,201,2819,217,2864,227,2890,238,2907,257,2915,276,2916,325,2916,547,2915,596,2907,615,2890,634,2866,645,2830,655,2724,667,2587,674,2432,678,2126,679,2004,680,1921,683,1921,678,2004,674,2126,673,2432,672,2587,669,2724,662,2829,649,2864,640,2886,630,2903,613,2910,595,2911,547,2911,325,2909,278,2902,260,2886,242,2862,232,2818,222,2689,206,2412,187"/>
+<area shape="poly" title=" " alt="" coords="2396,189,2623,235,2622,240,2395,195"/>
+<area shape="poly" title=" " alt="" coords="2413,187,2775,237,2775,242,2412,193"/>
+<area shape="poly" title=" " alt="" coords="2413,184,2687,209,2932,237,2938,238,2937,243,2932,243,2686,215,2412,190"/>
+</map>
+</div>
+</div><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 id="header-func-members" class="groupheader"><a id="func-members" name="func-members"></a>
+函数</h2></td></tr>
+<tr class="memitem:a3f981ac016b4d7d801088559ad96c9a7" id="r_a3f981ac016b4d7d801088559ad96c9a7"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a3f981ac016b4d7d801088559ad96c9a7">TEST_CASE</a> (&quot;Inline <a class="el" href="TestFeatureSystem_8cpp.html#a622b9af19b7bf17294385758814e4a0b">task</a> computes and completes on owner without dispatch&quot;, &quot;[JobRunner]&quot;)</td></tr>
+<tr class="memitem:afcc581370f6cb7531689dd32db1d0421" id="r_afcc581370f6cb7531689dd32db1d0421"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#afcc581370f6cb7531689dd32db1d0421">TEST_CASE</a> (&quot;Computation and commit failures preserve their errors&quot;, &quot;[JobRunner]&quot;)</td></tr>
+<tr class="memitem:a9213c72c0a8ccc2b97351cb0a8e53037" id="r_a9213c72c0a8ccc2b97351cb0a8e53037"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a9213c72c0a8ccc2b97351cb0a8e53037">TEST_CASE</a> (&quot;Heartbeat cancellation stops <a class="el" href="TestFeatureSystem_8cpp.html#a622b9af19b7bf17294385758814e4a0b">task</a> at next report&quot;, &quot;[JobRunner]&quot;)</td></tr>
+<tr class="memitem:a0e3bced8b40b39ac3dea023067747303" id="r_a0e3bced8b40b39ac3dea023067747303"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a0e3bced8b40b39ac3dea023067747303">TEST_CASE</a> (&quot;Computed result retains slot and model authority until one owner completion&quot;, &quot;[JobRunner][operation]&quot;)</td></tr>
+<tr class="memitem:ab9d353f3f0ad49d49c87bc7810179d40" id="r_ab9d353f3f0ad49d49c87bc7810179d40"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ab9d353f3f0ad49d49c87bc7810179d40">TEST_CASE</a> (&quot;Queued cancellation discards result and still drains cleanup&quot;, &quot;[JobRunner][operation]&quot;)</td></tr>
+<tr class="memitem:ad44b78ea547ff3d4134c11db4dfe3511" id="r_ad44b78ea547ff3d4134c11db4dfe3511"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ad44b78ea547ff3d4134c11db4dfe3511">TEST_CASE</a> (&quot;No-heartbeat cancellation keeps authority until actual return&quot;, &quot;[JobRunner][operation]&quot;)</td></tr>
+<tr class="memitem:aa4ebb695d2ad9fe5cebccc63281eb933" id="r_aa4ebb695d2ad9fe5cebccc63281eb933"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#aa4ebb695d2ad9fe5cebccc63281eb933">TEST_CASE</a> (&quot;Stop joins without GUI processing and late callback is harmless&quot;, &quot;[JobRunner][operation]&quot;)</td></tr>
+<tr class="memitem:a470ab0622ff7ce39b9bd4d712daf7f17" id="r_a470ab0622ff7ce39b9bd4d712daf7f17"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a470ab0622ff7ce39b9bd4d712daf7f17">TEST_CASE</a> (&quot;Old completion cannot release successor submitted by finished callback&quot;, &quot;[JobRunner][operation]&quot;)</td></tr>
+<tr class="memitem:a249b5d35bc2e44456fb7a7466ed2a678" id="r_a249b5d35bc2e44456fb7a7466ed2a678"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a249b5d35bc2e44456fb7a7466ed2a678">TEST_CASE</a> (&quot;Preparation runs occupied and exception or refusal releases reservation&quot;, &quot;[JobRunner][operation]&quot;)</td></tr>
+<tr class="memitem:abe450e01c73b6dbb4c4041b946137f46" id="r_abe450e01c73b6dbb4c4041b946137f46"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#abe450e01c73b6dbb4c4041b946137f46">TEST_CASE</a> (&quot;Runner construction requires an owner dispatcher&quot;, &quot;[JobRunner]&quot;)</td></tr>
+<tr class="memitem:a3b799ca4269d235b6d01c4eeed0e900b" id="r_a3b799ca4269d235b6d01c4eeed0e900b"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a3b799ca4269d235b6d01c4eeed0e900b">TEST_CASE</a> (&quot;Runner injection rejects a foreign model or undo host&quot;, &quot;[JobRunner][operation]&quot;)</td></tr>
+<tr class="memitem:a82cb88ff875aa09c36872f70a46e97ad" id="r_a82cb88ff875aa09c36872f70a46e97ad"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a82cb88ff875aa09c36872f70a46e97ad">TEST_CASE</a> (&quot;Owner-thread contract rejects off-thread publication and stop&quot;, &quot;[JobRunner]&quot;)</td></tr>
+<tr class="memitem:abd5cf8d29413e25d6cf1146ec4a73022" id="r_abd5cf8d29413e25d6cf1146ec4a73022"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#abd5cf8d29413e25d6cf1146ec4a73022">TEST_CASE</a> (&quot;Completion rejects an open boundary once; inline child shares it&quot;, &quot;[JobRunner][G3]&quot;)</td></tr>
+<tr class="memitem:a1c3563c3c52a8bcf914cb83e99f57ab9" id="r_a1c3563c3c52a8bcf914cb83e99f57ab9"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a1c3563c3c52a8bcf914cb83e99f57ab9">TEST_CASE</a> (&quot;Stop joins computing worker and cleans on owner without an event pump&quot;, &quot;[JobRunner][operation]&quot;)</td></tr>
+<tr class="memitem:ad8c7c7eb99dcc05b5a2e02b13faadeba" id="r_ad8c7c7eb99dcc05b5a2e02b13faadeba"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ad8c7c7eb99dcc05b5a2e02b13faadeba">TEST_CASE</a> (&quot;Task and apply captures are destroyed on owner before handler cleanup&quot;, &quot;[JobRunner][lifetime]&quot;)</td></tr>
+<tr class="memitem:a4f015dd1dd7d554ab5e45de5126d5437" id="r_a4f015dd1dd7d554ab5e45de5126d5437"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a4f015dd1dd7d554ab5e45de5126d5437">TEST_CASE</a> (&quot;Runner lifecycle observes one occupied publication and one released completion&quot;, &quot;[JobRunner][operation]&quot;)</td></tr>
+<tr class="memitem:a779d7d144b0df7e8bff1f879676380ac" id="r_a779d7d144b0df7e8bff1f879676380ac"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a779d7d144b0df7e8bff1f879676380ac">TEST_CASE</a> (&quot;Cancellation after commit starts preserves the actual commit outcome&quot;, &quot;[JobRunner][operation]&quot;)</td></tr>
+</table>
+<a name="doc-func-members" id="doc-func-members"></a><h2 id="header-doc-func-members" class="groupheader">函数说明</h2>
+<a id="a779d7d144b0df7e8bff1f879676380ac" name="a779d7d144b0df7e8bff1f879676380ac"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a779d7d144b0df7e8bff1f879676380ac">&#9670;&#160;</a></span>TEST_CASE() <span class="overload">[1/17]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">TEST_CASE </td>
+          <td>(</td>
+          <td class="paramtype">&quot;Cancellation after commit starts preserves the actual commit outcome&quot;</td>          <td class="paramname"><span class="paramname"><em></em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">&quot;&quot;</td>          <td class="paramname"><span class="paramname"><em></em></span>[JobRunner][operation]&#160;)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="abd5cf8d29413e25d6cf1146ec4a73022" name="abd5cf8d29413e25d6cf1146ec4a73022"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#abd5cf8d29413e25d6cf1146ec4a73022">&#9670;&#160;</a></span>TEST_CASE() <span class="overload">[2/17]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">TEST_CASE </td>
+          <td>(</td>
+          <td class="paramtype">&quot;Completion rejects an open boundary once; inline child shares it&quot;</td>          <td class="paramname"><span class="paramname"><em></em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">&quot;&quot;</td>          <td class="paramname"><span class="paramname"><em></em></span>[JobRunner][G3]&#160;)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="afcc581370f6cb7531689dd32db1d0421" name="afcc581370f6cb7531689dd32db1d0421"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#afcc581370f6cb7531689dd32db1d0421">&#9670;&#160;</a></span>TEST_CASE() <span class="overload">[3/17]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">TEST_CASE </td>
+          <td>(</td>
+          <td class="paramtype">&quot;Computation and commit failures preserve their errors&quot;</td>          <td class="paramname"><span class="paramname"><em></em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">&quot;&quot;</td>          <td class="paramname"><span class="paramname"><em></em></span>[JobRunner]&#160;)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a0e3bced8b40b39ac3dea023067747303" name="a0e3bced8b40b39ac3dea023067747303"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a0e3bced8b40b39ac3dea023067747303">&#9670;&#160;</a></span>TEST_CASE() <span class="overload">[4/17]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">TEST_CASE </td>
+          <td>(</td>
+          <td class="paramtype">&quot;Computed result retains slot and model authority until one owner completion&quot;</td>          <td class="paramname"><span class="paramname"><em></em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">&quot;&quot;</td>          <td class="paramname"><span class="paramname"><em></em></span>[JobRunner][operation]&#160;)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a9213c72c0a8ccc2b97351cb0a8e53037" name="a9213c72c0a8ccc2b97351cb0a8e53037"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a9213c72c0a8ccc2b97351cb0a8e53037">&#9670;&#160;</a></span>TEST_CASE() <span class="overload">[5/17]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">TEST_CASE </td>
+          <td>(</td>
+          <td class="paramtype">&quot;Heartbeat cancellation stops <a class="el" href="TestFeatureSystem_8cpp.html#a622b9af19b7bf17294385758814e4a0b">task</a> at next report&quot;</td>          <td class="paramname"><span class="paramname"><em></em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">&quot;&quot;</td>          <td class="paramname"><span class="paramname"><em></em></span>[JobRunner]&#160;)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a3f981ac016b4d7d801088559ad96c9a7" name="a3f981ac016b4d7d801088559ad96c9a7"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a3f981ac016b4d7d801088559ad96c9a7">&#9670;&#160;</a></span>TEST_CASE() <span class="overload">[6/17]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">TEST_CASE </td>
+          <td>(</td>
+          <td class="paramtype">&quot;Inline <a class="el" href="TestFeatureSystem_8cpp.html#a622b9af19b7bf17294385758814e4a0b">task</a> computes and completes on owner without dispatch&quot;</td>          <td class="paramname"><span class="paramname"><em></em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">&quot;&quot;</td>          <td class="paramname"><span class="paramname"><em></em></span>[JobRunner]&#160;)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="ad44b78ea547ff3d4134c11db4dfe3511" name="ad44b78ea547ff3d4134c11db4dfe3511"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ad44b78ea547ff3d4134c11db4dfe3511">&#9670;&#160;</a></span>TEST_CASE() <span class="overload">[7/17]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">TEST_CASE </td>
+          <td>(</td>
+          <td class="paramtype">&quot;No-heartbeat cancellation keeps authority until actual return&quot;</td>          <td class="paramname"><span class="paramname"><em></em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">&quot;&quot;</td>          <td class="paramname"><span class="paramname"><em></em></span>[JobRunner][operation]&#160;)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a470ab0622ff7ce39b9bd4d712daf7f17" name="a470ab0622ff7ce39b9bd4d712daf7f17"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a470ab0622ff7ce39b9bd4d712daf7f17">&#9670;&#160;</a></span>TEST_CASE() <span class="overload">[8/17]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">TEST_CASE </td>
+          <td>(</td>
+          <td class="paramtype">&quot;Old completion cannot release successor submitted by finished callback&quot;</td>          <td class="paramname"><span class="paramname"><em></em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">&quot;&quot;</td>          <td class="paramname"><span class="paramname"><em></em></span>[JobRunner][operation]&#160;)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a82cb88ff875aa09c36872f70a46e97ad" name="a82cb88ff875aa09c36872f70a46e97ad"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a82cb88ff875aa09c36872f70a46e97ad">&#9670;&#160;</a></span>TEST_CASE() <span class="overload">[9/17]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">TEST_CASE </td>
+          <td>(</td>
+          <td class="paramtype">&quot;Owner-thread contract rejects off-thread publication and stop&quot;</td>          <td class="paramname"><span class="paramname"><em></em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">&quot;&quot;</td>          <td class="paramname"><span class="paramname"><em></em></span>[JobRunner]&#160;)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a249b5d35bc2e44456fb7a7466ed2a678" name="a249b5d35bc2e44456fb7a7466ed2a678"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a249b5d35bc2e44456fb7a7466ed2a678">&#9670;&#160;</a></span>TEST_CASE() <span class="overload">[10/17]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">TEST_CASE </td>
+          <td>(</td>
+          <td class="paramtype">&quot;Preparation runs occupied and exception or refusal releases reservation&quot;</td>          <td class="paramname"><span class="paramname"><em></em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">&quot;&quot;</td>          <td class="paramname"><span class="paramname"><em></em></span>[JobRunner][operation]&#160;)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="ab9d353f3f0ad49d49c87bc7810179d40" name="ab9d353f3f0ad49d49c87bc7810179d40"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ab9d353f3f0ad49d49c87bc7810179d40">&#9670;&#160;</a></span>TEST_CASE() <span class="overload">[11/17]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">TEST_CASE </td>
+          <td>(</td>
+          <td class="paramtype">&quot;Queued cancellation discards result and still drains cleanup&quot;</td>          <td class="paramname"><span class="paramname"><em></em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">&quot;&quot;</td>          <td class="paramname"><span class="paramname"><em></em></span>[JobRunner][operation]&#160;)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="abe450e01c73b6dbb4c4041b946137f46" name="abe450e01c73b6dbb4c4041b946137f46"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#abe450e01c73b6dbb4c4041b946137f46">&#9670;&#160;</a></span>TEST_CASE() <span class="overload">[12/17]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">TEST_CASE </td>
+          <td>(</td>
+          <td class="paramtype">&quot;Runner construction requires an owner dispatcher&quot;</td>          <td class="paramname"><span class="paramname"><em></em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">&quot;&quot;</td>          <td class="paramname"><span class="paramname"><em></em></span>[JobRunner]&#160;)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a3b799ca4269d235b6d01c4eeed0e900b" name="a3b799ca4269d235b6d01c4eeed0e900b"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a3b799ca4269d235b6d01c4eeed0e900b">&#9670;&#160;</a></span>TEST_CASE() <span class="overload">[13/17]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">TEST_CASE </td>
+          <td>(</td>
+          <td class="paramtype">&quot;Runner injection rejects a foreign model or undo host&quot;</td>          <td class="paramname"><span class="paramname"><em></em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">&quot;&quot;</td>          <td class="paramname"><span class="paramname"><em></em></span>[JobRunner][operation]&#160;)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a4f015dd1dd7d554ab5e45de5126d5437" name="a4f015dd1dd7d554ab5e45de5126d5437"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a4f015dd1dd7d554ab5e45de5126d5437">&#9670;&#160;</a></span>TEST_CASE() <span class="overload">[14/17]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">TEST_CASE </td>
+          <td>(</td>
+          <td class="paramtype">&quot;Runner lifecycle observes one occupied publication and one released completion&quot;</td>          <td class="paramname"><span class="paramname"><em></em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">&quot;&quot;</td>          <td class="paramname"><span class="paramname"><em></em></span>[JobRunner][operation]&#160;)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a1c3563c3c52a8bcf914cb83e99f57ab9" name="a1c3563c3c52a8bcf914cb83e99f57ab9"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a1c3563c3c52a8bcf914cb83e99f57ab9">&#9670;&#160;</a></span>TEST_CASE() <span class="overload">[15/17]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">TEST_CASE </td>
+          <td>(</td>
+          <td class="paramtype">&quot;Stop joins computing worker and cleans on owner without an event pump&quot;</td>          <td class="paramname"><span class="paramname"><em></em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">&quot;&quot;</td>          <td class="paramname"><span class="paramname"><em></em></span>[JobRunner][operation]&#160;)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="aa4ebb695d2ad9fe5cebccc63281eb933" name="aa4ebb695d2ad9fe5cebccc63281eb933"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aa4ebb695d2ad9fe5cebccc63281eb933">&#9670;&#160;</a></span>TEST_CASE() <span class="overload">[16/17]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">TEST_CASE </td>
+          <td>(</td>
+          <td class="paramtype">&quot;Stop joins without GUI processing and late callback is harmless&quot;</td>          <td class="paramname"><span class="paramname"><em></em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">&quot;&quot;</td>          <td class="paramname"><span class="paramname"><em></em></span>[JobRunner][operation]&#160;)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="ad8c7c7eb99dcc05b5a2e02b13faadeba" name="ad8c7c7eb99dcc05b5a2e02b13faadeba"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ad8c7c7eb99dcc05b5a2e02b13faadeba">&#9670;&#160;</a></span>TEST_CASE() <span class="overload">[17/17]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">TEST_CASE </td>
+          <td>(</td>
+          <td class="paramtype">&quot;Task and apply captures are destroyed on owner before handler cleanup&quot;</td>          <td class="paramname"><span class="paramname"><em></em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">&quot;&quot;</td>          <td class="paramname"><span class="paramname"><em></em></span>[JobRunner][lifetime]&#160;)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+</div><!-- contents -->
+<!-- start footer part -->
+<hr class="footer"/><address class="footer"><small>
+制作者&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.14.0
+</small></address>
+</div><!-- doc-content -->
+</body>
+</html>

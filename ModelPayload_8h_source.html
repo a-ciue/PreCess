@@ -83,21 +83,40 @@ $(function() {
 <div class="line"><a id="l00002" name="l00002"></a><span class="lineno">    2</span><span class="preprocessor">#define MODEL_PAYLOAD_H</span></div>
 <div class="line"><a id="l00003" name="l00003"></a><span class="lineno">    3</span> </div>
 <div class="line"><a id="l00004" name="l00004"></a><span class="lineno">    4</span><span class="preprocessor">#include &quot;<a class="code" href="ComponentData_8h.html">ComponentData.h</a>&quot;</span></div>
-<div class="line"><a id="l00005" name="l00005"></a><span class="lineno">    5</span><span class="preprocessor">#include &lt;string&gt;</span></div>
-<div class="line"><a id="l00006" name="l00006"></a><span class="lineno">    6</span> </div>
-<div class="foldopen" id="foldopen00007" data-start="{" data-end="};">
-<div class="line"><a id="l00007" name="l00007"></a><span class="lineno"><a class="line" href="structModelPayload.html">    7</a></span><span class="keyword">struct </span><a class="code hl_struct" href="structModelPayload.html">ModelPayload</a> {</div>
-<div class="line"><a id="l00008" name="l00008"></a><span class="lineno"><a class="line" href="structModelPayload.html#a1e60c8e69a2456d5d3441fcad0789a82">    8</a></span>    std::string <a class="code hl_variable" href="structModelPayload.html#a1e60c8e69a2456d5d3441fcad0789a82">model_name</a>;</div>
-<div class="line"><a id="l00009" name="l00009"></a><span class="lineno"><a class="line" href="structModelPayload.html#aa7c4d3cd8c531ee15d9d836f7b39f5b0">    9</a></span>    <a class="code hl_typedef" href="ComponentData_8h.html#a728074d968d490d75144bc04c1ef092d">ComponentDatas</a> <a class="code hl_variable" href="structModelPayload.html#aa7c4d3cd8c531ee15d9d836f7b39f5b0">components</a>;</div>
-<div class="line"><a id="l00010" name="l00010"></a><span class="lineno">   10</span>};</div>
+<div class="line"><a id="l00005" name="l00005"></a><span class="lineno">    5</span><span class="preprocessor">#include &lt;filesystem&gt;</span></div>
+<div class="line"><a id="l00006" name="l00006"></a><span class="lineno">    6</span><span class="preprocessor">#include &lt;string&gt;</span></div>
+<div class="line"><a id="l00007" name="l00007"></a><span class="lineno">    7</span> </div>
+<div class="foldopen" id="foldopen00008" data-start="{" data-end="};">
+<div class="line"><a id="l00008" name="l00008"></a><span class="lineno"><a class="line" href="structModelPayload.html">    8</a></span><span class="keyword">struct </span><a class="code hl_struct" href="structModelPayload.html">ModelPayload</a> {</div>
+<div class="line"><a id="l00010" name="l00010"></a><span class="lineno"><a class="line" href="structModelPayload.html#abb6dde0dd01c80ee2e5d500b6bde79ad">   10</a></span>    std::u8string <a class="code hl_variable" href="structModelPayload.html#abb6dde0dd01c80ee2e5d500b6bde79ad">model_name</a>;</div>
+<div class="line"><a id="l00011" name="l00011"></a><span class="lineno"><a class="line" href="structModelPayload.html#aa7c4d3cd8c531ee15d9d836f7b39f5b0">   11</a></span>    <a class="code hl_typedef" href="ComponentData_8h.html#a728074d968d490d75144bc04c1ef092d">ComponentDatas</a> <a class="code hl_variable" href="structModelPayload.html#aa7c4d3cd8c531ee15d9d836f7b39f5b0">components</a>;</div>
+<div class="line"><a id="l00012" name="l00012"></a><span class="lineno">   12</span>};</div>
 </div>
-<div class="line"><a id="l00011" name="l00011"></a><span class="lineno">   11</span> </div>
-<div class="line"><a id="l00012" name="l00012"></a><span class="lineno">   12</span><span class="preprocessor">#endif </span><span class="comment">// MODEL_PAYLOAD_H</span></div>
+<div class="line"><a id="l00013" name="l00013"></a><span class="lineno">   13</span></div>
+<div class="foldopen" id="foldopen00018" data-start="{" data-end="}">
+<div class="line"><a id="l00018" name="l00018"></a><span class="lineno"><a class="line" href="ModelPayload_8h.html#a6f8f001de21d22ccb161f6f2263cacfc">   18</a></span><span class="keyword">inline</span> std::string <a class="code hl_function" href="ModelPayload_8h.html#a6f8f001de21d22ccb161f6f2263cacfc">u8Narrow</a>(<span class="keyword">const</span> std::u8string&amp; s)</div>
+<div class="line"><a id="l00019" name="l00019"></a><span class="lineno">   19</span>{</div>
+<div class="line"><a id="l00020" name="l00020"></a><span class="lineno">   20</span>    <span class="keywordflow">return</span> { <span class="keyword">reinterpret_cast&lt;</span><span class="keyword">const </span><span class="keywordtype">char</span>*<span class="keyword">&gt;</span>(s.data()), s.size() };</div>
+<div class="line"><a id="l00021" name="l00021"></a><span class="lineno">   21</span>}</div>
+</div>
+<div class="line"><a id="l00022" name="l00022"></a><span class="lineno">   22</span></div>
+<div class="foldopen" id="foldopen00028" data-start="{" data-end="}">
+<div class="line"><a id="l00028" name="l00028"></a><span class="lineno"><a class="line" href="ModelPayload_8h.html#af66fd221d76dfb42c1b9a6b02d809270">   28</a></span><span class="keyword">inline</span> std::string <a class="code hl_function" href="ModelPayload_8h.html#af66fd221d76dfb42c1b9a6b02d809270">pathUtf8</a>(<span class="keyword">const</span> std::filesystem::path&amp; <a class="code hl_variable" href="TestObjMeshIO_8cpp.html#ab972f994f7bb41f885fdf2268e4a8799">path</a>)</div>
+<div class="line"><a id="l00029" name="l00029"></a><span class="lineno">   29</span>{</div>
+<div class="line"><a id="l00030" name="l00030"></a><span class="lineno">   30</span>    <span class="keyword">const</span> std::u8string u8 = <a class="code hl_variable" href="TestObjMeshIO_8cpp.html#ab972f994f7bb41f885fdf2268e4a8799">path</a>.u8string();</div>
+<div class="line"><a id="l00031" name="l00031"></a><span class="lineno">   31</span>    <span class="keywordflow">return</span> { <span class="keyword">reinterpret_cast&lt;</span><span class="keyword">const </span><span class="keywordtype">char</span>*<span class="keyword">&gt;</span>(u8.data()), u8.size() };</div>
+<div class="line"><a id="l00032" name="l00032"></a><span class="lineno">   32</span>}</div>
+</div>
+<div class="line"><a id="l00033" name="l00033"></a><span class="lineno">   33</span> </div>
+<div class="line"><a id="l00034" name="l00034"></a><span class="lineno">   34</span><span class="preprocessor">#endif </span><span class="comment">// MODEL_PAYLOAD_H</span></div>
 <div class="ttc" id="aComponentData_8h_html"><div class="ttname"><a href="ComponentData_8h.html">ComponentData.h</a></div></div>
 <div class="ttc" id="aComponentData_8h_html_a728074d968d490d75144bc04c1ef092d"><div class="ttname"><a href="ComponentData_8h.html#a728074d968d490d75144bc04c1ef092d">ComponentDatas</a></div><div class="ttdeci">std::vector&lt; std::unique_ptr&lt; ComponentData &gt; &gt; ComponentDatas</div><div class="ttdef"><b>定义</b> ComponentData.h:17</div></div>
-<div class="ttc" id="astructModelPayload_html"><div class="ttname"><a href="structModelPayload.html">ModelPayload</a></div><div class="ttdef"><b>定义</b> ModelPayload.h:7</div></div>
-<div class="ttc" id="astructModelPayload_html_a1e60c8e69a2456d5d3441fcad0789a82"><div class="ttname"><a href="structModelPayload.html#a1e60c8e69a2456d5d3441fcad0789a82">ModelPayload::model_name</a></div><div class="ttdeci">std::string model_name</div><div class="ttdef"><b>定义</b> ModelPayload.h:8</div></div>
-<div class="ttc" id="astructModelPayload_html_aa7c4d3cd8c531ee15d9d836f7b39f5b0"><div class="ttname"><a href="structModelPayload.html#aa7c4d3cd8c531ee15d9d836f7b39f5b0">ModelPayload::components</a></div><div class="ttdeci">ComponentDatas components</div><div class="ttdef"><b>定义</b> ModelPayload.h:9</div></div>
+<div class="ttc" id="aModelPayload_8h_html_a6f8f001de21d22ccb161f6f2263cacfc"><div class="ttname"><a href="ModelPayload_8h.html#a6f8f001de21d22ccb161f6f2263cacfc">u8Narrow</a></div><div class="ttdeci">std::string u8Narrow(const std::u8string &amp;s)</div><div class="ttdoc">std::u8string（UTF-8 字节）→ std::string（同字节 reinterpret，中文名安全）</div><div class="ttdef"><b>定义</b> ModelPayload.h:18</div></div>
+<div class="ttc" id="aModelPayload_8h_html_af66fd221d76dfb42c1b9a6b02d809270"><div class="ttname"><a href="ModelPayload_8h.html#af66fd221d76dfb42c1b9a6b02d809270">pathUtf8</a></div><div class="ttdeci">std::string pathUtf8(const std::filesystem::path &amp;path)</div><div class="ttdoc">fs::path → UTF-8 std::string（保留字节语义，中文路径安全）</div><div class="ttdef"><b>定义</b> ModelPayload.h:28</div></div>
+<div class="ttc" id="aTestObjMeshIO_8cpp_html_ab972f994f7bb41f885fdf2268e4a8799"><div class="ttname"><a href="TestObjMeshIO_8cpp.html#ab972f994f7bb41f885fdf2268e4a8799">path</a></div><div class="ttdeci">const auto path</div><div class="ttdef"><b>定义</b> TestObjMeshIO.cpp:95</div></div>
+<div class="ttc" id="astructModelPayload_html"><div class="ttname"><a href="structModelPayload.html">ModelPayload</a></div><div class="ttdef"><b>定义</b> ModelPayload.h:8</div></div>
+<div class="ttc" id="astructModelPayload_html_aa7c4d3cd8c531ee15d9d836f7b39f5b0"><div class="ttname"><a href="structModelPayload.html#aa7c4d3cd8c531ee15d9d836f7b39f5b0">ModelPayload::components</a></div><div class="ttdeci">ComponentDatas components</div><div class="ttdef"><b>定义</b> ModelPayload.h:11</div></div>
+<div class="ttc" id="astructModelPayload_html_abb6dde0dd01c80ee2e5d500b6bde79ad"><div class="ttname"><a href="structModelPayload.html#abb6dde0dd01c80ee2e5d500b6bde79ad">ModelPayload::model_name</a></div><div class="ttdeci">std::u8string model_name</div><div class="ttdoc">模型名：UTF-8 字节串（char8_t 类型即编码标注；填充直用 path.u8string() 免往返转换）</div><div class="ttdef"><b>定义</b> ModelPayload.h:10</div></div>
 </div><!-- fragment --></div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
