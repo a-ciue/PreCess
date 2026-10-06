@@ -4,17 +4,12 @@
  * @author 范成通 email 1941804585@qq.com
  */
 
-#include "DimensionHandler.h"
 #include "ArgObject.h"
 #include "ComponentData.h"
+#include "DimensionHandler.h"
 #include "EventBus.h"
-#include "FeatureContext.h"
-#include "FeatureEventGateway.h"
-#include "FeatureParams.h"
-#include "FeatureRegistrar.h"
+#include "FeatureSystem.h"
 #include "GeometryData.h"
-#include "InteractionContext.h"
-#include "InteractionState.h"
 #include "MakeMeshData.h"
 #include "MeshAdjacency.h"
 #include "MeshData.h"
@@ -73,47 +68,34 @@ std::shared_ptr<Selection> makeGeometrySelection(ElementEnum::Type type, const s
     return std::make_shared<Selection>(Selection { ids, type, 0 });
 }
 
-//! @brief 功能测试环境：手工装配 FeatureContext（参数集 + 活动组件 provider），替代原算法 HandlerContext
+//! @brief 经真实系统注册和调用，参数声明与上下文装配由框架完成。
 struct FeatureTestEnv {
     ModelLayer mgr;
     core::EventBus bus;
-    FeatureEventGateway gateway { bus, mgr }; //> 事件网关（声明顺序须在 mgr/bus 之后）
-    DimensionHandler handler;
-    FeatureRegistrar registrar;
     std::optional<Index> active_component;
-    std::unique_ptr<FeatureParams> params;
-    systems::interaction::InteractionState interaction_state_;
-    InteractionContext interaction_ctx_;
-    std::unique_ptr<FeatureContext> ctx;
+    FeatureSystem system { mgr, bus };
+    FeatureInfo* info;
 
     FeatureTestEnv()
-        : interaction_ctx_(interaction_state_)
     {
-        // 装配顺序同 FeatureSystem：先空参数集装配 ctx，setup 收集声明后载入默认值
-        params = std::make_unique<FeatureParams>(std::vector<core::ArgType> {});
-        ctx = std::make_unique<FeatureContext>(FeatureContext {
-            mgr,
-            gateway,
-            *params,
-            interaction_ctx_,
-            []() -> std::optional<Index> { return std::nullopt; },
-            [this]() { return active_component; },
-            [this](Index component_id) { return mgr.getComponentOperator(component_id); },
-        });
-        // 参数声明直接取自被测功能的 setup，避免测试中重复维护一份
-        handler.setup(registrar, *ctx);
-        *params = FeatureParams(registrar.argTypes());
+        auto handler = std::make_unique<DimensionHandler>();
+        REQUIRE(system.registerHandler({ "DimensionPlugin", "尺寸标注" },
+            FeatureSystem::SystemHandlerPtr { handler.release() }));
+        system.setActiveComponentProvider([this] { return active_component; });
+        info = system.getFeatureInfos().front();
     }
 
-    //! @brief 写入功能参数并执行尺寸标注，返回结果字符串（下标 0=测量类型 1=选择对象，见 setup）
+    //! @brief 写入功能参数并执行尺寸标注，返回结果字符串。
     std::string executeDimension(int measure_type_index, std::shared_ptr<Selection> selection)
     {
-        params->setValue(0, core::ArgObject::create<ArgTypeEnum::Combo>(measure_type_index));
-        params->setValue(1, core::ArgObject::create<ArgTypeEnum::Selector>(std::move(selection)));
-        auto result_any = handler.execute(*ctx);
-        if (const std::string* result = std::any_cast<std::string>(&result_any))
+        REQUIRE(system.setParameter("DimensionPlugin", 0,
+            core::ArgObject::create<ArgTypeEnum::Combo>(measure_type_index)));
+        REQUIRE(system.setParameter("DimensionPlugin", 1,
+            core::ArgObject::create<ArgTypeEnum::Selector>(std::move(selection))));
+        auto result_any = system.invoke("DimensionPlugin");
+        if (const auto* result = std::any_cast<std::string>(&result_any))
             return *result;
-        return {};
+        return { };
     }
 };
 
@@ -308,10 +290,10 @@ TEST_CASE("DimensionHandler setup declares measure parameters and menu")
 {
     FeatureTestEnv env;
 
-    REQUIRE(env.registrar.argTypes().size() == 2);
-    CHECK(env.registrar.argTypes()[0].type == ArgTypeEnum::Combo);
-    CHECK(env.registrar.argTypes()[1].type == ArgTypeEnum::Selector);
-    REQUIRE(env.registrar.menuItems().size() == 1);
+    REQUIRE(env.info->arg_types.size() == 2);
+    CHECK(env.info->arg_types[0].type == ArgTypeEnum::Combo);
+    CHECK(env.info->arg_types[1].type == ArgTypeEnum::Selector);
+    REQUIRE(env.info->menus.size() == 1);
 }
 
 TEST_CASE("DimensionHandler: distance between two vertices")

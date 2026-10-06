@@ -10,6 +10,7 @@
 #include <functional>
 
 namespace systems::feature {
+class FeatureSystem;
 
 /**
  * @brief 视口交互上下文（FeatureContext 成员）：功能在 setup() 中经它订阅交互回调
@@ -20,7 +21,8 @@ namespace systems::feature {
  */
 class InteractionContext {
 public:
-    explicit InteractionContext(systems::interaction::InteractionState& state);
+    //! @brief 构造时绑定固定系统与本功能状态；宿主刷新回调由系统统一持有。
+    InteractionContext(FeatureSystem& system, systems::interaction::InteractionState& state);
 
     //! @brief 订阅左键拾取（渲染线程；返回是否有状态变化需要刷新标注）
     void onPick(std::function<bool(const systems::interaction::PickInfo&)> cb);
@@ -43,15 +45,8 @@ public:
     void setActive(bool on);
 
 private:
-    // 装配注入仅 FeatureSystem 可用：功能只调用、不可覆盖系统接线（冻结后渲染线程调用无重赋值竞争）
-    friend class FeatureSystem;
-
-    //! @brief 由 FeatureSystem 装配时注入：激活本功能前下线其他功能的交互（单激活约定）
-    std::function<void()> deactivate_others_;
-    //! @brief 由 FeatureSystem 装配时注入：通知渲染层拉取标注并刷新视口
-    std::function<void()> render_refresh_;
-
-    systems::interaction::InteractionState* state_;
+    FeatureSystem& system_;
+    systems::interaction::InteractionState& state_;
 };
 
 } // namespace systems::feature

@@ -2,3 +2,4 @@
 if(NOT EMSCRIPTEN)
 add_subdirectory(CmdExecutePlugin)
 endif()
+add_subdirectory(ProgressDemoPlugin)

@@ -1,4 +1,5 @@
 add_subdirectory(FeatureDemoPlugin)
+add_subdirectory(TaskDemoPlugin)
 add_subdirectory(MeshQualityPlugin)
 add_subdirectory(MeasurePlugin)
 add_subdirectory(DimensionPlugin)

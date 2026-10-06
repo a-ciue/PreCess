@@ -48,12 +48,36 @@ Page {
 
     footer: ToolBar {
         id: toolbar
-        height: 25
+        // 保留最小高度，并随字体和控件隐式高度增长，避免文字被裁切。
+        implicitHeight: Math.max(36, implicitContentHeight + topPadding + bottomPadding)
+        leftPadding: 4
+        rightPadding: 4
+        background: Rectangle {
+            color: Theme.surfaceAlt
+
+            // 与渲染区的细线分隔
+            Rectangle {
+                anchors {
+                    left: parent.left
+                    right: parent.right
+                    top: parent.top
+                }
+                height: 1
+                color: Theme.border
+            }
+        }
         RowLayout {
             anchors.fill: parent
 
             ToolButton {
                 id: geoBtn
+                // 图标独立接入前使用文字入口，避免仅图标模式下按钮为空。
+                display: ToolButton.TextOnly
+                flat: true
+                Accessible.name: qsTr("几何显示")
+                ToolTip.visible: hovered
+                ToolTip.text: text
+                ToolTip.delay: 500
                 readonly property var geoLabels: [
                     "几何·面·有边", "几何·面·无边", "几何·透·75%", "几何·透·50%",
                     "几何·透·25%", "几何·线·带曲面线", "几何·线·无曲面线", "几何·隐"
@@ -62,7 +86,7 @@ Page {
                 readonly property int subMenuCloseDelay: 500
                 text: myItem ? (myItem.geometryStyle >= 0 && myItem.geometryStyle < geoLabels.length ? geoLabels[myItem.geometryStyle] : "几何") : "几何"
                 Layout.fillHeight: true
-                onClicked: geoMenu.open()
+                onClicked: geoMenu.visible ? geoMenu.close() : geoMenu.open()
 
                 Timer { id: geoSubCloseTimer; interval: geoBtn.subMenuCloseDelay; onTriggered: { geoFaceMenu.close(); geoTransMenu.close(); geoWireMenu.close() } }
 
@@ -191,6 +215,13 @@ Page {
 
             ToolButton {
                 id: meshBtn
+                // 图标独立接入前使用文字入口，避免仅图标模式下按钮为空。
+                display: ToolButton.TextOnly
+                flat: true
+                Accessible.name: qsTr("网格显示")
+                ToolTip.visible: hovered
+                ToolTip.text: text
+                ToolTip.delay: 500
                 readonly property var meshLabels: [
                     "网格·面·带网格线", "网格·面·无线", "网格·透·75%", "网格·透·50%",
                     "网格·透·25%", "网格·线·带内部线", "网格·线·仅表面线", "网格·隐"
@@ -199,7 +230,7 @@ Page {
                 readonly property int subMenuCloseDelay: 500
                 text: myItem ? (myItem.meshStyle >= 0 && myItem.meshStyle < meshLabels.length ? meshLabels[myItem.meshStyle] : "网格") : "网格"
                 Layout.fillHeight: true
-                onClicked: meshMenu.open()
+                onClicked: meshMenu.visible ? meshMenu.close() : meshMenu.open()
 
                 Timer { id: meshSubCloseTimer; interval: meshBtn.subMenuCloseDelay; onTriggered: { meshFaceMenu.close(); meshTransMenu.close(); meshWireMenu.close() } }
 
@@ -328,10 +359,10 @@ Page {
 
             ToolButton {
                 id: topologyDiagnosticBtn
-                text: "拓扑诊断"
-                Layout.preferredWidth: 70
+                text: "网格诊断"
+                flat: true
                 Layout.fillHeight: true
-                onClicked: topologyDiagnosticMenu.open()
+                onClicked: topologyDiagnosticMenu.visible ? topologyDiagnosticMenu.close() : topologyDiagnosticMenu.open()
 
                 Menu {
                     id: topologyDiagnosticMenu
@@ -438,9 +469,138 @@ Page {
             }
 
             ToolButton {
+                id: geometryTopologyDiagnosticBtn
+                text: "几何诊断"
+                flat: true
+                Layout.fillHeight: true
+                onClicked: geometryTopologyDiagnosticMenu.visible ? geometryTopologyDiagnosticMenu.close() : geometryTopologyDiagnosticMenu.open()
+
+                Menu {
+                    id: geometryTopologyDiagnosticMenu
+                    closePolicy: Popup.CloseOnEscape | Popup.CloseOnPressOutsideParent
+                    onAboutToShow: { y = -height }
+
+                    function keepOpenAfterTrigger() {
+                        Qt.callLater(function() {
+                            if (!geometryTopologyDiagnosticMenu.visible)
+                                geometryTopologyDiagnosticMenu.open()
+                        })
+                    }
+
+                    // 类别序号必须与 GeometryTopologyDiagnosticCategory 的枚举顺序保持一致。
+                    MenuItem {
+                        text: "边界边"
+                        checkable: true
+                        onToggled: myItem.setGeometryTopologyDiagnosticCategoryEnabled(0, checked)
+                        onTriggered: geometryTopologyDiagnosticMenu.keepOpenAfterTrigger()
+                    }
+                    MenuItem {
+                        text: "孤立边"
+                        checkable: true
+                        onToggled: myItem.setGeometryTopologyDiagnosticCategoryEnabled(1, checked)
+                        onTriggered: geometryTopologyDiagnosticMenu.keepOpenAfterTrigger()
+                    }
+                    MenuItem {
+                        text: "非流形边"
+                        checkable: true
+                        onToggled: myItem.setGeometryTopologyDiagnosticCategoryEnabled(2, checked)
+                        onTriggered: geometryTopologyDiagnosticMenu.keepOpenAfterTrigger()
+                    }
+                    MenuSeparator {}
+                    MenuItem {
+                        text: "细小边"
+                        checkable: true
+                        onToggled: myItem.setGeometryTopologyDiagnosticCategoryEnabled(3, checked)
+                        onTriggered: geometryTopologyDiagnosticMenu.keepOpenAfterTrigger()
+                    }
+                    MenuItem {
+                        text: "细小面"
+                        checkable: true
+                        onToggled: myItem.setGeometryTopologyDiagnosticCategoryEnabled(4, checked)
+                        onTriggered: geometryTopologyDiagnosticMenu.keepOpenAfterTrigger()
+                    }
+                    MenuItem {
+                        text: "重复面"
+                        checkable: true
+                        onToggled: myItem.setGeometryTopologyDiagnosticCategoryEnabled(5, checked)
+                        onTriggered: geometryTopologyDiagnosticMenu.keepOpenAfterTrigger()
+                    }
+                    MenuItem {
+                        text: "自相交"
+                        checkable: true
+                        onToggled: myItem.setGeometryTopologyDiagnosticCategoryEnabled(6, checked)
+                        onTriggered: geometryTopologyDiagnosticMenu.keepOpenAfterTrigger()
+                    }
+                    MenuItem {
+                        text: "几何干涉"
+                        checkable: true
+                        onToggled: myItem.setGeometryTopologyDiagnosticCategoryEnabled(7, checked)
+                        onTriggered: geometryTopologyDiagnosticMenu.keepOpenAfterTrigger()
+                    }
+                    MenuItem {
+                        text: "无效拓扑"
+                        checkable: true
+                        onToggled: myItem.setGeometryTopologyDiagnosticCategoryEnabled(8, checked)
+                        onTriggered: geometryTopologyDiagnosticMenu.keepOpenAfterTrigger()
+                    }
+                    MenuSeparator {}
+                    MenuItem {
+                        id: geometrySmallEdgeLengthItem
+                        text: "细小边长度"
+                        contentItem: RowLayout {
+                            Label {
+                                text: geometrySmallEdgeLengthItem.text
+                                Layout.fillWidth: true
+                            }
+                            TextField {
+                                Layout.preferredWidth: 100
+                                text: "0.01"
+                                selectByMouse: true
+                                validator: DoubleValidator {
+                                    bottom: 0.0
+                                    notation: DoubleValidator.ScientificNotation
+                                }
+                                onEditingFinished: {
+                                    const threshold = Number(text)
+                                    if (threshold > 0)
+                                        myItem.setGeometryTopologyDiagnosticSmallEdgeLength(threshold)
+                                }
+                            }
+                        }
+                        onTriggered: geometryTopologyDiagnosticMenu.keepOpenAfterTrigger()
+                    }
+                    MenuItem {
+                        id: geometrySmallFaceAreaItem
+                        text: "细小面面积"
+                        contentItem: RowLayout {
+                            Label {
+                                text: geometrySmallFaceAreaItem.text
+                                Layout.fillWidth: true
+                            }
+                            TextField {
+                                Layout.preferredWidth: 100
+                                text: "0.01"
+                                selectByMouse: true
+                                validator: DoubleValidator {
+                                    bottom: 0.0
+                                    notation: DoubleValidator.ScientificNotation
+                                }
+                                onEditingFinished: {
+                                    const threshold = Number(text)
+                                    if (threshold > 0)
+                                        myItem.setGeometryTopologyDiagnosticSmallFaceArea(threshold)
+                                }
+                            }
+                        }
+                        onTriggered: geometryTopologyDiagnosticMenu.keepOpenAfterTrigger()
+                    }
+                }
+            }
+
+            ToolButton {
                 text: "裁剪"
+                flat: true
                 checkable: true
-                Layout.preferredWidth: 50
                 Layout.fillHeight: true
                 onClicked: {
                     myItem.setMeshClip(checked)
@@ -448,8 +608,8 @@ Page {
             }
             ToolButton {
                 text: "比例尺"
+                flat: true
                 checkable: true
-                Layout.preferredWidth: 50
                 Layout.fillHeight: true
                 onClicked: {
                     myItem.setScaleBarVisible(checked)
@@ -457,7 +617,7 @@ Page {
             }
             ToolButton {
                 text: "重置视图"
-                Layout.preferredWidth: 70
+                flat: true
                 Layout.fillHeight: true
                 onClicked: myItem.resetCamera()
             }
@@ -475,8 +635,8 @@ Page {
         Rectangle {
             id: borderRectangle
             anchors.fill: parent
-            border.color: "black"
-            border.width: 3
+            border.color: Theme.borderStrong
+            border.width: 1
             color: "transparent"
             z: 1
         }
@@ -484,8 +644,15 @@ Page {
         QRenderWindow {
             id: myItem
             anchors.fill: parent
-            anchors.margins: 3
+            anchors.margins: 1
             query: QModelManager.query
+            selectionRevision: App.selection.selectionRevision
+
+            onSelectedChanged: {
+                // 非参数选择期间的视口刷新、清空只影响高亮，不回写操作参数。
+                if (App.selection.listeningSelectorIndex >= 0)
+                    App.selection.selectionUpdated(myItem.selectedIDs)
+            }
 
             Component.onCompleted: {
                 myItem.setFaceSelectionByAngle(root.faceSelectByAngle, root.faceSelectAngle)
@@ -523,7 +690,6 @@ Page {
                 function onSelectModeChanged() { myItem.setSelectMode(App.selection.selectMode) }
                 function onSelectionInvalidated() {
                     myItem.clearSelection()
-                    selector.selection = null
                 }
             }
 
@@ -540,8 +706,8 @@ Page {
                 target: QModelManager.undoStack
                 // undo/redo 应用后统一清空选择集（Selection 持有的 gid/稳定 id 不作跨 undo 保证）
                 function onApplied() {
-                    myItem.clearSelection()
-                    selector.selection = null
+                    App.selection.listeningSelectorIndex = -1
+                    App.selection.selectionInvalidated()
                 }
             }
         }
@@ -564,15 +730,6 @@ Page {
             onClearButtonClicked: {
                 myItem.clearSelection()
             }
-
-            onConfirmButtonClicked: {
-                selector.selection = myItem.selectedIDs
-            }
-
-            // 确认后复位选择集：确认即本轮选择结束，避免残留高亮被下一次确认带走
-            onSelectionConfirmed: {
-                myItem.clearSelection()
-            }
         }
 
         Menu {
@@ -585,66 +742,16 @@ Page {
                 pickedIds = sel ? sel.getAsComponentIds() : []
             }
 
-            implicitWidth: 140
-            width: implicitWidth
-            height: implicitHeight
-
-            padding: 0
-            topPadding: 0
-            bottomPadding: 0
-            leftPadding: 0
-            rightPadding: 0
-
-            property int textLeftInset: 18
-            property int textRightInset: 12
-
-            background: Rectangle {
-                anchors.fill: parent
-                color: "#ffffff"
-                border.color: "#d0d0d0"
-                border.width: 1
-                radius: 4
-            }
-
+            // 视口菜单项：shown 控制显隐（无拾取时显示整组操作，有拾取时显示对象操作）
             component StyledMenuItem: MenuItem {
                 id: control
                 property bool shown: true
 
                 visible: shown
                 enabled: shown
-
-                implicitHeight: shown ? 30 : 0
-                height: implicitHeight
-
-                width: viewportMenu.width
-                implicitWidth: viewportMenu.width
-
-                background: Rectangle {
-                    anchors.fill: parent
-                    color: control.hovered ? "#f0f0f0" : "transparent"
-                }
-
-                contentItem: Text {
-                    anchors.fill: parent
-                    anchors.leftMargin: viewportMenu.textLeftInset
-                    anchors.rightMargin: viewportMenu.textRightInset
-
-                    text: control.text
-                    color: control.hovered ? "#1976d2" : "#333333"
-                    font.pixelSize: 12
-                    font.family: "Microsoft YaHei"
-                    verticalAlignment: Text.AlignVCenter
-                    horizontalAlignment: Text.AlignLeft
-                    elide: Text.ElideRight
-                }
             }
 
-            component StyledSeparator: MenuSeparator {
-                width: viewportMenu.width
-                implicitWidth: viewportMenu.width
-                implicitHeight: 6
-                height: visible ? implicitHeight : 0
-            }
+            component StyledSeparator: MenuSeparator {}
 
             StyledMenuItem {
                 text: "隐藏"
@@ -694,6 +801,25 @@ Page {
                 shown: true
                 onTriggered: App.registry.objectTree.reverseDisplayed()
             }
+        }
+    }
+
+    // 导入提示只覆盖可视化区域，保留停靠面板内容可见。
+    Rectangle {
+        anchors.fill: renderWindowPage
+        visible: App.importDragActive
+        z: 2
+        color: Qt.rgba(Theme.primary.r, Theme.primary.g, Theme.primary.b, 0.10)
+        border.color: Theme.primary
+        border.width: 2
+        radius: Theme.radiusControl
+
+        Label {
+            anchors.centerIn: parent
+            text: qsTr("松开鼠标以导入模型文件")
+            font.pixelSize: Theme.fontSizeLarge
+            font.bold: true
+            color: Theme.primary
         }
     }
 

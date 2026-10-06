@@ -1,5 +1,7 @@
 #include "QSystemPluginManager.h"
+#include "ModelLayer.h"
 #include "SystemPluginManager.h"
+#include <spdlog/spdlog.h>
 
 #include <QFileInfo>
 #include <QString>
@@ -27,7 +29,13 @@ bool QSystemPluginManager::registerPlugin(const QUrl& plugin_path)
 {
     QString plugin_path_temp = plugin_path.toLocalFile();
     std::filesystem::path path_std = QFileInfo(plugin_path_temp).filesystemFilePath();
-    bool result = system_plugin_manager_->registerPlugin(path_std);
+    bool result;
+    try {
+        result = system_plugin_manager_->registerPlugin(path_std);
+    } catch (const ModelOperationBusy& e) {
+        spdlog::warn("QSystemPluginManager: {}", e.what());
+        return false;
+    }
     if (result) {
         plugin_paths_.append(plugin_path_temp);
         plugin_names_.append(QFileInfo(plugin_path_temp).fileName());
@@ -39,7 +47,12 @@ bool QSystemPluginManager::registerPlugin(const QUrl& plugin_path)
 void QSystemPluginManager::unregisterPlugin(const QString& plugin_path)
 {
     std::filesystem::path path_std = QFileInfo(plugin_path).filesystemFilePath();
-    system_plugin_manager_->unregisterPlugin(path_std);
+    try {
+        system_plugin_manager_->unregisterPlugin(path_std);
+    } catch (const ModelOperationBusy& e) {
+        spdlog::warn("QSystemPluginManager: {}", e.what());
+        return;
+    }
     plugin_paths_.removeOne(plugin_path);
     plugin_names_.removeOne(QFileInfo(plugin_path).fileName());
     emit pluginNamesChanged();

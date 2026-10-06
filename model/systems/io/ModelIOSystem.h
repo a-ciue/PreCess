@@ -4,19 +4,22 @@
  */
 #pragma once
 #include "Core.h"
+#include "ModelIOInfo.h"
 #include "ModelIOSystemBase.h"
+#include "ModelPayload.h"
 #include "SystemHandlerPtr.h"
 #include <any>
 #include <filesystem>
 #include <functional>
+#include <optional>
 #include <unordered_map>
 #include <vector>
 
 class ModelLayer;
+class UndoStack;
 
 namespace systems::io {
 class ModelIOHandler;
-struct ModelIOInfo;
 /**
  * @brief 对应Handler的元信息
  */
@@ -34,7 +37,7 @@ public:
     using SystemHandlerPtr = ::systems::SystemHandlerPtr<SystemHandler>;
     static const std::string name; //> 系统名称
 
-    ModelIOSystem(ModelLayer& manager);
+    ModelIOSystem(ModelLayer& manager, UndoStack* stack = nullptr);
     ~ModelIOSystem() override;
     /**
      * @brief 系统的读模型接口
@@ -44,6 +47,14 @@ public:
      * @return 读取并添加模型成功返回true，失败（文件类型未注册或无法解析出模型）返回false
      */
     bool read(const std::filesystem::path& path, const std::string& file_type, const std::vector<std::any>& args) override;
+    /**
+     * @brief 仅解析文件为模型载荷，不落层
+     * @return 解析成功返回载荷；文件类型未注册或解析失败返回空
+     * @note 供按目标层落层的调用方（如算法影子执行）复用已注册格式 handler；
+     *       纯文件解析，不触模型、无落层副作用
+     */
+    std::optional<ModelPayload> parseModel(const std::filesystem::path& path, const std::string& file_type,
+        const std::vector<std::any>& args);
     /**
      * @brief 系统的写模型接口
      * @param model 模型id
@@ -77,9 +88,15 @@ public:
     void setOnDialogNameFiltersChanged(std::function<void()> callback);
 
 private:
+    //! @brief 文件格式处理器与信息共同持有，占用期注册表保持只读。
+    struct IOEntry {
+        SystemHandlerPtr handler;
+        ModelIOInfo info;
+    };
+
     ModelLayer* manager_;
-    std::unordered_map<std::string, SystemHandlerPtr> handlers_; //> 键是文件类型
-    std::unordered_map<std::string, std::unique_ptr<ModelIOInfo>> file_type_infos_; //> 键是文件类型，值是支持的文件类型信息(如扩展名、参数信息、描述等)
+    UndoStack* undo_stack_;
+    std::unordered_map<std::string, IOEntry> entries_; //> 键是文件类型
 
     std::function<void()> on_dialog_name_filters_changed_;
 };

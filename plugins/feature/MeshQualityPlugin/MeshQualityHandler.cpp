@@ -415,13 +415,13 @@ void MeshQualityHandler::deactivate(FeatureContext& ctx)
 {
     // 功能退出即清理现场：删除本次操作生成的全部质量属性（GUI 线程模型写，
     // 通知由 setFeatureActive 的操作边界 flush 统一发出）
-    clearGeneratedAttributes(ctx.componentOperator);
+    clearGeneratedAttributes(ctx);
 }
 
 void MeshQualityHandler::teardown(FeatureContext& ctx)
 {
     // 注销兜底：退出路径（deactivate）已清理，此处仅容错空转
-    clearGeneratedAttributes(ctx.componentOperator);
+    clearGeneratedAttributes(ctx);
 }
 
 std::any MeshQualityHandler::execute(FeatureContext& ctx)
@@ -437,7 +437,7 @@ std::any MeshQualityHandler::execute(FeatureContext& ctx)
     }
 
     const Index component_id = selection.ids.front();
-    auto component = ctx.componentOperator ? ctx.componentOperator(component_id) : std::nullopt;
+    auto component = ctx.componentOperator(component_id);
     if (!component || !component->mesh()) {
         return std::string("所选 Component 没有网格");
     }
@@ -518,10 +518,10 @@ std::any MeshQualityHandler::execute(FeatureContext& ctx)
     return output.str();
 }
 
-void MeshQualityHandler::clearGeneratedAttributes(const ComponentOperatorProvider& component_operator)
+void MeshQualityHandler::clearGeneratedAttributes(FeatureContext& ctx)
 {
     for (const auto& [component_id, attributes] : generated_attributes_) {
-        auto component = component_operator ? component_operator(component_id) : std::nullopt;
+        auto component = ctx.componentOperator(component_id);
         if (!component || !component->mesh())
             continue;
 

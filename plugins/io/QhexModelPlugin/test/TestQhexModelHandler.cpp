@@ -110,7 +110,7 @@ TEST_CASE("QhexModelHandler reads vertices and hexahedra with 1-based ids")
     REQUIRE(mesh->solid_vertices_ == std::vector<Index> { 0, 1, 2, 3, 4, 5, 6, 7 });
     REQUIRE(mesh->solid_vertices_offset_ == std::vector<Index> { 0, 8 });
     // 模型名取文件名（TempFile 路径随机，校验后缀）
-    const std::string suffix = "_read.qhex";
+    const std::u8string suffix = u8"_read.qhex";
     REQUIRE(payload.model_name.size() > suffix.size());
     REQUIRE(payload.model_name.compare(payload.model_name.size() - suffix.size(), suffix.size(), suffix) == 0);
 }

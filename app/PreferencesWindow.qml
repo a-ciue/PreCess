@@ -20,11 +20,22 @@ Item {
             Rectangle {
                 Layout.preferredWidth: 120
                 Layout.fillHeight: true
-                color: "#f0f0f0"
+                color: Theme.surfaceAlt
+
+                // 侧栏与内容区的细线分隔
+                Rectangle {
+                    anchors {
+                        top: parent.top
+                        bottom: parent.bottom
+                        right: parent.right
+                    }
+                    width: 1
+                    color: Theme.border
+                }
 
                 ColumnLayout {
                     anchors.fill: parent
-                    anchors.margins: 4
+                    anchors.margins: Theme.spacingXs
                     spacing: 2
 
                     ButtonGroup {
@@ -67,7 +78,7 @@ Item {
                     Label {
                         anchors.centerIn: parent
                         text: "主题设置 - 待开发"
-                        color: "#888"
+                        color: Theme.textSecondary
                     }
                 }
 
@@ -86,8 +97,9 @@ Item {
                         delegate: Rectangle {
                             width: ListView.view.width
                             height: 30
-                            color: pluginListView.currentIndex === index ? "gray" : "white"
-                            border.color: "#ccc"
+                            radius: Theme.radiusControl
+                            color: pluginListView.currentIndex === index ? Theme.primaryTint : Theme.surface
+                            border.color: pluginListView.currentIndex === index ? Theme.primary : Theme.border
                             border.width: 1
 
                             Text {
@@ -98,7 +110,7 @@ Item {
                                 anchors.verticalCenter: parent.verticalCenter
                                 text: modelData
                                 elide: Text.ElideRight
-                                color: pluginListView.currentIndex === index ? "white" : "black"
+                                color: Theme.textPrimary
                             }
 
                             MouseArea {
@@ -130,6 +142,7 @@ Item {
 
             Button {
                 text: "注册"
+                flat: true
                 implicitWidth: 70
                 implicitHeight: 26
                 onClicked: pluginFileDialog.open()
@@ -137,6 +150,7 @@ Item {
 
             Button {
                 text: "注销"
+                flat: true
                 implicitWidth: 70
                 implicitHeight: 26
                 enabled: pluginListView.currentIndex !== -1
@@ -157,12 +171,14 @@ Item {
 
             Button {
                 text: "恢复默认"
+                flat: true
                 implicitWidth: 70
                 implicitHeight: 26
             }
 
             Button {
                 text: "应用"
+                flat: true
                 implicitWidth: 70
                 implicitHeight: 26
             }

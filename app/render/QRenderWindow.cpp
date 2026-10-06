@@ -26,7 +26,11 @@
 #include <vtkPlane.h>
 
 #include <cmath>
+#include <memory>
+#include <optional>
+#include <string>
 #include <utility>
+#include <vector>
 
 namespace {
 //! @brief 比例尺刻度字号因子（vtkAxisActor2D::FontFactor，默认 1.0，取值区间 0.1~2.0）
@@ -155,6 +159,7 @@ public:
 private:
     QModelQuery* query_ {};
 };
+
 }
 
 QRenderWindow::QRenderWindow() = default;
@@ -265,12 +270,25 @@ QQuickVTKItem::vtkUserData QRenderWindow::initializeVTK(vtkRenderWindow* renderW
     vtk->plane_widget_->SetRepresentation(rep);
     vtk->plane_widget_->AddObserver(vtkCommand::InteractionEvent, callback);
 
+    render_selection_revision_ = selection_revision_;
+    vtk->selection_observer_tag_ = vtk->style_->AddObserver(vtkCommand::SelectionChangedEvent, this, &QRenderWindow::publishSelection);
+    publishSelection();
     return vtk;
 }
 
 void QRenderWindow::destroyingVTK(vtkRenderWindow* renderWindow, vtkUserData userData)
 {
     auto* vtk = Data::SafeDownCast(userData);
+    // 场景图重建会先释放旧 Data，再调用 initializeVTK；服务持有旧 renderer 的
+    // 裸指针，必须在此渲染线程边界销毁，不能拖到下一次 unique_ptr 赋值或 GUI 析构。
+    // 回调持有非 VTK 对象 this，必须在服务和场景图拆解前解除。
+    vtk->style_->RemoveObserver(vtk->selection_observer_tag_);
+    vtk->selection_observer_tag_ = 0;
+    vtk->style_->SetInteractionService(nullptr);
+    vtk->style_->SetSelectManager(nullptr);
+    interaction_service_.reset();
+    select_manager_.reset();
+    data_ = nullptr;
     if (vtk->renderer_) {
         vtk->renderer_->RemoveAllViewProps();
     }
@@ -338,6 +356,7 @@ void QRenderWindow::deleteModel(Index model_id)
         }
 
         this->select_manager_->clearSelection();
+        publishSelection();
     });
 }
 
@@ -355,6 +374,7 @@ void QRenderWindow::deleteComponent(Index component_id)
         }
 
         this->select_manager_->clearSelection();
+        publishSelection();
     });
 }
 
@@ -388,6 +408,7 @@ void QRenderWindow::onModelChanged(Index model_id)
 
         // Actor 即将重新加载，先释放引用旧 PolyData 和 OCC Shape 的选择器。
         this->select_manager_->clearSelection();
+        publishSelection();
         auto component_ids = model_query_->getComponentIds(model_id);
 
         for (Index component_id : component_ids) {
@@ -398,7 +419,8 @@ void QRenderWindow::onModelChanged(Index model_id)
 
             auto geometry_data = model_query_->getGeometryVtkDataByComponent(component_id);
             if (geometry_data) {
-                vtk->geometry_actor_manager_->loadGeometry(*geometry_data);
+                vtk->geometry_actor_manager_->loadGeometry(*geometry_data,
+                    model_query_->getComponentName(component_id).toStdString());
             }
         }
     });
@@ -414,6 +436,7 @@ void QRenderWindow::onComponentChanged(Index component_id)
 
         // Component 的子形状索引和 Actor 数据会更新，旧高亮选择器不能继续复用。
         this->select_manager_->clearSelection();
+        publishSelection();
 
         if (vtk->mesh_actor_manager_) {
             auto mesh_data = this->model_query_->getMeshDataByComponent(component_id);
@@ -427,7 +450,8 @@ void QRenderWindow::onComponentChanged(Index component_id)
         if (vtk->geometry_actor_manager_) {
             auto geometry_data = this->model_query_->getGeometryVtkDataByComponent(component_id);
             if (geometry_data) {
-                vtk->geometry_actor_manager_->loadGeometry(*geometry_data);
+                vtk->geometry_actor_manager_->loadGeometry(*geometry_data,
+                    model_query_->getComponentName(component_id).toStdString());
             } else {
                 vtk->geometry_actor_manager_->deleteComponent(component_id);
             }
@@ -497,18 +521,45 @@ void QRenderWindow::setGeometryVisibility(Index component_id, bool visibility)
 
 QSelection* QRenderWindow::selectedIDs()
 {
-    std::unique_ptr<Selection> data = this->select_manager_->getSelection();
-    if (!data) {
+    if (!selection_snapshot_)
         return nullptr;
-    }
-
-    // 保留 SelectManager 实际拾取到的 component_id；如果拾取器未提供，再退到当前活动组件
-    if (data->component_id < 0) {
-        data->component_id = this->cur_component_id_;
-    }
-    QSelection* selection = new QSelection(std::move(data));
+    // QML 包装对象单独持有副本，其生命周期和可变数据不与跨线程快照共享。
+    auto* selection = new QSelection(std::make_unique<Selection>(*selection_snapshot_));
     QJSEngine::setObjectOwnership(selection, QJSEngine::JavaScriptOwnership);
     return selection;
+}
+
+void QRenderWindow::setSelectionRevision(int revision)
+{
+    if (selection_revision_ == revision)
+        return;
+    // GUI 先推进版本，使已经排队、尚未送达的旧参数结果立即失效。
+    selection_revision_ = revision;
+    selection_snapshot_.reset();
+    emit selectionRevisionChanged();
+    emit selectedChanged(); // 没有渲染窗口时也立即同步空选择
+    // 拾取器及高亮属于渲染线程；与后续发布使用同一版本，避免混入旧选择。
+    dispatch_async([this, revision](vtkRenderWindow*, vtkUserData) {
+        render_selection_revision_ = revision;
+        select_manager_->clearSelection();
+        publishSelection();
+    });
+}
+
+void QRenderWindow::publishSelection()
+{
+    auto selection = select_manager_->getSelection();
+    if (selection && selection->component_id < 0)
+        selection->component_id = cur_component_id_;
+    // getSelection 返回独立副本；发布后只读，避免跨线程修改。
+    std::shared_ptr<const Selection> snapshot = std::move(selection);
+    const int revision = render_selection_revision_;
+    QMetaObject::invokeMethod(&selection_dispatcher_, [this, snapshot, revision] {
+        // 用户可能在排队期间切换参数或结束选择，旧结果不能覆盖当前参数。
+        if (revision != selection_revision_)
+            return;
+        selection_snapshot_ = snapshot;
+        emit selectedChanged(); }, Qt::QueuedConnection);
 }
 
 void QRenderWindow::setModelQuery(QModelQuery* query)
@@ -537,6 +588,7 @@ void QRenderWindow::setSelectMode(QString select_mode)
 {
     dispatch_async([select_mode, this](vtkRenderWindow* renderWindow, vtkUserData userData) -> void {
         select_manager_->setSelectMode(select_mode.toStdString());
+        publishSelection();
     });
 }
 
@@ -551,6 +603,7 @@ void QRenderWindow::clearSelection()
 {
     dispatch_async([this](vtkRenderWindow* renderWindow, vtkUserData userData) -> void {
         this->select_manager_->clearSelection();
+        publishSelection();
     });
 }
 
@@ -693,6 +746,37 @@ void QRenderWindow::setDihedralAngleRange(double minimum, double maximum)
         Data* vtk = Data::SafeDownCast(userData);
         if (vtk->mesh_actor_manager_)
             vtk->mesh_actor_manager_->setDihedralAngleRange(minimum, maximum);
+    });
+}
+
+void QRenderWindow::setGeometryTopologyDiagnosticCategoryEnabled(int category, bool enabled)
+{
+    dispatch_async([category, enabled, this](vtkRenderWindow* renderWindow,
+                        vtkUserData userData) -> void {
+        Data* vtk = Data::SafeDownCast(userData);
+        if (!vtk || !vtk->geometry_actor_manager_)
+            return;
+        vtk->geometry_actor_manager_->setTopologyDiagnosticCategoryEnabled(category, enabled);
+    });
+}
+
+void QRenderWindow::setGeometryTopologyDiagnosticSmallEdgeLength(double threshold)
+{
+    dispatch_async([threshold](vtkRenderWindow* renderWindow, vtkUserData userData) -> void {
+        Data* vtk = Data::SafeDownCast(userData);
+        if (!vtk || !vtk->geometry_actor_manager_)
+            return;
+        vtk->geometry_actor_manager_->setTopologyDiagnosticSmallEdgeLength(threshold);
+    });
+}
+
+void QRenderWindow::setGeometryTopologyDiagnosticSmallFaceArea(double threshold)
+{
+    dispatch_async([threshold](vtkRenderWindow* renderWindow, vtkUserData userData) -> void {
+        Data* vtk = Data::SafeDownCast(userData);
+        if (!vtk || !vtk->geometry_actor_manager_)
+            return;
+        vtk->geometry_actor_manager_->setTopologyDiagnosticSmallFaceArea(threshold);
     });
 }
 

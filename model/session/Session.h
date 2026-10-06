@@ -12,6 +12,7 @@
 #define SESSION_H
 #include "ComponentOperator.h" // boundaryWrite 参数需完整类型
 #include "EventBus.h" // 成员为值类型，需完整定义
+#include "Job.h"
 #include "ModelLayer.h" // 成员为值类型，需完整定义
 #include "SessionQuery.h"
 
@@ -35,6 +36,9 @@ class EditSystem;
 namespace systems::feature {
 class FeatureSystem;
 }
+namespace systems::job {
+class JobRunner;
+}
 class UndoStack;
 
 namespace session {
@@ -46,8 +50,16 @@ public:
      * @param observer 宿主观察者（如 app 层 QModelObserver；可为 nullptr）。
      *                 内部转发观察者先通知宿主、再把模型层通知桥接为 ModelEvent。
      */
-    explicit Session(ModelObserver* observer = nullptr);
-    //! @brief 有序拆解（见 teardown），保证功能停用与钩子断开先于成员析构
+    explicit Session(ModelObserver* observer = nullptr,
+        std::function<void(std::function<void()>)> dispatcher = { });
+    //! @brief 异步宿主的共享执行器；默认同步配置返回空。
+    systems::job::JobRunner* jobRunner() { return job_runner_.get(); }
+    //! @brief 展示回调只在空闲时装配；终态业务重放始终由 Session 执行。
+    void setTaskCallbacks(systems::job::JobFinishedFn started = { },
+        systems::job::JobProgressFn progress = { }, systems::job::JobFinishedFn finished = { });
+    //! @brief 宿主先停止任务，随后可关闭脚本运行时或拆会话。
+    void stopJobs();
+    //! @brief 有序拆解（见 teardown），保证任务停止、功能停用与钩子断开先于成员析构
     ~Session();
 
     Session(const Session&) = delete;
@@ -78,7 +90,7 @@ public:
     //! @brief 移除组件几何（操作边界：undo 自动记录 + 通知统一 flush）
     void removeGeometry(Index component_id);
 
-    //! @brief 有序拆解（幂等）：先停功能系统，再断开栈与模型层的互指钩子
+    //! @brief 有序拆解（幂等）：先停止任务，再停功能系统并断开栈与模型层的互指钩子
     void teardown();
 
 private:
@@ -102,6 +114,7 @@ private:
     std::unique_ptr<systems::edit::EditSystem> edit_system_;
     std::unique_ptr<systems::feature::FeatureSystem> feature_system_;
     std::unique_ptr<systems::SystemPluginManager> plugin_manager_;
+    std::unique_ptr<systems::job::JobRunner> job_runner_; //!< 先停任务，再拆功能和模型
     bool torn_down_ { false }; //> teardown 幂等守卫
 };
 }

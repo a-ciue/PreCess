@@ -184,7 +184,7 @@ static void add_cells_from_mesh(vtkUnstructuredGrid& ugrid,
 std::optional<ModelPayload> VtkLegacyModelHandler::read_model(const fs::path& path, const std::vector<std::any>& args)
 {
     vtkNew<vtkDataSetReader> reader;
-    auto path_string = path.u8string();
+    auto path_string = pathUtf8(path);
     reader->SetFileName(path_string.c_str());
     reader->ReadAllColorScalarsOn();
     reader->ReadAllScalarsOn();
@@ -248,7 +248,7 @@ std::optional<ModelPayload> VtkLegacyModelHandler::read_model(const fs::path& pa
     ComponentDatas comps;
     comps.push_back(std::move(c));
 
-    return ModelPayload{path.filename().u8string(), std::move(comps)};
+    return ModelPayload { path.filename().u8string(), std::move(comps)};
 }
 
 void VtkLegacyModelHandler::write_components(const ModelLayer& mgr,

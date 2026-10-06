@@ -10,9 +10,11 @@
 
 #include <Standard_Handle.hxx>
 #include <IVtkOCC_Shape.hxx>
+#include <memory>
 typedef Handle(IVtkOCC_Shape) OccShapeHandle;
 
 class GeometryActorSelectOp;
+class GeometryTopologyDiagnosticActor;
 class vtkPolyData;
 
 class GeometryActor {
@@ -28,6 +30,9 @@ public:
     bool isVisible() const;
     void setRenderStyle(GeometryRenderStyle style);
     GeometryRenderStyle getRenderStyle() const;
+
+    /** @brief 获取本组件独立的几何拓扑诊断渲染对象。 */
+    GeometryTopologyDiagnosticActor& topologyDiagnostics();
 
 private:
     void deleteGeometryActor();
@@ -46,6 +51,7 @@ private:
 
     vtkSmartPointer<vtkPolyData> poly_only_;
     vtkSmartPointer<vtkPolyData> line_only_;
+    std::unique_ptr<GeometryTopologyDiagnosticActor> topology_diagnostics_;
 };
 
 #endif

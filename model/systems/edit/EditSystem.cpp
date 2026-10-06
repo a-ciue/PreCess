@@ -6,9 +6,11 @@
 #include "ArgObject.h"
 #include "EditHandler.h"
 #include "ModelLayer.h"
+#include "ModelScope.h"
 #include "UndoStack.h"
 
 #include <spdlog/spdlog.h>
+#include <utility>
 
 namespace systems::edit {
 using core::ArgObject;
@@ -28,46 +30,36 @@ EditSystem::~EditSystem() = default;
 
 std::any EditSystem::call(const string& unique_name, Index component_id, const vector<ArgObject>& args)
 {
-    auto it = handlers_.find(unique_name);
-    if (it != handlers_.end() && it->second) {
+    if (model_manager_->writesPending() && !model_manager_->hasWritePrivilege()) {
+        spdlog::warn("EditSystem::call: '{}' rejected while a model operation is pending", unique_name);
+        return { };
+    }
+    auto it = entries_.find(unique_name);
+    if (it != entries_.end()) {
         // 过渡 shim（随系统迁移消亡）：操作边界统一 flush 组件变更通知 + undo 自动记录，
         // handler 写路径经 ComponentOperator 写必脏记入待通知集合；无写入则 flush 空转、空操作丢弃。
-        // 异常时先提交（部分写入可撤销）+ flush 再重抛，保证部分写入的通知不丢。
+        // ModelScope 析构收尾与退出原因无关：异常时先提交（部分写入可撤销）+ flush 再传播。
         // component_id 仅作对象树选中态提示透传给 handler（可为 -1），目标组件由 handler 按参数解析。
-        if (undo_stack_) {
-            const std::string& display_name = edit_infos_[unique_name]->display_name;
-            undo_stack_->beginOperation(display_name.empty() ? unique_name : display_name);
-        }
-        try {
-            std::any result = it->second->execute(*model_manager_, component_id, args);
-            if (undo_stack_)
-                undo_stack_->commitOperation();
-            model_manager_->flushNotifications();
-            return result;
-        } catch (...) {
-            if (undo_stack_)
-                undo_stack_->commitOperation();
-            model_manager_->flushNotifications();
-            throw;
-        }
+        const std::string& display_name = it->second.info.display_name;
+        ModelScope scope(*model_manager_, undo_stack_, display_name.empty() ? unique_name : display_name);
+        return it->second.handler->execute(*model_manager_, component_id, args);
     }
 
     spdlog::warn("EditSystem::call: Handler '{}' not found.", unique_name);
-    return {};
+    return { };
 }
 
 bool EditSystem::registerHandler(const HandlerMetaData& meta_data, SystemHandlerPtr handler)
 {
+    model_manager_->assertOperationIdle();
     if (!handler)
         return false;
 
-    auto info = std::make_unique<EditInfo>();
-    info->name = meta_data.name;
-    info->display_name = meta_data.display_name;
-    info->arg_types = handler->args_type();
-    this->edit_infos_[meta_data.name] = std::move(info);
-
-    handlers_[meta_data.name] = std::move(handler);
+    // 元数据准备成功后整体替换，异常不改变旧注册。
+    EditInfo info { .name = meta_data.name,
+        .display_name = meta_data.display_name,
+        .arg_types = handler->args_type() };
+    entries_.insert_or_assign(meta_data.name, EditEntry { std::move(handler), std::move(info) });
     on_edit_info_changed_();
     spdlog::info("EditSystem::registerHandler: Registered handler for edit '{}'", meta_data.name);
     return true;
@@ -75,12 +67,11 @@ bool EditSystem::registerHandler(const HandlerMetaData& meta_data, SystemHandler
 
 void EditSystem::unregisterHandler(const HandlerMetaData& meta_data)
 {
-    if (handlers_.count(meta_data.name) == 0) {
+    model_manager_->assertOperationIdle();
+    if (entries_.erase(meta_data.name) == 0) {
         spdlog::warn("EditSystem::unregisterHandler: Handler for edit '{}' not found", meta_data.name);
     }
 
-    handlers_.erase(meta_data.name);
-    this->edit_infos_.erase(meta_data.name);
     on_edit_info_changed_();
 
     spdlog::info("EditSystem::unregisterHandler: Unregistered handler for edit '{}'", meta_data.name);
@@ -89,20 +80,20 @@ void EditSystem::unregisterHandler(const HandlerMetaData& meta_data)
 vector<EditInfo*> EditSystem::getEditInfos()
 {
     vector<EditInfo*> infos;
-    infos.reserve(edit_infos_.size());
-    for (auto&& [algo_name, algo_info] : edit_infos_) {
-        infos.push_back(algo_info.get());
+    infos.reserve(entries_.size());
+    for (auto&& [edit_name, entry] : entries_) {
+        infos.push_back(&entry.info);
     }
     return infos;
 }
 
 std::optional<std::vector<core::ArgType>> EditSystem::getArgTypes(const std::string& unique_name)
 {
-    auto it = handlers_.find(unique_name);
-    if (it != handlers_.end() && it->second) {
-        return it->second->args_type();
+    auto it = entries_.find(unique_name);
+    if (it != entries_.end()) {
+        return it->second.handler->args_type();
     }
-    return {};
+    return { };
 }
 
 void EditSystem::setOnEditInfoChangedCallback(std::function<void()> callback)

@@ -241,7 +241,7 @@ TEST_CASE("InpModelHandler plugin Read test.inp ")
         fs::remove(outfile);
 
     ModelLayer mgr;
-    mgr.addModel(payload_in->model_name, std::move(payload_in->components));
+    mgr.addModel(u8Narrow(payload_in->model_name), std::move(payload_in->components));
     spdlog::info("addModel success");
     
     ComponentData* comp_in = mgr.findComponent(0);
@@ -308,7 +308,7 @@ TEST_CASE("InpModelHandler ReadWrite test2.inp ")
         fs::remove(outfile);
 
     ModelLayer mgr;
-    mgr.addModel(payload_in->model_name, std::move(payload_in->components));
+    mgr.addModel(u8Narrow(payload_in->model_name), std::move(payload_in->components));
     
     ComponentData* comp_in = mgr.findComponent(0);
     REQUIRE(comp_in != nullptr);
@@ -353,7 +353,7 @@ TEST_CASE("InpModelHandler ReadWrite yuan.inp ")
         fs::remove(outfile);
 
     ModelLayer mgr;
-    mgr.addModel(payload_in->model_name, std::move(payload_in->components));
+    mgr.addModel(u8Narrow(payload_in->model_name), std::move(payload_in->components));
     
     ComponentData* comp_in = mgr.findComponent(0);
     REQUIRE(comp_in != nullptr);
@@ -398,7 +398,7 @@ TEST_CASE("InpModelHandler ReadWrite wangGe4D.inp")
         fs::remove(outfile);
 
     ModelLayer mgr;
-    mgr.addModel(payload_in->model_name, std::move(payload_in->components));
+    mgr.addModel(u8Narrow(payload_in->model_name), std::move(payload_in->components));
     
     ComponentData* comp_in = mgr.findComponent(0);
     REQUIRE(comp_in != nullptr);
@@ -443,7 +443,7 @@ TEST_CASE("InpModelHandler ReadWrite aTest.inp")
         fs::remove(outfile);
 
     ModelLayer mgr;
-    mgr.addModel(payload_in->model_name, std::move(payload_in->components));
+    mgr.addModel(u8Narrow(payload_in->model_name), std::move(payload_in->components));
     
     ComponentData* comp_in = mgr.findComponent(0);
     REQUIRE(comp_in != nullptr);
@@ -488,7 +488,7 @@ TEST_CASE("InpModelHandler ReadWrite allQuardLuoShuan.inp")
         fs::remove(outfile);
 
     ModelLayer mgr;
-    mgr.addModel(payload_in->model_name, std::move(payload_in->components));
+    mgr.addModel(u8Narrow(payload_in->model_name), std::move(payload_in->components));
     
     ComponentData* comp_in = mgr.findComponent(0);
     REQUIRE(comp_in != nullptr);
@@ -533,7 +533,7 @@ TEST_CASE("InpModelHandler ReadWrite MixedTi_LuoShuan.inp")
         fs::remove(outfile);
 
     ModelLayer mgr;
-    mgr.addModel(payload_in->model_name, std::move(payload_in->components));
+    mgr.addModel(u8Narrow(payload_in->model_name), std::move(payload_in->components));
     
     ComponentData* comp_in = mgr.findComponent(0);
     REQUIRE(comp_in != nullptr);
