@@ -48,7 +48,7 @@ private:
         std::optional<double> applied_factor; //!< 已落地的因子，只在 GUI 访问
     };
 
-    //! 单轮预览计算结果（任务体产出，经 runTypedWriteback 由框架直传回写段——免共享状态发布）
+    //! 单轮预览计算结果（任务体产出，经 runWritebackJob 由框架直传回写段——免共享状态发布）
     struct PreviewResult {
         PreviewPositions out; //!< 分块缩放结果（本轮最终值）
         double computed { 1.0 }; //!< 本轮计算所用因子

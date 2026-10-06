@@ -75,7 +75,7 @@ TEST_CASE("Masked typed feature keeps progress and GUI events available until wr
         std::shared_ptr<Job> job;
         std::any execute(systems::feature::FeatureContext& ctx) override
         {
-            job = ctx.runTypedWriteback("正式回写", target, [](const ComponentOperator& op) { return op.mesh()->vertex_positions_; }, [this](auto& input, ProgressFn report) {
+            job = ctx.runWritebackJob("正式回写", target, [](const ComponentOperator& op) { return op.mesh()->vertex_positions_; }, [this](auto& input, ProgressFn report) {
                     worker_thread = std::this_thread::get_id();
                     report(0.5, "计算中");
                     input.front()[0] *= 2;

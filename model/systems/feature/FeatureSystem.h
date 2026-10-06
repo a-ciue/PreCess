@@ -178,16 +178,16 @@ private:
 
     bool routeKeyEvent(const KeyEvent& event); //> 按键绑定路由，返回事件是否被消费
     /**
-     * @brief 自由任务提交（FeatureContext::runJob 的实现）：无执行器或单槽忙时返回空
+     * @brief 纯计算任务提交（FeatureContext::runComputeJob 的实现）：无执行器或单槽忙时返回空
      */
-    std::shared_ptr<systems::job::Job> submitFreeJob(std::string name, systems::job::JobTaskFn task, const std::string& owner);
+    std::shared_ptr<systems::job::Job> submitComputeJob(std::string name, systems::job::JobTaskFn task, const std::string& owner);
     //! @brief 类型化入口的内部目标捕获与回写装配。
     std::shared_ptr<systems::job::Job> submitCapturedWriteback(std::string label, Index component_id,
         CaptureJobFn capture, WritebackFn write, const std::string& owner, bool masked);
     std::shared_ptr<systems::job::Job> submitCapturedWriteback(std::string label,
         LayerCaptureJobFn capture, LayerWritebackFn write, const std::string& owner, bool masked);
-    //! @brief 冻结任务提交（FeatureContext::runModelJob 的实现）：影子 copy-in → worker → GUI 提交
-    std::shared_ptr<systems::job::Job> submitModelJob(std::string label, Index component_id, ModelJobTaskFn task, const std::string& owner);
+    //! @brief 影子组件任务提交（FeatureContext::runComponentJob 的实现）：影子 copy-in → worker → GUI 提交
+    std::shared_ptr<systems::job::Job> submitComponentJob(std::string label, Index component_id, ComponentJobTaskFn task, const std::string& owner);
     //! @brief 生命周期清理边界（deactivate/teardown）：回调返回后统一 flush（异常时先 flush 再重抛）；
     //! 不成 undo 记录——退出清理（如删除功能生成的属性）若可撤销，撤销后会留下功能已停止跟踪的游离状态
     void flushAfterCallback(const std::function<void()>& fn);

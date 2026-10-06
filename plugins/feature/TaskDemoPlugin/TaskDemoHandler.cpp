@@ -39,7 +39,7 @@ std::any TaskDemoHandler::execute(FeatureContext& ctx)
             spdlog::warn("TaskDemo: no active component for frozen demo (select a mesh component first)");
             return { };
         }
-        auto job = ctx.runModelJob("冻结加点演示", *target,
+        auto job = ctx.runComponentJob("冻结加点演示", *target,
             [](ComponentOperator& shadow_target, systems::job::ProgressFn report) {
                 for (int i = 1; i <= 5; ++i) {
                     report(i / 5.0, "冻结阶段 " + std::to_string(i) + "/5");
@@ -64,7 +64,7 @@ std::any TaskDemoHandler::execute(FeatureContext& ctx)
             spdlog::warn("TaskDemo: no active component for writeback demo (select a mesh component first)");
             return { };
         }
-        auto job = ctx.runTypedWriteback(
+        auto job = ctx.runWritebackJob(
             "终态回写演示", *target,
             [](const ComponentOperator& op) {
                 if (!op.mesh())
@@ -86,7 +86,7 @@ std::any TaskDemoHandler::execute(FeatureContext& ctx)
     }
 
     // 自由通道：无写面、不遮罩——状态栏进度与红叉可用，用户可继续只读交互与参数更新
-    auto job = ctx.runJob("自由任务演示",
+    auto job = ctx.runComputeJob("自由任务演示",
         [](systems::job::ProgressFn report) {
             for (int i = 1; i <= 10; ++i) {
                 report(i / 10.0, "自由阶段 " + std::to_string(i) + "/10");

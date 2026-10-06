@@ -529,7 +529,7 @@ std::any MeshBooleanHandler::execute(FeatureContext& ctx)
         return *err;
 
     const std::string name = resultName(*comp_op_a, op, *comp_op_b);
-    const auto job = ctx.runTypedWriteback(
+    const auto job = ctx.runWritebackJob(
         "网格布尔",
         [a = *a_id, b = *b_id, op, name](const ModelLayer& model) {
             return BooleanInput { model.findComponent(a)->mesh->clone(), model.findComponent(b)->mesh->clone(), op, name };

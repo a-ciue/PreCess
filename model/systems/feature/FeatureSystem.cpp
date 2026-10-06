@@ -332,7 +332,7 @@ std::shared_ptr<systems::job::Job> FeatureSystem::submitWriteJob(std::string lab
         return work; }, { owner, masked, false, !preview_scope });
 }
 
-std::shared_ptr<systems::job::Job> FeatureSystem::submitFreeJob(std::string name,
+std::shared_ptr<systems::job::Job> FeatureSystem::submitComputeJob(std::string name,
     systems::job::JobTaskFn task, const std::string& owner)
 {
     if (!job_runner_)
@@ -372,8 +372,8 @@ std::shared_ptr<systems::job::Job> FeatureSystem::submitCapturedWriteback(std::s
         return systems::job::JobWork { capture(*model_layer_), [this, write](systems::job::ProgressFn report) { write(*model_layer_, std::move(report)); } }; }, preview_scope, masked);
 }
 
-std::shared_ptr<systems::job::Job> FeatureSystem::submitModelJob(std::string label, Index component_id,
-    ModelJobTaskFn task, const std::string& owner)
+std::shared_ptr<systems::job::Job> FeatureSystem::submitComponentJob(std::string label, Index component_id,
+    ComponentJobTaskFn task, const std::string& owner)
 {
     if (undo_stack_ && (!undo_stack_->inOperation() || undo_stack_->inPreviewCallback() || undo_stack_->scopeActive()))
         return nullptr;

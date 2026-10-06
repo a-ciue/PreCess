@@ -79,7 +79,7 @@ std::any ExtrudeFaceHandler::execute(FeatureContext& ctx)
             return std::string("所选几何面已失效。");
 
         const TopoDS_Face source = TopoDS::Face(*source_shape);
-        auto job = ctx.runTypedWriteback(
+        auto job = ctx.runWritebackJob(
             "拉伸面为实体", *component_id,
             [source](const ComponentOperator&) {
                 // 几何隔离由插件负责；worker 不访问模型和渲染器共享的旧 TShape。

@@ -59,9 +59,9 @@ public:
     std::any execute(systems::feature::FeatureContext& ctx) override
     {
         if (compute)
-            job = ctx.runJob("pure", compute);
+            job = ctx.runComputeJob("pure", compute);
         else
-            job = ctx.runModelJob("feature", target, [](ComponentOperator& op, ProgressFn) {
+            job = ctx.runComponentJob("feature", target, [](ComponentOperator& op, ProgressFn) {
                 op.appendPoint({ 1, 0, 0 });
             });
         return { };
@@ -147,7 +147,7 @@ TEST_CASE("Session notification replay may publish a successor without releasing
     auto& feature = installFeature(session, target);
     std::shared_ptr<Job> successor;
     feature.on_notification = [&](systems::feature::FeatureContext& ctx) {
-        successor = ctx.runJob("successor", [](ProgressFn) { });
+        successor = ctx.runComputeJob("successor", [](ProgressFn) { });
     };
     session.featureSystem().invoke("Feature");
     auto first = feature.job;

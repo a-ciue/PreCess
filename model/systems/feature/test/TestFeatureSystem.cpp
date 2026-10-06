@@ -526,13 +526,13 @@ TEST_CASE("InteractionContext::setActive notifies render refresh in both directi
 
 namespace {
 /**
- * @brief 测试用自由任务功能：execute 经 ctx.runJob 提交 undo-free 任务
+ * @brief 测试用自由任务功能：execute 经 ctx.runComputeJob 提交 undo-free 任务
  */
 class JobSubmittingFeature : public FeatureHandler {
 public:
     std::any execute(FeatureContext& ctx) override
     {
-        last_job = ctx.runJob("free-task",
+        last_job = ctx.runComputeJob("free-task",
             [](systems::job::ProgressFn report) {
                 report(0.5, "half");
             });
@@ -659,7 +659,7 @@ std::size_t pointCount(ModelLayer& mgr, Index component_id)
 }
 
 /**
- * @brief 测试用冻结任务功能：execute 经 ctx.runModelJob 提交，任务体由测试注入
+ * @brief 测试用冻结任务功能：execute 经 ctx.runComponentJob 提交，任务体由测试注入
  */
 class ModelJobFeature : public FeatureHandler {
 public:
@@ -668,11 +668,11 @@ public:
     std::any execute(FeatureContext& ctx) override
     {
         // 拷贝而非 move：handler 可被多次 invoke（move 会掏空 task，二次 invoke 撞空 function）
-        last_job = ctx.runModelJob("Append", target_component, task);
+        last_job = ctx.runComponentJob("Append", target_component, task);
         return { };
     }
     Index target_component { -1 };
-    ModelJobTaskFn task;
+    ComponentJobTaskFn task;
     std::shared_ptr<systems::job::Job> last_job;
 };
 
@@ -890,7 +890,7 @@ public:
     }
     std::any execute(FeatureContext& ctx) override
     {
-        last_job = ctx.runModelJob("Freeze", target, std::move(task));
+        last_job = ctx.runComponentJob("Freeze", target, std::move(task));
         return { };
     }
     bool onKeyEvent(const KeyEvent&) override
@@ -901,7 +901,7 @@ public:
 
     FeatureContext* context { nullptr };
     Index target { -1 };
-    ModelJobTaskFn task;
+    ComponentJobTaskFn task;
     std::shared_ptr<systems::job::Job> last_job;
     core::EventBus::Subscription event_sub;
     int event_ran { 0 };
@@ -997,7 +997,7 @@ public:
     {
         context = &ctx;
         event_sub = ctx.events.subscribe<GateTestEvent>([this](const GateTestEvent&) {
-            last_free_job = context->runJob("free-from-event",
+            last_free_job = context->runComputeJob("free-from-event",
                 [](systems::job::ProgressFn report) {
                     report(1.0, "done");
                 });
@@ -1176,9 +1176,9 @@ public:
     std::any execute(FeatureContext& ctx) override
     {
         if (write)
-            last_job = ctx.runTypedWriteback("回写任务", target, [task = std::move(task)](systems::job::ProgressFn report) { task(report); return 0; }, [write = std::move(write)](ComponentOperator& op, int&, systems::job::ProgressFn report) { write(op, std::move(report)); });
+            last_job = ctx.runWritebackJob("回写任务", target, [task = std::move(task)](systems::job::ProgressFn report) { task(report); return 0; }, [write = std::move(write)](ComponentOperator& op, int&, systems::job::ProgressFn report) { write(op, std::move(report)); });
         else
-            last_job = ctx.runJob("回写任务", std::move(task));
+            last_job = ctx.runComputeJob("回写任务", std::move(task));
         return { };
     }
     Index target { -1 };
@@ -1414,7 +1414,7 @@ TEST_CASE("Failed free job does not write back", "[FeatureSystem]")
     REQUIRE_FALSE(undo.canUndo()); // 零记录
 }
 
-// —— runTypedWriteback 绑定回写（写面由框架发）契约 ——
+// —— runWritebackJob 绑定回写（写面由框架发）契约 ——
 
 namespace {
 //! 注入式任务体 + 回写段的绑定回写功能
@@ -1422,7 +1422,7 @@ class BoundWritebackFeature : public FeatureHandler {
 public:
     std::any execute(FeatureContext& ctx) override
     {
-        last_job = ctx.runTypedWriteback("绑定回写任务", target, [task = std::move(task)](systems::job::ProgressFn report) { task(report); return 0; }, [write = std::move(write)](ComponentOperator& op, int&, systems::job::ProgressFn report) { write(op, std::move(report)); });
+        last_job = ctx.runWritebackJob("绑定回写任务", target, [task = std::move(task)](systems::job::ProgressFn report) { task(report); return 0; }, [write = std::move(write)](ComponentOperator& op, int&, systems::job::ProgressFn report) { write(op, std::move(report)); });
         return { };
     }
     Index target { -1 };
@@ -1436,7 +1436,7 @@ HandlerMetaData makeBoundWritebackMeta()
     HandlerMetaData meta_data;
     meta_data.name = "BoundWritebackFeature";
     meta_data.display_name = "绑定回写功能";
-    meta_data.description = "runTypedWriteback 契约测试";
+    meta_data.description = "runWritebackJob 契约测试";
     return meta_data;
 }
 }
@@ -1958,7 +1958,7 @@ class TypedWritebackFeature : public FeatureHandler {
 public:
     std::any execute(FeatureContext& ctx) override
     {
-        last_job = ctx.runTypedWriteback("类型化回写任务", target, [payload = this->payload, fail = this->fail_compute](systems::job::ProgressFn) {
+        last_job = ctx.runWritebackJob("类型化回写任务", target, [payload = this->payload, fail = this->fail_compute](systems::job::ProgressFn) {
                 if (fail)
                     throw std::runtime_error("compute failed"); // 抛在 compute 内（worker）→ 任务 Failed
                 return payload; }, [this](ComponentOperator& op, int& value, systems::job::ProgressFn) {
@@ -1980,7 +1980,7 @@ HandlerMetaData makeTypedWritebackMeta()
     HandlerMetaData meta_data;
     meta_data.name = "TypedWritebackFeature";
     meta_data.display_name = "类型化回写功能";
-    meta_data.description = "runTypedWriteback 契约测试";
+    meta_data.description = "runWritebackJob 契约测试";
     return meta_data;
 }
 }
@@ -2012,18 +2012,18 @@ TEST_CASE("Typed writeback presentation preserves both payload overloads and ope
                     return std::make_unique<int>(int(op.mesh()->vertex_positions_.size()));
                 };
                 if (masked)
-                    job = ctx.runTypedWriteback("typed", target, capture, compute, write, true);
+                    job = ctx.runWritebackJob("typed", target, capture, compute, write, true);
                 else
-                    job = ctx.runTypedWriteback("typed", target, capture, compute, write);
+                    job = ctx.runWritebackJob("typed", target, capture, compute, write);
             } else {
                 auto prepared = [compute](systems::job::ProgressFn report) {
                     auto input = std::make_unique<int>(3);
                     return compute(input, std::move(report));
                 };
                 if (masked)
-                    job = ctx.runTypedWriteback("typed", target, prepared, write, true);
+                    job = ctx.runWritebackJob("typed", target, prepared, write, true);
                 else
-                    job = ctx.runTypedWriteback("typed", target, prepared, write);
+                    job = ctx.runWritebackJob("typed", target, prepared, write);
             }
             return { };
         }
@@ -2642,7 +2642,7 @@ TEST_CASE("Rejected repeated model task never releases the running model operati
     REQUIRE(system.registerHandler(makeModelJobMetaData(), FeatureSystem::SystemHandlerPtr { raw }));
     system.invoke("ModelJobFeature");
     auto commit = h.takeOne();
-    auto rejected = raw->context->runModelJob("second", comp, raw->task);
+    auto rejected = raw->context->runComponentJob("second", comp, raw->task);
     REQUIRE_FALSE(rejected);
     REQUIRE(layer.writesFrozen());
     REQUIRE_THROWS_AS(layer.getComponentOperator(comp)->appendPoint({ 8, 8, 8 }), ModelOperationBusy);
@@ -2704,7 +2704,7 @@ TEST_CASE("Captured writeback owns all three phases and releases preparation fai
         void setup(FeatureRegistrar&, FeatureContext& ctx) override { context = &ctx; }
         std::any execute(FeatureContext& ctx) override
         {
-            job = ctx.runTypedWriteback("captured", target, [this](const ComponentOperator& op) {
+            job = ctx.runWritebackJob("captured", target, [this](const ComponentOperator& op) {
                     captured_on_gui = std::this_thread::get_id() == gui_thread;
                     if (fail_capture)
                         throw std::runtime_error("capture failed");
@@ -2763,7 +2763,7 @@ TEST_CASE("Captured writeback owns all three phases and releases preparation fai
 
     undo.beginOperation("write then submit");
     model.getComponentOperator(comp)->appendPoint({ 5, 5, 5 });
-    REQUIRE_FALSE(raw->context->runJob("invalid", [](systems::job::ProgressFn) { }));
+    REQUIRE_FALSE(raw->context->runComputeJob("invalid", [](systems::job::ProgressFn) { }));
     REQUIRE_FALSE(model.writesPending());
     undo.commitOperation();
     REQUIRE(undo.undo());
@@ -2833,7 +2833,7 @@ TEST_CASE("Preview job writes only the captured scope and execute confirms it", 
             context = &ctx;
             sub = ctx.events.subscribe<GateTestEvent>([this](const GateTestEvent&) {
                 REQUIRE(context->undo.beginScope("preview job"));
-                job = context->runTypedWriteback("preview compute", target, [](systems::job::ProgressFn) { return 7; }, [](ComponentOperator& op, int& value, systems::job::ProgressFn) { op.appendPoint({ double(value), 0, 0 }); });
+                job = context->runWritebackJob("preview compute", target, [](systems::job::ProgressFn) { return 7; }, [](ComponentOperator& op, int& value, systems::job::ProgressFn) { op.appendPoint({ double(value), 0, 0 }); });
             });
         }
     };
@@ -2904,7 +2904,7 @@ TEST_CASE("Execute refuses task publication after a nonempty preview and closes 
         std::shared_ptr<systems::job::Job> job;
         std::any execute(FeatureContext& ctx) override
         {
-            job = ctx.runJob("must refuse", [](systems::job::ProgressFn) { });
+            job = ctx.runComputeJob("must refuse", [](systems::job::ProgressFn) { });
             return { };
         }
     };
@@ -2983,7 +2983,7 @@ TEST_CASE("Pure preview calculation neither confirms nor closes its existing pre
             sub = ctx.events.subscribe<GateTestEvent>([this](const GateTestEvent&) {
                 REQUIRE(context->undo.beginScope("pure preview"));
                 context->model.getComponentOperator(target)->appendPoint({ 7, 0, 0 });
-                job = context->runJob("compute only", [](systems::job::ProgressFn) { });
+                job = context->runComputeJob("compute only", [](systems::job::ProgressFn) { });
             });
         }
     };
@@ -3228,7 +3228,7 @@ TEST_CASE("Typed move-only payload is destroyed on owner before deferred cleanup
         }
         std::any execute(FeatureContext& ctx) override
         {
-            job_ = ctx.runTypedWriteback("move payload", target_, [this](const ComponentOperator& op) { return Payload(lifetime_, static_cast<int>(op.mesh()->vertex_positions_.size())); }, [this](Payload& input, systems::job::ProgressFn) {
+            job_ = ctx.runWritebackJob("move payload", target_, [this](const ComponentOperator& op) { return Payload(lifetime_, static_cast<int>(op.mesh()->vertex_positions_.size())); }, [this](Payload& input, systems::job::ProgressFn) {
                     if (fail_compute_)
                         throw std::runtime_error("payload compute failed");
                     return Payload(lifetime_, input.probe->count); }, [this](ComponentOperator& op, Payload& result, systems::job::ProgressFn) {
@@ -3535,7 +3535,7 @@ TEST_CASE("Feature registration and runner binding reject wrong threads before l
     // 被拒的注册不撤掉原参数订阅，解绑不丢失原执行器。
     REQUIRE(system.setParameter(meta.name, 0, core::ArgObject::create<ArgTypeEnum::Float>(3.25)));
     REQUIRE(handler->last_float_value == 3.25);
-    auto job = handler->context->runJob("still bound", [](systems::job::ProgressFn) { });
+    auto job = handler->context->runComputeJob("still bound", [](systems::job::ProgressFn) { });
     REQUIRE(job);
     queue.take()();
     REQUIRE(job->state() == systems::job::JobState::Done);
@@ -3644,7 +3644,7 @@ TEST_CASE("Layer writeback continues preview as one execute record", "[FeatureSy
     const auto owner_thread = std::this_thread::get_id();
     Index added_model = -1;
     handler->action = [&](FeatureContext& ctx) {
-        handler->job = ctx.runTypedWriteback("worker label", [&](const ModelLayer& layer) {
+        handler->job = ctx.runWritebackJob("worker label", [&](const ModelLayer& layer) {
                 REQUIRE(std::this_thread::get_id() == owner_thread);
                 return layer.findComponent(a)->mesh->vertex_count_ + layer.findComponent(b)->mesh->vertex_count_; }, [=](Index& input, systems::job::ProgressFn) {
                 if (fail_compute)
@@ -3717,7 +3717,7 @@ TEST_CASE("Repeated preview component writes before publication are refused", "[
     REQUIRE(system.registerHandler(metadata, FeatureSystem::SystemHandlerPtr { handler }));
     handler->action = [&](FeatureContext& ctx) {
         ctx.model.getComponentOperator(target)->appendPoint({ 8, 0, 0 });
-        handler->job = ctx.runTypedWriteback("refused", [](const ModelLayer&) { return 0; }, [](int&, systems::job::ProgressFn) { return 1; }, [](ModelLayer&, int&, systems::job::ProgressFn) { });
+        handler->job = ctx.runWritebackJob("refused", [](const ModelLayer&) { return 0; }, [](int&, systems::job::ProgressFn) { return 1; }, [](ModelLayer&, int&, systems::job::ProgressFn) { });
     };
     {
         UndoStack::OwnerScope owner(&undo, metadata.name);
@@ -3750,7 +3750,7 @@ TEST_CASE("Component writeback installs plugin geometry without a mesh", "[Featu
     const auto metadata = makeMetaData();
     REQUIRE(system.registerHandler(metadata, FeatureSystem::SystemHandlerPtr { handler }));
     handler->action = [&](FeatureContext& ctx) {
-        handler->job = ctx.runTypedWriteback("box", target, [](const ComponentOperator&) { return 2.0; }, [](double& size, systems::job::ProgressFn) { return TopoDS_Shape(BRepPrimAPI_MakeBox(size, size, size).Shape()); }, [](ComponentOperator& op, TopoDS_Shape& shape, systems::job::ProgressFn) { op.appendGeometryShape(std::move(shape)); });
+        handler->job = ctx.runWritebackJob("box", target, [](const ComponentOperator&) { return 2.0; }, [](double& size, systems::job::ProgressFn) { return TopoDS_Shape(BRepPrimAPI_MakeBox(size, size, size).Shape()); }, [](ComponentOperator& op, TopoDS_Shape& shape, systems::job::ProgressFn) { op.appendGeometryShape(std::move(shape)); });
     };
     system.invoke(metadata.name);
     REQUIRE(handler->job);
@@ -3783,7 +3783,7 @@ TEST_CASE("Layer preview jobs remain temporary across event callbacks", "[Featur
         UndoStack::OwnerScope owner(&undo, metadata.name);
         REQUIRE(undo.beginScope("preview"));
         UndoStack::PreviewAccess callback(&undo);
-        handler->job = handler->context->runTypedWriteback("preview worker", [](const ModelLayer&) { return 42; }, [](int& value, systems::job::ProgressFn) { return value; }, [&](ModelLayer& layer, int& value, systems::job::ProgressFn) {
+        handler->job = handler->context->runWritebackJob("preview worker", [](const ModelLayer&) { return 42; }, [](int& value, systems::job::ProgressFn) { return value; }, [&](ModelLayer& layer, int& value, systems::job::ProgressFn) {
                 layer.getComponentOperator(target)->setMaterialId(value);
                 layer.getComponentOperator(target)->editableGeometryMeshMap().geometry_edge_to_mesh_point_ids[1] = { 0, 1 };
                 added = layer.addModel("preview model", { }); });
@@ -3834,7 +3834,7 @@ TEST_CASE("Formal job cancellation rolls back adopted structural preview", "[Fea
     const auto metadata = makeMetaData();
     REQUIRE(system.registerHandler(metadata, FeatureSystem::SystemHandlerPtr { handler }));
     handler->action = [&](FeatureContext& ctx) {
-        handler->job = ctx.runTypedWriteback("cancel", [](const ModelLayer&) { return 0; }, [](int&, systems::job::ProgressFn) { return 0; }, [](ModelLayer&, int&, systems::job::ProgressFn) { });
+        handler->job = ctx.runWritebackJob("cancel", [](const ModelLayer&) { return 0; }, [](int&, systems::job::ProgressFn) { return 0; }, [](ModelLayer&, int&, systems::job::ProgressFn) { });
     };
     Index temporary = -1;
     {
@@ -3874,7 +3874,7 @@ TEST_CASE("Writeback preparation failure leaves execute preview on synchronous p
     SECTION("capture throws") { }
     SECTION("missing target") { missing = true; }
     handler->action = [&](FeatureContext& ctx) {
-        handler->job = ctx.runTypedWriteback("prepare", missing ? -1 : target, [](const ComponentOperator&) -> int { throw std::runtime_error("capture failed"); }, [](int&, systems::job::ProgressFn) { return 0; }, [](ComponentOperator&, int&, systems::job::ProgressFn) { });
+        handler->job = ctx.runWritebackJob("prepare", missing ? -1 : target, [](const ComponentOperator&) -> int { throw std::runtime_error("capture failed"); }, [](int&, systems::job::ProgressFn) { return 0; }, [](ComponentOperator&, int&, systems::job::ProgressFn) { });
     };
     {
         UndoStack::OwnerScope owner(&undo, metadata.name);
@@ -3909,7 +3909,7 @@ TEST_CASE("Background executes fold into one feature session", "[FeatureSystem][
     const auto metadata = makeMetaData();
     REQUIRE(system.registerHandler(metadata, FeatureSystem::SystemHandlerPtr { handler }));
     handler->action = [&](FeatureContext& ctx) {
-        handler->job = ctx.runTypedWriteback("background", target, [](systems::job::ProgressFn) { return 1; }, [](ComponentOperator& op, int&, systems::job::ProgressFn) { op.appendPoint({ 7, 0, 0 }); });
+        handler->job = ctx.runWritebackJob("background", target, [](systems::job::ProgressFn) { return 1; }, [](ComponentOperator& op, int&, systems::job::ProgressFn) { op.appendPoint({ 7, 0, 0 }); });
     };
     REQUIRE(system.setFeatureActive(metadata.name));
     for (int i = 0; i < 2; ++i) {

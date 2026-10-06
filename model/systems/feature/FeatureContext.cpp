@@ -81,16 +81,16 @@ std::optional<ComponentOperator> FeatureContext::componentOperator(Index compone
     return model.getComponentOperator(component_id);
 }
 
-std::shared_ptr<systems::job::Job> FeatureContext::runJob(std::string label, systems::job::JobTaskFn task)
+std::shared_ptr<systems::job::Job> FeatureContext::runComputeJob(std::string label, systems::job::JobTaskFn task)
 {
     UndoStack::OwnerScope owner_scope(system_.undo_stack_, owner_);
-    return system_.submitFreeJob(std::move(label), std::move(task), owner_);
+    return system_.submitComputeJob(std::move(label), std::move(task), owner_);
 }
 
-std::shared_ptr<systems::job::Job> FeatureContext::runModelJob(std::string label, Index component_id, ModelJobTaskFn task)
+std::shared_ptr<systems::job::Job> FeatureContext::runComponentJob(std::string label, Index component_id, ComponentJobTaskFn task)
 {
     UndoStack::OwnerScope owner_scope(system_.undo_stack_, owner_);
-    return system_.submitModelJob(std::move(label), component_id, std::move(task), owner_);
+    return system_.submitComponentJob(std::move(label), component_id, std::move(task), owner_);
 }
 
 std::shared_ptr<systems::job::Job> FeatureContext::runCapturedWriteback(std::string label, Index component_id,

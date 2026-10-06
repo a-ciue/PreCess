@@ -7,7 +7,7 @@
 #include "ComponentOperator.h" // std::optional<ComponentOperator> 需要完整类型
 #include "Core.h"
 #include "FeatureEventGateway.h" // events 成员类型（功能经其订阅事件，调用点需完整类型）
-#include "Job.h" // runJob 成员类型（systems::job::Job / JobTaskFn）
+#include "Job.h" // runComputeJob 成员类型（systems::job::Job / JobTaskFn）
 
 #include <functional>
 #include <memory>
@@ -24,9 +24,9 @@ class InteractionContext;
 class FeatureSystem;
 struct FeatureContext;
 
-//! 冻结任务体：写面 = 影子目标组件的操作句柄（scope 限目标组件，无 io、无其他组件访问）
+//! 影子组件任务体：写面 = 影子目标组件的操作句柄（scope 限目标组件，无 io、无其他组件访问）
 //! report 为心跳（含取消检查）；写入落影子层，由框架在 undo 边界内提交/丢弃
-using ModelJobTaskFn = std::function<void(ComponentOperator& shadow_target, systems::job::ProgressFn report)>;
+using ComponentJobTaskFn = std::function<void(ComponentOperator& shadow_target, systems::job::ProgressFn report)>;
 
 //! GUI 回写段：框架在发布前校验目标，在持有操作占用的提交段交付就绪写面。
 using WritebackFn = std::function<void(ComponentOperator&, systems::job::ProgressFn)>;
@@ -88,12 +88,12 @@ struct FeatureContext {
      * 输入须在 GUI 复制，失败抛异常。任务到 GUI 清理结束持续占用模型；忙或未装配时返回空。
      * 进度是计算线程的取消检查点；提交、清理与终态均由框架回所属线程完成。
      */
-    std::shared_ptr<systems::job::Job> runJob(std::string label, systems::job::JobTaskFn task);
+    std::shared_ptr<systems::job::Job> runComputeJob(std::string label, systems::job::JobTaskFn task);
     /**
      * @brief 单组件影子修改；仅正式入口且无预览时发布，GUI 自动提交或丢弃。
      * worker 只操作影子写面，失败抛异常；几何／映射目标暂不支持。遮罩只影响展示。
      */
-    std::shared_ptr<systems::job::Job> runModelJob(std::string label, Index component_id, ModelJobTaskFn task);
+    std::shared_ptr<systems::job::Job> runComponentJob(std::string label, Index component_id, ComponentJobTaskFn task);
 
     /** @brief 由系统构造完整上下文，所属模型与功能身份不再通过闭包装配。 */
     FeatureContext(FeatureSystem& system, std::string owner, FeatureEventGateway& events,
@@ -105,10 +105,10 @@ struct FeatureContext {
         && !std::is_void_v<std::invoke_result_t<Compute, systems::job::ProgressFn>>
         && std::is_invocable_v<Write, ComponentOperator&,
             std::invoke_result_t<Compute, systems::job::ProgressFn>&, systems::job::ProgressFn>
-    std::shared_ptr<systems::job::Job> runTypedWriteback(
+    std::shared_ptr<systems::job::Job> runWritebackJob(
         std::string label, Index component_id, Compute compute, Write write, bool masked = false)
     {
-        return runTypedWriteback(std::move(label), component_id, [](const ComponentOperator&) { return 0; }, [compute = std::move(compute)](int&, systems::job::ProgressFn report) mutable { return compute(std::move(report)); }, std::move(write), masked);
+        return runWritebackJob(std::move(label), component_id, [](const ComponentOperator&) { return 0; }, [compute = std::move(compute)](int&, systems::job::ProgressFn report) mutable { return compute(std::move(report)); }, std::move(write), masked);
     }
 
     /**
@@ -120,7 +120,7 @@ struct FeatureContext {
      */
     template <typename Capture, typename Compute, typename Write>
         requires std::is_invocable_v<Capture, const ComponentOperator&>
-    std::shared_ptr<systems::job::Job> runTypedWriteback(
+    std::shared_ptr<systems::job::Job> runWritebackJob(
         std::string label, Index component_id, Capture capture, Compute compute, Write write, bool masked = false)
     {
         using Input = std::decay_t<std::invoke_result_t<Capture, const ComponentOperator&>>;
@@ -147,7 +147,7 @@ struct FeatureContext {
      */
     template <typename Capture, typename Compute, typename Write>
         requires std::is_invocable_v<Capture, const ModelLayer&>
-    std::shared_ptr<systems::job::Job> runTypedWriteback(
+    std::shared_ptr<systems::job::Job> runWritebackJob(
         std::string label, Capture capture, Compute compute, Write write, bool masked = false)
     {
         using Input = std::decay_t<std::invoke_result_t<Capture, const ModelLayer&>>;

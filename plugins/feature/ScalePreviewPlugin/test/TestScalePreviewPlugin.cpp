@@ -339,7 +339,7 @@ TEST_CASE("ScalePreview teardown with open scope session is safe", "[ScalePrevie
 TEST_CASE("ScalePreview discards preview when runner not injected", "[ScalePreviewPlugin]")
 {
     // 未注入执行器在生产不可达（QModelManager 构造期注入必达）——本用例钉框架契约：
-    // runJob 返回空 = 直接丢弃，不计算、不写模型（会话照常开，槽空装配后下笔变更接上）
+    // runComputeJob 返回空 = 直接丢弃，不计算、不写模型（会话照常开，槽空装配后下笔变更接上）
     CountingObserver obs;
     ModelLayer mgr { &obs };
     core::EventBus bus;
@@ -365,7 +365,7 @@ TEST_CASE("ScalePreview discards preview when runner not injected", "[ScalePrevi
 
 TEST_CASE("ScalePreview discards preview while slot occupied then recovers", "[ScalePreviewPlugin]")
 {
-    // 单槽被占 = 框架背压：runJob 忙拒绝 → 契约丢弃（不计算、不写模型）；
+    // 单槽被占 = 框架背压：runComputeJob 忙拒绝 → 契约丢弃（不计算、不写模型）；
     // 槽放行后下一笔因子变更自然接上正常异步路径（丢弃不残留、会话未被破坏）
     ScalePreviewFixture f;
     const Index cid = f.setupFeature();

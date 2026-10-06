@@ -115,7 +115,7 @@ std::any ScalePreviewHandler::execute(FeatureContext& ctx)
         return { };
     }
     const double factor = scale_;
-    auto job = ctx.runTypedWriteback(
+    auto job = ctx.runWritebackJob(
         kPreviewLabel, active_target_,
         [](const ComponentOperator& op) { return op.mesh()->vertex_positions_; }, [factor](PreviewPositions& input, systems::job::ProgressFn report) {
             report(0.0, "缩放计算中");
@@ -171,7 +171,7 @@ void ScalePreviewHandler::submitPreviewJob(FeatureContext& ctx)
 
     auto state = preview_;
     const double factor = scale_;
-    auto job = ctx.runTypedWriteback(kPreviewLabel, preview_component_,
+    auto job = ctx.runWritebackJob(kPreviewLabel, preview_component_,
         // 任务体在 worker 只读 state（"读须发布前拷贝"契约），不解引用 handler；
         // 结果经框架槽自任务体直传回写段（免共享状态发布）
         [state, factor](systems::job::ProgressFn report) {
@@ -187,7 +187,7 @@ void ScalePreviewHandler::submitPreviewJob(FeatureContext& ctx)
         preview_job_ = std::move(job);
         spdlog::debug("ScalePreview: preview job submitted");
     } else {
-        // 框架契约：单槽忙或执行器未注入 → 直接丢弃（FeatureContext::runJob 契约原文
+        // 框架契约：单槽忙或执行器未注入 → 直接丢弃（FeatureContext::runComputeJob 契约原文
         // "发布方按设计直接丢弃"）。不在 GUI 线程补算：那绕过任务系统的进度/取消/提交门
         // 管辖，且占槽任务必开软冻结窗——补算的写入必被写闸拒绝（异常反噬事件回调链）。
         // 会话与 base 保留：槽空后的下一笔因子变更自然接上正常路径
@@ -197,7 +197,7 @@ void ScalePreviewHandler::submitPreviewJob(FeatureContext& ctx)
 
 void ScalePreviewHandler::writePreview(PreviewState& state, PreviewResult& result, ComponentOperator& op)
 {
-    // 目标解析已收归框架（runTypedWriteback 提交段保证组件存在、网格在场）
+    // 目标解析已收归框架（runWritebackJob 提交段保证组件存在、网格在场）
     // 尺寸守卫先于标脏（写前标脏契约：幂等提前返回路径不得标脏）：
     // 任务期模型互斥由框架保证；仍核对跨多轮预览的业务基准尺寸
     const auto& base = state.base;
