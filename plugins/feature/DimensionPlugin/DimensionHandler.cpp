@@ -990,7 +990,7 @@ std::any DimensionHandler::execute(FeatureContext& ctx)
     // 选择集未带组件 id 时回退当前活动组件
     Index selected_component_id = selection.component_id;
     if (selected_component_id < 0) {
-        const auto active_component = ctx.activeComponent ? ctx.activeComponent() : std::nullopt;
+        const auto active_component = ctx.activeComponent();
         if (active_component) {
             selected_component_id = *active_component;
         }

@@ -5,13 +5,10 @@
 #ifndef MESH_QUALITY_HANDLER_H
 #define MESH_QUALITY_HANDLER_H
 
-#include "ComponentOperator.h"
 #include "Core.h"
 #include "FeatureHandler.h"
 
-#include <functional>
 #include <map>
-#include <optional>
 #include <string>
 #include <vector>
 
@@ -48,11 +45,6 @@ public:
 
 private:
     /**
-     * @brief 根据 Component ID 申请写操作句柄的上下文函数
-     */
-    using ComponentOperatorProvider = std::function<std::optional<ComponentOperator>(Index)>;
-
-    /**
      * @brief 单个组件在当前操作中生成的面、体质量属性名
      */
     struct GeneratedAttributes {
@@ -62,9 +54,9 @@ private:
 
     /**
      * @brief 删除当前操作生成的全部质量属性
-     * @param component_operator Component 写操作句柄申请函数
+     * @param ctx 固定框架上下文，按身份查询组件
      */
-    void clearGeneratedAttributes(const ComponentOperatorProvider& component_operator);
+    void clearGeneratedAttributes(FeatureContext& ctx);
 
     std::map<Index, GeneratedAttributes> generated_attributes_; //> 按组件记录当前操作生成的质量属性
 };

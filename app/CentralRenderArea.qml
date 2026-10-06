@@ -706,7 +706,8 @@ Page {
                 target: QModelManager.undoStack
                 // undo/redo 应用后统一清空选择集（Selection 持有的 gid/稳定 id 不作跨 undo 保证）
                 function onApplied() {
-                    myItem.clearSelection()
+                    App.selection.listeningSelectorIndex = -1
+                    App.selection.selectionInvalidated()
                 }
             }
         }

@@ -36,7 +36,8 @@ public:
     void setup(FeatureRegistrar& reg, FeatureContext&) override;
 
     /**
-     * @brief 执行所选布尔运算并返回结果文本
+     * @brief 发布后台布尔任务；即时返回启动提示，最终反馈经 GUI 回写的 report 展示。
+     * @note 宿主须装配共享 JobRunner，计算使用独立网格副本。
      */
     std::any execute(FeatureContext& ctx) override;
 };

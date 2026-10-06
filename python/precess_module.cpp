@@ -192,7 +192,7 @@ PYBIND11_MODULE(precess, m)
         .def("redo_label", [](const UndoStack& s) { return s.redoLabel().value_or(std::string()); })
         .def("undo", &UndoStack::undo)
         .def("redo", &UndoStack::redo)
-        .def("staged_active", &UndoStack::stagedActive);
+        .def("scope_active", &UndoStack::scopeActive);
 
     // —— 会话 ——
     py::class_<Session>(m, "Session")

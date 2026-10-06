@@ -13,6 +13,9 @@ ColumnLayout {
     id: root
     spacing: 0
 
+    // 冻结任务在飞（算法执行 ∨ 功能冻结任务）禁用工具栏：inline 执行中不得触发运行/编辑等模型操作
+    enabled: !QModelManager.taskStatus.frozenBusy
+
     readonly property bool isWasm: Qt.platform.os === "wasm"
 
     property int activeCategory: -1

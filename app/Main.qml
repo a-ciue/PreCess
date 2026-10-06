@@ -21,6 +21,7 @@ import app.model
 import app.core
 import app.model.systems
 import app.model.systems.io
+import app.model.systems.algo
 
 import app.render
 
@@ -32,6 +33,10 @@ ApplicationWindow {
     title: qsTr("PreCess")
     color: Theme.windowBackground
     flags: Qt.platform.os === "wasm" ? (Qt.Window | Qt.FramelessWindowHint) : Qt.Window
+
+    // 冻结任务忙碌态（聚合位经共享任务状态源单点暴露）：算法执行 ∨ 功能冻结任务——
+    // 忙碌遮罩、快捷键与工具栏禁用据此驱动；自由任务不置位（不打断用户操作）
+    readonly property bool frozenBusy: QModelManager.taskStatus.frozenBusy
 
     // 固定浅色调色板：Qt 6.5+ 默认调色板跟随系统深浅色主题，系统为深色模式时
     // Fusion 控件（Pane/Button/TextField 等）会渲染为深色、与浅色主题混杂；
@@ -121,8 +126,15 @@ ApplicationWindow {
         }
     }
 
+    // 底部状态栏：进度/取消红叉/百分比/回写待定徽标——控件独立（TaskStatusBar.qml），
+    // 数据源统一 QModelManager.taskStatus（共享任务状态源，不点名具体系统）
+    footer: TaskStatusBar {
+        id: statusBar
+    }
+
     Shortcut {
         sequence: "F10"
+        enabled: !root.frozenBusy
         onActivated: {
             if (consoleDock.shown)
                 consoleDock.hidePanel()
@@ -133,6 +145,7 @@ ApplicationWindow {
 
     Shortcut {
         sequence: "F11"
+        enabled: !root.frozenBusy
         onActivated: {
             if (pythonConsoleDock.shown)
                 pythonConsoleDock.hidePanel()
@@ -141,13 +154,15 @@ ApplicationWindow {
         }
     }
 
-    // 撤销/重做快捷键（栈空时适配器内部空转）
+    // 撤销/重做快捷键（栈空时适配器内部空转；算法执行期间禁用防重入）
     Shortcut {
         sequence: "Ctrl+Z"
+        enabled: !root.frozenBusy
         onActivated: QModelManager.undoStack.undo()
     }
     Shortcut {
         sequence: "Ctrl+Y"
+        enabled: !root.frozenBusy
         onActivated: QModelManager.undoStack.redo()
     }
 
@@ -279,6 +294,11 @@ ApplicationWindow {
             drop.accepted = drop.urls.length > 0
             if (drop.urls.length === 0)
                 return
+            // 算法执行期间拒绝导入：模型须保持冻结
+            if (root.frozenBusy) {
+                drop.accepted = false
+                return
+            }
 
             // 逐个导入并记录失败项，全部导入结束后统一重置视角
             let failed = 0
@@ -290,6 +310,37 @@ ApplicationWindow {
                 App.registry.renderWindow.resetCamera()
             if (failed > 0)
                 outputLogDock.showPanel() // 失败原因由日志面板承载，直接打开便于查看
+        }
+    }
+
+    // 算法执行期间的忙碌遮罩：吞掉鼠标交互并给出"阻塞中"反馈（footer 状态栏在遮罩之外）
+    Rectangle {
+        id: busyMask
+        z: 100
+        visible: root.frozenBusy
+        anchors.top: root.header.bottom
+        anchors.bottom: root.footer.top
+        anchors.left: parent.left
+        anchors.right: parent.right
+        color: Qt.rgba(0.93, 0.93, 0.93, 0.55)
+
+        MouseArea {
+            anchors.fill: parent
+            // 默认只接收左键，右键、中键和滚轮须在遮罩内明确拦截。
+            acceptedButtons: Qt.AllButtons
+            onWheel: (wheel) => { wheel.accepted = true; }
+        }
+
+        // hover 独立于鼠标按键分发，显式阻止下层渲染控件与 HoverHandler。
+        HoverHandler {
+            blocking: true
+        }
+
+        Label {
+            anchors.centerIn: parent
+            font.pixelSize: 15
+            color: "#444441"
+            text: qsTr("任务执行中，请稍候…")
         }
     }
 

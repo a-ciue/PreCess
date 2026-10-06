@@ -1,0 +1,8 @@
+precess_add_test(TestAlgorithmSystem TestAlgorithmSystem.cpp)
+precess_test_link_libraries(TestAlgorithmSystem AlgorithmSystem Data IOSystem)
+
+precess_add_test(TestJobRunner TestJobRunner.cpp)
+precess_test_link_libraries(TestJobRunner AlgorithmSystem Job Data IOSystem)
+
+precess_add_test(TestAlgorithmSystemShadow TestAlgorithmSystemShadow.cpp)
+precess_test_link_libraries(TestAlgorithmSystemShadow AlgorithmSystem Data IOSystem)

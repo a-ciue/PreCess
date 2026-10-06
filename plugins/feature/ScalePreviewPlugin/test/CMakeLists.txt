@@ -1,2 +1,2 @@
 precess_add_test(TestScalePreviewPlugin TestScalePreviewPlugin.cpp)
-precess_test_link_libraries(TestScalePreviewPlugin ScalePreviewPluginlib Systems FeatureSystem Data Qt6::Core)
+precess_test_link_libraries(TestScalePreviewPlugin ScalePreviewPluginlib Session Systems FeatureSystem Data Qt6::Core)

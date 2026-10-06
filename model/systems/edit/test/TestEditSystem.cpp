@@ -5,8 +5,14 @@
 #include "ModelLayer.h"
 #include "ModelObserver.h"
 #include "TrivialEditHandler.h"
+#include "UndoStack.h"
 
 #include <catch2/catch_test_macros.hpp>
+#include <exception>
+#include <memory>
+#include <stdexcept>
+#include <thread>
+#include <utility>
 
 using namespace systems::edit;
 
@@ -36,13 +42,39 @@ public:
         auto op = model.getComponentOperator(fallback_component_id);
         if (op)
             op->appendPoint({ 2.0, 0.0, 0.0 });
-        return {};
+        return { };
     }
 
     std::vector<core::ArgType> args_type() const override
     {
-        return {};
+        return { };
     }
+};
+
+//! @brief 区分执行身份，并观察拒绝是否发生在元数据访问之前。
+class RegistrationEditHandler : public EditHandler {
+public:
+    explicit RegistrationEditHandler(std::string value, int* metadata_calls = nullptr)
+        : value(std::move(value))
+        , metadata_calls(metadata_calls)
+    {
+    }
+    std::any execute(ModelLayer& model, Index target, const std::vector<core::ArgObject>&) override
+    {
+        model.getComponentOperator(target)->appendPoint({ 9, 0, 0 });
+        return value;
+    }
+    std::vector<core::ArgType> args_type() const override
+    {
+        if (metadata_calls)
+            ++*metadata_calls;
+        if (reject_metadata)
+            throw std::runtime_error("edit metadata failed");
+        return { { ArgTypeEnum::Text, value, { }, { } } };
+    }
+    std::string value;
+    int* metadata_calls;
+    bool reject_metadata { false };
 };
 
 //! @brief 构造一个简单三角形面片组件并入池，返回 component_id
@@ -71,7 +103,8 @@ TEST_CASE("EditSystem::register&unregister")
     mesh_data->init();
 
     auto c = std::make_unique<ComponentData>();
-    c->id = -1; c->name = "Comp_0";
+    c->id = -1;
+    c->name = "Comp_0";
     c->mesh = std::move(mesh_data);
     ComponentDatas comps;
     comps.push_back(std::move(c));
@@ -109,11 +142,134 @@ TEST_CASE("EditSystem::call flushes notifications at the operation boundary", "[
     REQUIRE(system.registerHandler(trivial_meta, std::move(trivial)));
 
     // handler 写一次 → 操作边界 flush 通知一次
-    system.call("WritingEdit", component_id, {});
+    system.call("WritingEdit", component_id, { });
     REQUIRE(obs.component_changed_count == count_after_add + 1);
     REQUIRE(obs.last_component_changed == component_id);
 
     // handler 不写 → flush 空转，无通知（修正原无条件 notify 的过度通知）
-    system.call("TrivialEdit", component_id, {});
+    system.call("TrivialEdit", component_id, { });
     REQUIRE(obs.component_changed_count == count_after_add + 1);
+}
+
+TEST_CASE("Edit registration keeps stable information and replaces handler with metadata", "[EditSystem][registration]")
+{
+    ModelLayer model;
+    const Index target = addTriangleComponent(model);
+    UndoStack undo(model);
+    model.setUndoRecorder(&undo);
+    EditSystem system(model, &undo);
+    HandlerMetaData meta { "Registered", "Original label" };
+    auto first = std::make_unique<RegistrationEditHandler>("first");
+    auto* original = first.get();
+    REQUIRE(system.registerHandler(meta, EditSystem::SystemHandlerPtr { first.release() }));
+    auto* info = system.getEditInfos().front();
+    for (int i = 0; i < 256; ++i) {
+        const auto name = "Other" + std::to_string(i);
+        auto handler = std::make_unique<RegistrationEditHandler>(name);
+        REQUIRE(system.registerHandler({ name, name }, EditSystem::SystemHandlerPtr { handler.release() }));
+    }
+    auto find_info = [&]() -> EditInfo* {
+        for (auto* entry : system.getEditInfos())
+            if (entry->name == meta.name)
+                return entry;
+        return nullptr;
+    };
+    REQUIRE(find_info() == info);
+    original->value = "changed";
+    REQUIRE(system.getArgTypes(meta.name)->front().name == "changed");
+    REQUIRE(info->arg_types.front().name == "first");
+    REQUIRE(std::any_cast<std::string>(system.call(meta.name, target, { })) == "changed");
+    REQUIRE(undo.undoLabel() == "Original label");
+    auto second = std::make_unique<RegistrationEditHandler>("second");
+    meta.display_name.clear();
+    REQUIRE(system.registerHandler(meta, EditSystem::SystemHandlerPtr { second.release() }));
+    REQUIRE(system.getEditInfos().size() == 257);
+    REQUIRE(find_info()->display_name.empty());
+    REQUIRE(find_info()->arg_types.front().name == "second");
+    REQUIRE(system.getArgTypes(meta.name)->front().name == "second");
+    REQUIRE(std::any_cast<std::string>(system.call(meta.name, target, { })) == "second");
+    REQUIRE(undo.undoLabel() == meta.name);
+    REQUIRE(undo.undo());
+    REQUIRE(undo.undoLabel() == "Original label");
+    REQUIRE(undo.undo());
+    REQUIRE(model.findComponent(target)->mesh->vertex_positions_.size() == 3);
+    system.unregisterHandler(meta);
+    REQUIRE_FALSE(find_info());
+    REQUIRE_FALSE(system.getArgTypes(meta.name));
+    REQUIRE(system.getEditInfos().size() == 256);
+}
+
+TEST_CASE("Edit metadata failure preserves the original registration", "[EditSystem][registration]")
+{
+    ModelLayer model;
+    const Index target = addTriangleComponent(model);
+    EditSystem system(model);
+    auto original = std::make_unique<RegistrationEditHandler>("original");
+    REQUIRE(system.registerHandler({ "Registered", "Original label" }, EditSystem::SystemHandlerPtr { original.release() }));
+    const auto infos = system.getEditInfos();
+    int notifications = 0;
+    system.setOnEditInfoChangedCallback([&] { ++notifications; });
+    HandlerMetaData meta { "Registered", "Rejected label" };
+    SECTION("replacement") { }
+    SECTION("new entry") { meta.name = "New"; }
+    auto rejected = std::make_unique<RegistrationEditHandler>("rejected");
+    rejected->reject_metadata = true;
+    REQUIRE_THROWS_AS(system.registerHandler(meta, EditSystem::SystemHandlerPtr { rejected.release() }), std::runtime_error);
+    REQUIRE_FALSE(system.registerHandler(meta, { }));
+    REQUIRE(notifications == 0);
+    REQUIRE(system.getEditInfos() == infos);
+    REQUIRE(infos.front()->display_name == "Original label");
+    REQUIRE(system.getArgTypes("Registered")->front().name == "original");
+    REQUIRE(std::any_cast<std::string>(system.call("Registered", target, { })) == "original");
+    REQUIRE_FALSE(system.getArgTypes("New"));
+}
+
+TEST_CASE("Edit registration changes require an idle owner thread even with write privilege", "[EditSystem][operation]")
+{
+    ModelLayer model;
+    EditSystem system(model);
+    const HandlerMetaData meta { "Registered", "Original" };
+    auto original = std::make_unique<RegistrationEditHandler>("original");
+    REQUIRE(system.registerHandler(meta, EditSystem::SystemHandlerPtr { original.release() }));
+    const auto infos = system.getEditInfos();
+    int notifications = 0;
+    int metadata_calls = 0;
+    system.setOnEditInfoChangedCallback([&] { ++notifications; });
+    auto operation = model.beginWriteOperation();
+    REQUIRE(operation);
+    {
+        ModelLayer::WritePrivilege privilege(model, operation.get());
+        auto rejected = std::make_unique<RegistrationEditHandler>("rejected", &metadata_calls);
+        REQUIRE_THROWS_AS(system.registerHandler(meta, EditSystem::SystemHandlerPtr { rejected.release() }), ModelOperationBusy);
+        REQUIRE_THROWS_AS(system.unregisterHandler(meta), ModelOperationBusy);
+    }
+    REQUIRE(metadata_calls == 0);
+    REQUIRE(notifications == 0);
+    REQUIRE(system.getEditInfos() == infos);
+    operation.reset();
+    std::exception_ptr registration_error, removal_error;
+    std::thread worker([&] {
+        try {
+            auto rejected = std::make_unique<RegistrationEditHandler>("worker", &metadata_calls);
+            system.registerHandler(meta, EditSystem::SystemHandlerPtr { rejected.release() });
+        } catch (...) {
+            registration_error = std::current_exception();
+        }
+        try {
+            system.unregisterHandler(meta);
+        } catch (...) {
+            removal_error = std::current_exception();
+        }
+    });
+    worker.join();
+    REQUIRE(registration_error);
+    REQUIRE(removal_error);
+    REQUIRE(metadata_calls == 0);
+    REQUIRE(notifications == 0);
+    REQUIRE(system.getEditInfos() == infos);
+    auto replacement = std::make_unique<RegistrationEditHandler>("replacement", &metadata_calls);
+    REQUIRE(system.registerHandler(meta, EditSystem::SystemHandlerPtr { replacement.release() }));
+    REQUIRE(metadata_calls == 1);
+    REQUIRE_NOTHROW(system.unregisterHandler(meta));
+    REQUIRE(system.getEditInfos().empty());
 }

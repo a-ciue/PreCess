@@ -208,7 +208,7 @@ std::any MeshRepairHandler::execute(FeatureContext& ctx)
     }
     const Index component_id = selection.ids.front();
 
-    auto comp_op = ctx.componentOperator ? ctx.componentOperator(component_id) : std::nullopt;
+    auto comp_op = ctx.componentOperator(component_id);
     if (!comp_op || !comp_op->mesh()) {
         return std::string("当前 Component 没有网格数据（网格修复仅支持网格模型）");
     }

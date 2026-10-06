@@ -16,7 +16,7 @@ import app.model.systems.algo
 Item{
     id: root
     property var parameters: []
-    property var resultText: ""
+    readonly property QSelection emptySelection: QSelection {}
 
     readonly property var activeOp: App.activeOperation
 
@@ -25,7 +25,6 @@ Item{
         // 创建类操作直接提供默认参数，避免依赖 ListView delegate 的延迟初始化时机。
         parameters = root.activeOp && root.activeOp.defaultParameters
                 ? root.activeOp.defaultParameters.slice() : []
-        resultText = ""
         // 活动操作是功能则进入该功能（interactive 的交互随之一并上线），否则退出当前功能
         // （幂等，守卫在功能系统内；进入/退出经 FeatureHandler::activate/deactivate 通知功能）
         var isFeature = !!(activeOp && activeOp.isFeature)
@@ -37,6 +36,21 @@ Item{
         parameters[index] = value
         if (root.activeOp && root.activeOp.isFeature)
             QModelManager.featureSystem.setParameter(root.activeOp.info.name, index, value)
+    }
+
+    // 清理全部选择器参数，包括 ListView 尚未创建的 delegate。
+    Connections {
+        target: App.selection
+        function onSelectionInvalidated() {
+            App.selection.listeningSelectorIndex = -1
+            if (!root.activeOp || !root.activeOp.info)
+                return
+            const args = root.activeOp.info.arg_types
+            for (let i = 0; i < args.length; ++i) {
+                if (args[i].type === QArgType.Selector)
+                    root.setParam(i, root.emptySelection)
+            }
+        }
     }
 
     // 功能侧回写参数值（如交互结果文本）→ 同步到面板显示
@@ -85,10 +99,10 @@ Item{
                 if (root.activeOp && root.activeOp.execute) {
                     try {
                         const result = root.activeOp.execute(App.selection.activeComponentId, root.parameters)
-                        root.resultText = result === undefined || result === null
-                                        ? "" : String(result)
+                        if (result !== undefined && result !== null)
+                            QModelManager.taskStatus.showMessage(String(result))
                     } catch (error) {
-                        root.resultText = qsTr("执行失败：") + error
+                        QModelManager.taskStatus.reportFailure(String(error))
                     }
                 }
                 if (App.registry.renderWindow)
@@ -138,27 +152,8 @@ Item{
             onClicked: App.activeOperation = null
         }
     }
-    TextArea {
-        id: resultArea
-        anchors.top: buttonRow.bottom
-        anchors.left: parent.left
-        anchors.right: parent.right
-        anchors.margins: visible ? Theme.spacingSm : 0
-        // 不可见时不占锚定布局高度，避免留下空白
-        height: visible ? 80 : 0
-        readOnly: true
-        text: root.resultText
-        wrapMode: TextEdit.Wrap
-        // 执行结果区：浅色凹陷面 + 边框
-        background: Rectangle {
-            radius: Theme.radiusControl
-            color: Theme.surfaceAlt
-            border.color: Theme.border
-        }
-        visible: text.length > 0
-    }
     Item{
-        anchors.top: resultArea.bottom
+        anchors.top: buttonRow.bottom
         anchors.left: parent.left
         anchors.right: parent.right
         anchors.bottom: parent.bottom
@@ -189,7 +184,7 @@ Item{
                             if(model.type === QArgType.Combo){           //多选一
                                 return componentComboBox
                             }
-                            if(model.type === QArgType.Float){           //数字框
+                            if(model.type === QArgType.Float || model.type === QArgType.Int){ //数字框（浮点/整数）
                                 return oneNumberBox
                             }
                             if(model.type === QArgType.Selector){           //选择器
@@ -300,7 +295,8 @@ Item{
                 Layout.fillWidth: true
                 text: model.content
                 onTextChanged:{
-                    root.setParam(index, parseFloat(text))
+                    // Int 走整数语义（parseInt 截断小数）；Float 保持 parseFloat
+                    root.setParam(index, model.type === QArgType.Int ? parseInt(text) : parseFloat(text))
                 }
             }
         }
@@ -505,9 +501,6 @@ Item{
                 target: App.selection
                 function onSelectionInvalidated() {
                     value = null
-                    root.setParam(index, emptySelection)
-                    if (App.selection.listeningSelectorIndex === index)
-                        App.selection.listeningSelectorIndex = -1
                 }
             }
         }

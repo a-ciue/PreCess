@@ -1,0 +1,7 @@
+{
+  "system": "AlgorithmSystem",
+  "handler": {
+    "name": "progressDemo",
+    "display_name": "进度取消演示"
+  }
+}
