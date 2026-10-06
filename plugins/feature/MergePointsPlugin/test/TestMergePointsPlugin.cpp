@@ -106,11 +106,10 @@ TEST_CASE("MergePoints feature merges two vertices at midpoint", "[MergePointsPl
 {
     core::EventBus bus;
     ModelLayer model_layer;
+    const MergePointsFixture fixture = addTwoPoints(model_layer);
     UndoStack undo_stack(model_layer);
     model_layer.setUndoRecorder(&undo_stack);
     FeatureSystem feature_system(model_layer, bus, &undo_stack);
-
-    const MergePointsFixture fixture = addTwoPoints(model_layer);
     undo_stack.clear();
     FeatureSystem::SystemHandlerPtr handler { new MergePointsHandler };
     REQUIRE(feature_system.registerHandler(handlerMetaData(), std::move(handler)));
@@ -142,11 +141,10 @@ TEST_CASE("MergePoints feature merges distant points without a distance paramete
 {
     core::EventBus bus;
     ModelLayer model_layer;
+    const MergePointsFixture fixture = addTwoPoints(model_layer);
     UndoStack undo_stack(model_layer);
     model_layer.setUndoRecorder(&undo_stack);
     FeatureSystem feature_system(model_layer, bus, &undo_stack);
-
-    const MergePointsFixture fixture = addTwoPoints(model_layer);
     FeatureSystem::SystemHandlerPtr handler { new MergePointsHandler };
     REQUIRE(feature_system.registerHandler(handlerMetaData(), std::move(handler)));
 

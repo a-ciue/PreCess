@@ -100,9 +100,7 @@ std::any SplitFaceHandler::execute(FeatureContext& ctx)
         }
 
         // 纯 OCC 操作成功并校验后只写回一次，保证一条 undo 记录。
-        auto component_operator = ctx.componentOperator
-            ? ctx.componentOperator(*component_id)
-            : std::nullopt;
+        auto component_operator = ctx.componentOperator(*component_id);
         if (!component_operator)
             return std::string("几何操作失败，详细原因请查看日志。");
         component_operator->replaceGeometryRoot(std::move(result));

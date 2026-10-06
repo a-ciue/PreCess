@@ -94,9 +94,7 @@ std::any MergePointsHandler::execute(FeatureContext& ctx)
 
         TopoDS_Shape result = GeometryTopologyEditor::mergeVertices(
             *component->geometry->rootShape, { first, second }, target_position);
-        auto component_operator = ctx.componentOperator
-            ? ctx.componentOperator(*first_owner)
-            : std::nullopt;
+        auto component_operator = ctx.componentOperator(*first_owner);
         if (!component_operator)
             return std::string("几何操作失败，详细原因请查看日志。");
         component_operator->replaceGeometryRoot(std::move(result));

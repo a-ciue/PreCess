@@ -45,7 +45,7 @@ std::any SplitEdgeHandler::execute(FeatureContext& ctx)
             return std::string("目标组件已经建立几何-网格映射，不能修改几何拓扑。");
         TopoDS_Shape result = GeometryTopologyEditor::splitEdge(
             *component->geometry->rootShape, TopoDS::Edge(*shape), *ratio);
-        auto op = ctx.componentOperator ? ctx.componentOperator(*component_id) : std::nullopt;
+        auto op = ctx.componentOperator(*component_id);
         if (!op)
             return std::string("几何操作失败，详细原因请查看日志。");
         op->replaceGeometryRoot(std::move(result));

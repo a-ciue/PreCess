@@ -160,11 +160,10 @@ TEST_CASE("FillGap feature stitches the gap boundary from one seed edge", "[Fill
 {
     core::EventBus bus;
     ModelLayer model_layer;
+    const FillGapFixture fixture = addGapPair(model_layer);
     UndoStack undo_stack(model_layer);
     model_layer.setUndoRecorder(&undo_stack);
     FeatureSystem feature_system(model_layer, bus, &undo_stack);
-
-    const FillGapFixture fixture = addGapPair(model_layer);
     undo_stack.clear();
     FeatureSystem::SystemHandlerPtr handler { new FillGapHandler };
     REQUIRE(feature_system.registerHandler(handlerMetaData(), std::move(handler)));
@@ -187,11 +186,10 @@ TEST_CASE("FillGap feature reports missing partner when tolerance is too small",
 {
     core::EventBus bus;
     ModelLayer model_layer;
+    const FillGapFixture fixture = addGapPair(model_layer);
     UndoStack undo_stack(model_layer);
     model_layer.setUndoRecorder(&undo_stack);
     FeatureSystem feature_system(model_layer, bus, &undo_stack);
-
-    const FillGapFixture fixture = addGapPair(model_layer);
     FeatureSystem::SystemHandlerPtr handler { new FillGapHandler };
     REQUIRE(feature_system.registerHandler(handlerMetaData(), std::move(handler)));
 
@@ -210,10 +208,10 @@ TEST_CASE("FillGap feature reports reverse success as one undo operation", "[Fil
 {
     core::EventBus bus;
     ModelLayer model_layer;
+    const auto fixture = addGapPair(model_layer, true);
     UndoStack undo_stack(model_layer);
     model_layer.setUndoRecorder(&undo_stack);
     FeatureSystem feature_system(model_layer, bus, &undo_stack);
-    const auto fixture = addGapPair(model_layer, true);
     undo_stack.clear();
     FeatureSystem::SystemHandlerPtr handler { new FillGapHandler };
     REQUIRE(feature_system.registerHandler(handlerMetaData(), std::move(handler)));

@@ -110,11 +110,10 @@ TEST_CASE("MergeEdge feature merges selected edges and records one undo operatio
 {
     core::EventBus bus;
     ModelLayer model_layer;
+    const MergeEdgeFixture fixture = addMergeableEdges(model_layer);
     UndoStack undo_stack(model_layer);
     model_layer.setUndoRecorder(&undo_stack);
     FeatureSystem feature_system(model_layer, bus, &undo_stack);
-
-    const MergeEdgeFixture fixture = addMergeableEdges(model_layer);
     undo_stack.clear();
     FeatureSystem::SystemHandlerPtr handler { new MergeEdgeHandler };
     REQUIRE(feature_system.registerHandler(handlerMetaData(), std::move(handler)));

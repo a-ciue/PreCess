@@ -65,9 +65,7 @@ std::any MergeFaceHandler::execute(FeatureContext& ctx)
         // 原子操作成功后只替换一次完整根形状，使框架生成一条 undo 记录并重建子形状 ID。
         TopoDS_Shape result = GeometryTopologyEditor::mergeFaces(
             *component->geometry->rootShape, faces);
-        auto component_operator = ctx.componentOperator
-            ? ctx.componentOperator(*component_id)
-            : std::nullopt;
+        auto component_operator = ctx.componentOperator(*component_id);
         if (!component_operator)
             return std::string("几何操作失败，详细原因请查看日志。");
         component_operator->replaceGeometryRoot(std::move(result));

@@ -58,9 +58,7 @@ std::any PatchFaceHandler::execute(FeatureContext& ctx)
         // 最小闭环由拓扑连通和弧长决定，不添加桥接边，也不依赖用户容差。
         TopoDS_Shape result = GeometryTopologyEditor::fillBoundaryLoop(
             *component->geometry->rootShape, TopoDS::Edge(*edge_shape));
-        auto component_operator = ctx.componentOperator
-            ? ctx.componentOperator(*component_id)
-            : std::nullopt;
+        auto component_operator = ctx.componentOperator(*component_id);
         if (!component_operator)
             return std::string("几何操作失败，详细原因请查看日志。");
         component_operator->replaceGeometryRoot(std::move(result));

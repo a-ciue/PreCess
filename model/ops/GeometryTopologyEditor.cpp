@@ -4087,7 +4087,9 @@ TopoDS_Shape GeometryTopologyEditor::fillBoundaryLoop(
             result_edge_faces;
         TopExp::MapShapesAndUniqueAncestors(result, TopAbs_EDGE, TopAbs_FACE, result_edge_faces);
         for (const TopoDS_Edge& edge : attachment_edges) {
-            const TopoDS_Shape mapped = sewing.IsModifiedSubShape(edge) ? sewing.ModifiedSubShape(edge) : edge;
+            TopoDS_Shape mapped = edge;
+            if (sewing.IsModifiedSubShape(edge))
+                mapped = sewing.ModifiedSubShape(edge);
             NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher> sections;
             TopExp::MapShapes(mapped, TopAbs_EDGE, sections);
             if (sections.IsEmpty())

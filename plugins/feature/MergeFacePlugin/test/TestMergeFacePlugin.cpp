@@ -177,11 +177,10 @@ TEST_CASE("MergeFace feature merges selected faces and records one undo operatio
 {
     core::EventBus bus;
     ModelLayer model_layer;
+    const MergeFaceFixture fixture = addMergeableFaces(model_layer);
     UndoStack undo_stack(model_layer);
     model_layer.setUndoRecorder(&undo_stack);
     FeatureSystem feature_system(model_layer, bus, &undo_stack);
-
-    const MergeFaceFixture fixture = addMergeableFaces(model_layer);
     undo_stack.clear();
     FeatureSystem::SystemHandlerPtr handler { new MergeFaceHandler };
     REQUIRE(feature_system.registerHandler(handlerMetaData(), std::move(handler)));

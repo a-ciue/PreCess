@@ -189,11 +189,10 @@ TEST_CASE("SplitFace feature splits one face and records one undo operation", "[
 {
     core::EventBus bus;
     ModelLayer model_layer;
+    const SplitFaceFixture fixture = addSplittableFace(model_layer);
     UndoStack undo_stack(model_layer);
     model_layer.setUndoRecorder(&undo_stack);
     FeatureSystem feature_system(model_layer, bus, &undo_stack);
-
-    const SplitFaceFixture fixture = addSplittableFace(model_layer);
     undo_stack.clear();
     FeatureSystem::SystemHandlerPtr handler { new SplitFaceHandler };
     REQUIRE(feature_system.registerHandler(handlerMetaData(), std::move(handler)));

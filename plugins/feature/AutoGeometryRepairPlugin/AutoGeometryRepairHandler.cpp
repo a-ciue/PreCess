@@ -83,9 +83,7 @@ std::any AutoGeometryRepairHandler::execute(FeatureContext& ctx)
 
         GeometryGapRepairResult repair =
             GeometryTopologyEditor::repairFreeEdgeGaps(root, cleanup_tolerance);
-        auto component_operator = ctx.componentOperator
-            ? ctx.componentOperator(component_id)
-            : std::nullopt;
+        auto component_operator = ctx.componentOperator(component_id);
         if (!component_operator)
             return std::string("几何操作失败，详细原因请查看日志。");
         spdlog::info("AutoGeometryRepair: {} candidates, {} stitched edges",

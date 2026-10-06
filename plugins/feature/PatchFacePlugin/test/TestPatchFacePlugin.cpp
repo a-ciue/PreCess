@@ -123,10 +123,10 @@ TEST_CASE("PatchFace feature fills a boundary loop with undo and redo", "[PatchF
         CAPTURE(isolated);
         core::EventBus bus;
         ModelLayer model_layer;
+        const auto fixture = addPatchBoundary(model_layer, isolated);
         UndoStack undo_stack(model_layer);
         model_layer.setUndoRecorder(&undo_stack);
         FeatureSystem feature_system(model_layer, bus, &undo_stack);
-        const auto fixture = addPatchBoundary(model_layer, isolated);
         undo_stack.clear();
         FeatureSystem::SystemHandlerPtr handler { new PatchFaceHandler };
         REQUIRE(feature_system.registerHandler(handlerMetaData(), std::move(handler)));
