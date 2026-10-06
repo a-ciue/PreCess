@@ -223,13 +223,33 @@ void writeTrait(std::ostream& os, const std::vector<MAttribute>& attributes, siz
 
 namespace systems::io {
 std::optional<ModelPayload> MModelHandler::read_model(const fs::path& path, const std::vector<std::any>& args)
-{
+try {
     std::ifstream ifs(path);
     if (!ifs) {
         spdlog::error("MModelHandler: failed to open input file: {}", path.string());
         return std::nullopt;
     }
 
+    auto c = std::make_unique<ComponentData>();
+    c->id = -1;
+    c->name = "Comp_0";
+    c->mesh = readMesh(ifs, path);
+
+    ComponentDatas comps;
+    comps.push_back(std::move(c));
+    return ModelPayload { path.filename().u8string(), std::move(comps) };
+} catch (const std::exception& e) {
+    // 插件入口收口内部异常，避免传播到宿主，并丢弃未完成的模型数据。
+    spdlog::error("MModelHandler::read_model: {}", e.what());
+    return std::nullopt;
+} catch (...) {
+    // 未知异常同样转换为读取失败，宿主不会收到部分模型。
+    spdlog::error("MModelHandler::read_model: unknown exception while reading input file");
+    return std::nullopt;
+}
+
+std::unique_ptr<MeshData> MModelHandler::readMesh(std::istream& ifs, const fs::path& path)
+{
     auto mesh_data = std::make_unique<MeshData>();
     mesh_data->init();
 
@@ -310,11 +330,15 @@ std::optional<ModelPayload> MModelHandler::read_model(const fs::path& path, cons
     if (!ifs)
         throw std::runtime_error("MModelHandler: failed to rewind input file: " + path.string());
     while (std::getline(ifs, line)) {
-        std::istringstream edge_stream(line);
-        std::string keyword;
-        if (!(edge_stream >> keyword) || keyword != "Edge")
+        // 先识别完整 Edge 关键词，仅对边行构造解析流，避免重复解析顶点和面。
+        const size_t keyword_begin = line.find_first_not_of(" \t\r\n\f\v");
+        if (keyword_begin == std::string::npos || line.compare(keyword_begin, 4, "Edge") != 0)
+            continue;
+        const size_t keyword_end = keyword_begin + 4;
+        if (keyword_end < line.size() && !std::isspace(static_cast<unsigned char>(line[keyword_end])))
             continue;
 
+        std::istringstream edge_stream(line.substr(keyword_end));
         Index v0 { }, v1 { };
         if (!(edge_stream >> v0 >> v1)) {
             spdlog::warn("MModelHandler: malformed Edge line, skip: {}", line);
@@ -352,15 +376,7 @@ std::optional<ModelPayload> MModelHandler::read_model(const fs::path& path, cons
     for (auto& [name, values] : mesh_data->edge_attributes_)
         values.resize(edge_count * edge_attribute_components[name], 0.0);
 
-    auto c = std::make_unique<ComponentData>();
-    c->id = -1;
-    c->name = "Comp_0";
-    c->mesh = std::move(mesh_data);
-
-    ComponentDatas comps;
-    comps.push_back(std::move(c));
-
-    return ModelPayload { path.filename().u8string(), std::move(comps) };
+    return mesh_data;
 }
 
 void MModelHandler::write_components(const ModelLayer& mgr,

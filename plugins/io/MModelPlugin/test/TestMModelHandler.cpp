@@ -15,17 +15,96 @@
 #include "ModelPayload.h"
 #include "TempFile.h"
 #include <catch2/catch_test_macros.hpp>
+#include <catch2/matchers/catch_matchers_string.hpp>
 #include <filesystem>
 #include <fstream>
 #include <map>
 #include <memory>
 #include <optional>
 #include <regex>
+#include <sstream>
+#include <stdexcept>
 #include <vector>
 
 namespace fs = std::filesystem;
 
 namespace {
+/** @brief 通过原读取实现验证输入流故障，不改变处理器的对外文件入口 */
+class TestableMModelHandler : public systems::io::MModelHandler {
+public:
+    using MModelHandler::readMesh;
+};
+
+/** @brief 两遍读取过程中可注入故障的阶段 */
+enum class ReadFailurePhase { FirstPass,
+    Rewind,
+    SecondPass };
+
+/** @brief 在读到末尾或回退时注入故障，避免依赖操作系统磁盘错误 */
+class FaultingInputBuffer : public std::stringbuf {
+public:
+    /** @brief 用合法网格文本构造缓冲区，并指定失败阶段 */
+    explicit FaultingInputBuffer(ReadFailurePhase phase)
+        : std::stringbuf("Vertex 4 0 0 0\nVertex 6911 1 0 0\nEdge 4 6911 {sharp}\n", std::ios::in)
+        , phase_(phase)
+    {
+    }
+
+protected:
+    /** @brief 读到缓冲区末尾时模拟对应扫描阶段的 I/O 故障 */
+    int_type underflow() override
+    {
+        if (phase_ == ReadFailurePhase::FirstPass || (phase_ == ReadFailurePhase::SecondPass && rewound_))
+            throw std::ios_base::failure("injected read failure");
+        return std::stringbuf::underflow();
+    }
+
+    /** @brief 模拟回退失败，或记录第二次扫描已开始 */
+    pos_type seekoff(off_type offset, std::ios_base::seekdir direction, std::ios_base::openmode mode) override
+    {
+        if (phase_ == ReadFailurePhase::Rewind)
+            return pos_type(off_type(-1));
+        rewound_ = true;
+        return std::stringbuf::seekoff(offset, direction, mode);
+    }
+
+private:
+    ReadFailurePhase phase_;
+    bool rewound_ { false };
+};
+
+/** @brief 在真实文件入口内注入读取故障，验证异常不会离开插件入口 */
+class FaultingMModelHandler : public systems::io::MModelHandler {
+public:
+    /** @brief 指定需要验证的读取失败阶段 */
+    explicit FaultingMModelHandler(ReadFailurePhase phase)
+        : phase_(phase)
+    {
+    }
+
+protected:
+    /** @brief 将真实解析器连接到故障流，仍由 read_model 负责捕获异常 */
+    std::unique_ptr<MeshData> readMesh(std::istream&, const fs::path& path) override
+    {
+        FaultingInputBuffer buffer(phase_);
+        std::istream input(&buffer);
+        return MModelHandler::readMesh(input, path);
+    }
+
+private:
+    ReadFailurePhase phase_;
+};
+
+/** @brief 模拟非标准异常，验证插件入口的未知异常兜底 */
+class UnknownExceptionMModelHandler : public systems::io::MModelHandler {
+protected:
+    /** @brief 使用非 std::exception 异常模拟读取过程中未知的失败 */
+    std::unique_ptr<MeshData> readMesh(std::istream&, const fs::path&) override
+    {
+        throw 1;
+    }
+};
+
 /**
  * @brief 构造一个仅含表面三角形的最小 MeshData
  *
@@ -491,4 +570,106 @@ TEST_CASE("MModelHandler::read_model() preserves many forward-referenced Edge re
         REQUIRE(mesh->edge_vertices_[i * 2 + 1] == static_cast<Index>(1 - i % 2));
         REQUIRE(sequences[i] == static_cast<double>(i));
     }
+}
+
+TEST_CASE("MModelHandler::read_model() returns nullopt when opening fails", "[MModelHandler][Errors]")
+{
+    systems::io::MModelHandler io;
+    const fs::path path = core::TempFile::instance().path().string() + "_missing.m";
+    REQUIRE_FALSE(fs::exists(path));
+    std::optional<ModelPayload> payload;
+    REQUIRE_NOTHROW(payload = io.read_model(path, { }));
+    REQUIRE_FALSE(payload.has_value());
+}
+
+TEST_CASE("MModelHandler::readMesh() reports stream failures", "[MModelHandler][Errors]")
+{
+    ReadFailurePhase phase = ReadFailurePhase::FirstPass;
+    std::string expected_error = "failed to read input file";
+    SECTION("First pass fails after partial input")
+    {
+        phase = ReadFailurePhase::FirstPass;
+    }
+    SECTION("Rewind fails")
+    {
+        phase = ReadFailurePhase::Rewind;
+        expected_error = "failed to rewind input file";
+    }
+    SECTION("Second pass fails after partial input")
+    {
+        phase = ReadFailurePhase::SecondPass;
+    }
+    FaultingInputBuffer buffer(phase);
+    std::istream input(&buffer);
+    TestableMModelHandler io;
+    // 失败必须抛异常而非返回已解析的部分网格；使用真实读取流程验证。
+    REQUIRE_THROWS_WITH(io.readMesh(input, "fault.m"),
+        Catch::Matchers::ContainsSubstring(expected_error));
+}
+
+TEST_CASE("MModelHandler::read_model() contains stream failures at plugin boundary", "[MModelHandler][Errors]")
+{
+    ReadFailurePhase phase = ReadFailurePhase::FirstPass;
+    SECTION("First pass fails after partial input")
+    {
+        phase = ReadFailurePhase::FirstPass;
+    }
+    SECTION("Rewind fails")
+    {
+        phase = ReadFailurePhase::Rewind;
+    }
+    SECTION("Second pass fails after partial input")
+    {
+        phase = ReadFailurePhase::SecondPass;
+    }
+
+    const fs::path path = core::TempFile::instance().path().string() + "_boundary.m";
+    std::ofstream output(path);
+    REQUIRE(output.is_open());
+    output << "Vertex 4 0 0 0\nVertex 6911 1 0 0\nEdge 4 6911 {sharp}\n";
+    output.close();
+
+    FaultingMModelHandler io(phase);
+    systems::io::ModelIOHandler& entry = io;
+    std::optional<ModelPayload> payload;
+    // 经宿主使用的虚接口进入文件入口，读取失败不能抛出或返回部分数据。
+    REQUIRE_NOTHROW(payload = entry.read_model(path, { }));
+    REQUIRE_FALSE(payload.has_value());
+}
+
+TEST_CASE("MModelHandler::read_model() contains unknown exceptions at plugin boundary", "[MModelHandler][Errors]")
+{
+    const fs::path path = core::TempFile::instance().path().string() + "_unknown_exception.m";
+    std::ofstream output(path);
+    REQUIRE(output.is_open());
+    output << "Vertex 4 0 0 0\n";
+    output.close();
+
+    UnknownExceptionMModelHandler io;
+    systems::io::ModelIOHandler& entry = io;
+    std::optional<ModelPayload> payload;
+    REQUIRE_NOTHROW(payload = entry.read_model(path, { }));
+    REQUIRE_FALSE(payload.has_value());
+}
+
+TEST_CASE("MModelHandler::read_model() matches complete Edge keywords", "[MModelHandler][Edge]")
+{
+    systems::io::MModelHandler io;
+    const fs::path path = core::TempFile::instance().path().string() + "_keywords.m";
+    std::ofstream output(path);
+    REQUIRE(output.is_open());
+    output << "Vertex 4 0 0 0\nVertex 6911 1 0 0\n"
+              "EdgeExtra 4 6911 {invalid}\n"
+              "Edge4 4 6911 {invalid}\n"
+              "edge 4 6911 {invalid}\n"
+              "# Edge 4 6911 {invalid}\n"
+              "  \tEdge\t4 6911 {sequence=(7)}\n";
+    output.close();
+    const auto payload = io.read_model(path, { });
+    REQUIRE(payload.has_value());
+    const MeshData* mesh = requireReadableMeshModel(*payload);
+    const std::vector<Index> expected_edges = { 0, 1 };
+    REQUIRE(mesh->edge_vertices_ == expected_edges);
+    const std::map<std::string, std::vector<double>> expected_attributes = { { "e_sequence_1", { 7.0 } } };
+    REQUIRE(mesh->edge_attributes_ == expected_attributes);
 }
