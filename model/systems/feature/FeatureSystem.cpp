@@ -119,9 +119,8 @@ void FeatureSystem::unregisterHandler(const HandlerMetaData& meta_data)
     if (it->second.handler) {
         flushAfterCallback([&] { it->second.handler->teardown(it->second.context); });
     }
-    // 层兜底：注销必关残留层（非 active 路径此处生效；active 路径切出时已关——幂等早退）
-    if (undo_stack_)
-        undo_stack_->cancelScope();
+    // 注销只清理该功能的残留预览，不影响其他功能的层。
+    it->second.context.undo.cancelScope();
     entries_.erase(it);
     spdlog::info("FeatureSystem::unregisterHandler: Unregistered feature '{}'", meta_data.name);
     on_feature_infos_changed_();

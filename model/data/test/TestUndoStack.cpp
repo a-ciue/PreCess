@@ -1179,3 +1179,64 @@ TEST_CASE("Preview revert consumes structural captures before subsequent cancel"
     REQUIRE_FALSE(f.stack.canUndo());
     REQUIRE_FALSE(f.stack.canRedo());
 }
+
+TEST_CASE("Closed sessions cannot absorb records when the same owner reenters", "[UndoStack][session]")
+{
+    UndoFixture f;
+    const auto [mid, cid] = f.addTriangle();
+    f.stack.clear();
+    UndoStack::OwnerScope owner(&f.stack, "feature");
+    auto write = [&](const char* label, double x) {
+        ModelScope scope(f.mgr, &f.stack, label);
+        writeVertex(f.mgr, cid, 0, { x, 0, 0 });
+    };
+    f.stack.beginSession("feature", "old session");
+    write("old step", 1);
+    SECTION("old undo segment behind a foreign record")
+    {
+        {
+            ModelScope scope(f.mgr, &f.stack, "foreign", ModelScope::Kind::Command, "other");
+            writeVertex(f.mgr, cid, 1, { 9, 0, 0 });
+        }
+        SECTION("empty final segment") { }
+        SECTION("one final record") { write("final step", 2); }
+        SECTION("multiple final records")
+        {
+            write("final step 1", 2);
+            write("final step 2", 3);
+        }
+        f.stack.endSession("feature");
+        while (f.stack.undoLabel() != "old step")
+            REQUIRE(f.stack.undo());
+    }
+    SECTION("old record on redo stack")
+    {
+        REQUIRE(f.stack.undo());
+        f.stack.endSession("feature");
+        REQUIRE(f.stack.redo());
+    }
+    f.stack.beginSession("feature", "new session");
+    write("new step", 4);
+    f.stack.endSession("feature");
+    REQUIRE(f.stack.undo());
+    CHECK(vertexAt(f.mgr, cid, 0)[0] == 1);
+    CHECK(f.stack.undoLabel() == "old step");
+}
+
+TEST_CASE("Opening and replacing previews notifies observable undo state", "[UndoStack][preview]")
+{
+    UndoFixture f;
+    std::vector<std::string> labels;
+    f.stack.setOnChanged([&] {
+        if (f.stack.scopeActive()) {
+            CHECK(f.stack.canUndo());
+            CHECK_FALSE(f.stack.canRedo());
+            labels.push_back(*f.stack.undoLabel());
+        }
+    });
+    REQUIRE(f.stack.beginScope("first"));
+    REQUIRE(labels == std::vector<std::string> { "first" });
+    REQUIRE(f.stack.beginScope("second"));
+    REQUIRE(labels == std::vector<std::string> { "first", "second" });
+    f.stack.setOnChanged({ });
+}

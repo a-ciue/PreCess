@@ -66,7 +66,10 @@ std::any TaskDemoHandler::execute(FeatureContext& ctx)
         }
         auto job = ctx.runTypedWriteback(
             "终态回写演示", *target,
-            [](const ComponentOperator& op) { return op.mesh()->vertex_positions_.size(); },
+            [](const ComponentOperator& op) {
+                if (!op.mesh())
+                    throw std::runtime_error("target has no mesh");
+                return op.mesh()->vertex_positions_.size(); },
             [](std::size_t& point_count, systems::job::ProgressFn report) {
                 for (int i = 1; i <= 3; ++i) {
                     report(i / 3.0, "计算阶段 " + std::to_string(i) + "/3");
@@ -74,7 +77,7 @@ std::any TaskDemoHandler::execute(FeatureContext& ctx)
                 }
                 report(1.0, "计算完成，准备回写");
                 return point_count; }, [](ComponentOperator& op, std::size_t& point_count, systems::job::ProgressFn report) {
-                // 回写段在 GUI 线程执行：目标存在与网格在场由框架保证（写前防御已收归框架）
+                // 捕获已验证网格，任务占用期间目标不会被其他操作修改。
                 op.appendPoint({ static_cast<double>(point_count), 1.0, 0.0 });
                 report(1.0, "回写完成：已向目标组件添加一点。"); });
         if (!job)

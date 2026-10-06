@@ -176,6 +176,8 @@ bool UndoStack::beginScope(std::string label)
     preview.owner = owner_;
     preview.scope_id = ++next_scope_id_;
     preview_ = std::move(preview);
+    if (on_changed_)
+        on_changed_();
     return true;
 }
 
@@ -324,12 +326,17 @@ void UndoStack::endSession(std::string owner)
     while (first > 0 && undo_[first - 1].session == owner)
         --first;
     const std::size_t count = undo_.size() - first;
+    // 收尾后清除所有旧会话标记，避免同 owner 的下次会话吸收旧记录（含 redo）。
+    for (auto& record : undo_)
+        if (record.session == owner)
+            record.session.clear();
+    for (auto& record : redo_)
+        if (record.session == owner)
+            record.session.clear();
     if (count == 0)
         return; // 会话期没成过记录（或都被撤销了）
-    if (count == 1) {
-        undo_[first].session.clear(); // 已是一条：只清标（会话已收尾）
+    if (count == 1)
         return;
-    }
 
     UndoRecord merged = std::move(undo_[first]);
     if (!label.empty())
@@ -341,7 +348,6 @@ void UndoStack::endSession(std::string owner)
             std::make_move_iterator(source.structural.begin()),
             std::make_move_iterator(source.structural.end()));
     }
-    merged.session.clear();
     undo_.erase(undo_.begin() + static_cast<std::ptrdiff_t>(first + 1), undo_.end());
     undo_[first] = std::move(merged);
     if (on_changed_)

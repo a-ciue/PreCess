@@ -42,3 +42,16 @@ precess_test_link_libraries(TestQTaskStatus Session Qt${VTK_QT_VERSION}::Core Qt
 # QML 选择器参数的空值语义与功能系统同步
 precess_add_test(TestSelectionParameter TestSelectionParameter.cpp)
 precess_test_link_libraries(TestSelectionParameter modelQml QArgType FeatureSystemQml FeatureSystem Qt6::Qml)
+
+precess_add_test(TestQModelDeletion TestQModelDeletion.cpp)
+precess_test_link_libraries(TestQModelDeletion modelQml Qt6::Qml)
+
+# 加载实际界面文件验证删除拒绝和 undo 后的选择器失效，不启动渲染窗口。
+precess_add_test(TestUndoQml TestUndoQml.cpp ../TreeModel.cpp ../TreeModel.h)
+set_target_properties(TestUndoQml PROPERTIES AUTOMOC ON)
+target_include_directories(TestUndoQml PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}/..")
+precess_test_link_libraries(TestUndoQml modelQml modelQmlplugin SystemQmlplugin renderQmlplugin renderQml Qt6::QuickControls2)
+qt_add_resources(TestUndoQml undo_ui
+    PREFIX "/undo-ui"
+    BASE "${CMAKE_CURRENT_SOURCE_DIR}/.."
+    FILES ../Theme.qml ../SideBar.qml ../ObjectTree.qml ../CentralRenderArea.qml ../Selector.qml)

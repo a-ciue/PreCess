@@ -20,6 +20,7 @@ QModelManager::QModelManager(std::string_view argv0, QObject* parent)
 {
     // 1) 会话组合根：模型层 + undo 栈 + 事件总线 + 四系统（内部经转发观察者桥接 ModelEvent）
     observer_ = std::make_unique<QModelObserver>();
+    connect(observer_.get(), &QModelObserver::modelRemoved, this, &QModelManager::modelRemoved);
     session_ = std::make_unique<session::Session>(observer_.get(), [this](std::function<void()> fn) {
         QMetaObject::invokeMethod(this, std::move(fn));
     });
@@ -105,13 +106,20 @@ QModelManager::~QModelManager()
 
 void QModelManager::removeModel(int id)
 {
-    session_->removeModel(id);
-    emit modelRemoved(id);
+    try {
+        session_->removeModel(id);
+    } catch (const ModelOperationBusy& e) {
+        spdlog::warn("QModelManager: {}", e.what());
+    }
 }
 
 void QModelManager::removeComponent(int id)
 {
-    session_->removeComponent(id);
+    try {
+        session_->removeComponent(id);
+    } catch (const ModelOperationBusy& e) {
+        spdlog::warn("QModelManager: {}", e.what());
+    }
 }
 
 void QModelManager::removeMesh(int componentId)

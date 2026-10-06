@@ -16,6 +16,7 @@ import app.model.systems.algo
 Item{
     id: root
     property var parameters: []
+    readonly property QSelection emptySelection: QSelection {}
 
     readonly property var activeOp: App.activeOperation
 
@@ -35,6 +36,21 @@ Item{
         parameters[index] = value
         if (root.activeOp && root.activeOp.isFeature)
             QModelManager.featureSystem.setParameter(root.activeOp.info.name, index, value)
+    }
+
+    // 清理全部选择器参数，包括 ListView 尚未创建的 delegate。
+    Connections {
+        target: App.selection
+        function onSelectionInvalidated() {
+            App.selection.listeningSelectorIndex = -1
+            if (!root.activeOp || !root.activeOp.info)
+                return
+            const args = root.activeOp.info.arg_types
+            for (let i = 0; i < args.length; ++i) {
+                if (args[i].type === QArgType.Selector)
+                    root.setParam(i, root.emptySelection)
+            }
+        }
     }
 
     // 功能侧回写参数值（如交互结果文本）→ 同步到面板显示
@@ -485,9 +501,6 @@ Item{
                 target: App.selection
                 function onSelectionInvalidated() {
                     value = null
-                    root.setParam(index, emptySelection)
-                    if (App.selection.listeningSelectorIndex === index)
-                        App.selection.listeningSelectorIndex = -1
                 }
             }
         }

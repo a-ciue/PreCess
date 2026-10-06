@@ -573,3 +573,28 @@ TEST_CASE("Raw key publication failure stays outside routing notification scope"
     REQUIRE_FALSE(f.stack.canUndo());
     REQUIRE(f.mgr.findComponent(cid)->mesh->vertex_positions_.size() == 3);
 }
+
+TEST_CASE("Managing another feature preserves the active owner's preview", "[FeatureSystem][undo][preview]")
+{
+    FeatureUndoFixture f;
+    const Index cid = addTriangleComponent(f.mgr, f.stack);
+    f.stack.clear();
+    auto handler = std::make_unique<EventWritingFeatureHandler>();
+    handler->component_id = cid;
+    REQUIRE(f.system.registerHandler(makeMeta("A"), FeatureSystem::SystemHandlerPtr { handler.release() }));
+    REQUIRE(f.system.registerHandler(makeMeta("B"), FeatureSystem::SystemHandlerPtr { std::make_unique<WritingFeatureHandler>().release() }));
+    REQUIRE(f.system.setFeatureActive("A"));
+    f.bus.publish(TestEvent { });
+    REQUIRE(f.stack.scopeActive());
+    SECTION("unregister another feature") { f.system.unregisterHandler(makeMeta("B")); }
+    SECTION("replace another feature")
+    {
+        REQUIRE(f.system.registerHandler(makeMeta("B"), FeatureSystem::SystemHandlerPtr { std::make_unique<WritingFeatureHandler>().release() }));
+    }
+    CHECK(f.stack.scopeActive());
+    CHECK(f.mgr.findComponent(cid)->mesh->vertex_positions_[0] == std::array<double, 3> { 5, 5, 5 });
+    REQUIRE(f.system.setFeatureActive(""));
+    CHECK_FALSE(f.stack.scopeActive());
+    CHECK_FALSE(f.stack.canUndo());
+    CHECK(f.mgr.findComponent(cid)->mesh->vertex_positions_[0] == std::array<double, 3> { 0, 0, 0 });
+}

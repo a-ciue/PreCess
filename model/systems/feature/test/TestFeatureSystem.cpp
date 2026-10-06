@@ -2180,6 +2180,7 @@ namespace {
 //! 开层并预览写一点（模拟预览插件的层开启，handler 自身不关层）
 void openScopePreview(ModelLayer& model_layer, UndoStack& undo, Index comp, const std::array<double, 3>& before)
 {
+    UndoStack::OwnerScope owner_scope(&undo, "FakeFeature");
     REQUIRE(undo.beginScope("预览"));
     auto op = model_layer.getComponentOperator(comp);
     REQUIRE(op.has_value());
