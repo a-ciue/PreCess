@@ -27,7 +27,9 @@ Rectangle {
             bottomMargin: root.dividerItem && !root.dividerItem.horizontal ? -2 : 0
         }
         acceptedButtons: Qt.LeftButton
-        onPressed: root.dividerItem.beginGroupDrag(root.mapToGlobal(mouse.x, mouse.y))
+        onPressed: function(mouse) {
+            root.dividerItem.beginGroupDrag(root.mapToGlobal(mouse.x, mouse.y))
+        }
         onPositionChanged: function(mouse) {
             if (pressed)
                 root.dividerItem.dragTo(root.mapToGlobal(mouse.x, mouse.y))
