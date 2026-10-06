@@ -6,7 +6,7 @@
  * write_components()。MeshData 自包含（vertex_positions_ 常驻坐标、连通性存组件内局部点索引），
  * 测试将源 MeshData 加入 ModelLayer 后即可直接导出，无需全局点池换算。
  * .m 格式以表面三角网格为主，不支持体单元，写出后体信息不会回流。
- * 点/面 {...} 属性段经 v_<key>_<分量数> / f_<key>_<分量数> 命名的属性表回环。
+ * 点/面/边 {...} 属性段经 v_ / f_ / e_ 前缀和分量数后缀命名的属性表回环。
  */
 #include "MModelHandler.h"
 #include "ComponentData.h"
@@ -282,6 +282,55 @@ TEST_CASE("MModelHandler::read_model() preserves Edge attributes", "[MModelHandl
     const std::vector<double> expected_direction = { 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, -1.0, 0.0, 0.0, 0.0 };
     REQUIRE(mesh->edge_attributes_.at("e_direction_3") == expected_direction);
     REQUIRE(mesh->vertex_attributes_.empty());
+
+    // 再导出并读回，全部边属性（含高精度 double 和多分量值）应精确保留。
+    ModelLayer layer;
+    const auto component_ids = addMeshModelAndGetComponentIds(layer, mesh->clone());
+    const fs::path exported_path = core::TempFile::instance().path().string() + "_edges_exported.m";
+    io.write_components(layer, component_ids, exported_path, { });
+    const auto exported_payload = io.read_model(exported_path, { });
+    REQUIRE(exported_payload.has_value());
+    const MeshData* exported_mesh = requireReadableMeshModel(*exported_payload);
+    REQUIRE(exported_mesh->edge_vertices_ == mesh->edge_vertices_);
+    REQUIRE(exported_mesh->edge_attributes_ == mesh->edge_attributes_);
+    REQUIRE(exported_mesh->face_attributes_ == mesh->face_attributes_);
+    REQUIRE(exported_mesh->vertex_positions_ == mesh->vertex_positions_);
+}
+
+TEST_CASE("MModelHandler::write_components() preserves edges without attributes", "[MModelHandler][Edge]")
+{
+    systems::io::MModelHandler io;
+    const fs::path path = core::TempFile::instance().path().string() + "_bare_edges.m";
+    auto mesh = std::make_unique<MeshData>();
+    mesh->init();
+    mesh->vertex_positions_ = { { 0.0, 0.0, 0.0 }, { 1.9067301061999999, 0.0, 0.0 } };
+    mesh->edge_vertices_ = { 1, 0 };
+    const auto expected_positions = mesh->vertex_positions_;
+    ModelLayer layer;
+    const auto component_ids = addMeshModelAndGetComponentIds(layer, std::move(mesh));
+    io.write_components(layer, component_ids, path, { });
+
+    // 独立检查文本语法：端点从 1 起编号，无属性时不输出空属性段。
+    std::ifstream input(path);
+    REQUIRE(input.is_open());
+    std::string line;
+    size_t edge_lines = 0;
+    while (std::getline(input, line)) {
+        if (line.rfind("Edge ", 0) == 0) {
+            REQUIRE(line == "Edge 2 1");
+            ++edge_lines;
+        }
+    }
+    REQUIRE(edge_lines == 1);
+
+    const auto payload = io.read_model(path, { });
+    REQUIRE(payload.has_value());
+    const MeshData* read_mesh = requireReadableMeshModel(*payload);
+    const std::vector<Index> expected_edges = { 1, 0 };
+    REQUIRE(read_mesh->edge_vertices_ == expected_edges);
+    REQUIRE(read_mesh->edge_attributes_.empty());
+    REQUIRE(read_mesh->face_vertices_.empty());
+    REQUIRE(read_mesh->vertex_positions_ == expected_positions);
 }
 
 TEST_CASE("MModelHandler::read_model() skips invalid Edge records", "[MModelHandler][Edge]")
@@ -305,4 +354,69 @@ TEST_CASE("MModelHandler::read_model() skips invalid Edge records", "[MModelHand
     REQUIRE(mesh->edge_vertices_ == expected_edges);
     REQUIRE(mesh->edge_attributes_.size() == 1);
     REQUIRE(mesh->edge_attributes_.at("e_accepted_1") == std::vector<double> { 1.0 });
+}
+
+TEST_CASE("MModelHandler::boolean flags round-trip", "[MModelHandler][Attributes]")
+{
+    systems::io::MModelHandler io;
+    const fs::path path = core::TempFile::instance().path().string() + "_flags.m";
+    std::ofstream output(path);
+    REQUIRE(output.is_open());
+    // 覆盖独立标记、连续标记、与数值属性混写，以及显式零值和缺失值。
+    output << "Vertex 4 0 0 0 {corner}\n"
+              "Vertex 6911 1 0 0\n"
+              "Vertex 42 0 1 0\n"
+              "Face 1 4 6911 42 {selected group=(2)}\n"
+              "Edge 42 4 {sharp=(0)}\n"
+              "Edge 4 6911 {sharp}\n"
+              "Edge 6911 42 {sharp boundary energy = (1.9067301061999999) pinned rgb=(1 0 -1) is_sharp=(0) tail}\n"
+              "Edge 4 42\n";
+    output.close();
+
+    const auto payload = io.read_model(path, { });
+    REQUIRE(payload.has_value());
+    const MeshData* mesh = requireReadableMeshModel(*payload);
+    const std::map<std::string, std::vector<double>> expected_vertex_attributes = {
+        { "v_corner_1", { 1.0, 0.0, 0.0 } }
+    };
+    const std::map<std::string, std::vector<double>> expected_face_attributes = {
+        { "f_selected_1", { 1.0 } }, { "f_group_1", { 2.0 } }
+    };
+    const std::map<std::string, std::vector<double>> expected_edge_attributes = {
+        { "e_sharp_1", { 0.0, 1.0, 1.0, 0.0 } },
+        { "e_boundary_1", { 0.0, 0.0, 1.0, 0.0 } },
+        { "e_energy_1", { 0.0, 0.0, 1.9067301061999999, 0.0 } },
+        { "e_pinned_1", { 0.0, 0.0, 1.0, 0.0 } },
+        { "e_rgb_3", { 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, -1.0, 0.0, 0.0, 0.0 } },
+        { "e_is_sharp_1", { 0.0, 0.0, 0.0, 0.0 } },
+        { "e_tail_1", { 0.0, 0.0, 1.0, 0.0 } }
+    };
+    REQUIRE(mesh->vertex_attributes_ == expected_vertex_attributes);
+    REQUIRE(mesh->face_attributes_ == expected_face_attributes);
+    REQUIRE(mesh->edge_attributes_ == expected_edge_attributes);
+
+    // 统一导出为数值形式，标记的真值和零值均应能完整回读。
+    ModelLayer layer;
+    const auto component_ids = addMeshModelAndGetComponentIds(layer, mesh->clone());
+    const fs::path exported_path = core::TempFile::instance().path().string() + "_flags_exported.m";
+    io.write_components(layer, component_ids, exported_path, { });
+    std::ifstream input(exported_path);
+    REQUIRE(input.is_open());
+    std::string line;
+    bool has_sharp_true = false;
+    bool has_sharp_false = false;
+    while (std::getline(input, line)) {
+        has_sharp_true = has_sharp_true || line.find(" sharp=(1)") != std::string::npos;
+        has_sharp_false = has_sharp_false || line.find(" sharp=(0)") != std::string::npos;
+    }
+    REQUIRE(has_sharp_true);
+    REQUIRE(has_sharp_false);
+
+    const auto exported_payload = io.read_model(exported_path, { });
+    REQUIRE(exported_payload.has_value());
+    const MeshData* exported_mesh = requireReadableMeshModel(*exported_payload);
+    REQUIRE(exported_mesh->vertex_attributes_ == expected_vertex_attributes);
+    REQUIRE(exported_mesh->face_attributes_ == expected_face_attributes);
+    REQUIRE(exported_mesh->edge_attributes_ == expected_edge_attributes);
+    REQUIRE(exported_mesh->edge_vertices_ == mesh->edge_vertices_);
 }

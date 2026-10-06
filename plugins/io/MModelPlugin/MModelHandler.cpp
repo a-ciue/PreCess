@@ -11,6 +11,8 @@
 #include <algorithm>
 #include <cctype>
 #include <fstream>
+#include <iomanip>
+#include <limits>
 #include <map>
 #include <spdlog/spdlog.h>
 #include <sstream>
@@ -45,7 +47,7 @@ std::string traitText(const std::string& line)
 }
 
 /**
- * @brief 解析 .m 属性段中的 key=(v1 v2 ...) 数值属性，例如 g=(1)、rgb=(1 0 0)
+ * @brief 解析 .m 属性段中的数值属性与无值标记；无值标记按单分量数值 1 存储
  */
 std::unordered_map<std::string, std::vector<double>> parseStringAttributes(const std::string& text)
 {
@@ -66,8 +68,8 @@ std::unordered_map<std::string, std::vector<double>> parseStringAttributes(const
         while (pos < text.size() && std::isspace(static_cast<unsigned char>(text[pos])))
             ++pos;
         if (pos >= text.size() || text[pos] != '=') {
-            while (pos < text.size() && !std::isspace(static_cast<unsigned char>(text[pos])))
-                ++pos;
+            // 无等号的 key 表示布尔真；pos 已指向下一属性，不能再跳过其内容。
+            result[key] = { 1.0 };
             continue;
         }
         ++pos;
@@ -369,10 +371,14 @@ void MModelHandler::write_components(const ModelLayer& mgr,
 
     // MeshData 自包含（vertex_positions_ 常驻坐标、连通性存局部点索引），
     // .m 顶点/面 id 从 1 开始，局部点索引 +1 即为文件顶点 id；
-    // 点/面属性按 v_<key>_<分量数> / f_<key>_<分量数> 命名还原为 {...} 属性段
+    // 点/面/边属性按 v_ / f_ / e_ 前缀与分量数后缀还原为 {...} 属性段。
+    // 保留 double 往返所需的有效数字，避免能量等高精度属性在文本导出时被截断。
+    ofs << std::setprecision(std::numeric_limits<double>::max_digits10);
     const size_t face_count = mesh.face_vertices_offset_.empty() ? 0 : mesh.face_vertices_offset_.size() - 1;
+    const size_t edge_count = mesh.edge_vertices_.size() / 2;
     const std::vector<MAttribute> vertex_attributes = collectAttributes(mesh.vertex_attributes_, "v_", mesh.vertex_positions_.size());
     const std::vector<MAttribute> face_attributes = collectAttributes(mesh.face_attributes_, "f_", face_count);
+    const std::vector<MAttribute> edge_attributes = collectAttributes(mesh.edge_attributes_, "e_", edge_count);
 
     for (size_t i = 0; i < mesh.vertex_positions_.size(); ++i) {
         const auto& p = mesh.vertex_positions_[i];
@@ -385,6 +391,12 @@ void MModelHandler::write_components(const ModelLayer& mgr,
         for (Index k = mesh.face_vertices_offset_[f]; k < mesh.face_vertices_offset_[f + 1]; ++k)
             ofs << " " << mesh.face_vertices_[k] + 1;
         writeTrait(ofs, face_attributes, f);
+        ofs << "\n";
+    }
+    // Edge 行只有两个端点编号，无独立边编号；属性按显式边单元顺序输出。
+    for (size_t e = 0; e < edge_count; ++e) {
+        ofs << "Edge " << mesh.edge_vertices_[2 * e] + 1 << " " << mesh.edge_vertices_[2 * e + 1] + 1;
+        writeTrait(ofs, edge_attributes, e);
         ofs << "\n";
     }
 }
