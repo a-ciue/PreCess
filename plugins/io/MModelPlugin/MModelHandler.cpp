@@ -11,9 +11,12 @@
 #include <algorithm>
 #include <cctype>
 #include <fstream>
+#include <iomanip>
+#include <limits>
 #include <map>
 #include <spdlog/spdlog.h>
 #include <sstream>
+#include <stdexcept>
 #include <string>
 #include <unordered_map>
 #include <vector>
@@ -45,7 +48,24 @@ std::string traitText(const std::string& line)
 }
 
 /**
- * @brief 解析 .m 属性段中的 key=(v1 v2 ...) 数值属性，例如 g=(1)、rgb=(1 0 0)
+ * @brief 校验无值标记名称：首字符为 ASCII 字母或下划线，其余为字母、数字或下划线
+ * @param key 待校验的完整标记名称
+ * @return 名称符合无值标记规则时返回 true
+ */
+bool isFlagName(const std::string& key)
+{
+    const auto is_letter = [](unsigned char ch) {
+        return (ch >= 'a' && ch <= 'z') || (ch >= 'A' && ch <= 'Z');
+    };
+    if (key.empty() || (!is_letter(key.front()) && key.front() != '_'))
+        return false;
+    return std::all_of(key.begin() + 1, key.end(), [&](unsigned char ch) {
+        return is_letter(ch) || (ch >= '0' && ch <= '9') || ch == '_';
+    });
+}
+
+/**
+ * @brief 解析 .m 属性段中的数值属性与无值标记；无值标记按单分量数值 1 存储
  */
 std::unordered_map<std::string, std::vector<double>> parseStringAttributes(const std::string& text)
 {
@@ -66,8 +86,11 @@ std::unordered_map<std::string, std::vector<double>> parseStringAttributes(const
         while (pos < text.size() && std::isspace(static_cast<unsigned char>(text[pos])))
             ++pos;
         if (pos >= text.size() || text[pos] != '=') {
-            while (pos < text.size() && !std::isspace(static_cast<unsigned char>(text[pos])))
-                ++pos;
+            // 无等号的 key 表示布尔真；pos 已指向下一属性，不能再跳过其内容。
+            if (isFlagName(key))
+                result[key] = { 1.0 };
+            else
+                spdlog::debug("MModelHandler: skip malformed flag name: {}", key);
             continue;
         }
         ++pos;
@@ -100,7 +123,7 @@ std::unordered_map<std::string, std::vector<double>> parseStringAttributes(const
 /**
  * @brief 将解析出的属性按 <前缀><key>_<分量数> 命名写入属性表，缺失元素补 0
  *
- * 前缀约定同 MeshData：顶点属性 "v_"、面属性 "f_"。
+ * 前缀约定同 MeshData：顶点属性 "v_"、面属性 "f_"、边属性 "e_"。
  */
 void appendAttributes(
     const std::string& prefix,
@@ -200,13 +223,33 @@ void writeTrait(std::ostream& os, const std::vector<MAttribute>& attributes, siz
 
 namespace systems::io {
 std::optional<ModelPayload> MModelHandler::read_model(const fs::path& path, const std::vector<std::any>& args)
-{
+try {
     std::ifstream ifs(path);
     if (!ifs) {
         spdlog::error("MModelHandler: failed to open input file: {}", path.string());
         return std::nullopt;
     }
 
+    auto c = std::make_unique<ComponentData>();
+    c->id = -1;
+    c->name = "Comp_0";
+    c->mesh = readMesh(ifs, path);
+
+    ComponentDatas comps;
+    comps.push_back(std::move(c));
+    return ModelPayload { path.filename().u8string(), std::move(comps) };
+} catch (const std::exception& e) {
+    // 插件入口收口内部异常，避免传播到宿主，并丢弃未完成的模型数据。
+    spdlog::error("MModelHandler::read_model: {}", e.what());
+    return std::nullopt;
+} catch (...) {
+    // 未知异常同样转换为读取失败，宿主不会收到部分模型。
+    spdlog::error("MModelHandler::read_model: unknown exception while reading input file");
+    return std::nullopt;
+}
+
+std::unique_ptr<MeshData> MModelHandler::readMesh(std::istream& ifs, const fs::path& path)
+{
     auto mesh_data = std::make_unique<MeshData>();
     mesh_data->init();
 
@@ -214,7 +257,9 @@ std::optional<ModelPayload> MModelHandler::read_model(const fs::path& path, cons
     std::unordered_map<Index, Index> vertex_index_map;
     std::unordered_map<std::string, size_t> vertex_attribute_components;
     std::unordered_map<std::string, size_t> face_attribute_components;
+    std::unordered_map<std::string, size_t> edge_attribute_components;
 
+    // 第一遍读取顶点和面，建立完整的文件顶点编号映射，不缓存 Edge 原始文本。
     std::string line;
     while (std::getline(ifs, line)) {
         std::istringstream line_stream(line);
@@ -274,8 +319,51 @@ std::optional<ModelPayload> MModelHandler::read_model(const fs::path& path, cons
                 parseStringAttributes(traitText(line)),
                 face_index);
         }
-        // 其余行（Edge / Corner 等仅承载属性的记录）不携带几何信息，忽略
+        // Edge 在第二遍处理，其余行（Corner 等记录）暂不支持。
     }
+    if (ifs.bad())
+        throw std::runtime_error("MModelHandler: failed to read input file: " + path.string());
+
+    // 清除 EOF 并回到文件开头，第二遍按记录顺序流式读边，支持 Edge 先于 Vertex。
+    ifs.clear();
+    ifs.seekg(0, std::ios::beg);
+    if (!ifs)
+        throw std::runtime_error("MModelHandler: failed to rewind input file: " + path.string());
+    while (std::getline(ifs, line)) {
+        // 先识别完整 Edge 关键词，仅对边行构造解析流，避免重复解析顶点和面。
+        const size_t keyword_begin = line.find_first_not_of(" \t\r\n\f\v");
+        if (keyword_begin == std::string::npos || line.compare(keyword_begin, 4, "Edge") != 0)
+            continue;
+        const size_t keyword_end = keyword_begin + 4;
+        if (keyword_end < line.size() && !std::isspace(static_cast<unsigned char>(line[keyword_end])))
+            continue;
+
+        std::istringstream edge_stream(line.substr(keyword_end));
+        Index v0 { }, v1 { };
+        if (!(edge_stream >> v0 >> v1)) {
+            spdlog::warn("MModelHandler: malformed Edge line, skip: {}", line);
+            continue;
+        }
+
+        const auto first = vertex_index_map.find(v0);
+        const auto second = vertex_index_map.find(v1);
+        if (first == vertex_index_map.end() || second == vertex_index_map.end() || v0 == v1) {
+            spdlog::warn("MModelHandler: Edge references unknown or identical vertices, skip: {}", line);
+            continue;
+        }
+
+        const size_t edge_index = mesh_data->edge_vertices_.size() / 2;
+        mesh_data->edge_vertices_.push_back(first->second);
+        mesh_data->edge_vertices_.push_back(second->second);
+        appendAttributes(
+            "e_",
+            mesh_data->edge_attributes_,
+            edge_attribute_components,
+            parseStringAttributes(traitText(line)),
+            edge_index);
+    }
+    if (ifs.bad())
+        throw std::runtime_error("MModelHandler: failed to read input file: " + path.string());
 
     mesh_data->vertex_count_ = static_cast<Index>(mesh_data->vertex_positions_.size());
     // 属性数组补齐：未声明该属性的元素补 0
@@ -284,16 +372,11 @@ std::optional<ModelPayload> MModelHandler::read_model(const fs::path& path, cons
     const size_t face_count = mesh_data->face_vertices_offset_.size() - 1;
     for (auto& [name, values] : mesh_data->face_attributes_)
         values.resize(face_count * face_attribute_components[name], 0.0);
+    const size_t edge_count = mesh_data->edge_vertices_.size() / 2;
+    for (auto& [name, values] : mesh_data->edge_attributes_)
+        values.resize(edge_count * edge_attribute_components[name], 0.0);
 
-    auto c = std::make_unique<ComponentData>();
-    c->id = -1;
-    c->name = "Comp_0";
-    c->mesh = std::move(mesh_data);
-
-    ComponentDatas comps;
-    comps.push_back(std::move(c));
-
-    return ModelPayload { path.filename().u8string(), std::move(comps) };
+    return mesh_data;
 }
 
 void MModelHandler::write_components(const ModelLayer& mgr,
@@ -333,10 +416,14 @@ void MModelHandler::write_components(const ModelLayer& mgr,
 
     // MeshData 自包含（vertex_positions_ 常驻坐标、连通性存局部点索引），
     // .m 顶点/面 id 从 1 开始，局部点索引 +1 即为文件顶点 id；
-    // 点/面属性按 v_<key>_<分量数> / f_<key>_<分量数> 命名还原为 {...} 属性段
+    // 点/面/边属性按 v_ / f_ / e_ 前缀与分量数后缀还原为 {...} 属性段。
+    // 保留 double 往返所需的有效数字，避免能量等高精度属性在文本导出时被截断。
+    ofs << std::setprecision(std::numeric_limits<double>::max_digits10);
     const size_t face_count = mesh.face_vertices_offset_.empty() ? 0 : mesh.face_vertices_offset_.size() - 1;
+    const size_t edge_count = mesh.edge_vertices_.size() / 2;
     const std::vector<MAttribute> vertex_attributes = collectAttributes(mesh.vertex_attributes_, "v_", mesh.vertex_positions_.size());
     const std::vector<MAttribute> face_attributes = collectAttributes(mesh.face_attributes_, "f_", face_count);
+    const std::vector<MAttribute> edge_attributes = collectAttributes(mesh.edge_attributes_, "e_", edge_count);
 
     for (size_t i = 0; i < mesh.vertex_positions_.size(); ++i) {
         const auto& p = mesh.vertex_positions_[i];
@@ -349,6 +436,12 @@ void MModelHandler::write_components(const ModelLayer& mgr,
         for (Index k = mesh.face_vertices_offset_[f]; k < mesh.face_vertices_offset_[f + 1]; ++k)
             ofs << " " << mesh.face_vertices_[k] + 1;
         writeTrait(ofs, face_attributes, f);
+        ofs << "\n";
+    }
+    // Edge 行只有两个端点编号，无独立边编号；属性按显式边单元顺序输出。
+    for (size_t e = 0; e < edge_count; ++e) {
+        ofs << "Edge " << mesh.edge_vertices_[2 * e] + 1 << " " << mesh.edge_vertices_[2 * e + 1] + 1;
+        writeTrait(ofs, edge_attributes, e);
         ofs << "\n";
     }
 }
