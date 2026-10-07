@@ -44,7 +44,7 @@ private:
     QString display_name_; //> 功能UI展示用名称
     QString description_; //> 功能描述
     QString menu_path_; //> 功能归属的菜单路径，以 '/' 分隔，约定两级（"菜单/分组"）：菜单为 ribbon 分页、分组为页内分组
-    QString icon_; //> 自定义图标的 qrc 资源路径，为空时按插件名映射默认图标
+    QString icon_; //> 自定义图标的 qrc 资源路径，为空时使用通用插件图标
     QList<QArgType*> arg_types_; //> 功能参数类型列表
     bool interactive_ = false; //> 是否声明视口交互能力
 };

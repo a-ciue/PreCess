@@ -1,65 +1,46 @@
-# License Information（中文）
+# 许可证说明（中文）
 
-> 本文件为中文翻译版本，仅供参考。
-> **正式许可条款以英文版 `LICENSE.md` 及仓库中的 `LGPLv3-LICENSE.txt` /
-> `AGPLv3-LICENSE.txt` 原文为准。**
-> 若中英文表述存在歧义，以英文版本为准。
+> 本文件为中文译本，仅供参考。若有歧义，以英文版 `LICENSE.md` 及许可证原文为准。
 
-本仓库采用**双许可证**结构，请按目录判断适用许可证。
+## 本仓库自有代码 —— LGPLv3
 
-## Section 1: LGPLv3 —— 核心库与其构建辅助脚本
+**本仓库自有代码统一采用 LGPLv3，第三方组件遵循各自许可证。**
 
-以下目录及其子目录使用 **GNU Lesser General Public License, version 3
-(LGPLv3)**：
+本仓库自有代码与材料采用 **GNU Lesser General Public License 第 3 版
+（LGPLv3）**，SPDX 标识为 `LGPL-3.0-only`。
 
-- `core/`
-- `model/`
-- `cmake/`（辅助定位依赖的 CMake 脚本，同时服务于 LGPL 与 AGPL 层）
+适用范围包括 `core/`、`model/`、`app/`、`plugins/`、`python/`、`examples/`、
+`sdk/`、`cmake/`、`resource/`、测试、文档及根目录构建与配置文件；下述第三方材料除外。
 
-许可证全文见本仓库的 `LGPLv3-LICENSE.txt`。
+LGPLv3 原文见 `LGPLv3-LICENSE.txt`。LGPLv3 引用了 GPLv3 条款并附加额外许可，
+因此同时附带 `GPLv3-LICENSE.txt`；附带 GPLv3 原文不表示本仓库改用 GPLv3。
 
-LGPLv3 允许第三方在**不修改依赖源码**的前提下，把这些目录的产物作为库链接
-到闭源软件中；`cmake/` 中的 Find 模块也可被下游 LGPL 使用者直接复用。
-请勿把非 LGPL 兼容代码引入这些目录。
+LGPLv3 允许应用程序在满足其条件时，以其它条款（包括闭源条款）使用和链接库。
+分发时须保留必要声明，按要求提供受许可覆盖的源码，并满足适用的库替换、重新链接
+及安装信息要求。对 LGPL 代码的修改在分发时仍受 LGPLv3 约束。
+此处为摘要，不能替代许可证原文。
 
-## Section 2: AGPLv3 —— 应用、插件与其它
+## 第三方组件 —— 遵循各自许可证
 
-除 Section 1 覆盖的目录以外的所有代码使用 **GNU Affero General Public
-License, version 3 (AGPLv3)**，包括但不限于：
+第三方源码、库、资源及其它材料保留原版权声明和许可证。本仓库的 LGPLv3 声明
+不会重新许可这些组件，也不会覆盖其原条款。例如，`model/ops/tiny_obj_loader.h`
+保留文件内的 MIT 许可。
 
-- `app/`
-- `plugins/`
-- `test/`
-- `resource/`（应用品牌资源与 Windows 资源脚本，随 `app/` 一同分发）
-- 仓库根目录下的构建脚本、配置与文档
-- `...`
+Qt、OpenCASCADE、VTK、libMeshb 等依赖，以实际使用版本附带的许可证为准。
+分发者须保留其要求的声明和许可原文，并履行各自的源码提供等义务。
 
-许可证全文见本仓库的 `AGPLv3-LICENSE.txt`。
+ZenithGridAddons 等外部插件工程不因本声明而改变许可证。分发主程序与外部插件
+的组合时，须评估并遵守该组合适用的许可；本声明不豁免 GPL 或 AGPL 义务。
 
-之所以整体应用/插件层选用 AGPLv3，是因为插件依赖链中可能包含以 AGPLv3
-许可发布的第三方库。
+## 贡献与依赖规则
 
-## 许可证边界规则
+新增自有代码贡献须采用 LGPLv3，贡献者须具备相应授权权利。引入第三方代码须保留
+原声明，新增依赖须审查，确保保持本仓库的 LGPLv3 许可模式。不得引入会要求
+本仓库本体按 GPL 或 AGPL 分发的代码或依赖。
 
-- **`core/`、`model/`、`cmake/`（LGPLv3）**
-  - `core/` / `model/` 单独作为库链接使用时按 LGPLv3 处理，可被闭源软件动态链接。
-  - `cmake/` 仅在构建期使用，不会被链接进最终二进制；采用 LGPLv3 便于下游
-    LGPL 使用者直接复用其中的 Find 模块。
-  - 允许被 AGPLv3 的 `app/` / `plugins/` 代码调用；LGPLv3 与 AGPLv3 兼容。
-  - 禁止在这些目录中引入 GPL / AGPL / 或与 LGPLv3 不兼容的代码，
-    否则会破坏"闭源二次开发"能力。
-- **`app/`、`plugins/`、`resource/` 及其余目录（AGPLv3）**
-  - 修改或分发这些代码必须遵守 AGPLv3，包括第 13 条"通过网络提供服务时
-    必须提供对应源代码"。
-  - 若发行版打包了任何 AGPLv3 组件，
-    则该发行版整体按 AGPLv3 分发义务处理。
-- **单独发布仅使用 `core/` + `model/` + `cmake/` 的衍生作品**
-  - 只要没有链接 AGPLv3 组件，可以按 LGPLv3 单独发布，不受 AGPL 传染。
-- **新增依赖**
-  - 加入 `core/` / `model/` / `cmake/`：许可证必须与 **LGPLv3** 兼容。
-  - 加入 `app/` / `plugins/` / `resource/` 等 AGPL 区域：许可证必须与
-    **AGPLv3** 兼容。
+本声明不覆盖第三方权利，也不追溯改变此前发行版本的许可。
 
-关于许可证的详细信息，请访问：
+完整条款：
+
 - [GNU Lesser General Public License v3.0](https://www.gnu.org/licenses/lgpl-3.0.html)
-- [GNU Affero General Public License v3.0](https://www.gnu.org/licenses/agpl-3.0.html)
+- [GNU General Public License v3.0](https://www.gnu.org/licenses/gpl-3.0.html)

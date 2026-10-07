@@ -34,7 +34,7 @@ void ScalePreviewHandler::setup(FeatureRegistrar& reg, FeatureContext& ctx)
     reg.addParameter({ ArgTypeEnum::Button, "取消", "", "取消预览：按层内捕获回滚，不成记录（在飞计算一并作废）" });
     // 菜单选项注册：归入 "示例" 菜单分页的默认分组
     // （菜单触发 = 会话态确认预览成记录；无会话直接按因子缩放并成一条记录）
-    reg.addMenuItem({ "示例", "缩放预览演示" });
+    reg.addMenuItem({ "示例", "缩放预览演示", "qrc:/images/toolbar/Panels/scale-preview.svg" });
 
     ctx_ = &ctx;
 

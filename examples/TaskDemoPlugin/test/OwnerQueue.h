@@ -1,6 +1,6 @@
 /** @file OwnerQueue.h
  * @brief 测试用所属线程队列：worker 只投递，主线程明确消费一次收尾。
- * @note 复制自 PreCess model/systems/job/test/OwnerQueue.h（LGPLv3）；其余示例为 AGPLv3。
+ * @note 复制自 PreCess model/systems/job/test/OwnerQueue.h（LGPLv3）。
  */
 #pragma once
 #include <chrono>

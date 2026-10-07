@@ -139,6 +139,10 @@ Item {
             }
 
             Button {
+                icon.source: "qrc:/images/toolbar/Panels/clear-console.svg"
+                icon.width: 14
+                icon.height: 14
+                icon.color: "transparent"
                 text: "清空窗口"
                 flat: true
                 onClicked: outputText.text = "=== PreCess JavaScript 控制台 ===\n\n"

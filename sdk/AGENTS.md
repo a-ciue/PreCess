@@ -7,5 +7,5 @@
 - 保留整个 examples 布局，不手动设置 PRECESS_PLUGIN_IN_TREE；产物在构建根目录的 plugins/。
 - 安装前核对目标主程序与插件扫描目录；构建、测试通过不等于完成主程序加载验证。
 - 模型写入、任务、预览和线程契约按 SDK 头文件与 skill 执行；正式功能优先用 Selector 选择目标。
-- 示例使用 AGPLv3，OwnerQueue 保留 LGPLv3；GPL/AGPL 代码不回灌 LGPL SDK。
+- SDK 示例自有代码统一采用 LGPLv3，第三方组件遵循各自许可证；不得引入会要求 SDK 本体按 GPL/AGPL 分发的代码或依赖。
 - 中文沟通；UTF-8 无 BOM、CRLF；未经要求不提交或推送。

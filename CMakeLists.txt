@@ -150,10 +150,10 @@ add_subdirectory(resource)
 # 插件 SDK 打包：开发文件安装 + find_package(PreCess) 包配置生成（见 cmake/PreCessPackage.cmake）
 include(PreCessPackage)
 
-set(CPACK_PACKAGE_NAME ${MYNAME})
-set(CPACK_PACKAGE_VENDOR ${MYNAME})
-set(CPACK_PACKAGE_ICON "${CMAKE_SOURCE_DIR}\\resource\\${MYNAME}.ico")
-set(CPACK_PACKAGE_DESCRIPTION_SUMMARY "${MYNAME}，专注网格处理的CAE前处理软件。")
+set(CPACK_PACKAGE_NAME "ZenithGrid")
+set(CPACK_PACKAGE_VENDOR "ZenithGrid")
+set(CPACK_PACKAGE_ICON "${CMAKE_SOURCE_DIR}\\resource\\ZenithGrid.ico")
+set(CPACK_PACKAGE_DESCRIPTION_SUMMARY "${CPACK_PACKAGE_NAME}，专注网格处理的CAE前处理软件。")
 set(CPACK_PACKAGE_INSTALL_DIRECTORY ${CPACK_PACKAGE_NAME})
 set(CPACK_PACKAGE_VERSION_MAJOR ${PROJECT_VERSION_MAJOR})
 set(CPACK_PACKAGE_VERSION_MINOR ${PROJECT_VERSION_MINOR})
@@ -190,16 +190,16 @@ set(CPACK_NSIS_MUI_UNIICON
     ${CPACK_PACKAGE_ICON}
 )
 set(CPACK_NSIS_INSTALLED_ICON_NAME bin/${MYNAME}.exe)
-set(CPACK_NSIS_DISPLAY_NAME "${MYNAME}")
-set(CPACK_NSIS_PACKAGE_NAME "${MYNAME}")
+set(CPACK_NSIS_DISPLAY_NAME "${CPACK_PACKAGE_NAME}")
+set(CPACK_NSIS_PACKAGE_NAME "${CPACK_PACKAGE_NAME}")
 set(CPACK_NSIS_ENABLE_UNINSTALL_BEFORE_INSTALL YES)
 set(CPACK_NSIS_CREATE_ICONS_EXTRA
-    "CreateShortCut '$SMPROGRAMS\\\\$STARTMENU_FOLDER\\\\${MYNAME}.lnk' '$INSTDIR\\\\bin\\\\${MYNAME}.exe'
-    CreateShortCut '$DESKTOP\\\\${MYNAME}.lnk' '$INSTDIR\\\\bin\\\\${MYNAME}.exe'"
+    "CreateShortCut '$SMPROGRAMS\\\\$STARTMENU_FOLDER\\\\${CPACK_PACKAGE_NAME}.lnk' '$INSTDIR\\\\bin\\\\${MYNAME}.exe'
+    CreateShortCut '$DESKTOP\\\\${CPACK_PACKAGE_NAME}.lnk' '$INSTDIR\\\\bin\\\\${MYNAME}.exe'"
 )
 set(CPACK_NSIS_DELETE_ICONS_EXTRA
-    "Delete '$SMPROGRAMS\\\\$START_MENU\\\\${MYNAME}.lnk'
-    Delete '$DESKTOP\\\\${MYNAME}.lnk'"
+    "Delete '$SMPROGRAMS\\\\$START_MENU\\\\${CPACK_PACKAGE_NAME}.lnk'
+    Delete '$DESKTOP\\\\${CPACK_PACKAGE_NAME}.lnk'"
 )
 
 set(SUPPORTED_MESH_EXTS .mesh .meshb .obj .step .stp .iges .igs .vtk .m .ply
@@ -209,8 +209,8 @@ set(CPACK_NSIS_EXTRA_UNINSTALL_COMMANDS "")
 
 # 注册到打开方式
 string(APPEND CPACK_NSIS_EXTRA_INSTALL_COMMANDS "
-WriteRegStr HKCR 'Applications\\${MYNAME}.exe' '' '${MYNAME}'
-WriteRegStr HKCR 'Applications\\${MYNAME}.exe' 'FriendlyAppName' '${MYNAME}'
+WriteRegStr HKCR 'Applications\\${MYNAME}.exe' '' '${CPACK_PACKAGE_NAME}'
+WriteRegStr HKCR 'Applications\\${MYNAME}.exe' 'FriendlyAppName' '${CPACK_PACKAGE_NAME}'
 WriteRegStr HKCR 'Applications\\${MYNAME}.exe\\shell\\open\\command' '' '\"$INSTDIR\\bin\\${MYNAME}.exe\" \"%1\"'
 WriteRegStr HKCR 'Applications\\${MYNAME}.exe\\DefaultIcon' '' '$INSTDIR\\bin\\${MYNAME}.exe,0'
 ")
@@ -221,7 +221,7 @@ DeleteRegKey HKCR 'Applications\\${MYNAME}.exe'
 foreach(ext ${SUPPORTED_MESH_EXTS})
     # 添加右键直接打开菜单
     string(APPEND CPACK_NSIS_EXTRA_INSTALL_COMMANDS "
-    WriteRegStr HKCR 'SystemFileAssociations\\${ext}\\shell\\${MYNAME}' '' '使用 ${MYNAME} 打开'
+    WriteRegStr HKCR 'SystemFileAssociations\\${ext}\\shell\\${MYNAME}' '' '使用 ${CPACK_PACKAGE_NAME} 打开'
     WriteRegStr HKCR 'SystemFileAssociations\\${ext}\\shell\\${MYNAME}\\command' '' '\"$INSTDIR\\bin\\${MYNAME}.exe\" \"%1\"'
     # 添加到打开方式列表
     WriteRegStr HKCR 'SystemFileAssociations\\${ext}\\OpenWithProgids' '${MYNAME}${ext}' ''
@@ -237,14 +237,14 @@ include(CPack)
 # 主程序：默认勾选、用户可取消（支持只装插件 SDK 的安装）。
 # CPack 组件语义：无标志=默认勾可取消；DISABLED=默认不勾可手动勾；REQUIRED=恒勾不可取消
 cpack_add_component(${MYNAME}
-    DISPLAY_NAME ${MYNAME}
+    DISPLAY_NAME "${CPACK_PACKAGE_NAME}"
     DESCRIPTION "主程序"
     INSTALL_TYPES Full Minimal
 )
 
 # PreCess 插件作顶层单项（不套组）
 cpack_add_component(AllPlugins
-    DISPLAY_NAME "${MYNAME} 插件"
+    DISPLAY_NAME "${CPACK_PACKAGE_NAME} 插件"
     DESCRIPTION "所有插件"
     DEPENDS ${MYNAME}
     INSTALL_TYPES Full
@@ -252,7 +252,7 @@ cpack_add_component(AllPlugins
 # 开发插件 SDK：DISABLED=默认不勾、组件页可手动勾选；
 # 不挂安装类型（选 Full 不连带）、不 DEPENDS 主程序——可纯 SDK 单独安装
 cpack_add_component(Development
-    DISPLAY_NAME "${MYNAME} 插件 SDK"
+    DISPLAY_NAME "${CPACK_PACKAGE_NAME} 插件 SDK"
     DESCRIPTION "插件开发文件（头文件、模型层库、CMake 包配置、示例源码与开发 skill），供 find_package(PreCess) 独立构建插件"
     DISABLED
 )

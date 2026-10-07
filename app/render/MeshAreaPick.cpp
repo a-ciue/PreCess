@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: AGPL-3.0-or-later
+// SPDX-License-Identifier: LGPL-3.0-only
 /**
  * @file MeshAreaPick.cpp
  * @brief 网格框选的拾取与隔离实现（见 MeshAreaPick.h 的机制说明）
