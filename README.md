@@ -34,10 +34,10 @@
     <img src="https://foruda.gitee.com/images/1754736381119453114/37538937_9363227.png" alt="Logo" width="80" height="80">
   </a>
 
-  <h3 align="center">臻格 ZenithGrid</h3>
+  <h3 align="center">ZenithGrid-OSS</h3>
 
   <p align="center">
-    专注网格处理的CAE前处理软件，面向网格算法开发者与工业界实际网格处理业务需求。
+    ZenithGrid 的开源代码仓库
     <br />
     <a href="https://gitee.com/precess/PreCess/wikis/Home"><strong>项目文档 »</strong></a>
     <br />
@@ -83,11 +83,15 @@
 <!-- ABOUT THE PROJECT -->
 ## 🔭关于项目
 
+### 开源仓库
+
+ZenithGrid-OSS 是 ZenithGrid 的开源代码仓库，由臻格与社区共同建设。我们在这里协作开发、跟踪问题并公开项目路线图，欢迎参与贡献。
+
+### ZenithGrid
+
 [![Product Name Screen Shot][product-screenshot]](https://geohubdut.netlify.app/products/item-a765/)
 
-**"ZenithGrid"** 是面向网格处理的 CAE 前处理软件品牌。公司中文名称为 **臻格**。
-
-**ZenithGrid** 是专注网格处理的 CAE 前处理开源软件，面向网格算法开发者与工业界需求。提供可视化交互框架，用户可在渲染窗口中直接拾取点、线、面、体在内的网格/几何元素等作为算法输入，可视化展示算法结果，降低验证调试成本。应用于网格算法研发、工业 CAE 前处理及游戏资产处理，致力成为 CAE 前处理开源生态底座。
+ZenithGrid 是一款面向 CAE 的网格前处理软件，集成模型导入、网格编辑与可视化，并通过插件扩展算法能力，服务于算法研发与工程应用。
 
 本项目使用**插件化架构**，将功能都封装在插件中。插件按 IO、算法、编辑、功能（`FeatureSystem` 事件驱动，可声明参数、菜单、按键绑定与视口交互能力）四类系统注册，由主程序运行时按需加载。**核心库** `core/` 与 `model/` 采用 **LGPLv3** 许可，允许在不修改依赖源码前提下被闭源软件链接使用；**应用与插件层**（`app/`、`plugins/` 等）采用 **AGPLv3** 许可。
 
