@@ -184,7 +184,6 @@ Item {
                 icon.color: "transparent"
                 text: "恢复默认"
                 flat: true
-                implicitWidth: 70
                 implicitHeight: 26
             }
 
