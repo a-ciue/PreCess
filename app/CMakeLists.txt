@@ -63,11 +63,11 @@ set_target_properties(${MYNAME} PROPERTIES
 )
 
 if(APPLE)
-    set(app_icon_macos "${CMAKE_SOURCE_DIR}/resource/PreCess.icns")
+    set(app_icon_macos "${CMAKE_SOURCE_DIR}/resource/ZenithGrid.icns")
     target_sources(${MYNAME} PRIVATE ${app_icon_macos})
     set_source_files_properties(${app_icon_macos} PROPERTIES MACOSX_PACKAGE_LOCATION Resources)
     set_target_properties(${MYNAME} PROPERTIES
-        MACOSX_BUNDLE_ICON_FILE PreCess.icns
+        MACOSX_BUNDLE_ICON_FILE ZenithGrid.icns
         MACOSX_BUNDLE_GUI_IDENTIFIER com.precess.PreCess
         MACOSX_BUNDLE_BUNDLE_VERSION ${PROJECT_VERSION}
         MACOSX_BUNDLE_SHORT_VERSION_STRING ${PROJECT_VERSION}
@@ -254,7 +254,7 @@ install(FILES "${CMAKE_CURRENT_BINARY_DIR}/index.html"
     DESTINATION ${CMAKE_INSTALL_BINDIR}
     COMPONENT ${MYNAME}
 )
-install(FILES "${CMAKE_CURRENT_SOURCE_DIR}/../resource/PreCess.ico"
+install(FILES "${CMAKE_CURRENT_SOURCE_DIR}/../resource/ZenithGrid.ico"
     DESTINATION ${CMAKE_INSTALL_BINDIR}
     COMPONENT ${MYNAME}
 )

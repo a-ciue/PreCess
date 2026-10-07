@@ -1,7 +1,7 @@
 qt_add_resources(${MYNAME} "images"
     PREFIX /images
     FILES
-        PreCess.ico
+        ZenithGrid.ico
         toolbar/File/import.svg
         toolbar/File/export.svg
         toolbar/File/preference.svg

@@ -69,7 +69,7 @@ int main(int argc, char* argv[])
     QModelManager::argv0 = argv[0];
 
     WASM_GLOBAL QGuiApplication app(argc, argv);
-    app.setWindowIcon(QIcon(":/images/PreCess.ico"));
+    app.setWindowIcon(QIcon(":/images/ZenithGrid.ico"));
     // 持久化身份（QSettings 存储位置）：布局快照等依赖明确的应用名/组织名
     QCoreApplication::setOrganizationName(QStringLiteral("PreCess"));
     QCoreApplication::setApplicationName(QStringLiteral("PreCess"));
