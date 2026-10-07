@@ -11,7 +11,7 @@ void ExternalDemoHandler::setup(FeatureRegistrar& reg, FeatureContext&)
     // 功能参数注册：UI 依声明生成控件，初始值取 ArgType::content
     reg.addParameter({ ArgTypeEnum::Float, "问候次数", "1.0", "执行时打印的演示参数" });
     // 菜单项注册："示例" 菜单分页默认分组
-    reg.addMenuItem({ "示例", "外部插件示例" });
+    reg.addMenuItem({ "示例", "外部插件示例", "qrc:/images/toolbar/precess_extra_plugin.svg" });
     spdlog::info("ExternalDemo: setup");
 }
 

@@ -43,8 +43,7 @@ ColumnLayout {
     property bool outputLogOpen: false
     property bool preferencesOpen: false
 
-    // 已知插件名 → 图标映射，未命中则使用已注册的通用插件图标
-    // 按插件名映射当前资源路径，保留既有 toolbar/<group>/ 目录布局
+    // 算法与编辑系统尚无图标声明字段，暂保留其名称映射。
     readonly property var pluginIconMap: ({
         // 编辑 (mesh)
         "CreateFacePlugin": "qrc:/images/toolbar/Edit/create-face.svg",
@@ -53,50 +52,15 @@ ColumnLayout {
         "TetGenPlugin": "qrc:/images/toolbar/Algorithm/tetgen.svg",
         "TetGenLibPlugin": "qrc:/images/toolbar/Algorithm/tetgen.svg",
         "GmshPlugin": "qrc:/images/toolbar/Algorithm/gmsh.svg",
-        "cmdExecutePlugin": "qrc:/images/toolbar/Algorithm/cmd.svg",
-        // 测量 (measure)
-        "MeasurePlugin": "qrc:/images/toolbar/Measure/measure.svg",
-        "DimensionPlugin": "qrc:/images/toolbar/Measure/dimension.svg",
-        // 网格 (mesh)
-        "MeshQuality": "qrc:/images/toolbar/Function/grid_quality.svg",
-        "MeshBoolean": "qrc:/images/toolbar/Mesh/mesh-boolean.svg",
-        "MeshRepair": "qrc:/images/toolbar/Mesh/mesh-repair.svg",
-        // 演示 (panels)
-        "ScalePreview": "qrc:/images/toolbar/Panels/scale-preview.svg",
-        "FeatureDemo": "qrc:/images/toolbar/Panels/feature-demo.svg",
-        // 几何创建 (geometry) — handler 名带不带 Plugin 后缀两种都映射
-        "CreatePoint": "qrc:/images/toolbar/Geometry/create-point.svg",
-        "CreatePointPlugin": "qrc:/images/toolbar/Geometry/create-point.svg",
-        "CreateLineByCoordinates": "qrc:/images/toolbar/Geometry/line-coordinates.svg",
-        "CreateLineByCoordinatesPlugin": "qrc:/images/toolbar/Geometry/line-coordinates.svg",
-        "CreateLineFromVertices": "qrc:/images/toolbar/Geometry/line-vertices.svg",
-        "CreateLineFromVerticesPlugin": "qrc:/images/toolbar/Geometry/line-vertices.svg",
-        "CreateRectangleFace": "qrc:/images/toolbar/Geometry/rectangle.svg",
-        "CreateRectangleFacePlugin": "qrc:/images/toolbar/Geometry/rectangle.svg",
-        "CreateDiskFace": "qrc:/images/toolbar/Geometry/disk.svg",
-        "CreateDiskFacePlugin": "qrc:/images/toolbar/Geometry/disk.svg",
-        "CreateBox": "qrc:/images/toolbar/Geometry/box.svg",
-        "CreateBoxPlugin": "qrc:/images/toolbar/Geometry/box.svg",
-        "CreateSphere": "qrc:/images/toolbar/Geometry/sphere.svg",
-        "CreateSpherePlugin": "qrc:/images/toolbar/Geometry/sphere.svg",
-        "CreateCylinder": "qrc:/images/toolbar/Geometry/cylinder.svg",
-        "CreateCylinderPlugin": "qrc:/images/toolbar/Geometry/cylinder.svg",
-        "CreateCone": "qrc:/images/toolbar/Geometry/cone.svg",
-        "CreateConePlugin": "qrc:/images/toolbar/Geometry/cone.svg",
-        "CreateFaceFromEdges": "qrc:/images/toolbar/Geometry/face-from-edges.svg",
-        "CreateFaceFromEdgesPlugin": "qrc:/images/toolbar/Geometry/face-from-edges.svg",
-        "ExtrudeFace": "qrc:/images/toolbar/Geometry/extrude.svg",
-        "ExtrudeFacePlugin": "qrc:/images/toolbar/Geometry/extrude.svg",
-        "DeleteGeometry": "qrc:/images/toolbar/Geometry/delete-geometry.svg",
-        "DeleteGeometryPlugin": "qrc:/images/toolbar/Geometry/delete-geometry.svg"
+        "cmdExecutePlugin": "qrc:/images/toolbar/Algorithm/cmd.svg"
     })
     function getIconForPlugin(pluginName) {
         return pluginIconMap[pluginName] || "qrc:/images/toolbar/precess_extra_plugin.svg"
     }
 
-    // 功能图标：优先菜单声明的自定义 qrc 图标，未指定时按插件名映射默认图标
+    // 功能图标由菜单声明提供，未指定时统一使用通用插件图标。
     function getIconForFeature(info) {
-        return info.icon ? info.icon : getIconForPlugin(info.name)
+        return info.icon || "qrc:/images/toolbar/precess_extra_plugin.svg"
     }
 
     function activatePlugin(systemList, pluginName, system) {
