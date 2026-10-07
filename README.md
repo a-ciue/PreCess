@@ -93,7 +93,7 @@ ZenithGrid-OSS 是 ZenithGrid 的开源代码仓库，由臻格与社区共同�
 
 ZenithGrid 是一款面向 CAE 的网格前处理软件，集成模型导入、网格编辑与可视化，并通过插件扩展算法能力，服务于算法研发与工程应用。
 
-本项目使用**插件化架构**，将功能都封装在插件中。插件按 IO、算法、编辑、功能（`FeatureSystem` 事件驱动，可声明参数、菜单、按键绑定与视口交互能力）四类系统注册，由主程序运行时按需加载。**核心库** `core/` 与 `model/` 采用 **LGPLv3** 许可，允许在不修改依赖源码前提下被闭源软件链接使用；**应用与插件层**（`app/`、`plugins/` 等）采用 **AGPLv3** 许可。
+本项目使用**插件化架构**，将功能都封装在插件中。插件按 IO、算法、编辑、功能（`FeatureSystem` 事件驱动，可声明参数、菜单、按键绑定与视口交互能力）四类系统注册，由主程序运行时按需加载。**本仓库自有代码统一采用 LGPLv3，第三方组件遵循各自许可证。**
 
 本项目使用CMake构建，力争做到**跨平台**开发，目标兼容Windows/Linux/MacOS系统。使用前沿开发技术，力争成为工业软件CAE前处理领域前沿的开源软件项目，成为工业软件CAE前处理领域**最好的网格处理开源项目**。
 
@@ -281,23 +281,16 @@ Contributions are what make the open source community such an amazing place to l
 <!-- LICENSE -->
 ## ⚖️许可证
 
-本项目对**不同目录代码**分别采用 `LGPLv3` 与 `AGPLv3` 双许可证：
+**本仓库自有代码统一采用 LGPLv3，第三方组件遵循各自许可证。**
 
-- **`core/`、`model/`、`cmake/`（LGPLv3）**：核心库层与其构建辅助脚本。
-  允许在**不修改依赖源码**的前提下被闭源软件链接使用，便于二次开发；
-  `cmake/` 中的 Find 模块可被下游 LGPL 使用者直接复用。
-- **`app/`、`plugins/`、`resource/` 及其余目录（AGPLv3）**：应用、插件与
-  应用品牌资源。由于插件依赖链中可能包含以 AGPLv3 发布的第三方库，
-  此部分统一采用 AGPLv3；分发或通过网络对外提供服务时须遵守 AGPLv3
-  全部条款（含第 13 条网络分发义务）。
+适用范围包括核心库、应用、项目内插件、Python 模块、SDK 示例、构建脚本、测试与资源。
+第三方源码和依赖保留原版权声明与许可；ZenithGridAddons 等外部插件工程遵循其自身许可证。
 
-LGPLv3 与 AGPLv3 兼容，因此 `app/` / `plugins/` 可以正常调用 `core/` /
-`model/`；只是任何发行版一旦打包了 AGPLv3 组件，整体分发义务按 AGPLv3
-处理。
+LGPLv3 允许在满足其条款时被闭源应用链接使用；分发时须按要求提供受许可覆盖的源码，
+并保障适用的库替换或重新链接权利。对本体的修改在分发时仍须遵守 LGPLv3。
 
-许可证边界与义务详情参见 `LICENSE.md`（正式版本，英文）、
-`LGPLv3-LICENSE.txt` 与 `AGPLv3-LICENSE.txt`。
-中文翻译版本见 `LICENSE.zh-CN.md`（仅供参考，以英文版本为准）。
+详情见 `LICENSE.md`（正式版本，英文）与 `LICENSE.zh-CN.md`（中文参考）。
+许可原文见 `LGPLv3-LICENSE.txt` 及其引用的 `GPLv3-LICENSE.txt`。
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -334,7 +327,7 @@ github镜像：[https://github.com/a-ciue/PreCess](https://github.com/a-ciue/Pre
 [github-stars-url]: https://github.com/a-ciue/PreCess/stargazers
 [issues-shield]: https://svg.hamm.cn/gitee.svg?user=precess&project=PreCess&type=issue
 [issues-url]: https://gitee.com/precess/PreCess/issues
-[license-shield]: https://img.shields.io/badge/license-LGPLv3%2FAGPLv3-blue.svg
+[license-shield]: https://img.shields.io/badge/license-LGPLv3-blue.svg
 [license-url]: https://gitee.com/precess/PreCess/blob/master/LICENSE.md
 [zread-shield]: https://img.shields.io/badge/Ask_Zread-_.svg?style=flat-square&color=00b0aa&labelColor=000000&logo=data%3Aimage%2Fsvg%2Bxml%3Bbase64%2CPHN2ZyB3aWR0aD0iMTYiIGhlaWdodD0iMTYiIHZpZXdCb3g9IjAgMCAxNiAxNiIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHBhdGggZD0iTTQuOTYxNTYgMS42MDAxSDIuMjQxNTZDMS44ODgxIDEuNjAwMSAxLjYwMTU2IDEuODg2NjQgMS42MDE1NiAyLjI0MDFWNC45NjAxQzEuNjAxNTYgNS4zMTM1NiAxLjg4ODEgNS42MDAxIDIuMjQxNTYgNS42MDAxSDQuOTYxNTZDNS4zMTUwMiA1LjYwMDEgNS42MDE1NiA1LjMxMzU2IDUuNjAxNTYgNC45NjAxVjIuMjQwMUM1LjYwMTU2IDEuODg2NjQgNS4zMTUwMiAxLjYwMDEgNC45NjE1NiAxLjYwMDFaIiBmaWxsPSIjZmZmIi8%2BCjxwYXRoIGQ9Ik00Ljk2MTU2IDEwLjM5OTlIMi4yNDE1NkMxLjg4ODEgMTAuMzk5OSAxLjYwMTU2IDEwLjY4NjQgMS42MDE1NiAxMS4wMzk5VjEzLjc1OTlDMS42MDE1NiAxNC4xMTM0IDEuODg4MSAxNC4zOTk5IDIuMjQxNTYgMTQuMzk5OUg0Ljk2MTU2QzUuMzE1MDIgMTQuMzk5OSA1LjYwMTU2IDE0LjExMzQgNS42MDE1NiAxMy43NTk5VjExLjAzOTlDNS42MDE1NiAxMC42ODY0IDUuMzE1MDIgMTAuMzk5OSA0Ljk2MTU2IDEwLjM5OTlaIiBmaWxsPSIjZmZmIi8%2BCjxwYXRoIGQ9Ik0xMy43NTg0IDEuNjAwMUgxMS4wMzg0QzEwLjY4NSAxLjYwMDEgMTAuMzk4NCAxLjg4NjY0IDEwLjM5ODQgMi4yNDAxVjQuOTYwMUMxMC4zOTg0IDUuMzEzNTYgMTAuNjg1IDUuNjAwMSAxMS4wMzg0IDUuNjAwMUgxMy43NTg0QzE0LjExMTkgNS42MDAxIDE0LjM5ODQgNS4zMTM1NiAxNC4zOTg0IDQuOTYwMVYyLjI0MDFDMTQuMzk4NCAxLjg4NjY0IDE0LjExMTkgMS42MDAxIDEzLjc1ODQgMS42MDAxWiIgZmlsbD0iI2ZmZiIvPgo8cGF0aCBkPSJNNCAxMkwxMiA0TDQgMTJaIiBmaWxsPSIjZmZmIi8%2BCjxwYXRoIGQ9Ik00IDEyTDEyIDQiIHN0cm9rZT0iI2ZmZiIgc3Ryb2tlLXdpZHRoPSIxLjUiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIvPgo8L3N2Zz4K&logoColor=ffffff
 [zread-url]: https://zread.ai/a-ciue/PreCess

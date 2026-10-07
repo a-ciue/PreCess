@@ -115,3 +115,13 @@ qt_add_resources(${MYNAME} "images"
         modeltree/show.svg
         modeltree/hide.svg
 )
+
+# 运行时发行包同样附带完整许可，不能只依赖可选的 Development 组件。
+install(FILES
+    "${PROJECT_SOURCE_DIR}/LICENSE.md"
+    "${PROJECT_SOURCE_DIR}/LICENSE.zh-CN.md"
+    "${PROJECT_SOURCE_DIR}/LGPLv3-LICENSE.txt"
+    "${PROJECT_SOURCE_DIR}/GPLv3-LICENSE.txt"
+    DESTINATION "${CMAKE_INSTALL_DATADIR}/licenses/${MYNAME}"
+    COMPONENT ${MYNAME}
+)

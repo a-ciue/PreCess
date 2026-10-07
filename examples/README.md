@@ -1,6 +1,6 @@
 # ZenithGrid / PreCess 插件示例
 
-源码与测试随 SDK 的 Development 组件分发，默认不构建示例 DLL。示例使用 AGPLv3；OwnerQueue 测试辅助头保留 LGPLv3。
+源码与测试随 SDK 的 Development 组件分发，默认不构建示例 DLL。示例自有代码与测试统一采用 LGPLv3，第三方组件遵循各自许可证。
 
 | 示例 | 用途 |
 | --- | --- |
