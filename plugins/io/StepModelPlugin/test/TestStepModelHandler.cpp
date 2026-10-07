@@ -108,7 +108,7 @@ TEST_CASE("StepModelHandler::write_components()/read_model() - English path (box
 
 TEST_CASE("StepModelHandler::write_components()/read_model() - Chinese filename")
 {
-    // 验证中文路径支持（path.u8string()）
+    // 验证中文路径支持（pathUtf8()）
     systems::io::StepModelHandler io;
     ModelLayer layer;
 

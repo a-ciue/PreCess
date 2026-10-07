@@ -27,12 +27,14 @@
 #   cmake -S . -B build -G Ninja "-DCMAKE_PREFIX_PATH=<SDK 前缀>;PreCess-deps 根" -DCMAKE_BUILD_TYPE=Debug
 #   cmake --build build
 #   cmake --install build --prefix <PreCess 安装目录>
-cmake_minimum_required(VERSION 3.24)
-project(ExternalDemoPlugin LANGUAGES CXX)
-set(CMAKE_CXX_STANDARD 17)
-set(CMAKE_CXX_STANDARD_REQUIRED ON)
-
-find_package(PreCess 0.4 REQUIRED)
+cmake_minimum_required(VERSION 3.27)
+# 外部模式声明本目录的插件工程；源码树内模式继承主工程。
+if(NOT PRECESS_PLUGIN_IN_TREE)
+    project(ExternalDemoPlugin LANGUAGES CXX)
+    set(CMAKE_CXX_STANDARD 20)
+    set(CMAKE_CXX_STANDARD_REQUIRED ON)
+endif()
+include("${CMAKE_CURRENT_LIST_DIR}/../ExampleProject.cmake")
 # 插件自用的第三方依赖示例（同 PreCess 构建时的同一 VTK 实例上追加组件）：
 # find_package(VTK REQUIRED COMPONENTS FiltersGeneral)
 
@@ -41,4 +43,6 @@ precess_add_feature_plugin(ExternalDemoPlugin
     PLUGIN_H "ExternalDemoPlugin.h"
 )
 # precess_plugin_link_libraries(ExternalDemoPlugin VTK::FiltersGeneral)
-precess_plugin_install(ExternalDemoPlugin)
+if(NOT PRECESS_PLUGIN_IN_TREE)
+    precess_plugin_install(ExternalDemoPlugin DESTINATION "${PRECESS_EXAMPLE_PLUGIN_INSTALL_DIR}")
+endif()

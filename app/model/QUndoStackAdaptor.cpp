@@ -16,16 +16,16 @@ void QUndoStackAdaptor::undo()
 {
     if (!stack_->canUndo())
         return;
-    stack_->undo(); // stackChanged 由 onChanged 回调发出
-    emit applied();
+    if (stack_->undo()) // 只有真正恢复模型才通知选择集清空。
+        emit applied();
 }
 
 void QUndoStackAdaptor::redo()
 {
     if (!stack_->canRedo())
         return;
-    stack_->redo();
-    emit applied();
+    if (stack_->redo())
+        emit applied();
 }
 
 bool QUndoStackAdaptor::canUndo() const
@@ -50,7 +50,7 @@ QString QUndoStackAdaptor::redoLabel() const
     return label ? QString::fromStdString(*label) : QString();
 }
 
-bool QUndoStackAdaptor::stagedActive() const
+bool QUndoStackAdaptor::scopeActive() const
 {
-    return stack_->stagedActive();
+    return stack_->scopeActive();
 }

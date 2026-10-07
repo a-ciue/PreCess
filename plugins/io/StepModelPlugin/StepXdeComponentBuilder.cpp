@@ -69,7 +69,7 @@ static void collectLeafShapes(
 
 std::optional<ModelPayload> StepXdeComponentBuilder::buildModelData(
     TDocStd_Document& doc,
-    const std::string& modelName)
+    const std::u8string& modelName)
 {
     Handle(XCAFDoc_ShapeTool) shapeTool = XCAFDoc_DocumentTool::ShapeTool(doc.Main());
     if (shapeTool.IsNull()) {
@@ -140,7 +140,7 @@ std::optional<ModelPayload> StepXdeComponentBuilder::buildModelData(
     }
 
     spdlog::info("[STEP-XDE] model '{}' created {} components",
-        modelName, comps.size());
+        u8Narrow(modelName), comps.size());
 
     return ModelPayload { modelName, std::move(comps) };
 }

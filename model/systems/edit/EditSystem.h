@@ -9,7 +9,6 @@
 
 #include <any>
 #include <functional>
-#include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
@@ -24,8 +23,8 @@ class UndoStack;
 namespace systems::edit {
 class EditHandler;
 struct HandlerMetaData {
-    std::string name {}; // 模型编辑操作唯一名称，用作索引
-    std::string display_name {}; // 模型编辑操作UI展示用名称
+    std::string name { }; // 模型编辑操作唯一名称，用作索引
+    std::string display_name { }; // 模型编辑操作UI展示用名称
 };
 
 /**
@@ -70,10 +69,15 @@ public:
     void setOnEditInfoChangedCallback(std::function<void()> callback);
 
 private:
+    //! @brief 同一注册的处理器与信息共同持有，扩容不改变信息地址。
+    struct EditEntry {
+        SystemHandlerPtr handler;
+        EditInfo info;
+    };
+
     ModelLayer* model_manager_; //< 模型管理器引用，用于获取模型操作接口
     UndoStack* undo_stack_ { nullptr }; //< undo 栈引用（可空：无栈时操作边界退化为仅 flush）
-    std::unordered_map<std::string, SystemHandlerPtr> handlers_; //< 模型编辑操作处理器插件列表，key为模型编辑操作唯一名称name
-    std::unordered_map<std::string, std::unique_ptr<EditInfo>> edit_infos_; //< 模型编辑操作信息列表，key为模型编辑操作唯一名称name
+    std::unordered_map<std::string, EditEntry> entries_; //< 注册条目，key 为编辑操作唯一名称
 
     std::function<void()> on_edit_info_changed_; //< 编辑信息变更回调
 };

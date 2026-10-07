@@ -24,10 +24,8 @@ endif()
 
 # ---- 语境与全局约定 -----------------------------------------------------------
 
-if(TARGET PreCessBase)
-    set(PRECESS_PLUGIN_IN_TREE TRUE)
-else()
-    set(PRECESS_PLUGIN_IN_TREE FALSE)
+# 主工程入口或 SDK 包入口负责初始化，不能由是否存在同名目标推断。
+if(NOT PRECESS_PLUGIN_IN_TREE)
     if(NOT TARGET PreCess::Base)
         message(FATAL_ERROR
             "PreCessPlugin.cmake 需要 PreCess 目标：外部构建请先 find_package(PreCess REQUIRED)")
@@ -61,8 +59,9 @@ if(NOT COMMAND qt_add_plugin)
     endif()
 endif()
 
-if(PRECESS_PLUGIN_IN_TREE AND NOT DEFINED plugins_output_dir)
-    set(plugins_output_dir "${CMAKE_CURRENT_BINARY_DIR}")
+# 插件目录独立于实现源码所在的子目录；主工程可提供 macOS bundle 布局。
+if(NOT DEFINED plugins_output_dir)
+    set(plugins_output_dir "${CMAKE_BINARY_DIR}/plugins")
 endif()
 
 # ---- 内部辅助 -----------------------------------------------------------------
@@ -165,6 +164,7 @@ function(_add_plugin TARGET)
     else()
         qt_add_plugin(${TARGET} ${plug_PLUGIN_H})
         set_target_properties(${TARGET} PROPERTIES
+            RUNTIME_OUTPUT_DIRECTORY "${plugins_output_dir}"
             LIBRARY_OUTPUT_DIRECTORY "${plugins_output_dir}"
         )
         if(APPLE)
@@ -173,8 +173,9 @@ function(_add_plugin TARGET)
         # in-tree 自动安装；外部工程经 precess_plugin_install() 显式安装
         if(PRECESS_PLUGIN_IN_TREE)
             install(TARGETS ${TARGET}
-                LIBRARY DESTINATION ${plugins_destination}
                 COMPONENT AllPlugins
+                RUNTIME DESTINATION "${plugins_destination}"
+                LIBRARY DESTINATION "${plugins_destination}"
             )
         endif()
     endif()

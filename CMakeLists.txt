@@ -1,11 +1,14 @@
-cmake_minimum_required(VERSION 3.17)
+cmake_minimum_required(VERSION 3.27)
 
 set(MYNAME PreCess)
 
-project(${MYNAME} VERSION 0.4.0)
+project(${MYNAME} VERSION 0.5.0)
 
-set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
+
+# 插件构建语境由入口统一声明，子目录不再通过目标或目录位置推断。
+set(PRECESS_PLUGIN_IN_TREE TRUE)
 
 # 项目以异常作错误处理机制：MSVC 缺省（无 /EH）下 catch 能捕获但不展开栈（C4530），
 # 捕获异常后继续执行会状态错乱（如 unordered_set 迭代器损坏），须显式启用 /EHsc
@@ -136,6 +139,9 @@ include(PreCessPluginTesting)
 add_subdirectory(core)
 add_subdirectory(model)
 add_subdirectory(python)
+
+# 示例默认仅作为 SDK 源码分发；开发框架时可显式启用并运行原有测试。
+option(PRECESS_BUILD_EXAMPLES "构建 SDK 示例插件与其测试" OFF)
 add_subdirectory(plugins)
 
 add_subdirectory(app)
@@ -247,7 +253,7 @@ cpack_add_component(AllPlugins
 # 不挂安装类型（选 Full 不连带）、不 DEPENDS 主程序——可纯 SDK 单独安装
 cpack_add_component(Development
     DISPLAY_NAME "${MYNAME} 插件 SDK"
-    DESCRIPTION "插件开发文件（头文件、模型层库、CMake 包配置），供 find_package(PreCess) 独立构建插件"
+    DESCRIPTION "插件开发文件（头文件、模型层库、CMake 包配置、示例源码与开发 skill），供 find_package(PreCess) 独立构建插件"
     DISABLED
 )
 cpack_add_install_type(Full)

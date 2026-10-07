@@ -12,6 +12,7 @@ add_library(Data OBJECT
 	ComponentOperator.cpp
 	MeshAdjacency.cpp
 	UndoStack.cpp
+	ModelScope.cpp
 )
 target_include_directories(Data PUBLIC
 	${CMAKE_CURRENT_SOURCE_DIR}   # 头文件路径

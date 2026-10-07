@@ -28,7 +28,7 @@ std::optional<ModelPayload> StepModelHandler::read_model(const fs::path& path, c
 
     STEPCAFControl_Reader reader;
     // 使用UTF-8编码字符串路径，配合C++17 std::filesystem处理中文路径
-    IFSelect_ReturnStatus stat = reader.ReadFile(path.u8string().c_str());
+    IFSelect_ReturnStatus stat = reader.ReadFile(pathUtf8(path).c_str());
     if (stat != IFSelect_RetDone) {
         spdlog::error("Failed to read STEP file: {}", path.string());
         return std::nullopt;

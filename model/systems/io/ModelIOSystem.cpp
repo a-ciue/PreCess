@@ -4,22 +4,23 @@
  */
 #include "ModelIOSystem.h"
 #include "ModelIOHandler.h"
-#include "ModelIOInfo.h"
 #include "ModelLayer.h"
+#include "ModelScope.h"
 
 #include <optional>
 #include <spdlog/fmt/ranges.h>
 #include <spdlog/spdlog.h>
+#include <utility>
 
 namespace systems::io {
 using std::string;
-using std::unique_ptr;
 using std::vector;
 
 const string ModelIOSystem::name = "ModelIOSystem";
 
-ModelIOSystem::ModelIOSystem(ModelLayer& manager)
+ModelIOSystem::ModelIOSystem(ModelLayer& manager, UndoStack* stack)
     : manager_(&manager)
+    , undo_stack_(stack)
 {
     on_dialog_name_filters_changed_ = []() { };
 }
@@ -28,72 +29,81 @@ ModelIOSystem::~ModelIOSystem() = default;
 
 bool ModelIOSystem::read(const std::filesystem::path& path, const string& file_type, const std::vector<std::any>& args)
 {
-    // 检查文件类型是否已注册
-    SystemHandler* handler = this->handlers_.count(file_type) ? this->handlers_[file_type].get() : nullptr;
-    if (!handler) {
-        spdlog::error(R"(file type "{}" not registered when read model file)", file_type);
+    ModelScope scope(*manager_, undo_stack_, "添加模型");
+    auto payload = parseModel(path, file_type, args);
+    if (!payload)
         return false;
+
+    this->manager_->addModel(u8Narrow(payload->model_name), std::move(payload->components));
+    return true;
+}
+
+std::optional<ModelPayload> ModelIOSystem::parseModel(const std::filesystem::path& path, const string& file_type,
+    const std::vector<std::any>& args)
+{
+    // 检查文件类型是否已注册
+    auto it = entries_.find(file_type);
+    if (it == entries_.end()) {
+        spdlog::error(R"(file type "{}" not registered when read model file)", file_type);
+        return std::nullopt;
     }
 
-    auto payload = handler->read_model(path, args);
+    auto payload = it->second.handler->read_model(path, args);
     if (!payload) {
         spdlog::error(R"(failed to read model from file "{}" as file type "{}")", path.string(), file_type);
-        return false;
+        return std::nullopt;
     }
-
-    this->manager_->addModel(payload->model_name, std::move(payload->components));
-    return true;
+    return payload;
 }
 
 void ModelIOSystem::write(Index model, const std::filesystem::path& path, const string& file_type, const std::vector<std::any>& args)
 {
     // 检查文件类型是否已注册
-    SystemHandler* handler = this->handlers_.count(file_type) ? this->handlers_[file_type].get() : nullptr;
-    if (!handler) {
+    auto it = entries_.find(file_type);
+    if (it == entries_.end()) {
         spdlog::warn("file type {} not registered when write model file", file_type);
         return;
     }
 
     auto* m = manager_->modelById(model);
-    auto cids = m ? m->componentIds() : std::vector<Index>{};
+    auto cids = m ? m->componentIds() : std::vector<Index> { };
     if (cids.empty()) {
         spdlog::warn("ModelIOSystem::write: model {} has no components", model);
         return;
     }
 
-    handler->write_components(*manager_, cids, path, args);
+    it->second.handler->write_components(*manager_, cids, path, args);
 }
 
 void ModelIOSystem::writeComponents(const std::vector<Index>& component_ids,
-        const std::filesystem::path& path,
-        const std::string& file_type,
-        const std::vector<std::any>& args)
+    const std::filesystem::path& path,
+    const std::string& file_type,
+    const std::vector<std::any>& args)
 {
-    SystemHandler* handler = handlers_.count(file_type) ? handlers_[file_type].get() : nullptr;
-    if (!handler) {
+    auto it = entries_.find(file_type);
+    if (it == entries_.end()) {
         spdlog::warn("file type {} not registered when write model file", file_type);
         return;
     }
 
-    handler->write_components(*manager_, component_ids, path, args);
+    it->second.handler->write_components(*manager_, component_ids, path, args);
 }
 
 bool ModelIOSystem::registerHandler(const HandlerMetaData& meta_data, SystemHandlerPtr handler)
 {
-    string file_type = meta_data.file_type;
-    if (this->handlers_.count(file_type)) {
-        // 不允许重复注册
+    manager_->assertOperationIdle();
+    const string& file_type = meta_data.file_type;
+    if (!handler || entries_.contains(file_type)) {
+        // 保持重复格式拒绝；不访问无效或被拒处理器的元数据。
         return false;
     }
 
-    auto info = std::make_unique<ModelIOInfo>(ModelIOInfo { file_type,
+    ModelIOInfo info { file_type,
         "", // TODO: 以后从meta_data中获取描述信息
         meta_data.extensions,
         handler->read_args_type(),
-        handler->write_args_type() });
-    this->file_type_infos_[file_type] = std::move(info);
-
-    this->handlers_[file_type] = std::move(handler);
+        handler->write_args_type() };
+    entries_.emplace(file_type, IOEntry { std::move(handler), std::move(info) });
 
     spdlog::info("registered file type: {}, supported file extension: {}", file_type, fmt::join(meta_data.extensions, ", "));
     on_dialog_name_filters_changed_();
@@ -103,9 +113,9 @@ bool ModelIOSystem::registerHandler(const HandlerMetaData& meta_data, SystemHand
 
 void ModelIOSystem::unregisterHandler(const HandlerMetaData& meta_data)
 {
+    manager_->assertOperationIdle();
     const string& file_type = meta_data.file_type;
-    this->handlers_.erase(file_type);
-    this->file_type_infos_.erase(file_type);
+    entries_.erase(file_type);
 
     spdlog::info("unregistered file type: {}", file_type);
     on_dialog_name_filters_changed_();
@@ -114,9 +124,9 @@ void ModelIOSystem::unregisterHandler(const HandlerMetaData& meta_data)
 std::vector<ModelIOInfo*> ModelIOSystem::registeredFileTypeInfos()
 {
     vector<ModelIOInfo*> infos;
-    infos.reserve(file_type_infos_.size());
-    for (auto&& [algo_name, algo_info] : file_type_infos_) {
-        infos.push_back(algo_info.get());
+    infos.reserve(entries_.size());
+    for (auto&& [file_type, entry] : entries_) {
+        infos.push_back(&entry.info);
     }
 
     return infos;

@@ -4,7 +4,7 @@
 # find_package(PreCess COMPONENTS Tests) 由 PreCessConfig.cmake include。
 # 测试链接写法保持与模型层归并前一致（模块目标名 + 裸 TK*，或插件的 <target>lib +
 # FeatureSystem Data）；归并后模块为 OBJECT 库、模块间 link 不传递对象文件，下方
-# precess_test_link_libraries 统一追加聚合归档（in-tree PreCessBase / 外部 PreCess::Base）
+# precess_test_link_libraries 统一追加聚合归档（统一使用 PreCess::Base）
 # 兜底跨模块对象缺口——等价于归并前 STATIC 的传递归档语义，测试文件因此零特判。
 # 运行时 DLL 目录由 $<TARGET_RUNTIME_DLL_DIRS> 按链接闭包自动收集，不依赖调用方显式罗列库清单。
 
@@ -62,14 +62,7 @@ endfunction()
 # TestGeometryBuilder DataOps TK...）依赖的跨模块对象由该归档补足
 function(precess_test_link_libraries TARGET)
     if(BUILD_TESTING)
-        if(TARGET PreCessBase)
-            set(_precess_test_base PreCessBase)
-        elseif(TARGET PreCess::Base)
-            set(_precess_test_base PreCess::Base)
-        else()
-            set(_precess_test_base "")
-        endif()
-        target_link_libraries(${TARGET} PRIVATE ${ARGN} ${_precess_test_base})
+        target_link_libraries(${TARGET} PRIVATE ${ARGN} PreCess::Base)
     endif()
 endfunction()
 

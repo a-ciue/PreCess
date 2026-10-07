@@ -55,8 +55,25 @@ Pane {
         target: QModelManager.observer
         function onModelAdded(modelId)   { refreshTimer.restart() }
         function onModelChanged(modelId) { refreshTimer.restart() }
-        function onModelRemoved(modelId) { refreshTimer.restart() }
-        function onComponentRemoved(componentId) { refreshTimer.restart() }
+        function onModelRemoved(modelId) {
+            if (App.selection.activeModelId === modelId) {
+                treeView.selectionModel.clear()
+                App.selection.activeComponentId = -1
+                App.selection.activeModelId = -1
+            }
+            refreshTimer.restart()
+        }
+        function onComponentRemoved(componentId) {
+            if (App.selection.activeComponentId === componentId) {
+                // 实际删除当前组件后保留所属模型，并选择剩余的第一个组件。
+                const ownerModelId = App.selection.activeModelId
+                treeView.selectionModel.clear()
+                App.selection.activeComponentId = -1
+                App.selection.activeComponentId = QModelManager.query.hasModel(ownerModelId)
+                        ? objectTree.firstComponentId(ownerModelId) : -1
+            }
+            refreshTimer.restart()
+        }
         function onComponentChanged(componentId) { refreshTimer.restart() }
     }
 
@@ -432,27 +449,9 @@ Pane {
 
     function deleteNode(nodeId, depth, nodeType, componentId) {
         if (depth === 0) {
-            // 删除当前 Model 时，其关联的 Component 也会一并失效。
-            if (App.selection.activeModelId === nodeId) {
-                treeView.selectionModel.clear()
-                App.selection.activeComponentId = -1
-                App.selection.activeModelId = -1
-            }
             QModelManager.removeModel(nodeId)
         } else if (depth === 1) {
-            // 删除当前 Component 后保留所属 Model，并选中剩余的第一个 Component。
-            const deletingActiveComponent = App.selection.activeComponentId === nodeId
-            const ownerModelId = deletingActiveComponent
-                ? QModelManager.query.findModelIdByComponent(nodeId) : -1
-            if (deletingActiveComponent) {
-                treeView.selectionModel.clear()
-                App.selection.activeComponentId = -1
-            }
             QModelManager.removeComponent(nodeId)
-            if (deletingActiveComponent) {
-                App.selection.activeModelId = ownerModelId
-                App.selection.activeComponentId = objectTree.firstComponentId(ownerModelId)
-            }
         } else if (depth === 2 && nodeType === objectTree._nodeTypeMesh) {
             QModelManager.removeMesh(componentId)
         } else if (depth === 2 && nodeType === objectTree._nodeTypeGeometry) {

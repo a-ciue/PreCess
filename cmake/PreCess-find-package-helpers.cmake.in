@@ -1,7 +1,8 @@
 # PreCess 三方包查找引导：记录 PreCess 构建时各边界内三方包的查找位置，
 # 引导插件侧 find_package 命中同一实例（仅在用户未显式设置时写入，不覆盖用户指定）。
 # 与 PreCessABI.cmake 的版本钉对配合：即使引导失效，错配也会在配置期报错。
-# 许可证边界外依赖（gmsh/tetgen/CGAL）不在此引导：SDK 不为其提供任何查找支持。
+# 许可证边界外依赖不在此引导：SDK 不为其提供查找支持。
+# 相关依赖由独立插件工程自行 find_package 并承担许可证义务。
 set(_precess_find_hints
     spdlog_DIR "@spdlog_DIR@"
     OpenCASCADE_DIR "@OpenCASCADE_DIR@"

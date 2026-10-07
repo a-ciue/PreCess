@@ -2,6 +2,7 @@
  * @file TestSession.cpp
  * @brief Session 组合根测试（子系统装配、观察者转发与 ModelEvent 桥接、有序拆解）
  */
+#include "ModelScope.h"
 #include "Session.h"
 
 #include "ComponentData.h"
@@ -60,6 +61,14 @@ struct EventCounter {
 };
 }
 
+namespace {
+Index addTestModel(Session& session)
+{
+    ModelScope command(session.model(), &session.undoStack(), "添加模型");
+    return session.model().addModel("A", { });
+}
+}
+
 TEST_CASE("Session assembles subsystems and bridges model events", "[session]")
 {
     RecordingObserver observer;
@@ -69,15 +78,15 @@ TEST_CASE("Session assembles subsystems and bridges model events", "[session]")
 
     SECTION("加模型：宿主观察者与 ModelEvent 同时收到通知")
     {
-        const Index model_id = s.model().addModel("A", { });
+        const Index model_id = addTestModel(s);
         CHECK(observer.model_added == 1);
         CHECK(counter.added == 1);
         CHECK(s.query().hasModel(model_id));
     }
 
-    SECTION("结构操作即时成 undo 记录，undo 恢复并通知")
+    SECTION("结构操作通过边界记录，undo 恢复并通知")
     {
-        s.model().addModel("A", { });
+        addTestModel(s);
         REQUIRE(s.undoStack().canUndo());
         s.undoStack().undo();
         CHECK(s.query().listModels().empty());
@@ -88,23 +97,31 @@ TEST_CASE("Session assembles subsystems and bridges model events", "[session]")
 
     SECTION("removeModel 经会话入口删除并通知")
     {
-        const Index model_id = s.model().addModel("A", { });
+        const Index model_id = addTestModel(s);
         s.removeModel(model_id);
         CHECK(s.query().listModels().empty());
         CHECK(observer.model_removed == 1);
         CHECK(counter.removed == 1);
+        REQUIRE(s.undoStack().undo());
+        CHECK(s.query().hasModel(model_id));
+        REQUIRE(s.undoStack().redo());
+        CHECK_FALSE(s.query().hasModel(model_id));
     }
 
     SECTION("removeGeometry 为操作边界：undo 记录 + 通知 flush")
     {
-        const Index model_id = s.model().addModel("A", { });
+        const Index model_id = addTestModel(s);
         auto geometry = std::make_unique<GeometryData>();
         geometry->setRootShape(GeometryBuilder::makeBox(0.0, 0.0, 0.0, 1.0, 1.0, 1.0));
         auto component = std::make_unique<ComponentData>();
         component->name = "Box";
         component->geometry = std::move(geometry);
         auto op = s.model().getModelOperator(model_id);
-        const Index comp_id = op->addGeometryComponent(std::move(component));
+        Index comp_id;
+        {
+            ModelScope command(s.model(), &s.undoStack(), "添加组件");
+            comp_id = op->addGeometryComponent(std::move(component));
+        }
         REQUIRE(s.query().hasComponent(comp_id));
         const int component_changed_before = observer.component_changed;
 
@@ -119,7 +136,7 @@ TEST_CASE("Session assembles subsystems and bridges model events", "[session]")
 
     SECTION("teardown 幂等：重复调用与析构安全")
     {
-        s.model().addModel("A", { });
+        addTestModel(s);
         s.teardown();
         s.teardown();
     }
@@ -131,7 +148,7 @@ TEST_CASE("Session works without host observer", "[session]")
     EventCounter counter;
     counter.subscribe(s.events());
 
-    s.model().addModel("A", { });
+    addTestModel(s);
     CHECK(counter.added == 1);
     CHECK(s.query().listModels().size() == 1);
     CHECK(s.undoStack().canUndo());

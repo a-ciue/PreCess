@@ -11,13 +11,12 @@
 #include <string>
 #include <vector>
 
-namespace systems::feature {
 namespace {
 //! @brief 功能结果 std::any → QVariant
 QVariant anyToQVariant(const std::any& value)
 {
     if (!value.has_value())
-        return {};
+        return { };
 
     if (value.type() == typeid(std::string))
         return QString::fromStdString(std::any_cast<std::string>(value));
@@ -43,9 +42,11 @@ QVariant anyToQVariant(const std::any& value)
         return list;
     }
 
-    return {};
+    return { };
 }
 }
+
+namespace systems::feature {
 
 QFeatureSystemAdaptor::QFeatureSystemAdaptor(FeatureSystem& feature_system)
     : feature_system_(&feature_system)
@@ -54,6 +55,8 @@ QFeatureSystemAdaptor::QFeatureSystemAdaptor(FeatureSystem& feature_system)
         emit featuresInfoChanged();
     });
 }
+
+QFeatureSystemAdaptor::~QFeatureSystemAdaptor() = default;
 
 FeatureSystem* QFeatureSystemAdaptor::featureSystem() const
 {
@@ -87,11 +90,7 @@ void QFeatureSystemAdaptor::notifyScalarAttributeDisplayRequested(
 {
     const QString q_attribute_name = QString::fromStdString(attribute_name);
     // FeatureSystem 在 execute 返回后统一 flush，排队发送可保证 QML 在模型刷新后设置渲染属性。
-    QMetaObject::invokeMethod(this,
-        [this, component_id, q_attribute_name]() {
-            emit scalarAttributeDisplayRequested(component_id, q_attribute_name);
-        },
-        Qt::QueuedConnection);
+    QMetaObject::invokeMethod(this, [this, component_id, q_attribute_name]() { emit scalarAttributeDisplayRequested(component_id, q_attribute_name); }, Qt::QueuedConnection);
 }
 
 bool QFeatureSystemAdaptor::setParameter(const QString& unique_name, int index, const QVariant& value)

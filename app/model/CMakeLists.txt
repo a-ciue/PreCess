@@ -20,6 +20,8 @@ qt_add_qml_module(modelQml
         QModelQuery.cpp
         QModelManager.h
         QModelManager.cpp
+        QTaskStatus.h
+        QTaskStatus.cpp
         QPythonRuntimeQml.h
         "${CMAKE_CURRENT_BINARY_DIR}/QArgType.h"
         QArgObject.h

@@ -103,7 +103,7 @@ endfunction()
 
 # 三方库版本钉对：插件侧命中的实例必须与 PreCess 构建时一致。
 # 分级依据三方互依拓扑（docs/plugin-sdk-design.md §5.1）：
-# - VTK/Qt/OCCT 属"单实例强约束"且被下游二进制锁死（gmsh 硬锁 OCCT；TKIVtk 锁 VTK -9.6 前缀）→ FATAL
+# - VTK/Qt/OCCT 存在跨 DLL 对象交互及三方互依，须保持同一实例 → FATAL
 # - spdlog 无下游锁、ABI 面窄 → WARN
 function(_precess_check_third_party_versions)
     if(PRECESS_ALLOW_ABI_MISMATCH)
@@ -125,8 +125,8 @@ function(_precess_check_third_party_versions)
             AND NOT OpenCASCADE_VERSION VERSION_EQUAL "${PRECESS_ABI_OCCT_VERSION}")
         message(FATAL_ERROR
             "OpenCASCADE 版本不匹配：PreCess 构建于 ${PRECESS_ABI_OCCT_VERSION}，当前命中 ${OpenCASCADE_VERSION}。"
-            "OCCT 是三方互依的重耦合节点：gmsh 二进制硬锁 TK*、TKIVtk（VIS）锁 VTK 且与 OCCT 对象跨 DLL 传递，"
-            "版本错配为运行期崩溃级。升级 OCCT 须连带核对 gmsh/TKIVtk 对应关系")
+            "OCCT 对象跨 DLL 传递，且 TKIVtk（VIS）与 VTK 存在版本依赖。"
+            "版本错配可能导致运行期崩溃，升级 OCCT 须连带核对 TKIVtk/VTK 对应关系")
     endif()
     if(NOT "${PRECESS_ABI_SPDLOG_VERSION}" STREQUAL "" AND DEFINED spdlog_VERSION
             AND NOT spdlog_VERSION VERSION_EQUAL "${PRECESS_ABI_SPDLOG_VERSION}")

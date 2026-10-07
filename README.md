@@ -117,15 +117,23 @@
 * [![spdlog][spdlog]][spdlog-url]
 * [![Catch2][Catch2]][Catch2-url]
 
-**插件层功能依赖**（由 `PreCess-deps.bat` 或 `PreCess-deps.sh` 获取，随对应插件按需构建）：
+**插件专属依赖**由各自的独立插件工程获取与构建，本仓库只维护主程序及 SDK 的依赖。
 
-* [![CGAL][CGAL]][CGAL-url]：插件共用网格转换层 `plugins/shared/cgal_support` 与网格修复插件（CGAL PMP）
-* [![Gmsh][Gmsh]][Gmsh-url]：Gmsh 渐进式网格划分插件（`gmsh::shared`）
-* [![TetGen][TetGen]][TetGen-url]：TetGen 体网格剖分插件（`tetgen::tetgen`，旧版调用外部 `tetgen` 可执行文件）
+**插件来源与构建方式**（命令见 [examples/README.md](examples/README.md)）：
+
+| 插件来源 | 随主程序构建 | 使用已安装 SDK 独立构建 |
+| --- | --- | --- |
+| 项目内插件 plugins/ | 主工程注册，自动构建与安装 | 未提供独立入口 |
+| 两用示例 examples/ | PRECESS_BUILD_EXAMPLES=ON，默认 OFF | 同一份源码保留独立入口，随 SDK 分发 |
+| 独立插件工程 | 不纳入主工程 | 使用 SDK 与配套依赖 |
+
+随主程序构建的项目内插件和示例共用输出、安装目录；共享头变更后全部重建。SDK 独立开发按 ABI 提示核对兼容性及目标安装目录，开发 skill 随 Development 组件分发。
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 ## 🚀快速构建项目
+
+需要 CMake 3.27+；插件测试辅助接口使用该版本引入的生成器表达式。
 
 #### Windows用户
 
@@ -147,12 +155,11 @@ cmake --build ./build --target install
 ## ⚙️功能用法
 
 - **模型导入与展示**：支持 IGES、STEP、OBJ、PLY、STL、`.m`、Medit `.mesh`、Gmsh `.msh`、Abaqus `.inp`、VTK `.vtk`、VTK XML（`.vtp`/`.vtu`）、`.off` 等格式导入与展示，支持多文件同时导入；几何与网格分层组织、网格/几何渲染风格切换（如「网格·面·带网格线」「网格·线·带内部线」等）、体网格切面裁剪。
-- **交互式选择与算法调用**：组件/点/边/面/体/几何点线面体选择器，网格面支持按角度扩散多选；对选择结果调用网格算法插件（Gmsh 渐进式划分、TetGen/TetGenLib 体网格剖分、CCGMeshToNURBS、执行 cmd 命令等）。
+- **交互式选择与算法调用**：组件/点/边/面/体/几何点线面体选择器，网格面支持按角度扩散多选；对选择结果调用网格算法插件（CCGMeshToNURBS、执行 cmd 命令等）。
 - **几何处理**：基础图元创建——点、直线边（坐标/选点）、矩形面、圆盘/扇形面、长方体、圆柱、圆锥/圆台、球体/部分球体；几何编辑——闭合边成面、面拉伸为实体、删除几何。以功能系统插件提供，菜单点选后经参数侧栏执行。
 - **网格编辑**：创建面、删除面等编辑插件。
 - **测量与尺寸标注**：视口交互测量与参数化尺寸标注（距离/角度/半径/长度/面积/体积/包围盒/重心）。
 - **网格质量分析**：计算所选组件的网格质量并生成标量属性，支持属性渲染与颜色表。
-- **网格修复**：基于 CGAL PMP 的孔洞三角化填补、自相交面检测、退化面清理。
 - **可定制停靠界面**：内嵌停靠组件（`app/dock/`），面板可停靠、浮动、合并为标签页；多标签分组为标签模式（标签顶满、每个标签可单独关闭、横向拖动重排、拖放到目标标签栏按插入位置落点、右键菜单与标签列表下拉），单标签分组为标题模式；浮窗内无显示面板时自动回收（多分组浮窗逐组归还主区域）；面板可声明 `closable`/`movable`/`floatable` 能力，中央渲染窗口作为持久部件受保护（不可拖动/合并）；布局支持持久化（退出保存、启动恢复）。
 - **插件开发与集成**：功能皆插件，按 IO/算法/编辑/功能（FeatureSystem 事件驱动）四类系统注册；功能可声明参数、菜单、按键绑定与视口交互能力，示例见 `plugins/` 目录。
 
@@ -344,9 +351,3 @@ github镜像：[https://github.com/a-ciue/PreCess](https://github.com/a-ciue/Pre
 [spdlog-url]: https://github.com/gabime/spdlog
 [Catch2]: https://img.shields.io/badge/Catch2-000000?style=for-the-badge&logo=catch2&logoColor=white
 [Catch2-url]: https://github.com/catchorg/Catch2
-[CGAL]: https://img.shields.io/badge/CGAL-000000?style=for-the-badge&logo=cgal&logoColor=white
-[CGAL-url]: https://www.cgal.org/
-[Gmsh]: https://img.shields.io/badge/Gmsh-000000?style=for-the-badge&logo=gmsh&logoColor=white
-[Gmsh-url]: https://gmsh.info/
-[TetGen]: https://img.shields.io/badge/TetGen-000000?style=for-the-badge&logo=tetgen&logoColor=white
-[TetGen-url]: https://wias-berlin.de/software/tetgen/
