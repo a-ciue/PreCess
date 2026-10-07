@@ -303,7 +303,7 @@ LGPLv3 允许在满足其条款时被闭源应用链接使用；分发时须按�
 ## 📞联系方式
 
 <div align="center">
-    <img src="https://foruda.gitee.com/images/1754749758923219333/0f73d9d8_9363227.png" alt="Logo" width="300">
+    <img src="resource/readme/zenithgrid-qq-group.jpg" alt="ZenithGrid-OSS QQ 交流群二维码，群号 947396008" width="300">
 </div>
 
 主仓库：[ZenithGrid](https://gitee.com/ZenithGrid/ZenithGrid)
