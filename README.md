@@ -31,7 +31,7 @@
 <br />
 <div align="center">
   <a href="https://gitee.com/precess/PreCess">
-    <img src="https://foruda.gitee.com/images/1754736381119453114/37538937_9363227.png" alt="Logo" width="80" height="80">
+    <img src="resource/pwa/icons/icon-512.png" alt="ZenithGrid Logo" width="80" height="80">
   </a>
 
   <h3 align="center">ZenithGrid-OSS</h3>
