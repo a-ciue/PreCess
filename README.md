@@ -30,7 +30,7 @@
 <!-- PROJECT LOGO -->
 <br />
 <div align="center">
-  <a href="https://gitee.com/precess/PreCess">
+  <a href="https://gitee.com/ZenithGrid/ZenithGrid">
     <img src="resource/pwa/icons/icon-512.png" alt="ZenithGrid Logo" width="80" height="80">
   </a>
 
@@ -39,16 +39,18 @@
   <p align="center">
     ZenithGrid 的开源代码仓库
     <br />
-    <a href="https://gitee.com/precess/PreCess/wikis/Home"><strong>项目文档 »</strong></a>
+    <a href="https://gitee.com/ZenithGrid/ZenithGrid/wikis/Home"><strong>项目文档 »</strong></a>
     <br />
     <br />
     <a href="https://precess.dawncraft.cc/">在线体验</a>
     &middot;
-    <a href="https://gitee.com/precess/PreCess/releases">发行版</a>
+    <a href="https://gitee.com/ZenithGrid/ZenithGrid/releases">发行版</a>
     &middot;
-    <a href="https://gitee.com/precess/PreCess/issues/new?template=1-bug%E6%8A%A5%E5%91%8A.yml">Bug 报告</a>
+    <a href="https://gitee.com/ZenithGrid/ZenithGridAddons">扩展插件</a>
     &middot;
-    <a href="https://gitee.com/precess/PreCess/issues/new?template=3-%E5%8A%9F%E8%83%BD%E5%BB%BA%E8%AE%AE.yml">功能反馈</a>
+    <a href="https://gitee.com/ZenithGrid/ZenithGrid/issues/new?template=1-bug%E6%8A%A5%E5%91%8A.yml">Bug 报告</a>
+    &middot;
+    <a href="https://gitee.com/ZenithGrid/ZenithGrid/issues/new?template=3-%E5%8A%9F%E8%83%BD%E5%BB%BA%E8%AE%AE.yml">功能反馈</a>
   </p>
 </div>
 
@@ -86,6 +88,9 @@
 ### 开源仓库
 
 ZenithGrid-OSS 是 ZenithGrid 的开源代码仓库，由臻格与社区共同建设。我们在这里协作开发、跟踪问题并公开项目路线图，欢迎参与贡献。
+
+- **[ZenithGrid](https://gitee.com/ZenithGrid/ZenithGrid)**：主程序、核心库、SDK 与项目内插件。
+- **[ZenithGridAddons](https://gitee.com/ZenithGrid/ZenithGridAddons)**：围绕 ZenithGrid 的 GPL 功能套件，通过独立插件提供几何操作、网格生成、网格修复等扩展能力，使用已安装的 SDK 独立构建；依赖与许可证见该仓库说明。
 
 ### ZenithGrid
 
@@ -129,7 +134,7 @@ ZenithGrid 是一款面向 CAE 的网格前处理软件，集成模型导入、�
 | --- | --- | --- |
 | 项目内插件 plugins/ | 主工程注册，自动构建与安装 | 未提供独立入口 |
 | 两用示例 examples/ | PRECESS_BUILD_EXAMPLES=ON，默认 OFF | 同一份源码保留独立入口，随 SDK 分发 |
-| 独立插件工程 | 不纳入主工程 | 使用 SDK 与配套依赖 |
+| 独立插件工程（如 [ZenithGridAddons](https://gitee.com/ZenithGrid/ZenithGridAddons)） | 不纳入主工程 | 使用 SDK 与配套依赖 |
 
 随主程序构建的项目内插件和示例共用输出、安装目录；共享头变更后全部重建。SDK 独立开发按 ABI 提示核对兼容性及目标安装目录，开发 skill 随 Development 组件分发。
 
@@ -141,7 +146,7 @@ ZenithGrid 是一款面向 CAE 的网格前处理软件，集成模型导入、�
 
 #### Windows用户
 
-1. 在本项目[发行版页面](https://gitee.com/precess/PreCess/releases)，下载带预编译依赖包`PreCess-deps`与项目源码`PreCess`，并解压放置在相同目录`<path>`
+1. 在本项目[发行版页面](https://gitee.com/ZenithGrid/ZenithGrid/releases)，下载带预编译依赖包`PreCess-deps`与项目源码`PreCess`，并解压放置在相同目录`<path>`
 2. `Win`+`Q`搜索并打开`x64 Native Tools Command Prompt for VS 2022`
 3. 执行命令：
 ```bash
@@ -167,7 +172,7 @@ cmake --build ./build --target install
 - **可定制停靠界面**：内嵌停靠组件（`app/dock/`），面板可停靠、浮动、合并为标签页；多标签分组为标签模式（标签顶满、每个标签可单独关闭、横向拖动重排、拖放到目标标签栏按插入位置落点、右键菜单与标签列表下拉），单标签分组为标题模式；浮窗内无显示面板时自动回收（多分组浮窗逐组归还主区域）；面板可声明 `closable`/`movable`/`floatable` 能力，中央渲染窗口作为持久部件受保护（不可拖动/合并）；布局支持持久化（退出保存、启动恢复）。
 - **插件开发与集成**：功能皆插件，按 IO/算法/编辑/功能（FeatureSystem 事件驱动）四类系统注册；功能可声明参数、菜单、按键绑定与视口交互能力，示例见 `plugins/` 目录。
 
-_For more examples, please refer to the [Documentation](https://gitee.com/precess/PreCess/wikis/Home)_
+_For more examples, please refer to the [Documentation](https://gitee.com/ZenithGrid/ZenithGrid/wikis/Home)_
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -240,7 +245,7 @@ _For more examples, please refer to the [Documentation](https://gitee.com/preces
 * [ ] 动画系统：一些算法的执行过程就是完美的动画
 * [ ] 操作结果预览：Blender在进行某些网格操作如挤出收口等操作时，有预览效果可以看得到。但这要UI与算法功能强相关，功能又在dll插件里，跨层操作难度大。参考Blender
 
-可以查看开启的或进行中的 [Issues](https://gitee.com/precess/PreCess/issues) 或 [里程碑](https://gitee.com/precess/PreCess/milestones) 来了解每个任务目前的具体进度。也可以**开启新的Issue**描述遇到的bug、建议或新的项目需求。
+可以查看开启的或进行中的 [Issues](https://gitee.com/ZenithGrid/ZenithGrid/issues) 或 [里程碑](https://gitee.com/ZenithGrid/ZenithGrid/milestones) 来了解每个任务目前的具体进度。也可以**开启新的Issue**描述遇到的bug、建议或新的项目需求。
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -256,7 +261,7 @@ Contributions are what make the open source community such an amazing place to l
 在此从简单开始列举可以为项目的**贡献形式**：
 
 1. 给项目一个**Star**🌟！
-2. **新建[Issue](https://gitee.com/precess/PreCess/issues)**：反馈项目bug、功能改进建议、新功能建议。写Issue时按照给定模板进行填写，并标注对应的tag标签。如，
+2. **新建[Issue](https://gitee.com/ZenithGrid/ZenithGrid/issues)**：反馈项目bug、功能改进建议、新功能建议。写Issue时按照给定模板进行填写，并标注对应的tag标签。如，
    * 项目Bug：反馈程序运行过程中遇到的bug，填写Issue时附带程序的输出记录。最好能做到稳定复现Bug，并附带Bug的复现操作流程。标注**bug标签**
    * 改进建议：标注enhancement标签
    * 新功能：标注feature标签
@@ -269,7 +274,7 @@ Contributions are what make the open source community such an amazing place to l
 
 在AI时代理论上**每个人都可以**修改项目代码并实现功能，如果缺少指导与项目结构理解可以[参与交流](#联系方式)。**贡献代码**难度由简单排序：
 
-1. 修改完善项目**[Wiki文档](https://gitee.com/precess/PreCess/wikis)**、根据[注释要求](https://gitee.com/precess/PreCess/wikis/%E4%BB%A3%E7%A0%81%E6%8F%90%E4%BA%A4%E8%A7%84%E8%8C%83#%E6%B3%A8%E9%87%8A)完善程序**注释**
+1. 修改完善项目**[Wiki文档](https://gitee.com/ZenithGrid/ZenithGrid/wikis)**、根据[注释要求](https://gitee.com/ZenithGrid/ZenithGrid/wikis/%E4%BB%A3%E7%A0%81%E6%8F%90%E4%BA%A4%E8%A7%84%E8%8C%83#%E6%B3%A8%E9%87%8A)完善程序**注释**
 2. 为项目补充缺失的单元**测试**等测试代码
 3. 发现并调试修复程序中的**bug**
 4. 基于现有架构做**二次开发**，开发软件拓展插件，集成网格算法等功能
@@ -284,7 +289,7 @@ Contributions are what make the open source community such an amazing place to l
 **本仓库自有代码统一采用 LGPLv3，第三方组件遵循各自许可证。**
 
 适用范围包括核心库、应用、项目内插件、Python 模块、SDK 示例、构建脚本、测试与资源。
-第三方源码和依赖保留原版权声明与许可；ZenithGridAddons 等外部插件工程遵循其自身许可证。
+第三方源码和依赖保留原版权声明与许可；[ZenithGridAddons](https://gitee.com/ZenithGrid/ZenithGridAddons) 等外部插件工程遵循其自身许可证。
 
 LGPLv3 允许在满足其条款时被闭源应用链接使用；分发时须按要求提供受许可覆盖的源码，
 并保障适用的库替换或重新链接权利。对本体的修改在分发时仍须遵守 LGPLv3。
@@ -301,7 +306,9 @@ LGPLv3 允许在满足其条款时被闭源应用链接使用；分发时须按�
     <img src="https://foruda.gitee.com/images/1754749758923219333/0f73d9d8_9363227.png" alt="Logo" width="300">
 </div>
 
-仓库链接: [https://gitee.com/precess/PreCess](https://gitee.com/precess/PreCess)
+主仓库：[ZenithGrid](https://gitee.com/ZenithGrid/ZenithGrid)
+
+扩展插件仓库：[ZenithGridAddons](https://gitee.com/ZenithGrid/ZenithGridAddons)
 
 github镜像：[https://github.com/a-ciue/PreCess](https://github.com/a-ciue/PreCess)
 
@@ -317,18 +324,18 @@ github镜像：[https://github.com/a-ciue/PreCess](https://github.com/a-ciue/Pre
 
 <!-- MARKDOWN LINKS & IMAGES -->
 <!-- https://www.markdownguide.org/basic-syntax/#reference-style-links -->
-[contributors-shield]: https://img.shields.io/endpoint?url=https%3A%2F%2Fgitee-badge.vercel.app%2Fjson%2Fcontributors%2Fprecess%2FPreCess
-[contributors-url]: https://gitee.com/precess/PreCess/graphs/contributors
-[forks-shield]: https://gitee.com/precess/PreCess/badge/fork.svg?theme=dark
-[forks-url]: https://gitee.com/precess/PreCess/network/members
-[stars-shield]: https://gitee.com/precess/PreCess/badge/star.svg?theme=dark
-[stars-url]: https://gitee.com/precess/PreCess/stargazers
+[contributors-shield]: https://img.shields.io/endpoint?url=https%3A%2F%2Fgitee-badge.vercel.app%2Fjson%2Fcontributors%2FZenithGrid%2FZenithGrid
+[contributors-url]: https://gitee.com/ZenithGrid/ZenithGrid/graphs/contributors
+[forks-shield]: https://gitee.com/ZenithGrid/ZenithGrid/badge/fork.svg?theme=dark
+[forks-url]: https://gitee.com/ZenithGrid/ZenithGrid/network/members
+[stars-shield]: https://gitee.com/ZenithGrid/ZenithGrid/badge/star.svg?theme=dark
+[stars-url]: https://gitee.com/ZenithGrid/ZenithGrid/stargazers
 [github-stars-shield]: https://img.shields.io/github/stars/a-ciue/PreCess?style=social
 [github-stars-url]: https://github.com/a-ciue/PreCess/stargazers
-[issues-shield]: https://svg.hamm.cn/gitee.svg?user=precess&project=PreCess&type=issue
-[issues-url]: https://gitee.com/precess/PreCess/issues
+[issues-shield]: https://svg.hamm.cn/gitee.svg?user=ZenithGrid&project=ZenithGrid&type=issue
+[issues-url]: https://gitee.com/ZenithGrid/ZenithGrid/issues
 [license-shield]: https://img.shields.io/badge/license-LGPLv3-blue.svg
-[license-url]: https://gitee.com/precess/PreCess/blob/master/LICENSE.md
+[license-url]: https://gitee.com/ZenithGrid/ZenithGrid/blob/master/LICENSE.md
 [zread-shield]: https://img.shields.io/badge/Ask_Zread-_.svg?style=flat-square&color=00b0aa&labelColor=000000&logo=data%3Aimage%2Fsvg%2Bxml%3Bbase64%2CPHN2ZyB3aWR0aD0iMTYiIGhlaWdodD0iMTYiIHZpZXdCb3g9IjAgMCAxNiAxNiIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHBhdGggZD0iTTQuOTYxNTYgMS42MDAxSDIuMjQxNTZDMS44ODgxIDEuNjAwMSAxLjYwMTU2IDEuODg2NjQgMS42MDE1NiAyLjI0MDFWNC45NjAxQzEuNjAxNTYgNS4zMTM1NiAxLjg4ODEgNS42MDAxIDIuMjQxNTYgNS42MDAxSDQuOTYxNTZDNS4zMTUwMiA1LjYwMDEgNS42MDE1NiA1LjMxMzU2IDUuNjAxNTYgNC45NjAxVjIuMjQwMUM1LjYwMTU2IDEuODg2NjQgNS4zMTUwMiAxLjYwMDEgNC45NjE1NiAxLjYwMDFaIiBmaWxsPSIjZmZmIi8%2BCjxwYXRoIGQ9Ik00Ljk2MTU2IDEwLjM5OTlIMi4yNDE1NkMxLjg4ODEgMTAuMzk5OSAxLjYwMTU2IDEwLjY4NjQgMS42MDE1NiAxMS4wMzk5VjEzLjc1OTlDMS42MDE1NiAxNC4xMTM0IDEuODg4MSAxNC4zOTk5IDIuMjQxNTYgMTQuMzk5OUg0Ljk2MTU2QzUuMzE1MDIgMTQuMzk5OSA1LjYwMTU2IDE0LjExMzQgNS42MDE1NiAxMy43NTk5VjExLjAzOTlDNS42MDE1NiAxMC42ODY0IDUuMzE1MDIgMTAuMzk5OSA0Ljk2MTU2IDEwLjM5OTlaIiBmaWxsPSIjZmZmIi8%2BCjxwYXRoIGQ9Ik0xMy43NTg0IDEuNjAwMUgxMS4wMzg0QzEwLjY4NSAxLjYwMDEgMTAuMzk4NCAxLjg4NjY0IDEwLjM5ODQgMi4yNDAxVjQuOTYwMUMxMC4zOTg0IDUuMzEzNTYgMTAuNjg1IDUuNjAwMSAxMS4wMzg0IDUuNjAwMUgxMy43NTg0QzE0LjExMTkgNS42MDAxIDE0LjM5ODQgNS4zMTM1NiAxNC4zOTg0IDQuOTYwMVYyLjI0MDFDMTQuMzk4NCAxLjg4NjY0IDE0LjExMTkgMS42MDAxIDEzLjc1ODQgMS42MDAxWiIgZmlsbD0iI2ZmZiIvPgo8cGF0aCBkPSJNNCAxMkwxMiA0TDQgMTJaIiBmaWxsPSIjZmZmIi8%2BCjxwYXRoIGQ9Ik00IDEyTDEyIDQiIHN0cm9rZT0iI2ZmZiIgc3Ryb2tlLXdpZHRoPSIxLjUiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIvPgo8L3N2Zz4K&logoColor=ffffff
 [zread-url]: https://zread.ai/a-ciue/PreCess
 [linkedin-shield]: https://img.shields.io/badge/-111-black.svg?colorB=555
