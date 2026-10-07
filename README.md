@@ -34,7 +34,7 @@
     <img src="https://foruda.gitee.com/images/1754736381119453114/37538937_9363227.png" alt="Logo" width="80" height="80">
   </a>
 
-  <h3 align="center">前蔚处理 ZenithGrid</h3>
+  <h3 align="center">臻格 ZenithGrid</h3>
 
   <p align="center">
     专注网格处理的CAE前处理软件，面向网格算法开发者与工业界实际网格处理业务需求。
@@ -85,7 +85,7 @@
 
 [![Product Name Screen Shot][product-screenshot]](https://geohubdut.netlify.app/products/item-a765/)
 
-**"ZenithGrid"** 是面向网格处理的 CAE 前处理软件品牌。**前蔚处理** 取自 **前处理**。
+**"ZenithGrid"** 是面向网格处理的 CAE 前处理软件品牌。公司中文名称为 **臻格**。
 
 **ZenithGrid** 是专注网格处理的 CAE 前处理开源软件，面向网格算法开发者与工业界需求。提供可视化交互框架，用户可在渲染窗口中直接拾取点、线、面、体在内的网格/几何元素等作为算法输入，可视化展示算法结果，降低验证调试成本。应用于网格算法研发、工业 CAE 前处理及游戏资产处理，致力成为 CAE 前处理开源生态底座。
 
