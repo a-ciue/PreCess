@@ -89,7 +89,7 @@ ZenithGrid-OSS 是 ZenithGrid 的开源代码仓库，由臻格与社区共同�
 
 ### ZenithGrid
 
-[![Product Name Screen Shot][product-screenshot]](https://geohubdut.netlify.app/products/item-a765/)
+[![ZenithGrid 网格处理与算法开发平台][product-screenshot]](https://geohubdut.netlify.app/products/item-a765/)
 
 ZenithGrid 是一款面向 CAE 的网格前处理软件，集成模型导入、网格编辑与可视化，并通过插件扩展算法能力，服务于算法研发与工程应用。
 
@@ -333,7 +333,7 @@ github镜像：[https://github.com/a-ciue/PreCess](https://github.com/a-ciue/Pre
 [zread-url]: https://zread.ai/a-ciue/PreCess
 [linkedin-shield]: https://img.shields.io/badge/-111-black.svg?colorB=555
 [linkedin-url]: https://linkedin.com/in/linkedin_username
-[product-screenshot]: resource/PreCess_letter.png
+[product-screenshot]: resource/readme/zenithgrid-banner.png
 [C++]: https://img.shields.io/badge/C++%2017-000000?style=for-the-badge&logo=cplusplus&logoColor=white
 [C++-url]: https://cppreference.com/
 [CMake]: https://img.shields.io/badge/CMake-000000?style=for-the-badge&logo=cmake&logoColor=white
