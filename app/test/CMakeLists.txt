@@ -54,7 +54,7 @@ precess_test_link_libraries(TestUndoQml modelQml modelQmlplugin SystemQmlplugin 
 qt_add_resources(TestUndoQml undo_ui
     PREFIX "/undo-ui"
     BASE "${CMAKE_CURRENT_SOURCE_DIR}/.."
-    FILES ../AlgorithmNavigation.js ../Theme.qml ../SideBar.qml ../ObjectTree.qml ../CentralRenderArea.qml ../Selector.qml)
+    FILES ../AlgorithmNavigation.js ../Theme.qml ../SideBar.qml ../OperationSession.qml ../OperationParameterModel.qml ../ObjectTree.qml ../CentralRenderArea.qml ../Selector.qml)
 
 # 验证主窗口实际遮罩的覆盖范围和鼠标拦截，保留状态栏取消入口。
 precess_add_test(TestBusyMask TestBusyMask.cpp)
@@ -70,7 +70,7 @@ precess_test_link_libraries(TestAlgorithmNavigation modelQml modelQmlplugin Syst
 qt_add_resources(TestAlgorithmNavigation navigation_ui
     PREFIX "/navigation-ui"
     BASE "${CMAKE_CURRENT_SOURCE_DIR}/.."
-    FILES ../SideBar.qml ../AppToolbar.qml ../AlgorithmNavigation.js ../RibbonTabButton.qml ../RibbonActionButton.qml ../Theme.qml)
+    FILES ../SideBar.qml ../OperationSession.qml ../OperationParameterModel.qml ../AppToolbar.qml ../AlgorithmNavigation.js ../RibbonTabButton.qml ../RibbonActionButton.qml ../Theme.qml)
 qt_add_resources(TestAlgorithmNavigation navigation_icons
     PREFIX "/images"
     BASE "${CMAKE_SOURCE_DIR}/resource"

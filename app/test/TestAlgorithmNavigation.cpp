@@ -1,20 +1,19 @@
 /** @file TestAlgorithmNavigation.cpp
  * @brief 算法导航的分类兼容、排序及实际工具栏加载测试
  */
+#include "ComponentData.h"
 #include "FeatureContext.h"
 #include "FeatureEvents.h"
 #include "FeatureHandler.h"
 #include "FeatureParams.h"
-#include "ComponentData.h"
-#include "GeometryData.h"
 #include "FeatureRegistrar.h"
 #include "FeatureSystem.h"
+#include "GeometryData.h"
 #include "QAlgorithmInfo.h"
 #include "QFeatureInfo.h"
 #include "QModelManager.h"
 #include "QSelection.h"
 
-#include <TopoDS_Shape.hxx>
 #include <QEventLoop>
 #include <QFile>
 #include <QFontDatabase>
@@ -31,6 +30,7 @@
 #include <QQuickWindow>
 #include <QTemporaryDir>
 #include <QTimer>
+#include <TopoDS_Shape.hxx>
 #include <catch2/catch_test_macros.hpp>
 #include <memory>
 
@@ -80,6 +80,16 @@ void pressKey(QQuickWindow& window, int key, Qt::KeyboardModifiers modifiers = Q
     QKeyEvent release(QEvent::KeyRelease, key, modifiers, text);
     QCoreApplication::sendEvent(&window, &release);
 }
+std::unique_ptr<QObject> createSession(QQmlEngine& engine)
+{
+    QQmlComponent component(&engine, QUrl("qrc:/navigation-ui/OperationSession.qml"));
+    INFO(component.errorString().toStdString());
+    REQUIRE(component.isReady());
+    std::unique_ptr<QObject> session(component.create());
+    INFO(component.errorString().toStdString());
+    REQUIRE(session);
+    return session;
+}
 class ButtonProbe : public systems::feature::FeatureHandler {
 public:
     explicit ButtonProbe(int& presses)
@@ -94,6 +104,36 @@ public:
 
 private:
     int& presses_;
+    core::EventBus::Subscription subscription_;
+};
+struct ParameterProbeState {
+    int notifications { 0 };
+    int activations { 0 };
+    double activated_value { 0 };
+};
+class ParameterProbe : public systems::feature::FeatureHandler {
+public:
+    ParameterProbe(std::vector<core::ArgType> types, ParameterProbeState& state)
+        : types_(std::move(types))
+        , state_(state)
+    {
+    }
+    void setup(systems::feature::FeatureRegistrar& reg, systems::feature::FeatureContext& ctx) override
+    {
+        for (const auto& type : types_)
+            reg.addParameter(type);
+        subscription_ = ctx.events.subscribe<systems::feature::ParameterChangedEvent>([this](const auto&) { ++state_.notifications; });
+    }
+    void activate(systems::feature::FeatureContext& ctx) override
+    {
+        ++state_.activations;
+        state_.activated_value = *ctx.params.value(0).get<ArgTypeEnum::Float>();
+        ctx.params.setValue(4, core::ArgObject::create<ArgTypeEnum::Float>(7.0));
+    }
+
+private:
+    std::vector<core::ArgType> types_;
+    ParameterProbeState& state_;
     core::EventBus::Subscription subscription_;
 };
 void application()
@@ -222,10 +262,11 @@ TEST_CASE("Actual toolbar keeps four mesh categories available and preserves act
     CHECK(categories->property("contentWidth").toReal() > categories->width());
     item->setWidth(800);
 
+    auto session = createSession(engine);
     QQmlComponent sidebar_component(&engine, QUrl("qrc:/navigation-ui/SideBar.qml"));
     INFO(sidebar_component.errorString().toStdString());
     REQUIRE(sidebar_component.isReady());
-    std::unique_ptr<QObject> sidebar(sidebar_component.create());
+    std::unique_ptr<QObject> sidebar(sidebar_component.createWithInitialProperties({ { "session", QVariant::fromValue(session.get()) } }));
     REQUIRE(sidebar);
     auto* sidebar_item = qobject_cast<QQuickItem*>(sidebar.get());
     REQUIRE(sidebar_item);
@@ -248,7 +289,7 @@ TEST_CASE("Actual toolbar keeps four mesh categories available and preserves act
     auto infos = engine.newArray(2);
     infos.setProperty(0, engine.newQObject(&first));
     infos.setProperty(1, engine.newQObject(&second));
-    REQUIRE(sidebar->setProperty("algorithmInfos", QVariant::fromValue(infos)));
+    REQUIRE(session->setProperty("algorithmInfos", QVariant::fromValue(infos)));
     auto* triangle = findItem(item, "algorithmCategory_triangle");
     REQUIRE(triangle);
     REQUIRE(QMetaObject::invokeMethod(triangle, "clicked"));
@@ -270,6 +311,68 @@ TEST_CASE("Actual toolbar keeps four mesh categories available and preserves act
     auto* selection = app->property("selection").value<QObject*>();
     REQUIRE(selection);
     selection->setProperty("listeningSelectorIndex", 0);
+    // 无关插件增删和描述包装刷新不能重新开始当前操作。
+    QAlgorithmInfo unrelated("unrelated", "其他算法", "", {});
+    QAlgorithmInfo refreshed_first("first", "Legacy library name", "", { &size, &quality }, nullptr,
+        { "triangle", "tetrahedron" }, "", "", 0, "更新后的算法名称");
+    auto refreshed = engine.newArray(3);
+    refreshed.setProperty(0, engine.newQObject(&refreshed_first));
+    refreshed.setProperty(1, engine.newQObject(&second));
+    refreshed.setProperty(2, engine.newQObject(&unrelated));
+    REQUIRE(session->setProperty("algorithmInfos", QVariant::fromValue(refreshed)));
+    {
+        QEventLoop loop;
+        QTimer::singleShot(50, &loop, &QEventLoop::quit);
+        loop.exec();
+    }
+    CHECK(sidebar->property("parameters").value<QJSValue>().property(0).toNumber() == 9.0);
+    CHECK(selection->property("listeningSelectorIndex").toInt() == 0);
+    CHECK(selector->property("currentText").toString() == refreshed_first.label());
+    REQUIRE(session->setProperty("algorithmInfos", QVariant::fromValue(infos)));
+    {
+        QEventLoop loop;
+        QTimer::singleShot(50, &loop, &QEventLoop::quit);
+        loop.exec();
+    }
+    CHECK(sidebar->property("parameters").value<QJSValue>().property(0).toNumber() == 9.0);
+    CHECK(selection->property("listeningSelectorIndex").toInt() == 0);
+    // 会话由宿主持有，销毁并重建整个面板也不能丢失参数或选择监听。
+    sidebar.reset();
+    QCoreApplication::processEvents();
+    auto* parameter_model = session->property("parameterModel").value<QObject*>();
+    REQUIRE(parameter_model);
+    CHECK(parameter_model->property("values").value<QJSValue>().property(0).toNumber() == 9.0);
+    CHECK(selection->property("listeningSelectorIndex").toInt() == 0);
+    sidebar.reset(sidebar_component.createWithInitialProperties({ { "session", QVariant::fromValue(session.get()) } }));
+    sidebar_item = qobject_cast<QQuickItem*>(sidebar.get());
+    REQUIRE(sidebar_item);
+    sidebar_item->setParentItem(window.contentItem());
+    sidebar_item->setY(180);
+    sidebar_item->setSize(QSizeF(360, 500));
+    {
+        QEventLoop loop;
+        QTimer::singleShot(50, &loop, &QEventLoop::quit);
+        loop.exec();
+    }
+    selector = findItem(sidebar_item, "meshAlgorithmSelector");
+    REQUIRE(selector);
+    CHECK(sidebar->property("parameters").value<QJSValue>().property(0).toNumber() == 9.0);
+    CHECK(selection->property("listeningSelectorIndex").toInt() == 0);
+    // 同名算法的参数声明发生变化时，则必须重新初始化。
+    const core::ArgType changed_size_type { ArgTypeEnum::Float, "目标尺寸", "2", "" };
+    QArgType changed_size(changed_size_type);
+    QAlgorithmInfo changed_first("first", "Changed", "", { &changed_size, &quality }, nullptr, { "triangle", "tetrahedron" });
+    auto changed_infos = engine.newArray(2);
+    changed_infos.setProperty(0, engine.newQObject(&changed_first));
+    changed_infos.setProperty(1, engine.newQObject(&second));
+    REQUIRE(session->setProperty("algorithmInfos", QVariant::fromValue(changed_infos)));
+    {
+        QEventLoop loop;
+        QTimer::singleShot(50, &loop, &QEventLoop::quit);
+        loop.exec();
+    }
+    CHECK(sidebar->property("parameters").value<QJSValue>().property(0).toNumber() == 2.0);
+    CHECK(selection->property("listeningSelectorIndex").toInt() == -1);
     REQUIRE(QMetaObject::invokeMethod(selector, "activated", Q_ARG(int, 1)));
     {
         QEventLoop loop;
@@ -311,7 +414,7 @@ TEST_CASE("Actual toolbar keeps four mesh categories available and preserves act
     // 动态卸载选择项后切到可用项，全部移除时不再持有旧参数和执行闭包。
     auto remaining = engine.newArray(1);
     remaining.setProperty(0, engine.newQObject(&first));
-    REQUIRE(sidebar->setProperty("algorithmInfos", QVariant::fromValue(remaining)));
+    REQUIRE(session->setProperty("algorithmInfos", QVariant::fromValue(remaining)));
     {
         QEventLoop loop;
         QTimer::singleShot(50, &loop, &QEventLoop::quit);
@@ -325,7 +428,7 @@ TEST_CASE("Actual toolbar keeps four mesh categories available and preserves act
         loop.exec();
         REQUIRE(window.grabWindow().save(capture + ".png"));
     }
-    REQUIRE(sidebar->setProperty("algorithmInfos", QVariant::fromValue(engine.newArray())));
+    REQUIRE(session->setProperty("algorithmInfos", QVariant::fromValue(engine.newArray())));
     {
         QEventLoop loop;
         QTimer::singleShot(50, &loop, &QEventLoop::quit);
@@ -382,10 +485,11 @@ TEST_CASE("Installed external algorithms appear in the actual toolbar and open t
     REQUIRE(toolbar);
     auto* item = qobject_cast<QQuickItem*>(toolbar.get());
     REQUIRE(item);
+    auto session = createSession(engine);
     QQmlComponent sidebar_component(&engine, QUrl("qrc:/navigation-ui/SideBar.qml"));
     INFO(sidebar_component.errorString().toStdString());
     REQUIRE(sidebar_component.isReady());
-    std::unique_ptr<QObject> sidebar(sidebar_component.create());
+    std::unique_ptr<QObject> sidebar(sidebar_component.createWithInitialProperties({ { "session", QVariant::fromValue(session.get()) } }));
     REQUIRE(sidebar);
     auto* sidebar_item = qobject_cast<QQuickItem*>(sidebar.get());
     REQUIRE(sidebar_item);
@@ -409,7 +513,7 @@ TEST_CASE("Installed external algorithms appear in the actual toolbar and open t
             index = i;
     }
     REQUIRE(index >= 0);
-    REQUIRE(QMetaObject::invokeMethod(sidebar.get(), "selectMeshAlgorithm", Q_ARG(QVariant, index), Q_ARG(QVariant, false)));
+    REQUIRE(QMetaObject::invokeMethod(session.get(), "selectMeshAlgorithm", Q_ARG(QVariant, index), Q_ARG(QVariant, false)));
     auto* app = engine.singletonInstance<QObject*>("app.core", "App");
     REQUIRE(app);
     const auto operation = app->property("activeOperation").value<QJSValue>();
@@ -450,7 +554,8 @@ TEST_CASE("Installed external algorithms appear in the actual toolbar and open t
             REQUIRE(target_popup.property("visible").toBool());
             const auto target_list = target_popup.property("contentItem");
             auto* new_model = qobject_cast<QQuickItem*>(target_list.property("itemAtIndex")
-                .callWithInstance(target_list, { QJSValue(2) }).toQObject());
+                    .callWithInstance(target_list, { QJSValue(2) })
+                    .toQObject());
             REQUIRE(new_model);
             clickItem(window, new_model);
             settle();
@@ -553,12 +658,13 @@ TEST_CASE("Actual parameter controls preserve edits through scrolling and accept
     QQmlEngine engine;
     static const int theme_type = qmlRegisterSingletonType(QUrl("qrc:/navigation-ui/Theme.qml"), "ParameterUi", 1, 0, "Theme");
     engine.rootContext()->setContextProperty("Theme", engine.singletonInstance<QObject*>(theme_type));
+    auto session = createSession(engine);
     QQmlComponent component(&engine, QUrl("qrc:/navigation-ui/SideBar.qml"));
     INFO(component.errorString().toStdString());
     REQUIRE(component.isReady());
     QQuickWindow window;
     window.resize(500, 320);
-    std::unique_ptr<QObject> sidebar(component.create());
+    std::unique_ptr<QObject> sidebar(component.createWithInitialProperties({ { "session", QVariant::fromValue(session.get()) } }));
     auto* item = qobject_cast<QQuickItem*>(sidebar.get());
     REQUIRE(item);
     item->setParentItem(window.contentItem());
@@ -583,14 +689,26 @@ TEST_CASE("Actual parameter controls preserve edits through scrolling and accept
         wrappers.push_back(std::make_unique<QArgType>(type));
         args.append(wrappers.back().get());
     }
-    QAlgorithmInfo info("fixture", "Fixture", "", args);
+    auto* manager = engine.singletonInstance<QModelManager*>("app.model", "QModelManager");
+    auto& system = *manager->getFeatureSystemAdaptor()->featureSystem();
+    ParameterProbeState probe_state;
+    systems::feature::HandlerMetaData fixture_meta;
+    fixture_meta.name = "fixture";
+    REQUIRE(system.registerHandler(fixture_meta,
+        systems::feature::FeatureSystem::SystemHandlerPtr { std::make_unique<ParameterProbe>(types, probe_state).release() }));
+    QFeatureInfo info("fixture", "Fixture", "", "", "", args);
     auto* app = engine.singletonInstance<QObject*>("app.core", "App");
     auto operation = engine.newObject();
     operation.setProperty("info", engine.newQObject(&info));
+    operation.setProperty("isFeature", true);
+    const auto fixture_operation = operation;
     REQUIRE(app->setProperty("activeOperation", QVariant::fromValue(operation)));
     settle();
     // 完整默认值与可视行数量无关，尚未滚到的参数也已初始化。
     CHECK(sidebar->property("parameters").value<QJSValue>().property("length").toInt() == 44);
+    CHECK(sidebar->property("parameters").value<QJSValue>().property(4).toNumber() == 7.0);
+    CHECK(probe_state.activations == 1);
+    CHECK(probe_state.notifications == 0);
     auto* numeric = findItem(item, "parameterControl_0");
     auto* path = findItem(item, "parameterControl_1");
     auto* toggle = findItem(item, "parameterControl_2");
@@ -641,14 +759,15 @@ TEST_CASE("Actual parameter controls preserve edits through scrolling and accept
     CHECK(numeric->property("text").toString() == "-1.5");
     CHECK(path->property("text").toString() == "picked");
     CHECK(toggle->property("checked").toBool());
-    CHECK(target->parentItem()->property("value").value<QObject*>() == &picked);
-    auto* manager = engine.singletonInstance<QModelManager*>("app.model", "QModelManager");
-    REQUIRE(QMetaObject::invokeMethod(manager->getFeatureSystemAdaptor(), "paramValueChanged",
-        Q_ARG(QString, "fixture"), Q_ARG(int, 0), Q_ARG(QVariant, 12.0)));
+    auto* displayed_selection = qobject_cast<QSelection*>(target->parentItem()->property("value").value<QObject*>());
+    REQUIRE(displayed_selection);
+    CHECK(displayed_selection->get() == picked.get());
+    const int before_update = probe_state.notifications;
+    REQUIRE(manager->getFeatureSystemAdaptor()->setParameter("fixture", 0, 12.0));
     settle();
     CHECK(numeric->property("text").toString() == "12");
+    CHECK(probe_state.notifications == before_update + 1);
     int presses = 0;
-    auto& system = *manager->getFeatureSystemAdaptor()->featureSystem();
     systems::feature::HandlerMetaData meta;
     meta.name = "ButtonProbe";
     systems::feature::FeatureSystem::SystemHandlerPtr handler { std::make_unique<ButtonProbe>(presses).release() };
@@ -667,7 +786,18 @@ TEST_CASE("Actual parameter controls preserve edits through scrolling and accept
     clickItem(window, button);
     settle();
     CHECK(presses == 1);
+    // 重新进入功能读取当前参数，activate 也应看到这些值；进入不产生参数事件。
+    const int before_reentry = probe_state.notifications;
+    REQUIRE(app->setProperty("activeOperation", QVariant::fromValue(fixture_operation)));
+    settle();
+    CHECK(probe_state.activations == 2);
+    CHECK(probe_state.activated_value == 12.0);
+    CHECK(probe_state.notifications == before_reentry);
+    CHECK(sidebar->property("parameters").value<QJSValue>().property(0).toNumber() == 12.0);
+    CHECK(sidebar->property("parameters").value<QJSValue>().property(1).toString() == "picked");
+    CHECK(sidebar->property("parameters").value<QJSValue>().property(2).toBool());
     app->setProperty("activeOperation", QVariant::fromValue(QJSValue(QJSValue::NullValue)));
     system.unregisterHandler(meta);
+    system.unregisterHandler(fixture_meta);
     QModelManager::argv0 = {};
 }

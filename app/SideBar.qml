@@ -12,157 +12,19 @@ import QtQuick.Dialogs
 import app.core
 import app.model
 import app.model.systems.algo
-import "AlgorithmNavigation.js" as AlgorithmNavigation
 
 Item{
     id: root
-    property var parameters: []
-    property bool changingOperation: false
-    readonly property QSelection emptySelection: QSelection {}
+    required property OperationSession session
+    readonly property var parameters: root.session.parameterModel.values
+    readonly property QSelection emptySelection: root.session.parameterModel.emptySelection
+    readonly property var activeOp: root.session.activeOperation
+    readonly property bool meshGeneration: root.session.meshGeneration
+    readonly property string panelTitle: root.session.panelTitle
+    readonly property var meshAlgorithms: root.session.meshAlgorithms
 
-    readonly property var activeOp: App.activeOperation
-    readonly property bool meshGeneration: !!(activeOp && activeOp.isMeshGeneration)
-    readonly property string panelTitle: root.meshGeneration && root.activeOp.categoryTitle
-            ? qsTr("操作面板") + "-" + root.activeOp.categoryTitle : qsTr("操作面板")
-    property var algorithmInfos: QModelManager.algorithmSystem.algorithmsInfo
-    readonly property var meshAlgorithms: meshGeneration
-        ? AlgorithmNavigation.buildAlgorithms(root.algorithmInfos, activeOp.meshCategory) : []
-    property var lastMeshAlgorithms: ({})
-
-    function selectMeshAlgorithm(index, force = false) {
-        if (!root.meshGeneration)
-            return
-        const info = index >= 0 && index < root.meshAlgorithms.length ? root.meshAlgorithms[index] : null
-        // QVariant/QObject 包装可产生不同 JS 引用；用注册身份避免刷新循环。
-        if (!force && info && root.activeOp.info && root.activeOp.info.name === info.name)
-            return
-        const category = root.activeOp.meshCategory
-        const title = root.activeOp.categoryTitle
-        if (info)
-            root.lastMeshAlgorithms[category] = info.name
-        App.activeOperation = {
-            isMeshGeneration: true,
-            meshCategory: category,
-            categoryTitle: title,
-            info: info,
-            execute: info ? function(model, args) {
-                QModelManager.algorithmSystem.call(info.name, model, args)
-            } : null
-        }
-    }
-
-    function refreshMeshAlgorithm(force = false) {
-        if (!root.meshGeneration)
-            return
-        const name = root.activeOp.info ? root.activeOp.info.name
-            : root.lastMeshAlgorithms[root.activeOp.meshCategory]
-        const index = root.meshAlgorithms.findIndex(info => info.name === name)
-        if (root.meshAlgorithms.length > 0)
-            root.selectMeshAlgorithm(index >= 0 ? index : 0, force)
-        else if (root.activeOp.info)
-            root.selectMeshAlgorithm(-1)
-    }
-
-    function refreshRegisteredMeshAlgorithm() {
-        root.refreshMeshAlgorithm(true)
-    }
-
-    onAlgorithmInfosChanged: Qt.callLater(root.refreshRegisteredMeshAlgorithm)
-
-    // 参数模型与候选列表先完成绑定更新，再切换操作，避免重入清空新参数。
-    onMeshAlgorithmsChanged: Qt.callLater(root.refreshMeshAlgorithm)
-
-    onActiveOpChanged: {
-        root.changingOperation = true
-        App.selection.listeningSelectorIndex = -1
-        // 操作开始时初始化全部参数，避免依赖可视行的创建与回收时机。
-        parameters = root.createParameters()
-        // 活动操作是功能则进入该功能（interactive 的交互随之一并上线），否则退出当前功能
-        // （幂等，守卫在功能系统内；进入/退出经 FeatureHandler::activate/deactivate 通知功能）
-        var isFeature = !!(activeOp && activeOp.isFeature)
-        QModelManager.featureSystem.setFeatureActive(isFeature ? activeOp.info.name : "")
-        if (isFeature) {
-            for (let i = 0; i < root.parameters.length; ++i) {
-                // Button 是点击事件，进入功能只初始化计数，不能派发一次点击。
-                if (root.activeOp.info.arg_types[i].type !== QArgType.Button)
-                    QModelManager.featureSystem.setParameter(root.activeOp.info.name, i, root.parameters[i])
-            }
-        }
-        if (root.meshGeneration && !root.activeOp.info)
-            Qt.callLater(root.refreshMeshAlgorithm)
-        root.changingOperation = false
-    }
-
-    // 默认值属于操作会话，不能由可回收的 ListView 行反复写入。
-    function createParameters() {
-        if (!root.activeOp || !root.activeOp.info)
-            return []
-        const presets = root.meshGeneration && root.activeOp.info.category_defaults
-                ? root.activeOp.info.category_defaults[root.activeOp.meshCategory] : null
-        return root.activeOp.info.arg_types.map((arg, index) => {
-            const defaults = root.activeOp.defaultParameters
-            if (defaults && defaults[index] !== undefined)
-                return defaults[index]
-            const preset = presets ? presets[arg.name] : undefined
-            const content = preset !== undefined ? String(preset) : arg.content
-            switch (arg.type) {
-            case QArgType.Combo: {
-                const parts = arg.content.split("|")
-                const count = parts[0].split(",").length
-                const value = preset !== undefined ? Number(preset) : (parts.length > 1 ? parseInt(parts[1]) : 0)
-                return Number.isFinite(value) && value >= 0 && value < count ? value : 0
-            }
-            case QArgType.Int: return parseInt(content)
-            case QArgType.Float: return parseFloat(content)
-            case QArgType.Bool: return content === "true"
-            case QArgType.Selector: return root.emptySelection
-            case QArgType.Button: return 0
-            default: return content || ""
-            }
-        })
-    }
-
-    function updateParam(index, value) {
-        if (Object.is(root.parameters[index], value))
-            return false
-        // 重新赋值才能通知绑定；原地修改 var 数组不会刷新功能回写的显示值。
-        const values = root.parameters.slice()
-        values[index] = value
-        root.parameters = values
-        return true
-    }
-
-    // 功能的参数持久化到系统；外部回写只更新展示，避免再次派发同一事件。
     function setParam(index, value) {
-        // 切换时旧行尚未销毁，默认值刷新不能被当作对新操作的编辑。
-        if (root.changingOperation)
-            return
-        if (root.updateParam(index, value) && root.activeOp && root.activeOp.isFeature)
-            QModelManager.featureSystem.setParameter(root.activeOp.info.name, index, value)
-    }
-
-    // 清理全部选择器参数，包括 ListView 尚未创建的 delegate。
-    Connections {
-        target: App.selection
-        function onSelectionInvalidated() {
-            App.selection.listeningSelectorIndex = -1
-            if (!root.activeOp || !root.activeOp.info)
-                return
-            const args = root.activeOp.info.arg_types
-            for (let i = 0; i < args.length; ++i) {
-                if (args[i].type === QArgType.Selector)
-                    root.setParam(i, root.emptySelection)
-            }
-        }
-    }
-
-    // 功能侧回写参数值（如交互结果文本）→ 同步到面板显示
-    Connections {
-        target: QModelManager.featureSystem
-        function onParamValueChanged(feature, index, value) {
-            if (root.activeOp && root.activeOp.info && root.activeOp.info.name === feature)
-                root.updateParam(index, value)
-        }
+        root.session.parameterModel.setValue(index, value)
     }
 
     ColumnLayout {
@@ -185,7 +47,7 @@ Item{
             enabled: root.meshAlgorithms.length > 0
             currentIndex: root.activeOp && root.activeOp.info
                 ? root.meshAlgorithms.findIndex(info => info.name === root.activeOp.info.name) : -1
-            onActivated: index => root.selectMeshAlgorithm(index)
+            onActivated: index => root.session.selectMeshAlgorithm(index)
             Accessible.name: qsTr("网格生成算法")
         }
         Label {

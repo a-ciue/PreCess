@@ -42,7 +42,7 @@ public:
     }
     std::any execute(systems::feature::FeatureContext& ctx) override
     {
-        return ctx.model.addModel("undo fixture", { });
+        return ctx.model.addModel("undo fixture", {});
     }
 };
 QGuiApplication& application()
@@ -56,7 +56,7 @@ QGuiApplication& application()
     static QGuiApplication app(argc, argv);
     return app;
 }
-std::unique_ptr<QObject> load(QQmlEngine& engine, const char* file)
+std::unique_ptr<QObject> load(QQmlEngine& engine, const char* file, const QVariantMap& properties = {})
 {
     const QUrl url(QString("qrc:/undo-ui/") + file);
     QQmlComponent component(&engine);
@@ -69,7 +69,7 @@ std::unique_ptr<QObject> load(QQmlEngine& engine, const char* file)
     }
     INFO(component.errorString().toStdString());
     REQUIRE(component.isReady());
-    std::unique_ptr<QObject> object(component.create());
+    std::unique_ptr<QObject> object(component.createWithInitialProperties(properties));
     INFO(component.errorString().toStdString());
     REQUIRE(object);
     return object;
@@ -78,6 +78,7 @@ struct QmlFixture {
     QTemporaryDir directory;
     std::string executable;
     QQmlEngine engine;
+    std::unique_ptr<QObject> session;
     std::unique_ptr<QObject> sidebar;
     std::unique_ptr<QObject> tree;
     std::unique_ptr<QObject> viewport;
@@ -93,7 +94,8 @@ struct QmlFixture {
         executable = (directory.path() + "/isolated/Test.exe").toStdString();
         QModelManager::argv0 = executable;
         engine.rootContext()->setContextProperty("Theme", engine.singletonInstance<QObject*>(theme_type));
-        sidebar = load(engine, "SideBar.qml");
+        session = load(engine, "OperationSession.qml");
+        sidebar = load(engine, "SideBar.qml", { { "session", QVariant::fromValue(session.get()) } });
         tree = load(engine, "ObjectTree.qml");
         viewport = load(engine, "CentralRenderArea.qml");
         manager = engine.singletonInstance<QModelManager*>("app.model", "QModelManager");
@@ -106,7 +108,7 @@ struct QmlFixture {
     ~QmlFixture()
     {
         app->setProperty("activeOperation", QVariant::fromValue(QJSValue(QJSValue::NullValue)));
-        QModelManager::argv0 = { };
+        QModelManager::argv0 = {};
     }
 };
 
@@ -163,7 +165,7 @@ TEST_CASE("Actual QML follows successful deletion notifications and preserves se
     model.removeComponent(other_cid);
     CHECK(selection_state->property("activeModelId").toInt() == mid);
     CHECK(selection_state->property("activeComponentId").toInt() == cid);
-    const Index other_mid = model.addModel("other", { });
+    const Index other_mid = model.addModel("other", {});
     model.removeModel(other_mid);
     CHECK(selection_state->property("activeModelId").toInt() == mid);
     CHECK(selection_state->property("activeComponentId").toInt() == cid);

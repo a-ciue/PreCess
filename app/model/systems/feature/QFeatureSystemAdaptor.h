@@ -41,6 +41,10 @@ public:
      */
     Q_INVOKABLE bool setParameter(const QString& unique_name, int index, const QVariant& value);
     /**
+     * @brief 读取功能持久参数的当前快照，不修改参数或派发变更事件
+     */
+    Q_INVOKABLE QVariantList getParameterValues(const QString& unique_name) const;
+    /**
      * @brief UI层向功能系统派发按键事件
      * @return 事件已被功能消费（应 accept）时为 true
      */
