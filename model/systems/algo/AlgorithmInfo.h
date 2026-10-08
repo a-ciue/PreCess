@@ -17,7 +17,7 @@ struct AlgorithmCategory {
  * @brief 插件声明的算法导航信息；类别使用稳定标识，未声明有效分类的算法归入其他算法。
  */
 struct AlgorithmNavigation {
-    std::vector<std::string> categories; //> 分类身份；旧四类字符串声明继续兼容
+    std::vector<std::string> categories; //> 分类身份，由已校验的分类描述派生
     std::vector<AlgorithmCategory> category_definitions; //> 插件显式提供的分类展示声明
     std::string group; //> 分类页内分组，空时使用默认分组
     std::string icon; //> 插件提供的 qrc 图标路径

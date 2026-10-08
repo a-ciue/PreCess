@@ -4,14 +4,13 @@
  */
 #include "AlgorithmHandler.h"
 #include "AlgorithmRegistrar.h"
-#include "AlgorithmSetup.h"
 #include "HandlerCreatorDestroyerFactory.h"
 #include "PluginBase.h"
 
 #include <QObject>
 
 namespace systems::algo {
-class SetupNavigationTestHandler : public AlgorithmHandler, public AlgorithmSetup {
+class SetupNavigationTestHandler : public AlgorithmHandler {
 public:
     void setup(AlgorithmRegistrar& registrar) override
     {

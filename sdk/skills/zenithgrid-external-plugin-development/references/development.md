@@ -36,15 +36,13 @@
 
 ## 算法导航分类声明
 
-新算法插件推荐在 Handler 的 `setup` 中声明导航，同时继承可选的 `AlgorithmSetup` 接口。JSON 只需保留 `system` 和 `handler` 的身份信息，不必写导航配置：
+算法导航统一通过 `AlgorithmHandler::setup(AlgorithmRegistrar&)` 声明。JSON 只保留 `system`、`handler.name`、`handler.display_name` 等身份信息；不再解析 `handler.navigation` 或 DLL 旁置导航文件。
 
 ```cpp
 #include "AlgorithmHandler.h"
 #include "AlgorithmRegistrar.h"
-#include "AlgorithmSetup.h"
 
-class ExampleQuadMesher : public systems::algo::AlgorithmHandler,
-                          public systems::algo::AlgorithmSetup {
+class ExampleQuadMesher : public systems::algo::AlgorithmHandler {
 public:
     void setup(systems::algo::AlgorithmRegistrar& registrar) override
     {
@@ -54,20 +52,17 @@ public:
         registrar.setOrder(10);
         registrar.setCategoryDefault("quadrilateral", "网格类型", "1");
     }
-    // 按既有接口实现 args_type()、execute()，必要时覆盖 resolveComponentId()。
+    // 实现 args_type()、execute()，必要时覆盖 resolveComponentId()。
 };
 ```
 
-`setup` 在每次注册时调用一次；普通查询、切换分类或执行算法不会重复调用。注册器仅收集声明，不持有模型或界面，不得保存其引用。完整声明经系统统一校验后登记；setup 抛异常时不添加条目，替换失败时保留原注册。忙碌时在调用 setup 前拒绝注册。
+- `setup` 每次注册调用一次，查询、分类切换和算法执行不重复调用。默认空实现将算法归入“其他算法”。注册器仅收集声明，不持有模型或界面，不能保存其引用。
+- 声明及参数准备成功后整体登记；setup 抛异常时不新增条目，替换失败保留原算法；模型忙碌时在调用 setup 前拒绝注册。
+- `addCategory` 接收完整分类描述：稳定 `id`、必填 `title`、可选资源 `icon` 和排序 `order`。`other` 为保留身份。一个算法可以声明多个分类，同一 id 自动合并为同一个按钮和页面，算法身份仍使用各自的 `handler.name`。
+- 同类描述应保持一致；冲突时记录警告，选择算法唯一名按字典序最小的完整声明，结果与加载顺序无关。分类按 order、id 排序。
+- 三角形、四边形、四面体、六面体四个基础分类始终显示；无算法时显示“暂无可用算法”并禁用执行。扩展分类由当前注册表派生，最后一个提供者卸载后消失。
+- `setLabel` 使用业务名称，空时沿用 display_name。`setIcon` 的资源由插件注册；group 为空时使用默认分组，order 越小越靠前，同值按算法身份排序。
+- `setCategoryDefault` 按分类设置参数默认值，参数名与 args_type() 一致，Combo 使用选项索引的字符串；进入分类时应用，用户随后可修改。参数控件仍由宿主生成，插件不依赖 app 层。
+- 直接 C++ 注册与动态、静态插件统一走 Handler 的 setup；HandlerMetaData 仅保存身份，没有第二套导航声明入口。
 
-实现 `AlgorithmSetup` 后，其声明整体优先于 JSON 和旁置文件，包括空声明，避免不同来源拼接出不一致配置。未实现该接口的旧插件继续走下面的 JSON / 旁置文件路径。原 `AlgorithmHandler` 虚函数布局保持不变；这不免除 SDK 版本、编译器和运行库的一般 ABI 兼容要求。
-
-旧插件兼容路径：算法插件在 JSON 的 `handler.navigation.categories` 中声明二级分类。完整对象包含 `id`、`title`、可选 `icon`、`order`；例如 `[{"id":"quadrilateral","title":"四边形网格生成","icon":"qrc:/myplugin/quad.svg","order":20}]`。插件必须自行注册其 qrc 资源。
-
-相同分类 `id` 自动合并到一个按钮和页面；算法 `handler.name` 保持各自唯一。`navigation.label` 是三级算法的业务名称，`navigation.order` 是算法排序，均独立于分类对象的展示信息。相同分类应提供一致的描述；冲突时宿主告警，选择算法唯一名最小的显式声明，不依赖加载顺序。
-
-旧四类字符串声明继续兼容。自定义类别必须使用完整对象；`other` 为保留身份。未声明有效分类的算法进入“其他算法”，三角形、四边形、四面体、六面体四个基础类别始终显示，没有算法时显示空状态并禁用执行；最后一个提供者卸载后自定义类别自动消失。运行中注册或卸载仍受模型任务占用约束。
-
-未实现 `AlgorithmSetup` 的动态插件也可用 DLL 旁同名 `.navigation.json` 提供上述 navigation 对象；该文件整体覆盖内嵌导航声明，不改变插件身份或执行接口，修改后重新加载生效。分类默认参数仍使用 `category_defaults`，键为分类 `id`。
-
-此能力不需要插件依赖 app 层；参数继续通过 `AlgorithmHandler::args_type()` 声明，由宿主生成通用控件。
+此改动更新 AlgorithmHandler 的虚函数接口，旧算法 DLL 不能混用。更新 SDK 后必须重建主程序、项目内插件、示例及独立 Addons 插件，并使用匹配的工具链和依赖。旧 JSON 导航配置和旁置文件应删除；分类需迁移至 setup，不提供兼容解析。

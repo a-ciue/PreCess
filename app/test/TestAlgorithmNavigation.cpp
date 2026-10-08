@@ -3,7 +3,6 @@
  */
 #include "AlgorithmHandler.h"
 #include "AlgorithmRegistrar.h"
-#include "AlgorithmSetup.h"
 #include "AlgorithmSystem.h"
 #include "AlgorithmSystemRegister.h"
 #include "ComponentData.h"
@@ -842,7 +841,7 @@ TEST_CASE("Registered custom categories create shared toolbar pages and disappea
     QTemporaryDir directory;
     const auto executable = (directory.path() + "/isolated/Test.exe").toStdString();
     QModelManager::argv0 = executable;
-    class CategoryHandler : public systems::algo::AlgorithmHandler, public systems::algo::AlgorithmSetup {
+    class CategoryHandler : public systems::algo::AlgorithmHandler {
     public:
         CategoryHandler(systems::algo::AlgorithmCategory category, int order)
             : category_(std::move(category))

@@ -111,7 +111,7 @@ TEST_CASE("Busy plugin unload keeps feature or IO registration until a successfu
     REQUIRE(session.ioSystem().registeredFileTypeInfos().empty());
 }
 
-TEST_CASE("Binary algorithm plugins accept sidecar navigation without losing legacy registration", "[session][plugins][navigation]")
+TEST_CASE("Algorithm plugins ignore obsolete navigation sidecars", "[session][plugins][navigation]")
 {
     int argc = 0;
     QCoreApplication app(argc, nullptr);
@@ -137,26 +137,13 @@ TEST_CASE("Binary algorithm plugins accept sidecar navigation without losing leg
     declaration_path.replace_extension(".navigation.json");
     QFile declaration(QString::fromStdString(declaration_path.string()));
     REQUIRE(declaration.open(QIODevice::WriteOnly));
-    bool expected_navigation = false;
-    bool expected_custom_category = false;
-    SECTION("Valid declarations supplement a previously unclassified binary")
+    SECTION("Former navigation declarations are ignored")
     {
-        REQUIRE(declaration.write(R"({"categories":["tetrahedron"],"group":"Generate","order":10,"label":"Mesh generation"})") > 0);
-        expected_navigation = true;
+        REQUIRE(declaration.write(R"({"categories":[{"id":"custom","title":"Custom meshing"}],"label":"Ignored"})") > 0);
     }
-    SECTION("Custom category objects reach the native registry through a binary sidecar")
-    {
-        REQUIRE(declaration.write(R"({"categories":[{"id":"custom","title":"Custom meshing","order":-5}],"group":"Generate","order":10,"label":"Mesh generation"})") > 0);
-        expected_navigation = true;
-        expected_custom_category = true;
-    }
-    SECTION("Malformed declarations preserve plugin availability")
+    SECTION("Malformed files are not read")
     {
         REQUIRE(declaration.write("{invalid") > 0);
-    }
-    SECTION("Non-object declarations preserve plugin availability")
-    {
-        REQUIRE(declaration.write("[]") > 0);
     }
     declaration.close();
     Session session;
@@ -164,21 +151,9 @@ TEST_CASE("Binary algorithm plugins accept sidecar navigation without losing leg
     const auto infos = session.algorithmSystem().getAlgorithmInfos();
     REQUIRE(infos.size() == 1);
     CHECK(infos.front()->name == "cmdExecutePlugin");
-    if (expected_navigation) {
-        CHECK(infos.front()->navigation.categories == std::vector<std::string> { expected_custom_category ? "custom" : "tetrahedron" });
-        const auto categories = session.algorithmSystem().getNavigationCategories();
-        REQUIRE(categories.size() == (expected_custom_category ? 5 : 4));
-        if (expected_custom_category) {
-            CHECK(categories[0].title == "Custom meshing");
-            CHECK(categories[0].order == -5);
-        }
-        CHECK(infos.front()->navigation.group == "Generate");
-        CHECK(infos.front()->navigation.order == 10);
-        CHECK(infos.front()->navigation.label == "Mesh generation");
-    } else {
-        CHECK(infos.front()->navigation.categories.empty());
-        CHECK(infos.front()->navigation.label.empty());
-    }
+    CHECK(infos.front()->navigation.categories.empty());
+    CHECK(infos.front()->navigation.label.empty());
+    CHECK(session.algorithmSystem().getNavigationCategories().size() == 4);
     declaration.close();
     session.pluginManager().unregisterPlugin(target);
     REQUIRE(session.pluginManager().registerPlugin(target));
@@ -188,7 +163,7 @@ TEST_CASE("Binary algorithm plugins accept sidecar navigation without losing leg
     CHECK(session.algorithmSystem().getNavigationCategories().size() == 4);
 }
 
-TEST_CASE("Binary algorithm setup overrides sidecar declarations and survives reload", "[session][plugins][setup][navigation]")
+TEST_CASE("Binary algorithm setup supplies navigation and survives reload", "[session][plugins][setup][navigation]")
 {
     int argc = 0;
     QCoreApplication app(argc, nullptr);

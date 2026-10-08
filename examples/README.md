@@ -47,15 +47,13 @@ cmake --install build --prefix "<安装前缀>" --component AllPlugins
 
 ## 算法插件的导航声明
 
-新算法插件推荐在 Handler 的 `setup` 中声明导航，同时继承可选的 `AlgorithmSetup` 接口。JSON 只需保留 `system` 和 `handler` 的身份信息，不必写导航配置：
+算法导航统一通过 `AlgorithmHandler::setup(AlgorithmRegistrar&)` 声明。JSON 只保留 `system`、`handler.name`、`handler.display_name` 等身份信息；不再解析 `handler.navigation` 或 DLL 旁置导航文件。
 
 ```cpp
 #include "AlgorithmHandler.h"
 #include "AlgorithmRegistrar.h"
-#include "AlgorithmSetup.h"
 
-class ExampleQuadMesher : public systems::algo::AlgorithmHandler,
-                          public systems::algo::AlgorithmSetup {
+class ExampleQuadMesher : public systems::algo::AlgorithmHandler {
 public:
     void setup(systems::algo::AlgorithmRegistrar& registrar) override
     {
@@ -65,70 +63,17 @@ public:
         registrar.setOrder(10);
         registrar.setCategoryDefault("quadrilateral", "网格类型", "1");
     }
-    // 按既有接口实现 args_type()、execute()，必要时覆盖 resolveComponentId()。
+    // 实现 args_type()、execute()，必要时覆盖 resolveComponentId()。
 };
 ```
 
-`setup` 在每次注册时调用一次；普通查询、切换分类或执行算法不会重复调用。注册器仅收集声明，不持有模型或界面，不得保存其引用。完整声明经系统统一校验后登记；setup 抛异常时不添加条目，替换失败时保留原注册。忙碌时在调用 setup 前拒绝注册。
+- `setup` 每次注册调用一次，查询、分类切换和算法执行不重复调用。默认空实现将算法归入“其他算法”。注册器仅收集声明，不持有模型或界面，不能保存其引用。
+- 声明及参数准备成功后整体登记；setup 抛异常时不新增条目，替换失败保留原算法；模型忙碌时在调用 setup 前拒绝注册。
+- `addCategory` 接收完整分类描述：稳定 `id`、必填 `title`、可选资源 `icon` 和排序 `order`。`other` 为保留身份。一个算法可以声明多个分类，同一 id 自动合并为同一个按钮和页面，算法身份仍使用各自的 `handler.name`。
+- 同类描述应保持一致；冲突时记录警告，选择算法唯一名按字典序最小的完整声明，结果与加载顺序无关。分类按 order、id 排序。
+- 三角形、四边形、四面体、六面体四个基础分类始终显示；无算法时显示“暂无可用算法”并禁用执行。扩展分类由当前注册表派生，最后一个提供者卸载后消失。
+- `setLabel` 使用业务名称，空时沿用 display_name。`setIcon` 的资源由插件注册；group 为空时使用默认分组，order 越小越靠前，同值按算法身份排序。
+- `setCategoryDefault` 按分类设置参数默认值，参数名与 args_type() 一致，Combo 使用选项索引的字符串；进入分类时应用，用户随后可修改。参数控件仍由宿主生成，插件不依赖 app 层。
+- 直接 C++ 注册与动态、静态插件统一走 Handler 的 setup；HandlerMetaData 仅保存身份，没有第二套导航声明入口。
 
-实现 `AlgorithmSetup` 后，其声明整体优先于 JSON 和旁置文件，包括空声明，避免不同来源拼接出不一致配置。未实现该接口的旧插件继续走下面的 JSON / 旁置文件路径。原 `AlgorithmHandler` 虚函数布局保持不变；这不免除 SDK 版本、编译器和运行库的一般 ABI 兼容要求。
-
-兼容路径：旧插件可在 JSON 的 `handler` 中增加可选 `navigation`，主程序按声明构建导航，插件无需依赖 app 层：
-
-```json
-{
-  "system": "AlgorithmSystem",
-  "handler": {
-    "name": "ExampleQuadMesher",
-    "display_name": "示例网格生成",
-    "navigation": {
-      "categories": [
-        {
-          "id": "quadrilateral",
-          "title": "四边形网格生成",
-          "icon": "qrc:/example/quad.svg",
-          "order": 20
-        }
-      ],
-      "group": "生成",
-      "label": "四边形网格生成（示例方法）",
-      "icon": "qrc:/example/mesher.svg",
-      "order": 10
-    }
-  }
-}
-```
-
-- 三角形、四边形、四面体、六面体四个基础分类始终显示；没有对应算法时面板显示“暂无可用算法”并禁用执行。扩展二级分类由已注册算法的声明自动生成。插件可复用分类，也可声明新的分类；一个算法可以归属多个分类。
-- 分类对象的 `id` 是稳定身份，`title` 是必填显示名称，`icon` 可省略并使用通用图标，`order` 默认 0。`other` 是保留身份，不得声明为分类。
-- 不同插件使用相同分类 `id` 时共用一个按钮及页面；显示名称相同但 `id` 不同时不合并。具体算法仍使用独立的 `handler.name`，同名算法注册保持既有替换语义。
-- 相同分类的显式声明应一致。存在冲突时记录警告，选择算法唯一名按字典序最小的完整声明；显式对象优先于旧字符串的默认描述。分类按 `order` 排序，同值按 `id` 排序，结果与加载顺序无关。
-- 兼容旧字符串 `triangle`（三角形）、`quadrilateral`（四边形）、`tetrahedron`（四面体）、`hexahedron`（六面体），它们集中补齐默认名称、图标和排序。未知旧字符串继续忽略，自定义分类须使用对象声明。
-- 未声明有效分类的算法进入“其他算法”；声明有效分类的算法只进入对应分类页面。“其他算法”保留工具栏按钮，具体网格算法在操作面板选择。
-- 卸载最后一个提供者后，扩展分类按钮消失，基础分类按钮保留；当前类别消失时清理活动操作，当前算法退出但类别仍在时选择剩余可用算法。无关插件变化或分类改名不会清空当前参数。
-- `label` 为可选业务名称，例如“三角形网格生成（德劳内方法）”，不填写库名称；必须与算法真实能力一致。未声明时沿用 `display_name`，内部仍按 `name` 分发，不影响脚本或执行接口。
-- `group` 为空时归入默认分组；`order` 默认 0，数值越小越靠前，同值按算法唯一名排序。分组顺序由组内最靠前的算法决定。
-- `icon` 应由插件自身注册资源；为空时显示通用算法图标。现有 JSON 无需修改即可继续加载。
-- 使用 C++ 直接注册时，将分类身份填入 `HandlerMetaData::navigation.categories`；自定义分类的完整描述填入 `category_definitions`，其身份也会自动加入所属类别。分类表从算法注册表派生，不需要单独注册或注销按钮。
-
-对于已安装且没有源码的算法 DLL，可在 DLL 旁放置同名 `.navigation.json`，例如 `ExampleMesher.dll` 对应 `ExampleMesher.navigation.json`：
-
-```json
-{
-  "categories": ["tetrahedron"],
-  "label": "四面体网格生成（德劳内方法）",
-  "group": "生成",
-  "icon": "qrc:/example/mesher.svg",
-  "order": 10
-}
-```
-
-未实现 `AlgorithmSetup` 时，旁置文件覆盖内嵌的 `handler.navigation`，不会覆盖插件身份或执行接口。文件缺失时使用内嵌声明；文件无法读取、JSON 无效或顶层不是对象时，记录警告并回退内嵌声明，插件仍可正常注册。修改声明后重新加载插件或重启程序生效。静态插件使用内嵌声明。
-
-导航可选 `category_defaults` 按类别声明参数默认值，例如 `"category_defaults": {"triangle": {"网格类型": 0}, "quadrilateral": {"网格类型": 1}}`。键为参数名，Combo 值为选项索引；进入类别时应用，用户随后可调整。通用界面不根据插件名推断参数。
-
-现有 Gmsh / TetGen 二进制插件的业务名称和分类配置见 `algorithm-navigation/`。安装对应插件后，将匹配的 `.navigation.json` 复制到 DLL 同目录，再重新加载插件或重启程序；这些声明仅用于已安装插件，不安装算法二进制。
-
-两个外部插件共享分类时，在各自 JSON 中使用相同的分类对象、不同的 `handler.name`；例如 `ExampleQuadMesherA` 和 `ExampleQuadMesherB` 都声明 `quadrilateral`，页面内显示两个算法选项。新增 `polyhedral` 等类别只需提供完整对象，不需要修改主程序 QML。
-
-JSON 格式兼容不等于 DLL ABI 兼容。修改 SDK 共享头文件后需全量重建主程序及项目内插件；独立插件仍须使用与目标主程序兼容的 SDK 和构建配置。
+此改动更新 AlgorithmHandler 的虚函数接口，旧算法 DLL 不能混用。更新 SDK 后必须重建主程序、项目内插件、示例及独立 Addons 插件，并使用匹配的工具链和依赖。旧 JSON 导航配置和旁置文件应删除；分类需迁移至 setup，不提供兼容解析。

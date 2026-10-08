@@ -1,9 +1,0 @@
-{
-  "categories": [
-    "tetrahedron"
-  ],
-  "group": "生成",
-  "icon": "qrc:/images/toolbar/Algorithm/tetgen.svg",
-  "order": 30,
-  "label": "四面体网格生成（德劳内方法，外部程序）"
-}

@@ -23,6 +23,7 @@ class ModelIOSystemBase;
 }
 
 namespace systems::algo {
+class AlgorithmRegistrar;
 //! 进度回调别名：任务系统（systems::job）定义公共类型，算法侧沿用短名
 using ProgressFn = systems::job::ProgressFn;
 
@@ -38,6 +39,11 @@ struct HandlerContext {
 class AlgorithmHandler {
 public:
     virtual ~AlgorithmHandler() = default;
+    /**
+     * @brief 每次注册时收集导航声明；默认不声明网格分类，归入其他算法。
+     * @note 不得保存 registrar 引用、写模型或创建界面；抛异常时注册不生效。
+     */
+    virtual void setup(AlgorithmRegistrar&) { }
     /**
      * @brief 在执行前解析算法实际使用的 Component
      *

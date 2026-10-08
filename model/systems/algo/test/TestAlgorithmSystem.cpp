@@ -1,6 +1,5 @@
 #include "AlgorithmHandler.h"
 #include "AlgorithmRegistrar.h"
-#include "AlgorithmSetup.h"
 #include "AlgorithmSystem.h"
 #include "AlgorithmSystemRegister.h"
 #include "HandlerCreatorDestroyerFactory.h"
@@ -273,7 +272,7 @@ TEST_CASE("Algorithm registration and runner binding reject wrong threads before
     REQUIRE(system.getAlgorithmInfos().empty());
 }
 
-TEST_CASE("Algorithm navigation survives plugin registration and legacy replacement", "[AlgorithmSystem][navigation]")
+TEST_CASE("Algorithm identity JSON cannot declare navigation", "[AlgorithmSystem][navigation]")
 {
     class NavigationPlugin : public systems::PluginBase {
         const systems::HandlerCreatorDestroyer& getHandlerCreatorDestroyer() noexcept override
@@ -286,32 +285,16 @@ TEST_CASE("Algorithm navigation survives plugin registration and legacy replacem
     AlgorithmSystem system(io, model);
     AlgorithmSystemRegister registrar(system);
     QJsonObject metadata {
-        { "name", "Mesher" },
-        { "display_name", "Mesh generator" },
-        { "navigation", QJsonObject { { "categories", QJsonArray { "triangle", "tetrahedron", "", 1 } }, { "group", "Generate" }, { "icon", "qrc:/plugin/mesher.svg" }, { "order", -10 }, { "label", "  网格生成（德劳内方法）  " } } }
+        { "name", "Mesher" }, { "display_name", "Mesh generator" },
+        { "navigation", QJsonObject { { "categories", QJsonArray { "triangle" } }, { "label", "Ignored" } } }
     };
-    auto navigation = metadata.value("navigation").toObject();
-    navigation.insert("category_defaults", QJsonObject { { "triangle", QJsonObject { { "网格类型", 0 }, { "ignored", QJsonArray {} } } } });
-    metadata.insert("navigation", navigation);
     REQUIRE(registrar.registerPlugin(metadata, plugin));
     const auto* info = system.getAlgorithmInfos().front();
-    CHECK(info->navigation.categories == std::vector<std::string> { "triangle", "tetrahedron" });
-    CHECK(info->navigation.group == "Generate");
-    CHECK(info->navigation.icon == "qrc:/plugin/mesher.svg");
-    CHECK(info->navigation.order == -10);
-    CHECK(info->navigation.label == "网格生成（德劳内方法）");
-    CHECK(info->navigation.category_defaults.at("triangle").at("网格类型") == "0");
-    CHECK(info->navigation.category_defaults.at("triangle").size() == 1);
-
-    metadata.remove("navigation");
-    REQUIRE(registrar.registerPlugin(metadata, plugin));
-    info = system.getAlgorithmInfos().front();
+    CHECK(info->name == "Mesher");
+    CHECK(info->display_name == "Mesh generator");
     CHECK(info->navigation.categories.empty());
-    CHECK(info->navigation.group.empty());
-    CHECK(info->navigation.icon.empty());
-    CHECK(info->navigation.order == 0);
     CHECK(info->navigation.label.empty());
-    CHECK(info->navigation.category_defaults.empty());
+    CHECK(system.getNavigationCategories().size() == 4);
     registrar.unregisterPlugin(metadata);
     CHECK(system.getAlgorithmInfos().empty());
 }
@@ -329,17 +312,38 @@ TEST_CASE("Algorithm categories merge declarations deterministically and follow 
     CHECK(builtins[3].id == "hexahedron");
     CHECK_FALSE(builtins[3].icon.empty());
     CHECK(system.getAlgorithmInfos().empty());
-    HandlerMetaData legacy { .name = "legacy" };
-    legacy.navigation.categories = { "triangle", "unknown", "triangle" };
-    HandlerMetaData first { .name = "a" };
+    struct NavigationFixture : HandlerMetaData {
+        AlgorithmNavigation navigation;
+    };
+    NavigationFixture legacy;
+    legacy.name = "basic";
+    legacy.navigation.category_definitions = { { "hexahedron", "六面体网格生成", "", 40 } };
+    NavigationFixture first;
+    first.name = "a";
     first.navigation.category_definitions = {
         { "triangle", "插件三角形", "qrc:/a.svg", 20 },
         { "custom", "自定义网格生成", "qrc:/custom.svg", 10 }
     };
-    HandlerMetaData second { .name = "z" };
+    NavigationFixture second;
+    second.name = "z";
     second.navigation.category_definitions = { { "triangle", "另一名称", "qrc:/z.svg", -10 } };
+    class NavigationHandler : public ReportingHandler {
+    public:
+        explicit NavigationHandler(AlgorithmNavigation navigation)
+            : navigation_(std::move(navigation))
+        {
+        }
+        void setup(AlgorithmRegistrar& reg) override
+        {
+            for (const auto& category : navigation_.category_definitions)
+                reg.addCategory(category);
+        }
+
+    private:
+        AlgorithmNavigation navigation_;
+    };
     const auto install = [&](const auto& metadata) {
-        REQUIRE(system.registerHandler(metadata, AlgorithmSystem::SystemHandlerPtr { std::make_unique<ReportingHandler>().release() }));
+        REQUIRE(system.registerHandler(metadata, AlgorithmSystem::SystemHandlerPtr { std::make_unique<NavigationHandler>(metadata.navigation).release() }));
     };
     install(second);
     install(legacy);
@@ -365,8 +369,8 @@ TEST_CASE("Algorithm categories merge declarations deterministically and follow 
     CHECK(snapshot[1].id == "quadrilateral");
     CHECK(snapshot[2] == first.navigation.category_definitions[0]);
     for (const auto* info : system.getAlgorithmInfos()) {
-        if (info->name == "legacy")
-            CHECK(info->navigation.categories == std::vector<std::string> { "triangle" });
+        if (info->name == "basic")
+            CHECK(info->navigation.categories == std::vector<std::string> { "hexahedron" });
     }
     system.unregisterHandler(first);
     REQUIRE(system.getNavigationCategories().size() == 4);
@@ -386,36 +390,32 @@ TEST_CASE("Algorithm categories merge declarations deterministically and follow 
     CHECK(system.getNavigationCategories().size() == 4);
 }
 
-TEST_CASE("Algorithm category JSON accepts custom objects and keeps legacy fallback", "[AlgorithmSystem][navigation]")
+TEST_CASE("Algorithm setup validates category descriptions and removes duplicates", "[AlgorithmSystem][setup][navigation]")
 {
-    class NavigationPlugin : public systems::PluginBase {
-        const systems::HandlerCreatorDestroyer& getHandlerCreatorDestroyer() noexcept override
+    class CategoryHandler : public ReportingHandler {
+    public:
+        void setup(AlgorithmRegistrar& reg) override
         {
-            return systems::HandlerCreatorDestroyerFactory<ReportingHandler, AlgorithmHandler>::get();
+            reg.addCategory({ "polyhedral", "多面体网格生成", "", -5 });
+            reg.addCategory({ "polyhedral", "重复分类", "", 9 });
+            reg.addCategory({ "other", "保留身份", "", 0 });
+            reg.addCategory({ "missing-title", "", "", 0 });
+            reg.addCategory({ "", "缺少身份", "", 0 });
         }
-    } plugin;
+    };
     ModelLayer model;
     systems::io::ModelIOSystem io(model);
     AlgorithmSystem system(io, model);
-    AlgorithmSystemRegister registrar(system);
-    const QJsonObject custom { { "id", " polyhedral " }, { "title", " 多面体网格生成 " }, { "order", -5 } };
-    const QJsonObject reserved { { "id", "other" }, { "title", "无效分类" } };
-    QJsonObject metadata { { "name", "CustomMesher" },
-        { "navigation", QJsonObject { { "categories", QJsonArray { "triangle", "future", custom, custom, reserved, QJsonObject { { "id", "missing-title" } }, 3 } } } } };
-    REQUIRE(registrar.registerPlugin(metadata, plugin));
+    HandlerMetaData metadata { .name = "CustomMesher" };
+    REQUIRE(system.registerHandler(metadata, AlgorithmSystem::SystemHandlerPtr { std::make_unique<CategoryHandler>().release() }));
     const auto* info = system.getAlgorithmInfos().front();
-    CHECK(info->navigation.categories == std::vector<std::string> { "triangle", "polyhedral" });
+    CHECK(info->navigation.categories == std::vector<std::string> { "polyhedral" });
     REQUIRE(info->navigation.category_definitions.size() == 1);
     CHECK(info->navigation.category_definitions[0].title == "多面体网格生成");
-    const auto categories = system.getNavigationCategories();
-    REQUIRE(categories.size() == 5);
-    CHECK(categories.front().id == "polyhedral");
-    CHECK(categories[1].id == "triangle");
-    metadata.insert("navigation", QJsonObject { { "categories", QJsonArray { "future" } } });
-    REQUIRE(registrar.registerPlugin(metadata, plugin));
-    CHECK(system.getAlgorithmInfos().front()->navigation.categories.empty());
+    REQUIRE(system.getNavigationCategories().size() == 5);
+    CHECK(system.getNavigationCategories().front().id == "polyhedral");
+    system.unregisterHandler(metadata);
     CHECK(system.getNavigationCategories().size() == 4);
-    registrar.unregisterPlugin(metadata);
 }
 
 TEST_CASE("Algorithm setup is authoritative once per registration and preserves the registry on failure", "[AlgorithmSystem][setup][navigation]")
@@ -425,7 +425,7 @@ TEST_CASE("Algorithm setup is authoritative once per registration and preserves 
         bool reject { false };
         bool empty { false };
     } state;
-    class SetupHandler : public ReportingHandler, public AlgorithmSetup {
+    class SetupHandler : public ReportingHandler {
     public:
         explicit SetupHandler(SetupState& state)
             : state_(state)
@@ -455,9 +455,6 @@ TEST_CASE("Algorithm setup is authoritative once per registration and preserves 
     int notifications = 0;
     system.setOnAlgorithmInfosChanged([&] { ++notifications; });
     HandlerMetaData metadata { .name = "setup-handler", .display_name = "fallback" };
-    metadata.navigation.categories = { "triangle" };
-    metadata.navigation.label = "JSON 不应覆盖 setup";
-    metadata.navigation.category_defaults["triangle"]["网格类型"] = "0";
     const auto handler = [&] { return AlgorithmSystem::SystemHandlerPtr { std::make_unique<SetupHandler>(state).release() }; };
     REQUIRE(system.registerHandler(metadata, handler()));
     CHECK(state.calls == 1);
@@ -491,7 +488,7 @@ TEST_CASE("Algorithm setup is authoritative once per registration and preserves 
     REQUIRE_THROWS_AS(system.registerHandler(failing_new, handler()), std::runtime_error);
     CHECK(system.getAlgorithmInfos().size() == 1);
     CHECK(notifications == 1);
-    // 空 setup 也是完整声明，不能重新引入旧 JSON 的分类和默认值。
+    // 空 setup 替换已有算法后，旧分类和默认值不能残留。
     state.reject = false;
     state.empty = true;
     REQUIRE(system.registerHandler(metadata, handler()));
