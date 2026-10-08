@@ -11,12 +11,11 @@ function compareAlgorithms(a, b) {
 
 // 导航只消费插件声明，不根据插件名称推断算法类别。
 function buildGroups(infos, category) {
-    const knownCategories = ["triangle", "quadrilateral", "tetrahedron", "hexahedron"]
     const items = []
     for (const info of infos) {
         const categories = info.categories || []
         const matches = category === "other"
-                ? !categories.some(key => knownCategories.indexOf(key) >= 0)
+                ? categories.length === 0
                 : categories.indexOf(category) >= 0
         if (matches)
             items.push(info)

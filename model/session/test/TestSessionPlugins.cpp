@@ -138,10 +138,17 @@ TEST_CASE("Binary algorithm plugins accept sidecar navigation without losing leg
     QFile declaration(QString::fromStdString(declaration_path.string()));
     REQUIRE(declaration.open(QIODevice::WriteOnly));
     bool expected_navigation = false;
+    bool expected_custom_category = false;
     SECTION("Valid declarations supplement a previously unclassified binary")
     {
         REQUIRE(declaration.write(R"({"categories":["tetrahedron"],"group":"Generate","order":10,"label":"Mesh generation"})") > 0);
         expected_navigation = true;
+    }
+    SECTION("Custom category objects reach the native registry through a binary sidecar")
+    {
+        REQUIRE(declaration.write(R"({"categories":[{"id":"custom","title":"Custom meshing","order":-5}],"group":"Generate","order":10,"label":"Mesh generation"})") > 0);
+        expected_navigation = true;
+        expected_custom_category = true;
     }
     SECTION("Malformed declarations preserve plugin availability")
     {
@@ -158,7 +165,13 @@ TEST_CASE("Binary algorithm plugins accept sidecar navigation without losing leg
     REQUIRE(infos.size() == 1);
     CHECK(infos.front()->name == "cmdExecutePlugin");
     if (expected_navigation) {
-        CHECK(infos.front()->navigation.categories == std::vector<std::string> { "tetrahedron" });
+        CHECK(infos.front()->navigation.categories == std::vector<std::string> { expected_custom_category ? "custom" : "tetrahedron" });
+        const auto categories = session.algorithmSystem().getNavigationCategories();
+        REQUIRE(categories.size() == 1);
+        if (expected_custom_category) {
+            CHECK(categories[0].title == "Custom meshing");
+            CHECK(categories[0].order == -5);
+        }
         CHECK(infos.front()->navigation.group == "Generate");
         CHECK(infos.front()->navigation.order == 10);
         CHECK(infos.front()->navigation.label == "Mesh generation");
@@ -172,4 +185,5 @@ TEST_CASE("Binary algorithm plugins accept sidecar navigation without losing leg
     CHECK(session.algorithmSystem().getAlgorithmInfos().size() == 1);
     session.pluginManager().unregisterPlugin(target);
     CHECK(session.algorithmSystem().getAlgorithmInfos().empty());
+    CHECK(session.algorithmSystem().getNavigationCategories().empty());
 }

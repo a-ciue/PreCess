@@ -45,9 +45,24 @@ HandlerMetaData AlgorithmSystemRegister::toMetaData(const QJsonObject& meta_data
     handle_data.display_name = meta_data.value("display_name").toString().toStdString();
     const auto navigation = meta_data.value("navigation").toObject();
     for (const auto& category : navigation.value("categories").toArray()) {
+        if (category.isString()) {
         const auto category_name = category.toString().trimmed();
         if (!category_name.isEmpty())
             handle_data.navigation.categories.push_back(category_name.toStdString());
+            continue;
+        }
+        if (!category.isObject())
+            continue;
+        const auto declaration = category.toObject();
+        const auto id = declaration.value("id").toString().trimmed();
+        const auto title = declaration.value("title").toString().trimmed();
+        if (id.isEmpty() || id == "other" || title.isEmpty()) {
+            spdlog::warn("Invalid navigation category declaration in algorithm '{}'", handle_data.name);
+            continue;
+        }
+        handle_data.navigation.categories.push_back(id.toStdString());
+        handle_data.navigation.category_definitions.push_back({ id.toStdString(), title.toStdString(),
+            declaration.value("icon").toString().trimmed().toStdString(), declaration.value("order").toInt() });
     }
     handle_data.navigation.group = navigation.value("group").toString().toStdString();
     handle_data.navigation.icon = navigation.value("icon").toString().toStdString();

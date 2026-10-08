@@ -11,7 +11,9 @@ QtObject {
     id: root
 
     property var activeOperation: null
-    property var algorithmInfos: QModelManager.algorithmSystem.algorithmsInfo
+    property var algorithmSystem: QModelManager.algorithmSystem
+    property var algorithmInfos: root.algorithmSystem.algorithmsInfo
+    readonly property var algorithmCategories: root.algorithmSystem.navigationCategories
     readonly property bool meshGeneration: !!(root.activeOperation && root.activeOperation.isMeshGeneration)
     readonly property var meshAlgorithms: root.meshGeneration ? AlgorithmNavigation.buildAlgorithms(root.algorithmInfos, root.activeOperation.meshCategory) : []
     readonly property string panelTitle: root.meshGeneration && root.activeOperation.categoryTitle ? qsTr("操作面板-%1").arg(root.activeOperation.categoryTitle) : qsTr("操作面板")
@@ -40,6 +42,7 @@ QtObject {
     }
 
     onAlgorithmInfosChanged: Qt.callLater(root.refreshRegisteredMeshAlgorithm)
+    onAlgorithmCategoriesChanged: Qt.callLater(root.refreshRegisteredMeshAlgorithm)
     onMeshAlgorithmsChanged: Qt.callLater(root.refreshMeshAlgorithm)
     Component.onCompleted: root.applyOperation(App.activeOperation)
 
@@ -70,6 +73,11 @@ QtObject {
     function selectMeshAlgorithm(index, refresh = false) {
         if (!root.meshGeneration)
             return;
+        const categoryInfo = root.algorithmCategories.find(entry => entry.id === root.activeOperation.meshCategory);
+        if (!categoryInfo) {
+            App.activeOperation = null;
+            return;
+        }
         const info = index >= 0 && index < root.meshAlgorithms.length ? root.meshAlgorithms[index] : null;
         // QObject 的 JS 包装引用不稳定；普通重复点击按注册名称判定幂等。
         if (!refresh && info && root.activeOperation.info && root.activeOperation.info.name === info.name)
@@ -82,10 +90,10 @@ QtObject {
         App.activeOperation = {
             isMeshGeneration: true,
             meshCategory: category,
-            categoryTitle: root.activeOperation.categoryTitle,
+            categoryTitle: categoryInfo.title,
             info: info,
             execute: info ? function (component, args) {
-                QModelManager.algorithmSystem.call(info.name, component, args);
+                root.algorithmSystem.call(info.name, component, args);
             } : null
         };
     }
@@ -97,6 +105,11 @@ QtObject {
     function refreshMeshAlgorithm(refresh = false) {
         if (!root.meshGeneration)
             return;
+        if (!root.algorithmCategories.some(entry => entry.id === root.activeOperation.meshCategory)) {
+            // 最后一个提供者退出后，活动操作不能继续持有已消失分类的闭包或选择监听。
+            App.activeOperation = null;
+            return;
+        }
         const name = root.activeOperation.info ? root.activeOperation.info.name : root.lastMeshAlgorithms[root.activeOperation.meshCategory];
         const index = root.meshAlgorithms.findIndex(info => info.name === name);
         if (root.meshAlgorithms.length > 0)

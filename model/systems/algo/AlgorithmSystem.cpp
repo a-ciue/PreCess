@@ -13,7 +13,9 @@
 #include "ModelScope.h"
 #include "ShadowComponent.h"
 #include "UndoStack.h"
+#include <algorithm>
 #include <cassert>
+#include <map>
 #include <spdlog/spdlog.h>
 #include <stdexcept>
 #include <utility>
@@ -22,6 +24,49 @@ namespace systems::algo {
 using core::ArgObject;
 using std::string;
 using std::vector;
+
+namespace {
+    // 旧声明只在这一处补齐展示信息；新分类完全由插件的对象声明提供。
+    const std::vector<AlgorithmCategory>& legacyCategories()
+    {
+        static const std::vector<AlgorithmCategory> categories {
+            { "triangle", "三角形网格生成", "qrc:/images/toolbar/Mesh/triangle-meshing.svg", 10 },
+            { "quadrilateral", "四边形网格生成", "qrc:/images/toolbar/Mesh/quad-meshing.svg", 20 },
+            { "tetrahedron", "四面体网格生成", "qrc:/images/toolbar/Algorithm/tetgen.svg", 30 },
+            { "hexahedron", "六面体网格生成", "qrc:/images/toolbar/Mesh/hexa-meshing.svg", 40 }
+        };
+        return categories;
+    }
+    const AlgorithmCategory* findCategory(const std::vector<AlgorithmCategory>& categories, const std::string& id)
+    {
+        const auto found = std::find_if(categories.begin(), categories.end(), [&](const auto& category) { return category.id == id; });
+        return found == categories.end() ? nullptr : &*found;
+    }
+    AlgorithmNavigation normalizeNavigation(AlgorithmNavigation navigation)
+    {
+        // 过滤无效声明、去重；未知旧字符串仍沿用“其他算法”的兼容语义。
+        std::vector<AlgorithmCategory> definitions;
+        for (auto& definition : navigation.category_definitions) {
+            if (definition.id.empty() || definition.id == "other" || definition.title.empty())
+                continue;
+            if (!findCategory(definitions, definition.id))
+                definitions.push_back(std::move(definition));
+        }
+        navigation.category_definitions = std::move(definitions);
+        std::vector<std::string> categories;
+        for (const auto& id : navigation.categories) {
+            if ((findCategory(navigation.category_definitions, id) || findCategory(legacyCategories(), id))
+                && std::find(categories.begin(), categories.end(), id) == categories.end())
+                categories.push_back(id);
+        }
+        for (const auto& definition : navigation.category_definitions) {
+            if (std::find(categories.begin(), categories.end(), definition.id) == categories.end())
+                categories.push_back(definition.id);
+        }
+        navigation.categories = std::move(categories);
+        return navigation;
+    }
+}
 
 const string AlgorithmSystem::name = "AlgorithmSystem";
 
@@ -249,7 +294,17 @@ bool AlgorithmSystem::registerHandler(const HandlerMetaData& meta_data, SystemHa
     AlgorithmInfo info { .name = meta_data.name,
         .display_name = meta_data.display_name,
         .arg_types = handler->args_type(),
-        .navigation = meta_data.navigation };
+        .navigation = normalizeNavigation(meta_data.navigation) };
+    for (const auto& definition : info.navigation.category_definitions) {
+        for (const auto& [name, entry] : entries_) {
+            if (name == meta_data.name)
+                continue;
+            const auto* existing = findCategory(entry.info.navigation.category_definitions, definition.id);
+            if (existing && *existing != definition)
+                spdlog::warn("Conflicting navigation category '{}' from algorithms '{}' and '{}'; choosing the smallest algorithm name",
+                    definition.id, name, meta_data.name);
+        }
+    }
     entries_.insert_or_assign(meta_data.name, AlgorithmEntry { std::move(handler), std::move(info) });
     spdlog::info("AlgorithmSystem::registerHandler: Registered handler for algorithm '{}'", meta_data.name);
     on_algorithm_infos_changed_();
@@ -267,6 +322,38 @@ void AlgorithmSystem::unregisterHandler(const HandlerMetaData& meta_data)
     on_algorithm_infos_changed_();
 
     spdlog::info("AlgorithmSystem::unregisterHandler: Unregistered handler for algorithm '{}'", meta_data.name);
+}
+
+std::vector<AlgorithmCategory> AlgorithmSystem::getNavigationCategories() const
+{
+    struct Candidate {
+        AlgorithmCategory category;
+        bool explicit_declaration;
+        std::string provider;
+    };
+    std::map<std::string, Candidate> candidates;
+    for (const auto& [name, entry] : entries_) {
+        for (const auto& id : entry.info.navigation.categories) {
+            const auto* category = findCategory(entry.info.navigation.category_definitions, id);
+            const bool explicit_declaration = category != nullptr;
+            if (!category)
+                category = findCategory(legacyCategories(), id);
+            if (!category)
+                continue;
+            auto found = candidates.find(id);
+            // 显式声明优先；同级按算法身份选来源，不依赖 unordered_map 或 DLL 加载顺序。
+            if (found == candidates.end() || explicit_declaration > found->second.explicit_declaration
+                || (explicit_declaration == found->second.explicit_declaration && name < found->second.provider))
+                candidates.insert_or_assign(id, Candidate { *category, explicit_declaration, name });
+        }
+    }
+    std::vector<AlgorithmCategory> result;
+    for (const auto& [id, candidate] : candidates)
+        result.push_back(candidate.category);
+    std::sort(result.begin(), result.end(), [](const auto& a, const auto& b) {
+        return a.order != b.order ? a.order < b.order : a.id < b.id;
+    });
+    return result;
 }
 
 vector<AlgorithmInfo*> AlgorithmSystem::getAlgorithmInfos()

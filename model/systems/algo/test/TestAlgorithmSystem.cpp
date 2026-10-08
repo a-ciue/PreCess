@@ -313,3 +313,96 @@ TEST_CASE("Algorithm navigation survives plugin registration and legacy replacem
     registrar.unregisterPlugin(metadata);
     CHECK(system.getAlgorithmInfos().empty());
 }
+
+TEST_CASE("Algorithm categories merge declarations deterministically and follow provider lifetime", "[AlgorithmSystem][navigation]")
+{
+    ModelLayer model;
+    systems::io::ModelIOSystem io(model);
+    AlgorithmSystem system(io, model);
+    HandlerMetaData legacy { .name = "legacy" };
+    legacy.navigation.categories = { "triangle", "unknown", "triangle" };
+    HandlerMetaData first { .name = "a" };
+    first.navigation.category_definitions = {
+        { "triangle", "插件三角形", "qrc:/a.svg", 20 },
+        { "custom", "自定义网格生成", "qrc:/custom.svg", 10 }
+    };
+    HandlerMetaData second { .name = "z" };
+    second.navigation.category_definitions = { { "triangle", "另一名称", "qrc:/z.svg", -10 } };
+    const auto install = [&](const auto& metadata) {
+        REQUIRE(system.registerHandler(metadata, AlgorithmSystem::SystemHandlerPtr { std::make_unique<ReportingHandler>().release() }));
+    };
+    install(second);
+    install(legacy);
+    install(first);
+    const auto snapshot = system.getNavigationCategories();
+    {
+        auto occupied = model.beginWriteOperation(false);
+        REQUIRE(occupied);
+        REQUIRE_THROWS_AS(system.unregisterHandler(first), ModelOperationBusy);
+        REQUIRE_THROWS_AS(system.registerHandler(first,
+                              AlgorithmSystem::SystemHandlerPtr { std::make_unique<ReportingHandler>().release() }),
+            ModelOperationBusy);
+        CHECK(system.getNavigationCategories() == snapshot);
+    }
+    auto invalid_handler = std::make_unique<RegistrationHandler>("invalid");
+    invalid_handler->reject_metadata = true;
+    REQUIRE_THROWS_AS(system.registerHandler(first,
+                          AlgorithmSystem::SystemHandlerPtr { invalid_handler.release() }),
+        std::runtime_error);
+    CHECK(system.getNavigationCategories() == snapshot);
+    REQUIRE(snapshot.size() == 2);
+    CHECK(snapshot[0].id == "custom");
+    CHECK(snapshot[1] == first.navigation.category_definitions[0]);
+    for (const auto* info : system.getAlgorithmInfos()) {
+        if (info->name == "legacy")
+            CHECK(info->navigation.categories == std::vector<std::string> { "triangle" });
+    }
+    system.unregisterHandler(first);
+    REQUIRE(system.getNavigationCategories().size() == 1);
+    CHECK(system.getNavigationCategories()[0] == second.navigation.category_definitions[0]);
+    system.unregisterHandler(second);
+    CHECK(system.getNavigationCategories()[0].title == "三角形网格生成");
+    system.unregisterHandler(legacy);
+    CHECK(system.getNavigationCategories().empty());
+    // 调换注册顺序不能改变分类来源与排序。
+    install(first);
+    install(legacy);
+    install(second);
+    CHECK(system.getNavigationCategories() == snapshot);
+    // 替换同名算法时，旧分类不能残留。
+    first.navigation = {};
+    install(first);
+    CHECK(system.getNavigationCategories().size() == 1);
+}
+
+TEST_CASE("Algorithm category JSON accepts custom objects and keeps legacy fallback", "[AlgorithmSystem][navigation]")
+{
+    class NavigationPlugin : public systems::PluginBase {
+        const systems::HandlerCreatorDestroyer& getHandlerCreatorDestroyer() noexcept override
+        {
+            return systems::HandlerCreatorDestroyerFactory<ReportingHandler, AlgorithmHandler>::get();
+        }
+    } plugin;
+    ModelLayer model;
+    systems::io::ModelIOSystem io(model);
+    AlgorithmSystem system(io, model);
+    AlgorithmSystemRegister registrar(system);
+    const QJsonObject custom { { "id", " polyhedral " }, { "title", " 多面体网格生成 " }, { "order", -5 } };
+    const QJsonObject reserved { { "id", "other" }, { "title", "无效分类" } };
+    QJsonObject metadata { { "name", "CustomMesher" },
+        { "navigation", QJsonObject { { "categories", QJsonArray { "triangle", "future", custom, custom, reserved, QJsonObject { { "id", "missing-title" } }, 3 } } } } };
+    REQUIRE(registrar.registerPlugin(metadata, plugin));
+    const auto* info = system.getAlgorithmInfos().front();
+    CHECK(info->navigation.categories == std::vector<std::string> { "triangle", "polyhedral" });
+    REQUIRE(info->navigation.category_definitions.size() == 1);
+    CHECK(info->navigation.category_definitions[0].title == "多面体网格生成");
+    const auto categories = system.getNavigationCategories();
+    REQUIRE(categories.size() == 2);
+    CHECK(categories.front().id == "polyhedral");
+    CHECK(categories.back().id == "triangle");
+    metadata.insert("navigation", QJsonObject { { "categories", QJsonArray { "future" } } });
+    REQUIRE(registrar.registerPlugin(metadata, plugin));
+    CHECK(system.getAlgorithmInfos().front()->navigation.categories.empty());
+    CHECK(system.getNavigationCategories().empty());
+    registrar.unregisterPlugin(metadata);
+}

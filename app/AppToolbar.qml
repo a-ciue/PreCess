@@ -21,30 +21,9 @@ ColumnLayout {
     readonly property bool isWasm: Qt.platform.os === "wasm"
 
     property int activeCategory: -1
-    // 网格类别属于算法页内入口，不占据顶层页签。
-    readonly property var algorithmCategories: [
-        {
-            key: "triangle",
-            title: qsTr("三角形网格生成"),
-            icon: "qrc:/images/toolbar/Mesh/triangle-meshing.svg"
-        },
-        {
-            key: "quadrilateral",
-            title: qsTr("四边形网格生成"),
-            icon: "qrc:/images/toolbar/Mesh/quad-meshing.svg"
-        },
-        {
-            key: "tetrahedron",
-            title: qsTr("四面体网格生成"),
-            icon: "qrc:/images/toolbar/Algorithm/tetgen.svg"
-        },
-        {
-            key: "hexahedron",
-            title: qsTr("六面体网格生成"),
-            icon: "qrc:/images/toolbar/Mesh/hexa-meshing.svg"
-        }
-    ]
-    readonly property var algorithmInfos: QModelManager.algorithmSystem.algorithmsInfo
+    property var algorithmSystem: QModelManager.algorithmSystem
+    readonly property var algorithmCategories: root.algorithmSystem.navigationCategories
+    readonly property var algorithmInfos: root.algorithmSystem.algorithmsInfo
     readonly property int algorithmPageStart: 2
     readonly property int featurePageStart: algorithmPageStart + 2
     property real windowHeight: 600
@@ -571,9 +550,9 @@ ColumnLayout {
                     model: root.algorithmCategories
                     RibbonActionButton {
                         required property var modelData
-                        objectName: "algorithmCategory_" + modelData.key
+                        objectName: "algorithmCategory_" + modelData.id
                         text: modelData.title
-                        icon.source: modelData.icon
+                        icon.source: modelData.icon || "qrc:/images/toolbar/precess_extra_plugin.svg"
                         icon.width: root.ribbonIconSize
                         icon.height: root.ribbonIconSize
                         icon.color: "transparent"
@@ -581,17 +560,17 @@ ColumnLayout {
                         checkable: true
                         autoExclusive: true
                         checked: !!(App.activeOperation && App.activeOperation.isMeshGeneration
-                            && App.activeOperation.meshCategory === modelData.key)
+                            && App.activeOperation.meshCategory === modelData.id)
                         onClicked: {
                             if (!root.propertyListOpen)
                                 root.propertyListToggled()
                             // 重复选择保留输入；新类别由操作面板解析默认或上次所选算法。
                             if (App.activeOperation && App.activeOperation.isMeshGeneration
-                                    && App.activeOperation.meshCategory === modelData.key)
+                                    && App.activeOperation.meshCategory === modelData.id)
                                 return
                             App.activeOperation = {
                                 isMeshGeneration: true,
-                                meshCategory: modelData.key,
+                                meshCategory: modelData.id,
                                 categoryTitle: modelData.title,
                                 info: null
                             }

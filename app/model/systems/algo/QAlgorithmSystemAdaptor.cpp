@@ -58,6 +58,17 @@ void QAlgorithmSystemAdaptor::call(const QString& unique_name, Index model, cons
     }
 }
 
+QVariantList QAlgorithmSystemAdaptor::getNavigationCategories() const
+{
+    QVariantList result;
+    for (const auto& category : algo_system_->getNavigationCategories()) {
+        result.append(QVariantMap { { "id", QString::fromStdString(category.id) },
+            { "title", QString::fromStdString(category.title) },
+            { "icon", QString::fromStdString(category.icon) }, { "order", category.order } });
+    }
+    return result;
+}
+
 QList<QAlgorithmInfo*> QAlgorithmSystemAdaptor::getAlgorithmsInfo() const
 {
     QList<QAlgorithmInfo*> infos;

@@ -1,6 +1,9 @@
 /** @file TestAlgorithmNavigation.cpp
  * @brief 算法导航的分类兼容、排序及实际工具栏加载测试
  */
+#include "AlgorithmHandler.h"
+#include "AlgorithmSystem.h"
+#include "AlgorithmSystemRegister.h"
 #include "ComponentData.h"
 #include "FeatureContext.h"
 #include "FeatureEvents.h"
@@ -9,16 +12,21 @@
 #include "FeatureRegistrar.h"
 #include "FeatureSystem.h"
 #include "GeometryData.h"
+#include "HandlerCreatorDestroyerFactory.h"
+#include "ModelIOSystem.h"
+#include "PluginBase.h"
 #include "QAlgorithmInfo.h"
 #include "QFeatureInfo.h"
 #include "QModelManager.h"
 #include "QSelection.h"
+#include "QTaskStatus.h"
 
 #include <QEventLoop>
 #include <QFile>
 #include <QFontDatabase>
 #include <QGuiApplication>
 #include <QJSEngine>
+#include <QJsonArray>
 #include <QKeyEvent>
 #include <QMouseEvent>
 #include <QPointer>
@@ -80,12 +88,14 @@ void pressKey(QQuickWindow& window, int key, Qt::KeyboardModifiers modifiers = Q
     QKeyEvent release(QEvent::KeyRelease, key, modifiers, text);
     QCoreApplication::sendEvent(&window, &release);
 }
-std::unique_ptr<QObject> createSession(QQmlEngine& engine)
+std::unique_ptr<QObject> createSession(QQmlEngine& engine, const QJSValue& algorithm_system = {})
 {
     QQmlComponent component(&engine, QUrl("qrc:/navigation-ui/OperationSession.qml"));
     INFO(component.errorString().toStdString());
     REQUIRE(component.isReady());
-    std::unique_ptr<QObject> session(component.create());
+    std::unique_ptr<QObject> session(algorithm_system.isObject()
+            ? component.createWithInitialProperties({ { "algorithmSystem", QVariant::fromValue(algorithm_system) } })
+            : component.create());
     INFO(component.errorString().toStdString());
     REQUIRE(session);
     return session;
@@ -165,8 +175,8 @@ TEST_CASE("Algorithm navigation groups declared categories and preserves unclass
             {name: "multi", categories: ["triangle", "tetrahedron"], group: "Generate", order: -1},
             {name: "a", categories: ["triangle", "triangle"], group: "Generate", order: 0},
             {name: "legacy"},
-            {name: "future", categories: ["future"]},
-            {name: "mixed", categories: ["future", "hexahedron"], group: "Other group"}
+            {name: "future", categories: []},
+            {name: "mixed", categories: ["hexahedron"], group: "Other group"}
         ];
         JSON.stringify({
             triangle: buildGroups(infos, "triangle").map(g => g.items.map(i => i.name)),
@@ -212,7 +222,7 @@ TEST_CASE("Qt algorithm information exposes navigation as JavaScript arrays", "[
     CHECK(result.toString() == R"({"names":["Mesher"],"group":"Generate","icon":"qrc:/plugin/mesher.svg","order":-10,"other":0})");
 }
 
-TEST_CASE("Actual toolbar keeps four mesh categories available and preserves active operation", "[navigation][QML]")
+TEST_CASE("Actual toolbar renders supplied mesh categories and preserves active operation", "[navigation][QML]")
 {
     application();
     QTemporaryDir directory;
@@ -225,7 +235,15 @@ TEST_CASE("Actual toolbar keeps four mesh categories available and preserves act
     QQmlComponent component(&engine, QUrl("qrc:/navigation-ui/AppToolbar.qml"));
     INFO(component.errorString().toStdString());
     REQUIRE(component.isReady());
-    std::unique_ptr<QObject> toolbar(component.create());
+    auto provider = engine.newObject();
+    provider.setProperty("algorithmsInfo", engine.newArray());
+    provider.setProperty("navigationCategories", engine.evaluate(R"JS([
+        {id: "triangle", title: "三角形网格生成"},
+        {id: "quadrilateral", title: "四边形网格生成"},
+        {id: "tetrahedron", title: "四面体网格生成"},
+        {id: "hexahedron", title: "六面体网格生成"}
+    ])JS"));
+    std::unique_ptr<QObject> toolbar(component.createWithInitialProperties({ { "algorithmSystem", QVariant::fromValue(provider) } }));
     INFO(component.errorString().toStdString());
     REQUIRE(toolbar);
     auto* item = qobject_cast<QQuickItem*>(toolbar.get());
@@ -262,7 +280,7 @@ TEST_CASE("Actual toolbar keeps four mesh categories available and preserves act
     CHECK(categories->property("contentWidth").toReal() > categories->width());
     item->setWidth(800);
 
-    auto session = createSession(engine);
+    auto session = createSession(engine, provider);
     QQmlComponent sidebar_component(&engine, QUrl("qrc:/navigation-ui/SideBar.qml"));
     INFO(sidebar_component.errorString().toStdString());
     REQUIRE(sidebar_component.isReady());
@@ -813,5 +831,142 @@ TEST_CASE("Actual parameter controls preserve edits through scrolling and accept
     app->setProperty("activeOperation", QVariant::fromValue(QJSValue(QJSValue::NullValue)));
     system.unregisterHandler(meta);
     system.unregisterHandler(fixture_meta);
+    QModelManager::argv0 = {};
+}
+
+TEST_CASE("Registered custom categories create shared toolbar pages and disappear after the last provider", "[navigation][QML][registry]")
+{
+    application();
+    QTemporaryDir directory;
+    const auto executable = (directory.path() + "/isolated/Test.exe").toStdString();
+    QModelManager::argv0 = executable;
+    class CategoryHandler : public systems::algo::AlgorithmHandler {
+    public:
+        std::any execute(systems::algo::HandlerContext&, const std::vector<core::ArgObject>&) override { return {}; }
+        std::vector<core::ArgType> args_type() const override
+        {
+            return { { ArgTypeEnum::Float, "目标尺寸", "1", "" } };
+        }
+    };
+    class CategoryPlugin : public systems::PluginBase {
+        const systems::HandlerCreatorDestroyer& getHandlerCreatorDestroyer() noexcept override
+        {
+            return systems::HandlerCreatorDestroyerFactory<CategoryHandler, systems::algo::AlgorithmHandler>::get();
+        }
+    } plugin;
+    ModelLayer model;
+    systems::io::ModelIOSystem io(model);
+    systems::algo::AlgorithmSystem system(io, model);
+    systems::algo::AlgorithmSystemRegister registrar(system);
+    QTaskStatus status;
+    systems::algo::QAlgorithmSystemAdaptor adaptor(system, status);
+    QQmlEngine engine;
+    static const int theme_type = qmlRegisterSingletonType(QUrl("qrc:/navigation-ui/Theme.qml"), "DynamicNavigationUi", 1, 0, "Theme");
+    engine.rootContext()->setContextProperty("Theme", engine.singletonInstance<QObject*>(theme_type));
+    QQmlComponent component(&engine, QUrl("qrc:/navigation-ui/AppToolbar.qml"));
+    REQUIRE(component.isReady());
+    QQmlEngine::setObjectOwnership(&adaptor, QQmlEngine::CppOwnership);
+    auto provider = engine.newQObject(&adaptor);
+    auto session = createSession(engine, provider);
+    std::unique_ptr<QObject> toolbar(component.createWithInitialProperties({ { "algorithmSystem", QVariant::fromValue(provider) } }));
+    auto* item = qobject_cast<QQuickItem*>(toolbar.get());
+    REQUIRE(item);
+    QQuickWindow window;
+    window.resize(900, 700);
+    item->setParentItem(window.contentItem());
+    item->setSize(QSizeF(900, 180));
+    window.show();
+    QQmlComponent sidebar_component(&engine, QUrl("qrc:/navigation-ui/SideBar.qml"));
+    REQUIRE(sidebar_component.isReady());
+    std::unique_ptr<QObject> sidebar(sidebar_component.createWithInitialProperties({ { "session", QVariant::fromValue(session.get()) } }));
+    auto* sidebar_item = qobject_cast<QQuickItem*>(sidebar.get());
+    REQUIRE(sidebar_item);
+    sidebar_item->setParentItem(window.contentItem());
+    sidebar_item->setPosition(QPointF(0, 180));
+    sidebar_item->setSize(QSizeF(450, 500));
+    REQUIRE(toolbar->setProperty("activeCategory", 2));
+    const auto settle = [] {
+        QEventLoop loop;
+        QTimer::singleShot(60, &loop, &QEventLoop::quit);
+        loop.exec();
+    };
+    auto* app = engine.singletonInstance<QObject*>("app.core", "App");
+    REQUIRE(app);
+    CHECK_FALSE(findItem(item, "algorithmCategory_polyhedral"));
+    const QJsonObject category { { "id", "polyhedral" }, { "title", "多面体网格生成" }, { "order", 5 } };
+    const auto metadata = [&](const char* name, int order) {
+        return QJsonObject { { "name", name }, { "display_name", name },
+            { "navigation", QJsonObject { { "categories", QJsonArray { category } }, { "order", order } } } };
+    };
+    const auto first = metadata("first", 10);
+    const auto second = metadata("second", 20);
+    REQUIRE(registrar.registerPlugin(first, plugin));
+    REQUIRE(registrar.registerPlugin(second, plugin));
+    settle();
+    CHECK(adaptor.getNavigationCategories().size() == 1);
+    auto* button = findItem(item, "algorithmCategory_polyhedral");
+    REQUIRE(button);
+    CHECK(button->property("text").toString() == "多面体网格生成");
+    clickItem(window, button);
+    settle();
+    CHECK(session->property("meshAlgorithms").value<QJSValue>().property("length").toInt() == 2);
+    CHECK(session->property("panelTitle").toString() == "操作面板-多面体网格生成");
+    auto* parameters = session->property("parameterModel").value<QObject*>();
+    REQUIRE(parameters);
+    auto* selector = findItem(sidebar_item, "meshAlgorithmSelector");
+    REQUIRE(selector);
+    CHECK(selector->property("count").toInt() == 2);
+    clickItem(window, selector);
+    pressKey(window, Qt::Key_Down);
+    pressKey(window, Qt::Key_Return);
+    settle();
+    CHECK(app->property("activeOperation").value<QJSValue>().property("info").property("name").toString() == "second");
+    clickItem(window, selector);
+    pressKey(window, Qt::Key_Up);
+    pressKey(window, Qt::Key_Return);
+    settle();
+    CHECK(app->property("activeOperation").value<QJSValue>().property("info").property("name").toString() == "first");
+    auto* numeric = findItem(sidebar_item, "parameterControl_0");
+    REQUIRE(numeric);
+    clickItem(window, numeric);
+    pressKey(window, Qt::Key_A, Qt::ControlModifier);
+    pressKey(window, Qt::Key_9, Qt::NoModifier, "9");
+    pressKey(window, Qt::Key_Tab);
+    settle();
+    CHECK(parameters->property("values").value<QJSValue>().property(0).toNumber() == 9.0);
+    auto* selection = app->property("selection").value<QObject*>();
+    REQUIRE(selection);
+    selection->setProperty("listeningSelectorIndex", 0);
+    // 不相关注册和分类显示名称刷新都不能重置当前参数或选择。
+    QJsonObject unrelated { { "name", "unrelated" } };
+    REQUIRE(registrar.registerPlugin(unrelated, plugin));
+    auto renamed = first;
+    auto navigation = renamed.value("navigation").toObject();
+    auto renamed_category = category;
+    renamed_category.insert("title", "多面体划分");
+    navigation.insert("categories", QJsonArray { renamed_category });
+    renamed.insert("navigation", navigation);
+    REQUIRE(registrar.registerPlugin(renamed, plugin));
+    settle();
+    CHECK(parameters->property("values").value<QJSValue>().property(0).toNumber() == 9.0);
+    CHECK(selection->property("listeningSelectorIndex").toInt() == 0);
+    CHECK(session->property("panelTitle").toString() == "操作面板-多面体划分");
+    // 当前算法退出后改选仍在的提供者；最后一个退出后清理整个操作。
+    registrar.unregisterPlugin(first);
+    settle();
+    REQUIRE(findItem(item, "algorithmCategory_polyhedral"));
+    CHECK(app->property("activeOperation").value<QJSValue>().property("info").property("name").toString() == "second");
+    CHECK(parameters->property("values").value<QJSValue>().property(0).toNumber() == 1.0);
+    CHECK(selection->property("listeningSelectorIndex").toInt() == -1);
+    selection->setProperty("listeningSelectorIndex", 0);
+    registrar.unregisterPlugin(second);
+    settle();
+    CHECK_FALSE(findItem(item, "algorithmCategory_polyhedral"));
+    CHECK(app->property("activeOperation").isNull());
+    CHECK_FALSE(session->property("meshGeneration").toBool());
+    CHECK(parameters->property("values").value<QJSValue>().property("length").toInt() == 0);
+    CHECK(selection->property("listeningSelectorIndex").toInt() == -1);
+    CHECK(adaptor.getAlgorithmsInfo().size() == 1);
+    registrar.unregisterPlugin(unrelated);
     QModelManager::argv0 = {};
 }

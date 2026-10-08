@@ -33,3 +33,15 @@
 先读取 InteractionState.h 与 InteractionContext.h。onPick/onHover 在渲染线程运行，可在回调中写 annotations 供渲染层拉取；GUI 不直接改交互状态与标注。GUI 用 requestRefresh() 或 deferRefresh(op) 交给渲染线程同步消费。deactivate 先于交互下线，延迟清理会在 clearSession 前执行；按目标状态幂等应用启停。
 
 交互能力、结果和环境分别走声明、事件、上下文，不依赖 app 层，不按功能名要求修改通用界面。
+
+## 算法导航分类声明
+
+算法插件在 JSON 的 `handler.navigation.categories` 中声明二级分类。完整对象包含 `id`、`title`、可选 `icon`、`order`；例如 `[{"id":"quadrilateral","title":"四边形网格生成","icon":"qrc:/myplugin/quad.svg","order":20}]`。插件必须自行注册其 qrc 资源。
+
+相同分类 `id` 自动合并到一个按钮和页面；算法 `handler.name` 保持各自唯一。`navigation.label` 是三级算法的业务名称，`navigation.order` 是算法排序，均独立于分类对象的展示信息。相同分类应提供一致的描述；冲突时宿主告警，选择算法唯一名最小的显式声明，不依赖加载顺序。
+
+旧四类字符串声明继续兼容。自定义类别必须使用完整对象；`other` 为保留身份。未声明有效分类的算法进入“其他算法”，最后一个提供者卸载后自定义类别自动消失。运行中注册或卸载仍受模型任务占用约束。
+
+动态插件也可用 DLL 旁同名 `.navigation.json` 提供上述 navigation 对象；该文件整体覆盖内嵌导航声明，不改变插件身份或执行接口，修改后重新加载生效。分类默认参数仍使用 `category_defaults`，键为分类 `id`。
+
+此能力不需要插件依赖 app 层；参数继续通过 `AlgorithmHandler::args_type()` 声明，由宿主生成通用控件。

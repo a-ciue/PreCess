@@ -53,12 +53,19 @@ cmake --install build --prefix "<安装前缀>" --component AllPlugins
 {
   "system": "AlgorithmSystem",
   "handler": {
-    "name": "ExampleMesher",
+    "name": "ExampleQuadMesher",
     "display_name": "示例网格生成",
     "navigation": {
-      "categories": ["triangle", "tetrahedron"],
+      "categories": [
+        {
+          "id": "quadrilateral",
+          "title": "四边形网格生成",
+          "icon": "qrc:/example/quad.svg",
+          "order": 20
+        }
+      ],
       "group": "生成",
-      "label": "网格生成（德劳内方法）",
+      "label": "四边形网格生成（示例方法）",
       "icon": "qrc:/example/mesher.svg",
       "order": 10
     }
@@ -66,13 +73,17 @@ cmake --install build --prefix "<安装前缀>" --component AllPlugins
 }
 ```
 
-- 类别标识固定为 `triangle`（三角形）、`quadrilateral`（四边形）、`tetrahedron`（四面体）、`hexahedron`（六面体）；一个算法可声明多类，同一入口共享既有参数和执行逻辑。
-- 未声明导航、类别为空或只有未知类别时，算法进入“其他算法”；包含有效类别时按有效类别展示，不额外进入“其他算法”。
-- 顶层“网格生成算法”提供四类入口，具体算法在操作面板选择；“其他算法”保留工具栏按钮。
+- 二级分类由已注册算法的声明自动生成，宿主不维护固定按钮列表。插件可复用分类，也可声明新的分类；一个算法可以归属多个分类。
+- 分类对象的 `id` 是稳定身份，`title` 是必填显示名称，`icon` 可省略并使用通用图标，`order` 默认 0。`other` 是保留身份，不得声明为分类。
+- 不同插件使用相同分类 `id` 时共用一个按钮及页面；显示名称相同但 `id` 不同时不合并。具体算法仍使用独立的 `handler.name`，同名算法注册保持既有替换语义。
+- 相同分类的显式声明应一致。存在冲突时记录警告，选择算法唯一名按字典序最小的完整声明；显式对象优先于旧字符串的默认描述。分类按 `order` 排序，同值按 `id` 排序，结果与加载顺序无关。
+- 兼容旧字符串 `triangle`（三角形）、`quadrilateral`（四边形）、`tetrahedron`（四面体）、`hexahedron`（六面体），它们集中补齐默认名称、图标和排序。未知旧字符串继续忽略，自定义分类须使用对象声明。
+- 未声明有效分类的算法进入“其他算法”；声明有效分类的算法只进入对应分类页面。“其他算法”保留工具栏按钮，具体网格算法在操作面板选择。
+- 卸载最后一个提供者后分类按钮消失；当前类别消失时清理活动操作，当前算法退出但类别仍在时选择剩余可用算法。无关插件变化或分类改名不会清空当前参数。
 - `label` 为可选业务名称，例如“三角形网格生成（德劳内方法）”，不填写库名称；必须与算法真实能力一致。未声明时沿用 `display_name`，内部仍按 `name` 分发，不影响脚本或执行接口。
 - `group` 为空时归入默认分组；`order` 默认 0，数值越小越靠前，同值按算法唯一名排序。分组顺序由组内最靠前的算法决定。
 - `icon` 应由插件自身注册资源；为空时显示通用算法图标。现有 JSON 无需修改即可继续加载。
-- 使用 C++ 直接注册时，将同样的信息填入 `HandlerMetaData::navigation`。
+- 使用 C++ 直接注册时，将分类身份填入 `HandlerMetaData::navigation.categories`；自定义分类的完整描述填入 `category_definitions`，其身份也会自动加入所属类别。分类表从算法注册表派生，不需要单独注册或注销按钮。
 
 对于已安装且没有源码的算法 DLL，可在 DLL 旁放置同名 `.navigation.json`，例如 `ExampleMesher.dll` 对应 `ExampleMesher.navigation.json`：
 
@@ -91,3 +102,7 @@ cmake --install build --prefix "<安装前缀>" --component AllPlugins
 导航可选 `category_defaults` 按类别声明参数默认值，例如 `"category_defaults": {"triangle": {"网格类型": 0}, "quadrilateral": {"网格类型": 1}}`。键为参数名，Combo 值为选项索引；进入类别时应用，用户随后可调整。通用界面不根据插件名推断参数。
 
 现有 Gmsh / TetGen 二进制插件的业务名称和分类配置见 `algorithm-navigation/`。安装对应插件后，将匹配的 `.navigation.json` 复制到 DLL 同目录，再重新加载插件或重启程序；这些声明仅用于已安装插件，不安装算法二进制。
+
+两个外部插件共享分类时，在各自 JSON 中使用相同的分类对象、不同的 `handler.name`；例如 `ExampleQuadMesherA` 和 `ExampleQuadMesherB` 都声明 `quadrilateral`，页面内显示两个算法选项。新增 `polyhedral` 等类别只需提供完整对象，不需要修改主程序 QML。
+
+JSON 格式兼容不等于 DLL ABI 兼容。修改 SDK 共享头文件后需全量重建主程序及项目内插件；独立插件仍须使用与目标主程序兼容的 SDK 和构建配置。

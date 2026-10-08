@@ -5,11 +5,20 @@
 #include <string>
 #include <vector>
 namespace systems::algo {
+/** @brief 分类身份独立于显示名称；相同 id 的算法共享一个导航入口。 */
+struct AlgorithmCategory {
+    std::string id;
+    std::string title;
+    std::string icon;
+    int order { 0 };
+    bool operator==(const AlgorithmCategory&) const = default;
+};
 /**
- * @brief 插件声明的算法导航信息；类别使用稳定标识，空或未知类别由界面归入其他算法。
+ * @brief 插件声明的算法导航信息；类别使用稳定标识，未声明有效分类的算法归入其他算法。
  */
 struct AlgorithmNavigation {
-    std::vector<std::string> categories; //> triangle / quadrilateral / tetrahedron / hexahedron，可声明多类
+    std::vector<std::string> categories; //> 分类身份；旧四类字符串声明继续兼容
+    std::vector<AlgorithmCategory> category_definitions; //> 插件显式提供的分类展示声明
     std::string group; //> 分类页内分组，空时使用默认分组
     std::string icon; //> 插件提供的 qrc 图标路径
     int order { 0 }; //> 页内排序，数值越小越靠前
