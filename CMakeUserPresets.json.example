@@ -31,6 +31,7 @@
         //"PRECESS_PYTHON_PATH": "", // 可选：python.exe 所在目录，留空用系统 PATH 发现；构建后 python313.dll 自动拷至可执行文件目录，运行/调试无需配置 Python
         "QT_QML_GENERATE_QMLLS_INI": "ON", // 供qml代码高亮、静态分析、自动补全使用
         "CMAKE_EXPORT_COMPILE_COMMANDS": true, // 生成compile_commands.json文件供clangd使用
+        "PRECESS_BUILD_EXAMPLES": false, // 随主程序构建并安装 examples 中的两用示例插件
         "BUILD_TESTING": true // 指定构建测试用例
       },
       "environment": {

@@ -1,12 +1,12 @@
 add_custom_target(AllPlugins)
-set(PLUGINS_BUILD_DIR "${CMAKE_CURRENT_BINARY_DIR}")
 
 if(APPLE)
     set(plugins_destination "${MYNAME}.app/Contents/plugins")
     set(plugins_output_dir "${CMAKE_BINARY_DIR}/app/${MYNAME}.app/Contents/plugins")
 else()
     set(plugins_destination "plugins")
-    set(plugins_output_dir "${PLUGINS_BUILD_DIR}")
+    # 正式插件和 examples 共用主程序扫描的构建目录。
+    set(plugins_output_dir "${CMAKE_BINARY_DIR}/plugins")
 endif()
 
 # 插件装配 API（_add_plugin / precess_add_*_plugin / precess_plugin_link_libraries /
@@ -14,11 +14,15 @@ endif()
 # 插件工程使用同一实现，此处仅提供 in-tree 的输出/安装布局变量（见上）
 include(PreCessPlugin)
 
-add_subdirectory(shared/cgal_support)
 add_subdirectory(io)
 add_subdirectory(algo)
 add_subdirectory(edit)
 add_subdirectory(feature)
+
+# 继承与正式插件相同的输出、安装及静态导入作用域。
+if(PRECESS_BUILD_EXAMPLES)
+    add_subdirectory("${PROJECT_SOURCE_DIR}/examples" "${CMAKE_BINARY_DIR}/examples")
+endif()
 
 # 生成静态插件导入文件，作为接口库 StaticPlugins 被主程序链接
 get_property(static_plugins GLOBAL PROPERTY STATIC_PLUGINS)

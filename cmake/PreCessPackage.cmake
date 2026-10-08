@@ -4,7 +4,7 @@
 #   include/precess/...            开发头文件（镜像源码模块布局，裸名 include 语义不变）
 #   lib/PreCessBase.lib（Debug: PreCessBased.lib）  模型层单一静态库（导出 PreCess::Base）
 #   lib/cmake/PreCess/             PreCessConfig/Targets/Plugin/PluginTesting/ABI/
-#                                  find-package-helpers/Modules + Findtetgen/Findfreetype
+#                                  find-package-helpers/Modules + Findfreetype
 include_guard(GLOBAL)
 
 option(PRECESS_INSTALL_DEVELOPMENT_FILES
@@ -66,10 +66,33 @@ if(PRECESS_WITH_PYTHON)
 endif()
 
 # ---- 3.5) 示例插件源码（独立 CMake 工程）随 SDK 安装 ------------------------------
-# 作为完整工程原样安装：使用者可在 <prefix>/examples/ExternalPlugin/ 直接
-# cmake -S 该目录编译插件 DLL（README 即"SDK + 发行页第三方依赖 → DLL"教程）
-install(DIRECTORY "${PROJECT_SOURCE_DIR}/examples/ExternalPlugin/"
-    DESTINATION "examples/ExternalPlugin"
+# 按源码、构建文件及文档白名单分发；构建目录内的生成源码仍需排除。
+install(DIRECTORY "${PROJECT_SOURCE_DIR}/examples/"
+    DESTINATION "examples"
+    COMPONENT Development
+    FILES_MATCHING
+    PATTERN "*.cpp"
+    PATTERN "*.h"
+    PATTERN "*.json"
+    PATTERN "*.cmake"
+    PATTERN "*.md"
+    PATTERN "CMakeLists.txt"
+    PATTERN "build" EXCLUDE
+    PATTERN "out" EXCLUDE
+    PATTERN "CMakeFiles" EXCLUDE
+    PATTERN "CMakeUserPresets.json" EXCLUDE
+)
+install(DIRECTORY "${PROJECT_SOURCE_DIR}/sdk/skills/"
+    DESTINATION "skills"
+    COMPONENT Development
+    FILES_MATCHING PATTERN "*.md"
+)
+install(FILES "${PROJECT_SOURCE_DIR}/sdk/AGENTS.md"
+    "${PROJECT_SOURCE_DIR}/LICENSE.md"
+    "${PROJECT_SOURCE_DIR}/LICENSE.zh-CN.md"
+    "${PROJECT_SOURCE_DIR}/GPLv3-LICENSE.txt"
+    "${PROJECT_SOURCE_DIR}/LGPLv3-LICENSE.txt"
+    DESTINATION "examples"
     COMPONENT Development
 )
 

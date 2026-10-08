@@ -1,31 +1,127 @@
 qt_add_resources(${MYNAME} "images"
     PREFIX /images
     FILES
-        PreCess.ico
+        ZenithGrid.ico
         toolbar/File/import.svg
         toolbar/File/export.svg
         toolbar/File/preference.svg
-        toolbar/Edit/create_face.svg
-        toolbar/Edit/delete_face.svg
+        toolbar/Edit/create-face.svg
+        toolbar/Edit/delete-face.svg
         toolbar/Algorithm/tetgen.svg
         toolbar/Algorithm/cmd.svg
         toolbar/Algorithm/gmsh.svg
         toolbar/precess_extra_plugin.svg
-        toolbar/Geometry/point.svg
-        toolbar/Geometry/line_coord.svg
-        toolbar/Geometry/line_points.svg
+        toolbar/Geometry/create-point.svg
+        toolbar/Geometry/line-coordinates.svg
+        toolbar/Geometry/line-vertices.svg
         toolbar/Geometry/rectangle.svg
-        toolbar/Geometry/sector_or_circle.svg
-        toolbar/Geometry/close_edges_to_form_surface.svg
-        toolbar/Geometry/cuboid.svg
+        toolbar/Geometry/disk.svg
+        toolbar/Geometry/face-from-edges.svg
+        toolbar/Geometry/box.svg
         toolbar/Geometry/cylinder.svg
-        toolbar/Geometry/cone_or_conical_stage.svg
+        toolbar/Geometry/cone.svg
         toolbar/Geometry/sphere.svg
-        toolbar/Geometry/stretched_surface.svg
-        toolbar/Geometry/delete_geometry.svg
+        toolbar/Geometry/extrude.svg
+        toolbar/Geometry/delete-geometry.svg
         toolbar/Function/grid_quality.svg
+        # 保留旧资源路径供外部插件兼容；应用自身已使用 toolbar/Measure/。
         toolbar/Tools/measure.svg
         toolbar/Tools/size_marking.svg
+        toolbar/Common/cancel.svg
+        toolbar/Common/confirm.svg
+        toolbar/Common/delete.svg
+        toolbar/Common/preferences.svg
+        toolbar/Common/redo.svg
+        toolbar/Common/restore-defaults.svg
+        toolbar/Common/run.svg
+        toolbar/Common/undo.svg
+        toolbar/Mesh/hexa-meshing.svg
+        toolbar/Mesh/mesh-boolean.svg
+        toolbar/Mesh/mesh-repair.svg
+        toolbar/Mesh/nurbs-reconstruction.svg
+        toolbar/Mesh/quad-meshing.svg
+        toolbar/Mesh/triangle-meshing.svg
+        toolbar/MeshOps/boolean-difference-a.svg
+        toolbar/MeshOps/boolean-difference-b.svg
+        toolbar/MeshOps/boolean-intersection.svg
+        toolbar/MeshOps/boolean-union.svg
+        toolbar/MeshOps/degenerate-cleanup.svg
+        toolbar/MeshOps/fill-hole.svg
+        toolbar/MeshOps/self-intersection.svg
+        toolbar/Measure/angle.svg
+        toolbar/Measure/area.svg
+        toolbar/Measure/bounding-box.svg
+        toolbar/Measure/centroid.svg
+        toolbar/Measure/dimension.svg
+        toolbar/Measure/distance.svg
+        toolbar/Measure/length.svg
+        toolbar/Measure/measure.svg
+        toolbar/Measure/radius.svg
+        toolbar/Measure/volume.svg
+        toolbar/Selection/angle-spread.svg
+        toolbar/Selection/clear-selection.svg
+        toolbar/Selection/select-component.svg
+        toolbar/Selection/select-edge.svg
+        toolbar/Selection/select-face.svg
+        toolbar/Selection/select-geometry-edge.svg
+        toolbar/Selection/select-geometry-face.svg
+        toolbar/Selection/select-geometry-solid.svg
+        toolbar/Selection/select-geometry-vertex.svg
+        toolbar/Selection/select-solid.svg
+        toolbar/Selection/select-vertex.svg
+        toolbar/Selection/select.svg
+        toolbar/Viewport/clip.svg
+        toolbar/Viewport/geometry.svg
+        toolbar/Viewport/hide-all.svg
+        toolbar/Viewport/invert-visibility.svg
+        toolbar/Viewport/isolate.svg
+        toolbar/Viewport/mesh.svg
+        toolbar/Viewport/reset-view.svg
+        toolbar/Viewport/scale-bar.svg
+        toolbar/Viewport/show-all.svg
+        toolbar/Viewport/surface.svg
+        toolbar/Viewport/transparent.svg
+        toolbar/Viewport/wireframe.svg
+        toolbar/Topology/boundary-edge.svg
+        toolbar/Topology/boundary-face.svg
+        toolbar/Topology/dihedral.svg
+        toolbar/Topology/isolated-edge.svg
+        toolbar/Topology/isolated-vertex.svg
+        toolbar/Topology/max-dihedral.svg
+        toolbar/Topology/min-dihedral.svg
+        toolbar/Topology/nonmanifold-edge.svg
+        toolbar/Topology/nonmanifold-vertex.svg
+        toolbar/Panels/attribute-render.svg
+        toolbar/Panels/browse-file.svg
+        toolbar/Panels/cancel-render.svg
+        toolbar/Panels/clear-console.svg
+        toolbar/Panels/console-js.svg
+        toolbar/Panels/console-python.svg
+        toolbar/Panels/feature-demo.svg
+        toolbar/Panels/help.svg
+        toolbar/Panels/log.svg
+        toolbar/Panels/model-file.svg
+        toolbar/Panels/object-tree.svg
+        toolbar/Panels/plugin-register.svg
+        toolbar/Panels/plugin-unregister.svg
+        toolbar/Panels/preview.svg
+        toolbar/Panels/properties.svg
+        toolbar/Panels/render-rgb.svg
+        toolbar/Panels/render-scalar.svg
+        toolbar/Panels/render-uv.svg
+        toolbar/Panels/render-vector.svg
+        toolbar/Panels/scale-preview.svg
+        toolbar/Panels/texture.svg
         modeltree/show.svg
         modeltree/hide.svg
+)
+
+# 运行时发行包同样附带完整许可，不能只依赖可选的 Development 组件。
+install(FILES
+    "${PROJECT_SOURCE_DIR}/LICENSE.md"
+    "${PROJECT_SOURCE_DIR}/LICENSE.zh-CN.md"
+    "${PROJECT_SOURCE_DIR}/LGPLv3-LICENSE.txt"
+    "${PROJECT_SOURCE_DIR}/GPLv3-LICENSE.txt"
+    DESTINATION "${CMAKE_INSTALL_DATADIR}/licenses/${MYNAME}"
+    COMPONENT ${MYNAME}
 )

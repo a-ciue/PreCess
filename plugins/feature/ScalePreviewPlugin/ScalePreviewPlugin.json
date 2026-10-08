@@ -1,8 +1,0 @@
-{
-  "system": "FeatureSystem",
-  "handler": {
-    "name": "ScalePreview",
-    "display_name": "缩放预览演示",
-    "description": "演示插件层预览机制 + 工作线程非阻塞预览：预览按钮开层不入栈、因子变更经自由任务在工作线程分块计算并终态回写、菜单确认记一条、取消回滚"
-  }
-}

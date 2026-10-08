@@ -30,7 +30,7 @@ ApplicationWindow {
     width: 800
     height: 600
     visibility: Window.Maximized
-    title: qsTr("PreCess")
+    title: qsTr("ZenithGrid")
     color: Theme.windowBackground
     flags: Qt.platform.os === "wasm" ? (Qt.Window | Qt.FramelessWindowHint) : Qt.Window
 

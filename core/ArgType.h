@@ -25,7 +25,7 @@ struct ArgType {
      */
     template <ArgTypeEnum T>
     struct TypeMap {
-        static_assert(false, "Enum not correspond to a valid type.");
+        static_assert(T != T, "Enum not correspond to a valid type."); // 触发静态断言，提示枚举值未对应有效类型
     };
 
     ArgTypeEnum type; //> 参数类型

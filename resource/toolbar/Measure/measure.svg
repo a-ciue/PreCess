@@ -1,0 +1,4 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><title>交互测量</title><defs><linearGradient id="measure-silver" gradientUnits="userSpaceOnUse" x1="3" y1="3" x2="21" y2="21"><stop stop-color="#8CA7B0"/><stop offset="1" stop-color="#536F7C"/></linearGradient><linearGradient id="measure-teal" gradientUnits="userSpaceOnUse" x1="3" y1="3" x2="21" y2="21"><stop stop-color="#3CBFC6"/><stop offset="1" stop-color="#087C8B"/></linearGradient></defs><g fill="none" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><g stroke="url(#measure-silver)"><circle cx="5" cy="7" r="2" fill="url(#measure-silver)" fill-opacity="0.09" />
+    <circle cx="19" cy="7" r="2" fill="url(#measure-silver)" fill-opacity="0.09" />
+    </g><g stroke="url(#measure-teal)"><path d="M5 13v7m14-7v7M5 17h14" />
+  </g></g></svg>
