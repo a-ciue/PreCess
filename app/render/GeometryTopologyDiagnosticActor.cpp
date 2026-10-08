@@ -45,7 +45,7 @@ namespace {
 using DiagnosticColor = std::array<double, 3>;
 
 constexpr std::array<DiagnosticColor, kGeometryTopologyDiagnosticCategoryCount> kCategoryColors { {
-    { 0.90, 0.10, 0.20 }, // 边界边：红
+    { 0.20, 0.85, 0.20 }, // 边界边：绿
     { 0.55, 0.25, 0.75 }, // 孤立边：紫/洋红
     { 1.00, 0.75, 0.10 }, // 非流形边：黄
     { 0.00, 0.72, 0.83 }, // 细小边：青

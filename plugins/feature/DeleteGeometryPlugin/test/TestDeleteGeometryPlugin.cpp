@@ -70,8 +70,8 @@ TEST_CASE("DeleteGeometry execute removes selected solid from component root", "
         core::ArgObject::create<ArgTypeEnum::Bool>(false)));
 
     // 操作目标由所选形状反查，返回被更新组件 id
-    const Index result_component_id = std::any_cast<Index>(feature_system.invoke("DeleteGeometry"));
-    REQUIRE(result_component_id == component_id);
+    const std::string result_message = std::any_cast<std::string>(feature_system.invoke("DeleteGeometry"));
+    REQUIRE(result_message.find("成功") != std::string::npos);
 
     // 顶层实体被移除，根形状保留（保留直接下级拓扑时不重建实体）
     REQUIRE(component->geometry != nullptr);
@@ -79,4 +79,24 @@ TEST_CASE("DeleteGeometry execute removes selected solid from component root", "
     REQUIRE(component->geometry->index.solid_local_to_global.size() == 0 + 1);
     // 下级拓扑保留：6 个面仍在
     REQUIRE(component->geometry->index.face_local_to_global.size() == 6 + 1);
+}
+
+//! @brief 删除选项默认开启，未显式设置时会删除实体及独占下级拓扑。
+TEST_CASE("DeleteGeometry defaults to cascading deletion", "[DeleteGeometryPlugin]")
+{
+    core::EventBus bus;
+    ModelLayer model_layer;
+    FeatureSystem feature_system(model_layer, bus);
+    const Index component_id = addBoxGeometryComponent(model_layer);
+    FeatureSystem::SystemHandlerPtr handler { new DeleteGeometryHandler };
+    REQUIRE(feature_system.registerHandler(handlerMetaData(), std::move(handler)));
+    auto* component = model_layer.findComponent(component_id);
+    auto selection = std::make_shared<Selection>();
+    selection->type = ElementEnum::GeometrySolid;
+    selection->ids = { component->geometry->index.solid_local_to_global[1] };
+    selection->component_id = component_id;
+    REQUIRE(feature_system.setParameter("DeleteGeometry", 0,
+        core::ArgObject::create<ArgTypeEnum::Selector>(selection)));
+    REQUIRE(std::any_cast<std::string>(feature_system.invoke("DeleteGeometry")).find("成功") != std::string::npos);
+    REQUIRE(component->geometry == nullptr);
 }

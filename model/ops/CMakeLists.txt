@@ -4,6 +4,7 @@ add_library(DataOps OBJECT
 	UGridModel.cpp
 	GeometryBuilder.cpp
 	GeometryTopologyEditor.cpp
+	GeometryRepairValidation.cpp
 )
 target_include_directories(DataOps PUBLIC
 	${CMAKE_CURRENT_SOURCE_DIR}   # 头文件路径
@@ -15,7 +16,9 @@ target_link_libraries(DataOps PUBLIC Core Data
 target_link_libraries(DataOps PRIVATE
 	TKBRep
 	TKBool
+	TKFeat
 	TKPrim
+	TKShHealing
 	TKTopAlgo
 	TKMesh          # 面片空间扫描需要 BRepMesh_IncrementalMesh
 )

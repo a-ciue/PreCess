@@ -9,6 +9,7 @@
 #include <catch2/catch_test_macros.hpp>
 
 #include <any>
+#include <string>
 
 using namespace systems;
 using namespace systems::feature;
@@ -20,6 +21,21 @@ HandlerMetaData pointMetaData()
     meta_data.name = "CreatePoint";
     meta_data.display_name = "创建点";
     return meta_data;
+}
+}
+
+
+namespace {
+//! @brief 从「创建…成功（组件 N）」中解析组件 id，供测试定位新建组件。
+Index parseComponentId(const std::string& message)
+{
+    REQUIRE(message.find("成功") != std::string::npos);
+    const auto end = message.find_last_of("0123456789");
+    REQUIRE(end != std::string::npos);
+    auto start = end;
+    while (start > 0 && message[start - 1] >= '0' && message[start - 1] <= '9')
+        --start;
+    return static_cast<Index>(std::stoll(message.substr(start, end - start + 1)));
 }
 }
 
@@ -38,7 +54,8 @@ TEST_CASE("CreatePoint execute creates point component by write target", "[Creat
 
     // 写入目标 2：新建临时模型承载，返回新组件 id
     REQUIRE(feature_system.setParameter("CreatePoint", 3, core::ArgObject::create<ArgTypeEnum::Combo>(2)));
-    const Index component_id = std::any_cast<Index>(feature_system.invoke("CreatePoint"));
+    const std::string create_message = std::any_cast<std::string>(feature_system.invoke("CreatePoint"));
+    const Index component_id = parseComponentId(create_message);
     const auto* component = model_layer.findComponent(component_id);
     REQUIRE(component != nullptr);
     REQUIRE(component->name == "Point_1");
@@ -46,6 +63,7 @@ TEST_CASE("CreatePoint execute creates point component by write target", "[Creat
     REQUIRE(component->geometry->rootShape != nullptr);
 
     // 再次执行：编号递增
-    const Index second_id = std::any_cast<Index>(feature_system.invoke("CreatePoint"));
+    const std::string second_message = std::any_cast<std::string>(feature_system.invoke("CreatePoint"));
+    const Index second_id = parseComponentId(second_message);
     REQUIRE(model_layer.findComponent(second_id)->name == "Point_2");
 }

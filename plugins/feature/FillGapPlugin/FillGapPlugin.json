@@ -1,0 +1,8 @@
+{
+  "system": "FeatureSystem",
+  "handler": {
+    "name": "FillGap",
+    "display_name": "局部缝合",
+    "description": "选择自由边，在最大间隙内将选中侧缝合到对侧边界"
+  }
+}

@@ -1,0 +1,2 @@
+precess_add_test(TestPatchFacePlugin TestPatchFacePlugin.cpp)
+precess_test_link_libraries(TestPatchFacePlugin PatchFacePluginlib FeatureSystem Data)

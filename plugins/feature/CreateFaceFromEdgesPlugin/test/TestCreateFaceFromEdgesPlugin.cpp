@@ -97,8 +97,8 @@ TEST_CASE("CreateFaceFromEdges execute creates face from closed edge loop", "[Cr
     REQUIRE(feature_system.setParameter("CreateFaceFromEdges", 0,
         core::ArgObject::create<ArgTypeEnum::Selector>(selection)));
 
-    const Index result_component_id = std::any_cast<Index>(feature_system.invoke("CreateFaceFromEdges"));
-    REQUIRE(result_component_id == component_id); // 写回源组件
+    const std::string result_message = std::any_cast<std::string>(feature_system.invoke("CreateFaceFromEdges"));
+    REQUIRE(result_message.find("成功") != std::string::npos); // 写回源组件
 
     // 闭合轮廓成面：面数 0 + 1，边数不变
     component->geometry->ensureIndexBuilt(model_layer.geomRegistry());
