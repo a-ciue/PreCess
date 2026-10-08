@@ -11,14 +11,14 @@ QtObject {
     id: root
 
     property var activeOperation: null
-    property var algorithmSystem: QModelManager.algorithmSystem
-    property var algorithmInfos: root.algorithmSystem.algorithmsInfo
+    property var algorithmSystem: QModelManager.featureSystem
+    property var algorithmInfos: root.algorithmSystem.featuresInfo
     readonly property var algorithmCategories: root.algorithmSystem.navigationCategories
     readonly property bool meshGeneration: !!(root.activeOperation && root.activeOperation.isMeshGeneration)
     readonly property var meshAlgorithms: root.meshGeneration ? AlgorithmNavigation.buildAlgorithms(root.algorithmInfos, root.activeOperation.meshCategory) : []
     readonly property string panelTitle: root.meshGeneration && root.activeOperation.categoryTitle ? qsTr("操作面板-%1").arg(root.activeOperation.categoryTitle) : qsTr("操作面板")
     readonly property OperationParameterModel parameterModel: OperationParameterModel {
-        featureSystem: QModelManager.featureSystem
+        featureSystem: root.algorithmSystem
         acceptingEdits: !root.switchingOperation
     }
 
@@ -57,7 +57,7 @@ QtObject {
             if (!preserveParameters) {
                 App.selection.listeningSelectorIndex = -1;
                 const featureName = operation && operation.isFeature && operation.info ? operation.info.name : "";
-                QModelManager.featureSystem.setFeatureActive(featureName);
+                root.parameterModel.featureSystem.setFeatureActive(featureName);
                 root.parameterModel.reset(operation);
             } else
                 root.parameterModel.argumentTypes = operation.info.arg_types;
@@ -89,11 +89,12 @@ QtObject {
             root.lastMeshAlgorithms[category] = info.name;
         App.activeOperation = {
             isMeshGeneration: true,
+            isFeature: !!info,
             meshCategory: category,
             categoryTitle: categoryInfo.title,
             info: info,
             execute: info ? function (component, args) {
-                root.algorithmSystem.call(info.name, component, args);
+                root.algorithmSystem.invoke(info.name);
             } : null
         };
     }

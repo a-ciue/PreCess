@@ -22,7 +22,8 @@ ColumnLayout {
 
     property int activeCategory: -1
     property var algorithmSystem: QModelManager.algorithmSystem
-    readonly property var algorithmCategories: root.algorithmSystem.navigationCategories
+    property var meshFeatureSystem: QModelManager.featureSystem
+    readonly property var algorithmCategories: root.meshFeatureSystem.navigationCategories
     readonly property var algorithmInfos: root.algorithmSystem.algorithmsInfo
     readonly property int algorithmPageStart: 2
     readonly property int featurePageStart: algorithmPageStart + 2
@@ -54,9 +55,6 @@ ColumnLayout {
     readonly property var pluginIconMap: ({
         "CreateFacePlugin": "qrc:/images/toolbar/Edit/create-face.svg",
         "DeleteFacePlugin": "qrc:/images/toolbar/Edit/delete-face.svg",
-        "TetGenPlugin": "qrc:/images/toolbar/Algorithm/tetgen.svg",
-        "TetGenLibPlugin": "qrc:/images/toolbar/Algorithm/tetgen.svg",
-        "GmshPlugin": "qrc:/images/toolbar/Algorithm/gmsh.svg",
         "cmdExecutePlugin": "qrc:/images/toolbar/Algorithm/cmd.svg"
     })
     function getIconForPlugin(pluginName) {
@@ -104,6 +102,8 @@ ColumnLayout {
         let menu_order = []
         let menus = {} // 菜单名 -> { group_order, groups: 分组名 -> [QFeatureInfo] }
         for (let info of QModelManager.featureSystem.featuresInfo) {
+            if (info.categories && info.categories.length > 0)
+                continue;
             let segs = (info.menu_path || "功能").split('/')
             let menu_name = segs[0]
             let group_name = segs.length > 1 ? segs[1] : ""

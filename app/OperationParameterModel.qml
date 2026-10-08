@@ -27,6 +27,15 @@ QtObject {
     function reset(operation) {
         root.argumentTypes = operation && operation.info ? operation.info.arg_types : [];
         root.featureName = operation && operation.isFeature && operation.info ? operation.info.name : "";
+        // 分类默认值只覆盖声明的参数，其他 Feature 参数保持其持久值。
+        const presets = operation && operation.isMeshGeneration && operation.info ? operation.info.category_defaults[operation.meshCategory] : null;
+        if (root.featureName && presets) {
+            const defaults = root.createDefaultValues(operation);
+            root.argumentTypes.forEach((arg, index) => {
+                if (presets[arg.name] !== undefined)
+                    root.featureSystem.setParameter(root.featureName, index, defaults[index]);
+            });
+        }
         // 功能系统持有长期参数；进入面板只读取快照，不用默认值覆盖或派发初始化事件。
         root.values = root.featureName ? Array.from(root.featureSystem.getParameterValues(root.featureName)) : root.createDefaultValues(operation);
     }

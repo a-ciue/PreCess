@@ -12,10 +12,76 @@
 
 #include <spdlog/spdlog.h>
 
+#include <algorithm>
+#include <map>
 #include <optional>
 #include <utility>
 
 namespace systems::feature {
+namespace {
+    // 四个基础分类始终存在；扩展分类由插件的 setup 提供。
+    const std::vector<FeatureCategory>& builtInCategories()
+    {
+        static const std::vector<FeatureCategory> categories {
+            { "triangle", "三角形网格生成", "qrc:/images/toolbar/Mesh/triangle-meshing.svg", 10 },
+            { "quadrilateral", "四边形网格生成", "qrc:/images/toolbar/Mesh/quad-meshing.svg", 20 },
+            { "tetrahedron", "四面体网格生成", "qrc:/images/toolbar/Algorithm/tetgen.svg", 30 },
+            { "hexahedron", "六面体网格生成", "qrc:/images/toolbar/Mesh/hexa-meshing.svg", 40 }
+        };
+        return categories;
+    }
+    const FeatureCategory* findCategory(const std::vector<FeatureCategory>& categories, const std::string& id)
+    {
+        const auto found = std::find_if(categories.begin(), categories.end(), [&](const auto& category) { return category.id == id; });
+        return found == categories.end() ? nullptr : &*found;
+    }
+    FeatureNavigation normalizeNavigation(FeatureNavigation navigation)
+    {
+        // 过滤无效声明、去重；所属分类身份完全从 setup 的分类描述派生。
+        std::vector<FeatureCategory> definitions;
+        for (auto& definition : navigation.category_definitions) {
+            if (definition.id.empty() || definition.id == "other" || definition.title.empty())
+                continue;
+            if (!findCategory(definitions, definition.id))
+                definitions.push_back(std::move(definition));
+        }
+        navigation.category_definitions = std::move(definitions);
+        std::vector<std::string> categories;
+        for (const auto& definition : navigation.category_definitions) {
+            if (std::find(categories.begin(), categories.end(), definition.id) == categories.end())
+                categories.push_back(definition.id);
+        }
+        navigation.categories = std::move(categories);
+        return navigation;
+    }
+}
+std::vector<FeatureCategory> FeatureSystem::getNavigationCategories() const
+{
+    struct Candidate {
+        FeatureCategory category;
+        std::string provider;
+    };
+    std::map<std::string, Candidate> candidates;
+    // 基础入口不随算法提供者卸载而消失；没有算法时由通用面板呈现空状态。
+    for (const auto& category : builtInCategories())
+        candidates.emplace(category.id, Candidate { category, "" });
+    for (const auto& [name, entry] : entries_) {
+        for (const auto& category : entry.info.navigation.category_definitions) {
+            auto found = candidates.find(category.id);
+            // 插件声明优先于内置描述；同类按算法身份选来源，不依赖加载顺序。
+            if (found == candidates.end() || found->second.provider.empty() || name < found->second.provider)
+                candidates.insert_or_assign(category.id, Candidate { category, name });
+        }
+    }
+    std::vector<FeatureCategory> result;
+    for (const auto& [id, candidate] : candidates)
+        result.push_back(candidate.category);
+    std::sort(result.begin(), result.end(), [](const auto& a, const auto& b) {
+        return a.order != b.order ? a.order < b.order : a.id < b.id;
+    });
+    return result;
+}
+
 const std::string FeatureSystem::name = "FeatureSystem";
 
 FeatureSystem::FeatureEntry::FeatureEntry(FeatureSystem& system, const HandlerMetaData& meta_data)
@@ -76,6 +142,10 @@ bool FeatureSystem::registerHandler(const HandlerMetaData& meta_data, SystemHand
     if (!handler) {
         return false;
     }
+    // 同名插件描述刷新不应丢失用户已编辑的参数；声明变化时仍载入新默认值。
+    std::optional<FeatureParams> previous_params;
+    if (auto previous = entries_.find(meta_data.name); previous != entries_.end())
+        previous_params = previous->second.params;
     // 同名功能先注销旧的再替换
     if (entries_.count(meta_data.name)) {
         spdlog::warn("FeatureSystem::registerHandler: feature '{}' already registered, replacing it", meta_data.name);
@@ -95,8 +165,13 @@ bool FeatureSystem::registerHandler(const HandlerMetaData& meta_data, SystemHand
     }
     // setup 返回后载入默认值；参数对象地址不变，context 内部引用继续有效。
     entry.params = FeatureParams(registrar.argTypes());
+    if (previous_params && std::equal(previous_params->types().begin(), previous_params->types().end(), registrar.argTypes().begin(), registrar.argTypes().end(), [](const auto& a, const auto& b) {
+            return a.name == b.name && a.type == b.type && a.content == b.content;
+        }))
+        entry.params = std::move(*previous_params);
     entry.info.arg_types = registrar.argTypes();
     entry.info.menus = registrar.menuItems();
+    entry.info.navigation = normalizeNavigation(registrar.navigation());
     entry.info.key_bindings = registrar.keyBindings();
     entry.handler = std::move(handler);
 

@@ -93,6 +93,8 @@ public:
      * @brief 获取已注册功能信息列表
      */
     std::vector<FeatureInfo*> getFeatureInfos();
+    /** @brief 聚合网格分类；四个基础入口始终保留。 */
+    std::vector<FeatureCategory> getNavigationCategories() const;
     /**
      * @brief 获取功能的参数集（UI 展示当前值用），功能不存在时为 nullptr
      */

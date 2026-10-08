@@ -35,7 +35,23 @@ public:
     const std::vector<MenuContribution>& menuItems() const noexcept { return menus_; }
     const std::vector<KeyBinding>& keyBindings() const noexcept { return key_bindings_; }
 
+    /** @brief 声明二级分类；相同 id 在系统中自动合并。 */
+    void addCategory(FeatureCategory category) { navigation_.category_definitions.push_back(std::move(category)); }
+    /** @brief 具体算法的业务名称，空时使用 display_name。 */
+    void setLabel(std::string label) { navigation_.label = std::move(label); }
+    void setGroup(std::string group) { navigation_.group = std::move(group); }
+    void setIcon(std::string icon) { navigation_.icon = std::move(icon); }
+    /** @brief 算法在分类内的排序；分类排序在 addCategory 的描述中指定。 */
+    void setOrder(int order) { navigation_.order = order; }
+    /** @brief 按分类声明参数默认值，Combo 使用选项索引的字符串。 */
+    void setCategoryDefault(std::string category, std::string parameter, std::string value)
+    {
+        navigation_.category_defaults[std::move(category)].insert_or_assign(std::move(parameter), std::move(value));
+    }
+    const FeatureNavigation& navigation() const noexcept { return navigation_; }
+
 private:
+    FeatureNavigation navigation_;
     std::vector<core::ArgType> arg_types_;
     std::vector<MenuContribution> menus_;
     std::vector<KeyBinding> key_bindings_;

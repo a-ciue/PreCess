@@ -166,6 +166,17 @@ void QFeatureSystemAdaptor::setActiveComponent(int id)
     active_component_id_ = id;
 }
 
+QVariantList QFeatureSystemAdaptor::getNavigationCategories() const
+{
+    QVariantList result;
+    for (const auto& category : feature_system_->getNavigationCategories()) {
+        result.append(QVariantMap { { "id", QString::fromStdString(category.id) },
+            { "title", QString::fromStdString(category.title) },
+            { "icon", QString::fromStdString(category.icon) }, { "order", category.order } });
+    }
+    return result;
+}
+
 QList<QFeatureInfo*> QFeatureSystemAdaptor::getFeaturesInfo() const
 {
     QList<QFeatureInfo*> infos;
@@ -174,6 +185,16 @@ QList<QFeatureInfo*> QFeatureSystemAdaptor::getFeaturesInfo() const
         std::vector<MenuContribution> menus = feature_info->menus;
         if (menus.empty()) {
             menus.push_back({ "功能", "", "" });
+        }
+        QStringList categories;
+        for (const auto& category : feature_info->navigation.categories)
+            categories.append(QString::fromStdString(category));
+        QVariantMap category_defaults;
+        for (const auto& [category, defaults] : feature_info->navigation.category_defaults) {
+            QVariantMap parameters;
+            for (const auto& [name, value] : defaults)
+                parameters.insert(QString::fromStdString(name), QString::fromStdString(value));
+            category_defaults.insert(QString::fromStdString(category), parameters);
         }
         for (const auto& menu : menus) {
             QList<QArgType*> args;
@@ -185,9 +206,11 @@ QList<QFeatureInfo*> QFeatureSystemAdaptor::getFeaturesInfo() const
                 QString::fromStdString(feature_info->display_name),
                 QString::fromStdString(feature_info->description),
                 QString::fromStdString(menu.menu_path.empty() ? "功能" : menu.menu_path),
-                QString::fromStdString(menu.icon),
+                QString::fromStdString(feature_info->navigation.icon.empty() ? menu.icon : feature_info->navigation.icon),
                 std::move(args),
-                feature_info->interactive));
+                feature_info->interactive, nullptr, categories,
+                QString::fromStdString(feature_info->navigation.group), feature_info->navigation.order,
+                QString::fromStdString(feature_info->navigation.label), category_defaults));
         }
     }
     return infos;

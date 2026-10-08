@@ -16,7 +16,6 @@
 #include "HandlerCreatorDestroyerFactory.h"
 #include "ModelIOSystem.h"
 #include "PluginBase.h"
-#include "QAlgorithmInfo.h"
 #include "QFeatureInfo.h"
 #include "QModelManager.h"
 #include "QSelection.h"
@@ -53,6 +52,17 @@ Q_IMPORT_QML_PLUGIN(app_model_systems_editPlugin)
 Q_IMPORT_QML_PLUGIN(app_model_systems_featurePlugin)
 
 namespace {
+// 测试描述使用 Feature 包装，参数排列便于构造多分类样例。
+class NavigationTestInfo : public QFeatureInfo {
+public:
+    NavigationTestInfo(QString name, QString display_name, QString description, QList<QArgType*> args,
+        QObject* parent = nullptr, QStringList categories = {}, QString group = {}, QString icon = {},
+        int order = 0, QString label = {}, QVariantMap defaults = {})
+        : QFeatureInfo(std::move(name), std::move(display_name), std::move(description), "", std::move(icon),
+              std::move(args), false, parent, std::move(categories), std::move(group), order, std::move(label), std::move(defaults))
+    {
+    }
+};
 QQuickItem* findItem(QQuickItem* root, const QString& name)
 {
     if (root->objectName() == name)
@@ -138,8 +148,10 @@ public:
     void activate(systems::feature::FeatureContext& ctx) override
     {
         ++state_.activations;
-        state_.activated_value = *ctx.params.value(0).get<ArgTypeEnum::Float>();
-        ctx.params.setValue(4, core::ArgObject::create<ArgTypeEnum::Float>(7.0));
+        if (const auto* value = ctx.params.value(0).get<ArgTypeEnum::Float>())
+            state_.activated_value = *value;
+        if (ctx.params.count() > 4)
+            ctx.params.setValue(4, core::ArgObject::create<ArgTypeEnum::Float>(7.0));
     }
 
 private:
@@ -200,14 +212,14 @@ TEST_CASE("Algorithm navigation groups declared categories and preserves unclass
     CHECK(ordered.toString() == "first,second,third");
 }
 
-TEST_CASE("Qt algorithm information exposes navigation as JavaScript arrays", "[navigation][Qt]")
+TEST_CASE("Qt feature information exposes navigation as JavaScript arrays", "[navigation][Qt]")
 {
     application();
     QJSEngine engine;
     QFile source(":/navigation-ui/AlgorithmNavigation.js");
     REQUIRE(source.open(QIODevice::ReadOnly));
     REQUIRE_FALSE(engine.evaluate(QString::fromUtf8(source.readAll()).remove(".pragma library")).isError());
-    QAlgorithmInfo info("Mesher", "Mesh generator", "", {}, nullptr,
+    NavigationTestInfo info("Mesher", "Mesh generator", "", {}, nullptr,
         { "triangle", "tetrahedron" }, "Generate", "qrc:/plugin/mesher.svg", -10);
     engine.globalObject().setProperty("info", engine.newQObject(&info));
     auto result = engine.evaluate(R"JS(
@@ -236,15 +248,11 @@ TEST_CASE("Actual toolbar renders supplied mesh categories and preserves active 
     QQmlComponent component(&engine, QUrl("qrc:/navigation-ui/AppToolbar.qml"));
     INFO(component.errorString().toStdString());
     REQUIRE(component.isReady());
-    auto provider = engine.newObject();
-    provider.setProperty("algorithmsInfo", engine.newArray());
-    provider.setProperty("navigationCategories", engine.evaluate(R"JS([
-        {id: "triangle", title: "三角形网格生成"},
-        {id: "quadrilateral", title: "四边形网格生成"},
-        {id: "tetrahedron", title: "四面体网格生成"},
-        {id: "hexahedron", title: "六面体网格生成"}
-    ])JS"));
-    std::unique_ptr<QObject> toolbar(component.createWithInitialProperties({ { "algorithmSystem", QVariant::fromValue(provider) } }));
+    auto* manager = engine.singletonInstance<QModelManager*>("app.model", "QModelManager");
+    auto* feature_adaptor = manager->getFeatureSystemAdaptor();
+    auto& feature_system = *feature_adaptor->featureSystem();
+    auto provider = engine.newQObject(feature_adaptor);
+    std::unique_ptr<QObject> toolbar(component.createWithInitialProperties({ { "meshFeatureSystem", QVariant::fromValue(provider) } }));
     INFO(component.errorString().toStdString());
     REQUIRE(toolbar);
     auto* item = qobject_cast<QQuickItem*>(toolbar.get());
@@ -301,9 +309,14 @@ TEST_CASE("Actual toolbar renders supplied mesh categories and preserves active 
     QArgType size(size_type);
     QArgType quality(quality_type);
     QArgType iterations(iterations_type);
-    QAlgorithmInfo first("first", "Legacy library name", "", { &size, &quality }, nullptr,
+    ParameterProbeState first_state, second_state;
+    REQUIRE(feature_system.registerHandler({ .name = "first" },
+        systems::feature::FeatureSystem::SystemHandlerPtr { std::make_unique<ParameterProbe>(std::vector<core::ArgType> { size_type, quality_type }, first_state).release() }));
+    REQUIRE(feature_system.registerHandler({ .name = "second" },
+        systems::feature::FeatureSystem::SystemHandlerPtr { std::make_unique<ParameterProbe>(std::vector<core::ArgType> { iterations_type }, second_state).release() }));
+    NavigationTestInfo first("first", "Legacy library name", "", { &size, &quality }, nullptr,
         { "triangle", "tetrahedron" }, "", "", 0, "网格生成（德劳内方法）");
-    QAlgorithmInfo second("second", "Second library", "", { &iterations }, nullptr,
+    NavigationTestInfo second("second", "Second library", "", { &iterations }, nullptr,
         { "triangle" }, "", "", 1, "三角形网格生成（波前推进法）");
     auto infos = engine.newArray(2);
     infos.setProperty(0, engine.newQObject(&first));
@@ -331,8 +344,8 @@ TEST_CASE("Actual toolbar renders supplied mesh categories and preserves active 
     REQUIRE(selection);
     selection->setProperty("listeningSelectorIndex", 0);
     // 无关插件增删和描述包装刷新不能重新开始当前操作。
-    QAlgorithmInfo unrelated("unrelated", "其他算法", "", {});
-    QAlgorithmInfo refreshed_first("first", "Legacy library name", "", { &size, &quality }, nullptr,
+    NavigationTestInfo unrelated("unrelated", "其他算法", "", {});
+    NavigationTestInfo refreshed_first("first", "Legacy library name", "", { &size, &quality }, nullptr,
         { "triangle", "tetrahedron" }, "", "", 0, "更新后的算法名称");
     auto refreshed = engine.newArray(3);
     refreshed.setProperty(0, engine.newQObject(&refreshed_first));
@@ -380,7 +393,10 @@ TEST_CASE("Actual toolbar renders supplied mesh categories and preserves active 
     // 同名算法的参数声明发生变化时，则必须重新初始化。
     const core::ArgType changed_size_type { ArgTypeEnum::Float, "目标尺寸", "2", "" };
     QArgType changed_size(changed_size_type);
-    QAlgorithmInfo changed_first("first", "Changed", "", { &changed_size, &quality }, nullptr, { "triangle", "tetrahedron" });
+    REQUIRE(feature_system.registerHandler({ .name = "first" },
+        systems::feature::FeatureSystem::SystemHandlerPtr { std::make_unique<ParameterProbe>(std::vector<core::ArgType> { changed_size_type, quality_type }, first_state).release() }));
+
+    NavigationTestInfo changed_first("first", "Changed", "", { &changed_size, &quality }, nullptr, { "triangle", "tetrahedron" });
     auto changed_infos = engine.newArray(2);
     changed_infos.setProperty(0, engine.newQObject(&changed_first));
     changed_infos.setProperty(1, engine.newQObject(&second));
@@ -502,7 +518,7 @@ TEST_CASE("Installed external algorithms appear in the actual toolbar and open t
     std::unique_ptr<QObject> toolbar(component.create());
     INFO(component.errorString().toStdString());
     REQUIRE(toolbar);
-    const auto infos = engine.newQObject(toolbar.get()).property("algorithmInfos");
+    const auto infos = engine.newQObject(engine.singletonInstance<QModelManager*>("app.model", "QModelManager")->getFeatureSystemAdaptor()).property("featuresInfo");
     const auto has_algorithm = [&](const QString& name) {
         for (int i = 0; i < infos.property("length").toInt(); ++i) {
             if (infos.property(i).property("name").toString() == name)
@@ -841,34 +857,33 @@ TEST_CASE("Registered custom categories create shared toolbar pages and disappea
     QTemporaryDir directory;
     const auto executable = (directory.path() + "/isolated/Test.exe").toStdString();
     QModelManager::argv0 = executable;
-    class CategoryHandler : public systems::algo::AlgorithmHandler {
+    class CategoryHandler : public systems::feature::FeatureHandler {
     public:
-        CategoryHandler(systems::algo::AlgorithmCategory category, int order)
+        CategoryHandler(systems::feature::FeatureCategory category, int order)
             : category_(std::move(category))
             , order_(order)
         {
         }
-        void setup(systems::algo::AlgorithmRegistrar& reg) override
+        void setup(systems::feature::FeatureRegistrar& reg, systems::feature::FeatureContext&) override
         {
             if (!category_.id.empty())
                 reg.addCategory(category_);
             reg.setOrder(order_);
-        }
-        std::any execute(systems::algo::HandlerContext&, const std::vector<core::ArgObject>&) override { return {}; }
-        std::vector<core::ArgType> args_type() const override
-        {
-            return { { ArgTypeEnum::Float, "目标尺寸", "1", "" } };
+            reg.addParameter({ ArgTypeEnum::Float, "目标尺寸", "1", "" });
         }
 
     private:
-        systems::algo::AlgorithmCategory category_;
+        systems::feature::FeatureCategory category_;
         int order_;
     };
     ModelLayer model;
-    systems::io::ModelIOSystem io(model);
-    systems::algo::AlgorithmSystem system(io, model);
+    core::EventBus events;
+    systems::feature::FeatureSystem system(model, events);
     QTaskStatus status;
-    systems::algo::QAlgorithmSystemAdaptor adaptor(system, status);
+    systems::feature::QFeatureSystemAdaptor adaptor(system);
+    auto subscription = events.subscribe<systems::feature::ParameterChangedEvent>([&](const auto& event) {
+        adaptor.notifyParameterChanged(event.feature, event.param_index, event.value);
+    });
     QQmlEngine engine;
     static const int theme_type = qmlRegisterSingletonType(QUrl("qrc:/navigation-ui/Theme.qml"), "DynamicNavigationUi", 1, 0, "Theme");
     engine.rootContext()->setContextProperty("Theme", engine.singletonInstance<QObject*>(theme_type));
@@ -877,7 +892,7 @@ TEST_CASE("Registered custom categories create shared toolbar pages and disappea
     QQmlEngine::setObjectOwnership(&adaptor, QQmlEngine::CppOwnership);
     auto provider = engine.newQObject(&adaptor);
     auto session = createSession(engine, provider);
-    std::unique_ptr<QObject> toolbar(component.createWithInitialProperties({ { "algorithmSystem", QVariant::fromValue(provider) } }));
+    std::unique_ptr<QObject> toolbar(component.createWithInitialProperties({ { "meshFeatureSystem", QVariant::fromValue(provider) } }));
     auto* item = qobject_cast<QQuickItem*>(toolbar.get());
     REQUIRE(item);
     QQuickWindow window;
@@ -928,8 +943,8 @@ TEST_CASE("Registered custom categories create shared toolbar pages and disappea
     }
     CHECK(found_execute);
     // 后装算法直接出现在既有分类；最后一个提供者卸载后保留入口并清空参数。
-    const systems::algo::HandlerMetaData hexahedron { .name = "hexahedron-test" };
-    REQUIRE(system.registerHandler(hexahedron, systems::algo::AlgorithmSystem::SystemHandlerPtr { std::make_unique<CategoryHandler>(systems::algo::AlgorithmCategory { "hexahedron", "六面体网格生成", "", 40 }, 0).release() }));
+    const systems::feature::HandlerMetaData hexahedron { .name = "hexahedron-test" };
+    REQUIRE(system.registerHandler(hexahedron, systems::feature::FeatureSystem::SystemHandlerPtr { std::make_unique<CategoryHandler>(systems::feature::FeatureCategory { "hexahedron", "六面体网格生成", "", 40 }, 0).release() }));
     settle();
     CHECK(session->property("meshAlgorithms").value<QJSValue>().property("length").toInt() == 1);
     CHECK(app->property("activeOperation").value<QJSValue>().property("info").property("name").toString() == "hexahedron-test");
@@ -940,12 +955,12 @@ TEST_CASE("Registered custom categories create shared toolbar pages and disappea
     CHECK(session->property("meshAlgorithms").value<QJSValue>().property("length").toInt() == 0);
     CHECK(app->property("activeOperation").value<QJSValue>().property("info").isNull());
     CHECK(session->property("parameterModel").value<QObject*>()->property("values").value<QJSValue>().property("length").toInt() == 0);
-    const systems::algo::AlgorithmCategory category { "polyhedral", "多面体网格生成", "", 5 };
+    const systems::feature::FeatureCategory category { "polyhedral", "多面体网格生成", "", 5 };
     const auto install = [&](const auto& metadata, const auto& declaration, int order) {
-        return system.registerHandler(metadata, systems::algo::AlgorithmSystem::SystemHandlerPtr { std::make_unique<CategoryHandler>(declaration, order).release() });
+        return system.registerHandler(metadata, systems::feature::FeatureSystem::SystemHandlerPtr { std::make_unique<CategoryHandler>(declaration, order).release() });
     };
-    const systems::algo::HandlerMetaData first { .name = "first", .display_name = "first" };
-    const systems::algo::HandlerMetaData second { .name = "second", .display_name = "second" };
+    const systems::feature::HandlerMetaData first { .name = "first", .display_name = "first" };
+    const systems::feature::HandlerMetaData second { .name = "second", .display_name = "second" };
     REQUIRE(install(first, category, 10));
     REQUIRE(install(second, category, 20));
     settle();
@@ -984,8 +999,8 @@ TEST_CASE("Registered custom categories create shared toolbar pages and disappea
     REQUIRE(selection);
     selection->setProperty("listeningSelectorIndex", 0);
     // 不相关注册和分类显示名称刷新都不能重置当前参数或选择。
-    const systems::algo::HandlerMetaData unrelated { .name = "unrelated" };
-    REQUIRE(install(unrelated, systems::algo::AlgorithmCategory {}, 0));
+    const systems::feature::HandlerMetaData unrelated { .name = "unrelated" };
+    REQUIRE(install(unrelated, systems::feature::FeatureCategory {}, 0));
     auto renamed_category = category;
     renamed_category.title = "多面体划分";
     REQUIRE(install(first, renamed_category, 10));
@@ -1008,7 +1023,7 @@ TEST_CASE("Registered custom categories create shared toolbar pages and disappea
     CHECK_FALSE(session->property("meshGeneration").toBool());
     CHECK(parameters->property("values").value<QJSValue>().property("length").toInt() == 0);
     CHECK(selection->property("listeningSelectorIndex").toInt() == -1);
-    CHECK(adaptor.getAlgorithmsInfo().size() == 1);
+    CHECK(adaptor.getFeaturesInfo().size() == 1);
     system.unregisterHandler(unrelated);
     QModelManager::argv0 = {};
 }
