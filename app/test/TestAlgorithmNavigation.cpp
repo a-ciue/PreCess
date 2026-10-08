@@ -2,6 +2,8 @@
  * @brief 算法导航的分类兼容、排序及实际工具栏加载测试
  */
 #include "AlgorithmHandler.h"
+#include "AlgorithmRegistrar.h"
+#include "AlgorithmSetup.h"
 #include "AlgorithmSystem.h"
 #include "AlgorithmSystemRegister.h"
 #include "ComponentData.h"
@@ -840,24 +842,32 @@ TEST_CASE("Registered custom categories create shared toolbar pages and disappea
     QTemporaryDir directory;
     const auto executable = (directory.path() + "/isolated/Test.exe").toStdString();
     QModelManager::argv0 = executable;
-    class CategoryHandler : public systems::algo::AlgorithmHandler {
+    class CategoryHandler : public systems::algo::AlgorithmHandler, public systems::algo::AlgorithmSetup {
     public:
+        CategoryHandler(systems::algo::AlgorithmCategory category, int order)
+            : category_(std::move(category))
+            , order_(order)
+        {
+        }
+        void setup(systems::algo::AlgorithmRegistrar& reg) override
+        {
+            if (!category_.id.empty())
+                reg.addCategory(category_);
+            reg.setOrder(order_);
+        }
         std::any execute(systems::algo::HandlerContext&, const std::vector<core::ArgObject>&) override { return {}; }
         std::vector<core::ArgType> args_type() const override
         {
             return { { ArgTypeEnum::Float, "目标尺寸", "1", "" } };
         }
+
+    private:
+        systems::algo::AlgorithmCategory category_;
+        int order_;
     };
-    class CategoryPlugin : public systems::PluginBase {
-        const systems::HandlerCreatorDestroyer& getHandlerCreatorDestroyer() noexcept override
-        {
-            return systems::HandlerCreatorDestroyerFactory<CategoryHandler, systems::algo::AlgorithmHandler>::get();
-        }
-    } plugin;
     ModelLayer model;
     systems::io::ModelIOSystem io(model);
     systems::algo::AlgorithmSystem system(io, model);
-    systems::algo::AlgorithmSystemRegister registrar(system);
     QTaskStatus status;
     systems::algo::QAlgorithmSystemAdaptor adaptor(system, status);
     QQmlEngine engine;
@@ -893,15 +903,14 @@ TEST_CASE("Registered custom categories create shared toolbar pages and disappea
     auto* app = engine.singletonInstance<QObject*>("app.core", "App");
     REQUIRE(app);
     CHECK_FALSE(findItem(item, "algorithmCategory_polyhedral"));
-    const QJsonObject category { { "id", "polyhedral" }, { "title", "多面体网格生成" }, { "order", 5 } };
-    const auto metadata = [&](const char* name, int order) {
-        return QJsonObject { { "name", name }, { "display_name", name },
-            { "navigation", QJsonObject { { "categories", QJsonArray { category } }, { "order", order } } } };
+    const systems::algo::AlgorithmCategory category { "polyhedral", "多面体网格生成", "", 5 };
+    const auto install = [&](const auto& metadata, const auto& declaration, int order) {
+        return system.registerHandler(metadata, systems::algo::AlgorithmSystem::SystemHandlerPtr { std::make_unique<CategoryHandler>(declaration, order).release() });
     };
-    const auto first = metadata("first", 10);
-    const auto second = metadata("second", 20);
-    REQUIRE(registrar.registerPlugin(first, plugin));
-    REQUIRE(registrar.registerPlugin(second, plugin));
+    const systems::algo::HandlerMetaData first { .name = "first", .display_name = "first" };
+    const systems::algo::HandlerMetaData second { .name = "second", .display_name = "second" };
+    REQUIRE(install(first, category, 10));
+    REQUIRE(install(second, category, 20));
     settle();
     CHECK(adaptor.getNavigationCategories().size() == 1);
     auto* button = findItem(item, "algorithmCategory_polyhedral");
@@ -938,28 +947,24 @@ TEST_CASE("Registered custom categories create shared toolbar pages and disappea
     REQUIRE(selection);
     selection->setProperty("listeningSelectorIndex", 0);
     // 不相关注册和分类显示名称刷新都不能重置当前参数或选择。
-    QJsonObject unrelated { { "name", "unrelated" } };
-    REQUIRE(registrar.registerPlugin(unrelated, plugin));
-    auto renamed = first;
-    auto navigation = renamed.value("navigation").toObject();
+    const systems::algo::HandlerMetaData unrelated { .name = "unrelated" };
+    REQUIRE(install(unrelated, systems::algo::AlgorithmCategory {}, 0));
     auto renamed_category = category;
-    renamed_category.insert("title", "多面体划分");
-    navigation.insert("categories", QJsonArray { renamed_category });
-    renamed.insert("navigation", navigation);
-    REQUIRE(registrar.registerPlugin(renamed, plugin));
+    renamed_category.title = "多面体划分";
+    REQUIRE(install(first, renamed_category, 10));
     settle();
     CHECK(parameters->property("values").value<QJSValue>().property(0).toNumber() == 9.0);
     CHECK(selection->property("listeningSelectorIndex").toInt() == 0);
     CHECK(session->property("panelTitle").toString() == "操作面板-多面体划分");
     // 当前算法退出后改选仍在的提供者；最后一个退出后清理整个操作。
-    registrar.unregisterPlugin(first);
+    system.unregisterHandler(first);
     settle();
     REQUIRE(findItem(item, "algorithmCategory_polyhedral"));
     CHECK(app->property("activeOperation").value<QJSValue>().property("info").property("name").toString() == "second");
     CHECK(parameters->property("values").value<QJSValue>().property(0).toNumber() == 1.0);
     CHECK(selection->property("listeningSelectorIndex").toInt() == -1);
     selection->setProperty("listeningSelectorIndex", 0);
-    registrar.unregisterPlugin(second);
+    system.unregisterHandler(second);
     settle();
     CHECK_FALSE(findItem(item, "algorithmCategory_polyhedral"));
     CHECK(app->property("activeOperation").isNull());
@@ -967,6 +972,6 @@ TEST_CASE("Registered custom categories create shared toolbar pages and disappea
     CHECK(parameters->property("values").value<QJSValue>().property("length").toInt() == 0);
     CHECK(selection->property("listeningSelectorIndex").toInt() == -1);
     CHECK(adaptor.getAlgorithmsInfo().size() == 1);
-    registrar.unregisterPlugin(unrelated);
+    system.unregisterHandler(unrelated);
     QModelManager::argv0 = {};
 }

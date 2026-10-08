@@ -1,4 +1,6 @@
 #include "AlgorithmHandler.h"
+#include "AlgorithmRegistrar.h"
+#include "AlgorithmSetup.h"
 #include "AlgorithmSystem.h"
 #include "AlgorithmSystemRegister.h"
 #include "HandlerCreatorDestroyerFactory.h"
@@ -405,4 +407,89 @@ TEST_CASE("Algorithm category JSON accepts custom objects and keeps legacy fallb
     CHECK(system.getAlgorithmInfos().front()->navigation.categories.empty());
     CHECK(system.getNavigationCategories().empty());
     registrar.unregisterPlugin(metadata);
+}
+
+TEST_CASE("Algorithm setup is authoritative once per registration and preserves the registry on failure", "[AlgorithmSystem][setup][navigation]")
+{
+    struct SetupState {
+        int calls { 0 };
+        bool reject { false };
+        bool empty { false };
+    } state;
+    class SetupHandler : public ReportingHandler, public AlgorithmSetup {
+    public:
+        explicit SetupHandler(SetupState& state)
+            : state_(state)
+        {
+        }
+        void setup(AlgorithmRegistrar& reg) override
+        {
+            ++state_.calls;
+            if (state_.empty)
+                return;
+            reg.addCategory({ "setup", "代码声明的分类", "qrc:/setup.svg", 5 });
+            reg.setLabel("代码声明的算法");
+            reg.setGroup("生成");
+            reg.setIcon("qrc:/algorithm.svg");
+            reg.setOrder(7);
+            reg.setCategoryDefault("setup", "网格类型", "1");
+            if (state_.reject)
+                throw std::runtime_error("setup failed");
+        }
+
+    private:
+        SetupState& state_;
+    };
+    ModelLayer model;
+    systems::io::ModelIOSystem io(model);
+    AlgorithmSystem system(io, model);
+    int notifications = 0;
+    system.setOnAlgorithmInfosChanged([&] { ++notifications; });
+    HandlerMetaData metadata { .name = "setup-handler", .display_name = "fallback" };
+    metadata.navigation.categories = { "triangle" };
+    metadata.navigation.label = "JSON 不应覆盖 setup";
+    metadata.navigation.category_defaults["triangle"]["网格类型"] = "0";
+    const auto handler = [&] { return AlgorithmSystem::SystemHandlerPtr { std::make_unique<SetupHandler>(state).release() }; };
+    REQUIRE(system.registerHandler(metadata, handler()));
+    CHECK(state.calls == 1);
+    const auto* info = system.getAlgorithmInfos().front();
+    CHECK(info->navigation.categories == std::vector<std::string> { "setup" });
+    CHECK(info->navigation.label == "代码声明的算法");
+    CHECK(info->navigation.group == "生成");
+    CHECK(info->navigation.icon == "qrc:/algorithm.svg");
+    CHECK(info->navigation.order == 7);
+    CHECK(info->navigation.category_defaults.size() == 1);
+    CHECK(info->navigation.category_defaults.at("setup").at("网格类型") == "1");
+    const auto snapshot = system.getNavigationCategories();
+    CHECK(snapshot.front().id == "setup");
+    system.getAlgorithmInfos();
+    system.getNavigationCategories();
+    CHECK(state.calls == 1);
+    {
+        auto occupied = model.beginWriteOperation(false);
+        REQUIRE(occupied);
+        REQUIRE_THROWS_AS(system.registerHandler(metadata, handler()), ModelOperationBusy);
+        CHECK(state.calls == 1);
+    }
+    state.reject = true;
+    REQUIRE_THROWS_AS(system.registerHandler(metadata, handler()), std::runtime_error);
+    CHECK(state.calls == 2);
+    CHECK(system.getAlgorithmInfos().front() == info);
+    CHECK(system.getNavigationCategories() == snapshot);
+    CHECK(notifications == 1);
+    auto failing_new = metadata;
+    failing_new.name = "failed-new";
+    REQUIRE_THROWS_AS(system.registerHandler(failing_new, handler()), std::runtime_error);
+    CHECK(system.getAlgorithmInfos().size() == 1);
+    CHECK(notifications == 1);
+    // 空 setup 也是完整声明，不能重新引入旧 JSON 的分类和默认值。
+    state.reject = false;
+    state.empty = true;
+    REQUIRE(system.registerHandler(metadata, handler()));
+    CHECK(system.getNavigationCategories().empty());
+    CHECK(system.getAlgorithmInfos().front()->navigation.label.empty());
+    CHECK(system.getAlgorithmInfos().front()->navigation.category_defaults.empty());
+    CHECK(notifications == 2);
+    system.unregisterHandler(metadata);
+    CHECK(notifications == 3);
 }

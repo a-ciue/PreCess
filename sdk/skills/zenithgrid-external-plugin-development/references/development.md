@@ -36,12 +36,38 @@
 
 ## 算法导航分类声明
 
-算法插件在 JSON 的 `handler.navigation.categories` 中声明二级分类。完整对象包含 `id`、`title`、可选 `icon`、`order`；例如 `[{"id":"quadrilateral","title":"四边形网格生成","icon":"qrc:/myplugin/quad.svg","order":20}]`。插件必须自行注册其 qrc 资源。
+新算法插件推荐在 Handler 的 `setup` 中声明导航，同时继承可选的 `AlgorithmSetup` 接口。JSON 只需保留 `system` 和 `handler` 的身份信息，不必写导航配置：
+
+```cpp
+#include "AlgorithmHandler.h"
+#include "AlgorithmRegistrar.h"
+#include "AlgorithmSetup.h"
+
+class ExampleQuadMesher : public systems::algo::AlgorithmHandler,
+                          public systems::algo::AlgorithmSetup {
+public:
+    void setup(systems::algo::AlgorithmRegistrar& registrar) override
+    {
+        registrar.addCategory({ "quadrilateral", "四边形网格生成", "", 20 });
+        registrar.setLabel("四边形网格生成（示例方法）");
+        registrar.setGroup("生成");
+        registrar.setOrder(10);
+        registrar.setCategoryDefault("quadrilateral", "网格类型", "1");
+    }
+    // 按既有接口实现 args_type()、execute()，必要时覆盖 resolveComponentId()。
+};
+```
+
+`setup` 在每次注册时调用一次；普通查询、切换分类或执行算法不会重复调用。注册器仅收集声明，不持有模型或界面，不得保存其引用。完整声明经系统统一校验后登记；setup 抛异常时不添加条目，替换失败时保留原注册。忙碌时在调用 setup 前拒绝注册。
+
+实现 `AlgorithmSetup` 后，其声明整体优先于 JSON 和旁置文件，包括空声明，避免不同来源拼接出不一致配置。未实现该接口的旧插件继续走下面的 JSON / 旁置文件路径。原 `AlgorithmHandler` 虚函数布局保持不变；这不免除 SDK 版本、编译器和运行库的一般 ABI 兼容要求。
+
+旧插件兼容路径：算法插件在 JSON 的 `handler.navigation.categories` 中声明二级分类。完整对象包含 `id`、`title`、可选 `icon`、`order`；例如 `[{"id":"quadrilateral","title":"四边形网格生成","icon":"qrc:/myplugin/quad.svg","order":20}]`。插件必须自行注册其 qrc 资源。
 
 相同分类 `id` 自动合并到一个按钮和页面；算法 `handler.name` 保持各自唯一。`navigation.label` 是三级算法的业务名称，`navigation.order` 是算法排序，均独立于分类对象的展示信息。相同分类应提供一致的描述；冲突时宿主告警，选择算法唯一名最小的显式声明，不依赖加载顺序。
 
 旧四类字符串声明继续兼容。自定义类别必须使用完整对象；`other` 为保留身份。未声明有效分类的算法进入“其他算法”，最后一个提供者卸载后自定义类别自动消失。运行中注册或卸载仍受模型任务占用约束。
 
-动态插件也可用 DLL 旁同名 `.navigation.json` 提供上述 navigation 对象；该文件整体覆盖内嵌导航声明，不改变插件身份或执行接口，修改后重新加载生效。分类默认参数仍使用 `category_defaults`，键为分类 `id`。
+未实现 `AlgorithmSetup` 的动态插件也可用 DLL 旁同名 `.navigation.json` 提供上述 navigation 对象；该文件整体覆盖内嵌导航声明，不改变插件身份或执行接口，修改后重新加载生效。分类默认参数仍使用 `category_defaults`，键为分类 `id`。
 
 此能力不需要插件依赖 app 层；参数继续通过 `AlgorithmHandler::args_type()` 声明，由宿主生成通用控件。

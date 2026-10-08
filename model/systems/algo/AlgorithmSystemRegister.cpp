@@ -46,9 +46,9 @@ HandlerMetaData AlgorithmSystemRegister::toMetaData(const QJsonObject& meta_data
     const auto navigation = meta_data.value("navigation").toObject();
     for (const auto& category : navigation.value("categories").toArray()) {
         if (category.isString()) {
-        const auto category_name = category.toString().trimmed();
-        if (!category_name.isEmpty())
-            handle_data.navigation.categories.push_back(category_name.toStdString());
+            const auto category_name = category.toString().trimmed();
+            if (!category_name.isEmpty())
+                handle_data.navigation.categories.push_back(category_name.toStdString());
             continue;
         }
         if (!category.isObject())

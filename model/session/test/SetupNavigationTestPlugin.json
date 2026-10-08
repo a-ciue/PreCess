@@ -1,0 +1,7 @@
+{
+  "system": "AlgorithmSystem",
+  "handler": {
+    "name": "setupNavigationTest",
+    "display_name": "Fallback name"
+  }
+}

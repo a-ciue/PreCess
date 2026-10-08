@@ -47,7 +47,33 @@ cmake --install build --prefix "<安装前缀>" --component AllPlugins
 
 ## 算法插件的导航声明
 
-`AlgorithmSystem` 插件可在 JSON 的 `handler` 中增加可选 `navigation`，主程序按声明构建导航，插件无需依赖 app 层：
+新算法插件推荐在 Handler 的 `setup` 中声明导航，同时继承可选的 `AlgorithmSetup` 接口。JSON 只需保留 `system` 和 `handler` 的身份信息，不必写导航配置：
+
+```cpp
+#include "AlgorithmHandler.h"
+#include "AlgorithmRegistrar.h"
+#include "AlgorithmSetup.h"
+
+class ExampleQuadMesher : public systems::algo::AlgorithmHandler,
+                          public systems::algo::AlgorithmSetup {
+public:
+    void setup(systems::algo::AlgorithmRegistrar& registrar) override
+    {
+        registrar.addCategory({ "quadrilateral", "四边形网格生成", "", 20 });
+        registrar.setLabel("四边形网格生成（示例方法）");
+        registrar.setGroup("生成");
+        registrar.setOrder(10);
+        registrar.setCategoryDefault("quadrilateral", "网格类型", "1");
+    }
+    // 按既有接口实现 args_type()、execute()，必要时覆盖 resolveComponentId()。
+};
+```
+
+`setup` 在每次注册时调用一次；普通查询、切换分类或执行算法不会重复调用。注册器仅收集声明，不持有模型或界面，不得保存其引用。完整声明经系统统一校验后登记；setup 抛异常时不添加条目，替换失败时保留原注册。忙碌时在调用 setup 前拒绝注册。
+
+实现 `AlgorithmSetup` 后，其声明整体优先于 JSON 和旁置文件，包括空声明，避免不同来源拼接出不一致配置。未实现该接口的旧插件继续走下面的 JSON / 旁置文件路径。原 `AlgorithmHandler` 虚函数布局保持不变；这不免除 SDK 版本、编译器和运行库的一般 ABI 兼容要求。
+
+兼容路径：旧插件可在 JSON 的 `handler` 中增加可选 `navigation`，主程序按声明构建导航，插件无需依赖 app 层：
 
 ```json
 {
@@ -97,7 +123,7 @@ cmake --install build --prefix "<安装前缀>" --component AllPlugins
 }
 ```
 
-旁置文件覆盖内嵌的 `handler.navigation`，不会覆盖插件身份或执行接口。文件缺失时使用内嵌声明；文件无法读取、JSON 无效或顶层不是对象时，记录警告并回退内嵌声明，插件仍可正常注册。修改声明后重新加载插件或重启程序生效。静态插件使用内嵌声明。
+未实现 `AlgorithmSetup` 时，旁置文件覆盖内嵌的 `handler.navigation`，不会覆盖插件身份或执行接口。文件缺失时使用内嵌声明；文件无法读取、JSON 无效或顶层不是对象时，记录警告并回退内嵌声明，插件仍可正常注册。修改声明后重新加载插件或重启程序生效。静态插件使用内嵌声明。
 
 导航可选 `category_defaults` 按类别声明参数默认值，例如 `"category_defaults": {"triangle": {"网格类型": 0}, "quadrilateral": {"网格类型": 1}}`。键为参数名，Combo 值为选项索引；进入类别时应用，用户随后可调整。通用界面不根据插件名推断参数。
 

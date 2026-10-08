@@ -4,6 +4,8 @@
  */
 #include "AlgorithmSystem.h"
 #include "AlgorithmHandler.h"
+#include "AlgorithmRegistrar.h"
+#include "AlgorithmSetup.h"
 #include "ArgObject.h"
 #include "JobRunner.h"
 #include "ModelData.h"
@@ -290,11 +292,18 @@ bool AlgorithmSystem::registerHandler(const HandlerMetaData& meta_data, SystemHa
     if (!handler)
         return false;
 
-    // 元数据准备成功后才整体替换，异常不留下 handler 与信息不一致的注册。
+    // setup 的声明整体生效，避免与 JSON/旁置文件逐字段混合成两个事实来源。
+    auto navigation = meta_data.navigation;
+    if (auto* declarer = dynamic_cast<AlgorithmSetup*>(handler.get())) {
+        AlgorithmRegistrar registrar;
+        declarer->setup(registrar);
+        navigation = registrar.navigation();
+    }
+    // 声明及参数准备成功后才整体替换，异常不留下半注册或提前撤掉旧算法。
     AlgorithmInfo info { .name = meta_data.name,
         .display_name = meta_data.display_name,
         .arg_types = handler->args_type(),
-        .navigation = normalizeNavigation(meta_data.navigation) };
+        .navigation = normalizeNavigation(std::move(navigation)) };
     for (const auto& definition : info.navigation.category_definitions) {
         for (const auto& [name, entry] : entries_) {
             if (name == meta_data.name)

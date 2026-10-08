@@ -187,3 +187,44 @@ TEST_CASE("Binary algorithm plugins accept sidecar navigation without losing leg
     CHECK(session.algorithmSystem().getAlgorithmInfos().empty());
     CHECK(session.algorithmSystem().getNavigationCategories().empty());
 }
+
+TEST_CASE("Binary algorithm setup overrides sidecar declarations and survives reload", "[session][plugins][setup][navigation]")
+{
+    int argc = 0;
+    QCoreApplication app(argc, nullptr);
+    const std::filesystem::path source(PRECESS_SETUP_TEST_PLUGIN);
+    REQUIRE(std::filesystem::exists(source));
+    QTemporaryDir directory;
+    REQUIRE(directory.isValid());
+    const auto target = std::filesystem::path(directory.path().toStdString()) / source.filename();
+    REQUIRE(QFile::copy(QString::fromStdString(source.string()), QString::fromStdString(target.string())));
+    SECTION("Minimal identity JSON") { }
+    SECTION("Conflicting legacy sidecar cannot override setup")
+    {
+        auto sidecar = target;
+        sidecar.replace_extension(".navigation.json");
+        QFile declaration(QString::fromStdString(sidecar.string()));
+        REQUIRE(declaration.open(QIODevice::WriteOnly));
+        REQUIRE(declaration.write(R"({"categories":["triangle"],"label":"Legacy label"})") > 0);
+    }
+    Session session;
+    for (int reload = 0; reload < 2; ++reload) {
+        REQUIRE(session.pluginManager().registerPlugin(target));
+        const auto infos = session.algorithmSystem().getAlgorithmInfos();
+        REQUIRE(infos.size() == 1);
+        CHECK(infos.front()->name == "setupNavigationTest");
+        CHECK(infos.front()->navigation.label == "Setup algorithm");
+        CHECK(infos.front()->navigation.categories == std::vector<std::string> { "setup-custom" });
+        CHECK(infos.front()->navigation.order == 7);
+        CHECK(infos.front()->navigation.category_defaults.at("setup-custom").at("Size") == "3");
+        REQUIRE(infos.front()->arg_types.size() == 1);
+        CHECK(infos.front()->arg_types.front().name == "Size");
+        const auto categories = session.algorithmSystem().getNavigationCategories();
+        REQUIRE(categories.size() == 1);
+        CHECK(categories.front().title == "Setup custom category");
+        CHECK(categories.front().order == 5);
+        session.pluginManager().unregisterPlugin(target);
+        CHECK(session.algorithmSystem().getAlgorithmInfos().empty());
+        CHECK(session.algorithmSystem().getNavigationCategories().empty());
+    }
+}
