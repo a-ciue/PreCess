@@ -470,9 +470,9 @@ TEST_CASE("Actual toolbar keeps four mesh categories available and preserves act
 TEST_CASE("Installed external algorithms appear in the actual toolbar and open their parameters", "[navigation][external]")
 {
     application();
-    const auto host = qEnvironmentVariable("PRECESS_EXTERNAL_PLUGIN_HOST").toStdString();
-    if (host.empty())
-        SKIP("Set PRECESS_EXTERNAL_PLUGIN_HOST to validate installed addon binaries");
+    const auto host_override = qEnvironmentVariable("PRECESS_EXTERNAL_PLUGIN_HOST");
+    // 测试程序与宿主共用运行目录；普通 ctest 也应验证已部署的外部插件。
+    const auto host = (host_override.isEmpty() ? QCoreApplication::applicationFilePath() : host_override).toStdString();
     QModelManager::argv0 = host;
     QQmlEngine engine;
     static const int theme_type = qmlRegisterSingletonType(QUrl("qrc:/navigation-ui/Theme.qml"), "ExternalNavigationUi", 1, 0, "Theme");
@@ -483,6 +483,20 @@ TEST_CASE("Installed external algorithms appear in the actual toolbar and open t
     std::unique_ptr<QObject> toolbar(component.create());
     INFO(component.errorString().toStdString());
     REQUIRE(toolbar);
+    const auto infos = engine.newQObject(toolbar.get()).property("algorithmInfos");
+    const auto has_algorithm = [&](const QString& name) {
+        for (int i = 0; i < infos.property("length").toInt(); ++i) {
+            if (infos.property(i).property("name").toString() == name)
+                return true;
+        }
+        return false;
+    };
+    const bool has_addons = has_algorithm("TetGenLibPlugin") && has_algorithm("GmshPlugin");
+    if (!has_addons && host_override.isEmpty()) {
+        QModelManager::argv0 = {};
+        SKIP("Optional TetGenLib and Gmsh addon binaries are not installed beside the test executable");
+    }
+    REQUIRE(has_addons);
     auto* item = qobject_cast<QQuickItem*>(toolbar.get());
     REQUIRE(item);
     auto session = createSession(engine);
