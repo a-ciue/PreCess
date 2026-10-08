@@ -210,6 +210,8 @@ endfunction()
 #     [STATIC]
 # )
 function(precess_add_algo_plugin TARGET)
+    message(DEPRECATION
+        "${TARGET}: AlgorithmSystem is frozen. New algorithm plugins must use precess_add_feature_plugin and FeatureHandler.")
     _add_plugin(${TARGET} ${ARGN})
 endfunction()
 

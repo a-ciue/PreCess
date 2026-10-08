@@ -12,6 +12,7 @@
 - **先理解，再动手**：修改前先阅读相关目录的代码与依赖关系（见第 2 节），不要凭猜测改动。
 - **最小化改动（默认）**：只做与当前任务直接相关的修改，保持与现有代码风格一致；不顺手重命名、不重排无关文件、不“顺便”修无关 bug（可在结论里提示）。
 - **适时提出重构建议**：最小化改动不等于回避结构性问题。任务中发现现有代码存在结构性缺陷（模式误用、职责错位、重复实现、隐患级联修补等）时，先完成最小修复，同时在结论中向用户说明根因、给出重构方案与影响范围；经用户明确同意后实施的重构不受最小化改动限制，未获同意不得擅自扩大改动范围。评估优先级时以**是否引入新的复杂性维度**为重要判据：现有实现或拟议改动会引入新的复杂性维度（新概念、新状态、新依赖方向）的，优先考虑重构；不引入新维度的"整齐化"重构可暂缓。
+- **旧算法接口已废弃并冻结**：`model/systems/algo/`、`app/model/systems/algo/`、`plugins/algo/` 和 `precess_add_algo_plugin` 仅维护已有调用者。新增算法必须走 `FeatureHandler` / `FeatureSystem`，在 Feature 的 setup 声明参数与导航，禁止新增旧算法插件、扩展旧接口或因常规清理重构旧实现。只有用户明确要求修复旧调用者缺陷，或迁移、删除旧调用者时才允许改动旧路径；详见 `model/systems/algo/README.md`。本限制同样适用于 AI 后续开发。
 - **根因优先**：从根本原因修复，避免表层补丁。
 - **不臆造**：不确定的 API、路径、依赖必须先在仓库中检索确认；找不到就说明，不要编造。
 - **尊重许可证边界**：本仓库自有代码统一采用 **LGPLv3**，第三方组件遵循各自许可证。不得引入会要求本仓库本体按 GPL / AGPL 分发的代码或依赖；引入第三方组件前须核对许可并保留原声明（见第 7 节）。
@@ -53,7 +54,7 @@
 - `plugins/`：项目内产品插件，依赖 `model/systems`、`model/data`、`core`，随主工程构建，不依赖 `app`。
 - `examples/`：同时支持随主程序构建和 SDK 独立构建的示例，源码及测试随 SDK 分发；主工程通过 `PRECESS_BUILD_EXAMPLES` 决定是否构建。
 - `python/`：precess Python 绑定模块（pyd）与内嵌解释器宿主 `python::Runtime`（LGPLv3，无 Qt；依赖 `model/session`）。
-  - `plugins/algo/`：算法插件；`plugins/io/`：模型 IO 插件；`plugins/edit/`：编辑插件；`plugins/feature/`：功能插件（`FeatureHandler`，json 的 `system` 字段为 `FeatureSystem`）。
+  - `plugins/algo/`：已废弃的旧算法插件，仅保留已有调用者；`plugins/io/`：模型 IO 插件；`plugins/edit/`：编辑插件；`plugins/feature/`：功能插件（`FeatureHandler`，json 的 `system` 字段为 `FeatureSystem`）。
 
 **依赖速记**：`app → model → core`；`plugins → model + core`；QML 只调依赖包功能、不写主业务逻辑。
 

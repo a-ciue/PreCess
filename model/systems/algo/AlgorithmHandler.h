@@ -33,9 +33,11 @@ struct HandlerContext {
     ProgressFn report_progress = [](double, const std::string&) { };
 };
 /**
- * @brief 算法系统的功能接口，继承他来实现具体的算法功能
+ * @brief 旧算法系统的兼容接口，仅供已有插件维护
+ * @deprecated 新算法必须实现 FeatureHandler，在 FeatureHandler::setup 中通过 FeatureRegistrar 声明参数与导航，
+ *             经 FeatureContext 执行和发布任务。禁止为此旧接口新增能力。
  */
-class AlgorithmHandler {
+class [[deprecated("Legacy AlgorithmHandler is frozen; implement FeatureHandler instead")]] AlgorithmHandler {
 public:
     virtual ~AlgorithmHandler() = default;
     /**

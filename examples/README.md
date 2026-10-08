@@ -6,7 +6,7 @@
 | --- | --- |
 | ExternalPlugin | 最小功能插件骨架 |
 | FeatureDemoPlugin | 参数、按键、模型事件与同步写入 |
-| ProgressDemoPlugin | 算法进度与取消 |
+| ProgressDemoPlugin | 旧算法接口的进度与取消兼容示例；新增算法使用 Feature 与 TaskDemoPlugin 范式 |
 | TaskDemoPlugin | 纯计算、影子组件、类型化回写任务 |
 | ScalePreviewPlugin | 预览、后台缩放、确认与取消 |
 

@@ -4,11 +4,11 @@
 
 ## 注册、参数和目标
 
-- 插件继承 QObject 和 systems::PluginBase，用 HandlerCreatorDestroyerFactory 由插件创建/销毁 Handler，保持 DLL 边界两侧分配释放配对。四类 Handler 分别为 FeatureHandler、AlgorithmHandler、EditHandler、ModelIOHandler；先查头文件确认当前纯虚接口。
+- 插件继承 QObject 和 systems::PluginBase，用 HandlerCreatorDestroyerFactory 由插件创建/销毁 Handler，保持 DLL 边界两侧分配释放配对。新算法和通用功能使用 FeatureHandler，编辑、IO 分别使用 EditHandler、ModelIOHandler。AlgorithmHandler 已废弃并冻结，仅供已有插件维护；先查头文件确认当前纯虚接口。
 - JSON 的 system 分别为 FeatureSystem、AlgorithmSystem、EditSystem、ModelIOSystem；handler.name 唯一。视口交互能力通过 JSON 的 interactive 声明，宿主读取声明，不能要求通用界面按插件名特判。
 - 功能 setup(FeatureRegistrar&, FeatureContext&) 注册参数、菜单、按键和订阅；activate/deactivate 对应重复进出功能；teardown(FeatureContext&) 对应注销。上下文固定绑定系统与 owner，服务始终可调用；查询或任务结果可能为空，不检测接口是否装配。
 - `ctx.events.subscribe<ParameterChangedEvent>` 自动按所属功能过滤；全局监听明确使用 ctx.events.bus()。订阅句柄须保活并随生命周期退订。Button 参数只按 param_index 处理，计数载荷不作为值。
-- 优先注册 Selector 让用户选择目标；活动对象树组件只作 fallback。全局点 gid 经 ModelLayer::pointIdMap() 解析组件，局部边/面选择携 component_id。算法覆盖 resolveComponentId，编辑 execute 接收 ModelLayer 与 fallback_component_id。不要把例子的活动组件简化带入正式功能。
+- 优先注册 Selector 让用户选择目标；活动对象树组件只作 fallback。全局点 gid 经 ModelLayer::pointIdMap() 解析组件，局部边/面选择携 component_id。旧算法兼容实现覆盖 resolveComponentId，新算法通过 Feature Selector 解析目标；编辑 execute 接收 ModelLayer 与 fallback_component_id。不要把例子的活动组件简化带入正式功能。
 
 ## 模型写与 undo
 
