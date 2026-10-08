@@ -85,7 +85,7 @@ public:
      * @brief 获取已注册算法类型信息
      */
     std::vector<AlgorithmInfo*> getAlgorithmInfos();
-    /** @brief 从当前算法声明派生分类快照；不维护独立的分类注册状态。 */
+    /** @brief 从基础分类与当前算法声明派生分类快照；不维护独立的分类注册状态。 */
     std::vector<AlgorithmCategory> getNavigationCategories() const;
     /**
      * @brief 获取参数类型

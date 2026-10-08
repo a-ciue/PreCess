@@ -321,6 +321,14 @@ TEST_CASE("Algorithm categories merge declarations deterministically and follow 
     ModelLayer model;
     systems::io::ModelIOSystem io(model);
     AlgorithmSystem system(io, model);
+    const auto builtins = system.getNavigationCategories();
+    REQUIRE(builtins.size() == 4);
+    CHECK(builtins[0].id == "triangle");
+    CHECK(builtins[1].id == "quadrilateral");
+    CHECK(builtins[2].id == "tetrahedron");
+    CHECK(builtins[3].id == "hexahedron");
+    CHECK_FALSE(builtins[3].icon.empty());
+    CHECK(system.getAlgorithmInfos().empty());
     HandlerMetaData legacy { .name = "legacy" };
     legacy.navigation.categories = { "triangle", "unknown", "triangle" };
     HandlerMetaData first { .name = "a" };
@@ -352,20 +360,21 @@ TEST_CASE("Algorithm categories merge declarations deterministically and follow 
                           AlgorithmSystem::SystemHandlerPtr { invalid_handler.release() }),
         std::runtime_error);
     CHECK(system.getNavigationCategories() == snapshot);
-    REQUIRE(snapshot.size() == 2);
+    REQUIRE(snapshot.size() == 5);
     CHECK(snapshot[0].id == "custom");
-    CHECK(snapshot[1] == first.navigation.category_definitions[0]);
+    CHECK(snapshot[1].id == "quadrilateral");
+    CHECK(snapshot[2] == first.navigation.category_definitions[0]);
     for (const auto* info : system.getAlgorithmInfos()) {
         if (info->name == "legacy")
             CHECK(info->navigation.categories == std::vector<std::string> { "triangle" });
     }
     system.unregisterHandler(first);
-    REQUIRE(system.getNavigationCategories().size() == 1);
+    REQUIRE(system.getNavigationCategories().size() == 4);
     CHECK(system.getNavigationCategories()[0] == second.navigation.category_definitions[0]);
     system.unregisterHandler(second);
     CHECK(system.getNavigationCategories()[0].title == "三角形网格生成");
     system.unregisterHandler(legacy);
-    CHECK(system.getNavigationCategories().empty());
+    CHECK(system.getNavigationCategories().size() == 4);
     // 调换注册顺序不能改变分类来源与排序。
     install(first);
     install(legacy);
@@ -374,7 +383,7 @@ TEST_CASE("Algorithm categories merge declarations deterministically and follow 
     // 替换同名算法时，旧分类不能残留。
     first.navigation = {};
     install(first);
-    CHECK(system.getNavigationCategories().size() == 1);
+    CHECK(system.getNavigationCategories().size() == 4);
 }
 
 TEST_CASE("Algorithm category JSON accepts custom objects and keeps legacy fallback", "[AlgorithmSystem][navigation]")
@@ -399,13 +408,13 @@ TEST_CASE("Algorithm category JSON accepts custom objects and keeps legacy fallb
     REQUIRE(info->navigation.category_definitions.size() == 1);
     CHECK(info->navigation.category_definitions[0].title == "多面体网格生成");
     const auto categories = system.getNavigationCategories();
-    REQUIRE(categories.size() == 2);
+    REQUIRE(categories.size() == 5);
     CHECK(categories.front().id == "polyhedral");
-    CHECK(categories.back().id == "triangle");
+    CHECK(categories[1].id == "triangle");
     metadata.insert("navigation", QJsonObject { { "categories", QJsonArray { "future" } } });
     REQUIRE(registrar.registerPlugin(metadata, plugin));
     CHECK(system.getAlgorithmInfos().front()->navigation.categories.empty());
-    CHECK(system.getNavigationCategories().empty());
+    CHECK(system.getNavigationCategories().size() == 4);
     registrar.unregisterPlugin(metadata);
 }
 
@@ -486,7 +495,7 @@ TEST_CASE("Algorithm setup is authoritative once per registration and preserves 
     state.reject = false;
     state.empty = true;
     REQUIRE(system.registerHandler(metadata, handler()));
-    CHECK(system.getNavigationCategories().empty());
+    CHECK(system.getNavigationCategories().size() == 4);
     CHECK(system.getAlgorithmInfos().front()->navigation.label.empty());
     CHECK(system.getAlgorithmInfos().front()->navigation.category_defaults.empty());
     CHECK(notifications == 2);

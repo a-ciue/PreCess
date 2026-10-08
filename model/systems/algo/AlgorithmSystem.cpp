@@ -28,8 +28,8 @@ using std::string;
 using std::vector;
 
 namespace {
-    // 旧声明只在这一处补齐展示信息；新分类完全由插件的对象声明提供。
-    const std::vector<AlgorithmCategory>& legacyCategories()
+    // 四个基础分类始终存在，也为旧字符串声明补齐展示信息；扩展分类由插件提供。
+    const std::vector<AlgorithmCategory>& builtInCategories()
     {
         static const std::vector<AlgorithmCategory> categories {
             { "triangle", "三角形网格生成", "qrc:/images/toolbar/Mesh/triangle-meshing.svg", 10 },
@@ -57,7 +57,7 @@ namespace {
         navigation.category_definitions = std::move(definitions);
         std::vector<std::string> categories;
         for (const auto& id : navigation.categories) {
-            if ((findCategory(navigation.category_definitions, id) || findCategory(legacyCategories(), id))
+            if ((findCategory(navigation.category_definitions, id) || findCategory(builtInCategories(), id))
                 && std::find(categories.begin(), categories.end(), id) == categories.end())
                 categories.push_back(id);
         }
@@ -341,12 +341,15 @@ std::vector<AlgorithmCategory> AlgorithmSystem::getNavigationCategories() const
         std::string provider;
     };
     std::map<std::string, Candidate> candidates;
+    // 基础入口不随算法提供者卸载而消失；没有算法时由通用面板呈现空状态。
+    for (const auto& category : builtInCategories())
+        candidates.emplace(category.id, Candidate { category, false, "" });
     for (const auto& [name, entry] : entries_) {
         for (const auto& id : entry.info.navigation.categories) {
             const auto* category = findCategory(entry.info.navigation.category_definitions, id);
             const bool explicit_declaration = category != nullptr;
             if (!category)
-                category = findCategory(legacyCategories(), id);
+                category = findCategory(builtInCategories(), id);
             if (!category)
                 continue;
             auto found = candidates.find(id);

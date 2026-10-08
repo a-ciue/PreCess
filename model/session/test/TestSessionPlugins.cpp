@@ -167,7 +167,7 @@ TEST_CASE("Binary algorithm plugins accept sidecar navigation without losing leg
     if (expected_navigation) {
         CHECK(infos.front()->navigation.categories == std::vector<std::string> { expected_custom_category ? "custom" : "tetrahedron" });
         const auto categories = session.algorithmSystem().getNavigationCategories();
-        REQUIRE(categories.size() == 1);
+        REQUIRE(categories.size() == (expected_custom_category ? 5 : 4));
         if (expected_custom_category) {
             CHECK(categories[0].title == "Custom meshing");
             CHECK(categories[0].order == -5);
@@ -185,7 +185,7 @@ TEST_CASE("Binary algorithm plugins accept sidecar navigation without losing leg
     CHECK(session.algorithmSystem().getAlgorithmInfos().size() == 1);
     session.pluginManager().unregisterPlugin(target);
     CHECK(session.algorithmSystem().getAlgorithmInfos().empty());
-    CHECK(session.algorithmSystem().getNavigationCategories().empty());
+    CHECK(session.algorithmSystem().getNavigationCategories().size() == 4);
 }
 
 TEST_CASE("Binary algorithm setup overrides sidecar declarations and survives reload", "[session][plugins][setup][navigation]")
@@ -220,11 +220,11 @@ TEST_CASE("Binary algorithm setup overrides sidecar declarations and survives re
         REQUIRE(infos.front()->arg_types.size() == 1);
         CHECK(infos.front()->arg_types.front().name == "Size");
         const auto categories = session.algorithmSystem().getNavigationCategories();
-        REQUIRE(categories.size() == 1);
+        REQUIRE(categories.size() == 5);
         CHECK(categories.front().title == "Setup custom category");
         CHECK(categories.front().order == 5);
         session.pluginManager().unregisterPlugin(target);
         CHECK(session.algorithmSystem().getAlgorithmInfos().empty());
-        CHECK(session.algorithmSystem().getNavigationCategories().empty());
+        CHECK(session.algorithmSystem().getNavigationCategories().size() == 4);
     }
 }

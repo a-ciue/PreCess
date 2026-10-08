@@ -903,6 +903,44 @@ TEST_CASE("Registered custom categories create shared toolbar pages and disappea
     auto* app = engine.singletonInstance<QObject*>("app.core", "App");
     REQUIRE(app);
     CHECK_FALSE(findItem(item, "algorithmCategory_polyhedral"));
+    settle();
+    // 没有安装任何算法时，四个基础入口也必须可见、可点击。
+    CHECK(adaptor.getNavigationCategories().size() == 4);
+    for (const auto& id : { "triangle", "quadrilateral", "tetrahedron", "hexahedron" })
+        REQUIRE(findItem(item, QString("algorithmCategory_%1").arg(id)));
+    auto* hexahedron_button = findItem(item, "algorithmCategory_hexahedron");
+    REQUIRE(hexahedron_button);
+    clickItem(window, hexahedron_button);
+    settle();
+    CHECK(session->property("panelTitle").toString() == "操作面板-六面体网格生成");
+    CHECK(session->property("meshAlgorithms").value<QJSValue>().property("length").toInt() == 0);
+    CHECK(app->property("activeOperation").value<QJSValue>().property("info").isNull());
+    auto* empty_label = findAction(sidebar_item, "暂无可用算法");
+    REQUIRE(empty_label);
+    CHECK(empty_label->isVisible());
+    auto* buttons = findItem(sidebar_item, "operationButtons");
+    REQUIRE(buttons);
+    bool found_execute = false;
+    for (auto* button : buttons->childItems()) {
+        if (button->property("text").toString() == "执行") {
+            found_execute = true;
+            CHECK_FALSE(button->isEnabled());
+        }
+    }
+    CHECK(found_execute);
+    // 后装算法直接出现在既有分类；最后一个提供者卸载后保留入口并清空参数。
+    const systems::algo::HandlerMetaData hexahedron { .name = "hexahedron-test" };
+    REQUIRE(system.registerHandler(hexahedron, systems::algo::AlgorithmSystem::SystemHandlerPtr { std::make_unique<CategoryHandler>(systems::algo::AlgorithmCategory { "hexahedron", "六面体网格生成", "", 40 }, 0).release() }));
+    settle();
+    CHECK(session->property("meshAlgorithms").value<QJSValue>().property("length").toInt() == 1);
+    CHECK(app->property("activeOperation").value<QJSValue>().property("info").property("name").toString() == "hexahedron-test");
+    system.unregisterHandler(hexahedron);
+    settle();
+    REQUIRE(findItem(item, "algorithmCategory_hexahedron"));
+    CHECK(session->property("panelTitle").toString() == "操作面板-六面体网格生成");
+    CHECK(session->property("meshAlgorithms").value<QJSValue>().property("length").toInt() == 0);
+    CHECK(app->property("activeOperation").value<QJSValue>().property("info").isNull());
+    CHECK(session->property("parameterModel").value<QObject*>()->property("values").value<QJSValue>().property("length").toInt() == 0);
     const systems::algo::AlgorithmCategory category { "polyhedral", "多面体网格生成", "", 5 };
     const auto install = [&](const auto& metadata, const auto& declaration, int order) {
         return system.registerHandler(metadata, systems::algo::AlgorithmSystem::SystemHandlerPtr { std::make_unique<CategoryHandler>(declaration, order).release() });
@@ -912,7 +950,7 @@ TEST_CASE("Registered custom categories create shared toolbar pages and disappea
     REQUIRE(install(first, category, 10));
     REQUIRE(install(second, category, 20));
     settle();
-    CHECK(adaptor.getNavigationCategories().size() == 1);
+    CHECK(adaptor.getNavigationCategories().size() == 5);
     auto* button = findItem(item, "algorithmCategory_polyhedral");
     REQUIRE(button);
     CHECK(button->property("text").toString() == "多面体网格生成");
