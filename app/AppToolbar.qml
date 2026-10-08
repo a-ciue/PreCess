@@ -552,7 +552,7 @@ ColumnLayout {
                         required property var modelData
                         objectName: "algorithmCategory_" + modelData.id
                         text: modelData.title
-                        icon.source: root.getIconForPlugin(modelData.name)
+                        icon.source: modelData.icon || "qrc:/images/toolbar/precess_extra_plugin.svg"
                         icon.width: root.ribbonIconSize
                         icon.height: root.ribbonIconSize
                         icon.color: "transparent"

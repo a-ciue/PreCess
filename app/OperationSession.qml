@@ -54,10 +54,11 @@ QtObject {
         try {
             // 描述包装可以刷新；只有操作身份或参数声明变化才重新初始化会话。
             root.activeOperation = operation;
+            // 同名替换会退出旧功能；激活协调不能随参数保留一起跳过。
+            const featureName = operation && operation.isFeature && operation.info ? operation.info.name : "";
+            root.parameterModel.featureSystem.setFeatureActive(featureName);
             if (!preserveParameters) {
                 App.selection.listeningSelectorIndex = -1;
-                const featureName = operation && operation.isFeature && operation.info ? operation.info.name : "";
-                root.parameterModel.featureSystem.setFeatureActive(featureName);
                 root.parameterModel.reset(operation);
             } else
                 root.parameterModel.argumentTypes = operation.info.arg_types;
@@ -94,7 +95,7 @@ QtObject {
             categoryTitle: categoryInfo.title,
             info: info,
             execute: info ? function (component, args) {
-                root.meshFeatureSystem.invoke(info.name);
+                return root.meshFeatureSystem.invoke(info.name);
             } : null
         };
     }

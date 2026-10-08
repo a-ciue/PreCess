@@ -858,9 +858,10 @@ TEST_CASE("Registered custom categories create shared toolbar pages and disappea
     QModelManager::argv0 = executable;
     class CategoryHandler : public systems::feature::FeatureHandler {
     public:
-        CategoryHandler(systems::feature::FeatureCategory category, int order)
+        CategoryHandler(systems::feature::FeatureCategory category, int order, int& activations)
             : category_(std::move(category))
             , order_(order)
+            , activations_(activations)
         {
         }
         void setup(systems::feature::FeatureRegistrar& reg, systems::feature::FeatureContext&) override
@@ -870,10 +871,13 @@ TEST_CASE("Registered custom categories create shared toolbar pages and disappea
             reg.setOrder(order_);
             reg.addParameter({ ArgTypeEnum::Float, "目标尺寸", "1", "" });
         }
+        void activate(systems::feature::FeatureContext&) override { ++activations_; }
+        std::any execute(systems::feature::FeatureContext&) override { return std::string("请选择目标组件"); }
 
     private:
         systems::feature::FeatureCategory category_;
         int order_;
+        int& activations_;
     };
     ModelLayer model;
     core::EventBus events;
@@ -919,8 +923,12 @@ TEST_CASE("Registered custom categories create shared toolbar pages and disappea
     settle();
     // 没有安装任何算法时，四个基础入口也必须可见、可点击。
     CHECK(adaptor.getNavigationCategories().size() == 4);
-    for (const auto& id : { "triangle", "quadrilateral", "tetrahedron", "hexahedron" })
-        REQUIRE(findItem(item, QString("algorithmCategory_%1").arg(id)));
+    for (const auto& entry : adaptor.getNavigationCategories()) {
+        const auto category = entry.toMap();
+        auto* category_button = findItem(item, "algorithmCategory_" + category.value("id").toString());
+        REQUIRE(category_button);
+        CHECK(engine.newQObject(category_button).property("icon").property("source").toString() == category.value("icon").toString());
+    }
     auto* hexahedron_button = findItem(item, "algorithmCategory_hexahedron");
     REQUIRE(hexahedron_button);
     clickItem(window, hexahedron_button);
@@ -942,8 +950,9 @@ TEST_CASE("Registered custom categories create shared toolbar pages and disappea
     }
     CHECK(found_execute);
     // 后装算法直接出现在既有分类；最后一个提供者卸载后保留入口并清空参数。
+    int activations = 0;
     const systems::feature::HandlerMetaData hexahedron { .name = "hexahedron-test" };
-    REQUIRE(system.registerHandler(hexahedron, systems::feature::FeatureSystem::SystemHandlerPtr { std::make_unique<CategoryHandler>(systems::feature::FeatureCategory { "hexahedron", "六面体网格生成", "", 40 }, 0).release() }));
+    REQUIRE(system.registerHandler(hexahedron, systems::feature::FeatureSystem::SystemHandlerPtr { std::make_unique<CategoryHandler>(systems::feature::FeatureCategory { "hexahedron", "六面体网格生成", "", 40 }, 0, activations).release() }));
     settle();
     CHECK(session->property("meshAlgorithms").value<QJSValue>().property("length").toInt() == 1);
     CHECK(app->property("activeOperation").value<QJSValue>().property("info").property("name").toString() == "hexahedron-test");
@@ -954,9 +963,9 @@ TEST_CASE("Registered custom categories create shared toolbar pages and disappea
     CHECK(session->property("meshAlgorithms").value<QJSValue>().property("length").toInt() == 0);
     CHECK(app->property("activeOperation").value<QJSValue>().property("info").isNull());
     CHECK(session->property("parameterModel").value<QObject*>()->property("values").value<QJSValue>().property("length").toInt() == 0);
-    const systems::feature::FeatureCategory category { "polyhedral", "多面体网格生成", "", 5 };
+    const systems::feature::FeatureCategory category { "polyhedral", "多面体网格生成", "qrc:/images/toolbar/Mesh/hexa-meshing.svg", 5 };
     const auto install = [&](const auto& metadata, const auto& declaration, int order) {
-        return system.registerHandler(metadata, systems::feature::FeatureSystem::SystemHandlerPtr { std::make_unique<CategoryHandler>(declaration, order).release() });
+        return system.registerHandler(metadata, systems::feature::FeatureSystem::SystemHandlerPtr { std::make_unique<CategoryHandler>(declaration, order, activations).release() });
     };
     const systems::feature::HandlerMetaData first { .name = "first", .display_name = "first" };
     const systems::feature::HandlerMetaData second { .name = "second", .display_name = "second" };
@@ -967,10 +976,15 @@ TEST_CASE("Registered custom categories create shared toolbar pages and disappea
     auto* button = findItem(item, "algorithmCategory_polyhedral");
     REQUIRE(button);
     CHECK(button->property("text").toString() == "多面体网格生成");
+    CHECK(engine.newQObject(button).property("icon").property("source").toString() == QString::fromStdString(category.icon));
     clickItem(window, button);
     settle();
     CHECK(session->property("meshAlgorithms").value<QJSValue>().property("length").toInt() == 2);
     CHECK(session->property("panelTitle").toString() == "操作面板-多面体网格生成");
+    auto operation = app->property("activeOperation").value<QJSValue>();
+    auto execute = operation.property("execute");
+    REQUIRE(execute.isCallable());
+    CHECK(execute.callWithInstance(operation).toString() == "请选择目标组件");
     auto* parameters = session->property("parameterModel").value<QObject*>();
     REQUIRE(parameters);
     auto* selector = findItem(sidebar_item, "meshAlgorithmSelector");
@@ -999,7 +1013,10 @@ TEST_CASE("Registered custom categories create shared toolbar pages and disappea
     selection->setProperty("listeningSelectorIndex", 0);
     // 不相关注册和分类显示名称刷新都不能重置当前参数或选择。
     const systems::feature::HandlerMetaData unrelated { .name = "unrelated" };
+    const int before_refresh = activations;
     REQUIRE(install(unrelated, systems::feature::FeatureCategory {}, 0));
+    settle();
+    CHECK(activations == before_refresh);
     auto renamed_category = category;
     renamed_category.title = "多面体划分";
     REQUIRE(install(first, renamed_category, 10));
@@ -1007,6 +1024,7 @@ TEST_CASE("Registered custom categories create shared toolbar pages and disappea
     CHECK(parameters->property("values").value<QJSValue>().property(0).toNumber() == 9.0);
     CHECK(selection->property("listeningSelectorIndex").toInt() == 0);
     CHECK(session->property("panelTitle").toString() == "操作面板-多面体划分");
+    CHECK(activations == before_refresh + 1);
     // 当前算法退出后改选仍在的提供者；最后一个退出后清理整个操作。
     system.unregisterHandler(first);
     settle();
