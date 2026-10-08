@@ -151,19 +151,15 @@ TEST_CASE("Algorithm plugins ignore obsolete navigation sidecars", "[session][pl
     const auto infos = session.algorithmSystem().getAlgorithmInfos();
     REQUIRE(infos.size() == 1);
     CHECK(infos.front()->name == "cmdExecutePlugin");
-    CHECK(infos.front()->navigation.categories.empty());
-    CHECK(infos.front()->navigation.label.empty());
-    CHECK(session.algorithmSystem().getNavigationCategories().size() == 4);
     declaration.close();
     session.pluginManager().unregisterPlugin(target);
     REQUIRE(session.pluginManager().registerPlugin(target));
     CHECK(session.algorithmSystem().getAlgorithmInfos().size() == 1);
     session.pluginManager().unregisterPlugin(target);
     CHECK(session.algorithmSystem().getAlgorithmInfos().empty());
-    CHECK(session.algorithmSystem().getNavigationCategories().size() == 4);
 }
 
-TEST_CASE("Binary algorithm setup supplies navigation and survives reload", "[session][plugins][setup][navigation]")
+TEST_CASE("Binary feature setup supplies navigation and survives reload", "[session][plugins][setup][navigation]")
 {
     int argc = 0;
     QCoreApplication app(argc, nullptr);
@@ -185,7 +181,7 @@ TEST_CASE("Binary algorithm setup supplies navigation and survives reload", "[se
     Session session;
     for (int reload = 0; reload < 2; ++reload) {
         REQUIRE(session.pluginManager().registerPlugin(target));
-        const auto infos = session.algorithmSystem().getAlgorithmInfos();
+        const auto infos = session.featureSystem().getFeatureInfos();
         REQUIRE(infos.size() == 1);
         CHECK(infos.front()->name == "setupNavigationTest");
         CHECK(infos.front()->navigation.label == "Setup algorithm");
@@ -194,12 +190,12 @@ TEST_CASE("Binary algorithm setup supplies navigation and survives reload", "[se
         CHECK(infos.front()->navigation.category_defaults.at("setup-custom").at("Size") == "3");
         REQUIRE(infos.front()->arg_types.size() == 1);
         CHECK(infos.front()->arg_types.front().name == "Size");
-        const auto categories = session.algorithmSystem().getNavigationCategories();
+        const auto categories = session.featureSystem().getNavigationCategories();
         REQUIRE(categories.size() == 5);
         CHECK(categories.front().title == "Setup custom category");
         CHECK(categories.front().order == 5);
         session.pluginManager().unregisterPlugin(target);
-        CHECK(session.algorithmSystem().getAlgorithmInfos().empty());
-        CHECK(session.algorithmSystem().getNavigationCategories().size() == 4);
+        CHECK(session.featureSystem().getFeatureInfos().empty());
+        CHECK(session.featureSystem().getNavigationCategories().size() == 4);
     }
 }

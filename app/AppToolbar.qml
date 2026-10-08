@@ -23,7 +23,7 @@ ColumnLayout {
     property int activeCategory: -1
     property var algorithmSystem: QModelManager.algorithmSystem
     property var meshFeatureSystem: QModelManager.featureSystem
-    readonly property var algorithmCategories: root.meshFeatureSystem.navigationCategories
+    readonly property var meshCategories: root.meshFeatureSystem.navigationCategories
     readonly property var algorithmInfos: root.algorithmSystem.algorithmsInfo
     readonly property int algorithmPageStart: 2
     readonly property int featurePageStart: algorithmPageStart + 2
@@ -547,12 +547,12 @@ ColumnLayout {
                 height: meshCategoryPage.height
                 spacing: 2
                 Repeater {
-                    model: root.algorithmCategories
+                    model: root.meshCategories
                     RibbonActionButton {
                         required property var modelData
                         objectName: "algorithmCategory_" + modelData.id
                         text: modelData.title
-                        icon.source: modelData.icon || "qrc:/images/toolbar/precess_extra_plugin.svg"
+                        icon.source: root.getIconForPlugin(modelData.name)
                         icon.width: root.ribbonIconSize
                         icon.height: root.ribbonIconSize
                         icon.color: "transparent"
@@ -617,7 +617,7 @@ ColumnLayout {
                                     topPadding: 4
                                     bottomPadding: 4
                                     objectName: "algorithmAction_" + modelData.name
-                                    icon.source: modelData.icon || "qrc:/images/toolbar/precess_extra_plugin.svg"
+                                    icon.source: root.getIconForPlugin(modelData.name)
                                     // 按钮文字和内边距先占位，图标使用剩余高度。
                                     icon.height: Math.max(16, Math.min(root.ribbonIconSize,
                                         root.ribbonPageHeight - topPadding - bottomPadding

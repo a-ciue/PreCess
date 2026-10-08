@@ -1,5 +1,5 @@
 {
-  "system": "AlgorithmSystem",
+  "system": "FeatureSystem",
   "handler": {
     "name": "setupNavigationTest",
     "display_name": "Fallback name"

@@ -14,13 +14,11 @@ class QAlgorithmSystemAdaptor : public QObject {
     QML_ELEMENT
     QML_UNCREATABLE("QAlgorithmSystemAdaptor is provided by C++")
     Q_PROPERTY(QList<QAlgorithmInfo*> algorithmsInfo READ getAlgorithmsInfo NOTIFY algorithmsInfoChanged)
-    Q_PROPERTY(QVariantList navigationCategories READ getNavigationCategories NOTIFY algorithmsInfoChanged)
 public:
     QAlgorithmSystemAdaptor(AlgorithmSystem& system, QTaskStatus& status);
     ~QAlgorithmSystemAdaptor() override;
     Q_INVOKABLE void call(const QString& name, Index model, const QVariantList& args);
     QList<QAlgorithmInfo*> getAlgorithmsInfo() const;
-    QVariantList getNavigationCategories() const;
 signals:
     void algorithmsInfoChanged();
 

@@ -4,7 +4,6 @@
  */
 #include "AlgorithmSystem.h"
 #include "AlgorithmHandler.h"
-#include "AlgorithmRegistrar.h"
 #include "ArgObject.h"
 #include "JobRunner.h"
 #include "ModelData.h"
@@ -25,44 +24,6 @@ namespace systems::algo {
 using core::ArgObject;
 using std::string;
 using std::vector;
-
-namespace {
-    // 四个基础分类始终存在；扩展分类由插件的 setup 提供。
-    const std::vector<AlgorithmCategory>& builtInCategories()
-    {
-        static const std::vector<AlgorithmCategory> categories {
-            { "triangle", "三角形网格生成", "qrc:/images/toolbar/Mesh/triangle-meshing.svg", 10 },
-            { "quadrilateral", "四边形网格生成", "qrc:/images/toolbar/Mesh/quad-meshing.svg", 20 },
-            { "tetrahedron", "四面体网格生成", "qrc:/images/toolbar/Algorithm/tetgen.svg", 30 },
-            { "hexahedron", "六面体网格生成", "qrc:/images/toolbar/Mesh/hexa-meshing.svg", 40 }
-        };
-        return categories;
-    }
-    const AlgorithmCategory* findCategory(const std::vector<AlgorithmCategory>& categories, const std::string& id)
-    {
-        const auto found = std::find_if(categories.begin(), categories.end(), [&](const auto& category) { return category.id == id; });
-        return found == categories.end() ? nullptr : &*found;
-    }
-    AlgorithmNavigation normalizeNavigation(AlgorithmNavigation navigation)
-    {
-        // 过滤无效声明、去重；所属分类身份完全从 setup 的分类描述派生。
-        std::vector<AlgorithmCategory> definitions;
-        for (auto& definition : navigation.category_definitions) {
-            if (definition.id.empty() || definition.id == "other" || definition.title.empty())
-                continue;
-            if (!findCategory(definitions, definition.id))
-                definitions.push_back(std::move(definition));
-        }
-        navigation.category_definitions = std::move(definitions);
-        std::vector<std::string> categories;
-        for (const auto& definition : navigation.category_definitions) {
-            if (std::find(categories.begin(), categories.end(), definition.id) == categories.end())
-                categories.push_back(definition.id);
-        }
-        navigation.categories = std::move(categories);
-        return navigation;
-    }
-}
 
 const string AlgorithmSystem::name = "AlgorithmSystem";
 
@@ -286,24 +247,10 @@ bool AlgorithmSystem::registerHandler(const HandlerMetaData& meta_data, SystemHa
     if (!handler)
         return false;
 
-    // setup 是唯一声明入口，注册准备失败时保留已有条目。
-    AlgorithmRegistrar registrar;
-    handler->setup(registrar);
-    // 声明及参数准备成功后才整体替换，异常不留下半注册或提前撤掉旧算法。
+    // 参数准备成功后再替换注册，保留旧接口既有的失败原子性。
     AlgorithmInfo info { .name = meta_data.name,
         .display_name = meta_data.display_name,
-        .arg_types = handler->args_type(),
-        .navigation = normalizeNavigation(registrar.navigation()) };
-    for (const auto& definition : info.navigation.category_definitions) {
-        for (const auto& [name, entry] : entries_) {
-            if (name == meta_data.name)
-                continue;
-            const auto* existing = findCategory(entry.info.navigation.category_definitions, definition.id);
-            if (existing && *existing != definition)
-                spdlog::warn("Conflicting navigation category '{}' from algorithms '{}' and '{}'; choosing the smallest algorithm name",
-                    definition.id, name, meta_data.name);
-        }
-    }
+        .arg_types = handler->args_type() };
     entries_.insert_or_assign(meta_data.name, AlgorithmEntry { std::move(handler), std::move(info) });
     spdlog::info("AlgorithmSystem::registerHandler: Registered handler for algorithm '{}'", meta_data.name);
     on_algorithm_infos_changed_();
@@ -321,33 +268,6 @@ void AlgorithmSystem::unregisterHandler(const HandlerMetaData& meta_data)
     on_algorithm_infos_changed_();
 
     spdlog::info("AlgorithmSystem::unregisterHandler: Unregistered handler for algorithm '{}'", meta_data.name);
-}
-
-std::vector<AlgorithmCategory> AlgorithmSystem::getNavigationCategories() const
-{
-    struct Candidate {
-        AlgorithmCategory category;
-        std::string provider;
-    };
-    std::map<std::string, Candidate> candidates;
-    // 基础入口不随算法提供者卸载而消失；没有算法时由通用面板呈现空状态。
-    for (const auto& category : builtInCategories())
-        candidates.emplace(category.id, Candidate { category, "" });
-    for (const auto& [name, entry] : entries_) {
-        for (const auto& category : entry.info.navigation.category_definitions) {
-            auto found = candidates.find(category.id);
-            // 插件声明优先于内置描述；同类按算法身份选来源，不依赖加载顺序。
-            if (found == candidates.end() || found->second.provider.empty() || name < found->second.provider)
-                candidates.insert_or_assign(category.id, Candidate { category, name });
-        }
-    }
-    std::vector<AlgorithmCategory> result;
-    for (const auto& [id, candidate] : candidates)
-        result.push_back(candidate.category);
-    std::sort(result.begin(), result.end(), [](const auto& a, const auto& b) {
-        return a.order != b.order ? a.order < b.order : a.id < b.id;
-    });
-    return result;
 }
 
 vector<AlgorithmInfo*> AlgorithmSystem::getAlgorithmInfos()

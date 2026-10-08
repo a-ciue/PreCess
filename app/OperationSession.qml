@@ -11,14 +11,14 @@ QtObject {
     id: root
 
     property var activeOperation: null
-    property var algorithmSystem: QModelManager.featureSystem
-    property var algorithmInfos: root.algorithmSystem.featuresInfo
-    readonly property var algorithmCategories: root.algorithmSystem.navigationCategories
+    property var meshFeatureSystem: QModelManager.featureSystem
+    property var meshFeatureInfos: root.meshFeatureSystem.featuresInfo
+    readonly property var meshCategories: root.meshFeatureSystem.navigationCategories
     readonly property bool meshGeneration: !!(root.activeOperation && root.activeOperation.isMeshGeneration)
-    readonly property var meshAlgorithms: root.meshGeneration ? AlgorithmNavigation.buildAlgorithms(root.algorithmInfos, root.activeOperation.meshCategory) : []
+    readonly property var meshAlgorithms: root.meshGeneration ? AlgorithmNavigation.buildAlgorithms(root.meshFeatureInfos, root.activeOperation.meshCategory) : []
     readonly property string panelTitle: root.meshGeneration && root.activeOperation.categoryTitle ? qsTr("操作面板-%1").arg(root.activeOperation.categoryTitle) : qsTr("操作面板")
     readonly property OperationParameterModel parameterModel: OperationParameterModel {
-        featureSystem: root.algorithmSystem
+        featureSystem: root.meshFeatureSystem
         acceptingEdits: !root.switchingOperation
     }
 
@@ -41,8 +41,8 @@ QtObject {
         }
     }
 
-    onAlgorithmInfosChanged: Qt.callLater(root.refreshRegisteredMeshAlgorithm)
-    onAlgorithmCategoriesChanged: Qt.callLater(root.refreshRegisteredMeshAlgorithm)
+    onMeshFeatureInfosChanged: Qt.callLater(root.refreshRegisteredMeshAlgorithm)
+    onMeshCategoriesChanged: Qt.callLater(root.refreshRegisteredMeshAlgorithm)
     onMeshAlgorithmsChanged: Qt.callLater(root.refreshMeshAlgorithm)
     Component.onCompleted: root.applyOperation(App.activeOperation)
 
@@ -73,7 +73,7 @@ QtObject {
     function selectMeshAlgorithm(index, refresh = false) {
         if (!root.meshGeneration)
             return;
-        const categoryInfo = root.algorithmCategories.find(entry => entry.id === root.activeOperation.meshCategory);
+        const categoryInfo = root.meshCategories.find(entry => entry.id === root.activeOperation.meshCategory);
         if (!categoryInfo) {
             App.activeOperation = null;
             return;
@@ -94,7 +94,7 @@ QtObject {
             categoryTitle: categoryInfo.title,
             info: info,
             execute: info ? function (component, args) {
-                root.algorithmSystem.invoke(info.name);
+                root.meshFeatureSystem.invoke(info.name);
             } : null
         };
     }
@@ -106,7 +106,7 @@ QtObject {
     function refreshMeshAlgorithm(refresh = false) {
         if (!root.meshGeneration)
             return;
-        if (!root.algorithmCategories.some(entry => entry.id === root.activeOperation.meshCategory)) {
+        if (!root.meshCategories.some(entry => entry.id === root.activeOperation.meshCategory)) {
             // 最后一个提供者退出后，活动操作不能继续持有已消失分类的闭包或选择监听。
             App.activeOperation = null;
             return;

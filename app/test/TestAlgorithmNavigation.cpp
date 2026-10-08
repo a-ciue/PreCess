@@ -2,7 +2,6 @@
  * @brief 算法导航的分类兼容、排序及实际工具栏加载测试
  */
 #include "AlgorithmHandler.h"
-#include "AlgorithmRegistrar.h"
 #include "AlgorithmSystem.h"
 #include "AlgorithmSystemRegister.h"
 #include "ComponentData.h"
@@ -105,7 +104,7 @@ std::unique_ptr<QObject> createSession(QQmlEngine& engine, const QJSValue& algor
     INFO(component.errorString().toStdString());
     REQUIRE(component.isReady());
     std::unique_ptr<QObject> session(algorithm_system.isObject()
-            ? component.createWithInitialProperties({ { "algorithmSystem", QVariant::fromValue(algorithm_system) } })
+            ? component.createWithInitialProperties({ { "meshFeatureSystem", QVariant::fromValue(algorithm_system) } })
             : component.create());
     INFO(component.errorString().toStdString());
     REQUIRE(session);
@@ -321,7 +320,7 @@ TEST_CASE("Actual toolbar renders supplied mesh categories and preserves active 
     auto infos = engine.newArray(2);
     infos.setProperty(0, engine.newQObject(&first));
     infos.setProperty(1, engine.newQObject(&second));
-    REQUIRE(session->setProperty("algorithmInfos", QVariant::fromValue(infos)));
+    REQUIRE(session->setProperty("meshFeatureInfos", QVariant::fromValue(infos)));
     auto* triangle = findItem(item, "algorithmCategory_triangle");
     REQUIRE(triangle);
     REQUIRE(QMetaObject::invokeMethod(triangle, "clicked"));
@@ -351,7 +350,7 @@ TEST_CASE("Actual toolbar renders supplied mesh categories and preserves active 
     refreshed.setProperty(0, engine.newQObject(&refreshed_first));
     refreshed.setProperty(1, engine.newQObject(&second));
     refreshed.setProperty(2, engine.newQObject(&unrelated));
-    REQUIRE(session->setProperty("algorithmInfos", QVariant::fromValue(refreshed)));
+    REQUIRE(session->setProperty("meshFeatureInfos", QVariant::fromValue(refreshed)));
     {
         QEventLoop loop;
         QTimer::singleShot(50, &loop, &QEventLoop::quit);
@@ -360,7 +359,7 @@ TEST_CASE("Actual toolbar renders supplied mesh categories and preserves active 
     CHECK(sidebar->property("parameters").value<QJSValue>().property(0).toNumber() == 9.0);
     CHECK(selection->property("listeningSelectorIndex").toInt() == 0);
     CHECK(selector->property("currentText").toString() == refreshed_first.label());
-    REQUIRE(session->setProperty("algorithmInfos", QVariant::fromValue(infos)));
+    REQUIRE(session->setProperty("meshFeatureInfos", QVariant::fromValue(infos)));
     {
         QEventLoop loop;
         QTimer::singleShot(50, &loop, &QEventLoop::quit);
@@ -400,7 +399,7 @@ TEST_CASE("Actual toolbar renders supplied mesh categories and preserves active 
     auto changed_infos = engine.newArray(2);
     changed_infos.setProperty(0, engine.newQObject(&changed_first));
     changed_infos.setProperty(1, engine.newQObject(&second));
-    REQUIRE(session->setProperty("algorithmInfos", QVariant::fromValue(changed_infos)));
+    REQUIRE(session->setProperty("meshFeatureInfos", QVariant::fromValue(changed_infos)));
     {
         QEventLoop loop;
         QTimer::singleShot(50, &loop, &QEventLoop::quit);
@@ -449,7 +448,7 @@ TEST_CASE("Actual toolbar renders supplied mesh categories and preserves active 
     // 动态卸载选择项后切到可用项，全部移除时不再持有旧参数和执行闭包。
     auto remaining = engine.newArray(1);
     remaining.setProperty(0, engine.newQObject(&first));
-    REQUIRE(session->setProperty("algorithmInfos", QVariant::fromValue(remaining)));
+    REQUIRE(session->setProperty("meshFeatureInfos", QVariant::fromValue(remaining)));
     {
         QEventLoop loop;
         QTimer::singleShot(50, &loop, &QEventLoop::quit);
@@ -463,7 +462,7 @@ TEST_CASE("Actual toolbar renders supplied mesh categories and preserves active 
         loop.exec();
         REQUIRE(window.grabWindow().save(capture + ".png"));
     }
-    REQUIRE(session->setProperty("algorithmInfos", QVariant::fromValue(engine.newArray())));
+    REQUIRE(session->setProperty("meshFeatureInfos", QVariant::fromValue(engine.newArray())));
     {
         QEventLoop loop;
         QTimer::singleShot(50, &loop, &QEventLoop::quit);

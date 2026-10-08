@@ -58,17 +58,6 @@ void QAlgorithmSystemAdaptor::call(const QString& unique_name, Index model, cons
     }
 }
 
-QVariantList QAlgorithmSystemAdaptor::getNavigationCategories() const
-{
-    QVariantList result;
-    for (const auto& category : algo_system_->getNavigationCategories()) {
-        result.append(QVariantMap { { "id", QString::fromStdString(category.id) },
-            { "title", QString::fromStdString(category.title) },
-            { "icon", QString::fromStdString(category.icon) }, { "order", category.order } });
-    }
-    return result;
-}
-
 QList<QAlgorithmInfo*> QAlgorithmSystemAdaptor::getAlgorithmsInfo() const
 {
     QList<QAlgorithmInfo*> infos;
@@ -77,25 +66,11 @@ QList<QAlgorithmInfo*> QAlgorithmSystemAdaptor::getAlgorithmsInfo() const
         for (const auto& arg_type : algo_info->arg_types) {
             args << new QArgType(arg_type);
         }
-        QStringList categories;
-        for (const auto& category : algo_info->navigation.categories)
-            categories.append(QString::fromStdString(category));
-        QVariantMap category_defaults;
-        for (const auto& [category, defaults] : algo_info->navigation.category_defaults) {
-            QVariantMap parameters;
-            for (const auto& [name, value] : defaults)
-                parameters.insert(QString::fromStdString(name), QString::fromStdString(value));
-            category_defaults.insert(QString::fromStdString(category), parameters);
-        }
         infos.append(new QAlgorithmInfo(
             QString::fromStdString(algo_info->name),
             QString::fromStdString(algo_info->display_name),
             QString::fromStdString(algo_info->description),
-            std::move(args), nullptr, std::move(categories),
-            QString::fromStdString(algo_info->navigation.group),
-            QString::fromStdString(algo_info->navigation.icon),
-            algo_info->navigation.order,
-            QString::fromStdString(algo_info->navigation.label), std::move(category_defaults)));
+            std::move(args)));
     }
     return infos;
 }
