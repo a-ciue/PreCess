@@ -1,3 +1,3 @@
 <map id="类继承关系图" name="类继承关系图">
-<area shape="rect" id="Node000000" href="$classGeometryActor.html" title=" " alt="" coords="5,5,127,31"/>
+<area shape="rect" id="Node000000" href="$classgeometry_1_1repair_1_1BoundaryAudit.html" title="修复前捕获边、点身份及各自误差上限；修复后检查拓扑及三维/二维曲线一致性。 既有容差仅作用于对应实体，不传播成整个局部区域的求解容差。" alt="" coords="5,5,205,45"/>
 </map>

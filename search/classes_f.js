@@ -9,6 +9,7 @@ var searchData=
   ['placeddocks_6',['PlacedDocks',['../structdocktest_1_1PlacedDocks.html',1,'docktest']]],
   ['pluginbase_7',['PluginBase',['../classsystems_1_1PluginBase.html',1,'systems']]],
   ['points_5ft_8',['points_t',['../structtinyobj_1_1points__t.html',1,'tinyobj']]],
-  ['preparedalgorithm_9',['PreparedAlgorithm',['../structsystems_1_1algo_1_1PreparedAlgorithm.html',1,'systems::algo']]],
-  ['previewaccess_10',['PreviewAccess',['../classUndoStack_1_1PreviewAccess.html',1,'UndoStack']]]
+  ['precisionpolicy_9',['PrecisionPolicy',['../structgeometry_1_1repair_1_1PrecisionPolicy.html',1,'geometry::repair']]],
+  ['preparedalgorithm_10',['PreparedAlgorithm',['../structsystems_1_1algo_1_1PreparedAlgorithm.html',1,'systems::algo']]],
+  ['previewaccess_11',['PreviewAccess',['../classUndoStack_1_1PreviewAccess.html',1,'UndoStack']]]
 ];

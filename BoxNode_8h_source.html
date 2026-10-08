@@ -114,7 +114,7 @@ $(function() {
 <div class="line"><a id="l00056" name="l00056"></a><span class="lineno">   56</span></div>
 <div class="line"><a id="l00065" name="l00065"></a><span class="lineno">   65</span>    <a class="code hl_class" href="classdock_1_1LayoutNode.html">LayoutNode</a>* <a class="code hl_function" href="classdock_1_1BoxNode.html#af5ec5524712539567c1cf74c8d7a189c">detachNode</a>(<a class="code hl_class" href="classdock_1_1LayoutNode.html">LayoutNode</a>* item, <span class="keywordtype">bool</span> hardDelete);</div>
 <div class="line"><a id="l00066" name="l00066"></a><span class="lineno">   66</span> </div>
-<div class="line"><a id="l00067" name="l00067"></a><span class="lineno">   67</span>    <span class="keywordtype">void</span> <a class="code hl_function" href="classdock_1_1BoxNode.html#adbb0ffc9dc119731e79529a9bbd3c1e5">setGeometry</a>(<span class="keyword">const</span> QRect&amp; <a class="code hl_variable" href="TestComponentModel_8cpp.html#acd06f41b01ec41c67d52bd9d7cc86e10">geometry</a>) <span class="keyword">override</span>;</div>
+<div class="line"><a id="l00067" name="l00067"></a><span class="lineno">   67</span>    <span class="keywordtype">void</span> <a class="code hl_function" href="classdock_1_1BoxNode.html#adbb0ffc9dc119731e79529a9bbd3c1e5">setGeometry</a>(<span class="keyword">const</span> QRect&amp; <a class="code hl_namespace" href="namespacegeometry.html">geometry</a>) <span class="keyword">override</span>;</div>
 <div class="line"><a id="l00068" name="l00068"></a><span class="lineno">   68</span>    QSize <a class="code hl_function" href="classdock_1_1BoxNode.html#a2bb07128122e51964c9f0e60eac979b4">minExtent</a>() <span class="keyword">const override</span>;</div>
 <div class="line"><a id="l00069" name="l00069"></a><span class="lineno">   69</span>    QSize <a class="code hl_function" href="classdock_1_1BoxNode.html#ab648c6bb8451e3a642753605d3336b12">maxExtent</a>() <span class="keyword">const override</span>;</div>
 <div class="line"><a id="l00070" name="l00070"></a><span class="lineno">   70</span></div>
@@ -139,7 +139,6 @@ $(function() {
 <div class="line"><a id="l00096" name="l00096"></a><span class="lineno">   96</span> </div>
 <div class="line"><a id="l00097" name="l00097"></a><span class="lineno">   97</span>}</div>
 <div class="ttc" id="aLayoutNode_8h_html"><div class="ttname"><a href="LayoutNode_8h.html">LayoutNode.h</a></div><div class="ttdoc">布局树节点</div></div>
-<div class="ttc" id="aTestComponentModel_8cpp_html_acd06f41b01ec41c67d52bd9d7cc86e10"><div class="ttname"><a href="TestComponentModel_8cpp.html#acd06f41b01ec41c67d52bd9d7cc86e10">geometry</a></div><div class="ttdeci">c1 geometry</div><div class="ttdef"><b>定义</b> TestComponentModel.cpp:81</div></div>
 <div class="ttc" id="aclassdock_1_1BoxNode_html_a081b8282f4035c63b2b51e16a68d2424"><div class="ttname"><a href="classdock_1_1BoxNode.html#a081b8282f4035c63b2b51e16a68d2424">dock::BoxNode::BoxNode</a></div><div class="ttdeci">BoxNode(Qt::Orientation orientation)</div><div class="ttdef"><b>定义</b> BoxNode.cpp:100</div></div>
 <div class="ttc" id="aclassdock_1_1BoxNode_html_a0a2df7c2218f2bfd08a4cfaf0b2e44cb"><div class="ttname"><a href="classdock_1_1BoxNode.html#a0a2df7c2218f2bfd08a4cfaf0b2e44cb">dock::BoxNode::~BoxNode</a></div><div class="ttdeci">~BoxNode() override</div><div class="ttdef"><b>定义</b> BoxNode.cpp:106</div></div>
 <div class="ttc" id="aclassdock_1_1BoxNode_html_a1ffc67c074c1a38bbd8d637520bf3d7c"><div class="ttname"><a href="classdock_1_1BoxNode.html#a1ffc67c074c1a38bbd8d637520bf3d7c">dock::BoxNode::replaceNode</a></div><div class="ttdeci">void replaceNode(LayoutNode *old_child, LayoutNode *new_child)</div><div class="ttdoc">用 new_child 原地替换 old_child（继承可见性；占比由调用方先行设置）</div><div class="ttdef"><b>定义</b> BoxNode.cpp:268</div></div>
@@ -170,6 +169,7 @@ $(function() {
 <div class="ttc" id="aclassdock_1_1LayoutNode_html"><div class="ttname"><a href="classdock_1_1LayoutNode.html">dock::LayoutNode</a></div><div class="ttdoc">布局树节点（叶子节点与容器节点的公共基类）</div><div class="ttdef"><b>定义</b> LayoutNode.h:25</div></div>
 <div class="ttc" id="aclassdock_1_1LayoutNode_html_ab502912c14547c37b207cd6cee17bf28"><div class="ttname"><a href="classdock_1_1LayoutNode.html#ab502912c14547c37b207cd6cee17bf28">dock::LayoutNode::LayoutNode</a></div><div class="ttdeci">LayoutNode(LayoutClient *client=nullptr)</div><div class="ttdef"><b>定义</b> LayoutNode.cpp:13</div></div>
 <div class="ttc" id="anamespacedock_html"><div class="ttname"><a href="namespacedock.html">dock</a></div><div class="ttdef"><b>定义</b> DockCatalog.cpp:14</div></div>
+<div class="ttc" id="anamespacegeometry_html"><div class="ttname"><a href="namespacegeometry.html">geometry</a></div><div class="ttdef"><b>定义</b> GeometryRepairValidation.cpp:27</div></div>
 </div><!-- fragment --></div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>

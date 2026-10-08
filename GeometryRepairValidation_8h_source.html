@@ -1,0 +1,175 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="zh">
+<head>
+<meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=11"/>
+<meta name="generator" content="Doxygen 1.14.0"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>PreCess: model/ops/GeometryRepairValidation.h 源文件</title>
+<link href="tabs.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="jquery.js"></script>
+<script type="text/javascript" src="dynsections.js"></script>
+<script type="text/javascript" src="clipboard.js"></script>
+<script type="text/javascript" src="cookie.js"></script>
+<link href="search/search.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="search/searchdata.js"></script>
+<script type="text/javascript" src="search/search.js"></script>
+<link href="doxygen.css" rel="stylesheet" type="text/css" />
+</head>
+<body>
+<div id="top"><!-- do not remove this div, it is closed by doxygen! -->
+<div id="titlearea">
+<table cellspacing="0" cellpadding="0">
+ <tbody>
+ <tr id="projectrow">
+  <td id="projectlogo"><img alt="Logo" src="ZenithGrid.ico"/></td>
+  <td id="projectalign">
+   <div id="projectname">PreCess
+   </div>
+  </td>
+ </tr>
+ </tbody>
+</table>
+</div>
+<!-- end header part -->
+<!-- 制作者 Doxygen 1.14.0 -->
+<script type="text/javascript">
+var searchBox = new SearchBox("searchBox", "search/",'.html');
+</script>
+<script type="text/javascript">
+$(function() { codefold.init(); });
+</script>
+<script type="text/javascript" src="menudata.js"></script>
+<script type="text/javascript" src="menu.js"></script>
+<script type="text/javascript">
+$(function() {
+  initMenu('',true,false,'search.php','搜索',false);
+  $(function() { init_search(); });
+});
+</script>
+<div id="main-nav"></div>
+<!-- window showing the filter options -->
+<div id="MSearchSelectWindow"
+     onmouseover="return searchBox.OnSearchSelectShow()"
+     onmouseout="return searchBox.OnSearchSelectHide()"
+     onkeydown="return searchBox.OnSearchSelectKey(event)">
+</div>
+
+<!-- iframe showing the search results (closed by default) -->
+<div id="MSearchResultsWindow">
+<div id="MSearchResults">
+<div class="SRPage">
+<div id="SRIndex">
+<div id="SRResults"></div>
+<div class="SRStatus" id="Loading">载入中...</div>
+<div class="SRStatus" id="Searching">搜索中...</div>
+<div class="SRStatus" id="NoMatches">未找到</div>
+</div>
+</div>
+</div>
+</div>
+
+<div id="nav-path" class="navpath">
+  <ul>
+<li class="navelem"><a href="dir_3f14f6767c31cb4a1d22c13c18cc6fc3.html">model</a></li><li class="navelem"><a href="dir_f3f991c7b5bf0583e6df7a74afc61832.html">ops</a></li>  </ul>
+</div>
+</div><!-- top -->
+<div id="doc-content">
+<div class="header">
+  <div class="headertitle"><div class="title">GeometryRepairValidation.h</div></div>
+</div><!--header-->
+<div class="contents">
+<a href="GeometryRepairValidation_8h.html">浏览该文件的文档.</a><div class="fragment"><div class="line"><a id="l00001" name="l00001"></a><span class="lineno">    1</span></div>
+<div class="line"><a id="l00005" name="l00005"></a><span class="lineno">    5</span><span class="preprocessor">#pragma once</span></div>
+<div class="line"><a id="l00006" name="l00006"></a><span class="lineno">    6</span> </div>
+<div class="line"><a id="l00007" name="l00007"></a><span class="lineno">    7</span><span class="preprocessor">#include &lt;TopoDS_Edge.hxx&gt;</span></div>
+<div class="line"><a id="l00008" name="l00008"></a><span class="lineno">    8</span><span class="preprocessor">#include &lt;TopoDS_Vertex.hxx&gt;</span></div>
+<div class="line"><a id="l00009" name="l00009"></a><span class="lineno">    9</span><span class="preprocessor">#include &lt;functional&gt;</span></div>
+<div class="line"><a id="l00010" name="l00010"></a><span class="lineno">   10</span><span class="preprocessor">#include &lt;vector&gt;</span></div>
+<div class="line"><a id="l00011" name="l00011"></a><span class="lineno">   11</span><span class="preprocessor">#include &lt;utility&gt;</span></div>
+<div class="line"><a id="l00012" name="l00012"></a><span class="lineno">   12</span> </div>
+<div class="line"><a id="l00013" name="l00013"></a><span class="lineno">   13</span><span class="keyword">class </span>TopoDS_Face;</div>
+<div class="line"><a id="l00014" name="l00014"></a><span class="lineno">   14</span><span class="keyword">class </span>gp_Pnt;</div>
+<div class="line"><a id="l00015" name="l00015"></a><span class="lineno">   15</span> </div>
+<div class="line"><a id="l00016" name="l00016"></a><span class="lineno">   16</span><span class="keyword">namespace </span><a class="code hl_namespace" href="namespacegeometry_1_1repair.html">geometry::repair</a> {</div>
+<div class="foldopen" id="foldopen00018" data-start="{" data-end="};">
+<div class="line"><a id="l00018" name="l00018"></a><span class="lineno"><a class="line" href="structgeometry_1_1repair_1_1PrecisionPolicy.html">   18</a></span><span class="keyword">struct </span><a class="code hl_struct" href="structgeometry_1_1repair_1_1PrecisionPolicy.html">PrecisionPolicy</a> {</div>
+<div class="line"><a id="l00019" name="l00019"></a><span class="lineno"><a class="line" href="structgeometry_1_1repair_1_1PrecisionPolicy.html#a22233a18df07d5b62998b85a914360f0">   19</a></span>    <span class="keywordtype">double</span> <a class="code hl_variable" href="structgeometry_1_1repair_1_1PrecisionPolicy.html#a22233a18df07d5b62998b85a914360f0">numerical_floor</a> = 0.0; </div>
+<div class="line"><a id="l00020" name="l00020"></a><span class="lineno"><a class="line" href="structgeometry_1_1repair_1_1PrecisionPolicy.html#a4c71891dcb00f4d0d8ad31f2b2efbcba">   20</a></span>    <span class="keywordtype">double</span> <a class="code hl_variable" href="structgeometry_1_1repair_1_1PrecisionPolicy.html#a4c71891dcb00f4d0d8ad31f2b2efbcba">fitting</a> = 0.0; </div>
+<div class="line"><a id="l00021" name="l00021"></a><span class="lineno"><a class="line" href="structgeometry_1_1repair_1_1PrecisionPolicy.html#a1eb4f097bd9ebba7f398e88ac9935cfb">   21</a></span>    <span class="keywordtype">double</span> <a class="code hl_variable" href="structgeometry_1_1repair_1_1PrecisionPolicy.html#a1eb4f097bd9ebba7f398e88ac9935cfb">validation</a> = 0.0; </div>
+<div class="line"><a id="l00022" name="l00022"></a><span class="lineno"><a class="line" href="structgeometry_1_1repair_1_1PrecisionPolicy.html#adfa9dc72870b467c79fdf1c4a117a093">   22</a></span>    <span class="keywordtype">double</span> <a class="code hl_variable" href="structgeometry_1_1repair_1_1PrecisionPolicy.html#adfa9dc72870b467c79fdf1c4a117a093">classification</a> = 0.0; </div>
+<div class="line"><a id="l00023" name="l00023"></a><span class="lineno">   23</span></div>
+<div class="line"><a id="l00025" name="l00025"></a><span class="lineno">   25</span>    <span class="keyword">static</span> <a class="code hl_struct" href="structgeometry_1_1repair_1_1PrecisionPolicy.html">PrecisionPolicy</a> <a class="code hl_function" href="structgeometry_1_1repair_1_1PrecisionPolicy.html#ae10a73ff96baac15b11b88746756201b">fromShape</a>(<span class="keyword">const</span> TopoDS_Shape&amp; local_shape);</div>
+<div class="line"><a id="l00026" name="l00026"></a><span class="lineno">   26</span>};</div>
+</div>
+<div class="line"><a id="l00027" name="l00027"></a><span class="lineno">   27</span></div>
+<div class="foldopen" id="foldopen00029" data-start="{" data-end="};">
+<div class="line"><a id="l00029" name="l00029"></a><span class="lineno"><a class="line" href="namespacegeometry_1_1repair.html#a4b2363a5b4aab03c94cb5f618cf3db0f">   29</a></span><span class="keyword">enum class</span> <a class="code hl_enumeration" href="namespacegeometry_1_1repair.html#a4b2363a5b4aab03c94cb5f618cf3db0f">DeviationStatus</a> { <a class="code hl_enumvalue" href="namespacegeometry_1_1repair.html#a4b2363a5b4aab03c94cb5f618cf3db0faf35a9898c108fb84e9021d10b493c618">WithinLimit</a>,</div>
+<div class="line"><a id="l00030" name="l00030"></a><span class="lineno"><a class="line" href="namespacegeometry_1_1repair.html#a4b2363a5b4aab03c94cb5f618cf3db0fae2db06b840e9430b11fc2dcf488ba799">   30</a></span>    <a class="code hl_enumvalue" href="namespacegeometry_1_1repair.html#a4b2363a5b4aab03c94cb5f618cf3db0fae2db06b840e9430b11fc2dcf488ba799">Exceeded</a>,</div>
+<div class="line"><a id="l00031" name="l00031"></a><span class="lineno"><a class="line" href="namespacegeometry_1_1repair.html#a4b2363a5b4aab03c94cb5f618cf3db0fa4a3b76ab214699973b85cc072788ff7d">   31</a></span>    <a class="code hl_enumvalue" href="namespacegeometry_1_1repair.html#a4b2363a5b4aab03c94cb5f618cf3db0fa4a3b76ab214699973b85cc072788ff7d">Unresolved</a> };</div>
+</div>
+<div class="line"><a id="l00032" name="l00032"></a><span class="lineno">   32</span></div>
+<div class="foldopen" id="foldopen00034" data-start="{" data-end="};">
+<div class="line"><a id="l00034" name="l00034"></a><span class="lineno"><a class="line" href="structgeometry_1_1repair_1_1DeviationResult.html">   34</a></span><span class="keyword">struct </span><a class="code hl_struct" href="structgeometry_1_1repair_1_1DeviationResult.html">DeviationResult</a> {</div>
+<div class="line"><a id="l00035" name="l00035"></a><span class="lineno"><a class="line" href="structgeometry_1_1repair_1_1DeviationResult.html#a1d65e65c53e536063bb89bd085d14f7b">   35</a></span>    <a class="code hl_enumeration" href="namespacegeometry_1_1repair.html#a4b2363a5b4aab03c94cb5f618cf3db0f">DeviationStatus</a> <a class="code hl_variable" href="structgeometry_1_1repair_1_1DeviationResult.html#a1d65e65c53e536063bb89bd085d14f7b">status</a> = <a class="code hl_enumvalue" href="namespacegeometry_1_1repair.html#a4b2363a5b4aab03c94cb5f618cf3db0fa4a3b76ab214699973b85cc072788ff7d">DeviationStatus::Unresolved</a>;</div>
+<div class="line"><a id="l00036" name="l00036"></a><span class="lineno"><a class="line" href="structgeometry_1_1repair_1_1DeviationResult.html#a742304949392c6f8dbdfd2f162871743">   36</a></span>    <span class="keywordtype">double</span> <a class="code hl_variable" href="structgeometry_1_1repair_1_1DeviationResult.html#a742304949392c6f8dbdfd2f162871743">maximum</a> = 0.0;</div>
+<div class="line"><a id="l00037" name="l00037"></a><span class="lineno"><a class="line" href="structgeometry_1_1repair_1_1DeviationResult.html#a7132a046794c27c59bd2b1df36f894d1">   37</a></span>    <span class="keywordtype">int</span> <a class="code hl_variable" href="structgeometry_1_1repair_1_1DeviationResult.html#a7132a046794c27c59bd2b1df36f894d1">evaluations</a> = 0;</div>
+<div class="line"><a id="l00038" name="l00038"></a><span class="lineno">   38</span>};</div>
+</div>
+<div class="line"><a id="l00039" name="l00039"></a><span class="lineno">   39</span></div>
+<div class="foldopen" id="foldopen00041" data-start="{" data-end="};">
+<div class="line"><a id="l00041" name="l00041"></a><span class="lineno"><a class="line" href="structgeometry_1_1repair_1_1DeviationBudget.html">   41</a></span><span class="keyword">struct </span><a class="code hl_struct" href="structgeometry_1_1repair_1_1DeviationBudget.html">DeviationBudget</a> {</div>
+<div class="line"><a id="l00042" name="l00042"></a><span class="lineno"><a class="line" href="structgeometry_1_1repair_1_1DeviationBudget.html#adfe7d1146bb85989c835ba27f553749a">   42</a></span>    <span class="keywordtype">int</span> <a class="code hl_variable" href="structgeometry_1_1repair_1_1DeviationBudget.html#adfe7d1146bb85989c835ba27f553749a">max_depth</a> = 16;</div>
+<div class="line"><a id="l00043" name="l00043"></a><span class="lineno"><a class="line" href="structgeometry_1_1repair_1_1DeviationBudget.html#a001a7bb902c822674ee4ae7ef428baa8">   43</a></span>    <span class="keywordtype">int</span> <a class="code hl_variable" href="structgeometry_1_1repair_1_1DeviationBudget.html#a001a7bb902c822674ee4ae7ef428baa8">max_evaluations</a> = 16384;</div>
+<div class="line"><a id="l00044" name="l00044"></a><span class="lineno"><a class="line" href="structgeometry_1_1repair_1_1DeviationBudget.html#a7c20665edb0158f947f9b10394ef5ffa">   44</a></span>    <span class="keywordtype">double</span> <a class="code hl_variable" href="structgeometry_1_1repair_1_1DeviationBudget.html#a7c20665edb0158f947f9b10394ef5ffa">resolution</a> = 0.0; </div>
+<div class="line"><a id="l00045" name="l00045"></a><span class="lineno">   45</span>};</div>
+</div>
+<div class="line"><a id="l00046" name="l00046"></a><span class="lineno">   46</span></div>
+<div class="line"><a id="l00051" name="l00051"></a><span class="lineno">   51</span><a class="code hl_struct" href="structgeometry_1_1repair_1_1DeviationResult.html">DeviationResult</a> <a class="code hl_function" href="namespacegeometry_1_1repair.html#ac9fe2ea4c3d14aa876ba3a07baf43dea">measureCurveDeviation</a>(<span class="keyword">const</span> TopoDS_Edge&amp; edge,</div>
+<div class="line"><a id="l00052" name="l00052"></a><span class="lineno">   52</span>    <span class="keyword">const</span> std::function&lt;<span class="keywordtype">double</span>(<span class="keyword">const</span> gp_Pnt&amp;)&gt;&amp; distance, <span class="keywordtype">double</span> limit,</div>
+<div class="line"><a id="l00053" name="l00053"></a><span class="lineno">   53</span>    <span class="keyword">const</span> <a class="code hl_struct" href="structgeometry_1_1repair_1_1DeviationBudget.html">DeviationBudget</a>&amp; budget = { });</div>
+<div class="line"><a id="l00054" name="l00054"></a><span class="lineno">   54</span></div>
+<div class="foldopen" id="foldopen00059" data-start="{" data-end="};">
+<div class="line"><a id="l00059" name="l00059"></a><span class="lineno"><a class="line" href="classgeometry_1_1repair_1_1BoundaryAudit.html">   59</a></span><span class="keyword">class </span><a class="code hl_function" href="classgeometry_1_1repair_1_1BoundaryAudit.html#ab8fa76f675d171b8182a16e7151d7560">BoundaryAudit</a> {</div>
+<div class="line"><a id="l00060" name="l00060"></a><span class="lineno">   60</span><span class="keyword">public</span>:</div>
+<div class="line"><a id="l00062" name="l00062"></a><span class="lineno">   62</span>    <a class="code hl_function" href="classgeometry_1_1repair_1_1BoundaryAudit.html#ab8fa76f675d171b8182a16e7151d7560">BoundaryAudit</a>(<span class="keyword">const</span> TopoDS_Shape&amp; boundary, <span class="keyword">const</span> <a class="code hl_struct" href="structgeometry_1_1repair_1_1PrecisionPolicy.html">PrecisionPolicy</a>&amp; precision);</div>
+<div class="line"><a id="l00064" name="l00064"></a><span class="lineno">   64</span>    <span class="keywordtype">void</span> <a class="code hl_function" href="classgeometry_1_1repair_1_1BoundaryAudit.html#a5257553df6e122aff8ba8cab96449a80">validateFace</a>(<span class="keyword">const</span> TopoDS_Face&amp; face, <span class="keyword">const</span> <span class="keywordtype">char</span>* operation) <span class="keyword">const</span>;</div>
+<div class="line"><a id="l00065" name="l00065"></a><span class="lineno">   65</span> </div>
+<div class="line"><a id="l00066" name="l00066"></a><span class="lineno">   66</span><span class="keyword">private</span>:</div>
+<div class="line"><a id="l00067" name="l00067"></a><span class="lineno"><a class="line" href="classgeometry_1_1repair_1_1BoundaryAudit.html#a1d8f40085471a786290516f6e0c9d978">   67</a></span>    std::vector&lt;std::pair&lt;TopoDS_Edge, double&gt;&gt; <a class="code hl_variable" href="classgeometry_1_1repair_1_1BoundaryAudit.html#a1d8f40085471a786290516f6e0c9d978">edges_</a>;</div>
+<div class="line"><a id="l00068" name="l00068"></a><span class="lineno"><a class="line" href="classgeometry_1_1repair_1_1BoundaryAudit.html#a57b3d29f366d6064c5b263091cb149b4">   68</a></span>    std::vector&lt;std::pair&lt;TopoDS_Vertex, double&gt;&gt; <a class="code hl_variable" href="classgeometry_1_1repair_1_1BoundaryAudit.html#a57b3d29f366d6064c5b263091cb149b4">vertices_</a>;</div>
+<div class="line"><a id="l00069" name="l00069"></a><span class="lineno">   69</span>};</div>
+</div>
+<div class="line"><a id="l00070" name="l00070"></a><span class="lineno">   70</span>}</div>
+<div class="ttc" id="aclassgeometry_1_1repair_1_1BoundaryAudit_html_a1d8f40085471a786290516f6e0c9d978"><div class="ttname"><a href="classgeometry_1_1repair_1_1BoundaryAudit.html#a1d8f40085471a786290516f6e0c9d978">geometry::repair::BoundaryAudit::edges_</a></div><div class="ttdeci">std::vector&lt; std::pair&lt; TopoDS_Edge, double &gt; &gt; edges_</div><div class="ttdef"><b>定义</b> GeometryRepairValidation.h:67</div></div>
+<div class="ttc" id="aclassgeometry_1_1repair_1_1BoundaryAudit_html_a5257553df6e122aff8ba8cab96449a80"><div class="ttname"><a href="classgeometry_1_1repair_1_1BoundaryAudit.html#a5257553df6e122aff8ba8cab96449a80">geometry::repair::BoundaryAudit::validateFace</a></div><div class="ttdeci">void validateFace(const TopoDS_Face &amp;face, const char *operation) const</div><div class="ttdoc">要求边界身份及容差受控，并使用 OCC 最大偏差检查验证面上的每条边。</div><div class="ttdef"><b>定义</b> GeometryRepairValidation.cpp:157</div></div>
+<div class="ttc" id="aclassgeometry_1_1repair_1_1BoundaryAudit_html_a57b3d29f366d6064c5b263091cb149b4"><div class="ttname"><a href="classgeometry_1_1repair_1_1BoundaryAudit.html#a57b3d29f366d6064c5b263091cb149b4">geometry::repair::BoundaryAudit::vertices_</a></div><div class="ttdeci">std::vector&lt; std::pair&lt; TopoDS_Vertex, double &gt; &gt; vertices_</div><div class="ttdef"><b>定义</b> GeometryRepairValidation.h:68</div></div>
+<div class="ttc" id="aclassgeometry_1_1repair_1_1BoundaryAudit_html_ab8fa76f675d171b8182a16e7151d7560"><div class="ttname"><a href="classgeometry_1_1repair_1_1BoundaryAudit.html#ab8fa76f675d171b8182a16e7151d7560">geometry::repair::BoundaryAudit::BoundaryAudit</a></div><div class="ttdeci">BoundaryAudit(const TopoDS_Shape &amp;boundary, const PrecisionPolicy &amp;precision)</div><div class="ttdoc">在任何修复器修改边界之前捕获身份和原始容差。</div><div class="ttdef"><b>定义</b> GeometryRepairValidation.cpp:142</div></div>
+<div class="ttc" id="anamespacegeometry_1_1repair_html"><div class="ttname"><a href="namespacegeometry_1_1repair.html">geometry::repair</a></div><div class="ttdef"><b>定义</b> GeometryRepairValidation.cpp:27</div></div>
+<div class="ttc" id="anamespacegeometry_1_1repair_html_a4b2363a5b4aab03c94cb5f618cf3db0f"><div class="ttname"><a href="namespacegeometry_1_1repair.html#a4b2363a5b4aab03c94cb5f618cf3db0f">geometry::repair::DeviationStatus</a></div><div class="ttdeci">DeviationStatus</div><div class="ttdoc">自适应预检结果；预算不足或投影失败必须与合格结果区分。</div><div class="ttdef"><b>定义</b> GeometryRepairValidation.h:29</div></div>
+<div class="ttc" id="anamespacegeometry_1_1repair_html_a4b2363a5b4aab03c94cb5f618cf3db0fa4a3b76ab214699973b85cc072788ff7d"><div class="ttname"><a href="namespacegeometry_1_1repair.html#a4b2363a5b4aab03c94cb5f618cf3db0fa4a3b76ab214699973b85cc072788ff7d">geometry::repair::DeviationStatus::Unresolved</a></div><div class="ttdeci">@ Unresolved</div><div class="ttdef"><b>定义</b> GeometryRepairValidation.h:31</div></div>
+<div class="ttc" id="anamespacegeometry_1_1repair_html_a4b2363a5b4aab03c94cb5f618cf3db0fae2db06b840e9430b11fc2dcf488ba799"><div class="ttname"><a href="namespacegeometry_1_1repair.html#a4b2363a5b4aab03c94cb5f618cf3db0fae2db06b840e9430b11fc2dcf488ba799">geometry::repair::DeviationStatus::Exceeded</a></div><div class="ttdeci">@ Exceeded</div><div class="ttdef"><b>定义</b> GeometryRepairValidation.h:30</div></div>
+<div class="ttc" id="anamespacegeometry_1_1repair_html_a4b2363a5b4aab03c94cb5f618cf3db0faf35a9898c108fb84e9021d10b493c618"><div class="ttname"><a href="namespacegeometry_1_1repair.html#a4b2363a5b4aab03c94cb5f618cf3db0faf35a9898c108fb84e9021d10b493c618">geometry::repair::DeviationStatus::WithinLimit</a></div><div class="ttdeci">@ WithinLimit</div><div class="ttdef"><b>定义</b> GeometryRepairValidation.h:29</div></div>
+<div class="ttc" id="anamespacegeometry_1_1repair_html_ac9fe2ea4c3d14aa876ba3a07baf43dea"><div class="ttname"><a href="namespacegeometry_1_1repair.html#ac9fe2ea4c3d14aa876ba3a07baf43dea">geometry::repair::measureCurveDeviation</a></div><div class="ttdeci">DeviationResult measureCurveDeviation(const TopoDS_Edge &amp;edge, const std::function&lt; double(const gp_Pnt &amp;)&gt; &amp;distance, double limit, const DeviationBudget &amp;budget)</div><div class="ttdoc">按曲线节点区间、弦偏差和距离变化递归细分，检查三维曲线到目标的距离。</div><div class="ttdef"><b>定义</b> GeometryRepairValidation.cpp:67</div></div>
+<div class="ttc" id="astructgeometry_1_1repair_1_1DeviationBudget_html"><div class="ttname"><a href="structgeometry_1_1repair_1_1DeviationBudget.html">geometry::repair::DeviationBudget</a></div><div class="ttdoc">预检计算预算；深度和求值上限只限制成本，不允许在耗尽时返回成功。</div><div class="ttdef"><b>定义</b> GeometryRepairValidation.h:41</div></div>
+<div class="ttc" id="astructgeometry_1_1repair_1_1DeviationBudget_html_a001a7bb902c822674ee4ae7ef428baa8"><div class="ttname"><a href="structgeometry_1_1repair_1_1DeviationBudget.html#a001a7bb902c822674ee4ae7ef428baa8">geometry::repair::DeviationBudget::max_evaluations</a></div><div class="ttdeci">int max_evaluations</div><div class="ttdef"><b>定义</b> GeometryRepairValidation.h:43</div></div>
+<div class="ttc" id="astructgeometry_1_1repair_1_1DeviationBudget_html_a7c20665edb0158f947f9b10394ef5ffa"><div class="ttname"><a href="structgeometry_1_1repair_1_1DeviationBudget.html#a7c20665edb0158f947f9b10394ef5ffa">geometry::repair::DeviationBudget::resolution</a></div><div class="ttdeci">double resolution</div><div class="ttdoc">正数时独立控制几何及残差采样精度，零沿用预检默认策略。</div><div class="ttdef"><b>定义</b> GeometryRepairValidation.h:44</div></div>
+<div class="ttc" id="astructgeometry_1_1repair_1_1DeviationBudget_html_adfe7d1146bb85989c835ba27f553749a"><div class="ttname"><a href="structgeometry_1_1repair_1_1DeviationBudget.html#adfe7d1146bb85989c835ba27f553749a">geometry::repair::DeviationBudget::max_depth</a></div><div class="ttdeci">int max_depth</div><div class="ttdef"><b>定义</b> GeometryRepairValidation.h:42</div></div>
+<div class="ttc" id="astructgeometry_1_1repair_1_1DeviationResult_html"><div class="ttname"><a href="structgeometry_1_1repair_1_1DeviationResult.html">geometry::repair::DeviationResult</a></div><div class="ttdoc">记录观测最大偏差与求值次数；自适应预检不代替最终 pcurve 验收。</div><div class="ttdef"><b>定义</b> GeometryRepairValidation.h:34</div></div>
+<div class="ttc" id="astructgeometry_1_1repair_1_1DeviationResult_html_a1d65e65c53e536063bb89bd085d14f7b"><div class="ttname"><a href="structgeometry_1_1repair_1_1DeviationResult.html#a1d65e65c53e536063bb89bd085d14f7b">geometry::repair::DeviationResult::status</a></div><div class="ttdeci">DeviationStatus status</div><div class="ttdef"><b>定义</b> GeometryRepairValidation.h:35</div></div>
+<div class="ttc" id="astructgeometry_1_1repair_1_1DeviationResult_html_a7132a046794c27c59bd2b1df36f894d1"><div class="ttname"><a href="structgeometry_1_1repair_1_1DeviationResult.html#a7132a046794c27c59bd2b1df36f894d1">geometry::repair::DeviationResult::evaluations</a></div><div class="ttdeci">int evaluations</div><div class="ttdef"><b>定义</b> GeometryRepairValidation.h:37</div></div>
+<div class="ttc" id="astructgeometry_1_1repair_1_1DeviationResult_html_a742304949392c6f8dbdfd2f162871743"><div class="ttname"><a href="structgeometry_1_1repair_1_1DeviationResult.html#a742304949392c6f8dbdfd2f162871743">geometry::repair::DeviationResult::maximum</a></div><div class="ttdeci">double maximum</div><div class="ttdef"><b>定义</b> GeometryRepairValidation.h:36</div></div>
+<div class="ttc" id="astructgeometry_1_1repair_1_1PrecisionPolicy_html"><div class="ttname"><a href="structgeometry_1_1repair_1_1PrecisionPolicy.html">geometry::repair::PrecisionPolicy</a></div><div class="ttdoc">在模型当前坐标单位下计算的局部精度，搜索距离不得参与计算。</div><div class="ttdef"><b>定义</b> GeometryRepairValidation.h:18</div></div>
+<div class="ttc" id="astructgeometry_1_1repair_1_1PrecisionPolicy_html_a1eb4f097bd9ebba7f398e88ac9935cfb"><div class="ttname"><a href="structgeometry_1_1repair_1_1PrecisionPolicy.html#a1eb4f097bd9ebba7f398e88ac9935cfb">geometry::repair::PrecisionPolicy::validation</a></div><div class="ttdeci">double validation</div><div class="ttdoc">本次新建几何允许的表示误差上限。</div><div class="ttdef"><b>定义</b> GeometryRepairValidation.h:21</div></div>
+<div class="ttc" id="astructgeometry_1_1repair_1_1PrecisionPolicy_html_a22233a18df07d5b62998b85a914360f0"><div class="ttname"><a href="structgeometry_1_1repair_1_1PrecisionPolicy.html#a22233a18df07d5b62998b85a914360f0">geometry::repair::PrecisionPolicy::numerical_floor</a></div><div class="ttdeci">double numerical_floor</div><div class="ttdoc">内核与坐标舍入共同决定的精度底线。</div><div class="ttdef"><b>定义</b> GeometryRepairValidation.h:19</div></div>
+<div class="ttc" id="astructgeometry_1_1repair_1_1PrecisionPolicy_html_a4c71891dcb00f4d0d8ad31f2b2efbcba"><div class="ttname"><a href="structgeometry_1_1repair_1_1PrecisionPolicy.html#a4c71891dcb00f4d0d8ad31f2b2efbcba">geometry::repair::PrecisionPolicy::fitting</a></div><div class="ttdeci">double fitting</div><div class="ttdoc">局部尺度与最短边限制下的求解目标。</div><div class="ttdef"><b>定义</b> GeometryRepairValidation.h:20</div></div>
+<div class="ttc" id="astructgeometry_1_1repair_1_1PrecisionPolicy_html_adfa9dc72870b467c79fdf1c4a117a093"><div class="ttname"><a href="structgeometry_1_1repair_1_1PrecisionPolicy.html#adfa9dc72870b467c79fdf1c4a117a093">geometry::repair::PrecisionPolicy::classification</a></div><div class="ttdeci">double classification</div><div class="ttdoc">判断曲线是否在面上的数值精度。</div><div class="ttdef"><b>定义</b> GeometryRepairValidation.h:22</div></div>
+<div class="ttc" id="astructgeometry_1_1repair_1_1PrecisionPolicy_html_ae10a73ff96baac15b11b88746756201b"><div class="ttname"><a href="structgeometry_1_1repair_1_1PrecisionPolicy.html#ae10a73ff96baac15b11b88746756201b">geometry::repair::PrecisionPolicy::fromShape</a></div><div class="ttdeci">static PrecisionPolicy fromShape(const TopoDS_Shape &amp;local_shape)</div><div class="ttdoc">从操作局部形状推导精度，不能传整个无关装配来放宽小零件的精度。</div><div class="ttdef"><b>定义</b> GeometryRepairValidation.cpp:28</div></div>
+</div><!-- fragment --></div><!-- contents -->
+<!-- start footer part -->
+<hr class="footer"/><address class="footer"><small>
+制作者&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.14.0
+</small></address>
+</div><!-- doc-content -->
+</body>
+</html>

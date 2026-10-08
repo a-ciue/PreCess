@@ -51,5 +51,6 @@ var searchData=
   ['num_5fface_5fvertices_48',['num_face_vertices',['../structtinyobj_1_1mesh__t.html#a0b3e989fbc944b29a4e67a288490ec07',1,'tinyobj::mesh_t']]],
   ['num_5fline_5fvertices_49',['num_line_vertices',['../structtinyobj_1_1lines__t.html#a97270228c686b420540510c138df7ab3',1,'tinyobj::lines_t']]],
   ['number_50',['number',['../structTreeNode.html#a7ad06451902899d0e30976c83a4f1c3a',1,'TreeNode']]],
-  ['numberrole_51',['NumberRole',['../classTreeModel.html#aab6367624db733c58760195c14f7c4b5a6191c5b5d65179da8aabb55b65768920',1,'TreeModel']]]
+  ['numberrole_51',['NumberRole',['../classTreeModel.html#aab6367624db733c58760195c14f7c4b5a6191c5b5d65179da8aabb55b65768920',1,'TreeModel']]],
+  ['numerical_5ffloor_52',['numerical_floor',['../structgeometry_1_1repair_1_1PrecisionPolicy.html#a22233a18df07d5b62998b85a914360f0',1,'geometry::repair::PrecisionPolicy']]]
 ];

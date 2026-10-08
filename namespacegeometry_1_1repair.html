@@ -1,0 +1,188 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="zh">
+<head>
+<meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=11"/>
+<meta name="generator" content="Doxygen 1.14.0"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>PreCess: geometry::repair 命名空间参考</title>
+<link href="tabs.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="jquery.js"></script>
+<script type="text/javascript" src="dynsections.js"></script>
+<script type="text/javascript" src="clipboard.js"></script>
+<script type="text/javascript" src="cookie.js"></script>
+<link href="search/search.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="search/searchdata.js"></script>
+<script type="text/javascript" src="search/search.js"></script>
+<link href="doxygen.css" rel="stylesheet" type="text/css" />
+</head>
+<body>
+<div id="top"><!-- do not remove this div, it is closed by doxygen! -->
+<div id="titlearea">
+<table cellspacing="0" cellpadding="0">
+ <tbody>
+ <tr id="projectrow">
+  <td id="projectlogo"><img alt="Logo" src="ZenithGrid.ico"/></td>
+  <td id="projectalign">
+   <div id="projectname">PreCess
+   </div>
+  </td>
+ </tr>
+ </tbody>
+</table>
+</div>
+<!-- end header part -->
+<!-- 制作者 Doxygen 1.14.0 -->
+<script type="text/javascript">
+var searchBox = new SearchBox("searchBox", "search/",'.html');
+</script>
+<script type="text/javascript">
+$(function() { codefold.init(); });
+</script>
+<script type="text/javascript" src="menudata.js"></script>
+<script type="text/javascript" src="menu.js"></script>
+<script type="text/javascript">
+$(function() {
+  initMenu('',true,false,'search.php','搜索',false);
+  $(function() { init_search(); });
+});
+</script>
+<div id="main-nav"></div>
+<!-- window showing the filter options -->
+<div id="MSearchSelectWindow"
+     onmouseover="return searchBox.OnSearchSelectShow()"
+     onmouseout="return searchBox.OnSearchSelectHide()"
+     onkeydown="return searchBox.OnSearchSelectKey(event)">
+</div>
+
+<!-- iframe showing the search results (closed by default) -->
+<div id="MSearchResultsWindow">
+<div id="MSearchResults">
+<div class="SRPage">
+<div id="SRIndex">
+<div id="SRResults"></div>
+<div class="SRStatus" id="Loading">载入中...</div>
+<div class="SRStatus" id="Searching">搜索中...</div>
+<div class="SRStatus" id="NoMatches">未找到</div>
+</div>
+</div>
+</div>
+</div>
+
+<div id="nav-path" class="navpath">
+  <ul>
+<li class="navelem"><a href="namespacegeometry.html">geometry</a></li><li class="navelem"><a href="namespacegeometry_1_1repair.html">repair</a></li>  </ul>
+</div>
+</div><!-- top -->
+<div id="doc-content">
+<div class="header">
+  <div class="summary">
+<a href="#nested-classes">类</a> &#124;
+<a href="#enum-members">枚举</a> &#124;
+<a href="#func-members">函数</a>  </div>
+  <div class="headertitle"><div class="title">geometry::repair 命名空间参考</div></div>
+</div><!--header-->
+<div class="contents">
+<table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 id="header-nested-classes" class="groupheader"><a id="nested-classes" name="nested-classes"></a>
+类</h2></td></tr>
+<tr class="memitem:BoundaryAudit" id="r_BoundaryAudit"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classgeometry_1_1repair_1_1BoundaryAudit.html">BoundaryAudit</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">修复前捕获边、点身份及各自误差上限；修复后检查拓扑及三维/二维曲线一致性。 既有容差仅作用于对应实体，不传播成整个局部区域的求解容差。  <a href="classgeometry_1_1repair_1_1BoundaryAudit.html#details">更多...</a><br /></td></tr>
+<tr class="memitem:DeviationBudget" id="r_DeviationBudget"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structgeometry_1_1repair_1_1DeviationBudget.html">DeviationBudget</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">预检计算预算；深度和求值上限只限制成本，不允许在耗尽时返回成功。  <a href="structgeometry_1_1repair_1_1DeviationBudget.html#details">更多...</a><br /></td></tr>
+<tr class="memitem:DeviationResult" id="r_DeviationResult"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structgeometry_1_1repair_1_1DeviationResult.html">DeviationResult</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">记录观测最大偏差与求值次数；自适应预检不代替最终 pcurve 验收。  <a href="structgeometry_1_1repair_1_1DeviationResult.html#details">更多...</a><br /></td></tr>
+<tr class="memitem:PrecisionPolicy" id="r_PrecisionPolicy"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structgeometry_1_1repair_1_1PrecisionPolicy.html">PrecisionPolicy</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">在模型当前坐标单位下计算的局部精度，搜索距离不得参与计算。  <a href="structgeometry_1_1repair_1_1PrecisionPolicy.html#details">更多...</a><br /></td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 id="header-enum-members" class="groupheader"><a id="enum-members" name="enum-members"></a>
+枚举</h2></td></tr>
+<tr class="memitem:a4b2363a5b4aab03c94cb5f618cf3db0f" id="r_a4b2363a5b4aab03c94cb5f618cf3db0f"><td class="memItemLeft" align="right" valign="top">enum class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a4b2363a5b4aab03c94cb5f618cf3db0f">DeviationStatus</a> { <a class="el" href="#a4b2363a5b4aab03c94cb5f618cf3db0faf35a9898c108fb84e9021d10b493c618">WithinLimit</a>
+, <a class="el" href="#a4b2363a5b4aab03c94cb5f618cf3db0fae2db06b840e9430b11fc2dcf488ba799">Exceeded</a>
+, <a class="el" href="#a4b2363a5b4aab03c94cb5f618cf3db0fa4a3b76ab214699973b85cc072788ff7d">Unresolved</a>
+ }</td></tr>
+<tr class="memdesc:a4b2363a5b4aab03c94cb5f618cf3db0f"><td class="mdescLeft">&#160;</td><td class="mdescRight">自适应预检结果；预算不足或投影失败必须与合格结果区分。  <a href="#a4b2363a5b4aab03c94cb5f618cf3db0f">更多...</a><br /></td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 id="header-func-members" class="groupheader"><a id="func-members" name="func-members"></a>
+函数</h2></td></tr>
+<tr class="memitem:ac9fe2ea4c3d14aa876ba3a07baf43dea" id="r_ac9fe2ea4c3d14aa876ba3a07baf43dea"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structgeometry_1_1repair_1_1DeviationResult.html">DeviationResult</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ac9fe2ea4c3d14aa876ba3a07baf43dea">measureCurveDeviation</a> (const TopoDS_Edge &amp;edge, const std::function&lt; double(const gp_Pnt &amp;)&gt; &amp;distance, double limit, const <a class="el" href="structgeometry_1_1repair_1_1DeviationBudget.html">DeviationBudget</a> &amp;budget={ })</td></tr>
+<tr class="memdesc:ac9fe2ea4c3d14aa876ba3a07baf43dea"><td class="mdescLeft">&#160;</td><td class="mdescRight">按曲线节点区间、弦偏差和距离变化递归细分，检查三维曲线到目标的距离。  <br /></td></tr>
+</table>
+<a name="doc-enum-members" id="doc-enum-members"></a><h2 id="header-doc-enum-members" class="groupheader">枚举类型说明</h2>
+<a id="a4b2363a5b4aab03c94cb5f618cf3db0f" name="a4b2363a5b4aab03c94cb5f618cf3db0f"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a4b2363a5b4aab03c94cb5f618cf3db0f">&#9670;&#160;</a></span>DeviationStatus</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">enum class <a class="el" href="#a4b2363a5b4aab03c94cb5f618cf3db0f">geometry::repair::DeviationStatus</a></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel strong">strong</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>自适应预检结果；预算不足或投影失败必须与合格结果区分。 </p>
+<table class="fieldtable">
+<tr><th colspan="2">枚举值</th></tr><tr><td class="fieldname"><a id="a4b2363a5b4aab03c94cb5f618cf3db0faf35a9898c108fb84e9021d10b493c618" name="a4b2363a5b4aab03c94cb5f618cf3db0faf35a9898c108fb84e9021d10b493c618"></a>WithinLimit&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a4b2363a5b4aab03c94cb5f618cf3db0fae2db06b840e9430b11fc2dcf488ba799" name="a4b2363a5b4aab03c94cb5f618cf3db0fae2db06b840e9430b11fc2dcf488ba799"></a>Exceeded&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a4b2363a5b4aab03c94cb5f618cf3db0fa4a3b76ab214699973b85cc072788ff7d" name="a4b2363a5b4aab03c94cb5f618cf3db0fa4a3b76ab214699973b85cc072788ff7d"></a>Unresolved&#160;</td><td class="fielddoc"></td></tr>
+</table>
+
+</div>
+</div>
+<a name="doc-func-members" id="doc-func-members"></a><h2 id="header-doc-func-members" class="groupheader">函数说明</h2>
+<a id="ac9fe2ea4c3d14aa876ba3a07baf43dea" name="ac9fe2ea4c3d14aa876ba3a07baf43dea"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ac9fe2ea4c3d14aa876ba3a07baf43dea">&#9670;&#160;</a></span>measureCurveDeviation()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="structgeometry_1_1repair_1_1DeviationResult.html">DeviationResult</a> geometry::repair::measureCurveDeviation </td>
+          <td>(</td>
+          <td class="paramtype">const TopoDS_Edge &amp;</td>          <td class="paramname"><span class="paramname"><em>edge</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const std::function&lt; double(const gp_Pnt &amp;)&gt; &amp;</td>          <td class="paramname"><span class="paramname"><em>distance</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">double</td>          <td class="paramname"><span class="paramname"><em>limit</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const <a class="el" href="structgeometry_1_1repair_1_1DeviationBudget.html">DeviationBudget</a> &amp;</td>          <td class="paramname"><span class="paramname"><em>budget</em></span><span class="paramdefsep"> = </span><span class="paramdefval">{&#160;}</span>&#160;)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>按曲线节点区间、弦偏差和距离变化递归细分，检查三维曲线到目标的距离。 </p>
+<dl class="params"><dt>参数</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">distance</td><td>返回给定点的目标距离；负值或非有限值表示无法求解。 </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+</div><!-- contents -->
+<!-- start footer part -->
+<hr class="footer"/><address class="footer"><small>
+制作者&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.14.0
+</small></address>
+</div><!-- doc-content -->
+</body>
+</html>

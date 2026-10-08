@@ -1,0 +1,5 @@
+<map id="GeometryGapPartnerChain" name="GeometryGapPartnerChain">
+<area shape="rect" id="Node000001" title="一组可与种子链缝合的对侧自由边链及其最大间隙。" alt="" coords="5,116,201,141"/>
+<area shape="rect" id="Node000002" title=" " alt="" coords="26,5,181,45"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="106,59,106,116,101,116,101,59"/>
+</map>

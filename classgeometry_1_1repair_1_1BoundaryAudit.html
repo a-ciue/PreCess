@@ -1,0 +1,226 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="zh">
+<head>
+<meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=11"/>
+<meta name="generator" content="Doxygen 1.14.0"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>PreCess: geometry::repair::BoundaryAudit类 参考</title>
+<link href="tabs.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="jquery.js"></script>
+<script type="text/javascript" src="dynsections.js"></script>
+<script type="text/javascript" src="clipboard.js"></script>
+<script type="text/javascript" src="cookie.js"></script>
+<link href="search/search.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="search/searchdata.js"></script>
+<script type="text/javascript" src="search/search.js"></script>
+<link href="doxygen.css" rel="stylesheet" type="text/css" />
+</head>
+<body>
+<div id="top"><!-- do not remove this div, it is closed by doxygen! -->
+<div id="titlearea">
+<table cellspacing="0" cellpadding="0">
+ <tbody>
+ <tr id="projectrow">
+  <td id="projectlogo"><img alt="Logo" src="ZenithGrid.ico"/></td>
+  <td id="projectalign">
+   <div id="projectname">PreCess
+   </div>
+  </td>
+ </tr>
+ </tbody>
+</table>
+</div>
+<!-- end header part -->
+<!-- 制作者 Doxygen 1.14.0 -->
+<script type="text/javascript">
+var searchBox = new SearchBox("searchBox", "search/",'.html');
+</script>
+<script type="text/javascript">
+$(function() { codefold.init(); });
+</script>
+<script type="text/javascript" src="menudata.js"></script>
+<script type="text/javascript" src="menu.js"></script>
+<script type="text/javascript">
+$(function() {
+  initMenu('',true,false,'search.php','搜索',false);
+  $(function() { init_search(); });
+});
+</script>
+<div id="main-nav"></div>
+<!-- window showing the filter options -->
+<div id="MSearchSelectWindow"
+     onmouseover="return searchBox.OnSearchSelectShow()"
+     onmouseout="return searchBox.OnSearchSelectHide()"
+     onkeydown="return searchBox.OnSearchSelectKey(event)">
+</div>
+
+<!-- iframe showing the search results (closed by default) -->
+<div id="MSearchResultsWindow">
+<div id="MSearchResults">
+<div class="SRPage">
+<div id="SRIndex">
+<div id="SRResults"></div>
+<div class="SRStatus" id="Loading">载入中...</div>
+<div class="SRStatus" id="Searching">搜索中...</div>
+<div class="SRStatus" id="NoMatches">未找到</div>
+</div>
+</div>
+</div>
+</div>
+
+<div id="nav-path" class="navpath">
+  <ul>
+<li class="navelem"><a href="namespacegeometry.html">geometry</a></li><li class="navelem"><a href="namespacegeometry_1_1repair.html">repair</a></li><li class="navelem"><a href="classgeometry_1_1repair_1_1BoundaryAudit.html">BoundaryAudit</a></li>  </ul>
+</div>
+</div><!-- top -->
+<div id="doc-content">
+<div class="header">
+  <div class="summary">
+<a href="#pub-methods">Public 成员函数</a> &#124;
+<a href="#pri-attribs">Private 属性</a> &#124;
+<a href="classgeometry_1_1repair_1_1BoundaryAudit-members.html">所有成员列表</a>  </div>
+  <div class="headertitle"><div class="title">geometry::repair::BoundaryAudit类 参考</div></div>
+</div><!--header-->
+<div class="contents">
+
+<p>修复前捕获边、点身份及各自误差上限；修复后检查拓扑及三维/二维曲线一致性。 既有容差仅作用于对应实体，不传播成整个局部区域的求解容差。  
+ <a href="#details">更多...</a></p>
+
+<p><code>#include &lt;<a class="el" href="GeometryRepairValidation_8h_source.html">GeometryRepairValidation.h</a>&gt;</code></p>
+<div class="dynheader">
+geometry::repair::BoundaryAudit 的协作图:</div>
+<div class="dyncontent">
+<div class="center"><img src="classgeometry_1_1repair_1_1BoundaryAudit__coll__graph.png" border="0" usemap="#ageometry_1_1repair_1_1BoundaryAudit_coll__map" loading="lazy" alt="Collaboration graph"/></div>
+<map name="ageometry_1_1repair_1_1BoundaryAudit_coll__map" id="ageometry_1_1repair_1_1BoundaryAudit_coll__map">
+<area shape="rect" title="修复前捕获边、点身份及各自误差上限；修复后检查拓扑及三维/二维曲线一致性。 既有容差仅作用于对应实体，不传播成整个局部区域的求解容差。" alt="" coords="645,40,845,80"/>
+<area shape="rect" title=" " alt="" coords="318,8,525,48"/>
+<area shape="poly" title=" " alt="" coords="539,37,645,47,645,53,538,42"/>
+<area shape="rect" title=" " alt="" coords="10,8,191,48"/>
+<area shape="poly" title=" " alt="" coords="205,25,318,25,318,31,205,31"/>
+<area shape="rect" title=" " alt="" coords="313,72,529,112"/>
+<area shape="poly" title=" " alt="" coords="543,81,621,73,645,71,645,76,622,79,543,86"/>
+<area shape="rect" title=" " alt="" coords="5,72,196,112"/>
+<area shape="poly" title=" " alt="" coords="210,89,313,89,313,95,210,95"/>
+</map>
+<center><span class="legend">[<a href="graph_legend.html">图例</a>]</span></center></div>
+<table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 id="header-pub-methods" class="groupheader"><a id="pub-methods" name="pub-methods"></a>
+Public 成员函数</h2></td></tr>
+<tr class="memitem:ab8fa76f675d171b8182a16e7151d7560" id="r_ab8fa76f675d171b8182a16e7151d7560"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ab8fa76f675d171b8182a16e7151d7560">BoundaryAudit</a> (const TopoDS_Shape &amp;boundary, const <a class="el" href="structgeometry_1_1repair_1_1PrecisionPolicy.html">PrecisionPolicy</a> &amp;precision)</td></tr>
+<tr class="memdesc:ab8fa76f675d171b8182a16e7151d7560"><td class="mdescLeft">&#160;</td><td class="mdescRight">在任何修复器修改边界之前捕获身份和原始容差。  <br /></td></tr>
+<tr class="memitem:a5257553df6e122aff8ba8cab96449a80" id="r_a5257553df6e122aff8ba8cab96449a80"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a5257553df6e122aff8ba8cab96449a80">validateFace</a> (const TopoDS_Face &amp;face, const char *operation) const</td></tr>
+<tr class="memdesc:a5257553df6e122aff8ba8cab96449a80"><td class="mdescLeft">&#160;</td><td class="mdescRight">要求边界身份及容差受控，并使用 OCC 最大偏差检查验证面上的每条边。  <br /></td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 id="header-pri-attribs" class="groupheader"><a id="pri-attribs" name="pri-attribs"></a>
+Private 属性</h2></td></tr>
+<tr class="memitem:a1d8f40085471a786290516f6e0c9d978" id="r_a1d8f40085471a786290516f6e0c9d978"><td class="memItemLeft" align="right" valign="top">std::vector&lt; std::pair&lt; TopoDS_Edge, double &gt; &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a1d8f40085471a786290516f6e0c9d978">edges_</a></td></tr>
+<tr class="memitem:a57b3d29f366d6064c5b263091cb149b4" id="r_a57b3d29f366d6064c5b263091cb149b4"><td class="memItemLeft" align="right" valign="top">std::vector&lt; std::pair&lt; TopoDS_Vertex, double &gt; &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a57b3d29f366d6064c5b263091cb149b4">vertices_</a></td></tr>
+</table>
+<a name="details" id="details"></a><h2 id="header-details" class="groupheader">详细描述</h2>
+<div class="textblock"><p>修复前捕获边、点身份及各自误差上限；修复后检查拓扑及三维/二维曲线一致性。 既有容差仅作用于对应实体，不传播成整个局部区域的求解容差。 </p>
+</div><a name="doc-constructors" id="doc-constructors"></a><h2 id="header-doc-constructors" class="groupheader">构造及析构函数说明</h2>
+<a id="ab8fa76f675d171b8182a16e7151d7560" name="ab8fa76f675d171b8182a16e7151d7560"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ab8fa76f675d171b8182a16e7151d7560">&#9670;&#160;</a></span>BoundaryAudit()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">geometry::repair::BoundaryAudit::BoundaryAudit </td>
+          <td>(</td>
+          <td class="paramtype">const TopoDS_Shape &amp;</td>          <td class="paramname"><span class="paramname"><em>boundary</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const <a class="el" href="structgeometry_1_1repair_1_1PrecisionPolicy.html">PrecisionPolicy</a> &amp;</td>          <td class="paramname"><span class="paramname"><em>precision</em></span>&#160;)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>在任何修复器修改边界之前捕获身份和原始容差。 </p>
+
+</div>
+</div>
+<a name="doc-func-members" id="doc-func-members"></a><h2 id="header-doc-func-members" class="groupheader">成员函数说明</h2>
+<a id="a5257553df6e122aff8ba8cab96449a80" name="a5257553df6e122aff8ba8cab96449a80"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a5257553df6e122aff8ba8cab96449a80">&#9670;&#160;</a></span>validateFace()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void geometry::repair::BoundaryAudit::validateFace </td>
+          <td>(</td>
+          <td class="paramtype">const TopoDS_Face &amp;</td>          <td class="paramname"><span class="paramname"><em>face</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const char *</td>          <td class="paramname"><span class="paramname"><em>operation</em></span>&#160;) const</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>要求边界身份及容差受控，并使用 OCC 最大偏差检查验证面上的每条边。 </p>
+
+</div>
+</div>
+<a name="doc-variable-members" id="doc-variable-members"></a><h2 id="header-doc-variable-members" class="groupheader">类成员变量说明</h2>
+<a id="a1d8f40085471a786290516f6e0c9d978" name="a1d8f40085471a786290516f6e0c9d978"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a1d8f40085471a786290516f6e0c9d978">&#9670;&#160;</a></span>edges_</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::vector&lt;std::pair&lt;TopoDS_Edge, double&gt; &gt; geometry::repair::BoundaryAudit::edges_</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel private">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a57b3d29f366d6064c5b263091cb149b4" name="a57b3d29f366d6064c5b263091cb149b4"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a57b3d29f366d6064c5b263091cb149b4">&#9670;&#160;</a></span>vertices_</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::vector&lt;std::pair&lt;TopoDS_Vertex, double&gt; &gt; geometry::repair::BoundaryAudit::vertices_</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel private">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<hr/>该类的文档由以下文件生成:<ul>
+<li>model/ops/<a class="el" href="GeometryRepairValidation_8h_source.html">GeometryRepairValidation.h</a></li>
+<li>model/ops/<a class="el" href="GeometryRepairValidation_8cpp.html">GeometryRepairValidation.cpp</a></li>
+</ul>
+</div><!-- contents -->
+<!-- start footer part -->
+<hr class="footer"/><address class="footer"><small>
+制作者&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.14.0
+</small></address>
+</div><!-- doc-content -->
+</body>
+</html>

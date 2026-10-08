@@ -1,5 +1,5 @@
 <map id="类继承关系图" name="类继承关系图">
-<area shape="rect" id="Node000000" title=" " alt="" coords="5,5,91,31"/>
-<area shape="rect" id="Node000001" href="$structQRenderWindow_1_1Data.html" title=" " alt="" coords="139,5,307,31"/>
-<area shape="poly" id="edge86_Node000000_Node000001" title=" " alt="" coords="104,15,139,15,139,21,104,21"/>
+<area shape="rect" id="Node000000" href="$classUndoRecorder.html" title="undo 记录钩子（ModelLayer 回调，UndoStack 实现）" alt="" coords="5,5,120,31"/>
+<area shape="rect" id="Node000001" href="$classUndoStack.html" title=" " alt="" coords="168,5,260,31"/>
+<area shape="poly" id="edge80_Node000000_Node000001" title=" " alt="" coords="134,15,168,15,168,21,134,21"/>
 </map>

@@ -23,5 +23,6 @@ var searchData=
   ['normals_20',['normals',['../structFaceSelectorHighlight_1_1FaceSpreadCache.html#a50cbddbf281df70eac56a306bbe859a6',1,'FaceSelectorHighlight::FaceSpreadCache::normals'],['../structtinyobj_1_1attrib__t.html#ac647590e9a03bec3c6cee5c215781e12',1,'tinyobj::attrib_t::normals']]],
   ['num_5fface_5fvertices_21',['num_face_vertices',['../structtinyobj_1_1mesh__t.html#a0b3e989fbc944b29a4e67a288490ec07',1,'tinyobj::mesh_t']]],
   ['num_5fline_5fvertices_22',['num_line_vertices',['../structtinyobj_1_1lines__t.html#a97270228c686b420540510c138df7ab3',1,'tinyobj::lines_t']]],
-  ['number_23',['number',['../structTreeNode.html#a7ad06451902899d0e30976c83a4f1c3a',1,'TreeNode']]]
+  ['number_23',['number',['../structTreeNode.html#a7ad06451902899d0e30976c83a4f1c3a',1,'TreeNode']]],
+  ['numerical_5ffloor_24',['numerical_floor',['../structgeometry_1_1repair_1_1PrecisionPolicy.html#a22233a18df07d5b62998b85a914360f0',1,'geometry::repair::PrecisionPolicy']]]
 ];

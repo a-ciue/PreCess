@@ -1,3 +1,3 @@
 <map id="类继承关系图" name="类继承关系图">
-<area shape="rect" id="Node000000" href="$classUndoStack_1_1OwnerScope.html" title="所有者上下文守卫：功能入口（invoke / 按键路由 / 事件回调）进入时压入功能 唯一名，析构弹出——嵌套安全（各功能的入口可相互重入）" alt="" coords="5,5,187,31"/>
+<area shape="rect" id="Node000000" href="$classTopologyDiagnosticActor.html" title="把拓扑诊断集合渲染为独立的边、点和面 Actor" alt="" coords="5,5,188,31"/>
 </map>

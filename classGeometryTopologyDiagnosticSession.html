@@ -100,7 +100,7 @@ Public 成员函数</h2></td></tr>
 </table>
 <a name="details" id="details"></a><h2 id="header-details" class="groupheader">详细描述</h2>
 <div class="textblock"><p>可分段推进的一次几何拓扑诊断。 </p>
-<p>判定顺序、判定谓词与 <a class="el" href="classGeometryTopologyEditor.html#a94a71d526fb63756371658b7d76d2d20" title="计算用于展示和后续清理的几何拓扑诊断结果。">GeometryTopologyEditor::diagnoseTopology()</a> 完全相同，区别只在于 工作可以按时间片分批完成：调用方（后台任务队列）因此能在时间片之间让更紧急的请求插队， 不必等一次长诊断整体跑完。结果只有在 <a class="el" href="#a3e34722594027943f000903f6f578359" title="最多推进 budget_ms 毫秒。">advance()</a> 返回 true 之后才是完整的。 </p>
+<p>判定顺序、判定谓词与 <a class="el" href="classGeometryTopologyEditor.html#ad4a5fbe4f7f0bfc6d6a5184bc609a31f" title="计算用于展示和后续清理的几何拓扑诊断结果。">GeometryTopologyEditor::diagnoseTopology()</a> 完全相同，区别只在于 工作可以按时间片分批完成：调用方（后台任务队列）因此能在时间片之间让更紧急的请求插队， 不必等一次长诊断整体跑完。结果只有在 <a class="el" href="#a3e34722594027943f000903f6f578359" title="最多推进 budget_ms 毫秒。">advance()</a> 返回 true 之后才是完整的。 </p>
 </div><a name="doc-constructors" id="doc-constructors"></a><h2 id="header-doc-constructors" class="groupheader">构造及析构函数说明</h2>
 <a id="a057c5d8110f519eced9683bbd869e37d" name="a057c5d8110f519eced9683bbd869e37d"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a057c5d8110f519eced9683bbd869e37d">&#9670;&#160;</a></span>~GeometryTopologyDiagnosticSession()</h2>

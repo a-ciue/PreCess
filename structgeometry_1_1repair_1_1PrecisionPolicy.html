@@ -1,0 +1,214 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="zh">
+<head>
+<meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=11"/>
+<meta name="generator" content="Doxygen 1.14.0"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>PreCess: geometry::repair::PrecisionPolicy结构体 参考</title>
+<link href="tabs.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="jquery.js"></script>
+<script type="text/javascript" src="dynsections.js"></script>
+<script type="text/javascript" src="clipboard.js"></script>
+<script type="text/javascript" src="cookie.js"></script>
+<link href="search/search.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="search/searchdata.js"></script>
+<script type="text/javascript" src="search/search.js"></script>
+<link href="doxygen.css" rel="stylesheet" type="text/css" />
+</head>
+<body>
+<div id="top"><!-- do not remove this div, it is closed by doxygen! -->
+<div id="titlearea">
+<table cellspacing="0" cellpadding="0">
+ <tbody>
+ <tr id="projectrow">
+  <td id="projectlogo"><img alt="Logo" src="ZenithGrid.ico"/></td>
+  <td id="projectalign">
+   <div id="projectname">PreCess
+   </div>
+  </td>
+ </tr>
+ </tbody>
+</table>
+</div>
+<!-- end header part -->
+<!-- 制作者 Doxygen 1.14.0 -->
+<script type="text/javascript">
+var searchBox = new SearchBox("searchBox", "search/",'.html');
+</script>
+<script type="text/javascript">
+$(function() { codefold.init(); });
+</script>
+<script type="text/javascript" src="menudata.js"></script>
+<script type="text/javascript" src="menu.js"></script>
+<script type="text/javascript">
+$(function() {
+  initMenu('',true,false,'search.php','搜索',false);
+  $(function() { init_search(); });
+});
+</script>
+<div id="main-nav"></div>
+<!-- window showing the filter options -->
+<div id="MSearchSelectWindow"
+     onmouseover="return searchBox.OnSearchSelectShow()"
+     onmouseout="return searchBox.OnSearchSelectHide()"
+     onkeydown="return searchBox.OnSearchSelectKey(event)">
+</div>
+
+<!-- iframe showing the search results (closed by default) -->
+<div id="MSearchResultsWindow">
+<div id="MSearchResults">
+<div class="SRPage">
+<div id="SRIndex">
+<div id="SRResults"></div>
+<div class="SRStatus" id="Loading">载入中...</div>
+<div class="SRStatus" id="Searching">搜索中...</div>
+<div class="SRStatus" id="NoMatches">未找到</div>
+</div>
+</div>
+</div>
+</div>
+
+<div id="nav-path" class="navpath">
+  <ul>
+<li class="navelem"><a href="namespacegeometry.html">geometry</a></li><li class="navelem"><a href="namespacegeometry_1_1repair.html">repair</a></li><li class="navelem"><a href="structgeometry_1_1repair_1_1PrecisionPolicy.html">PrecisionPolicy</a></li>  </ul>
+</div>
+</div><!-- top -->
+<div id="doc-content">
+<div class="header">
+  <div class="summary">
+<a href="#pub-static-methods">静态 Public 成员函数</a> &#124;
+<a href="#pub-attribs">Public 属性</a> &#124;
+<a href="structgeometry_1_1repair_1_1PrecisionPolicy-members.html">所有成员列表</a>  </div>
+  <div class="headertitle"><div class="title">geometry::repair::PrecisionPolicy结构体 参考</div></div>
+</div><!--header-->
+<div class="contents">
+
+<p>在模型当前坐标单位下计算的局部精度，搜索距离不得参与计算。  
+ <a href="#details">更多...</a></p>
+
+<p><code>#include &lt;<a class="el" href="GeometryRepairValidation_8h_source.html">GeometryRepairValidation.h</a>&gt;</code></p>
+<table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 id="header-pub-static-methods" class="groupheader"><a id="pub-static-methods" name="pub-static-methods"></a>
+静态 Public 成员函数</h2></td></tr>
+<tr class="memitem:ae10a73ff96baac15b11b88746756201b" id="r_ae10a73ff96baac15b11b88746756201b"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="structgeometry_1_1repair_1_1PrecisionPolicy.html">PrecisionPolicy</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ae10a73ff96baac15b11b88746756201b">fromShape</a> (const TopoDS_Shape &amp;local_shape)</td></tr>
+<tr class="memdesc:ae10a73ff96baac15b11b88746756201b"><td class="mdescLeft">&#160;</td><td class="mdescRight">从操作局部形状推导精度，不能传整个无关装配来放宽小零件的精度。  <br /></td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 id="header-pub-attribs" class="groupheader"><a id="pub-attribs" name="pub-attribs"></a>
+Public 属性</h2></td></tr>
+<tr class="memitem:a22233a18df07d5b62998b85a914360f0" id="r_a22233a18df07d5b62998b85a914360f0"><td class="memItemLeft" align="right" valign="top">double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a22233a18df07d5b62998b85a914360f0">numerical_floor</a> = 0.0</td></tr>
+<tr class="memdesc:a22233a18df07d5b62998b85a914360f0"><td class="mdescLeft">&#160;</td><td class="mdescRight">内核与坐标舍入共同决定的精度底线。  <br /></td></tr>
+<tr class="memitem:a4c71891dcb00f4d0d8ad31f2b2efbcba" id="r_a4c71891dcb00f4d0d8ad31f2b2efbcba"><td class="memItemLeft" align="right" valign="top">double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a4c71891dcb00f4d0d8ad31f2b2efbcba">fitting</a> = 0.0</td></tr>
+<tr class="memdesc:a4c71891dcb00f4d0d8ad31f2b2efbcba"><td class="mdescLeft">&#160;</td><td class="mdescRight">局部尺度与最短边限制下的求解目标。  <br /></td></tr>
+<tr class="memitem:a1eb4f097bd9ebba7f398e88ac9935cfb" id="r_a1eb4f097bd9ebba7f398e88ac9935cfb"><td class="memItemLeft" align="right" valign="top">double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a1eb4f097bd9ebba7f398e88ac9935cfb">validation</a> = 0.0</td></tr>
+<tr class="memdesc:a1eb4f097bd9ebba7f398e88ac9935cfb"><td class="mdescLeft">&#160;</td><td class="mdescRight">本次新建几何允许的表示误差上限。  <br /></td></tr>
+<tr class="memitem:adfa9dc72870b467c79fdf1c4a117a093" id="r_adfa9dc72870b467c79fdf1c4a117a093"><td class="memItemLeft" align="right" valign="top">double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#adfa9dc72870b467c79fdf1c4a117a093">classification</a> = 0.0</td></tr>
+<tr class="memdesc:adfa9dc72870b467c79fdf1c4a117a093"><td class="mdescLeft">&#160;</td><td class="mdescRight">判断曲线是否在面上的数值精度。  <br /></td></tr>
+</table>
+<a name="details" id="details"></a><h2 id="header-details" class="groupheader">详细描述</h2>
+<div class="textblock"><p>在模型当前坐标单位下计算的局部精度，搜索距离不得参与计算。 </p>
+</div><a name="doc-func-members" id="doc-func-members"></a><h2 id="header-doc-func-members" class="groupheader">成员函数说明</h2>
+<a id="ae10a73ff96baac15b11b88746756201b" name="ae10a73ff96baac15b11b88746756201b"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ae10a73ff96baac15b11b88746756201b">&#9670;&#160;</a></span>fromShape()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="structgeometry_1_1repair_1_1PrecisionPolicy.html">PrecisionPolicy</a> geometry::repair::PrecisionPolicy::fromShape </td>
+          <td>(</td>
+          <td class="paramtype">const TopoDS_Shape &amp;</td>          <td class="paramname"><span class="paramname"><em>local_shape</em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel static">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>从操作局部形状推导精度，不能传整个无关装配来放宽小零件的精度。 </p>
+
+</div>
+</div>
+<a name="doc-variable-members" id="doc-variable-members"></a><h2 id="header-doc-variable-members" class="groupheader">类成员变量说明</h2>
+<a id="adfa9dc72870b467c79fdf1c4a117a093" name="adfa9dc72870b467c79fdf1c4a117a093"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#adfa9dc72870b467c79fdf1c4a117a093">&#9670;&#160;</a></span>classification</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">double geometry::repair::PrecisionPolicy::classification = 0.0</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>判断曲线是否在面上的数值精度。 </p>
+
+</div>
+</div>
+<a id="a4c71891dcb00f4d0d8ad31f2b2efbcba" name="a4c71891dcb00f4d0d8ad31f2b2efbcba"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a4c71891dcb00f4d0d8ad31f2b2efbcba">&#9670;&#160;</a></span>fitting</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">double geometry::repair::PrecisionPolicy::fitting = 0.0</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>局部尺度与最短边限制下的求解目标。 </p>
+
+</div>
+</div>
+<a id="a22233a18df07d5b62998b85a914360f0" name="a22233a18df07d5b62998b85a914360f0"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a22233a18df07d5b62998b85a914360f0">&#9670;&#160;</a></span>numerical_floor</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">double geometry::repair::PrecisionPolicy::numerical_floor = 0.0</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>内核与坐标舍入共同决定的精度底线。 </p>
+
+</div>
+</div>
+<a id="a1eb4f097bd9ebba7f398e88ac9935cfb" name="a1eb4f097bd9ebba7f398e88ac9935cfb"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a1eb4f097bd9ebba7f398e88ac9935cfb">&#9670;&#160;</a></span>validation</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">double geometry::repair::PrecisionPolicy::validation = 0.0</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>本次新建几何允许的表示误差上限。 </p>
+
+</div>
+</div>
+<hr/>该结构体的文档由以下文件生成:<ul>
+<li>model/ops/<a class="el" href="GeometryRepairValidation_8h_source.html">GeometryRepairValidation.h</a></li>
+<li>model/ops/<a class="el" href="GeometryRepairValidation_8cpp.html">GeometryRepairValidation.cpp</a></li>
+</ul>
+</div><!-- contents -->
+<!-- start footer part -->
+<hr class="footer"/><address class="footer"><small>
+制作者&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.14.0
+</small></address>
+</div><!-- doc-content -->
+</body>
+</html>

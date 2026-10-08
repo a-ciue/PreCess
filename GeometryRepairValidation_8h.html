@@ -1,0 +1,168 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="zh">
+<head>
+<meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=11"/>
+<meta name="generator" content="Doxygen 1.14.0"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>PreCess: model/ops/GeometryRepairValidation.h 文件参考</title>
+<link href="tabs.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="jquery.js"></script>
+<script type="text/javascript" src="dynsections.js"></script>
+<script type="text/javascript" src="clipboard.js"></script>
+<script type="text/javascript" src="cookie.js"></script>
+<link href="search/search.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="search/searchdata.js"></script>
+<script type="text/javascript" src="search/search.js"></script>
+<link href="doxygen.css" rel="stylesheet" type="text/css" />
+</head>
+<body>
+<div id="top"><!-- do not remove this div, it is closed by doxygen! -->
+<div id="titlearea">
+<table cellspacing="0" cellpadding="0">
+ <tbody>
+ <tr id="projectrow">
+  <td id="projectlogo"><img alt="Logo" src="ZenithGrid.ico"/></td>
+  <td id="projectalign">
+   <div id="projectname">PreCess
+   </div>
+  </td>
+ </tr>
+ </tbody>
+</table>
+</div>
+<!-- end header part -->
+<!-- 制作者 Doxygen 1.14.0 -->
+<script type="text/javascript">
+var searchBox = new SearchBox("searchBox", "search/",'.html');
+</script>
+<script type="text/javascript">
+$(function() { codefold.init(); });
+</script>
+<script type="text/javascript" src="menudata.js"></script>
+<script type="text/javascript" src="menu.js"></script>
+<script type="text/javascript">
+$(function() {
+  initMenu('',true,false,'search.php','搜索',false);
+  $(function() { init_search(); });
+});
+</script>
+<div id="main-nav"></div>
+<!-- window showing the filter options -->
+<div id="MSearchSelectWindow"
+     onmouseover="return searchBox.OnSearchSelectShow()"
+     onmouseout="return searchBox.OnSearchSelectHide()"
+     onkeydown="return searchBox.OnSearchSelectKey(event)">
+</div>
+
+<!-- iframe showing the search results (closed by default) -->
+<div id="MSearchResultsWindow">
+<div id="MSearchResults">
+<div class="SRPage">
+<div id="SRIndex">
+<div id="SRResults"></div>
+<div class="SRStatus" id="Loading">载入中...</div>
+<div class="SRStatus" id="Searching">搜索中...</div>
+<div class="SRStatus" id="NoMatches">未找到</div>
+</div>
+</div>
+</div>
+</div>
+
+<div id="nav-path" class="navpath">
+  <ul>
+<li class="navelem"><a href="dir_3f14f6767c31cb4a1d22c13c18cc6fc3.html">model</a></li><li class="navelem"><a href="dir_f3f991c7b5bf0583e6df7a74afc61832.html">ops</a></li>  </ul>
+</div>
+</div><!-- top -->
+<div id="doc-content">
+<div class="header">
+  <div class="summary">
+<a href="#nested-classes">类</a> &#124;
+<a href="#namespaces">命名空间</a> &#124;
+<a href="#enum-members">枚举</a> &#124;
+<a href="#func-members">函数</a>  </div>
+  <div class="headertitle"><div class="title">GeometryRepairValidation.h 文件参考</div></div>
+</div><!--header-->
+<div class="contents">
+
+<p>几何编辑共用的局部精度、曲线偏差预检和边界验收；不包含搜索距离或用户移动意图。  
+<a href="#details">更多...</a></p>
+<div class="textblock"><code>#include &lt;TopoDS_Edge.hxx&gt;</code><br />
+<code>#include &lt;TopoDS_Vertex.hxx&gt;</code><br />
+<code>#include &lt;functional&gt;</code><br />
+<code>#include &lt;vector&gt;</code><br />
+<code>#include &lt;utility&gt;</code><br />
+</div><div class="textblock"><div class="dynheader">
+GeometryRepairValidation.h 的引用(Include)关系图:</div>
+<div class="dyncontent">
+<div class="center"><img src="GeometryRepairValidation_8h__incl.png" border="0" usemap="#amodel_2ops_2GeometryRepairValidation_8h" loading="lazy" alt=""/></div>
+<map name="amodel_2ops_2GeometryRepairValidation_8h" id="amodel_2ops_2GeometryRepairValidation_8h">
+<area shape="rect" title="几何编辑共用的局部精度、曲线偏差预检和边界验收；不包含搜索距离或用户移动意图。" alt="" coords="281,5,483,45"/>
+<area shape="rect" title=" " alt="" coords="5,93,143,119"/>
+<area shape="poly" title=" " alt="" coords="309,48,133,92,132,87,308,43"/>
+<area shape="rect" title=" " alt="" coords="167,93,314,119"/>
+<area shape="poly" title=" " alt="" coords="349,48,275,89,273,84,347,43"/>
+<area shape="rect" title=" " alt="" coords="339,93,425,119"/>
+<area shape="poly" title=" " alt="" coords="385,46,385,79,379,79,379,46"/>
+<area shape="rect" title=" " alt="" coords="449,93,512,119"/>
+<area shape="poly" title=" " alt="" coords="408,43,457,82,454,87,404,48"/>
+<area shape="rect" title=" " alt="" coords="536,93,596,119"/>
+<area shape="poly" title=" " alt="" coords="427,43,528,85,525,90,425,48"/>
+</map>
+</div>
+</div><div class="textblock"><div class="dynheader">
+此图展示该文件被哪些文件直接或间接地引用了:</div>
+<div class="dyncontent">
+<div class="center"><img src="GeometryRepairValidation_8h__dep__incl.png" border="0" usemap="#amodel_2ops_2GeometryRepairValidation_8hdep" loading="lazy" alt=""/></div>
+<map name="amodel_2ops_2GeometryRepairValidation_8hdep" id="amodel_2ops_2GeometryRepairValidation_8hdep">
+<area shape="rect" title="几何编辑共用的局部精度、曲线偏差预检和边界验收；不包含搜索距离或用户移动意图。" alt="" coords="239,5,440,45"/>
+<area shape="rect" href="GeometryRepairValidation_8cpp.html" title=" " alt="" coords="5,93,207,133"/>
+<area shape="poly" title=" " alt="" coords="276,53,158,96,156,91,274,48"/>
+<area shape="rect" href="GeometryTopologyEditor_8cpp.html" title=" " alt="" coords="231,93,448,133"/>
+<area shape="poly" title=" " alt="" coords="342,59,342,93,337,93,337,59"/>
+<area shape="rect" href="TestGeometryRepairValidation_8cpp.html" title="验证局部精度、节点自适应检测、计算预算和输入误差隔离。" alt="" coords="472,93,687,133"/>
+<area shape="poly" title=" " alt="" coords="406,47,528,91,526,96,404,52"/>
+</map>
+</div>
+</div>
+<p><a href="GeometryRepairValidation_8h_source.html">浏览该文件的源代码.</a></p>
+<table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 id="header-nested-classes" class="groupheader"><a id="nested-classes" name="nested-classes"></a>
+类</h2></td></tr>
+<tr class="memitem:geometry_3A_3Arepair_3A_3APrecisionPolicy" id="r_geometry_3A_3Arepair_3A_3APrecisionPolicy"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structgeometry_1_1repair_1_1PrecisionPolicy.html">geometry::repair::PrecisionPolicy</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">在模型当前坐标单位下计算的局部精度，搜索距离不得参与计算。  <a href="structgeometry_1_1repair_1_1PrecisionPolicy.html#details">更多...</a><br /></td></tr>
+<tr class="memitem:geometry_3A_3Arepair_3A_3ADeviationResult" id="r_geometry_3A_3Arepair_3A_3ADeviationResult"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structgeometry_1_1repair_1_1DeviationResult.html">geometry::repair::DeviationResult</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">记录观测最大偏差与求值次数；自适应预检不代替最终 pcurve 验收。  <a href="structgeometry_1_1repair_1_1DeviationResult.html#details">更多...</a><br /></td></tr>
+<tr class="memitem:geometry_3A_3Arepair_3A_3ADeviationBudget" id="r_geometry_3A_3Arepair_3A_3ADeviationBudget"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structgeometry_1_1repair_1_1DeviationBudget.html">geometry::repair::DeviationBudget</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">预检计算预算；深度和求值上限只限制成本，不允许在耗尽时返回成功。  <a href="structgeometry_1_1repair_1_1DeviationBudget.html#details">更多...</a><br /></td></tr>
+<tr class="memitem:geometry_3A_3Arepair_3A_3ABoundaryAudit" id="r_geometry_3A_3Arepair_3A_3ABoundaryAudit"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classgeometry_1_1repair_1_1BoundaryAudit.html">geometry::repair::BoundaryAudit</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">修复前捕获边、点身份及各自误差上限；修复后检查拓扑及三维/二维曲线一致性。 既有容差仅作用于对应实体，不传播成整个局部区域的求解容差。  <a href="classgeometry_1_1repair_1_1BoundaryAudit.html#details">更多...</a><br /></td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 id="header-namespaces" class="groupheader"><a id="namespaces" name="namespaces"></a>
+命名空间</h2></td></tr>
+<tr class="memitem:geometry" id="r_geometry"><td class="memItemLeft" align="right" valign="top">namespace &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacegeometry.html">geometry</a></td></tr>
+<tr class="memitem:geometry_3A_3Arepair" id="r_geometry_3A_3Arepair"><td class="memItemLeft" align="right" valign="top">namespace &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacegeometry_1_1repair.html">geometry::repair</a></td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 id="header-enum-members" class="groupheader"><a id="enum-members" name="enum-members"></a>
+枚举</h2></td></tr>
+<tr class="memitem:a4b2363a5b4aab03c94cb5f618cf3db0f" id="r_a4b2363a5b4aab03c94cb5f618cf3db0f"><td class="memItemLeft" align="right" valign="top">enum class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacegeometry_1_1repair.html#a4b2363a5b4aab03c94cb5f618cf3db0f">geometry::repair::DeviationStatus</a> { <a class="el" href="namespacegeometry_1_1repair.html#a4b2363a5b4aab03c94cb5f618cf3db0faf35a9898c108fb84e9021d10b493c618">geometry::repair::WithinLimit</a>
+, <a class="el" href="namespacegeometry_1_1repair.html#a4b2363a5b4aab03c94cb5f618cf3db0fae2db06b840e9430b11fc2dcf488ba799">geometry::repair::Exceeded</a>
+, <a class="el" href="namespacegeometry_1_1repair.html#a4b2363a5b4aab03c94cb5f618cf3db0fa4a3b76ab214699973b85cc072788ff7d">geometry::repair::Unresolved</a>
+ }</td></tr>
+<tr class="memdesc:a4b2363a5b4aab03c94cb5f618cf3db0f"><td class="mdescLeft">&#160;</td><td class="mdescRight">自适应预检结果；预算不足或投影失败必须与合格结果区分。  <a href="namespacegeometry_1_1repair.html#a4b2363a5b4aab03c94cb5f618cf3db0f">更多...</a><br /></td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 id="header-func-members" class="groupheader"><a id="func-members" name="func-members"></a>
+函数</h2></td></tr>
+<tr class="memitem:ac9fe2ea4c3d14aa876ba3a07baf43dea" id="r_ac9fe2ea4c3d14aa876ba3a07baf43dea"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structgeometry_1_1repair_1_1DeviationResult.html">DeviationResult</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacegeometry_1_1repair.html#ac9fe2ea4c3d14aa876ba3a07baf43dea">geometry::repair::measureCurveDeviation</a> (const TopoDS_Edge &amp;edge, const std::function&lt; double(const gp_Pnt &amp;)&gt; &amp;distance, double limit, const <a class="el" href="structgeometry_1_1repair_1_1DeviationBudget.html">DeviationBudget</a> &amp;budget={ })</td></tr>
+<tr class="memdesc:ac9fe2ea4c3d14aa876ba3a07baf43dea"><td class="mdescLeft">&#160;</td><td class="mdescRight">按曲线节点区间、弦偏差和距离变化递归细分，检查三维曲线到目标的距离。  <br /></td></tr>
+</table>
+<a name="details" id="details"></a><h2 id="header-details" class="groupheader">详细描述</h2>
+<div class="textblock"><p>几何编辑共用的局部精度、曲线偏差预检和边界验收；不包含搜索距离或用户移动意图。 </p>
+</div></div><!-- contents -->
+<!-- start footer part -->
+<hr class="footer"/><address class="footer"><small>
+制作者&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.14.0
+</small></address>
+</div><!-- doc-content -->
+</body>
+</html>

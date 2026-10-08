@@ -1,0 +1,299 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="zh">
+<head>
+<meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=11"/>
+<meta name="generator" content="Doxygen 1.14.0"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>PreCess: model/ops/test/TestGeometryRepairValidation.cpp 文件参考</title>
+<link href="tabs.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="jquery.js"></script>
+<script type="text/javascript" src="dynsections.js"></script>
+<script type="text/javascript" src="clipboard.js"></script>
+<script type="text/javascript" src="cookie.js"></script>
+<link href="search/search.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="search/searchdata.js"></script>
+<script type="text/javascript" src="search/search.js"></script>
+<link href="doxygen.css" rel="stylesheet" type="text/css" />
+</head>
+<body>
+<div id="top"><!-- do not remove this div, it is closed by doxygen! -->
+<div id="titlearea">
+<table cellspacing="0" cellpadding="0">
+ <tbody>
+ <tr id="projectrow">
+  <td id="projectlogo"><img alt="Logo" src="ZenithGrid.ico"/></td>
+  <td id="projectalign">
+   <div id="projectname">PreCess
+   </div>
+  </td>
+ </tr>
+ </tbody>
+</table>
+</div>
+<!-- end header part -->
+<!-- 制作者 Doxygen 1.14.0 -->
+<script type="text/javascript">
+var searchBox = new SearchBox("searchBox", "search/",'.html');
+</script>
+<script type="text/javascript">
+$(function() { codefold.init(); });
+</script>
+<script type="text/javascript" src="menudata.js"></script>
+<script type="text/javascript" src="menu.js"></script>
+<script type="text/javascript">
+$(function() {
+  initMenu('',true,false,'search.php','搜索',false);
+  $(function() { init_search(); });
+});
+</script>
+<div id="main-nav"></div>
+<!-- window showing the filter options -->
+<div id="MSearchSelectWindow"
+     onmouseover="return searchBox.OnSearchSelectShow()"
+     onmouseout="return searchBox.OnSearchSelectHide()"
+     onkeydown="return searchBox.OnSearchSelectKey(event)">
+</div>
+
+<!-- iframe showing the search results (closed by default) -->
+<div id="MSearchResultsWindow">
+<div id="MSearchResults">
+<div class="SRPage">
+<div id="SRIndex">
+<div id="SRResults"></div>
+<div class="SRStatus" id="Loading">载入中...</div>
+<div class="SRStatus" id="Searching">搜索中...</div>
+<div class="SRStatus" id="NoMatches">未找到</div>
+</div>
+</div>
+</div>
+</div>
+
+<div id="nav-path" class="navpath">
+  <ul>
+<li class="navelem"><a href="dir_3f14f6767c31cb4a1d22c13c18cc6fc3.html">model</a></li><li class="navelem"><a href="dir_f3f991c7b5bf0583e6df7a74afc61832.html">ops</a></li><li class="navelem"><a href="dir_b1c6ebd7ce52cc5375ef042e6a1d0c67.html">test</a></li>  </ul>
+</div>
+</div><!-- top -->
+<div id="doc-content">
+<div class="header">
+  <div class="summary">
+<a href="#func-members">函数</a>  </div>
+  <div class="headertitle"><div class="title">TestGeometryRepairValidation.cpp 文件参考</div></div>
+</div><!--header-->
+<div class="contents">
+
+<p>验证局部精度、节点自适应检测、计算预算和输入误差隔离。  
+<a href="#details">更多...</a></p>
+<div class="textblock"><code>#include &quot;<a class="el" href="GeometryRepairValidation_8h_source.html">GeometryRepairValidation.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="GeometryBuilder_8h_source.html">GeometryBuilder.h</a>&quot;</code><br />
+<code>#include &lt;BRepBuilderAPI_MakeEdge.hxx&gt;</code><br />
+<code>#include &lt;BRepBuilderAPI_Transform.hxx&gt;</code><br />
+<code>#include &lt;BRep_Tool.hxx&gt;</code><br />
+<code>#include &lt;BRep_Builder.hxx&gt;</code><br />
+<code>#include &lt;Geom_BSplineCurve.hxx&gt;</code><br />
+<code>#include &lt;NCollection_Array1.hxx&gt;</code><br />
+<code>#include &lt;TopExp_Explorer.hxx&gt;</code><br />
+<code>#include &lt;TopoDS.hxx&gt;</code><br />
+<code>#include &lt;TopoDS_Face.hxx&gt;</code><br />
+<code>#include &lt;gp_Trsf.hxx&gt;</code><br />
+<code>#include &lt;catch2/catch_approx.hpp&gt;</code><br />
+<code>#include &lt;catch2/catch_test_macros.hpp&gt;</code><br />
+<code>#include &lt;limits&gt;</code><br />
+<code>#include &lt;cmath&gt;</code><br />
+<code>#include &lt;stdexcept&gt;</code><br />
+</div><div class="textblock"><div class="dynheader">
+TestGeometryRepairValidation.cpp 的引用(Include)关系图:</div>
+<div class="dyncontent">
+<div class="center"><img src="TestGeometryRepairValidation_8cpp__incl.png" border="0" usemap="#amodel_2ops_2test_2TestGeometryRepairValidation_8cpp" loading="lazy" alt=""/></div>
+<map name="amodel_2ops_2test_2TestGeometryRepairValidation_8cpp" id="amodel_2ops_2test_2TestGeometryRepairValidation_8cpp">
+<area shape="rect" title="验证局部精度、节点自适应检测、计算预算和输入误差隔离。" alt="" coords="1852,5,2067,45"/>
+<area shape="rect" href="GeometryRepairValidation_8h.html" title="几何编辑共用的局部精度、曲线偏差预检和边界验收；不包含搜索距离或用户移动意图。" alt="" coords="279,93,485,119"/>
+<area shape="poly" title=" " alt="" coords="1852,32,1279,53,894,72,499,96,499,91,894,66,1279,48,1852,27"/>
+<area shape="rect" href="GeometryBuilder_8h.html" title=" " alt="" coords="510,93,654,119"/>
+<area shape="poly" title=" " alt="" coords="1852,32,1346,51,1011,70,668,96,668,91,1011,64,1346,46,1852,27"/>
+<area shape="rect" title=" " alt="" coords="679,93,904,119"/>
+<area shape="poly" title=" " alt="" coords="1852,35,1446,59,918,96,917,91,1446,54,1852,30"/>
+<area shape="rect" title=" " alt="" coords="928,93,1151,119"/>
+<area shape="poly" title=" " alt="" coords="1852,38,1165,96,1164,90,1851,33"/>
+<area shape="rect" title=" " alt="" coords="1174,93,1291,119"/>
+<area shape="poly" title=" " alt="" coords="1852,38,1606,61,1306,96,1305,91,1606,56,1851,33"/>
+<area shape="rect" title=" " alt="" coords="1315,93,1451,119"/>
+<area shape="poly" title=" " alt="" coords="1852,44,1465,96,1465,91,1851,38"/>
+<area shape="rect" title=" " alt="" coords="1476,93,1659,119"/>
+<area shape="poly" title=" " alt="" coords="1866,48,1638,93,1637,88,1865,43"/>
+<area shape="rect" title=" " alt="" coords="1683,93,1857,119"/>
+<area shape="poly" title=" " alt="" coords="1915,48,1812,90,1810,85,1913,43"/>
+<area shape="rect" title=" " alt="" coords="1881,93,2037,119"/>
+<area shape="poly" title=" " alt="" coords="1962,46,1962,79,1957,79,1957,46"/>
+<area shape="rect" title=" " alt="" coords="2062,93,2161,119"/>
+<area shape="poly" title=" " alt="" coords="1997,43,2078,84,2075,89,1995,48"/>
+<area shape="rect" title=" " alt="" coords="2185,93,2320,119"/>
+<area shape="poly" title=" " alt="" coords="2030,43,2197,87,2196,92,2029,48"/>
+<area shape="rect" title=" " alt="" coords="2344,93,2439,119"/>
+<area shape="poly" title=" " alt="" coords="2067,43,2331,90,2330,96,2066,48"/>
+<area shape="rect" title=" " alt="" coords="2463,93,2647,119"/>
+<area shape="poly" title=" " alt="" coords="2067,38,2455,89,2455,94,2067,43"/>
+<area shape="rect" title=" " alt="" coords="2671,93,2890,119"/>
+<area shape="poly" title=" " alt="" coords="2067,34,2658,90,2657,96,2066,40"/>
+<area shape="rect" title=" " alt="" coords="2914,93,2973,119"/>
+<area shape="poly" title=" " alt="" coords="2067,25,2227,29,2433,39,2665,59,2901,91,2900,96,2664,64,2433,45,2227,34,2067,30"/>
+<area shape="rect" title=" " alt="" coords="2997,93,3060,119"/>
+<area shape="poly" title=" " alt="" coords="2067,24,2240,28,2467,38,2723,58,2854,73,2984,91,2983,96,2853,78,2722,64,2466,44,2240,33,2067,30"/>
+<area shape="rect" title=" " alt="" coords="3084,93,3171,119"/>
+<area shape="poly" title=" " alt="" coords="2067,25,2254,30,2502,41,2783,60,3071,91,3070,96,2783,66,2502,46,2254,35,2067,31"/>
+<area shape="rect" title=" " alt="" coords="5,167,143,192"/>
+<area shape="poly" title=" " alt="" coords="333,121,137,166,136,161,332,116"/>
+<area shape="rect" title=" " alt="" coords="167,167,314,192"/>
+<area shape="poly" title=" " alt="" coords="360,121,277,163,275,158,358,116"/>
+<area shape="rect" title=" " alt="" coords="339,167,425,192"/>
+<area shape="poly" title=" " alt="" coords="385,119,385,153,379,153,379,119"/>
+<area shape="rect" title=" " alt="" coords="533,167,596,192"/>
+<area shape="poly" title=" " alt="" coords="412,116,523,159,521,164,410,121"/>
+<area shape="rect" title=" " alt="" coords="449,167,509,192"/>
+<area shape="poly" title=" " alt="" coords="399,117,454,156,451,160,396,121"/>
+<area shape="poly" title=" " alt="" coords="582,120,573,154,568,153,577,118"/>
+<area shape="rect" title=" " alt="" coords="620,167,765,192"/>
+<area shape="poly" title=" " alt="" coords="601,116,664,157,661,161,598,121"/>
+</map>
+</div>
+</div><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 id="header-func-members" class="groupheader"><a id="func-members" name="func-members"></a>
+函数</h2></td></tr>
+<tr class="memitem:a530fa89f7aeb6c202bd5ebbaa405970f" id="r_a530fa89f7aeb6c202bd5ebbaa405970f"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a530fa89f7aeb6c202bd5ebbaa405970f">TEST_CASE</a> (&quot;GeometryRepair precision scales locally without inheriting coarse entity tolerances&quot;)</td></tr>
+<tr class="memdesc:a530fa89f7aeb6c202bd5ebbaa405970f"><td class="mdescLeft">&#160;</td><td class="mdescRight">局部精度随模型尺度变化，平移与无关的输入粗容差不能改变求解目标。  <br /></td></tr>
+<tr class="memitem:ac29be4e5756e455e18e7a7fe3d4c72c5" id="r_ac29be4e5756e455e18e7a7fe3d4c72c5"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ac29be4e5756e455e18e7a7fe3d4c72c5">TEST_CASE</a> (&quot;GeometryRepair adaptive deviation detects a narrow spline excursion&quot;)</td></tr>
+<tr class="memdesc:ac29be4e5756e455e18e7a7fe3d4c72c5"><td class="mdescLeft">&#160;</td><td class="mdescRight">节点之间的窄尖峰会避开旧的均匀九点采样，节点分段检查必须将其拒绝。  <br /></td></tr>
+<tr class="memitem:a2c9e8e7ffd8535cd0d2ff971e913b0c3" id="r_a2c9e8e7ffd8535cd0d2ff971e913b0c3"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a2c9e8e7ffd8535cd0d2ff971e913b0c3">TEST_CASE</a> (&quot;GeometryRepair reports unresolved deviation instead of accepting exhausted budgets&quot;)</td></tr>
+<tr class="memdesc:a2c9e8e7ffd8535cd0d2ff971e913b0c3"><td class="mdescLeft">&#160;</td><td class="mdescRight">求值预算耗尽或投影无解时不能误报通过；调用方可以拒绝并保留原模型。  <br /></td></tr>
+<tr class="memitem:a8a3831eef568076a1ae65a32bb3e64e1" id="r_a8a3831eef568076a1ae65a32bb3e64e1"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a8a3831eef568076a1ae65a32bb3e64e1">TEST_CASE</a> (&quot;GeometryRepair audits boundary tolerance growth against the preoperation snapshot&quot;)</td></tr>
+<tr class="memdesc:a8a3831eef568076a1ae65a32bb3e64e1"><td class="mdescLeft">&#160;</td><td class="mdescRight">捕获修复前的实体级预算，禁止事后抬高容差绕过验收。  <br /></td></tr>
+<tr class="memitem:afcd20b01421def8892bc38a5be3562e9" id="r_afcd20b01421def8892bc38a5be3562e9"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#afcd20b01421def8892bc38a5be3562e9">TEST_CASE</a> (&quot;GeometryRepair refuses precision policies that would erase local features&quot;)</td></tr>
+<tr class="memdesc:afcd20b01421def8892bc38a5be3562e9"><td class="mdescLeft">&#160;</td><td class="mdescRight">极小特征的保护预算与内核精度冲突时明确拒绝，不自动放宽或删除特征。  <br /></td></tr>
+<tr class="memitem:a23021aa28da36b94c18b38bfa9e8214c" id="r_a23021aa28da36b94c18b38bfa9e8214c"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a23021aa28da36b94c18b38bfa9e8214c">TEST_CASE</a> (&quot;GeometryRepair fixed resolution is independent of the search limit&quot;)</td></tr>
+<tr class="memdesc:a23021aa28da36b94c18b38bfa9e8214c"><td class="mdescLeft">&#160;</td><td class="mdescRight">固定测量分辨率后，放大查询上限不得改变采样点或实测最大偏差。  <br /></td></tr>
+</table>
+<a name="details" id="details"></a><h2 id="header-details" class="groupheader">详细描述</h2>
+<div class="textblock"><p>验证局部精度、节点自适应检测、计算预算和输入误差隔离。 </p>
+</div><a name="doc-func-members" id="doc-func-members"></a><h2 id="header-doc-func-members" class="groupheader">函数说明</h2>
+<a id="ac29be4e5756e455e18e7a7fe3d4c72c5" name="ac29be4e5756e455e18e7a7fe3d4c72c5"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ac29be4e5756e455e18e7a7fe3d4c72c5">&#9670;&#160;</a></span>TEST_CASE() <span class="overload">[1/6]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">TEST_CASE </td>
+          <td>(</td>
+          <td class="paramtype">&quot;GeometryRepair adaptive deviation detects a narrow spline excursion&quot;</td>          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>节点之间的窄尖峰会避开旧的均匀九点采样，节点分段检查必须将其拒绝。 </p>
+
+</div>
+</div>
+<a id="a8a3831eef568076a1ae65a32bb3e64e1" name="a8a3831eef568076a1ae65a32bb3e64e1"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a8a3831eef568076a1ae65a32bb3e64e1">&#9670;&#160;</a></span>TEST_CASE() <span class="overload">[2/6]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">TEST_CASE </td>
+          <td>(</td>
+          <td class="paramtype">&quot;GeometryRepair audits boundary tolerance growth against the preoperation snapshot&quot;</td>          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>捕获修复前的实体级预算，禁止事后抬高容差绕过验收。 </p>
+
+</div>
+</div>
+<a id="a23021aa28da36b94c18b38bfa9e8214c" name="a23021aa28da36b94c18b38bfa9e8214c"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a23021aa28da36b94c18b38bfa9e8214c">&#9670;&#160;</a></span>TEST_CASE() <span class="overload">[3/6]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">TEST_CASE </td>
+          <td>(</td>
+          <td class="paramtype">&quot;GeometryRepair fixed resolution is independent of the search limit&quot;</td>          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>固定测量分辨率后，放大查询上限不得改变采样点或实测最大偏差。 </p>
+
+</div>
+</div>
+<a id="a530fa89f7aeb6c202bd5ebbaa405970f" name="a530fa89f7aeb6c202bd5ebbaa405970f"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a530fa89f7aeb6c202bd5ebbaa405970f">&#9670;&#160;</a></span>TEST_CASE() <span class="overload">[4/6]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">TEST_CASE </td>
+          <td>(</td>
+          <td class="paramtype">&quot;GeometryRepair precision scales locally without inheriting coarse entity tolerances&quot;</td>          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>局部精度随模型尺度变化，平移与无关的输入粗容差不能改变求解目标。 </p>
+
+</div>
+</div>
+<a id="afcd20b01421def8892bc38a5be3562e9" name="afcd20b01421def8892bc38a5be3562e9"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#afcd20b01421def8892bc38a5be3562e9">&#9670;&#160;</a></span>TEST_CASE() <span class="overload">[5/6]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">TEST_CASE </td>
+          <td>(</td>
+          <td class="paramtype">&quot;GeometryRepair refuses precision policies that would erase local features&quot;</td>          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>极小特征的保护预算与内核精度冲突时明确拒绝，不自动放宽或删除特征。 </p>
+
+</div>
+</div>
+<a id="a2c9e8e7ffd8535cd0d2ff971e913b0c3" name="a2c9e8e7ffd8535cd0d2ff971e913b0c3"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a2c9e8e7ffd8535cd0d2ff971e913b0c3">&#9670;&#160;</a></span>TEST_CASE() <span class="overload">[6/6]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">TEST_CASE </td>
+          <td>(</td>
+          <td class="paramtype">&quot;GeometryRepair reports unresolved deviation instead of accepting exhausted budgets&quot;</td>          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>求值预算耗尽或投影无解时不能误报通过；调用方可以拒绝并保留原模型。 </p>
+
+</div>
+</div>
+</div><!-- contents -->
+<!-- start footer part -->
+<hr class="footer"/><address class="footer"><small>
+制作者&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.14.0
+</small></address>
+</div><!-- doc-content -->
+</body>
+</html>

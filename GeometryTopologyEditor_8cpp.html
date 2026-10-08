@@ -76,34 +76,66 @@ $(function() {
 </div><!-- top -->
 <div id="doc-content">
 <div class="header">
+  <div class="summary">
+<a href="#func-members">函数</a>  </div>
   <div class="headertitle"><div class="title">GeometryTopologyEditor.cpp 文件参考</div></div>
 </div><!--header-->
 <div class="contents">
 <div class="textblock"><code>#include &quot;<a class="el" href="GeometryTopologyEditor_8h_source.html">GeometryTopologyEditor.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="GeometryRepairValidation_8h_source.html">GeometryRepairValidation.h</a>&quot;</code><br />
 <code>#include &lt;BRepAdaptor_Curve.hxx&gt;</code><br />
+<code>#include &lt;BRepLib_CheckCurveOnSurface.hxx&gt;</code><br />
 <code>#include &lt;BRepAdaptor_Surface.hxx&gt;</code><br />
 <code>#include &lt;BRepAlgoAPI_Common.hxx&gt;</code><br />
 <code>#include &lt;BRepAlgoAPI_Section.hxx&gt;</code><br />
 <code>#include &lt;BRepBndLib.hxx&gt;</code><br />
 <code>#include &lt;BRepBuilderAPI_Copy.hxx&gt;</code><br />
+<code>#include &lt;BRepBuilderAPI_FindPlane.hxx&gt;</code><br />
+<code>#include &lt;BRepBuilderAPI_MakeEdge.hxx&gt;</code><br />
+<code>#include &lt;BRepBuilderAPI_MakeFace.hxx&gt;</code><br />
+<code>#include &lt;BRepBuilderAPI_MakeVertex.hxx&gt;</code><br />
+<code>#include &lt;BRepBuilderAPI_MakeWire.hxx&gt;</code><br />
+<code>#include &lt;BRepBuilderAPI_Sewing.hxx&gt;</code><br />
 <code>#include &lt;BRepClass_FaceClassifier.hxx&gt;</code><br />
 <code>#include &lt;BRepCheck_Analyzer.hxx&gt;</code><br />
 <code>#include &lt;BRepCheck_Status.hxx&gt;</code><br />
 <code>#include &lt;BRepExtrema_DistShapeShape.hxx&gt;</code><br />
 <code>#include &lt;BRepExtrema_SelfIntersection.hxx&gt;</code><br />
 <code>#include &lt;BRepMesh_IncrementalMesh.hxx&gt;</code><br />
+<code>#include &lt;BRepFeat_SplitShape.hxx&gt;</code><br />
+<code>#include &lt;BRepFill_Filling.hxx&gt;</code><br />
 <code>#include &lt;BRepGProp.hxx&gt;</code><br />
 <code>#include &lt;BRep_Tool.hxx&gt;</code><br />
 <code>#include &lt;BRep_Builder.hxx&gt;</code><br />
 <code>#include &lt;BRepTools.hxx&gt;</code><br />
+<code>#include &lt;BRepTools_ReShape.hxx&gt;</code><br />
 <code>#include &lt;Bnd_Box.hxx&gt;</code><br />
+<code>#include &lt;GCPnts_AbscissaPoint.hxx&gt;</code><br />
+<code>#include &lt;GeomAPI_ProjectPointOnSurf.hxx&gt;</code><br />
+<code>#include &lt;GeomAPI_ProjectPointOnCurve.hxx&gt;</code><br />
 <code>#include &lt;Geom_BSplineSurface.hxx&gt;</code><br />
 <code>#include &lt;Geom_BezierSurface.hxx&gt;</code><br />
+<code>#include &lt;Geom_Curve.hxx&gt;</code><br />
+<code>#include &lt;Geom_CylindricalSurface.hxx&gt;</code><br />
+<code>#include &lt;gp_Ax3.hxx&gt;</code><br />
+<code>#include &lt;gp_Circ.hxx&gt;</code><br />
+<code>#include &lt;Geom_BSplineCurve.hxx&gt;</code><br />
+<code>#include &lt;Geom_TrimmedCurve.hxx&gt;</code><br />
+<code>#include &lt;GeomConvert.hxx&gt;</code><br />
+<code>#include &lt;GeomFill_BSplineCurves.hxx&gt;</code><br />
 <code>#include &lt;Geom_Surface.hxx&gt;</code><br />
+<code>#include &lt;Geom_Plane.hxx&gt;</code><br />
+<code>#include &lt;GeomAbs_CurveType.hxx&gt;</code><br />
 <code>#include &lt;GeomAbs_SurfaceType.hxx&gt;</code><br />
 <code>#include &lt;GProp_GProps.hxx&gt;</code><br />
 <code>#include &lt;Precision.hxx&gt;</code><br />
 <code>#include &lt;Poly_Triangulation.hxx&gt;</code><br />
+<code>#include &lt;ShapeBuild_Edge.hxx&gt;</code><br />
+<code>#include &lt;ShapeFix_Shape.hxx&gt;</code><br />
+<code>#include &lt;ShapeFix_Face.hxx&gt;</code><br />
+<code>#include &lt;ShapeFix_Edge.hxx&gt;</code><br />
+<code>#include &lt;BRepTools_WireExplorer.hxx&gt;</code><br />
+<code>#include &lt;ShapeUpgrade_UnifySameDomain.hxx&gt;</code><br />
 <code>#include &lt;NCollection_Array1.hxx&gt;</code><br />
 <code>#include &lt;NCollection_Array2.hxx&gt;</code><br />
 <code>#include &lt;NCollection_DataMap.hxx&gt;</code><br />
@@ -116,13 +148,18 @@ $(function() {
 <code>#include &lt;NCollection_IndexedMap.hxx&gt;</code><br />
 <code>#include &lt;NCollection_List.hxx&gt;</code><br />
 <code>#include &lt;TopoDS_Compound.hxx&gt;</code><br />
+<code>#include &lt;TopoDS_CompSolid.hxx&gt;</code><br />
 <code>#include &lt;TopoDS_Edge.hxx&gt;</code><br />
 <code>#include &lt;TopoDS_Face.hxx&gt;</code><br />
 <code>#include &lt;TopoDS_Iterator.hxx&gt;</code><br />
+<code>#include &lt;TopoDS_Vertex.hxx&gt;</code><br />
+<code>#include &lt;TopoDS_Wire.hxx&gt;</code><br />
 <code>#include &lt;TopoDS.hxx&gt;</code><br />
 <code>#include &lt;TColStd_PackedMapOfInteger.hxx&gt;</code><br />
 <code>#include &lt;TopTools_ShapeMapHasher.hxx&gt;</code><br />
 <code>#include &lt;gp_Pnt.hxx&gt;</code><br />
+<code>#include &lt;gp_Vec.hxx&gt;</code><br />
+<code>#include &lt;gp_Pnt2d.hxx&gt;</code><br />
 <code>#include &lt;gp_Cylinder.hxx&gt;</code><br />
 <code>#include &lt;gp_Dir.hxx&gt;</code><br />
 <code>#include &lt;gp_Lin.hxx&gt;</code><br />
@@ -138,13 +175,102 @@ $(function() {
 <code>#include &lt;execution&gt;</code><br />
 <code>#include &lt;limits&gt;</code><br />
 <code>#include &lt;memory&gt;</code><br />
+<code>#include &lt;map&gt;</code><br />
 <code>#include &lt;numeric&gt;</code><br />
+<code>#include &lt;optional&gt;</code><br />
+<code>#include &lt;queue&gt;</code><br />
+<code>#include &lt;functional&gt;</code><br />
 <code>#include &lt;stdexcept&gt;</code><br />
+<code>#include &lt;string&gt;</code><br />
+<code>#include &lt;tuple&gt;</code><br />
 <code>#include &lt;unordered_map&gt;</code><br />
 <code>#include &lt;unordered_set&gt;</code><br />
 <code>#include &lt;utility&gt;</code><br />
 <code>#include &lt;vector&gt;</code><br />
-</div></div><!-- contents -->
+</div><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 id="header-func-members" class="groupheader"><a id="func-members" name="func-members"></a>
+函数</h2></td></tr>
+<tr class="memitem:ae51dd9ab990b7c7fba76a0c02651c473" id="r_ae51dd9ab990b7c7fba76a0c02651c473"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ae51dd9ab990b7c7fba76a0c02651c473">collectFacesExcept</a> (const TopoDS_Shape &amp;shape, const TopoDS_Shape &amp;<a class="el" href="TestFeatureSystem_8cpp.html#a50aa9159ca4c9e08050d5572202941a1">target</a>, std::vector&lt; TopoDS_Face &gt; &amp;out)</td></tr>
+<tr class="memdesc:ae51dd9ab990b7c7fba76a0c02651c473"><td class="mdescLeft">&#160;</td><td class="mdescRight">递归收集形状下的 Face，跳过目标 Face。  <br /></td></tr>
+<tr class="memitem:a07994293bb93650a12cde7d2480316fe" id="r_a07994293bb93650a12cde7d2480316fe"><td class="memItemLeft" align="right" valign="top">TopoDS_Shape&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a07994293bb93650a12cde7d2480316fe">demoteOpenSolids</a> (const TopoDS_Shape &amp;shape)</td></tr>
+<tr class="memdesc:a07994293bb93650a12cde7d2480316fe"><td class="mdescLeft">&#160;</td><td class="mdescRight">将不再闭合的 Solid 降级为 Shell，使缺面结果仍可通过拓扑校验。  <br /></td></tr>
+<tr class="memitem:ac5787b3ee53e921d1bcf3d603e691224" id="r_ac5787b3ee53e921d1bcf3d603e691224"><td class="memItemLeft" align="right" valign="top">TopoDS_Shape&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ac5787b3ee53e921d1bcf3d603e691224">removeNestedFace</a> (const TopoDS_Shape &amp;root, const TopoDS_Face &amp;face)</td></tr>
+<tr class="memdesc:ac5787b3ee53e921d1bcf3d603e691224"><td class="mdescLeft">&#160;</td><td class="mdescRight">从父 Shell/Solid 中摘除嵌套 Face 并重建父级。  <br /></td></tr>
+</table>
+<a name="doc-func-members" id="doc-func-members"></a><h2 id="header-doc-func-members" class="groupheader">函数说明</h2>
+<a id="ae51dd9ab990b7c7fba76a0c02651c473" name="ae51dd9ab990b7c7fba76a0c02651c473"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ae51dd9ab990b7c7fba76a0c02651c473">&#9670;&#160;</a></span>collectFacesExcept()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void collectFacesExcept </td>
+          <td>(</td>
+          <td class="paramtype">const TopoDS_Shape &amp;</td>          <td class="paramname"><span class="paramname"><em>shape</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const TopoDS_Shape &amp;</td>          <td class="paramname"><span class="paramname"><em>target</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">std::vector&lt; TopoDS_Face &gt; &amp;</td>          <td class="paramname"><span class="paramname"><em>out</em></span>&#160;)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>递归收集形状下的 Face，跳过目标 Face。 </p>
+<p>会穿过 Compound 包装：BRepFeat 分割后 Shell 子节点里可能挂着 Compound， 不能只看直接子级是不是 Face。 </p>
+
+</div>
+</div>
+<a id="a07994293bb93650a12cde7d2480316fe" name="a07994293bb93650a12cde7d2480316fe"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a07994293bb93650a12cde7d2480316fe">&#9670;&#160;</a></span>demoteOpenSolids()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">TopoDS_Shape demoteOpenSolids </td>
+          <td>(</td>
+          <td class="paramtype">const TopoDS_Shape &amp;</td>          <td class="paramname"><span class="paramname"><em>shape</em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>将不再闭合的 Solid 降级为 Shell，使缺面结果仍可通过拓扑校验。 </p>
+
+</div>
+</div>
+<a id="ac5787b3ee53e921d1bcf3d603e691224" name="ac5787b3ee53e921d1bcf3d603e691224"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ac5787b3ee53e921d1bcf3d603e691224">&#9670;&#160;</a></span>removeNestedFace()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">TopoDS_Shape removeNestedFace </td>
+          <td>(</td>
+          <td class="paramtype">const TopoDS_Shape &amp;</td>          <td class="paramname"><span class="paramname"><em>root</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const TopoDS_Face &amp;</td>          <td class="paramname"><span class="paramname"><em>face</em></span>&#160;)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>从父 Shell/Solid 中摘除嵌套 Face 并重建父级。 </p>
+<p>按「父 Shell 整体替换」实现：收集 Shell 内除目标外的全部 Face（穿过 Compound 包装）重建 Shell，再写回根形状。避免 BRepTools_ReShape 对嵌套拓扑返回空结果， 也避免把分割后挂在 Shell 下的 Compound 子树误丢。 </p>
+
+</div>
+</div>
+</div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
 制作者&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.14.0

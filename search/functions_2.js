@@ -12,11 +12,12 @@ var searchData=
   ['bindsession_9',['bindSession',['../classQTaskStatus.html#a6da850287a78e76fc7a4cb9a4d7c7c42',1,'QTaskStatus']]],
   ['blocksmerged_10',['blocksMerged',['../classQModelObserver.html#ac1bdada16a5cc4b6ad8fe7cda93cb1b5',1,'QModelObserver']]],
   ['blockupdated_11',['blockUpdated',['../classQModelObserver.html#a6f0cf16c33ebce2aa965465d607b6581',1,'QModelObserver']]],
-  ['boundarywrite_12',['boundaryWrite',['../classsession_1_1Session.html#ab59d83c80b5d0a1653942a1f0877cb52',1,'session::Session']]],
-  ['boxnode_13',['BoxNode',['../classdock_1_1BoxNode.html#a081b8282f4035c63b2b51e16a68d2424',1,'dock::BoxNode']]],
-  ['bringtofront_14',['bringToFront',['../classdock_1_1DockView.html#ada09ae5957fc2b31e376a450e96e5a73',1,'dock::DockView::bringToFront()'],['../classdocktest_1_1StubView.html#aacbc521c1d5d2f68d7c612185884d4dc',1,'docktest::StubView::bringToFront()'],['../classdock_1_1ui_1_1DockHostItem.html#a3e2b9fa40d752fef04ca897fdf93bdbb',1,'dock::ui::DockHostItem::bringToFront()'],['../classdock_1_1ui_1_1DockPanelItem.html#a9b8583defcbd2d4a1702e30d74453179',1,'dock::ui::DockPanelItem::bringToFront()'],['../classdock_1_1ui_1_1DockWindowItem.html#a4ffa6df353d379e737e14de1dbe8111f',1,'dock::ui::DockWindowItem::bringToFront()'],['../classdock_1_1ui_1_1PanelContentView.html#ab55bc8fecb6aeb54679a336379fed445',1,'dock::ui::PanelContentView::bringToFront()'],['../classdock_1_1ui_1_1PanelGroupItem.html#ac26bb32c10d9a1d318ca5523bb65d2ef',1,'dock::ui::PanelGroupItem::bringToFront()']]],
-  ['build_15',['build',['../structGeometrySubshapeIndex.html#af30c3a3b0ced48046486c2a8aaf38906',1,'GeometrySubshapeIndex']]],
-  ['buildhighlight_16',['buildHighlight',['../classGeometryActorSelectOp.html#a1b944073d9d1cb680389fa7b0a5d6645',1,'GeometryActorSelectOp']]],
-  ['bus_17',['bus',['../classsystems_1_1feature_1_1FeatureEventGateway.html#ad003b345cd3f6550e455993e2e476385',1,'systems::feature::FeatureEventGateway']]],
-  ['busychanged_18',['busyChanged',['../classQTaskStatus.html#a64372caa9076395bf5d88cbb826a0312',1,'QTaskStatus']]]
+  ['boundaryaudit_12',['BoundaryAudit',['../classgeometry_1_1repair_1_1BoundaryAudit.html#ab8fa76f675d171b8182a16e7151d7560',1,'geometry::repair::BoundaryAudit']]],
+  ['boundarywrite_13',['boundaryWrite',['../classsession_1_1Session.html#ab59d83c80b5d0a1653942a1f0877cb52',1,'session::Session']]],
+  ['boxnode_14',['BoxNode',['../classdock_1_1BoxNode.html#a081b8282f4035c63b2b51e16a68d2424',1,'dock::BoxNode']]],
+  ['bringtofront_15',['bringToFront',['../classdock_1_1DockView.html#ada09ae5957fc2b31e376a450e96e5a73',1,'dock::DockView::bringToFront()'],['../classdocktest_1_1StubView.html#aacbc521c1d5d2f68d7c612185884d4dc',1,'docktest::StubView::bringToFront()'],['../classdock_1_1ui_1_1DockHostItem.html#a3e2b9fa40d752fef04ca897fdf93bdbb',1,'dock::ui::DockHostItem::bringToFront()'],['../classdock_1_1ui_1_1DockPanelItem.html#a9b8583defcbd2d4a1702e30d74453179',1,'dock::ui::DockPanelItem::bringToFront()'],['../classdock_1_1ui_1_1DockWindowItem.html#a4ffa6df353d379e737e14de1dbe8111f',1,'dock::ui::DockWindowItem::bringToFront()'],['../classdock_1_1ui_1_1PanelContentView.html#ab55bc8fecb6aeb54679a336379fed445',1,'dock::ui::PanelContentView::bringToFront()'],['../classdock_1_1ui_1_1PanelGroupItem.html#ac26bb32c10d9a1d318ca5523bb65d2ef',1,'dock::ui::PanelGroupItem::bringToFront()']]],
+  ['build_16',['build',['../structGeometrySubshapeIndex.html#af30c3a3b0ced48046486c2a8aaf38906',1,'GeometrySubshapeIndex']]],
+  ['buildhighlight_17',['buildHighlight',['../classGeometryActorSelectOp.html#a1b944073d9d1cb680389fa7b0a5d6645',1,'GeometryActorSelectOp']]],
+  ['bus_18',['bus',['../classsystems_1_1feature_1_1FeatureEventGateway.html#ad003b345cd3f6550e455993e2e476385',1,'systems::feature::FeatureEventGateway']]],
+  ['busychanged_19',['busyChanged',['../classQTaskStatus.html#a64372caa9076395bf5d88cbb826a0312',1,'QTaskStatus']]]
 ];

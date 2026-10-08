@@ -86,16 +86,90 @@ $(function() {
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 id="header-pub-static-methods" class="groupheader"><a id="pub-static-methods" name="pub-static-methods"></a>
 静态 Public 成员函数</h2></td></tr>
-<tr class="memitem:a94a71d526fb63756371658b7d76d2d20" id="r_a94a71d526fb63756371658b7d76d2d20"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="structGeometryTopologyDiagnosticResult.html">GeometryTopologyDiagnosticResult</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a94a71d526fb63756371658b7d76d2d20">diagnoseTopology</a> (const TopoDS_Shape &amp;root, double small_edge_length_threshold, double small_face_area_threshold, const <a class="el" href="structGeometryTopologyDiagnosticOptions.html">GeometryTopologyDiagnosticOptions</a> &amp;options={}, const std::atomic&lt; bool &gt; *cancel=nullptr)</td></tr>
-<tr class="memdesc:a94a71d526fb63756371658b7d76d2d20"><td class="mdescLeft">&#160;</td><td class="mdescRight">计算用于展示和后续清理的几何拓扑诊断结果。  <br /></td></tr>
+<tr class="memitem:ad4a5fbe4f7f0bfc6d6a5184bc609a31f" id="r_ad4a5fbe4f7f0bfc6d6a5184bc609a31f"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="structGeometryTopologyDiagnosticResult.html">GeometryTopologyDiagnosticResult</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ad4a5fbe4f7f0bfc6d6a5184bc609a31f">diagnoseTopology</a> (const TopoDS_Shape &amp;root, double small_edge_length_threshold, double small_face_area_threshold, const <a class="el" href="structGeometryTopologyDiagnosticOptions.html">GeometryTopologyDiagnosticOptions</a> &amp;options={ }, const std::atomic&lt; bool &gt; *cancel=nullptr)</td></tr>
+<tr class="memdesc:ad4a5fbe4f7f0bfc6d6a5184bc609a31f"><td class="mdescLeft">&#160;</td><td class="mdescRight">计算用于展示和后续清理的几何拓扑诊断结果。  <br /></td></tr>
+<tr class="memitem:a15bbeac90706de8ecf9141280677536a" id="r_a15bbeac90706de8ecf9141280677536a"><td class="memItemLeft" align="right" valign="top">static TopoDS_Shape&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a15bbeac90706de8ecf9141280677536a">splitEdge</a> (const TopoDS_Shape &amp;root, const TopoDS_Edge &amp;edge, double ratio)</td></tr>
+<tr class="memdesc:a15bbeac90706de8ecf9141280677536a"><td class="mdescLeft">&#160;</td><td class="mdescRight">将一条 Edge 按归一化比例分成两条 Edge。  <br /></td></tr>
+<tr class="memitem:a312f1f6db98ce8bf3906f309b8429c7b" id="r_a312f1f6db98ce8bf3906f309b8429c7b"><td class="memItemLeft" align="right" valign="top">static TopoDS_Shape&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a312f1f6db98ce8bf3906f309b8429c7b">collapseEdge</a> (const TopoDS_Shape &amp;root, const TopoDS_Edge &amp;edge, const gp_Pnt &amp;target_position)</td></tr>
+<tr class="memdesc:a312f1f6db98ce8bf3906f309b8429c7b"><td class="mdescLeft">&#160;</td><td class="mdescRight">将一条 Edge 压缩到目标位置。  <br /></td></tr>
+<tr class="memitem:a625a947887fc56b96acf0d786c5755d7" id="r_a625a947887fc56b96acf0d786c5755d7"><td class="memItemLeft" align="right" valign="top">static TopoDS_Vertex&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a625a947887fc56b96acf0d786c5755d7">recommendCollapseVertex</a> (const TopoDS_Shape &amp;root, const TopoDS_Edge &amp;edge)</td></tr>
+<tr class="memdesc:a625a947887fc56b96acf0d786c5755d7"><td class="mdescLeft">&#160;</td><td class="mdescRight">根据相邻曲线、Face、边数和边长推荐应保留的端点。  <br /></td></tr>
+<tr class="memitem:a4d7585781e3fd2c6e338fd7e57abb139" id="r_a4d7585781e3fd2c6e338fd7e57abb139"><td class="memItemLeft" align="right" valign="top">static TopoDS_Shape&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a4d7585781e3fd2c6e338fd7e57abb139">mergeVertices</a> (const TopoDS_Shape &amp;root, const std::vector&lt; TopoDS_Vertex &gt; &amp;vertices, const gp_Pnt &amp;target_position)</td></tr>
+<tr class="memdesc:a4d7585781e3fd2c6e338fd7e57abb139"><td class="mdescLeft">&#160;</td><td class="mdescRight">将两个或多个 Vertex 合并到目标位置，并实际重建相邻曲线和面。  <br /></td></tr>
+<tr class="memitem:a1f75168e1b9f2f8879d7c5c1100c94b2" id="r_a1f75168e1b9f2f8879d7c5c1100c94b2"><td class="memItemLeft" align="right" valign="top">static TopoDS_Shape&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a1f75168e1b9f2f8879d7c5c1100c94b2">mergeFaces</a> (const TopoDS_Shape &amp;root, const std::vector&lt; TopoDS_Face &gt; &amp;faces)</td></tr>
+<tr class="memdesc:a1f75168e1b9f2f8879d7c5c1100c94b2"><td class="mdescLeft">&#160;</td><td class="mdescRight">将一组连通且同域的 Face 合并为一个 Face。  <br /></td></tr>
+<tr class="memitem:a5fcfd97ec17fc53e18f1d60a5d10ebb6" id="r_a5fcfd97ec17fc53e18f1d60a5d10ebb6"><td class="memItemLeft" align="right" valign="top">static TopoDS_Shape&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a5fcfd97ec17fc53e18f1d60a5d10ebb6">mergeEdges</a> (const TopoDS_Shape &amp;root, const std::vector&lt; TopoDS_Edge &gt; &amp;edges)</td></tr>
+<tr class="memdesc:a5fcfd97ec17fc53e18f1d60a5d10ebb6"><td class="mdescLeft">&#160;</td><td class="mdescRight">将一组连续且同域的 Edge 合并为一个 Edge。  <br /></td></tr>
+<tr class="memitem:a9deb1714068d1dd91803d6ed78e18316" id="r_a9deb1714068d1dd91803d6ed78e18316"><td class="memItemLeft" align="right" valign="top">static TopoDS_Shape&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a9deb1714068d1dd91803d6ed78e18316">splitFace</a> (const TopoDS_Shape &amp;root, const TopoDS_Face &amp;target_face, const std::vector&lt; TopoDS_Edge &gt; &amp;splitting_edges)</td></tr>
+<tr class="memdesc:a9deb1714068d1dd91803d6ed78e18316"><td class="mdescLeft">&#160;</td><td class="mdescRight">使用已经位于目标面上的几何边分割一个 Face。  <br /></td></tr>
+<tr class="memitem:a8999456be7a3c2d4742e5a9fa5ddd0c8" id="r_a8999456be7a3c2d4742e5a9fa5ddd0c8"><td class="memItemLeft" align="right" valign="top">static TopoDS_Shape&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a8999456be7a3c2d4742e5a9fa5ddd0c8">splitFaceByFaces</a> (const TopoDS_Shape &amp;root, const TopoDS_Face &amp;target_face, const std::vector&lt; TopoDS_Face &gt; &amp;splitting_faces)</td></tr>
+<tr class="memdesc:a8999456be7a3c2d4742e5a9fa5ddd0c8"><td class="mdescLeft">&#160;</td><td class="mdescRight">使用一个或多个相交 Face 分割目标 Face。  <br /></td></tr>
+<tr class="memitem:a65a5605a372d9b779bbe2a2456b6b4a8" id="r_a65a5605a372d9b779bbe2a2456b6b4a8"><td class="memItemLeft" align="right" valign="top">static std::vector&lt; <a class="el" href="structGeometryStitchCandidate.html">GeometryStitchCandidate</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a65a5605a372d9b779bbe2a2456b6b4a8">findStitchCandidates</a> (const TopoDS_Shape &amp;root, double tolerance)</td></tr>
+<tr class="memdesc:a65a5605a372d9b779bbe2a2456b6b4a8"><td class="mdescLeft">&#160;</td><td class="mdescRight">查找给定容差内方向相容的跨面自由边配对。  <br /></td></tr>
+<tr class="memitem:ae5b76e8d87fe99ed6c7927beea61cdd6" id="r_ae5b76e8d87fe99ed6c7927beea61cdd6"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="structGeometryGapRepairResult.html">GeometryGapRepairResult</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ae5b76e8d87fe99ed6c7927beea61cdd6">repairFreeEdgeGaps</a> (const TopoDS_Shape &amp;root, double tolerance)</td></tr>
+<tr class="memdesc:ae5b76e8d87fe99ed6c7927beea61cdd6"><td class="mdescLeft">&#160;</td><td class="mdescRight">自动缝合根形状中位于给定容差内的跨面自由边。  <br /></td></tr>
+<tr class="memitem:a564b6732fda7d065a85b5ef11a4174f3" id="r_a564b6732fda7d065a85b5ef11a4174f3"><td class="memItemLeft" align="right" valign="top">static TopoDS_Shape&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a564b6732fda7d065a85b5ef11a4174f3">stitchBoundaryEdges</a> (const TopoDS_Shape &amp;root, const std::vector&lt; TopoDS_Edge &gt; &amp;first_chain, const std::vector&lt; TopoDS_Edge &gt; &amp;second_chain, double tolerance)</td></tr>
+<tr class="memdesc:a564b6732fda7d065a85b5ef11a4174f3"><td class="mdescLeft">&#160;</td><td class="mdescRight">在指定容差内缝合两组自由边链。  <br /></td></tr>
+<tr class="memitem:a11fdc838069eef76e9b624f89cefe400" id="r_a11fdc838069eef76e9b624f89cefe400"><td class="memItemLeft" align="right" valign="top">static std::vector&lt; TopoDS_Edge &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a11fdc838069eef76e9b624f89cefe400">expandStitchableFreeChain</a> (const TopoDS_Shape &amp;root, const TopoDS_Edge &amp;seed, double tolerance)</td></tr>
+<tr class="memdesc:a11fdc838069eef76e9b624f89cefe400"><td class="mdescLeft">&#160;</td><td class="mdescRight">从种子自由边扩展出容差内可缝合的同侧连续自由边链。  <br /></td></tr>
+<tr class="memitem:a69e29e1148112c2c48460343d236a734" id="r_a69e29e1148112c2c48460343d236a734"><td class="memItemLeft" align="right" valign="top">static std::vector&lt; <a class="el" href="structGeometryGapPartnerChain.html">GeometryGapPartnerChain</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a69e29e1148112c2c48460343d236a734">findGapPartnerChains</a> (const TopoDS_Shape &amp;root, const std::vector&lt; TopoDS_Edge &gt; &amp;seed_chain, double tolerance)</td></tr>
+<tr class="memdesc:a69e29e1148112c2c48460343d236a734"><td class="mdescLeft">&#160;</td><td class="mdescRight">为种子自由边链查找容差内的对侧间隙链，按最大间隙升序返回。  <br /></td></tr>
+<tr class="memitem:a0f212c3db080eb9758fd9d9a8fe22376" id="r_a0f212c3db080eb9758fd9d9a8fe22376"><td class="memItemLeft" align="right" valign="top">static TopoDS_Shape&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a0f212c3db080eb9758fd9d9a8fe22376">stitchGapFromSeedEdge</a> (const TopoDS_Shape &amp;root, const TopoDS_Edge &amp;seed_edge, double tolerance, bool *reversed=nullptr, bool *sewn=nullptr)</td></tr>
+<tr class="memdesc:a0f212c3db080eb9758fd9d9a8fe22376"><td class="mdescLeft">&#160;</td><td class="mdescRight">以种子自由边为入口，自动识别所属间隙边界并缝合已有面。  <br /></td></tr>
+<tr class="memitem:aba4575654a81060ed7a76f4e1e3f3cbd" id="r_aba4575654a81060ed7a76f4e1e3f3cbd"><td class="memItemLeft" align="right" valign="top">static TopoDS_Shape&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#aba4575654a81060ed7a76f4e1e3f3cbd">fillBoundaryLoop</a> (const TopoDS_Shape &amp;root, const TopoDS_Edge &amp;seed_edge)</td></tr>
+<tr class="memdesc:aba4575654a81060ed7a76f4e1e3f3cbd"><td class="mdescLeft">&#160;</td><td class="mdescRight">填充包含种子边且总弧长最短的闭合边界环，支持平面和非共面边界。  <br /></td></tr>
 <tr class="memitem:a03ac45e0703bde8eb328b36254d5fcd2" id="r_a03ac45e0703bde8eb328b36254d5fcd2"><td class="memItemLeft" align="right" valign="top">static TopoDS_Shape&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a03ac45e0703bde8eb328b36254d5fcd2">removeTopLevelShape</a> (const TopoDS_Shape &amp;root, const TopoDS_Shape &amp;<a class="el" href="TestFeatureSystem_8cpp.html#a50aa9159ca4c9e08050d5572202941a1">target</a>, bool delete_children)</td></tr>
 <tr class="memdesc:a03ac45e0703bde8eb328b36254d5fcd2"><td class="mdescLeft">&#160;</td><td class="mdescRight">从根形状中删除一个顶层独立 Vertex、Edge、Face 或 Solid。  <br /></td></tr>
+<tr class="memitem:affed095659e359fdb6342f5b4a71edb9" id="r_affed095659e359fdb6342f5b4a71edb9"><td class="memItemLeft" align="right" valign="top">static TopoDS_Shape&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#affed095659e359fdb6342f5b4a71edb9">removeShape</a> (const TopoDS_Shape &amp;root, const TopoDS_Shape &amp;<a class="el" href="TestFeatureSystem_8cpp.html#a50aa9159ca4c9e08050d5572202941a1">target</a>, bool delete_children)</td></tr>
+<tr class="memdesc:affed095659e359fdb6342f5b4a71edb9"><td class="mdescLeft">&#160;</td><td class="mdescRight">从根形状中删除一个几何形状，Face 支持嵌套在 Shell/Solid 内。  <br /></td></tr>
 </table>
 <a name="details" id="details"></a><h2 id="header-details" class="groupheader">详细描述</h2>
 <div class="textblock"><p>提供不依赖界面和模型管理的基础 OCC 拓扑编辑函数。 </p>
 </div><a name="doc-func-members" id="doc-func-members"></a><h2 id="header-doc-func-members" class="groupheader">成员函数说明</h2>
-<a id="a94a71d526fb63756371658b7d76d2d20" name="a94a71d526fb63756371658b7d76d2d20"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a94a71d526fb63756371658b7d76d2d20">&#9670;&#160;</a></span>diagnoseTopology()</h2>
+<a id="a312f1f6db98ce8bf3906f309b8429c7b" name="a312f1f6db98ce8bf3906f309b8429c7b"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a312f1f6db98ce8bf3906f309b8429c7b">&#9670;&#160;</a></span>collapseEdge()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">TopoDS_Shape GeometryTopologyEditor::collapseEdge </td>
+          <td>(</td>
+          <td class="paramtype">const TopoDS_Shape &amp;</td>          <td class="paramname"><span class="paramname"><em>root</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const TopoDS_Edge &amp;</td>          <td class="paramname"><span class="paramname"><em>edge</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const gp_Pnt &amp;</td>          <td class="paramname"><span class="paramname"><em>target_position</em></span>&#160;)</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel static">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>将一条 Edge 压缩到目标位置。 </p>
+<dl class="params"><dt>参数</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">target_position</td><td>压缩后的公共顶点位置。 </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="ad4a5fbe4f7f0bfc6d6a5184bc609a31f" name="ad4a5fbe4f7f0bfc6d6a5184bc609a31f"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ad4a5fbe4f7f0bfc6d6a5184bc609a31f">&#9670;&#160;</a></span>diagnoseTopology()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -121,7 +195,7 @@ $(function() {
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">const <a class="el" href="structGeometryTopologyDiagnosticOptions.html">GeometryTopologyDiagnosticOptions</a> &amp;</td>          <td class="paramname"><span class="paramname"><em>options</em></span><span class="paramdefsep"> = </span><span class="paramdefval">{}</span>, </td>
+          <td class="paramtype">const <a class="el" href="structGeometryTopologyDiagnosticOptions.html">GeometryTopologyDiagnosticOptions</a> &amp;</td>          <td class="paramname"><span class="paramname"><em>options</em></span><span class="paramdefsep"> = </span><span class="paramdefval">{&#160;}</span>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
@@ -150,6 +224,409 @@ $(function() {
 </dl>
 <dl class="section return"><dt>返回</dt><dd>一次计算得到的全部诊断类别。</dd></dl>
 <p>等价于用无限预算把 <a class="el" href="classGeometryTopologyDiagnosticSession.html" title="可分段推进的一次几何拓扑诊断。">GeometryTopologyDiagnosticSession</a> 一次推进到完成；需要让长诊断 给其它请求让路时，改用会话接口分片推进。 </p>
+
+</div>
+</div>
+<a id="a11fdc838069eef76e9b624f89cefe400" name="a11fdc838069eef76e9b624f89cefe400"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a11fdc838069eef76e9b624f89cefe400">&#9670;&#160;</a></span>expandStitchableFreeChain()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::vector&lt; TopoDS_Edge &gt; GeometryTopologyEditor::expandStitchableFreeChain </td>
+          <td>(</td>
+          <td class="paramtype">const TopoDS_Shape &amp;</td>          <td class="paramname"><span class="paramname"><em>root</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const TopoDS_Edge &amp;</td>          <td class="paramname"><span class="paramname"><em>seed</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">double</td>          <td class="paramname"><span class="paramname"><em>tolerance</em></span>&#160;)</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel static">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>从种子自由边扩展出容差内可缝合的同侧连续自由边链。 </p>
+<p>只吸收「在容差内存在跨面自由边配对」的邻接自由边，避免把同一面的 无关外轮廓扩进间隙边界。种子边自身必须是自由边且存在对侧配对。</p>
+<dl class="params"><dt>参数</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">root</td><td>当前几何根形状。 </td></tr>
+    <tr><td class="paramname">seed</td><td>间隙边，必须是 root 上的自由边界边。 </td></tr>
+    <tr><td class="paramname">tolerance</td><td>最大间隙距离，必须为有限正数。 </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>返回</dt><dd>含种子边在内的同侧可缝合自由边链。</dd></dl>
+<dl class="exception"><dt>异常</dt><dd>
+  <table class="exception">
+    <tr><td class="paramname">std::invalid_argument</td><td>种子边不是自由边或不属于 root。 </td></tr>
+    <tr><td class="paramname">std::runtime_error</td><td>种子边在容差内没有对侧自由边配对。 </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="aba4575654a81060ed7a76f4e1e3f3cbd" name="aba4575654a81060ed7a76f4e1e3f3cbd"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aba4575654a81060ed7a76f4e1e3f3cbd">&#9670;&#160;</a></span>fillBoundaryLoop()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">TopoDS_Shape GeometryTopologyEditor::fillBoundaryLoop </td>
+          <td>(</td>
+          <td class="paramtype">const TopoDS_Shape &amp;</td>          <td class="paramname"><span class="paramname"><em>root</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const TopoDS_Edge &amp;</td>          <td class="paramname"><span class="paramname"><em>seed_edge</em></span>&#160;)</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel static">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>填充包含种子边且总弧长最短的闭合边界环，支持平面和非共面边界。 </p>
+<dl class="params"><dt>参数</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">root</td><td>当前几何根形状。 </td></tr>
+    <tr><td class="paramname">seed_edge</td><td>所属边界的种子边，可为孤立边或仅邻接一个面的自由边。 </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>返回</dt><dd>新增一个面后的完整根形状；原始形状不被原地修改。 </dd></dl>
+<dl class="exception"><dt>异常</dt><dd>
+  <table class="exception">
+    <tr><td class="paramname">std::runtime_error</td><td>找不到闭环、覆盖已有面或无法生成有效补面。 </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="a69e29e1148112c2c48460343d236a734" name="a69e29e1148112c2c48460343d236a734"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a69e29e1148112c2c48460343d236a734">&#9670;&#160;</a></span>findGapPartnerChains()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::vector&lt; <a class="el" href="structGeometryGapPartnerChain.html">GeometryGapPartnerChain</a> &gt; GeometryTopologyEditor::findGapPartnerChains </td>
+          <td>(</td>
+          <td class="paramtype">const TopoDS_Shape &amp;</td>          <td class="paramname"><span class="paramname"><em>root</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const std::vector&lt; TopoDS_Edge &gt; &amp;</td>          <td class="paramname"><span class="paramname"><em>seed_chain</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">double</td>          <td class="paramname"><span class="paramname"><em>tolerance</em></span>&#160;)</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel static">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>为种子自由边链查找容差内的对侧间隙链，按最大间隙升序返回。 </p>
+<p>候选链须与种子链互相覆盖且总长接近，语义与 stitchBoundaryEdges 一致； 多组时由调用方按容差收窄，或取间隙最小者。不执行缝合。</p>
+<dl class="params"><dt>参数</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">root</td><td>当前几何根形状。 </td></tr>
+    <tr><td class="paramname">seed_chain</td><td>同侧连续自由边链。 </td></tr>
+    <tr><td class="paramname">tolerance</td><td>最大间隙距离，必须为有限正数。 </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>返回</dt><dd>对侧链候选；第一项最大间隙最小。 </dd></dl>
+
+</div>
+</div>
+<a id="a65a5605a372d9b779bbe2a2456b6b4a8" name="a65a5605a372d9b779bbe2a2456b6b4a8"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a65a5605a372d9b779bbe2a2456b6b4a8">&#9670;&#160;</a></span>findStitchCandidates()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::vector&lt; <a class="el" href="structGeometryStitchCandidate.html">GeometryStitchCandidate</a> &gt; GeometryTopologyEditor::findStitchCandidates </td>
+          <td>(</td>
+          <td class="paramtype">const TopoDS_Shape &amp;</td>          <td class="paramname"><span class="paramname"><em>root</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">double</td>          <td class="paramname"><span class="paramname"><em>tolerance</em></span>&#160;)</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel static">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>查找给定容差内方向相容的跨面自由边配对。 </p>
+<p>以较短边为基准计算到较长边的最大采样偏差，因此能够识别“一条长边对应 多条短边”的 Stitch 场景；同一 Face 内的边和已经共享拓扑点的边不会入选。</p>
+<dl class="params"><dt>参数</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">root</td><td>当前几何根形状。 </td></tr>
+    <tr><td class="paramname">tolerance</td><td>最大允许间隙，使用模型长度单位。 </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="a5fcfd97ec17fc53e18f1d60a5d10ebb6" name="a5fcfd97ec17fc53e18f1d60a5d10ebb6"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a5fcfd97ec17fc53e18f1d60a5d10ebb6">&#9670;&#160;</a></span>mergeEdges()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">TopoDS_Shape GeometryTopologyEditor::mergeEdges </td>
+          <td>(</td>
+          <td class="paramtype">const TopoDS_Shape &amp;</td>          <td class="paramname"><span class="paramname"><em>root</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const std::vector&lt; TopoDS_Edge &gt; &amp;</td>          <td class="paramname"><span class="paramname"><em>edges</em></span>&#160;)</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel static">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>将一组连续且同域的 Edge 合并为一个 Edge。 </p>
+<p>仅开放选中边之间只连接两条选中边的公共顶点，端点及其他分支节点保持不变。</p>
+<dl class="params"><dt>参数</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">root</td><td>当前几何根形状。 </td></tr>
+    <tr><td class="paramname">edges</td><td>两个或多个属于 root 的待合并边。 </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>返回</dt><dd>合并后的完整根形状。</dd></dl>
+<dl class="exception"><dt>异常</dt><dd>
+  <table class="exception">
+    <tr><td class="paramname">std::invalid_argument</td><td>输入为空、边数量不足、存在重复边或边不属于 root。 </td></tr>
+    <tr><td class="paramname">std::runtime_error</td><td>所选边不连续、不同域、未能完整合并或结果拓扑无效。 </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="a1f75168e1b9f2f8879d7c5c1100c94b2" name="a1f75168e1b9f2f8879d7c5c1100c94b2"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a1f75168e1b9f2f8879d7c5c1100c94b2">&#9670;&#160;</a></span>mergeFaces()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">TopoDS_Shape GeometryTopologyEditor::mergeFaces </td>
+          <td>(</td>
+          <td class="paramtype">const TopoDS_Shape &amp;</td>          <td class="paramname"><span class="paramname"><em>root</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const std::vector&lt; TopoDS_Face &gt; &amp;</td>          <td class="paramname"><span class="paramname"><em>faces</em></span>&#160;)</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel static">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>将一组连通且同域的 Face 合并为一个 Face。 </p>
+<p>删除选中面之间的内部共享边；若同一 Edge 还是根 Compound 的独立子节点，也会一并删除。 其他边界保持不变，避免同时合并 root 中未选中的同域面。</p>
+<dl class="params"><dt>参数</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">root</td><td>当前几何根形状。 </td></tr>
+    <tr><td class="paramname">faces</td><td>两个或多个属于 root 的待合并面。 </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>返回</dt><dd>合并后的完整根形状。</dd></dl>
+<dl class="exception"><dt>异常</dt><dd>
+  <table class="exception">
+    <tr><td class="paramname">std::invalid_argument</td><td>输入为空、面数量不足、存在重复面或面不属于 root。 </td></tr>
+    <tr><td class="paramname">std::runtime_error</td><td>所选面不连通、不同域、未能完整合并或结果拓扑无效。 </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="a4d7585781e3fd2c6e338fd7e57abb139" name="a4d7585781e3fd2c6e338fd7e57abb139"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a4d7585781e3fd2c6e338fd7e57abb139">&#9670;&#160;</a></span>mergeVertices()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">TopoDS_Shape GeometryTopologyEditor::mergeVertices </td>
+          <td>(</td>
+          <td class="paramtype">const TopoDS_Shape &amp;</td>          <td class="paramname"><span class="paramname"><em>root</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const std::vector&lt; TopoDS_Vertex &gt; &amp;</td>          <td class="paramname"><span class="paramname"><em>vertices</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const gp_Pnt &amp;</td>          <td class="paramname"><span class="paramname"><em>target_position</em></span>&#160;)</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel static">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>将两个或多个 Vertex 合并到目标位置，并实际重建相邻曲线和面。 </p>
+<p>不限制点间距离；不通过放大拓扑容差掩盖几何位移。无效重建会抛异常，输入不变。 </p><dl class="params"><dt>参数</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">target_position</td><td>合并后的公共顶点位置。 </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="a625a947887fc56b96acf0d786c5755d7" name="a625a947887fc56b96acf0d786c5755d7"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a625a947887fc56b96acf0d786c5755d7">&#9670;&#160;</a></span>recommendCollapseVertex()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">TopoDS_Vertex GeometryTopologyEditor::recommendCollapseVertex </td>
+          <td>(</td>
+          <td class="paramtype">const TopoDS_Shape &amp;</td>          <td class="paramname"><span class="paramname"><em>root</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const TopoDS_Edge &amp;</td>          <td class="paramname"><span class="paramname"><em>edge</em></span>&#160;)</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel static">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>根据相邻曲线、Face、边数和边长推荐应保留的端点。 </p>
+
+</div>
+</div>
+<a id="affed095659e359fdb6342f5b4a71edb9" name="affed095659e359fdb6342f5b4a71edb9"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#affed095659e359fdb6342f5b4a71edb9">&#9670;&#160;</a></span>removeShape()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">TopoDS_Shape GeometryTopologyEditor::removeShape </td>
+          <td>(</td>
+          <td class="paramtype">const TopoDS_Shape &amp;</td>          <td class="paramname"><span class="paramname"><em>root</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const TopoDS_Shape &amp;</td>          <td class="paramname"><span class="paramname"><em>target</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">bool</td>          <td class="paramname"><span class="paramname"><em>delete_children</em></span>&#160;)</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel static">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>从根形状中删除一个几何形状，Face 支持嵌套在 Shell/Solid 内。 </p>
+<p>顶层独立形状走 removeTopLevelShape；嵌套 Face 从父 Shell/Solid 中摘除后重建 父级，Solid 因缺面不再闭合时降级为对应 Shell。用于切除分割后的突出面片。 嵌套的 Edge/Vertex 不支持（会破坏所在 Face 的 Wire），请先删所属 Face。</p>
+<dl class="params"><dt>参数</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">root</td><td>当前几何根形状。 </td></tr>
+    <tr><td class="paramname">target</td><td>要删除的 Vertex、Edge、Face 或 Solid。 </td></tr>
+    <tr><td class="paramname">delete_children</td><td>为 false 时保留独占下级拓扑；嵌套面独占的边提升为独立几何。 </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>返回</dt><dd>删除后的根形状；没有任何剩余拓扑时返回空 Shape。</dd></dl>
+<dl class="exception"><dt>异常</dt><dd>
+  <table class="exception">
+    <tr><td class="paramname">std::invalid_argument</td><td>输入为空、类型不支持、目标不属于 root，或目标是 不能单独删除的嵌套 Edge/Vertex。 </td></tr>
+    <tr><td class="paramname">std::runtime_error</td><td>编辑后的拓扑无效。 </td></tr>
+  </table>
+  </dd>
+</dl>
 
 </div>
 </div>
@@ -199,6 +676,303 @@ $(function() {
   <table class="exception">
     <tr><td class="paramname">std::invalid_argument</td><td>输入为空、类型不支持或目标不是顶层独立形状。 </td></tr>
     <tr><td class="paramname">std::runtime_error</td><td>编辑后的拓扑无效。 </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="ae5b76e8d87fe99ed6c7927beea61cdd6" name="ae5b76e8d87fe99ed6c7927beea61cdd6"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ae5b76e8d87fe99ed6c7927beea61cdd6">&#9670;&#160;</a></span>repairFreeEdgeGaps()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="structGeometryGapRepairResult.html">GeometryGapRepairResult</a> GeometryTopologyEditor::repairFreeEdgeGaps </td>
+          <td>(</td>
+          <td class="paramtype">const TopoDS_Shape &amp;</td>          <td class="paramname"><span class="paramname"><em>root</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">double</td>          <td class="paramname"><span class="paramname"><em>tolerance</em></span>&#160;)</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel static">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>自动缝合根形状中位于给定容差内的跨面自由边。 </p>
+<dl class="section return"><dt>返回</dt><dd>修复后的完整根形状以及候选数、实际 Stitch 边数。 </dd></dl>
+
+</div>
+</div>
+<a id="a15bbeac90706de8ecf9141280677536a" name="a15bbeac90706de8ecf9141280677536a"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a15bbeac90706de8ecf9141280677536a">&#9670;&#160;</a></span>splitEdge()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">TopoDS_Shape GeometryTopologyEditor::splitEdge </td>
+          <td>(</td>
+          <td class="paramtype">const TopoDS_Shape &amp;</td>          <td class="paramname"><span class="paramname"><em>root</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const TopoDS_Edge &amp;</td>          <td class="paramname"><span class="paramname"><em>edge</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">double</td>          <td class="paramname"><span class="paramname"><em>ratio</em></span>&#160;)</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel static">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>将一条 Edge 按归一化比例分成两条 Edge。 </p>
+<dl class="params"><dt>参数</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">ratio</td><td>从起点到终点的比例，必须位于 (0, 1)。 </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="a9deb1714068d1dd91803d6ed78e18316" name="a9deb1714068d1dd91803d6ed78e18316"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a9deb1714068d1dd91803d6ed78e18316">&#9670;&#160;</a></span>splitFace()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">TopoDS_Shape GeometryTopologyEditor::splitFace </td>
+          <td>(</td>
+          <td class="paramtype">const TopoDS_Shape &amp;</td>          <td class="paramname"><span class="paramname"><em>root</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const TopoDS_Face &amp;</td>          <td class="paramname"><span class="paramname"><em>target_face</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const std::vector&lt; TopoDS_Edge &gt; &amp;</td>          <td class="paramname"><span class="paramname"><em>splitting_edges</em></span>&#160;)</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel static">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>使用已经位于目标面上的几何边分割一个 Face。 </p>
+<p>目标面可以是根形状的直接子形状，也可以嵌套在 Shell 或 Solid 中。分割边必须 已经落在目标面的参数域内，且相互连接时共享拓扑顶点；本函数不负责投影或压印。</p>
+<dl class="params"><dt>参数</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">root</td><td>当前几何根形状。 </td></tr>
+    <tr><td class="paramname">target_face</td><td>要分割的面，必须属于 root。 </td></tr>
+    <tr><td class="paramname">splitting_edges</td><td>一条或多条位于 target_face 上的分割边。 </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>返回</dt><dd>分割后的完整根形状。</dd></dl>
+<dl class="exception"><dt>异常</dt><dd>
+  <table class="exception">
+    <tr><td class="paramname">std::invalid_argument</td><td>输入为空、分割边集合为空、目标面不属于 root，或分割边 不在目标面上。 </td></tr>
+    <tr><td class="paramname">std::runtime_error</td><td>OCC 分割失败、目标面没有实际分裂或结果拓扑无效。 </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="a8999456be7a3c2d4742e5a9fa5ddd0c8" name="a8999456be7a3c2d4742e5a9fa5ddd0c8"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a8999456be7a3c2d4742e5a9fa5ddd0c8">&#9670;&#160;</a></span>splitFaceByFaces()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">TopoDS_Shape GeometryTopologyEditor::splitFaceByFaces </td>
+          <td>(</td>
+          <td class="paramtype">const TopoDS_Shape &amp;</td>          <td class="paramname"><span class="paramname"><em>root</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const TopoDS_Face &amp;</td>          <td class="paramname"><span class="paramname"><em>target_face</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const std::vector&lt; TopoDS_Face &gt; &amp;</td>          <td class="paramname"><span class="paramname"><em>splitting_faces</em></span>&#160;)</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel static">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>使用一个或多个相交 Face 分割目标 Face。 </p>
+<p>切割面只作为工具保留在原位置；函数先计算目标面与切割面的交线，再仅替换 目标面，避免同时分割根形状中的其他 Face。</p>
+<dl class="params"><dt>参数</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">root</td><td>当前几何根形状。 </td></tr>
+    <tr><td class="paramname">target_face</td><td>要分割的面，必须属于 root。 </td></tr>
+    <tr><td class="paramname">splitting_faces</td><td>一个或多个属于 root 的切割面。 </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>返回</dt><dd>分割后的完整根形状。 </dd></dl>
+
+</div>
+</div>
+<a id="a564b6732fda7d065a85b5ef11a4174f3" name="a564b6732fda7d065a85b5ef11a4174f3"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a564b6732fda7d065a85b5ef11a4174f3">&#9670;&#160;</a></span>stitchBoundaryEdges()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">TopoDS_Shape GeometryTopologyEditor::stitchBoundaryEdges </td>
+          <td>(</td>
+          <td class="paramtype">const TopoDS_Shape &amp;</td>          <td class="paramname"><span class="paramname"><em>root</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const std::vector&lt; TopoDS_Edge &gt; &amp;</td>          <td class="paramname"><span class="paramname"><em>first_chain</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const std::vector&lt; TopoDS_Edge &gt; &amp;</td>          <td class="paramname"><span class="paramname"><em>second_chain</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">double</td>          <td class="paramname"><span class="paramname"><em>tolerance</em></span>&#160;)</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel static">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>在指定容差内缝合两组自由边链。 </p>
+<p>将第一组链所在的面及受影响邻面重建到第二组链，保持第二组曲线的几何位置。 支持一长对多短及多短对一长；移动链必须位于同一面且内部顶点没有支路。 两组边都必须属于 root、各自连续，且每条边只能邻接一个 Face。</p>
+<dl class="params"><dt>参数</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">root</td><td>当前几何根形状。 </td></tr>
+    <tr><td class="paramname">first_chain</td><td>要移动的自由边链。 </td></tr>
+    <tr><td class="paramname">second_chain</td><td>保持原位的目标自由边链。 </td></tr>
+    <tr><td class="paramname">tolerance</td><td>最大缝合距离，必须为有限正数。 </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>返回</dt><dd>缝合后的完整根形状。</dd></dl>
+<dl class="exception"><dt>异常</dt><dd>
+  <table class="exception">
+    <tr><td class="paramname">std::invalid_argument</td><td>输入为空、重复、非连续、不是自由边或不属于 root。 </td></tr>
+    <tr><td class="paramname">std::runtime_error</td><td>两组边不在容差内、未完整缝合或结果拓扑无效。 </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="a0f212c3db080eb9758fd9d9a8fe22376" name="a0f212c3db080eb9758fd9d9a8fe22376"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a0f212c3db080eb9758fd9d9a8fe22376">&#9670;&#160;</a></span>stitchGapFromSeedEdge()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">TopoDS_Shape GeometryTopologyEditor::stitchGapFromSeedEdge </td>
+          <td>(</td>
+          <td class="paramtype">const TopoDS_Shape &amp;</td>          <td class="paramname"><span class="paramname"><em>root</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const TopoDS_Edge &amp;</td>          <td class="paramname"><span class="paramname"><em>seed_edge</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">double</td>          <td class="paramname"><span class="paramname"><em>tolerance</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">bool *</td>          <td class="paramname"><span class="paramname"><em>reversed</em></span><span class="paramdefsep"> = </span><span class="paramdefval">nullptr</span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">bool *</td>          <td class="paramname"><span class="paramname"><em>sewn</em></span><span class="paramdefsep"> = </span><span class="paramdefval">nullptr</span>&#160;)</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel static">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>以种子自由边为入口，自动识别所属间隙边界并缝合已有面。 </p>
+<p>最大间隙作为搜索上限，按实际跨面配对距离由近到远寻找完整边链。 固定最近完整配对后优先移动选中侧；重建失败则基于原模型尝试反向。 缺口端部边跨邻面时，反向允许重新划分同一组边的移动链，但不改选其他缺口。 不创建填充面。双向失败后按完整边链实测偏差推导内部预算，进行局部 Sewing；拟合精度不随搜索上限放宽。</p>
+<dl class="params"><dt>参数</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">root</td><td>当前几何根形状。 </td></tr>
+    <tr><td class="paramname">seed_edge</td><td>间隙边，必须是 root 上的自由边界边。 </td></tr>
+    <tr><td class="paramname">tolerance</td><td>最大缝合距离，必须为有限正数。 </td></tr>
+    <tr><td class="paramname">sewn</td><td>可选输出；容差缝合后备成功时为 true。 </td></tr>
+    <tr><td class="paramname">reversed</td><td>可选输出；仅反向缝合成功时为 true，失败或正向成功为 false。 </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>返回</dt><dd>缝合后的完整根形状。</dd></dl>
+<dl class="exception"><dt>异常</dt><dd>
+  <table class="exception">
+    <tr><td class="paramname">std::invalid_argument</td><td>种子边不是自由边或不属于 root。 </td></tr>
+    <tr><td class="paramname">std::runtime_error</td><td>容差内找不到对侧间隙链，或缝合失败。 </td></tr>
   </table>
   </dd>
 </dl>

@@ -1,0 +1,11 @@
+<map id="geometry::repair::BoundaryAudit" name="geometry::repair::BoundaryAudit">
+<area shape="rect" id="Node000001" title="修复前捕获边、点身份及各自误差上限；修复后检查拓扑及三维/二维曲线一致性。 既有容差仅作用于对应实体，不传播成整个局部区域的求解容差。" alt="" coords="645,40,845,80"/>
+<area shape="rect" id="Node000002" title=" " alt="" coords="318,8,525,48"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="539,37,645,47,645,53,538,42"/>
+<area shape="rect" id="Node000003" title=" " alt="" coords="10,8,191,48"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="205,25,318,25,318,31,205,31"/>
+<area shape="rect" id="Node000004" title=" " alt="" coords="313,72,529,112"/>
+<area shape="poly" id="edge3_Node000001_Node000004" title=" " alt="" coords="543,81,621,73,645,71,645,76,622,79,543,86"/>
+<area shape="rect" id="Node000005" title=" " alt="" coords="5,72,196,112"/>
+<area shape="poly" id="edge4_Node000004_Node000005" title=" " alt="" coords="210,89,313,89,313,95,210,95"/>
+</map>

@@ -1,3 +1,3 @@
 <map id="类继承关系图" name="类继承关系图">
-<area shape="rect" id="Node000000" href="$structQPythonRuntimeQml.html" title="QPythonRuntime 的 QML 外来类型包装：类本体编入 pythonApp 静态库 （不携带 QML 宏），QML 注册经本包装在 modelQml 的 app...." alt="" coords="5,5,164,31"/>
+<area shape="rect" id="Node000000" href="$classModelScope.html" title="模型操作作用域：undo 边界与通知 flush 的组合生命周期" alt="" coords="5,5,107,31"/>
 </map>
