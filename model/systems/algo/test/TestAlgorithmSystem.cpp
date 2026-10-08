@@ -1,5 +1,9 @@
 #include "AlgorithmHandler.h"
 #include "AlgorithmSystem.h"
+#include "AlgorithmSystemRegister.h"
+#include "HandlerCreatorDestroyerFactory.h"
+#include "PluginBase.h"
+
 #include "ArgObject.h"
 #include "ComponentData.h"
 #include "JobRunner.h"
@@ -8,6 +12,7 @@
 #include "ModelLayer.h"
 #include "UndoStack.h"
 #include "test/OwnerQueue.h"
+#include <QJsonArray>
 
 #include <array>
 #include <catch2/catch_approx.hpp>
@@ -264,4 +269,47 @@ TEST_CASE("Algorithm registration and runner binding reject wrong threads before
     REQUIRE_NOTHROW(system.setJobRunner(nullptr));
     REQUIRE_NOTHROW(system.unregisterHandler(meta));
     REQUIRE(system.getAlgorithmInfos().empty());
+}
+
+TEST_CASE("Algorithm navigation survives plugin registration and legacy replacement", "[AlgorithmSystem][navigation]")
+{
+    class NavigationPlugin : public systems::PluginBase {
+        const systems::HandlerCreatorDestroyer& getHandlerCreatorDestroyer() noexcept override
+        {
+            return systems::HandlerCreatorDestroyerFactory<ReportingHandler, AlgorithmHandler>::get();
+        }
+    } plugin;
+    ModelLayer model;
+    systems::io::ModelIOSystem io(model);
+    AlgorithmSystem system(io, model);
+    AlgorithmSystemRegister registrar(system);
+    QJsonObject metadata {
+        { "name", "Mesher" },
+        { "display_name", "Mesh generator" },
+        { "navigation", QJsonObject { { "categories", QJsonArray { "triangle", "tetrahedron", "", 1 } }, { "group", "Generate" }, { "icon", "qrc:/plugin/mesher.svg" }, { "order", -10 }, { "label", "  网格生成（德劳内方法）  " } } }
+    };
+    auto navigation = metadata.value("navigation").toObject();
+    navigation.insert("category_defaults", QJsonObject { { "triangle", QJsonObject { { "网格类型", 0 }, { "ignored", QJsonArray {} } } } });
+    metadata.insert("navigation", navigation);
+    REQUIRE(registrar.registerPlugin(metadata, plugin));
+    const auto* info = system.getAlgorithmInfos().front();
+    CHECK(info->navigation.categories == std::vector<std::string> { "triangle", "tetrahedron" });
+    CHECK(info->navigation.group == "Generate");
+    CHECK(info->navigation.icon == "qrc:/plugin/mesher.svg");
+    CHECK(info->navigation.order == -10);
+    CHECK(info->navigation.label == "网格生成（德劳内方法）");
+    CHECK(info->navigation.category_defaults.at("triangle").at("网格类型") == "0");
+    CHECK(info->navigation.category_defaults.at("triangle").size() == 1);
+
+    metadata.remove("navigation");
+    REQUIRE(registrar.registerPlugin(metadata, plugin));
+    info = system.getAlgorithmInfos().front();
+    CHECK(info->navigation.categories.empty());
+    CHECK(info->navigation.group.empty());
+    CHECK(info->navigation.icon.empty());
+    CHECK(info->navigation.order == 0);
+    CHECK(info->navigation.label.empty());
+    CHECK(info->navigation.category_defaults.empty());
+    registrar.unregisterPlugin(metadata);
+    CHECK(system.getAlgorithmInfos().empty());
 }

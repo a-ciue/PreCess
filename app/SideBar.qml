@@ -12,29 +12,132 @@ import QtQuick.Dialogs
 import app.core
 import app.model
 import app.model.systems.algo
+import "AlgorithmNavigation.js" as AlgorithmNavigation
 
 Item{
     id: root
     property var parameters: []
+    property bool changingOperation: false
     readonly property QSelection emptySelection: QSelection {}
 
     readonly property var activeOp: App.activeOperation
+    readonly property bool meshGeneration: !!(activeOp && activeOp.isMeshGeneration)
+    readonly property string panelTitle: root.meshGeneration && root.activeOp.categoryTitle
+            ? qsTr("操作面板") + "-" + root.activeOp.categoryTitle : qsTr("操作面板")
+    property var algorithmInfos: QModelManager.algorithmSystem.algorithmsInfo
+    readonly property var meshAlgorithms: meshGeneration
+        ? AlgorithmNavigation.buildAlgorithms(root.algorithmInfos, activeOp.meshCategory) : []
+    property var lastMeshAlgorithms: ({})
+
+    function selectMeshAlgorithm(index, force = false) {
+        if (!root.meshGeneration)
+            return
+        const info = index >= 0 && index < root.meshAlgorithms.length ? root.meshAlgorithms[index] : null
+        // QVariant/QObject 包装可产生不同 JS 引用；用注册身份避免刷新循环。
+        if (!force && info && root.activeOp.info && root.activeOp.info.name === info.name)
+            return
+        const category = root.activeOp.meshCategory
+        const title = root.activeOp.categoryTitle
+        if (info)
+            root.lastMeshAlgorithms[category] = info.name
+        App.activeOperation = {
+            isMeshGeneration: true,
+            meshCategory: category,
+            categoryTitle: title,
+            info: info,
+            execute: info ? function(model, args) {
+                QModelManager.algorithmSystem.call(info.name, model, args)
+            } : null
+        }
+    }
+
+    function refreshMeshAlgorithm(force = false) {
+        if (!root.meshGeneration)
+            return
+        const name = root.activeOp.info ? root.activeOp.info.name
+            : root.lastMeshAlgorithms[root.activeOp.meshCategory]
+        const index = root.meshAlgorithms.findIndex(info => info.name === name)
+        if (root.meshAlgorithms.length > 0)
+            root.selectMeshAlgorithm(index >= 0 ? index : 0, force)
+        else if (root.activeOp.info)
+            root.selectMeshAlgorithm(-1)
+    }
+
+    function refreshRegisteredMeshAlgorithm() {
+        root.refreshMeshAlgorithm(true)
+    }
+
+    onAlgorithmInfosChanged: Qt.callLater(root.refreshRegisteredMeshAlgorithm)
+
+    // 参数模型与候选列表先完成绑定更新，再切换操作，避免重入清空新参数。
+    onMeshAlgorithmsChanged: Qt.callLater(root.refreshMeshAlgorithm)
 
     onActiveOpChanged: {
+        root.changingOperation = true
         App.selection.listeningSelectorIndex = -1
-        // 创建类操作直接提供默认参数，避免依赖 ListView delegate 的延迟初始化时机。
-        parameters = root.activeOp && root.activeOp.defaultParameters
-                ? root.activeOp.defaultParameters.slice() : []
+        // 操作开始时初始化全部参数，避免依赖可视行的创建与回收时机。
+        parameters = root.createParameters()
         // 活动操作是功能则进入该功能（interactive 的交互随之一并上线），否则退出当前功能
         // （幂等，守卫在功能系统内；进入/退出经 FeatureHandler::activate/deactivate 通知功能）
         var isFeature = !!(activeOp && activeOp.isFeature)
         QModelManager.featureSystem.setFeatureActive(isFeature ? activeOp.info.name : "")
+        if (isFeature) {
+            for (let i = 0; i < root.parameters.length; ++i) {
+                // Button 是点击事件，进入功能只初始化计数，不能派发一次点击。
+                if (root.activeOp.info.arg_types[i].type !== QArgType.Button)
+                    QModelManager.featureSystem.setParameter(root.activeOp.info.name, i, root.parameters[i])
+            }
+        }
+        if (root.meshGeneration && !root.activeOp.info)
+            Qt.callLater(root.refreshMeshAlgorithm)
+        root.changingOperation = false
     }
 
-    // 写入参数值；功能的参数为持久参数，修改即时写回功能系统实时生效
+    // 默认值属于操作会话，不能由可回收的 ListView 行反复写入。
+    function createParameters() {
+        if (!root.activeOp || !root.activeOp.info)
+            return []
+        const presets = root.meshGeneration && root.activeOp.info.category_defaults
+                ? root.activeOp.info.category_defaults[root.activeOp.meshCategory] : null
+        return root.activeOp.info.arg_types.map((arg, index) => {
+            const defaults = root.activeOp.defaultParameters
+            if (defaults && defaults[index] !== undefined)
+                return defaults[index]
+            const preset = presets ? presets[arg.name] : undefined
+            const content = preset !== undefined ? String(preset) : arg.content
+            switch (arg.type) {
+            case QArgType.Combo: {
+                const parts = arg.content.split("|")
+                const count = parts[0].split(",").length
+                const value = preset !== undefined ? Number(preset) : (parts.length > 1 ? parseInt(parts[1]) : 0)
+                return Number.isFinite(value) && value >= 0 && value < count ? value : 0
+            }
+            case QArgType.Int: return parseInt(content)
+            case QArgType.Float: return parseFloat(content)
+            case QArgType.Bool: return content === "true"
+            case QArgType.Selector: return root.emptySelection
+            case QArgType.Button: return 0
+            default: return content || ""
+            }
+        })
+    }
+
+    function updateParam(index, value) {
+        if (Object.is(root.parameters[index], value))
+            return false
+        // 重新赋值才能通知绑定；原地修改 var 数组不会刷新功能回写的显示值。
+        const values = root.parameters.slice()
+        values[index] = value
+        root.parameters = values
+        return true
+    }
+
+    // 功能的参数持久化到系统；外部回写只更新展示，避免再次派发同一事件。
     function setParam(index, value) {
-        parameters[index] = value
-        if (root.activeOp && root.activeOp.isFeature)
+        // 切换时旧行尚未销毁，默认值刷新不能被当作对新操作的编辑。
+        if (root.changingOperation)
+            return
+        if (root.updateParam(index, value) && root.activeOp && root.activeOp.isFeature)
             QModelManager.featureSystem.setParameter(root.activeOp.info.name, index, value)
     }
 
@@ -58,12 +161,44 @@ Item{
         target: QModelManager.featureSystem
         function onParamValueChanged(feature, index, value) {
             if (root.activeOp && root.activeOp.info && root.activeOp.info.name === feature)
-                root.parameters[index] = value
+                root.updateParam(index, value)
+        }
+    }
+
+    ColumnLayout {
+        id: meshHeader
+        anchors.top: parent.top
+        anchors.left: parent.left
+        anchors.right: parent.right
+        anchors.margins: root.meshGeneration ? Theme.spacingSm : 0
+        spacing: Theme.spacingSm
+        visible: root.meshGeneration
+        height: visible ? implicitHeight : 0
+        ComboBox {
+            id: meshAlgorithmSelector
+            objectName: "meshAlgorithmSelector"
+            Layout.fillWidth: true
+            // 单入口也保留选择框，让三级导航与当前算法身份始终可见。
+            visible: root.meshAlgorithms.length > 0
+            model: root.meshAlgorithms.map(info => ({ text: info.label || info.display_name, name: info.name }))
+            textRole: "text"
+            enabled: root.meshAlgorithms.length > 0
+            currentIndex: root.activeOp && root.activeOp.info
+                ? root.meshAlgorithms.findIndex(info => info.name === root.activeOp.info.name) : -1
+            onActivated: index => root.selectMeshAlgorithm(index)
+            Accessible.name: qsTr("网格生成算法")
+        }
+        Label {
+            visible: root.meshAlgorithms.length === 0
+            text: qsTr("暂无可用算法")
+            color: Theme.textSecondary
+            Layout.fillWidth: true
         }
     }
 
     RowLayout{
         id: buttonRow
+        objectName: "operationButtons"
         anchors.top: parent.top
         anchors.left: parent.left
         anchors.right: parent.right
@@ -71,7 +206,17 @@ Item{
         height: visible ? 36 : 0
         spacing: Theme.spacingSm
         // 无活动操作时按钮行整体隐藏，避免两个 disabled 按钮占据首行
-        visible: !!(root.activeOp && root.activeOp.info)
+        visible: root.meshGeneration || !!(root.activeOp && root.activeOp.info)
+        // AnchorChanges 显式撤销旧锚点，避免动态绑定留下上下双锚点撑满面板。
+        states: State {
+            name: "meshGeneration"
+            when: root.meshGeneration
+            AnchorChanges {
+                target: buttonRow
+                anchors.top: undefined
+                anchors.bottom: root.bottom
+            }
+        }
         Button{
             id: commitButton
             text: "执行"
@@ -116,7 +261,7 @@ Item{
             ToolTip.visible: hovered
             ToolTip.delay: 500
             ToolTip.text: qsTr("结束当前操作")
-            enabled: !!(root.activeOp && root.activeOp.info)
+            enabled: !!root.activeOp
             Layout.fillHeight: true
             // 保留对号语义，用有边界的按钮与粗线标记提升辨识度。
             background: Rectangle {
@@ -153,15 +298,16 @@ Item{
         }
     }
     Item{
-        anchors.top: buttonRow.bottom
+        anchors.top: root.meshGeneration ? meshHeader.bottom : buttonRow.bottom
         anchors.left: parent.left
         anchors.right: parent.right
-        anchors.bottom: parent.bottom
+        anchors.bottom: root.meshGeneration ? buttonRow.top : parent.bottom
         clip: true
         ColumnLayout{
             anchors.fill: parent
             ListView{
                 id:parameterList
+                objectName: "operationParameters"
                 clip: true
                 // 固定预留滚动条槽，避免遮挡输入框或在滚动条显隐时挤动参数行。
                 contentWidth: Math.max(0, width - parameterScrollBar.implicitWidth - Theme.spacingXs)
@@ -171,7 +317,7 @@ Item{
                 Layout.fillWidth: true
                 Layout.margins: Theme.spacingSm
                 spacing: Theme.spacingSm
-                model: root.activeOp ? root.activeOp.info.arg_types : []
+                model: root.activeOp && root.activeOp.info ? root.activeOp.info.arg_types : []
                 delegate:Component{
                     Loader{
                         required property var model
@@ -214,12 +360,11 @@ Item{
         id:componentComboBox
         RowLayout{
             id: comboRow
+            // activated 的 index 是选项编号，不能当作参数在操作中的位置。
+            readonly property int parameterIndex: index
             spacing: Theme.spacingSm
             width: parameterList.contentWidth
-            property var value: null
-            ListModel{
-                id: comboModel
-            }
+            readonly property var modelDataValues: model.content.split("|")[0].split(",").map(text => ({ text: text }))
             Text{
                 id:nametext
                 text: model.name
@@ -231,37 +376,12 @@ Item{
             }
             ComboBox{
                 id:parameterComboBox
+                objectName: "parameterControl_" + index
                 Layout.fillWidth: true
-                model: comboModel
-                onCurrentIndexChanged: {
-                    if (comboRow.parent.initialized) {
-                        value = currentIndex
-                        root.setParam(index, value)
-                    }
-                }
-            }
-
-            Component.onCompleted: {
-                if(model && model.content){
-                    let parts = model.content.split("|")
-                    let items = parts[0].split(",")
-                    comboModel.clear()
-                    for(let i=0; i<items.length; i++){
-                        comboModel.append({"text":items[i]})
-                    }
-                    const parameterValue = root.parameters[index]
-                    let defaultIndex = parameterValue !== undefined
-                            && parameterValue !== null
-                            ? Number(parameterValue)
-                            : (parts.length > 1 ? parseInt(parts[1]) : 0)
-                    if (isNaN(defaultIndex) || defaultIndex < 0 || defaultIndex >= items.length) {
-                        defaultIndex = 0
-                    }
-                    parameterComboBox.currentIndex = defaultIndex
-                    value = defaultIndex
-                }
-                value = parameterComboBox.currentIndex
-                root.setParam(index, value)
+                model: comboRow.modelDataValues
+                textRole: "text"
+                currentIndex: Number(root.parameters[comboRow.parameterIndex])
+                onActivated: optionIndex => root.setParam(comboRow.parameterIndex, optionIndex)
             }
         }
     }
@@ -281,6 +401,7 @@ Item{
             }
             TextField {
                 id:parameterTextInput
+                objectName: "parameterControl_" + index
                 Layout.minimumWidth: 0
                 Layout.minimumHeight: 28
                 padding: 6
@@ -293,10 +414,19 @@ Item{
                     border.color: parent.activeFocus ? Theme.primary : Theme.borderStrong
                 }
                 Layout.fillWidth: true
-                text: model.content
-                onTextChanged:{
-                    // Int 走整数语义（parseInt 截断小数）；Float 保持 parseFloat
+                property bool editingValue: false
+                readonly property string sourceText: Number.isNaN(root.parameters[index])
+                        ? "" : String(root.parameters[index] ?? "")
+                onSourceTextChanged: {
+                    if (!editingValue)
+                        text = sourceText
+                }
+                Component.onCompleted: text = sourceText
+                onTextEdited: {
+                    // 保留负号、小数点等中间文本，不用解析结果覆盖正在输入的内容。
+                    editingValue = true
                     root.setParam(index, model.type === QArgType.Int ? parseInt(text) : parseFloat(text))
+                    editingValue = false
                 }
             }
         }
@@ -317,6 +447,7 @@ Item{
             }
             TextArea{
                 id:fileText
+                objectName: "parameterControl_" + index
                 Layout.minimumWidth: 0
                 Layout.minimumHeight: 28
                 padding: 6
@@ -331,12 +462,12 @@ Item{
                 wrapMode: TextEdit.Wrap
                 Layout.fillWidth: true
 
-                Component.onCompleted: {
-                    fileText.text = model.content
-                    root.setParam(index, fileText.text)
-                }
-                onEditingFinished: {
-                    root.setParam(index, fileText.text)
+                readonly property string sourceText: String(root.parameters[index] ?? "")
+                onSourceTextChanged: text = sourceText
+                Component.onCompleted: text = sourceText
+                onTextChanged: {
+                    if (parent.parent.initialized)
+                        root.setParam(index, text)
                 }
             }
             Button{
@@ -377,7 +508,6 @@ Item{
             id: textRow
             spacing: Theme.spacingSm
             width: parameterList.contentWidth
-            property var value: fileText.text
             Text{
                 id:nametext
                 text: model.name
@@ -399,6 +529,7 @@ Item{
             }
             TextArea{
                 id:fileText
+                objectName: "parameterControl_" + index
                 Layout.minimumWidth: 0
                 Layout.minimumHeight: 28
                 padding: 6
@@ -416,19 +547,12 @@ Item{
                 ToolTip.visible: hovered && model.description.length > 0
                 ToolTip.text: model.description
 
-                // 中间属性承接显示值（避免 text 绑定被用户输入摧毁）：
-                // 优先取参数当前值（功能回写的结果等），未赋值时取 content 默认
-                property string sourceText: {
-                    const v = root.parameters[index]
-                    return (v !== undefined && v !== null && v !== "") ? String(v) : (model.content || "")
-                }
+                readonly property string sourceText: String(root.parameters[index] ?? "")
                 onSourceTextChanged: text = sourceText
-                Component.onCompleted: {
-                    text = sourceText
-                    root.setParam(index, fileText.text)
-                }
-                onEditingFinished: {
-                    root.setParam(index, fileText.text)
+                Component.onCompleted: text = sourceText
+                onTextChanged: {
+                    if (textRow.parent.initialized)
+                        root.setParam(index, text)
                 }
             }
         }
@@ -438,9 +562,7 @@ Item{
         RowLayout{
             spacing: Theme.spacingSm
             width: parameterList.contentWidth
-            property var value: null
-            // 清空参数时传递明确的选择器对象，不让通用转换层解释 null。
-            readonly property QSelection emptySelection: QSelection {}
+            readonly property var value: root.parameters[index]
 
             Text{
                 id:nametext
@@ -455,7 +577,7 @@ Item{
                 id:selectedItems
                 Layout.fillWidth: true
                 elide: Text.ElideRight
-                text: value ? value.size():"无"
+                text: value && value.size() > 0 ? value.size() : "无"
                 color: value ? Theme.textPrimary : Theme.textSecondary
                 font.pixelSize: Theme.fontSizeBody
                 verticalAlignment: Text.AlignVCenter
@@ -463,6 +585,7 @@ Item{
 
             Button{
                 id: selectStartButton
+                objectName: "parameterControl_" + index
                 text: checked ? "结束选择" : "开始选择"
                 // 拾取进行中：强调色提示当前面板处于监听状态
                 highlighted: App.selection.listeningSelectorIndex === index
@@ -496,17 +619,10 @@ Item{
                     if (App.selection.listeningSelectorIndex !== index)
                         return
                     // 只更新当前监听参数；视口的 null 在此转换为明确的空选择器。
-                    value = selection
-                    root.setParam(index, value === null ? emptySelection : value)
+                    root.setParam(index, selection === null ? root.emptySelection : selection)
                 }
             }
 
-            Connections {
-                target: App.selection
-                function onSelectionInvalidated() {
-                    value = null
-                }
-            }
         }
     }
     Component{
@@ -526,6 +642,7 @@ Item{
             }
             CheckBox{
                 id: parameterCheckBox
+                objectName: "parameterControl_" + index
                 // 加大勾选区域，以实色背景区分已选状态；保留控件自身的键盘和无障碍行为。
                 indicator: Rectangle {
                     implicitWidth: 24
@@ -553,13 +670,8 @@ Item{
                     }
                 }
 
-                Component.onCompleted: {
-                    checked = (model.content === "true")
-                    root.setParam(index, checked)
-                }
-                onCheckedChanged: {
-                    root.setParam(index, checked)
-                }
+                checked: !!root.parameters[index]
+                onToggled: root.setParam(index, checked)
             }
         }
     }
@@ -569,6 +681,7 @@ Item{
             spacing: Theme.spacingSm
             width: parameterList.contentWidth
             Button{
+                objectName: "parameterControl_" + index
                 // Button 是无值触发器：计数器载荷，功能约定忽略值只读参数下标
                 text: model.name
                 Layout.fillWidth: true

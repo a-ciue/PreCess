@@ -248,7 +248,8 @@ bool AlgorithmSystem::registerHandler(const HandlerMetaData& meta_data, SystemHa
     // 元数据准备成功后才整体替换，异常不留下 handler 与信息不一致的注册。
     AlgorithmInfo info { .name = meta_data.name,
         .display_name = meta_data.display_name,
-        .arg_types = handler->args_type() };
+        .arg_types = handler->args_type(),
+        .navigation = meta_data.navigation };
     entries_.insert_or_assign(meta_data.name, AlgorithmEntry { std::move(handler), std::move(info) });
     spdlog::info("AlgorithmSystem::registerHandler: Registered handler for algorithm '{}'", meta_data.name);
     on_algorithm_infos_changed_();

@@ -43,6 +43,26 @@ HandlerMetaData AlgorithmSystemRegister::toMetaData(const QJsonObject& meta_data
     HandlerMetaData handle_data;
     handle_data.name = meta_data.value("name").toString().toStdString();
     handle_data.display_name = meta_data.value("display_name").toString().toStdString();
+    const auto navigation = meta_data.value("navigation").toObject();
+    for (const auto& category : navigation.value("categories").toArray()) {
+        const auto category_name = category.toString().trimmed();
+        if (!category_name.isEmpty())
+            handle_data.navigation.categories.push_back(category_name.toStdString());
+    }
+    handle_data.navigation.group = navigation.value("group").toString().toStdString();
+    handle_data.navigation.icon = navigation.value("icon").toString().toStdString();
+    handle_data.navigation.order = navigation.value("order").toInt();
+    handle_data.navigation.label = navigation.value("label").toString().trimmed().toStdString();
+    const auto category_defaults = navigation.value("category_defaults").toObject();
+    for (auto category = category_defaults.begin(); category != category_defaults.end(); ++category) {
+        const auto defaults = category.value().toObject();
+        for (auto parameter = defaults.begin(); parameter != defaults.end(); ++parameter) {
+            const auto value = parameter.value();
+            if (value.isString() || value.isDouble() || value.isBool())
+                handle_data.navigation.category_defaults[category.key().toStdString()][parameter.key().toStdString()]
+                    = value.toVariant().toString().toStdString();
+        }
+    }
     return handle_data;
 }
 }

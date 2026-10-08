@@ -47,6 +47,7 @@ struct PreparedAlgorithm;
 struct HandlerMetaData {
     std::string name { }; // 算法唯一名称，用作索引
     std::string display_name { }; // 算法UI展示用名称
+    AlgorithmNavigation navigation; //> 可选导航声明，旧插件可省略
 };
 
 class AlgorithmSystem {

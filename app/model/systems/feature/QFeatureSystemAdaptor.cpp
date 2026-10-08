@@ -3,6 +3,8 @@
 #include "FeatureSystem.h"
 #include "QArgObject.h"
 #include "QFeatureInfo.h"
+#include "QSelection.h"
+#include <QQmlEngine>
 
 #include <QMetaObject>
 #include <spdlog/spdlog.h>
@@ -70,7 +72,7 @@ QVariant QFeatureSystemAdaptor::invoke(const QString& unique_name)
 
 void QFeatureSystemAdaptor::notifyParameterChanged(const std::string& feature, std::size_t index, const core::ArgObject& value)
 {
-    // ArgObject → QVariant（覆盖常用显示类型，其余为空 QVariant）
+    // 将参数变更转换为面板展示值，保留各类型的实际载荷。
     QVariant q_value;
     if (const auto* v = value.get<ArgTypeEnum::Text>()) {
         q_value = QString::fromStdString(*v);
@@ -80,7 +82,22 @@ void QFeatureSystemAdaptor::notifyParameterChanged(const std::string& feature, s
         q_value = static_cast<qlonglong>(*v);
     } else if (const auto* v = value.get<ArgTypeEnum::Float>()) {
         q_value = *v;
+    } else if (const auto* v = value.get<ArgTypeEnum::Combo>()) {
+        // Combo/Button 的底层载荷为 int，不能漏转为空值回写到面板。
+        q_value = *v;
+    } else if (const auto* v = value.get<ArgTypeEnum::Path>()) {
+        const auto path = v->u8string();
+        q_value = QString::fromUtf8(reinterpret_cast<const char*>(path.data()), static_cast<qsizetype>(path.size()));
+    } else if (const auto* v = value.get<ArgTypeEnum::Selector>()) {
+        auto* selection = new QSelection;
+        selection->set(*v);
+        // 参数数组持有包装对象；替换后交由 QML GC 回收，不随临时信号失效。
+        QQmlEngine::setObjectOwnership(selection, QQmlEngine::JavaScriptOwnership);
+        q_value = QVariant::fromValue(selection);
     }
+    // 未支持的展示类型保留现有值，不能用无效 QVariant 清掉刚编辑的参数。
+    if (!q_value.isValid())
+        return;
     emit paramValueChanged(QString::fromStdString(feature), static_cast<int>(index), q_value);
 }
 

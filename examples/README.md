@@ -44,3 +44,50 @@ cmake --install build --prefix "<安装前缀>" --component AllPlugins
 - PRECESS_PLUGIN_IN_TREE 由构建入口管理，不手动设置。示例保留独立入口；项目内插件不需要这套 SDK 入口。以上命令的产物均放在独立 build 目录。
 
 模型写入、任务和线程契约以接口头文件为准。示例使用活动组件是教学简化，正式功能优先通过 Selector 选择目标。
+
+## 算法插件的导航声明
+
+`AlgorithmSystem` 插件可在 JSON 的 `handler` 中增加可选 `navigation`，主程序按声明构建导航，插件无需依赖 app 层：
+
+```json
+{
+  "system": "AlgorithmSystem",
+  "handler": {
+    "name": "ExampleMesher",
+    "display_name": "示例网格生成",
+    "navigation": {
+      "categories": ["triangle", "tetrahedron"],
+      "group": "生成",
+      "label": "网格生成（德劳内方法）",
+      "icon": "qrc:/example/mesher.svg",
+      "order": 10
+    }
+  }
+}
+```
+
+- 类别标识固定为 `triangle`（三角形）、`quadrilateral`（四边形）、`tetrahedron`（四面体）、`hexahedron`（六面体）；一个算法可声明多类，同一入口共享既有参数和执行逻辑。
+- 未声明导航、类别为空或只有未知类别时，算法进入“其他算法”；包含有效类别时按有效类别展示，不额外进入“其他算法”。
+- 顶层“网格生成算法”提供四类入口，具体算法在操作面板选择；“其他算法”保留工具栏按钮。
+- `label` 为可选业务名称，例如“三角形网格生成（德劳内方法）”，不填写库名称；必须与算法真实能力一致。未声明时沿用 `display_name`，内部仍按 `name` 分发，不影响脚本或执行接口。
+- `group` 为空时归入默认分组；`order` 默认 0，数值越小越靠前，同值按算法唯一名排序。分组顺序由组内最靠前的算法决定。
+- `icon` 应由插件自身注册资源；为空时显示通用算法图标。现有 JSON 无需修改即可继续加载。
+- 使用 C++ 直接注册时，将同样的信息填入 `HandlerMetaData::navigation`。
+
+对于已安装且没有源码的算法 DLL，可在 DLL 旁放置同名 `.navigation.json`，例如 `ExampleMesher.dll` 对应 `ExampleMesher.navigation.json`：
+
+```json
+{
+  "categories": ["tetrahedron"],
+  "label": "四面体网格生成（德劳内方法）",
+  "group": "生成",
+  "icon": "qrc:/example/mesher.svg",
+  "order": 10
+}
+```
+
+旁置文件覆盖内嵌的 `handler.navigation`，不会覆盖插件身份或执行接口。文件缺失时使用内嵌声明；文件无法读取、JSON 无效或顶层不是对象时，记录警告并回退内嵌声明，插件仍可正常注册。修改声明后重新加载插件或重启程序生效。静态插件使用内嵌声明。
+
+导航可选 `category_defaults` 按类别声明参数默认值，例如 `"category_defaults": {"triangle": {"网格类型": 0}, "quadrilateral": {"网格类型": 1}}`。键为参数名，Combo 值为选项索引；进入类别时应用，用户随后可调整。通用界面不根据插件名推断参数。
+
+现有 Gmsh / TetGen 二进制插件的业务名称和分类配置见 `algorithm-navigation/`。安装对应插件后，将匹配的 `.navigation.json` 复制到 DLL 同目录，再重新加载插件或重启程序；这些声明仅用于已安装插件，不安装算法二进制。

@@ -6,11 +6,39 @@
 #include "SystemRegisterBase.h"
 #include "PluginBase.h"
 
+#include <QFile>
 #include <QFileInfo>
+#include <QJsonDocument>
+#include <QJsonParseError>
 #include <QPluginLoader>
 #include <spdlog/spdlog.h>
 
 Q_DECLARE_INTERFACE(systems::PluginBase, "com.PreCess.systems.PluginBase/1.0")
+
+namespace {
+// 已分发的二进制插件可用旁置声明补充导航；不改动插件身份与执行接口。
+void applyNavigationDeclaration(QJsonObject& metadata, const std::filesystem::path& plugin_path)
+{
+    auto declaration_path = plugin_path;
+    declaration_path.replace_extension(".navigation.json");
+    QFile file(QString::fromLocal8Bit(declaration_path.string()));
+    if (!file.exists())
+        return;
+    if (!file.open(QIODevice::ReadOnly)) {
+        spdlog::warn("Cannot read plugin navigation declaration: {}", declaration_path.string());
+        return;
+    }
+    QJsonParseError error;
+    const auto declaration = QJsonDocument::fromJson(file.readAll(), &error);
+    if (error.error != QJsonParseError::NoError || !declaration.isObject()) {
+        spdlog::warn("Invalid plugin navigation declaration: {}", declaration_path.string());
+        return;
+    }
+    auto handler = metadata.value("handler").toObject();
+    handler.insert("navigation", declaration.object());
+    metadata.insert("handler", handler);
+}
+}
 
 namespace systems {
 void SystemPluginManager::registerStaticPlugins()
@@ -52,6 +80,7 @@ bool SystemPluginManager::registerPlugin(const std::filesystem::path& plugin_pat
     }
 
     QJsonObject system_meta_data = plugin_loader.metaData().value("MetaData").toObject();
+    applyNavigationDeclaration(system_meta_data, plugin_path);
     return this->loadPlugin(system_meta_data, *plugin_instance, plugin_name);
 }
 

@@ -1,0 +1,18 @@
+{
+  "categories": [
+    "triangle",
+    "quadrilateral"
+  ],
+  "group": "生成",
+  "icon": "qrc:/images/toolbar/Algorithm/gmsh.svg",
+  "order": 20,
+  "label": "曲面网格生成",
+  "category_defaults": {
+    "triangle": {
+      "网格类型": 0
+    },
+    "quadrilateral": {
+      "网格类型": 1
+    }
+  }
+}

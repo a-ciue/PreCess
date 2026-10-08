@@ -210,8 +210,9 @@ ApplicationWindow {
         Docking.DockPanel {
             id: sideBarDock
             uniqueName: "sideBar"
-            title: "操作面板"
+            title: sideBarContent.panelTitle
             SideBar {
+                id: sideBarContent
                 implicitWidth: 200
                 implicitHeight: 120
                 anchors.fill: parent

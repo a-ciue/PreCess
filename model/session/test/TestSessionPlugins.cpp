@@ -5,6 +5,7 @@
  * 插件目录经编译期宏 PRECESS_PLUGIN_DIR 注入（构建树 plugins 目录），
  * 用以验证 Session 的系统装配与插件注册链路端到端可用。
  */
+#include "AlgorithmSystem.h"
 #include "Session.h"
 
 #include "FeatureInfo.h"
@@ -15,6 +16,8 @@
 #include "test/OwnerQueue.h"
 
 #include <QCoreApplication>
+#include <QFile>
+#include <QTemporaryDir>
 #include <catch2/catch_test_macros.hpp>
 
 #include <filesystem>
@@ -105,4 +108,67 @@ TEST_CASE("Busy plugin unload keeps feature or IO registration until a successfu
     REQUIRE(session.pluginManager().getPluginNames().empty());
     REQUIRE(session.featureSystem().getFeatureInfos().empty());
     REQUIRE(session.ioSystem().registeredFileTypeInfos().empty());
+}
+
+TEST_CASE("Binary algorithm plugins accept sidecar navigation without losing legacy registration", "[session][plugins][navigation]")
+{
+    int argc = 0;
+    QCoreApplication app(argc, nullptr);
+#ifdef PRECESS_PLUGIN_DIR
+    const std::filesystem::path plugin_dir(PRECESS_PLUGIN_DIR);
+#else
+    SKIP("PRECESS_PLUGIN_DIR not defined");
+#endif
+    std::filesystem::path source;
+    for (const auto& entry : std::filesystem::directory_iterator(plugin_dir)) {
+        if (entry.path().stem().string().find("CmdExecutePlugin") != std::string::npos
+            && (entry.path().extension() == ".dll" || entry.path().extension() == ".so" || entry.path().extension() == ".dylib")) {
+            source = entry.path();
+            break;
+        }
+    }
+    REQUIRE_FALSE(source.empty());
+    QTemporaryDir directory;
+    REQUIRE(directory.isValid());
+    const auto target = std::filesystem::path(directory.path().toStdString()) / source.filename();
+    REQUIRE(QFile::copy(QString::fromStdString(source.string()), QString::fromStdString(target.string())));
+    auto declaration_path = target;
+    declaration_path.replace_extension(".navigation.json");
+    QFile declaration(QString::fromStdString(declaration_path.string()));
+    REQUIRE(declaration.open(QIODevice::WriteOnly));
+    bool expected_navigation = false;
+    SECTION("Valid declarations supplement a previously unclassified binary")
+    {
+        REQUIRE(declaration.write(R"({"categories":["tetrahedron"],"group":"Generate","order":10,"label":"Mesh generation"})") > 0);
+        expected_navigation = true;
+    }
+    SECTION("Malformed declarations preserve plugin availability")
+    {
+        REQUIRE(declaration.write("{invalid") > 0);
+    }
+    SECTION("Non-object declarations preserve plugin availability")
+    {
+        REQUIRE(declaration.write("[]") > 0);
+    }
+    declaration.close();
+    Session session;
+    REQUIRE(session.pluginManager().registerPlugin(target));
+    const auto infos = session.algorithmSystem().getAlgorithmInfos();
+    REQUIRE(infos.size() == 1);
+    CHECK(infos.front()->name == "cmdExecutePlugin");
+    if (expected_navigation) {
+        CHECK(infos.front()->navigation.categories == std::vector<std::string> { "tetrahedron" });
+        CHECK(infos.front()->navigation.group == "Generate");
+        CHECK(infos.front()->navigation.order == 10);
+        CHECK(infos.front()->navigation.label == "Mesh generation");
+    } else {
+        CHECK(infos.front()->navigation.categories.empty());
+        CHECK(infos.front()->navigation.label.empty());
+    }
+    declaration.close();
+    session.pluginManager().unregisterPlugin(target);
+    REQUIRE(session.pluginManager().registerPlugin(target));
+    CHECK(session.algorithmSystem().getAlgorithmInfos().size() == 1);
+    session.pluginManager().unregisterPlugin(target);
+    CHECK(session.algorithmSystem().getAlgorithmInfos().empty());
 }

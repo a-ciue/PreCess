@@ -31,6 +31,8 @@ QtObject {
     readonly property color surface: "#FFFFFF"
     //! 面板标题栏、表头等次级面
     readonly property color surfaceAlt: "#F7F8FA"
+    //! 停靠面板标题面，与内容区拉开层次
+    readonly property color panelHeaderSurface: "#E6EDF5"
     //! 列表项悬停着色
     readonly property color hoverOverlay: "#ECF0F4"
 

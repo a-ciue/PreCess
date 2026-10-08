@@ -3,6 +3,8 @@ import QtQuick.Controls
 import QtQuick.Layouts
 import QtQuick.Dialogs
 
+import "AlgorithmNavigation.js" as AlgorithmNavigation
+
 import app.core
 import app.model
 import app.model.systems
@@ -19,6 +21,32 @@ ColumnLayout {
     readonly property bool isWasm: Qt.platform.os === "wasm"
 
     property int activeCategory: -1
+    // 网格类别属于算法页内入口，不占据顶层页签。
+    readonly property var algorithmCategories: [
+        {
+            key: "triangle",
+            title: qsTr("三角形网格生成"),
+            icon: "qrc:/images/toolbar/Mesh/triangle-meshing.svg"
+        },
+        {
+            key: "quadrilateral",
+            title: qsTr("四边形网格生成"),
+            icon: "qrc:/images/toolbar/Mesh/quad-meshing.svg"
+        },
+        {
+            key: "tetrahedron",
+            title: qsTr("四面体网格生成"),
+            icon: "qrc:/images/toolbar/Algorithm/tetgen.svg"
+        },
+        {
+            key: "hexahedron",
+            title: qsTr("六面体网格生成"),
+            icon: "qrc:/images/toolbar/Mesh/hexa-meshing.svg"
+        }
+    ]
+    readonly property var algorithmInfos: QModelManager.algorithmSystem.algorithmsInfo
+    readonly property int algorithmPageStart: 2
+    readonly property int featurePageStart: algorithmPageStart + 2
     property real windowHeight: 600
 
     // 限制页高范围，给小窗口保留文字空间，避免大窗口工具栏过度放大。
@@ -45,10 +73,8 @@ ColumnLayout {
 
     // 算法与编辑系统尚无图标声明字段，暂保留其名称映射。
     readonly property var pluginIconMap: ({
-        // 编辑 (mesh)
         "CreateFacePlugin": "qrc:/images/toolbar/Edit/create-face.svg",
         "DeleteFacePlugin": "qrc:/images/toolbar/Edit/delete-face.svg",
-        // 算法 (algorithm)
         "TetGenPlugin": "qrc:/images/toolbar/Algorithm/tetgen.svg",
         "TetGenLibPlugin": "qrc:/images/toolbar/Algorithm/tetgen.svg",
         "GmshPlugin": "qrc:/images/toolbar/Algorithm/gmsh.svg",
@@ -270,6 +296,7 @@ ColumnLayout {
     }
 
     ToolBar {
+        Layout.fillWidth: true
         background: Rectangle {
             color: Theme.surfaceAlt
 
@@ -285,108 +312,126 @@ ColumnLayout {
             }
         }
 
-        RowLayout {
-            Layout.fillWidth: true
-            Layout.fillHeight: true
-            spacing: 2
+        Flickable {
+            anchors.fill: parent
+            implicitHeight: navigationRow.implicitHeight
+            contentWidth: navigationRow.implicitWidth
+            contentHeight: height
+            flickableDirection: Flickable.HorizontalFlick
+            boundsBehavior: Flickable.StopAtBounds
+            clip: true
 
-            RibbonTabButton {
-                text: "文件"
-                checkable: true
-                checked: activeCategory === 0
-                onClicked: activeCategory = (activeCategory === 0) ? -1 : 0
-            }
+            RowLayout {
+                id: navigationRow
+                spacing: 2
 
-            RibbonTabButton {
-                text: qsTr("编辑")
-                checkable: true
-                checked: activeCategory === 1
-                onClicked: activeCategory = (activeCategory === 1) ? -1 : 1
-            }
-
-            RibbonTabButton {
-                text: qsTr("算法")
-                checkable: true
-                checked: activeCategory === 2
-                onClicked: activeCategory = (activeCategory === 2) ? -1 : 2
-            }
-
-            // 功能菜单分页：按 menu_path 第一段（菜单）动态生成分页按钮，页序对应 StackLayout 索引 3 起
-            Repeater {
-                model: root.featureMenus
                 RibbonTabButton {
-                    required property var modelData
-                    required property int index
-                    text: modelData.name
+                    text: "文件"
                     checkable: true
-                    checked: activeCategory === 3 + index
-                    onClicked: activeCategory = (activeCategory === 3 + index) ? -1 : 3 + index
+                    checked: activeCategory === 0
+                    onClicked: activeCategory = (activeCategory === 0) ? -1 : 0
                 }
-            }
 
-            RibbonTabButton {
-                id: viewBtn
-                text: "视图"
-                onClicked: viewMenu.popup(viewBtn, 0, viewBtn.height)
-                Menu {
-                    id: viewMenu
-                    closePolicy: Popup.CloseOnEscape | Popup.CloseOnPressOutsideParent
+                RibbonTabButton {
+                    objectName: "editCategory"
+                    text: qsTr("编辑")
+                    checkable: true
+                    checked: activeCategory === 1
+                    onClicked: activeCategory = (activeCategory === 1) ? -1 : 1
+                }
 
-                    Action {
-                        text: "对象树"
+                RibbonTabButton {
+                    objectName: "meshGenerationTab"
+                    text: qsTr("网格生成算法")
+                    checkable: true
+                    checked: root.activeCategory === root.algorithmPageStart
+                    onClicked: root.activeCategory = checked ? root.algorithmPageStart : -1
+                }
+
+                RibbonTabButton {
+                    text: qsTr("其他算法")
+                    checkable: true
+                    checked: activeCategory === root.featurePageStart - 1
+                    onClicked: activeCategory = checked ? root.featurePageStart - 1 : -1
+                }
+
+                // 功能菜单页排在固定算法分类页之后
+                Repeater {
+                    model: root.featureMenus
+                    RibbonTabButton {
+                        required property var modelData
+                        required property int index
+                        text: modelData.name
                         checkable: true
-                        checked: objectTreeOpen
-                        onToggled: objectTreeToggled()
-                    }
-                    Action {
-                        text: "操作面板"
-                        checkable: true
-                        checked: propertyListOpen
-                        onToggled: propertyListToggled()
-                    }
-                    Action {
-                        text: "属性渲染"
-                        checkable: true
-                        checked: attributeRenderOpen
-                        onToggled: attributeRenderToggled()
-                    }
-                    Action {
-                        text: "JavaScript 控制台"
-                        checkable: true
-                        checked: consoleOpen
-                        onToggled: consoleToggled()
-                    }
-                    Action {
-                        text: "Python 控制台"
-                        checkable: true
-                        checked: pythonConsoleOpen
-                        onToggled: pythonConsoleToggled()
-                    }
-                    Action {
-                        text: "日志"
-                        checkable: true
-                        checked: outputLogOpen
-                        onToggled: outputLogToggled()
-                    }
-                    Action {
-                        text: "偏好设置"
-                        checkable: true
-                        checked: preferencesOpen
-                        onToggled: preferencesToggled()
-                    }
-                    MenuSeparator {}
-                    Action {
-                        text: qsTr("恢复默认布局")
-                        onTriggered: root.resetLayoutRequested()
+                        checked: activeCategory === root.featurePageStart + index
+                        onClicked: activeCategory = checked ? root.featurePageStart + index : -1
                     }
                 }
-            }
 
-            Item { Layout.fillWidth: true }
+                RibbonTabButton {
+                    id: viewBtn
+                    text: "视图"
+                    onClicked: viewMenu.popup(viewBtn, 0, viewBtn.height)
+                    Menu {
+                        id: viewMenu
+                        closePolicy: Popup.CloseOnEscape | Popup.CloseOnPressOutsideParent
+
+                        Action {
+                            text: "对象树"
+                            checkable: true
+                            checked: objectTreeOpen
+                            onToggled: objectTreeToggled()
+                        }
+                        Action {
+                            text: "操作面板"
+                            checkable: true
+                            checked: propertyListOpen
+                            onToggled: propertyListToggled()
+                        }
+                        Action {
+                            text: "属性渲染"
+                            checkable: true
+                            checked: attributeRenderOpen
+                            onToggled: attributeRenderToggled()
+                        }
+                        Action {
+                            text: "JavaScript 控制台"
+                            checkable: true
+                            checked: consoleOpen
+                            onToggled: consoleToggled()
+                        }
+                        Action {
+                            text: "Python 控制台"
+                            checkable: true
+                            checked: pythonConsoleOpen
+                            onToggled: pythonConsoleToggled()
+                        }
+                        Action {
+                            text: "日志"
+                            checkable: true
+                            checked: outputLogOpen
+                            onToggled: outputLogToggled()
+                        }
+                        Action {
+                            text: "偏好设置"
+                            checkable: true
+                            checked: preferencesOpen
+                            onToggled: preferencesToggled()
+                        }
+                        MenuSeparator {}
+                        Action {
+                            text: qsTr("恢复默认布局")
+                            onTriggered: root.resetLayoutRequested()
+                        }
+                    }
+                }
+            }
         }
     }
 
     StackLayout {
+        Layout.fillWidth: true
+        Layout.preferredHeight: root.ribbonPageHeight
         implicitHeight: activeCategory >= 0 ? root.ribbonPageHeight : 0
         visible: activeCategory >= 0
 
@@ -508,30 +553,122 @@ ColumnLayout {
             Item { Layout.fillWidth: true }
         }
 
-        // 2: 算法 → 数据驱动，图标按名映射
-        RowLayout {
+        Flickable {
+            id: meshCategoryPage
+            objectName: "meshCategoryPage"
             Layout.fillWidth: true
             Layout.fillHeight: true
-            spacing: 2
+            contentWidth: meshCategoryRow.implicitWidth
+            contentHeight: height
+            flickableDirection: Flickable.HorizontalFlick
+            boundsBehavior: Flickable.StopAtBounds
+            clip: true
+            RowLayout {
+                id: meshCategoryRow
+                height: meshCategoryPage.height
+                spacing: 2
+                Repeater {
+                    model: root.algorithmCategories
+                    RibbonActionButton {
+                        required property var modelData
+                        objectName: "algorithmCategory_" + modelData.key
+                        text: modelData.title
+                        icon.source: modelData.icon
+                        icon.width: root.ribbonIconSize
+                        icon.height: root.ribbonIconSize
+                        icon.color: "transparent"
+                        Layout.fillHeight: true
+                        checkable: true
+                        autoExclusive: true
+                        checked: !!(App.activeOperation && App.activeOperation.isMeshGeneration
+                            && App.activeOperation.meshCategory === modelData.key)
+                        onClicked: {
+                            if (!root.propertyListOpen)
+                                root.propertyListToggled()
+                            // 重复选择保留输入；新类别由操作面板解析默认或上次所选算法。
+                            if (App.activeOperation && App.activeOperation.isMeshGeneration
+                                    && App.activeOperation.meshCategory === modelData.key)
+                                return
+                            App.activeOperation = {
+                                isMeshGeneration: true,
+                                meshCategory: modelData.key,
+                                categoryTitle: modelData.title,
+                                info: null
+                            }
+                        }
+                    }
+                }
+            }
+        }
 
-            Repeater {
-                model: QModelManager.algorithmSystem.algorithmsInfo
-                RibbonActionButton {
-                    required property var modelData
-                    icon.source: root.getIconForPlugin(modelData.name)
-                    icon.width: root.ribbonIconSize
-                    icon.height: root.ribbonIconSize
-                    icon.color: "transparent"
-                    Layout.fillHeight: true
-                    text: modelData.display_name
-                    onClicked: root.activatePlugin(QModelManager.algorithmSystem.algorithmsInfo, modelData.name, QModelManager.algorithmSystem)
+        // 其他算法沿用原有按钮与参数面板入口。
+        Flickable {
+            id: algorithmPage
+            objectName: "algorithmPage_other"
+            readonly property var groups: AlgorithmNavigation.buildGroups(root.algorithmInfos, "other")
+            Layout.fillWidth: true
+            Layout.fillHeight: true
+            contentWidth: algorithmGroups.implicitWidth
+            contentHeight: height
+            flickableDirection: Flickable.HorizontalFlick
+            boundsBehavior: Flickable.StopAtBounds
+            clip: true
+
+            RowLayout {
+                id: algorithmGroups
+                height: algorithmPage.height
+                spacing: Theme.spacingSm
+
+                Repeater {
+                    model: algorithmPage.groups
+                    ColumnLayout {
+                        id: algorithmGroup
+                        required property var modelData
+                        spacing: 0
+                        Layout.fillHeight: true
+
+                        RowLayout {
+                            Layout.fillHeight: true
+                            spacing: 2
+                            Repeater {
+                                model: algorithmGroup.modelData.items
+                                RibbonActionButton {
+                                    id: algorithmAction
+                                    required property var modelData
+                                    topPadding: 4
+                                    bottomPadding: 4
+                                    objectName: "algorithmAction_" + modelData.name
+                                    icon.source: modelData.icon || "qrc:/images/toolbar/precess_extra_plugin.svg"
+                                    // 按钮文字和内边距先占位，图标使用剩余高度。
+                                    icon.height: Math.max(16, Math.min(root.ribbonIconSize,
+                                        root.ribbonPageHeight - topPadding - bottomPadding
+                                        - spacing - actionFontMetrics.height))
+                                    icon.width: icon.height
+                                    icon.color: "transparent"
+                                    Layout.fillHeight: true
+                                    text: modelData.display_name
+                                    onClicked: root.activatePlugin(root.algorithmInfos, modelData.name, QModelManager.algorithmSystem)
+                                    FontMetrics {
+                                        id: actionFontMetrics
+                                        font: algorithmAction.font
+                                    }
+                                }
+                            }
+                        }
+                    }
                 }
             }
 
-            Item { Layout.fillWidth: true }
+            Label {
+                parent: algorithmPage
+                anchors.centerIn: parent
+                visible: algorithmPage.groups.length === 0
+                text: qsTr("暂无可用算法")
+                color: Theme.textSecondary
+            }
         }
 
-        // 功能菜单页（索引 3 起）：页内按 menu_path 第二段（分组）排列功能按钮，同组排在一起，组间以竖线分隔
+        // 功能菜单页：页内按 menu_path 第二段（分组）排列功能按钮，同组排在一起，组间以竖线分隔
         Repeater {
             model: root.featureMenus
             RowLayout {
