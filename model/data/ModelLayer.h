@@ -139,17 +139,6 @@ public:
     const MeshIDMap& edgeIdMap() const;
 
     /**
-     * @brief 设置当前会话统一使用的几何清理容差。
-     * @throws std::invalid_argument 容差不是有限正数。
-     */
-    void setGeometryCleanupTolerance(double tolerance);
-
-    /**
-     * @brief 返回当前会话统一使用的几何清理容差。
-     */
-    double geometryCleanupTolerance() const noexcept;
-
-    /**
      * @brief 标记组件数据已修改（写路径自动调用；Topology 类立即失效邻接懒表并记入待通知集合）
      * @note 通知不即时发出，由操作边界 flushNotifications() 统一发 notifyComponentChanged
      * @param loc 写入口调用点（无归属写诊断用，由 ComponentOperator 写入口默认捕获）
@@ -247,7 +236,6 @@ private:
 
     MeshIDMap point_id_map_; // 点的 global<->local（gid 为纯身份标识，坐标由组件 MeshData 自持）
     MeshIDMap edge_id_map_; // 边的 global->local
-    double geometry_cleanup_tolerance_ { 0.01 }; //!< Stitch 与自动修复共用的会话级几何容差
 
     ModelObserver* observer_ { nullptr }; //!< 全局模型观察者，用于捕获模型事件
     std::vector<Index> pending_notify_; //!< 本次操作内被标脏的组件（去重；undo 操作记录的预留拦截点）

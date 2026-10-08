@@ -63,9 +63,7 @@ std::any AutoGeometryRepairHandler::execute(FeatureContext& ctx)
         if (component->mapping && !component->mapping->empty())
             return std::string("目标组件已经建立几何-网格映射，不能修改几何拓扑。");
 
-        // 检测与修复共用会话参数记忆；仅检测仍不修改几何，也不产生撤销记录。
-        ctx.model.setGeometryCleanupTolerance(*tolerance);
-        const double cleanup_tolerance = ctx.model.geometryCleanupTolerance();
+        const double cleanup_tolerance = *tolerance;
         const TopoDS_Shape& root = *component->geometry->rootShape;
         if (*mode == 0) {
             const std::vector<GeometryStitchCandidate> candidates =

@@ -117,8 +117,16 @@ TEST_CASE("AutoGeometryRepair feature detects then repairs free edge gaps", "[Au
     const std::string detection = std::any_cast<std::string>(
         feature_system.invoke("AutoGeometryRepair"));
     REQUIRE(detection.find("检测到 1 对") != std::string::npos);
-    REQUIRE(model_layer.geometryCleanupTolerance() == 0.01);
     REQUIRE(countBoundaryEdges(*model_layer.findComponent(fixture.component_id)) == original);
+
+    // 修改本插件参数后检测立即使用新容差，不依赖模型层的会话状态。
+    REQUIRE(feature_system.setParameter("AutoGeometryRepair", 1,
+        core::ArgObject::create<ArgTypeEnum::Float>(0.001)));
+    const auto narrow_detection = std::any_cast<std::string>(feature_system.invoke("AutoGeometryRepair"));
+    REQUIRE(narrow_detection.find("检测到 0 对") != std::string::npos);
+    REQUIRE(countBoundaryEdges(*model_layer.findComponent(fixture.component_id)) == original);
+    REQUIRE(feature_system.setParameter("AutoGeometryRepair", 1,
+        core::ArgObject::create<ArgTypeEnum::Float>(0.01)));
 
     REQUIRE(feature_system.setParameter("AutoGeometryRepair", 2,
         core::ArgObject::create<ArgTypeEnum::Combo>(1)));

@@ -63,8 +63,7 @@ std::any FillGapHandler::execute(FeatureContext& ctx)
         if (!edge_shape || edge_shape->ShapeType() != TopAbs_EDGE)
             return std::string("所选几何边已失效。");
 
-        ctx.model.setGeometryCleanupTolerance(*tolerance);
-        const double cleanup_tolerance = ctx.model.geometryCleanupTolerance();
+        const double cleanup_tolerance = *tolerance;
         // 先按选中侧到对侧的方向重建几何，再一次写回，形成一条撤销记录。
         bool reversed = false;
         bool sewn = false;
