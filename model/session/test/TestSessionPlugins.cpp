@@ -71,7 +71,8 @@ TEST_CASE("Busy plugin unload keeps feature or IO registration until a successfu
     SKIP("PRECESS_PLUGIN_DIR not defined");
 #endif
     std::string plugin_fragment;
-    SECTION("feature") { plugin_fragment = "FeatureDemoPlugin"; }
+    // 使用默认构建的产品插件，不能依赖 PRECESS_BUILD_EXAMPLES=ON。
+    SECTION("feature") { plugin_fragment = "CreatePointPlugin"; }
     SECTION("IO") { plugin_fragment = "OffModelPlugin"; }
     std::filesystem::path plugin_path;
     for (const auto& entry : std::filesystem::directory_iterator(plugin_dir)) {
