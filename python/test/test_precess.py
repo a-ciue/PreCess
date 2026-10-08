@@ -47,6 +47,18 @@ if plugins_dir.is_dir():
     names = session.feature_names()
     assert "CreateBox" in names, names
 
+    # 几何功能返回状态文字；创建的组件身份由会话查询取得。
+    def created_component_id(operation):
+        before_ids = {component_id for model in query.list_models()
+                      for component_id in query.component_ids(model.model_id)}
+        result = operation()
+        assert isinstance(result, str), result
+        after_ids = {component_id for model in query.list_models()
+                     for component_id in query.component_ids(model.model_id)}
+        new_ids = after_ids - before_ids
+        assert len(new_ids) == 1, (result, new_ids)
+        return new_ids.pop()
+
     # 参数自省：确定 call 顺序传参的含义与取值，Combo 带选项清单
     box_params = session.feature_params("CreateBox")
     assert [p["name"] for p in box_params] == ["原点 X", "原点 Y", "原点 Z", "X 方向长度",
@@ -56,8 +68,7 @@ if plugins_dir.is_dir():
 
     # 写入目标 = 新建 Model（Combo 参数下标 6 的选项下标 2）
     assert session.set_parameter("CreateBox", 6, 2)
-    component_id = session.invoke("CreateBox")
-    assert isinstance(component_id, int) and component_id >= 0, component_id
+    component_id = created_component_id(lambda: session.invoke("CreateBox"))
 
     assert query.has_component(component_id)
     assert query.find_model_id_by_component(component_id) >= 0
@@ -76,14 +87,13 @@ if plugins_dir.is_dir():
 
     # —— call 顺序传参：实参按声明序映射，前缀之外的参数保留当前值 ——
     # 上一步已把"写入目标"设为新建 Model，这里只传前三个 Float（原点）也合法
-    kw_component_id = session.call("CreateBox", 0.0, 0.0, 0.0)
-    assert isinstance(kw_component_id, int) and kw_component_id >= 0, kw_component_id
+    kw_component_id = created_component_id(lambda: session.call("CreateBox", 0.0, 0.0, 0.0))
     assert query.geometry_summary(kw_component_id).face_count == 6
 
     # 完整传参：六个 Float + 末位 Combo 按选项下标（2 = 新建 Model，映射见
     # feature_params 返回的 options 清单）
-    sized_component_id = session.call("CreateBox", 10.0, 0.0, 0.0, 4.0, 3.0, 2.0, 2)
-    assert isinstance(sized_component_id, int) and sized_component_id >= 0, sized_component_id
+    sized_component_id = created_component_id(
+        lambda: session.call("CreateBox", 10.0, 0.0, 0.0, 4.0, 3.0, 2.0, 2))
     assert query.component_name(sized_component_id) != query.component_name(kw_component_id)
 
     # 错误路径：未知功能 / 超出声明数量的实参 / Combo 误传非整型
