@@ -4,11 +4,11 @@
 
 ## 注册、参数和目标
 
-- 插件继承 QObject 和 systems::PluginBase，用 HandlerCreatorDestroyerFactory 由插件创建/销毁 Handler，保持 DLL 边界两侧分配释放配对。新算法和通用功能使用 FeatureHandler，编辑、IO 分别使用 EditHandler、ModelIOHandler。AlgorithmHandler 已废弃并冻结，仅供已有插件维护；先查头文件确认当前纯虚接口。
-- JSON 的 system 分别为 FeatureSystem、AlgorithmSystem、EditSystem、ModelIOSystem；handler.name 唯一。视口交互能力通过 JSON 的 interactive 声明，宿主读取声明，不能要求通用界面按插件名特判。
+- 插件继承 QObject 和 systems::PluginBase，用 HandlerCreatorDestroyerFactory 由插件创建/销毁 Handler，保持 DLL 边界两侧分配释放配对。新增算法、编辑和通用业务功能使用 FeatureHandler；IO 使用 ModelIOHandler。AlgorithmHandler / AlgorithmSystem 与 EditHandler / EditSystem 已废弃并冻结，仅维护已有调用者，不新增旧插件或扩展旧接口；先查头文件确认当前纯虚接口。
+- 新增业务插件 JSON 的 system 为 FeatureSystem，IO 为 ModelIOSystem；AlgorithmSystem、EditSystem 仅用于已有插件兼容，handler.name 唯一。视口交互能力通过 JSON 的 interactive 声明，宿主读取声明，不能要求通用界面按插件名特判。
 - 功能 setup(FeatureRegistrar&, FeatureContext&) 注册参数、菜单、按键和订阅；activate/deactivate 对应重复进出功能；teardown(FeatureContext&) 对应注销。上下文固定绑定系统与 owner，服务始终可调用；查询或任务结果可能为空，不检测接口是否装配。
 - `ctx.events.subscribe<ParameterChangedEvent>` 自动按所属功能过滤；全局监听明确使用 ctx.events.bus()。订阅句柄须保活并随生命周期退订。Button 参数只按 param_index 处理，计数载荷不作为值。
-- 优先注册 Selector 让用户选择目标；活动对象树组件只作 fallback。全局点 gid 经 ModelLayer::pointIdMap() 解析组件，局部边/面选择携 component_id。旧算法兼容实现覆盖 resolveComponentId，新算法通过 Feature Selector 解析目标；编辑 execute 接收 ModelLayer 与 fallback_component_id。不要把例子的活动组件简化带入正式功能。
+- 优先注册 Selector 让用户选择目标；活动对象树组件只作 fallback。全局点 gid 经 ModelLayer::pointIdMap() 解析组件，局部边/面选择携 component_id。旧算法兼容实现覆盖 resolveComponentId，旧编辑 execute 接收 ModelLayer 与 fallback_component_id；新增业务通过 Feature Selector 解析目标。不要把例子的活动组件简化带入正式功能。
 
 ## 模型写与 undo
 
@@ -34,27 +34,49 @@
 
 交互能力、结果和环境分别走声明、事件、上下文，不依赖 app 层，不按功能名要求修改通用界面。
 
-## 网格生成 Feature 导航声明
+## 通用 Feature 分类导航
 
-网格生成功能继承 `FeatureHandler`，在 `setup(FeatureRegistrar&, FeatureContext&)` 中一次声明参数和分类。JSON 只保留 `system: FeatureSystem` 与 Handler 身份，不解析导航 JSON 或旁置文件。
+分类描述父入口，Feature 描述可执行的子功能。两者通过稳定分类 id 关联，适用于求解、几何、网格生成等业务。父入口可以拥有 0、1 或多个子功能：0 显示空态并禁用执行，1 直接显示参数，多个显示子功能选择器；均由同一操作会话管理。
+
+参数和分类在 `setup(FeatureRegistrar&, FeatureContext&)` 中声明。`FeatureRegistrar` 收集通用注册信息，`registrar.navigation()` 返回管理导航声明的 `FeatureNavigation`；导航不从 JSON 或旁置文件解析，插件 JSON 保留宿主识别所需的元数据。
 
 ```cpp
-void ExampleMesher::setup(FeatureRegistrar& registrar, FeatureContext&)
+void ExampleSolver::setup(FeatureRegistrar& registrar, FeatureContext&)
 {
-    registrar.addParameter({ ArgTypeEnum::Combo, "网格类型", "三角形,四边形" });
-    registrar.addCategory({ "quadrilateral", "四边形网格生成", "", 20 });
-    registrar.setLabel("四边形网格生成（示例方法）");
-    registrar.setGroup("生成");
-    registrar.setOrder(10);
-    registrar.setCategoryDefault("quadrilateral", "网格类型", "1");
+    registrar.addParameter({ ArgTypeEnum::Int, "迭代数", "100" });
+    auto& navigation = registrar.navigation();
+    navigation.addCategory({ "analysis", "分析", "", 20, "功能/求解" });
+    navigation.setLabel("稳态求解器");
+    navigation.setOrder(10);
+    navigation.setCategoryDefault("analysis", "迭代数", "200");
 }
 ```
 
-- `addCategory` 接收稳定 id、必填 title、可选 icon 和 order。相同 id 自动合并，一个功能可加入多个分类；`other` 为保留身份。参数使用 `addParameter` 声明，execute 从 `ctx.params` 读取。
-- 未声明分类的 Feature 沿用普通菜单；已声明分类的功能进入网格生成三级导航，不重复出现在默认功能菜单。
-- 三角形、四边形、四面体、六面体四个基础入口始终显示，无实现时显示“暂无可用算法”并禁用执行。扩展分类随最后一个提供者退出而消失。
-- 同类描述应保持一致；冲突时选择功能唯一名按字典序最小的完整声明。分类按 order、id 排序。
-- `setLabel` 为空时使用 display_name；setIcon 的资源由插件提供。分类默认值按参数名称匹配，Combo 使用选项索引字符串；进入分类时应用，用户随后可修改。
-- 参数、激活、事件、后台任务和 undo 统一走 FeatureSystem；网格生成插件不调用 AlgorithmSystem 转发。
+`FeatureCategory` 的字段顺序为 `id`、`title`、`icon`、`order`、`menu_path`。id 为稳定身份，title 必填；icon、menu_path 默认空，order 默认 0。menu_path 使用“菜单/分组”结构，例如“功能/求解”；插件留空时继承宿主同 id 的路径。解析后的路径仍为空时，通用界面先使用首个子功能的菜单贡献；没有子功能或该贡献也为空时，使用“功能”菜单。
 
-更新公共 Feature 声明后必须全量重建主程序、项目内插件、示例及独立 Addons，使用匹配 SDK、工具链和依赖，禁止混用旧 DLL。
+- `navigation.addCategory` 即时忽略空 id、保留身份 `other`、空 title 与重复 id，首个有效描述保留。`categories()` 从合法的 `categoryDefinitions()` 派生，查询不暴露可变容器。一个 Feature 可加入多个分类。
+- 同 id 的分类由 FeatureSystem 聚合。插件描述优先于宿主；多个插件冲突时选择功能唯一名按字典序最小的描述，空 menu_path 仅继承宿主同 id 的路径。分类按 order、id 排序。
+- `setLabel` 为空时使用 display_name；`setGroup` 保留分组元数据，当前平面子功能选择器不按它分组，父入口在菜单中的分组由 menu_path 决定；`setIcon` 的资源由插件提供；`setOrder` 指定子功能排序。`setCategoryDefault` 按参数名匹配，Combo 使用选项索引字符串；进入分类时应用，用户随后可修改。
+- 未声明有效分类的 Feature 沿用普通菜单；已声明分类的功能进入所属父入口，不重复出现在普通功能菜单。execute 从 `ctx.params` 读取参数，激活、事件、后台任务和 undo 统一走 FeatureSystem，不经旧算法/编辑系统转发。
+
+需要没有实现也保留的父入口，由产品宿主在模型操作空闲时配置。例如宿主初始化时：
+
+```cpp
+feature_system.setNavigationCategories({
+    { "analysis", "分析", "", 20, "功能/求解" }
+});
+```
+
+`setNavigationCategories` 替换宿主声明并通知界面，使用与插件相同的分类校验。FeatureSystem 默认没有固定分类；宿主入口不会因最后一个插件卸载而消失，未被宿主保留的入口随提供者退出而消失。产品默认入口属于应用层，插件不在 setup 中改写宿主配置。
+
+网格生成只是一个业务实例，其 setup 仍使用同一接口：
+
+```cpp
+registrar.addParameter({ ArgTypeEnum::Combo, "网格类型", "三角形,四边形" });
+auto& navigation = registrar.navigation();
+navigation.addCategory({ "quadrilateral", "四边形网格生成", "", 20, "网格生成算法/生成" });
+navigation.setLabel("四边形网格生成（示例方法）");
+navigation.setCategoryDefault("quadrilateral", "网格类型", "1");
+```
+
+空导航继续支持普通 Feature 插件，既有插件无需为导航修改源码。公共 Feature 头文件变化后必须用匹配 SDK、工具链和依赖，全量重建主程序、项目内插件、示例及独立 Addons；源码无需迁移不代表旧 DLL 保持 ABI 兼容。本次只冻结旧算法/编辑接口，不要求迁移或删除所有既有调用者。

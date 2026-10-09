@@ -45,27 +45,22 @@ cmake --install build --prefix "<安装前缀>" --component AllPlugins
 
 模型写入、任务和线程契约以接口头文件为准。示例使用活动组件是教学简化，正式功能优先通过 Selector 选择目标。
 
-## 网格生成 Feature 导航声明
+## 通用 Feature 分类导航
 
-网格生成功能继承 `FeatureHandler`，在 `setup(FeatureRegistrar&, FeatureContext&)` 中一次声明参数和分类。JSON 只保留 `system: FeatureSystem` 与 Handler 身份，不解析导航 JSON 或旁置文件。
+新增算法、编辑和通用业务功能使用 `FeatureHandler`。在 setup 中声明参数，经 `registrar.navigation()` 声明父入口与子功能的关联；分类不限于网格生成，JSON 和旁置文件不提供导航。
 
 ```cpp
-void ExampleMesher::setup(FeatureRegistrar& registrar, FeatureContext&)
+void ExampleSolver::setup(FeatureRegistrar& registrar, FeatureContext&)
 {
-    registrar.addParameter({ ArgTypeEnum::Combo, "网格类型", "三角形,四边形" });
-    registrar.addCategory({ "quadrilateral", "四边形网格生成", "", 20 });
-    registrar.setLabel("四边形网格生成（示例方法）");
-    registrar.setGroup("生成");
-    registrar.setOrder(10);
-    registrar.setCategoryDefault("quadrilateral", "网格类型", "1");
+    registrar.addParameter({ ArgTypeEnum::Int, "迭代数", "100" });
+    auto& navigation = registrar.navigation();
+    navigation.addCategory({ "analysis", "分析", "", 20, "功能/求解" });
+    navigation.setLabel("稳态求解器");
 }
 ```
 
-- `addCategory` 接收稳定 id、必填 title、可选 icon 和 order。相同 id 自动合并，一个功能可加入多个分类；`other` 为保留身份。参数使用 `addParameter` 声明，execute 从 `ctx.params` 读取。
-- 未声明分类的 Feature 沿用普通菜单；已声明分类的功能进入网格生成三级导航，不重复出现在默认功能菜单。
-- 三角形、四边形、四面体、六面体四个基础入口始终显示，无实现时显示“暂无可用算法”并禁用执行。扩展分类随最后一个提供者退出而消失。
-- 同类描述应保持一致；冲突时选择功能唯一名按字典序最小的完整声明。分类按 order、id 排序。
-- `setLabel` 为空时使用 display_name；setIcon 的资源由插件提供。分类默认值按参数名称匹配，Combo 使用选项索引字符串；进入分类时应用，用户随后可修改。
-- 参数、激活、事件、后台任务和 undo 统一走 FeatureSystem；网格生成插件不调用 AlgorithmSystem 转发。
+`FeatureCategory` 第五个字段 `menu_path` 指定“菜单/分组”；留空时继承宿主同 id 的路径，解析后仍为空则依次回退到首个子功能的菜单贡献、“功能”菜单。父入口可以关联 0、1 或多个功能：0 显示空态并禁用执行，1 直接显示参数，多个显示子功能选择器。需要常驻的入口由产品宿主注入，FeatureSystem 不固定网格分类。
 
-更新公共 Feature 声明后必须全量重建主程序、项目内插件、示例及独立 Addons，使用匹配 SDK、工具链和依赖，禁止混用旧 DLL。
+完整字段、校验、聚合、宿主配置和网格生成实例见源码树的 [SDK 导航 reference](../sdk/skills/zenithgrid-external-plugin-development/references/development.md#通用-feature-分类导航)；已安装 SDK 内对应 `skills/zenithgrid-external-plugin-development/references/development.md`。参数、激活、事件、任务与 undo 均走 FeatureSystem，不转发到已废弃的算法/编辑系统；本次不迁移或删除已有旧插件。
+
+空导航继续使用普通菜单，既有普通 Feature 插件无需修改导航源码。公共 Feature 头文件变化后，必须用匹配 SDK、工具链和依赖全量重建主程序、项目内插件、示例及独立 Addons，禁止混用旧 DLL。
