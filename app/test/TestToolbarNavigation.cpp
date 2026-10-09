@@ -80,6 +80,20 @@ QQuickItem* findAction(QQuickItem* root, const QString& text)
     }
     return nullptr;
 }
+void checkOperationButtonsAtBottom(QQuickItem* sidebar)
+{
+    auto* buttons = findItem(sidebar, "operationButtons");
+    auto* parameters = findItem(sidebar, "operationParameters");
+    REQUIRE(buttons);
+    REQUIRE(parameters);
+    CHECK(buttons->isVisible());
+    CHECK(buttons->height() > 0);
+    // 按钮行共用四边边距，用实际水平边距核对底边，避免绑定固定面板尺寸。
+    CHECK(qFuzzyCompare(buttons->y() + buttons->height() + buttons->x(), sidebar->height()));
+    const auto parameter_bounds = parameters->mapRectToItem(sidebar, QRectF(0, 0, parameters->width(), parameters->height()));
+    CHECK(parameter_bounds.top() >= 0);
+    CHECK(parameter_bounds.bottom() <= buttons->y());
+}
 void clickItem(QQuickWindow& window, QQuickItem* item)
 {
     const QPointF position = item->mapToScene(QPointF(item->width() / 2, item->height() / 2));
@@ -257,6 +271,17 @@ TEST_CASE("Feature navigation aggregates generic entries and shares executable c
     const auto menu_result = QJsonDocument::fromJson(menus.toString().toUtf8()).object();
     CHECK(menu_result.value("forward") == menu_result.value("reverse"));
     CHECK(menu_result.value("forward").toArray().size() == 2);
+    const auto single_menu = engine.evaluate(R"JS(
+        JSON.stringify(buildMenus(buildEntries([], [
+            {id: "triangle", title: "三角形网格生成", menu_path: "网格生成算法"},
+            {id: "tetrahedron", title: "四面体网格生成", menu_path: "网格生成算法"}
+        ])).map(menu => ({name: menu.name, groups: menu.groups.map(group => ({
+            name: group.name, ids: group.items.map(entry => entry.id)
+        }))})))
+    )JS");
+    INFO(single_menu.toString().toStdString());
+    REQUIRE_FALSE(single_menu.isError());
+    CHECK(single_menu.toString() == R"([{"name":"网格生成算法","groups":[{"name":"","ids":["category:tetrahedron","category:triangle"]}]}])");
     NavigationTestInfo info("SharedFeature", "共享功能", "", {}, nullptr,
         { "construction", "repair" });
     engine.globalObject().setProperty("qtInfo", engine.newQObject(&info));
@@ -577,7 +602,7 @@ TEST_CASE("Actual toolbar renders declared feature entries and preserves active 
     }
     CHECK(app->property("activeOperation").value<QJSValue>().property("info").isNull());
     CHECK_FALSE(selector->property("enabled").toBool());
-    // 多子功能与普通操作反复切换时，执行按钮不能同时保留上下锚点。
+    // 多子功能与普通操作反复切换时，执行按钮固定底部，参数区不能与按钮重叠。
     REQUIRE(session->setProperty("featureInfos", QVariant::fromValue(infos)));
     auto* buttons = findItem(sidebar_item, "operationButtons");
     auto* parameters = findItem(sidebar_item, "operationParameters");
@@ -593,7 +618,7 @@ TEST_CASE("Actual toolbar renders declared feature entries and preserves active 
             loop.exec();
         }
         CHECK(buttons->height() <= 40);
-        CHECK(buttons->y() < 20);
+        checkOperationButtonsAtBottom(sidebar_item);
         CHECK(sidebar->property("panelTitle").toString() == "操作面板");
         CHECK(parameters->height() > 300);
         REQUIRE(QMetaObject::invokeMethod(triangle, "clicked"));
@@ -603,7 +628,7 @@ TEST_CASE("Actual toolbar renders declared feature entries and preserves active 
             loop.exec();
         }
         CHECK(buttons->height() <= 40);
-        CHECK(buttons->y() > 400);
+        checkOperationButtonsAtBottom(sidebar_item);
     }
     app->setProperty("activeOperation", QVariant::fromValue(QJSValue(QJSValue::NullValue)));
     QModelManager::argv0 = {};
@@ -729,7 +754,7 @@ TEST_CASE("Installed external algorithms appear in the actual toolbar and open t
         show_feature_menu("几何");
         click_visible(box);
         CHECK(buttons->height() <= 40);
-        CHECK(buttons->y() < 20);
+        checkOperationButtonsAtBottom(sidebar_item);
         CHECK(sidebar->property("panelTitle").toString() == "操作面板 - 创建长方体");
         CHECK(parameters->height() > 300);
         CHECK(parameters->property("count").toInt() == 7);
@@ -771,7 +796,7 @@ TEST_CASE("Installed external algorithms appear in the actual toolbar and open t
         show_feature_menu("网格生成算法");
         click_visible(tetrahedron);
         CHECK(buttons->height() <= 40);
-        CHECK(buttons->y() > 400);
+        checkOperationButtonsAtBottom(sidebar_item);
     }
     auto* triangle = findItem(item, "featureEntry_category:triangle");
     click_visible(triangle);
@@ -1095,6 +1120,7 @@ TEST_CASE("Non-mesh feature entries handle zero one and multiple children across
     CHECK(empty_label->isVisible());
     auto* buttons = findItem(sidebar_item, "operationButtons");
     REQUIRE(buttons);
+    checkOperationButtonsAtBottom(sidebar_item);
     bool found_execute = false;
     for (auto* button : buttons->childItems()) {
         if (button->property("text").toString() == "执行") {
@@ -1118,13 +1144,14 @@ TEST_CASE("Non-mesh feature entries handle zero one and multiple children across
     CHECK(session->property("subFeatures").value<QJSValue>().property("length").toInt() == 1);
     CHECK(app->property("activeOperation").value<QJSValue>().property("info").property("name").toString() == "construction-test");
     CHECK_FALSE(selector->isVisible());
-    CHECK(buttons->y() < 20);
+    checkOperationButtonsAtBottom(sidebar_item);
     system.unregisterHandler(single);
     settle();
     REQUIRE(findItem(item, "featureEntry_category:construction"));
     CHECK(session->property("subFeatures").value<QJSValue>().property("length").toInt() == 0);
     CHECK(app->property("activeOperation").value<QJSValue>().property("info").isNull());
     CHECK(session->property("parameterModel").value<QObject*>()->property("values").value<QJSValue>().property("length").toInt() == 0);
+    checkOperationButtonsAtBottom(sidebar_item);
     const systems::feature::FeatureCategory category {
         "repair", "曲面修复", "qrc:/images/toolbar/Mesh/hexa-meshing.svg", 5, "几何工具/修复"
     };
@@ -1140,7 +1167,7 @@ TEST_CASE("Non-mesh feature entries handle zero one and multiple children across
     settle();
     CHECK(session->property("subFeatures").value<QJSValue>().property("length").toInt() == 1);
     CHECK_FALSE(selector->isVisible());
-    CHECK(buttons->y() < 20);
+    checkOperationButtonsAtBottom(sidebar_item);
     auto* parameters = session->property("parameterModel").value<QObject*>();
     REQUIRE(parameters);
     REQUIRE(QMetaObject::invokeMethod(sidebar.get(), "setParam", Q_ARG(QVariant, 0), Q_ARG(QVariant, 9.0)));
@@ -1154,7 +1181,7 @@ TEST_CASE("Non-mesh feature entries handle zero one and multiple children across
     CHECK(session->property("subFeatures").value<QJSValue>().property("length").toInt() == 2);
     CHECK(session->property("panelTitle").toString() == "操作面板 - 曲面修复");
     CHECK(selector->isVisible());
-    CHECK(buttons->y() > 400);
+    checkOperationButtonsAtBottom(sidebar_item);
     CHECK(activations == single_activations);
     CHECK(parameters->property("values").value<QJSValue>().property(0).toNumber() == 9.0);
     CHECK(selection->property("listeningSelectorIndex").toInt() == 0);
@@ -1201,7 +1228,7 @@ TEST_CASE("Non-mesh feature entries handle zero one and multiple children across
     settle();
     CHECK(session->property("subFeatures").value<QJSValue>().property("length").toInt() == 1);
     CHECK_FALSE(selector->isVisible());
-    CHECK(buttons->y() < 20);
+    checkOperationButtonsAtBottom(sidebar_item);
     CHECK(parameters->property("values").value<QJSValue>().property(0).toNumber() == 9.0);
     CHECK(selection->property("listeningSelectorIndex").toInt() == 0);
     CHECK(activations == before_refresh + 1);
@@ -1214,6 +1241,7 @@ TEST_CASE("Non-mesh feature entries handle zero one and multiple children across
     CHECK(app->property("activeOperation").value<QJSValue>().property("info").property("name").toString() == "second");
     CHECK(parameters->property("values").value<QJSValue>().property(0).toNumber() == 1.0);
     CHECK(selection->property("listeningSelectorIndex").toInt() == -1);
+    checkOperationButtonsAtBottom(sidebar_item);
     selection->setProperty("listeningSelectorIndex", 0);
     system.unregisterHandler(second);
     settle();
@@ -1223,6 +1251,7 @@ TEST_CASE("Non-mesh feature entries handle zero one and multiple children across
     CHECK(parameters->property("values").value<QJSValue>().property("length").toInt() == 0);
     CHECK(selection->property("listeningSelectorIndex").toInt() == -1);
     CHECK(adaptor.getFeaturesInfo().size() == 2);
+    CHECK_FALSE(buttons->isVisible());
     // 无分类普通功能也经统一入口直达，不显示子功能选择器。
     auto* normal_tab = findItem(item, "featureTab_功能");
     REQUIRE(normal_tab);
@@ -1234,8 +1263,15 @@ TEST_CASE("Non-mesh feature entries handle zero one and multiple children across
     settle();
     CHECK(app->property("activeOperation").value<QJSValue>().property("info").property("name").toString() == "unrelated");
     CHECK_FALSE(selector->isVisible());
-    CHECK(buttons->y() < 20);
+    checkOperationButtonsAtBottom(sidebar_item);
     CHECK(session->property("subFeatures").value<QJSValue>().property("length").toInt() == 1);
+    // 面板缩小时，底部操作行仍完整可见，滚动参数区应让出相应空间。
+    const auto sidebar_height = sidebar_item->height();
+    sidebar_item->setHeight(sidebar_height / 2);
+    settle();
+    checkOperationButtonsAtBottom(sidebar_item);
+    sidebar_item->setHeight(sidebar_height);
+    settle();
     // 同一叶子的另一个菜单入口不能引入退出/激活，也不能丢失已编辑的参数。
     REQUIRE(QMetaObject::invokeMethod(sidebar.get(), "setParam", Q_ARG(QVariant, 0), Q_ARG(QVariant, 7.0)));
     const int before_menu_switch_activations = activations;
@@ -1253,9 +1289,10 @@ TEST_CASE("Non-mesh feature entries handle zero one and multiple children across
     CHECK(deactivations == before_menu_switch_deactivations);
     CHECK(parameters->property("values").value<QJSValue>().property(0).toNumber() == 7.0);
     CHECK_FALSE(selector->isVisible());
-    CHECK(buttons->y() < 20);
+    checkOperationButtonsAtBottom(sidebar_item);
     system.unregisterHandler(unrelated);
     settle();
     CHECK(app->property("activeOperation").isNull());
+    CHECK_FALSE(buttons->isVisible());
     QModelManager::argv0 = {};
 }

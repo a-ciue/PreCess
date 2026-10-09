@@ -62,24 +62,14 @@ Item{
     RowLayout{
         id: buttonRow
         objectName: "operationButtons"
-        anchors.top: parent.top
+        anchors.bottom: parent.bottom
         anchors.left: parent.left
         anchors.right: parent.right
         anchors.margins: visible ? Theme.spacingSm : 0
         height: visible ? 36 : 0
         spacing: Theme.spacingSm
-        // 无活动操作时按钮行整体隐藏，避免两个 disabled 按钮占据首行
+        // 无活动操作时按钮行整体隐藏，避免禁用按钮占用面板空间。
         visible: root.isGroupedOperation || !!(root.activeOp && root.activeOp.info)
-        // AnchorChanges 显式撤销旧锚点，避免动态绑定留下上下双锚点撑满面板。
-        states: State {
-            name: "subFeatureChoice"
-            when: root._hasSubFeatureHeader
-            AnchorChanges {
-                target: buttonRow
-                anchors.top: undefined
-                anchors.bottom: root.bottom
-            }
-        }
         Button{
             id: commitButton
             text: "执行"
@@ -161,10 +151,10 @@ Item{
         }
     }
     Item{
-        anchors.top: root._hasSubFeatureHeader ? subFeatureHeader.bottom : buttonRow.bottom
+        anchors.top: root._hasSubFeatureHeader ? subFeatureHeader.bottom : parent.top
         anchors.left: parent.left
         anchors.right: parent.right
-        anchors.bottom: root._hasSubFeatureHeader ? buttonRow.top : parent.bottom
+        anchors.bottom: buttonRow.visible ? buttonRow.top : parent.bottom
         clip: true
         ColumnLayout{
             anchors.fill: parent

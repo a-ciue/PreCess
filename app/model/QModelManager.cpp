@@ -26,10 +26,10 @@ QModelManager::QModelManager(std::string_view argv0, QObject* parent)
     });
 
     // 产品默认入口由应用声明；无实现时仍显示空态，通用功能系统不内置网格类别。
-    session_->featureSystem().setNavigationCategories({ { "triangle", "三角形网格生成", "qrc:/images/toolbar/Mesh/triangle-meshing.svg", 10, "网格生成算法/生成" },
-        { "quadrilateral", "四边形网格生成", "qrc:/images/toolbar/Mesh/quad-meshing.svg", 20, "网格生成算法/生成" },
-        { "tetrahedron", "四面体网格生成", "qrc:/images/toolbar/Algorithm/tetgen.svg", 30, "网格生成算法/生成" },
-        { "hexahedron", "六面体网格生成", "qrc:/images/toolbar/Mesh/hexa-meshing.svg", 40, "网格生成算法/生成" } });
+    session_->featureSystem().setNavigationCategories({ { "triangle", "三角形网格生成", "qrc:/images/toolbar/Mesh/triangle-meshing.svg", 10, "网格生成算法" },
+        { "quadrilateral", "四边形网格生成", "qrc:/images/toolbar/Mesh/quad-meshing.svg", 20, "网格生成算法" },
+        { "tetrahedron", "四面体网格生成", "qrc:/images/toolbar/Algorithm/tetgen.svg", 30, "网格生成算法" },
+        { "hexahedron", "六面体网格生成", "qrc:/images/toolbar/Mesh/hexa-meshing.svg", 40, "网格生成算法" } });
 
     query_ = std::make_unique<QModelQuery>(&session_->query(), this);
 
