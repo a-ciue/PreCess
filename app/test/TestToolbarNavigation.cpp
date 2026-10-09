@@ -1,9 +1,6 @@
-/** @file TestAlgorithmNavigation.cpp
- * @brief 通用功能导航、旧算法分类兼容及实际工具栏加载测试
+/** @file TestToolbarNavigation.cpp
+ * @brief 通用功能导航、旧算法列表兼容及实际工具栏加载测试
  */
-#include "AlgorithmHandler.h"
-#include "AlgorithmSystem.h"
-#include "AlgorithmSystemRegister.h"
 #include "ComponentData.h"
 #include "FeatureContext.h"
 #include "FeatureEvents.h"
@@ -12,9 +9,7 @@
 #include "FeatureRegistrar.h"
 #include "FeatureSystem.h"
 #include "GeometryData.h"
-#include "HandlerCreatorDestroyerFactory.h"
-#include "ModelIOSystem.h"
-#include "PluginBase.h"
+#include "QAlgorithmInfo.h"
 #include "QFeatureInfo.h"
 #include "QModelManager.h"
 #include "QSelection.h"
@@ -166,7 +161,7 @@ void application()
     qputenv("QT_QPA_PLATFORM", "offscreen");
     qputenv("QT_QUICK_BACKEND", "software");
     static int argc = 1;
-    static char name[] = "TestAlgorithmNavigation";
+    static char name[] = "TestToolbarNavigation";
     static char* argv[] = { name, nullptr };
     static QGuiApplication app(argc, argv);
     if (const auto font_path = qEnvironmentVariable("PRECESS_NAVIGATION_FONT"); !font_path.isEmpty()) {
@@ -177,48 +172,11 @@ void application()
 }
 }
 
-TEST_CASE("Algorithm navigation groups declared categories and preserves unclassified algorithms", "[navigation]")
-{
-    application();
-    QJSEngine engine;
-    QFile source(":/navigation-ui/AlgorithmNavigation.js");
-    REQUIRE(source.open(QIODevice::ReadOnly));
-    REQUIRE_FALSE(engine.evaluate(QString::fromUtf8(source.readAll()).remove(".pragma library")).isError());
-    auto result = engine.evaluate(R"JS(
-        const infos = [
-            {name: "z", categories: ["triangle"], group: "Generate", order: 0},
-            {name: "multi", categories: ["triangle", "tetrahedron"], group: "Generate", order: -1},
-            {name: "a", categories: ["triangle", "triangle"], group: "Generate", order: 0},
-            {name: "legacy"},
-            {name: "future", categories: []},
-            {name: "mixed", categories: ["hexahedron"], group: "Other group"}
-        ];
-        JSON.stringify({
-            triangle: buildGroups(infos, "triangle").map(g => g.items.map(i => i.name)),
-            tetrahedron: buildGroups(infos, "tetrahedron").map(g => g.items.map(i => i.name)),
-            quadrilateral: buildGroups(infos, "quadrilateral"),
-            other: buildGroups(infos, "other").map(g => g.items.map(i => i.name)),
-            hexahedron: buildGroups(infos, "hexahedron").map(g => g.name)
-        })
-    )JS");
-    INFO(result.toString().toStdString());
-    REQUIRE_FALSE(result.isError());
-    CHECK(result.toString() == R"({"triangle":[["multi","a","z"]],"tetrahedron":[["multi"]],"quadrilateral":[],"other":[["future","legacy"]],"hexahedron":["Other group"]})");
-    const auto ordered = engine.evaluate(R"JS(
-        buildAlgorithms([
-            {name: "third", categories: ["triangle"], group: "A", order: 3},
-            {name: "second", categories: ["triangle"], group: "B", order: 2},
-            {name: "first", categories: ["triangle"], group: "A", order: 1}
-        ], "triangle").map(info => info.name).join(",")
-    )JS");
-    CHECK(ordered.toString() == "first,second,third");
-}
-
 TEST_CASE("Qt feature information exposes navigation as JavaScript arrays", "[navigation][Qt]")
 {
     application();
     QJSEngine engine;
-    QFile source(":/navigation-ui/AlgorithmNavigation.js");
+    QFile source(":/navigation-ui/FeatureNavigation.js");
     REQUIRE(source.open(QIODevice::ReadOnly));
     REQUIRE_FALSE(engine.evaluate(QString::fromUtf8(source.readAll()).remove(".pragma library")).isError());
     NavigationTestInfo info("Mesher", "Mesh generator", "", {}, nullptr,
@@ -226,9 +184,9 @@ TEST_CASE("Qt feature information exposes navigation as JavaScript arrays", "[na
     engine.globalObject().setProperty("info", engine.newQObject(&info));
     auto result = engine.evaluate(R"JS(
         JSON.stringify({
-            names: buildGroups([info], "tetrahedron")[0].items.map(i => i.name),
+            names: buildFeatures([info], "tetrahedron").map(i => i.name),
             group: info.group, icon: info.icon, order: info.order,
-            other: buildGroups([info], "other").length
+            other: buildFeatures([info], "other").length
         })
     )JS");
     INFO(result.toString().toStdString());
@@ -310,6 +268,74 @@ TEST_CASE("Feature navigation aggregates generic entries and shares executable c
     INFO(qt_entries.toString().toStdString());
     REQUIRE_FALSE(qt_entries.isError());
     CHECK(qt_entries.toString() == "category:construction:SharedFeature,category:repair:SharedFeature");
+}
+
+TEST_CASE("Actual toolbar preserves legacy algorithm parameters and execution", "[navigation][QML][legacy]")
+{
+    application();
+    QTemporaryDir directory;
+    REQUIRE(directory.isValid());
+    QModelManager::argv0 = (directory.path() + "/isolated/Test.exe").toStdString();
+    QQmlEngine engine;
+    static const int theme_type = qmlRegisterSingletonType(QUrl("qrc:/navigation-ui/Theme.qml"), "NavigationUi", 1, 0, "Theme");
+    engine.rootContext()->setContextProperty("Theme", engine.singletonInstance<QObject*>(theme_type));
+    const core::ArgType count_type { ArgTypeEnum::Int, "次数", "3", "" };
+    QArgType count(count_type);
+    // 使用已撤回导航字段的真实旧描述，不能靠 Feature 包装补齐分类数据。
+    QAlgorithmInfo info("cmdExecutePlugin", "旧算法", "", { &count });
+    engine.globalObject().setProperty("legacyInfo", engine.newQObject(&info));
+    const auto provider = engine.evaluate(R"JS(({
+        algorithmsInfo: [legacyInfo],
+        call: function(name, model, args) { this.lastCall = [name, model, args[0]]; }
+    }))JS");
+    REQUIRE_FALSE(provider.isError());
+    QQmlComponent component(&engine, QUrl("qrc:/navigation-ui/AppToolbar.qml"));
+    INFO(component.errorString().toStdString());
+    REQUIRE(component.isReady());
+    std::unique_ptr<QObject> toolbar(component.createWithInitialProperties({ { "algorithmSystem", QVariant::fromValue(provider) } }));
+    REQUIRE(toolbar);
+    auto* item = qobject_cast<QQuickItem*>(toolbar.get());
+    REQUIRE(item);
+    QQuickWindow window;
+    window.resize(800, 180);
+    item->setParentItem(window.contentItem());
+    item->setSize(QSizeF(800, 180));
+    REQUIRE(toolbar->setProperty("activeCategory", 2));
+    window.show();
+    QEventLoop loop;
+    QTimer::singleShot(60, &loop, &QEventLoop::quit);
+    loop.exec();
+    auto* button = findItem(item, "algorithmAction_cmdExecutePlugin");
+    REQUIRE(button);
+    REQUIRE(button->isVisible());
+    REQUIRE(button->width() > 0);
+    auto* empty_label = findAction(item, "暂无可用算法");
+    REQUIRE(empty_label);
+    CHECK_FALSE(empty_label->isVisible());
+    auto session = createSession(engine, engine.newQObject(engine.singletonInstance<QModelManager*>("app.model", "QModelManager")->getFeatureSystemAdaptor()));
+    clickItem(window, button);
+    auto* app = engine.singletonInstance<QObject*>("app.core", "App");
+    REQUIRE(app);
+    const auto operation = app->property("activeOperation").value<QJSValue>();
+    CHECK(operation.property("info").toQObject() == &info);
+    auto* parameters = session->property("parameterModel").value<QObject*>();
+    REQUIRE(parameters);
+    CHECK(parameters->property("featureName").toString().isEmpty());
+    CHECK(parameters->property("values").value<QJSValue>().property(0).toInt() == 3);
+    auto execute = operation.property("execute");
+    REQUIRE(execute.isCallable());
+    auto args = engine.newArray(1);
+    args.setProperty(0, 7);
+    CHECK_FALSE(execute.call({ QJSValue(42), args }).isError());
+    CHECK(provider.property("lastCall").property(0).toString() == "cmdExecutePlugin");
+    CHECK(provider.property("lastCall").property(1).toInt() == 42);
+    CHECK(provider.property("lastCall").property(2).toInt() == 7);
+    auto empty_provider = engine.newObject();
+    empty_provider.setProperty("algorithmsInfo", engine.newArray());
+    REQUIRE(toolbar->setProperty("algorithmSystem", QVariant::fromValue(empty_provider)));
+    QCoreApplication::processEvents();
+    CHECK_FALSE(findItem(item, "algorithmAction_cmdExecutePlugin"));
+    CHECK(empty_label->isVisible());
 }
 
 TEST_CASE("Actual toolbar renders declared feature entries and preserves active operation", "[navigation][QML]")

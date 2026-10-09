@@ -3,7 +3,6 @@ import QtQuick.Controls
 import QtQuick.Layouts
 import QtQuick.Dialogs
 
-import "AlgorithmNavigation.js" as AlgorithmNavigation
 import "FeatureNavigation.js" as FeatureNavigation
 
 import app.core
@@ -508,7 +507,6 @@ ColumnLayout {
         Flickable {
             id: algorithmPage
             objectName: "algorithmPage_other"
-            readonly property var groups: AlgorithmNavigation.buildGroups(root.algorithmInfos, "other")
             Layout.fillWidth: true
             Layout.fillHeight: true
             contentWidth: algorithmGroups.implicitWidth
@@ -523,40 +521,26 @@ ColumnLayout {
                 spacing: Theme.spacingSm
 
                 Repeater {
-                    model: algorithmPage.groups
-                    ColumnLayout {
-                        id: algorithmGroup
+                    model: root.algorithmInfos
+                    RibbonActionButton {
+                        id: algorithmAction
                         required property var modelData
-                        spacing: 0
+                        topPadding: 4
+                        bottomPadding: 4
+                        objectName: "algorithmAction_" + modelData.name
+                        icon.source: root.getIconForPlugin(modelData.name)
+                        // 按钮文字和内边距先占位，图标使用剩余高度。
+                        icon.height: Math.max(16, Math.min(root.ribbonIconSize,
+                            root.ribbonPageHeight - topPadding - bottomPadding
+                            - spacing - actionFontMetrics.height))
+                        icon.width: icon.height
+                        icon.color: "transparent"
                         Layout.fillHeight: true
-
-                        RowLayout {
-                            Layout.fillHeight: true
-                            spacing: 2
-                            Repeater {
-                                model: algorithmGroup.modelData.items
-                                RibbonActionButton {
-                                    id: algorithmAction
-                                    required property var modelData
-                                    topPadding: 4
-                                    bottomPadding: 4
-                                    objectName: "algorithmAction_" + modelData.name
-                                    icon.source: root.getIconForPlugin(modelData.name)
-                                    // 按钮文字和内边距先占位，图标使用剩余高度。
-                                    icon.height: Math.max(16, Math.min(root.ribbonIconSize,
-                                        root.ribbonPageHeight - topPadding - bottomPadding
-                                        - spacing - actionFontMetrics.height))
-                                    icon.width: icon.height
-                                    icon.color: "transparent"
-                                    Layout.fillHeight: true
-                                    text: modelData.display_name
-                                    onClicked: root.activatePlugin(root.algorithmInfos, modelData.name, QModelManager.algorithmSystem)
-                                    FontMetrics {
-                                        id: actionFontMetrics
-                                        font: algorithmAction.font
-                                    }
-                                }
-                            }
+                        text: modelData.display_name
+                        onClicked: root.activatePlugin(root.algorithmInfos, modelData.name, root.algorithmSystem)
+                        FontMetrics {
+                            id: actionFontMetrics
+                            font: algorithmAction.font
                         }
                     }
                 }
@@ -565,7 +549,7 @@ ColumnLayout {
             Label {
                 parent: algorithmPage
                 anchors.centerIn: parent
-                visible: algorithmPage.groups.length === 0
+                visible: root.algorithmInfos.length === 0
                 text: qsTr("暂无可用算法")
                 color: Theme.textSecondary
             }
