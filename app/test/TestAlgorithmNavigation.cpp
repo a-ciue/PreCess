@@ -1,5 +1,5 @@
 /** @file TestAlgorithmNavigation.cpp
- * @brief 算法导航的分类兼容、排序及实际工具栏加载测试
+ * @brief 通用功能导航、旧算法分类兼容及实际工具栏加载测试
  */
 #include "AlgorithmHandler.h"
 #include "AlgorithmSystem.h"
@@ -26,6 +26,8 @@
 #include <QGuiApplication>
 #include <QJSEngine>
 #include <QJsonArray>
+#include <QJsonDocument>
+#include <QJsonObject>
 #include <QKeyEvent>
 #include <QMouseEvent>
 #include <QPointer>
@@ -35,6 +37,7 @@
 #include <QQmlExtensionPlugin>
 #include <QQuickItem>
 #include <QQuickWindow>
+#include <QRectF>
 #include <QTemporaryDir>
 #include <QTimer>
 #include <TopoDS_Shape.hxx>
@@ -56,8 +59,8 @@ class NavigationTestInfo : public QFeatureInfo {
 public:
     NavigationTestInfo(QString name, QString display_name, QString description, QList<QArgType*> args,
         QObject* parent = nullptr, QStringList categories = {}, QString group = {}, QString icon = {},
-        int order = 0, QString label = {}, QVariantMap defaults = {})
-        : QFeatureInfo(std::move(name), std::move(display_name), std::move(description), "", std::move(icon),
+        int order = 0, QString label = {}, QVariantMap defaults = {}, QString menu_path = {})
+        : QFeatureInfo(std::move(name), std::move(display_name), std::move(description), std::move(menu_path), std::move(icon),
               std::move(args), false, parent, std::move(categories), std::move(group), order, std::move(label), std::move(defaults))
     {
     }
@@ -104,7 +107,7 @@ std::unique_ptr<QObject> createSession(QQmlEngine& engine, const QJSValue& algor
     INFO(component.errorString().toStdString());
     REQUIRE(component.isReady());
     std::unique_ptr<QObject> session(algorithm_system.isObject()
-            ? component.createWithInitialProperties({ { "meshFeatureSystem", QVariant::fromValue(algorithm_system) } })
+            ? component.createWithInitialProperties({ { "featureSystem", QVariant::fromValue(algorithm_system) } })
             : component.create());
     INFO(component.errorString().toStdString());
     REQUIRE(session);
@@ -234,7 +237,82 @@ TEST_CASE("Qt feature information exposes navigation as JavaScript arrays", "[na
     CHECK(result.toString() == R"({"names":["Mesher"],"group":"Generate","icon":"qrc:/plugin/mesher.svg","order":-10,"other":0})");
 }
 
-TEST_CASE("Actual toolbar renders supplied mesh categories and preserves active operation", "[navigation][QML]")
+TEST_CASE("Feature navigation aggregates generic entries and shares executable children", "[navigation][feature]")
+{
+    application();
+    QJSEngine engine;
+    QFile source(":/navigation-ui/FeatureNavigation.js");
+    REQUIRE(source.open(QIODevice::ReadOnly));
+    REQUIRE_FALSE(engine.evaluate(QString::fromUtf8(source.readAll()).remove(".pragma library")).isError());
+    const auto result = engine.evaluate(R"JS(
+        const categories = [
+            {id: "construction", title: "几何构造", icon: "qrc:/construct.svg", order: 10, menu_path: "几何工具/构造"},
+            {id: "repair", title: "曲面修复", order: 20, menu_path: "几何工具/修复"},
+            {id: "empty", title: "后处理", order: 30, menu_path: "分析工具/结果"}
+        ];
+        const shared = {name: "shared", categories: ["construction", "repair"], order: -1};
+        const entries = buildEntries([
+            {name: "z", categories: ["construction"], order: 0},
+            shared,
+            {name: "a", categories: ["construction", "construction"], order: 0},
+            shared,
+            {name: "plain", display_name: "普通功能", menu_path: "修复工具/基本"},
+            {name: "plain", display_name: "普通功能", menu_path: "几何工具/快捷"},
+            {name: "legacy"}
+        ], categories);
+        const find = id => entries.find(entry => entry.id === id);
+        JSON.stringify({
+            construction: find("category:construction").items.map(info => info.name),
+            repair: find("category:repair").items.map(info => info.name),
+            empty: find("category:empty").items.length,
+            menu: find("category:construction").menu_path,
+            icon: find("category:construction").icon,
+            plain: find("feature:plain:修复工具/基本").items.map(info => info.name),
+            plainMenu: find("feature:plain:修复工具/基本").menu_path,
+            plainEntries: entries.filter(entry => !entry.categoryId && entry.items[0].name === "plain").length,
+            legacy: find("feature:legacy:功能").items.map(info => info.name),
+            sameChild: find("category:construction").items[0] === find("category:repair").items[0],
+            zero: buildEntries([], categories).map(entry => entry.items.length)
+        })
+    )JS");
+    INFO(result.toString().toStdString());
+    REQUIRE_FALSE(result.isError());
+    CHECK(result.toString() == R"({"construction":["shared","a","z"],"repair":["shared"],"empty":0,"menu":"几何工具/构造","icon":"qrc:/construct.svg","plain":["plain"],"plainMenu":"修复工具/基本","plainEntries":2,"legacy":["legacy"],"sameChild":true,"zero":[0,0,0]})");
+    const auto menus = engine.evaluate(R"JS(
+        const ordinaryInfos = [
+            {name: "z", display_name: "Z", menu_path: "修复工具/高级", order: 5},
+            {name: "shared", display_name: "共享", menu_path: "几何工具/构造", order: 0},
+            {name: "a", display_name: "A", menu_path: "修复工具/基本", order: 0},
+            {name: "shared", display_name: "共享", menu_path: "修复工具/基本", order: 0}
+        ];
+        const summarize = infos => buildMenus(buildEntries(infos, []))
+            .map(menu => ({name: menu.name, groups: menu.groups.map(group => ({
+                name: group.name, ids: group.items.map(entry => entry.id)
+            }))}));
+        JSON.stringify({
+            forward: summarize(ordinaryInfos),
+            reverse: summarize(ordinaryInfos.slice().reverse())
+        })
+    )JS");
+    INFO(menus.toString().toStdString());
+    REQUIRE_FALSE(menus.isError());
+    const auto menu_result = QJsonDocument::fromJson(menus.toString().toUtf8()).object();
+    CHECK(menu_result.value("forward") == menu_result.value("reverse"));
+    CHECK(menu_result.value("forward").toArray().size() == 2);
+    NavigationTestInfo info("SharedFeature", "共享功能", "", {}, nullptr,
+        { "construction", "repair" });
+    engine.globalObject().setProperty("qtInfo", engine.newQObject(&info));
+    const auto qt_entries = engine.evaluate(R"JS(
+        buildEntries([qtInfo], [{id: "construction", title: "几何构造"}, {id: "repair", title: "曲面修复"}])
+            .filter(entry => entry.items.length > 0)
+            .map(entry => entry.id + ":" + entry.items[0].name).join(",")
+    )JS");
+    INFO(qt_entries.toString().toStdString());
+    REQUIRE_FALSE(qt_entries.isError());
+    CHECK(qt_entries.toString() == "category:construction:SharedFeature,category:repair:SharedFeature");
+}
+
+TEST_CASE("Actual toolbar renders declared feature entries and preserves active operation", "[navigation][QML]")
 {
     application();
     QTemporaryDir directory;
@@ -251,7 +329,7 @@ TEST_CASE("Actual toolbar renders supplied mesh categories and preserves active 
     auto* feature_adaptor = manager->getFeatureSystemAdaptor();
     auto& feature_system = *feature_adaptor->featureSystem();
     auto provider = engine.newQObject(feature_adaptor);
-    std::unique_ptr<QObject> toolbar(component.createWithInitialProperties({ { "meshFeatureSystem", QVariant::fromValue(provider) } }));
+    std::unique_ptr<QObject> toolbar(component.createWithInitialProperties({ { "featureSystem", QVariant::fromValue(provider) } }));
     INFO(component.errorString().toStdString());
     REQUIRE(toolbar);
     auto* item = qobject_cast<QQuickItem*>(toolbar.get());
@@ -273,17 +351,17 @@ TEST_CASE("Actual toolbar renders supplied mesh categories and preserves active 
     auto operation = engine.newObject();
     operation.setProperty("marker", 42);
     REQUIRE(app->setProperty("activeOperation", QVariant::fromValue(operation)));
-    auto* tab = findItem(item, "meshGenerationTab");
+    auto* tab = findItem(item, "featureTab_网格生成算法");
     REQUIRE(tab);
     REQUIRE(tab->setProperty("checked", true));
     REQUIRE(QMetaObject::invokeMethod(tab, "clicked"));
-    CHECK(toolbar->property("activeCategory").toInt() == 2);
+    CHECK(toolbar->property("activeCategory").toInt() == 3);
     CHECK(app->property("activeOperation").value<QJSValue>().strictlyEquals(operation));
 
     // 窄窗口保留四类入口，通过横向滚动访问完整文字。
     item->setWidth(300);
     QCoreApplication::processEvents();
-    auto* categories = findItem(item, "meshCategoryPage");
+    auto* categories = findItem(item, "featureMenuPage_网格生成算法");
     REQUIRE(categories);
     CHECK(categories->property("contentWidth").toReal() > categories->width());
     item->setWidth(800);
@@ -320,8 +398,8 @@ TEST_CASE("Actual toolbar renders supplied mesh categories and preserves active 
     auto infos = engine.newArray(2);
     infos.setProperty(0, engine.newQObject(&first));
     infos.setProperty(1, engine.newQObject(&second));
-    REQUIRE(session->setProperty("meshFeatureInfos", QVariant::fromValue(infos)));
-    auto* triangle = findItem(item, "algorithmCategory_triangle");
+    REQUIRE(session->setProperty("featureInfos", QVariant::fromValue(infos)));
+    auto* triangle = findItem(item, "featureEntry_category:triangle");
     REQUIRE(triangle);
     REQUIRE(QMetaObject::invokeMethod(triangle, "clicked"));
     {
@@ -330,9 +408,9 @@ TEST_CASE("Actual toolbar renders supplied mesh categories and preserves active 
         loop.exec();
     }
     CHECK(app->property("activeOperation").value<QJSValue>().property("info").property("name").toString() == "first");
-    auto* selector = findItem(sidebar_item, "meshAlgorithmSelector");
+    auto* selector = findItem(sidebar_item, "subFeatureSelector");
     REQUIRE(selector);
-    CHECK(sidebar->property("panelTitle").toString() == "操作面板-三角形网格生成");
+    CHECK(sidebar->property("panelTitle").toString() == "操作面板 - 三角形网格生成");
     CHECK(selector->property("count").toInt() == 2);
     CHECK(selector->property("visible").toBool());
     CHECK(selector->property("currentText").toString() == first.label());
@@ -350,7 +428,7 @@ TEST_CASE("Actual toolbar renders supplied mesh categories and preserves active 
     refreshed.setProperty(0, engine.newQObject(&refreshed_first));
     refreshed.setProperty(1, engine.newQObject(&second));
     refreshed.setProperty(2, engine.newQObject(&unrelated));
-    REQUIRE(session->setProperty("meshFeatureInfos", QVariant::fromValue(refreshed)));
+    REQUIRE(session->setProperty("featureInfos", QVariant::fromValue(refreshed)));
     {
         QEventLoop loop;
         QTimer::singleShot(50, &loop, &QEventLoop::quit);
@@ -359,7 +437,7 @@ TEST_CASE("Actual toolbar renders supplied mesh categories and preserves active 
     CHECK(sidebar->property("parameters").value<QJSValue>().property(0).toNumber() == 9.0);
     CHECK(selection->property("listeningSelectorIndex").toInt() == 0);
     CHECK(selector->property("currentText").toString() == refreshed_first.label());
-    REQUIRE(session->setProperty("meshFeatureInfos", QVariant::fromValue(infos)));
+    REQUIRE(session->setProperty("featureInfos", QVariant::fromValue(infos)));
     {
         QEventLoop loop;
         QTimer::singleShot(50, &loop, &QEventLoop::quit);
@@ -385,7 +463,7 @@ TEST_CASE("Actual toolbar renders supplied mesh categories and preserves active 
         QTimer::singleShot(50, &loop, &QEventLoop::quit);
         loop.exec();
     }
-    selector = findItem(sidebar_item, "meshAlgorithmSelector");
+    selector = findItem(sidebar_item, "subFeatureSelector");
     REQUIRE(selector);
     CHECK(sidebar->property("parameters").value<QJSValue>().property(0).toNumber() == 9.0);
     CHECK(selection->property("listeningSelectorIndex").toInt() == 0);
@@ -399,7 +477,7 @@ TEST_CASE("Actual toolbar renders supplied mesh categories and preserves active 
     auto changed_infos = engine.newArray(2);
     changed_infos.setProperty(0, engine.newQObject(&changed_first));
     changed_infos.setProperty(1, engine.newQObject(&second));
-    REQUIRE(session->setProperty("meshFeatureInfos", QVariant::fromValue(changed_infos)));
+    REQUIRE(session->setProperty("featureInfos", QVariant::fromValue(changed_infos)));
     {
         QEventLoop loop;
         QTimer::singleShot(50, &loop, &QEventLoop::quit);
@@ -424,9 +502,12 @@ TEST_CASE("Actual toolbar renders supplied mesh categories and preserves active 
     REQUIRE(edit);
     REQUIRE(QMetaObject::invokeMethod(edit, "clicked"));
     CHECK(app->property("activeOperation").value<QJSValue>().property("info").property("name").toString() == "second");
-    REQUIRE(toolbar->setProperty("activeCategory", 2));
+    REQUIRE(toolbar->setProperty("activeCategory", 3));
+    // 注册表更新会重建工具栏委托，不能继续使用替换前的按钮指针。
+    triangle = findItem(item, "featureEntry_category:triangle");
+    REQUIRE(triangle);
     for (const auto& category : { "quadrilateral", "tetrahedron", "hexahedron" }) {
-        auto* button = findItem(item, QString("algorithmCategory_") + category);
+        auto* button = findItem(item, QString("featureEntry_category:") + category);
         REQUIRE(button);
         CHECK(button->property("enabled").toBool());
         REQUIRE(QMetaObject::invokeMethod(button, "clicked"));
@@ -436,7 +517,7 @@ TEST_CASE("Actual toolbar renders supplied mesh categories and preserves active 
             loop.exec();
         }
         CHECK(selector->property("count").toInt() == (QString(category) == "tetrahedron" ? 1 : 0));
-        CHECK(selector->property("visible").toBool() == (QString(category) == "tetrahedron"));
+        CHECK_FALSE(selector->property("visible").toBool());
     }
     REQUIRE(QMetaObject::invokeMethod(triangle, "clicked"));
     {
@@ -448,21 +529,21 @@ TEST_CASE("Actual toolbar renders supplied mesh categories and preserves active 
     // 动态卸载选择项后切到可用项，全部移除时不再持有旧参数和执行闭包。
     auto remaining = engine.newArray(1);
     remaining.setProperty(0, engine.newQObject(&first));
-    REQUIRE(session->setProperty("meshFeatureInfos", QVariant::fromValue(remaining)));
+    REQUIRE(session->setProperty("featureInfos", QVariant::fromValue(remaining)));
     {
         QEventLoop loop;
         QTimer::singleShot(50, &loop, &QEventLoop::quit);
         loop.exec();
     }
     CHECK(app->property("activeOperation").value<QJSValue>().property("info").property("name").toString() == "first");
-    CHECK(selector->property("visible").toBool());
+    CHECK_FALSE(selector->property("visible").toBool());
     if (const auto capture = qEnvironmentVariable("PRECESS_NAVIGATION_CAPTURE"); !capture.isEmpty()) {
         QEventLoop loop;
         QTimer::singleShot(150, &loop, &QEventLoop::quit);
         loop.exec();
         REQUIRE(window.grabWindow().save(capture + ".png"));
     }
-    REQUIRE(session->setProperty("meshFeatureInfos", QVariant::fromValue(engine.newArray())));
+    REQUIRE(session->setProperty("featureInfos", QVariant::fromValue(engine.newArray())));
     {
         QEventLoop loop;
         QTimer::singleShot(50, &loop, &QEventLoop::quit);
@@ -470,7 +551,8 @@ TEST_CASE("Actual toolbar renders supplied mesh categories and preserves active 
     }
     CHECK(app->property("activeOperation").value<QJSValue>().property("info").isNull());
     CHECK_FALSE(selector->property("enabled").toBool());
-    // 网格生成与普通操作反复切换时，执行按钮不能同时保留上下锚点。
+    // 多子功能与普通操作反复切换时，执行按钮不能同时保留上下锚点。
+    REQUIRE(session->setProperty("featureInfos", QVariant::fromValue(infos)));
     auto* buttons = findItem(sidebar_item, "operationButtons");
     auto* parameters = findItem(sidebar_item, "operationParameters");
     REQUIRE(buttons);
@@ -544,24 +626,65 @@ TEST_CASE("Installed external algorithms appear in the actual toolbar and open t
     QQuickWindow window;
     window.resize(1000, 700);
     item->setParentItem(window.contentItem());
-    item->setWidth(1000);
-    item->setHeight(item->implicitHeight());
+    // 与下方 sidebar 的 Y=180 一致，展开 ribbon 后不能沿用折叠时的 implicitHeight。
+    item->setSize(QSizeF(1000, 180));
     sidebar_item->setParentItem(window.contentItem());
     sidebar_item->setY(180);
     sidebar_item->setWidth(360);
     sidebar_item->setHeight(500);
     window.show();
-    auto* tetrahedron = findItem(item, "algorithmCategory_tetrahedron");
-    REQUIRE(tetrahedron);
-    REQUIRE(QMetaObject::invokeMethod(tetrahedron, "clicked"));
-    const auto algorithms = sidebar->property("meshAlgorithms").value<QJSValue>();
+    const auto settle = [] {
+        QEventLoop loop;
+        QTimer::singleShot(80, &loop, &QEventLoop::quit);
+        loop.exec();
+    };
+    const auto click_visible = [&](QQuickItem* target) {
+        REQUIRE(target);
+        REQUIRE(target->isVisible());
+        REQUIRE(target->isEnabled());
+        REQUIRE(target->width() > 0);
+        REQUIRE(target->height() > 0);
+        const auto scene_bounds = target->mapRectToScene(QRectF(0, 0, target->width(), target->height()));
+        REQUIRE(QRectF(QPointF(0, 0), QSizeF(window.size())).contains(scene_bounds));
+        clickItem(window, target);
+        settle();
+    };
+    const auto show_feature_menu = [&](const QString& name) {
+        auto* tab = findItem(item, "featureTab_" + name);
+        REQUIRE(tab);
+        if (!tab->property("checked").toBool())
+            click_visible(tab);
+        auto* page = findItem(item, "featureMenuPage_" + name);
+        REQUIRE(page);
+        REQUIRE(page->isVisible());
+        REQUIRE(page->width() > 0);
+        REQUIRE(page->height() > 0);
+    };
+    settle();
+    show_feature_menu("网格生成算法");
+    auto* tetrahedron = findItem(item, "featureEntry_category:tetrahedron");
+    click_visible(tetrahedron);
+    const auto algorithms = sidebar->property("subFeatures").value<QJSValue>();
     int index = -1;
     for (int i = 0; i < algorithms.property("length").toInt(); ++i) {
         if (algorithms.property(i).property("name").toString() == "TetGenLibPlugin")
             index = i;
     }
     REQUIRE(index >= 0);
-    REQUIRE(QMetaObject::invokeMethod(session.get(), "selectMeshAlgorithm", Q_ARG(QVariant, index), Q_ARG(QVariant, false)));
+    auto* selector = findItem(sidebar_item, "subFeatureSelector");
+    REQUIRE(selector);
+    // 使用可见下拉选项进入 TetGen，避免通过会话方法绕过真正的三级导航。
+    if (algorithms.property("length").toInt() > 1) {
+        click_visible(selector);
+        const auto popup = engine.newQObject(selector).property("popup");
+        REQUIRE(popup.property("visible").toBool());
+        const auto list = popup.property("contentItem");
+        auto* candidate = qobject_cast<QQuickItem*>(list.property("itemAtIndex")
+                .callWithInstance(list, { QJSValue(index) })
+                .toQObject());
+        click_visible(candidate);
+    } else
+        REQUIRE(index == 0);
     auto* app = engine.singletonInstance<QObject*>("app.core", "App");
     REQUIRE(app);
     const auto operation = app->property("activeOperation").value<QJSValue>();
@@ -572,22 +695,16 @@ TEST_CASE("Installed external algorithms appear in the actual toolbar and open t
     REQUIRE(box);
     auto* buttons = findItem(sidebar_item, "operationButtons");
     auto* parameters = findItem(sidebar_item, "operationParameters");
-    auto* selector = findItem(sidebar_item, "meshAlgorithmSelector");
     REQUIRE(buttons);
     REQUIRE(parameters);
     REQUIRE(selector);
-    const auto settle = [] {
-        QEventLoop loop;
-        QTimer::singleShot(80, &loop, &QEventLoop::quit);
-        loop.exec();
-    };
     for (int cycle = 0; cycle < 3; ++cycle) {
         INFO(cycle);
-        REQUIRE(QMetaObject::invokeMethod(box, "clicked"));
-        settle();
+        show_feature_menu("几何");
+        click_visible(box);
         CHECK(buttons->height() <= 40);
         CHECK(buttons->y() < 20);
-        CHECK(sidebar->property("panelTitle").toString() == "操作面板");
+        CHECK(sidebar->property("panelTitle").toString() == "操作面板 - 创建长方体");
         CHECK(parameters->height() > 300);
         CHECK(parameters->property("count").toInt() == 7);
         CHECK_FALSE(selector->property("visible").toBool());
@@ -625,28 +742,23 @@ TEST_CASE("Installed external algorithms appear in the actual toolbar and open t
             REQUIRE(component->geometry->rootShape);
             CHECK_FALSE(component->geometry->rootShape->IsNull());
         }
-        REQUIRE(QMetaObject::invokeMethod(tetrahedron, "clicked"));
-        settle();
+        show_feature_menu("网格生成算法");
+        click_visible(tetrahedron);
         CHECK(buttons->height() <= 40);
         CHECK(buttons->y() > 400);
     }
-    auto* triangle = findItem(item, "algorithmCategory_triangle");
-    REQUIRE(triangle);
-    REQUIRE(QMetaObject::invokeMethod(triangle, "clicked"));
-    settle();
-    CHECK(sidebar->property("meshAlgorithms").value<QJSValue>().property("length").toInt() == 1);
-    CHECK(selector->property("visible").toBool());
+    auto* triangle = findItem(item, "featureEntry_category:triangle");
+    click_visible(triangle);
+    CHECK(sidebar->property("subFeatures").value<QJSValue>().property("length").toInt() == 1);
+    CHECK_FALSE(selector->property("visible").toBool());
     CHECK(parameters->property("count").toInt() > 0);
-    REQUIRE(toolbar->setProperty("activeCategory", 2));
-    settle();
+    show_feature_menu("网格生成算法");
     if (const auto capture = qEnvironmentVariable("PRECESS_NAVIGATION_CAPTURE"); !capture.isEmpty())
         REQUIRE(window.grabWindow().save(capture + "-single.png"));
-    auto* quadrilateral = findItem(item, "algorithmCategory_quadrilateral");
-    REQUIRE(quadrilateral);
-    REQUIRE(QMetaObject::invokeMethod(quadrilateral, "clicked"));
-    settle();
+    auto* quadrilateral = findItem(item, "featureEntry_category:quadrilateral");
+    click_visible(quadrilateral);
     CHECK(selector->property("count").toInt() == 1);
-    CHECK(selector->property("visible").toBool());
+    CHECK_FALSE(selector->property("visible").toBool());
     CHECK(selector->property("currentText").toString() == "曲面网格生成");
     CHECK(sidebar->property("parameters").value<QJSValue>().property(6).toInt() == 1);
     if (const auto capture = qEnvironmentVariable("PRECESS_NAVIGATION_CAPTURE"); !capture.isEmpty())
@@ -850,38 +962,52 @@ TEST_CASE("Actual parameter controls preserve edits through scrolling and accept
     QModelManager::argv0 = {};
 }
 
-TEST_CASE("Registered custom categories create shared toolbar pages and disappear after the last provider", "[navigation][QML][registry]")
+TEST_CASE("Non-mesh feature entries handle zero one and multiple children across plugin changes", "[navigation][QML][registry]")
 {
     application();
     QTemporaryDir directory;
+    REQUIRE(directory.isValid());
     const auto executable = (directory.path() + "/isolated/Test.exe").toStdString();
     QModelManager::argv0 = executable;
     class CategoryHandler : public systems::feature::FeatureHandler {
     public:
-        CategoryHandler(systems::feature::FeatureCategory category, int order, int& activations)
+        CategoryHandler(systems::feature::FeatureCategory category, int order, int& activations, int& deactivations)
             : category_(std::move(category))
             , order_(order)
             , activations_(activations)
+            , deactivations_(deactivations)
         {
         }
         void setup(systems::feature::FeatureRegistrar& reg, systems::feature::FeatureContext&) override
         {
             if (!category_.id.empty())
                 reg.navigation().addCategory(category_);
+            else {
+                reg.addMenuItem({ "功能", "", "" });
+                reg.addMenuItem({ "几何工具/快捷", "", "" });
+            }
             reg.navigation().setOrder(order_);
             reg.addParameter({ ArgTypeEnum::Float, "目标尺寸", "1", "" });
         }
         void activate(systems::feature::FeatureContext&) override { ++activations_; }
+        void deactivate(systems::feature::FeatureContext&) override { ++deactivations_; }
         std::any execute(systems::feature::FeatureContext&) override { return std::string("请选择目标组件"); }
 
     private:
         systems::feature::FeatureCategory category_;
         int order_;
         int& activations_;
+        int& deactivations_;
     };
     ModelLayer model;
     core::EventBus events;
     systems::feature::FeatureSystem system(model, events);
+    // 通用系统没有网格内置项；宿主显式声明需要长期保留的空父入口。
+    CHECK(system.getNavigationCategories().empty());
+    const systems::feature::FeatureCategory construction {
+        "construction", "几何构造", "qrc:/images/toolbar/Mesh/hexa-meshing.svg", 40, "几何工具/构造"
+    };
+    system.setNavigationCategories({ construction });
     QTaskStatus status;
     systems::feature::QFeatureSystemAdaptor adaptor(system);
     auto subscription = events.subscribe<systems::feature::ParameterChangedEvent>([&](const auto& event) {
@@ -891,11 +1017,12 @@ TEST_CASE("Registered custom categories create shared toolbar pages and disappea
     static const int theme_type = qmlRegisterSingletonType(QUrl("qrc:/navigation-ui/Theme.qml"), "DynamicNavigationUi", 1, 0, "Theme");
     engine.rootContext()->setContextProperty("Theme", engine.singletonInstance<QObject*>(theme_type));
     QQmlComponent component(&engine, QUrl("qrc:/navigation-ui/AppToolbar.qml"));
+    INFO(component.errorString().toStdString());
     REQUIRE(component.isReady());
     QQmlEngine::setObjectOwnership(&adaptor, QQmlEngine::CppOwnership);
     auto provider = engine.newQObject(&adaptor);
     auto session = createSession(engine, provider);
-    std::unique_ptr<QObject> toolbar(component.createWithInitialProperties({ { "meshFeatureSystem", QVariant::fromValue(provider) } }));
+    std::unique_ptr<QObject> toolbar(component.createWithInitialProperties({ { "featureSystem", QVariant::fromValue(provider) } }));
     auto* item = qobject_cast<QQuickItem*>(toolbar.get());
     REQUIRE(item);
     QQuickWindow window;
@@ -911,7 +1038,6 @@ TEST_CASE("Registered custom categories create shared toolbar pages and disappea
     sidebar_item->setParentItem(window.contentItem());
     sidebar_item->setPosition(QPointF(0, 180));
     sidebar_item->setSize(QSizeF(450, 500));
-    REQUIRE(toolbar->setProperty("activeCategory", 2));
     const auto settle = [] {
         QEventLoop loop;
         QTimer::singleShot(60, &loop, &QEventLoop::quit);
@@ -919,24 +1045,26 @@ TEST_CASE("Registered custom categories create shared toolbar pages and disappea
     };
     auto* app = engine.singletonInstance<QObject*>("app.core", "App");
     REQUIRE(app);
-    CHECK_FALSE(findItem(item, "algorithmCategory_polyhedral"));
     settle();
-    // 没有安装任何算法时，四个基础入口也必须可见、可点击。
-    CHECK(adaptor.getNavigationCategories().size() == 4);
-    for (const auto& entry : adaptor.getNavigationCategories()) {
-        const auto category = entry.toMap();
-        auto* category_button = findItem(item, "algorithmCategory_" + category.value("id").toString());
-        REQUIRE(category_button);
-        CHECK(engine.newQObject(category_button).property("icon").property("source").toString() == category.value("icon").toString());
-    }
-    auto* hexahedron_button = findItem(item, "algorithmCategory_hexahedron");
-    REQUIRE(hexahedron_button);
-    clickItem(window, hexahedron_button);
+    CHECK_FALSE(findItem(item, "featureTab_网格生成算法"));
+    auto* construction_tab = findItem(item, "featureTab_几何工具");
+    REQUIRE(construction_tab);
+    // 切换 StackLayout 页后先完成布局，否则隐藏页的旧几何位置会丢失首个鼠标点击。
+    clickItem(window, construction_tab);
     settle();
-    CHECK(session->property("panelTitle").toString() == "操作面板-六面体网格生成");
-    CHECK(session->property("meshAlgorithms").value<QJSValue>().property("length").toInt() == 0);
+    CHECK(adaptor.getNavigationCategories().size() == 1);
+    auto* construction_button = findItem(item, "featureEntry_category:construction");
+    REQUIRE(construction_button);
+    REQUIRE(construction_button->isVisible());
+    REQUIRE(construction_button->width() > 0);
+    REQUIRE(construction_button->height() > 0);
+    CHECK(engine.newQObject(construction_button).property("icon").property("source").toString() == QString::fromStdString(construction.icon));
+    clickItem(window, construction_button);
+    settle();
+    CHECK(session->property("panelTitle").toString() == "操作面板 - 几何构造");
+    CHECK(session->property("subFeatures").value<QJSValue>().property("length").toInt() == 0);
     CHECK(app->property("activeOperation").value<QJSValue>().property("info").isNull());
-    auto* empty_label = findAction(sidebar_item, "暂无可用算法");
+    auto* empty_label = findAction(sidebar_item, "暂无可用子功能");
     REQUIRE(empty_label);
     CHECK(empty_label->isVisible());
     auto* buttons = findItem(sidebar_item, "operationButtons");
@@ -949,46 +1077,65 @@ TEST_CASE("Registered custom categories create shared toolbar pages and disappea
         }
     }
     CHECK(found_execute);
-    // 后装算法直接出现在既有分类；最后一个提供者卸载后保留入口并清空参数。
+    auto* selector = findItem(sidebar_item, "subFeatureSelector");
+    REQUIRE(selector);
+    CHECK_FALSE(selector->isVisible());
     int activations = 0;
-    const systems::feature::HandlerMetaData hexahedron { .name = "hexahedron-test" };
-    REQUIRE(system.registerHandler(hexahedron, systems::feature::FeatureSystem::SystemHandlerPtr { std::make_unique<CategoryHandler>(systems::feature::FeatureCategory { "hexahedron", "六面体网格生成", "", 40 }, 0, activations).release() }));
+    int deactivations = 0;
+    const auto install = [&](const auto& metadata, const auto& declaration, int order) {
+        return system.registerHandler(metadata, systems::feature::FeatureSystem::SystemHandlerPtr { std::make_unique<CategoryHandler>(declaration, order, activations, deactivations).release() });
+    };
+    // 后装单个子功能直接进入参数；最后提供者卸载后保留显式声明的入口。
+    const systems::feature::HandlerMetaData single { .name = "construction-test" };
+    REQUIRE(install(single, construction, 0));
     settle();
-    CHECK(session->property("meshAlgorithms").value<QJSValue>().property("length").toInt() == 1);
-    CHECK(app->property("activeOperation").value<QJSValue>().property("info").property("name").toString() == "hexahedron-test");
-    system.unregisterHandler(hexahedron);
+    CHECK(session->property("subFeatures").value<QJSValue>().property("length").toInt() == 1);
+    CHECK(app->property("activeOperation").value<QJSValue>().property("info").property("name").toString() == "construction-test");
+    CHECK_FALSE(selector->isVisible());
+    CHECK(buttons->y() < 20);
+    system.unregisterHandler(single);
     settle();
-    REQUIRE(findItem(item, "algorithmCategory_hexahedron"));
-    CHECK(session->property("panelTitle").toString() == "操作面板-六面体网格生成");
-    CHECK(session->property("meshAlgorithms").value<QJSValue>().property("length").toInt() == 0);
+    REQUIRE(findItem(item, "featureEntry_category:construction"));
+    CHECK(session->property("subFeatures").value<QJSValue>().property("length").toInt() == 0);
     CHECK(app->property("activeOperation").value<QJSValue>().property("info").isNull());
     CHECK(session->property("parameterModel").value<QObject*>()->property("values").value<QJSValue>().property("length").toInt() == 0);
-    const systems::feature::FeatureCategory category { "polyhedral", "多面体网格生成", "qrc:/images/toolbar/Mesh/hexa-meshing.svg", 5 };
-    const auto install = [&](const auto& metadata, const auto& declaration, int order) {
-        return system.registerHandler(metadata, systems::feature::FeatureSystem::SystemHandlerPtr { std::make_unique<CategoryHandler>(declaration, order, activations).release() });
+    const systems::feature::FeatureCategory category {
+        "repair", "曲面修复", "qrc:/images/toolbar/Mesh/hexa-meshing.svg", 5, "几何工具/修复"
     };
     const systems::feature::HandlerMetaData first { .name = "first", .display_name = "first" };
     const systems::feature::HandlerMetaData second { .name = "second", .display_name = "second" };
     REQUIRE(install(first, category, 10));
-    REQUIRE(install(second, category, 20));
     settle();
-    CHECK(adaptor.getNavigationCategories().size() == 5);
-    auto* button = findItem(item, "algorithmCategory_polyhedral");
+    auto* button = findItem(item, "featureEntry_category:repair");
     REQUIRE(button);
-    CHECK(button->property("text").toString() == "多面体网格生成");
+    CHECK(button->property("text").toString() == "曲面修复");
     CHECK(engine.newQObject(button).property("icon").property("source").toString() == QString::fromStdString(category.icon));
     clickItem(window, button);
     settle();
-    CHECK(session->property("meshAlgorithms").value<QJSValue>().property("length").toInt() == 2);
-    CHECK(session->property("panelTitle").toString() == "操作面板-多面体网格生成");
+    CHECK(session->property("subFeatures").value<QJSValue>().property("length").toInt() == 1);
+    CHECK_FALSE(selector->isVisible());
+    CHECK(buttons->y() < 20);
+    auto* parameters = session->property("parameterModel").value<QObject*>();
+    REQUIRE(parameters);
+    REQUIRE(QMetaObject::invokeMethod(sidebar.get(), "setParam", Q_ARG(QVariant, 0), Q_ARG(QVariant, 9.0)));
+    auto* selection = app->property("selection").value<QObject*>();
+    REQUIRE(selection);
+    selection->setProperty("listeningSelectorIndex", 0);
+    const int single_activations = activations;
+    REQUIRE(install(second, category, 20));
+    settle();
+    CHECK(adaptor.getNavigationCategories().size() == 2);
+    CHECK(session->property("subFeatures").value<QJSValue>().property("length").toInt() == 2);
+    CHECK(session->property("panelTitle").toString() == "操作面板 - 曲面修复");
+    CHECK(selector->isVisible());
+    CHECK(buttons->y() > 400);
+    CHECK(activations == single_activations);
+    CHECK(parameters->property("values").value<QJSValue>().property(0).toNumber() == 9.0);
+    CHECK(selection->property("listeningSelectorIndex").toInt() == 0);
     auto operation = app->property("activeOperation").value<QJSValue>();
     auto execute = operation.property("execute");
     REQUIRE(execute.isCallable());
     CHECK(execute.callWithInstance(operation).toString() == "请选择目标组件");
-    auto* parameters = session->property("parameterModel").value<QObject*>();
-    REQUIRE(parameters);
-    auto* selector = findItem(sidebar_item, "meshAlgorithmSelector");
-    REQUIRE(selector);
     CHECK(selector->property("count").toInt() == 2);
     clickItem(window, selector);
     pressKey(window, Qt::Key_Down);
@@ -1008,39 +1155,81 @@ TEST_CASE("Registered custom categories create shared toolbar pages and disappea
     pressKey(window, Qt::Key_Tab);
     settle();
     CHECK(parameters->property("values").value<QJSValue>().property(0).toNumber() == 9.0);
-    auto* selection = app->property("selection").value<QObject*>();
-    REQUIRE(selection);
     selection->setProperty("listeningSelectorIndex", 0);
     // 不相关注册和分类显示名称刷新都不能重置当前参数或选择。
-    const systems::feature::HandlerMetaData unrelated { .name = "unrelated" };
+    const systems::feature::HandlerMetaData unrelated { .name = "unrelated", .display_name = "普通功能" };
     const int before_refresh = activations;
     REQUIRE(install(unrelated, systems::feature::FeatureCategory {}, 0));
     settle();
     CHECK(activations == before_refresh);
     auto renamed_category = category;
-    renamed_category.title = "多面体划分";
+    renamed_category.title = "曲面修整";
     REQUIRE(install(first, renamed_category, 10));
     settle();
     CHECK(parameters->property("values").value<QJSValue>().property(0).toNumber() == 9.0);
     CHECK(selection->property("listeningSelectorIndex").toInt() == 0);
-    CHECK(session->property("panelTitle").toString() == "操作面板-多面体划分");
+    CHECK(session->property("panelTitle").toString() == "操作面板 - 曲面修整");
     CHECK(activations == before_refresh + 1);
-    // 当前算法退出后改选仍在的提供者；最后一个退出后清理整个操作。
+    // 多项退回单项时保留当前参数、选择和激活会话，仅收起子功能选择器。
+    system.unregisterHandler(second);
+    settle();
+    CHECK(session->property("subFeatures").value<QJSValue>().property("length").toInt() == 1);
+    CHECK_FALSE(selector->isVisible());
+    CHECK(buttons->y() < 20);
+    CHECK(parameters->property("values").value<QJSValue>().property(0).toNumber() == 9.0);
+    CHECK(selection->property("listeningSelectorIndex").toInt() == 0);
+    CHECK(activations == before_refresh + 1);
+    REQUIRE(install(second, category, 20));
+    settle();
+    // 当前子功能退出后改选仍在的提供者；最后一个退出后清理整个临时入口。
     system.unregisterHandler(first);
     settle();
-    REQUIRE(findItem(item, "algorithmCategory_polyhedral"));
+    REQUIRE(findItem(item, "featureEntry_category:repair"));
     CHECK(app->property("activeOperation").value<QJSValue>().property("info").property("name").toString() == "second");
     CHECK(parameters->property("values").value<QJSValue>().property(0).toNumber() == 1.0);
     CHECK(selection->property("listeningSelectorIndex").toInt() == -1);
     selection->setProperty("listeningSelectorIndex", 0);
     system.unregisterHandler(second);
     settle();
-    CHECK_FALSE(findItem(item, "algorithmCategory_polyhedral"));
+    CHECK_FALSE(findItem(item, "featureEntry_category:repair"));
     CHECK(app->property("activeOperation").isNull());
-    CHECK_FALSE(session->property("meshGeneration").toBool());
+    CHECK_FALSE(session->property("isGroupedOperation").toBool());
     CHECK(parameters->property("values").value<QJSValue>().property("length").toInt() == 0);
     CHECK(selection->property("listeningSelectorIndex").toInt() == -1);
-    CHECK(adaptor.getFeaturesInfo().size() == 1);
+    CHECK(adaptor.getFeaturesInfo().size() == 2);
+    // 无分类普通功能也经统一入口直达，不显示子功能选择器。
+    auto* normal_tab = findItem(item, "featureTab_功能");
+    REQUIRE(normal_tab);
+    clickItem(window, normal_tab);
+    settle();
+    auto* normal = findItem(item, "featureEntry_feature:unrelated:功能");
+    REQUIRE(normal);
+    clickItem(window, normal);
+    settle();
+    CHECK(app->property("activeOperation").value<QJSValue>().property("info").property("name").toString() == "unrelated");
+    CHECK_FALSE(selector->isVisible());
+    CHECK(buttons->y() < 20);
+    CHECK(session->property("subFeatures").value<QJSValue>().property("length").toInt() == 1);
+    // 同一叶子的另一个菜单入口不能引入退出/激活，也不能丢失已编辑的参数。
+    REQUIRE(QMetaObject::invokeMethod(sidebar.get(), "setParam", Q_ARG(QVariant, 0), Q_ARG(QVariant, 7.0)));
+    const int before_menu_switch_activations = activations;
+    const int before_menu_switch_deactivations = deactivations;
+    auto* shortcut_tab = findItem(item, "featureTab_几何工具");
+    REQUIRE(shortcut_tab);
+    clickItem(window, shortcut_tab);
+    settle();
+    auto* shortcut = findItem(item, "featureEntry_feature:unrelated:几何工具/快捷");
+    REQUIRE(shortcut);
+    clickItem(window, shortcut);
+    settle();
+    CHECK(app->property("activeOperation").value<QJSValue>().property("entryId").toString() == "feature:unrelated:几何工具/快捷");
+    CHECK(activations == before_menu_switch_activations);
+    CHECK(deactivations == before_menu_switch_deactivations);
+    CHECK(parameters->property("values").value<QJSValue>().property(0).toNumber() == 7.0);
+    CHECK_FALSE(selector->isVisible());
+    CHECK(buttons->y() < 20);
     system.unregisterHandler(unrelated);
+    settle();
+    CHECK(app->property("activeOperation").isNull());
     QModelManager::argv0 = {};
 }

@@ -27,6 +27,7 @@ qt_add_qml_module(${MYNAME}
             TaskStatusBar.qml
             AppToolbar.qml
             AlgorithmNavigation.js
+            FeatureNavigation.js
             AttributeRenderPanel.qml
             CentralRenderArea.qml
             SideBar.qml

@@ -4,6 +4,7 @@ import QtQuick.Layouts
 import QtQuick.Dialogs
 
 import "AlgorithmNavigation.js" as AlgorithmNavigation
+import "FeatureNavigation.js" as FeatureNavigation
 
 import app.core
 import app.model
@@ -22,11 +23,12 @@ ColumnLayout {
 
     property int activeCategory: -1
     property var algorithmSystem: QModelManager.algorithmSystem
-    property var meshFeatureSystem: QModelManager.featureSystem
-    readonly property var meshCategories: root.meshFeatureSystem.navigationCategories
+    property var featureSystem: QModelManager.featureSystem
+    readonly property var navigationEntries: FeatureNavigation.buildEntries(root.featureSystem.featuresInfo, root.featureSystem.navigationCategories)
     readonly property var algorithmInfos: root.algorithmSystem.algorithmsInfo
+    // StackLayout: 文件 0、编辑 1、旧算法 2，后续均由功能菜单声明生成。
     readonly property int algorithmPageStart: 2
-    readonly property int featurePageStart: algorithmPageStart + 2
+    readonly property int featurePageStart: algorithmPageStart + 1
     property real windowHeight: 600
 
     // 限制页高范围，给小窗口保留文字空间，避免大窗口工具栏过度放大。
@@ -61,11 +63,6 @@ ColumnLayout {
         return pluginIconMap[pluginName] || "qrc:/images/toolbar/precess_extra_plugin.svg"
     }
 
-    // 功能图标由菜单声明提供，未指定时统一使用通用插件图标。
-    function getIconForFeature(info) {
-        return info.icon || "qrc:/images/toolbar/precess_extra_plugin.svg"
-    }
-
     function activatePlugin(systemList, pluginName, system) {
         for (var i = 0; i < systemList.length; i++) {
             if (systemList[i].name === pluginName) {
@@ -85,57 +82,39 @@ ColumnLayout {
         return model_id < 0 ? "" : QModelManager.query.getModelName(model_id)
     }
 
-    // 功能触发入口：ribbon 功能按钮共用
-    function activateFeature(info) {
+    // 入口不持执行状态；会话按子功能数量直接进入或显示选择器。
+    function activateEntry(entry) {
+        if (!root.propertyListOpen)
+            root.propertyListToggled()
+        if (App.activeOperation && App.activeOperation.entryId === entry.id)
+            return
+        // 单项直接发布叶子，避免同一功能的不同菜单入口切换时先退出已有会话。
+        const info = entry.items.length === 1 ? entry.items[0] : null
         App.activeOperation = {
+            entryId: entry.id,
+            categoryId: entry.categoryId,
+            categoryTitle: entry.title,
+            isFeature: !!info,
             info: info,
-            isFeature: true,
-            execute: function() { return QModelManager.featureSystem.invoke(info.name) }
+            execute: info ? function () { return root.featureSystem.invoke(info.name) } : null
         }
     }
 
-    // 功能 ribbon 结构：[{ name: 菜单名, groups: [{ name: 分组名, items: [QFeatureInfo] }] }]，由 rebuildFeatureMenus 维护
+    // 功能 ribbon 结构：[{ name: 菜单名, groups: [{ name: 分组名, items: [入口对象] }] }]，由 rebuildFeatureMenus 维护
     property var featureMenus: []
 
-    // 按 menu_path 两级（菜单/分组）重建功能 ribbon 结构（功能注册/注销时调用）
+    // 普通单项与聚合入口共用菜单声明；注册变化后按菜单身份保持当前页。
     function rebuildFeatureMenus() {
-        let menu_order = []
-        let menus = {} // 菜单名 -> { group_order, groups: 分组名 -> [QFeatureInfo] }
-        for (let info of QModelManager.featureSystem.featuresInfo) {
-            if (info.categories && info.categories.length > 0)
-                continue;
-            let segs = (info.menu_path || "功能").split('/')
-            let menu_name = segs[0]
-            let group_name = segs.length > 1 ? segs[1] : ""
-            if (!menus[menu_name]) {
-                menus[menu_name] = { group_order: [], groups: {} }
-                menu_order.push(menu_name)
-            }
-            let menu = menus[menu_name]
-            if (!menu.groups[group_name]) {
-                menu.groups[group_name] = []
-                menu.group_order.push(group_name)
-            }
-            menu.groups[group_name].push(info)
-        }
-        let ribbon = []
-        for (let menu_name of menu_order) {
-            let menu = menus[menu_name]
-            let groups = []
-            for (let group_name of menu.group_order)
-                groups.push({ name: group_name, items: menu.groups[group_name] })
-            ribbon.push({ name: menu_name, groups: groups })
-        }
-        featureMenus = ribbon
-    }
-
-    Connections {
-        target: QModelManager.featureSystem
-        function onFeaturesInfoChanged() {
-            root.rebuildFeatureMenus()
+        const index = root.activeCategory - root.featurePageStart
+        const name = index >= 0 && index < root.featureMenus.length ? root.featureMenus[index].name : ""
+        root.featureMenus = FeatureNavigation.buildMenus(root.navigationEntries)
+        if (name) {
+            const nextIndex = root.featureMenus.findIndex(menu => menu.name === name)
+            root.activeCategory = nextIndex < 0 ? -1 : root.featurePageStart + nextIndex
         }
     }
 
+    onNavigationEntriesChanged: rebuildFeatureMenus()
     Component.onCompleted: rebuildFeatureMenus()
 
     // 网页端导入模型
@@ -320,26 +299,19 @@ ColumnLayout {
                 }
 
                 RibbonTabButton {
-                    objectName: "meshGenerationTab"
-                    text: qsTr("网格生成算法")
-                    checkable: true
-                    checked: root.activeCategory === root.algorithmPageStart
-                    onClicked: root.activeCategory = checked ? root.algorithmPageStart : -1
-                }
-
-                RibbonTabButton {
                     text: qsTr("其他算法")
                     checkable: true
                     checked: activeCategory === root.featurePageStart - 1
                     onClicked: activeCategory = checked ? root.featurePageStart - 1 : -1
                 }
 
-                // 功能菜单页排在固定算法分类页之后
+                // 功能菜单页均由声明生成，不区分具体业务类型。
                 Repeater {
                     model: root.featureMenus
                     RibbonTabButton {
                         required property var modelData
                         required property int index
+                        objectName: "featureTab_" + modelData.name
                         text: modelData.name
                         checkable: true
                         checked: activeCategory === root.featurePageStart + index
@@ -532,54 +504,6 @@ ColumnLayout {
             Item { Layout.fillWidth: true }
         }
 
-        Flickable {
-            id: meshCategoryPage
-            objectName: "meshCategoryPage"
-            Layout.fillWidth: true
-            Layout.fillHeight: true
-            contentWidth: meshCategoryRow.implicitWidth
-            contentHeight: height
-            flickableDirection: Flickable.HorizontalFlick
-            boundsBehavior: Flickable.StopAtBounds
-            clip: true
-            RowLayout {
-                id: meshCategoryRow
-                height: meshCategoryPage.height
-                spacing: 2
-                Repeater {
-                    model: root.meshCategories
-                    RibbonActionButton {
-                        required property var modelData
-                        objectName: "algorithmCategory_" + modelData.id
-                        text: modelData.title
-                        icon.source: modelData.icon || "qrc:/images/toolbar/precess_extra_plugin.svg"
-                        icon.width: root.ribbonIconSize
-                        icon.height: root.ribbonIconSize
-                        icon.color: "transparent"
-                        Layout.fillHeight: true
-                        checkable: true
-                        autoExclusive: true
-                        checked: !!(App.activeOperation && App.activeOperation.isMeshGeneration
-                            && App.activeOperation.meshCategory === modelData.id)
-                        onClicked: {
-                            if (!root.propertyListOpen)
-                                root.propertyListToggled()
-                            // 重复选择保留输入；新类别由操作面板解析默认或上次所选算法。
-                            if (App.activeOperation && App.activeOperation.isMeshGeneration
-                                    && App.activeOperation.meshCategory === modelData.id)
-                                return
-                            App.activeOperation = {
-                                isMeshGeneration: true,
-                                meshCategory: modelData.id,
-                                categoryTitle: modelData.title,
-                                info: null
-                            }
-                        }
-                    }
-                }
-            }
-        }
-
         // 其他算法沿用原有按钮与参数面板入口。
         Flickable {
             id: algorithmPage
@@ -647,49 +571,60 @@ ColumnLayout {
             }
         }
 
-        // 功能菜单页：页内按 menu_path 第二段（分组）排列功能按钮，同组排在一起，组间以竖线分隔
+        // 单项与多子功能入口共用横向菜单页。
         Repeater {
             model: root.featureMenus
-            RowLayout {
+            Flickable {
                 id: featureMenuPage
                 required property var modelData
+                objectName: "featureMenuPage_" + modelData.name
                 Layout.fillWidth: true
                 Layout.fillHeight: true
-                spacing: 2
+                contentWidth: featureGroups.implicitWidth
+                contentHeight: height
+                flickableDirection: Flickable.HorizontalFlick
+                boundsBehavior: Flickable.StopAtBounds
+                clip: true
 
-                Repeater {
-                    model: featureMenuPage.modelData.groups
-                    RowLayout {
-                        id: featureGroupRow
-                        required property var modelData
-                        required property int index
-                        Layout.fillHeight: true
-                        spacing: 2
-
-                        Repeater {
-                            model: featureGroupRow.modelData.items
-                            RibbonActionButton {
-                                required property var modelData
-                                icon.source: root.getIconForFeature(modelData)
-                                icon.width: root.ribbonIconSize
-                                icon.height: root.ribbonIconSize
-                                icon.color: "transparent"
-                                Layout.fillHeight: true
-                                text: modelData.display_name
-                                onClicked: root.activateFeature(modelData)
-                            }
-                        }
-
-                        // 分组间竖线分隔（最后一组不显示）
-                        ToolSeparator {
-                            orientation: Qt.Vertical
+                RowLayout {
+                    id: featureGroups
+                    height: featureMenuPage.height
+                    spacing: 2
+                    Repeater {
+                        model: featureMenuPage.modelData.groups
+                        RowLayout {
+                            id: featureGroupRow
+                            required property var modelData
+                            required property int index
                             Layout.fillHeight: true
-                            visible: featureGroupRow.index < featureMenuPage.modelData.groups.length - 1
+                            spacing: 2
+
+                            Repeater {
+                                model: featureGroupRow.modelData.items
+                                RibbonActionButton {
+                                    required property var modelData
+                                    objectName: "featureEntry_" + modelData.id
+                                    icon.source: modelData.icon || "qrc:/images/toolbar/precess_extra_plugin.svg"
+                                    icon.width: root.ribbonIconSize
+                                    icon.height: root.ribbonIconSize
+                                    icon.color: "transparent"
+                                    Layout.fillHeight: true
+                                    text: modelData.title
+                                    checkable: true
+                                    autoExclusive: true
+                                    checked: !!(App.activeOperation && App.activeOperation.entryId === modelData.id)
+                                    onClicked: root.activateEntry(modelData)
+                                }
+                            }
+
+                            ToolSeparator {
+                                orientation: Qt.Vertical
+                                Layout.fillHeight: true
+                                visible: featureGroupRow.index < featureMenuPage.modelData.groups.length - 1
+                            }
                         }
                     }
                 }
-
-                Item { Layout.fillWidth: true }
             }
         }
     }

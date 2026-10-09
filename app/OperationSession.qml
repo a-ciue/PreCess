@@ -1,39 +1,43 @@
 /**
  * @file OperationSession.qml
- * @brief 操作会话：协调算法选择、注册表刷新、功能激活和参数模型。
+ * @brief 操作会话：协调子功能选择、注册表刷新、功能激活和参数模型。
  */
 import QtQml
 import app.core
 import app.model
-import "AlgorithmNavigation.js" as AlgorithmNavigation
+import "FeatureNavigation.js" as FeatureNavigation
 
 QtObject {
     id: root
 
     property var activeOperation: null
-    property var meshFeatureSystem: QModelManager.featureSystem
-    property var meshFeatureInfos: root.meshFeatureSystem.featuresInfo
-    readonly property var meshCategories: root.meshFeatureSystem.navigationCategories
-    readonly property bool meshGeneration: !!(root.activeOperation && root.activeOperation.isMeshGeneration)
-    readonly property var meshAlgorithms: root.meshGeneration ? AlgorithmNavigation.buildAlgorithms(root.meshFeatureInfos, root.activeOperation.meshCategory) : []
-    readonly property string panelTitle: root.meshGeneration && root.activeOperation.categoryTitle ? qsTr("操作面板-%1").arg(root.activeOperation.categoryTitle) : qsTr("操作面板")
+    property var featureSystem: QModelManager.featureSystem
+    property var featureInfos: root.featureSystem.featuresInfo
+    readonly property var navigationCategories: root.featureSystem.navigationCategories
+    readonly property var navigationEntries: FeatureNavigation.buildEntries(root.featureInfos, root.navigationCategories)
+    readonly property bool isGroupedOperation: !!(root.activeOperation && root.activeOperation.entryId)
+    readonly property var activeEntry: root.isGroupedOperation ? root.navigationEntries.find(entry => entry.id === root.activeOperation.entryId) || null : null
+    readonly property var subFeatures: root.activeEntry ? root.activeEntry.items : (!root.isGroupedOperation && root.activeOperation && root.activeOperation.isFeature && root.activeOperation.info ? [root.activeOperation.info] : [])
+    readonly property bool hasSubFeatureChoice: root.subFeatures.length > 1
+    readonly property string panelTitle: root.activeEntry ? qsTr("操作面板 - %1").arg(root.activeEntry.title) : qsTr("操作面板")
     readonly property OperationParameterModel parameterModel: OperationParameterModel {
-        featureSystem: root.meshFeatureSystem
-        acceptingEdits: !root.switchingOperation
+        featureSystem: root.featureSystem
+        _acceptingControlEdits: !root._switchingOperation
     }
 
-    property bool switchingOperation: false
-    property var lastMeshAlgorithms: ({})
-    property string parameterIdentity: ""
-    property string parameterSchema: ""
+    property bool _switchingOperation: false
+    property var _lastSubFeatures: ({})
+    property string _parameterIdentity: ""
+    property string _parameterSchema: ""
 
-    property Connections operationChanges: Connections {
+    // QtObject 没有默认对象列表，用显式属性承载随会话存活的信号连接。
+    readonly property Connections _operationChanges: Connections {
         target: App
         function onActiveOperationChanged() {
             root.applyOperation(App.activeOperation);
         }
     }
-    property Connections selectionChanges: Connections {
+    readonly property Connections _selectionChanges: Connections {
         target: App.selection
         function onSelectionInvalidated() {
             App.selection.listeningSelectorIndex = -1;
@@ -41,16 +45,16 @@ QtObject {
         }
     }
 
-    onMeshFeatureInfosChanged: Qt.callLater(root.refreshRegisteredMeshAlgorithm)
-    onMeshCategoriesChanged: Qt.callLater(root.refreshRegisteredMeshAlgorithm)
-    onMeshAlgorithmsChanged: Qt.callLater(root.refreshMeshAlgorithm)
+    onNavigationEntriesChanged: Qt.callLater(root.refreshRegisteredSubFeature)
+    onSubFeaturesChanged: Qt.callLater(root.refreshSubFeature)
     Component.onCompleted: root.applyOperation(App.activeOperation)
 
     function applyOperation(operation) {
-        const identity = operation && operation.isMeshGeneration && operation.info ? JSON.stringify([operation.meshCategory, operation.info.name]) : "";
-        const schema = identity ? JSON.stringify([operation.info.arg_types.map(arg => [arg.name, arg.type, arg.content]), operation.info.category_defaults ? operation.info.category_defaults[operation.meshCategory] : null, operation.defaultParameters]) : "";
-        const preserveParameters = identity !== "" && identity === root.parameterIdentity && schema === root.parameterSchema;
-        root.switchingOperation = true;
+        const identity = operation && operation.isFeature && operation.info ? JSON.stringify([operation.entryId || "", operation.info.name]) : "";
+        const schema = identity ? JSON.stringify([operation.info.arg_types.map(arg => [arg.name, arg.type, arg.content]), operation.categoryId && operation.info.category_defaults ? operation.info.category_defaults[operation.categoryId] : null, operation.defaultParameters]) : "";
+        const preserveParameters = identity !== "" && identity === root._parameterIdentity && schema === root._parameterSchema;
+        // 切换模型时控件可能同步更新文本；此期间只同步快照，不接受控件反向写入。
+        root._switchingOperation = true;
         try {
             // 描述包装可以刷新；只有操作身份或参数声明变化才重新初始化会话。
             root.activeOperation = operation;
@@ -62,61 +66,60 @@ QtObject {
                 root.parameterModel.reset(operation);
             } else
                 root.parameterModel.argumentTypes = operation.info.arg_types;
-            root.parameterIdentity = identity;
-            root.parameterSchema = schema;
+            root._parameterIdentity = identity;
+            root._parameterSchema = schema;
         } finally {
-            root.switchingOperation = false;
+            root._switchingOperation = false;
         }
-        if (root.meshGeneration && !root.activeOperation.info)
-            Qt.callLater(root.refreshMeshAlgorithm);
+        if (root.isGroupedOperation && !root.activeOperation.info)
+            Qt.callLater(root.refreshSubFeature);
     }
 
-    function selectMeshAlgorithm(index, refresh = false) {
-        if (!root.meshGeneration)
+    function selectSubFeature(index, refresh = false) {
+        if (!root.isGroupedOperation)
             return;
-        const categoryInfo = root.meshCategories.find(entry => entry.id === root.activeOperation.meshCategory);
-        if (!categoryInfo) {
+        const entry = root.activeEntry;
+        if (!entry) {
             App.activeOperation = null;
             return;
         }
-        const info = index >= 0 && index < root.meshAlgorithms.length ? root.meshAlgorithms[index] : null;
+        const info = index >= 0 && index < root.subFeatures.length ? root.subFeatures[index] : null;
         // QObject 的 JS 包装引用不稳定；普通重复点击按注册名称判定幂等。
         if (!refresh && info && root.activeOperation.info && root.activeOperation.info.name === info.name)
             return;
-        if (!info && !root.activeOperation.info)
+        if (!refresh && !info && !root.activeOperation.info)
             return;
-        const category = root.activeOperation.meshCategory;
         if (info)
-            root.lastMeshAlgorithms[category] = info.name;
+            root._lastSubFeatures[entry.id] = info.name;
         App.activeOperation = {
-            isMeshGeneration: true,
+            entryId: entry.id,
             isFeature: !!info,
-            meshCategory: category,
-            categoryTitle: categoryInfo.title,
+            categoryId: entry.categoryId,
+            categoryTitle: entry.title,
             info: info,
-            execute: info ? function (component, args) {
-                return root.meshFeatureSystem.invoke(info.name);
+            execute: info ? function () {
+                return root.featureSystem.invoke(info.name);
             } : null
         };
     }
 
-    function refreshRegisteredMeshAlgorithm() {
-        root.refreshMeshAlgorithm(true);
+    function refreshRegisteredSubFeature() {
+        root.refreshSubFeature(true);
     }
 
-    function refreshMeshAlgorithm(refresh = false) {
-        if (!root.meshGeneration)
+    function refreshSubFeature(refresh = false) {
+        if (!root.isGroupedOperation)
             return;
-        if (!root.meshCategories.some(entry => entry.id === root.activeOperation.meshCategory)) {
-            // 最后一个提供者退出后，活动操作不能继续持有已消失分类的闭包或选择监听。
+        if (!root.activeEntry) {
+            // 父入口消失后，不再持有已卸载子功能的闭包或选择监听。
             App.activeOperation = null;
             return;
         }
-        const name = root.activeOperation.info ? root.activeOperation.info.name : root.lastMeshAlgorithms[root.activeOperation.meshCategory];
-        const index = root.meshAlgorithms.findIndex(info => info.name === name);
-        if (root.meshAlgorithms.length > 0)
-            root.selectMeshAlgorithm(index >= 0 ? index : 0, refresh);
+        const name = root.activeOperation.info ? root.activeOperation.info.name : root._lastSubFeatures[root.activeOperation.entryId];
+        const index = root.subFeatures.findIndex(info => info.name === name);
+        if (root.subFeatures.length > 0)
+            root.selectSubFeature(index >= 0 ? index : 0, refresh);
         else
-            root.selectMeshAlgorithm(-1);
+            root.selectSubFeature(-1, refresh);
     }
 }

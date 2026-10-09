@@ -218,6 +218,8 @@ TEST_CASE("Actual undo clears offscreen selectors only after successful restorat
     REQUIRE(system.registerHandler(meta, systems::feature::FeatureSystem::SystemHandlerPtr { std::make_unique<ManySelectors>().release() }));
     auto* info = manager->getFeatureSystemAdaptor()->getFeaturesInfo().front();
     QJSValue active = f.engine.newObject();
+    // 普通功能也使用统一入口身份；视口外参数仍由同一会话模型清理。
+    active.setProperty("entryId", QStringLiteral("feature:ManySelectors:功能"));
     active.setProperty("isFeature", true);
     active.setProperty("info", f.engine.newQObject(info));
     app->setProperty("activeOperation", QVariant::fromValue(active));

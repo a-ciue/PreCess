@@ -17,42 +17,43 @@ Item{
     id: root
     required property OperationSession session
     readonly property var parameters: root.session.parameterModel.values
-    readonly property QSelection emptySelection: root.session.parameterModel.emptySelection
     readonly property var activeOp: root.session.activeOperation
-    readonly property bool meshGeneration: root.session.meshGeneration
+    readonly property bool isGroupedOperation: root.session.isGroupedOperation
+    readonly property bool hasSubFeatureChoice: root.session.hasSubFeatureChoice
     readonly property string panelTitle: root.session.panelTitle
-    readonly property var meshAlgorithms: root.session.meshAlgorithms
+    readonly property var subFeatures: root.session.subFeatures
+    readonly property bool _hasSubFeatureHeader: root.isGroupedOperation && (root.hasSubFeatureChoice || root.subFeatures.length === 0)
 
     function setParam(index, value) {
         root.session.parameterModel.setValue(index, value)
     }
 
     ColumnLayout {
-        id: meshHeader
+        id: subFeatureHeader
         anchors.top: parent.top
         anchors.left: parent.left
         anchors.right: parent.right
-        anchors.margins: root.meshGeneration ? Theme.spacingSm : 0
+        anchors.margins: root._hasSubFeatureHeader ? Theme.spacingSm : 0
         spacing: Theme.spacingSm
-        visible: root.meshGeneration
+        visible: root._hasSubFeatureHeader
         height: visible ? implicitHeight : 0
         ComboBox {
-            id: meshAlgorithmSelector
-            objectName: "meshAlgorithmSelector"
+            id: subFeatureSelector
+            objectName: "subFeatureSelector"
             Layout.fillWidth: true
-            // 单入口也保留选择框，让三级导航与当前算法身份始终可见。
-            visible: root.meshAlgorithms.length > 0
-            model: root.meshAlgorithms.map(info => ({ text: info.label || info.display_name, name: info.name }))
+            // 单子功能直接进入参数面板，多个子功能才显示选择入口。
+            visible: root.hasSubFeatureChoice
+            model: root.subFeatures.map(info => ({ text: info.label || info.display_name }))
             textRole: "text"
-            enabled: root.meshAlgorithms.length > 0
+            enabled: root.hasSubFeatureChoice
             currentIndex: root.activeOp && root.activeOp.info
-                ? root.meshAlgorithms.findIndex(info => info.name === root.activeOp.info.name) : -1
-            onActivated: index => root.session.selectMeshAlgorithm(index)
-            Accessible.name: qsTr("网格生成算法")
+                ? root.subFeatures.findIndex(info => info.name === root.activeOp.info.name) : -1
+            onActivated: index => root.session.selectSubFeature(index)
+            Accessible.name: qsTr("子功能")
         }
         Label {
-            visible: root.meshAlgorithms.length === 0
-            text: qsTr("暂无可用算法")
+            visible: root.subFeatures.length === 0
+            text: qsTr("暂无可用子功能")
             color: Theme.textSecondary
             Layout.fillWidth: true
         }
@@ -68,11 +69,11 @@ Item{
         height: visible ? 36 : 0
         spacing: Theme.spacingSm
         // 无活动操作时按钮行整体隐藏，避免两个 disabled 按钮占据首行
-        visible: root.meshGeneration || !!(root.activeOp && root.activeOp.info)
+        visible: root.isGroupedOperation || !!(root.activeOp && root.activeOp.info)
         // AnchorChanges 显式撤销旧锚点，避免动态绑定留下上下双锚点撑满面板。
         states: State {
-            name: "meshGeneration"
-            when: root.meshGeneration
+            name: "subFeatureChoice"
+            when: root._hasSubFeatureHeader
             AnchorChanges {
                 target: buttonRow
                 anchors.top: undefined
@@ -155,15 +156,15 @@ Item{
                     }
                 }
             }
-            // 确认 = 结束当前操作，取消操作选中；再次执行需重新点选算法
+            // 确认 = 结束当前操作，取消操作选中；再次执行需重新点选功能。
             onClicked: App.activeOperation = null
         }
     }
     Item{
-        anchors.top: root.meshGeneration ? meshHeader.bottom : buttonRow.bottom
+        anchors.top: root._hasSubFeatureHeader ? subFeatureHeader.bottom : buttonRow.bottom
         anchors.left: parent.left
         anchors.right: parent.right
-        anchors.bottom: root.meshGeneration ? buttonRow.top : parent.bottom
+        anchors.bottom: root._hasSubFeatureHeader ? buttonRow.top : parent.bottom
         clip: true
         ColumnLayout{
             anchors.fill: parent
@@ -480,8 +481,7 @@ Item{
                     // 切换参数的同步通知可能先于 checked 绑定刷新，必须核对当前监听者。
                     if (App.selection.listeningSelectorIndex !== index)
                         return
-                    // 只更新当前监听参数；视口的 null 在此转换为明确的空选择器。
-                    root.setParam(index, selection === null ? root.emptySelection : selection)
+                    root.setParam(index, selection)
                 }
             }
 
