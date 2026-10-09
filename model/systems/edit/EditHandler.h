@@ -19,9 +19,11 @@ class ArgObject;
 
 namespace systems::edit {
 /**
- * @brief 模型编辑系统的功能接口，继承他来实现具体的编辑功能
+ * @brief 旧编辑系统的兼容接口，仅供已有插件维护
+ * @deprecated 新编辑功能实现 FeatureHandler，在 setup 中声明参数与导航，
+ *             经 FeatureContext 执行和发布任务。禁止为此旧接口新增能力。
  */
-class EditHandler {
+class [[deprecated("Legacy EditHandler is frozen; implement FeatureHandler instead")]] EditHandler {
 public:
     virtual ~EditHandler() = default;
     /**

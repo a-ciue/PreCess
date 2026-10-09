@@ -221,6 +221,8 @@ endfunction()
 #     [STATIC]
 # )
 function(precess_add_edit_plugin TARGET)
+    message(DEPRECATION
+        "${TARGET}: EditSystem is frozen. New editing plugins must use precess_add_feature_plugin and FeatureHandler.")
     _add_plugin(${TARGET} ${ARGN})
 endfunction()
 
