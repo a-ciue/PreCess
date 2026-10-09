@@ -39,7 +39,7 @@ struct FeatureInfo {
     bool interactive = false; //> 是否声明视口交互能力（功能经 interaction 上下文订阅交互回调）
     std::vector<core::ArgType> arg_types; //> 功能参数类型列表
     std::vector<MenuContribution> menus; //> 菜单贡献项列表
-    FeatureNavigation navigation; //> setup 声明的网格生成分类；空时使用普通功能菜单
+    FeatureNavigation navigation; //> setup 声明的分类导航；空时使用普通功能菜单
     std::vector<KeyBinding> key_bindings; //> 按键绑定列表
 };
 }

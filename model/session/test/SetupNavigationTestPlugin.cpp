@@ -1,6 +1,6 @@
 /**
  * @file SetupNavigationTestPlugin.cpp
- * @brief 验证可选 setup 接口经真实 DLL 边界注册，不安装到产品插件目录。
+ * @brief 验证 Feature 导航声明经真实 DLL 边界注册，不安装到产品插件目录。
  */
 #include "FeatureHandler.h"
 #include "FeatureRegistrar.h"
@@ -15,10 +15,11 @@ public:
     void setup(FeatureRegistrar& registrar, FeatureContext&) override
     {
         registrar.addParameter({ ArgTypeEnum::Float, "Size", "1", "" });
-        registrar.addCategory({ "setup-custom", "Setup custom category", "", 5 });
-        registrar.setLabel("Setup algorithm");
-        registrar.setOrder(7);
-        registrar.setCategoryDefault("setup-custom", "Size", "3");
+        auto& navigation = registrar.navigation();
+        navigation.addCategory({ "setup-custom", "Setup custom category", "", 5, "Tools/Custom" });
+        navigation.setLabel("Setup feature");
+        navigation.setOrder(7);
+        navigation.setCategoryDefault("setup-custom", "Size", "3");
     }
 };
 

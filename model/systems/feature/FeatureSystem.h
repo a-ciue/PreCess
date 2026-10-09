@@ -93,7 +93,9 @@ public:
      * @brief 获取已注册功能信息列表
      */
     std::vector<FeatureInfo*> getFeatureInfos();
-    /** @brief 聚合网格分类；四个基础入口始终保留。 */
+    /** @brief 设置宿主始终保留的父入口；仅在模型操作空闲时允许变更。 */
+    void setNavigationCategories(std::vector<FeatureCategory> categories);
+    /** @brief 聚合宿主入口与功能分类；相同 id 按提供者身份确定来源。 */
     std::vector<FeatureCategory> getNavigationCategories() const;
     /**
      * @brief 获取功能的参数集（UI 展示当前值用），功能不存在时为 nullptr
@@ -205,6 +207,7 @@ private:
     core::EventBus* event_bus_; //< 事件总线引用
     UndoStack* undo_stack_ { nullptr }; //< undo 栈引用（可空：无栈时边界退化为仅 flush）
     std::unordered_map<std::string, FeatureEntry> entries_; //< 功能条目，key 为功能唯一名称
+    std::vector<FeatureCategory> navigation_categories_; //!< 宿主声明的常驻父入口，不含业务分类假设
     std::optional<std::string> pending_feature_; //!< 占用期最后一个有效目标；空字符串表示退出
     std::string current_feature_; //< 当前进入的功能名（空=无；setFeatureActive 驱动进入/退出）
     std::function<std::optional<Index>()> active_model_provider_;

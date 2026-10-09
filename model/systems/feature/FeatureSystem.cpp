@@ -18,43 +18,18 @@
 #include <utility>
 
 namespace systems::feature {
-namespace {
-    // 四个基础分类始终存在；扩展分类由插件的 setup 提供。
-    const std::vector<FeatureCategory>& builtInCategories()
-    {
-        static const std::vector<FeatureCategory> categories {
-            { "triangle", "三角形网格生成", "qrc:/images/toolbar/Mesh/triangle-meshing.svg", 10 },
-            { "quadrilateral", "四边形网格生成", "qrc:/images/toolbar/Mesh/quad-meshing.svg", 20 },
-            { "tetrahedron", "四面体网格生成", "qrc:/images/toolbar/Algorithm/tetgen.svg", 30 },
-            { "hexahedron", "六面体网格生成", "qrc:/images/toolbar/Mesh/hexa-meshing.svg", 40 }
-        };
-        return categories;
-    }
-    const FeatureCategory* findCategory(const std::vector<FeatureCategory>& categories, const std::string& id)
-    {
-        const auto found = std::find_if(categories.begin(), categories.end(), [&](const auto& category) { return category.id == id; });
-        return found == categories.end() ? nullptr : &*found;
-    }
-    FeatureNavigation normalizeNavigation(FeatureNavigation navigation)
-    {
-        // 过滤无效声明、去重；所属分类身份完全从 setup 的分类描述派生。
-        std::vector<FeatureCategory> definitions;
-        for (auto& definition : navigation.category_definitions) {
-            if (definition.id.empty() || definition.id == "other" || definition.title.empty())
-                continue;
-            if (!findCategory(definitions, definition.id))
-                definitions.push_back(std::move(definition));
-        }
-        navigation.category_definitions = std::move(definitions);
-        std::vector<std::string> categories;
-        for (const auto& definition : navigation.category_definitions) {
-            if (std::find(categories.begin(), categories.end(), definition.id) == categories.end())
-                categories.push_back(definition.id);
-        }
-        navigation.categories = std::move(categories);
-        return navigation;
-    }
+void FeatureSystem::setNavigationCategories(std::vector<FeatureCategory> categories)
+{
+    model_layer_->assertOperationIdle();
+    FeatureNavigation navigation;
+    for (auto& category : categories)
+        navigation.addCategory(std::move(category));
+    if (navigation_categories_ == navigation.categoryDefinitions())
+        return;
+    navigation_categories_ = navigation.categoryDefinitions();
+    on_feature_infos_changed_();
 }
+
 std::vector<FeatureCategory> FeatureSystem::getNavigationCategories() const
 {
     struct Candidate {
@@ -62,15 +37,22 @@ std::vector<FeatureCategory> FeatureSystem::getNavigationCategories() const
         std::string provider;
     };
     std::map<std::string, Candidate> candidates;
-    // 基础入口不随算法提供者卸载而消失；没有算法时由通用面板呈现空状态。
-    for (const auto& category : builtInCategories())
+    // 宿主入口不随功能卸载而消失；系统不预设业务类别或菜单路径。
+    for (const auto& category : navigation_categories_)
         candidates.emplace(category.id, Candidate { category, "" });
     for (const auto& [name, entry] : entries_) {
-        for (const auto& category : entry.info.navigation.category_definitions) {
+        for (const auto& category : entry.info.navigation.categoryDefinitions()) {
             auto found = candidates.find(category.id);
-            // 插件声明优先于内置描述；同类按算法身份选来源，不依赖加载顺序。
-            if (found == candidates.end() || found->second.provider.empty() || name < found->second.provider)
-                candidates.insert_or_assign(category.id, Candidate { category, name });
+            // 插件描述优先；同类按功能身份选来源，不依赖加载顺序。
+            if (found == candidates.end() || found->second.provider.empty() || name < found->second.provider) {
+                auto resolved_category = category;
+                if (resolved_category.menu_path.empty()) {
+                    const auto host = std::find_if(navigation_categories_.begin(), navigation_categories_.end(), [&](const auto& declared) { return declared.id == category.id; });
+                    if (host != navigation_categories_.end())
+                        resolved_category.menu_path = host->menu_path;
+                }
+                candidates.insert_or_assign(category.id, Candidate { std::move(resolved_category), name });
+            }
         }
     }
     std::vector<FeatureCategory> result;
@@ -171,7 +153,7 @@ bool FeatureSystem::registerHandler(const HandlerMetaData& meta_data, SystemHand
         entry.params = std::move(*previous_params);
     entry.info.arg_types = registrar.argTypes();
     entry.info.menus = registrar.menuItems();
-    entry.info.navigation = normalizeNavigation(registrar.navigation());
+    entry.info.navigation = registrar.navigation();
     entry.info.key_bindings = registrar.keyBindings();
     entry.handler = std::move(handler);
 

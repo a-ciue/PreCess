@@ -184,18 +184,19 @@ TEST_CASE("Binary feature setup supplies navigation and survives reload", "[sess
         const auto infos = session.featureSystem().getFeatureInfos();
         REQUIRE(infos.size() == 1);
         CHECK(infos.front()->name == "setupNavigationTest");
-        CHECK(infos.front()->navigation.label == "Setup algorithm");
-        CHECK(infos.front()->navigation.categories == std::vector<std::string> { "setup-custom" });
-        CHECK(infos.front()->navigation.order == 7);
-        CHECK(infos.front()->navigation.category_defaults.at("setup-custom").at("Size") == "3");
+        CHECK(infos.front()->navigation.label() == "Setup feature");
+        CHECK(infos.front()->navigation.categories() == std::vector<std::string> { "setup-custom" });
+        CHECK(infos.front()->navigation.order() == 7);
+        CHECK(infos.front()->navigation.categoryDefaults().at("setup-custom").at("Size") == "3");
         REQUIRE(infos.front()->arg_types.size() == 1);
         CHECK(infos.front()->arg_types.front().name == "Size");
         const auto categories = session.featureSystem().getNavigationCategories();
-        REQUIRE(categories.size() == 5);
+        REQUIRE(categories.size() == 1);
         CHECK(categories.front().title == "Setup custom category");
         CHECK(categories.front().order == 5);
+        CHECK(categories.front().menu_path == "Tools/Custom");
         session.pluginManager().unregisterPlugin(target);
         CHECK(session.featureSystem().getFeatureInfos().empty());
-        CHECK(session.featureSystem().getNavigationCategories().size() == 4);
+        CHECK(session.featureSystem().getNavigationCategories().empty());
     }
 }

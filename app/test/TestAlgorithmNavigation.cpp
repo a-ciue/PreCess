@@ -867,8 +867,8 @@ TEST_CASE("Registered custom categories create shared toolbar pages and disappea
         void setup(systems::feature::FeatureRegistrar& reg, systems::feature::FeatureContext&) override
         {
             if (!category_.id.empty())
-                reg.addCategory(category_);
-            reg.setOrder(order_);
+                reg.navigation().addCategory(category_);
+            reg.navigation().setOrder(order_);
             reg.addParameter({ ArgTypeEnum::Float, "目标尺寸", "1", "" });
         }
         void activate(systems::feature::FeatureContext&) override { ++activations_; }
