@@ -15,12 +15,28 @@
 #include <spdlog/spdlog.h>
 
 #include <utility>
+#include <thread>
+#include <stdexcept>
 
 namespace py = pybind11;
 
 namespace python {
 
+#ifdef PRECESS_RUNTIME_FAILURE_TEST
+// 仅故障测试目标提供定义；生产库没有此符号、状态或公开 API。
+void runtimeInitializationCheckpoint(const char* stage);
+#endif
+
 struct Runtime::State {
+    const std::thread::id owner_thread = std::this_thread::get_id();
+    bool interpreter_owned = false;
+    bool initialization_attempted = false;
+    std::unique_ptr<py::gil_scoped_release> idle_gil;
+    void checkThread() const
+    {
+        if (std::this_thread::get_id() != owner_thread)
+            throw std::logic_error("Python Runtime must be used on its owning thread");
+    }
     session::Session* session = nullptr; //> 活会话（不持有所有权，宿主保证生命周期）
     Config config;                       //> 解释器配置（标准库根与模块目录候选）
     bool initialized = false;            //> 解释器就绪且 precess 已导入
@@ -38,56 +54,97 @@ Runtime::Runtime(session::Session* session, Config config)
 
 Runtime::~Runtime()
 {
-    if (!state_->initialized)
+    if (!state_->interpreter_owned)
         return;
-    // 先丢弃 Python 侧活会话引用再终结解释器。GIL 自初始化起归初始化线程
-    // 所有：acquire 守卫在同线程为无操作配对，块结束时 GIL 仍被持有，可直接
-    // Finalize；终结之后不再触碰任何 Python API
+    // 析构不能跨线程恢复状态；违反宿主契约时拒绝继续操作解释器。
+    if (std::this_thread::get_id() != state_->owner_thread || state_->executing)
+        std::terminate();
+    state_->idle_gil.reset(); // 恢复初始化线程状态；此后保持 GIL 至终结。
     {
-        py::gil_scoped_acquire gil;
-        state_->precess_module.attr("current") = py::none();
+        if (state_->precess_module) {
+            try {
+                state_->precess_module.attr("current") = py::none();
+            } catch (const py::error_already_set& e) {
+                spdlog::error("Python Runtime shutdown: {}", e.what());
+            }
+        }
         state_->precess_module = py::object();
     }
-    Py_FinalizeEx();
+    py::finalize_interpreter();
 }
 
 bool Runtime::isAvailable() const
 {
+    state_->checkThread();
     return state_->initialized;
 }
 
 const std::string& Runtime::lastError() const
 {
+    state_->checkThread();
     return state_->last_error;
 }
 
 void Runtime::initialize()
 {
-    if (state_->initialized || !state_->last_error.empty())
+    state_->checkThread();
+    if (state_->initialization_attempted)
         return;
+    state_->initialization_attempted = true;
+
+    // 守卫在所有 Python 局部对象和 catch 异常对象之外：异常报告自身抛异常
+    // 时也会回滚。恢复 GIL -> 清空引用 -> 终结，绝不让 release 跨越终结。
+    struct InitializationRollback {
+        State& state;
+        ~InitializationRollback()
+        {
+            if (!state.initialized && state.interpreter_owned) {
+                state.idle_gil.reset();
+                state.precess_module = py::object();
+                py::finalize_interpreter();
+                state.interpreter_owned = false;
+            }
+        }
+    } rollback { *state_ };
 
     // 1) 解释器初始化：python_home 非空时经 PyConfig 把标准库根固定为该目录。
     //    嵌入场景主程序不是 python.exe，不显式给 home 时标准库定位依赖环境
     //    变量等启发式，跨部署形态不可靠
     PyConfig config;
     PyConfig_InitPythonConfig(&config);
-    if (!state_->config.python_home.empty())
-        PyConfig_SetString(&config, &config.home, state_->config.python_home.wstring().c_str());
-    if (!state_->config.program_name.empty())
-        PyConfig_SetBytesString(&config, &config.program_name, state_->config.program_name.c_str());
-    const PyStatus status = Py_InitializeFromConfig(&config);
-    PyConfig_Clear(&config);
-    if (PyStatus_Exception(status)) {
-        state_->last_error = std::string("Python 解释器初始化失败：")
-            + (status.err_msg ? status.err_msg : "未知错误");
+    struct ConfigCleanup {
+        PyConfig& config;
+        bool delegated = false;
+        ~ConfigCleanup() { if (!delegated) PyConfig_Clear(&config); }
+    } config_cleanup { config };
+    try {
+    auto check_config = [&](PyStatus status) {
+        if (!PyStatus_Exception(status))
+            return true;
+        state_->last_error = status.err_msg ? status.err_msg : "Python config failed";
+        return false;
+    };
+    if (!state_->config.python_home.empty()
+        && !check_config(PyConfig_SetString(&config, &config.home, state_->config.python_home.wstring().c_str())))
+        return;
+    if (!state_->config.program_name.empty()
+        && !check_config(PyConfig_SetBytesString(&config, &config.program_name, state_->config.program_name.c_str())))
+        return;
+    if (Py_IsInitialized()) {
+        state_->last_error = "Python interpreter already exists; Runtime requires exclusive ownership";
         return;
     }
+        // 此重载负责清理 PyConfig；禁止自动改变模块搜索路径。
+        config_cleanup.delegated = true;
+        py::initialize_interpreter(&config, 0, nullptr, false);
+        state_->interpreter_owned = true;
+#ifdef PRECESS_RUNTIME_FAILURE_TEST
+        runtimeInitializationCheckpoint("import");
+#endif
 
     // 2) sys.path 按优先级前置模块目录后导入 precess，并注入活会话（引用
-    //    策略，无所有权）。初始化后 GIL 归初始化线程，此后同线程的 gil 守卫
-    //    均为无操作配对
-    py::gil_scoped_acquire gil;
-    try {
+    //    策略，无所有权）。初始化期间持 GIL，全部 Python 临时对象清理后再释放。
+    {
         py::module_ sys = py::module_::import("sys");
         // 逆序前置，使 module_dirs 首个候选位于 sys.path 最前
         for (auto it = state_->config.module_dirs.rbegin(); it != state_->config.module_dirs.rend(); ++it)
@@ -95,13 +152,6 @@ void Runtime::initialize()
         state_->precess_module = py::module_::import("precess");
         state_->precess_module.attr("current")
             = py::cast(state_->session, py::return_value_policy::reference);
-        state_->initialized = true;
-    } catch (const py::error_already_set& e) {
-        state_->last_error = std::string("precess 模块导入失败：")
-            + e.what()
-            + "\n（请确认构建已生成 precess 扩展模块，且位于 module_dirs 候选目录之一）";
-        state_->precess_module = py::object();
-        return;
     }
 
     // 3) 控制台辅助注入（失败仅记日志，不影响运行时可用性）：控制台输入行是
@@ -110,6 +160,9 @@ void Runtime::initialize()
     //    "lost sys.stdin" 崩出），裸 help 的 "Type help()..." 提示语也会误导用户；
     //    clear() 经输出换页符 \f、由界面识别清屏
     try {
+#ifdef PRECESS_RUNTIME_FAILURE_TEST
+        runtimeInitializationCheckpoint("console");
+#endif
         py::exec(R"PY(
 def _console_guide():
     return (
@@ -154,6 +207,22 @@ del _ConsoleHelp, _ConsoleExit, _console_clear
     } catch (const py::error_already_set& e) {
         spdlog::error("python::Runtime: 控制台辅助注入失败: {}", e.what());
     }
+    // 所有局部 Python 对象已析构。守卫跨越 GUI 空闲期，不能是局部变量。
+#ifdef PRECESS_RUNTIME_FAILURE_TEST
+    runtimeInitializationCheckpoint("before_release");
+#endif
+    state_->idle_gil = std::make_unique<py::gil_scoped_release>();
+#ifdef PRECESS_RUNTIME_FAILURE_TEST
+    runtimeInitializationCheckpoint("after_release");
+#endif
+    state_->initialized = true; // 最后发布可用状态；之后只析构原生配置守卫。
+    } catch (const py::error_already_set& e) {
+        state_->last_error = std::string("Python 初始化失败：") + e.what();
+    } catch (const std::exception& e) {
+        state_->last_error = std::string("Python 初始化失败：") + e.what();
+    } catch (...) {
+        state_->last_error = "Python 初始化失败：未知 C++ 异常";
+    }
 }
 
 void Runtime::ensureInitialized()
@@ -164,6 +233,7 @@ void Runtime::ensureInitialized()
 
 Runtime::ExecutionResult Runtime::execute(const std::string& source)
 {
+    state_->checkThread();
     ExecutionResult result;
     ensureInitialized();
     if (!state_->initialized) {
@@ -177,6 +247,10 @@ Runtime::ExecutionResult Runtime::execute(const std::string& source)
 
     py::gil_scoped_acquire gil;
     state_->executing = true;
+    struct ExecutionGuard {
+        bool& flag;
+        ~ExecutionGuard() { flag = false; }
+    } execution_guard { state_->executing };
     std::string captured;
     try {
         // Python 侧 sys.stdout/sys.stderr 临时换成 StringIO 捕获输出（含表达式
@@ -226,6 +300,7 @@ Runtime::ExecutionResult Runtime::execute(const std::string& source)
 
 std::string Runtime::version() const
 {
+    state_->checkThread();
     if (!state_->initialized)
         return std::string();
     py::gil_scoped_acquire gil;
