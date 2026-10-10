@@ -45,22 +45,20 @@ cmake --install build --prefix "<安装前缀>" --component AllPlugins
 
 模型写入、任务和线程契约以接口头文件为准。示例使用活动组件是教学简化，正式功能优先通过 Selector 选择目标。
 
-## 通用 Feature 分类导航
+## 统一 Feature 功能入口
 
-新增算法、编辑和通用业务功能使用 `FeatureHandler`。在 setup 中声明参数，经 `registrar.navigation()` 声明父入口与子功能的关联；分类不限于网格生成，JSON 和旁置文件不提供导航。
+新增业务功能使用 `FeatureHandler`。所有功能都用同一个入口接口：
 
 ```cpp
 void ExampleSolver::setup(FeatureRegistrar& registrar, FeatureContext&)
 {
     registrar.addParameter({ ArgTypeEnum::Int, "迭代数", "100" });
     auto& navigation = registrar.navigation();
-    navigation.addCategory({ "analysis", "分析", "", 20, "功能/求解" });
+    navigation.addEntry({ "analysis", "分析", "", 20, "功能/求解" });
     navigation.setLabel("稳态求解器");
 }
 ```
 
-`FeatureCategory` 第五个字段 `menu_path` 指定“菜单/分组”；留空时继承宿主同 id 的路径，解析后仍为空则依次回退到首个子功能的菜单贡献、“功能”菜单。父入口可以关联 0、1 或多个功能：0 显示空态并禁用执行，1 直接显示参数，多个显示子功能选择器。需要常驻的入口由产品宿主注入，FeatureSystem 不固定网格分类。
+不同功能注册相同入口 id 后自动聚合：一个功能直接显示参数，多个功能显示子功能选择器。`FeatureNavigationEntry` 依次声明 id、入口标题、图标、排序和菜单/分组路径；子功能标题通过 `setLabel` 单独配置。同一功能可注册到多个入口，参数和执行状态不复制。宿主通过 `setNavigationEntries` 保留空入口，零子功能时禁用执行。未声明入口时回退默认“功能”菜单。
 
-完整字段、校验、聚合、宿主配置和网格生成实例见源码树的 [SDK 导航 reference](../sdk/skills/zenithgrid-external-plugin-development/references/development.md#通用-feature-分类导航)；已安装 SDK 内对应 `skills/zenithgrid-external-plugin-development/references/development.md`。参数、激活、事件、任务与 undo 均走 FeatureSystem，不转发到已废弃的算法/编辑系统；本次不迁移或删除已有旧插件。
-
-空导航继续使用普通菜单，既有普通 Feature 插件无需修改导航源码。公共 Feature 头文件变化后，必须用匹配 SDK、工具链和依赖全量重建主程序、项目内插件、示例及独立 Addons，禁止混用旧 DLL。
+完整字段、参数预设与聚合规则见 [SDK 导航 reference](../sdk/skills/zenithgrid-external-plugin-development/references/development.md#统一功能入口)。功能执行、事件、任务和 undo 通过 FeatureSystem 协调。公共 Feature 头文件变化后，必须用匹配 SDK 全量重建主程序、项目内插件、示例及独立 Addons，确保 ABI 一致。

@@ -16,10 +16,10 @@ public:
     {
         registrar.addParameter({ ArgTypeEnum::Float, "Size", "1", "" });
         auto& navigation = registrar.navigation();
-        navigation.addCategory({ "setup-custom", "Setup custom category", "", 5, "Tools/Custom" });
+        navigation.addEntry({ "setup-custom", "Setup custom category", "", 5, "Tools/Custom" });
         navigation.setLabel("Setup feature");
         navigation.setOrder(7);
-        navigation.setCategoryDefault("setup-custom", "Size", "3");
+        navigation.setEntryDefault("setup-custom", "Size", "3");
     }
 };
 

@@ -48,7 +48,7 @@ void CreateSphereHandler::setup(FeatureRegistrar& reg, FeatureContext& /*ctx*/)
     reg.addParameter({ ArgTypeEnum::Float, "经度扫掠角（度）", "360", "范围为 (0, 360]" });
     reg.addParameter({ ArgTypeEnum::Combo, "写入目标",
         "添加到当前 Component,新建 Component,新建 Model|0", "选择几何创建结果的组织位置" });
-    reg.addMenuItem({ "几何", "创建球体/部分球体", "qrc:/images/toolbar/Geometry/sphere.svg" });
+    reg.navigation().addEntry({ "CreateSphere", "创建球体/部分球体", "qrc:/images/toolbar/Geometry/sphere.svg", 0, "几何" });
 }
 
 std::any CreateSphereHandler::execute(FeatureContext& ctx)

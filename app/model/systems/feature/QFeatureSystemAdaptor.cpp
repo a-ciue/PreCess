@@ -166,10 +166,10 @@ void QFeatureSystemAdaptor::setActiveComponent(int id)
     active_component_id_ = id;
 }
 
-QVariantList QFeatureSystemAdaptor::getNavigationCategories() const
+QVariantList QFeatureSystemAdaptor::getNavigationEntries() const
 {
     QVariantList result;
-    for (const auto& category : feature_system_->getNavigationCategories()) {
+    for (const auto& category : feature_system_->getNavigationEntries()) {
         result.append(QVariantMap { { "id", QString::fromStdString(category.id) },
             { "title", QString::fromStdString(category.title) },
             { "icon", QString::fromStdString(category.icon) }, { "order", category.order },
@@ -182,37 +182,27 @@ QList<QFeatureInfo*> QFeatureSystemAdaptor::getFeaturesInfo() const
 {
     QList<QFeatureInfo*> infos;
     for (const FeatureInfo* feature_info : feature_system_->getFeatureInfos()) {
-        // 每个菜单贡献项生成一条功能信息（同一功能可挂到多个菜单），未声明时归入默认"功能"菜单
-        std::vector<MenuContribution> menus = feature_info->menus;
-        if (menus.empty()) {
-            menus.push_back({ "功能", "", "" });
-        }
+        // 一个功能只生成一份参数与执行描述，入口身份列表负责多处展示。
         QStringList categories;
-        for (const auto& category : feature_info->navigation.categories())
+        for (const auto& category : feature_info->navigation.entryIds())
             categories.append(QString::fromStdString(category));
         QVariantMap category_defaults;
-        for (const auto& [category, defaults] : feature_info->navigation.categoryDefaults()) {
+        for (const auto& [category, defaults] : feature_info->navigation.entryDefaults()) {
             QVariantMap parameters;
             for (const auto& [name, value] : defaults)
                 parameters.insert(QString::fromStdString(name), QString::fromStdString(value));
             category_defaults.insert(QString::fromStdString(category), parameters);
         }
-        for (const auto& menu : menus) {
-            QList<QArgType*> args;
-            for (const auto& arg_type : feature_info->arg_types) {
-                args << new QArgType(arg_type);
-            }
-            infos.append(new QFeatureInfo(
-                QString::fromStdString(feature_info->name),
-                QString::fromStdString(feature_info->display_name),
-                QString::fromStdString(feature_info->description),
-                QString::fromStdString(menu.menu_path.empty() ? "功能" : menu.menu_path),
-                QString::fromStdString(feature_info->navigation.icon().empty() ? menu.icon : feature_info->navigation.icon()),
-                std::move(args),
-                feature_info->interactive, nullptr, categories,
-                QString::fromStdString(feature_info->navigation.group()), feature_info->navigation.order(),
-                QString::fromStdString(feature_info->navigation.label()), category_defaults));
-        }
+        QList<QArgType*> args;
+        for (const auto& arg_type : feature_info->arg_types)
+            args << new QArgType(arg_type);
+        infos.append(new QFeatureInfo(
+            QString::fromStdString(feature_info->name),
+            QString::fromStdString(feature_info->display_name),
+            QString::fromStdString(feature_info->description),
+            QString::fromStdString(feature_info->navigation.icon()), std::move(args),
+            feature_info->interactive, nullptr, categories, feature_info->navigation.order(),
+            QString::fromStdString(feature_info->navigation.label()), category_defaults));
     }
     return infos;
 }

@@ -13,8 +13,8 @@ QtObject {
     property var activeOperation: null
     property var featureSystem: QModelManager.featureSystem
     property var featureInfos: root.featureSystem.featuresInfo
-    readonly property var navigationCategories: root.featureSystem.navigationCategories
-    readonly property var navigationEntries: FeatureNavigation.buildEntries(root.featureInfos, root.navigationCategories)
+    readonly property var navigationDefinitions: root.featureSystem.navigationDefinitions
+    readonly property var navigationEntries: FeatureNavigation.buildEntries(root.featureInfos, root.navigationDefinitions)
     readonly property bool isGroupedOperation: !!(root.activeOperation && root.activeOperation.entryId)
     readonly property var activeEntry: root.isGroupedOperation ? root.navigationEntries.find(entry => entry.id === root.activeOperation.entryId) || null : null
     readonly property var subFeatures: root.activeEntry ? root.activeEntry.items : (!root.isGroupedOperation && root.activeOperation && root.activeOperation.isFeature && root.activeOperation.info ? [root.activeOperation.info] : [])

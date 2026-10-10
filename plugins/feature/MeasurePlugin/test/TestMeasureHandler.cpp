@@ -51,7 +51,7 @@ TEST_CASE("MeasureHandler setup declares clear button parameter and menu")
     // 纯交互功能：仅"清除"按钮参数（无值触发器）与菜单项
     REQUIRE(env.info->arg_types.size() == 1);
     CHECK(env.info->arg_types[0].type == ArgTypeEnum::Button);
-    REQUIRE(env.info->menus.size() == 1);
+    REQUIRE(env.info->navigation.entries().size() == 1);
 }
 
 TEST_CASE("MeasureHandler: interactive picks update state annotations and ParameterChangedEvent clears")

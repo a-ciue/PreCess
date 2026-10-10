@@ -24,7 +24,7 @@ void DeleteGeometryHandler::setup(FeatureRegistrar& reg, FeatureContext& /*ctx*/
         "请选择一个顶层几何点、边、面或体" });
     reg.addParameter({ ArgTypeEnum::Bool, "同时删除下级拓扑", "false",
         "关闭时保留直接下级拓扑，开启时不影响其他形状共享的拓扑" });
-    reg.addMenuItem({ "几何", "删除几何", "qrc:/images/toolbar/Geometry/delete-geometry.svg" });
+    reg.navigation().addEntry({ "DeleteGeometry", "删除几何", "qrc:/images/toolbar/Geometry/delete-geometry.svg", 0, "几何" });
 }
 
 std::any DeleteGeometryHandler::execute(FeatureContext& ctx)

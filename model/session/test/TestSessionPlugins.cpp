@@ -52,7 +52,7 @@ TEST_CASE("Session loads plugins and registers feature infos", "[session][plugin
         CHECK(infos.size() >= 12);
         bool has_geometry_menu = false;
         for (const systems::feature::FeatureInfo* info : infos) {
-            for (const auto& menu : info->menus) {
+            for (const auto& menu : info->navigation.entries()) {
                 if (menu.menu_path == "几何")
                     has_geometry_menu = true;
             }
@@ -185,18 +185,18 @@ TEST_CASE("Binary feature setup supplies navigation and survives reload", "[sess
         REQUIRE(infos.size() == 1);
         CHECK(infos.front()->name == "setupNavigationTest");
         CHECK(infos.front()->navigation.label() == "Setup feature");
-        CHECK(infos.front()->navigation.categories() == std::vector<std::string> { "setup-custom" });
+        CHECK(infos.front()->navigation.entryIds() == std::vector<std::string> { "setup-custom" });
         CHECK(infos.front()->navigation.order() == 7);
-        CHECK(infos.front()->navigation.categoryDefaults().at("setup-custom").at("Size") == "3");
+        CHECK(infos.front()->navigation.entryDefaults().at("setup-custom").at("Size") == "3");
         REQUIRE(infos.front()->arg_types.size() == 1);
         CHECK(infos.front()->arg_types.front().name == "Size");
-        const auto categories = session.featureSystem().getNavigationCategories();
+        const auto categories = session.featureSystem().getNavigationEntries();
         REQUIRE(categories.size() == 1);
         CHECK(categories.front().title == "Setup custom category");
         CHECK(categories.front().order == 5);
         CHECK(categories.front().menu_path == "Tools/Custom");
         session.pluginManager().unregisterPlugin(target);
         CHECK(session.featureSystem().getFeatureInfos().empty());
-        CHECK(session.featureSystem().getNavigationCategories().empty());
+        CHECK(session.featureSystem().getNavigationEntries().empty());
     }
 }

@@ -23,7 +23,7 @@ ColumnLayout {
     property int activeCategory: -1
     property var algorithmSystem: QModelManager.algorithmSystem
     property var featureSystem: QModelManager.featureSystem
-    readonly property var navigationEntries: FeatureNavigation.buildEntries(root.featureSystem.featuresInfo, root.featureSystem.navigationCategories)
+    readonly property var navigationEntries: FeatureNavigation.buildEntries(root.featureSystem.featuresInfo, root.featureSystem.navigationDefinitions)
     readonly property var algorithmInfos: root.algorithmSystem.algorithmsInfo
     // StackLayout: 文件 0、编辑 1、旧算法 2，后续均由功能菜单声明生成。
     readonly property int algorithmPageStart: 2

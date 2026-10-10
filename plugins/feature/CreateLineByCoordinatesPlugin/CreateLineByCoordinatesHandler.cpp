@@ -37,7 +37,7 @@ void CreateLineByCoordinatesHandler::setup(FeatureRegistrar& reg, FeatureContext
     reg.addParameter({ ArgTypeEnum::Float, "终点 Z", "0", "" });
     reg.addParameter({ ArgTypeEnum::Combo, "写入目标",
         "添加到当前 Component,新建 Component,新建 Model|0", "选择几何创建结果的组织位置" });
-    reg.addMenuItem({ "几何", "创建直线边（坐标）", "qrc:/images/toolbar/Geometry/line-coordinates.svg" });
+    reg.navigation().addEntry({ "CreateLineByCoordinates", "创建直线边（坐标）", "qrc:/images/toolbar/Geometry/line-coordinates.svg", 0, "几何" });
 }
 
 std::any CreateLineByCoordinatesHandler::execute(FeatureContext& ctx)

@@ -18,44 +18,44 @@
 #include <utility>
 
 namespace systems::feature {
-void FeatureSystem::setNavigationCategories(std::vector<FeatureCategory> categories)
+void FeatureSystem::setNavigationEntries(std::vector<FeatureNavigationEntry> categories)
 {
     model_layer_->assertOperationIdle();
     FeatureNavigation navigation;
     for (auto& category : categories)
-        navigation.addCategory(std::move(category));
-    if (navigation_categories_ == navigation.categoryDefinitions())
+        navigation.addEntry(std::move(category));
+    if (navigation_entries_ == navigation.entries())
         return;
-    navigation_categories_ = navigation.categoryDefinitions();
+    navigation_entries_ = navigation.entries();
     on_feature_infos_changed_();
 }
 
-std::vector<FeatureCategory> FeatureSystem::getNavigationCategories() const
+std::vector<FeatureNavigationEntry> FeatureSystem::getNavigationEntries() const
 {
     struct Candidate {
-        FeatureCategory category;
+        FeatureNavigationEntry category;
         std::string provider;
     };
     std::map<std::string, Candidate> candidates;
     // 宿主入口不随功能卸载而消失；系统不预设业务类别或菜单路径。
-    for (const auto& category : navigation_categories_)
+    for (const auto& category : navigation_entries_)
         candidates.emplace(category.id, Candidate { category, "" });
     for (const auto& [name, entry] : entries_) {
-        for (const auto& category : entry.info.navigation.categoryDefinitions()) {
+        for (const auto& category : entry.info.navigation.entries()) {
             auto found = candidates.find(category.id);
             // 插件描述优先；同类按功能身份选来源，不依赖加载顺序。
             if (found == candidates.end() || found->second.provider.empty() || name < found->second.provider) {
                 auto resolved_category = category;
                 if (resolved_category.menu_path.empty()) {
-                    const auto host = std::find_if(navigation_categories_.begin(), navigation_categories_.end(), [&](const auto& declared) { return declared.id == category.id; });
-                    if (host != navigation_categories_.end())
+                    const auto host = std::find_if(navigation_entries_.begin(), navigation_entries_.end(), [&](const auto& declared) { return declared.id == category.id; });
+                    if (host != navigation_entries_.end())
                         resolved_category.menu_path = host->menu_path;
                 }
                 candidates.insert_or_assign(category.id, Candidate { std::move(resolved_category), name });
             }
         }
     }
-    std::vector<FeatureCategory> result;
+    std::vector<FeatureNavigationEntry> result;
     for (const auto& [id, candidate] : candidates)
         result.push_back(candidate.category);
     std::sort(result.begin(), result.end(), [](const auto& a, const auto& b) {
@@ -152,7 +152,6 @@ bool FeatureSystem::registerHandler(const HandlerMetaData& meta_data, SystemHand
         }))
         entry.params = std::move(*previous_params);
     entry.info.arg_types = registrar.argTypes();
-    entry.info.menus = registrar.menuItems();
     entry.info.navigation = registrar.navigation();
     entry.info.key_bindings = registrar.keyBindings();
     entry.handler = std::move(handler);

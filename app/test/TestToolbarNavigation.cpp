@@ -37,6 +37,7 @@
 #include <QTimer>
 #include <TopoDS_Shape.hxx>
 #include <catch2/catch_test_macros.hpp>
+#include <catch2/generators/catch_generators.hpp>
 #include <memory>
 
 Q_IMPORT_QML_PLUGIN(app_corePlugin)
@@ -53,10 +54,10 @@ namespace {
 class NavigationTestInfo : public QFeatureInfo {
 public:
     NavigationTestInfo(QString name, QString display_name, QString description, QList<QArgType*> args,
-        QObject* parent = nullptr, QStringList categories = {}, QString group = {}, QString icon = {},
-        int order = 0, QString label = {}, QVariantMap defaults = {}, QString menu_path = {})
-        : QFeatureInfo(std::move(name), std::move(display_name), std::move(description), std::move(menu_path), std::move(icon),
-              std::move(args), false, parent, std::move(categories), std::move(group), order, std::move(label), std::move(defaults))
+        QObject* parent = nullptr, QStringList categories = {}, QString icon = {},
+        int order = 0, QString label = {}, QVariantMap defaults = {})
+        : QFeatureInfo(std::move(name), std::move(display_name), std::move(description), std::move(icon),
+              std::move(args), false, parent, std::move(categories), order, std::move(label), std::move(defaults))
     {
     }
 };
@@ -194,19 +195,19 @@ TEST_CASE("Qt feature information exposes navigation as JavaScript arrays", "[na
     REQUIRE(source.open(QIODevice::ReadOnly));
     REQUIRE_FALSE(engine.evaluate(QString::fromUtf8(source.readAll()).remove(".pragma library")).isError());
     NavigationTestInfo info("Mesher", "Mesh generator", "", {}, nullptr,
-        { "triangle", "tetrahedron" }, "Generate", "qrc:/plugin/mesher.svg", -10);
+        { "triangle", "tetrahedron" }, "qrc:/plugin/mesher.svg", -10);
     engine.globalObject().setProperty("info", engine.newQObject(&info));
     auto result = engine.evaluate(R"JS(
         JSON.stringify({
             names: buildFeatures([info], "tetrahedron").map(i => i.name),
-            group: info.group, icon: info.icon, order: info.order,
+            icon: info.icon, order: info.order,
             other: buildFeatures([info], "other").length
         })
     )JS");
     INFO(result.toString().toStdString());
     REQUIRE_FALSE(result.isError());
     CHECK(info.label() == "Mesh generator");
-    CHECK(result.toString() == R"({"names":["Mesher"],"group":"Generate","icon":"qrc:/plugin/mesher.svg","order":-10,"other":0})");
+    CHECK(result.toString() == R"({"names":["Mesher"],"icon":"qrc:/plugin/mesher.svg","order":-10,"other":0})");
 }
 
 TEST_CASE("Feature navigation aggregates generic entries and shares executable children", "[navigation][feature]")
@@ -220,17 +221,18 @@ TEST_CASE("Feature navigation aggregates generic entries and shares executable c
         const categories = [
             {id: "construction", title: "几何构造", icon: "qrc:/construct.svg", order: 10, menu_path: "几何工具/构造"},
             {id: "repair", title: "曲面修复", order: 20, menu_path: "几何工具/修复"},
-            {id: "empty", title: "后处理", order: 30, menu_path: "分析工具/结果"}
+            {id: "empty", title: "后处理", order: 30, menu_path: "分析工具/结果"},
+            {id: "plain-basic", title: "普通功能", menu_path: "修复工具/基本"},
+            {id: "plain-shortcut", title: "普通功能", menu_path: "几何工具/快捷"}
         ];
-        const shared = {name: "shared", categories: ["construction", "repair"], order: -1};
+        const shared = {name: "shared", entry_ids: ["construction", "repair"], order: -1};
         const entries = buildEntries([
-            {name: "z", categories: ["construction"], order: 0},
+            {name: "z", entry_ids: ["construction"], order: 0},
             shared,
-            {name: "a", categories: ["construction", "construction"], order: 0},
+            {name: "a", entry_ids: ["construction", "construction"], order: 0},
             shared,
-            {name: "plain", display_name: "普通功能", menu_path: "修复工具/基本"},
-            {name: "plain", display_name: "普通功能", menu_path: "几何工具/快捷"},
-            {name: "legacy"}
+            {name: "plain", display_name: "普通功能", entry_ids: ["plain-basic", "plain-shortcut"]},
+            {name: "unlisted"}
         ], categories);
         const find = id => entries.find(entry => entry.id === id);
         JSON.stringify({
@@ -239,31 +241,35 @@ TEST_CASE("Feature navigation aggregates generic entries and shares executable c
             empty: find("category:empty").items.length,
             menu: find("category:construction").menu_path,
             icon: find("category:construction").icon,
-            plain: find("feature:plain:修复工具/基本").items.map(info => info.name),
-            plainMenu: find("feature:plain:修复工具/基本").menu_path,
-            plainEntries: entries.filter(entry => !entry.categoryId && entry.items[0].name === "plain").length,
-            legacy: find("feature:legacy:功能").items.map(info => info.name),
+            plain: find("category:plain-basic").items.map(info => info.name),
+            plainMenu: find("category:plain-basic").menu_path,
+            plainEntries: entries.filter(entry => entry.items.length && entry.items[0].name === "plain").length,
+            unlisted: find("feature:unlisted").items.map(info => info.name),
             sameChild: find("category:construction").items[0] === find("category:repair").items[0],
             zero: buildEntries([], categories).map(entry => entry.items.length)
         })
     )JS");
     INFO(result.toString().toStdString());
     REQUIRE_FALSE(result.isError());
-    CHECK(result.toString() == R"({"construction":["shared","a","z"],"repair":["shared"],"empty":0,"menu":"几何工具/构造","icon":"qrc:/construct.svg","plain":["plain"],"plainMenu":"修复工具/基本","plainEntries":2,"legacy":["legacy"],"sameChild":true,"zero":[0,0,0]})");
+    CHECK(result.toString() == R"({"construction":["shared","a","z"],"repair":["shared"],"empty":0,"menu":"几何工具/构造","icon":"qrc:/construct.svg","plain":["plain"],"plainMenu":"修复工具/基本","plainEntries":2,"unlisted":["unlisted"],"sameChild":true,"zero":[0,0,0,0,0]})");
     const auto menus = engine.evaluate(R"JS(
-        const ordinaryInfos = [
-            {name: "z", display_name: "Z", menu_path: "修复工具/高级", order: 5},
-            {name: "shared", display_name: "共享", menu_path: "几何工具/构造", order: 0},
-            {name: "a", display_name: "A", menu_path: "修复工具/基本", order: 0},
-            {name: "shared", display_name: "共享", menu_path: "修复工具/基本", order: 0}
+        const declarations = [
+            {id: "advanced", title: "高级", menu_path: "修复工具/高级"},
+            {id: "construct", title: "构造", menu_path: "几何工具/构造"},
+            {id: "basic", title: "基本", menu_path: "修复工具/基本"}
         ];
-        const summarize = infos => buildMenus(buildEntries(infos, []))
+        const declaredInfos = [
+            {name: "z", display_name: "Z", entry_ids: ["advanced"], order: 5},
+            {name: "shared", display_name: "共享", entry_ids: ["construct", "basic"], order: 0},
+            {name: "a", display_name: "A", entry_ids: ["basic"], order: 0}
+        ];
+        const summarize = infos => buildMenus(buildEntries(infos, declarations))
             .map(menu => ({name: menu.name, groups: menu.groups.map(group => ({
                 name: group.name, ids: group.items.map(entry => entry.id)
             }))}));
         JSON.stringify({
-            forward: summarize(ordinaryInfos),
-            reverse: summarize(ordinaryInfos.slice().reverse())
+            forward: summarize(declaredInfos),
+            reverse: summarize(declaredInfos.slice().reverse())
         })
     )JS");
     INFO(menus.toString().toStdString());
@@ -295,12 +301,92 @@ TEST_CASE("Feature navigation aggregates generic entries and shares executable c
     CHECK(qt_entries.toString() == "category:construction:SharedFeature,category:repair:SharedFeature");
 }
 
+TEST_CASE("Unified entries keep parent presentation independent of child presentation", "[navigation][Qt]")
+{
+    application();
+    ModelLayer model;
+    core::EventBus events;
+    systems::feature::FeatureSystem system(model, events);
+    systems::feature::QFeatureSystemAdaptor adaptor(system);
+    class EntryFeature : public systems::feature::FeatureHandler {
+    public:
+        bool override_display { false };
+        void setup(systems::feature::FeatureRegistrar& reg, systems::feature::FeatureContext&) override
+        {
+            auto& navigation = reg.navigation();
+            navigation.addEntry({ "first", "First title", "qrc:/first.svg", 0, "Tools/First" });
+            navigation.addEntry({ "first", "Ignored duplicate", "", 0, "Other" });
+            navigation.addEntry({ "second", "Second title", "qrc:/second.svg", 0, "Tools/Second" });
+            if (override_display) {
+                navigation.setLabel("Child title");
+                navigation.setIcon("qrc:/child.svg");
+            }
+        }
+    };
+    auto handler = std::make_unique<EntryFeature>();
+    const bool override_display = GENERATE(false, true);
+    handler->override_display = override_display;
+    REQUIRE(system.registerHandler({ .name = "entry-feature", .display_name = "Display fallback" },
+        systems::feature::FeatureSystem::SystemHandlerPtr { handler.release() }));
+    const auto infos = adaptor.getFeaturesInfo();
+    REQUIRE(infos.size() == 1);
+    CHECK(infos[0]->metaObject()->indexOfProperty("menu_path") == -1);
+    CHECK(infos[0]->entryIds() == QStringList { "first", "second" });
+    CHECK(infos[0]->label() == (override_display ? "Child title" : "Display fallback"));
+    CHECK(infos[0]->icon() == (override_display ? "qrc:/child.svg" : ""));
+    const auto entries = adaptor.getNavigationEntries();
+    REQUIRE(entries.size() == 2);
+    CHECK(entries[0].toMap().value("title").toString() == "First title");
+    CHECK(entries[0].toMap().value("icon").toString() == "qrc:/first.svg");
+    CHECK(entries[0].toMap().value("menu_path").toString() == "Tools/First");
+    CHECK(entries[1].toMap().value("title").toString() == "Second title");
+    CHECK(entries[1].toMap().value("menu_path").toString() == "Tools/Second");
+    QJSEngine engine;
+    QFile source(":/navigation-ui/FeatureNavigation.js");
+    REQUIRE(source.open(QIODevice::ReadOnly));
+    REQUIRE_FALSE(engine.evaluate(QString::fromUtf8(source.readAll()).remove(".pragma library")).isError());
+    engine.globalObject().setProperty("feature", engine.newQObject(infos[0]));
+    engine.globalObject().setProperty("declarations", engine.toScriptValue(entries));
+    const auto paths = engine.evaluate("buildEntries([feature], declarations).map(entry => entry.menu_path).join('|')");
+    REQUIRE_FALSE(paths.isError());
+    CHECK(paths.toString() == "Tools/First|Tools/Second");
+    qDeleteAll(infos);
+}
+
+TEST_CASE("Feature menus use entry paths and give unlisted features one default entry", "[navigation][Qt]")
+{
+    application();
+    QJSEngine engine;
+    QFile source(":/navigation-ui/FeatureNavigation.js");
+    REQUIRE(source.open(QIODevice::ReadOnly));
+    REQUIRE_FALSE(engine.evaluate(QString::fromUtf8(source.readAll()).remove(".pragma library")).isError());
+    NavigationTestInfo unlisted("unlisted", "未声明入口", "", {});
+    engine.globalObject().setProperty("unlisted", engine.newQObject(&unlisted));
+    const auto result = engine.evaluate(R"JS(
+        const entries = buildEntries([
+            {name: "bound", entry_ids: ["configured", "default"], menu_path: "Ignored/Child"},
+            unlisted, unlisted
+        ], [
+            {id: "configured", title: "指定菜单", menu_path: "Tools/Configured"},
+            {id: "default", title: "默认菜单"}
+        ]);
+        JSON.stringify(entries.map(entry => ({
+            id: entry.id, path: entry.menu_path, names: entry.items.map(info => info.name)
+        })))
+    )JS");
+    INFO(result.toString().toStdString());
+    REQUIRE_FALSE(result.isError());
+    CHECK(result.toString() == R"([{"id":"category:configured","path":"Tools/Configured","names":["bound"]},{"id":"category:default","path":"功能","names":["bound"]},{"id":"feature:unlisted","path":"功能","names":["unlisted"]}])");
+}
+
 TEST_CASE("Actual toolbar preserves legacy algorithm parameters and execution", "[navigation][QML][legacy]")
 {
     application();
     QTemporaryDir directory;
     REQUIRE(directory.isValid());
-    QModelManager::argv0 = (directory.path() + "/isolated/Test.exe").toStdString();
+    const auto executable = (directory.path() + "/isolated/Test.exe").toStdString();
+    // argv0 是 string_view，必须持有路径直到 QML 宿主析构完成。
+    QModelManager::argv0 = executable;
     QQmlEngine engine;
     static const int theme_type = qmlRegisterSingletonType(QUrl("qrc:/navigation-ui/Theme.qml"), "NavigationUi", 1, 0, "Theme");
     engine.rootContext()->setContextProperty("Theme", engine.singletonInstance<QObject*>(theme_type));
@@ -458,9 +544,9 @@ TEST_CASE("Actual toolbar renders declared feature entries and preserves active 
     REQUIRE(feature_system.registerHandler({ .name = "second" },
         systems::feature::FeatureSystem::SystemHandlerPtr { std::make_unique<ParameterProbe>(std::vector<core::ArgType> { iterations_type }, second_state).release() }));
     NavigationTestInfo first("first", "Legacy library name", "", { &size, &quality }, nullptr,
-        { "triangle", "tetrahedron" }, "", "", 0, "网格生成（德劳内方法）");
+        { "triangle", "tetrahedron" }, "", 0, "网格生成（德劳内方法）");
     NavigationTestInfo second("second", "Second library", "", { &iterations }, nullptr,
-        { "triangle" }, "", "", 1, "三角形网格生成（波前推进法）");
+        { "triangle" }, "", 1, "三角形网格生成（波前推进法）");
     auto infos = engine.newArray(2);
     infos.setProperty(0, engine.newQObject(&first));
     infos.setProperty(1, engine.newQObject(&second));
@@ -489,7 +575,7 @@ TEST_CASE("Actual toolbar renders declared feature entries and preserves active 
     // 无关插件增删和描述包装刷新不能重新开始当前操作。
     NavigationTestInfo unrelated("unrelated", "其他算法", "", {});
     NavigationTestInfo refreshed_first("first", "Legacy library name", "", { &size, &quality }, nullptr,
-        { "triangle", "tetrahedron" }, "", "", 0, "更新后的算法名称");
+        { "triangle", "tetrahedron" }, "", 0, "更新后的算法名称");
     auto refreshed = engine.newArray(3);
     refreshed.setProperty(0, engine.newQObject(&refreshed_first));
     refreshed.setProperty(1, engine.newQObject(&second));
@@ -730,27 +816,32 @@ TEST_CASE("Installed external algorithms appear in the actual toolbar and open t
     show_feature_menu("网格生成算法");
     auto* tetrahedron = findItem(item, "featureEntry_category:tetrahedron");
     click_visible(tetrahedron);
-    const auto algorithms = sidebar->property("subFeatures").value<QJSValue>();
-    int index = -1;
-    for (int i = 0; i < algorithms.property("length").toInt(); ++i) {
-        if (algorithms.property(i).property("name").toString() == "TetGenLibPlugin")
-            index = i;
-    }
-    REQUIRE(index >= 0);
     auto* selector = findItem(sidebar_item, "subFeatureSelector");
     REQUIRE(selector);
-    // 使用可见下拉选项进入 TetGen，避免通过会话方法绕过真正的三级导航。
-    if (algorithms.property("length").toInt() > 1) {
-        click_visible(selector);
-        const auto popup = engine.newQObject(selector).property("popup");
-        REQUIRE(popup.property("visible").toBool());
-        const auto list = popup.property("contentItem");
-        auto* candidate = qobject_cast<QQuickItem*>(list.property("itemAtIndex")
-                .callWithInstance(list, { QJSValue(index) })
-                .toQObject());
-        click_visible(candidate);
-    } else
-        REQUIRE(index == 0);
+    // 本地 Addons 可增加同类提供者；按功能身份选取真实下拉项，不固定数量或加载顺序。
+    const auto select_feature = [&](const QString& name) {
+        const auto features = sidebar->property("subFeatures").value<QJSValue>();
+        const int count = features.property("length").toInt();
+        int index = -1;
+        for (int i = 0; i < count; ++i) {
+            if (features.property(i).property("name").toString() == name)
+                index = i;
+        }
+        REQUIRE(index >= 0);
+        CHECK(selector->property("count").toInt() == count);
+        CHECK(selector->property("visible").toBool() == (count > 1));
+        if (count > 1) {
+            click_visible(selector);
+            const auto popup = engine.newQObject(selector).property("popup");
+            REQUIRE(popup.property("visible").toBool());
+            const auto list = popup.property("contentItem");
+            auto* candidate = qobject_cast<QQuickItem*>(list.property("itemAtIndex")
+                    .callWithInstance(list, { QJSValue(index) })
+                    .toQObject());
+            click_visible(candidate);
+        }
+    };
+    select_feature("TetGenLibPlugin");
     auto* app = engine.singletonInstance<QObject*>("app.core", "App");
     REQUIRE(app);
     const auto operation = app->property("activeOperation").value<QJSValue>();
@@ -815,16 +906,14 @@ TEST_CASE("Installed external algorithms appear in the actual toolbar and open t
     }
     auto* triangle = findItem(item, "featureEntry_category:triangle");
     click_visible(triangle);
-    CHECK(sidebar->property("subFeatures").value<QJSValue>().property("length").toInt() == 1);
-    CHECK_FALSE(selector->property("visible").toBool());
+    select_feature("GmshPlugin");
     CHECK(parameters->property("count").toInt() > 0);
     show_feature_menu("网格生成算法");
     if (const auto capture = qEnvironmentVariable("PRECESS_NAVIGATION_CAPTURE"); !capture.isEmpty())
         REQUIRE(window.grabWindow().save(capture + "-single.png"));
     auto* quadrilateral = findItem(item, "featureEntry_category:quadrilateral");
     click_visible(quadrilateral);
-    CHECK(selector->property("count").toInt() == 1);
-    CHECK_FALSE(selector->property("visible").toBool());
+    select_feature("GmshPlugin");
     CHECK(selector->property("currentText").toString() == "曲面网格生成");
     CHECK(sidebar->property("parameters").value<QJSValue>().property(6).toInt() == 1);
     if (const auto capture = qEnvironmentVariable("PRECESS_NAVIGATION_CAPTURE"); !capture.isEmpty())
@@ -922,7 +1011,7 @@ TEST_CASE("Actual parameter controls preserve edits through scrolling and accept
     fixture_meta.name = "fixture";
     REQUIRE(system.registerHandler(fixture_meta,
         systems::feature::FeatureSystem::SystemHandlerPtr { std::make_unique<ParameterProbe>(types, probe_state).release() }));
-    QFeatureInfo info("fixture", "Fixture", "", "", "", args);
+    QFeatureInfo info("fixture", "Fixture", "", "", args);
     auto* app = engine.singletonInstance<QObject*>("app.core", "App");
     auto operation = engine.newObject();
     operation.setProperty("info", engine.newQObject(&info));
@@ -1000,7 +1089,7 @@ TEST_CASE("Actual parameter controls preserve edits through scrolling and accept
     REQUIRE(system.registerHandler(meta, std::move(handler)));
     const core::ArgType button_type { ArgTypeEnum::Button, "触发", "" };
     QArgType button_arg(button_type);
-    QFeatureInfo button_info("ButtonProbe", "ButtonProbe", "", "", "", { &button_arg });
+    QFeatureInfo button_info("ButtonProbe", "ButtonProbe", "", "", { &button_arg });
     operation = engine.newObject();
     operation.setProperty("info", engine.newQObject(&button_info));
     operation.setProperty("isFeature", true);
@@ -1037,7 +1126,7 @@ TEST_CASE("Non-mesh feature entries handle zero one and multiple children across
     QModelManager::argv0 = executable;
     class CategoryHandler : public systems::feature::FeatureHandler {
     public:
-        CategoryHandler(systems::feature::FeatureCategory category, int order, int& activations, int& deactivations)
+        CategoryHandler(systems::feature::FeatureNavigationEntry category, int order, int& activations, int& deactivations)
             : category_(std::move(category))
             , order_(order)
             , activations_(activations)
@@ -1047,10 +1136,10 @@ TEST_CASE("Non-mesh feature entries handle zero one and multiple children across
         void setup(systems::feature::FeatureRegistrar& reg, systems::feature::FeatureContext&) override
         {
             if (!category_.id.empty())
-                reg.navigation().addCategory(category_);
+                reg.navigation().addEntry(category_);
             else {
-                reg.addMenuItem({ "功能", "", "" });
-                reg.addMenuItem({ "几何工具/快捷", "", "" });
+                reg.navigation().addEntry({ "ordinary", "普通功能", "", 0, "功能" });
+                reg.navigation().addEntry({ "ordinary-shortcut", "普通功能", "", 0, "几何工具/快捷" });
             }
             reg.navigation().setOrder(order_);
             reg.addParameter({ ArgTypeEnum::Float, "目标尺寸", "1", "" });
@@ -1060,7 +1149,7 @@ TEST_CASE("Non-mesh feature entries handle zero one and multiple children across
         std::any execute(systems::feature::FeatureContext&) override { return std::string("请选择目标组件"); }
 
     private:
-        systems::feature::FeatureCategory category_;
+        systems::feature::FeatureNavigationEntry category_;
         int order_;
         int& activations_;
         int& deactivations_;
@@ -1069,11 +1158,11 @@ TEST_CASE("Non-mesh feature entries handle zero one and multiple children across
     core::EventBus events;
     systems::feature::FeatureSystem system(model, events);
     // 通用系统没有网格内置项；宿主显式声明需要长期保留的空父入口。
-    CHECK(system.getNavigationCategories().empty());
-    const systems::feature::FeatureCategory construction {
+    CHECK(system.getNavigationEntries().empty());
+    const systems::feature::FeatureNavigationEntry construction {
         "construction", "几何构造", "qrc:/images/toolbar/Mesh/hexa-meshing.svg", 40, "几何工具/构造"
     };
-    system.setNavigationCategories({ construction });
+    system.setNavigationEntries({ construction });
     QTaskStatus status;
     systems::feature::QFeatureSystemAdaptor adaptor(system);
     auto subscription = events.subscribe<systems::feature::ParameterChangedEvent>([&](const auto& event) {
@@ -1124,7 +1213,7 @@ TEST_CASE("Non-mesh feature entries handle zero one and multiple children across
     // 切换 StackLayout 页后先完成布局，否则隐藏页的旧几何位置会丢失首个鼠标点击。
     clickItem(window, construction_tab);
     settle();
-    CHECK(adaptor.getNavigationCategories().size() == 1);
+    CHECK(adaptor.getNavigationEntries().size() == 1);
     auto* construction_button = findItem(item, "featureEntry_category:construction");
     REQUIRE(construction_button);
     REQUIRE(construction_button->isVisible());
@@ -1173,7 +1262,7 @@ TEST_CASE("Non-mesh feature entries handle zero one and multiple children across
     CHECK(app->property("activeOperation").value<QJSValue>().property("info").isNull());
     CHECK(session->property("parameterModel").value<QObject*>()->property("values").value<QJSValue>().property("length").toInt() == 0);
     checkOperationButtonsAtBottom(sidebar_item);
-    const systems::feature::FeatureCategory category {
+    const systems::feature::FeatureNavigationEntry category {
         "repair", "曲面修复", "qrc:/images/toolbar/Mesh/hexa-meshing.svg", 5, "几何工具/修复"
     };
     const systems::feature::HandlerMetaData first { .name = "first", .display_name = "first" };
@@ -1198,7 +1287,7 @@ TEST_CASE("Non-mesh feature entries handle zero one and multiple children across
     const int single_activations = activations;
     REQUIRE(install(second, category, 20));
     settle();
-    CHECK(adaptor.getNavigationCategories().size() == 2);
+    CHECK(adaptor.getNavigationEntries().size() == 2);
     CHECK(session->property("subFeatures").value<QJSValue>().property("length").toInt() == 2);
     CHECK(session->property("panelTitle").toString() == "操作面板 - 曲面修复");
     CHECK(selector->isVisible());
@@ -1233,7 +1322,7 @@ TEST_CASE("Non-mesh feature entries handle zero one and multiple children across
     // 不相关注册和分类显示名称刷新都不能重置当前参数或选择。
     const systems::feature::HandlerMetaData unrelated { .name = "unrelated", .display_name = "普通功能" };
     const int before_refresh = activations;
-    REQUIRE(install(unrelated, systems::feature::FeatureCategory {}, 0));
+    REQUIRE(install(unrelated, systems::feature::FeatureNavigationEntry {}, 0));
     settle();
     CHECK(activations == before_refresh);
     auto renamed_category = category;
@@ -1271,14 +1360,14 @@ TEST_CASE("Non-mesh feature entries handle zero one and multiple children across
     CHECK_FALSE(session->property("isGroupedOperation").toBool());
     CHECK(parameters->property("values").value<QJSValue>().property("length").toInt() == 0);
     CHECK(selection->property("listeningSelectorIndex").toInt() == -1);
-    CHECK(adaptor.getFeaturesInfo().size() == 2);
+    CHECK(adaptor.getFeaturesInfo().size() == 1);
     CHECK_FALSE(buttons->isVisible());
     // 无分类普通功能也经统一入口直达，不显示子功能选择器。
     auto* normal_tab = findItem(item, "featureTab_功能");
     REQUIRE(normal_tab);
     clickItem(window, normal_tab);
     settle();
-    auto* normal = findItem(item, "featureEntry_feature:unrelated:功能");
+    auto* normal = findItem(item, "featureEntry_category:ordinary");
     REQUIRE(normal);
     clickItem(window, normal);
     settle();
@@ -1301,11 +1390,11 @@ TEST_CASE("Non-mesh feature entries handle zero one and multiple children across
     REQUIRE(shortcut_tab);
     clickItem(window, shortcut_tab);
     settle();
-    auto* shortcut = findItem(item, "featureEntry_feature:unrelated:几何工具/快捷");
+    auto* shortcut = findItem(item, "featureEntry_category:ordinary-shortcut");
     REQUIRE(shortcut);
     clickItem(window, shortcut);
     settle();
-    CHECK(app->property("activeOperation").value<QJSValue>().property("entryId").toString() == "feature:unrelated:几何工具/快捷");
+    CHECK(app->property("activeOperation").value<QJSValue>().property("entryId").toString() == "category:ordinary-shortcut");
     CHECK(activations == before_menu_switch_activations);
     CHECK(deactivations == before_menu_switch_deactivations);
     CHECK(parameters->property("values").value<QJSValue>().property(0).toNumber() == 7.0);

@@ -9,14 +9,21 @@
 - `setup` 声明参数、菜单、按键和事件订阅；`activate/deactivate` 对应反复进出功能，`teardown` 对应注销。上下文服务始终可调用，查询或任务结果可空；订阅句柄须保活并随生命周期退订。
 - `ctx.events.subscribe<ParameterChangedEvent>` 自动按所属功能过滤，全局监听用 `ctx.events.bus()`；Button 参数只处理参数下标。目标优先用 Selector，活动组件只作提示；点 gid 经 `ModelLayer::pointIdMap()` 解析组件，局部边/面选择携 `component_id`。
 
-普通功能继续用 `addMenuItem`；需要父入口和子功能时，在 `setup` 中声明分类，同 id 自动聚合，适用于几何、求解、网格等业务：
+## 统一功能入口
+
+功能入口通过 `navigation().addEntry` 注册：
 
 ```cpp
 registrar.addParameter({ ArgTypeEnum::Int, "迭代数", "100" });
-registrar.navigation().addCategory({ "analysis", "分析", "", 0, "功能" });
+registrar.navigation().addEntry({ "analysis", "分析", "", 20, "功能/求解" });
+registrar.navigation().setLabel("稳态求解器");
 ```
 
-`menu_path` 可填“菜单”或“菜单/分组”，留空可继承宿主同 id 路径。显示名称、图标、排序和分类默认参数按需调用 `FeatureNavigation` 的 setter，字段与校验见其头文件。导航由 `setup` 注册；JSON 保留身份和 `interactive` 等能力声明，通用界面不按插件名特判。既有普通 Feature 无需为导航改源码。
+`FeatureNavigationEntry` 依次为稳定 `id`、入口标题、入口图标、入口排序、`menu_path`。不同功能注册相同 id 即属于同一个入口；一个子功能直接显示参数，多个子功能显示选择器。同一功能可声明多个入口，共享一份参数和执行状态。id 不从标题或图标推断；同一功能内重复 id 保留首个有效声明，空 id 或标题被忽略。
+
+`menu_path` 使用“菜单”或“菜单/分组”，留空时继承宿主同 id 的路径，最终回退“功能”。分组只由该路径表达。`setLabel/setIcon/setOrder` 配置子功能的显示名称、图标与排序，不覆盖入口描述；`setEntryDefault(id, parameter, value)` 声明入口参数预设（Combo 为选项索引字符串）。宿主可通过 `FeatureSystem::setNavigationEntries` 保留常驻入口；零子功能显示空态并禁用执行。未声明入口的功能自动归入默认“功能”菜单。
+
+导航在 `setup` 声明，JSON 保留身份与能力。
 
 ## 模型写与 undo
 
@@ -38,4 +45,4 @@ registrar.navigation().addCategory({ "analysis", "分析", "", 0, "功能" });
 
 `onPick/onHover` 在渲染线程运行，可写交互状态和标注；GUI 使用 `requestRefresh()` 或 `deferRefresh(op)`，不直接修改。能力、结果和环境分别走声明、事件、上下文，不依赖 app 层；契约见 `InteractionState.h`、`InteractionContext.h`，生命周期与事件示例见 `examples/FeatureDemoPlugin`。
 
-公共头文件变化后，使用匹配 SDK、工具链和依赖重建主程序及全部插件；源码无需迁移不代表旧 DLL 保持 ABI 兼容。构建、安装与加载验证见 [build.md](build.md)。
+公共头文件变化后，使用匹配 SDK、工具链和依赖全量重建主程序及全部插件，确保 ABI 一致。构建、安装与加载验证见 [build.md](build.md)。

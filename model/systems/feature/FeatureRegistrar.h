@@ -23,26 +23,20 @@ public:
      */
     void addParameter(core::ArgType arg) { arg_types_.push_back(std::move(arg)); }
     /**
-     * @brief 注册一个菜单项，点击后触发功能的 execute()
-     */
-    void addMenuItem(MenuContribution item) { menus_.push_back(std::move(item)); }
-    /**
      * @brief 注册按键绑定：execute=true 走正式执行，否则为预览/非模型 onKeyEvent 回调
      */
     void addKeyBinding(KeyBinding binding) { key_bindings_.push_back(binding); }
 
     const std::vector<core::ArgType>& argTypes() const noexcept { return arg_types_; }
-    const std::vector<MenuContribution>& menuItems() const noexcept { return menus_; }
     const std::vector<KeyBinding>& keyBindings() const noexcept { return key_bindings_; }
 
-    /** @brief 导航声明自行维护合法性；与注册器具有相同生命周期。 */
+    /** @brief 统一声明功能入口和子功能显示属性；与注册器具有相同生命周期。 */
     FeatureNavigation& navigation() noexcept { return navigation_; }
     const FeatureNavigation& navigation() const noexcept { return navigation_; }
 
 private:
     FeatureNavigation navigation_;
     std::vector<core::ArgType> arg_types_;
-    std::vector<MenuContribution> menus_;
     std::vector<KeyBinding> key_bindings_;
 };
 }

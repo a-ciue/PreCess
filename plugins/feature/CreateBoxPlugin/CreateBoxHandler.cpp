@@ -39,7 +39,7 @@ void CreateBoxHandler::setup(FeatureRegistrar& reg, FeatureContext& /*ctx*/)
     reg.addParameter({ ArgTypeEnum::Float, "Z 方向长度", "10", "必须大于 0" });
     reg.addParameter({ ArgTypeEnum::Combo, "写入目标",
         "添加到当前 Component,新建 Component,新建 Model|0", "选择几何创建结果的组织位置" });
-    reg.addMenuItem({ "几何", "创建长方体", "qrc:/images/toolbar/Geometry/box.svg" });
+    reg.navigation().addEntry({ "CreateBox", "创建长方体", "qrc:/images/toolbar/Geometry/box.svg", 0, "几何" });
 }
 
 std::any CreateBoxHandler::execute(FeatureContext& ctx)

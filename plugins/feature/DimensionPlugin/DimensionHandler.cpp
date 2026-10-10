@@ -968,7 +968,7 @@ void DimensionHandler::setup(FeatureRegistrar& reg, FeatureContext&)
     // Combo 内容全部由测量操作注册表生成，名称与下标天然一致
     reg.addParameter({ ArgTypeEnum::Combo, "测量类型", comboContent() + "|0" });
     reg.addParameter({ ArgTypeEnum::Selector, "选择对象", selectorContent() });
-    reg.addMenuItem({ "工具", "尺寸标注", "qrc:/images/toolbar/Measure/dimension.svg" });
+    reg.navigation().addEntry({ "Dimension", "尺寸标注", "qrc:/images/toolbar/Measure/dimension.svg", 0, "工具" });
 }
 
 std::any DimensionHandler::execute(FeatureContext& ctx)

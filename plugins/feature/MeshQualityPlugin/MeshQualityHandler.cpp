@@ -408,7 +408,7 @@ void MeshQualityHandler::setup(FeatureRegistrar& reg, FeatureContext&)
         "Scaled Jacobian,Equiangle Skew,Edge Ratio,最小角,最大角,Warpage,Tet Collapse|0",
         "选择要计算并写入面、体属性的网格质量指标",
     });
-    reg.addMenuItem({ "功能/网格", "网格质量", "qrc:/images/toolbar/Function/grid_quality.svg" });
+    reg.navigation().addEntry({ "MeshQuality", "网格质量", "qrc:/images/toolbar/Function/grid_quality.svg", 0, "功能/网格" });
 }
 
 void MeshQualityHandler::deactivate(FeatureContext& ctx)

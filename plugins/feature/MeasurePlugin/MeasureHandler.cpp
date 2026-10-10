@@ -84,7 +84,7 @@ void MeasureHandler::setup(FeatureRegistrar& reg, FeatureContext& ctx)
 {
     // "清除"按钮参数：无值触发器，点击发布 ParameterChangedEvent，功能内部订阅并清空
     reg.addParameter({ ArgTypeEnum::Button, "清除", "" });
-    reg.addMenuItem({ "工具", "测量", "qrc:/images/toolbar/Measure/measure.svg" });
+    reg.navigation().addEntry({ "Measure", "测量", "qrc:/images/toolbar/Measure/measure.svg", 0, "工具" });
 
     // 标注集绑定到交互状态：渲染层事件后从 InteractionState.annotations 拉取绘制
     annotations_ = &ctx.interaction.annotations();

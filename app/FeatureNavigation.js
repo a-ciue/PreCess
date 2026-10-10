@@ -8,7 +8,7 @@ function compareFeatures(a, b) {
 function buildFeatures(infos, categoryId) {
     const features = []
     for (const info of infos) {
-        if ((info.categories || []).indexOf(categoryId) >= 0
+        if ((info.entry_ids || []).indexOf(categoryId) >= 0
                 && !features.some(feature => feature.name === info.name))
             features.push(info)
     }
@@ -26,18 +26,16 @@ function buildEntries(infos, categories) {
             title: category.title,
             icon: category.icon || "",
             order: category.order || 0,
-            menu_path: category.menu_path || (items.length ? items[0].menu_path : "") || "功能",
+            menu_path: category.menu_path || "功能",
             items: items
         })
     }
-    // 原有菜单贡献保持各自位置，并视作只有一个子功能的普通入口。
-    const ordinaryFeatures = Array.from(infos).sort((a, b) => compareFeatures(a, b)
-        || ((a.menu_path || "") < (b.menu_path || "") ? -1 : (a.menu_path || "") > (b.menu_path || "") ? 1 : 0))
-    for (const info of ordinaryFeatures) {
-        if ((info.categories || []).length > 0)
+    // 未声明入口的功能生成默认入口。
+    const unlistedFeatures = Array.from(infos).sort(compareFeatures)
+    for (const info of unlistedFeatures) {
+        if ((info.entry_ids || []).length > 0)
             continue
-        const path = info.menu_path || "功能"
-        const id = "feature:" + info.name + ":" + path
+        const id = "feature:" + info.name
         if (entries.some(entry => entry.id === id))
             continue
         entries.push({
@@ -46,7 +44,7 @@ function buildEntries(infos, categories) {
             title: info.label || info.display_name,
             icon: info.icon || "",
             order: info.order || 0,
-            menu_path: path,
+            menu_path: "功能",
             items: [info]
         })
     }
