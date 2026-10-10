@@ -110,6 +110,25 @@ if(_precess_real)
         # 宿主与 precess 模块，桩模式无意义）；宿主配置宏经 precess_runtime
         # PUBLIC 传递，此处仅补测试专属的插件目录
         precess_add_test(TestPrecessRuntime test/test_runtime.cpp)
+        precess_add_test(TestPrecessRuntimeThreads test/test_runtime_threads.cpp)
+        target_link_libraries(TestPrecessRuntimeThreads PRIVATE precess_runtime pybind11::embed)
+        # 单独编译 Runtime，故障检查点只存在于测试可执行文件，不进入生产库。
+        precess_add_test(TestPrecessRuntimeInitialization test/test_runtime_initialization.cpp runtime.cpp)
+        target_include_directories(TestPrecessRuntimeInitialization PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}/include")
+        target_link_libraries(TestPrecessRuntimeInitialization PRIVATE PreCessBase pybind11::embed spdlog::spdlog)
+        target_compile_definitions(TestPrecessRuntimeInitialization PRIVATE
+            PRECESS_RUNTIME_FAILURE_TEST
+            PRECESS_PYTHON_HOME="${PRECESS_PYTHON_HOME_DIR}"
+            PRECESS_PYTHON_MODULE_DIR="$<TARGET_FILE_DIR:precess_bindings>")
+        add_dependencies(TestPrecessRuntimeInitialization precess_bindings)
+        # Catch2 用例在构建后发现；此脚本在发现脚本之后由 CTest 加载。
+        file(GENERATE OUTPUT "${CMAKE_CURRENT_BINARY_DIR}/RuntimeTestTimeouts.cmake" CONTENT [=[
+foreach(runtime_test IN LISTS TestPrecessRuntimeInitialization_TESTS TestPrecessRuntimeThreads_TESTS)
+    set_tests_properties("${runtime_test}" PROPERTIES TIMEOUT 20)
+endforeach()
+]=])
+        set_property(DIRECTORY APPEND PROPERTY TEST_INCLUDE_FILES
+            "${CMAKE_CURRENT_BINARY_DIR}/RuntimeTestTimeouts.cmake")
         target_link_libraries(TestPrecessRuntime PRIVATE precess_runtime)
         target_compile_definitions(TestPrecessRuntime PRIVATE
             PRECESS_PLUGIN_DIR="${CMAKE_BINARY_DIR}/plugins")

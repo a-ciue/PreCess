@@ -17,7 +17,9 @@ namespace python {
  *
  * 无 Qt，供 GUI（app/model 的 QPythonRuntime）与无头宿主（CLI）共用。
  * 线程约定：同一实例的所有方法须在同一线程调用（GUI 宿主即 GUI 线程），
- * 渲染/工作线程不得触碰。
+ * 渲染/工作线程不得调用 Runtime 或访问 GUI 会话；纯 Python 后台线程可以运行。
+ * 宿主空闲时释放 GIL，各 Python 入口按作用域获取；销毁须在所属线程且无执行中调用。
+ * 用户后台任务须协作结束，Runtime 不强制终止任意 Python 线程。
  *
  * 生命周期约定：经引用策略把 session 注入 precess.current（Python 侧不持有
  * 所有权），session 必须比本对象活得久；析构先丢弃引用再终结解释器。
