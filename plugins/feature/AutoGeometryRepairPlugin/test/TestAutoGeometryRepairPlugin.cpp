@@ -98,6 +98,11 @@ TEST_CASE("AutoGeometryRepair feature detects then repairs free edge gaps", "[Au
 
     FeatureSystem::SystemHandlerPtr handler { new AutoGeometryRepairHandler };
     REQUIRE(feature_system.registerHandler(handlerMetaData(), std::move(handler)));
+    const auto navigation_entries = feature_system.getNavigationEntries();
+    REQUIRE(navigation_entries.size() == 1);
+    CHECK(navigation_entries.front().id == "AutoGeometryRepair");
+    CHECK(navigation_entries.front().title == "自动修复间隙");
+    CHECK(navigation_entries.front().menu_path == "几何/修复");
     auto selection = std::make_shared<Selection>();
     selection->type = ElementEnum::Component;
     // component_id 是其他选择类型的归属提示；组件选择必须使用 ids 中的明确目标。

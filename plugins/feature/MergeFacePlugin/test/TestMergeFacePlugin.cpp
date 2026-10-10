@@ -184,6 +184,11 @@ TEST_CASE("MergeFace feature merges selected faces and records one undo operatio
     undo_stack.clear();
     FeatureSystem::SystemHandlerPtr handler { new MergeFaceHandler };
     REQUIRE(feature_system.registerHandler(handlerMetaData(), std::move(handler)));
+    const auto navigation_entries = feature_system.getNavigationEntries();
+    REQUIRE(navigation_entries.size() == 1);
+    CHECK(navigation_entries.front().id == "MergeFace");
+    CHECK(navigation_entries.front().title == "合并面");
+    CHECK(navigation_entries.front().menu_path == "几何/拓扑");
 
     const std::any hint = feature_system.invoke("MergeFace");
     REQUIRE(std::any_cast<std::string>(hint)

@@ -27,7 +27,7 @@ void SplitFaceHandler::setup(FeatureRegistrar& reg, FeatureContext& /*ctx*/)
     // 切割工具允许 Edge 或 Face，execute 按实际选择类型调用对应原子操作。
     reg.addParameter({ ArgTypeEnum::Selector, "目标面", "GeometryFace", "请选择一个需要分割的几何面" });
     reg.addParameter({ ArgTypeEnum::Selector, "切割工具", "GeometryEdge,GeometryFace", "请选择位于目标面上的边，或与目标面相交的面" });
-    reg.addMenuItem({ "几何/拓扑", "分割面", "" });
+    reg.navigation().addEntry({ "SplitFace", "分割面", "", 0, "几何/拓扑" });
 }
 
 std::any SplitFaceHandler::execute(FeatureContext& ctx)
