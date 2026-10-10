@@ -101,6 +101,29 @@ ColumnLayout {
 
     // 功能 ribbon 结构：[{ name: 菜单名, groups: [{ name: 分组名, items: [入口对象] }] }]，由 rebuildFeatureMenus 维护
     property var featureMenus: []
+    // 产品层指定前置菜单；页签排序保留原页面身份，避免影响切换和注册表刷新。
+    property var leadingFeatureMenus: []
+    readonly property var navigationTabs: {
+        const leading = []
+        const trailing = []
+        for (let index = 0; index < root.featureMenus.length; ++index) {
+            const menu = root.featureMenus[index]
+            const tab = {
+                name: menu.name,
+                objectName: "featureTab_" + menu.name,
+                pageIndex: root.featurePageStart + index
+            }
+            if (root.leadingFeatureMenus.indexOf(menu.name) >= 0)
+                leading.push(tab)
+            else
+                trailing.push(tab)
+        }
+        return leading.concat([{
+            name: qsTr("其他算法"),
+            objectName: "otherAlgorithmTab",
+            pageIndex: root.algorithmPageStart
+        }], trailing)
+    }
 
     // 普通单项与聚合入口共用菜单声明；注册变化后按菜单身份保持当前页。
     function rebuildFeatureMenus() {
@@ -297,24 +320,16 @@ ColumnLayout {
                     onClicked: activeCategory = (activeCategory === 1) ? -1 : 1
                 }
 
-                RibbonTabButton {
-                    text: qsTr("其他算法")
-                    checkable: true
-                    checked: activeCategory === root.featurePageStart - 1
-                    onClicked: activeCategory = checked ? root.featurePageStart - 1 : -1
-                }
-
                 // 功能菜单页均由声明生成，不区分具体业务类型。
                 Repeater {
-                    model: root.featureMenus
+                    model: root.navigationTabs
                     RibbonTabButton {
                         required property var modelData
-                        required property int index
-                        objectName: "featureTab_" + modelData.name
+                        objectName: modelData.objectName
                         text: modelData.name
                         checkable: true
-                        checked: activeCategory === root.featurePageStart + index
-                        onClicked: activeCategory = checked ? root.featurePageStart + index : -1
+                        checked: activeCategory === modelData.pageIndex
+                        onClicked: activeCategory = checked ? modelData.pageIndex : -1
                     }
                 }
 

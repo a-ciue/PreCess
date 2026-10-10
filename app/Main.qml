@@ -87,6 +87,7 @@ ApplicationWindow {
 
     header: AppToolbar {
         windowHeight: root.height
+        leadingFeatureMenus: ["网格生成算法"]
         onResetLayoutRequested: {
             if (root.defaultDockLayout.length > 0)
                 dockHost.restoreLayout(root.defaultDockLayout)

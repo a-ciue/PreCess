@@ -380,7 +380,10 @@ TEST_CASE("Actual toolbar renders declared feature entries and preserves active 
     auto* feature_adaptor = manager->getFeatureSystemAdaptor();
     auto& feature_system = *feature_adaptor->featureSystem();
     auto provider = engine.newQObject(feature_adaptor);
-    std::unique_ptr<QObject> toolbar(component.createWithInitialProperties({ { "featureSystem", QVariant::fromValue(provider) } }));
+    std::unique_ptr<QObject> toolbar(component.createWithInitialProperties({
+        { "featureSystem", QVariant::fromValue(provider) },
+        { "leadingFeatureMenus", QStringList { "网格生成算法" } },
+    }));
     INFO(component.errorString().toStdString());
     REQUIRE(toolbar);
     auto* item = qobject_cast<QQuickItem*>(toolbar.get());
@@ -404,9 +407,21 @@ TEST_CASE("Actual toolbar renders declared feature entries and preserves active 
     REQUIRE(app->setProperty("activeOperation", QVariant::fromValue(operation)));
     auto* tab = findItem(item, "featureTab_网格生成算法");
     REQUIRE(tab);
+    auto* legacy_tab = findItem(item, "otherAlgorithmTab");
+    REQUIRE(legacy_tab);
+    CHECK(tab->mapToItem(item, QPointF()).x() + tab->width() <= legacy_tab->mapToItem(item, QPointF()).x());
+    clickItem(window, legacy_tab);
+    QCoreApplication::processEvents();
+    CHECK(toolbar->property("activeCategory").toInt() == 2);
+    REQUIRE(findItem(item, "algorithmPage_other"));
+    CHECK(findItem(item, "algorithmPage_other")->isVisible());
     REQUIRE(tab->setProperty("checked", true));
     REQUIRE(QMetaObject::invokeMethod(tab, "clicked"));
+    QCoreApplication::processEvents();
     CHECK(toolbar->property("activeCategory").toInt() == 3);
+    REQUIRE(findItem(item, "featureMenuPage_网格生成算法"));
+    CHECK(findItem(item, "featureMenuPage_网格生成算法")->isVisible());
+    CHECK_FALSE(findItem(item, "algorithmPage_other")->isVisible());
     CHECK(app->property("activeOperation").value<QJSValue>().strictlyEquals(operation));
 
     // 窄窗口保留四类入口，通过横向滚动访问完整文字。
@@ -1073,7 +1088,10 @@ TEST_CASE("Non-mesh feature entries handle zero one and multiple children across
     QQmlEngine::setObjectOwnership(&adaptor, QQmlEngine::CppOwnership);
     auto provider = engine.newQObject(&adaptor);
     auto session = createSession(engine, provider);
-    std::unique_ptr<QObject> toolbar(component.createWithInitialProperties({ { "featureSystem", QVariant::fromValue(provider) } }));
+    std::unique_ptr<QObject> toolbar(component.createWithInitialProperties({
+        { "featureSystem", QVariant::fromValue(provider) },
+        { "leadingFeatureMenus", QStringList { "几何工具", "不存在的菜单" } },
+    }));
     auto* item = qobject_cast<QQuickItem*>(toolbar.get());
     REQUIRE(item);
     QQuickWindow window;
@@ -1100,6 +1118,9 @@ TEST_CASE("Non-mesh feature entries handle zero one and multiple children across
     CHECK_FALSE(findItem(item, "featureTab_网格生成算法"));
     auto* construction_tab = findItem(item, "featureTab_几何工具");
     REQUIRE(construction_tab);
+    auto* legacy_tab = findItem(item, "otherAlgorithmTab");
+    REQUIRE(legacy_tab);
+    CHECK(construction_tab->mapToItem(item, QPointF()).x() + construction_tab->width() <= legacy_tab->mapToItem(item, QPointF()).x());
     // 切换 StackLayout 页后先完成布局，否则隐藏页的旧几何位置会丢失首个鼠标点击。
     clickItem(window, construction_tab);
     settle();
