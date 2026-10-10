@@ -14,6 +14,7 @@
 #include "QModelManager.h"
 #include "QSelection.h"
 #include "QTaskStatus.h"
+#include "SessionQuery.h"
 
 #include <QEventLoop>
 #include <QFile>
@@ -889,11 +890,18 @@ TEST_CASE("Installed external algorithms appear in the actual toolbar and open t
             REQUIRE(params);
             REQUIRE(params->value(6).get<ArgTypeEnum::Combo>());
             REQUIRE(*params->value(6).get<ArgTypeEnum::Combo>() == 2);
-            // 没有对象树选中态时，经生产执行闭包真正创建几何，不能只断言控件文案。
+            // 执行返回状态文案；通过模型查询验证新建结果，避免把文案当作组件身份。
+            const session::SessionQuery query(*manager->getModelManager());
+            REQUIRE(query.listModels().empty());
             const auto result = app->property("activeOperation").value<QJSValue>().property("execute").call();
             INFO(result.toString().toStdString());
-            REQUIRE(result.isNumber());
-            auto* component = manager->getModelManager()->findComponent(result.toInt());
+            REQUIRE(result.isString());
+            CHECK(result.toString().startsWith(QStringLiteral("创建长方体成功")));
+            const auto models = query.listModels();
+            REQUIRE(models.size() == 1);
+            const auto component_ids = query.componentIds(models.front().model_id);
+            REQUIRE(component_ids.size() == 1);
+            const auto* component = manager->getModelManager()->findComponent(component_ids.front());
             REQUIRE(component);
             REQUIRE(component->geometry);
             REQUIRE(component->geometry->rootShape);
