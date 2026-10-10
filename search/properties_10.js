@@ -1,7 +1,8 @@
 var searchData=
 [
-  ['undolabel_0',['undoLabel',['../classQUndoStackAdaptor.html#ae5f23f409712e8b2535c02405f7f63f5',1,'QUndoStackAdaptor']]],
-  ['undostack_1',['undoStack',['../classQModelManager.html#af6ffce88cef35bb362bca8720b61a22f',1,'QModelManager']]],
-  ['uniquename_2',['uniqueName',['../classdock_1_1ui_1_1DockHostItem.html#a3db28332551c8fe42fbc40156b44de62',1,'dock::ui::DockHostItem::uniqueName'],['../classdock_1_1ui_1_1DockPanelItem.html#a73271090c97f0bd6acc25ab925b7109b',1,'dock::ui::DockPanelItem::uniqueName']]],
-  ['updatingtabs_3',['updatingTabs',['../classdock_1_1ui_1_1PanelGroupItem.html#a4e86ca6c2f5a475b37fe19b31857fa22',1,'dock::ui::PanelGroupItem']]]
+  ['tabcount_0',['tabCount',['../classdock_1_1ui_1_1PanelGroupItem.html#a189c44996c274d7e2e6052dd583d8fe9',1,'dock::ui::PanelGroupItem']]],
+  ['tabnames_1',['tabNames',['../classdock_1_1ui_1_1PanelGroupItem.html#a20036e430079f4661e0a604072a7b780',1,'dock::ui::PanelGroupItem']]],
+  ['taskstatus_2',['taskStatus',['../classQModelManager.html#a01deb5b5634b4141c8452d023d90dc56',1,'QModelManager']]],
+  ['title_3',['title',['../classdock_1_1ui_1_1DockPanelItem.html#a3e4345721c13b4f8ba933607b2da639a',1,'dock::ui::DockPanelItem::title'],['../classdock_1_1ui_1_1PanelGroupItem.html#a4e2d4b8fc73d482c591adab9bbdf7d21',1,'dock::ui::PanelGroupItem::title']]],
+  ['type_4',['type',['../classQArgObject.html#a6be57d547a06c72078c8ed35a2f9bf93',1,'QArgObject']]]
 ];

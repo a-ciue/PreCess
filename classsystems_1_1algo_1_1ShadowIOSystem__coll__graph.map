@@ -25,7 +25,7 @@
 <area shape="poly" id="edge63_Node000078_Node000004" title=" " alt="" coords="366,864,593,864,593,869,366,869"/>
 <area shape="rect" id="Node000005" title=" " alt="" coords="5,847,144,887"/>
 <area shape="poly" id="edge4_Node000004_Node000005" title=" " alt="" coords="158,864,265,864,265,869,158,869"/>
-<area shape="rect" id="Node000006" href="$classsystems_1_1algo_1_1AlgorithmHandler.html" title="算法系统的功能接口，继承他来实现具体的算法功能" alt="" coords="2193,341,2378,381"/>
+<area shape="rect" id="Node000006" href="$classsystems_1_1algo_1_1AlgorithmHandler.html" title="旧算法系统的兼容接口，仅供已有插件维护" alt="" coords="2193,341,2378,381"/>
 <area shape="poly" id="edge5_Node000003_Node000006" title=" " alt="" coords="2392,367,2543,379,2542,384,2392,372"/>
 <area shape="rect" id="Node000007" title=" " alt="" coords="2214,277,2357,317"/>
 <area shape="poly" id="edge6_Node000003_Node000007" title=" " alt="" coords="2371,310,2519,343,2626,375,2625,380,2518,348,2370,315"/>

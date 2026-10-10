@@ -1,0 +1,7 @@
+<map id="model/systems/core/HandlerCreatorDestroyerFactory.h" name="model/systems/core/HandlerCreatorDestroyerFactory.h">
+<area shape="rect" id="Node000001" title=" " alt="" coords="119,5,366,45"/>
+<area shape="rect" id="Node000002" href="$SetupNavigationTestPlugin_8cpp.html" title="验证 Feature 导航声明经真实 DLL 边界注册，不安装到产品插件目录。" alt="" coords="5,93,232,133"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="205,55,148,95,145,91,202,51"/>
+<area shape="rect" id="Node000003" href="$TestAlgorithmSystem_8cpp.html" title=" " alt="" coords="256,93,477,133"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="283,51,341,91,338,95,280,55"/>
+</map>

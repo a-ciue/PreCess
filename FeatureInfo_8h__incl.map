@@ -1,14 +1,24 @@
 <map id="model/systems/feature/FeatureInfo.h" name="model/systems/feature/FeatureInfo.h">
-<area shape="rect" id="Node000001" title="功能的描述信息与注册声明（菜单、按键）" alt="" coords="247,5,420,45"/>
-<area shape="rect" id="Node000002" href="$ArgType_8h.html" title="用于模型层描述功能参数类型" alt="" coords="194,93,281,119"/>
-<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="312,48,264,87,260,82,308,43"/>
+<area shape="rect" id="Node000001" title="功能的描述信息与注册声明（菜单、按键）" alt="" coords="339,5,512,45"/>
+<area shape="rect" id="Node000002" href="$ArgType_8h.html" title="用于模型层描述功能参数类型" alt="" coords="214,93,301,119"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="386,48,296,90,293,85,384,43"/>
 <area shape="rect" id="Node000004" title=" " alt="" coords="320,167,379,192"/>
-<area shape="poly" id="edge5_Node000001_Node000004" title=" " alt="" coords="338,46,349,153,344,153,333,46"/>
-<area shape="rect" id="Node000006" title=" " alt="" coords="371,93,434,119"/>
-<area shape="poly" id="edge6_Node000001_Node000006" title=" " alt="" coords="352,44,385,81,381,84,348,47"/>
+<area shape="poly" id="edge11_Node000001_Node000004" title=" " alt="" coords="418,47,364,155,359,153,413,45"/>
+<area shape="rect" id="Node000006" href="$FeatureNavigation_8h.html" title="Feature 的统一导航入口声明。" alt="" coords="441,93,596,119"/>
+<area shape="poly" id="edge5_Node000001_Node000006" title=" " alt="" coords="450,44,496,82,492,86,446,48"/>
+<area shape="rect" id="Node000010" title=" " alt="" coords="671,167,734,192"/>
+<area shape="poly" id="edge12_Node000001_Node000010" title=" " alt="" coords="496,43,553,63,609,91,652,122,685,155,682,159,648,126,607,96,551,68,494,48"/>
 <area shape="rect" id="Node000003" title=" " alt="" coords="5,167,96,192"/>
-<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="208,121,95,164,93,159,206,116"/>
-<area shape="poly" id="edge3_Node000002_Node000004" title=" " alt="" coords="257,116,321,157,318,161,254,121"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="225,121,98,165,96,160,223,116"/>
+<area shape="poly" id="edge3_Node000002_Node000004" title=" " alt="" coords="274,117,325,156,322,160,270,121"/>
 <area shape="rect" id="Node000005" href="$private__ArgTypeEnum_8h.html" title="参数类型枚举类定义，只被ArgType.h和QArgType.h.in使用。" alt="" coords="120,167,296,192"/>
-<area shape="poly" id="edge4_Node000002_Node000005" title=" " alt="" coords="235,120,220,155,216,153,230,118"/>
+<area shape="poly" id="edge4_Node000002_Node000005" title=" " alt="" coords="251,121,226,157,222,154,247,117"/>
+<area shape="poly" id="edge8_Node000006_Node000004" title=" " alt="" coords="492,121,391,164,389,159,490,116"/>
+<area shape="rect" id="Node000007" title=" " alt="" coords="403,167,488,192"/>
+<area shape="poly" id="edge6_Node000006_Node000007" title=" " alt="" coords="508,121,469,159,465,155,505,117"/>
+<area shape="rect" id="Node000008" title=" " alt="" coords="512,167,563,192"/>
+<area shape="poly" id="edge7_Node000006_Node000008" title=" " alt="" coords="524,118,533,153,528,154,519,120"/>
+<area shape="rect" id="Node000009" title=" " alt="" coords="587,167,647,192"/>
+<area shape="poly" id="edge9_Node000006_Node000009" title=" " alt="" coords="536,117,592,156,589,161,533,121"/>
+<area shape="poly" id="edge10_Node000006_Node000010" title=" " alt="" coords="549,116,661,159,659,164,547,121"/>
 </map>

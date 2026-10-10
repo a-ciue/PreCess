@@ -2,7 +2,7 @@
 <area shape="rect" id="Node000001" title="算法系统的操作器，负责注册和注销算法插件" alt="" coords="3199,920,3384,960"/>
 <area shape="rect" id="Node000002" href="$classsystems_1_1SystemRegisterBase.html" title="系统功能插件的注册器，系统的交互接口，用于注册和注销系统的插件PluginBase。本身不储存状态" alt="" coords="2867,899,3087,925"/>
 <area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="3100,920,3199,929,3198,934,3100,926"/>
-<area shape="rect" id="Node000003" href="$classsystems_1_1algo_1_1AlgorithmSystem.html" title=" " alt="" coords="2884,949,3069,989"/>
+<area shape="rect" id="Node000003" href="$classsystems_1_1algo_1_1AlgorithmSystem.html" title="已废弃的算法分发系统，仅保留已有调用者的运行能力" alt="" coords="2884,949,3069,989"/>
 <area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="3083,962,3174,955,3198,952,3198,957,3175,960,3083,967"/>
 <area shape="rect" id="Node000004" title=" " alt="" coords="265,1078,352,1103"/>
 <area shape="poly" id="edge3_Node000003_Node000004" title=" " alt="" coords="318,1116,332,1168,357,1233,374,1266,395,1298,420,1326,449,1350,482,1368,511,1378,539,1382,566,1382,624,1374,697,1368,2631,1368,2667,1365,2701,1355,2734,1340,2764,1321,2818,1270,2864,1209,2902,1145,2931,1083,2967,989,2972,991,2936,1085,2906,1147,2868,1212,2822,1274,2767,1325,2736,1345,2703,1360,2668,1370,2631,1373,697,1373,625,1379,566,1387,538,1387,510,1383,480,1373,447,1354,417,1330,391,1301,370,1269,352,1235,326,1169,312,1117"/>

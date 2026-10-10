@@ -1,0 +1,182 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="zh">
+<head>
+<meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=11"/>
+<meta name="generator" content="Doxygen 1.14.0"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>PreCess: model/systems/feature/FeatureNavigation.h 源文件</title>
+<link href="tabs.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="jquery.js"></script>
+<script type="text/javascript" src="dynsections.js"></script>
+<script type="text/javascript" src="clipboard.js"></script>
+<script type="text/javascript" src="cookie.js"></script>
+<link href="search/search.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="search/searchdata.js"></script>
+<script type="text/javascript" src="search/search.js"></script>
+<link href="doxygen.css" rel="stylesheet" type="text/css" />
+</head>
+<body>
+<div id="top"><!-- do not remove this div, it is closed by doxygen! -->
+<div id="titlearea">
+<table cellspacing="0" cellpadding="0">
+ <tbody>
+ <tr id="projectrow">
+  <td id="projectlogo"><img alt="Logo" src="ZenithGrid.ico"/></td>
+  <td id="projectalign">
+   <div id="projectname">PreCess
+   </div>
+  </td>
+ </tr>
+ </tbody>
+</table>
+</div>
+<!-- end header part -->
+<!-- 制作者 Doxygen 1.14.0 -->
+<script type="text/javascript">
+var searchBox = new SearchBox("searchBox", "search/",'.html');
+</script>
+<script type="text/javascript">
+$(function() { codefold.init(); });
+</script>
+<script type="text/javascript" src="menudata.js"></script>
+<script type="text/javascript" src="menu.js"></script>
+<script type="text/javascript">
+$(function() {
+  initMenu('',true,false,'search.php','搜索',false);
+  $(function() { init_search(); });
+});
+</script>
+<div id="main-nav"></div>
+<!-- window showing the filter options -->
+<div id="MSearchSelectWindow"
+     onmouseover="return searchBox.OnSearchSelectShow()"
+     onmouseout="return searchBox.OnSearchSelectHide()"
+     onkeydown="return searchBox.OnSearchSelectKey(event)">
+</div>
+
+<!-- iframe showing the search results (closed by default) -->
+<div id="MSearchResultsWindow">
+<div id="MSearchResults">
+<div class="SRPage">
+<div id="SRIndex">
+<div id="SRResults"></div>
+<div class="SRStatus" id="Loading">载入中...</div>
+<div class="SRStatus" id="Searching">搜索中...</div>
+<div class="SRStatus" id="NoMatches">未找到</div>
+</div>
+</div>
+</div>
+</div>
+
+<div id="nav-path" class="navpath">
+  <ul>
+<li class="navelem"><a href="dir_3f14f6767c31cb4a1d22c13c18cc6fc3.html">model</a></li><li class="navelem"><a href="dir_2daa03e0cb702fa035b1e0c62ad50ba5.html">systems</a></li><li class="navelem"><a href="dir_05585d2a38afe5c243e9dcc7f0f8321f.html">feature</a></li>  </ul>
+</div>
+</div><!-- top -->
+<div id="doc-content">
+<div class="header">
+  <div class="headertitle"><div class="title">FeatureNavigation.h</div></div>
+</div><!--header-->
+<div class="contents">
+<a href="FeatureNavigation_8h.html">浏览该文件的文档.</a><div class="fragment"><div class="line"><a id="l00001" name="l00001"></a><span class="lineno">    1</span></div>
+<div class="line"><a id="l00004" name="l00004"></a><span class="lineno">    4</span><span class="preprocessor">#pragma once</span></div>
+<div class="line"><a id="l00005" name="l00005"></a><span class="lineno">    5</span><span class="preprocessor">#include &lt;algorithm&gt;</span></div>
+<div class="line"><a id="l00006" name="l00006"></a><span class="lineno">    6</span><span class="preprocessor">#include &lt;map&gt;</span></div>
+<div class="line"><a id="l00007" name="l00007"></a><span class="lineno">    7</span><span class="preprocessor">#include &lt;string&gt;</span></div>
+<div class="line"><a id="l00008" name="l00008"></a><span class="lineno">    8</span><span class="preprocessor">#include &lt;utility&gt;</span></div>
+<div class="line"><a id="l00009" name="l00009"></a><span class="lineno">    9</span><span class="preprocessor">#include &lt;vector&gt;</span></div>
+<div class="line"><a id="l00010" name="l00010"></a><span class="lineno">   10</span><span class="keyword">namespace </span><a class="code hl_namespace" href="namespacesystems_1_1feature.html">systems::feature</a> {</div>
+<div class="foldopen" id="foldopen00012" data-start="{" data-end="};">
+<div class="line"><a id="l00012" name="l00012"></a><span class="lineno"><a class="line" href="structsystems_1_1feature_1_1FeatureNavigationEntry.html">   12</a></span><span class="keyword">struct </span><a class="code hl_struct" href="structsystems_1_1feature_1_1FeatureNavigationEntry.html">FeatureNavigationEntry</a> {</div>
+<div class="line"><a id="l00013" name="l00013"></a><span class="lineno"><a class="line" href="structsystems_1_1feature_1_1FeatureNavigationEntry.html#aca4b8855eca5edf66a56ca724e91ef71">   13</a></span>    std::string <a class="code hl_variable" href="structsystems_1_1feature_1_1FeatureNavigationEntry.html#aca4b8855eca5edf66a56ca724e91ef71">id</a>; <span class="comment">//&gt; 稳定身份，不从标题或图标推断</span></div>
+<div class="line"><a id="l00014" name="l00014"></a><span class="lineno"><a class="line" href="structsystems_1_1feature_1_1FeatureNavigationEntry.html#a19139b5e701aa966715186d53480168c">   14</a></span>    std::string <a class="code hl_variable" href="structsystems_1_1feature_1_1FeatureNavigationEntry.html#a19139b5e701aa966715186d53480168c">title</a>;</div>
+<div class="line"><a id="l00015" name="l00015"></a><span class="lineno"><a class="line" href="structsystems_1_1feature_1_1FeatureNavigationEntry.html#ab909bae23387855e210bf8fafb7426ae">   15</a></span>    std::string <a class="code hl_variable" href="structsystems_1_1feature_1_1FeatureNavigationEntry.html#ab909bae23387855e210bf8fafb7426ae">icon</a>;</div>
+<div class="line"><a id="l00016" name="l00016"></a><span class="lineno"><a class="line" href="structsystems_1_1feature_1_1FeatureNavigationEntry.html#a8ad4805cfa7ec20bbc995ea531b3c230">   16</a></span>    <span class="keywordtype">int</span> <a class="code hl_variable" href="structsystems_1_1feature_1_1FeatureNavigationEntry.html#a8ad4805cfa7ec20bbc995ea531b3c230">order</a> { 0 };</div>
+<div class="line"><a id="l00017" name="l00017"></a><span class="lineno"><a class="line" href="structsystems_1_1feature_1_1FeatureNavigationEntry.html#acd833640a4535c239081bb47e38cb701">   17</a></span>    std::string <a class="code hl_variable" href="structsystems_1_1feature_1_1FeatureNavigationEntry.html#acd833640a4535c239081bb47e38cb701">menu_path</a>; <span class="comment">//&gt; 菜单/分组；留空时继承宿主同 id 的路径，最终回退“功能”</span></div>
+<div class="line"><a id="l00018" name="l00018"></a><span class="lineno"><a class="line" href="structsystems_1_1feature_1_1FeatureNavigationEntry.html#a7a66a8b7f96b34606a0033b53dd7e85e">   18</a></span>    <span class="keywordtype">bool</span> <a class="code hl_function" href="structsystems_1_1feature_1_1FeatureNavigationEntry.html#a7a66a8b7f96b34606a0033b53dd7e85e">operator==</a>(<span class="keyword">const</span> <a class="code hl_struct" href="structsystems_1_1feature_1_1FeatureNavigationEntry.html">FeatureNavigationEntry</a>&amp;) <span class="keyword">const</span> = <span class="keywordflow">default</span>;</div>
+<div class="line"><a id="l00019" name="l00019"></a><span class="lineno">   19</span>};</div>
+</div>
+<div class="line"><a id="l00020" name="l00020"></a><span class="lineno">   20</span></div>
+<div class="foldopen" id="foldopen00021" data-start="{" data-end="};">
+<div class="line"><a id="l00021" name="l00021"></a><span class="lineno"><a class="line" href="classsystems_1_1feature_1_1FeatureNavigation.html">   21</a></span><span class="keyword">class </span><a class="code hl_class" href="classsystems_1_1feature_1_1FeatureNavigation.html">FeatureNavigation</a> {</div>
+<div class="line"><a id="l00022" name="l00022"></a><span class="lineno">   22</span><span class="keyword">public</span>:</div>
+<div class="foldopen" id="foldopen00024" data-start="{" data-end="}">
+<div class="line"><a id="l00024" name="l00024"></a><span class="lineno"><a class="line" href="classsystems_1_1feature_1_1FeatureNavigation.html#a04b6ffadcce5ef63d93aed2fd81c5803">   24</a></span>    <span class="keywordtype">void</span> <a class="code hl_function" href="classsystems_1_1feature_1_1FeatureNavigation.html#a04b6ffadcce5ef63d93aed2fd81c5803">addEntry</a>(<a class="code hl_struct" href="structsystems_1_1feature_1_1FeatureNavigationEntry.html">FeatureNavigationEntry</a> entry)</div>
+<div class="line"><a id="l00025" name="l00025"></a><span class="lineno">   25</span>    {</div>
+<div class="line"><a id="l00026" name="l00026"></a><span class="lineno">   26</span>        <span class="keywordflow">if</span> (entry.<a class="code hl_variable" href="structsystems_1_1feature_1_1FeatureNavigationEntry.html#aca4b8855eca5edf66a56ca724e91ef71">id</a>.empty() || entry.<a class="code hl_variable" href="structsystems_1_1feature_1_1FeatureNavigationEntry.html#a19139b5e701aa966715186d53480168c">title</a>.empty())</div>
+<div class="line"><a id="l00027" name="l00027"></a><span class="lineno">   27</span>            <span class="keywordflow">return</span>;</div>
+<div class="line"><a id="l00028" name="l00028"></a><span class="lineno">   28</span>        <span class="keywordflow">if</span> (std::any_of(<a class="code hl_variable" href="classsystems_1_1feature_1_1FeatureNavigation.html#a06348e92249d8350299fc8f2323c9ed4">entries_</a>.begin(), <a class="code hl_variable" href="classsystems_1_1feature_1_1FeatureNavigation.html#a06348e92249d8350299fc8f2323c9ed4">entries_</a>.end(), [&amp;](<span class="keyword">const</span> <span class="keyword">auto</span>&amp; existing) { return existing.id == entry.id; }))</div>
+<div class="line"><a id="l00029" name="l00029"></a><span class="lineno">   29</span>            <span class="keywordflow">return</span>;</div>
+<div class="line"><a id="l00030" name="l00030"></a><span class="lineno">   30</span>        <a class="code hl_variable" href="classsystems_1_1feature_1_1FeatureNavigation.html#a06348e92249d8350299fc8f2323c9ed4">entries_</a>.push_back(std::move(entry));</div>
+<div class="line"><a id="l00031" name="l00031"></a><span class="lineno">   31</span>    }</div>
+</div>
+<div class="line"><a id="l00032" name="l00032"></a><span class="lineno">   32</span></div>
+<div class="line"><a id="l00033" name="l00033"></a><span class="lineno"><a class="line" href="classsystems_1_1feature_1_1FeatureNavigation.html#abd1b48bc8e049adc0489dade1cc8ef0d">   33</a></span>    <span class="keywordtype">void</span> <a class="code hl_function" href="classsystems_1_1feature_1_1FeatureNavigation.html#abd1b48bc8e049adc0489dade1cc8ef0d">setLabel</a>(std::string <a class="code hl_function" href="classsystems_1_1feature_1_1FeatureNavigation.html#aae063767c85c86651d9287a44f96fd73">label</a>) { <a class="code hl_variable" href="classsystems_1_1feature_1_1FeatureNavigation.html#ac3be817bfcd6a1bd262cc5decf3d4025">label_</a> = std::move(<a class="code hl_function" href="classsystems_1_1feature_1_1FeatureNavigation.html#aae063767c85c86651d9287a44f96fd73">label</a>); }</div>
+<div class="line"><a id="l00034" name="l00034"></a><span class="lineno"><a class="line" href="classsystems_1_1feature_1_1FeatureNavigation.html#a8a2f2f6e77ef8eaa61838435135fa6c5">   34</a></span>    <span class="keywordtype">void</span> <a class="code hl_function" href="classsystems_1_1feature_1_1FeatureNavigation.html#a8a2f2f6e77ef8eaa61838435135fa6c5">setIcon</a>(std::string <a class="code hl_function" href="classsystems_1_1feature_1_1FeatureNavigation.html#a79ab0ad2a07d53176682c0fe762650a4">icon</a>) { <a class="code hl_variable" href="classsystems_1_1feature_1_1FeatureNavigation.html#a906c2b3f6191d63dc5d0e9e1bb0fd7e7">icon_</a> = std::move(<a class="code hl_function" href="classsystems_1_1feature_1_1FeatureNavigation.html#a79ab0ad2a07d53176682c0fe762650a4">icon</a>); }</div>
+<div class="line"><a id="l00036" name="l00036"></a><span class="lineno"><a class="line" href="classsystems_1_1feature_1_1FeatureNavigation.html#a1a7c1930be866b7893f044a65b7319ce">   36</a></span>    <span class="keywordtype">void</span> <a class="code hl_function" href="classsystems_1_1feature_1_1FeatureNavigation.html#a1a7c1930be866b7893f044a65b7319ce">setOrder</a>(<span class="keywordtype">int</span> <a class="code hl_function" href="classsystems_1_1feature_1_1FeatureNavigation.html#adc95cfb625bdcadaf93a6f07587abb15">order</a>) { <a class="code hl_variable" href="classsystems_1_1feature_1_1FeatureNavigation.html#aae76a9f4983daedd32a332ecd703544b">order_</a> = <a class="code hl_function" href="classsystems_1_1feature_1_1FeatureNavigation.html#adc95cfb625bdcadaf93a6f07587abb15">order</a>; }</div>
+<div class="foldopen" id="foldopen00038" data-start="{" data-end="}">
+<div class="line"><a id="l00038" name="l00038"></a><span class="lineno"><a class="line" href="classsystems_1_1feature_1_1FeatureNavigation.html#a777a8181773eae0730a6298c01298745">   38</a></span>    <span class="keywordtype">void</span> <a class="code hl_function" href="classsystems_1_1feature_1_1FeatureNavigation.html#a777a8181773eae0730a6298c01298745">setEntryDefault</a>(std::string entry, std::string parameter, std::string value)</div>
+<div class="line"><a id="l00039" name="l00039"></a><span class="lineno">   39</span>    {</div>
+<div class="line"><a id="l00040" name="l00040"></a><span class="lineno">   40</span>        <a class="code hl_variable" href="classsystems_1_1feature_1_1FeatureNavigation.html#ac2b2a06a0801e2e725b4a94e17ac20dd">entry_defaults_</a>[std::move(entry)].insert_or_assign(std::move(parameter), std::move(value));</div>
+<div class="line"><a id="l00041" name="l00041"></a><span class="lineno">   41</span>    }</div>
+</div>
+<div class="foldopen" id="foldopen00042" data-start="{" data-end="}">
+<div class="line"><a id="l00042" name="l00042"></a><span class="lineno"><a class="line" href="classsystems_1_1feature_1_1FeatureNavigation.html#abaa7a2cf6bfcc57f998fefb684e90dd0">   42</a></span>    std::vector&lt;std::string&gt; <a class="code hl_function" href="classsystems_1_1feature_1_1FeatureNavigation.html#abaa7a2cf6bfcc57f998fefb684e90dd0">entryIds</a>()<span class="keyword"> const</span></div>
+<div class="line"><a id="l00043" name="l00043"></a><span class="lineno">   43</span><span class="keyword">    </span>{</div>
+<div class="line"><a id="l00044" name="l00044"></a><span class="lineno">   44</span>        std::vector&lt;std::string&gt; <a class="code hl_variable" href="TestComponentModel_8cpp.html#a5b425756f8f086f69cb81301d88866ca">ids</a>;</div>
+<div class="line"><a id="l00045" name="l00045"></a><span class="lineno">   45</span>        <a class="code hl_variable" href="TestComponentModel_8cpp.html#a5b425756f8f086f69cb81301d88866ca">ids</a>.reserve(<a class="code hl_variable" href="classsystems_1_1feature_1_1FeatureNavigation.html#a06348e92249d8350299fc8f2323c9ed4">entries_</a>.size());</div>
+<div class="line"><a id="l00046" name="l00046"></a><span class="lineno">   46</span>        <span class="keywordflow">for</span> (<span class="keyword">const</span> <span class="keyword">auto</span>&amp; entry : <a class="code hl_variable" href="classsystems_1_1feature_1_1FeatureNavigation.html#a06348e92249d8350299fc8f2323c9ed4">entries_</a>)</div>
+<div class="line"><a id="l00047" name="l00047"></a><span class="lineno">   47</span>            <a class="code hl_variable" href="TestComponentModel_8cpp.html#a5b425756f8f086f69cb81301d88866ca">ids</a>.push_back(entry.id);</div>
+<div class="line"><a id="l00048" name="l00048"></a><span class="lineno">   48</span>        <span class="keywordflow">return</span> <a class="code hl_variable" href="TestComponentModel_8cpp.html#a5b425756f8f086f69cb81301d88866ca">ids</a>;</div>
+<div class="line"><a id="l00049" name="l00049"></a><span class="lineno">   49</span>    }</div>
+</div>
+<div class="line"><a id="l00050" name="l00050"></a><span class="lineno"><a class="line" href="classsystems_1_1feature_1_1FeatureNavigation.html#aed14b02102e15fac7f8d042df8dbb0c1">   50</a></span>    <span class="keyword">const</span> std::vector&lt;FeatureNavigationEntry&gt;&amp; <a class="code hl_function" href="classsystems_1_1feature_1_1FeatureNavigation.html#aed14b02102e15fac7f8d042df8dbb0c1">entries</a>() const noexcept { <span class="keywordflow">return</span> <a class="code hl_variable" href="classsystems_1_1feature_1_1FeatureNavigation.html#a06348e92249d8350299fc8f2323c9ed4">entries_</a>; }</div>
+<div class="line"><a id="l00051" name="l00051"></a><span class="lineno"><a class="line" href="classsystems_1_1feature_1_1FeatureNavigation.html#aae063767c85c86651d9287a44f96fd73">   51</a></span>    <span class="keyword">const</span> std::string&amp; <a class="code hl_function" href="classsystems_1_1feature_1_1FeatureNavigation.html#aae063767c85c86651d9287a44f96fd73">label</a>() const noexcept { <span class="keywordflow">return</span> <a class="code hl_variable" href="classsystems_1_1feature_1_1FeatureNavigation.html#ac3be817bfcd6a1bd262cc5decf3d4025">label_</a>; }</div>
+<div class="line"><a id="l00052" name="l00052"></a><span class="lineno"><a class="line" href="classsystems_1_1feature_1_1FeatureNavigation.html#a79ab0ad2a07d53176682c0fe762650a4">   52</a></span>    <span class="keyword">const</span> std::string&amp; <a class="code hl_function" href="classsystems_1_1feature_1_1FeatureNavigation.html#a79ab0ad2a07d53176682c0fe762650a4">icon</a>() const noexcept { <span class="keywordflow">return</span> <a class="code hl_variable" href="classsystems_1_1feature_1_1FeatureNavigation.html#a906c2b3f6191d63dc5d0e9e1bb0fd7e7">icon_</a>; }</div>
+<div class="line"><a id="l00053" name="l00053"></a><span class="lineno"><a class="line" href="classsystems_1_1feature_1_1FeatureNavigation.html#adc95cfb625bdcadaf93a6f07587abb15">   53</a></span>    <span class="keywordtype">int</span> <a class="code hl_function" href="classsystems_1_1feature_1_1FeatureNavigation.html#adc95cfb625bdcadaf93a6f07587abb15">order</a>() const noexcept { <span class="keywordflow">return</span> <a class="code hl_variable" href="classsystems_1_1feature_1_1FeatureNavigation.html#aae76a9f4983daedd32a332ecd703544b">order_</a>; }</div>
+<div class="line"><a id="l00054" name="l00054"></a><span class="lineno"><a class="line" href="classsystems_1_1feature_1_1FeatureNavigation.html#a1adb87b179e5a2707523424bc0d06183">   54</a></span>    <span class="keyword">const</span> std::map&lt;std::string, std::map&lt;std::string, std::string&gt;&gt;&amp; <a class="code hl_function" href="classsystems_1_1feature_1_1FeatureNavigation.html#a1adb87b179e5a2707523424bc0d06183">entryDefaults</a>() const noexcept { <span class="keywordflow">return</span> <a class="code hl_variable" href="classsystems_1_1feature_1_1FeatureNavigation.html#ac2b2a06a0801e2e725b4a94e17ac20dd">entry_defaults_</a>; }</div>
+<div class="line"><a id="l00055" name="l00055"></a><span class="lineno">   55</span> </div>
+<div class="line"><a id="l00056" name="l00056"></a><span class="lineno">   56</span><span class="keyword">private</span>:</div>
+<div class="line"><a id="l00057" name="l00057"></a><span class="lineno"><a class="line" href="classsystems_1_1feature_1_1FeatureNavigation.html#a06348e92249d8350299fc8f2323c9ed4">   57</a></span>    std::vector&lt;FeatureNavigationEntry&gt; <a class="code hl_variable" href="classsystems_1_1feature_1_1FeatureNavigation.html#a06348e92249d8350299fc8f2323c9ed4">entries_</a>;</div>
+<div class="line"><a id="l00058" name="l00058"></a><span class="lineno"><a class="line" href="classsystems_1_1feature_1_1FeatureNavigation.html#a906c2b3f6191d63dc5d0e9e1bb0fd7e7">   58</a></span>    std::string <a class="code hl_variable" href="classsystems_1_1feature_1_1FeatureNavigation.html#a906c2b3f6191d63dc5d0e9e1bb0fd7e7">icon_</a>;</div>
+<div class="line"><a id="l00059" name="l00059"></a><span class="lineno"><a class="line" href="classsystems_1_1feature_1_1FeatureNavigation.html#aae76a9f4983daedd32a332ecd703544b">   59</a></span>    <span class="keywordtype">int</span> <a class="code hl_variable" href="classsystems_1_1feature_1_1FeatureNavigation.html#aae76a9f4983daedd32a332ecd703544b">order_</a> { 0 };</div>
+<div class="line"><a id="l00060" name="l00060"></a><span class="lineno"><a class="line" href="classsystems_1_1feature_1_1FeatureNavigation.html#ac3be817bfcd6a1bd262cc5decf3d4025">   60</a></span>    std::string <a class="code hl_variable" href="classsystems_1_1feature_1_1FeatureNavigation.html#ac3be817bfcd6a1bd262cc5decf3d4025">label_</a>;</div>
+<div class="line"><a id="l00061" name="l00061"></a><span class="lineno"><a class="line" href="classsystems_1_1feature_1_1FeatureNavigation.html#ac2b2a06a0801e2e725b4a94e17ac20dd">   61</a></span>    std::map&lt;std::string, std::map&lt;std::string, std::string&gt;&gt; <a class="code hl_variable" href="classsystems_1_1feature_1_1FeatureNavigation.html#ac2b2a06a0801e2e725b4a94e17ac20dd">entry_defaults_</a>;</div>
+<div class="line"><a id="l00062" name="l00062"></a><span class="lineno">   62</span>};</div>
+</div>
+<div class="line"><a id="l00063" name="l00063"></a><span class="lineno">   63</span>}</div>
+<div class="ttc" id="aTestComponentModel_8cpp_html_a5b425756f8f086f69cb81301d88866ca"><div class="ttname"><a href="TestComponentModel_8cpp.html#a5b425756f8f086f69cb81301d88866ca">ids</a></div><div class="ttdeci">auto ids</div><div class="ttdef"><b>定义</b> TestComponentModel.cpp:97</div></div>
+<div class="ttc" id="aclasssystems_1_1feature_1_1FeatureNavigation_html"><div class="ttname"><a href="classsystems_1_1feature_1_1FeatureNavigation.html">systems::feature::FeatureNavigation</a></div><div class="ttdoc">统一声明入口与子功能显示属性，不区分普通菜单和分类。</div><div class="ttdef"><b>定义</b> FeatureNavigation.h:21</div></div>
+<div class="ttc" id="aclasssystems_1_1feature_1_1FeatureNavigation_html_a04b6ffadcce5ef63d93aed2fd81c5803"><div class="ttname"><a href="classsystems_1_1feature_1_1FeatureNavigation.html#a04b6ffadcce5ef63d93aed2fd81c5803">systems::feature::FeatureNavigation::addEntry</a></div><div class="ttdeci">void addEntry(FeatureNavigationEntry entry)</div><div class="ttdoc">添加入口；忽略缺失身份/标题及重复 id，保留首个有效描述。</div><div class="ttdef"><b>定义</b> FeatureNavigation.h:24</div></div>
+<div class="ttc" id="aclasssystems_1_1feature_1_1FeatureNavigation_html_a06348e92249d8350299fc8f2323c9ed4"><div class="ttname"><a href="classsystems_1_1feature_1_1FeatureNavigation.html#a06348e92249d8350299fc8f2323c9ed4">systems::feature::FeatureNavigation::entries_</a></div><div class="ttdeci">std::vector&lt; FeatureNavigationEntry &gt; entries_</div><div class="ttdef"><b>定义</b> FeatureNavigation.h:57</div></div>
+<div class="ttc" id="aclasssystems_1_1feature_1_1FeatureNavigation_html_a1a7c1930be866b7893f044a65b7319ce"><div class="ttname"><a href="classsystems_1_1feature_1_1FeatureNavigation.html#a1a7c1930be866b7893f044a65b7319ce">systems::feature::FeatureNavigation::setOrder</a></div><div class="ttdeci">void setOrder(int order)</div><div class="ttdoc">子功能在入口内的排序；入口排序由 addEntry 的描述指定。</div><div class="ttdef"><b>定义</b> FeatureNavigation.h:36</div></div>
+<div class="ttc" id="aclasssystems_1_1feature_1_1FeatureNavigation_html_a1adb87b179e5a2707523424bc0d06183"><div class="ttname"><a href="classsystems_1_1feature_1_1FeatureNavigation.html#a1adb87b179e5a2707523424bc0d06183">systems::feature::FeatureNavigation::entryDefaults</a></div><div class="ttdeci">const std::map&lt; std::string, std::map&lt; std::string, std::string &gt; &gt; &amp; entryDefaults() const noexcept</div><div class="ttdef"><b>定义</b> FeatureNavigation.h:54</div></div>
+<div class="ttc" id="aclasssystems_1_1feature_1_1FeatureNavigation_html_a777a8181773eae0730a6298c01298745"><div class="ttname"><a href="classsystems_1_1feature_1_1FeatureNavigation.html#a777a8181773eae0730a6298c01298745">systems::feature::FeatureNavigation::setEntryDefault</a></div><div class="ttdeci">void setEntryDefault(std::string entry, std::string parameter, std::string value)</div><div class="ttdoc">按入口声明参数默认值，Combo 使用选项索引的字符串。</div><div class="ttdef"><b>定义</b> FeatureNavigation.h:38</div></div>
+<div class="ttc" id="aclasssystems_1_1feature_1_1FeatureNavigation_html_a79ab0ad2a07d53176682c0fe762650a4"><div class="ttname"><a href="classsystems_1_1feature_1_1FeatureNavigation.html#a79ab0ad2a07d53176682c0fe762650a4">systems::feature::FeatureNavigation::icon</a></div><div class="ttdeci">const std::string &amp; icon() const noexcept</div><div class="ttdef"><b>定义</b> FeatureNavigation.h:52</div></div>
+<div class="ttc" id="aclasssystems_1_1feature_1_1FeatureNavigation_html_a8a2f2f6e77ef8eaa61838435135fa6c5"><div class="ttname"><a href="classsystems_1_1feature_1_1FeatureNavigation.html#a8a2f2f6e77ef8eaa61838435135fa6c5">systems::feature::FeatureNavigation::setIcon</a></div><div class="ttdeci">void setIcon(std::string icon)</div><div class="ttdef"><b>定义</b> FeatureNavigation.h:34</div></div>
+<div class="ttc" id="aclasssystems_1_1feature_1_1FeatureNavigation_html_a906c2b3f6191d63dc5d0e9e1bb0fd7e7"><div class="ttname"><a href="classsystems_1_1feature_1_1FeatureNavigation.html#a906c2b3f6191d63dc5d0e9e1bb0fd7e7">systems::feature::FeatureNavigation::icon_</a></div><div class="ttdeci">std::string icon_</div><div class="ttdef"><b>定义</b> FeatureNavigation.h:58</div></div>
+<div class="ttc" id="aclasssystems_1_1feature_1_1FeatureNavigation_html_aae063767c85c86651d9287a44f96fd73"><div class="ttname"><a href="classsystems_1_1feature_1_1FeatureNavigation.html#aae063767c85c86651d9287a44f96fd73">systems::feature::FeatureNavigation::label</a></div><div class="ttdeci">const std::string &amp; label() const noexcept</div><div class="ttdef"><b>定义</b> FeatureNavigation.h:51</div></div>
+<div class="ttc" id="aclasssystems_1_1feature_1_1FeatureNavigation_html_aae76a9f4983daedd32a332ecd703544b"><div class="ttname"><a href="classsystems_1_1feature_1_1FeatureNavigation.html#aae76a9f4983daedd32a332ecd703544b">systems::feature::FeatureNavigation::order_</a></div><div class="ttdeci">int order_</div><div class="ttdef"><b>定义</b> FeatureNavigation.h:59</div></div>
+<div class="ttc" id="aclasssystems_1_1feature_1_1FeatureNavigation_html_abaa7a2cf6bfcc57f998fefb684e90dd0"><div class="ttname"><a href="classsystems_1_1feature_1_1FeatureNavigation.html#abaa7a2cf6bfcc57f998fefb684e90dd0">systems::feature::FeatureNavigation::entryIds</a></div><div class="ttdeci">std::vector&lt; std::string &gt; entryIds() const</div><div class="ttdef"><b>定义</b> FeatureNavigation.h:42</div></div>
+<div class="ttc" id="aclasssystems_1_1feature_1_1FeatureNavigation_html_abd1b48bc8e049adc0489dade1cc8ef0d"><div class="ttname"><a href="classsystems_1_1feature_1_1FeatureNavigation.html#abd1b48bc8e049adc0489dade1cc8ef0d">systems::feature::FeatureNavigation::setLabel</a></div><div class="ttdeci">void setLabel(std::string label)</div><div class="ttdoc">子功能标题；空时使用功能 display_name，不覆盖入口标题。</div><div class="ttdef"><b>定义</b> FeatureNavigation.h:33</div></div>
+<div class="ttc" id="aclasssystems_1_1feature_1_1FeatureNavigation_html_ac2b2a06a0801e2e725b4a94e17ac20dd"><div class="ttname"><a href="classsystems_1_1feature_1_1FeatureNavigation.html#ac2b2a06a0801e2e725b4a94e17ac20dd">systems::feature::FeatureNavigation::entry_defaults_</a></div><div class="ttdeci">std::map&lt; std::string, std::map&lt; std::string, std::string &gt; &gt; entry_defaults_</div><div class="ttdef"><b>定义</b> FeatureNavigation.h:61</div></div>
+<div class="ttc" id="aclasssystems_1_1feature_1_1FeatureNavigation_html_ac3be817bfcd6a1bd262cc5decf3d4025"><div class="ttname"><a href="classsystems_1_1feature_1_1FeatureNavigation.html#ac3be817bfcd6a1bd262cc5decf3d4025">systems::feature::FeatureNavigation::label_</a></div><div class="ttdeci">std::string label_</div><div class="ttdef"><b>定义</b> FeatureNavigation.h:60</div></div>
+<div class="ttc" id="aclasssystems_1_1feature_1_1FeatureNavigation_html_adc95cfb625bdcadaf93a6f07587abb15"><div class="ttname"><a href="classsystems_1_1feature_1_1FeatureNavigation.html#adc95cfb625bdcadaf93a6f07587abb15">systems::feature::FeatureNavigation::order</a></div><div class="ttdeci">int order() const noexcept</div><div class="ttdef"><b>定义</b> FeatureNavigation.h:53</div></div>
+<div class="ttc" id="aclasssystems_1_1feature_1_1FeatureNavigation_html_aed14b02102e15fac7f8d042df8dbb0c1"><div class="ttname"><a href="classsystems_1_1feature_1_1FeatureNavigation.html#aed14b02102e15fac7f8d042df8dbb0c1">systems::feature::FeatureNavigation::entries</a></div><div class="ttdeci">const std::vector&lt; FeatureNavigationEntry &gt; &amp; entries() const noexcept</div><div class="ttdef"><b>定义</b> FeatureNavigation.h:50</div></div>
+<div class="ttc" id="anamespacesystems_1_1feature_html"><div class="ttname"><a href="namespacesystems_1_1feature.html">systems::feature</a></div><div class="ttdef"><b>定义</b> QFeatureSystemAdaptor.cpp:79</div></div>
+<div class="ttc" id="astructsystems_1_1feature_1_1FeatureNavigationEntry_html"><div class="ttname"><a href="structsystems_1_1feature_1_1FeatureNavigationEntry.html">systems::feature::FeatureNavigationEntry</a></div><div class="ttdoc">一个功能图标入口；不同功能声明相同 id 时成为该入口的子功能。</div><div class="ttdef"><b>定义</b> FeatureNavigation.h:12</div></div>
+<div class="ttc" id="astructsystems_1_1feature_1_1FeatureNavigationEntry_html_a19139b5e701aa966715186d53480168c"><div class="ttname"><a href="structsystems_1_1feature_1_1FeatureNavigationEntry.html#a19139b5e701aa966715186d53480168c">systems::feature::FeatureNavigationEntry::title</a></div><div class="ttdeci">std::string title</div><div class="ttdef"><b>定义</b> FeatureNavigation.h:14</div></div>
+<div class="ttc" id="astructsystems_1_1feature_1_1FeatureNavigationEntry_html_a7a66a8b7f96b34606a0033b53dd7e85e"><div class="ttname"><a href="structsystems_1_1feature_1_1FeatureNavigationEntry.html#a7a66a8b7f96b34606a0033b53dd7e85e">systems::feature::FeatureNavigationEntry::operator==</a></div><div class="ttdeci">bool operator==(const FeatureNavigationEntry &amp;) const =default</div></div>
+<div class="ttc" id="astructsystems_1_1feature_1_1FeatureNavigationEntry_html_a8ad4805cfa7ec20bbc995ea531b3c230"><div class="ttname"><a href="structsystems_1_1feature_1_1FeatureNavigationEntry.html#a8ad4805cfa7ec20bbc995ea531b3c230">systems::feature::FeatureNavigationEntry::order</a></div><div class="ttdeci">int order</div><div class="ttdef"><b>定义</b> FeatureNavigation.h:16</div></div>
+<div class="ttc" id="astructsystems_1_1feature_1_1FeatureNavigationEntry_html_ab909bae23387855e210bf8fafb7426ae"><div class="ttname"><a href="structsystems_1_1feature_1_1FeatureNavigationEntry.html#ab909bae23387855e210bf8fafb7426ae">systems::feature::FeatureNavigationEntry::icon</a></div><div class="ttdeci">std::string icon</div><div class="ttdef"><b>定义</b> FeatureNavigation.h:15</div></div>
+<div class="ttc" id="astructsystems_1_1feature_1_1FeatureNavigationEntry_html_aca4b8855eca5edf66a56ca724e91ef71"><div class="ttname"><a href="structsystems_1_1feature_1_1FeatureNavigationEntry.html#aca4b8855eca5edf66a56ca724e91ef71">systems::feature::FeatureNavigationEntry::id</a></div><div class="ttdeci">std::string id</div><div class="ttdef"><b>定义</b> FeatureNavigation.h:13</div></div>
+<div class="ttc" id="astructsystems_1_1feature_1_1FeatureNavigationEntry_html_acd833640a4535c239081bb47e38cb701"><div class="ttname"><a href="structsystems_1_1feature_1_1FeatureNavigationEntry.html#acd833640a4535c239081bb47e38cb701">systems::feature::FeatureNavigationEntry::menu_path</a></div><div class="ttdeci">std::string menu_path</div><div class="ttdef"><b>定义</b> FeatureNavigation.h:17</div></div>
+</div><!-- fragment --></div><!-- contents -->
+<!-- start footer part -->
+<hr class="footer"/><address class="footer"><small>
+制作者&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.14.0
+</small></address>
+</div><!-- doc-content -->
+</body>
+</html>

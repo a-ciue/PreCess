@@ -1,9 +1,13 @@
 <map id="core/TempFile.cpp" name="core/TempFile.cpp">
-<area shape="rect" id="Node000001" title=" " alt="" coords="141,5,280,31"/>
-<area shape="rect" id="Node000002" href="$TempFile_8h.html" title=" " alt="" coords="111,79,203,104"/>
-<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="204,33,176,69,172,66,200,29"/>
+<area shape="rect" id="Node000001" title="临时目录的独占创建和进程退出清理。" alt="" coords="252,5,391,31"/>
+<area shape="rect" id="Node000002" href="$TempFile_8h.html" title="临时文件路径及其独占目录的生命周期管理。" alt="" coords="111,79,203,104"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="296,33,198,76,195,71,294,28"/>
 <area shape="rect" id="Node000006" title=" " alt="" coords="228,79,300,104"/>
-<area shape="poly" id="edge5_Node000001_Node000006" title=" " alt="" coords="222,29,249,66,245,69,217,33"/>
+<area shape="poly" id="edge5_Node000001_Node000006" title=" " alt="" coords="314,33,284,70,280,66,310,29"/>
+<area shape="rect" id="Node000007" title=" " alt="" coords="325,79,433,104"/>
+<area shape="poly" id="edge6_Node000001_Node000007" title=" " alt="" coords="333,29,363,66,359,70,329,33"/>
+<area shape="rect" id="Node000008" title=" " alt="" coords="457,79,517,104"/>
+<area shape="poly" id="edge7_Node000001_Node000008" title=" " alt="" coords="349,28,448,71,446,76,347,33"/>
 <area shape="rect" id="Node000003" title=" " alt="" coords="5,152,96,177"/>
 <area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="142,106,81,147,78,142,139,102"/>
 <area shape="rect" id="Node000004" title=" " alt="" coords="121,152,194,177"/>

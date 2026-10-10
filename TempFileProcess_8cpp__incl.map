@@ -1,0 +1,15 @@
+<map id="core/test/TempFileProcess.cpp" name="core/test/TempFileProcess.cpp">
+<area shape="rect" id="Node000001" title="临时目录回归测试子进程：通过标准输入协调正常退出和文件占用。" alt="" coords="159,5,377,31"/>
+<area shape="rect" id="Node000002" href="$TempFile_8h.html" title="临时文件路径及其独占目录的生命周期管理。" alt="" coords="111,79,203,104"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="252,33,189,73,186,69,249,28"/>
+<area shape="rect" id="Node000006" title=" " alt="" coords="228,79,308,104"/>
+<area shape="poly" id="edge5_Node000001_Node000006" title=" " alt="" coords="271,31,271,65,265,65,265,31"/>
+<area shape="rect" id="Node000007" title=" " alt="" coords="333,79,419,104"/>
+<area shape="poly" id="edge6_Node000001_Node000007" title=" " alt="" coords="287,28,348,69,345,73,284,33"/>
+<area shape="rect" id="Node000003" title=" " alt="" coords="5,152,96,177"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="142,106,81,147,78,142,139,102"/>
+<area shape="rect" id="Node000004" title=" " alt="" coords="121,152,194,177"/>
+<area shape="poly" id="edge3_Node000002_Node000004" title=" " alt="" coords="160,104,160,138,155,138,155,104"/>
+<area shape="rect" id="Node000005" title=" " alt="" coords="219,152,277,177"/>
+<area shape="poly" id="edge4_Node000002_Node000005" title=" " alt="" coords="174,102,224,141,221,145,170,106"/>
+</map>

@@ -10,9 +10,11 @@ var searchData=
   ['featureeventgateway_7',['FeatureEventGateway',['../classsystems_1_1feature_1_1FeatureEventGateway.html',1,'systems::feature']]],
   ['featurehandler_8',['FeatureHandler',['../classsystems_1_1feature_1_1FeatureHandler.html',1,'systems::feature']]],
   ['featureinfo_9',['FeatureInfo',['../structsystems_1_1feature_1_1FeatureInfo.html',1,'systems::feature']]],
-  ['featureparams_10',['FeatureParams',['../classsystems_1_1feature_1_1FeatureParams.html',1,'systems::feature']]],
-  ['featureregistrar_11',['FeatureRegistrar',['../classsystems_1_1feature_1_1FeatureRegistrar.html',1,'systems::feature']]],
-  ['featuresystem_12',['FeatureSystem',['../classsystems_1_1feature_1_1FeatureSystem.html',1,'systems::feature']]],
-  ['featuresystemregister_13',['FeatureSystemRegister',['../classsystems_1_1feature_1_1FeatureSystemRegister.html',1,'systems::feature']]],
-  ['floatorigin_14',['FloatOrigin',['../structdock_1_1DragSession_1_1FloatOrigin.html',1,'dock::DragSession']]]
+  ['featurenavigation_10',['FeatureNavigation',['../classsystems_1_1feature_1_1FeatureNavigation.html',1,'systems::feature']]],
+  ['featurenavigationentry_11',['FeatureNavigationEntry',['../structsystems_1_1feature_1_1FeatureNavigationEntry.html',1,'systems::feature']]],
+  ['featureparams_12',['FeatureParams',['../classsystems_1_1feature_1_1FeatureParams.html',1,'systems::feature']]],
+  ['featureregistrar_13',['FeatureRegistrar',['../classsystems_1_1feature_1_1FeatureRegistrar.html',1,'systems::feature']]],
+  ['featuresystem_14',['FeatureSystem',['../classsystems_1_1feature_1_1FeatureSystem.html',1,'systems::feature']]],
+  ['featuresystemregister_15',['FeatureSystemRegister',['../classsystems_1_1feature_1_1FeatureSystemRegister.html',1,'systems::feature']]],
+  ['floatorigin_16',['FloatOrigin',['../structdock_1_1DragSession_1_1FloatOrigin.html',1,'dock::DragSession']]]
 ];

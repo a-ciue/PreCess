@@ -1,45 +1,49 @@
 <map id="model/systems/core/InteractionState.h" name="model/systems/core/InteractionState.h">
-<area shape="rect" id="Node000001" title="视口交互状态：功能经上下文订阅回调、产出标注；渲染层据此驱动与拉取" alt="" coords="1843,5,1998,45"/>
-<area shape="rect" id="Node000002" href="$InteractionService_8cpp.html" title="通用视口交互服务实现：拾取解析、标注绘制、事件路由" alt="" coords="1475,101,1716,126"/>
-<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="1837,51,1639,103,1638,98,1835,46"/>
+<area shape="rect" id="Node000001" title="视口交互状态：功能经上下文订阅回调、产出标注；渲染层据此驱动与拉取" alt="" coords="2038,5,2193,45"/>
+<area shape="rect" id="Node000002" href="$InteractionService_8cpp.html" title="通用视口交互服务实现：拾取解析、标注绘制、事件路由" alt="" coords="1669,101,1911,126"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="2031,51,1834,103,1833,98,2030,46"/>
 <area shape="rect" id="Node000003" href="$QRenderWindow_8cpp.html" title=" " alt="" coords="5,277,236,302"/>
-<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="1885,56,1814,98,1772,119,1728,136,1615,169,1510,194,1413,214,1323,228,1155,244,997,247,668,245,475,252,249,272,194,279,194,274,248,267,474,246,667,240,997,242,1155,238,1322,223,1412,209,1509,189,1613,163,1726,131,1770,114,1812,94,1882,51"/>
-<area shape="rect" id="Node000004" href="$TestInteractionService_8cpp.html" title="通用视口交互服务的独立测试：拾取转发、标注拉取、结果回调与生命周期" alt="" coords="2145,93,2366,133"/>
-<area shape="poly" id="edge3_Node000001_Node000004" title=" " alt="" coords="2008,46,2183,91,2181,96,2007,51"/>
-<area shape="rect" id="Node000005" href="$FeatureSystem_8h.html" title="功能系统：功能的注册、调用与事件路由" alt="" coords="1791,181,1965,221"/>
-<area shape="poly" id="edge4_Node000001_Node000005" title=" " alt="" coords="1903,58,1887,94,1880,140,1879,181,1874,181,1875,140,1882,93,1898,56"/>
-<area shape="rect" id="Node000018" href="$TestFeatureSystem_8cpp.html" title=" " alt="" coords="3124,269,3331,309"/>
-<area shape="poly" id="edge23_Node000001_Node000018" title=" " alt="" coords="1990,48,2037,67,2083,91,2109,113,2119,122,2134,131,2274,183,2396,216,2506,232,2611,239,2833,242,2963,249,3113,267,3124,268,3123,274,3112,272,2962,254,2833,247,2611,244,2506,238,2395,221,2272,189,2132,136,2116,127,2105,117,2081,96,2035,72,1988,53"/>
-<area shape="rect" id="Node000020" href="$InteractionContext_8h.html" title="视口交互上下文：功能订阅拾取/悬停回调、产出标注的入口" alt="" coords="1897,93,2070,133"/>
-<area shape="poly" id="edge20_Node000001_Node000020" title=" " alt="" coords="1945,55,1972,92,1967,95,1941,58"/>
-<area shape="poly" id="edge7_Node000005_Node000003" title=" " alt="" coords="1777,223,1773,224,1542,244,1345,253,1172,254,1011,252,850,249,677,249,480,256,249,272,189,279,189,274,248,267,480,250,677,244,850,244,1011,247,1172,249,1345,247,1541,238,1772,219,1777,218"/>
-<area shape="rect" id="Node000006" href="$QModelManager_8cpp.html" title=" " alt="" coords="901,277,1129,302"/>
-<area shape="poly" id="edge5_Node000005_Node000006" title=" " alt="" coords="1778,223,1773,224,1596,242,1458,250,1319,256,1142,272,1087,279,1086,274,1142,267,1319,251,1457,244,1596,237,1772,219,1777,218"/>
-<area shape="rect" id="Node000007" href="$QFeatureSystemAdaptor_8cpp.html" title=" " alt="" coords="1154,269,1365,309"/>
-<area shape="poly" id="edge6_Node000005_Node000007" title=" " alt="" coords="1778,223,1773,224,1574,249,1376,272,1365,273,1365,268,1375,267,1574,243,1772,219,1777,218"/>
-<area shape="rect" id="Node000008" href="$TestQTaskStatus_8cpp.html" title="共享 Runner 的展示、取消与后继任务回归。" alt="" coords="1388,277,1600,302"/>
-<area shape="poly" id="edge8_Node000005_Node000008" title=" " alt="" coords="1781,227,1546,279,1545,274,1780,222"/>
-<area shape="rect" id="Node000009" href="$TestSelectionParameter_8cpp.html" title="选择器空值从 QML 适配层写入功能参数的回归测试" alt="" coords="1623,277,1882,302"/>
-<area shape="poly" id="edge9_Node000005_Node000009" title=" " alt="" coords="1840,232,1771,279,1768,274,1837,227"/>
-<area shape="rect" id="Node000010" href="$TestUndoQml_8cpp.html" title="实际 QML 删除与选择器失效路径回归测试" alt="" coords="1907,277,2100,302"/>
-<area shape="poly" id="edge10_Node000005_Node000010" title=" " alt="" coords="1919,227,1988,274,1985,279,1916,232"/>
-<area shape="rect" id="Node000011" href="$Session_8cpp.html" title="会话组合根实现：子系统装配、观察者转发桥与有序拆解" alt="" coords="2125,277,2322,302"/>
-<area shape="poly" id="edge11_Node000005_Node000011" title=" " alt="" coords="1968,222,2178,274,2177,279,1966,227"/>
-<area shape="rect" id="Node000012" href="$TestSessionJobs_8cpp.html" title="无 Qt 宿主的任务拥有关系、终态重放与拆解回归。" alt="" coords="2347,269,2503,309"/>
-<area shape="poly" id="edge12_Node000005_Node000012" title=" " alt="" coords="1979,214,2334,267,2347,269,2346,274,2334,272,1978,219"/>
-<area shape="rect" id="Node000013" href="$TestSessionPlugins_8cpp.html" title="Session 插件装载冒烟测试：动态插件注册与功能信息（Qt 插件机制，需 QCoreApplication）" alt="" coords="2527,269,2703,309"/>
-<area shape="poly" id="edge13_Node000005_Node000013" title=" " alt="" coords="1979,214,2020,219,2159,232,2268,240,2377,250,2516,267,2527,268,2527,274,2515,272,2376,255,2267,246,2159,238,2019,224,1978,219"/>
-<area shape="rect" id="Node000014" href="$FeatureContext_8cpp.html" title="固定功能服务：查询宿主，任务与预览按构造身份交给框架。" alt="" coords="2727,269,2901,309"/>
-<area shape="poly" id="edge14_Node000005_Node000014" title=" " alt="" coords="1979,214,2020,219,2215,234,2368,239,2520,247,2716,267,2727,268,2727,274,2715,272,2520,252,2368,245,2215,239,2019,224,1978,219"/>
-<area shape="rect" id="Node000015" href="$FeatureSystem_8cpp.html" title=" " alt="" coords="261,269,434,309"/>
-<area shape="poly" id="edge15_Node000005_Node000015" title=" " alt="" coords="1777,223,1773,224,1571,241,1400,249,1250,249,1109,247,969,244,818,246,647,254,446,272,435,273,434,268,446,267,647,248,818,240,969,239,1109,241,1250,244,1400,243,1571,236,1772,219,1777,218"/>
-<area shape="rect" id="Node000016" href="$FeatureSystemRegister_8cpp.html" title=" " alt="" coords="459,269,663,309"/>
-<area shape="poly" id="edge16_Node000005_Node000016" title=" " alt="" coords="1777,223,1773,224,1606,239,1464,247,1223,249,983,251,841,258,674,272,663,273,663,268,674,267,841,252,982,245,1223,244,1464,242,1606,234,1772,219,1777,218"/>
-<area shape="rect" id="Node000017" href="$InteractionContext_8cpp.html" title="视口交互上下文实现" alt="" coords="2925,269,3100,309"/>
-<area shape="poly" id="edge17_Node000005_Node000017" title=" " alt="" coords="1979,214,2020,219,2155,229,2271,235,2466,239,2662,244,2777,253,2913,267,2925,268,2925,274,2912,272,2777,258,2662,250,2466,244,2270,240,2155,235,2019,224,1978,220"/>
-<area shape="poly" id="edge18_Node000005_Node000018" title=" " alt="" coords="1979,210,2089,219,2377,232,2601,236,2826,244,2957,252,3113,267,3124,268,3123,273,3112,272,2957,258,2825,249,2601,242,2377,238,2088,224,1978,215"/>
-<area shape="rect" id="Node000019" href="$TestFeatureUndo_8cpp.html" title="FeatureSystem undo 集成测试：边界自动记录 / 插件层会话 / 网关包装" alt="" coords="687,269,877,309"/>
-<area shape="poly" id="edge19_Node000005_Node000019" title=" " alt="" coords="1778,223,1773,224,1639,237,1525,244,1331,248,1137,252,1023,259,889,272,878,273,878,268,888,267,1023,254,1137,247,1331,243,1525,239,1638,232,1772,219,1778,218"/>
-<area shape="poly" id="edge21_Node000020_Node000005" title=" " alt="" coords="1951,144,1903,183,1900,179,1948,140"/>
-<area shape="poly" id="edge22_Node000020_Node000017" title=" " alt="" coords="2005,143,2041,184,2064,204,2090,219,2124,232,2165,242,2263,255,2375,261,2495,263,2731,260,2832,261,2913,267,2925,268,2925,274,2912,272,2832,267,2731,266,2495,268,2375,267,2262,260,2164,247,2123,237,2088,224,2061,208,2037,188,2001,146"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="2079,56,2009,99,1967,119,1923,136,1794,172,1676,200,1566,221,1464,236,1367,246,1274,251,1095,253,722,246,504,251,382,259,249,272,193,279,193,274,248,267,382,254,504,246,722,240,1095,248,1274,246,1366,241,1463,231,1565,216,1675,195,1793,167,1921,131,1965,115,2007,94,2077,51"/>
+<area shape="rect" id="Node000004" href="$TestInteractionService_8cpp.html" title="通用视口交互服务的独立测试：拾取转发、标注拉取、结果回调与生命周期" alt="" coords="2339,93,2561,133"/>
+<area shape="poly" id="edge3_Node000001_Node000004" title=" " alt="" coords="2203,46,2377,91,2376,96,2201,51"/>
+<area shape="rect" id="Node000005" href="$FeatureSystem_8h.html" title="功能系统：功能的注册、调用与事件路由" alt="" coords="1986,181,2159,221"/>
+<area shape="poly" id="edge4_Node000001_Node000005" title=" " alt="" coords="2098,58,2082,94,2075,140,2074,181,2069,181,2069,140,2077,93,2093,56"/>
+<area shape="rect" id="Node000020" href="$TestFeatureSystem_8cpp.html" title=" " alt="" coords="3651,269,3857,309"/>
+<area shape="poly" id="edge25_Node000001_Node000020" title=" " alt="" coords="2185,48,2232,67,2278,91,2303,113,2313,122,2328,131,2426,168,2517,197,2601,219,2680,234,2756,244,2828,250,2969,252,3266,244,3439,248,3535,255,3640,267,3651,268,3650,273,3639,272,3535,260,3438,253,3266,249,2969,258,2828,256,2755,250,2679,239,2600,224,2515,202,2424,173,2326,136,2310,127,2300,117,2275,96,2229,72,2183,53"/>
+<area shape="rect" id="Node000022" href="$InteractionContext_8h.html" title="视口交互上下文：功能订阅拾取/悬停回调、产出标注的入口" alt="" coords="2091,93,2265,133"/>
+<area shape="poly" id="edge22_Node000001_Node000022" title=" " alt="" coords="2139,55,2166,92,2162,95,2135,58"/>
+<area shape="poly" id="edge7_Node000005_Node000003" title=" " alt="" coords="1972,224,1968,224,1707,246,1485,255,1290,256,1108,252,927,248,732,248,510,254,249,272,189,279,188,274,248,267,510,249,731,242,927,243,1108,247,1290,251,1485,250,1706,240,1967,219,1972,218"/>
+<area shape="rect" id="Node000006" href="$QModelManager_8cpp.html" title=" " alt="" coords="1351,277,1579,302"/>
+<area shape="poly" id="edge5_Node000005_Node000006" title=" " alt="" coords="1973,223,1968,224,1780,249,1592,272,1540,279,1540,274,1591,267,1779,244,1967,219,1972,218"/>
+<area shape="rect" id="Node000007" href="$QFeatureSystemAdaptor_8cpp.html" title=" " alt="" coords="1603,269,1814,309"/>
+<area shape="poly" id="edge6_Node000005_Node000007" title=" " alt="" coords="1980,227,1789,272,1788,267,1979,222"/>
+<area shape="rect" id="Node000008" href="$TestQTaskStatus_8cpp.html" title="共享 Runner 的展示、取消与后继任务回归。" alt="" coords="1837,277,2049,302"/>
+<area shape="poly" id="edge8_Node000005_Node000008" title=" " alt="" coords="2034,231,1962,279,1959,274,2031,227"/>
+<area shape="rect" id="Node000009" href="$TestSelectionParameter_8cpp.html" title="选择器空值从 QML 适配层写入功能参数的回归测试" alt="" coords="2073,277,2331,302"/>
+<area shape="poly" id="edge9_Node000005_Node000009" title=" " alt="" coords="2114,227,2186,274,2183,279,2111,231"/>
+<area shape="rect" id="Node000010" href="$TestToolbarNavigation_8cpp.html" title="通用功能导航、旧算法列表兼容及实际工具栏加载测试" alt="" coords="2355,277,2606,302"/>
+<area shape="poly" id="edge10_Node000005_Node000010" title=" " alt="" coords="2173,221,2427,274,2426,279,2172,226"/>
+<area shape="rect" id="Node000011" href="$TestUndoQml_8cpp.html" title="实际 QML 删除与选择器失效路径回归测试" alt="" coords="2631,277,2824,302"/>
+<area shape="poly" id="edge11_Node000005_Node000011" title=" " alt="" coords="2173,213,2214,219,2416,241,2618,267,2664,274,2663,279,2618,272,2416,247,2214,224,2172,219"/>
+<area shape="rect" id="Node000012" href="$Session_8cpp.html" title="会话组合根实现：子系统装配、观察者转发桥与有序拆解" alt="" coords="2849,277,3046,302"/>
+<area shape="poly" id="edge12_Node000005_Node000012" title=" " alt="" coords="2174,214,2214,219,2389,234,2526,241,2662,249,2837,267,2886,274,2886,279,2836,272,2662,254,2525,246,2389,239,2214,224,2173,219"/>
+<area shape="rect" id="Node000013" href="$TestSessionJobs_8cpp.html" title="无 Qt 宿主的任务拥有关系、终态重放与拆解回归。" alt="" coords="3071,269,3227,309"/>
+<area shape="poly" id="edge13_Node000005_Node000013" title=" " alt="" coords="2174,214,2214,219,2343,229,2451,234,2637,238,2822,244,2930,252,3058,267,3071,269,3070,274,3058,272,2930,257,2821,249,2636,243,2451,240,2342,234,2214,224,2173,220"/>
+<area shape="rect" id="Node000014" href="$TestSessionPlugins_8cpp.html" title="Session 插件装载冒烟测试：动态插件注册与功能信息（Qt 插件机制，需 QCoreApplication）" alt="" coords="3251,269,3427,309"/>
+<area shape="poly" id="edge14_Node000005_Node000014" title=" " alt="" coords="2173,214,2214,219,2370,230,2502,236,2727,238,2952,243,3084,251,3240,267,3251,268,3251,273,3239,272,3084,256,2952,248,2727,243,2502,241,2370,236,2214,224,2173,220"/>
+<area shape="rect" id="Node000015" href="$FeatureContext_8cpp.html" title="固定功能服务：查询宿主，任务与预览按构造身份交给框架。" alt="" coords="261,269,434,309"/>
+<area shape="poly" id="edge15_Node000005_Node000015" title=" " alt="" coords="1972,223,1968,224,1737,243,1540,251,1368,250,1206,247,1045,243,873,243,677,252,446,272,435,273,434,268,446,267,677,246,873,238,1045,237,1207,241,1368,245,1540,245,1736,238,1967,219,1972,218"/>
+<area shape="rect" id="Node000016" href="$FeatureSystem_8cpp.html" title=" " alt="" coords="458,269,631,309"/>
+<area shape="poly" id="edge16_Node000005_Node000016" title=" " alt="" coords="1972,223,1968,224,1767,241,1596,249,1445,249,1305,247,1165,244,1015,246,844,254,644,272,632,273,631,268,643,267,844,248,1015,240,1165,239,1305,241,1445,244,1596,243,1766,236,1967,219,1972,218"/>
+<area shape="rect" id="Node000017" href="$FeatureSystemRegister_8cpp.html" title=" " alt="" coords="656,269,860,309"/>
+<area shape="poly" id="edge17_Node000005_Node000017" title=" " alt="" coords="1972,223,1968,224,1801,239,1660,247,1419,249,1179,251,1038,258,872,272,861,273,860,268,871,267,1038,252,1179,245,1419,244,1660,242,1801,234,1967,219,1971,218"/>
+<area shape="rect" id="Node000018" href="$InteractionContext_8cpp.html" title="视口交互上下文实现" alt="" coords="3452,269,3627,309"/>
+<area shape="poly" id="edge18_Node000005_Node000018" title=" " alt="" coords="2173,214,2214,219,2400,232,2558,237,2827,237,2957,237,3096,240,3254,249,3440,267,3452,268,3451,274,3439,272,3253,254,3096,245,2957,242,2827,243,2558,243,2400,237,2214,224,2173,220"/>
+<area shape="rect" id="Node000019" href="$TestFeatureNavigation_8cpp.html" title="Feature 的通用分类聚合及持久参数回归测试。" alt="" coords="884,269,1112,309"/>
+<area shape="poly" id="edge19_Node000005_Node000019" title=" " alt="" coords="1973,223,1968,224,1839,237,1731,244,1546,250,1361,254,1124,272,1112,273,1112,268,1123,267,1360,249,1545,245,1730,239,1839,232,1967,219,1972,218"/>
+<area shape="poly" id="edge20_Node000005_Node000020" title=" " alt="" coords="2174,210,2284,219,2490,229,2665,234,2962,234,3259,239,3434,249,3640,267,3651,268,3650,273,3639,272,3433,254,3259,245,2962,240,2665,239,2490,234,2283,224,2173,215"/>
+<area shape="rect" id="Node000021" href="$TestFeatureUndo_8cpp.html" title="FeatureSystem undo 集成测试：边界自动记录 / 插件层会话 / 网关包装" alt="" coords="1136,269,1327,309"/>
+<area shape="poly" id="edge21_Node000005_Node000021" title=" " alt="" coords="1973,223,1968,224,1791,241,1653,248,1515,255,1338,272,1328,273,1327,268,1338,267,1514,249,1653,243,1791,236,1967,219,1972,218"/>
+<area shape="poly" id="edge23_Node000022_Node000005" title=" " alt="" coords="2146,144,2098,183,2094,179,2143,140"/>
+<area shape="poly" id="edge24_Node000022_Node000018" title=" " alt="" coords="2200,143,2236,185,2259,204,2284,219,2315,228,2362,235,2496,246,2667,253,2858,257,3221,260,3358,263,3440,267,3452,268,3451,274,3439,272,3358,268,3221,266,2857,262,2667,258,2495,251,2361,240,2314,233,2282,224,2256,208,2232,188,2196,146"/>
 </map>

@@ -1,0 +1,490 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="zh">
+<head>
+<meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=11"/>
+<meta name="generator" content="Doxygen 1.14.0"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>PreCess: app/test/TestToolbarNavigation.cpp 文件参考</title>
+<link href="tabs.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="jquery.js"></script>
+<script type="text/javascript" src="dynsections.js"></script>
+<script type="text/javascript" src="clipboard.js"></script>
+<script type="text/javascript" src="cookie.js"></script>
+<link href="search/search.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="search/searchdata.js"></script>
+<script type="text/javascript" src="search/search.js"></script>
+<link href="doxygen.css" rel="stylesheet" type="text/css" />
+</head>
+<body>
+<div id="top"><!-- do not remove this div, it is closed by doxygen! -->
+<div id="titlearea">
+<table cellspacing="0" cellpadding="0">
+ <tbody>
+ <tr id="projectrow">
+  <td id="projectlogo"><img alt="Logo" src="ZenithGrid.ico"/></td>
+  <td id="projectalign">
+   <div id="projectname">PreCess
+   </div>
+  </td>
+ </tr>
+ </tbody>
+</table>
+</div>
+<!-- end header part -->
+<!-- 制作者 Doxygen 1.14.0 -->
+<script type="text/javascript">
+var searchBox = new SearchBox("searchBox", "search/",'.html');
+</script>
+<script type="text/javascript">
+$(function() { codefold.init(); });
+</script>
+<script type="text/javascript" src="menudata.js"></script>
+<script type="text/javascript" src="menu.js"></script>
+<script type="text/javascript">
+$(function() {
+  initMenu('',true,false,'search.php','搜索',false);
+  $(function() { init_search(); });
+});
+</script>
+<div id="main-nav"></div>
+<!-- window showing the filter options -->
+<div id="MSearchSelectWindow"
+     onmouseover="return searchBox.OnSearchSelectShow()"
+     onmouseout="return searchBox.OnSearchSelectHide()"
+     onkeydown="return searchBox.OnSearchSelectKey(event)">
+</div>
+
+<!-- iframe showing the search results (closed by default) -->
+<div id="MSearchResultsWindow">
+<div id="MSearchResults">
+<div class="SRPage">
+<div id="SRIndex">
+<div id="SRResults"></div>
+<div class="SRStatus" id="Loading">载入中...</div>
+<div class="SRStatus" id="Searching">搜索中...</div>
+<div class="SRStatus" id="NoMatches">未找到</div>
+</div>
+</div>
+</div>
+</div>
+
+<div id="nav-path" class="navpath">
+  <ul>
+<li class="navelem"><a href="dir_d422163b96683743ed3963d4aac17747.html">app</a></li><li class="navelem"><a href="dir_effe5c348e70d16252aa6de5fa9356c9.html">test</a></li>  </ul>
+</div>
+</div><!-- top -->
+<div id="doc-content">
+<div class="header">
+  <div class="summary">
+<a href="#func-members">函数</a>  </div>
+  <div class="headertitle"><div class="title">TestToolbarNavigation.cpp 文件参考</div></div>
+</div><!--header-->
+<div class="contents">
+
+<p>通用功能导航、旧算法列表兼容及实际工具栏加载测试  
+<a href="#details">更多...</a></p>
+<div class="textblock"><code>#include &quot;<a class="el" href="ComponentData_8h_source.html">ComponentData.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="FeatureContext_8h_source.html">FeatureContext.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="FeatureEvents_8h_source.html">FeatureEvents.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="FeatureHandler_8h_source.html">FeatureHandler.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="FeatureParams_8h_source.html">FeatureParams.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="FeatureRegistrar_8h_source.html">FeatureRegistrar.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="FeatureSystem_8h_source.html">FeatureSystem.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="GeometryData_8h_source.html">GeometryData.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="QAlgorithmInfo_8h_source.html">QAlgorithmInfo.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="QFeatureInfo_8h_source.html">QFeatureInfo.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="QModelManager_8h_source.html">QModelManager.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="QSelection_8h_source.html">QSelection.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="QTaskStatus_8h_source.html">QTaskStatus.h</a>&quot;</code><br />
+<code>#include &lt;QEventLoop&gt;</code><br />
+<code>#include &lt;QFile&gt;</code><br />
+<code>#include &lt;QFontDatabase&gt;</code><br />
+<code>#include &lt;QGuiApplication&gt;</code><br />
+<code>#include &lt;QJSEngine&gt;</code><br />
+<code>#include &lt;QJsonArray&gt;</code><br />
+<code>#include &lt;QJsonDocument&gt;</code><br />
+<code>#include &lt;QJsonObject&gt;</code><br />
+<code>#include &lt;QKeyEvent&gt;</code><br />
+<code>#include &lt;QMouseEvent&gt;</code><br />
+<code>#include &lt;QPointer&gt;</code><br />
+<code>#include &lt;QQmlComponent&gt;</code><br />
+<code>#include &lt;QQmlContext&gt;</code><br />
+<code>#include &lt;QQmlEngine&gt;</code><br />
+<code>#include &lt;QQmlExtensionPlugin&gt;</code><br />
+<code>#include &lt;QQuickItem&gt;</code><br />
+<code>#include &lt;QQuickWindow&gt;</code><br />
+<code>#include &lt;QRectF&gt;</code><br />
+<code>#include &lt;QTemporaryDir&gt;</code><br />
+<code>#include &lt;QTimer&gt;</code><br />
+<code>#include &lt;TopoDS_Shape.hxx&gt;</code><br />
+<code>#include &lt;catch2/catch_test_macros.hpp&gt;</code><br />
+<code>#include &lt;catch2/generators/catch_generators.hpp&gt;</code><br />
+<code>#include &lt;memory&gt;</code><br />
+</div><div class="textblock"><div class="dynheader">
+TestToolbarNavigation.cpp 的引用(Include)关系图:</div>
+<div class="dyncontent">
+<div class="center"><img src="TestToolbarNavigation_8cpp__incl.png" border="0" usemap="#aapp_2test_2TestToolbarNavigation_8cpp" loading="lazy" alt=""/></div>
+<map name="aapp_2test_2TestToolbarNavigation_8cpp" id="aapp_2test_2TestToolbarNavigation_8cpp">
+<area shape="rect" title="通用功能导航、旧算法列表兼容及实际工具栏加载测试" alt="" coords="3001,5,3252,31"/>
+<area shape="rect" href="ComponentData_8h.html" title=" " alt="" coords="733,240,873,265"/>
+<area shape="poly" title=" " alt="" coords="3001,23,2514,29,1867,40,1285,57,1090,68,1028,75,996,81,940,112,890,153,850,195,821,230,817,227,846,191,886,149,937,108,994,76,1027,69,1089,63,1285,52,1867,34,2514,23,3001,18"/>
+<area shape="rect" title=" " alt="" coords="1220,460,1297,485"/>
+<area shape="poly" title=" " alt="" coords="3001,22,2356,29,1920,38,1466,52,1038,72,679,99,538,116,431,135,364,156,347,167,341,179,341,254,347,297,363,328,389,350,422,366,505,386,601,409,653,422,724,433,895,450,1071,461,1206,467,1206,472,1070,466,894,456,723,439,652,427,599,415,504,391,420,371,386,355,359,332,342,299,336,254,336,177,343,164,361,152,430,130,537,111,678,94,1038,67,1466,47,1920,33,2356,24,3001,17"/>
+<area shape="rect" href="FeatureContext_8h.html" title="功能上下文：功能访问软件环境的入口" alt="" coords="1622,167,1757,192"/>
+<area shape="poly" title=" " alt="" coords="3001,21,2740,22,2417,30,2255,37,2105,48,1977,63,1881,81,1834,97,1790,118,1718,161,1716,156,1787,114,1832,92,1879,76,1976,57,2105,43,2254,32,2416,25,2740,17,3001,16"/>
+<area shape="rect" href="FeatureEvents_8h.html" title="功能系统在事件总线上传递的事件类型" alt="" coords="2094,313,2221,339"/>
+<area shape="poly" title=" " alt="" coords="3001,24,2711,29,2363,40,2066,57,1969,68,1940,74,1926,81,1920,89,1919,97,1926,117,1939,133,1960,149,2016,180,2074,209,2098,224,2115,238,2137,269,2151,299,2146,301,2132,271,2111,242,2095,228,2072,214,2014,184,1958,153,1936,137,1922,120,1914,98,1915,87,1922,77,1938,69,1968,63,2065,51,2363,34,2711,24,3001,18"/>
+<area shape="rect" href="FeatureHandler_8h.html" title="功能系统的功能接口" alt="" coords="1007,86,1140,111"/>
+<area shape="poly" title=" " alt="" coords="3001,22,2604,26,2070,35,1540,52,1319,65,1152,81,1128,86,1127,80,1152,76,1319,60,1540,47,2070,29,2604,20,3001,17"/>
+<area shape="rect" href="FeatureParams_8h.html" title="功能的持久参数集" alt="" coords="171,167,301,192"/>
+<area shape="poly" title=" " alt="" coords="3001,22,2376,23,1508,29,1082,37,716,47,449,62,365,71,321,81,298,96,279,115,250,156,246,153,275,112,295,92,319,76,364,66,448,57,716,42,1082,31,1508,24,2376,17,3001,16"/>
+<area shape="rect" href="FeatureRegistrar_8h.html" title="功能声明的收集器" alt="" coords="5,167,147,192"/>
+<area shape="poly" title=" " alt="" coords="3001,23,1485,41,678,59,403,69,316,75,270,81,223,97,177,118,105,161,102,156,175,113,221,92,269,76,316,70,403,64,677,53,1485,36,3001,18"/>
+<area shape="rect" href="FeatureSystem_8h.html" title="功能系统：功能的注册、调用与事件路由" alt="" coords="1165,86,1297,111"/>
+<area shape="poly" title=" " alt="" coords="3001,23,2634,28,2148,38,1667,56,1468,67,1316,81,1289,86,1288,81,1316,76,1467,62,1667,50,2148,33,2634,23,3001,18"/>
+<area shape="rect" href="GeometryData_8h.html" title=" " alt="" coords="1217,313,1348,339"/>
+<area shape="poly" title=" " alt="" coords="3001,21,2721,22,2369,29,2192,36,2028,47,1888,62,1782,81,1710,103,1638,131,1503,195,1389,259,1312,308,1309,303,1387,254,1500,190,1636,126,1708,98,1781,76,1887,57,2027,42,2191,31,2369,23,2721,16,3001,16"/>
+<area shape="rect" href="QAlgorithmInfo_8h.html" title=" " alt="" coords="1936,86,2069,111"/>
+<area shape="poly" title=" " alt="" coords="3001,22,2821,26,2592,35,2338,52,2083,81,2059,86,2058,80,2082,76,2337,47,2591,29,2821,20,3001,17"/>
+<area shape="rect" href="QFeatureInfo_8h.html" title=" " alt="" coords="2094,86,2213,111"/>
+<area shape="poly" title=" " alt="" coords="3001,23,2845,27,2651,37,2438,54,2226,81,2206,85,2205,80,2225,76,2437,49,2650,31,2845,22,3001,18"/>
+<area shape="rect" href="QModelManager_8h.html" title=" " alt="" coords="2237,86,2377,111"/>
+<area shape="poly" title=" " alt="" coords="3001,27,2723,46,2559,61,2396,81,2369,86,2368,81,2396,76,2559,56,2723,40,3001,22"/>
+<area shape="rect" href="QTaskStatus_8h.html" title="全局单槽任务的 Qt 展示：唯一进度合流、忙状态、取消入口与终态反馈。" alt="" coords="2448,167,2563,192"/>
+<area shape="poly" title=" " alt="" coords="3001,24,2840,29,2664,39,2517,56,2468,67,2442,81,2436,89,2435,98,2442,119,2459,139,2479,156,2475,160,2455,142,2438,121,2430,99,2431,87,2438,77,2466,62,2516,51,2664,34,2839,24,3001,19"/>
+<area shape="rect" href="QSelection_8h.html" title=" " alt="" coords="2452,86,2556,111"/>
+<area shape="poly" title=" " alt="" coords="3001,29,2798,47,2683,62,2570,81,2553,85,2552,80,2569,76,2682,57,2797,42,3001,24"/>
+<area shape="rect" title=" " alt="" coords="2581,86,2681,111"/>
+<area shape="poly" title=" " alt="" coords="3008,33,2857,52,2694,81,2679,85,2678,80,2693,76,2856,47,3007,28"/>
+<area shape="rect" title=" " alt="" coords="2705,86,2759,111"/>
+<area shape="poly" title=" " alt="" coords="3011,33,2895,52,2773,81,2767,83,2765,78,2771,76,2894,46,3010,28"/>
+<area shape="rect" title=" " alt="" coords="2784,86,2907,111"/>
+<area shape="poly" title=" " alt="" coords="3086,33,2900,85,2899,80,3085,28"/>
+<area shape="rect" title=" " alt="" coords="2931,86,3058,111"/>
+<area shape="poly" title=" " alt="" coords="3109,33,3027,81,3024,77,3106,29"/>
+<area shape="rect" title=" " alt="" coords="3083,86,3171,111"/>
+<area shape="poly" title=" " alt="" coords="3129,31,3129,72,3124,72,3124,31"/>
+<area shape="rect" title=" " alt="" coords="3195,86,3290,111"/>
+<area shape="poly" title=" " alt="" coords="3145,29,3216,76,3213,80,3142,33"/>
+<area shape="rect" title=" " alt="" coords="3314,86,3441,111"/>
+<area shape="poly" title=" " alt="" coords="3164,28,3329,79,3327,84,3162,33"/>
+<area shape="rect" title=" " alt="" coords="3465,86,3567,111"/>
+<area shape="poly" title=" " alt="" coords="3203,28,3321,48,3454,76,3468,80,3467,85,3453,81,3320,54,3202,33"/>
+<area shape="rect" title=" " alt="" coords="3591,86,3684,111"/>
+<area shape="poly" title=" " alt="" coords="3253,27,3409,46,3579,76,3592,79,3591,85,3578,81,3409,51,3252,32"/>
+<area shape="rect" title=" " alt="" coords="3708,86,3820,111"/>
+<area shape="poly" title=" " alt="" coords="3253,24,3461,42,3580,57,3696,76,3714,80,3713,85,3696,81,3579,62,3461,48,3252,29"/>
+<area shape="rect" title=" " alt="" coords="3845,86,3923,111"/>
+<area shape="poly" title=" " alt="" coords="3252,17,3375,22,3521,32,3678,49,3833,76,3844,79,3843,84,3831,81,3677,54,3520,37,3375,27,3252,23"/>
+<area shape="rect" title=" " alt="" coords="3947,86,4082,111"/>
+<area shape="poly" title=" " alt="" coords="3252,20,3564,36,3751,52,3936,76,3959,80,3958,86,3936,81,3750,58,3564,41,3252,25"/>
+<area shape="rect" title=" " alt="" coords="4106,86,4217,111"/>
+<area shape="poly" title=" " alt="" coords="3252,16,3420,19,3631,27,3863,45,3981,59,4095,76,4113,80,4112,85,4094,81,3980,64,3863,51,3631,33,3420,24,3252,21"/>
+<area shape="rect" title=" " alt="" coords="4241,86,4343,111"/>
+<area shape="poly" title=" " alt="" coords="3252,20,3765,38,4034,55,4145,65,4230,76,4247,80,4246,85,4229,81,4144,70,4034,60,3765,44,3252,25"/>
+<area shape="rect" title=" " alt="" coords="4368,86,4531,111"/>
+<area shape="poly" title=" " alt="" coords="3252,17,3463,19,3738,28,4046,46,4203,59,4356,76,4387,81,4386,86,4356,81,4202,65,4046,51,3737,33,3463,25,3252,22"/>
+<area shape="rect" title=" " alt="" coords="4555,86,4653,111"/>
+<area shape="poly" title=" " alt="" coords="3253,18,3546,23,3917,33,4279,50,4429,62,4543,76,4559,80,4558,85,4542,81,4429,67,4279,55,3917,38,3545,28,3252,23"/>
+<area shape="rect" title=" " alt="" coords="4678,86,4799,111"/>
+<area shape="poly" title=" " alt="" coords="3252,18,3568,23,3976,34,4375,51,4540,62,4666,76,4687,80,4686,85,4665,81,4539,68,4374,56,3975,39,3568,29,3252,23"/>
+<area shape="rect" title=" " alt="" coords="4824,86,4893,111"/>
+<area shape="poly" title=" " alt="" coords="3253,19,4113,38,4556,54,4717,65,4812,76,4822,79,4821,84,4812,81,4716,70,4556,60,4113,43,3252,24"/>
+<area shape="rect" title=" " alt="" coords="4917,86,5037,111"/>
+<area shape="poly" title=" " alt="" coords="3252,17,3613,21,4090,30,4562,48,4757,60,4906,76,4927,80,4926,85,4905,81,4757,66,4561,53,4090,35,3613,26,3252,23"/>
+<area shape="rect" title=" " alt="" coords="5062,86,5133,111"/>
+<area shape="poly" title=" " alt="" coords="3252,18,3677,24,4235,35,4751,53,4938,63,5050,76,5061,79,5060,84,5049,81,4938,69,4751,58,4235,41,3677,29,3252,23"/>
+<area shape="rect" title=" " alt="" coords="5157,86,5302,111"/>
+<area shape="poly" title=" " alt="" coords="3252,17,3657,21,4203,30,4748,48,4974,60,5146,76,5172,80,5171,86,5145,81,4974,66,4747,53,4203,36,3657,26,3252,23"/>
+<area shape="rect" title=" " alt="" coords="5327,86,5545,111"/>
+<area shape="poly" title=" " alt="" coords="3252,18,4282,35,4878,52,5126,63,5315,76,5359,81,5358,87,5314,81,5126,69,4878,58,4282,40,3252,23"/>
+<area shape="rect" title=" " alt="" coords="5569,79,5748,119"/>
+<area shape="poly" title=" " alt="" coords="3252,17,3725,20,4385,30,5054,47,5337,60,5556,76,5556,81,5337,65,5054,52,4384,35,3725,26,3252,22"/>
+<area shape="rect" href="Core_8h.html" title=" " alt="" coords="1167,387,1231,412"/>
+<area shape="poly" title=" " alt="" coords="835,263,1156,379,1154,384,833,268"/>
+<area shape="poly" title=" " alt="" coords="753,268,705,286,681,299,659,315,634,339,614,363,609,374,608,386,611,398,619,410,630,417,649,424,706,436,872,454,1058,463,1206,468,1206,473,1058,469,871,459,705,442,647,429,628,422,615,414,606,400,603,386,604,373,610,360,630,335,656,311,678,295,702,281,751,263"/>
+<area shape="rect" title=" " alt="" coords="1861,460,1920,485"/>
+<area shape="poly" title=" " alt="" coords="873,253,1039,258,1249,268,1453,285,1537,297,1601,311,1656,334,1728,372,1862,451,1859,455,1726,377,1654,339,1599,316,1536,302,1453,291,1249,274,1039,263,873,258"/>
+<area shape="rect" title=" " alt="" coords="434,460,497,485"/>
+<area shape="poly" title=" " alt="" coords="733,259,660,265,583,275,515,292,491,302,474,315,464,329,458,345,452,381,455,416,460,446,455,447,449,417,447,381,452,344,459,327,470,311,488,298,514,287,582,270,660,260,732,254"/>
+<area shape="rect" href="MeshData_8h.html" title=" " alt="" coords="839,313,939,339"/>
+<area shape="poly" title=" " alt="" coords="818,263,866,302,863,307,815,267"/>
+<area shape="rect" title=" " alt="" coords="630,387,754,412"/>
+<area shape="poly" title=" " alt="" coords="742,268,702,285,684,298,670,315,665,329,666,344,678,373,673,375,661,345,660,328,666,312,681,295,699,281,740,263"/>
+<area shape="rect" href="MeshAdjacency_8h.html" title="网格邻接查询索引——统一边表 + 稳定边 id" alt="" coords="681,313,815,339"/>
+<area shape="poly" title=" " alt="" coords="796,267,767,304,763,301,792,264"/>
+<area shape="poly" title=" " alt="" coords="1211,411,1242,448,1238,451,1207,414"/>
+<area shape="poly" title=" " alt="" coords="1231,401,1848,464,1847,470,1231,407"/>
+<area shape="poly" title=" " alt="" coords="1166,406,511,470,510,464,1166,401"/>
+<area shape="poly" title=" " alt="" coords="940,336,1154,385,1153,390,938,341"/>
+<area shape="poly" title=" " alt="" coords="894,338,904,374,915,394,930,410,950,421,979,431,1053,447,1134,458,1206,465,1206,470,1134,464,1052,452,977,436,948,426,926,414,911,397,899,376,889,339"/>
+<area shape="poly" title=" " alt="" coords="899,337,931,375,954,394,980,410,1032,422,1124,433,1379,450,1847,468,1847,473,1379,455,1124,438,1032,427,978,414,951,399,927,378,895,340"/>
+<area shape="poly" title=" " alt="" coords="859,341,738,384,736,379,857,336"/>
+<area shape="rect" title=" " alt="" coords="991,387,1065,412"/>
+<area shape="poly" title=" " alt="" coords="913,336,994,378,992,383,910,341"/>
+<area shape="poly" title=" " alt="" coords="816,335,1153,388,1153,393,815,341"/>
+<area shape="poly" title=" " alt="" coords="758,338,774,374,775,395,767,414,750,428,724,439,655,456,578,466,511,472,510,467,577,461,654,451,722,434,747,423,763,410,770,394,769,375,753,340"/>
+<area shape="poly" title=" " alt="" coords="741,341,712,377,707,374,737,337"/>
+<area shape="poly" title=" " alt="" coords="794,336,978,383,977,388,792,341"/>
+<area shape="poly" title=" " alt="" coords="1666,194,1412,316,1361,341,1245,385,1243,380,1359,336,1409,311,1664,190"/>
+<area shape="poly" title=" " alt="" coords="1684,194,1653,241,1640,270,1632,294,1622,317,1602,341,1568,367,1531,390,1452,426,1376,451,1312,466,1310,460,1374,446,1450,422,1528,386,1565,363,1598,337,1618,314,1627,292,1635,268,1648,239,1679,191"/>
+<area shape="poly" title=" " alt="" coords="1757,183,1881,197,2027,221,2097,238,2158,259,2205,283,2223,297,2236,312,2246,333,2248,353,2244,370,2234,386,2200,413,2151,433,2095,448,2036,459,1934,471,1933,466,2035,454,2094,443,2150,428,2197,408,2230,383,2239,368,2243,352,2240,335,2231,315,2219,301,2202,287,2155,264,2095,243,2026,226,1881,202,1757,189"/>
+<area shape="poly" title=" " alt="" coords="1636,195,1445,241,1325,276,1206,316,1128,350,1062,383,1059,378,1125,345,1204,311,1323,271,1443,236,1635,189"/>
+<area shape="rect" href="ComponentOperator_8h.html" title=" " alt="" coords="1423,313,1588,339"/>
+<area shape="poly" title=" " alt="" coords="1674,194,1607,242,1530,306,1527,302,1604,238,1671,190"/>
+<area shape="rect" href="FeatureEventGateway_8h.html" title="功能事件网关：预览写归属、订阅存活与通知 flush，不维护正式 undo 历史" alt="" coords="1893,240,2069,265"/>
+<area shape="poly" title=" " alt="" coords="1737,189,1922,234,1920,239,1736,195"/>
+<area shape="rect" title=" " alt="" coords="1765,313,1851,339"/>
+<area shape="poly" title=" " alt="" coords="1701,191,1792,301,1788,304,1697,194"/>
+<area shape="rect" title=" " alt="" coords="1875,313,1967,339"/>
+<area shape="poly" title=" " alt="" coords="1709,190,1892,303,1889,308,1707,194"/>
+<area shape="rect" href="Job_8h.html" title="任务单元：状态、错误、取消令牌与执行闭包（线程模型的任务载体）" alt="" coords="1662,240,1717,265"/>
+<area shape="poly" title=" " alt="" coords="1692,192,1692,226,1687,226,1687,192"/>
+<area shape="poly" title=" " alt="" coords="1457,341,1245,390,1243,385,1455,336"/>
+<area shape="poly" title=" " alt="" coords="1487,341,1292,455,1289,451,1484,337"/>
+<area shape="poly" title=" " alt="" coords="1524,337,1582,372,1658,410,1760,442,1849,461,1847,467,1758,447,1656,414,1579,377,1521,341"/>
+<area shape="poly" title=" " alt="" coords="1478,341,1376,378,1310,398,1243,415,1138,433,1030,447,819,465,637,472,510,474,510,469,637,467,818,459,1029,441,1137,427,1242,409,1309,393,1374,373,1477,336"/>
+<area shape="poly" title=" " alt="" coords="1988,265,1994,301,1991,322,1982,340,1962,359,1934,376,1861,404,1771,426,1671,443,1468,464,1311,473,1311,467,1467,459,1670,438,1770,421,1860,399,1932,371,1958,355,1978,337,1986,320,1988,301,1983,266"/>
+<area shape="poly" title=" " alt="" coords="1995,264,2012,285,2026,312,2041,364,2039,388,2026,413,2007,434,1984,450,1934,467,1932,462,1982,445,2004,430,2022,411,2033,386,2035,365,2022,314,2008,288,1991,267"/>
+<area shape="poly" title=" " alt="" coords="2011,263,2117,306,2115,310,2009,268"/>
+<area shape="poly" title=" " alt="" coords="1954,268,1850,310,1848,306,1952,263"/>
+<area shape="poly" title=" " alt="" coords="1973,267,1942,305,1938,301,1969,264"/>
+<area shape="poly" title=" " alt="" coords="2094,335,1245,397,1244,392,2093,329"/>
+<area shape="poly" title=" " alt="" coords="2151,341,2121,377,2100,397,2076,414,2041,433,2003,447,1935,466,1933,461,2002,442,2039,428,2073,410,2096,393,2117,373,2147,337"/>
+<area shape="poly" title=" " alt="" coords="1699,264,1755,337,1816,399,1869,449,1866,453,1812,403,1751,340,1695,267"/>
+<area shape="poly" title=" " alt="" coords="1662,257,1143,275,842,292,732,303,669,316,612,344,561,381,518,419,486,452,482,448,514,416,557,377,610,340,667,311,731,298,842,287,1143,269,1662,252"/>
+<area shape="poly" title=" " alt="" coords="1710,263,1778,304,1775,308,1707,268"/>
+<area shape="poly" title=" " alt="" coords="243,191,258,231,286,289,324,352,347,383,372,410,401,433,430,451,428,455,398,437,369,414,343,386,320,355,281,291,254,233,238,193"/>
+<area shape="poly" title=" " alt="" coords="89,191,190,287,265,350,345,410,386,433,425,452,423,457,383,438,343,414,261,355,186,291,86,194"/>
+<area shape="poly" title=" " alt="" coords="1232,112,1208,314,1203,373,1198,373,1203,313,1226,111"/>
+<area shape="poly" title=" " alt="" coords="1218,114,1192,136,1164,169,1141,208,1134,229,1132,251,1132,327,1135,372,1143,390,1157,410,1183,435,1214,452,1211,457,1180,439,1153,414,1138,393,1130,373,1127,327,1127,251,1129,228,1136,206,1160,166,1188,133,1214,110"/>
+<area shape="poly" title=" " alt="" coords="1297,100,1554,112,1721,124,1891,139,2051,159,2185,183,2237,198,2277,213,2302,231,2310,241,2312,251,2312,328,2306,360,2289,382,2264,398,2233,414,2195,432,2155,446,2072,465,1995,473,1934,475,1933,470,1995,468,2071,460,2153,441,2193,427,2231,410,2262,393,2286,378,2301,358,2307,327,2307,252,2305,243,2299,235,2274,218,2235,203,2184,189,2050,164,1891,144,1720,129,1554,118,1297,105"/>
+<area shape="poly" title=" " alt="" coords="1186,114,1152,121,1071,130,962,132,708,136,586,145,533,154,486,165,446,180,417,200,398,223,392,252,392,327,397,362,411,395,429,425,447,448,443,451,425,428,406,398,392,364,387,328,387,251,394,221,413,196,444,176,484,160,532,149,586,140,707,131,962,127,1071,124,1152,116,1184,109"/>
+<area shape="poly" title=" " alt="" coords="1184,114,923,180,793,216,721,242,683,272,671,289,660,314,657,330,660,345,676,374,671,377,655,347,652,330,655,313,666,287,679,268,719,238,792,211,921,174,1182,109"/>
+<area shape="poly" title=" " alt="" coords="1197,114,1153,135,1132,150,1113,168,1079,220,1056,277,1042,331,1034,374,1028,373,1036,330,1051,275,1075,218,1109,165,1128,146,1151,131,1195,109"/>
+<area shape="poly" title=" " alt="" coords="1297,109,1610,162,1609,167,1296,114"/>
+<area shape="poly" title=" " alt="" coords="1297,100,1433,106,1601,118,1761,137,1827,149,1876,164,1901,177,1925,194,1963,227,1959,231,1922,198,1899,182,1874,169,1825,155,1760,142,1600,123,1433,111,1297,105"/>
+<area shape="poly" title=" " alt="" coords="1297,97,1414,100,1569,109,1742,129,1829,145,1914,164,2003,191,2040,209,2083,238,2117,269,2143,300,2139,304,2113,272,2080,242,2037,214,2001,196,1913,169,1828,150,1741,135,1568,115,1414,105,1297,102"/>
+<area shape="poly" title=" " alt="" coords="1297,96,1416,98,1556,107,1624,116,1685,128,1736,144,1771,165,1794,195,1807,232,1812,268,1813,299,1807,299,1807,269,1802,233,1789,198,1768,169,1734,149,1684,133,1623,121,1555,113,1415,104,1297,102"/>
+<area shape="poly" title=" " alt="" coords="1189,114,1152,121,1034,137,934,147,762,155,591,158,371,169,315,174,315,168,370,164,591,153,762,150,933,141,1034,132,1152,116,1188,109"/>
+<area shape="poly" title=" " alt="" coords="1283,340,1265,447,1260,446,1278,339"/>
+<area shape="poly" title=" " alt="" coords="1242,341,1080,386,1078,381,1241,336"/>
+<area shape="poly" title=" " alt="" coords="2310,112,2308,155,2299,217,2289,250,2276,283,2258,314,2235,341,2204,363,2163,383,2114,400,2058,415,1930,438,1790,455,1647,465,1513,471,1311,474,1311,469,1513,466,1647,460,1789,449,1929,433,2057,409,2112,395,2161,378,2201,358,2232,337,2254,311,2272,281,2284,249,2293,216,2303,154,2304,111"/>
+<area shape="poly" title=" " alt="" coords="2325,110,2353,133,2381,165,2406,205,2411,225,2413,251,2413,328,2407,361,2389,383,2362,399,2329,414,2296,427,2252,437,2142,454,1934,472,1934,466,2141,449,2251,432,2295,422,2327,410,2359,394,2385,379,2402,358,2408,327,2408,251,2406,226,2401,208,2377,168,2349,137,2321,114"/>
+<area shape="poly" title=" " alt="" coords="2337,109,2465,159,2463,164,2335,114"/>
+</map>
+</div>
+</div><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 id="header-func-members" class="groupheader"><a id="func-members" name="func-members"></a>
+函数</h2></td></tr>
+<tr class="memitem:ac5ca44968f32e0f9c27a7c78f18c9f61" id="r_ac5ca44968f32e0f9c27a7c78f18c9f61"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ac5ca44968f32e0f9c27a7c78f18c9f61">TEST_CASE</a> (&quot;Qt feature information exposes navigation as JavaScript arrays&quot;, &quot;[navigation][Qt]&quot;)</td></tr>
+<tr class="memitem:a61b481c119116ed354e4dfaa90db4fdf" id="r_a61b481c119116ed354e4dfaa90db4fdf"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a61b481c119116ed354e4dfaa90db4fdf">TEST_CASE</a> (&quot;Feature navigation aggregates generic entries and shares executable children&quot;, &quot;[navigation][feature]&quot;)</td></tr>
+<tr class="memitem:a74227e65b1efe5b3185686e28bdd310a" id="r_a74227e65b1efe5b3185686e28bdd310a"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a74227e65b1efe5b3185686e28bdd310a">TEST_CASE</a> (&quot;Unified entries keep parent presentation independent of child presentation&quot;, &quot;[navigation][Qt]&quot;)</td></tr>
+<tr class="memitem:a6ca63191a81fece8352fe6d6711f05ab" id="r_a6ca63191a81fece8352fe6d6711f05ab"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a6ca63191a81fece8352fe6d6711f05ab">TEST_CASE</a> (&quot;Feature menus use entry paths and give unlisted features one default entry&quot;, &quot;[navigation][Qt]&quot;)</td></tr>
+<tr class="memitem:ac47eb9eb7c0770ac4266eb6f52a874df" id="r_ac47eb9eb7c0770ac4266eb6f52a874df"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ac47eb9eb7c0770ac4266eb6f52a874df">TEST_CASE</a> (&quot;Actual toolbar preserves legacy algorithm parameters and execution&quot;, &quot;[navigation][QML][legacy]&quot;)</td></tr>
+<tr class="memitem:a05d940b5498177afe677f905cd45a28c" id="r_a05d940b5498177afe677f905cd45a28c"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a05d940b5498177afe677f905cd45a28c">TEST_CASE</a> (&quot;Actual toolbar renders declared feature entries and preserves active operation&quot;, &quot;[navigation][QML]&quot;)</td></tr>
+<tr class="memitem:a4cb793f95d2d90331d8abec50fe7f352" id="r_a4cb793f95d2d90331d8abec50fe7f352"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a4cb793f95d2d90331d8abec50fe7f352">TEST_CASE</a> (&quot;Installed external algorithms appear in the actual toolbar and open their parameters&quot;, &quot;[navigation][external]&quot;)</td></tr>
+<tr class="memitem:a1e5882180bd9e505b3eeceb6fe8b9563" id="r_a1e5882180bd9e505b3eeceb6fe8b9563"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a1e5882180bd9e505b3eeceb6fe8b9563">TEST_CASE</a> (&quot;Actual parameter controls preserve edits through scrolling and accept external updates&quot;, &quot;[navigation][parameters]&quot;)</td></tr>
+<tr class="memitem:a4dff8d7e46f0ad276e0e2c4bca68baf9" id="r_a4dff8d7e46f0ad276e0e2c4bca68baf9"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a4dff8d7e46f0ad276e0e2c4bca68baf9">TEST_CASE</a> (&quot;Non-mesh feature entries handle zero one and multiple children across plugin changes&quot;, &quot;[navigation][QML][registry]&quot;)</td></tr>
+</table>
+<a name="details" id="details"></a><h2 id="header-details" class="groupheader">详细描述</h2>
+<div class="textblock"><p>通用功能导航、旧算法列表兼容及实际工具栏加载测试 </p>
+</div><a name="doc-func-members" id="doc-func-members"></a><h2 id="header-doc-func-members" class="groupheader">函数说明</h2>
+<a id="a1e5882180bd9e505b3eeceb6fe8b9563" name="a1e5882180bd9e505b3eeceb6fe8b9563"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a1e5882180bd9e505b3eeceb6fe8b9563">&#9670;&#160;</a></span>TEST_CASE() <span class="overload">[1/9]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">TEST_CASE </td>
+          <td>(</td>
+          <td class="paramtype">&quot;Actual parameter controls preserve edits through scrolling and accept external updates&quot;</td>          <td class="paramname"><span class="paramname"><em></em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">&quot;&quot;</td>          <td class="paramname"><span class="paramname"><em></em></span>[navigation][parameters]&#160;)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="ac47eb9eb7c0770ac4266eb6f52a874df" name="ac47eb9eb7c0770ac4266eb6f52a874df"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ac47eb9eb7c0770ac4266eb6f52a874df">&#9670;&#160;</a></span>TEST_CASE() <span class="overload">[2/9]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">TEST_CASE </td>
+          <td>(</td>
+          <td class="paramtype">&quot;Actual toolbar preserves legacy algorithm parameters and execution&quot;</td>          <td class="paramname"><span class="paramname"><em></em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">&quot;&quot;</td>          <td class="paramname"><span class="paramname"><em></em></span>[navigation][QML][legacy]&#160;)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a05d940b5498177afe677f905cd45a28c" name="a05d940b5498177afe677f905cd45a28c"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a05d940b5498177afe677f905cd45a28c">&#9670;&#160;</a></span>TEST_CASE() <span class="overload">[3/9]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">TEST_CASE </td>
+          <td>(</td>
+          <td class="paramtype">&quot;Actual toolbar renders declared feature entries and preserves active operation&quot;</td>          <td class="paramname"><span class="paramname"><em></em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">&quot;&quot;</td>          <td class="paramname"><span class="paramname"><em></em></span>[navigation][QML]&#160;)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a6ca63191a81fece8352fe6d6711f05ab" name="a6ca63191a81fece8352fe6d6711f05ab"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a6ca63191a81fece8352fe6d6711f05ab">&#9670;&#160;</a></span>TEST_CASE() <span class="overload">[4/9]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">TEST_CASE </td>
+          <td>(</td>
+          <td class="paramtype">&quot;Feature menus use entry paths and give unlisted features one default entry&quot;</td>          <td class="paramname"><span class="paramname"><em></em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">&quot;&quot;</td>          <td class="paramname"><span class="paramname"><em></em></span>[navigation][Qt]&#160;)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a61b481c119116ed354e4dfaa90db4fdf" name="a61b481c119116ed354e4dfaa90db4fdf"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a61b481c119116ed354e4dfaa90db4fdf">&#9670;&#160;</a></span>TEST_CASE() <span class="overload">[5/9]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">TEST_CASE </td>
+          <td>(</td>
+          <td class="paramtype">&quot;Feature navigation aggregates generic entries and shares executable children&quot;</td>          <td class="paramname"><span class="paramname"><em></em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">&quot;&quot;</td>          <td class="paramname"><span class="paramname"><em></em></span>[navigation][feature]&#160;)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a4cb793f95d2d90331d8abec50fe7f352" name="a4cb793f95d2d90331d8abec50fe7f352"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a4cb793f95d2d90331d8abec50fe7f352">&#9670;&#160;</a></span>TEST_CASE() <span class="overload">[6/9]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">TEST_CASE </td>
+          <td>(</td>
+          <td class="paramtype">&quot;Installed external algorithms appear in the actual toolbar and open their parameters&quot;</td>          <td class="paramname"><span class="paramname"><em></em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">&quot;&quot;</td>          <td class="paramname"><span class="paramname"><em></em></span>[navigation][external]&#160;)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a4dff8d7e46f0ad276e0e2c4bca68baf9" name="a4dff8d7e46f0ad276e0e2c4bca68baf9"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a4dff8d7e46f0ad276e0e2c4bca68baf9">&#9670;&#160;</a></span>TEST_CASE() <span class="overload">[7/9]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">TEST_CASE </td>
+          <td>(</td>
+          <td class="paramtype">&quot;Non-mesh feature entries handle zero one and multiple children across plugin changes&quot;</td>          <td class="paramname"><span class="paramname"><em></em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">&quot;&quot;</td>          <td class="paramname"><span class="paramname"><em></em></span>[navigation][QML][registry]&#160;)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="ac5ca44968f32e0f9c27a7c78f18c9f61" name="ac5ca44968f32e0f9c27a7c78f18c9f61"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ac5ca44968f32e0f9c27a7c78f18c9f61">&#9670;&#160;</a></span>TEST_CASE() <span class="overload">[8/9]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">TEST_CASE </td>
+          <td>(</td>
+          <td class="paramtype">&quot;Qt feature information exposes navigation as JavaScript arrays&quot;</td>          <td class="paramname"><span class="paramname"><em></em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">&quot;&quot;</td>          <td class="paramname"><span class="paramname"><em></em></span>[navigation][Qt]&#160;)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a74227e65b1efe5b3185686e28bdd310a" name="a74227e65b1efe5b3185686e28bdd310a"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a74227e65b1efe5b3185686e28bdd310a">&#9670;&#160;</a></span>TEST_CASE() <span class="overload">[9/9]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">TEST_CASE </td>
+          <td>(</td>
+          <td class="paramtype">&quot;Unified entries keep parent presentation independent of child presentation&quot;</td>          <td class="paramname"><span class="paramname"><em></em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">&quot;&quot;</td>          <td class="paramname"><span class="paramname"><em></em></span>[navigation][Qt]&#160;)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+</div><!-- contents -->
+<!-- start footer part -->
+<hr class="footer"/><address class="footer"><small>
+制作者&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.14.0
+</small></address>
+</div><!-- doc-content -->
+</body>
+</html>

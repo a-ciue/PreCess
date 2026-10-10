@@ -1,0 +1,7 @@
+<map id="systems::feature::SetupNavigationTestPlugin" name="systems::feature::SetupNavigationTestPlugin">
+<area shape="rect" id="Node000001" title=" " alt="" coords="5,79,253,119"/>
+<area shape="rect" id="Node000002" title=" " alt="" coords="23,5,97,31"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="81,39,115,77,111,80,77,43"/>
+<area shape="rect" id="Node000003" href="$classsystems_1_1PluginBase.html" title="插件对象基类，定义与插件交互的接口。" alt="" coords="121,5,279,31"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="183,43,148,80,144,77,179,39"/>
+</map>

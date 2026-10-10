@@ -1,3 +1,3 @@
 <map id="类继承关系图" name="类继承关系图">
-<area shape="rect" id="Node000000" href="$classsystems_1_1job_1_1JobRunner.html" title="所属线程管理一个在飞任务；worker 不等待 GUI。 发布、准备、查询、清理、终态与 stop 均在构造线程。 异步运行须向该线程投递；计算结束后保持槽与模型占用直到 GUI 收尾。" alt="" coords="5,5,184,31"/>
+<area shape="rect" id="Node000000" href="$structsystems_1_1job_1_1JobOptions.html" title="发布时固定的归属与展示策略；owner 不授予写权。" alt="" coords="5,5,188,31"/>
 </map>

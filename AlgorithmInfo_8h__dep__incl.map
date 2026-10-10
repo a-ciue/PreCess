@@ -1,23 +1,25 @@
 <map id="model/systems/algo/AlgorithmInfo.h" name="model/systems/algo/AlgorithmInfo.h">
-<area shape="rect" id="Node000001" title=" " alt="" coords="917,5,1071,45"/>
-<area shape="rect" id="Node000002" href="$AlgorithmSystem_8h.html" title=" " alt="" coords="917,93,1071,133"/>
-<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="997,59,997,93,991,93,991,59"/>
+<area shape="rect" id="Node000001" title=" " alt="" coords="1019,5,1174,45"/>
+<area shape="rect" id="Node000002" href="$AlgorithmSystem_8h.html" title=" " alt="" coords="1019,93,1174,133"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="1099,59,1099,93,1094,93,1094,59"/>
 <area shape="rect" id="Node000003" href="$QModelManager_8cpp.html" title=" " alt="" coords="5,189,233,214"/>
-<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="903,124,610,147,246,184,192,191,191,186,246,179,610,142,902,118"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="1006,122,671,145,459,163,246,184,191,191,191,186,246,179,459,157,670,140,1005,117"/>
 <area shape="rect" id="Node000004" href="$QAlgorithmSystemAdaptor_8cpp.html" title=" " alt="" coords="258,181,485,221"/>
-<area shape="poly" id="edge3_Node000002_Node000004" title=" " alt="" coords="903,129,497,184,485,186,484,180,496,179,902,124"/>
+<area shape="poly" id="edge3_Node000002_Node000004" title=" " alt="" coords="1006,126,775,151,497,184,485,186,484,180,496,179,774,146,1005,121"/>
 <area shape="rect" id="Node000005" href="$Session_8cpp.html" title="会话组合根实现：子系统装配、观察者转发桥与有序拆解" alt="" coords="509,189,706,214"/>
-<area shape="poly" id="edge4_Node000002_Node000005" title=" " alt="" coords="903,137,660,191,658,186,902,132"/>
+<area shape="poly" id="edge4_Node000002_Node000005" title=" " alt="" coords="1006,133,673,191,672,186,1005,128"/>
 <area shape="rect" id="Node000006" href="$TestSessionJobs_8cpp.html" title="无 Qt 宿主的任务拥有关系、终态重放与拆解回归。" alt="" coords="731,181,887,221"/>
-<area shape="poly" id="edge5_Node000002_Node000006" title=" " alt="" coords="942,142,850,184,848,179,940,137"/>
-<area shape="rect" id="Node000007" href="$AlgorithmSystem_8cpp.html" title=" " alt="" coords="911,181,1077,221"/>
-<area shape="poly" id="edge6_Node000002_Node000007" title=" " alt="" coords="997,147,997,181,991,181,991,147"/>
-<area shape="rect" id="Node000008" href="$AlgorithmSystemRegister_8cpp.html" title=" " alt="" coords="1102,181,1321,221"/>
-<area shape="poly" id="edge7_Node000002_Node000008" title=" " alt="" coords="1055,136,1165,179,1163,184,1054,141"/>
-<area shape="rect" id="Node000009" href="$TestAlgorithmSystem_8cpp.html" title=" " alt="" coords="1345,181,1566,221"/>
-<area shape="poly" id="edge8_Node000002_Node000009" title=" " alt="" coords="1086,129,1355,179,1354,184,1085,134"/>
-<area shape="rect" id="Node000010" href="$TestAlgorithmSystemShadow_8cpp.html" title=" " alt="" coords="1591,181,1861,221"/>
-<area shape="poly" id="edge9_Node000002_Node000010" title=" " alt="" coords="1085,122,1578,179,1591,180,1590,185,1578,184,1085,127"/>
-<area shape="rect" id="Node000011" href="$TestFeatureSystem_8cpp.html" title=" " alt="" coords="1885,181,2092,221"/>
-<area shape="poly" id="edge10_Node000002_Node000011" title=" " alt="" coords="1086,116,1432,138,1653,156,1874,179,1885,180,1885,185,1874,184,1652,161,1432,143,1085,122"/>
+<area shape="poly" id="edge5_Node000002_Node000006" title=" " alt="" coords="1021,140,872,184,871,179,1019,135"/>
+<area shape="rect" id="Node000007" href="$TestSessionPlugins_8cpp.html" title="Session 插件装载冒烟测试：动态插件注册与功能信息（Qt 插件机制，需 QCoreApplication）" alt="" coords="911,181,1087,221"/>
+<area shape="poly" id="edge6_Node000002_Node000007" title=" " alt="" coords="1067,144,1023,183,1019,179,1063,140"/>
+<area shape="rect" id="Node000008" href="$AlgorithmSystem_8cpp.html" title=" " alt="" coords="1112,181,1279,221"/>
+<area shape="poly" id="edge7_Node000002_Node000008" title=" " alt="" coords="1130,140,1175,179,1172,183,1127,144"/>
+<area shape="rect" id="Node000009" href="$AlgorithmSystemRegister_8cpp.html" title=" " alt="" coords="1303,181,1522,221"/>
+<area shape="poly" id="edge8_Node000002_Node000009" title=" " alt="" coords="1180,134,1344,179,1343,184,1179,140"/>
+<area shape="rect" id="Node000010" href="$TestAlgorithmSystem_8cpp.html" title=" " alt="" coords="1546,181,1767,221"/>
+<area shape="poly" id="edge9_Node000002_Node000010" title=" " alt="" coords="1188,126,1546,180,1545,186,1188,131"/>
+<area shape="rect" id="Node000011" href="$TestAlgorithmSystemShadow_8cpp.html" title=" " alt="" coords="1792,181,2063,221"/>
+<area shape="poly" id="edge10_Node000002_Node000011" title=" " alt="" coords="1188,120,1453,145,1780,179,1792,180,1792,185,1779,184,1453,150,1187,125"/>
+<area shape="rect" id="Node000012" href="$TestFeatureSystem_8cpp.html" title=" " alt="" coords="2087,181,2293,221"/>
+<area shape="poly" id="edge11_Node000002_Node000012" title=" " alt="" coords="1188,115,1575,136,1824,154,2076,179,2087,180,2086,185,2075,184,1824,159,1574,141,1188,121"/>
 </map>

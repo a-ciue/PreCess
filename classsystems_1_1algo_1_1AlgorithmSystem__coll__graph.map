@@ -1,5 +1,5 @@
 <map id="systems::algo::AlgorithmSystem" name="systems::algo::AlgorithmSystem">
-<area shape="rect" id="Node000001" title=" " alt="" coords="2872,883,3057,923"/>
+<area shape="rect" id="Node000001" title="已废弃的算法分发系统，仅保留已有调用者的运行能力" alt="" coords="2872,883,3057,923"/>
 <area shape="rect" id="Node000002" title=" " alt="" coords="265,977,352,1002"/>
 <area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="366,987,697,987,1721,987,1831,983,1916,973,2001,961,2110,949,2536,922,2872,904,2872,909,2537,927,2111,955,2001,966,1917,978,1831,988,1721,992,697,992,366,992"/>
 <area shape="rect" id="Node000014" href="$classModelData.html" title="Model主要负责处理模型数据，先更新模型数据，再更新ModelActor调函数" alt="" coords="652,317,745,342"/>

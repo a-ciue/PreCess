@@ -1,9 +1,13 @@
 <map id="app/model/systems/feature/QFeatureInfo.h" name="app/model/systems/feature/QFeatureInfo.h">
-<area shape="rect" id="Node000001" title=" " alt="" coords="62,5,263,45"/>
+<area shape="rect" id="Node000001" title=" " alt="" coords="170,5,371,45"/>
 <area shape="rect" id="Node000002" title=" " alt="" coords="5,93,101,119"/>
-<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="138,48,82,87,79,83,135,43"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="220,48,99,91,97,86,218,43"/>
 <area shape="rect" id="Node000003" title=" " alt="" coords="125,93,200,119"/>
-<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="165,46,165,79,160,79,160,46"/>
-<area shape="rect" id="Node000004" title=" " alt="" coords="224,93,363,119"/>
-<area shape="poly" id="edge3_Node000001_Node000004" title=" " alt="" coords="196,43,264,84,261,88,193,48"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="246,48,192,87,189,83,243,43"/>
+<area shape="rect" id="Node000004" title=" " alt="" coords="224,93,317,119"/>
+<area shape="poly" id="edge3_Node000001_Node000004" title=" " alt="" coords="273,46,273,79,268,79,268,46"/>
+<area shape="rect" id="Node000005" title=" " alt="" coords="341,93,448,119"/>
+<area shape="poly" id="edge4_Node000001_Node000005" title=" " alt="" coords="302,43,366,84,363,88,299,48"/>
+<area shape="rect" id="Node000006" title=" " alt="" coords="472,93,611,119"/>
+<area shape="poly" id="edge5_Node000001_Node000006" title=" " alt="" coords="336,43,490,87,488,92,335,48"/>
 </map>

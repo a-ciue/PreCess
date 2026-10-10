@@ -94,10 +94,10 @@ edit 的目录依赖关系图</div>
 <area shape="poly" href="dir_000010_000006.html" alt="" coords="78,86,97,96,137,110,170,118,250,133,249,139,169,123,135,116,95,101,76,90"/>
 <area shape="rect" href="dir_000010_000006.html" title="8" alt="" coords="242,119,252,134"/>
 <area shape="rect" href="dir_7ab848ac46872281723ddee58859d3c4.html" title="test" alt="" coords="109,63,155,88"/>
-<area shape="poly" href="dir_000032_000004.html" alt="" coords="147,86,192,125,188,129,143,90"/>
-<area shape="rect" href="dir_000032_000004.html" title="1" alt="" coords="187,110,197,125"/>
-<area shape="poly" href="dir_000032_000006.html" alt="" coords="156,85,252,128,249,133,154,90"/>
-<area shape="rect" href="dir_000032_000006.html" title="5" alt="" coords="245,113,255,128"/>
+<area shape="poly" href="dir_000033_000004.html" alt="" coords="147,86,192,125,188,129,143,90"/>
+<area shape="rect" href="dir_000033_000004.html" title="1" alt="" coords="187,110,197,125"/>
+<area shape="poly" href="dir_000033_000006.html" alt="" coords="156,85,252,128,249,133,154,90"/>
+<area shape="rect" href="dir_000033_000006.html" title="5" alt="" coords="245,113,255,128"/>
 <area shape="rect" href="dir_2083ac89913e57343d0c9d9b6920b7e7.html" alt="" coords="27,52,167,99"/>
 <area shape="rect" href="dir_2daa03e0cb702fa035b1e0c62ad50ba5.html" title="systems" alt="" coords="16,16,177,172"/>
 </map>
@@ -116,6 +116,20 @@ edit 的目录依赖关系图</div>
 <tr class="memitem:EditSystemRegister_2Ecpp" id="r_EditSystemRegister_2Ecpp"><td class="memItemLeft" align="right" valign="top"><span class="icondoc"><div class="doc-icon"></div></span>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="EditSystemRegister_8cpp.html">EditSystemRegister.cpp</a></td></tr>
 <tr class="memitem:EditSystemRegister_2Eh" id="r_EditSystemRegister_2Eh"><td class="memItemLeft" align="right" valign="top"><a href="EditSystemRegister_8h_source.html"><span class="icondoc"><div class="doc-icon"></div></span></a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="EditSystemRegister_8h.html">EditSystemRegister.h</a></td></tr>
 </table>
+<a name="details" id="details"></a><h2 id="header-details" class="groupheader">详细描述</h2>
+<h1 class="doxsection"><a class="anchor" id="autotoc_md1"></a>
+旧编辑接口：已废弃并冻结</h1>
+<p><span class="tt">EditHandler</span>、<span class="tt">EditSystem</span> 和 <span class="tt">precess_add_edit_plugin</span> 仅保留现有插件及脚本调用的运行能力。C++ 接口带 <span class="tt">[[deprecated]]</span> 标记，CMake 入口产生弃用提示。</p>
+<p>新增编辑功能使用 <span class="tt">FeatureHandler</span> / <span class="tt">FeatureSystem</span>，在 <span class="tt">setup(FeatureRegistrar&amp;, FeatureContext&amp;)</span> 声明参数、菜单或分类导航；执行读取 <span class="tt">ctx.params</span>，模型写入及后台回写遵循 <span class="tt">FeatureContext</span> 的受控写和任务契约。</p>
+<p>现有 CreateFacePlugin、DeleteFacePlugin 继续使用旧编辑入口。本次仅标记废弃并冻结，不迁移或删除已有插件，也不改变其执行和 undo 行为。</p>
+<p>维护规则：</p>
+<ul>
+<li>不新增旧编辑插件，不扩展旧系统的注册、参数、导航或执行接口。</li>
+<li>不为常规清理、格式调整或架构统一重构旧实现。</li>
+<li>仅为既有调用者缺陷修复，或后续明确安排的迁移、删除修改旧路径；保留对应回归测试并说明必要性。</li>
+<li>移除旧系统前先迁移剩余插件、Qt 适配层与脚本入口。</li>
+</ul>
+<p>范围：<span class="tt">model/systems/edit/</span>、<span class="tt">app/model/systems/edit/</span>、<span class="tt">plugins/edit/</span> 及 SDK 的旧编辑构建入口；Session 为兼容旧调用者持有的编辑系统同样适用。 </p>
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>

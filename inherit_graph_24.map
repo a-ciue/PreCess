@@ -1,3 +1,3 @@
 <map id="类继承关系图" name="类继承关系图">
-<area shape="rect" id="Node000000" href="$classcore_1_1TempFile.html" title="获取临时文件，单例模式" alt="" coords="5,5,121,31"/>
+<area shape="rect" id="Node000000" href="$classcore_1_1TempFile.html" title="在单例独占的子目录内获取临时路径，退出时只清理自己拥有的目录。" alt="" coords="5,5,121,31"/>
 </map>

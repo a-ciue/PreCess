@@ -83,7 +83,7 @@ $(function() {
 </div><!--header-->
 <div class="contents">
 
-<p>算法系统的功能接口，继承他来实现具体的算法功能  
+<p>旧算法系统的兼容接口，仅供已有插件维护  
  <a href="#details">更多...</a></p>
 
 <p><code>#include &lt;<a class="el" href="AlgorithmHandler_8h_source.html">AlgorithmHandler.h</a>&gt;</code></p>
@@ -99,7 +99,8 @@ Public 成员函数</h2></td></tr>
 <tr class="memdesc:a7bb54b18ecfddf55f5630ed737514b24"><td class="mdescLeft">&#160;</td><td class="mdescRight">算法参数类型，交给UI使用  <br /></td></tr>
 </table>
 <a name="details" id="details"></a><h2 id="header-details" class="groupheader">详细描述</h2>
-<div class="textblock"><p>算法系统的功能接口，继承他来实现具体的算法功能 </p>
+<div class="textblock"><p>旧算法系统的兼容接口，仅供已有插件维护 </p>
+<dl class="deprecated"><dt><b><a class="el" href="deprecated.html#_deprecated000001">弃用</a></b></dt><dd>新算法必须实现 FeatureHandler，在 FeatureHandler::setup 中通过 FeatureRegistrar 声明参数与导航， 经 FeatureContext 执行和发布任务。禁止为此旧接口新增能力。 </dd></dl>
 </div><a name="doc-constructors" id="doc-constructors"></a><h2 id="header-doc-constructors" class="groupheader">构造及析构函数说明</h2>
 <a id="a4e53f0bac9d50e2f4228e5eaa94862b9" name="a4e53f0bac9d50e2f4228e5eaa94862b9"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a4e53f0bac9d50e2f4228e5eaa94862b9">&#9670;&#160;</a></span>~AlgorithmHandler()</h2>

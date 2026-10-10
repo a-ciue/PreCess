@@ -24,6 +24,7 @@
 */
 var menudata={children:[
 {text:"首页",url:"index.html"},
+{text:"相关页面",url:"pages.html"},
 {text:"命名空间",url:"namespaces.html",children:[
 {text:"命名空间列表",url:"namespaces.html"},
 {text:"命名空间成员",url:"namespacemembers.html",children:[
@@ -144,6 +145,7 @@ var menudata={children:[
 {text:"g",url:"functions_prop.html#index_g"},
 {text:"h",url:"functions_prop.html#index_h"},
 {text:"i",url:"functions_prop.html#index_i"},
+{text:"l",url:"functions_prop.html#index_l"},
 {text:"m",url:"functions_prop.html#index_m"},
 {text:"n",url:"functions_prop.html#index_n"},
 {text:"o",url:"functions_prop.html#index_o"},

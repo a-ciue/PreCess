@@ -1,5 +1,5 @@
 <map id="core/TempFile.h" name="core/TempFile.h">
-<area shape="rect" id="Node000001" title=" " alt="" coords="95,5,219,31"/>
+<area shape="rect" id="Node000001" title="临时文件路径及其独占目录的生命周期管理。" alt="" coords="95,5,219,31"/>
 <area shape="rect" id="Node000002" title=" " alt="" coords="5,79,96,104"/>
 <area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="142,33,81,73,78,69,139,28"/>
 <area shape="rect" id="Node000003" title=" " alt="" coords="121,79,194,104"/>
