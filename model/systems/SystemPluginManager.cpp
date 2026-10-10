@@ -6,7 +6,6 @@
 #include "SystemRegisterBase.h"
 #include "PluginBase.h"
 
-#include <QFileInfo>
 #include <QPluginLoader>
 #include <spdlog/spdlog.h>
 

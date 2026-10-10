@@ -21,7 +21,7 @@ Rectangle {
     // 仅依赖 Qt、不反向依赖 app，故以局部常量对齐配色）
     // 修改这些配色时须同步检查 app/Theme.qml 中的对应令牌。
     readonly property color panelBorder: "#D9DDE3"
-    readonly property color titleBarSurface: "#F7F8FA"
+    readonly property color titleBarSurface: "#E6EDF5" // Theme.panelHeaderSurface
     readonly property color titleText: "#2B2F36"
     readonly property color chromeIcon: "#5A616B"
     readonly property color chromeHover: "#E2E6EB"
@@ -55,6 +55,14 @@ Rectangle {
         height: visible ? Docking.Tokens.Metric.TitleBarHeight : 0
         visible: root.showTitleBar
         color: root.titleBarSurface
+
+        Rectangle {
+            anchors.left: parent.left
+            anchors.right: parent.right
+            anchors.bottom: parent.bottom
+            height: 1
+            color: root.panelBorder
+        }
 
         // 行内空白：拖动整个分组 / 右键分组菜单
         MouseArea {

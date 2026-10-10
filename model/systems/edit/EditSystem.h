@@ -28,9 +28,11 @@ struct HandlerMetaData {
 };
 
 /**
- * @brief 模型编辑操作系统，负责管理和调用各种模型编辑操作处理器。所有模型编辑操作的入口。
+ * @brief 已废弃的编辑分发系统，仅保留已有调用者的运行能力
+ * @deprecated 新编辑功能使用 FeatureSystem；本系统不再接收新插件或接口扩展。
+ * @note 修改限制见本目录 README.md 和根目录 AGENTS.md。
  */
-class EditSystem {
+class [[deprecated("Legacy EditSystem is frozen; use FeatureSystem instead")]] EditSystem {
 public:
     using SystemHandler = EditHandler; //> 模型编辑操作处理器类型，模型编辑操作系统下所有处理器的基类类型
     using SystemHandlerPtr = ::systems::SystemHandlerPtr<SystemHandler>; //> 处理器的智能指针，支持自定义析构函数。特别是兼容跨dll边界获取的析构函数。

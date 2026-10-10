@@ -37,6 +37,8 @@ ApplicationWindow {
     // 冻结任务忙碌态（聚合位经共享任务状态源单点暴露）：算法执行 ∨ 功能冻结任务——
     // 忙碌遮罩、快捷键与工具栏禁用据此驱动；自由任务不置位（不打断用户操作）
     readonly property bool frozenBusy: QModelManager.taskStatus.frozenBusy
+    // 操作状态由窗口持有，侧栏隐藏或重建不会结束当前操作。
+    readonly property OperationSession operationSession: OperationSession {}
 
     // 固定浅色调色板：Qt 6.5+ 默认调色板跟随系统深浅色主题，系统为深色模式时
     // Fusion 控件（Pane/Button/TextField 等）会渲染为深色、与浅色主题混杂；
@@ -85,6 +87,7 @@ ApplicationWindow {
 
     header: AppToolbar {
         windowHeight: root.height
+        leadingFeatureMenus: ["网格生成算法"]
         onResetLayoutRequested: {
             if (root.defaultDockLayout.length > 0)
                 dockHost.restoreLayout(root.defaultDockLayout)
@@ -210,8 +213,10 @@ ApplicationWindow {
         Docking.DockPanel {
             id: sideBarDock
             uniqueName: "sideBar"
-            title: "操作面板"
+            title: sideBarContent.panelTitle
             SideBar {
+                id: sideBarContent
+                session: root.operationSession
                 implicitWidth: 200
                 implicitHeight: 120
                 anchors.fill: parent

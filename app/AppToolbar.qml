@@ -3,6 +3,8 @@ import QtQuick.Controls
 import QtQuick.Layouts
 import QtQuick.Dialogs
 
+import "FeatureNavigation.js" as FeatureNavigation
+
 import app.core
 import app.model
 import app.model.systems
@@ -19,6 +21,13 @@ ColumnLayout {
     readonly property bool isWasm: Qt.platform.os === "wasm"
 
     property int activeCategory: -1
+    property var algorithmSystem: QModelManager.algorithmSystem
+    property var featureSystem: QModelManager.featureSystem
+    readonly property var navigationEntries: FeatureNavigation.buildEntries(root.featureSystem.featuresInfo, root.featureSystem.navigationDefinitions)
+    readonly property var algorithmInfos: root.algorithmSystem.algorithmsInfo
+    // StackLayout: 文件 0、编辑 1、旧算法 2，后续均由功能菜单声明生成。
+    readonly property int algorithmPageStart: 2
+    readonly property int featurePageStart: algorithmPageStart + 1
     property real windowHeight: 600
 
     // 限制页高范围，给小窗口保留文字空间，避免大窗口工具栏过度放大。
@@ -45,22 +54,12 @@ ColumnLayout {
 
     // 算法与编辑系统尚无图标声明字段，暂保留其名称映射。
     readonly property var pluginIconMap: ({
-        // 编辑 (mesh)
         "CreateFacePlugin": "qrc:/images/toolbar/Edit/create-face.svg",
         "DeleteFacePlugin": "qrc:/images/toolbar/Edit/delete-face.svg",
-        // 算法 (algorithm)
-        "TetGenPlugin": "qrc:/images/toolbar/Algorithm/tetgen.svg",
-        "TetGenLibPlugin": "qrc:/images/toolbar/Algorithm/tetgen.svg",
-        "GmshPlugin": "qrc:/images/toolbar/Algorithm/gmsh.svg",
         "cmdExecutePlugin": "qrc:/images/toolbar/Algorithm/cmd.svg"
     })
     function getIconForPlugin(pluginName) {
         return pluginIconMap[pluginName] || "qrc:/images/toolbar/precess_extra_plugin.svg"
-    }
-
-    // 功能图标由菜单声明提供，未指定时统一使用通用插件图标。
-    function getIconForFeature(info) {
-        return info.icon || "qrc:/images/toolbar/precess_extra_plugin.svg"
     }
 
     function activatePlugin(systemList, pluginName, system) {
@@ -82,55 +81,62 @@ ColumnLayout {
         return model_id < 0 ? "" : QModelManager.query.getModelName(model_id)
     }
 
-    // 功能触发入口：ribbon 功能按钮共用
-    function activateFeature(info) {
+    // 入口不持执行状态；会话按子功能数量直接进入或显示选择器。
+    function activateEntry(entry) {
+        if (!root.propertyListOpen)
+            root.propertyListToggled()
+        if (App.activeOperation && App.activeOperation.entryId === entry.id)
+            return
+        // 单项直接发布叶子，避免同一功能的不同菜单入口切换时先退出已有会话。
+        const info = entry.items.length === 1 ? entry.items[0] : null
         App.activeOperation = {
+            entryId: entry.id,
+            categoryId: entry.categoryId,
+            categoryTitle: entry.title,
+            isFeature: !!info,
             info: info,
-            isFeature: true,
-            execute: function() { return QModelManager.featureSystem.invoke(info.name) }
+            execute: info ? function () { return root.featureSystem.invoke(info.name) } : null
         }
     }
 
-    // 功能 ribbon 结构：[{ name: 菜单名, groups: [{ name: 分组名, items: [QFeatureInfo] }] }]，由 rebuildFeatureMenus 维护
+    // 功能 ribbon 结构：[{ name: 菜单名, groups: [{ name: 分组名, items: [入口对象] }] }]，由 rebuildFeatureMenus 维护
     property var featureMenus: []
+    // 产品层指定前置菜单；页签排序保留原页面身份，避免影响切换和注册表刷新。
+    property var leadingFeatureMenus: []
+    readonly property var navigationTabs: {
+        const leading = []
+        const trailing = []
+        for (let index = 0; index < root.featureMenus.length; ++index) {
+            const menu = root.featureMenus[index]
+            const tab = {
+                name: menu.name,
+                objectName: "featureTab_" + menu.name,
+                pageIndex: root.featurePageStart + index
+            }
+            if (root.leadingFeatureMenus.indexOf(menu.name) >= 0)
+                leading.push(tab)
+            else
+                trailing.push(tab)
+        }
+        return leading.concat([{
+            name: qsTr("其他算法"),
+            objectName: "otherAlgorithmTab",
+            pageIndex: root.algorithmPageStart
+        }], trailing)
+    }
 
-    // 按 menu_path 两级（菜单/分组）重建功能 ribbon 结构（功能注册/注销时调用）
+    // 普通单项与聚合入口共用菜单声明；注册变化后按菜单身份保持当前页。
     function rebuildFeatureMenus() {
-        let menu_order = []
-        let menus = {} // 菜单名 -> { group_order, groups: 分组名 -> [QFeatureInfo] }
-        for (let info of QModelManager.featureSystem.featuresInfo) {
-            let segs = (info.menu_path || "功能").split('/')
-            let menu_name = segs[0]
-            let group_name = segs.length > 1 ? segs[1] : ""
-            if (!menus[menu_name]) {
-                menus[menu_name] = { group_order: [], groups: {} }
-                menu_order.push(menu_name)
-            }
-            let menu = menus[menu_name]
-            if (!menu.groups[group_name]) {
-                menu.groups[group_name] = []
-                menu.group_order.push(group_name)
-            }
-            menu.groups[group_name].push(info)
-        }
-        let ribbon = []
-        for (let menu_name of menu_order) {
-            let menu = menus[menu_name]
-            let groups = []
-            for (let group_name of menu.group_order)
-                groups.push({ name: group_name, items: menu.groups[group_name] })
-            ribbon.push({ name: menu_name, groups: groups })
-        }
-        featureMenus = ribbon
-    }
-
-    Connections {
-        target: QModelManager.featureSystem
-        function onFeaturesInfoChanged() {
-            root.rebuildFeatureMenus()
+        const index = root.activeCategory - root.featurePageStart
+        const name = index >= 0 && index < root.featureMenus.length ? root.featureMenus[index].name : ""
+        root.featureMenus = FeatureNavigation.buildMenus(root.navigationEntries)
+        if (name) {
+            const nextIndex = root.featureMenus.findIndex(menu => menu.name === name)
+            root.activeCategory = nextIndex < 0 ? -1 : root.featurePageStart + nextIndex
         }
     }
 
+    onNavigationEntriesChanged: rebuildFeatureMenus()
     Component.onCompleted: rebuildFeatureMenus()
 
     // 网页端导入模型
@@ -270,6 +276,7 @@ ColumnLayout {
     }
 
     ToolBar {
+        Layout.fillWidth: true
         background: Rectangle {
             color: Theme.surfaceAlt
 
@@ -285,108 +292,111 @@ ColumnLayout {
             }
         }
 
-        RowLayout {
-            Layout.fillWidth: true
-            Layout.fillHeight: true
-            spacing: 2
+        Flickable {
+            anchors.fill: parent
+            implicitHeight: navigationRow.implicitHeight
+            contentWidth: navigationRow.implicitWidth
+            contentHeight: height
+            flickableDirection: Flickable.HorizontalFlick
+            boundsBehavior: Flickable.StopAtBounds
+            clip: true
 
-            RibbonTabButton {
-                text: "文件"
-                checkable: true
-                checked: activeCategory === 0
-                onClicked: activeCategory = (activeCategory === 0) ? -1 : 0
-            }
+            RowLayout {
+                id: navigationRow
+                spacing: 2
 
-            RibbonTabButton {
-                text: qsTr("编辑")
-                checkable: true
-                checked: activeCategory === 1
-                onClicked: activeCategory = (activeCategory === 1) ? -1 : 1
-            }
-
-            RibbonTabButton {
-                text: qsTr("算法")
-                checkable: true
-                checked: activeCategory === 2
-                onClicked: activeCategory = (activeCategory === 2) ? -1 : 2
-            }
-
-            // 功能菜单分页：按 menu_path 第一段（菜单）动态生成分页按钮，页序对应 StackLayout 索引 3 起
-            Repeater {
-                model: root.featureMenus
                 RibbonTabButton {
-                    required property var modelData
-                    required property int index
-                    text: modelData.name
+                    text: "文件"
                     checkable: true
-                    checked: activeCategory === 3 + index
-                    onClicked: activeCategory = (activeCategory === 3 + index) ? -1 : 3 + index
+                    checked: activeCategory === 0
+                    onClicked: activeCategory = (activeCategory === 0) ? -1 : 0
                 }
-            }
 
-            RibbonTabButton {
-                id: viewBtn
-                text: "视图"
-                onClicked: viewMenu.popup(viewBtn, 0, viewBtn.height)
-                Menu {
-                    id: viewMenu
-                    closePolicy: Popup.CloseOnEscape | Popup.CloseOnPressOutsideParent
+                RibbonTabButton {
+                    objectName: "editCategory"
+                    text: qsTr("编辑")
+                    checkable: true
+                    checked: activeCategory === 1
+                    onClicked: activeCategory = (activeCategory === 1) ? -1 : 1
+                }
 
-                    Action {
-                        text: "对象树"
+                // 功能菜单页均由声明生成，不区分具体业务类型。
+                Repeater {
+                    model: root.navigationTabs
+                    RibbonTabButton {
+                        required property var modelData
+                        objectName: modelData.objectName
+                        text: modelData.name
                         checkable: true
-                        checked: objectTreeOpen
-                        onToggled: objectTreeToggled()
-                    }
-                    Action {
-                        text: "操作面板"
-                        checkable: true
-                        checked: propertyListOpen
-                        onToggled: propertyListToggled()
-                    }
-                    Action {
-                        text: "属性渲染"
-                        checkable: true
-                        checked: attributeRenderOpen
-                        onToggled: attributeRenderToggled()
-                    }
-                    Action {
-                        text: "JavaScript 控制台"
-                        checkable: true
-                        checked: consoleOpen
-                        onToggled: consoleToggled()
-                    }
-                    Action {
-                        text: "Python 控制台"
-                        checkable: true
-                        checked: pythonConsoleOpen
-                        onToggled: pythonConsoleToggled()
-                    }
-                    Action {
-                        text: "日志"
-                        checkable: true
-                        checked: outputLogOpen
-                        onToggled: outputLogToggled()
-                    }
-                    Action {
-                        text: "偏好设置"
-                        checkable: true
-                        checked: preferencesOpen
-                        onToggled: preferencesToggled()
-                    }
-                    MenuSeparator {}
-                    Action {
-                        text: qsTr("恢复默认布局")
-                        onTriggered: root.resetLayoutRequested()
+                        checked: activeCategory === modelData.pageIndex
+                        onClicked: activeCategory = checked ? modelData.pageIndex : -1
                     }
                 }
-            }
 
-            Item { Layout.fillWidth: true }
+                RibbonTabButton {
+                    id: viewBtn
+                    text: "视图"
+                    onClicked: viewMenu.popup(viewBtn, 0, viewBtn.height)
+                    Menu {
+                        id: viewMenu
+                        closePolicy: Popup.CloseOnEscape | Popup.CloseOnPressOutsideParent
+
+                        Action {
+                            text: "对象树"
+                            checkable: true
+                            checked: objectTreeOpen
+                            onToggled: objectTreeToggled()
+                        }
+                        Action {
+                            text: "操作面板"
+                            checkable: true
+                            checked: propertyListOpen
+                            onToggled: propertyListToggled()
+                        }
+                        Action {
+                            text: "属性渲染"
+                            checkable: true
+                            checked: attributeRenderOpen
+                            onToggled: attributeRenderToggled()
+                        }
+                        Action {
+                            text: "JavaScript 控制台"
+                            checkable: true
+                            checked: consoleOpen
+                            onToggled: consoleToggled()
+                        }
+                        Action {
+                            text: "Python 控制台"
+                            checkable: true
+                            checked: pythonConsoleOpen
+                            onToggled: pythonConsoleToggled()
+                        }
+                        Action {
+                            text: "日志"
+                            checkable: true
+                            checked: outputLogOpen
+                            onToggled: outputLogToggled()
+                        }
+                        Action {
+                            text: "偏好设置"
+                            checkable: true
+                            checked: preferencesOpen
+                            onToggled: preferencesToggled()
+                        }
+                        MenuSeparator {}
+                        Action {
+                            text: qsTr("恢复默认布局")
+                            onTriggered: root.resetLayoutRequested()
+                        }
+                    }
+                }
+            }
         }
     }
 
     StackLayout {
+        Layout.fillWidth: true
+        Layout.preferredHeight: root.ribbonPageHeight
         implicitHeight: activeCategory >= 0 ? root.ribbonPageHeight : 0
         visible: activeCategory >= 0
 
@@ -508,72 +518,112 @@ ColumnLayout {
             Item { Layout.fillWidth: true }
         }
 
-        // 2: 算法 → 数据驱动，图标按名映射
-        RowLayout {
+        // 其他算法沿用原有按钮与参数面板入口。
+        Flickable {
+            id: algorithmPage
+            objectName: "algorithmPage_other"
             Layout.fillWidth: true
             Layout.fillHeight: true
-            spacing: 2
+            contentWidth: algorithmGroups.implicitWidth
+            contentHeight: height
+            flickableDirection: Flickable.HorizontalFlick
+            boundsBehavior: Flickable.StopAtBounds
+            clip: true
 
-            Repeater {
-                model: QModelManager.algorithmSystem.algorithmsInfo
-                RibbonActionButton {
-                    required property var modelData
-                    icon.source: root.getIconForPlugin(modelData.name)
-                    icon.width: root.ribbonIconSize
-                    icon.height: root.ribbonIconSize
-                    icon.color: "transparent"
-                    Layout.fillHeight: true
-                    text: modelData.display_name
-                    onClicked: root.activatePlugin(QModelManager.algorithmSystem.algorithmsInfo, modelData.name, QModelManager.algorithmSystem)
-                }
-            }
-
-            Item { Layout.fillWidth: true }
-        }
-
-        // 功能菜单页（索引 3 起）：页内按 menu_path 第二段（分组）排列功能按钮，同组排在一起，组间以竖线分隔
-        Repeater {
-            model: root.featureMenus
             RowLayout {
-                id: featureMenuPage
-                required property var modelData
-                Layout.fillWidth: true
-                Layout.fillHeight: true
-                spacing: 2
+                id: algorithmGroups
+                height: algorithmPage.height
+                spacing: Theme.spacingSm
 
                 Repeater {
-                    model: featureMenuPage.modelData.groups
-                    RowLayout {
-                        id: featureGroupRow
+                    model: root.algorithmInfos
+                    RibbonActionButton {
+                        id: algorithmAction
                         required property var modelData
-                        required property int index
+                        topPadding: 4
+                        bottomPadding: 4
+                        objectName: "algorithmAction_" + modelData.name
+                        icon.source: root.getIconForPlugin(modelData.name)
+                        // 按钮文字和内边距先占位，图标使用剩余高度。
+                        icon.height: Math.max(16, Math.min(root.ribbonIconSize,
+                            root.ribbonPageHeight - topPadding - bottomPadding
+                            - spacing - actionFontMetrics.height))
+                        icon.width: icon.height
+                        icon.color: "transparent"
                         Layout.fillHeight: true
-                        spacing: 2
-
-                        Repeater {
-                            model: featureGroupRow.modelData.items
-                            RibbonActionButton {
-                                required property var modelData
-                                icon.source: root.getIconForFeature(modelData)
-                                icon.width: root.ribbonIconSize
-                                icon.height: root.ribbonIconSize
-                                icon.color: "transparent"
-                                Layout.fillHeight: true
-                                text: modelData.display_name
-                                onClicked: root.activateFeature(modelData)
-                            }
-                        }
-
-                        // 分组间竖线分隔（最后一组不显示）
-                        ToolSeparator {
-                            orientation: Qt.Vertical
-                            Layout.fillHeight: true
-                            visible: featureGroupRow.index < featureMenuPage.modelData.groups.length - 1
+                        text: modelData.display_name
+                        onClicked: root.activatePlugin(root.algorithmInfos, modelData.name, root.algorithmSystem)
+                        FontMetrics {
+                            id: actionFontMetrics
+                            font: algorithmAction.font
                         }
                     }
                 }
+            }
 
-                Item { Layout.fillWidth: true }
+            Label {
+                parent: algorithmPage
+                anchors.centerIn: parent
+                visible: root.algorithmInfos.length === 0
+                text: qsTr("暂无可用算法")
+                color: Theme.textSecondary
+            }
+        }
+
+        // 单项与多子功能入口共用横向菜单页。
+        Repeater {
+            model: root.featureMenus
+            Flickable {
+                id: featureMenuPage
+                required property var modelData
+                objectName: "featureMenuPage_" + modelData.name
+                Layout.fillWidth: true
+                Layout.fillHeight: true
+                contentWidth: featureGroups.implicitWidth
+                contentHeight: height
+                flickableDirection: Flickable.HorizontalFlick
+                boundsBehavior: Flickable.StopAtBounds
+                clip: true
+
+                RowLayout {
+                    id: featureGroups
+                    height: featureMenuPage.height
+                    spacing: 2
+                    Repeater {
+                        model: featureMenuPage.modelData.groups
+                        RowLayout {
+                            id: featureGroupRow
+                            required property var modelData
+                            required property int index
+                            Layout.fillHeight: true
+                            spacing: 2
+
+                            Repeater {
+                                model: featureGroupRow.modelData.items
+                                RibbonActionButton {
+                                    required property var modelData
+                                    objectName: "featureEntry_" + modelData.id
+                                    icon.source: modelData.icon || "qrc:/images/toolbar/precess_extra_plugin.svg"
+                                    icon.width: root.ribbonIconSize
+                                    icon.height: root.ribbonIconSize
+                                    icon.color: "transparent"
+                                    Layout.fillHeight: true
+                                    text: modelData.title
+                                    checkable: true
+                                    autoExclusive: true
+                                    checked: !!(App.activeOperation && App.activeOperation.entryId === modelData.id)
+                                    onClicked: root.activateEntry(modelData)
+                                }
+                            }
+
+                            ToolSeparator {
+                                orientation: Qt.Vertical
+                                Layout.fillHeight: true
+                                visible: featureGroupRow.index < featureMenuPage.modelData.groups.length - 1
+                            }
+                        }
+                    }
+                }
             }
         }
     }

@@ -24,6 +24,7 @@ class QFeatureSystemAdaptor : public QObject {
     QML_ELEMENT
     QML_UNCREATABLE("QFeatureSystemAdaptor is provided by C++")
     Q_PROPERTY(QList<QFeatureInfo*> featuresInfo READ getFeaturesInfo NOTIFY featuresInfoChanged)
+    Q_PROPERTY(QVariantList navigationDefinitions READ getNavigationEntries NOTIFY featuresInfoChanged)
 public:
     QFeatureSystemAdaptor(FeatureSystem& feature_system);
     ~QFeatureSystemAdaptor() override;
@@ -40,6 +41,10 @@ public:
      * @param value 新参数值
      */
     Q_INVOKABLE bool setParameter(const QString& unique_name, int index, const QVariant& value);
+    /**
+     * @brief 读取功能持久参数的当前快照，不修改参数或派发变更事件
+     */
+    Q_INVOKABLE QVariantList getParameterValues(const QString& unique_name) const;
     /**
      * @brief UI层向功能系统派发按键事件
      * @return 事件已被功能消费（应 accept）时为 true
@@ -63,6 +68,7 @@ public:
      * @brief 由qml获取所有已注册的功能和参数列表
      */
     QList<QFeatureInfo*> getFeaturesInfo() const;
+    QVariantList getNavigationEntries() const;
 
     /**
      * @brief 获取底层功能系统指针（interaction 交互状态等系统级接口用）

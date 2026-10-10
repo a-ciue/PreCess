@@ -49,7 +49,12 @@ struct HandlerMetaData {
     std::string display_name { }; // 算法UI展示用名称
 };
 
-class AlgorithmSystem {
+/**
+ * @brief 已废弃的算法分发系统，仅保留已有调用者的运行能力
+ * @deprecated 新功能使用 FeatureSystem；本系统不再接收新算法、导航或接口扩展。
+ * @note 修改限制见本目录 README.md 和根目录 AGENTS.md。
+ */
+class [[deprecated("Legacy AlgorithmSystem is frozen; use FeatureSystem instead")]] AlgorithmSystem {
 public:
     using SystemHandler = AlgorithmHandler; //> 算法处理器类型，算法系统下所有处理器的基类类型
     using SystemHandlerPtr = ::systems::SystemHandlerPtr<SystemHandler>; //> 处理器的智能指针，支持自定义析构函数。特别是兼容跨dll边界获取的析构函数。

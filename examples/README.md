@@ -6,7 +6,7 @@
 | --- | --- |
 | ExternalPlugin | 最小功能插件骨架 |
 | FeatureDemoPlugin | 参数、按键、模型事件与同步写入 |
-| ProgressDemoPlugin | 算法进度与取消 |
+| ProgressDemoPlugin | 旧算法接口的进度与取消兼容示例；新增算法使用 Feature 与 TaskDemoPlugin 范式 |
 | TaskDemoPlugin | 纯计算、影子组件、类型化回写任务 |
 | ScalePreviewPlugin | 预览、后台缩放、确认与取消 |
 
@@ -44,3 +44,21 @@ cmake --install build --prefix "<安装前缀>" --component AllPlugins
 - PRECESS_PLUGIN_IN_TREE 由构建入口管理，不手动设置。示例保留独立入口；项目内插件不需要这套 SDK 入口。以上命令的产物均放在独立 build 目录。
 
 模型写入、任务和线程契约以接口头文件为准。示例使用活动组件是教学简化，正式功能优先通过 Selector 选择目标。
+
+## 统一 Feature 功能入口
+
+新增业务功能使用 `FeatureHandler`。所有功能都用同一个入口接口：
+
+```cpp
+void ExampleSolver::setup(FeatureRegistrar& registrar, FeatureContext&)
+{
+    registrar.addParameter({ ArgTypeEnum::Int, "迭代数", "100" });
+    auto& navigation = registrar.navigation();
+    navigation.addEntry({ "analysis", "分析", "", 20, "功能/求解" });
+    navigation.setLabel("稳态求解器");
+}
+```
+
+不同功能注册相同入口 id 后自动聚合：一个功能直接显示参数，多个功能显示子功能选择器。`FeatureNavigationEntry` 依次声明 id、入口标题、图标、排序和菜单/分组路径；子功能标题通过 `setLabel` 单独配置。同一功能可注册到多个入口，参数和执行状态不复制。宿主通过 `setNavigationEntries` 保留空入口，零子功能时禁用执行。未声明入口时回退默认“功能”菜单。
+
+完整字段、参数预设与聚合规则见 [SDK 导航 reference](../sdk/skills/zenithgrid-external-plugin-development/references/development.md#统一功能入口)。功能执行、事件、任务和 undo 通过 FeatureSystem 协调。公共 Feature 头文件变化后，必须用匹配 SDK 全量重建主程序、项目内插件、示例及独立 Addons，确保 ABI 一致。

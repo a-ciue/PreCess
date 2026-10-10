@@ -15,63 +15,61 @@ import app.model.systems.algo
 
 Item{
     id: root
-    property var parameters: []
-    readonly property QSelection emptySelection: QSelection {}
+    required property OperationSession session
+    readonly property var parameters: root.session.parameterModel.values
+    readonly property var activeOp: root.session.activeOperation
+    readonly property bool isGroupedOperation: root.session.isGroupedOperation
+    readonly property bool hasSubFeatureChoice: root.session.hasSubFeatureChoice
+    readonly property string panelTitle: root.session.panelTitle
+    readonly property var subFeatures: root.session.subFeatures
+    readonly property bool _hasSubFeatureHeader: root.isGroupedOperation && (root.hasSubFeatureChoice || root.subFeatures.length === 0)
 
-    readonly property var activeOp: App.activeOperation
-
-    onActiveOpChanged: {
-        App.selection.listeningSelectorIndex = -1
-        // 创建类操作直接提供默认参数，避免依赖 ListView delegate 的延迟初始化时机。
-        parameters = root.activeOp && root.activeOp.defaultParameters
-                ? root.activeOp.defaultParameters.slice() : []
-        // 活动操作是功能则进入该功能（interactive 的交互随之一并上线），否则退出当前功能
-        // （幂等，守卫在功能系统内；进入/退出经 FeatureHandler::activate/deactivate 通知功能）
-        var isFeature = !!(activeOp && activeOp.isFeature)
-        QModelManager.featureSystem.setFeatureActive(isFeature ? activeOp.info.name : "")
-    }
-
-    // 写入参数值；功能的参数为持久参数，修改即时写回功能系统实时生效
     function setParam(index, value) {
-        parameters[index] = value
-        if (root.activeOp && root.activeOp.isFeature)
-            QModelManager.featureSystem.setParameter(root.activeOp.info.name, index, value)
+        root.session.parameterModel.setValue(index, value)
     }
 
-    // 清理全部选择器参数，包括 ListView 尚未创建的 delegate。
-    Connections {
-        target: App.selection
-        function onSelectionInvalidated() {
-            App.selection.listeningSelectorIndex = -1
-            if (!root.activeOp || !root.activeOp.info)
-                return
-            const args = root.activeOp.info.arg_types
-            for (let i = 0; i < args.length; ++i) {
-                if (args[i].type === QArgType.Selector)
-                    root.setParam(i, root.emptySelection)
-            }
+    ColumnLayout {
+        id: subFeatureHeader
+        anchors.top: parent.top
+        anchors.left: parent.left
+        anchors.right: parent.right
+        anchors.margins: root._hasSubFeatureHeader ? Theme.spacingSm : 0
+        spacing: Theme.spacingSm
+        visible: root._hasSubFeatureHeader
+        height: visible ? implicitHeight : 0
+        ComboBox {
+            id: subFeatureSelector
+            objectName: "subFeatureSelector"
+            Layout.fillWidth: true
+            // 单子功能直接进入参数面板，多个子功能才显示选择入口。
+            visible: root.hasSubFeatureChoice
+            model: root.subFeatures.map(info => ({ text: info.label || info.display_name }))
+            textRole: "text"
+            enabled: root.hasSubFeatureChoice
+            currentIndex: root.activeOp && root.activeOp.info
+                ? root.subFeatures.findIndex(info => info.name === root.activeOp.info.name) : -1
+            onActivated: index => root.session.selectSubFeature(index)
+            Accessible.name: qsTr("子功能")
         }
-    }
-
-    // 功能侧回写参数值（如交互结果文本）→ 同步到面板显示
-    Connections {
-        target: QModelManager.featureSystem
-        function onParamValueChanged(feature, index, value) {
-            if (root.activeOp && root.activeOp.info && root.activeOp.info.name === feature)
-                root.parameters[index] = value
+        Label {
+            visible: root.subFeatures.length === 0
+            text: qsTr("暂无可用子功能")
+            color: Theme.textSecondary
+            Layout.fillWidth: true
         }
     }
 
     RowLayout{
         id: buttonRow
-        anchors.top: parent.top
+        objectName: "operationButtons"
+        anchors.bottom: parent.bottom
         anchors.left: parent.left
         anchors.right: parent.right
         anchors.margins: visible ? Theme.spacingSm : 0
         height: visible ? 36 : 0
         spacing: Theme.spacingSm
-        // 无活动操作时按钮行整体隐藏，避免两个 disabled 按钮占据首行
-        visible: !!(root.activeOp && root.activeOp.info)
+        // 无活动操作时按钮行整体隐藏，避免禁用按钮占用面板空间。
+        visible: root.isGroupedOperation || !!(root.activeOp && root.activeOp.info)
         Button{
             id: commitButton
             text: "执行"
@@ -116,7 +114,7 @@ Item{
             ToolTip.visible: hovered
             ToolTip.delay: 500
             ToolTip.text: qsTr("结束当前操作")
-            enabled: !!(root.activeOp && root.activeOp.info)
+            enabled: !!root.activeOp
             Layout.fillHeight: true
             // 保留对号语义，用有边界的按钮与粗线标记提升辨识度。
             background: Rectangle {
@@ -148,20 +146,21 @@ Item{
                     }
                 }
             }
-            // 确认 = 结束当前操作，取消操作选中；再次执行需重新点选算法
+            // 确认 = 结束当前操作，取消操作选中；再次执行需重新点选功能。
             onClicked: App.activeOperation = null
         }
     }
     Item{
-        anchors.top: buttonRow.bottom
+        anchors.top: root._hasSubFeatureHeader ? subFeatureHeader.bottom : parent.top
         anchors.left: parent.left
         anchors.right: parent.right
-        anchors.bottom: parent.bottom
+        anchors.bottom: buttonRow.visible ? buttonRow.top : parent.bottom
         clip: true
         ColumnLayout{
             anchors.fill: parent
             ListView{
                 id:parameterList
+                objectName: "operationParameters"
                 clip: true
                 // 固定预留滚动条槽，避免遮挡输入框或在滚动条显隐时挤动参数行。
                 contentWidth: Math.max(0, width - parameterScrollBar.implicitWidth - Theme.spacingXs)
@@ -171,7 +170,7 @@ Item{
                 Layout.fillWidth: true
                 Layout.margins: Theme.spacingSm
                 spacing: Theme.spacingSm
-                model: root.activeOp ? root.activeOp.info.arg_types : []
+                model: root.activeOp && root.activeOp.info ? root.activeOp.info.arg_types : []
                 delegate:Component{
                     Loader{
                         required property var model
@@ -214,12 +213,11 @@ Item{
         id:componentComboBox
         RowLayout{
             id: comboRow
+            // activated 的 index 是选项编号，不能当作参数在操作中的位置。
+            readonly property int parameterIndex: index
             spacing: Theme.spacingSm
             width: parameterList.contentWidth
-            property var value: null
-            ListModel{
-                id: comboModel
-            }
+            readonly property var modelDataValues: model.content.split("|")[0].split(",").map(text => ({ text: text }))
             Text{
                 id:nametext
                 text: model.name
@@ -231,37 +229,12 @@ Item{
             }
             ComboBox{
                 id:parameterComboBox
+                objectName: "parameterControl_" + index
                 Layout.fillWidth: true
-                model: comboModel
-                onCurrentIndexChanged: {
-                    if (comboRow.parent.initialized) {
-                        value = currentIndex
-                        root.setParam(index, value)
-                    }
-                }
-            }
-
-            Component.onCompleted: {
-                if(model && model.content){
-                    let parts = model.content.split("|")
-                    let items = parts[0].split(",")
-                    comboModel.clear()
-                    for(let i=0; i<items.length; i++){
-                        comboModel.append({"text":items[i]})
-                    }
-                    const parameterValue = root.parameters[index]
-                    let defaultIndex = parameterValue !== undefined
-                            && parameterValue !== null
-                            ? Number(parameterValue)
-                            : (parts.length > 1 ? parseInt(parts[1]) : 0)
-                    if (isNaN(defaultIndex) || defaultIndex < 0 || defaultIndex >= items.length) {
-                        defaultIndex = 0
-                    }
-                    parameterComboBox.currentIndex = defaultIndex
-                    value = defaultIndex
-                }
-                value = parameterComboBox.currentIndex
-                root.setParam(index, value)
+                model: comboRow.modelDataValues
+                textRole: "text"
+                currentIndex: Number(root.parameters[comboRow.parameterIndex])
+                onActivated: optionIndex => root.setParam(comboRow.parameterIndex, optionIndex)
             }
         }
     }
@@ -281,6 +254,7 @@ Item{
             }
             TextField {
                 id:parameterTextInput
+                objectName: "parameterControl_" + index
                 Layout.minimumWidth: 0
                 Layout.minimumHeight: 28
                 padding: 6
@@ -293,10 +267,19 @@ Item{
                     border.color: parent.activeFocus ? Theme.primary : Theme.borderStrong
                 }
                 Layout.fillWidth: true
-                text: model.content
-                onTextChanged:{
-                    // Int 走整数语义（parseInt 截断小数）；Float 保持 parseFloat
+                property bool editingValue: false
+                readonly property string sourceText: Number.isNaN(root.parameters[index])
+                        ? "" : String(root.parameters[index] ?? "")
+                onSourceTextChanged: {
+                    if (!editingValue)
+                        text = sourceText
+                }
+                Component.onCompleted: text = sourceText
+                onTextEdited: {
+                    // 保留负号、小数点等中间文本，不用解析结果覆盖正在输入的内容。
+                    editingValue = true
                     root.setParam(index, model.type === QArgType.Int ? parseInt(text) : parseFloat(text))
+                    editingValue = false
                 }
             }
         }
@@ -317,6 +300,7 @@ Item{
             }
             TextArea{
                 id:fileText
+                objectName: "parameterControl_" + index
                 Layout.minimumWidth: 0
                 Layout.minimumHeight: 28
                 padding: 6
@@ -331,12 +315,12 @@ Item{
                 wrapMode: TextEdit.Wrap
                 Layout.fillWidth: true
 
-                Component.onCompleted: {
-                    fileText.text = model.content
-                    root.setParam(index, fileText.text)
-                }
-                onEditingFinished: {
-                    root.setParam(index, fileText.text)
+                readonly property string sourceText: String(root.parameters[index] ?? "")
+                onSourceTextChanged: text = sourceText
+                Component.onCompleted: text = sourceText
+                onTextChanged: {
+                    if (parent.parent.initialized)
+                        root.setParam(index, text)
                 }
             }
             Button{
@@ -377,7 +361,6 @@ Item{
             id: textRow
             spacing: Theme.spacingSm
             width: parameterList.contentWidth
-            property var value: fileText.text
             Text{
                 id:nametext
                 text: model.name
@@ -399,6 +382,7 @@ Item{
             }
             TextArea{
                 id:fileText
+                objectName: "parameterControl_" + index
                 Layout.minimumWidth: 0
                 Layout.minimumHeight: 28
                 padding: 6
@@ -416,19 +400,12 @@ Item{
                 ToolTip.visible: hovered && model.description.length > 0
                 ToolTip.text: model.description
 
-                // 中间属性承接显示值（避免 text 绑定被用户输入摧毁）：
-                // 优先取参数当前值（功能回写的结果等），未赋值时取 content 默认
-                property string sourceText: {
-                    const v = root.parameters[index]
-                    return (v !== undefined && v !== null && v !== "") ? String(v) : (model.content || "")
-                }
+                readonly property string sourceText: String(root.parameters[index] ?? "")
                 onSourceTextChanged: text = sourceText
-                Component.onCompleted: {
-                    text = sourceText
-                    root.setParam(index, fileText.text)
-                }
-                onEditingFinished: {
-                    root.setParam(index, fileText.text)
+                Component.onCompleted: text = sourceText
+                onTextChanged: {
+                    if (textRow.parent.initialized)
+                        root.setParam(index, text)
                 }
             }
         }
@@ -438,9 +415,7 @@ Item{
         RowLayout{
             spacing: Theme.spacingSm
             width: parameterList.contentWidth
-            property var value: null
-            // 清空参数时传递明确的选择器对象，不让通用转换层解释 null。
-            readonly property QSelection emptySelection: QSelection {}
+            readonly property var value: root.parameters[index]
 
             Text{
                 id:nametext
@@ -455,7 +430,7 @@ Item{
                 id:selectedItems
                 Layout.fillWidth: true
                 elide: Text.ElideRight
-                text: value ? value.size():"无"
+                text: value && value.size() > 0 ? value.size() : "无"
                 color: value ? Theme.textPrimary : Theme.textSecondary
                 font.pixelSize: Theme.fontSizeBody
                 verticalAlignment: Text.AlignVCenter
@@ -463,6 +438,7 @@ Item{
 
             Button{
                 id: selectStartButton
+                objectName: "parameterControl_" + index
                 text: checked ? "结束选择" : "开始选择"
                 // 拾取进行中：强调色提示当前面板处于监听状态
                 highlighted: App.selection.listeningSelectorIndex === index
@@ -495,18 +471,10 @@ Item{
                     // 切换参数的同步通知可能先于 checked 绑定刷新，必须核对当前监听者。
                     if (App.selection.listeningSelectorIndex !== index)
                         return
-                    // 只更新当前监听参数；视口的 null 在此转换为明确的空选择器。
-                    value = selection
-                    root.setParam(index, value === null ? emptySelection : value)
+                    root.setParam(index, selection)
                 }
             }
 
-            Connections {
-                target: App.selection
-                function onSelectionInvalidated() {
-                    value = null
-                }
-            }
         }
     }
     Component{
@@ -526,6 +494,7 @@ Item{
             }
             CheckBox{
                 id: parameterCheckBox
+                objectName: "parameterControl_" + index
                 // 加大勾选区域，以实色背景区分已选状态；保留控件自身的键盘和无障碍行为。
                 indicator: Rectangle {
                     implicitWidth: 24
@@ -553,13 +522,8 @@ Item{
                     }
                 }
 
-                Component.onCompleted: {
-                    checked = (model.content === "true")
-                    root.setParam(index, checked)
-                }
-                onCheckedChanged: {
-                    root.setParam(index, checked)
-                }
+                checked: !!root.parameters[index]
+                onToggled: root.setParam(index, checked)
             }
         }
     }
@@ -569,6 +533,7 @@ Item{
             spacing: Theme.spacingSm
             width: parameterList.contentWidth
             Button{
+                objectName: "parameterControl_" + index
                 // Button 是无值触发器：计数器载荷，功能约定忽略值只读参数下标
                 text: model.name
                 Layout.fillWidth: true

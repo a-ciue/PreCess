@@ -21,7 +21,7 @@ void CreateFaceFromEdgesHandler::setup(FeatureRegistrar& reg, FeatureContext& /*
     // 参数声明与原 GeometryOperationActions.qml 中 createFaceFromEdgesInfo 保持一致；
     // 菜单与图标复用原"几何"页"闭合边成面"按钮的声明
     reg.addParameter({ ArgTypeEnum::Selector, "轮廓边", "GeometryEdge", "请选择一条或多条闭合轮廓边" });
-    reg.addMenuItem({ "几何", "选择闭合边创建面", "qrc:/images/toolbar/Geometry/face-from-edges.svg" });
+    reg.navigation().addEntry({ "CreateFaceFromEdges", "选择闭合边创建面", "qrc:/images/toolbar/Geometry/face-from-edges.svg", 0, "几何" });
 }
 
 std::any CreateFaceFromEdgesHandler::execute(FeatureContext& ctx)

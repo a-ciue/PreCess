@@ -13,7 +13,9 @@
 #include "ModelScope.h"
 #include "ShadowComponent.h"
 #include "UndoStack.h"
+#include <algorithm>
 #include <cassert>
+#include <map>
 #include <spdlog/spdlog.h>
 #include <stdexcept>
 #include <utility>
@@ -245,7 +247,7 @@ bool AlgorithmSystem::registerHandler(const HandlerMetaData& meta_data, SystemHa
     if (!handler)
         return false;
 
-    // 元数据准备成功后才整体替换，异常不留下 handler 与信息不一致的注册。
+    // 参数准备成功后再替换注册，保留旧接口既有的失败原子性。
     AlgorithmInfo info { .name = meta_data.name,
         .display_name = meta_data.display_name,
         .arg_types = handler->args_type() };

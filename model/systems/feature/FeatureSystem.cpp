@@ -12,10 +12,58 @@
 
 #include <spdlog/spdlog.h>
 
+#include <algorithm>
+#include <map>
 #include <optional>
 #include <utility>
 
 namespace systems::feature {
+void FeatureSystem::setNavigationEntries(std::vector<FeatureNavigationEntry> categories)
+{
+    model_layer_->assertOperationIdle();
+    FeatureNavigation navigation;
+    for (auto& category : categories)
+        navigation.addEntry(std::move(category));
+    if (navigation_entries_ == navigation.entries())
+        return;
+    navigation_entries_ = navigation.entries();
+    on_feature_infos_changed_();
+}
+
+std::vector<FeatureNavigationEntry> FeatureSystem::getNavigationEntries() const
+{
+    struct Candidate {
+        FeatureNavigationEntry category;
+        std::string provider;
+    };
+    std::map<std::string, Candidate> candidates;
+    // 宿主入口不随功能卸载而消失；系统不预设业务类别或菜单路径。
+    for (const auto& category : navigation_entries_)
+        candidates.emplace(category.id, Candidate { category, "" });
+    for (const auto& [name, entry] : entries_) {
+        for (const auto& category : entry.info.navigation.entries()) {
+            auto found = candidates.find(category.id);
+            // 插件描述优先；同类按功能身份选来源，不依赖加载顺序。
+            if (found == candidates.end() || found->second.provider.empty() || name < found->second.provider) {
+                auto resolved_category = category;
+                if (resolved_category.menu_path.empty()) {
+                    const auto host = std::find_if(navigation_entries_.begin(), navigation_entries_.end(), [&](const auto& declared) { return declared.id == category.id; });
+                    if (host != navigation_entries_.end())
+                        resolved_category.menu_path = host->menu_path;
+                }
+                candidates.insert_or_assign(category.id, Candidate { std::move(resolved_category), name });
+            }
+        }
+    }
+    std::vector<FeatureNavigationEntry> result;
+    for (const auto& [id, candidate] : candidates)
+        result.push_back(candidate.category);
+    std::sort(result.begin(), result.end(), [](const auto& a, const auto& b) {
+        return a.order != b.order ? a.order < b.order : a.id < b.id;
+    });
+    return result;
+}
+
 const std::string FeatureSystem::name = "FeatureSystem";
 
 FeatureSystem::FeatureEntry::FeatureEntry(FeatureSystem& system, const HandlerMetaData& meta_data)
@@ -76,6 +124,10 @@ bool FeatureSystem::registerHandler(const HandlerMetaData& meta_data, SystemHand
     if (!handler) {
         return false;
     }
+    // 同名插件描述刷新不应丢失用户已编辑的参数；声明变化时仍载入新默认值。
+    std::optional<FeatureParams> previous_params;
+    if (auto previous = entries_.find(meta_data.name); previous != entries_.end())
+        previous_params = previous->second.params;
     // 同名功能先注销旧的再替换
     if (entries_.count(meta_data.name)) {
         spdlog::warn("FeatureSystem::registerHandler: feature '{}' already registered, replacing it", meta_data.name);
@@ -95,8 +147,12 @@ bool FeatureSystem::registerHandler(const HandlerMetaData& meta_data, SystemHand
     }
     // setup 返回后载入默认值；参数对象地址不变，context 内部引用继续有效。
     entry.params = FeatureParams(registrar.argTypes());
+    if (previous_params && std::equal(previous_params->types().begin(), previous_params->types().end(), registrar.argTypes().begin(), registrar.argTypes().end(), [](const auto& a, const auto& b) {
+            return a.name == b.name && a.type == b.type && a.content == b.content;
+        }))
+        entry.params = std::move(*previous_params);
     entry.info.arg_types = registrar.argTypes();
-    entry.info.menus = registrar.menuItems();
+    entry.info.navigation = registrar.navigation();
     entry.info.key_bindings = registrar.keyBindings();
     entry.handler = std::move(handler);
 

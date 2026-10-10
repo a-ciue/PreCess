@@ -26,9 +26,12 @@ qt_add_qml_module(${MYNAME}
             Main.qml
             TaskStatusBar.qml
             AppToolbar.qml
+            FeatureNavigation.js
             AttributeRenderPanel.qml
             CentralRenderArea.qml
             SideBar.qml
+            OperationSession.qml
+            OperationParameterModel.qml
             ObjectTree.qml
             Selector.qml
             JavaScriptConsole.qml

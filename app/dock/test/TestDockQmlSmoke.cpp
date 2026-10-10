@@ -171,6 +171,22 @@ TEST_CASE("DockQml: docking area loads from QML and lays out docks")
     REQUIRE(central_guest->parentItem() != nullptr);
     CHECK(central_guest->parentItem()->objectName() == QStringLiteral("contentArea"));
 
+    // 动态标题必须同步到真实停靠标题栏，恢复默认标题后继续既有布局用例。
+    auto* initial_view = platform->panelGroupItem(panel_a->group());
+    REQUIRE(initial_view != nullptr);
+    auto* initial_title = initial_view->findChild<QQuickItem*>(QStringLiteral("titleText"));
+    REQUIRE(initial_title != nullptr);
+    panel_a->setTitle(QStringLiteral("操作面板-三角形网格生成"));
+    QCoreApplication::processEvents();
+    CHECK(initial_title->property("text").toString() == QStringLiteral("操作面板-三角形网格生成"));
+    if (const auto capture = qEnvironmentVariable("PRECESS_DOCK_CAPTURE"); !capture.isEmpty()) {
+        QTest::qWait(100);
+        REQUIRE(host_window.grabWindow().save(capture));
+    }
+    panel_a->setTitle(QStringLiteral("Panel A"));
+    QCoreApplication::processEvents();
+    CHECK(initial_title->property("text").toString() == QStringLiteral("Panel A"));
+
     // 重开面板：client 应恢复可见（重开空白回归）
     QQuickItem* panel_a_guest = platform->panelContentItem(panel_a);
     REQUIRE(panel_a_guest != nullptr);

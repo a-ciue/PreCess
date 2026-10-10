@@ -6,7 +6,6 @@
 #include "AlgorithmSystem.h"
 #include "PluginBase.h"
 
-#include <QJsonArray>
 #include <cassert>
 #include <spdlog/spdlog.h>
 

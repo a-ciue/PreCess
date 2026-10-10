@@ -1,5 +1,9 @@
 #include "AlgorithmHandler.h"
 #include "AlgorithmSystem.h"
+#include "AlgorithmSystemRegister.h"
+#include "HandlerCreatorDestroyerFactory.h"
+#include "PluginBase.h"
+
 #include "ArgObject.h"
 #include "ComponentData.h"
 #include "JobRunner.h"
@@ -8,6 +12,7 @@
 #include "ModelLayer.h"
 #include "UndoStack.h"
 #include "test/OwnerQueue.h"
+#include <QJsonArray>
 
 #include <array>
 #include <catch2/catch_approx.hpp>

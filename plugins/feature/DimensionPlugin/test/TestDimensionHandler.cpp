@@ -293,7 +293,7 @@ TEST_CASE("DimensionHandler setup declares measure parameters and menu")
     REQUIRE(env.info->arg_types.size() == 2);
     CHECK(env.info->arg_types[0].type == ArgTypeEnum::Combo);
     CHECK(env.info->arg_types[1].type == ArgTypeEnum::Selector);
-    REQUIRE(env.info->menus.size() == 1);
+    REQUIRE(env.info->navigation.entries().size() == 1);
 }
 
 TEST_CASE("DimensionHandler: distance between two vertices")

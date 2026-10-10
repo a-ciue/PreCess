@@ -23,7 +23,7 @@ if(BUILD_TESTING)
 endif()
 ```
 
-- 按系统选择 precess_add_io_plugin / precess_add_algo_plugin / precess_add_edit_plugin / precess_add_feature_plugin；生成动态插件和供测试链接的 <目标名>lib。独立工程不使用 STATIC。
+- 按系统选择 precess_add_io_plugin / precess_add_edit_plugin / precess_add_feature_plugin；新增算法使用 precess_add_feature_plugin。precess_add_algo_plugin 已废弃并冻结，仅供已有旧插件维护；生成动态插件和供测试链接的 <目标名>lib。独立工程不使用 STATIC。
 - 额外依赖先 find_package，再用 precess_plugin_link_libraries 连接；VTK 等基线依赖使用 SDK 配套实例，GPL 依赖由插件工程维护。
 - 测试用 Tests 组件、precess_add_test 和 precess_test_link_libraries，连接 <目标名>lib 与 PreCess::Base，不连接 Data、Session 等源码树目标。
 - 复用 examples 时保留 ExampleProject.cmake，不手动设置 PRECESS_PLUGIN_IN_TREE。更新 SDK/公共头后重建全部插件；更换 SDK 或配置时使用新的构建目录。

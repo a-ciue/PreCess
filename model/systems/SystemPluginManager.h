@@ -26,6 +26,7 @@ public:
      * @return 注册是否成功
      *
      * 解析插件元数据，获取插件名称和系统名称，并将插件注册到对应的系统注册器中。
+     * JSON 仅提供插件身份；算法导航由 Handler 的 setup 声明。
      */
     bool registerPlugin(const std::filesystem::path& plugin_path);
     /**

@@ -7,6 +7,7 @@ qt_add_qml_module(FeatureSystemQml
 )
 target_link_libraries(FeatureSystemQml PRIVATE 
     FeatureSystem
+    coreQml
     Qt6::Core Qt6::Qml spdlog::spdlog)
 target_link_libraries(FeatureSystemQml PUBLIC QArgType Core Data)
 target_link_libraries(FeatureSystemQmlplugin PUBLIC QArgType)

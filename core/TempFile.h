@@ -1,5 +1,6 @@
-// TempFile.h
-// 临时文件的RAII实现
+/** @file TempFile.h
+ * @brief 临时文件路径及其独占目录的生命周期管理。
+ */
 #pragma once
 #include <filesystem>
 #include <fstream>
@@ -7,21 +8,21 @@
 
 namespace core {
 /**
- * @brief 获取临时文件，单例模式
+ * @brief 在单例独占的子目录内获取临时路径，退出时只清理自己拥有的目录。
  */
 class TempFile {
 public:
-    ~TempFile();
-    // 对象拥有文件所有权（类unique_ptr，禁止拷贝构造和赋值
-    TempFile(TempFile&) = delete;
-    TempFile& operator=(TempFile&) = delete;
+    ~TempFile() noexcept;
+    // 单例持有唯一清理权；禁止复制或移动到另一个生命周期。
+    TempFile(const TempFile&) = delete;
+    TempFile& operator=(const TempFile&) = delete;
 
-    TempFile(TempFile&&) = default;
-    TempFile& operator=(TempFile&&) = default;
+    TempFile(TempFile&&) = delete;
+    TempFile& operator=(TempFile&&) = delete;
 
     static TempFile& instance();
     /**
-     * @brief 获取临时文件路径，推荐使用stream()代替path()
+     * @brief 获取尚未创建的临时文件路径，可从多个线程调用。
      */
     std::filesystem::path path() const;
     /**
