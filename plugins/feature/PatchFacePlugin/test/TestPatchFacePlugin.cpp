@@ -130,6 +130,11 @@ TEST_CASE("PatchFace feature fills a boundary loop with undo and redo", "[PatchF
         undo_stack.clear();
         FeatureSystem::SystemHandlerPtr handler { new PatchFaceHandler };
         REQUIRE(feature_system.registerHandler(handlerMetaData(), std::move(handler)));
+        const auto navigation_entries = feature_system.getNavigationEntries();
+        REQUIRE(navigation_entries.size() == 1);
+        CHECK(navigation_entries.front().id == "PatchFace");
+        CHECK(navigation_entries.front().title == "补面");
+        CHECK(navigation_entries.front().menu_path == "几何/修复");
         REQUIRE(feature_system.setParameter("PatchFace", 0,
             core::ArgObject::create<ArgTypeEnum::Selector>(makeEdgeSelection(fixture))));
         const auto result = feature_system.invoke("PatchFace");

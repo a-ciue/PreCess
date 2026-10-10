@@ -17,5 +17,10 @@ TEST_CASE("CollapseEdge feature registers its baseline parameters", "[CollapseEd
     meta.name = "CollapseEdge";
     FeatureSystem::SystemHandlerPtr handler { new CollapseEdgeHandler };
     REQUIRE(system.registerHandler(meta, std::move(handler)));
+    const auto navigation_entries = system.getNavigationEntries();
+    REQUIRE(navigation_entries.size() == 1);
+    CHECK(navigation_entries.front().id == "CollapseEdge");
+    CHECK(navigation_entries.front().title == "压缩边");
+    CHECK(navigation_entries.front().menu_path == "几何/拓扑");
     REQUIRE(std::any_cast<std::string>(system.invoke("CollapseEdge")) == "请选择一条需要压缩的几何边。");
 }

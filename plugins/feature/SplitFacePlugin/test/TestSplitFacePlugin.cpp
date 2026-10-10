@@ -196,6 +196,11 @@ TEST_CASE("SplitFace feature splits one face and records one undo operation", "[
     undo_stack.clear();
     FeatureSystem::SystemHandlerPtr handler { new SplitFaceHandler };
     REQUIRE(feature_system.registerHandler(handlerMetaData(), std::move(handler)));
+    const auto navigation_entries = feature_system.getNavigationEntries();
+    REQUIRE(navigation_entries.size() == 1);
+    CHECK(navigation_entries.front().id == "SplitFace");
+    CHECK(navigation_entries.front().title == "分割面");
+    CHECK(navigation_entries.front().menu_path == "几何/拓扑");
 
     const std::any hint = feature_system.invoke("SplitFace");
     REQUIRE(std::any_cast<std::string>(hint) == "请选择一个需要分割的几何面。");

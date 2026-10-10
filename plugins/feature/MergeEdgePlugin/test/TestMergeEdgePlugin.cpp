@@ -117,6 +117,11 @@ TEST_CASE("MergeEdge feature merges selected edges and records one undo operatio
     undo_stack.clear();
     FeatureSystem::SystemHandlerPtr handler { new MergeEdgeHandler };
     REQUIRE(feature_system.registerHandler(handlerMetaData(), std::move(handler)));
+    const auto navigation_entries = feature_system.getNavigationEntries();
+    REQUIRE(navigation_entries.size() == 1);
+    CHECK(navigation_entries.front().id == "MergeEdge");
+    CHECK(navigation_entries.front().title == "合并边");
+    CHECK(navigation_entries.front().menu_path == "几何/拓扑");
 
     const std::any hint = feature_system.invoke("MergeEdge");
     REQUIRE(std::any_cast<std::string>(hint)

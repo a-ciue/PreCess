@@ -29,7 +29,7 @@ void PatchFaceHandler::setup(FeatureRegistrar& reg, FeatureContext& /*ctx*/)
 {
     reg.addParameter({ ArgTypeEnum::Selector, "边界边", "GeometryEdge",
         "选择一条孤立边或单面边界边，按总弧长最短的闭合边界环补面" });
-    reg.addMenuItem({ "几何/修复", "补面", "" });
+    reg.navigation().addEntry({ "PatchFace", "补面", "", 0, "几何/修复" });
 }
 
 std::any PatchFaceHandler::execute(FeatureContext& ctx)

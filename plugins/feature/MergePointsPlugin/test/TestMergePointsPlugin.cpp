@@ -113,6 +113,11 @@ TEST_CASE("MergePoints feature merges two vertices at midpoint", "[MergePointsPl
     undo_stack.clear();
     FeatureSystem::SystemHandlerPtr handler { new MergePointsHandler };
     REQUIRE(feature_system.registerHandler(handlerMetaData(), std::move(handler)));
+    const auto navigation_entries = feature_system.getNavigationEntries();
+    REQUIRE(navigation_entries.size() == 1);
+    CHECK(navigation_entries.front().id == "MergePoints");
+    CHECK(navigation_entries.front().title == "点合并");
+    CHECK(navigation_entries.front().menu_path == "几何/拓扑");
 
     REQUIRE(feature_system.setParameter("MergePoints", 0,
         core::ArgObject::create<ArgTypeEnum::Selector>(
