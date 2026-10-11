@@ -20,7 +20,7 @@ void SplitEdgeHandler::setup(FeatureRegistrar& reg, FeatureContext& /*ctx*/)
 {
     reg.addParameter({ ArgTypeEnum::Selector, "目标边", "GeometryEdge", "请选择一条需要分割的几何边" });
     reg.addParameter({ ArgTypeEnum::Float, "分割比例", "0.5", "沿边方向的归一化比例，范围为 (0, 1)" });
-    reg.navigation().addEntry({ "SplitEdge", "分割边", "", 0, "几何/拓扑" });
+    reg.navigation().addEntry({ "SplitEdge", "分割边", "qrc:/images/toolbar/Geometry/split-edge.svg", 0, "几何/拓扑" });
 }
 
 std::any SplitEdgeHandler::execute(FeatureContext& ctx)

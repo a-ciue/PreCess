@@ -170,6 +170,7 @@ TEST_CASE("FillGap feature stitches the gap boundary from one seed edge", "[Fill
     const auto navigation_entries = feature_system.getNavigationEntries();
     REQUIRE(navigation_entries.size() == 1);
     CHECK(navigation_entries.front().id == "FillGap");
+    CHECK(navigation_entries.front().icon == "qrc:/images/toolbar/Geometry/fill-gap.svg");
     CHECK(navigation_entries.front().title == "局部缝合");
     CHECK(navigation_entries.front().menu_path == "几何/修复");
 

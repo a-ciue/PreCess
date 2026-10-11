@@ -66,7 +66,7 @@ qt_add_resources(TestBusyMask busy_mask
 
 # 加载实际工具栏，覆盖通用父入口和旧算法列表入口。
 precess_add_test(TestToolbarNavigation TestToolbarNavigation.cpp)
-precess_test_link_libraries(TestToolbarNavigation modelQml modelQmlplugin SystemQmlplugin renderQmlplugin renderQml Qt6::QuickControls2)
+precess_test_link_libraries(TestToolbarNavigation modelQml modelQmlplugin SystemQmlplugin renderQmlplugin renderQml Qt6::QuickControls2 Qt6::Svg)
 qt_add_resources(TestToolbarNavigation navigation_ui
     PREFIX "/navigation-ui"
     BASE "${CMAKE_CURRENT_SOURCE_DIR}/.."
@@ -81,4 +81,15 @@ qt_add_resources(TestToolbarNavigation navigation_icons
         "${CMAKE_SOURCE_DIR}/resource/toolbar/Algorithm/gmsh.svg"
         "${CMAKE_SOURCE_DIR}/resource/toolbar/Mesh/triangle-meshing.svg"
         "${CMAKE_SOURCE_DIR}/resource/toolbar/Mesh/quad-meshing.svg"
-        "${CMAKE_SOURCE_DIR}/resource/toolbar/Mesh/hexa-meshing.svg")
+        "${CMAKE_SOURCE_DIR}/resource/toolbar/Mesh/hexa-meshing.svg"
+        "${CMAKE_SOURCE_DIR}/resource/toolbar/Geometry/split-edge.svg"
+        "${CMAKE_SOURCE_DIR}/resource/toolbar/Geometry/merge-edge.svg"
+        "${CMAKE_SOURCE_DIR}/resource/toolbar/Geometry/split-face.svg"
+        "${CMAKE_SOURCE_DIR}/resource/toolbar/Geometry/merge-face.svg"
+        "${CMAKE_SOURCE_DIR}/resource/toolbar/Geometry/merge-points.svg"
+        "${CMAKE_SOURCE_DIR}/resource/toolbar/Geometry/collapse-edge.svg"
+        "${CMAKE_SOURCE_DIR}/resource/toolbar/Geometry/patch-face.svg"
+        "${CMAKE_SOURCE_DIR}/resource/toolbar/Geometry/fill-gap.svg"
+        "${CMAKE_SOURCE_DIR}/resource/toolbar/Geometry/auto-geometry-repair.svg"
+        "${CMAKE_SOURCE_DIR}/resource/toolbar/Geometry/geometry-reconstruction.svg"
+        "${CMAKE_SOURCE_DIR}/resource/toolbar/Panels/preview.svg")
