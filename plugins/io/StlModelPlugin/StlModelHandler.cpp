@@ -11,6 +11,7 @@
  * 写出仅支持 ASCII（法向按顶点几何重算，退化面写 0）。
  */
 #include "StlModelHandler.h"
+#include "StlPointHash.h"
 
 #include "ArgType.h"
 #include "ComponentData.h"
@@ -51,22 +52,7 @@ std::string trimLine(const std::string& line)
     return line.substr(first, last - first + 1);
 }
 
-//! @brief 三角形角点坐标的精确匹配哈希（按 double 位模式混合，-0.0 归一化为 0.0）
-struct PointHash {
-    size_t operator()(const std::array<double, 3>& point) const noexcept
-    {
-        size_t seed = 0x9e3779b97f4a7c15ULL;
-        for (double value : point) {
-            if (value == 0.0) {
-                value = 0.0; // +0.0 与 -0.0 数值相等，归一化后位模式一致
-            }
-            uint64_t bits = 0;
-            std::memcpy(&bits, &value, sizeof(bits));
-            seed ^= bits + 0x9e3779b97f4a7c15ULL + (seed << 6) + (seed >> 2);
-        }
-        return seed;
-    }
-};
+using PointHash = systems::io::detail::StlPointHash;
 
 //! @brief 把一个三角形 soup 角点焊接进网格：相同坐标精确合并为共享顶点
 void weldTriangle(const std::array<double, 3>* corners,
