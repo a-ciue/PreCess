@@ -199,6 +199,7 @@ TEST_CASE("SplitFace feature splits one face and records one undo operation", "[
     const auto navigation_entries = feature_system.getNavigationEntries();
     REQUIRE(navigation_entries.size() == 1);
     CHECK(navigation_entries.front().id == "SplitFace");
+    CHECK(navigation_entries.front().icon == "qrc:/images/toolbar/Geometry/split-face.svg");
     CHECK(navigation_entries.front().title == "分割面");
     CHECK(navigation_entries.front().menu_path == "几何/拓扑");
 

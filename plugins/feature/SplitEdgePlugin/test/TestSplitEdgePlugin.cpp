@@ -20,6 +20,7 @@ TEST_CASE("SplitEdge feature registers its baseline parameters", "[SplitEdgePlug
     const auto navigation_entries = system.getNavigationEntries();
     REQUIRE(navigation_entries.size() == 1);
     CHECK(navigation_entries.front().id == "SplitEdge");
+    CHECK(navigation_entries.front().icon == "qrc:/images/toolbar/Geometry/split-edge.svg");
     CHECK(navigation_entries.front().title == "分割边");
     CHECK(navigation_entries.front().menu_path == "几何/拓扑");
     REQUIRE(std::any_cast<std::string>(system.invoke("SplitEdge")) == "请选择一条需要分割的几何边。");

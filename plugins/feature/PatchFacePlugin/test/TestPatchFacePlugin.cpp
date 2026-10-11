@@ -133,6 +133,7 @@ TEST_CASE("PatchFace feature fills a boundary loop with undo and redo", "[PatchF
         const auto navigation_entries = feature_system.getNavigationEntries();
         REQUIRE(navigation_entries.size() == 1);
         CHECK(navigation_entries.front().id == "PatchFace");
+        CHECK(navigation_entries.front().icon == "qrc:/images/toolbar/Geometry/patch-face.svg");
         CHECK(navigation_entries.front().title == "补面");
         CHECK(navigation_entries.front().menu_path == "几何/修复");
         REQUIRE(feature_system.setParameter("PatchFace", 0,
