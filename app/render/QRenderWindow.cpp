@@ -13,6 +13,7 @@
 #include "GeometryActorManager.h"
 #include "GeometryDataVtk.h"
 #include "MeshIdQuery.h"
+#include "ViewportOrientationRepresentation.h"
 
 #include <spdlog/spdlog.h>
 #include <vtkCamera.h>
@@ -244,9 +245,11 @@ QQuickVTKItem::vtkUserData QRenderWindow::initializeVTK(vtkRenderWindow* renderW
     // 注入渲染刷新回调（与 setFeatureAdaptor 互补，确保两者先后顺序均能生效）
     injectRenderRefreshCallback();
 
+    vtkNew<ViewportOrientationRepresentation> orientation;
+    vtk->orientationWidget->SetRepresentation(orientation);
     vtk->orientationWidget->AnimateOff();
     vtk->orientationWidget->SetParentRenderer(vtk->renderer_);
-    vtk->orientationWidget->SetInteractor(renderWindow->GetInteractor()); // 设置坐标系控件大小（占屏幕比例）
+    vtk->orientationWidget->SetInteractor(renderWindow->GetInteractor());
     vtk->orientationWidget->On();
 
     vtkNew<vtkDisplaySizedImplicitPlaneRepresentation> rep;
@@ -279,6 +282,10 @@ QQuickVTKItem::vtkUserData QRenderWindow::initializeVTK(vtkRenderWindow* renderW
 void QRenderWindow::destroyingVTK(vtkRenderWindow* renderWindow, vtkUserData userData)
 {
     auto* vtk = Data::SafeDownCast(userData);
+    // 智能指针管理对象内存，Off/解绑负责移除窗口上的事件观察者与 renderer 引用。
+    vtk->orientationWidget->Off();
+    vtk->orientationWidget->SetInteractor(nullptr);
+    vtk->orientationWidget->SetParentRenderer(nullptr);
     // 场景图重建会先释放旧 Data，再调用 initializeVTK；服务持有旧 renderer 的
     // 裸指针，必须在此渲染线程边界销毁，不能拖到下一次 unique_ptr 赋值或 GUI 析构。
     // 回调持有非 VTK 对象 this，必须在服务和场景图拆解前解除。
@@ -328,8 +335,11 @@ bool QRenderWindow::event(QEvent* ev)
         if (!_click)
             return QQuickVTKItem::event(ev);
 
-        setClick();
+        // 释放延迟 press，避免后续悬停重放旧按下事件、触发无按键旋转。
+        _click.reset();
         auto e = static_cast<QMouseEvent*>(ev);
+        if (e->button() == Qt::LeftButton)
+            setClick();
         if (e->button() == Qt::RightButton) {
             emit rightClicked();
             return QQuickVTKItem::event(ev);
@@ -625,7 +635,15 @@ void QRenderWindow::setScaleBarVisible(bool on)
 void QRenderWindow::setClick()
 {
     dispatch_async([this](vtkRenderWindow* renderWindow, vtkUserData userData) {
+        auto* interactor = renderWindow->GetInteractor();
+        if (!interactor)
+            return;
         Data* vtk = Data::SafeDownCast(userData);
+        auto* orientation = ViewportOrientationRepresentation::SafeDownCast(vtk->orientationWidget->GetRepresentation());
+        const int* position = interactor->GetEventPosition();
+        // 仅检查圆盘范围，不重复拾取，也不改变 widget 的交互状态。
+        if (orientation && vtk->orientationWidget->GetEnabled() && orientation->containsPoint(position[0], position[1]))
+            return;
         vtk->style_->SetClick();
     });
 }

@@ -53,6 +53,8 @@ qt_add_qml_module(renderQml
     SOURCES
         QRenderWindow.h
         QRenderWindow.cpp
+        ViewportOrientationRepresentation.h
+        ViewportOrientationRepresentation.cpp
 )
 target_link_libraries(renderQml PRIVATE 
     vtkPart modelQml 
@@ -65,3 +67,10 @@ vtk_module_autoinit(TARGETS renderQml MODULES
 if(BUILD_TESTING)
 add_subdirectory(test)
 endif()
+
+qt_add_resources(renderQml "orientation_assets"
+    PREFIX "/orientation"
+    FILES
+        assets/orientation-handles.png
+        assets/orientation-hover.png
+)
