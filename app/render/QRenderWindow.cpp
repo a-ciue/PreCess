@@ -411,6 +411,7 @@ void QRenderWindow::hideSelectedFaces()
 
         // 高亮为独立 actor，不经过面过滤管线；隐藏后须清空，否则被隐藏面仍以高亮形态可见。
         this->select_manager_->clearSelection();
+        publishSelection();
     });
 }
 
@@ -418,6 +419,9 @@ void QRenderWindow::showAllHiddenFaces()
 {
     dispatch_async([this](vtkRenderWindow*, vtkUserData userData) -> void {
         Data* vtk = Data::SafeDownCast(userData);
+        // 恢复会改变渲染单元索引，先丢弃旧选择并同步 GUI，避免旧索引指向另一原模型面。
+        this->select_manager_->clearSelection();
+        publishSelection();
         vtk->mesh_actor_manager_->showAllFaces();
     });
 }

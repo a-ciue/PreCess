@@ -286,6 +286,10 @@ void MeshActor::applyFacePipeline()
     } else {
         face_mapper_->SetInputConnection(face_hider_->GetOutputPort());
     }
+
+    // 隐藏/恢复会切换连通性存储类型，VTK 的边线绘制可能随之切换纹理路径。
+    // 同一输入连接不会自动使着色器失效，显式刷新 mapper 避免恢复后继续采样旧边线纹理。
+    face_mapper_->Modified();
 }
 
 void MeshActor::hideFaces(const std::vector<vtkIdType>& face_ids)
