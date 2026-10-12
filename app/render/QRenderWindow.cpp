@@ -406,6 +406,9 @@ void QRenderWindow::hideSelectedFaces()
 
         // 仅面选择模式有数据；selectedFaceIdsByComponent 在其余模式直接返回空表。
         auto selected_faces = this->select_manager_->selectedFaceIdsByComponent();
+        // 非面模式或没有选中面时为空操作，保留当前选择及 GUI 快照。
+        if (selected_faces.empty())
+            return;
         for (const auto& [component_id, face_ids] : selected_faces)
             vtk->mesh_actor_manager_->hideFaces(component_id, face_ids);
 

@@ -1,5 +1,6 @@
 #include "FaceHideFilter.h"
 
+#include <spdlog/spdlog.h>
 #include <vtkCellArray.h>
 #include <vtkCellData.h>
 #include <vtkDataSetAttributes.h>
@@ -36,6 +37,7 @@ namespace {
 //! @param in_cells 输入分类单元数组
 //! @param removed 全局单元 id 移除标记
 //! @param[in,out] cell_id 该分类数组起始的全局单元 id（按四类顺序递增），随遍历推进
+//! @param[in,out] out_cell_id 输出全局单元 id，跨分类累计，仅在保留单元时递增
 //! @param point_map 输入点 id → 输出点 id 压缩映射，-1 表示尚未复制
 //! @param in_points/in_point_data/out_points/out_point_data 点与点属性复制上下文
 //! @param in_cell_data/out_cell_data 单元属性复制上下文
@@ -43,6 +45,7 @@ namespace {
 vtkNew<vtkCellArray> copyVisibleCells(vtkCellArray* in_cells,
     const std::vector<char>& removed,
     vtkIdType& cell_id,
+    vtkIdType& out_cell_id,
     std::vector<vtkIdType>& point_map,
     vtkPoints* in_points,
     vtkPointData* in_point_data,
@@ -79,8 +82,10 @@ vtkNew<vtkCellArray> copyVisibleCells(vtkCellArray* in_cells,
             new_point_ids->SetId(j, new_point_id);
         }
 
-        const vtkIdType new_cell_id = out_cells->InsertNextCell(new_point_ids);
-        out_cell_data->CopyData(in_cell_data, cell_id, new_cell_id);
+        out_cells->InsertNextCell(new_point_ids);
+        // 分类数组的单元索引各自从零开始，属性必须按整个输出数据集的单元索引写入。
+        out_cell_data->CopyData(in_cell_data, cell_id, out_cell_id);
+        ++out_cell_id;
     }
 
     return out_cells;
@@ -95,8 +100,11 @@ int FaceHideFilter::RequestData(
 {
     auto* input = vtkPolyData::GetData(input_vector[0]);
     auto* output = vtkPolyData::GetData(output_vector);
-    if (!input || !output)
+    if (!input || !output) {
+        spdlog::error("FaceHideFilter::RequestData 输入或输出数据为空：输入有效={}，输出有效={}",
+            input != nullptr, output != nullptr);
         return 0;
+    }
 
     // 空隐藏集（含未设置）透传完整数据，但用新的 cell array wrapper 包裹底层数据，
     // 使每个 wrapper 拥有独立 MTime。这是修复 vtkOpenGLCellToVTKCellMap 缓存失效
@@ -127,8 +135,10 @@ int FaceHideFilter::RequestData(
     const vtkIdType cell_count = input->GetNumberOfCells();
     const vtkIdType point_count = input->GetNumberOfPoints();
     vtkPoints* in_points = input->GetPoints();
-    if (!in_points && cell_count > 0)
+    if (!in_points && cell_count > 0) {
+        spdlog::error("FaceHideFilter::RequestData 输入包含 {} 个单元，但缺少点坐标", cell_count);
         return 0;
+    }
 
     // 标记待移除单元，越界 id 忽略。
     std::vector<char> removed(static_cast<size_t>(cell_count), 0);
@@ -157,13 +167,14 @@ int FaceHideFilter::RequestData(
 
     // 全局单元 id 顺序为 verts → lines → polys → strips（与 vtkRemovePolyData 文档一致）。
     vtkIdType cell_id = 0;
-    auto out_verts = copyVisibleCells(input->GetVerts(), removed, cell_id, point_map,
+    vtkIdType out_cell_id = 0;
+    auto out_verts = copyVisibleCells(input->GetVerts(), removed, cell_id, out_cell_id, point_map,
         in_points, in_point_data, out_points, out_point_data, in_cell_data, out_cell_data);
-    auto out_lines = copyVisibleCells(input->GetLines(), removed, cell_id, point_map,
+    auto out_lines = copyVisibleCells(input->GetLines(), removed, cell_id, out_cell_id, point_map,
         in_points, in_point_data, out_points, out_point_data, in_cell_data, out_cell_data);
-    auto out_polys = copyVisibleCells(input->GetPolys(), removed, cell_id, point_map,
+    auto out_polys = copyVisibleCells(input->GetPolys(), removed, cell_id, out_cell_id, point_map,
         in_points, in_point_data, out_points, out_point_data, in_cell_data, out_cell_data);
-    auto out_strips = copyVisibleCells(input->GetStrips(), removed, cell_id, point_map,
+    auto out_strips = copyVisibleCells(input->GetStrips(), removed, cell_id, out_cell_id, point_map,
         in_points, in_point_data, out_points, out_point_data, in_cell_data, out_cell_data);
 
     output->SetVerts(out_verts);

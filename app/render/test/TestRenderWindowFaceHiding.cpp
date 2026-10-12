@@ -144,11 +144,20 @@ struct FaceHidingViewport {
     std::vector<Index> visibleFaceIds()
     {
         std::vector<Index> ids;
-        item.dispatch_async([&ids](vtkRenderWindow*, QQuickVTKItem::vtkUserData user_data) {
+        // 回调只记录对象是否有效，断言留在测试线程，避免异常穿过 Qt 事件回调。
+        bool has_face_actor = false;
+        bool has_face_mapper = false;
+        item.dispatch_async([&ids, &has_face_actor, &has_face_mapper](vtkRenderWindow*, QQuickVTKItem::vtkUserData user_data) {
             auto* data = QRenderWindow::Data::SafeDownCast(user_data);
             MeshActorSelectOp select_op(data->mesh_actor_manager_->getComponentActor(7));
             auto* actor = vtkActor::SafeDownCast(&select_op.getFaceActor());
+            has_face_actor = actor != nullptr;
+            if (!has_face_actor)
+                return;
             auto* mapper = vtkPolyDataMapper::SafeDownCast(actor->GetMapper());
+            has_face_mapper = mapper != nullptr;
+            if (!has_face_mapper)
+                return;
             mapper->Update();
             auto* face_ids = vtkIdTypeArray::SafeDownCast(
                 mapper->GetInput()->GetCellData()->GetArray("PrecessFaceIds"));
@@ -158,6 +167,9 @@ struct FaceHidingViewport {
             }
         });
         REQUIRE(flush());
+        INFO("测试组件的面渲染对象必须为 vtkActor，映射器必须为 vtkPolyDataMapper");
+        REQUIRE(has_face_actor);
+        REQUIRE(has_face_mapper);
         return ids;
     }
 };
@@ -180,6 +192,53 @@ TEST_CASE("QRenderWindow hiding faces publishes an empty GUI selection")
     CHECK(updates == 1);
     CHECK(env.selectedFaceIds().empty());
     CHECK(env.visibleFaceIds() == std::vector<Index>({ 1 }));
+}
+
+TEST_CASE("QRenderWindow hiding faces preserves component selection")
+{
+    testApplication();
+    FaceHidingViewport env;
+    REQUIRE(env.flush());
+    env.item.setSelectMode("Component");
+    REQUIRE(env.flush());
+    // 在面位置真实拾取整个组件，验证非面模式下隐藏接口不会清除组件选择。
+    env.selectFace(0);
+    std::unique_ptr<QSelection> before(env.item.selectedIDs());
+    REQUIRE(before != nullptr);
+    REQUIRE(before->get() != nullptr);
+    REQUIRE(before->get()->type == ElementEnum::Component);
+    REQUIRE(before->get()->ids == std::vector<Index>({ 7 }));
+
+    int updates = 0;
+    QObject::connect(&env.item, &QRenderWindow::selectedChanged, &env.item, [&updates] { ++updates; });
+    env.item.hideSelectedFaces();
+    REQUIRE(env.flush());
+
+    std::unique_ptr<QSelection> after(env.item.selectedIDs());
+    REQUIRE(after != nullptr);
+    REQUIRE(after->get() != nullptr);
+    CHECK(after->get()->type == before->get()->type);
+    CHECK(after->get()->ids == before->get()->ids);
+    CHECK(after->get()->component_id == before->get()->component_id);
+    CHECK(updates == 0);
+    CHECK(env.visibleFaceIds() == std::vector<Index>({ 0, 1 }));
+}
+
+TEST_CASE("QRenderWindow hiding faces without selection does not publish a reset")
+{
+    testApplication();
+    FaceHidingViewport env;
+    REQUIRE(env.flush());
+    REQUIRE(env.selectedFaceIds().empty());
+    int updates = 0;
+    QObject::connect(&env.item, &QRenderWindow::selectedChanged, &env.item, [&updates] { ++updates; });
+
+    // 空选择不产生隐藏操作，也不应发布一次额外的 GUI 选择清理。
+    env.item.hideSelectedFaces();
+    REQUIRE(env.flush());
+    CHECK(env.selectedFaceIds().empty());
+    CHECK(updates == 0);
+    CHECK(env.visibleFaceIds() == std::vector<Index>({ 0, 1 }));
 }
 
 TEST_CASE("QRenderWindow restoring faces invalidates compressed selection indices")

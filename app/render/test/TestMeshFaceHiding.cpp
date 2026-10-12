@@ -6,12 +6,15 @@
 #include <vtkActor.h>
 #include <vtkAlgorithmOutput.h>
 #include <vtkCamera.h>
+#include <vtkCellArray.h>
 #include <vtkCellData.h>
+#include <vtkDoubleArray.h>
 #include <vtkHardwareSelector.h>
 #include <vtkIdTypeArray.h>
 #include <vtkImageData.h>
 #include <vtkNew.h>
 #include <vtkPlane.h>
+#include <vtkPoints.h>
 #include <vtkPolyData.h>
 #include <vtkPolyDataMapper.h>
 #include <vtkProperty.h>
@@ -83,6 +86,109 @@ std::vector<vtkIdType> faceIdValues(vtkPolyData* poly)
 }
 
 } // namespace
+
+TEST_CASE("FaceHideFilter preserves global cell attributes across mixed cell categories")
+{
+    vtkNew<vtkPolyData> input;
+    vtkNew<vtkPoints> points;
+    for (vtkIdType id = 0; id < 8; ++id)
+        points->InsertNextPoint(static_cast<double>(id % 4), static_cast<double>(id / 4), 0.0);
+    input->SetPoints(points);
+
+    // 每类放两个单元，并用不同的属性值识别各分类及分类内的单元顺序。
+    vtkNew<vtkCellArray> verts;
+    vtkNew<vtkCellArray> lines;
+    vtkNew<vtkCellArray> polys;
+    vtkNew<vtkCellArray> strips;
+    for (vtkIdType id = 0; id < 2; ++id) {
+        const vtkIdType cell_points[] = { id, id + 2, id + 4, id + 6 };
+        verts->InsertNextCell(1, cell_points);
+        lines->InsertNextCell(2, cell_points);
+        polys->InsertNextCell(3, cell_points);
+        strips->InsertNextCell(4, cell_points);
+    }
+    input->SetVerts(verts);
+    input->SetLines(lines);
+    input->SetPolys(polys);
+    input->SetStrips(strips);
+    vtkNew<vtkIdTypeArray> original_ids;
+    original_ids->SetName("OriginalCellIds");
+    vtkNew<vtkDoubleArray> values;
+    values->SetName("CellValues");
+    values->SetNumberOfComponents(2);
+    for (vtkIdType id = 0; id < 8; ++id) {
+        original_ids->InsertNextValue(id);
+        values->InsertNextTuple2(100.0 + static_cast<double>(id), 0.25 + static_cast<double>(id));
+    }
+    input->GetCellData()->AddArray(original_ids);
+    input->GetCellData()->AddArray(values);
+
+    std::vector<vtkIdType> hidden_ids;
+    std::vector<vtkIdType> expected_ids;
+    SECTION("Each category retains one cell")
+    {
+        hidden_ids = { 0, 2, 4, 6 };
+        expected_ids = { 1, 3, 5, 7 };
+    }
+    SECTION("Leading categories are entirely removed")
+    {
+        hidden_ids = { 0, 1, 2, 3 };
+        expected_ids = { 4, 5, 6, 7 };
+    }
+    SECTION("Only vertices remain")
+    {
+        hidden_ids = { 2, 3, 4, 5, 6, 7 };
+        expected_ids = { 0, 1 };
+    }
+    SECTION("All cells are removed")
+    {
+        hidden_ids = { 0, 1, 2, 3, 4, 5, 6, 7 };
+        expected_ids = { };
+    }
+    SECTION("Invalid hidden ids still preserve every cell")
+    {
+        hidden_ids = { -1, 8 };
+        expected_ids = { 0, 1, 2, 3, 4, 5, 6, 7 };
+    }
+
+    vtkNew<vtkIdTypeArray> hidden;
+    for (const auto id : hidden_ids)
+        hidden->InsertNextValue(id);
+    vtkNew<FaceHideFilter> filter;
+    filter->SetInputData(input);
+    filter->SetHiddenCellIds(hidden);
+    filter->Update();
+
+    // 检查属性类型、元组数量、原始身份及对应单元类型，不能只比较排序后的属性集合。
+    const auto check_attributes = [&](const std::vector<vtkIdType>& expected) {
+        auto* output = filter->GetOutput();
+        const auto count = static_cast<vtkIdType>(expected.size());
+        REQUIRE(output->GetNumberOfCells() == count);
+        auto* output_ids = vtkIdTypeArray::SafeDownCast(output->GetCellData()->GetArray("OriginalCellIds"));
+        auto* output_values = vtkDoubleArray::SafeDownCast(output->GetCellData()->GetArray("CellValues"));
+        REQUIRE(output_ids != nullptr);
+        REQUIRE(output_values != nullptr);
+        REQUIRE(output_ids->GetNumberOfTuples() == count);
+        REQUIRE(output_values->GetNumberOfTuples() == count);
+        REQUIRE(output_values->GetNumberOfComponents() == 2);
+        for (vtkIdType id = 0; id < count; ++id) {
+            const auto original_id = expected[static_cast<std::size_t>(id)];
+            CAPTURE(id, original_id);
+            CHECK(output_ids->GetValue(id) == original_id);
+            CHECK(output_values->GetComponent(id, 0) == 100.0 + static_cast<double>(original_id));
+            CHECK(output_values->GetComponent(id, 1) == 0.25 + static_cast<double>(original_id));
+            CHECK(output->GetCellType(id) == input->GetCellType(original_id));
+        }
+    };
+    check_attributes(expected_ids);
+
+    // 清空隐藏集后恢复所有分类，属性顺序与原始数据完全一致。
+    hidden->Reset();
+    hidden->Modified();
+    filter->Modified();
+    filter->Update();
+    check_attributes({ 0, 1, 2, 3, 4, 5, 6, 7 });
+}
 
 TEST_CASE("hideFaces removes selected cells and showAllFaces restores them")
 {
