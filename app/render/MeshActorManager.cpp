@@ -96,6 +96,20 @@ void MeshActorManager::setClipPlane(vtkPlane* plane)
     }
 }
 
+void MeshActorManager::hideFaces(Index component_id, const std::vector<vtkIdType>& face_ids)
+{
+    auto it = component_actors_.find(component_id);
+    if (it != component_actors_.end())
+        it->second->hideFaces(face_ids);
+}
+
+void MeshActorManager::showAllFaces()
+{
+    for (auto&& [idx, mesh_actor] : this->component_actors_) {
+        mesh_actor->showAllFaces();
+    }
+}
+
 bool MeshActorManager::getCount(Index component_id)
 {
     return this->component_actors_.count(component_id);

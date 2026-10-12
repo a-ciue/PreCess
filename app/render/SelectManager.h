@@ -8,9 +8,12 @@
 #include <memory>
 #include <optional>
 #include <string>
+#include <unordered_map>
 #include <utility>
+#include <vector>
 #include <vtkNew.h>
 #include <vtkActor.h>
+#include <vtkType.h>
 
 class vtkRenderer;
 class GeometrySelectManager;
@@ -42,6 +45,11 @@ public:
     //! @brief 吸附网格顶点：命中返回组件 id、局部点 id 与世界坐标（转发给网格选择管理器）
     std::optional<MeshVertexSnap> snapMeshVertex(double posx, double posy);
     void clearSelection();
+    /**
+     * @brief 导出各组件当前高亮选中面的原始模型面 id（仅面选择模式有效）
+     * @return component_id → 原模型面 id 列表；非面选择模式返回空表
+     */
+    std::unordered_map<Index, std::vector<vtkIdType>> selectedFaceIdsByComponent();
     //! @brief 注入模型层 id 查询接口，供选择器解析单元 id（如边端点对 -> 边 id）
     void setMeshIdQuery(const IMeshIdQuery* id_query);
     void refreshComponentHighlight();

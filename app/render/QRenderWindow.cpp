@@ -399,6 +399,29 @@ void QRenderWindow::setMeshClip(bool on)
     });
 }
 
+void QRenderWindow::hideSelectedFaces()
+{
+    dispatch_async([this](vtkRenderWindow*, vtkUserData userData) -> void {
+        Data* vtk = Data::SafeDownCast(userData);
+
+        // 仅面选择模式有数据；selectedFaceIdsByComponent 在其余模式直接返回空表。
+        auto selected_faces = this->select_manager_->selectedFaceIdsByComponent();
+        for (const auto& [component_id, face_ids] : selected_faces)
+            vtk->mesh_actor_manager_->hideFaces(component_id, face_ids);
+
+        // 高亮为独立 actor，不经过面过滤管线；隐藏后须清空，否则被隐藏面仍以高亮形态可见。
+        this->select_manager_->clearSelection();
+    });
+}
+
+void QRenderWindow::showAllHiddenFaces()
+{
+    dispatch_async([this](vtkRenderWindow*, vtkUserData userData) -> void {
+        Data* vtk = Data::SafeDownCast(userData);
+        vtk->mesh_actor_manager_->showAllFaces();
+    });
+}
+
 void QRenderWindow::onModelChanged(Index model_id)
 {
     dispatch_async([model_id, this](vtkRenderWindow* renderWindow, vtkUserData userData) -> void {

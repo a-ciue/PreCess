@@ -756,22 +756,40 @@ Page {
             id: viewportMenu
 
             property var pickedIds: []
+            // 面选择器状态：faceMode 控制"隐藏面"项是否出现，hasFacePicks 控制是否可点（onOpened 刷新）
+            property bool faceMode: App.selection.selectMode === "Face"
+            property bool hasFacePicks: false
 
             onOpened: {
                 let sel = myItem.selectedIDs
                 pickedIds = sel ? sel.getAsComponentIds() : []
+                hasFacePicks = faceMode && !!sel && sel.size() > 0
             }
 
             // 视口菜单项：shown 控制显隐（无拾取时显示整组操作，有拾取时显示对象操作）
             component StyledMenuItem: MenuItem {
                 id: control
                 property bool shown: true
+                // 可见但需要置灰的场景：shown 控制显隐，active 控制可点（如面选择器下无选中面）
+                property bool active: true
 
                 visible: shown
-                enabled: shown
+                enabled: shown && active
             }
 
             component StyledSeparator: MenuSeparator {}
+
+            // 面选择器专用：隐藏当前高亮选中的面（渲染层过滤，"全部显示"可恢复；其余选择模式不显示）
+            StyledMenuItem {
+                text: "隐藏"
+                shown: viewportMenu.faceMode
+                active: viewportMenu.hasFacePicks
+                onTriggered: myItem.hideSelectedFaces()
+            }
+
+            StyledSeparator {
+                visible: viewportMenu.faceMode
+            }
 
             StyledMenuItem {
                 text: "隐藏"
@@ -813,7 +831,11 @@ Page {
             StyledMenuItem {
                 text: "全部显示"
                 shown: viewportMenu.pickedIds.length === 0
-                onTriggered: App.registry.objectTree.showAllNodes()
+                onTriggered: {
+                    App.registry.objectTree.showAllNodes()
+                    // 同时恢复经面选择器右键"隐藏"移除的面
+                    myItem.showAllHiddenFaces()
+                }
             }
 
             StyledMenuItem {

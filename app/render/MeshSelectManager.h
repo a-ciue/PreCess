@@ -6,7 +6,9 @@
 
 #include <memory>
 #include <unordered_map>
+#include <vector>
 #include <vtkSmartPointer.h>
+#include <vtkType.h>
 
 class vtkRenderer;
 class vtkActor;
@@ -49,6 +51,14 @@ public:
     void clearSelection();
     void setMeshIdQuery(const IMeshIdQuery* id_query);
     std::unique_ptr<Selection> getSelection();
+    /**
+     * @brief 导出各组件当前高亮选中面的原始模型面 id
+     *
+     * 仅供面选择模式：经各 FaceSelectorHighlight::get() 的 PrecessFaceIds
+     * 反查得到原模型面 id（裁剪/隐藏过滤链上的 render id 不会外泄）。
+     * @return component_id → 原模型面 id 列表；非面选择模式返回空表
+     */
+    std::unordered_map<Index, std::vector<vtkIdType>> selectedFacesByComponent();
     void setHighlightVisible(bool visible);
     void setHighlightVisible(Index component_id, bool visible);
 

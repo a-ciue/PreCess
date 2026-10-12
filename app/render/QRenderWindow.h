@@ -169,6 +169,19 @@ public:
      */
     Q_INVOKABLE void setMeshClip(bool on);
 
+    /**
+     * @brief 隐藏面选择器当前高亮选中的面（右键菜单"隐藏"）
+     *
+     * 仅面选择模式有效，其余模式为空操作；隐藏为渲染层单元过滤，
+     * 不修改模型数据，被隐藏面不渲染也不可拾取。
+     */
+    Q_INVOKABLE void hideSelectedFaces();
+
+    /**
+     * @brief 显示全部经 hideSelectedFaces 隐藏的面（右键菜单"全部显示"）
+     */
+    Q_INVOKABLE void showAllHiddenFaces();
+
     Q_SLOT void setClick();
 
     /**

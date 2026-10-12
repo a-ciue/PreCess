@@ -5,6 +5,7 @@
 #include "renderStrategy/IAttributeRenderStrategy.h"
 #include <optional>
 #include <unordered_map>
+#include <vector>
 #include <vtkActor.h>
 #include <vtkCompositePolyDataMapper.h>
 #include <vtkExtractEdges.h>
@@ -13,6 +14,7 @@
 #include <vtkPropCollection.h>
 #include <vtkPoints.h>
 #include <vtkIdTypeArray.h>
+#include "FaceHideFilter.h"
 #include <vtkSmartPointer.h>
 class vtkGeometryFilter;
 class vtkExtractGeometry;
@@ -53,6 +55,19 @@ public:
      * @param plane 裁剪平面，传入nullptr则取消裁剪
      */
     void setClipPlane(vtkPlane* plane);
+    /**
+     * @brief 隐藏指定面（原始模型面 id，即 face_data_ 的单元 id）
+     *
+     * 与裁剪同构：在面管线上游插入 FaceHideFilter 过滤器整单元移除，
+     * 不修改模型数据；被移除面不渲染、硬件拾取不可命中，PrecessFaceIds 等
+     * 身份数组按原类型随过滤器透传，拾取映射不受影响。可累积调用，重复 id 自动去重。
+     * @param face_ids 待隐藏面的原始模型面 id 集合
+     */
+    void hideFaces(const std::vector<vtkIdType>& face_ids);
+    /**
+     * @brief 显示全部经 hideFaces 隐藏的面（清空隐藏集，filter 走透传输出完整模型）
+     */
+    void showAllFaces();
     void setRenderStyle(MeshRenderStyle style);
     MeshRenderStyle getRenderStyle() const;
 
@@ -79,6 +94,14 @@ public:
 
 private:
     void applyStyle();
+    /**
+     * @brief 面管线唯一接线入口：face_hider_ 常驻，mapper 始终经 SetInputConnection 连接
+     *
+     * 链路 face_data_ → face_hider_（常驻）→ face_clipper_（可选）→ face_mapper_，
+     * 空隐藏集时 filter 走透传，非空时深拷贝移除隐藏面。不切换 SetInputConnection/SetInputData，
+     * 避免 vtkOpenGLCellToVTKCellMap 缓存失效缺陷。
+     */
+    void applyFacePipeline();
 
     std::unique_ptr<IAttributeRenderStrategy> render_strategy_;
     MeshRenderStyle style_ { MeshRenderStyle::FaceWithEdges };
@@ -90,6 +113,11 @@ private:
     vtkNew<vtkExtractPolyDataGeometry> edge_clipper_;
     vtkNew<vtkExtractPolyDataGeometry> face_clipper_;
     vtkNew<vtkExtractGeometry> solid_clipper_;
+
+    //> 面隐藏过滤器：位于面裁剪过滤器上游，按 HiddenCellIds 整单元移除用户隐藏的面。
+    //> hidden_face_ids_ 存原始模型面 id（face_data_ 单元 id），网格重载后失效并清空。
+    vtkNew<FaceHideFilter> face_hider_;
+    vtkNew<vtkIdTypeArray> hidden_face_ids_;
 
     vtkNew<vtkGeometryFilter> solid_filter_;
     vtkNew<vtkExtractEdges> solid_edge_extractor_;

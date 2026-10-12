@@ -3,6 +3,7 @@
 #include "renderStrategy/AttributeOperator.h"
 #include "Core.h"
 #include <spdlog/spdlog.h>
+#include <algorithm>
 #include <stdexcept>
 #include <vtkActor.h>
 #include <vtkCellArray.h>
@@ -115,6 +116,10 @@ MeshActor::MeshActor(vtkRenderer* renderer)
     this->edge_actor_->SetMapper(edge_mapper_);
     this->glyph3D_actor_->SetMapper(glyph3D_mapper_);
     topology_diagnostics_ = std::make_unique<TopologyDiagnosticActor>(renderer_);
+
+    // 面隐藏过滤器只持有 HiddenCellIds 活数组引用；数组内容变化后须令过滤器失效重算。
+    hidden_face_ids_->SetNumberOfComponents(1);
+    face_hider_->SetHiddenCellIds(hidden_face_ids_);
 }
 
 MeshActor::~MeshActor()
@@ -130,6 +135,10 @@ MeshActor::~MeshActor()
 void MeshActor::loadModelData(const MeshDataVtk& model_data)
 {
     this->model_data_ = std::make_unique<MeshDataVtk>(model_data);
+
+    // 隐藏面 id 绑定的是旧网格的面单元，网格重载后语义失效，清空隐藏状态。
+    hidden_face_ids_->Reset();
+    hidden_face_ids_->Modified();
 
     // 单元中心只依赖当前网格；重新加载后先失效，首次向量渲染时再按需计算。
     edge_cell_centers_ = nullptr;
@@ -240,7 +249,7 @@ void MeshActor::loadModelData(const MeshDataVtk& model_data)
 
     // mappers
     edge_mapper_->SetInputData(edge_poly);
-    face_mapper_->SetInputData(face_poly);
+    applyFacePipeline(); // 面管线按隐藏/裁剪状态统一接线（重载后隐藏集已清空）
     face_mapper_->Modified(); // 确保多边形网格被正确渲染
     solid_mapper_->SetInputConnection(solid_filter_->GetOutputPort());
 
@@ -263,27 +272,84 @@ bool MeshActor::isVisible() const
     return visibility_ && style_ != MeshRenderStyle::Hidden; 
 }
 
+void MeshActor::applyFacePipeline()
+{
+    // 面隐藏过滤器常驻管线：mapper 始终经 SetInputConnection 连接 face_hider_，
+    // 空隐藏集时 filter 走浅拷贝透传（输出完整模型数据），非空时深拷贝移除隐藏面。
+    // 避免 SetInputConnection ↔ SetInputData 切换导致 vtkOpenGLCellToVTKCellMap
+    // 的 MapBuildState 与 CellCellMap 状态不一致（崩溃根因）。
+    face_hider_->SetInputData(this->face_data_);
+
+    if (clip_plane_) {
+        face_clipper_->SetInputConnection(face_hider_->GetOutputPort());
+        face_mapper_->SetInputConnection(face_clipper_->GetOutputPort());
+    } else {
+        face_mapper_->SetInputConnection(face_hider_->GetOutputPort());
+    }
+}
+
+void MeshActor::hideFaces(const std::vector<vtkIdType>& face_ids)
+{
+    if (face_ids.empty())
+        return;
+
+    const vtkIdType cell_count = face_data_->GetNumberOfCells();
+
+    // 合并新旧 id：丢弃越界 id，排序去重，整表重写活数组。
+    std::vector<vtkIdType> merged;
+    merged.reserve(hidden_face_ids_->GetNumberOfValues() + static_cast<vtkIdType>(face_ids.size()));
+    for (vtkIdType i = 0; i < hidden_face_ids_->GetNumberOfValues(); ++i)
+        merged.push_back(hidden_face_ids_->GetValue(i));
+    for (vtkIdType id : face_ids) {
+        if (id >= 0 && id < cell_count)
+            merged.push_back(id);
+    }
+    std::sort(merged.begin(), merged.end());
+    merged.erase(std::unique(merged.begin(), merged.end()), merged.end());
+
+    hidden_face_ids_->Reset();
+    for (vtkIdType id : merged)
+        hidden_face_ids_->InsertNextValue(id);
+    hidden_face_ids_->Modified();
+    // id 数组为原地改写（Set 引用不变），显式令过滤器失效，确保管线按新隐藏集重算。
+    face_hider_->Modified();
+
+    applyFacePipeline();
+}
+
+void MeshActor::showAllFaces()
+{
+    if (hidden_face_ids_->GetNumberOfValues() == 0)
+        return;
+
+    hidden_face_ids_->Reset();
+    hidden_face_ids_->Modified();
+    face_hider_->Modified();
+
+    applyFacePipeline();
+}
+
 void MeshActor::setClipPlane(vtkPlane* plane)
 {
     topology_diagnostics_->setClipPlane(plane);
     if (plane) {
         // 网格重载会把 mapper 接回原始数据，因此每次应用裁剪平面都重新建立裁剪管线。
         solid_clipper_->SetInputData(this->solid_data_);
-        face_clipper_->SetInputData(this->face_data_);
         edge_clipper_->SetInputData(this->edge_data_);
 
         solid_filter_->SetInputConnection(solid_clipper_->GetOutputPort());
-        face_mapper_->SetInputConnection(face_clipper_->GetOutputPort());
         edge_mapper_->SetInputConnection(edge_clipper_->GetOutputPort());
         solid_clipper_->SetImplicitFunction(plane);
-        face_clipper_->SetImplicitFunction(plane);
         edge_clipper_->SetImplicitFunction(plane);
     } else {
         solid_filter_->SetInputData(this->solid_data_);
-        face_mapper_->SetInputData(this->face_data_);
         edge_mapper_->SetInputData(this->edge_data_);
     }
+    face_clipper_->SetImplicitFunction(plane);
     clip_plane_ = plane;
+
+    // 面管线（隐藏过滤器 + 裁剪过滤器）由统一接线入口处理。
+    applyFacePipeline();
 }
 
 void MeshActor::setRenderStyle(MeshRenderStyle style)

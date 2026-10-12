@@ -6,7 +6,9 @@
 #include "TopologyDiagnosticCategory.h"
 #include <unordered_map>
 #include <array>
+#include <vector>
 #include <vtkScalarBarActor.h>
+#include <vtkType.h>
 
 class vtkRenderer;
 
@@ -22,6 +24,16 @@ public:
 
     void setVisibility(Index component_id, bool visibility);
     void setClipPlane(vtkPlane* plane);
+    /**
+     * @brief 隐藏指定组件的若干面（原始模型面 id）
+     * @param component_id 目标组件
+     * @param face_ids 待隐藏面 id 集合
+     */
+    void hideFaces(Index component_id, const std::vector<vtkIdType>& face_ids);
+    /**
+     * @brief 显示全部组件中经 hideFaces 隐藏的面
+     */
+    void showAllFaces();
     void setCurrentRenderStyle(MeshRenderStyle style);
     MeshRenderStyle getCurrentRenderStyle() const;
 
