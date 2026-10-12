@@ -93,6 +93,13 @@ vtk_module_autoinit(TARGETS TestInteractionService MODULES VTK::InteractionStyle
 precess_add_test(TestMeshTopologyDiagnostics TestMeshTopologyDiagnostics.cpp)
 precess_test_link_libraries(TestMeshTopologyDiagnostics vtkPart TestDeps)
 
+# TestMeshFaceHiding（右键隐藏选中面：FaceHideFilter 过滤链与裁剪组合、恢复、重载清空）
+precess_add_test(TestMeshFaceHiding TestMeshFaceHiding.cpp)
+precess_test_link_libraries(TestMeshFaceHiding vtkPart TestDeps
+    VTK::RenderingOpenGL2 VTK::InteractionStyle VTK::CommonColor VTK::RenderingCore VTK::RenderingUI VTK::FiltersGeometry VTK::FiltersExtraction
+)
+vtk_module_autoinit(TARGETS TestMeshFaceHiding MODULES VTK::RenderingOpenGL2 VTK::InteractionStyle VTK::CommonColor VTK::RenderingCore VTK::RenderingUI VTK::FiltersGeometry VTK::FiltersExtraction)
+
 # TestSelectorHighlightDeselect（回归：取消最后一个选中后，partition 高亮必须清空而不是残留）
 precess_add_test(TestSelectorHighlightDeselect TestSelectorHighlightDeselect.cpp)
 precess_test_link_libraries(TestSelectorHighlightDeselect vtkPart TestDeps spdlog::spdlog
