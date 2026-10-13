@@ -68,6 +68,7 @@ void GeometryActorManager::loadGeometry(
     }
 
     auto& actor_ptr = component_actors_[component_id];
+    actor_ptr->setSurfacePrecision(surface_precision_);
     // 先同步类别开关但不计算，避免复用 Actor 时对即将替换的旧 Shape 重建诊断。
     actor_ptr->topologyDiagnostics().setCategoryFlagsOnly(
         topology_diagnostic_category_enabled_);
@@ -97,12 +98,32 @@ void GeometryActorManager::setCurrentRenderStyle(GeometryRenderStyle style)
     current_style_ = style;
     for (auto& [id, actor] : component_actors_) {
         actor->setRenderStyle(style);
+        // 隐藏时切档会移除旧敏感实体，恢复显示时必须按当前样式重新启用拾取。
+        op_.setShapePickingEnabled(actor, actor->isVisible());
     }
 }
 
 GeometryRenderStyle GeometryActorManager::getCurrentRenderStyle() const
 {
     return current_style_;
+}
+
+void GeometryActorManager::setSurfacePrecision(int precision)
+{
+    if (precision < 0 || precision > 3 || precision == surface_precision_)
+        return;
+    for (auto& [id, actor] : component_actors_) {
+        // Picker 的敏感实体缓存也引用旧三角化，先移除，再用新数据重新注册。
+        op_.unregisterProps(actor);
+        try {
+            actor->setSurfacePrecision(precision);
+        } catch (...) {
+            op_.registerProps(id, actor);
+            throw;
+        }
+        op_.registerProps(id, actor);
+    }
+    surface_precision_ = precision;
 }
 
 void GeometryActorManager::setTopologyDiagnosticCategoryEnabled(int category, bool enabled)

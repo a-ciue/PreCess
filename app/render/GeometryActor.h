@@ -26,6 +26,9 @@ public:
 
     void loadShape(const GeometryDataVtk& geometry_data);
 
+    /** @brief 设置显示用曲面精细度：0 粗糙、1 标准、2 精细、3 非常精细。 */
+    void setSurfacePrecision(int precision);
+
     void setVisibility(bool visibility);
     bool isVisible() const;
     void setRenderStyle(GeometryRenderStyle style);
@@ -37,11 +40,15 @@ public:
 private:
     void deleteGeometryActor();
     void applyStyle();
+    void rebuildShape(int precision);
 
     GeometryRenderStyle style_ { GeometryRenderStyle::SurfaceWithEdges };
+    int surface_precision_ { 1 };
     bool visibility_;
     OccShapeHandle occ_shape_;
-    const GeometrySubshapeIndex* geometry_index_;
+    // 显示拓扑独立持有三角缓存，gid 沿用原模型，不注册到业务 GeometryRegistry。
+    GeometrySubshapeIndex display_geometry_index_;
+    const GeometrySubshapeIndex* geometry_index_ { nullptr };
 
     vtkNew<vtkActor> poly_actor_;
     vtkNew<vtkActor> line_actor_;

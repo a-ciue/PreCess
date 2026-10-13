@@ -121,6 +121,16 @@ IVtk_IdType GeometryActorSelectOp::getShapeId() const
     return geometry_actor_->occ_shape_->GetId();
 }
 
+const OccShapeHandle& GeometryActorSelectOp::getOccShape() const
+{
+    return geometry_actor_->occ_shape_;
+}
+
+vtkPolyData* GeometryActorSelectOp::getLineOnlyPolyData() const
+{
+    return geometry_actor_->line_only_;
+}
+
 void GeometryActorSelectOp::disableSelectionModes(IVtkTools_ShapePicker* picker) const
 {
     if (!picker)

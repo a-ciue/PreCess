@@ -108,3 +108,13 @@ precess_test_link_libraries(TestRenderWindowLifecycle renderQml vtkPart modelQml
 vtk_module_autoinit(TARGETS TestRenderWindowLifecycle MODULES
     VTK::GUISupportQtQuick VTK::RenderingOpenGL2 VTK::InteractionStyle
 )
+
+# 曲面显示精细度覆盖双向缓存重建、原始几何隔离与实际拾取/高亮。
+precess_add_test(TestGeometrySurfacePrecision TestGeometrySurfacePrecision.cpp)
+precess_test_link_libraries(TestGeometrySurfacePrecision vtkPart spdlog::spdlog
+    VTK::RenderingCore VTK::RenderingOpenGL2 VTK::FiltersGeometry
+    TKIVtk TKPrim TKMesh TKBRep TKGeomBase TKMath TKernel TKTopAlgo
+)
+vtk_module_autoinit(TARGETS TestGeometrySurfacePrecision MODULES
+    VTK::RenderingCore VTK::RenderingOpenGL2 VTK::FiltersGeometry
+)

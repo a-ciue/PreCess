@@ -113,6 +113,12 @@ void SelectManager::refreshComponentHighlight()
     component_selector_->refreshHighlight();
 }
 
+void SelectManager::refreshGeometrySelection()
+{
+    geom_->refreshSelectionHighlight();
+    refreshComponentHighlight();
+}
+
 void SelectManager::setGeometryHighlightVisible(bool visible)
 {
     geom_->setHighlightVisible(visible);

@@ -1,20 +1,43 @@
 #include "GeometryActor.h"
 #include "Core.h"
 #include "GeometryTopologyDiagnosticActor.h"
+#include <BRepBuilderAPI_Copy.hxx>
+#include <BRepTools.hxx>
 #include <IVtkTools_ShapeDataSource.hxx>
 #include <IVtkTools_SubPolyDataFilter.hxx>
 #include <IVtkVTK_ShapeData.hxx>
-#include <TopoDS_Shape.hxx>
+#include <Prs3d_Drawer.hxx>
 #include <TopExp_Explorer.hxx>
-#include <vtkPolyDataMapper.h>
-#include <vtkProperty.h>
-#include <vtkRenderer.h>
+#include <TopoDS_Shape.hxx>
+#include <vtkCellData.h>
 #include <vtkExtractSelection.h>
 #include <vtkGeometryFilter.h>
 #include <vtkIdTypeArray.h>
+#include <vtkPolyDataMapper.h>
+#include <vtkProperty.h>
+#include <vtkRenderer.h>
 #include <vtkSelection.h>
 #include <vtkSelectionNode.h>
-#include <vtkCellData.h>
+
+#include <array>
+#include <chrono>
+#include <cmath>
+#include <spdlog/spdlog.h>
+#include <stdexcept>
+
+namespace {
+struct SurfacePrecision {
+    double deviation_coefficient;
+    double angle_degrees;
+};
+
+constexpr std::array<SurfacePrecision, 4> kSurfacePrecisions { {
+    { 0.003, 30.0 },
+    { 0.001, 20.0 },
+    { 0.0003, 10.0 },
+    { 0.0001, 5.0 },
+} };
+}
 
 // 按 OCCT 约定的正式名称获取单元对应的子形状 ID 数组。
 static vtkSmartPointer<vtkDataArray> findSubIdArray(vtkPolyData* poly_data)
@@ -43,13 +66,51 @@ GeometryActor::~GeometryActor()
 
 void GeometryActor::loadShape(const GeometryDataVtk& geometry_data)
 {
-    // GeometryData 保证根形状已经是严格一层扁平的 Compound。
-    OccShapeHandle aShapeImpl = new IVtkOCC_Shape(geometry_data.shape);
+    // 只复制拓扑、共享不可变曲面；三角化及法向缓存不能写入模型或撤销快照的 TShape。
+    BRepBuilderAPI_Copy copy(geometry_data.shape, false, false);
+    if (!copy.IsDone())
+        throw std::runtime_error("无法创建曲面显示副本");
+    OccShapeHandle aShapeImpl = new IVtkOCC_Shape(copy.Shape());
     aShapeImpl->SetId(static_cast<IVtk_IdType>(geometry_data.component_id));
     this->occ_shape_ = aShapeImpl;
-    this->geometry_index_ = geometry_data.geometry_index;
+    geometry_index_ = nullptr;
+    display_geometry_index_ = {};
+    if (geometry_data.geometry_index) {
+        display_geometry_index_ = *geometry_data.geometry_index;
+        // 按原 local id 显式映射，不能依赖复制后重新遍历的子形状顺序。
+        for (int type = 0; type < GeometrySubshapeIndex::kTypeCount; ++type) {
+            auto& display_map = display_geometry_index_.type_maps[type];
+            display_map.Clear();
+            const auto& original_map = geometry_data.geometry_index->type_maps[type];
+            for (int local = 1; local <= original_map.Extent(); ++local)
+                display_map.Add(copy.ModifiedShape(original_map.FindKey(local)));
+        }
+        geometry_index_ = &display_geometry_index_;
+    }
+    rebuildShape(surface_precision_);
+}
+
+void GeometryActor::setSurfacePrecision(int precision)
+{
+    if (precision < 0 || precision >= static_cast<int>(kSurfacePrecisions.size())
+        || precision == surface_precision_)
+        return;
+    if (!occ_shape_.IsNull())
+        rebuildShape(precision);
+    surface_precision_ = precision;
+}
+
+void GeometryActor::rebuildShape(int precision)
+{
+    const auto started = std::chrono::steady_clock::now();
+    const TopoDS_Shape& shape = occ_shape_->GetShape();
+    // 精细网格也满足粗档误差，必须失效旧缓存，保证精细→粗糙确实减少面数。
+    BRepTools::Clean(shape);
+    const auto& settings = kSurfacePrecisions[static_cast<size_t>(precision)];
+    occ_shape_->Attributes()->SetDeviationCoefficient(settings.deviation_coefficient);
+    occ_shape_->Attributes()->SetDeviationAngle(settings.angle_degrees * std::acos(-1.0) / 180.0);
     vtkSmartPointer<IVtkTools_ShapeDataSource> DS = vtkSmartPointer<IVtkTools_ShapeDataSource>::New();
-    DS->SetShape(aShapeImpl);
+    DS->SetShape(occ_shape_);
     DS->Update();
     vtkPolyData* src = DS->GetOutput();
 
@@ -98,16 +159,16 @@ void GeometryActor::loadShape(const GeometryDataVtk& geometry_data)
     line_sub_id_array_ = findSubIdArray(line_only);
     poly_sub_id_array_ = findSubIdArray(poly_only);
 
-    topology_diagnostics_->loadShape(geometry_data.shape, occ_shape_,
+    topology_diagnostics_->loadShape(shape, occ_shape_,
         line_only_, line_sub_id_array_, poly_only_, poly_sub_id_array_);
 
     NCollection_Map<IVtk_IdType> edgeVertexIds;
-    for (TopExp_Explorer exp(geometry_data.shape, TopAbs_EDGE); exp.More(); exp.Next()) {
-        IVtk_IdType id = aShapeImpl->GetSubShapeId(exp.Current());
+    for (TopExp_Explorer exp(shape, TopAbs_EDGE); exp.More(); exp.Next()) {
+        IVtk_IdType id = occ_shape_->GetSubShapeId(exp.Current());
         if (id >= 0) edgeVertexIds.Add(id);
     }
-    for (TopExp_Explorer exp(geometry_data.shape, TopAbs_VERTEX); exp.More(); exp.Next()) {
-        IVtk_IdType id = aShapeImpl->GetSubShapeId(exp.Current());
+    for (TopExp_Explorer exp(shape, TopAbs_VERTEX); exp.More(); exp.Next()) {
+        IVtk_IdType id = occ_shape_->GetSubShapeId(exp.Current());
         if (id >= 0) edgeVertexIds.Add(id);
     }
 
@@ -138,6 +199,13 @@ void GeometryActor::loadShape(const GeometryDataVtk& geometry_data)
     line_actor_->GetProperty()->SetPointSize(6.0);
     line_actor_->GetProperty()->SetColor(0.0, 0.0, 0.0);
     renderer_->AddActor(line_actor_);
+    applyStyle();
+    topology_diagnostics_->setGeometryVisible(isVisible());
+    const double elapsed_ms = std::chrono::duration<double, std::milli>(
+        std::chrono::steady_clock::now() - started)
+                                  .count();
+    spdlog::info("[SurfacePrecision] component={} level={} triangles={} rebuild_ms={:.1f}",
+        occ_shape_->GetId(), precision, nP, elapsed_ms);
 }
 
 void GeometryActor::deleteGeometryActor()

@@ -223,6 +223,7 @@ QQuickVTKItem::vtkUserData QRenderWindow::initializeVTK(vtkRenderWindow* renderW
     vtk->mesh_actor_manager_->bindRender(vtk->renderer_);
     vtk->geometry_actor_manager_ = std::make_unique<GeometryActorManager>();
     vtk->geometry_actor_manager_->bindRender(vtk->renderer_);
+    vtk->geometry_actor_manager_->setSurfacePrecision(surface_precision_);
 
     select_manager_ = std::make_unique<SelectManager>(*vtk->renderer_,
         vtk->mesh_actor_manager_->op(), vtk->geometry_actor_manager_->op());
@@ -699,7 +700,7 @@ void QRenderWindow::setGeometryStyle(int style)
         }
         if (select_manager_) {
             select_manager_->setGeometryHighlightVisible(style != 7);
-            select_manager_->refreshComponentHighlight();
+            select_manager_->refreshGeometrySelection();
         }
     });
     emit geometryStyleChanged();
@@ -708,6 +709,30 @@ void QRenderWindow::setGeometryStyle(int style)
 int QRenderWindow::getGeometryStyle()
 {
     return static_cast<int>(geometry_style_);
+}
+
+void QRenderWindow::setSurfacePrecision(int precision)
+{
+    if (precision < 0 || precision > 3 || precision == surface_precision_)
+        return;
+    surface_precision_ = precision;
+    dispatch_async([precision, this](vtkRenderWindow*, vtkUserData userData) {
+        auto* vtk = Data::SafeDownCast(userData);
+        if (!vtk || !vtk->geometry_actor_manager_)
+            return;
+        // 三角缓存和拾取器同属渲染线程；重建后沿用几何身份重新生成现有选择高亮。
+        vtk->geometry_actor_manager_->setSurfacePrecision(precision);
+        if (select_manager_) {
+            select_manager_->refreshGeometrySelection();
+        }
+        scheduleRender();
+    });
+    emit surfacePrecisionChanged();
+}
+
+int QRenderWindow::getSurfacePrecision() const
+{
+    return surface_precision_;
 }
 
 void QRenderWindow::setMeshStyle(int style)

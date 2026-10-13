@@ -124,8 +124,16 @@ void GeometryActorManagerSelectOp::unregisterProps(std::shared_ptr<GeometryActor
         shape_id_to_component_.erase(it);
     }
 
-    for (auto picker : shape_pickers_)
-        op.disableSelectionModes(picker);
+    const auto& shape = op.getOccShape();
+    const auto selectable = shape->GetSelectableObject();
+    if (!selectable.IsNull()) {
+        for (auto picker : shape_pickers_) {
+            // RemoveSelectableObject 会清空 Shape 上的句柄；多 Picker 需各自移除旧对象。
+            shape->SetSelectableObject(selectable);
+            picker->RemoveSelectableObject(shape);
+        }
+        shape->SetSelectableObject(nullptr);
+    }
 }
 
 void GeometryActorManagerSelectOp::setShapePickingEnabled(std::shared_ptr<GeometryActor> actor, bool enabled)

@@ -38,6 +38,9 @@ public:
     static int toleranceForMode(SelectMode m);
 
     IVtk_IdType getShapeId() const;
+    /** @brief 获取显示副本，供拾取缓存管理与显示检查使用。 */
+    const OccShapeHandle& getOccShape() const;
+    vtkPolyData* getLineOnlyPolyData() const;
     void disableSelectionModes(IVtkTools_ShapePicker* picker) const;
     void enableSelectionMode(IVtkTools_ShapePicker* picker, SelectMode mode) const;
 

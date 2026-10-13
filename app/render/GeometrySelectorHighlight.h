@@ -21,6 +21,8 @@ public:
     virtual void clear() = 0;
     virtual void disableHighlight() = 0;
     virtual void enableHighlight() = 0;
+    //! @brief 显示数据重建后重新连接高亮，保留选择与组件显隐状态。
+    virtual void refreshHighlight() = 0;
     virtual GeometrySelectionVtk get() const = 0;
 };
 
@@ -35,6 +37,7 @@ public:
     void clear() override;
     void disableHighlight() override;
     void enableHighlight() override;
+    void refreshHighlight() override;
     GeometrySelectionVtk get() const override;
 
 private:
@@ -56,6 +59,7 @@ public:
     void clear() override;
     void disableHighlight() override;
     void enableHighlight() override;
+    void refreshHighlight() override;
     GeometrySelectionVtk get() const override;
 
 private:
@@ -77,6 +81,7 @@ public:
     void clear() override;
     void disableHighlight() override;
     void enableHighlight() override;
+    void refreshHighlight() override;
     GeometrySelectionVtk get() const override;
 
 private:
@@ -98,6 +103,7 @@ public:
     void clear() override;
     void disableHighlight() override;
     void enableHighlight() override;
+    void refreshHighlight() override;
     GeometrySelectionVtk get() const override;
 
 private:

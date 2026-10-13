@@ -31,6 +31,10 @@ public:
     void setCurrentRenderStyle(GeometryRenderStyle style);
     GeometryRenderStyle getCurrentRenderStyle() const;
 
+    /** @brief 设置四档曲面显示精细度，已加载及后续加载的组件统一使用该档位。 */
+    void setSurfacePrecision(int precision);
+    int getSurfacePrecision() const { return surface_precision_; }
+
     /** @brief 设置窗口级几何拓扑诊断类别是否启用。 */
     void setTopologyDiagnosticCategoryEnabled(int category, bool enabled);
     /** @brief 设置窗口级细小边长度阈值。 */
@@ -46,6 +50,7 @@ private:
     std::unordered_map<Index, std::shared_ptr<GeometryActor>> component_actors_;
     vtkRenderer* renderer_;
     GeometryRenderStyle current_style_ { GeometryRenderStyle::SurfaceWithEdges };
+    int surface_precision_ { 1 };
     std::array<bool, kGeometryTopologyDiagnosticCategoryCount> topology_diagnostic_category_enabled_ {};
     double topology_diagnostic_small_edge_length_ { 0.01 };
     double topology_diagnostic_small_face_area_ { 0.01 };
