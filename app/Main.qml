@@ -62,11 +62,33 @@ ApplicationWindow {
     palette.toolTipBase: Theme.surface
     palette.toolTipText: Theme.textPrimary
 
+    // 把应用主题明暗推送给 dock 模块（dock 刻意不反向依赖 app）
+    Binding {
+        target: Docking.Theme
+        property: "dark"
+        value: Theme.dark
+    }
+
     // 布局持久化：JSON 快照存于 QSettings；退出保存，启动恢复
     Settings {
         id: dockSettings
         category: "DockLayout"
         property string json
+    }
+
+    // 主题偏好持久化：切换即写入，启动时恢复
+    Settings {
+        id: appearanceSettings
+        category: "Appearance"
+        property int mode: Theme.Mode.Light
+    }
+
+    // 主题模式变化写回 QSettings
+    Connections {
+        target: Theme
+        function onModeChanged() {
+            appearanceSettings.mode = Theme.mode
+        }
     }
 
     //! @brief 声明默认停靠布局（首次启动与恢复前的基础布局）
@@ -327,7 +349,7 @@ ApplicationWindow {
         anchors.bottom: root.footer.top
         anchors.left: parent.left
         anchors.right: parent.right
-        color: Qt.rgba(0.93, 0.93, 0.93, 0.55)
+        color: Theme.busyMaskOverlay
 
         MouseArea {
             anchors.fill: parent
@@ -344,12 +366,15 @@ ApplicationWindow {
         Label {
             anchors.centerIn: parent
             font.pixelSize: 15
-            color: "#444441"
+            color: Theme.textPrimary
             text: qsTr("任务执行中，请稍候…")
         }
     }
 
     Component.onCompleted: {
+        // 恢复上次选择的主题模式
+        Theme.mode = appearanceSettings.mode
+
         // 同步当前活动模型/组件到功能系统（功能菜单由 AppToolbar 自行构建）
         QModelManager.featureSystem.setActiveModel(App.selection.activeModelId)
         QModelManager.featureSystem.setActiveComponent(App.selection.activeComponentId)

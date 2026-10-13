@@ -74,12 +74,55 @@ Item {
                 Layout.margins: 8
                 currentIndex: 0
 
-                Item {
+                ColumnLayout {
+                    Layout.fillWidth: true
+                    Layout.fillHeight: true
+                    Layout.alignment: Qt.AlignTop
+                    spacing: Theme.spacingSm
+
                     Label {
-                        anchors.centerIn: parent
-                        text: "主题设置 - 待开发"
-                        color: Theme.textSecondary
+                        text: qsTr("主题")
+                        font.pixelSize: Theme.fontSizeLarge
+                        color: Theme.textPrimary
                     }
+
+                    ButtonGroup {
+                        id: themeModeGroup
+                    }
+
+                    ColumnLayout {
+                        Layout.leftMargin: Theme.spacingXs
+                        spacing: Theme.spacingXs
+
+                        RadioButton {
+                            id: lightRadio
+                            text: qsTr("浅色")
+                            ButtonGroup.group: themeModeGroup
+                            onClicked: Theme.setMode(Theme.Mode.Light)
+                        }
+
+                        RadioButton {
+                            id: darkRadio
+                            text: qsTr("深色")
+                            ButtonGroup.group: themeModeGroup
+                            onClicked: Theme.setMode(Theme.Mode.Dark)
+                        }
+
+                        // 用 Binding 元素同步选中态：直接绑定 checked 会被 ButtonGroup
+                        // 的点击赋值破坏，外部改主题（如恢复默认）后无法回显
+                        Binding {
+                            target: lightRadio
+                            property: "checked"
+                            value: Theme.mode === Theme.Mode.Light
+                        }
+                        Binding {
+                            target: darkRadio
+                            property: "checked"
+                            value: Theme.mode === Theme.Mode.Dark
+                        }
+                    }
+
+                    Item { Layout.fillHeight: true }
                 }
 
                 ColumnLayout {
@@ -185,6 +228,7 @@ Item {
                 text: "恢复默认"
                 flat: true
                 implicitHeight: 26
+                onClicked: Theme.setMode(Theme.Mode.Light)
             }
 
             Button {

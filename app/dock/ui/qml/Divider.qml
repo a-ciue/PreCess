@@ -4,6 +4,7 @@
  */
 
 import QtQuick
+import PreCess.Docking as Docking
 
 Rectangle {
     id: root
@@ -11,7 +12,7 @@ Rectangle {
     //! @brief 关联的 DividerItem（C++）
     property var dividerItem: null
 
-    color: hoverHandler.hovered ? "#7aa7d9" : "transparent"
+    color: hoverHandler.hovered ? (Docking.Theme.dark ? "#5A87C0" : "#7aa7d9") : "transparent"
 
     HoverHandler {
         id: hoverHandler

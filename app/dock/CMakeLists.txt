@@ -27,6 +27,7 @@ add_library(dock STATIC
     ui/DropZoneOverlay.cpp
     ui/GlobalMouseRelay.cpp
     ui/DockRuntime.cpp
+    ui/DockTheme.h
     ui/QmlRegistration.cpp
     ui/DividerItem.cpp
 )
