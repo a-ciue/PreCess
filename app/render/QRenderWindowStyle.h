@@ -26,7 +26,7 @@ public:
     QRenderWindowStyle();
 	static QRenderWindowStyle* New();
     vtkTypeMacro(QRenderWindowStyle, vtkInteractorStyleTrackballCamera);
-    void SetClick();
+    void SetClick(bool click = true);
     void SetSelectManager(SelectManager* select_manager);
     //! @brief 交互服务激活时点击/悬停走交互拾取，否则走选择系统
     void SetInteractionService(InteractionService* service);

@@ -34,9 +34,9 @@ QRenderWindowStyle::QRenderWindowStyle()
     rubber_band_actor_->SetProperty(prop);
 }
 
-void QRenderWindowStyle::SetClick()
+void QRenderWindowStyle::SetClick(bool click)
 {
-	click_ = true;
+    click_ = click;
 }
 
 void QRenderWindowStyle::SetSelectManager(SelectManager* select_manager)

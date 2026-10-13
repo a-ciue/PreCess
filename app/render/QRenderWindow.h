@@ -10,6 +10,7 @@
 #include "Core.h"
 #include "QModelQuery.h"
 #include "QSelection.h"
+#include <QPointF>
 #include <QQuickVTKItem.h>
 #include <QVTKRenderWindowAdapter.h>
 
@@ -169,8 +170,6 @@ public:
      */
     Q_INVOKABLE void setMeshClip(bool on);
 
-    Q_SLOT void setClick();
-
     /**
      * @brief 设置属性渲染方式
      *
@@ -221,6 +220,8 @@ signals:
     void rightClicked();
 
 private:
+    //! @brief 在 VTK release 前排队点击标记，使用本次事件坐标排除坐标系操作。
+    void queueClick(QPointF press_position, QPointF release_position);
     //! @brief 渲染线程制作选择快照，排队交付 GUI 线程，禁止 QML 直接读取拾取器。
     void publishSelection();
     // QQuickVTKItem 会接管事件分发，GUI 排队通知交给独立 QObject。
@@ -238,7 +239,7 @@ private:
     MeshActor* cur_actor_ {};
     Index cur_component_id_ { -1 };
 
-    std::unique_ptr<QMouseEvent> _click;
+    std::unique_ptr<QMouseEvent> click_candidate_; //> 仅判定点击，事件始终立即转发且不重放
     const Data* data_ {};
 
     QModelQuery* model_query_ {};
