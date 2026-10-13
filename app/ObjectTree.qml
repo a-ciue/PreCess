@@ -557,7 +557,23 @@ Pane {
         }
     }
 
+    // 同步渲染层显隐结果，分别保存网格和几何状态，避免再次发送显隐命令。
+    function syncComponentVisibility(componentId, meshVisible, geometryVisible) {
+        let compIdx = treeModel.findIndexByNodeId(componentId, 1)
+        if (!compIdx || !compIdx.valid) return
+        treeModel.setVisibility(compIdx, meshVisible || geometryVisible)
+        for (let i = 0; i < treeModel.rowCount(compIdx); i++) {
+            let childIdx = treeModel.index(i, 0, compIdx)
+            let cType = treeModel.data(childIdx, TreeModel.NodeTypeRole)
+            if (cType === objectTree._nodeTypeMesh)
+                treeModel.setVisibility(childIdx, meshVisible)
+            else if (cType === objectTree._nodeTypeGeometry)
+                treeModel.setVisibility(childIdx, geometryVisible)
+        }
+    }
+
     function reverseDisplayed() {
+        let componentIds = []
         let modelCount = treeModel.rowCount()
         for (let mi = 0; mi < modelCount; mi++) {
             let modelIdx = treeModel.index(mi, 0)
@@ -565,11 +581,10 @@ Pane {
             for (let ci = 0; ci < compCount; ci++) {
                 let compIdx = treeModel.index(ci, 0, modelIdx)
                 let cid = treeModel.data(compIdx, TreeModel.NodeIdRole)
-                let isVis = treeModel.data(compIdx, TreeModel.IsVisibleRole)
-                treeModel.setVisibility(compIdx, !isVis)
-                App.componentVisibilityUpdated(cid, !isVis, !isVis)
+                componentIds.push(cid)
             }
         }
+        App.registry.renderWindow.reverseVisibility(componentIds)
     }
 
     Component.onCompleted: {

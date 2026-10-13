@@ -264,6 +264,96 @@ TEST_CASE("face hiding composes with the clipping pipeline and survives clip tog
     REQUIRE(env.faceOutput()->GetNumberOfCells() == original_count);
 }
 
+TEST_CASE("reverseVisibility complements hidden faces and preserves clipping")
+{
+    FaceHidingEnv env;
+    const auto original_ids = faceIdValues(env.faceOutput());
+    REQUIRE(original_ids.size() > 2);
+    vtkNew<vtkPlane> keep_all_plane;
+    keep_all_plane->SetOrigin(1.0e6, 0.0, 0.0);
+    keep_all_plane->SetNormal(1.0, 0.0, 0.0);
+    env.actor->setClipPlane(keep_all_plane);
+    env.actor->hideFaces({ 0, 2 });
+    const auto partially_visible = faceIdValues(env.faceOutput());
+
+    REQUIRE(env.actor->reverseVisibility());
+    CHECK(faceIdValues(env.faceOutput()) == std::vector<vtkIdType>({ 0, 2 }));
+    REQUIRE(env.actor->reverseVisibility());
+    CHECK(faceIdValues(env.faceOutput()) == partially_visible);
+    env.actor->setClipPlane(nullptr);
+    CHECK(faceIdValues(env.faceOutput()) == partially_visible);
+
+    // 整体隐藏必须按实际不可见状态反转，不能只恢复之前剩余的面。
+    env.actor->setVisibility(false);
+    REQUIRE(env.actor->reverseVisibility());
+    CHECK(env.actor->isVisible());
+    CHECK(faceIdValues(env.faceOutput()) == original_ids);
+    CHECK_FALSE(env.actor->reverseVisibility());
+    CHECK_FALSE(env.actor->isVisible());
+    REQUIRE(env.actor->reverseVisibility());
+    CHECK(faceIdValues(env.faceOutput()) == original_ids);
+
+    env.actor->hideFaces(original_ids);
+    CHECK(env.faceOutput()->GetNumberOfCells() == 0);
+    REQUIRE(env.actor->reverseVisibility());
+    CHECK(faceIdValues(env.faceOutput()) == original_ids);
+}
+
+TEST_CASE("showFaces restores requested faces while preserving other hidden faces")
+{
+    FaceHidingEnv env;
+    const auto original_ids = faceIdValues(env.faceOutput());
+    env.actor->hideFaces({ 0, 1, 2 });
+    env.actor->showFaces({ 0, 0, -1, static_cast<vtkIdType>(original_ids.size()) });
+    auto expected = original_ids;
+    expected.erase(std::remove(expected.begin(), expected.end(), 1), expected.end());
+    expected.erase(std::remove(expected.begin(), expected.end(), 2), expected.end());
+    CHECK(faceIdValues(env.faceOutput()) == expected);
+    env.actor->showFaces({ });
+    CHECK(faceIdValues(env.faceOutput()) == expected);
+
+    // 父组件隐藏时，显示所选面不会恢复同组件其余面、体或独立边。
+    env.actor->setVisibility(false);
+    env.actor->showFaces({ -1 });
+    CHECK_FALSE(env.actor->isVisible());
+    env.actor->showFaces({ 1 });
+    CHECK(env.actor->isVisible());
+    CHECK(faceIdValues(env.faceOutput()) == std::vector<vtkIdType>({ 1 }));
+    MeshActorSelectOp op(env.actor);
+    CHECK_FALSE(op.getSolidActor().GetVisibility());
+    CHECK_FALSE(op.getEdgeActor().GetVisibility());
+}
+
+TEST_CASE("face isolation survives style changes and ends on restore or reload")
+{
+    FaceHidingEnv env;
+    const auto original_ids = faceIdValues(env.faceOutput());
+    MeshActorSelectOp op(env.actor);
+    env.actor->isolateFaces({ 0, 2 });
+    CHECK(faceIdValues(env.faceOutput()) == std::vector<vtkIdType>({ 0, 2 }));
+    env.actor->setRenderStyle(MeshRenderStyle::Face);
+    env.actor->setRenderStyle(MeshRenderStyle::FaceWithEdges);
+    CHECK_FALSE(op.getSolidActor().GetVisibility());
+    CHECK_FALSE(op.getEdgeActor().GetVisibility());
+    env.actor->showFaces({ 1 });
+    CHECK(faceIdValues(env.faceOutput()) == std::vector<vtkIdType>({ 0, 1, 2 }));
+    CHECK_FALSE(op.getSolidActor().GetVisibility());
+    env.actor->showAllFaces();
+    CHECK(faceIdValues(env.faceOutput()) == original_ids);
+    CHECK(op.getSolidActor().GetVisibility());
+    CHECK(op.getEdgeActor().GetVisibility());
+
+    // 隔离全部面没有隐藏 id，也必须能结束隔离。
+    env.actor->isolateFaces(original_ids);
+    env.actor->showAllFaces();
+    CHECK(op.getSolidActor().GetVisibility());
+    env.actor->isolateFaces({ 0 });
+    MeshData reloaded_mesh;
+    env.actor->loadModelData(MakeMeshDataVtk(reloaded_mesh));
+    CHECK(faceIdValues(env.faceOutput()) == original_ids);
+    CHECK(op.getSolidActor().GetVisibility());
+}
+
 TEST_CASE("reloading mesh data clears hidden faces")
 {
     FaceHidingEnv env;
@@ -375,6 +465,15 @@ TEST_CASE("showAllFaces restores triangular surface wireframe after extensive hi
         selection.TakeReference(selector->Select());
         REQUIRE(selection != nullptr);
         countInteriorEdgePixels(*window);
+        // 反转也会切换面连通性，必须保留实际线框绘制能力。
+        REQUIRE(env.actor->reverseVisibility());
+        REQUIRE(env.faceOutput()->GetNumberOfCells() == original_count - 128);
+        REQUIRE(countInteriorEdgePixels(*window) > 1000);
+        REQUIRE(env.actor->reverseVisibility());
+        REQUIRE(env.faceOutput()->GetNumberOfCells() == 128);
+        env.actor->isolateFaces(hidden_ids);
+        REQUIRE(env.faceOutput()->GetNumberOfCells() == original_count - 128);
+        REQUIRE(countInteriorEdgePixels(*window) > 1000);
         env.actor->showAllFaces();
         REQUIRE(env.faceOutput()->GetNumberOfCells() == original_count);
         REQUIRE(face_actor->GetProperty()->GetEdgeVisibility() != 0);

@@ -11,6 +11,7 @@
 #include "SelectManager.h"
 #include "Selection.h"
 #include "GeometryActorManager.h"
+#include "GeometryActor.h"
 #include "GeometryDataVtk.h"
 #include "MeshIdQuery.h"
 
@@ -25,6 +26,7 @@
 #include <vtkObjectFactory.h>
 #include <vtkPlane.h>
 
+#include <algorithm>
 #include <cmath>
 #include <memory>
 #include <optional>
@@ -409,12 +411,66 @@ void QRenderWindow::hideSelectedFaces()
         // 非面模式或没有选中面时为空操作，保留当前选择及 GUI 快照。
         if (selected_faces.empty())
             return;
-        for (const auto& [component_id, face_ids] : selected_faces)
+        for (const auto& [component_id, face_ids] : selected_faces) {
             vtk->mesh_actor_manager_->hideFaces(component_id, face_ids);
-
-        // 高亮为独立 actor，不经过面过滤管线；隐藏后须清空，否则被隐藏面仍以高亮形态可见。
-        this->select_manager_->clearSelection();
+            // 保留原始面选择，只移除独立高亮，隐藏后仍可用“显示”恢复同一批面。
+            select_manager_->setMeshHighlightVisible(component_id, false);
+        }
         publishSelection();
+    });
+}
+
+void QRenderWindow::showSelectedFaces()
+{
+    dispatch_async([this](vtkRenderWindow*, vtkUserData user_data) {
+        auto* vtk = Data::SafeDownCast(user_data);
+        if (!vtk)
+            return;
+        const auto selected_faces = select_manager_->selectedFaceIdsByComponent();
+        if (selected_faces.empty())
+            return;
+        // 更新面集合前释放旧渲染索引和高亮，操作只使用导出的原始面 id。
+        select_manager_->clearSelection();
+        publishSelection();
+        for (const auto& [component_id, face_ids] : selected_faces) {
+            if (auto actor = vtk->mesh_actor_manager_->getComponentActor(component_id)) {
+                actor->showFaces(face_ids);
+                auto geometry = vtk->geometry_actor_manager_->getComponentActor(component_id);
+                publishComponentVisibility(component_id, true, geometry && geometry->isVisibilityEnabled());
+            }
+        }
+    });
+}
+
+void QRenderWindow::isolateSelectedFaces()
+{
+    dispatch_async([this](vtkRenderWindow*, vtkUserData user_data) {
+        auto* vtk = Data::SafeDownCast(user_data);
+        if (!vtk)
+            return;
+        const auto selected_faces = select_manager_->selectedFaceIdsByComponent();
+        if (selected_faces.empty())
+            return;
+        select_manager_->clearSelection();
+        publishSelection();
+        // 同组件隔离一样覆盖整个场景，并包含只有几何的组件。
+        auto ids = vtk->mesh_actor_manager_->op().getAllComponentIds();
+        const auto geometry_ids = vtk->geometry_actor_manager_->op().getAllComponentIds();
+        ids.insert(ids.end(), geometry_ids.begin(), geometry_ids.end());
+        std::sort(ids.begin(), ids.end());
+        ids.erase(std::unique(ids.begin(), ids.end()), ids.end());
+        for (Index component_id : ids) {
+            const auto selected = selected_faces.find(component_id);
+            auto actor = vtk->mesh_actor_manager_->getComponentActor(component_id);
+            const bool mesh_visible = actor && selected != selected_faces.end();
+            if (mesh_visible)
+                actor->isolateFaces(selected->second);
+            else
+                vtk->mesh_actor_manager_->setVisibility(component_id, false);
+            // 必须走管理器，同时禁用 OCC 几何拾取，避免隐藏几何仍能命中。
+            vtk->geometry_actor_manager_->setVisibility(component_id, false);
+            publishComponentVisibility(component_id, mesh_visible, false);
+        }
     });
 }
 
@@ -426,6 +482,47 @@ void QRenderWindow::showAllHiddenFaces()
         this->select_manager_->clearSelection();
         publishSelection();
         vtk->mesh_actor_manager_->showAllFaces();
+    });
+}
+
+void QRenderWindow::reverseVisibility(const QVariantList& component_ids)
+{
+    std::vector<Index> ids;
+    ids.reserve(component_ids.size());
+    for (const auto& component_id : component_ids)
+        ids.push_back(component_id.toInt());
+    std::sort(ids.begin(), ids.end());
+    ids.erase(std::unique(ids.begin(), ids.end()), ids.end());
+    if (ids.empty())
+        return;
+
+    // 每次在渲染线程读取最新显隐，避免连续点击使用尚未同步的对象树状态。
+    dispatch_async([this, ids = std::move(ids)](vtkRenderWindow*, vtkUserData user_data) {
+        auto* vtk = Data::SafeDownCast(user_data);
+        if (!vtk)
+            return;
+        // 面集合改变后旧渲染索引和独立高亮均失效，先清理并同步选择快照。
+        select_manager_->clearSelection();
+        publishSelection();
+        for (Index component_id : ids) {
+            auto mesh = vtk->mesh_actor_manager_->getComponentActor(component_id);
+            auto geometry = vtk->geometry_actor_manager_->getComponentActor(component_id);
+            const bool mesh_enabled = mesh && mesh->isVisibilityEnabled();
+            // 沿用组件整体开关取反：任一子项开启就属于可见组件，不单独反转几何。
+            const bool component_visible = mesh_enabled || (geometry && geometry->isVisibilityEnabled());
+            bool mesh_visible = false;
+            if (mesh) {
+                // 已隐藏网格且几何可见时，组件反转仍应隐藏，不能把网格单独打开。
+                if (!mesh_enabled && component_visible)
+                    vtk->mesh_actor_manager_->setVisibility(component_id, false);
+                else
+                    mesh_visible = mesh->reverseVisibility();
+            }
+            const bool geometry_visible = geometry && !component_visible;
+            // 复用原有管理器入口，同时更新几何显隐和 OCC 拾取状态。
+            vtk->geometry_actor_manager_->setVisibility(component_id, geometry_visible);
+            publishComponentVisibility(component_id, mesh_visible, geometry_visible);
+        }
     });
 }
 
@@ -590,6 +687,12 @@ void QRenderWindow::publishSelection()
             return;
         selection_snapshot_ = snapshot;
         emit selectedChanged(); }, Qt::QueuedConnection);
+}
+
+void QRenderWindow::publishComponentVisibility(Index component_id, bool mesh_visible, bool geometry_visible)
+{
+    // QQuickVTKItem 接管自身事件，通知复用现有 GUI 调度对象。
+    QMetaObject::invokeMethod(&selection_dispatcher_, [this, component_id, mesh_visible, geometry_visible] { emit componentVisibilityChanged(component_id, mesh_visible, geometry_visible); }, Qt::QueuedConnection);
 }
 
 void QRenderWindow::setModelQuery(QModelQuery* query)

@@ -28,6 +28,8 @@ public:
 
     void setVisibility(bool visibility);
     bool isVisible() const;
+    /** @brief 查询几何显隐开关，供面操作同步对象树时保留几何状态。 */
+    bool isVisibilityEnabled() const { return visibility_; }
     void setRenderStyle(GeometryRenderStyle style);
     GeometryRenderStyle getRenderStyle() const;
 

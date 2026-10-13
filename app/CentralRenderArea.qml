@@ -674,6 +674,10 @@ Page {
                     App.selection.selectionUpdated(myItem.selectedIDs)
             }
 
+            onComponentVisibilityChanged: function(componentId, meshVisible, geometryVisible) {
+                App.registry.objectTree.syncComponentVisibility(componentId, meshVisible, geometryVisible)
+            }
+
             Component.onCompleted: {
                 myItem.setFaceSelectionByAngle(root.faceSelectByAngle, root.faceSelectAngle)
             }
@@ -754,23 +758,28 @@ Page {
 
         Menu {
             id: viewportMenu
+            objectName: "viewportVisibilityMenu"
 
             property var pickedIds: []
-            // 面选择器状态：faceMode 控制"隐藏面"项是否出现，hasFacePicks 控制是否可点（onOpened 刷新）
+            // 面和组件共用所选对象操作；空选择时显示全局显隐操作。
             property bool faceMode: App.selection.selectMode === "Face"
             property bool hasFacePicks: false
+            property bool hasPicks: faceMode ? hasFacePicks : pickedIds.length > 0
 
-            onOpened: {
-                let sel = myItem.selectedIDs
+            // 根据选择快照刷新菜单，确保弹出前完成所选对象判断。
+            function refreshSelection(sel) {
                 pickedIds = sel ? sel.getAsComponentIds() : []
+                // 选择模式已标识选面；Element 的继承枚举未导出到 QML，不能用于比较。
                 hasFacePicks = faceMode && !!sel && sel.size() > 0
             }
+
+            onAboutToShow: refreshSelection(myItem.selectedIDs)
 
             // 视口菜单项：shown 控制显隐（无拾取时显示整组操作，有拾取时显示对象操作）
             component StyledMenuItem: MenuItem {
                 id: control
                 property bool shown: true
-                // 可见但需要置灰的场景：shown 控制显隐，active 控制可点（如面选择器下无选中面）
+                // shown 控制显隐，active 控制可点。
                 property bool active: true
 
                 visible: shown
@@ -779,61 +788,59 @@ Page {
 
             component StyledSeparator: MenuSeparator {}
 
-            // 面选择器专用：隐藏当前高亮选中的面（渲染层过滤，"全部显示"可恢复；其余选择模式不显示）
             StyledMenuItem {
                 text: "隐藏"
-                shown: viewportMenu.faceMode
-                active: viewportMenu.hasFacePicks
-                onTriggered: myItem.hideSelectedFaces()
-            }
-
-            StyledSeparator {
-                visible: viewportMenu.faceMode
-            }
-
-            StyledMenuItem {
-                text: "隐藏"
-                shown: viewportMenu.pickedIds.length > 0
+                shown: viewportMenu.hasPicks
                 onTriggered: {
-                    for (let i = 0; i < viewportMenu.pickedIds.length; i++)
-                        App.registry.objectTree.hideNode(viewportMenu.pickedIds[i], 1)
+                    if (viewportMenu.faceMode)
+                        myItem.hideSelectedFaces()
+                    else {
+                        for (let i = 0; i < viewportMenu.pickedIds.length; i++)
+                            App.registry.objectTree.hideNode(viewportMenu.pickedIds[i], 1)
+                    }
                 }
             }
 
             StyledMenuItem {
                 text: "隔离"
-                shown: viewportMenu.pickedIds.length > 0
+                shown: viewportMenu.hasPicks
                 onTriggered: {
-                    if (viewportMenu.pickedIds.length > 0)
+                    if (viewportMenu.faceMode)
+                        myItem.isolateSelectedFaces()
+                    else if (viewportMenu.pickedIds.length > 0)
                         App.registry.objectTree.isolateSelection(viewportMenu.pickedIds)
                 }
             }
 
             StyledMenuItem {
                 text: "显示"
-                shown: viewportMenu.pickedIds.length > 0
+                shown: viewportMenu.hasPicks
                 onTriggered: {
-                    for (let i = 0; i < viewportMenu.pickedIds.length; i++)
-                        App.registry.objectTree.showNode(viewportMenu.pickedIds[i], 1)
+                    if (viewportMenu.faceMode)
+                        myItem.showSelectedFaces()
+                    else {
+                        for (let i = 0; i < viewportMenu.pickedIds.length; i++)
+                            App.registry.objectTree.showNode(viewportMenu.pickedIds[i], 1)
+                    }
                 }
             }
 
             StyledSeparator {
-                visible: viewportMenu.pickedIds.length > 0
+                visible: viewportMenu.hasPicks
             }
 
             StyledMenuItem {
                 text: "全部隐藏"
-                shown: viewportMenu.pickedIds.length === 0
+                shown: !viewportMenu.hasPicks
                 onTriggered: App.registry.objectTree.hideAllNodes()
             }
 
             StyledMenuItem {
                 text: "全部显示"
-                shown: viewportMenu.pickedIds.length === 0
+                shown: !viewportMenu.hasPicks
                 onTriggered: {
                     App.registry.objectTree.showAllNodes()
-                    // 同时恢复经面选择器右键"隐藏"移除的面
+                    // 同时恢复局部隐藏面并结束面隔离。
                     myItem.showAllHiddenFaces()
                 }
             }

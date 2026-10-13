@@ -46,7 +46,7 @@ public:
     std::optional<MeshVertexSnap> snapMeshVertex(double posx, double posy);
     void clearSelection();
     /**
-     * @brief 导出各组件当前高亮选中面的原始模型面 id（仅面选择模式有效）
+     * @brief 导出各组件保留的原始模型面 ID，包含已隐藏的选择（仅面选择模式有效）
      * @return component_id → 原模型面 id 列表；非面选择模式返回空表
      */
     std::unordered_map<Index, std::vector<vtkIdType>> selectedFaceIdsByComponent();

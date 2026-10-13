@@ -52,10 +52,10 @@ public:
     void setMeshIdQuery(const IMeshIdQuery* id_query);
     std::unique_ptr<Selection> getSelection();
     /**
-     * @brief 导出各组件当前高亮选中面的原始模型面 id
+     * @brief 导出各组件保留的原始模型面 ID，包含已隐藏的选择
      *
-     * 仅供面选择模式：经各 FaceSelectorHighlight::get() 的 PrecessFaceIds
-     * 反查得到原模型面 id（裁剪/隐藏过滤链上的 render id 不会外泄）。
+     * 仅供面选择模式：FaceSelectorHighlight 在拾取时通过 PrecessFaceIds
+     * 转换并保存原模型面 ID，裁剪或隐藏后的渲染下标不会外泄。
      * @return component_id → 原模型面 id 列表；非面选择模式返回空表
      */
     std::unordered_map<Index, std::vector<vtkIdType>> selectedFacesByComponent();

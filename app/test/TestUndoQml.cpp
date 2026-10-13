@@ -6,6 +6,8 @@
 #include "FeatureHandler.h"
 #include "FeatureRegistrar.h"
 #include "FeatureSystem.h"
+#include "GeometryData.h"
+#include "MeshData.h"
 #include "ModelLayer.h"
 #include "QFeatureInfo.h"
 #include "QModelManager.h"
@@ -22,6 +24,8 @@
 #include <QTemporaryDir>
 #include <QTimer>
 #include <catch2/catch_test_macros.hpp>
+#include <map>
+#include <utility>
 
 Q_IMPORT_QML_PLUGIN(app_corePlugin)
 Q_IMPORT_QML_PLUGIN(app_modelPlugin)
@@ -129,6 +133,91 @@ bool waitForRefresh(TreeModel& tree_model)
     return refreshed;
 }
 
+}
+
+TEST_CASE("Actual QML synchronizes reversed mesh and geometry visibility across tree refresh", "[QML][visibility]")
+{
+    application();
+    QmlFixture f;
+    auto& model = *f.manager->getModelManager();
+    model.setUndoRecorder(nullptr);
+    ComponentDatas components;
+    auto component = std::make_unique<ComponentData>();
+    component->mesh = std::make_unique<MeshData>();
+    component->geometry = std::make_unique<GeometryData>();
+    components.push_back(std::move(component));
+    const Index model_id = model.addModel("visibility fixture", std::move(components));
+    const Index component_id = model.modelById(model_id)->componentIds()[0];
+    auto* tree = f.tree->findChild<TreeModel*>();
+    auto* viewport = f.viewport->findChild<QQuickVTKItem*>();
+    REQUIRE(tree);
+    REQUIRE(viewport);
+    REQUIRE(tree->refresh());
+
+    for (auto [mesh_visible, geometry_visible] : { std::make_pair(true, false),
+                                                   std::make_pair(false, false), std::make_pair(false, true), std::make_pair(true, true) }) {
+        // 触发实际视口信号，覆盖 CentralRenderArea 到 ObjectTree 的回传链路。
+        REQUIRE(QMetaObject::invokeMethod(viewport, "componentVisibilityChanged",
+                                          Q_ARG(Index, component_id), Q_ARG(bool, mesh_visible), Q_ARG(bool, geometry_visible)));
+        for (int round = 0; round < 2; ++round) {
+            const auto index = tree->findIndexByNodeId(component_id, 1);
+            REQUIRE(index.isValid());
+            CHECK(tree->data(index, TreeModel::IsVisibleRole).toBool() == (mesh_visible || geometry_visible));
+            CHECK(tree->data(tree->parent(index), TreeModel::IsVisibleRole).toBool() == (mesh_visible || geometry_visible));
+            REQUIRE(tree->rowCount(index) == 2);
+            for (int i = 0; i < tree->rowCount(index); ++i) {
+                const auto child = tree->index(i, 0, index);
+                const bool is_mesh = tree->data(child, TreeModel::NodeTypeRole).toInt() == static_cast<int>(TreeNode::NodeType::Mesh);
+                CHECK(tree->data(child, TreeModel::IsVisibleRole).toBool() == (is_mesh ? mesh_visible : geometry_visible));
+            }
+            // 树重建后仍需保留各子节点状态，不能退回统一的组件开关。
+            REQUIRE(tree->refresh());
+        }
+    }
+}
+
+TEST_CASE("Actual QML aligns face and component visibility menu entries", "[QML][visibility]")
+{
+    application();
+    QmlFixture f;
+    auto* menu = f.viewport->findChild<QObject*>("viewportVisibilityMenu");
+    REQUIRE(menu);
+    std::map<QString, QObject*> items;
+    for (auto* item : menu->findChildren<QObject*>()) {
+        if (item->property("shown").isValid()) {
+            const auto text = item->property("text").toString();
+            REQUIRE(items.count(text) == 0);
+            items[text] = item;
+        }
+    }
+    REQUIRE(items.size() == 6);
+    for (const auto& mode : { QString("Face"), QString("Component") }) {
+        f.selection_state->setProperty("selectMode", mode);
+        for (bool has_picks : { false, true }) {
+            // 传入真实 QSelection，覆盖 C++ 选择快照到 QML 菜单的判断路径。
+            auto data = std::make_unique<Selection>();
+            data->type = mode == "Face" ? ElementEnum::Face : ElementEnum::Component;
+            data->component_id = 7;
+            if (has_picks)
+                data->ids = { 0, 1 };
+            QSelection selection(std::move(data));
+            REQUIRE(QMetaObject::invokeMethod(menu, "refreshSelection",
+                                              Q_ARG(QVariant, QVariant::fromValue(&selection))));
+            CHECK(menu->property("hasPicks").toBool() == has_picks);
+            for (const auto& text : { QString("隐藏"), QString("显示"), QString("隔离") })
+                CHECK(items.at(text)->property("shown").toBool() == has_picks);
+            for (const auto& text : { QString("全部隐藏"), QString("全部显示") })
+                CHECK(items.at(text)->property("shown").toBool() == !has_picks);
+            CHECK(items.at("反转显示")->property("shown").toBool());
+        }
+    }
+    // 尚未取得选择快照时也应恢复全局操作，不能保留上次菜单的选择状态。
+    f.selection_state->setProperty("selectMode", "Face");
+    REQUIRE(QMetaObject::invokeMethod(menu, "refreshSelection",
+                                      Q_ARG(QVariant, QVariant::fromValue(static_cast<QObject*>(nullptr)))));
+    CHECK_FALSE(menu->property("hasPicks").toBool());
+    for (const auto& text : { QString("隐藏"), QString("显示"), QString("隔离") })
+        CHECK_FALSE(items.at(text)->property("shown").toBool());
 }
 
 TEST_CASE("Actual QML follows successful deletion notifications and preserves selection on refusal", "[QML][undo]")

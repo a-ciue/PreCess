@@ -50,6 +50,8 @@ public:
 
     void setVisibility(bool visibility);
     bool isVisible() const;
+    /** @brief 查询网格显隐开关，供组件级反转使用，不受渲染样式影响。 */
+    bool isVisibilityEnabled() const { return visibility_; }
     /**
      * @brief 设置或取消裁剪平面
      * @param plane 裁剪平面，传入nullptr则取消裁剪
@@ -64,10 +66,19 @@ public:
      * @param face_ids 待隐藏面的原始模型面 id 集合
      */
     void hideFaces(const std::vector<vtkIdType>& face_ids);
+    /** @brief 显示指定原始面，保留其余面的显隐；整体隐藏时只恢复这些面。 */
+    void showFaces(const std::vector<vtkIdType>& face_ids);
+    /** @brief 隔离指定原始面，同时遮住本组件的体、独立边、向量及诊断覆盖层。 */
+    void isolateFaces(const std::vector<vtkIdType>& face_ids);
     /**
      * @brief 显示全部经 hideFaces 隐藏的面（清空隐藏集，filter 走透传输出完整模型）
      */
     void showAllFaces();
+    /**
+     * @brief 反转网格显隐；局部隐藏时交换原始面的可见与隐藏集合
+     * @return 反转后的组件网格显隐开关，供对象树同步
+     */
+    bool reverseVisibility();
     void setRenderStyle(MeshRenderStyle style);
     MeshRenderStyle getRenderStyle() const;
 
@@ -106,6 +117,7 @@ private:
     std::unique_ptr<IAttributeRenderStrategy> render_strategy_;
     MeshRenderStyle style_ { MeshRenderStyle::FaceWithEdges };
     bool visibility_ { true };
+    bool faces_only_ { false }; //> 面隔离期间遮住不经过面过滤管线的渲染对象
     std::unique_ptr<MeshDataVtk> model_data_;
     std::unique_ptr<TopologyDiagnosticActor> topology_diagnostics_;
 

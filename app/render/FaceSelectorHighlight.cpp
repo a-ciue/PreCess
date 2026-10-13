@@ -18,6 +18,7 @@
 #include <vtkCellData.h>
 #include <vtkDataObject.h>
 #include <vtkHardwarePicker.h>
+#include <vtkIdList.h>
 #include <vtkIdTypeArray.h>
 #include <vtkPartitionedDataSet.h>
 #include <vtkPolyData.h>
@@ -27,6 +28,15 @@
 
 namespace {
 constexpr double kPi = 3.14159265358979323846;
+
+/** @brief 将拾取到的渲染面下标转换为原始面 ID，避免隐藏或裁剪重排后选择身份改变。 */
+vtkIdType getOriginalFaceId(vtkPolyData& poly, vtkIdType render_id)
+{
+    auto* face_ids = vtkIdTypeArray::SafeDownCast(poly.GetCellData()->GetArray("PrecessFaceIds"));
+    if (face_ids && render_id >= 0 && render_id < face_ids->GetNumberOfTuples())
+        return face_ids->GetValue(render_id);
+    return render_id;
+}
 
 /**
  * @brief 用排序后的两个点编号表示无向边，用于查找共享边
@@ -218,21 +228,9 @@ SelectionVtk FaceSelectorHighlight::get()
     SelectionVtk back_selection;
     back_selection.type = ElementEnum::Face;
 
-    // 经 face polydata 的面索引数组换算模型面 id：
-    // 不裁剪时数组为恒等（索引即面 id）；裁剪开启时 cell 重排，数组随裁剪链透传仍指向原模型面。
-    auto* face_actor = vtkActor::SafeDownCast(&select_op_.getFaceActor());
-    auto* mapper = face_actor ? vtkPolyDataMapper::SafeDownCast(face_actor->GetMapper()) : nullptr;
-    auto* poly = mapper ? mapper->GetInput() : nullptr;
-    auto* face_ids = poly
-        ? vtkIdTypeArray::SafeDownCast(poly->GetCellData()->GetArray("PrecessFaceIds"))
-        : nullptr;
-
-    for (const auto& face : selections_) {
-        if (face_ids && face >= 0 && face < face_ids->GetNumberOfTuples())
-            back_selection.ids.push_back(static_cast<Index>(face_ids->GetValue(face)));
-        else
-            back_selection.ids.push_back(static_cast<Index>(face)); // 数组缺失时按索引即 id 兜底
-    }
+    // 选择在拾取时已转换为原始面 ID，隐藏后不依赖当前可见面表。
+    for (vtkIdType face_id : selections_)
+        back_selection.ids.push_back(static_cast<Index>(face_id));
 
     return back_selection;
 }
@@ -261,16 +259,28 @@ void FaceSelectorHighlight::enableHighlight()
     auto* mapper = vtkPolyDataMapper::SafeDownCast(face_actor->GetMapper());
     if (!mapper)
         return;
+    // 显隐过滤会改变当前输出，先更新再按原始面 ID 重建可见部分高亮。
+    mapper->Update();
     auto* poly = mapper->GetInput();
     if (!poly)
         return;
 
+    auto* face_ids = vtkIdTypeArray::SafeDownCast(poly->GetCellData()->GetArray("PrecessFaceIds"));
     vtkNew<vtkCellArray> cell_array;
-    for (const auto& face : selections_) {
-        vtkIdType point_count = 0;
-        const vtkIdType* point_ids = nullptr;
-        poly->GetCellPoints(face, point_count, point_ids);
-        cell_array->InsertNextCell(point_count, point_ids);
+    vtkNew<vtkIdList> render_ids;
+    for (vtkIdType face_id : selections_) {
+        render_ids->Reset();
+        // 按原始面 ID 查找当前渲染单元；隐藏或被裁剪剔除的面没有匹配项。
+        if (face_ids)
+            face_ids->LookupTypedValue(face_id, render_ids);
+        else if (face_id >= 0 && face_id < poly->GetNumberOfCells())
+            render_ids->InsertNextId(face_id);
+        for (vtkIdType i = 0; i < render_ids->GetNumberOfIds(); ++i) {
+            vtkIdType point_count = 0;
+            const vtkIdType* point_ids = nullptr;
+            poly->GetCellPoints(render_ids->GetId(i), point_count, point_ids);
+            cell_array->InsertNextCell(point_count, point_ids);
+        }
     }
 
     vtkNew<vtkPolyData> highlight_poly;
@@ -328,6 +338,10 @@ void FaceSelectorHighlight::select(double posx, double posy,
             spread_cache_.normals, picked_cell_id, spread_options_.angle_deg);
     }
 
+    // 邻接扩散仍使用当前可见面的渲染下标；只有保存选择时转换为稳定身份。
+    for (auto& face_id : picked_faces)
+        face_id = getOriginalFaceId(*picked_poly, face_id);
+
     // 按 op 决定整片区域（含角度扩散）的选中语义：
     switch (op) {
     case SelectOp::Append:
@@ -337,7 +351,7 @@ void FaceSelectorHighlight::select(double posx, double posy,
         removeSelected(picked_faces, selections_);
         break;
     case SelectOp::Toggle:
-        if (isSelected(picked_cell_id, selections_))
+        if (isSelected(picked_faces.front(), selections_))
             removeSelected(picked_faces, selections_);
         else
             addSelected(picked_faces, selections_);
@@ -381,7 +395,15 @@ void FaceSelectorHighlight::selectArea(
 
     // 按 op 对框内命中的面做集合运算：Append->并集；Remove->差集；Toggle->对称差。
     std::unordered_set<vtkIdType> cur(selections_.begin(), selections_.end());
-    std::unordered_set<vtkIdType> picked_set(picked.begin(), picked.end());
+    auto* face_actor = vtkActor::SafeDownCast(&select_op_.getFaceActor());
+    auto* mapper = face_actor ? vtkPolyDataMapper::SafeDownCast(face_actor->GetMapper()) : nullptr;
+    auto* poly = mapper ? mapper->GetInput() : nullptr;
+    if (!poly)
+        return;
+    // 框选也在集合运算前统一转换，避免与保留的隐藏面混用两种下标。
+    std::unordered_set<vtkIdType> picked_set;
+    for (vtkIdType render_id : picked)
+        picked_set.insert(getOriginalFaceId(*poly, render_id));
     std::unordered_set<vtkIdType> result;
     switch (op) {
     case SelectOp::Append:

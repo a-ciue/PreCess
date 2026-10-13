@@ -139,6 +139,7 @@ void MeshActor::loadModelData(const MeshDataVtk& model_data)
     // 隐藏面 id 绑定的是旧网格的面单元，网格重载后语义失效，清空隐藏状态。
     hidden_face_ids_->Reset();
     hidden_face_ids_->Modified();
+    faces_only_ = false;
 
     // 单元中心只依赖当前网格；重新加载后先失效，首次向量渲染时再按需计算。
     edge_cell_centers_ = nullptr;
@@ -259,6 +260,7 @@ void MeshActor::loadModelData(const MeshDataVtk& model_data)
     topology_diagnostics_->loadModelData(*model_data_);
     // Actor 数据重载后恢复自身原有裁剪连接；新 Actor 的状态由渲染窗口统一同步。
     setClipPlane(clip_plane_);
+    applyStyle();
 }
 
 void MeshActor::setVisibility(bool visibility)
@@ -323,14 +325,96 @@ void MeshActor::hideFaces(const std::vector<vtkIdType>& face_ids)
 
 void MeshActor::showAllFaces()
 {
-    if (hidden_face_ids_->GetNumberOfValues() == 0)
-        return;
+    if (hidden_face_ids_->GetNumberOfValues() != 0) {
+        hidden_face_ids_->Reset();
+        hidden_face_ids_->Modified();
+        face_hider_->Modified();
+        applyFacePipeline();
+    }
+    // 全部显示也结束面隔离，即使隔离时恰好选中了全部面。
+    if (faces_only_) {
+        faces_only_ = false;
+        applyStyle();
+    }
+}
 
+void MeshActor::showFaces(const std::vector<vtkIdType>& face_ids)
+{
+    std::vector<vtkIdType> shown_ids;
+    const vtkIdType cell_count = face_data_->GetNumberOfCells();
+    for (vtkIdType id : face_ids) {
+        if (id >= 0 && id < cell_count)
+            shown_ids.push_back(id);
+    }
+    if (shown_ids.empty())
+        return;
+    if (!visibility_) {
+        // 父组件整体不可见时，仅恢复所选面，避免连带显示其余内容。
+        isolateFaces(shown_ids);
+        return;
+    }
+    std::sort(shown_ids.begin(), shown_ids.end());
+    vtkNew<vtkIdTypeArray> remaining_ids;
+    // 从隐藏集移除指定面；数组对象不变，拾取仍以原始面 id 为准。
+    for (vtkIdType i = 0; i < hidden_face_ids_->GetNumberOfValues(); ++i) {
+        const auto id = hidden_face_ids_->GetValue(i);
+        if (!std::binary_search(shown_ids.begin(), shown_ids.end(), id))
+            remaining_ids->InsertNextValue(id);
+    }
+    hidden_face_ids_->DeepCopy(remaining_ids);
+    face_hider_->Modified();
+    applyFacePipeline();
+}
+
+void MeshActor::isolateFaces(const std::vector<vtkIdType>& face_ids)
+{
+    const vtkIdType cell_count = face_data_->GetNumberOfCells();
+    std::vector<bool> shown(static_cast<std::size_t>(cell_count), false);
+    for (vtkIdType id : face_ids) {
+        if (id >= 0 && id < cell_count)
+            shown[static_cast<std::size_t>(id)] = true;
+    }
+    // 隔离用新的可见集合替换旧集合，其补集仍由原有隐藏过滤器移除。
     hidden_face_ids_->Reset();
+    for (vtkIdType id = 0; id < cell_count; ++id) {
+        if (!shown[static_cast<std::size_t>(id)])
+            hidden_face_ids_->InsertNextValue(id);
+    }
     hidden_face_ids_->Modified();
     face_hider_->Modified();
-
+    faces_only_ = true;
+    setVisibility(true);
     applyFacePipeline();
+}
+
+bool MeshActor::reverseVisibility()
+{
+    if (!visibility_) {
+        // 整体隐藏时所有面均不可见，反转后应显示全部面，清除之前的局部隐藏。
+        showAllFaces();
+        setVisibility(true);
+    } else if (hidden_face_ids_->GetNumberOfValues() == 0) {
+        // 完整显示时直接关闭组件显隐，避免生成全量隐藏 id。
+        setVisibility(false);
+    } else {
+        const vtkIdType cell_count = face_data_->GetNumberOfCells();
+        const vtkIdType hidden_count = hidden_face_ids_->GetNumberOfValues();
+        vtkNew<vtkIdTypeArray> reversed_ids;
+        reversed_ids->Allocate(cell_count - hidden_count);
+        vtkIdType hidden_index = 0;
+        // hideFaces 保证隐藏 id 有序且唯一；按原始面 id 求补集，不使用过滤后的单元索引。
+        for (vtkIdType face_id = 0; face_id < cell_count; ++face_id) {
+            if (hidden_index < hidden_count && hidden_face_ids_->GetValue(hidden_index) == face_id)
+                ++hidden_index;
+            else
+                reversed_ids->InsertNextValue(face_id);
+        }
+        // 保留过滤器绑定的数组对象，并沿用已有管线更新和线框缓存刷新。
+        hidden_face_ids_->DeepCopy(reversed_ids);
+        face_hider_->Modified();
+        applyFacePipeline();
+    }
+    return visibility_;
 }
 
 void MeshActor::setClipPlane(vtkPlane* plane)
@@ -369,7 +453,7 @@ MeshRenderStyle MeshActor::getRenderStyle() const
 
 void MeshActor::applyStyle()
 {
-    topology_diagnostics_->setMeshVisible(visibility_ && style_ != MeshRenderStyle::Hidden);
+    topology_diagnostics_->setMeshVisible(visibility_ && style_ != MeshRenderStyle::Hidden && !faces_only_);
     if (style_ == MeshRenderStyle::Hidden || !visibility_) {
         solid_actor_->SetVisibility(false);
         face_actor_->SetVisibility(false);
@@ -462,6 +546,12 @@ void MeshActor::applyStyle()
         break;
     default:
         break;
+    }
+    // 样式或组件显隐变化后仍保持隔离，所选面的线框由 face_actor_ 自身绘制。
+    if (faces_only_) {
+        solid_actor_->SetVisibility(false);
+        edge_actor_->SetVisibility(false);
+        glyph3D_actor_->SetVisibility(false);
     }
 }
 

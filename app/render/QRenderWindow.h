@@ -12,6 +12,7 @@
 #include "QSelection.h"
 #include <QQuickVTKItem.h>
 #include <QVTKRenderWindowAdapter.h>
+#include <QVariantList>
 
 #include <QtQml/QQmlApplicationEngine>
 #include <QtQml/QQmlContext>
@@ -173,14 +174,25 @@ public:
      * @brief 隐藏面选择器当前高亮选中的面（右键菜单"隐藏"）
      *
      * 仅面选择模式有效，其余模式为空操作；隐藏为渲染层单元过滤，
-     * 不修改模型数据，被隐藏面不渲染也不可拾取。
+     * 不修改模型数据，被隐藏面不渲染也不可拾取；保留选择以便再次显示。
      */
     Q_INVOKABLE void hideSelectedFaces();
 
+    /** @brief 显示面选择器选中的原始面，保留其余面和几何的显隐。 */
+    Q_INVOKABLE void showSelectedFaces();
+    /** @brief 在整个场景仅显示面选择器选中的面，遮住其余网格和几何。 */
+    Q_INVOKABLE void isolateSelectedFaces();
+
     /**
-     * @brief 显示全部经 hideSelectedFaces 隐藏的面（右键菜单"全部显示"）
+     * @brief 恢复全部局部隐藏面并结束面隔离（右键菜单"全部显示"）
      */
     Q_INVOKABLE void showAllHiddenFaces();
+
+    /**
+     * @brief 在渲染线程反转场景组件显隐；几何沿用组件整体开关，网格兼容局部隐藏面
+     * @param component_ids 对象树提供的场景组件 id，结果经信号同步回对象树
+     */
+    Q_INVOKABLE void reverseVisibility(const QVariantList& component_ids);
 
     Q_SLOT void setClick();
 
@@ -232,10 +244,14 @@ signals:
     void meshStyleChanged();
     void clicked();
     void rightClicked();
+    /** @brief 在 GUI 线程通知对象树同步渲染操作后的网格、几何显隐开关。 */
+    void componentVisibilityChanged(Index component_id, bool mesh_visible, bool geometry_visible);
 
 private:
     //! @brief 渲染线程制作选择快照，排队交付 GUI 线程，禁止 QML 直接读取拾取器。
     void publishSelection();
+    /** @brief 将渲染线程得到的组件显隐结果排队发送到 GUI 线程。 */
+    void publishComponentVisibility(Index component_id, bool mesh_visible, bool geometry_visible);
     // QQuickVTKItem 会接管事件分发，GUI 排队通知交给独立 QObject。
     QObject selection_dispatcher_;
     std::shared_ptr<const Selection> selection_snapshot_; //> 仅 GUI 线程访问
