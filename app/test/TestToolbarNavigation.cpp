@@ -20,12 +20,14 @@
 #include <QFile>
 #include <QFontDatabase>
 #include <QGuiApplication>
+#include <QImage>
 #include <QJSEngine>
 #include <QJsonArray>
 #include <QJsonDocument>
 #include <QJsonObject>
 #include <QKeyEvent>
 #include <QMouseEvent>
+#include <QPainter>
 #include <QPointer>
 #include <QQmlComponent>
 #include <QQmlContext>
@@ -34,6 +36,7 @@
 #include <QQuickItem>
 #include <QQuickWindow>
 #include <QRectF>
+#include <QSvgRenderer>
 #include <QTemporaryDir>
 #include <QTimer>
 #include <TopoDS_Shape.hxx>
@@ -172,6 +175,28 @@ private:
     ParameterProbeState& state_;
     core::EventBus::Subscription subscription_;
 };
+void checkSvgResource(const QString& path, int size)
+{
+    INFO(path.toStdString());
+    INFO(size);
+    QSvgRenderer renderer(path);
+    REQUIRE(renderer.isValid());
+    CHECK(renderer.viewBoxF() == QRectF(0, 0, 24, 24));
+    QImage image(size, size, QImage::Format_ARGB32_Premultiplied);
+    image.fill(Qt::transparent);
+    QPainter painter(&image);
+    renderer.render(&painter);
+    painter.end();
+    int painted_pixels = 0;
+    for (int y = 0; y < size; ++y) {
+        for (int x = 0; x < size; ++x) {
+            if (qAlpha(image.pixel(x, y)) > 0)
+                ++painted_pixels;
+        }
+    }
+    CHECK(painted_pixels > 0);
+    CHECK(painted_pixels < size * size);
+}
 void application()
 {
     qputenv("QT_QPA_PLATFORM", "offscreen");
@@ -186,6 +211,25 @@ void application()
             QGuiApplication::setFont(QFont(families.front(), 10));
     }
 }
+}
+
+TEST_CASE("Designed feature resources render at toolbar sizes", "[navigation][icons]")
+{
+    application();
+    const auto path = GENERATE(
+        ":/images/toolbar/Geometry/split-edge.svg",
+        ":/images/toolbar/Geometry/merge-edge.svg",
+        ":/images/toolbar/Geometry/split-face.svg",
+        ":/images/toolbar/Geometry/merge-face.svg",
+        ":/images/toolbar/Geometry/merge-points.svg",
+        ":/images/toolbar/Geometry/collapse-edge.svg",
+        ":/images/toolbar/Geometry/patch-face.svg",
+        ":/images/toolbar/Geometry/fill-gap.svg",
+        ":/images/toolbar/Geometry/auto-geometry-repair.svg",
+        ":/images/toolbar/Geometry/geometry-reconstruction.svg",
+        ":/images/toolbar/Panels/preview.svg");
+    const auto size = GENERATE(16, 24, 32);
+    checkSvgResource(QString::fromUtf8(path), size);
 }
 
 TEST_CASE("Qt feature information exposes navigation as JavaScript arrays", "[navigation][Qt]")
@@ -814,6 +858,35 @@ TEST_CASE("Installed external algorithms appear in the actual toolbar and open t
         REQUIRE(page->height() > 0);
     };
     settle();
+    const auto check_entry_icon = [&](const QString& id, const QString& url) {
+        INFO(id.toStdString());
+        auto* entry = findItem(item, "featureEntry_category:" + id);
+        REQUIRE(entry);
+        CHECK(engine.newQObject(entry).property("icon").property("source").toString() == url);
+    };
+    show_feature_menu("几何");
+    check_entry_icon("SplitEdge", "qrc:/images/toolbar/Geometry/split-edge.svg");
+    check_entry_icon("MergeEdge", "qrc:/images/toolbar/Geometry/merge-edge.svg");
+    check_entry_icon("SplitFace", "qrc:/images/toolbar/Geometry/split-face.svg");
+    check_entry_icon("MergeFace", "qrc:/images/toolbar/Geometry/merge-face.svg");
+    check_entry_icon("MergePoints", "qrc:/images/toolbar/Geometry/merge-points.svg");
+    check_entry_icon("CollapseEdge", "qrc:/images/toolbar/Geometry/collapse-edge.svg");
+    check_entry_icon("PatchFace", "qrc:/images/toolbar/Geometry/patch-face.svg");
+    check_entry_icon("FillGap", "qrc:/images/toolbar/Geometry/fill-gap.svg");
+    check_entry_icon("AutoGeometryRepair", "qrc:/images/toolbar/Geometry/auto-geometry-repair.svg");
+    if (const auto capture = qEnvironmentVariable("PRECESS_NAVIGATION_CAPTURE"); !capture.isEmpty())
+        REQUIRE(window.grabWindow().save(capture + "-geometry-icons.png"));
+    show_feature_menu("功能");
+    check_entry_icon("MeshBoolean", "qrc:/zenithgrid-addons/MeshBooleanPlugin/icons/mesh-boolean.svg");
+    for (const int size : { 16, 24, 32 })
+        checkSvgResource(":/zenithgrid-addons/MeshBooleanPlugin/icons/mesh-boolean.svg", size);
+    CHECK_FALSE(QFile::exists(":/images/toolbar/Mesh/mesh-boolean.svg"));
+    check_entry_icon("MeshRepair", "qrc:/zenithgrid-addons/MeshRepairPlugin/icons/mesh-repair.svg");
+    for (const int size : { 16, 24, 32 })
+        checkSvgResource(":/zenithgrid-addons/MeshRepairPlugin/icons/mesh-repair.svg", size);
+    CHECK_FALSE(QFile::exists(":/images/toolbar/Mesh/mesh-repair.svg"));
+    if (const auto capture = qEnvironmentVariable("PRECESS_NAVIGATION_CAPTURE"); !capture.isEmpty())
+        REQUIRE(window.grabWindow().save(capture + "-mesh-icons.png"));
     show_feature_menu("网格生成算法");
     auto* tetrahedron = findItem(item, "featureEntry_category:tetrahedron");
     click_visible(tetrahedron);

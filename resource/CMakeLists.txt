@@ -23,6 +23,16 @@ qt_add_resources(${MYNAME} "images"
         toolbar/Geometry/sphere.svg
         toolbar/Geometry/extrude.svg
         toolbar/Geometry/delete-geometry.svg
+        toolbar/Geometry/split-edge.svg
+        toolbar/Geometry/merge-edge.svg
+        toolbar/Geometry/split-face.svg
+        toolbar/Geometry/merge-face.svg
+        toolbar/Geometry/merge-points.svg
+        toolbar/Geometry/collapse-edge.svg
+        toolbar/Geometry/patch-face.svg
+        toolbar/Geometry/fill-gap.svg
+        toolbar/Geometry/auto-geometry-repair.svg
+        toolbar/Geometry/geometry-reconstruction.svg
         toolbar/Function/grid_quality.svg
         # 保留旧资源路径供外部插件兼容；应用自身已使用 toolbar/Measure/。
         toolbar/Tools/measure.svg
@@ -36,8 +46,6 @@ qt_add_resources(${MYNAME} "images"
         toolbar/Common/run.svg
         toolbar/Common/undo.svg
         toolbar/Mesh/hexa-meshing.svg
-        toolbar/Mesh/mesh-boolean.svg
-        toolbar/Mesh/mesh-repair.svg
         toolbar/Mesh/nurbs-reconstruction.svg
         toolbar/Mesh/quad-meshing.svg
         toolbar/Mesh/triangle-meshing.svg

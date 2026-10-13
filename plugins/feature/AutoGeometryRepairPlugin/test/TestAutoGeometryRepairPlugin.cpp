@@ -101,6 +101,7 @@ TEST_CASE("AutoGeometryRepair feature detects then repairs free edge gaps", "[Au
     const auto navigation_entries = feature_system.getNavigationEntries();
     REQUIRE(navigation_entries.size() == 1);
     CHECK(navigation_entries.front().id == "AutoGeometryRepair");
+    CHECK(navigation_entries.front().icon == "qrc:/images/toolbar/Geometry/auto-geometry-repair.svg");
     CHECK(navigation_entries.front().title == "自动修复间隙");
     CHECK(navigation_entries.front().menu_path == "几何/修复");
     auto selection = std::make_shared<Selection>();

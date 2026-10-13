@@ -116,6 +116,7 @@ TEST_CASE("MergePoints feature merges two vertices at midpoint", "[MergePointsPl
     const auto navigation_entries = feature_system.getNavigationEntries();
     REQUIRE(navigation_entries.size() == 1);
     CHECK(navigation_entries.front().id == "MergePoints");
+    CHECK(navigation_entries.front().icon == "qrc:/images/toolbar/Geometry/merge-points.svg");
     CHECK(navigation_entries.front().title == "点合并");
     CHECK(navigation_entries.front().menu_path == "几何/拓扑");
 

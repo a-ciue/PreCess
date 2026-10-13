@@ -7,10 +7,12 @@
 #include "ModelLayer.h"
 #include "ModelPayload.h"
 #include "StlModelHandler.h"
+#include "StlPointHash.h"
 #include "TempFile.h"
 
 #include <catch2/catch_test_macros.hpp>
 
+#include <algorithm>
 #include <cstring>
 #include <filesystem>
 #include <fstream>
@@ -125,6 +127,58 @@ ModelPayload requireReadPayload(systems::io::StlModelHandler& handler, const fs:
     return std::move(*payload);
 }
 } // namespace
+
+TEST_CASE("STL point hash distributes widened float coordinates across low-bit buckets")
+{
+    // 二进制 STL 的规则点阵：不用墙钟阈值，直接防止低位掩码桶退化。
+    constexpr size_t bucket_count = 4096;
+    std::array<size_t, bucket_count> bucket_sizes {};
+    const systems::io::detail::StlPointHash hash;
+    for (size_t i = 0; i < bucket_count; ++i) {
+        const std::array<double, 3> point {
+            static_cast<double>(static_cast<float>(i % 64) * 0.125f),
+            static_cast<double>(static_cast<float>(i / 64) * 0.25f),
+            static_cast<double>(4.0f),
+        };
+        ++bucket_sizes[hash(point) & (bucket_count - 1)];
+    }
+    const auto occupied = std::count_if(bucket_sizes.begin(), bucket_sizes.end(),
+        [](size_t count) { return count != 0; });
+    REQUIRE(occupied > bucket_count / 2);
+    REQUIRE(*std::max_element(bucket_sizes.begin(), bucket_sizes.end()) < 16);
+}
+
+TEST_CASE("STL point hash treats positive and negative zero equally")
+{
+    const systems::io::detail::StlPointHash hash;
+    const std::array<double, 3> positive { 0.0, 0.0, 0.0 };
+    for (unsigned mask = 0; mask < 8; ++mask) {
+        const std::array<double, 3> point {
+            mask & 1 ? -0.0 : 0.0,
+            mask & 2 ? -0.0 : 0.0,
+            mask & 4 ? -0.0 : 0.0,
+        };
+        REQUIRE(hash(point) == hash(positive));
+    }
+}
+
+TEST_CASE("StlModelHandler welds binary vertices with signed zero coordinates")
+{
+    systems::io::StlModelHandler handler;
+    const fs::path input = core::TempFile::instance().path().string() + "_signedzero.stl";
+    std::string bytes = makeBinaryStl(0.0f, 0.0f);
+    const std::string negative = makeBinaryStl(-0.0f, -0.0f);
+    const uint32_t facet_count = 2;
+    std::memcpy(bytes.data() + 80, &facet_count, sizeof(facet_count));
+    bytes.append(negative, 84, std::string::npos);
+    writeFile(input, bytes);
+
+    const ModelPayload payload = requireReadPayload(handler, input);
+    const MeshData& mesh = *payload.components.front()->mesh;
+    REQUIRE(mesh.vertex_count_ == 3);
+    REQUIRE(mesh.face_vertices_ == std::vector<Index> { 0, 1, 2, 0, 1, 2 });
+    REQUIRE(mesh.face_vertices_offset_ == std::vector<Index> { 0, 3, 6 });
+}
 
 TEST_CASE("StlModelHandler reads ASCII STL and welds shared vertices")
 {
