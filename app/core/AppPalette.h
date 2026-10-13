@@ -6,7 +6,7 @@
  * 而非窗口调色板；本单例把主题明暗写入应用调色板，由 Main.qml 绑定
  * Theme.dark 驱动。菜单/对话框另有显式 palette 绑定，不依赖本单例。
  *
- * 角色色值须与 app/Theme.qml、app/Main.qml 的调色板保持一致。
+ * 调色板角色色值由 ThemePalette.h 提供（须与 app/Theme.qml 保持一致）。
  */
 
 #pragma once
@@ -16,6 +16,8 @@
 #include <QObject>
 #include <QPalette>
 #include <qqmlintegration.h>
+
+#include "ThemePalette.h"
 
 class AppPalette : public QObject
 {
@@ -47,34 +49,10 @@ signals:
     void darkChanged();
 
 private:
-    //! @brief 按当前明暗组装 QPalette 并写入应用调色板
+    //! @brief 按当前明暗刷新应用调色板
     void applyPalette()
     {
-        QPalette palette;
-        palette.setColor(QPalette::Window, themed("#F3F4F6", "#1E1E1E"));
-        palette.setColor(QPalette::WindowText, themed("#2B2F36", "#D4D4D4"));
-        palette.setColor(QPalette::Base, themed("#FFFFFF", "#252526"));
-        palette.setColor(QPalette::AlternateBase, themed("#F7F8FA", "#2D2D30"));
-        palette.setColor(QPalette::Text, themed("#2B2F36", "#D4D4D4"));
-        palette.setColor(QPalette::Button, themed("#F7F8FA", "#2D2D30"));
-        palette.setColor(QPalette::ButtonText, themed("#2B2F36", "#D4D4D4"));
-        palette.setColor(QPalette::Highlight, themed("#1976D2", "#4EA1F3"));
-        palette.setColor(QPalette::HighlightedText, themed("#FFFFFF", "#FFFFFF"));
-        palette.setColor(QPalette::PlaceholderText, themed("#9CA3AF", "#6B6F76"));
-        palette.setColor(QPalette::Mid, themed("#C3C8CF", "#4A4A4F"));
-        palette.setColor(QPalette::Midlight, themed("#D9DDE3", "#3E3E42"));
-        palette.setColor(QPalette::Light, themed("#FFFFFF", "#252526"));
-        palette.setColor(QPalette::Dark, themed("#C3C8CF", "#4A4A4F"));
-        palette.setColor(QPalette::Shadow, themed("#B7BDC7", "#5A5A5A"));
-        palette.setColor(QPalette::Link, themed("#1976D2", "#4EA1F3"));
-        palette.setColor(QPalette::ToolTipBase, themed("#FFFFFF", "#252526"));
-        palette.setColor(QPalette::ToolTipText, themed("#2B2F36", "#D4D4D4"));
-        QGuiApplication::setPalette(palette);
-    }
-
-    QColor themed(const char* light, const char* dark_hex) const
-    {
-        return QColor(QLatin1String(dark_ ? dark_hex : light));
+        QGuiApplication::setPalette(app::core::buildThemePalette(dark_));
     }
 
     bool dark_ = false;

@@ -40,27 +40,8 @@ ApplicationWindow {
     // 操作状态由窗口持有，侧栏隐藏或重建不会结束当前操作。
     readonly property OperationSession operationSession: OperationSession {}
 
-    // 固定浅色调色板：Qt 6.5+ 默认调色板跟随系统深浅色主题，系统为深色模式时
-    // Fusion 控件（Pane/Button/TextField 等）会渲染为深色、与浅色主题混杂；
-    // 窗口级调色板自此处向下传播到全部控件与弹窗，取值与 Theme 令牌一致
-    palette.window: Theme.windowBackground
-    palette.windowText: Theme.textPrimary
-    palette.base: Theme.surface
-    palette.alternateBase: Theme.surfaceAlt
-    palette.text: Theme.textPrimary
-    palette.button: Theme.surfaceAlt
-    palette.buttonText: Theme.textPrimary
-    palette.highlight: Theme.primary
-    palette.highlightedText: Theme.textOnPrimary
-    palette.placeholderText: Theme.textDisabled
-    palette.mid: Theme.borderStrong
-    palette.midlight: Theme.border
-    palette.light: Theme.surface
-    palette.dark: Theme.borderStrong
-    palette.shadow: Theme.scrollBarHover
-    palette.link: Theme.primary
-    palette.toolTipBase: Theme.surface
-    palette.toolTipText: Theme.textPrimary
+    // 调色板统一由 AppPalette 写入应用调色板（随 Theme.dark 同步），窗口/控件
+    // 与弹窗均据此渲染，避免在此重复列举角色色值。
 
     // 把应用主题明暗推送给 dock 模块（dock 刻意不反向依赖 app）
     Binding {

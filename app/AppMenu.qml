@@ -27,6 +27,4 @@ Menu {
     palette.dark: Theme.borderStrong
     palette.shadow: Theme.scrollBarHover
     palette.link: Theme.primary
-    palette.toolTipBase: Theme.surface
-    palette.toolTipText: Theme.textPrimary
 }

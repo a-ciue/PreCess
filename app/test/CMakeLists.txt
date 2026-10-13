@@ -82,3 +82,14 @@ qt_add_resources(TestToolbarNavigation navigation_icons
         "${CMAKE_SOURCE_DIR}/resource/toolbar/Mesh/triangle-meshing.svg"
         "${CMAKE_SOURCE_DIR}/resource/toolbar/Mesh/quad-meshing.svg"
         "${CMAKE_SOURCE_DIR}/resource/toolbar/Mesh/hexa-meshing.svg")
+
+# AppPalette 应用调色板角色随明暗解析（纯函数，无需应用实例）
+precess_add_test(TestAppPalette TestAppPalette.cpp)
+target_include_directories(TestAppPalette PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}/..")
+precess_test_link_libraries(TestAppPalette Qt${VTK_QT_VERSION}::Gui)
+
+# DockTheme 停靠配色表随明暗整体刷新
+precess_add_test(TestDockTheme TestDockTheme.cpp ../dock/ui/DockTheme.h)
+set_target_properties(TestDockTheme PROPERTIES AUTOMOC ON)
+target_include_directories(TestDockTheme PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}/../dock")
+precess_test_link_libraries(TestDockTheme Qt${VTK_QT_VERSION}::Core Qt${VTK_QT_VERSION}::Gui)

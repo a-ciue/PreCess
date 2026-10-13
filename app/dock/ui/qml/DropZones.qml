@@ -18,12 +18,11 @@ Item {
     //! @brief 标签插入标记：[{x, y, width, height}]，无效时不显示
     property var tabInsert: null
 
-    // 落点配色（明暗由 Docking.Theme 驱动，与 app/Theme.qml 对齐）
-    readonly property bool dark: Docking.Theme.dark
-    readonly property color accent: dark ? "#4EA1F3" : "#2f6fb5"
-    readonly property color zoneFill: dark ? "#2A3A4D" : "#cfe0f3"
-    readonly property color zoneBorder: dark ? "#3E5C7D" : "#8fb2d9"
-    readonly property color zoneMarker: dark ? "#6E86A3" : "#9fb9d6"
+    // 落点配色：取自 Docking.Theme.colors（与 app/Theme.qml 同步）
+    readonly property color accent: Docking.Theme.colors.dropAccent
+    readonly property color zoneFill: Docking.Theme.colors.dropZoneFill
+    readonly property color zoneBorder: Docking.Theme.colors.dropZoneBorder
+    readonly property color zoneMarker: Docking.Theme.colors.dropZoneMarker
 
     // 标签插入标记（悬停目标分组的标题栏/标签栏条带时显示竖线）
     Rectangle {

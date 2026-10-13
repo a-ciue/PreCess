@@ -17,17 +17,14 @@ Rectangle {
     //! @brief 关联的 PanelGroupItem（C++）
     property var groupView: null
 
-    // 面板外框配色（与 app 侧 Theme 令牌取值保持一致；dock 模块刻意
-    // 仅依赖 Qt、不反向依赖 app，故以局部常量对齐配色，明暗由 Docking.Theme 驱动）
-    // 修改这些配色时须同步检查 app/Theme.qml 中的对应令牌。
-    readonly property bool dark: Docking.Theme.dark
-    readonly property color panelBorder: dark ? "#3E3E42" : "#D9DDE3" // Theme.border
-    readonly property color titleBarSurface: dark ? "#333336" : "#E6EDF5" // Theme.panelHeaderSurface
-    readonly property color titleText: dark ? "#D4D4D4" : "#2B2F36" // Theme.textPrimary
-    readonly property color chromeIcon: dark ? "#9DA1A6" : "#5A616B"
-    readonly property color chromeHover: dark ? "#3A3A3D" : "#E2E6EB"
-    readonly property color closeHover: dark ? "#F14C4C" : "#D32F2F" // Theme.danger
-    readonly property color reorderAccent: dark ? "#4EA1F3" : "#1976D2" // Theme.primary
+    // 面板外框配色：取自 Docking.Theme.colors（与 app/Theme.qml 对应令牌同步）
+    readonly property color panelBorder: Docking.Theme.colors.border
+    readonly property color titleBarSurface: Docking.Theme.colors.panelHeaderSurface
+    readonly property color titleText: Docking.Theme.colors.textPrimary
+    readonly property color chromeIcon: Docking.Theme.colors.chromeIcon
+    readonly property color chromeHover: Docking.Theme.colors.chromeHover
+    readonly property color closeHover: Docking.Theme.colors.danger
+    readonly property color reorderAccent: Docking.Theme.colors.primary
 
     color: "transparent"
     border.color: panelBorder
