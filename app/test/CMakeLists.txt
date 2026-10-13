@@ -93,7 +93,6 @@ qt_add_resources(TestToolbarNavigation navigation_icons
         "${CMAKE_SOURCE_DIR}/resource/toolbar/Geometry/auto-geometry-repair.svg"
         "${CMAKE_SOURCE_DIR}/resource/toolbar/Geometry/geometry-reconstruction.svg"
         "${CMAKE_SOURCE_DIR}/resource/toolbar/Panels/preview.svg")
-        "${CMAKE_SOURCE_DIR}/resource/toolbar/Mesh/hexa-meshing.svg")
 
 # AppPalette 应用调色板角色随明暗解析（纯函数，无需应用实例）
 precess_add_test(TestAppPalette TestAppPalette.cpp)
