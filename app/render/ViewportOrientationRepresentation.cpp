@@ -20,8 +20,7 @@ namespace {
 constexpr double kCanvasSize = 120.0;
 constexpr double kCenter = kCanvasSize / 2;
 constexpr double kAxisLength = 38.0;
-constexpr double kPositiveRadius = 10.0;
-constexpr double kNegativeRadius = 8.0;
+constexpr double kHandleRadius = 10.0;
 constexpr double kHoverRadius = 54.0;
 constexpr double kSpriteSize = 28.0;
 constexpr int kSpritePixels = 84;
@@ -190,7 +189,7 @@ int ViewportOrientationRepresentation::ComputeInteractionState(int x, int y, int
     if (GetInteractionStateAsEnum() != InteractionStateType::Outside) {
         updateProjection();
         for (auto it = impl_->handles.rbegin(); it != impl_->handles.rend(); ++it) {
-            const double radius = (it->direction == 0 ? kPositiveRadius : kNegativeRadius) + 3.0;
+            const double radius = kHandleRadius + 3.0;
             const auto delta = point - it->center;
             if (delta.x() * delta.x() + delta.y() * delta.y() <= radius * radius) {
                 PickedAxis = it->axis;

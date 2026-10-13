@@ -7,6 +7,7 @@
 #include "ViewportOrientationRepresentation.h"
 
 #include <QGuiApplication>
+#include <QImage>
 #include <catch2/catch_test_macros.hpp>
 #include <vtkActor.h>
 #include <vtkActor2D.h>
@@ -19,6 +20,9 @@
 #include <vtkRenderWindowInteractor.h>
 #include <vtkTransform.h>
 #include <vtkWeakPointer.h>
+
+#include <algorithm>
+#include <array>
 
 namespace {
 QGuiApplication& testApplication()
@@ -272,7 +276,7 @@ TEST_CASE("Viewport orientation reuses its image for unchanged rotation and hove
     CHECK(image->GetScalarPointer() == pixels);
     // 正轴纹理和负轴圆环首帧即可见，验证嵌入资源确实加载。
     auto* positive = static_cast<unsigned char*>(image->GetScalarPointer(103, 60, 0));
-    auto* ring = static_cast<unsigned char*>(image->GetScalarPointer(14, 60, 0));
+    auto* ring = static_cast<unsigned char*>(image->GetScalarPointer(12, 60, 0));
     CHECK(positive[3] > 200);
     CHECK(positive[0] > positive[1]);
     CHECK(ring[3] > 100);
@@ -293,4 +297,42 @@ TEST_CASE("Viewport orientation reuses its image for unchanged rotation and hove
     window->SetSize(0, 0);
     CHECK_FALSE(orientation->containsPoint(98, 60));
     CHECK(orientation->ComputeInteractionState(98, 60, 1) == static_cast<int>(vtkCameraOrientationRepresentation::InteractionStateType::Outside));
+}
+
+TEST_CASE("Viewport orientation atlas keeps every label inside its round handle")
+{
+    testApplication();
+    const QImage atlas(QStringLiteral(":/orientation/assets/orientation-handles.png"));
+    REQUIRE_FALSE(atlas.isNull());
+    constexpr int scale = 3;
+    constexpr int cell_pixels = 28 * scale;
+    REQUIRE(atlas.size() == QSize(12 * cell_pixels, cell_pixels));
+    std::array<int, 12> label_heights {};
+    for (int column = 0; column < 12; ++column) {
+        const int direction = column % 4 / 2;
+        const bool hovered = column % 2;
+        const double radius = 9.0 * scale;
+        int label_pixels = 0;
+        int first_y = cell_pixels;
+        int last_y = -1;
+        for (int y = 0; y < cell_pixels; ++y) {
+            for (int x = 0; x < cell_pixels; ++x) {
+                const QColor color = atlas.pixelColor(column * cell_pixels + x, y);
+                // 只统计不透明的深色字形，排除圆环和半透明负轴背景。
+                if (color.alpha() < 200 || color.red() > 20 || color.green() > 31 || color.blue() > 44)
+                    continue;
+                ++label_pixels;
+                first_y = (std::min)(first_y, y);
+                last_y = (std::max)(last_y, y);
+                const double dx = x + 0.5 - cell_pixels / 2.0;
+                const double dy = y + 0.5 - cell_pixels / 2.0;
+                INFO("atlas column=" << column << ", pixel=" << x << "," << y);
+                CHECK(dx * dx + dy * dy <= radius * radius);
+            }
+        }
+        CHECK((label_pixels > 0) == (direction == 0 || hovered));
+        label_heights[column] = last_y - first_y + 1;
+    }
+    for (int axis = 0; axis < 3; ++axis)
+        CHECK(label_heights[axis * 4 + 1] == label_heights[axis * 4 + 3]);
 }

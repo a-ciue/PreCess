@@ -5,7 +5,8 @@ from PIL import Image, ImageDraw, ImageFont
 SCALE = 3
 CELL = 28
 COLORS = [(245, 71, 97), (143, 199, 51), (61, 140, 242)]
-FONT = ImageFont.truetype("C:/Windows/Fonts/seguisb.ttf", 13 * SCALE)
+# 正负轴共用字号和圆点尺寸，完整负轴标签也能留在圆环内。
+FONT = ImageFont.truetype("C:/Windows/Fonts/seguisb.ttf", 10 * SCALE)
 atlas = Image.new("RGBA", (CELL * SCALE * 12, CELL * SCALE))
 
 for axis, color in enumerate(COLORS):
@@ -13,7 +14,7 @@ for axis, color in enumerate(COLORS):
         for hovered in range(2):
             image = Image.new("RGBA", (CELL * SCALE, CELL * SCALE))
             draw = ImageDraw.Draw(image)
-            radius = (10 if direction == 0 else 8) * SCALE
+            radius = 10 * SCALE
             center = CELL * SCALE / 2
             bounds = (center - radius, center - radius, center + radius, center + radius)
             if direction == 0 or hovered:
