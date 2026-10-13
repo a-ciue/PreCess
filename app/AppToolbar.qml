@@ -337,7 +337,7 @@ ColumnLayout {
                     id: viewBtn
                     text: "视图"
                     onClicked: viewMenu.popup(viewBtn, 0, viewBtn.height)
-                    Menu {
+                    AppMenu {
                         id: viewMenu
                         closePolicy: Popup.CloseOnEscape | Popup.CloseOnPressOutsideParent
 

@@ -69,6 +69,13 @@ ApplicationWindow {
         value: Theme.dark
     }
 
+    // 同步应用调色板：ToolTip 等按应用调色板取色的弹窗据此跟随主题
+    Binding {
+        target: AppPalette
+        property: "dark"
+        value: Theme.dark
+    }
+
     // 布局持久化：JSON 快照存于 QSettings；退出保存，启动恢复
     Settings {
         id: dockSettings

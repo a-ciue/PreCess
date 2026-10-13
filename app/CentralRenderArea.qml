@@ -94,7 +94,7 @@ Page {
 
                 Timer { id: geoSubCloseTimer; interval: geoBtn.subMenuCloseDelay; onTriggered: { geoFaceMenu.close(); geoTransMenu.close(); geoWireMenu.close() } }
 
-                Menu {
+                AppMenu {
                     id: geoMenu
                     closePolicy: Popup.CloseOnEscape | Popup.CloseOnPressOutsideParent
                     onAboutToShow: { y = -height }
@@ -157,7 +157,7 @@ Page {
                     }
                 }
 
-                Menu {
+                AppMenu {
                     id: geoFaceMenu
                     MenuItem {
                         text: "有边"
@@ -174,7 +174,7 @@ Page {
                         onTriggered: myItem.setGeometryStyle(1)
                     }
                 }
-                Menu {
+                AppMenu {
                     id: geoTransMenu
                     MenuItem {
                         text: "75%"
@@ -198,7 +198,7 @@ Page {
                         onTriggered: myItem.setGeometryStyle(4)
                     }
                 }
-                Menu {
+                AppMenu {
                     id: geoWireMenu
                     MenuItem {
                         text: "带曲面线"
@@ -242,7 +242,7 @@ Page {
 
                 Timer { id: meshSubCloseTimer; interval: meshBtn.subMenuCloseDelay; onTriggered: { meshFaceMenu.close(); meshTransMenu.close(); meshWireMenu.close() } }
 
-                Menu {
+                AppMenu {
                     id: meshMenu
                     closePolicy: Popup.CloseOnEscape | Popup.CloseOnPressOutsideParent
                     onAboutToShow: { y = -height }
@@ -305,7 +305,7 @@ Page {
                     }
                 }
 
-                Menu {
+                AppMenu {
                     id: meshFaceMenu
                     MenuItem {
                         text: "带网格线"
@@ -322,7 +322,7 @@ Page {
                         onTriggered: myItem.setMeshStyle(1)
                     }
                 }
-                Menu {
+                AppMenu {
                     id: meshTransMenu
                     MenuItem {
                         text: "75%"
@@ -346,7 +346,7 @@ Page {
                         onTriggered: myItem.setMeshStyle(4)
                     }
                 }
-                Menu {
+                AppMenu {
                     id: meshWireMenu
                     MenuItem {
                         text: "带内部线"
@@ -372,7 +372,7 @@ Page {
                 Layout.fillHeight: true
                 onClicked: topologyDiagnosticMenu.visible ? topologyDiagnosticMenu.close() : topologyDiagnosticMenu.open()
 
-                Menu {
+                AppMenu {
                     id: topologyDiagnosticMenu
                     closePolicy: Popup.CloseOnEscape | Popup.CloseOnPressOutsideParent
                     onAboutToShow: { y = -height }
@@ -483,7 +483,7 @@ Page {
                 Layout.fillHeight: true
                 onClicked: geometryTopologyDiagnosticMenu.visible ? geometryTopologyDiagnosticMenu.close() : geometryTopologyDiagnosticMenu.open()
 
-                Menu {
+                AppMenu {
                     id: geometryTopologyDiagnosticMenu
                     closePolicy: Popup.CloseOnEscape | Popup.CloseOnPressOutsideParent
                     onAboutToShow: { y = -height }
@@ -752,7 +752,7 @@ Page {
             }
         }
 
-        Menu {
+        AppMenu {
             id: viewportMenu
 
             property var pickedIds: []

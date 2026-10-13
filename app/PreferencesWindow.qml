@@ -80,45 +80,30 @@ Item {
                     Layout.alignment: Qt.AlignTop
                     spacing: Theme.spacingSm
 
-                    Label {
-                        text: qsTr("主题")
-                        font.pixelSize: Theme.fontSizeLarge
-                        color: Theme.textPrimary
-                    }
+                    RowLayout {
+                        Layout.fillWidth: true
+                        spacing: Theme.spacingMd
 
-                    ButtonGroup {
-                        id: themeModeGroup
-                    }
-
-                    ColumnLayout {
-                        Layout.leftMargin: Theme.spacingXs
-                        spacing: Theme.spacingXs
-
-                        RadioButton {
-                            id: lightRadio
-                            text: qsTr("浅色")
-                            ButtonGroup.group: themeModeGroup
-                            onClicked: Theme.setMode(Theme.Mode.Light)
+                        Label {
+                            text: qsTr("主题")
+                            font.pixelSize: Theme.fontSizeLarge
+                            color: Theme.textPrimary
+                            Layout.fillWidth: true
                         }
 
-                        RadioButton {
-                            id: darkRadio
-                            text: qsTr("深色")
-                            ButtonGroup.group: themeModeGroup
-                            onClicked: Theme.setMode(Theme.Mode.Dark)
+                        ComboBox {
+                            id: themeCombo
+                            Layout.preferredWidth: 160
+                            model: [qsTr("浅色"), qsTr("深色")]
+                            onActivated: Theme.setMode(currentIndex)
                         }
 
-                        // 用 Binding 元素同步选中态：直接绑定 checked 会被 ButtonGroup
-                        // 的点击赋值破坏，外部改主题（如恢复默认）后无法回显
+                        // 用 Binding 元素同步选中项：直接绑定 currentIndex 会被
+                        // 下拉选择破坏，外部改主题（如恢复默认）后无法回显
                         Binding {
-                            target: lightRadio
-                            property: "checked"
-                            value: Theme.mode === Theme.Mode.Light
-                        }
-                        Binding {
-                            target: darkRadio
-                            property: "checked"
-                            value: Theme.mode === Theme.Mode.Dark
+                            target: themeCombo
+                            property: "currentIndex"
+                            value: Theme.mode
                         }
                     }
 
@@ -260,6 +245,22 @@ Item {
         standardButtons: Dialog.Ok
         modal: true
         anchors.centerIn: parent
+
+        // 显式绑定主题调色板：对话框弹窗不随窗口调色板的后续变化更新
+        palette.window: Theme.surface
+        palette.base: Theme.surface
+        palette.windowText: Theme.textPrimary
+        palette.text: Theme.textPrimary
+        palette.button: Theme.surfaceAlt
+        palette.buttonText: Theme.textPrimary
+        palette.highlight: Theme.primary
+        palette.highlightedText: Theme.textOnPrimary
+        palette.mid: Theme.borderStrong
+        palette.midlight: Theme.border
+        palette.dark: Theme.borderStrong
+        palette.light: Theme.surface
+        palette.shadow: Theme.scrollBarHover
+        palette.placeholderText: Theme.textDisabled
 
         Label {
             text: "插件注册失败"

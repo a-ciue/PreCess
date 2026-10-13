@@ -204,7 +204,7 @@ Rectangle {
                     }
 
                     // 标签右键菜单（浮动/回停、关闭、关闭其他）
-                    Menu {
+                    DockMenu {
                         id: tabMenu
                         MenuItem {
                             text: root.groupView && root.groupView.detached ? qsTr("回停") : qsTr("浮动")
@@ -264,7 +264,7 @@ Rectangle {
                     hoverEnabled: true
                     onClicked: tabsMenu.popup()
                 }
-                Menu {
+                DockMenu {
                     id: tabsMenu
                     Instantiator {
                         model: root.groupView ? root.groupView.tabNames : []
@@ -349,7 +349,7 @@ Rectangle {
         }
 
         // 标题栏右键菜单（浮动/回停、关闭分组、关闭其他分组）
-        Menu {
+        DockMenu {
             id: titleMenu
             MenuItem {
                 text: root.groupView && root.groupView.detached ? qsTr("回停分组") : qsTr("浮动分组")
