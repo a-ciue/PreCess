@@ -2,14 +2,20 @@
 
 #include <QImage>
 #include <QPainter>
-#include <vtkActor2D.h>
+#include <vtkCellArray.h>
 #include <vtkCoordinate.h>
+#include <vtkFloatArray.h>
 #include <vtkImageData.h>
-#include <vtkImageMapper.h>
 #include <vtkMatrix4x4.h>
 #include <vtkObjectFactory.h>
+#include <vtkPointData.h>
+#include <vtkPoints.h>
+#include <vtkPolyData.h>
+#include <vtkPolyDataMapper2D.h>
 #include <vtkPropCollection.h>
 #include <vtkRenderer.h>
+#include <vtkTexture.h>
+#include <vtkTexturedActor2D.h>
 #include <vtkTransform.h>
 
 #include <algorithm>
@@ -54,8 +60,11 @@ std::array<Handle, 6> makeHandles(vtkTransform* transform)
 
 struct ViewportOrientationRepresentation::Impl {
     vtkNew<vtkImageData> image;
-    vtkNew<vtkImageMapper> mapper;
-    vtkNew<vtkActor2D> actor;
+    vtkNew<vtkTexture> texture;
+    vtkNew<vtkPoints> points;
+    vtkNew<vtkPolyData> quad;
+    vtkNew<vtkPolyDataMapper2D> mapper;
+    vtkNew<vtkTexturedActor2D> actor;
     std::array<Handle, 6> handles {};
     std::array<double, 9> last_rotation {};
     bool has_projection = false;
@@ -80,10 +89,27 @@ ViewportOrientationRepresentation::ViewportOrientationRepresentation()
     SetXAxisColor(0.96, 0.28, 0.38);
     SetYAxisColor(0.56, 0.78, 0.20);
     SetZAxisColor(0.24, 0.55, 0.95);
-    impl_->mapper->SetInputData(impl_->image);
-    impl_->mapper->SetColorWindow(255.0);
-    impl_->mapper->SetColorLevel(127.5);
+    // vtkImageMapper 每帧重新包装输入并上传纹理；固定绑定同一图像才能复用 GPU 存储。
+    impl_->texture->SetInputData(impl_->image);
+    impl_->texture->SetColorModeToDirectScalars();
+    impl_->texture->RepeatOff();
+    impl_->texture->InterpolateOff();
+    impl_->points->SetNumberOfPoints(4);
+    impl_->quad->SetPoints(impl_->points);
+    vtkNew<vtkCellArray> cells;
+    const vtkIdType ids[] = { 0, 1, 2, 3 };
+    cells->InsertNextCell(4, ids);
+    impl_->quad->SetPolys(cells);
+    vtkNew<vtkFloatArray> uv;
+    uv->SetNumberOfComponents(2);
+    uv->InsertNextTuple2(0, 0);
+    uv->InsertNextTuple2(1, 0);
+    uv->InsertNextTuple2(1, 1);
+    uv->InsertNextTuple2(0, 1);
+    impl_->quad->GetPointData()->SetTCoords(uv);
+    impl_->mapper->SetInputData(impl_->quad);
     impl_->actor->SetMapper(impl_->mapper);
+    impl_->actor->SetTexture(impl_->texture);
     impl_->actor->GetPositionCoordinate()->SetCoordinateSystemToViewport();
     impl_->actor->SetPosition(0, 0);
     impl_->actor->PickableOff();
@@ -151,6 +177,11 @@ void ViewportOrientationRepresentation::BuildRepresentation()
     if (size[0] != impl_->last_width || size[1] != impl_->last_height) {
         impl_->image->SetDimensions(size[0], size[1], 1);
         impl_->image->AllocateScalars(VTK_UNSIGNED_CHAR, 4);
+        impl_->points->SetPoint(0, 0, 0, 0);
+        impl_->points->SetPoint(1, size[0], 0, 0);
+        impl_->points->SetPoint(2, size[0], size[1], 0);
+        impl_->points->SetPoint(3, 0, size[1], 0);
+        impl_->points->Modified();
     }
     for (int row = 0; row < size[1]; ++row)
         std::memcpy(impl_->image->GetScalarPointer(0, row, 0), image.constScanLine(size[1] - row - 1), size[0] * 4);
@@ -207,7 +238,8 @@ int ViewportOrientationRepresentation::ComputeInteractionState(int x, int y, int
 int ViewportOrientationRepresentation::RenderOverlay(vtkViewport* viewport)
 {
     BuildRepresentation();
-    return Renderer && Renderer->GetSize()[0] > 0 && Renderer->GetSize()[1] > 0
+    const int* size = Renderer ? Renderer->GetSize() : nullptr;
+    return size && size[0] > 0 && size[1] > 0
         ? impl_->actor->RenderOverlay(viewport)
         : 0;
 }

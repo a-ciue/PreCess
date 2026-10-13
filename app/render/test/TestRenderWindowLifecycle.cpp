@@ -15,9 +15,11 @@
 #include <vtkCallbackCommand.h>
 #include <vtkCamera.h>
 #include <vtkImageData.h>
-#include <vtkImageMapper.h>
+#include <vtkObjectFactory.h>
+#include <vtkOpenGLTexture.h>
 #include <vtkPropCollection.h>
 #include <vtkRenderWindowInteractor.h>
+#include <vtkTexturedActor2D.h>
 #include <vtkTransform.h>
 #include <vtkWeakPointer.h>
 
@@ -25,6 +27,20 @@
 #include <array>
 
 namespace {
+class CountingTexture : public vtkOpenGLTexture {
+public:
+    static CountingTexture* New();
+    vtkTypeMacro(CountingTexture, vtkOpenGLTexture);
+    int uploads {};
+    void Render(vtkRenderer* renderer) override
+    {
+        const auto before = LoadTime.GetMTime();
+        Superclass::Render(renderer);
+        uploads += before != LoadTime.GetMTime();
+    }
+};
+vtkStandardNewMacro(CountingTexture);
+
 QGuiApplication& testApplication()
 {
     qputenv("QT_QPA_PLATFORM", "offscreen");
@@ -258,11 +274,10 @@ TEST_CASE("Viewport orientation reuses its image for unchanged rotation and hove
     vtkNew<vtkPropCollection> props;
     orientation->GetActors2D(props);
     REQUIRE(props->GetNumberOfItems() == 1);
-    auto* actor = vtkActor2D::SafeDownCast(props->GetItemAsObject(0));
+    auto* actor = vtkTexturedActor2D::SafeDownCast(props->GetItemAsObject(0));
     REQUIRE(actor != nullptr);
-    auto* mapper = vtkImageMapper::SafeDownCast(actor->GetMapper());
-    REQUIRE(mapper != nullptr);
-    auto* image = mapper->GetInput();
+    REQUIRE(actor->GetTexture() != nullptr);
+    auto* image = actor->GetTexture()->GetInput();
     REQUIRE(image != nullptr);
     auto image_time = image->GetMTime();
     void* pixels = image->GetScalarPointer();
@@ -335,4 +350,53 @@ TEST_CASE("Viewport orientation atlas keeps every label inside its round handle"
     }
     for (int axis = 0; axis < 3; ++axis)
         CHECK(label_heights[axis * 4 + 1] == label_heights[axis * 4 + 3]);
+}
+
+TEST_CASE("Viewport orientation uploads its persistent texture only when pixels change")
+{
+    testApplication();
+    vtkNew<vtkRenderWindow> window;
+    window->SetOffScreenRendering(1);
+    window->SetMultiSamples(0);
+    window->SetSize(120, 120);
+    vtkNew<vtkRenderer> renderer;
+    window->AddRenderer(renderer);
+    vtkNew<ViewportOrientationRepresentation> orientation;
+    orientation->SetRenderer(renderer);
+    renderer->AddViewProp(orientation);
+    orientation->BuildRepresentation();
+    vtkNew<vtkPropCollection> props;
+    orientation->GetActors2D(props);
+    auto* actor = vtkTexturedActor2D::SafeDownCast(props->GetItemAsObject(0));
+    REQUIRE(actor != nullptr);
+    vtkNew<CountingTexture> texture;
+    texture->SetInputData(actor->GetTexture()->GetInput());
+    texture->SetColorModeToDirectScalars();
+    texture->RepeatOff();
+    actor->SetTexture(texture);
+    window->Render();
+    REQUIRE(texture->uploads == 1);
+    for (int i = 0; i < 10; ++i) {
+        orientation->GetTransform()->Identity();
+        orientation->GetTransform()->RotateZ(0);
+        window->Render();
+    }
+    CHECK(texture->uploads == 1);
+    orientation->GetTransform()->RotateZ(15);
+    window->Render();
+    CHECK(texture->uploads == 2);
+    orientation->ComputeInteractionState(60, 60, 1);
+    window->Render();
+    CHECK(texture->uploads == 3);
+    orientation->ComputeInteractionState(61, 60, 1);
+    window->Render();
+    CHECK(texture->uploads == 3);
+    window->SetSize(240, 240);
+    window->Render();
+    CHECK(texture->uploads == 4);
+    CHECK(texture->GetInput()->GetDimensions()[0] == 240);
+    CHECK(texture->GetInput()->GetDimensions()[1] == 240);
+    orientation->ReleaseGraphicsResources(window);
+    window->Render();
+    CHECK(texture->uploads == 5);
 }
