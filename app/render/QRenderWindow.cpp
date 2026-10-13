@@ -283,6 +283,9 @@ QQuickVTKItem::vtkUserData QRenderWindow::initializeVTK(vtkRenderWindow* renderW
 void QRenderWindow::destroyingVTK(vtkRenderWindow* renderWindow, vtkUserData userData)
 {
     auto* vtk = Data::SafeDownCast(userData);
+    // 拖动中的 style 仍持有事件焦点，可能截获 Interactor 的 DeleteEvent；提前解绑避免悬空引用。
+    vtk->plane_widget_->Off();
+    vtk->plane_widget_->SetInteractor(nullptr);
     // 智能指针管理对象内存，Off/解绑负责移除窗口上的事件观察者与 renderer 引用。
     vtk->orientationWidget->Off();
     vtk->orientationWidget->SetInteractor(nullptr);

@@ -14,6 +14,7 @@
 #include <vtkActorCollection.h>
 #include <vtkCallbackCommand.h>
 #include <vtkCamera.h>
+#include <vtkDisplaySizedImplicitPlaneWidget.h>
 #include <vtkImageData.h>
 #include <vtkObjectFactory.h>
 #include <vtkOpenGLTexture.h>
@@ -70,6 +71,7 @@ TEST_CASE("QRenderWindow releases interaction actors before recreating VTK resou
         REQUIRE(orientation != nullptr);
         CHECK(data->orientationWidget->GetEnabled());
         CHECK(data->orientationWidget->GetInteractor() == interactor.GetPointer());
+        CHECK(data->plane_widget_->GetInteractor() == interactor.GetPointer());
         auto* actors = data->renderer_->GetActors();
         // InteractionService 添加点、实线、虚线三个标注 actor；renderer 还可包含选择高亮等 actor。
         REQUIRE(actors->GetNumberOfItems() >= 3);
@@ -81,6 +83,8 @@ TEST_CASE("QRenderWindow releases interaction actors before recreating VTK resou
         CHECK_FALSE(data->orientationWidget->GetEnabled());
         CHECK(data->orientationWidget->GetInteractor() == nullptr);
         CHECK(data->orientationWidget->GetParentRenderer() == nullptr);
+        CHECK_FALSE(data->plane_widget_->GetEnabled());
+        CHECK(data->plane_widget_->GetInteractor() == nullptr);
         CHECK_FALSE(data->style_->HasObserver(vtkCommand::SelectionChangedEvent));
         // 即使外部仍持有 style，销毁后的事件也不得访问已释放的服务。
         data->style_->InvokeEvent(vtkCommand::SelectionChangedEvent);

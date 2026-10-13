@@ -285,3 +285,20 @@ TEST_CASE("QRenderWindow Qt input preserves control click and rectangle selectio
     CHECK(fixture.item->observed->presses == 2);
     CHECK(fixture.item->observed->releases == 2);
 }
+
+TEST_CASE("QRenderWindow safely destroys the viewport during a held mouse press")
+{
+    testApplication();
+    {
+        InputFixture fixture;
+        QTest::mousePress(&fixture.window, Qt::LeftButton, Qt::NoModifier, QPoint(200, 200));
+        fixture.flush();
+        CHECK(fixture.item->observed->presses == 1);
+        CHECK(fixture.item->observed->releases == 0);
+        // 不发送 release，覆盖 style 尚未释放事件焦点时的真实场景图销毁。
+    }
+    // 被测窗口已销毁；清空 QtTest 的合成按键状态，避免影响同进程内的其他用例。
+    QWindow release_window;
+    release_window.resize(640, 480);
+    QTest::mouseRelease(&release_window, Qt::LeftButton, Qt::NoModifier, QPoint(200, 200));
+}
