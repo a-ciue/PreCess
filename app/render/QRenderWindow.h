@@ -10,6 +10,7 @@
 #include "Core.h"
 #include "QModelQuery.h"
 #include "QSelection.h"
+#include "SurfacePrecision.h"
 #include <QQuickVTKItem.h>
 #include <QVTKRenderWindowAdapter.h>
 
@@ -17,13 +18,13 @@
 #include <QtQml/QQmlContext>
 #include <QtQml/qqmlregistration.h>
 #include <vtkActor.h>
-#include <vtkCameraOrientationWidget.h>
 #include <vtkAxisActor2D.h>
+#include <vtkCameraOrientationWidget.h>
+#include <vtkPoints.h>
 #include <vtkPolyDataMapper.h>
 #include <vtkRenderWindow.h>
 #include <vtkRenderWindowInteractor.h>
 #include <vtkRenderer.h>
-#include <vtkPoints.h>
 
 #include <memory>
 
@@ -40,6 +41,7 @@ class QFeatureSystemAdaptor;
 }
 
 struct QRenderWindow : QQuickVTKItem { // 结构体继承QQuickVTKItem
+    friend struct QRenderWindowTestAccess;
     Q_OBJECT
     Q_PROPERTY(QSelection* selectedIDs READ selectedIDs NOTIFY selectedChanged)
     Q_PROPERTY(int selectionRevision READ selectionRevision WRITE setSelectionRevision NOTIFY selectionRevisionChanged)
@@ -193,7 +195,7 @@ public:
      * App.registry.renderWindow.setAttriMode(0, "v_displacement9_3", 3, { "glyph_scale": 0.5 })
      * App.registry.renderWindow.setAttriMode(0, "v_thickness9_1", 1, {})
      * App.registry.renderWindow.setAttriMode(0, "v_thickness9_1", 1, { "scalar_range": [0, 2] })
-     * 
+     *
      * @param component_id 目标 Component ID
      * @param attr_name 属性名，前缀 v_/e_/f_/s_ 表示点/边/面/体，后缀 _3 表示属性分量为 3
      * @param mode 渲染方式 0:RGB 1:SCALAR 2:UV 3:VECTOR
@@ -227,6 +229,8 @@ signals:
     void rightClicked();
 
 private:
+    /** @brief 渲染线程应用切档并将实际档位排队返回 GUI；任何异常均在此收口。 */
+    void applySurfacePrecision(vtkUserData user_data, int precision, quint64 revision);
     //! @brief 渲染线程制作选择快照，排队交付 GUI 线程，禁止 QML 直接读取拾取器。
     void publishSelection();
     // QQuickVTKItem 会接管事件分发，GUI 排队通知交给独立 QObject。
@@ -236,7 +240,9 @@ private:
     int render_selection_revision_ {}; //> 渲染侧已应用版本
 
     GeometryRenderStyle geometry_style_ { GeometryRenderStyle::SurfaceWithEdges };
-    int surface_precision_ { 1 }; //> 标准档保持原有显示精度
+    int surface_precision_ { surface_precision::kDefault }; //> GUI 侧当前请求档位
+    quint64 surface_precision_revision_ {}; //> 防止旧切档结果覆盖新的 GUI 请求
+    quint64 surface_precision_scene_generation_ {}; //> 场景销毁或重建后丢弃旧档位回执
     MeshRenderStyle mesh_style_ { MeshRenderStyle::FaceWithEdges };
 
     std::unique_ptr<SelectManager> select_manager_;

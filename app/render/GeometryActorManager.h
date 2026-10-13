@@ -3,6 +3,7 @@
 #include "Core.h"
 #include "GeometryActorManagerSelectOp.h"
 #include "GeometryTopologyDiagnosticCategory.h"
+#include "SurfacePrecision.h"
 #include <array>
 #include <memory>
 #include <string>
@@ -46,11 +47,11 @@ public:
     const GeometryActorManagerSelectOp& op() const { return op_; }
 
 private:
-    GeometryActorManagerSelectOp op_{*this};
+    GeometryActorManagerSelectOp op_ { *this };
     std::unordered_map<Index, std::shared_ptr<GeometryActor>> component_actors_;
     vtkRenderer* renderer_;
     GeometryRenderStyle current_style_ { GeometryRenderStyle::SurfaceWithEdges };
-    int surface_precision_ { 1 };
+    int surface_precision_ { surface_precision::kDefault };
     std::array<bool, kGeometryTopologyDiagnosticCategoryCount> topology_diagnostic_category_enabled_ {};
     double topology_diagnostic_small_edge_length_ { 0.01 };
     double topology_diagnostic_small_face_area_ { 0.01 };

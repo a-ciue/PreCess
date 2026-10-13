@@ -5,6 +5,8 @@
 #include "GeometryDataVtk.h"
 #include "GeometryRegistry.h"
 #include "GeometrySelectManager.h"
+#include "GeometryTopologyDiagnosticActor.h"
+#include "SurfacePrecisionFailure.h"
 
 #include <BRepBuilderAPI_MakeEdge.hxx>
 #include <BRepBuilderAPI_MakeFace.hxx>
@@ -35,6 +37,7 @@
 #include <gp_Dir2d.hxx>
 #include <gp_Pnt2d.hxx>
 #include <vtkActor.h>
+#include <vtkActorCollection.h>
 #include <vtkCamera.h>
 #include <vtkMapper.h>
 #include <vtkPartitionedDataSet.h>
@@ -259,7 +262,9 @@ TEST_CASE("CAD surface precision rebuilds in both directions and applies to late
     for (int precision = 0; precision < 4; ++precision) {
         scene.manager.setSurfacePrecision(precision);
         counts[precision] = scene.polygons()->GetNumberOfPolys();
-        CHECK(GeometryActorSelectOp(scene.actor()).getOccShape() == original_display);
+        const auto& display = GeometryActorSelectOp(scene.actor()).getOccShape();
+        CHECK(display->GetId() == original_display->GetId());
+        CHECK_FALSE(display->GetShape().IsSame(*scene.geometry.rootShape));
         checkTriangulationsUnchanged(original_caches);
     }
     INFO("sphere triangle counts: " << counts[0] << ", " << counts[1] << ", " << counts[2] << ", " << counts[3]);
@@ -502,4 +507,114 @@ TEST_CASE("CAD precision changes safely handle no components and an empty compou
         REQUIRE(op.getLineOnlyPolyData() != nullptr);
         CHECK(op.getLineOnlyPolyData()->GetNumberOfCells() == 0);
     }
+}
+
+TEST_CASE("CAD actor precision failure preserves display caches and permits retry", "[geometry][precision][failure]")
+{
+    GeometryScene scene(BRepPrimAPI_MakeSphere(10.0).Shape());
+    scene.load();
+    const auto actor = scene.actor();
+    const auto original_shape = GeometryActorSelectOp(actor).getOccShape();
+    const auto caches = captureTriangulations(original_shape->GetShape());
+    vtkSmartPointer<vtkPolyData> polygons = scene.polygons();
+    const int actor_count = scene.renderer->GetActors()->GetNumberOfItems();
+    SurfacePrecisionFailure failure;
+    REQUIRE_THROWS_AS(actor->setSurfacePrecision(3), std::runtime_error);
+    CHECK(failure.rebuilds() == 1);
+    CHECK(actor->getSurfacePrecision() == 1);
+    CHECK(scene.polygons() == polygons);
+    CHECK(GeometryActorSelectOp(actor).getOccShape() == original_shape);
+    CHECK(scene.renderer->GetActors()->GetNumberOfItems() == actor_count);
+    checkTriangulationsUnchanged(caches);
+    REQUIRE_NOTHROW(actor->setSurfacePrecision(3));
+    CHECK(actor->getSurfacePrecision() == 3);
+    CHECK(scene.polygons()->GetNumberOfPolys() > polygons->GetNumberOfPolys());
+}
+
+TEST_CASE("CAD batch precision failure keeps every component pickable and retries atomically", "[geometry][precision][failure][render]")
+{
+    GeometryScene scene(BRepPrimAPI_MakeSphere(10.0).Shape());
+    scene.load();
+    GeometryData later;
+    later.setRootShape(BRepPrimAPI_MakeSphere(gp_Pnt(30.0, 0.0, 0.0), 10.0).Shape());
+    later.ensureIndexBuilt(scene.registry);
+    scene.manager.loadGeometry({ *later.rootShape, kComponentId + 1, &later.index });
+    scene.manager.setCurrentRenderStyle(GeometryRenderStyle::Transparent25);
+    // 诊断也参与候选准备，失败后保留旧叠加，成功后保留类别及阈值。
+    scene.manager.setTopologyDiagnosticSmallFaceArea(2000.0);
+    scene.manager.setTopologyDiagnosticCategoryEnabled(
+        static_cast<int>(GeometryTopologyDiagnosticCategory::SmallFace), true);
+    vtkNew<vtkActor> highlight;
+    highlight->PickableOff();
+    scene.renderer->AddActor(highlight);
+    GeometrySelectManager selection(*scene.renderer, *highlight, scene.manager.op());
+    selection.setSelectMode(SelectMode::GeometryFace);
+    scene.lookDownZ(gp_Pnt(0.0, 0.0, 0.0));
+    const auto display = scene.project(gp_Pnt(3.0, 2.0, std::sqrt(87.0)));
+    selection.select(display[0], display[1]);
+    const auto selected = selection.getSelection()->ids;
+    REQUIRE(selected == std::vector<Index> { scene.geometry.index.faceGlobalId(1) });
+
+    std::array<OccShapeHandle, 2> shapes;
+    std::array<vtkSmartPointer<vtkPolyData>, 2> polygons;
+    for (int i = 0; i < 2; ++i) {
+        GeometryActorSelectOp op(scene.manager.getComponentActor(kComponentId + i));
+        shapes[i] = op.getOccShape();
+        polygons[i] = vtkPolyDataMapper::SafeDownCast(op.getPolyActor().GetMapper())->GetInput();
+        REQUIRE_FALSE(shapes[i]->GetSelectableObject().IsNull());
+    }
+    const auto first_selectable = shapes[0]->GetSelectableObject();
+    const auto second_selectable = shapes[1]->GetSelectableObject();
+    const auto first_caches = captureTriangulations(shapes[0]->GetShape());
+    const auto second_caches = captureTriangulations(shapes[1]->GetShape());
+    const int actor_count = scene.renderer->GetActors()->GetNumberOfItems();
+    const auto highlight_count = highlightCellCount(*highlight);
+    SurfacePrecisionFailure failure(2);
+    REQUIRE_THROWS_AS(scene.manager.setSurfacePrecision(3), std::runtime_error);
+    REQUIRE(failure.rebuilds() == 2); // 第一个组件已准备成功，第二个在重建末尾失败。
+    CHECK(scene.manager.getSurfacePrecision() == 1);
+    CHECK(scene.renderer->GetActors()->GetNumberOfItems() == actor_count);
+    CHECK(shapes[0]->GetSelectableObject() == first_selectable);
+    CHECK(shapes[1]->GetSelectableObject() == second_selectable);
+    checkTriangulationsUnchanged(first_caches);
+    checkTriangulationsUnchanged(second_caches);
+    for (int i = 0; i < 2; ++i) {
+        const auto actor = scene.manager.getComponentActor(kComponentId + i);
+        GeometryActorSelectOp op(actor);
+        CHECK(actor->getSurfacePrecision() == 1);
+        CHECK(op.getOccShape() == shapes[i]);
+        CHECK(vtkPolyDataMapper::SafeDownCast(op.getPolyActor().GetMapper())->GetInput() == polygons[i]);
+        CHECK(scene.manager.op().getComponentId(&op.getPolyActor()) == kComponentId + i);
+    }
+    selection.refreshSelectionHighlight();
+    CHECK(selection.getSelection()->ids == selected);
+    CHECK(highlightCellCount(*highlight) == highlight_count);
+    selection.select(display[0], display[1]);
+    REQUIRE(selection.getSelection()->ids.empty());
+    selection.select(display[0], display[1], SelectOp::Append);
+    REQUIRE(selection.getSelection()->ids == selected);
+
+    REQUIRE_NOTHROW(scene.manager.setSurfacePrecision(3));
+    CHECK(scene.manager.getSurfacePrecision() == 3);
+    CHECK(scene.renderer->GetActors()->GetNumberOfItems() == actor_count);
+    for (int i = 0; i < 2; ++i) {
+        const auto actor = scene.manager.getComponentActor(kComponentId + i);
+        GeometryActorSelectOp op(actor);
+        CHECK(actor->getSurfacePrecision() == 3);
+        CHECK(actor->getRenderStyle() == GeometryRenderStyle::Transparent25);
+        CHECK(op.getPolyActor().GetProperty()->GetOpacity() == Catch::Approx(0.25));
+        CHECK(vtkPolyDataMapper::SafeDownCast(op.getPolyActor().GetMapper())->GetInput()->GetNumberOfPolys()
+            > polygons[i]->GetNumberOfPolys());
+        REQUIRE_FALSE(op.getOccShape()->GetSelectableObject().IsNull());
+    }
+    selection.refreshSelectionHighlight();
+    CHECK(selection.getSelection()->ids == selected);
+    CHECK(highlightCellCount(*highlight) > highlight_count);
+    scene.window->Render();
+    selection.select(display[0], display[1]);
+    REQUIRE(selection.getSelection()->ids.empty());
+    selection.select(display[0], display[1], SelectOp::Append);
+    CHECK(selection.getSelection()->ids == selected);
+    scene.manager.loadGeometry({ *later.rootShape, kComponentId + 2, &later.index });
+    CHECK(scene.manager.getComponentActor(kComponentId + 2)->getSurfacePrecision() == 3);
 }

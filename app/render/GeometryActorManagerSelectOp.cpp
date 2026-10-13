@@ -132,6 +132,8 @@ void GeometryActorManagerSelectOp::unregisterProps(std::shared_ptr<GeometryActor
             shape->SetSelectableObject(selectable);
             picker->RemoveSelectableObject(shape);
         }
+        // 解除 Shape 与旧敏感实体的关联；后续 registerProps 按新三角化重新建立。
+        // 即使没有观察中的 Picker，也不能让旧缓存继续挂在 Shape 上。
         shape->SetSelectableObject(nullptr);
     }
 }

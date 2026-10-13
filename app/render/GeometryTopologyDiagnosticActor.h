@@ -15,8 +15,8 @@
 #include <vtkPolyDataMapper.h>
 
 #include <array>
-#include <string>
 #include <memory>
+#include <string>
 
 class GeometryTopologyDiagnosticResult;
 struct GeometryTopologyDiagnosticOptions;
@@ -31,6 +31,8 @@ typedef Handle(IVtkOCC_Shape) GeometryDiagnosticOccShapeHandle;
  * @brief 计算并显示一个 GeometryActor 对应的 OCC 几何拓扑诊断结果。
  */
 class GeometryTopologyDiagnosticActor {
+    friend class GeometryActor;
+
 public:
     explicit GeometryTopologyDiagnosticActor(vtkRenderer* renderer);
     ~GeometryTopologyDiagnosticActor();
@@ -58,6 +60,10 @@ public:
     void setComponentLabel(std::string label) { component_label_ = std::move(label); }
 
 private:
+    /** @brief 将已准备好的诊断显示迁移到目标 renderer，不重新执行几何计算。 */
+    void bindRender(vtkRenderer* renderer);
+    /** @brief 为独立显示候选同步诊断配置，保留类别开关、阈值和日志归属。 */
+    void copySettingsFrom(const GeometryTopologyDiagnosticActor& source);
     /** @brief 保存一种诊断类别的独立静态数据、映射器和 Actor。 */
     struct DiagnosticPipeline {
         vtkNew<vtkPolyData> data;

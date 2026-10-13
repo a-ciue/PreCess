@@ -51,7 +51,7 @@ void GeometryActorManager::deleteComponent(Index component_id)
 
 void GeometryActorManager::loadGeometry(const GeometryDataVtk& geometry_data)
 {
-    loadGeometry(geometry_data, { });
+    loadGeometry(geometry_data, {});
 }
 
 void GeometryActorManager::loadGeometry(
@@ -110,18 +110,36 @@ GeometryRenderStyle GeometryActorManager::getCurrentRenderStyle() const
 
 void GeometryActorManager::setSurfacePrecision(int precision)
 {
-    if (precision < 0 || precision > 3 || precision == surface_precision_)
+    if (!surface_precision::isValid(precision) || precision == surface_precision_)
         return;
-    for (auto& [id, actor] : component_actors_) {
-        // Picker 的敏感实体缓存也引用旧三角化，先移除，再用新数据重新注册。
-        op_.unregisterProps(actor);
-        try {
-            actor->setSurfacePrecision(precision);
-        } catch (...) {
-            op_.registerProps(id, actor);
-            throw;
+    // 所有三角化及诊断均在独立副本上完成，准备失败时连旧 Picker 缓存也不触碰。
+    struct PreparedComponent {
+        Index id;
+        std::shared_ptr<GeometryActor> actor;
+        std::unique_ptr<GeometryActor> display;
+    };
+    std::vector<PreparedComponent> prepared;
+    prepared.reserve(component_actors_.size());
+    for (const auto& [id, actor] : component_actors_)
+        prepared.push_back({ id, actor, actor->prepareSurfacePrecision(precision) });
+
+    size_t committed = 0;
+    try {
+        for (auto& component : prepared) {
+            // Picker 敏感实体引用旧拓扑，必须在交换前移除、交换后重新创建。
+            op_.unregisterProps(component.actor);
+            component.actor->swapDisplay(*component.display);
+            ++committed;
+            op_.registerProps(component.id, component.actor);
         }
-        op_.registerProps(id, actor);
+    } catch (...) {
+        while (committed > 0) {
+            auto& component = prepared[--committed];
+            op_.unregisterProps(component.actor);
+            component.actor->swapDisplay(*component.display);
+            op_.registerProps(component.id, component.actor);
+        }
+        throw;
     }
     surface_precision_ = precision;
 }

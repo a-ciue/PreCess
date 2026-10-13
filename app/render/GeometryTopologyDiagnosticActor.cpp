@@ -18,6 +18,7 @@
 #include <TopoDS_Edge.hxx>
 #include <TopoDS_Face.hxx>
 #include <TopoDS_Shape.hxx>
+#include <gp_Pnt.hxx>
 #include <vtkCellArray.h>
 #include <vtkDataArray.h>
 #include <vtkExtractSelection.h>
@@ -29,16 +30,15 @@
 #include <vtkRenderer.h>
 #include <vtkSelection.h>
 #include <vtkSelectionNode.h>
-#include <gp_Pnt.hxx>
 
 #include <algorithm>
-#include <chrono>
 #include <array>
+#include <chrono>
 #include <cmath>
-#include <stdexcept>
-#include <utility>
 #include <cstdio>
+#include <stdexcept>
 #include <string>
+#include <utility>
 #include <vector>
 
 namespace {
@@ -195,6 +195,28 @@ GeometryTopologyDiagnosticActor::~GeometryTopologyDiagnosticActor()
     renderer_->RemoveActor(invalid_edge_pipeline_.actor);
     renderer_->RemoveActor(small_edge_marker_.actor);
     renderer_->RemoveActor(small_face_marker_.actor);
+}
+
+void GeometryTopologyDiagnosticActor::bindRender(vtkRenderer* renderer)
+{
+    auto move_actor = [this, renderer](vtkActor* actor) {
+        renderer_->RemoveActor(actor);
+        renderer->AddActor(actor);
+    };
+    for (auto& pipeline : pipelines_)
+        move_actor(pipeline.actor);
+    move_actor(invalid_edge_pipeline_.actor);
+    move_actor(small_edge_marker_.actor);
+    move_actor(small_face_marker_.actor);
+    renderer_ = renderer;
+}
+
+void GeometryTopologyDiagnosticActor::copySettingsFrom(const GeometryTopologyDiagnosticActor& source)
+{
+    category_enabled_ = source.category_enabled_;
+    small_edge_length_threshold_ = source.small_edge_length_threshold_;
+    small_face_area_threshold_ = source.small_face_area_threshold_;
+    component_label_ = source.component_label_;
 }
 
 void GeometryTopologyDiagnosticActor::loadShape(const TopoDS_Shape& shape,

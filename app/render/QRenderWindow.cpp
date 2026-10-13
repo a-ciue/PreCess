@@ -1,25 +1,26 @@
 #include "QRenderWindow.h"
-#include "renderStrategy/AttributeCommon.h"
 #include "FeatureSystem.h"
+#include "GeometryActorManager.h"
+#include "GeometryDataVtk.h"
 #include "InteractionService.h"
 #include "InteractionState.h"
 #include "MeshActorManager.h"
+#include "MeshIdQuery.h"
 #include "QFeatureSystemAdaptor.h"
 #include "QModelQuery.h"
 #include "QRenderWindowStyle.h"
 #include "QSelection.h"
 #include "SelectManager.h"
 #include "Selection.h"
-#include "GeometryActorManager.h"
-#include "GeometryDataVtk.h"
-#include "MeshIdQuery.h"
+#include "renderStrategy/AttributeCommon.h"
 
+#include <Standard_Failure.hxx>
 #include <spdlog/spdlog.h>
-#include <vtkCamera.h>
-#include <vtkDoubleArray.h>
 #include <vtkCallbackCommand.h>
+#include <vtkCamera.h>
 #include <vtkDisplaySizedImplicitPlaneRepresentation.h>
 #include <vtkDisplaySizedImplicitPlaneWidget.h>
+#include <vtkDoubleArray.h>
 #include <vtkMapper.h>
 #include <vtkMath.h>
 #include <vtkObjectFactory.h>
@@ -168,6 +169,8 @@ QRenderWindow::~QRenderWindow() = default;
 
 QQuickVTKItem::vtkUserData QRenderWindow::initializeVTK(vtkRenderWindow* renderWindow)
 {
+    // 生命周期边界由 QQuickVTKItem 阻塞 GUI，旧场景回执不能修正新场景档位。
+    ++surface_precision_scene_generation_;
     vtkNew<Data> vtk;
 
     // 渲染窗口统一使用平行投影：高放大倍数下避免透视投影的视锥非线性误差，
@@ -279,6 +282,7 @@ QQuickVTKItem::vtkUserData QRenderWindow::initializeVTK(vtkRenderWindow* renderW
 
 void QRenderWindow::destroyingVTK(vtkRenderWindow* renderWindow, vtkUserData userData)
 {
+    ++surface_precision_scene_generation_;
     auto* vtk = Data::SafeDownCast(userData);
     // 场景图重建会先释放旧 Data，再调用 initializeVTK；服务持有旧 renderer 的
     // 裸指针，必须在此渲染线程边界销毁，不能拖到下一次 unique_ptr 赋值或 GUI 析构。
@@ -620,7 +624,7 @@ void QRenderWindow::setScaleBarVisible(bool on)
     dispatch_async([on](vtkRenderWindow* renderWindow, vtkUserData userData) -> void {
         Data* vtk = Data::SafeDownCast(userData);
         vtk->scale_bar_axis_->SetVisibility(on);
-        });
+    });
 }
 
 void QRenderWindow::setClick()
@@ -713,21 +717,43 @@ int QRenderWindow::getGeometryStyle()
 
 void QRenderWindow::setSurfacePrecision(int precision)
 {
-    if (precision < 0 || precision > 3 || precision == surface_precision_)
+    if (!surface_precision::isValid(precision) || precision == surface_precision_)
         return;
     surface_precision_ = precision;
-    dispatch_async([precision, this](vtkRenderWindow*, vtkUserData userData) {
-        auto* vtk = Data::SafeDownCast(userData);
-        if (!vtk || !vtk->geometry_actor_manager_)
-            return;
-        // 三角缓存和拾取器同属渲染线程；重建后沿用几何身份重新生成现有选择高亮。
-        vtk->geometry_actor_manager_->setSurfacePrecision(precision);
-        if (select_manager_) {
-            select_manager_->refreshGeometrySelection();
-        }
-        scheduleRender();
+    const quint64 revision = ++surface_precision_revision_;
+    dispatch_async([precision, revision, this](vtkRenderWindow*, vtkUserData user_data) {
+        applySurfacePrecision(user_data, precision, revision);
     });
     emit surfacePrecisionChanged();
+}
+
+void QRenderWindow::applySurfacePrecision(vtkUserData user_data, int precision, quint64 revision)
+{
+    auto* vtk = Data::SafeDownCast(user_data);
+    if (!vtk || !vtk->geometry_actor_manager_)
+        return;
+    const quint64 scene_generation = surface_precision_scene_generation_;
+    try {
+        // 三角缓存和拾取器同属渲染线程；重建后沿用几何身份重新生成现有选择高亮。
+        vtk->geometry_actor_manager_->setSurfacePrecision(precision);
+        if (select_manager_)
+            select_manager_->refreshGeometrySelection();
+        scheduleRender();
+    } catch (const Standard_Failure& error) {
+        spdlog::error("曲面显示精细度切换失败: {}", error.GetMessageString());
+    } catch (const std::exception& error) {
+        spdlog::error("曲面显示精细度切换失败: {}", error.what());
+    } catch (...) {
+        spdlog::error("曲面显示精细度切换失败: 未知异常");
+    }
+    const int actual_precision = vtk->geometry_actor_manager_->getSurfacePrecision();
+    // QQuickVTKItem 接管事件分发，借独立 QObject 在 GUI 线程修正档位并开放重试。
+    QMetaObject::invokeMethod(&selection_dispatcher_, [this, revision, scene_generation, actual_precision] {
+        if (scene_generation != surface_precision_scene_generation_
+            || revision != surface_precision_revision_ || surface_precision_ == actual_precision)
+            return;
+        surface_precision_ = actual_precision;
+        emit surfacePrecisionChanged(); }, Qt::QueuedConnection);
 }
 
 int QRenderWindow::getSurfacePrecision() const
@@ -777,7 +803,7 @@ void QRenderWindow::setDihedralAngleRange(double minimum, double maximum)
 void QRenderWindow::setGeometryTopologyDiagnosticCategoryEnabled(int category, bool enabled)
 {
     dispatch_async([category, enabled, this](vtkRenderWindow* renderWindow,
-                        vtkUserData userData) -> void {
+                       vtkUserData userData) -> void {
         Data* vtk = Data::SafeDownCast(userData);
         if (!vtk || !vtk->geometry_actor_manager_)
             return;
