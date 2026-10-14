@@ -64,21 +64,6 @@ ApplicationWindow {
         property string json
     }
 
-    // 主题偏好持久化：切换即写入，启动时恢复
-    Settings {
-        id: appearanceSettings
-        category: "Appearance"
-        property int mode: Theme.Mode.Light
-    }
-
-    // 主题模式变化写回 QSettings
-    Connections {
-        target: Theme
-        function onModeChanged() {
-            appearanceSettings.mode = Theme.mode
-        }
-    }
-
     //! @brief 声明默认停靠布局（首次启动与恢复前的基础布局）
     function applyDefaultLayout() {
         dockHost.placePanel(objectTreeDock, Docking.Tokens.DockEdge.Left, null, Qt.size(250, 0))
@@ -360,9 +345,6 @@ ApplicationWindow {
     }
 
     Component.onCompleted: {
-        // 恢复上次选择的主题模式
-        Theme.mode = appearanceSettings.mode
-
         // 同步当前活动模型/组件到功能系统（功能菜单由 AppToolbar 自行构建）
         QModelManager.featureSystem.setActiveModel(App.selection.activeModelId)
         QModelManager.featureSystem.setActiveComponent(App.selection.activeComponentId)

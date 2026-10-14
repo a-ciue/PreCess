@@ -10,6 +10,7 @@
 
 pragma Singleton
 import QtQuick
+import QtCore
 
 QtObject {
     id: theme
@@ -17,8 +18,15 @@ QtObject {
     //! @brief 主题模式
     enum Mode { Light, Dark }
 
-    //! @brief 当前主题模式；持久化由 Main.qml 的 Settings 读写
-    property int mode: Theme.Mode.Light
+    // 持久化真源；QtObject 无默认属性，故经属性持有 Settings。
+    // mode 绑定于其 mode，修改请用 setMode 写回（无重复回写）。
+    property var _settings: Settings {
+        category: "Appearance"
+        property int mode: Theme.Mode.Light
+    }
+
+    //! @brief 当前主题模式（只读，修改用 setMode）
+    readonly property int mode: _settings.mode
     //! @brief 是否深色主题
     readonly property bool dark: mode === Theme.Mode.Dark
 
@@ -27,7 +35,7 @@ QtObject {
      * @param m Theme.Mode.Light 或 Theme.Mode.Dark
      */
     function setMode(m) {
-        mode = m
+        _settings.mode = m
     }
 
     // 修改配色时同步检查 dock/ui/qml 的局部配色（经 Docking.Theme.dark 选择）。

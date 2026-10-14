@@ -54,7 +54,7 @@ precess_test_link_libraries(TestUndoQml modelQml modelQmlplugin SystemQmlplugin 
 qt_add_resources(TestUndoQml undo_ui
     PREFIX "/undo-ui"
     BASE "${CMAKE_CURRENT_SOURCE_DIR}/.."
-    FILES ../FeatureNavigation.js ../Theme.qml ../SideBar.qml ../OperationSession.qml ../OperationParameterModel.qml ../ObjectTree.qml ../CentralRenderArea.qml ../Selector.qml)
+    FILES ../FeatureNavigation.js ../Theme.qml ../SideBar.qml ../OperationSession.qml ../OperationParameterModel.qml ../ObjectTree.qml ../CentralRenderArea.qml ../Selector.qml ../AppMenu.qml)
 
 # 验证主窗口实际遮罩的覆盖范围和鼠标拦截，保留状态栏取消入口。
 precess_add_test(TestBusyMask TestBusyMask.cpp)
@@ -70,7 +70,7 @@ precess_test_link_libraries(TestToolbarNavigation modelQml modelQmlplugin System
 qt_add_resources(TestToolbarNavigation navigation_ui
     PREFIX "/navigation-ui"
     BASE "${CMAKE_CURRENT_SOURCE_DIR}/.."
-    FILES ../SideBar.qml ../OperationSession.qml ../OperationParameterModel.qml ../AppToolbar.qml ../FeatureNavigation.js ../RibbonTabButton.qml ../RibbonActionButton.qml ../Theme.qml)
+    FILES ../SideBar.qml ../OperationSession.qml ../OperationParameterModel.qml ../AppToolbar.qml ../FeatureNavigation.js ../RibbonTabButton.qml ../RibbonActionButton.qml ../Theme.qml ../AppMenu.qml)
 # 实际工具栏读取产品与插件声明的图标；资源随真实 QML 一同加载。
 qt_add_resources(TestToolbarNavigation navigation_icons
     PREFIX "/images"

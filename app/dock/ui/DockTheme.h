@@ -41,13 +41,17 @@ public:
         if (dark_ == dark)
             return;
         dark_ = dark;
+        colors_dirty_ = true;
         emit darkChanged();
         emit colorsChanged();
     }
 
-    /** @brief 当前明暗下的颜色表（须与 app/Theme.qml 对应令牌同步） */
+    /** @brief 当前明暗下的颜色表（惰性缓存；须与 app/Theme.qml 对应令牌同步） */
     QVariantMap colors() const
     {
+        if (!colors_dirty_)
+            return colors_cache_;
+
         const bool d = dark_;
         auto c = [d](const char* light, const char* dark_hex) {
             return QColor(QLatin1String(d ? dark_hex : light));
@@ -75,7 +79,11 @@ public:
         m["dropZoneFill"] = c("#cfe0f3", "#2A3A4D");
         m["dropZoneBorder"] = c("#8fb2d9", "#3E5C7D");
         m["dropZoneMarker"] = c("#9fb9d6", "#6E86A3");
-        return m;
+        // 活跃落点前景/边框（白，刻意两主题同值：在蓝色强调填充上保持对比）
+        m["dropZoneActiveFore"] = c("#FFFFFF", "#FFFFFF");
+        colors_cache_ = m;
+        colors_dirty_ = false;
+        return colors_cache_;
     }
 
 signals:
@@ -84,6 +92,8 @@ signals:
 
 private:
     bool dark_ = false;
+    mutable QVariantMap colors_cache_;
+    mutable bool colors_dirty_ = true;
 };
 
 }

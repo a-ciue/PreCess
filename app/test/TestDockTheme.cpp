@@ -18,6 +18,7 @@ TEST_CASE("DockTheme: default light colors", "[DockTheme]")
     REQUIRE(light.value("surface").value<QColor>() == QColor("#FFFFFF"));
     REQUIRE(light.value("panelHeaderSurface").value<QColor>() == QColor("#E6EDF5"));
     REQUIRE(light.value("dropAccent").value<QColor>() == QColor("#2f6fb5"));
+    REQUIRE(light.value("dropZoneActiveFore").value<QColor>() == QColor("#FFFFFF"));
 }
 
 TEST_CASE("DockTheme: dark colors after setDark", "[DockTheme]")
@@ -32,4 +33,5 @@ TEST_CASE("DockTheme: dark colors after setDark", "[DockTheme]")
     REQUIRE(dark.value("textPrimary").value<QColor>() == QColor("#D4D4D4"));
     REQUIRE(dark.value("primary").value<QColor>() == QColor("#4EA1F3"));
     REQUIRE(dark.value("dropAccent").value<QColor>() == QColor("#4EA1F3"));
+    REQUIRE(dark.value("dropZoneActiveFore").value<QColor>() == QColor("#FFFFFF"));
 }

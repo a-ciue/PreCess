@@ -23,6 +23,8 @@ Item {
     readonly property color zoneFill: Docking.Theme.colors.dropZoneFill
     readonly property color zoneBorder: Docking.Theme.colors.dropZoneBorder
     readonly property color zoneMarker: Docking.Theme.colors.dropZoneMarker
+    //! 活跃态前景/边框（在强调填充上保持对比）
+    readonly property color activeFore: Docking.Theme.colors.dropZoneActiveFore
 
     // 标签插入标记（悬停目标分组的标题栏/标签栏条带时显示竖线）
     Rectangle {
@@ -63,7 +65,7 @@ Item {
             radius: 3
             color: modelData.active ? root.accent : root.zoneFill
             opacity: modelData.active ? 0.9 : 0.6
-            border.color: modelData.active ? "#ffffff" : root.zoneBorder
+            border.color: modelData.active ? root.activeFore : root.zoneBorder
             border.width: modelData.active ? 2 : 1
 
             // 位置标记：中心方框画大方块，其余画小方块
@@ -72,7 +74,7 @@ Item {
                 width: Math.max(6, parent.width / 3)
                 height: width
                 radius: 1
-                color: modelData.active ? "#ffffff" : root.zoneMarker
+                color: modelData.active ? root.activeFore : root.zoneMarker
                 opacity: 0.9
             }
         }
