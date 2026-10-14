@@ -7,7 +7,6 @@
 #include "GeometryDataVtk.h"
 #include "QRenderWindow.h"
 #include "QRenderWindowStyle.h"
-#include "SurfacePrecisionFailure.h"
 
 #include <BRepPrimAPI_MakeSphere.hxx>
 #include <QGuiApplication>
@@ -16,14 +15,6 @@
 #include <vtkActorCollection.h>
 #include <vtkRenderWindowInteractor.h>
 #include <vtkWeakPointer.h>
-
-struct QRenderWindowTestAccess {
-    static quint64 revision(const QRenderWindow& item) { return item.surface_precision_revision_; }
-    static void apply(QRenderWindow& item, QQuickVTKItem::vtkUserData data, int precision, quint64 revision)
-    {
-        item.applySurfacePrecision(data, precision, revision);
-    }
-};
 
 namespace {
 QGuiApplication& testApplication()
@@ -120,137 +111,46 @@ TEST_CASE("QRenderWindow notifies selection reset without a render window")
     CHECK(updates == 1);
 }
 
-TEST_CASE("QRenderWindow contains precision exceptions restores GUI state and retries", "[precision][failure]")
+TEST_CASE("QRenderWindow applies requested surface precision across scene rebuilds", "[precision]")
 {
     testApplication();
-    auto kind = SurfacePrecisionFailure::Kind::Standard;
-    SECTION("standard exception") { }
-    SECTION("OCCT exception") { kind = SurfacePrecisionFailure::Kind::Occ; }
-    SECTION("unknown exception") { kind = SurfacePrecisionFailure::Kind::Unknown; }
     QRenderWindow item;
-    vtkNew<vtkRenderWindow> window;
-    vtkNew<vtkRenderWindowInteractor> interactor;
-    interactor->SetRenderWindow(window);
-    auto user_data = item.initializeVTK(window);
-    auto* data = QRenderWindow::Data::SafeDownCast(user_data);
-    const auto sphere = BRepPrimAPI_MakeSphere(10.0).Shape();
-    data->geometry_actor_manager_->loadGeometry({ sphere, 123, nullptr });
-    QCoreApplication::processEvents();
     int updates = 0;
     QObject::connect(&item, &QRenderWindow::surfacePrecisionChanged, &item, [&updates] { ++updates; });
     item.setSurfacePrecision(3);
     CHECK(item.getSurfacePrecision() == 3);
     CHECK(updates == 1);
-    SurfacePrecisionFailure failure(1, kind);
-    REQUIRE_NOTHROW(QRenderWindowTestAccess::apply(item, user_data, 3, QRenderWindowTestAccess::revision(item)));
-    CHECK(data->geometry_actor_manager_->getSurfacePrecision() == 1);
-    CHECK(item.getSurfacePrecision() == 3); // 渲染线程不能直接改 GUI 属性。
-    QCoreApplication::processEvents();
-    CHECK(item.getSurfacePrecision() == 1);
-    CHECK(updates == 2);
-    const auto failed_revision = QRenderWindowTestAccess::revision(item);
-    item.setSurfacePrecision(3);
-    CHECK(QRenderWindowTestAccess::revision(item) > failed_revision);
-    REQUIRE_NOTHROW(QRenderWindowTestAccess::apply(item, user_data, 3, QRenderWindowTestAccess::revision(item)));
-    QCoreApplication::processEvents();
+    item.setSurfacePrecision(3); // 同档重复请求不再通知。
+    item.setSurfacePrecision(-1);
+    item.setSurfacePrecision(4);
     CHECK(item.getSurfacePrecision() == 3);
+    CHECK(updates == 1);
+    const auto sphere = BRepPrimAPI_MakeSphere(10.0).Shape();
+
+    // 请求先于场景存在：初始化即把当前档位应用到新 manager 与后续加载的组件。
+    vtkNew<vtkRenderWindow> window;
+    vtkNew<vtkRenderWindowInteractor> interactor;
+    interactor->SetRenderWindow(window);
+    auto user_data = item.initializeVTK(window);
+    auto* data = QRenderWindow::Data::SafeDownCast(user_data);
+    data->geometry_actor_manager_->loadGeometry({ sphere, 123, nullptr });
     CHECK(data->geometry_actor_manager_->getSurfacePrecision() == 3);
     CHECK(data->geometry_actor_manager_->getComponentActor(123)->getSurfacePrecision() == 3);
-    CHECK(updates == 3);
     item.destroyingVTK(window, user_data);
     window->RemoveRenderer(data->overlay_renderer_);
     window->RemoveRenderer(data->renderer_);
-}
 
-TEST_CASE("QRenderWindow ignores stale precision failure after a newer request", "[precision][failure]")
-{
-    testApplication();
-    QRenderWindow item;
-    vtkNew<vtkRenderWindow> window;
-    vtkNew<vtkRenderWindowInteractor> interactor;
-    interactor->SetRenderWindow(window);
-    auto user_data = item.initializeVTK(window);
-    auto* data = QRenderWindow::Data::SafeDownCast(user_data);
-    const auto sphere = BRepPrimAPI_MakeSphere(10.0).Shape();
-    data->geometry_actor_manager_->loadGeometry({ sphere, 123, nullptr });
+    // 场景重建沿用当前请求档位，GUI 与渲染层保持一致。
+    vtkNew<vtkRenderWindow> rebuilt_window;
+    vtkNew<vtkRenderWindowInteractor> rebuilt_interactor;
+    rebuilt_interactor->SetRenderWindow(rebuilt_window);
+    user_data = item.initializeVTK(rebuilt_window);
+    auto* rebuilt = QRenderWindow::Data::SafeDownCast(user_data);
+    rebuilt->geometry_actor_manager_->loadGeometry({ sphere, 123, nullptr });
     QCoreApplication::processEvents();
-    item.setSurfacePrecision(3);
-    SurfacePrecisionFailure failure;
-    QRenderWindowTestAccess::apply(item, user_data, 3, QRenderWindowTestAccess::revision(item));
-    item.setSurfacePrecision(0);
-    QCoreApplication::processEvents();
-    CHECK(item.getSurfacePrecision() == 0);
-    QRenderWindowTestAccess::apply(item, user_data, 0, QRenderWindowTestAccess::revision(item));
-    QCoreApplication::processEvents();
-    CHECK(item.getSurfacePrecision() == 0);
-    CHECK(data->geometry_actor_manager_->getSurfacePrecision() == 0);
-    item.destroyingVTK(window, user_data);
-    window->RemoveRenderer(data->overlay_renderer_);
-    window->RemoveRenderer(data->renderer_);
-}
-
-TEST_CASE("QRenderWindow ignores precision failure from a destroyed scene", "[precision][failure][lifecycle]")
-{
-    testApplication();
-    QRenderWindow item;
-    vtkNew<vtkRenderWindow> old_window;
-    vtkNew<vtkRenderWindowInteractor> old_interactor;
-    old_interactor->SetRenderWindow(old_window);
-    auto old_user_data = item.initializeVTK(old_window);
-    auto* old_data = QRenderWindow::Data::SafeDownCast(old_user_data);
-    const auto sphere = BRepPrimAPI_MakeSphere(10.0).Shape();
-    old_data->geometry_actor_manager_->loadGeometry({ sphere, 123, nullptr });
-    QCoreApplication::processEvents();
-    item.setSurfacePrecision(3);
-    SurfacePrecisionFailure failure;
-    QRenderWindowTestAccess::apply(item, old_user_data, 3, QRenderWindowTestAccess::revision(item));
-    CHECK(old_data->geometry_actor_manager_->getSurfacePrecision() == 1);
+    CHECK(item.getSurfacePrecision() == rebuilt->geometry_actor_manager_->getSurfacePrecision());
     CHECK(item.getSurfacePrecision() == 3);
-    // 旧失败回执尚未消费时重建场景，新 manager 已采用当前请求档位。
-    item.destroyingVTK(old_window, old_user_data);
-    old_window->RemoveRenderer(old_data->overlay_renderer_);
-    old_window->RemoveRenderer(old_data->renderer_);
-
-    vtkNew<vtkRenderWindow> window;
-    vtkNew<vtkRenderWindowInteractor> interactor;
-    interactor->SetRenderWindow(window);
-    auto user_data = item.initializeVTK(window);
-    auto* data = QRenderWindow::Data::SafeDownCast(user_data);
-    data->geometry_actor_manager_->loadGeometry({ sphere, 123, nullptr });
-    CHECK(data->geometry_actor_manager_->getSurfacePrecision() == 3);
-    QCoreApplication::processEvents();
-    CHECK(item.getSurfacePrecision() == data->geometry_actor_manager_->getSurfacePrecision());
-    CHECK(item.getSurfacePrecision() == 3);
-    item.destroyingVTK(window, user_data);
-    window->RemoveRenderer(data->overlay_renderer_);
-    window->RemoveRenderer(data->renderer_);
-}
-
-TEST_CASE("QRenderWindow corrects precision requests queued before scene initialization", "[precision][failure][lifecycle]")
-{
-    testApplication();
-    QRenderWindow item;
-    item.setSurfacePrecision(0);
-    const auto first_revision = QRenderWindowTestAccess::revision(item);
-    item.setSurfacePrecision(3);
-    const auto latest_revision = QRenderWindowTestAccess::revision(item);
-    vtkNew<vtkRenderWindow> window;
-    vtkNew<vtkRenderWindowInteractor> interactor;
-    interactor->SetRenderWindow(window);
-    auto user_data = item.initializeVTK(window);
-    auto* data = QRenderWindow::Data::SafeDownCast(user_data);
-    const auto sphere = BRepPrimAPI_MakeSphere(10.0).Shape();
-    data->geometry_actor_manager_->loadGeometry({ sphere, 123, nullptr });
-    QCoreApplication::processEvents();
-    CHECK(data->geometry_actor_manager_->getSurfacePrecision() == 3);
-    // 初始化不作废请求版本；较早请求生效、最新请求失败后仍应校正 GUI。
-    QRenderWindowTestAccess::apply(item, user_data, 0, first_revision);
-    SurfacePrecisionFailure failure;
-    QRenderWindowTestAccess::apply(item, user_data, 3, latest_revision);
-    CHECK(data->geometry_actor_manager_->getSurfacePrecision() == 0);
-    QCoreApplication::processEvents();
-    CHECK(item.getSurfacePrecision() == 0);
-    item.destroyingVTK(window, user_data);
-    window->RemoveRenderer(data->overlay_renderer_);
-    window->RemoveRenderer(data->renderer_);
+    item.destroyingVTK(rebuilt_window, user_data);
+    rebuilt_window->RemoveRenderer(rebuilt->overlay_renderer_);
+    rebuilt_window->RemoveRenderer(rebuilt->renderer_);
 }

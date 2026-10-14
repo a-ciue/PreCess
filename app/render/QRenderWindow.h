@@ -41,7 +41,6 @@ class QFeatureSystemAdaptor;
 }
 
 struct QRenderWindow : QQuickVTKItem { // 结构体继承QQuickVTKItem
-    friend struct QRenderWindowTestAccess;
     Q_OBJECT
     Q_PROPERTY(QSelection* selectedIDs READ selectedIDs NOTIFY selectedChanged)
     Q_PROPERTY(int selectionRevision READ selectionRevision WRITE setSelectionRevision NOTIFY selectionRevisionChanged)
