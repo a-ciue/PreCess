@@ -544,11 +544,13 @@ ColumnLayout {
                         bottomPadding: 4
                         objectName: "algorithmAction_" + modelData.name
                         icon.source: root.getIconForPlugin(modelData.name)
-                        // 按钮文字和内边距先占位，图标使用剩余高度。
-                        icon.height: Math.max(16, Math.min(root.ribbonIconSize,
+                        // 正方形图标边长用局部源；避免 icon.width 绑定 icon.height
+                        // （同组子属性互绑会经 iconChanged 自触绑定循环）
+                        readonly property real actionIconSize: Math.max(16, Math.min(root.ribbonIconSize,
                             root.ribbonPageHeight - topPadding - bottomPadding
                             - spacing - actionFontMetrics.height))
-                        icon.width: icon.height
+                        icon.width: actionIconSize
+                        icon.height: actionIconSize
                         icon.color: "transparent"
                         Layout.fillHeight: true
                         text: modelData.display_name
