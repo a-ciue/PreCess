@@ -626,5 +626,8 @@ void MeshActor::renderAttribute(
     if (render_strategy_) {
         AttributeOperator op(this);
         render_strategy_->render(op, attr_name, args);
+        // 属性策略可直接开启独立箭头，完成后仍须遵守面隔离遮罩。
+        if (faces_only_)
+            glyph3D_actor_->VisibilityOff();
     }
 }

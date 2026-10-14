@@ -1,7 +1,11 @@
 #include "MakeMeshDataVtk.h"
+#include "MakeMeshData.h"
 
 #include "MeshActor.h"
 #include "MeshActorSelectOp.h"
+#include "renderStrategy/AttributeOperator.h"
+#include "renderStrategy/AttriRenderStrategyScalar.h"
+#include "renderStrategy/AttriRenderStrategyVector.h"
 #include <catch2/catch_test_macros.hpp>
 #include <vtkActor.h>
 #include <vtkAlgorithmOutput.h>
@@ -83,6 +87,19 @@ std::vector<vtkIdType> faceIdValues(vtkPolyData* poly)
 
     std::sort(values.begin(), values.end());
     return values;
+}
+
+//! @brief 生成自持的属性测试网格，显式准备各类属性以验证有效向量输入。
+MeshData makeAttributeMesh()
+{
+    MeshData mesh = MakeMeshData();
+    const auto face_count = mesh.face_vertices_offset_.size() - 1;
+    mesh.vertex_attributes_["v_isolation_vector_3"].assign(mesh.vertex_positions_.size() * 3, 1.0);
+    mesh.edge_attributes_["e_isolation_vector_3"].assign(mesh.edge_vertices_.size() / 2 * 3, 1.0);
+    mesh.face_attributes_["f_isolation_vector_3"].assign(face_count * 3, 1.0);
+    mesh.solid_attributes_["s_isolation_vector_3"].assign(mesh.solid_types_.size() * 3, 1.0);
+    mesh.face_attributes_["f_isolation_scalar_1"].assign(face_count, 0.5);
+    return mesh;
 }
 
 } // namespace
@@ -352,6 +369,59 @@ TEST_CASE("face isolation survives style changes and ends on restore or reload")
     env.actor->loadModelData(MakeMeshDataVtk(reloaded_mesh));
     CHECK(faceIdValues(env.faceOutput()) == original_ids);
     CHECK(op.getSolidActor().GetVisibility());
+}
+
+//! @brief 隔离约束必须覆盖所有向量属性来源及后续标量渲染。
+TEST_CASE("face isolation constrains vector and scalar attribute rendering")
+{
+    FaceHidingEnv env(makeAttributeMesh());
+    AttributeOperator attribute_op(env.actor.get());
+    MeshActorSelectOp select_op(env.actor);
+    auto* glyph = attribute_op.getGlyph3DActor();
+    std::string attribute;
+    SECTION("vertex vectors") { attribute = "v_isolation_vector_3"; }
+    SECTION("edge vectors") { attribute = "e_isolation_vector_3"; }
+    SECTION("face vectors") { attribute = "f_isolation_vector_3"; }
+    SECTION("solid vectors") { attribute = "s_isolation_vector_3"; }
+
+    // 先确认向量属性有效且生成了箭头，避免空输入使隔离断言假通过。
+    env.actor->setRenderStrategy(std::make_unique<AttriRenderStrategyVector>());
+    env.actor->renderAttribute(attribute, { });
+    attribute_op.getGlyph3DMapper()->Update();
+    REQUIRE(attribute_op.getGlyph3DMapper()->GetInput() != nullptr);
+    REQUIRE(attribute_op.getGlyph3DMapper()->GetInput()->GetNumberOfCells() > 0);
+    REQUIRE(glyph->GetVisibility());
+    env.actor->isolateFaces({ 0, 2 });
+    REQUIRE_FALSE(glyph->GetVisibility());
+
+    // 隔离后重新应用向量，属性策略不能打开不经过面过滤管线的覆盖层。
+    env.actor->renderAttribute(attribute, { });
+    CHECK_FALSE(glyph->GetVisibility());
+    CHECK_FALSE(select_op.getSolidActor().GetVisibility());
+    CHECK_FALSE(select_op.getEdgeActor().GetVisibility());
+    CHECK(faceIdValues(env.faceOutput()) == std::vector<vtkIdType>({ 0, 2 }));
+    env.actor->setRenderStrategy(std::make_unique<AttriRenderStrategyScalar>());
+    env.actor->renderAttribute("f_isolation_scalar_1", { });
+    CHECK_FALSE(glyph->GetVisibility());
+    CHECK_FALSE(select_op.getSolidActor().GetVisibility());
+    CHECK(faceIdValues(env.faceOutput()) == std::vector<vtkIdType>({ 0, 2 }));
+}
+
+//! @brief 结束隔离后保留普通向量显示和切换标量时的箭头取消行为。
+TEST_CASE("attribute rendering after face isolation restores ordinary vector and scalar behavior")
+{
+    FaceHidingEnv env(makeAttributeMesh());
+    AttributeOperator attribute_op(env.actor.get());
+    env.actor->isolateFaces({ 0 });
+    env.actor->showAllFaces();
+    // 结束隔离后向量应正常显示，切换标量则继续遵守策略自身的取消逻辑。
+    env.actor->setRenderStrategy(std::make_unique<AttriRenderStrategyVector>());
+    env.actor->renderAttribute("f_isolation_vector_3", { });
+    REQUIRE(attribute_op.getGlyph3DActor()->GetVisibility());
+    env.actor->setRenderStrategy(std::make_unique<AttriRenderStrategyScalar>());
+    env.actor->renderAttribute("f_isolation_scalar_1", { });
+    CHECK_FALSE(attribute_op.getGlyph3DActor()->GetVisibility());
+    CHECK(attribute_op.getFaceMapper()->GetScalarVisibility());
 }
 
 TEST_CASE("reloading mesh data clears hidden faces")
