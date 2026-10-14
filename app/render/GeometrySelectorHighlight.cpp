@@ -56,17 +56,6 @@ static void updateFilterAndNotify(IVtkTools_SubPolyDataFilter* filter, const NCo
         data->Modified();
 }
 
-static void rebuildHighlightFilter(GeometryActorSelectOp& select_op, SelectMode mode,
-    vtkSmartPointer<IVtkTools_SubPolyDataFilter>& filter, vtkPartitionedDataSet& data,
-    unsigned int partition_id)
-{
-    // 三角化重建替换了 PolyData，旧 filter 的输入仍指向旧显示缓存。
-    filter = select_op.buildHighlight(mode);
-    if (filter)
-        filter->Update();
-    data.SetPartition(partition_id, filter ? filter->GetOutput() : nullptr);
-}
-
 // ─── Face ──────────────────────────────────────────────
 
 GeometryFaceSelectorHighlight::GeometryFaceSelectorHighlight(
@@ -105,15 +94,6 @@ void GeometryFaceSelectorHighlight::enableHighlight()
     for (const auto& [sid, gid] : selections_)
         ids.Append(sid);
     updateFilterAndNotify(hl_filter_, ids, highlight_data_);
-}
-
-void GeometryFaceSelectorHighlight::refreshHighlight()
-{
-    rebuildHighlightFilter(select_op_, SelectMode::GeometryFace, hl_filter_, *highlight_data_, partition_id_);
-    if (select_op_.isVisible())
-        enableHighlight();
-    else
-        disableHighlight();
 }
 
 GeometrySelectionVtk GeometryFaceSelectorHighlight::get() const
@@ -191,15 +171,6 @@ void GeometryEdgeSelectorHighlight::enableHighlight()
     updateFilterAndNotify(hl_filter_, ids, highlight_data_);
 }
 
-void GeometryEdgeSelectorHighlight::refreshHighlight()
-{
-    rebuildHighlightFilter(select_op_, SelectMode::GeometryEdge, hl_filter_, *highlight_data_, partition_id_);
-    if (select_op_.isVisible())
-        enableHighlight();
-    else
-        disableHighlight();
-}
-
 GeometrySelectionVtk GeometryEdgeSelectorHighlight::get() const
 {
     GeometrySelectionVtk s;
@@ -273,15 +244,6 @@ void GeometryVertexSelectorHighlight::enableHighlight()
     for (const auto& [sid, gid] : selections_)
         ids.Append(sid);
     updateFilterAndNotify(hl_filter_, ids, highlight_data_);
-}
-
-void GeometryVertexSelectorHighlight::refreshHighlight()
-{
-    rebuildHighlightFilter(select_op_, SelectMode::GeometryVertex, hl_filter_, *highlight_data_, partition_id_);
-    if (select_op_.isVisible())
-        enableHighlight();
-    else
-        disableHighlight();
 }
 
 GeometrySelectionVtk GeometryVertexSelectorHighlight::get() const
@@ -358,15 +320,6 @@ void GeometrySolidSelectorHighlight::enableHighlight()
     for (const auto& fid : highlighted_face_ids_)
         ids.Append(fid);
     updateFilterAndNotify(hl_filter_, ids, highlight_data_);
-}
-
-void GeometrySolidSelectorHighlight::refreshHighlight()
-{
-    rebuildHighlightFilter(select_op_, SelectMode::GeometrySolid, hl_filter_, *highlight_data_, partition_id_);
-    if (select_op_.isVisible())
-        enableHighlight();
-    else
-        disableHighlight();
 }
 
 GeometrySelectionVtk GeometrySolidSelectorHighlight::get() const

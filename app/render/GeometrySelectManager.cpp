@@ -193,12 +193,6 @@ void GeometrySelectManager::clearSelection()
     highlight_data_->Initialize();
 }
 
-void GeometrySelectManager::refreshSelectionHighlight()
-{
-    for (const auto& entry : component_selectors_)
-        entry.second->refreshHighlight();
-}
-
 std::optional<std::pair<Index, std::array<double, 3>>> GeometrySelectManager::snapGeometryVertex(double posx, double posy)
 {
     // 无已注册几何组件时不触碰 picker，避免空拾取崩溃

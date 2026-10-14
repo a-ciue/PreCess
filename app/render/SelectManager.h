@@ -45,8 +45,6 @@ public:
     //! @brief 注入模型层 id 查询接口，供选择器解析单元 id（如边端点对 -> 边 id）
     void setMeshIdQuery(const IMeshIdQuery* id_query);
     void refreshComponentHighlight();
-    //! @brief 几何显示重建后刷新子形状与组件高亮，保留当前选择。
-    void refreshGeometrySelection();
     void setGeometryHighlightVisible(bool visible);
     void setGeometryHighlightVisible(Index component_id, bool visible);
     void setMeshHighlightVisible(bool visible);

@@ -39,8 +39,6 @@
 #include <vtkActor.h>
 #include <vtkActorCollection.h>
 #include <vtkCamera.h>
-#include <vtkMapper.h>
-#include <vtkPartitionedDataSet.h>
 #include <vtkPolyData.h>
 #include <vtkPolyDataMapper.h>
 #include <vtkProperty.h>
@@ -142,18 +140,6 @@ void checkTriangulationsUnchanged(const std::vector<TriangulationSnapshot>& snap
             CHECK(triangulation->Deflection() == snapshot.deflection);
         }
     }
-}
-
-vtkIdType highlightCellCount(vtkActor& highlight)
-{
-    auto* data = vtkPartitionedDataSet::SafeDownCast(highlight.GetMapper()->GetInputDataObject(0, 0));
-    REQUIRE(data != nullptr);
-    vtkIdType count = 0;
-    for (unsigned int i = 0; i < data->GetNumberOfPartitions(); ++i) {
-        if (auto* poly = vtkPolyData::SafeDownCast(data->GetPartition(i)))
-            count += poly->GetNumberOfCells();
-    }
-    return count;
 }
 
 Index findBoxElement(const GeometrySubshapeIndex& index, TopAbs_ShapeEnum type)
@@ -322,7 +308,7 @@ TEST_CASE("CAD display remeshing preserves shared geometry snapshot caches and r
     CHECK(GeometryActorSelectOp(scene.actor()).getPolyActor().GetVisibility() == 0);
 }
 
-TEST_CASE("CAD precision refresh preserves original face edge vertex and solid selections", "[geometry][precision][render]")
+TEST_CASE("CAD precision rebuild keeps original geometry selections pickable", "[geometry][precision][render]")
 {
     GeometryScene scene(BRepPrimAPI_MakeBox(10.0, 10.0, 10.0).Shape());
     scene.load();
@@ -348,65 +334,17 @@ TEST_CASE("CAD precision refresh preserves original face edge vertex and solid s
         const auto display = scene.project(pick.point);
         selection.select(display[0], display[1]);
         REQUIRE(selection.getSelection()->ids == std::vector<Index> { pick.expected_gid });
-        REQUIRE(highlightCellCount(*highlight) > 0);
         for (int precision : { 3, 0, 1 }) {
             scene.manager.setSurfacePrecision(precision);
-            selection.refreshSelectionHighlight();
-            scene.window->Render();
+            // 选择按几何身份的 gid 标识，不随三角化重建失效。
             CHECK(selection.getSelection()->ids == std::vector<Index> { pick.expected_gid });
-            CHECK(highlightCellCount(*highlight) > 0);
         }
         // 同一原始 gid 在重建后仍可再次拾取并取消，覆盖 picker 缓存与映射。
         selection.select(display[0], display[1]);
         CHECK(selection.getSelection()->ids.empty());
-        CHECK(highlightCellCount(*highlight) == 0);
+        selection.select(display[0], display[1], SelectOp::Append);
+        CHECK(selection.getSelection()->ids == std::vector<Index> { pick.expected_gid });
     }
-}
-
-TEST_CASE("CAD selected curved face highlight follows the rebuilt triangulation", "[geometry][precision][render]")
-{
-    GeometryScene scene(BRepPrimAPI_MakeSphere(10.0).Shape());
-    scene.load();
-    scene.manager.setSurfacePrecision(0);
-    vtkNew<vtkActor> highlight;
-    highlight->PickableOff();
-    scene.renderer->AddActor(highlight);
-    GeometrySelectManager selection(*scene.renderer, *highlight, scene.manager.op());
-    selection.setSelectMode(SelectMode::GeometryFace);
-    scene.lookDownZ(gp_Pnt(0.0, 0.0, 0.0));
-    // 避开球面极点，使用前半球上普通位置。
-    const auto display = scene.project(gp_Pnt(3.0, 2.0, std::sqrt(87.0)));
-    selection.select(display[0], display[1]);
-    const auto selected_ids = selection.getSelection()->ids;
-    REQUIRE(selected_ids == std::vector<Index> { scene.geometry.index.faceGlobalId(1) });
-    REQUIRE(highlightCellCount(*highlight) == scene.polygons()->GetNumberOfPolys());
-    const vtkIdType coarse_count = highlightCellCount(*highlight);
-    scene.manager.setSurfacePrecision(3);
-    selection.refreshSelectionHighlight();
-    CHECK(selection.getSelection()->ids == selected_ids);
-    CHECK(highlightCellCount(*highlight) == scene.polygons()->GetNumberOfPolys());
-    CHECK(highlightCellCount(*highlight) > coarse_count);
-    scene.manager.setSurfacePrecision(0);
-    selection.refreshSelectionHighlight();
-    CHECK(selection.getSelection()->ids == selected_ids);
-    CHECK(highlightCellCount(*highlight) == coarse_count);
-
-    scene.manager.setVisibility(kComponentId, false);
-    scene.manager.setSurfacePrecision(3);
-    selection.refreshSelectionHighlight();
-    CHECK(selection.getSelection()->ids == selected_ids);
-    CHECK(highlightCellCount(*highlight) == 0);
-    scene.manager.setVisibility(kComponentId, true);
-    selection.refreshSelectionHighlight();
-    CHECK(highlightCellCount(*highlight) == scene.polygons()->GetNumberOfPolys());
-
-    selection.setHighlightVisible(false);
-    scene.manager.setSurfacePrecision(0);
-    selection.refreshSelectionHighlight();
-    CHECK(highlight->GetMapper()->GetInputDataObject(0, 0) == nullptr);
-    CHECK(selection.getSelection()->ids == selected_ids);
-    selection.setHighlightVisible(true);
-    CHECK(highlightCellCount(*highlight) == coarse_count);
 }
 
 TEST_CASE("CAD precision rebuild retains a trimmed rational B-spline surface hole", "[geometry][precision]")
@@ -440,7 +378,7 @@ TEST_CASE("CAD precision rebuild retains a trimmed rational B-spline surface hol
     CHECK(counts[1] > counts[0]);
 }
 
-TEST_CASE("CAD hidden geometry restores picking and selected highlight after precision rebuild", "[geometry][precision][render]")
+TEST_CASE("CAD hidden geometry restores picking after precision rebuild", "[geometry][precision][render]")
 {
     GeometryScene scene(BRepPrimAPI_MakeSphere(10.0).Shape());
     scene.load();
@@ -463,16 +401,11 @@ TEST_CASE("CAD hidden geometry restores picking and selected highlight after pre
     for (const auto style : restored_styles) {
         scene.manager.setCurrentRenderStyle(GeometryRenderStyle::Hidden);
         scene.manager.setSurfacePrecision(precision);
-        selection.refreshSelectionHighlight();
         CHECK(selection.getSelection()->ids == selected_ids);
-        CHECK(highlightCellCount(*highlight) == 0);
 
         scene.manager.setCurrentRenderStyle(style);
-        selection.refreshSelectionHighlight();
         scene.window->Render();
         REQUIRE(scene.actor()->isVisible());
-        CHECK(selection.getSelection()->ids == selected_ids);
-        CHECK(highlightCellCount(*highlight) == scene.polygons()->GetNumberOfPolys());
 
         // 恢复后真正重拾一次：若 Picker 仍处于禁用态，Toggle 会走空拾取清空；
         // 紧接着 Append 必须重新命中，避免把清空误判为恢复成功。
@@ -480,7 +413,6 @@ TEST_CASE("CAD hidden geometry restores picking and selected highlight after pre
         REQUIRE(selection.getSelection()->ids.empty());
         selection.select(display[0], display[1], SelectOp::Append);
         CHECK(selection.getSelection()->ids == selected_ids);
-        CHECK(highlightCellCount(*highlight) == scene.polygons()->GetNumberOfPolys());
         precision = 0;
     }
 }
@@ -568,7 +500,6 @@ TEST_CASE("CAD batch precision failure keeps every component pickable and retrie
     const auto first_caches = captureTriangulations(shapes[0]->GetShape());
     const auto second_caches = captureTriangulations(shapes[1]->GetShape());
     const int actor_count = scene.renderer->GetActors()->GetNumberOfItems();
-    const auto highlight_count = highlightCellCount(*highlight);
     SurfacePrecisionFailure failure(2);
     REQUIRE_THROWS_AS(scene.manager.setSurfacePrecision(3), std::runtime_error);
     REQUIRE(failure.rebuilds() == 2); // 第一个组件已准备成功，第二个在重建末尾失败。
@@ -586,9 +517,7 @@ TEST_CASE("CAD batch precision failure keeps every component pickable and retrie
         CHECK(vtkPolyDataMapper::SafeDownCast(op.getPolyActor().GetMapper())->GetInput() == polygons[i]);
         CHECK(scene.manager.op().getComponentId(&op.getPolyActor()) == kComponentId + i);
     }
-    selection.refreshSelectionHighlight();
     CHECK(selection.getSelection()->ids == selected);
-    CHECK(highlightCellCount(*highlight) == highlight_count);
     selection.select(display[0], display[1]);
     REQUIRE(selection.getSelection()->ids.empty());
     selection.select(display[0], display[1], SelectOp::Append);
@@ -607,9 +536,7 @@ TEST_CASE("CAD batch precision failure keeps every component pickable and retrie
             > polygons[i]->GetNumberOfPolys());
         REQUIRE_FALSE(op.getOccShape()->GetSelectableObject().IsNull());
     }
-    selection.refreshSelectionHighlight();
     CHECK(selection.getSelection()->ids == selected);
-    CHECK(highlightCellCount(*highlight) > highlight_count);
     scene.window->Render();
     selection.select(display[0], display[1]);
     REQUIRE(selection.getSelection()->ids.empty());

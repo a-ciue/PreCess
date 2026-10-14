@@ -29,8 +29,6 @@ public:
     void selectArea(int xmin, int ymin, int xmax, int ymax, SelectOp op = SelectOp::Toggle);
     void setSelectMode(SelectMode select_mode);
     void clearSelection();
-    //! @brief 重新连接现有选择的高亮数据，不修改业务选择。
-    void refreshSelectionHighlight();
     std::unique_ptr<Selection> getSelection();
     void setHighlightVisible(bool visible);
     void setHighlightVisible(Index component_id, bool visible);
