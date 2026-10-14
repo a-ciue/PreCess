@@ -332,7 +332,7 @@ Pane {
                 }
             }
 
-            Menu {
+            AppMenu {
                 id: contextMenu
 
                 MenuItem {

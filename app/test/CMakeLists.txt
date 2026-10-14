@@ -54,7 +54,7 @@ precess_test_link_libraries(TestUndoQml modelQml modelQmlplugin SystemQmlplugin 
 qt_add_resources(TestUndoQml undo_ui
     PREFIX "/undo-ui"
     BASE "${CMAKE_CURRENT_SOURCE_DIR}/.."
-    FILES ../FeatureNavigation.js ../Theme.qml ../SideBar.qml ../OperationSession.qml ../OperationParameterModel.qml ../ObjectTree.qml ../CentralRenderArea.qml ../Selector.qml)
+    FILES ../FeatureNavigation.js ../Theme.qml ../SideBar.qml ../OperationSession.qml ../OperationParameterModel.qml ../ObjectTree.qml ../CentralRenderArea.qml ../Selector.qml ../AppMenu.qml)
 
 # 验证主窗口实际遮罩的覆盖范围和鼠标拦截，保留状态栏取消入口。
 precess_add_test(TestBusyMask TestBusyMask.cpp)
@@ -70,7 +70,7 @@ precess_test_link_libraries(TestToolbarNavigation modelQml modelQmlplugin System
 qt_add_resources(TestToolbarNavigation navigation_ui
     PREFIX "/navigation-ui"
     BASE "${CMAKE_CURRENT_SOURCE_DIR}/.."
-    FILES ../SideBar.qml ../OperationSession.qml ../OperationParameterModel.qml ../AppToolbar.qml ../FeatureNavigation.js ../RibbonTabButton.qml ../RibbonActionButton.qml ../Theme.qml)
+    FILES ../SideBar.qml ../OperationSession.qml ../OperationParameterModel.qml ../AppToolbar.qml ../FeatureNavigation.js ../RibbonTabButton.qml ../RibbonActionButton.qml ../Theme.qml ../AppMenu.qml)
 # 实际工具栏读取产品与插件声明的图标；资源随真实 QML 一同加载。
 qt_add_resources(TestToolbarNavigation navigation_icons
     PREFIX "/images"
@@ -93,3 +93,20 @@ qt_add_resources(TestToolbarNavigation navigation_icons
         "${CMAKE_SOURCE_DIR}/resource/toolbar/Geometry/auto-geometry-repair.svg"
         "${CMAKE_SOURCE_DIR}/resource/toolbar/Geometry/geometry-reconstruction.svg"
         "${CMAKE_SOURCE_DIR}/resource/toolbar/Panels/preview.svg")
+
+# AppPalette 应用调色板角色随明暗解析（纯函数，无需应用实例）
+precess_add_test(TestAppPalette TestAppPalette.cpp)
+target_include_directories(TestAppPalette PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}/..")
+precess_test_link_libraries(TestAppPalette Qt${VTK_QT_VERSION}::Gui)
+
+# DockTheme 停靠配色表随明暗整体刷新
+precess_add_test(TestDockTheme TestDockTheme.cpp ../dock/ui/DockTheme.h)
+set_target_properties(TestDockTheme PROPERTIES AUTOMOC ON)
+target_include_directories(TestDockTheme PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}/../dock")
+precess_test_link_libraries(TestDockTheme Qt${VTK_QT_VERSION}::Core Qt${VTK_QT_VERSION}::Gui)
+
+# 主题色跨文件一致性：ThemePalette 与 DockTheme 重叠语义相等
+precess_add_test(TestThemeConsistency TestThemeConsistency.cpp ../dock/ui/DockTheme.h)
+set_target_properties(TestThemeConsistency PROPERTIES AUTOMOC ON)
+target_include_directories(TestThemeConsistency PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}/.." "${CMAKE_CURRENT_SOURCE_DIR}/../dock")
+precess_test_link_libraries(TestThemeConsistency Qt${VTK_QT_VERSION}::Core Qt${VTK_QT_VERSION}::Gui)

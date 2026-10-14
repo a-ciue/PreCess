@@ -7,11 +7,13 @@
 
 #include "DockPanelItem.h"
 #include "DockHostItem.h"
+#include "DockTheme.h"
 #include "GlobalMouseRelay.h"
 #include "DockRuntime.h"
 #include "docking/DockEnums.h"
 
 #include <QCoreApplication>
+#include <QJSEngine>
 #include <QQmlEngine>
 #include <QtQml/qqml.h>
 
@@ -27,6 +29,9 @@ void registerTypes()
 {
     qmlRegisterType<DockHostItem>("PreCess.Docking", 1, 0, "DockHost");
     qmlRegisterType<DockPanelItem>("PreCess.Docking", 1, 0, "DockPanel");
+    // 主题承载单例：app 侧把 Theme.dark 推入，dock QML 据此选择局部配色
+    qmlRegisterSingletonType<DockTheme>("PreCess.Docking", 1, 0, "Theme",
+        [](QQmlEngine*, QJSEngine*) -> QObject* { return new DockTheme; });
     qmlRegisterUncreatableMetaObject(dock::staticMetaObject, "PreCess.Docking", 1, 0, "Tokens",
         QStringLiteral("Enum access only"));
 }

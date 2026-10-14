@@ -4,15 +4,14 @@
  */
 
 import QtQuick
+import PreCess.Docking as Docking
 
 Rectangle {
     id: root
 
-    // 浮动窗口底与边框（与 app 侧 Theme 令牌取值保持一致；dock 模块
-    // 刻意不依赖 app，故此处以局部常量对齐配色）
-    // 修改这些配色时须同步检查 app/Theme.qml 中的对应令牌。
-    readonly property color surfaceWindow: "#F3F4F6"
-    readonly property color windowBorder: "#C3C8CF"
+    // 浮动窗口底与边框：取自 Docking.Theme.colors（与 app/Theme.qml 同步）
+    readonly property color surfaceWindow: Docking.Theme.colors.windowBackground
+    readonly property color windowBorder: Docking.Theme.colors.borderStrong
 
     color: surfaceWindow
     border.color: windowBorder
