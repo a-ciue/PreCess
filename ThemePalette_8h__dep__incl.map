@@ -1,0 +1,9 @@
+<map id="app/core/ThemePalette.h" name="app/core/ThemePalette.h">
+<area shape="rect" id="Node000001" title="主题应用调色板构造：纯函数，不依赖 QML 与应用实例，便于单测" alt="" coords="203,5,387,31"/>
+<area shape="rect" id="Node000002" href="$AppPalette_8h.html" title="应用级调色板单例：让 ToolTip 等按应用调色板取色的弹窗跟随主题" alt="" coords="5,79,169,104"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="250,38,122,81,120,76,248,33"/>
+<area shape="rect" id="Node000003" href="$TestAppPalette_8cpp.html" title="主题应用调色板单元测试：角色随明暗正确解析" alt="" coords="194,79,397,104"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="298,44,298,79,293,79,293,44"/>
+<area shape="rect" id="Node000004" href="$TestThemeConsistency_8cpp.html" title="主题色跨文件一致性：ThemePalette（应用调色板）与 DockTheme（停靠配色）" alt="" coords="421,79,676,104"/>
+<area shape="poly" id="edge3_Node000001_Node000004" title=" " alt="" coords="350,32,508,76,507,81,349,37"/>
+</map>

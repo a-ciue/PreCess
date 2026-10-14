@@ -1,0 +1,167 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="zh">
+<head>
+<meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=11"/>
+<meta name="generator" content="Doxygen 1.14.0"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>PreCess: app/test/TestAppPalette.cpp 文件参考</title>
+<link href="tabs.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="jquery.js"></script>
+<script type="text/javascript" src="dynsections.js"></script>
+<script type="text/javascript" src="clipboard.js"></script>
+<script type="text/javascript" src="cookie.js"></script>
+<link href="search/search.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="search/searchdata.js"></script>
+<script type="text/javascript" src="search/search.js"></script>
+<link href="doxygen.css" rel="stylesheet" type="text/css" />
+</head>
+<body>
+<div id="top"><!-- do not remove this div, it is closed by doxygen! -->
+<div id="titlearea">
+<table cellspacing="0" cellpadding="0">
+ <tbody>
+ <tr id="projectrow">
+  <td id="projectlogo"><img alt="Logo" src="ZenithGrid.ico"/></td>
+  <td id="projectalign">
+   <div id="projectname">PreCess
+   </div>
+  </td>
+ </tr>
+ </tbody>
+</table>
+</div>
+<!-- end header part -->
+<!-- 制作者 Doxygen 1.14.0 -->
+<script type="text/javascript">
+var searchBox = new SearchBox("searchBox", "search/",'.html');
+</script>
+<script type="text/javascript">
+$(function() { codefold.init(); });
+</script>
+<script type="text/javascript" src="menudata.js"></script>
+<script type="text/javascript" src="menu.js"></script>
+<script type="text/javascript">
+$(function() {
+  initMenu('',true,false,'search.php','搜索',false);
+  $(function() { init_search(); });
+});
+</script>
+<div id="main-nav"></div>
+<!-- window showing the filter options -->
+<div id="MSearchSelectWindow"
+     onmouseover="return searchBox.OnSearchSelectShow()"
+     onmouseout="return searchBox.OnSearchSelectHide()"
+     onkeydown="return searchBox.OnSearchSelectKey(event)">
+</div>
+
+<!-- iframe showing the search results (closed by default) -->
+<div id="MSearchResultsWindow">
+<div id="MSearchResults">
+<div class="SRPage">
+<div id="SRIndex">
+<div id="SRResults"></div>
+<div class="SRStatus" id="Loading">载入中...</div>
+<div class="SRStatus" id="Searching">搜索中...</div>
+<div class="SRStatus" id="NoMatches">未找到</div>
+</div>
+</div>
+</div>
+</div>
+
+<div id="nav-path" class="navpath">
+  <ul>
+<li class="navelem"><a href="dir_d422163b96683743ed3963d4aac17747.html">app</a></li><li class="navelem"><a href="dir_effe5c348e70d16252aa6de5fa9356c9.html">test</a></li>  </ul>
+</div>
+</div><!-- top -->
+<div id="doc-content">
+<div class="header">
+  <div class="summary">
+<a href="#func-members">函数</a>  </div>
+  <div class="headertitle"><div class="title">TestAppPalette.cpp 文件参考</div></div>
+</div><!--header-->
+<div class="contents">
+
+<p>主题应用调色板单元测试：角色随明暗正确解析  
+<a href="#details">更多...</a></p>
+<div class="textblock"><code>#include &quot;<a class="el" href="ThemePalette_8h_source.html">core/ThemePalette.h</a>&quot;</code><br />
+<code>#include &lt;catch2/catch_test_macros.hpp&gt;</code><br />
+<code>#include &lt;QColor&gt;</code><br />
+<code>#include &lt;QPalette&gt;</code><br />
+</div><div class="textblock"><div class="dynheader">
+TestAppPalette.cpp 的引用(Include)关系图:</div>
+<div class="dyncontent">
+<div class="center"><img src="TestAppPalette_8cpp__incl.png" border="0" usemap="#aapp_2test_2TestAppPalette_8cpp" loading="lazy" alt=""/></div>
+<map name="aapp_2test_2TestAppPalette_8cpp" id="aapp_2test_2TestAppPalette_8cpp">
+<area shape="rect" title="主题应用调色板单元测试：角色随明暗正确解析" alt="" coords="57,5,260,31"/>
+<area shape="rect" href="ThemePalette_8h.html" title="主题应用调色板构造：纯函数，不依赖 QML 与应用实例，便于单测" alt="" coords="23,79,179,104"/>
+<area shape="poly" title=" " alt="" coords="151,33,122,70,117,66,147,29"/>
+<area shape="rect" title=" " alt="" coords="15,152,81,177"/>
+<area shape="poly" title=" " alt="" coords="87,33,45,51,27,64,13,80,8,95,11,110,29,140,25,143,6,112,3,94,8,77,24,60,43,46,85,28"/>
+<area shape="rect" title=" " alt="" coords="115,152,192,177"/>
+<area shape="poly" title=" " alt="" coords="171,30,191,63,196,83,195,105,186,125,175,142,170,140,181,122,190,103,191,84,186,65,167,33"/>
+<area shape="rect" title=" " alt="" coords="255,79,473,104"/>
+<area shape="poly" title=" " alt="" coords="193,28,319,72,317,77,191,33"/>
+<area shape="poly" title=" " alt="" coords="95,106,67,143,63,140,91,103"/>
+<area shape="poly" title=" " alt="" coords="112,103,139,139,135,142,108,106"/>
+</map>
+</div>
+</div><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 id="header-func-members" class="groupheader"><a id="func-members" name="func-members"></a>
+函数</h2></td></tr>
+<tr class="memitem:ad8dcac133f40a01cef29911710f1f1d4" id="r_ad8dcac133f40a01cef29911710f1f1d4"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ad8dcac133f40a01cef29911710f1f1d4">TEST_CASE</a> (&quot;ThemePalette: light roles&quot;, &quot;[ThemePalette]&quot;)</td></tr>
+<tr class="memitem:a7dfc86c16b841317a4f6ba0ecd87ea52" id="r_a7dfc86c16b841317a4f6ba0ecd87ea52"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a7dfc86c16b841317a4f6ba0ecd87ea52">TEST_CASE</a> (&quot;ThemePalette: dark roles&quot;, &quot;[ThemePalette]&quot;)</td></tr>
+</table>
+<a name="details" id="details"></a><h2 id="header-details" class="groupheader">详细描述</h2>
+<div class="textblock"><p>主题应用调色板单元测试：角色随明暗正确解析 </p>
+</div><a name="doc-func-members" id="doc-func-members"></a><h2 id="header-doc-func-members" class="groupheader">函数说明</h2>
+<a id="a7dfc86c16b841317a4f6ba0ecd87ea52" name="a7dfc86c16b841317a4f6ba0ecd87ea52"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a7dfc86c16b841317a4f6ba0ecd87ea52">&#9670;&#160;</a></span>TEST_CASE() <span class="overload">[1/2]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">TEST_CASE </td>
+          <td>(</td>
+          <td class="paramtype">&quot;ThemePalette: dark roles&quot;</td>          <td class="paramname"><span class="paramname"><em></em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">&quot;&quot;</td>          <td class="paramname"><span class="paramname"><em></em></span>[ThemePalette]&#160;)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="ad8dcac133f40a01cef29911710f1f1d4" name="ad8dcac133f40a01cef29911710f1f1d4"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ad8dcac133f40a01cef29911710f1f1d4">&#9670;&#160;</a></span>TEST_CASE() <span class="overload">[2/2]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">TEST_CASE </td>
+          <td>(</td>
+          <td class="paramtype">&quot;ThemePalette: light roles&quot;</td>          <td class="paramname"><span class="paramname"><em></em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">&quot;&quot;</td>          <td class="paramname"><span class="paramname"><em></em></span>[ThemePalette]&#160;)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+</div><!-- contents -->
+<!-- start footer part -->
+<hr class="footer"/><address class="footer"><small>
+制作者&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.14.0
+</small></address>
+</div><!-- doc-content -->
+</body>
+</html>

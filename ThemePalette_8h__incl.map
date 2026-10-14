@@ -1,0 +1,7 @@
+<map id="app/core/ThemePalette.h" name="app/core/ThemePalette.h">
+<area shape="rect" id="Node000001" title="主题应用调色板构造：纯函数，不依赖 QML 与应用实例，便于单测" alt="" coords="5,5,189,31"/>
+<area shape="rect" id="Node000002" title=" " alt="" coords="16,79,83,104"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="92,33,67,69,62,66,87,30"/>
+<area shape="rect" id="Node000003" title=" " alt="" coords="107,79,184,104"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="107,30,132,66,128,69,103,33"/>
+</map>

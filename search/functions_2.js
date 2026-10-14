@@ -18,6 +18,7 @@ var searchData=
   ['bringtofront_15',['bringToFront',['../classdock_1_1DockView.html#ada09ae5957fc2b31e376a450e96e5a73',1,'dock::DockView::bringToFront()'],['../classdocktest_1_1StubView.html#aacbc521c1d5d2f68d7c612185884d4dc',1,'docktest::StubView::bringToFront()'],['../classdock_1_1ui_1_1DockHostItem.html#a3e2b9fa40d752fef04ca897fdf93bdbb',1,'dock::ui::DockHostItem::bringToFront()'],['../classdock_1_1ui_1_1DockPanelItem.html#a9b8583defcbd2d4a1702e30d74453179',1,'dock::ui::DockPanelItem::bringToFront()'],['../classdock_1_1ui_1_1DockWindowItem.html#a4ffa6df353d379e737e14de1dbe8111f',1,'dock::ui::DockWindowItem::bringToFront()'],['../classdock_1_1ui_1_1PanelContentView.html#ab55bc8fecb6aeb54679a336379fed445',1,'dock::ui::PanelContentView::bringToFront()'],['../classdock_1_1ui_1_1PanelGroupItem.html#ac26bb32c10d9a1d318ca5523bb65d2ef',1,'dock::ui::PanelGroupItem::bringToFront()']]],
   ['build_16',['build',['../structGeometrySubshapeIndex.html#af30c3a3b0ced48046486c2a8aaf38906',1,'GeometrySubshapeIndex']]],
   ['buildhighlight_17',['buildHighlight',['../classGeometryActorSelectOp.html#a1b944073d9d1cb680389fa7b0a5d6645',1,'GeometryActorSelectOp']]],
-  ['bus_18',['bus',['../classsystems_1_1feature_1_1FeatureEventGateway.html#ad003b345cd3f6550e455993e2e476385',1,'systems::feature::FeatureEventGateway']]],
-  ['busychanged_19',['busyChanged',['../classQTaskStatus.html#a64372caa9076395bf5d88cbb826a0312',1,'QTaskStatus']]]
+  ['buildthemepalette_18',['buildThemePalette',['../namespaceapp_1_1core.html#a2739a0708d725ea6aa1db7327fc092e7',1,'app::core']]],
+  ['bus_19',['bus',['../classsystems_1_1feature_1_1FeatureEventGateway.html#ad003b345cd3f6550e455993e2e476385',1,'systems::feature::FeatureEventGateway']]],
+  ['busychanged_20',['busyChanged',['../classQTaskStatus.html#a64372caa9076395bf5d88cbb826a0312',1,'QTaskStatus']]]
 ];

@@ -41,13 +41,14 @@ var searchData=
   ['bringtofront_38',['bringToFront',['../classdock_1_1DockView.html#ada09ae5957fc2b31e376a450e96e5a73',1,'dock::DockView::bringToFront()'],['../classdocktest_1_1StubView.html#aacbc521c1d5d2f68d7c612185884d4dc',1,'docktest::StubView::bringToFront()'],['../classdock_1_1ui_1_1DockHostItem.html#a3e2b9fa40d752fef04ca897fdf93bdbb',1,'dock::ui::DockHostItem::bringToFront()'],['../classdock_1_1ui_1_1DockPanelItem.html#a9b8583defcbd2d4a1702e30d74453179',1,'dock::ui::DockPanelItem::bringToFront()'],['../classdock_1_1ui_1_1DockWindowItem.html#a4ffa6df353d379e737e14de1dbe8111f',1,'dock::ui::DockWindowItem::bringToFront()'],['../classdock_1_1ui_1_1PanelContentView.html#ab55bc8fecb6aeb54679a336379fed445',1,'dock::ui::PanelContentView::bringToFront()'],['../classdock_1_1ui_1_1PanelGroupItem.html#ac26bb32c10d9a1d318ca5523bb65d2ef',1,'dock::ui::PanelGroupItem::bringToFront()']]],
   ['build_39',['build',['../structGeometrySubshapeIndex.html#af30c3a3b0ced48046486c2a8aaf38906',1,'GeometrySubshapeIndex']]],
   ['buildhighlight_40',['buildHighlight',['../classGeometryActorSelectOp.html#a1b944073d9d1cb680389fa7b0a5d6645',1,'GeometryActorSelectOp']]],
-  ['built_41',['built',['../structGeometrySubshapeIndex.html#acb1c4a20283d7edd67b1e152766f0b8d',1,'GeometrySubshapeIndex']]],
-  ['built_5fmesh_5f_42',['built_mesh_',['../classMeshAdjacency.html#a037729cdc2d38fd87bf4cc2ea6b712e1',1,'MeshAdjacency']]],
-  ['bump_5fmultiplier_43',['bump_multiplier',['../structtinyobj_1_1texture__option__t.html#ad2e2c79e305189e5d146992c32248d49',1,'tinyobj::texture_option_t']]],
-  ['bump_5ftexname_44',['bump_texname',['../structtinyobj_1_1material__t.html#aceb73086232f1cdd82f956fe8c6efcfb',1,'tinyobj::material_t']]],
-  ['bump_5ftexopt_45',['bump_texopt',['../structtinyobj_1_1material__t.html#a77cb124464a606ad2b649196e72c39a0',1,'tinyobj::material_t']]],
-  ['bus_46',['bus',['../classsystems_1_1feature_1_1FeatureEventGateway.html#ad003b345cd3f6550e455993e2e476385',1,'systems::feature::FeatureEventGateway']]],
-  ['bus_5f_47',['bus_',['../classcore_1_1EventBus_1_1Subscription.html#a7a108c7be151cc9159f2d59023900629',1,'core::EventBus::Subscription::bus_'],['../classsession_1_1Session_1_1ObserverRelay.html#a9431263a2e4019993f2494db7e3d6b79',1,'session::Session::ObserverRelay::bus_'],['../classsystems_1_1feature_1_1FeatureEventGateway.html#ad8c3d01a24a43127fa162d9c67691901',1,'systems::feature::FeatureEventGateway::bus_'],['../classEventBus_1_1Subscription.html#a7a108c7be151cc9159f2d59023900629',1,'EventBus::Subscription::bus_']]],
-  ['busychanged_48',['busyChanged',['../classQTaskStatus.html#a64372caa9076395bf5d88cbb826a0312',1,'QTaskStatus']]],
-  ['button_49',['Button',['../private__ArgTypeEnum_8h.html#a374c959e39e35a98c3c1e86d8805a9b8a87b7760f14fbff78d8819291f36ab9a0',1,'private_ArgTypeEnum.h']]]
+  ['buildthemepalette_41',['buildThemePalette',['../namespaceapp_1_1core.html#a2739a0708d725ea6aa1db7327fc092e7',1,'app::core']]],
+  ['built_42',['built',['../structGeometrySubshapeIndex.html#acb1c4a20283d7edd67b1e152766f0b8d',1,'GeometrySubshapeIndex']]],
+  ['built_5fmesh_5f_43',['built_mesh_',['../classMeshAdjacency.html#a037729cdc2d38fd87bf4cc2ea6b712e1',1,'MeshAdjacency']]],
+  ['bump_5fmultiplier_44',['bump_multiplier',['../structtinyobj_1_1texture__option__t.html#ad2e2c79e305189e5d146992c32248d49',1,'tinyobj::texture_option_t']]],
+  ['bump_5ftexname_45',['bump_texname',['../structtinyobj_1_1material__t.html#aceb73086232f1cdd82f956fe8c6efcfb',1,'tinyobj::material_t']]],
+  ['bump_5ftexopt_46',['bump_texopt',['../structtinyobj_1_1material__t.html#a77cb124464a606ad2b649196e72c39a0',1,'tinyobj::material_t']]],
+  ['bus_47',['bus',['../classsystems_1_1feature_1_1FeatureEventGateway.html#ad003b345cd3f6550e455993e2e476385',1,'systems::feature::FeatureEventGateway']]],
+  ['bus_5f_48',['bus_',['../classcore_1_1EventBus_1_1Subscription.html#a7a108c7be151cc9159f2d59023900629',1,'core::EventBus::Subscription::bus_'],['../classsession_1_1Session_1_1ObserverRelay.html#a9431263a2e4019993f2494db7e3d6b79',1,'session::Session::ObserverRelay::bus_'],['../classsystems_1_1feature_1_1FeatureEventGateway.html#ad8c3d01a24a43127fa162d9c67691901',1,'systems::feature::FeatureEventGateway::bus_'],['../classEventBus_1_1Subscription.html#a7a108c7be151cc9159f2d59023900629',1,'EventBus::Subscription::bus_']]],
+  ['busychanged_49',['busyChanged',['../classQTaskStatus.html#a64372caa9076395bf5d88cbb826a0312',1,'QTaskStatus']]],
+  ['button_50',['Button',['../private__ArgTypeEnum_8h.html#a374c959e39e35a98c3c1e86d8805a9b8a87b7760f14fbff78d8819291f36ab9a0',1,'private_ArgTypeEnum.h']]]
 ];

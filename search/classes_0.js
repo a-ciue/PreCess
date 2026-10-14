@@ -9,13 +9,14 @@ var searchData=
   ['annotationline_6',['AnnotationLine',['../structsystems_1_1interaction_1_1AnnotationLine.html',1,'systems::interaction']]],
   ['annotationpoint_7',['AnnotationPoint',['../structsystems_1_1interaction_1_1AnnotationPoint.html',1,'systems::interaction']]],
   ['annotationtext_8',['AnnotationText',['../structsystems_1_1interaction_1_1AnnotationText.html',1,'systems::interaction']]],
-  ['argobject_9',['ArgObject',['../classcore_1_1ArgObject.html',1,'core::ArgObject'],['../classsystems_1_1algo_1_1ArgObject.html',1,'systems::algo::ArgObject'],['../classsystems_1_1edit_1_1ArgObject.html',1,'systems::edit::ArgObject']]],
-  ['argtype_10',['ArgType',['../structcore_1_1ArgType.html',1,'core']]],
-  ['attrib_5ft_11',['attrib_t',['../structtinyobj_1_1attrib__t.html',1,'tinyobj']]],
-  ['attributeinfo_12',['AttributeInfo',['../structsession_1_1AttributeInfo.html',1,'session']]],
-  ['attributeoperator_13',['AttributeOperator',['../classAttributeOperator.html',1,'']]],
-  ['attrirenderstrategyrgb_14',['AttriRenderStrategyRGB',['../classAttriRenderStrategyRGB.html',1,'']]],
-  ['attrirenderstrategyscalar_15',['AttriRenderStrategyScalar',['../classAttriRenderStrategyScalar.html',1,'']]],
-  ['attrirenderstrategyuv_16',['AttriRenderStrategyUV',['../classAttriRenderStrategyUV.html',1,'']]],
-  ['attrirenderstrategyvector_17',['AttriRenderStrategyVector',['../classAttriRenderStrategyVector.html',1,'']]]
+  ['apppalette_9',['AppPalette',['../classAppPalette.html',1,'']]],
+  ['argobject_10',['ArgObject',['../classcore_1_1ArgObject.html',1,'core::ArgObject'],['../classsystems_1_1algo_1_1ArgObject.html',1,'systems::algo::ArgObject'],['../classsystems_1_1edit_1_1ArgObject.html',1,'systems::edit::ArgObject']]],
+  ['argtype_11',['ArgType',['../structcore_1_1ArgType.html',1,'core']]],
+  ['attrib_5ft_12',['attrib_t',['../structtinyobj_1_1attrib__t.html',1,'tinyobj']]],
+  ['attributeinfo_13',['AttributeInfo',['../structsession_1_1AttributeInfo.html',1,'session']]],
+  ['attributeoperator_14',['AttributeOperator',['../classAttributeOperator.html',1,'']]],
+  ['attrirenderstrategyrgb_15',['AttriRenderStrategyRGB',['../classAttriRenderStrategyRGB.html',1,'']]],
+  ['attrirenderstrategyscalar_16',['AttriRenderStrategyScalar',['../classAttriRenderStrategyScalar.html',1,'']]],
+  ['attrirenderstrategyuv_17',['AttriRenderStrategyUV',['../classAttriRenderStrategyUV.html',1,'']]],
+  ['attrirenderstrategyvector_18',['AttriRenderStrategyVector',['../classAttriRenderStrategyVector.html',1,'']]]
 ];
