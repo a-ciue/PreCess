@@ -246,7 +246,8 @@ Item {
         modal: true
         anchors.centerIn: parent
 
-        // 显式绑定主题调色板：对话框弹窗不随窗口调色板的后续变化更新
+        // 显式绑定 Theme 令牌：对话框弹窗按创建时快照取窗口 palette，
+        // 直接绑定 Theme 才能跟随主题切换
         palette.window: Theme.surface
         palette.base: Theme.surface
         palette.windowText: Theme.textPrimary

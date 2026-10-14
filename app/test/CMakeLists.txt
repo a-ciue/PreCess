@@ -104,3 +104,9 @@ precess_add_test(TestDockTheme TestDockTheme.cpp ../dock/ui/DockTheme.h)
 set_target_properties(TestDockTheme PROPERTIES AUTOMOC ON)
 target_include_directories(TestDockTheme PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}/../dock")
 precess_test_link_libraries(TestDockTheme Qt${VTK_QT_VERSION}::Core Qt${VTK_QT_VERSION}::Gui)
+
+# 主题色跨文件一致性：ThemePalette 与 DockTheme 重叠语义相等
+precess_add_test(TestThemeConsistency TestThemeConsistency.cpp ../dock/ui/DockTheme.h)
+set_target_properties(TestThemeConsistency PROPERTIES AUTOMOC ON)
+target_include_directories(TestThemeConsistency PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}/.." "${CMAKE_CURRENT_SOURCE_DIR}/../dock")
+precess_test_link_libraries(TestThemeConsistency Qt${VTK_QT_VERSION}::Core Qt${VTK_QT_VERSION}::Gui)
