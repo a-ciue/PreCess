@@ -17,6 +17,16 @@ Rectangle {
     border.color: windowBorder
     border.width: 1
 
+    // 自定义壁纸：由 app 侧 Binding 推入 Docking.Theme.wallpaperUrl；无壁纸时露出纯色底
+    Image {
+        anchors.fill: parent
+        anchors.margins: 1
+        source: Docking.Theme.wallpaperUrl
+        fillMode: Image.PreserveAspectCrop
+        asynchronous: true
+        visible: source != ""
+    }
+
     // 停靠区域宿主：C++ 侧把 DockAreaItem 挂到此处
     Item {
         id: areaHost

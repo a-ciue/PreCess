@@ -43,7 +43,8 @@ void verifyConsistency(bool dark)
     REQUIRE(palette.color(QPalette::Dark) == dock_color("borderStrong"));
     REQUIRE(palette.color(QPalette::Shadow) == dock_color("scrollBarHover"));
     REQUIRE(palette.color(QPalette::Link) == dock_color("primary"));
-    REQUIRE(palette.color(QPalette::ToolTipBase) == dock_color("surface"));
+    // 弹窗面为不透明 menuSurface（ToolTip 等按应用调色板取色）
+    REQUIRE(palette.color(QPalette::ToolTipBase) == dock_color("menuSurface"));
     REQUIRE(palette.color(QPalette::ToolTipText) == dock_color("textPrimary"));
 }
 

@@ -110,3 +110,17 @@ precess_add_test(TestThemeConsistency TestThemeConsistency.cpp ../dock/ui/DockTh
 set_target_properties(TestThemeConsistency PROPERTIES AUTOMOC ON)
 target_include_directories(TestThemeConsistency PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}/.." "${CMAKE_CURRENT_SOURCE_DIR}/../dock")
 precess_test_link_libraries(TestThemeConsistency Qt${VTK_QT_VERSION}::Core Qt${VTK_QT_VERSION}::Gui)
+
+# WallpaperLibrary 壁纸库：导入校验、单张替换、移除与启动校验
+precess_add_test(TestWallpaperLibrary
+    TestWallpaperLibrary.cpp
+    "${CMAKE_CURRENT_SOURCE_DIR}/../core/WallpaperLibrary.cpp"
+    "${CMAKE_CURRENT_SOURCE_DIR}/../core/WallpaperLibrary.h"
+)
+set_target_properties(TestWallpaperLibrary PROPERTIES AUTOMOC ON)
+target_include_directories(TestWallpaperLibrary PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}/../core")
+precess_test_link_libraries(TestWallpaperLibrary
+    Qt${VTK_QT_VERSION}::Core
+    Qt${VTK_QT_VERSION}::Gui
+    Qt${VTK_QT_VERSION}::Quick
+)

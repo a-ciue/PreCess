@@ -12,19 +12,19 @@ import QtQuick.Controls
 import PreCess.Docking as Docking
 
 Menu {
-    palette.window: Docking.Theme.colors.surface
-    palette.base: Docking.Theme.colors.surface
-    palette.alternateBase: Docking.Theme.colors.surfaceAlt
+    palette.window: Docking.Theme.colors.menuSurface
+    palette.base: Docking.Theme.colors.menuSurface
+    palette.alternateBase: Docking.Theme.colors.menuSurface
     palette.windowText: Docking.Theme.colors.textPrimary
     palette.text: Docking.Theme.colors.textPrimary
-    palette.button: Docking.Theme.colors.surfaceAlt
+    palette.button: Docking.Theme.colors.menuSurface
     palette.buttonText: Docking.Theme.colors.textPrimary
     palette.highlight: Docking.Theme.colors.primary
     palette.highlightedText: Docking.Theme.colors.textOnPrimary
     palette.placeholderText: Docking.Theme.colors.textDisabled
     palette.mid: Docking.Theme.colors.borderStrong
     palette.midlight: Docking.Theme.colors.border
-    palette.light: Docking.Theme.colors.surface
+    palette.light: Docking.Theme.colors.menuSurface
     palette.dark: Docking.Theme.colors.borderStrong
     palette.shadow: Docking.Theme.colors.scrollBarHover
     palette.link: Docking.Theme.colors.primary

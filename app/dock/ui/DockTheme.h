@@ -11,6 +11,7 @@
 
 #include <QColor>
 #include <QObject>
+#include <QString>
 #include <QVariantMap>
 
 namespace dock::ui {
@@ -26,6 +27,8 @@ class DockTheme : public QObject
     Q_OBJECT
     Q_PROPERTY(bool dark READ dark WRITE setDark NOTIFY darkChanged)
     Q_PROPERTY(QVariantMap colors READ colors NOTIFY colorsChanged)
+    //! @brief 自定义壁纸图像源（app 侧 Binding 推入；空串时浮窗显示纯色兜底）
+    Q_PROPERTY(QString wallpaperUrl READ wallpaperUrl WRITE setWallpaperUrl NOTIFY wallpaperUrlChanged)
 
 public:
     explicit DockTheme(QObject* parent = nullptr)
@@ -34,6 +37,18 @@ public:
     }
 
     bool dark() const { return dark_; }
+
+    /** @brief 自定义壁纸图像源（由 app 侧 Binding 驱动） */
+    QString wallpaperUrl() const { return wallpaper_url_; }
+
+    /** @brief 设置壁纸图像源 */
+    void setWallpaperUrl(const QString& url)
+    {
+        if (wallpaper_url_ == url)
+            return;
+        wallpaper_url_ = url;
+        emit wallpaperUrlChanged();
+    }
 
     /** @brief 设置明暗（由 app 侧 Binding 驱动） */
     void setDark(bool dark)
@@ -56,13 +71,21 @@ public:
         auto c = [d](const char* light, const char* dark_hex) {
             return QColor(QLatin1String(d ? dark_hex : light));
         };
+        // 半透明面令牌（与 app/Theme.qml、ThemePalette.h 同步）
+        auto ca = [d](const char* light, const char* dark_hex, qreal alpha) {
+            QColor color(QLatin1String(d ? dark_hex : light));
+            color.setAlphaF(alpha);
+            return color;
+        };
 
         QVariantMap m;
         // 语义色（对齐 Theme.qml）
         m["windowBackground"] = c("#F3F4F6", "#1E1E1E");
-        m["surface"] = c("#FFFFFF", "#252526");
-        m["surfaceAlt"] = c("#F7F8FA", "#2D2D30");
-        m["panelHeaderSurface"] = c("#E6EDF5", "#333336");
+        m["surface"] = ca("#FFFFFF", "#252526", 0.72);
+        m["surfaceAlt"] = ca("#F7F8FA", "#2D2D30", 0.62);
+        m["panelHeaderSurface"] = ca("#E6EDF5", "#333336", 0.70);
+        // 菜单 / 弹窗：不透明，保证弹窗文字在壁纸上可读
+        m["menuSurface"] = c("#FFFFFF", "#252526");
         m["border"] = c("#D9DDE3", "#3E3E42");
         m["borderStrong"] = c("#C3C8CF", "#4A4A4F");
         m["textPrimary"] = c("#2B2F36", "#D4D4D4");
@@ -89,9 +112,11 @@ public:
 signals:
     void darkChanged();
     void colorsChanged();
+    void wallpaperUrlChanged();
 
 private:
     bool dark_ = false;
+    QString wallpaper_url_;
     mutable QVariantMap colors_cache_;
     mutable bool colors_dirty_ = true;
 };

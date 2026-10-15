@@ -34,6 +34,72 @@ ApplicationWindow {
     color: Theme.windowBackground
     flags: Qt.platform.os === "wasm" ? (Qt.Window | Qt.FramelessWindowHint) : Qt.Window
 
+    // 壁纸背景层：纯色兜底 + 双缓冲图片淡入淡出（无壁纸时露出 windowBackground）
+    background: Item {
+        Rectangle {
+            anchors.fill: parent
+            color: Theme.windowBackground
+        }
+
+        // 当前图：承接上一次过渡结果
+        Image {
+            id: wallpaperCurrent
+            anchors.fill: parent
+            fillMode: Image.PreserveAspectCrop
+            asynchronous: true
+            visible: source != ""
+        }
+
+        // 新图：加载完成后淡入，结束后交给 current（避免切换闪烁）
+        Image {
+            id: wallpaperIncoming
+            anchors.fill: parent
+            fillMode: Image.PreserveAspectCrop
+            asynchronous: true
+            visible: source != ""
+            opacity: 0
+
+            onStatusChanged: {
+                if (status === Image.Ready)
+                    wallpaperFadeIn.restart()
+            }
+        }
+
+        NumberAnimation {
+            id: wallpaperFadeIn
+            target: wallpaperIncoming
+            property: "opacity"
+            from: 0
+            to: 1
+            duration: 400
+            easing.type: Easing.InOutCubic
+            onFinished: {
+                wallpaperCurrent.source = wallpaperIncoming.source
+                wallpaperIncoming.source = ""
+                wallpaperIncoming.opacity = 0
+            }
+        }
+
+        Connections {
+            target: Theme
+            function onWallpaperChanged() {
+                const url = Theme.wallpaperSource
+                if (url === wallpaperCurrent.source)
+                    return
+                if (url === "") {
+                    wallpaperCurrent.source = ""
+                    wallpaperIncoming.source = ""
+                    wallpaperIncoming.opacity = 0
+                    return
+                }
+                wallpaperIncoming.opacity = 0
+                wallpaperIncoming.source = url
+            }
+        }
+
+        Component.onCompleted: wallpaperCurrent.source = Theme.wallpaperSource
+    }
+
     // 冻结任务忙碌态（聚合位经共享任务状态源单点暴露）：算法执行 ∨ 功能冻结任务——
     // 忙碌遮罩、快捷键与工具栏禁用据此驱动；自由任务不置位（不打断用户操作）
     readonly property bool frozenBusy: QModelManager.taskStatus.frozenBusy
@@ -48,6 +114,13 @@ ApplicationWindow {
         target: Docking.Theme
         property: "dark"
         value: Theme.dark
+    }
+
+    // 把自定义壁纸图像源推送给 dock 模块（浮动窗口经 Docking.Theme.wallpaperUrl 读取）
+    Binding {
+        target: Docking.Theme
+        property: "wallpaperUrl"
+        value: Theme.wallpaperSource
     }
 
     // 同步应用调色板：ToolTip 等按应用调色板取色的弹窗据此跟随主题
@@ -345,6 +418,9 @@ ApplicationWindow {
     }
 
     Component.onCompleted: {
+        // 启动校验自定义壁纸：选择失效时回退纯色（必要时采纳托管目录内的唯一残留）
+        Theme.setWallpaper(Wallpaper.reconcile(Theme.wallpaper))
+
         // 同步当前活动模型/组件到功能系统（功能菜单由 AppToolbar 自行构建）
         QModelManager.featureSystem.setActiveModel(App.selection.activeModelId)
         QModelManager.featureSystem.setActiveComponent(App.selection.activeComponentId)

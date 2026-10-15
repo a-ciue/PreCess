@@ -1,0 +1,71 @@
+/**
+ * @file WallpaperLibrary.h
+ * @brief 自定义壁纸库：托管用户导入的壁纸并把文件名解析为图像
+ *
+ * 导入的图片复制到 AppDataLocation/wallpapers/，以内容哈希命名（单张模式：目录内
+ * 始终至多一张）。QSettings 只保存文件名（id），运行时经 image://wallpaper/ 解析到
+ * 托管目录——原文件被移动/改名后仍可用，也不受托管目录位置变化影响。
+ */
+
+#pragma once
+
+#include <QImage>
+#include <QObject>
+#include <QQuickImageProvider>
+#include <QSize>
+#include <QString>
+#include <QUrl>
+#include <qqmlintegration.h>
+
+/**
+ * @brief image://wallpaper/ 图像提供者
+ *
+ * id 为托管目录内的文件名；非法 id 或缺失文件返回空图像，QML 侧回退纯色背景。
+ * 不限制导入分辨率/大小，但按“自适应填充”语义解码：优先采用 QML 请求尺寸，
+ * 否则以主屏分辨率（含设备像素比）为解码上限，避免超高清图全量解码。
+ */
+class WallpaperProvider : public QQuickImageProvider
+{
+public:
+    WallpaperProvider();
+
+    /** @brief 把 id 解析为托管目录内的图片并按目标尺寸（KeepAspectRatioByExpanding）缩放 */
+    QImage requestImage(const QString& id, QSize* size, const QSize& requestedSize) override;
+
+private:
+    //! @brief 无 QML 请求尺寸时的解码上限（主屏分辨率 × 设备像素比）
+    QSize decode_limit_;
+};
+
+/**
+ * @brief 壁纸库 QML 单例：导入/移除/启动校验用户壁纸
+ */
+class WallpaperLibrary : public QObject
+{
+    Q_OBJECT
+    QML_NAMED_ELEMENT(Wallpaper)
+    QML_SINGLETON
+
+public:
+    explicit WallpaperLibrary(QObject* parent = nullptr);
+
+    /**
+     * @brief 导入壁纸：校验后复制到托管目录并删除旧图
+     * @param source_url 本地图片 URL
+     * @return 成功返回托管文件名（id），失败返回空串
+     */
+    Q_INVOKABLE QString importWallpaper(const QUrl& source_url);
+
+    /** @brief 删除托管目录内的壁纸文件 */
+    Q_INVOKABLE bool removeWallpaper();
+
+    /**
+     * @brief 启动校验：id 有效且文件存在则保留；失效时采纳唯一残留或回退空
+     * @param id 当前持久化的壁纸 id
+     * @return 可用的壁纸 id，或空串（纯色默认）
+     */
+    Q_INVOKABLE QString reconcile(const QString& id);
+
+    /** @brief 托管目录（AppDataLocation/wallpapers） */
+    static QString userWallpaperDir();
+};

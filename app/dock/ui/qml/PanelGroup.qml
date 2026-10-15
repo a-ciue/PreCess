@@ -368,7 +368,9 @@ Rectangle {
     }
 
     // 内容宿主：C++ 侧把当前面板的 client item 重挂到此处
-    Item {
+    // 统一半透明面底板（与渲染窗口底边栏同款 surfaceAlt），使面板透出背景又不干扰文字；
+    // 中央分组保持透明，避免在渲染窗口边缘露出色底。
+    Rectangle {
         id: contentArea
         objectName: "contentArea"
         anchors {
@@ -378,6 +380,8 @@ Rectangle {
             bottom: parent.bottom
             margins: 1
         }
+        color: (root.groupView && root.groupView.central)
+               ? "transparent" : Docking.Theme.colors.surfaceAlt
         clip: true
     }
 

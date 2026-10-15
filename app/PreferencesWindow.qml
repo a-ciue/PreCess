@@ -3,6 +3,7 @@ import QtQuick.Controls
 import QtQuick.Layouts
 import QtQuick.Dialogs
 
+import app.core
 import app.model
 
 Item {
@@ -104,6 +105,74 @@ Item {
                             target: themeCombo
                             property: "currentIndex"
                             value: Theme.mode
+                        }
+                    }
+
+                    // 壁纸：导入一张图片替换主题纯色背景（壁纸叠在主题纯色之上，深浅通用）
+                    ColumnLayout {
+                        Layout.fillWidth: true
+                        spacing: Theme.spacingSm
+
+                        Label {
+                            text: qsTr("壁纸")
+                            font.pixelSize: Theme.fontSizeLarge
+                            color: Theme.textPrimary
+                        }
+
+                        RowLayout {
+                            spacing: Theme.spacingMd
+
+                            // 预览：有自定义图显示图片，否则显示主题纯色默认
+                            Rectangle {
+                                Layout.preferredWidth: 160
+                                Layout.preferredHeight: 90
+                                color: Theme.menuSurface
+                                border.color: Theme.border
+                                border.width: 1
+                                radius: Theme.radiusControl
+                                clip: true
+
+                                Image {
+                                    anchors.fill: parent
+                                    anchors.margins: 1
+                                    source: Theme.wallpaperSource
+                                    fillMode: Image.PreserveAspectCrop
+                                    asynchronous: true
+                                    visible: source != ""
+                                }
+
+                                Label {
+                                    anchors.centerIn: parent
+                                    visible: Theme.wallpaper === ""
+                                    text: qsTr("默认（纯色）")
+                                    color: Theme.textSecondary
+                                    font.pixelSize: Theme.fontSizeCaption
+                                }
+                            }
+
+                            ColumnLayout {
+                                spacing: Theme.spacingXs
+
+                                Button {
+                                    text: qsTr("导入图片")
+                                    flat: true
+                                    implicitHeight: 26
+                                    onClicked: wallpaperFileDialog.open()
+                                }
+
+                                Button {
+                                    text: qsTr("清除")
+                                    flat: true
+                                    implicitHeight: 26
+                                    enabled: Theme.wallpaper !== ""
+                                    onClicked: {
+                                        Wallpaper.removeWallpaper()
+                                        Theme.setWallpaper("")
+                                    }
+                                }
+                            }
+
+                            Item { Layout.fillWidth: true }
                         }
                     }
 
@@ -247,24 +316,67 @@ Item {
         anchors.centerIn: parent
 
         // 显式绑定 Theme 令牌：对话框弹窗按创建时快照取窗口 palette，
-        // 直接绑定 Theme 才能跟随主题切换
-        palette.window: Theme.surface
-        palette.base: Theme.surface
+        // 直接绑定 Theme 才能跟随主题切换；弹窗用不透明 menuSurface 保证可读
+        palette.window: Theme.menuSurface
+        palette.base: Theme.menuSurface
         palette.windowText: Theme.textPrimary
         palette.text: Theme.textPrimary
-        palette.button: Theme.surfaceAlt
+        palette.button: Theme.menuSurface
         palette.buttonText: Theme.textPrimary
         palette.highlight: Theme.primary
         palette.highlightedText: Theme.textOnPrimary
         palette.mid: Theme.borderStrong
         palette.midlight: Theme.border
         palette.dark: Theme.borderStrong
-        palette.light: Theme.surface
+        palette.light: Theme.menuSurface
         palette.shadow: Theme.scrollBarHover
         palette.placeholderText: Theme.textDisabled
 
         Label {
             text: "插件注册失败"
+        }
+    }
+
+    // 壁纸导入：选择本地图片，交由 C++ 校验并复制到托管目录
+    FileDialog {
+        id: wallpaperFileDialog
+        title: "请选择背景图片"
+        fileMode: FileDialog.OpenFile
+        nameFilters: ["图片文件 (*.jpg *.jpeg *.png *.webp *.bmp)", "所有文件 (*)"]
+
+        onAccepted: {
+            var id = Wallpaper.importWallpaper(selectedFile)
+            if (id.length > 0)
+                Theme.setWallpaper(id)
+            else
+                wallpaperFailureDialog.open()
+        }
+    }
+
+    Dialog {
+        id: wallpaperFailureDialog
+        title: "导入失败"
+        standardButtons: Dialog.Ok
+        modal: true
+        anchors.centerIn: parent
+
+        palette.window: Theme.menuSurface
+        palette.base: Theme.menuSurface
+        palette.windowText: Theme.textPrimary
+        palette.text: Theme.textPrimary
+        palette.button: Theme.menuSurface
+        palette.buttonText: Theme.textPrimary
+        palette.highlight: Theme.primary
+        palette.highlightedText: Theme.textOnPrimary
+        palette.mid: Theme.borderStrong
+        palette.midlight: Theme.border
+        palette.dark: Theme.borderStrong
+        palette.light: Theme.menuSurface
+        palette.shadow: Theme.scrollBarHover
+        palette.placeholderText: Theme.textDisabled
+
+        Label {
+            text: "无法导入所选图片，请确认是有效的图片文件"
         }
     }
 }

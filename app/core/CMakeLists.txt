@@ -3,11 +3,11 @@ set_source_files_properties(App.qml
 qt_add_qml_module(coreQml 
     URI app.core 
     STATIC 
-    SOURCES QSelection.h AppPalette.h ThemePalette.h
+    SOURCES QSelection.h AppPalette.h ThemePalette.h WallpaperLibrary.h WallpaperLibrary.cpp
     QML_FILES App.qml
 )
 target_include_directories(coreQml PUBLIC
     ${CMAKE_CURRENT_SOURCE_DIR}   # 头文件路径
 )
 target_link_libraries(coreQml PUBLIC Core)
-target_link_libraries(coreQml PRIVATE Qt${VTK_QT_VERSION}::Qml Qt${VTK_QT_VERSION}::Gui)
+target_link_libraries(coreQml PRIVATE Qt${VTK_QT_VERSION}::Qml Qt${VTK_QT_VERSION}::Gui Qt${VTK_QT_VERSION}::Quick)

@@ -11,19 +11,19 @@ import QtQuick
 import QtQuick.Controls
 
 Menu {
-    palette.window: Theme.surface
-    palette.base: Theme.surface
-    palette.alternateBase: Theme.surfaceAlt
+    palette.window: Theme.menuSurface
+    palette.base: Theme.menuSurface
+    palette.alternateBase: Theme.menuSurface
     palette.windowText: Theme.textPrimary
     palette.text: Theme.textPrimary
-    palette.button: Theme.surfaceAlt
+    palette.button: Theme.menuSurface
     palette.buttonText: Theme.textPrimary
     palette.highlight: Theme.primary
     palette.highlightedText: Theme.textOnPrimary
     palette.placeholderText: Theme.textDisabled
     palette.mid: Theme.borderStrong
     palette.midlight: Theme.border
-    palette.light: Theme.surface
+    palette.light: Theme.menuSurface
     palette.dark: Theme.borderStrong
     palette.shadow: Theme.scrollBarHover
     palette.link: Theme.primary

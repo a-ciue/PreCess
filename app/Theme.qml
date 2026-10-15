@@ -23,12 +23,18 @@ QtObject {
     property var _settings: Settings {
         category: "Appearance"
         property int mode: Theme.Mode.Light
+        // 自定义壁纸 id（托管目录内文件名，空串 = 主题纯色默认）
+        property string wallpaper: ""
     }
 
     //! @brief 当前主题模式（只读，修改用 setMode）
     readonly property int mode: _settings.mode
     //! @brief 是否深色主题
     readonly property bool dark: mode === Theme.Mode.Dark
+    //! @brief 自定义壁纸 id（只读，修改用 setWallpaper；空串 = 纯色默认）
+    readonly property string wallpaper: _settings.wallpaper
+    //! @brief 壁纸图像源（经 image://wallpaper/ 解析到托管目录；空串 = 无壁纸）
+    readonly property url wallpaperSource: wallpaper.length > 0 ? "image://wallpaper/" + wallpaper : ""
 
     /**
      * @brief 设置主题模式
@@ -36,6 +42,14 @@ QtObject {
      */
     function setMode(m) {
         _settings.mode = m
+    }
+
+    /**
+     * @brief 设置自定义壁纸
+     * @param id 托管壁纸 id（空串表示回退主题纯色）
+     */
+    function setWallpaper(id) {
+        _settings.wallpaper = id
     }
 
     // 修改配色时同步检查 dock/ui/qml 的局部配色（经 Docking.Theme.dark 选择）。
@@ -54,16 +68,22 @@ QtObject {
     readonly property color warning: dark ? "#FFA657" : "#EF6C00"
 
     // ---- 面与背景 ----
-    //! 应用底色（中央区、ribbon 页背景）
+    //! 应用底色（中央区、ribbon 页背景）；同时作为无壁纸时的兜底背景，保持不透明
     readonly property color windowBackground: dark ? "#1E1E1E" : "#F3F4F6"
-    //! 面板 / 菜单等前景面
-    readonly property color surface: dark ? "#252526" : "#FFFFFF"
-    //! 面板标题栏、表头等次级面
-    readonly property color surfaceAlt: dark ? "#2D2D30" : "#F7F8FA"
-    //! 停靠面板标题面，与内容区拉开层次
-    readonly property color panelHeaderSurface: dark ? "#333336" : "#E6EDF5"
+    //! 面板 / 输入控件等前景面：半透明以透出壁纸（浅色白、深色黑灰）
+    readonly property color surface: dark ? Qt.rgba(0.145, 0.145, 0.149, 0.72)
+                                          : Qt.rgba(1.0, 1.0, 1.0, 0.72)
+    //! 工具栏、面板次级面：半透明
+    readonly property color surfaceAlt: dark ? Qt.rgba(0.176, 0.176, 0.188, 0.62)
+                                             : Qt.rgba(0.969, 0.973, 0.980, 0.62)
+    //! 停靠面板标题面，与内容区拉开层次；半透明
+    readonly property color panelHeaderSurface: dark ? Qt.rgba(0.2, 0.2, 0.212, 0.70)
+                                                     : Qt.rgba(0.902, 0.929, 0.961, 0.70)
+    //! 菜单 / 弹窗前景面：不透明，保证弹窗内文字在壁纸上可读
+    readonly property color menuSurface: dark ? "#252526" : "#FFFFFF"
     //! 列表项悬停着色
-    readonly property color hoverOverlay: dark ? "#2A2D2E" : "#ECF0F4"
+    readonly property color hoverOverlay: dark ? Qt.rgba(0.165, 0.176, 0.180, 0.50)
+                                               : Qt.rgba(0.925, 0.941, 0.957, 0.50)
     //! 忙碌遮罩层
     readonly property color busyMaskOverlay: dark ? Qt.rgba(0.12, 0.12, 0.12, 0.55)
                                                  : Qt.rgba(0.93, 0.93, 0.93, 0.55)
