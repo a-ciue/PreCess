@@ -1,6 +1,6 @@
 #include "MakeMeshDataVtk.h"
 
-#include "MeshActor.h"
+#include "TestMeshActorWithData.h"
 #include "MeshActorSelectOp.h"
 #include "SelectorHighlight.h"
 #include "renderStrategy/AttributeOperator.h"
@@ -31,7 +31,7 @@ struct OffscreenMesh {
     MeshData mesh;
     vtkSmartPointer<vtkRenderer> renderer;
     vtkSmartPointer<vtkRenderWindow> render_window;
-    std::shared_ptr<MeshActor> actor;
+    std::shared_ptr<TestMeshActorWithData> actor;
 
     OffscreenMesh()
     {
@@ -43,7 +43,7 @@ struct OffscreenMesh {
         render_window->SetMultiSamples(0);
         render_window->AddRenderer(renderer);
         render_window->SetSize(600, 600);
-        actor = std::make_shared<MeshActor>(renderer);
+        actor = std::make_shared<TestMeshActorWithData>(renderer);
         actor->loadModelData(model_data);
         renderer->ResetCamera();
         render_window->Render();
@@ -196,6 +196,7 @@ TEST_CASE("FaceSelectorHighlight retains original selection across clipping and 
     // 将裁剪面移到原面外侧，使原面完整进入可见集合并恢复高亮。
     plane->SetOrigin(bounds[0] < bounds[1] ? bounds[1] + 1.0 : (bounds[0] + bounds[1]) / 2,
                      bounds[0] < bounds[1] ? (bounds[2] + bounds[3]) / 2 : bounds[3] + 1.0, (bounds[4] + bounds[5]) / 2);
+    env.actor->setClipPlane(plane); // 数据侧显式提交更新后的平面值。
     selector.enableHighlight();
     CHECK(selector.get().ids == std::vector<Index>({ 0 }));
     CHECK(partitionCellCount(*highlight_data) == 1);

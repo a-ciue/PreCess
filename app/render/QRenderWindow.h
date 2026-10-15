@@ -8,24 +8,28 @@
 #ifndef Q_RENDER_WINDOW_H
 #define Q_RENDER_WINDOW_H
 #include "Core.h"
+#include "MeshPipelineData.h"
 #include "QModelQuery.h"
 #include "QSelection.h"
 #include <QQuickVTKItem.h>
 #include <QVTKRenderWindowAdapter.h>
 #include <QVariantList>
+#include <unordered_map>
 
 #include <QtQml/QQmlApplicationEngine>
 #include <QtQml/QQmlContext>
 #include <QtQml/qqmlregistration.h>
 #include <vtkActor.h>
-#include <vtkCameraOrientationWidget.h>
 #include <vtkAxisActor2D.h>
+#include <vtkCameraOrientationWidget.h>
+#include <vtkPoints.h>
 #include <vtkPolyDataMapper.h>
 #include <vtkRenderWindow.h>
 #include <vtkRenderWindowInteractor.h>
 #include <vtkRenderer.h>
-#include <vtkPoints.h>
 
+#include <deque>
+#include <functional>
 #include <memory>
 
 class MeshActor;
@@ -61,13 +65,14 @@ public:
 
         /*std::unordered_map<Index, std::unique_ptr<MeshActor>> models_;*/
         vtkNew<QRenderWindowStyle> style_;
-        unsigned long selection_observer_tag_ {}; //> 随当前场景图注册和移除
+        unsigned long selection_observer_tag_ { }; //> 随当前场景图注册和移除
         vtkSmartPointer<vtkCameraOrientationWidget> orientationWidget = vtkSmartPointer<vtkCameraOrientationWidget>::New();
 
         std::unique_ptr<MeshActorManager> mesh_actor_manager_;
         std::unique_ptr<GeometryActorManager> geometry_actor_manager_;
 
         vtkNew<vtkDisplaySizedImplicitPlaneWidget> plane_widget_;
+        std::uint64_t clip_revision_ { }; //> 当前渲染侧裁剪交互身份
 
         vtkNew<vtkAxisActor2D> scale_bar_axis_; //> 比例尺标尺轴（叠加层底部中央，段长与刻度随相机缩放联动更新）
     };
@@ -158,6 +163,11 @@ public:
     /** @brief 设置几何拓扑诊断的细小面面积阈值。 */
     Q_INVOKABLE void setGeometryTopologyDiagnosticSmallFaceArea(double threshold);
 
+    /** @brief 在 GUI 线程准备自持网格数据，再投递完成的快照。 */
+    void loadMeshData(Index component_id, const MeshDataVtk& data);
+    /** @brief 接管在同一 GUI 线程准备好的组件管线。 */
+    void loadMeshData(Index component_id, std::unique_ptr<MeshPipelineData> pipeline);
+
     Q_INVOKABLE void onModelChanged(Index model_id);
     Q_INVOKABLE void onComponentChanged(Index component_id);
 
@@ -213,7 +223,7 @@ public:
      * App.registry.renderWindow.setAttriMode(0, "v_displacement9_3", 3, { "glyph_scale": 0.5 })
      * App.registry.renderWindow.setAttriMode(0, "v_thickness9_1", 1, {})
      * App.registry.renderWindow.setAttriMode(0, "v_thickness9_1", 1, { "scalar_range": [0, 2] })
-     * 
+     *
      * @param component_id 目标 Component ID
      * @param attr_name 属性名，前缀 v_/e_/f_/s_ 表示点/边/面/体，后缀 _3 表示属性分量为 3
      * @param mode 渲染方式 0:RGB 1:SCALAR 2:UV 3:VECTOR
@@ -248,6 +258,43 @@ signals:
     void componentVisibilityChanged(Index component_id, bool mesh_visible, bool geometry_visible);
 
 private:
+    /** @brief 面命令只在渲染端导出原始选择，在 GUI 端执行数据操作。 */
+    enum class FaceOperation { Hide,
+        Show,
+        Isolate,
+        ShowAll,
+        Reverse };
+    using SelectedFaces = std::unordered_map<Index, std::vector<vtkIdType>>;
+    using MeshGenerations = std::unordered_map<Index, std::uint64_t>;
+    using GeometryVisibility = std::unordered_map<Index, bool>;
+    /** @brief 捕获渲染端选择与几何开关，不跨线程访问 GUI 管线。 */
+    void requestFaceOperation(FaceOperation operation, std::vector<Index> ids = { });
+    /** @brief 在 GUI 线程计算面命令，发布独立结果并保留原交互语义。 */
+    void applyFaceOperation(FaceOperation operation, const SelectedFaces& selected,
+        const MeshGenerations& generations, const GeometryVisibility& geometry, const std::vector<Index>& ids);
+    /** @brief 发布当前组件结果，缓存用于场景图重建。 */
+    std::shared_ptr<const MeshDataSnapshot> prepareMeshSnapshot(Index component_id);
+    /** @brief 将裁剪控件值排队交给 GUI，并丢弃停用前的旧交互。 */
+    void publishClipPlane(const MeshClipPlane& plane, std::uint64_t revision);
+    /** @brief 在 GUI 线程更新所有主网格的隐藏/裁剪数据。 */
+    void applyClipPlane(const MeshClipPlane& plane);
+    /** @brief 将 GUI 数据变更按调用顺序串行处理，面选择回传期间暂存后续操作。 */
+    void enqueueMeshOperation(std::function<void()> operation);
+    /** @brief 消费待处理的 GUI 操作，遇到异步选择导出时暂停。 */
+    void drainMeshOperations();
+    /** @brief 让选择和样式等渲染命令等待先前的数据操作，保持原有调用顺序。 */
+    void enqueueRenderOperation(std::function<void(vtkRenderWindow*, vtkUserData)> operation);
+    /** @brief 安装已自持的 GUI 数据，按需保留原整体开关并清理选择。 */
+    void installMeshData(Index component_id, std::shared_ptr<MeshPipelineData> pipeline, bool reset_selection);
+    std::deque<std::function<void()>> mesh_operations_; //> 仅 GUI 访问，保持混合命令顺序
+    bool draining_mesh_operations_ { };
+    bool face_operation_pending_ { };
+    std::unordered_map<Index, std::shared_ptr<MeshPipelineData>> mesh_pipeline_data_; //> 仅 GUI 访问
+    std::unordered_map<Index, std::shared_ptr<const MeshDataSnapshot>> mesh_snapshots_; //> 发布后只读
+    GeometryVisibility geometry_visibility_; //> GUI 接收的最新几何开关意图
+    MeshClipPlane mesh_clip_;
+    std::uint64_t clip_revision_ { };
+
     //! @brief 渲染线程制作选择快照，排队交付 GUI 线程，禁止 QML 直接读取拾取器。
     void publishSelection();
     /** @brief 将渲染线程得到的组件显隐结果排队发送到 GUI 线程。 */
@@ -255,22 +302,22 @@ private:
     // QQuickVTKItem 会接管事件分发，GUI 排队通知交给独立 QObject。
     QObject selection_dispatcher_;
     std::shared_ptr<const Selection> selection_snapshot_; //> 仅 GUI 线程访问
-    int selection_revision_ {}; //> GUI 侧版本
-    int render_selection_revision_ {}; //> 渲染侧已应用版本
+    int selection_revision_ { }; //> GUI 侧版本
+    int render_selection_revision_ { }; //> 渲染侧已应用版本
 
     GeometryRenderStyle geometry_style_ { GeometryRenderStyle::SurfaceWithEdges };
     MeshRenderStyle mesh_style_ { MeshRenderStyle::FaceWithEdges };
 
     std::unique_ptr<SelectManager> select_manager_;
     std::unique_ptr<InteractionService> interaction_service_;
-    systems::feature::QFeatureSystemAdaptor* feature_adaptor_ {};
-    MeshActor* cur_actor_ {};
+    systems::feature::QFeatureSystemAdaptor* feature_adaptor_ { };
+    MeshActor* cur_actor_ { };
     Index cur_component_id_ { -1 };
 
     std::unique_ptr<QMouseEvent> _click;
-    const Data* data_ {};
+    const Data* data_ { };
 
-    QModelQuery* model_query_ {};
+    QModelQuery* model_query_ { };
 
     std::unique_ptr<IMeshIdQuery> mesh_id_query_; //> IMeshIdQuery 桥接实现，随 setModelQuery 注入
 

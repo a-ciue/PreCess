@@ -15,6 +15,7 @@
 #include "SelectManager.h"
 #include "GeometrySubshapeIndex.h"
 #include "MeshActorManager.h"
+#include "MeshPipelineData.h"
 
 #include <BRepPrimAPI_MakeBox.hxx>
 #include <BRep_Tool.hxx>
@@ -166,7 +167,9 @@ int main(int argc, char* argv[])
 
     // 拾取列表在选择系统构造时登记观察，网格须在此之后加载才会进入拾取列表
     // （与应用一致：选择系统与服务先于模型加载创建）
-    mesh_manager.loadMesh(0, test_mesh_data, renderer.GetPointer());
+    MeshPipelineData mesh_data;
+    mesh_data.loadModelData(test_mesh_data);
+    mesh_manager.loadMesh(0, mesh_data.createSnapshot(), renderer.GetPointer());
 
     // 交互状态经 provider 提供：开关开启前无激活状态，pick 不转发
     bool interaction_enabled = false;

@@ -1,8 +1,11 @@
 #include "MakeMeshDataVtk.h"
 #include "MakeMeshData.h"
 
-#include "MeshActor.h"
+#include "FaceHideFilter.h"
+#include "TestMeshActorWithData.h"
+#include "MeshActorManager.h"
 #include "MeshActorSelectOp.h"
+#include "MeshPipelineData.h"
 #include "renderStrategy/AttributeOperator.h"
 #include "renderStrategy/AttriRenderStrategyScalar.h"
 #include "renderStrategy/AttriRenderStrategyVector.h"
@@ -22,10 +25,14 @@
 #include <vtkPolyData.h>
 #include <vtkPolyDataMapper.h>
 #include <vtkProperty.h>
+#include <vtkPropCollection.h>
 #include <vtkRenderWindow.h>
 #include <vtkRenderer.h>
+#include <vtkScalarBarActor.h>
 #include <vtkSelection.h>
 #include <vtkSmartPointer.h>
+#include <vtkTrivialProducer.h>
+#include <vtkUnstructuredGrid.h>
 #include <vtkWindowToImageFilter.h>
 
 #include <algorithm>
@@ -40,7 +47,7 @@ namespace {
 struct FaceHidingEnv {
     MeshData mesh;
     vtkSmartPointer<vtkRenderer> renderer;
-    std::shared_ptr<MeshActor> actor;
+    std::shared_ptr<TestMeshActorWithData> actor;
 
     //! @brief 加载指定网格，未提供输入时使用既有演示网格。
     explicit FaceHidingEnv(MeshData input_mesh = { })
@@ -49,11 +56,11 @@ struct FaceHidingEnv {
         // MeshDataVtk 持有 mesh 成员的引用，mesh 须随本对象保活
         MeshDataVtk model_data = MakeMeshDataVtk(mesh);
         renderer = vtkSmartPointer<vtkRenderer>::New();
-        actor = std::make_shared<MeshActor>(renderer);
+        actor = std::make_shared<TestMeshActorWithData>(renderer);
         actor->loadModelData(model_data);
     }
 
-    //! @brief 执行面管线并返回 face mapper 当前输入（隐藏/裁剪过滤器的输出）
+    //! @brief 更新 mapper 的数据生产者并读取已发布的面过滤结果。
     vtkPolyData* faceOutput()
     {
         MeshActorSelectOp select_op(actor);
@@ -62,7 +69,7 @@ struct FaceHidingEnv {
         if (!mapper)
             return nullptr;
 
-        // 经输入连接的生产者算法驱动管线执行（SetInputData 时为 trivial producer，Update 无害）。
+        // 渲染端只能更新轻量数据生产者，不能反向执行测试所属线程的数据过滤器。
         auto* connection = mapper->GetInputConnection(0, 0);
         if (auto* producer = connection ? connection->GetProducer() : nullptr)
             producer->Update();
@@ -207,6 +214,162 @@ TEST_CASE("FaceHideFilter preserves global cell attributes across mixed cell cat
     check_attributes({ 0, 1, 2, 3, 4, 5, 6, 7 });
 }
 
+TEST_CASE("MeshPipelineData preserves original typed IDs and published snapshots across hiding and clipping")
+{
+    MeshData mesh;
+    MeshPipelineData data;
+    data.loadModelData(MakeMeshDataVtk(mesh));
+    const auto original_snapshot = data.createSnapshot();
+    REQUIRE(original_snapshot->visible_faces != nullptr);
+    REQUIRE(original_snapshot->original_solids != nullptr);
+    const auto original_ids = faceIdValues(original_snapshot->visible_faces);
+    REQUIRE(original_ids.size() > 2);
+
+    // 体身份与面身份都必须保持 vtkIdTypeArray，避免拾取侧按原类型读取失败。
+    auto* solid_ids = vtkIdTypeArray::SafeDownCast(
+        original_snapshot->original_solids->GetCellData()->GetArray("vtkOriginalCellIds"));
+    REQUIRE(solid_ids != nullptr);
+    REQUIRE(solid_ids->GetNumberOfTuples() > 0);
+    for (vtkIdType i = 0; i < solid_ids->GetNumberOfTuples(); ++i)
+        CHECK(solid_ids->GetValue(i) == i);
+
+    // 模型缓冲可以释放；GUI 源快照必须独立保活已发布坐标、拓扑和属性。
+    mesh.clear();
+    data.hideFaces({ 0, 2 });
+    const auto hidden_snapshot = data.createSnapshot();
+    auto expected_ids = original_ids;
+    expected_ids.erase(std::remove(expected_ids.begin(), expected_ids.end(), 0), expected_ids.end());
+    expected_ids.erase(std::remove(expected_ids.begin(), expected_ids.end(), 2), expected_ids.end());
+    REQUIRE(faceIdValues(hidden_snapshot->visible_faces) == expected_ids);
+    CHECK(faceIdValues(original_snapshot->visible_faces) == original_ids);
+
+    // 将平面移到全部网格之外，确认新一次裁剪不会重写已发布的隐藏结果。
+    vtkNew<vtkPlane> remove_all_plane;
+    remove_all_plane->SetOrigin(-1.0e6, 0.0, 0.0);
+    remove_all_plane->SetNormal(1.0, 0.0, 0.0);
+    data.setClipPlane(remove_all_plane);
+    const auto clipped_snapshot = data.createSnapshot();
+    REQUIRE(clipped_snapshot->visible_faces->GetNumberOfCells() == 0);
+    CHECK(faceIdValues(hidden_snapshot->visible_faces) == expected_ids);
+    CHECK(faceIdValues(original_snapshot->visible_faces) == original_ids);
+
+    data.setClipPlane(nullptr);
+    data.showAllFaces();
+    const auto restored_snapshot = data.createSnapshot();
+    CHECK(faceIdValues(restored_snapshot->visible_faces) == original_ids);
+    CHECK(faceIdValues(hidden_snapshot->visible_faces) == expected_ids);
+    CHECK(clipped_snapshot->visible_faces->GetNumberOfCells() == 0);
+}
+
+TEST_CASE("MeshActor consumes completed mesh data through trivial producers")
+{
+    MeshData mesh;
+    MeshPipelineData data;
+    data.loadModelData(MakeMeshDataVtk(mesh));
+    data.hideFaces({ 0, 2 });
+    vtkNew<vtkPlane> keep_all_plane;
+    keep_all_plane->SetOrigin(1.0e6, 0.0, 0.0);
+    keep_all_plane->SetNormal(1.0, 0.0, 0.0);
+    data.setClipPlane(keep_all_plane);
+    const auto snapshot = data.createSnapshot();
+    const auto published_ids = faceIdValues(snapshot->visible_faces);
+
+    vtkNew<vtkRenderer> renderer;
+    auto actor = std::make_shared<MeshActor>(renderer);
+    actor->applyDataSnapshot(snapshot);
+    MeshActorSelectOp select_op(actor);
+
+    // 三类 mapper 均只接收数据；渲染更新不能沿连接触发 GUI 计算管线。
+    for (vtkProp* prop : { &select_op.getFaceActor(), &select_op.getEdgeActor(), &select_op.getSolidActor() }) {
+        auto* mesh_actor = vtkActor::SafeDownCast(prop);
+        REQUIRE(mesh_actor != nullptr);
+        auto* mapper = vtkPolyDataMapper::SafeDownCast(mesh_actor->GetMapper());
+        REQUIRE(mapper != nullptr);
+        auto* connection = mapper->GetInputConnection(0, 0);
+        REQUIRE(connection != nullptr);
+        CHECK(vtkTrivialProducer::SafeDownCast(connection->GetProducer()) != nullptr);
+    }
+
+    // 数据侧继续更新后，未安装新快照的 mapper 必须仍展示上一次发布的面集。
+    data.hideFaces({ 1 });
+    const auto newer_snapshot = data.createSnapshot();
+    REQUIRE(faceIdValues(newer_snapshot->visible_faces) != published_ids);
+    auto* face_actor = vtkActor::SafeDownCast(&select_op.getFaceActor());
+    auto* face_mapper = vtkPolyDataMapper::SafeDownCast(face_actor->GetMapper());
+    face_mapper->Update();
+    CHECK(faceIdValues(face_mapper->GetInput()) == published_ids);
+    actor->applyDataSnapshot(newer_snapshot);
+    actor->applyDataSnapshot(snapshot); // 旧版本不能覆盖已经安装的新结果。
+    face_mapper->Update();
+    CHECK(faceIdValues(face_mapper->GetInput()) == faceIdValues(newer_snapshot->visible_faces));
+}
+
+TEST_CASE("MeshActorManager preserves scalar bar across same-generation snapshots and clears it on reload")
+{
+    MeshData mesh = makeAttributeMesh();
+    MeshPipelineData data;
+    data.loadModelData(MakeMeshDataVtk(mesh));
+    const auto initial_snapshot = data.createSnapshot();
+    vtkNew<vtkRenderer> renderer;
+    MeshActorManager manager;
+    manager.bindRender(renderer);
+    manager.loadMesh(7, initial_snapshot, renderer);
+    manager.setAttriMode(7, "f_isolation_scalar_1", Mode::SCALAR,
+        { { "scalar_range", std::vector<double> { 0.0, 1.0 } } });
+
+    // 从渲染器查找实际颜色条，避免测试私有成员或仅验证属性调用成功。
+    vtkScalarBarActor* scalar_bar = nullptr;
+    auto* props = renderer->GetViewProps();
+    props->InitTraversal();
+    while (auto* prop = props->GetNextProp()) {
+        if (auto* candidate = vtkScalarBarActor::SafeDownCast(prop)) {
+            REQUIRE(scalar_bar == nullptr);
+            scalar_bar = candidate;
+        }
+    }
+    REQUIRE(scalar_bar != nullptr);
+    REQUIRE(scalar_bar->GetVisibility());
+    REQUIRE(scalar_bar->GetLookupTable() != nullptr);
+    REQUIRE(std::string(scalar_bar->GetTitle()) == "isolation_scalar");
+    auto* lookup_table = scalar_bar->GetLookupTable();
+    AttributeOperator attribute_op(manager.getComponentActor(7).get());
+    REQUIRE(attribute_op.getFaceMapper()->GetScalarVisibility());
+
+    SECTION("manual face hiding") { data.hideFaces({ 0 }); }
+    SECTION("clipping")
+    {
+        vtkNew<vtkPlane> plane;
+        plane->SetOrigin(1.0e6, 0.0, 0.0);
+        plane->SetNormal(1.0, 0.0, 0.0);
+        data.setClipPlane(plane);
+    }
+    SECTION("overall visibility") { data.setVisibility(false); }
+
+    // 同一份网格的显示更新必须保留属性模式、颜色条及其颜色映射。
+    const auto updated_snapshot = data.createSnapshot();
+    REQUIRE(updated_snapshot->generation == initial_snapshot->generation);
+    manager.loadMesh(7, updated_snapshot, renderer);
+    CHECK(scalar_bar->GetVisibility());
+    CHECK(scalar_bar->GetLookupTable() == lookup_table);
+    CHECK(std::string(scalar_bar->GetTitle()) == "isolation_scalar");
+    CHECK(attribute_op.getFaceMapper()->GetScalarVisibility());
+
+    // 重新加载会生成新的网格代次，旧属性模式及颜色条仍须按原契约清理。
+    data.loadModelData(MakeMeshDataVtk(mesh));
+    const auto reloaded_snapshot = data.createSnapshot();
+    REQUIRE(reloaded_snapshot->generation != initial_snapshot->generation);
+    manager.loadMesh(7, reloaded_snapshot, renderer);
+    CHECK_FALSE(scalar_bar->GetVisibility());
+    CHECK_FALSE(attribute_op.getFaceMapper()->GetScalarVisibility());
+
+    // 新网格重新着色后，旧代次快照不能关闭颜色条或替换当前数据。
+    manager.setAttriMode(7, "f_isolation_scalar_1", Mode::SCALAR, {});
+    REQUIRE(scalar_bar->GetVisibility());
+    manager.loadMesh(7, initial_snapshot, renderer);
+    CHECK(scalar_bar->GetVisibility());
+    CHECK(manager.getComponentActor(7)->dataGeneration() == reloaded_snapshot->generation);
+}
+
 TEST_CASE("hideFaces removes selected cells and showAllFaces restores them")
 {
     FaceHidingEnv env;
@@ -261,7 +424,7 @@ TEST_CASE("face hiding composes with the clipping pipeline and survives clip tog
     const vtkIdType original_count = env.faceOutput()->GetNumberOfCells();
 
     // 原点远离网格、法向指向 +X 的平面：原点附近所有点的隐函数值严格为负（内侧），
-    // 演示网格全部保留，仅用于验证 hider → clipper 的串联接线，不实际剔除单元。
+    // 演示网格全部保留，仅验证 GUI 数据管线内隐藏与裁剪的组合，不实际剔除单元。
     vtkNew<vtkPlane> keep_all_plane;
     keep_all_plane->SetOrigin(1.0e6, 0.0, 0.0);
     keep_all_plane->SetNormal(1.0, 0.0, 0.0);
@@ -273,7 +436,7 @@ TEST_CASE("face hiding composes with the clipping pipeline and survives clip tog
     env.actor->hideFaces({ 0, 1 });
     REQUIRE(env.faceOutput()->GetNumberOfCells() == original_count - 2);
 
-    // 关闭裁剪不影响隐藏状态（接线在 hider 直连 mapper 与 hider → clipper 间切换）。
+    // 关闭裁剪仅更新数据管线的裁剪条件，保留原始面隐藏集合。
     env.actor->setClipPlane(nullptr);
     REQUIRE(env.faceOutput()->GetNumberOfCells() == original_count - 2);
 

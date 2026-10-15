@@ -1,24 +1,22 @@
 #ifndef MESH_ACTOR_H
 #define MESH_ACTOR_H
-#include "renderStrategy/AttributeCommon.h"
 #include "Core.h"
+#include "MeshPipelineData.h"
+#include "renderStrategy/AttributeCommon.h"
 #include "renderStrategy/IAttributeRenderStrategy.h"
 #include <optional>
 #include <unordered_map>
 #include <vector>
 #include <vtkActor.h>
 #include <vtkCompositePolyDataMapper.h>
-#include <vtkExtractEdges.h>
+#include <vtkIdTypeArray.h>
 #include <vtkMinimalStandardRandomSequence.h>
 #include <vtkNamedColors.h>
-#include <vtkPropCollection.h>
 #include <vtkPoints.h>
-#include <vtkIdTypeArray.h>
-#include "FaceHideFilter.h"
+#include <vtkPropCollection.h>
 #include <vtkSmartPointer.h>
-class vtkGeometryFilter;
-class vtkExtractGeometry;
-class vtkExtractPolyDataGeometry;
+class vtkTrivialProducer;
+class vtkPlane;
 class vtkPoints;
 class vtkPolyData;
 class vtkUnstructuredGrid;
@@ -46,39 +44,15 @@ public:
     explicit MeshActor(vtkRenderer* renderer);
     ~MeshActor();
 
-    void loadModelData(const MeshDataVtk& model_data);
+    /** @brief 安装 GUI 线程已完成的只读数据快照，拒绝旧代次和旧版本。 */
+    void applyDataSnapshot(std::shared_ptr<const MeshDataSnapshot> snapshot);
+    /** @brief 返回当前源数据代次，供选择消息校验原始面身份。 */
+    std::uint64_t dataGeneration() const { return data_generation_; }
 
     void setVisibility(bool visibility);
     bool isVisible() const;
     /** @brief 查询网格显隐开关，供组件级反转使用，不受渲染样式影响。 */
     bool isVisibilityEnabled() const { return visibility_; }
-    /**
-     * @brief 设置或取消裁剪平面
-     * @param plane 裁剪平面，传入nullptr则取消裁剪
-     */
-    void setClipPlane(vtkPlane* plane);
-    /**
-     * @brief 隐藏指定面（原始模型面 id，即 face_data_ 的单元 id）
-     *
-     * 与裁剪同构：在面管线上游插入 FaceHideFilter 过滤器整单元移除，
-     * 不修改模型数据；被移除面不渲染、硬件拾取不可命中，PrecessFaceIds 等
-     * 身份数组按原类型随过滤器透传，拾取映射不受影响。可累积调用，重复 id 自动去重。
-     * @param face_ids 待隐藏面的原始模型面 id 集合
-     */
-    void hideFaces(const std::vector<vtkIdType>& face_ids);
-    /** @brief 显示指定原始面，保留其余面的显隐；整体隐藏时只恢复这些面。 */
-    void showFaces(const std::vector<vtkIdType>& face_ids);
-    /** @brief 隔离指定原始面，同时遮住本组件的体、独立边、向量及诊断覆盖层。 */
-    void isolateFaces(const std::vector<vtkIdType>& face_ids);
-    /**
-     * @brief 显示全部经 hideFaces 隐藏的面（清空隐藏集，filter 走透传输出完整模型）
-     */
-    void showAllFaces();
-    /**
-     * @brief 反转网格显隐；局部隐藏时交换原始面的可见与隐藏集合
-     * @return 反转后的组件网格显隐开关，供对象树同步
-     */
-    bool reverseVisibility();
     void setRenderStyle(MeshRenderStyle style);
     MeshRenderStyle getRenderStyle() const;
 
@@ -105,34 +79,29 @@ public:
 
 private:
     void applyStyle();
-    /**
-     * @brief 面管线唯一接线入口：face_hider_ 常驻，mapper 始终经 SetInputConnection 连接
-     *
-     * 链路 face_data_ → face_hider_（常驻）→ face_clipper_（可选）→ face_mapper_，
-     * 空隐藏集时 filter 走透传，非空时深拷贝移除隐藏面。不切换 SetInputConnection/SetInputData，
-     * 避免 vtkOpenGLCellToVTKCellMap 缓存失效缺陷。
-     */
-    void applyFacePipeline();
+    /** @brief 将原始数据的活跃属性选择同步到本线程的可见数据包装。 */
+    void syncDisplayAttributes();
 
     std::unique_ptr<IAttributeRenderStrategy> render_strategy_;
     MeshRenderStyle style_ { MeshRenderStyle::FaceWithEdges };
     bool visibility_ { true };
     bool faces_only_ { false }; //> 面隔离期间遮住不经过面过滤管线的渲染对象
-    std::unique_ptr<MeshDataVtk> model_data_;
+    std::shared_ptr<const MeshDataVtk> model_data_;
+    std::shared_ptr<const MeshDataSnapshot> data_snapshot_;
+    std::uint64_t data_generation_ { };
+    std::uint64_t data_revision_ { };
     std::unique_ptr<TopologyDiagnosticActor> topology_diagnostics_;
 
-    vtkPlane* clip_plane_ {};
-    vtkNew<vtkExtractPolyDataGeometry> edge_clipper_;
-    vtkNew<vtkExtractPolyDataGeometry> face_clipper_;
-    vtkNew<vtkExtractGeometry> solid_clipper_;
-
-    //> 面隐藏过滤器：位于面裁剪过滤器上游，按 HiddenCellIds 整单元移除用户隐藏的面。
-    //> hidden_face_ids_ 存原始模型面 id（face_data_ 单元 id），网格重载后失效并清空。
-    vtkNew<FaceHideFilter> face_hider_;
-    vtkNew<vtkIdTypeArray> hidden_face_ids_;
-
-    vtkNew<vtkGeometryFilter> solid_filter_;
-    vtkNew<vtkExtractEdges> solid_edge_extractor_;
+    // 发布结果只经过渲染端的固定 Producer，不连接 GUI Filter 的输出端口。
+    vtkNew<vtkTrivialProducer> face_source_;
+    vtkNew<vtkTrivialProducer> edge_source_;
+    vtkNew<vtkTrivialProducer> solid_surface_source_;
+    vtkNew<vtkTrivialProducer> solid_internal_source_;
+    vtkNew<vtkPlane> clip_plane_;
+    vtkSmartPointer<vtkPolyData> visible_faces_;
+    vtkSmartPointer<vtkPolyData> visible_edges_;
+    vtkSmartPointer<vtkPolyData> solid_surface_;
+    vtkSmartPointer<vtkPolyData> solid_internal_edges_;
 
     vtkNew<vtkPolyDataMapper> edge_mapper_;
     vtkNew<vtkPolyDataMapper> face_mapper_;
@@ -157,14 +126,7 @@ private:
 
     vtkRenderer* renderer_;
 
-    // 组件私有点集：坐标随 loadModelData 从 MeshData::vertex_positions_ 同步，
-    // 连通性数组直接以组件内局部点 id 作 VTK 点索引。
+    // 渲染端私有点包装，底层只读坐标由已发布快照保活。
     vtkNew<vtkPoints> points_;
-    //> 拾取标签 vtkOriginalPointIds：存局部点 id，高亮提取直接作 VTK 点索引；
-    //> 与提取过滤器自动生成的同名数组同语义（均为局部点下标），无需担心覆盖。
-    //> 全局点 id 不随数据集散发，跨层身份在出口（get()/PickInfo）经 id 查询桥统一换算。
-    vtkNew<vtkIdTypeArray> original_point_ids_;
-
-    static void _createSolidUGird(const MeshDataVtk& model_data, vtkPoints& points, vtkUnstructuredGrid& solid_data);
 };
 #endif // MODEL_ACTOR_H

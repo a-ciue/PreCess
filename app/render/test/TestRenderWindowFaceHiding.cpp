@@ -2,26 +2,27 @@
  * @file TestRenderWindowFaceHiding.cpp
  * @brief 面隐藏与恢复时选择快照、高亮及面身份的视口回归测试
  */
+#include "GeometryActor.h"
+#include "GeometryActorManager.h"
 #include "MakeMeshData.h"
 #include "MakeMeshDataVtk.h"
 #include "MeshActorManager.h"
 #include "MeshActorSelectOp.h"
-#include "GeometryActor.h"
-#include "GeometryActorManager.h"
+#include "MeshPipelineData.h"
 #include "QRenderWindow.h"
 #include "QRenderWindowStyle.h"
 
+#include <BRep_Builder.hxx>
 #include <QElapsedTimer>
 #include <QGuiApplication>
 #include <QQuickWindow>
 #include <QThread>
-#include <BRep_Builder.hxx>
 #include <TopoDS_Compound.hxx>
 #include <TopoDS_Vertex.hxx>
-#include <gp_Pnt.hxx>
 #include <catch2/catch_test_macros.hpp>
-#include <vtkCamera.h>
+#include <gp_Pnt.hxx>
 #include <vtkActorCollection.h>
+#include <vtkCamera.h>
 #include <vtkCellData.h>
 #include <vtkCompositePolyDataMapper.h>
 #include <vtkIdTypeArray.h>
@@ -55,7 +56,8 @@ QGuiApplication& testApplication()
 #endif
     qputenv("QT_QUICK_BACKEND", "rhi");
     qputenv("QSG_RHI_BACKEND", "opengl");
-    qputenv("QSG_RENDER_LOOP", "basic");
+    if (qEnvironmentVariableIsEmpty("QSG_RENDER_LOOP"))
+        qputenv("QSG_RENDER_LOOP", "basic");
     QQuickVTKItem::setGraphicsApi();
     static int argc = 1;
     static char app_name[] = "TestRenderWindowFaceHiding";
@@ -88,10 +90,9 @@ struct FaceHidingViewport {
         window.setPersistentGraphics(false);
         item.setParentItem(window.contentItem());
         item.setSize(QSizeF(600, 600));
-        item.dispatch_async([this](vtkRenderWindow*, QQuickVTKItem::vtkUserData user_data) {
+        item.loadMeshData(7, MakeMeshDataVtk(mesh));
+        item.dispatch_async([](vtkRenderWindow*, QQuickVTKItem::vtkUserData user_data) {
             auto* data = QRenderWindow::Data::SafeDownCast(user_data);
-            auto model_data = MakeMeshDataVtk(mesh);
-            data->mesh_actor_manager_->loadMesh(7, model_data, data->renderer_);
             auto* camera = data->renderer_->GetActiveCamera();
             camera->SetPosition(6.5, 0.5, 5.0);
             camera->SetFocalPoint(6.5, 0.5, 0.0);
@@ -110,21 +111,26 @@ struct FaceHidingViewport {
         QCoreApplication::processEvents();
     }
 
-    //! @brief 等待已入队的渲染命令完成，再消费它们发布的 GUI 选择快照。
+    //! @brief 通过多轮渲染屏障消费选择导出、GUI 计算、渲染安装及最终 GUI 通知。
     bool flush()
     {
-        auto completed = std::make_shared<std::atomic_bool>(false);
-        item.dispatch_async([completed](vtkRenderWindow*, QQuickVTKItem::vtkUserData) {
-            completed->store(true);
-        });
         QElapsedTimer timer;
         timer.start();
-        while (!completed->load() && timer.elapsed() < 5000) {
-            QCoreApplication::processEvents(QEventLoop::AllEvents, 10);
-            QThread::msleep(1);
+        // 每轮屏障后消费 GUI 队列，再为 GUI 新发布的渲染结果排入下一轮屏障。
+        for (int round = 0; round < 8; ++round) {
+            auto completed = std::make_shared<std::atomic_bool>(false);
+            item.dispatch_async([completed](vtkRenderWindow*, QQuickVTKItem::vtkUserData) {
+                completed->store(true);
+            });
+            while (!completed->load() && timer.elapsed() < 5000) {
+                QCoreApplication::processEvents(QEventLoop::AllEvents, 10);
+                QThread::msleep(1);
+            }
+            if (!completed->load())
+                return false;
+            QCoreApplication::processEvents();
         }
-        QCoreApplication::processEvents();
-        return completed->load();
+        return true;
     }
 
     //! @brief 通过真实点击选中指定原模型面，并由 style 事件发布选择结果。
@@ -264,10 +270,9 @@ TEST_CASE("QRenderWindow restores retained hidden face selections in their own c
     second_mesh = env.mesh.clone();
     for (auto& point : second_mesh->vertex_positions_)
         point[1] += 1.5;
-    env.item.dispatch_async([&env, &second_mesh](vtkRenderWindow*, QQuickVTKItem::vtkUserData user_data) {
-        auto* data = QRenderWindow::Data::SafeDownCast(user_data);
-        data->mesh_actor_manager_->loadMesh(8, MakeMeshDataVtk(*second_mesh), data->renderer_);
-    });
+    auto second_data = std::make_unique<MeshPipelineData>();
+    second_data->loadModelData(MakeMeshDataVtk(*second_mesh));
+    env.item.loadMeshData(8, std::move(second_data));
     REQUIRE(env.flush());
     env.selectFace(0);
     env.selectFace(1, 1.5);
@@ -443,7 +448,7 @@ TEST_CASE("QRenderWindow reversing visibility swaps hidden faces in every select
     CHECK(env.selectedFaceIds().empty());
     CHECK(env.visibleFaceIds() == std::vector<Index>({ 1 }));
 
-    // 不等待对象树回传即连续点击，仍应逐次基于渲染线程当前状态取反。
+    // 不等待对象树回传即连续点击，仍应逐次基于最新显隐意图取反。
     env.item.reverseVisibility({ 7 });
     env.item.reverseVisibility({ 7 });
     REQUIRE(env.flush());
@@ -460,20 +465,20 @@ TEST_CASE("QRenderWindow reversing visibility handles partially visible and hidd
     REQUIRE(env.flush());
     env.selectFace(0);
     env.item.hideSelectedFaces();
-    env.item.dispatch_async([&env](vtkRenderWindow*, QQuickVTKItem::vtkUserData user_data) {
-        auto* data = QRenderWindow::Data::SafeDownCast(user_data);
-        auto model_data = MakeMeshDataVtk(env.mesh);
-        data->mesh_actor_manager_->loadMesh(8, model_data, data->renderer_);
-        data->mesh_actor_manager_->hideFaces(8, { 0 });
-        data->mesh_actor_manager_->setVisibility(8, false);
-        data->mesh_actor_manager_->loadMesh(9, model_data, data->renderer_);
-    });
+    auto hidden_data = std::make_unique<MeshPipelineData>();
+    hidden_data->loadModelData(MakeMeshDataVtk(env.mesh));
+    hidden_data->hideFaces({ 0 });
+    hidden_data->setVisibility(false);
+    env.item.loadMeshData(8, std::move(hidden_data));
+    auto visible_data = std::make_unique<MeshPipelineData>();
+    visible_data->loadModelData(MakeMeshDataVtk(env.mesh));
+    env.item.loadMeshData(9, std::move(visible_data));
     REQUIRE(env.flush());
     std::map<Index, std::pair<bool, bool>> visibility;
     QObject::connect(&env.item, &QRenderWindow::componentVisibilityChanged, &env.item,
-                     [&visibility](Index component_id, bool mesh_visible, bool geometry_visible) {
-                         visibility[component_id] = { mesh_visible, geometry_visible };
-                     });
+        [&visibility](Index component_id, bool mesh_visible, bool geometry_visible) {
+            visibility[component_id] = { mesh_visible, geometry_visible };
+        });
     env.item.reverseVisibility({ 7, 8, 9, 7 });
     REQUIRE(env.flush());
     CHECK(env.visibleFaceIds(7) == std::vector<Index>({ 0 }));
@@ -500,7 +505,8 @@ TEST_CASE("QRenderWindow reversing geometry follows the original component visib
     SECTION("both visible") { geometry_enabled = true; }
     SECTION("both hidden") { mesh_enabled = false; }
     SECTION("hidden render style preserves the component visibility switch") { hidden_style = true; }
-    env.item.dispatch_async([mesh_enabled, geometry_enabled, hidden_style](vtkRenderWindow*, QQuickVTKItem::vtkUserData user_data) {
+    env.item.setMeshVisibility(7, mesh_enabled);
+    env.item.dispatch_async([geometry_enabled, hidden_style](vtkRenderWindow*, QQuickVTKItem::vtkUserData user_data) {
         auto* data = QRenderWindow::Data::SafeDownCast(user_data);
         BRep_Builder builder;
         TopoDS_Compound shape;
@@ -509,7 +515,6 @@ TEST_CASE("QRenderWindow reversing geometry follows the original component visib
         builder.MakeVertex(vertex, gp_Pnt(100.0, 100.0, 0.0), 1.0e-7);
         builder.Add(shape, vertex);
         data->geometry_actor_manager_->loadGeometry({ shape, 7 });
-        data->mesh_actor_manager_->setVisibility(7, mesh_enabled);
         data->geometry_actor_manager_->setVisibility(7, geometry_enabled);
         if (hidden_style) {
             data->mesh_actor_manager_->getComponentActor(7)->setRenderStyle(MeshRenderStyle::Hidden);
@@ -519,9 +524,9 @@ TEST_CASE("QRenderWindow reversing geometry follows the original component visib
     REQUIRE(env.flush());
     std::pair<bool, bool> visibility { mesh_enabled, geometry_enabled };
     QObject::connect(&env.item, &QRenderWindow::componentVisibilityChanged, &env.item,
-                     [&visibility](Index, bool mesh_visible, bool geometry_visible) {
-                         visibility = { mesh_visible, geometry_visible };
-                     });
+        [&visibility](Index, bool mesh_visible, bool geometry_visible) {
+            visibility = { mesh_visible, geometry_visible };
+        });
     const bool expected = !(mesh_enabled || geometry_enabled);
     env.item.reverseVisibility({ 7 });
     REQUIRE(env.flush());
@@ -530,7 +535,7 @@ TEST_CASE("QRenderWindow reversing geometry follows the original component visib
     env.item.dispatch_async([&actor_visibility](vtkRenderWindow*, QQuickVTKItem::vtkUserData user_data) {
         auto* data = QRenderWindow::Data::SafeDownCast(user_data);
         actor_visibility = { data->mesh_actor_manager_->getComponentActor(7)->isVisibilityEnabled(),
-                             data->geometry_actor_manager_->getComponentActor(7)->isVisibilityEnabled() };
+            data->geometry_actor_manager_->getComponentActor(7)->isVisibilityEnabled() };
     });
     REQUIRE(env.flush());
     CHECK(actor_visibility == visibility);
@@ -552,9 +557,9 @@ TEST_CASE("QRenderWindow showing selected faces restores them through a hidden p
     REQUIRE(env.selectedFaceIds() == std::vector<Index>({ 1 }));
     std::pair<bool, bool> visibility { false, false };
     QObject::connect(&env.item, &QRenderWindow::componentVisibilityChanged, &env.item,
-                     [&visibility](Index, bool mesh_visible, bool geometry_visible) {
-                         visibility = { mesh_visible, geometry_visible };
-                     });
+        [&visibility](Index, bool mesh_visible, bool geometry_visible) {
+            visibility = { mesh_visible, geometry_visible };
+        });
     env.item.showSelectedFaces();
     REQUIRE(env.flush());
     CHECK(env.selectedFaceIds().empty());
@@ -576,11 +581,15 @@ TEST_CASE("QRenderWindow isolating faces keeps selections from multiple componen
     second_mesh = env.mesh.clone();
     for (auto& point : second_mesh->vertex_positions_)
         point[1] += 1.5;
-    env.item.dispatch_async([&env, &second_mesh](vtkRenderWindow*, QQuickVTKItem::vtkUserData user_data) {
+    auto second_data = std::make_unique<MeshPipelineData>();
+    second_data->loadModelData(MakeMeshDataVtk(*second_mesh));
+    second_data->hideFaces({ 1 });
+    env.item.loadMeshData(8, std::move(second_data));
+    auto unselected_data = std::make_unique<MeshPipelineData>();
+    unselected_data->loadModelData(MakeMeshDataVtk(env.mesh));
+    env.item.loadMeshData(9, std::move(unselected_data));
+    env.item.dispatch_async([](vtkRenderWindow*, QQuickVTKItem::vtkUserData user_data) {
         auto* data = QRenderWindow::Data::SafeDownCast(user_data);
-        data->mesh_actor_manager_->loadMesh(8, MakeMeshDataVtk(*second_mesh), data->renderer_);
-        data->mesh_actor_manager_->hideFaces(8, { 1 });
-        data->mesh_actor_manager_->loadMesh(9, MakeMeshDataVtk(env.mesh), data->renderer_);
         // 纯几何组件也属于全场景隔离范围，不能只遍历网格管理器。
         BRep_Builder builder;
         TopoDS_Compound shape;
@@ -596,9 +605,9 @@ TEST_CASE("QRenderWindow isolating faces keeps selections from multiple componen
     REQUIRE(env.selectedFaceIds().size() == 2);
     std::map<Index, std::pair<bool, bool>> visibility;
     QObject::connect(&env.item, &QRenderWindow::componentVisibilityChanged, &env.item,
-                     [&visibility](Index component_id, bool mesh_visible, bool geometry_visible) {
-                         visibility[component_id] = { mesh_visible, geometry_visible };
-                     });
+        [&visibility](Index component_id, bool mesh_visible, bool geometry_visible) {
+            visibility[component_id] = { mesh_visible, geometry_visible };
+        });
     env.item.isolateSelectedFaces();
     REQUIRE(env.flush());
     CHECK(env.selectedFaceIds().empty());
@@ -656,5 +665,72 @@ TEST_CASE("QRenderWindow face display and isolation preserve non-face or empty s
     REQUIRE(env.flush());
     CHECK(env.selectedFaceIds() == before);
     CHECK(updates == 0);
+    CHECK(env.visibleFaceIds() == std::vector<Index>({ 0, 1 }));
+}
+
+//! @brief 使用真实的独立渲染线程验证 GUI 数据管线、裁剪回传和选择交接。
+TEST_CASE("QRenderWindow GUI mesh pipeline works with a separate render thread")
+{
+    qputenv("QSG_RENDER_LOOP", "threaded");
+    testApplication();
+    FaceHidingViewport env;
+    REQUIRE(env.flush());
+    std::atomic_bool separate_thread { false };
+    auto* gui_thread = QThread::currentThread();
+    env.item.dispatch_async([gui_thread, &separate_thread](vtkRenderWindow*, QQuickVTKItem::vtkUserData) {
+        separate_thread.store(QThread::currentThread() != gui_thread);
+    });
+    REQUIRE(env.flush());
+    REQUIRE(separate_thread.load());
+    env.selectFace(0);
+    REQUIRE(env.selectedFaceIds() == std::vector<Index>({ 0 }));
+    env.item.hideSelectedFaces();
+    REQUIRE(env.flush());
+    CHECK(env.visibleFaceIds() == std::vector<Index>({ 1 }));
+    CHECK(env.selectedFaceIds() == std::vector<Index>({ 0 }));
+    env.item.setMeshClip(true);
+    REQUIRE(env.flush());
+    env.item.setMeshClip(false);
+    REQUIRE(env.flush());
+    CHECK(env.visibleFaceIds() == std::vector<Index>({ 1 }));
+    env.item.showSelectedFaces();
+    REQUIRE(env.flush());
+    CHECK(env.visibleFaceIds() == std::vector<Index>({ 0, 1 }));
+    CHECK(env.selectedFaceIds().empty());
+}
+
+//! @brief 混合异步面命令与直接整体开关时，结果必须仍按 GUI 调用顺序生效。
+TEST_CASE("QRenderWindow preserves mixed visibility command order")
+{
+    testApplication();
+    FaceHidingViewport env;
+    REQUIRE(env.flush());
+    SECTION("reverse then show")
+    {
+        env.item.reverseVisibility({ 7 });
+        env.item.setMeshVisibility(7, true);
+    }
+    SECTION("empty selection releases later commands")
+    {
+        env.item.showSelectedFaces();
+        env.item.isolateSelectedFaces();
+        env.item.setMeshVisibility(7, true);
+    }
+    SECTION("hide then show retained selection")
+    {
+        env.selectFace(0);
+        env.item.hideSelectedFaces();
+        env.item.showSelectedFaces();
+        env.item.clearSelection();
+        env.item.setMeshVisibility(7, true);
+    }
+    REQUIRE(env.flush());
+    bool visible = false;
+    env.item.dispatch_async([&visible](vtkRenderWindow*, QQuickVTKItem::vtkUserData user_data) {
+        auto* data = QRenderWindow::Data::SafeDownCast(user_data);
+        visible = data->mesh_actor_manager_->getComponentActor(7)->isVisibilityEnabled();
+    });
+    REQUIRE(env.flush());
+    CHECK(visible);
     CHECK(env.visibleFaceIds() == std::vector<Index>({ 0, 1 }));
 }
