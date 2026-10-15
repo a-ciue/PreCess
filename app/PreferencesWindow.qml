@@ -60,7 +60,9 @@ Item {
                         onClicked: panelStack.currentIndex = 1
                     }
 
-                    Item { Layout.fillHeight: true }
+                    Item {
+                        Layout.fillHeight: true
+                    }
                 }
             }
 
@@ -75,108 +77,120 @@ Item {
                 Layout.margins: 8
                 currentIndex: 0
 
-                ColumnLayout {
+                ScrollView {
+                    id: themeScroll
                     Layout.fillWidth: true
                     Layout.fillHeight: true
-                    Layout.alignment: Qt.AlignTop
-                    spacing: Theme.spacingSm
+                    // 主题页内容较高，窗口变小时纵向滚动便于查看
+                    ScrollBar.horizontal.policy: ScrollBar.AlwaysOff
+                    ScrollBar.vertical.policy: ScrollBar.AsNeeded
+                    clip: true
 
-                    RowLayout {
-                        Layout.fillWidth: true
-                        spacing: Theme.spacingMd
-
-                        Label {
-                            text: qsTr("主题")
-                            font.pixelSize: Theme.fontSizeLarge
-                            color: Theme.textPrimary
-                            Layout.fillWidth: true
-                        }
-
-                        ComboBox {
-                            id: themeCombo
-                            Layout.preferredWidth: 160
-                            model: [qsTr("浅色"), qsTr("深色")]
-                            onActivated: Theme.setMode(currentIndex)
-                        }
-
-                        // 用 Binding 元素同步选中项：直接绑定 currentIndex 会被
-                        // 下拉选择破坏，外部改主题（如恢复默认）后无法回显
-                        Binding {
-                            target: themeCombo
-                            property: "currentIndex"
-                            value: Theme.mode
-                        }
-                    }
-
-                    // 壁纸：导入一张图片替换主题纯色背景（壁纸叠在主题纯色之上，深浅通用）
                     ColumnLayout {
-                        Layout.fillWidth: true
+                        width: parent.width
                         spacing: Theme.spacingSm
 
-                        Label {
-                            text: qsTr("壁纸")
-                            font.pixelSize: Theme.fontSizeLarge
-                            color: Theme.textPrimary
-                        }
-
                         RowLayout {
+                            Layout.fillWidth: true
                             spacing: Theme.spacingMd
 
-                            // 预览：有自定义图显示图片，否则显示主题纯色默认
-                            Rectangle {
-                                Layout.preferredWidth: 160
-                                Layout.preferredHeight: 90
-                                color: Theme.menuSurface
-                                border.color: Theme.border
-                                border.width: 1
-                                radius: Theme.radiusControl
-                                clip: true
-
-                                Image {
-                                    anchors.fill: parent
-                                    anchors.margins: 1
-                                    source: Theme.wallpaperSource
-                                    fillMode: Image.PreserveAspectCrop
-                                    asynchronous: true
-                                    visible: source != ""
-                                }
-
-                                Label {
-                                    anchors.centerIn: parent
-                                    visible: Theme.wallpaper === ""
-                                    text: qsTr("默认（纯色）")
-                                    color: Theme.textSecondary
-                                    font.pixelSize: Theme.fontSizeCaption
-                                }
+                            Label {
+                                text: qsTr("主题")
+                                font.pixelSize: Theme.fontSizeLarge
+                                color: Theme.textPrimary
+                                Layout.fillWidth: true
                             }
 
-                            ColumnLayout {
-                                spacing: Theme.spacingXs
+                            ComboBox {
+                                id: themeCombo
+                                Layout.preferredWidth: 160
+                                model: [qsTr("浅色"), qsTr("深色")]
+                                onActivated: Theme.setMode(currentIndex)
+                            }
 
-                                Button {
-                                    text: qsTr("导入图片")
-                                    flat: true
-                                    implicitHeight: 26
-                                    onClicked: wallpaperFileDialog.open()
-                                }
+                            // 用 Binding 元素同步选中项：直接绑定 currentIndex 会被
+                            // 下拉选择破坏，外部改主题（如恢复默认）后无法回显
+                            Binding {
+                                target: themeCombo
+                                property: "currentIndex"
+                                value: Theme.mode
+                            }
+                        }
 
-                                Button {
-                                    text: qsTr("清除")
-                                    flat: true
-                                    implicitHeight: 26
-                                    enabled: Theme.wallpaper !== ""
-                                    onClicked: {
-                                        Wallpaper.removeWallpaper()
-                                        Theme.setWallpaper("")
+                        // 壁纸：导入一张图片替换主题纯色背景（壁纸叠在主题纯色之上，深浅通用）
+                        ColumnLayout {
+                            Layout.fillWidth: true
+                            spacing: Theme.spacingSm
+
+                            Label {
+                                text: qsTr("壁纸")
+                                font.pixelSize: Theme.fontSizeLarge
+                                color: Theme.textPrimary
+                            }
+
+                            RowLayout {
+                                spacing: Theme.spacingMd
+
+                                // 预览：有自定义图显示图片，否则显示主题纯色默认
+                                Rectangle {
+                                    Layout.preferredWidth: 160
+                                    Layout.preferredHeight: 90
+                                    color: Theme.menuSurface
+                                    border.color: Theme.border
+                                    border.width: 1
+                                    radius: Theme.radiusControl
+                                    clip: true
+
+                                    Image {
+                                        anchors.fill: parent
+                                        anchors.margins: 1
+                                        source: Theme.wallpaperSource
+                                        fillMode: Image.PreserveAspectCrop
+                                        asynchronous: true
+                                        visible: source != ""
+                                    }
+
+                                    Label {
+                                        anchors.centerIn: parent
+                                        visible: Theme.wallpaper === ""
+                                        text: qsTr("默认（纯色）")
+                                        color: Theme.textSecondary
+                                        font.pixelSize: Theme.fontSizeCaption
                                     }
                                 }
-                            }
 
-                            Item { Layout.fillWidth: true }
+                                ColumnLayout {
+                                    spacing: Theme.spacingXs
+
+                                    Button {
+                                        text: qsTr("导入图片")
+                                        flat: true
+                                        implicitHeight: 26
+                                        onClicked: wallpaperFileDialog.open()
+                                    }
+
+                                    Button {
+                                        text: qsTr("清除")
+                                        flat: true
+                                        implicitHeight: 26
+                                        enabled: Theme.wallpaper !== ""
+                                        onClicked: {
+                                            Wallpaper.removeWallpaper();
+                                            Theme.setWallpaper("");
+                                        }
+                                    }
+                                }
+
+                                Item {
+                                    Layout.fillWidth: true
+                                }
+                            }
+                        }
+
+                        Item {
+                            Layout.fillHeight: true
                         }
                     }
-
-                    Item { Layout.fillHeight: true }
                 }
 
                 ColumnLayout {
@@ -214,9 +228,9 @@ Item {
                                 anchors.fill: parent
                                 onClicked: {
                                     if (pluginListView.currentIndex === index) {
-                                        pluginListView.currentIndex = -1
+                                        pluginListView.currentIndex = -1;
                                     } else {
-                                        pluginListView.currentIndex = index
+                                        pluginListView.currentIndex = index;
                                     }
                                 }
                             }
@@ -232,10 +246,11 @@ Item {
 
         RowLayout {
             Layout.fillWidth: true
-            visible: panelStack.currentIndex === 1
-                && QModelManager.systemPluginManager.canLoadExternalPlugins
+            visible: panelStack.currentIndex === 1 && QModelManager.systemPluginManager.canLoadExternalPlugins
 
-            Item { Layout.fillWidth: true }
+            Item {
+                Layout.fillWidth: true
+            }
 
             Button {
                 icon.source: "qrc:/images/toolbar/Panels/plugin-register.svg"
@@ -260,10 +275,10 @@ Item {
                 implicitHeight: 26
                 enabled: pluginListView.currentIndex !== -1
                 onClicked: {
-                    var selectedPlugin = QModelManager.systemPluginManager.pluginNames[pluginListView.currentIndex]
-                    var pluginPath = QModelManager.systemPluginManager.getPluginPath(selectedPlugin)
-                    QModelManager.systemPluginManager.unregisterPlugin(pluginPath)
-                    pluginListView.currentIndex = -1
+                    var selectedPlugin = QModelManager.systemPluginManager.pluginNames[pluginListView.currentIndex];
+                    var pluginPath = QModelManager.systemPluginManager.getPluginPath(selectedPlugin);
+                    QModelManager.systemPluginManager.unregisterPlugin(pluginPath);
+                    pluginListView.currentIndex = -1;
                 }
             }
         }
@@ -272,7 +287,9 @@ Item {
             Layout.fillWidth: true
             visible: panelStack.currentIndex === 0
 
-            Item { Layout.fillWidth: true }
+            Item {
+                Layout.fillWidth: true
+            }
 
             Button {
                 icon.source: "qrc:/images/toolbar/Common/restore-defaults.svg"
@@ -301,9 +318,9 @@ Item {
         nameFilters: ["Plugin files (*.dll *.so)", "All files (*)"]
 
         onAccepted: {
-            var result = QModelManager.systemPluginManager.registerPlugin(selectedFile)
+            var result = QModelManager.systemPluginManager.registerPlugin(selectedFile);
             if (!result) {
-                registerFailureDialog.open()
+                registerFailureDialog.open();
             }
         }
     }
@@ -345,11 +362,11 @@ Item {
         nameFilters: ["图片文件 (*.jpg *.jpeg *.png *.webp *.bmp)", "所有文件 (*)"]
 
         onAccepted: {
-            var id = Wallpaper.importWallpaper(selectedFile)
+            var id = Wallpaper.importWallpaper(selectedFile);
             if (id.length > 0)
-                Theme.setWallpaper(id)
+                Theme.setWallpaper(id);
             else
-                wallpaperFailureDialog.open()
+                wallpaperFailureDialog.open();
         }
     }
 
