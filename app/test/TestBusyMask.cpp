@@ -11,6 +11,7 @@
 #include <QQuickWindow>
 #include <QWheelEvent>
 #include <catch2/catch_test_macros.hpp>
+#include <catch2/generators/catch_generators.hpp>
 #include <memory>
 
 namespace {
@@ -163,6 +164,63 @@ TEST_CASE("Busy mask blocks mouse buttons, scrolling and native hover", "[QML][b
     moveWindow(*window, QPointF(120, 120));
     CHECK(object->property("hoverMoves").toInt() > hover_moves);
     CHECK(probe->hoverMoves() > native_hover_moves);
+}
+
+TEST_CASE("Startup import fits camera after all successful model notifications", "[QML][camera]")
+{
+    testApplication();
+    QFile main_qml(":/busy-mask/Main.qml");
+    REQUIRE(main_qml.open(QIODevice::ReadOnly));
+    const QByteArray source = main_qml.readAll().replace("\r\n", "\n");
+    const auto start = source.lastIndexOf("    Component.onCompleted:");
+    REQUIRE(start >= 0);
+    const auto end = source.lastIndexOf("\n}");
+    REQUIRE(end > start);
+    // 执行生产启动回调；read 模拟同步导入通知，resetCamera 检查调用次序。
+    const QByteArray fixture = R"QML(
+        import QtQuick
+        Item {
+            property var commandLineArgs: []
+            property var results: []
+            property int reads: 0
+            property int resets: 0
+            property int readsAtReset: -1
+            property var managerMock: ({
+                featureSystem: {
+                    setActiveModel: function(id) {},
+                    setActiveComponent: function(id) {}
+                },
+                ioSystem: {
+                    read: function(filter, url, args) { return results[reads++] }
+                }
+            })
+            property var appMock: ({
+                selection: { activeModelId: -1, activeComponentId: -1 },
+                registry: { renderWindow: {
+                    resetCamera: function() { ++resets; readsAtReset = reads }
+                } }
+            })
+    )QML"
+        + QByteArray(source.mid(start, end - start)).replace("QModelManager", "managerMock").replace("App.", "appMock.") + "\n}";
+    QQmlEngine engine;
+    QQmlComponent component(&engine);
+    component.setData(fixture, QUrl());
+    INFO(component.errorString().toStdString());
+    REQUIRE(component.isReady());
+    const QVariantList results = GENERATE(QVariantList {}, QVariantList { true },
+        QVariantList { false }, QVariantList { true, false, true });
+    QVariantList paths;
+    for (qsizetype i = 0; i < results.size(); ++i)
+        paths.append(QString("file:///mesh%1.obj").arg(i));
+    std::unique_ptr<QObject> object(component.createWithInitialProperties(
+        { { "commandLineArgs", paths }, { "results", results } }));
+    REQUIRE(object);
+    QCoreApplication::processEvents();
+    CHECK(object->property("reads").toInt() == results.size());
+    const bool imported = results.contains(QVariant(true));
+    CHECK(object->property("resets").toInt() == (imported ? 1 : 0));
+    if (imported)
+        CHECK(object->property("readsAtReset").toInt() == results.size());
 }
 
 #include "TestBusyMask.moc"
