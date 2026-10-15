@@ -29,6 +29,7 @@
 
 #include <algorithm>
 #include <cmath>
+#include <limits>
 #include <memory>
 #include <optional>
 #include <string>
@@ -513,8 +514,13 @@ void QRenderWindow::showAllHiddenFaces() { requestFaceOperation(FaceOperation::S
 void QRenderWindow::reverseVisibility(const QVariantList& component_ids)
 {
     std::vector<Index> ids;
-    for (const auto& id : component_ids)
-        ids.push_back(id.toInt());
+    // 先按宽整数解析再校验，避免非法值变为组件 0，或溢出后误命中其他组件。
+    for (const auto& id : component_ids) {
+        bool ok = false;
+        const auto component_id = id.toLongLong(&ok);
+        if (ok && component_id >= 0 && component_id <= std::numeric_limits<Index>::max())
+            ids.push_back(static_cast<Index>(component_id));
+    }
     std::sort(ids.begin(), ids.end());
     ids.erase(std::unique(ids.begin(), ids.end()), ids.end());
     if (!ids.empty())

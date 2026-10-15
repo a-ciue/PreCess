@@ -120,6 +120,7 @@ void addCellAttributes(
 /** @brief 从自持连通性建立体网格，保留多面体的面与面位置索引。 */
 void createSolidGrid(const MeshDataVtk& model_data, vtkPoints& points, vtkUnstructuredGrid& solid_data)
 {
+    // 以下 SetArray 的 save=1 禁止 VTK 释放外部数组；缓冲由快照中的源网格保活。
     // cells
     vtkNew<vtkCellArray> solid_cells;
     vtkNew<vtkAOSDataArrayTemplate<Index>> index_array;
@@ -218,6 +219,8 @@ void MeshPipelineData::loadModelData(const MeshDataVtk& data)
     hidden_face_ids_.clear();
     faces_only_ = false;
     dirty_ = true;
+    // 本方法所有 SetArray 均使用 save=1：VTK 借用 vector 缓冲，不负责释放。
+    // source_ 与已发布快照共同保活这些缓冲，不能把 save 改为 0。
     // 组件私有点集：坐标自持，连通性数组直接以局部点 id 作 VTK 点索引
     const auto& positions = model_data_->vertex_positions_;
     const vtkIdType point_count = static_cast<vtkIdType>(positions.size());

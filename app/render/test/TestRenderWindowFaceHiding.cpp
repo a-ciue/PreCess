@@ -34,6 +34,7 @@
 #include <atomic>
 #include <cmath>
 #include <cstdio>
+#include <limits>
 #include <map>
 #include <memory>
 #include <utility>
@@ -733,4 +734,104 @@ TEST_CASE("QRenderWindow preserves mixed visibility command order")
     REQUIRE(env.flush());
     CHECK(visible);
     CHECK(env.visibleFaceIds() == std::vector<Index>({ 0, 1 }));
+}
+
+//! @brief 非法或溢出的组件参数不能退化为有效 ID，有效重复项只能反转一次。
+TEST_CASE("QRenderWindow rejects invalid and overflowing reverse visibility component IDs")
+{
+    testApplication();
+    std::map<Index, std::pair<bool, bool>> notifications;
+    FaceHidingViewport env;
+    env.item.loadMeshData(0, MakeMeshDataVtk(env.mesh));
+    REQUIRE(env.flush());
+    QObject::connect(&env.item, &QRenderWindow::componentVisibilityChanged, &env.item,
+        [&notifications](Index id, bool mesh_visible, bool geometry_visible) {
+            notifications[id] = { mesh_visible, geometry_visible };
+        });
+    QVariantList ids { QString("not-a-component"), QVariant { }, -1,
+        QVariant::fromValue(std::numeric_limits<qlonglong>::max()),
+        QVariant::fromValue(qlonglong { 1 } << 32),
+        QVariant::fromValue((qlonglong { 1 } << 32) + 7) };
+    bool expected_seven_visible = true;
+    SECTION("invalid inputs only") { }
+    SECTION("mixed inputs retain and deduplicate valid IDs")
+    {
+        ids.append(QString("7"));
+        ids.append(7);
+        expected_seven_visible = false;
+    }
+    env.item.reverseVisibility(ids);
+    REQUIRE(env.flush());
+    bool zero_visible = false;
+    bool seven_visible = false;
+    env.item.dispatch_async([&zero_visible, &seven_visible](vtkRenderWindow*, QQuickVTKItem::vtkUserData user_data) {
+        auto* data = QRenderWindow::Data::SafeDownCast(user_data);
+        zero_visible = data->mesh_actor_manager_->getComponentActor(0)->isVisibilityEnabled();
+        seven_visible = data->mesh_actor_manager_->getComponentActor(7)->isVisibilityEnabled();
+    });
+    REQUIRE(env.flush());
+    CHECK(zero_visible);
+    CHECK(seven_visible == expected_seven_visible);
+    CHECK(notifications.size() == (expected_seven_visible ? 0 : 1));
+    CHECK_FALSE(notifications.contains(0));
+    if (!expected_seven_visible)
+        CHECK(notifications.at(7) == std::make_pair(false, false));
+}
+
+//! @brief 面命令尚未导出选择时释放真实场景图，重建后必须继续消费原命令及后续操作。
+TEST_CASE("QRenderWindow pending face operations resume after scene graph recreation")
+{
+    qputenv("QSG_RENDER_LOOP", "threaded");
+    testApplication();
+    // 原子标志先于视口构造，确保析构阶段的场景图信号也不会访问已销毁的捕获对象。
+    std::atomic_bool invalidated { false };
+    std::atomic_bool recreated { false };
+    std::atomic_bool exported { false };
+    FaceHidingViewport env;
+    REQUIRE(env.flush());
+    env.selectFace(0);
+    env.item.hideSelectedFaces();
+    REQUIRE(env.flush());
+    REQUIRE(env.visibleFaceIds() == std::vector<Index>({ 1 }));
+    QObject::connect(&env.window, &QQuickWindow::sceneGraphInvalidated, &env.window, [&invalidated] { invalidated.store(true); }, Qt::DirectConnection);
+    QObject::connect(&env.window, &QQuickWindow::sceneGraphInitialized, &env.window, [&recreated] { recreated.store(true); }, Qt::DirectConnection);
+
+    // 先提交面命令再关闭窗口：pending 已置位，但尚未进入下一次渲染同步；后续开关等待其完成。
+    env.item.showAllHiddenFaces();
+    env.item.setMeshVisibility(7, false);
+    env.item.dispatch_async([&exported](vtkRenderWindow*, QQuickVTKItem::vtkUserData) { exported.store(true); });
+    env.window.hide();
+    env.window.releaseResources();
+    QElapsedTimer timer;
+    timer.start();
+    while (!invalidated.load() && timer.elapsed() < 5000) {
+        QCoreApplication::processEvents(QEventLoop::AllEvents, 10);
+        QThread::msleep(1);
+    }
+    REQUIRE(invalidated.load());
+    REQUIRE_FALSE(exported.load());
+
+    // 新场景必须先执行保留的面命令，再执行整体隐藏，不能因重建清掉 pending 而倒序。
+    env.window.show();
+    REQUIRE(env.flush());
+    REQUIRE(recreated.load());
+    REQUIRE(exported.load());
+    CHECK(env.visibleFaceIds() == std::vector<Index>({ 0, 1 }));
+    bool visible = true;
+    env.item.dispatch_async([&visible](vtkRenderWindow*, QQuickVTKItem::vtkUserData user_data) {
+        auto* data = QRenderWindow::Data::SafeDownCast(user_data);
+        visible = data->mesh_actor_manager_->getComponentActor(7)->isVisibilityEnabled();
+    });
+    REQUIRE(env.flush());
+    CHECK_FALSE(visible);
+
+    // 再提交一次反转，验证 GUI 队列已解除等待且可继续处理新操作。
+    env.item.reverseVisibility({ 7 });
+    REQUIRE(env.flush());
+    env.item.dispatch_async([&visible](vtkRenderWindow*, QQuickVTKItem::vtkUserData user_data) {
+        auto* data = QRenderWindow::Data::SafeDownCast(user_data);
+        visible = data->mesh_actor_manager_->getComponentActor(7)->isVisibilityEnabled();
+    });
+    REQUIRE(env.flush());
+    CHECK(visible);
 }
