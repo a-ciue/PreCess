@@ -81,6 +81,9 @@ QtObject {
                                                      : Qt.rgba(0.902, 0.929, 0.961, 0.70)
     //! 菜单 / 弹窗前景面：不透明，保证弹窗内文字在壁纸上可读
     readonly property color menuSurface: dark ? "#252526" : "#FFFFFF"
+    //! 壁纸遮罩：叠在壁纸之上，使自定义背景随主题调色（浅色白亮化、深色灰暗化）
+    readonly property color wallpaperTint: dark ? Qt.rgba(0.12, 0.12, 0.14, 0.55)
+                                                : Qt.rgba(1.0, 1.0, 1.0, 0.45)
     //! 列表项悬停着色
     readonly property color hoverOverlay: dark ? Qt.rgba(0.165, 0.176, 0.180, 0.50)
                                                : Qt.rgba(0.925, 0.941, 0.957, 0.50)

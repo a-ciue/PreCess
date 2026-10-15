@@ -65,6 +65,20 @@ ApplicationWindow {
             }
         }
 
+        // 壁纸遮罩：叠在壁纸之上随主题调色（浅色白亮化、深色灰暗化），无壁纸时不叠加
+        Rectangle {
+            anchors.fill: parent
+            color: Theme.wallpaperTint
+            visible: Theme.wallpaper !== ""
+
+            Behavior on color {
+                ColorAnimation {
+                    duration: 300
+                    easing.type: Easing.InOutCubic
+                }
+            }
+        }
+
         NumberAnimation {
             id: wallpaperFadeIn
             target: wallpaperIncoming

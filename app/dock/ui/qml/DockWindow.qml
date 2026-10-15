@@ -27,6 +27,21 @@ Rectangle {
         visible: source != ""
     }
 
+    // 壁纸遮罩：随主题调色（浅色白亮化、深色灰暗化），无壁纸时不叠加
+    Rectangle {
+        anchors.fill: parent
+        anchors.margins: 1
+        color: Docking.Theme.colors.wallpaperTint
+        visible: Docking.Theme.wallpaperUrl !== ""
+
+        Behavior on color {
+            ColorAnimation {
+                duration: 300
+                easing.type: Easing.InOutCubic
+            }
+        }
+    }
+
     // 停靠区域宿主：C++ 侧把 DockAreaItem 挂到此处
     Item {
         id: areaHost

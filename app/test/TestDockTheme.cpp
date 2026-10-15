@@ -32,6 +32,8 @@ TEST_CASE("DockTheme: default light colors", "[DockTheme]")
     REQUIRE(light.value("panelHeaderSurface").value<QColor>() == withAlpha("#E6EDF5", 0.70));
     // 菜单面保持不透明
     REQUIRE(light.value("menuSurface").value<QColor>() == QColor("#FFFFFF"));
+    // 壁纸遮罩：浅色白亮化
+    REQUIRE(light.value("wallpaperTint").value<QColor>() == withAlpha("#FFFFFF", 0.45));
     REQUIRE(light.value("dropAccent").value<QColor>() == QColor("#2f6fb5"));
     REQUIRE(light.value("dropZoneActiveFore").value<QColor>() == QColor("#FFFFFF"));
 }
@@ -48,6 +50,8 @@ TEST_CASE("DockTheme: dark colors after setDark", "[DockTheme]")
     REQUIRE(dark.value("textPrimary").value<QColor>() == QColor("#D4D4D4"));
     REQUIRE(dark.value("primary").value<QColor>() == QColor("#4EA1F3"));
     REQUIRE(dark.value("menuSurface").value<QColor>() == QColor("#252526"));
+    // 壁纸遮罩：深色灰暗化
+    REQUIRE(dark.value("wallpaperTint").value<QColor>() == withAlpha("#1F1F24", 0.55));
     REQUIRE(dark.value("dropAccent").value<QColor>() == QColor("#4EA1F3"));
     REQUIRE(dark.value("dropZoneActiveFore").value<QColor>() == QColor("#FFFFFF"));
 }

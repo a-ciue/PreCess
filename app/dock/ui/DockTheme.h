@@ -86,6 +86,10 @@ public:
         m["panelHeaderSurface"] = ca("#E6EDF5", "#333336", 0.70);
         // 菜单 / 弹窗：不透明，保证弹窗文字在壁纸上可读
         m["menuSurface"] = c("#FFFFFF", "#252526");
+        // 壁纸遮罩：随主题调色（浅色白亮化、深色灰暗化），与 app/Theme.qml 同步
+        QColor wallpaper_tint = d ? QColor(0x1F, 0x1F, 0x24) : QColor(0xFF, 0xFF, 0xFF);
+        wallpaper_tint.setAlphaF(d ? 0.55 : 0.45);
+        m["wallpaperTint"] = wallpaper_tint;
         m["border"] = c("#D9DDE3", "#3E3E42");
         m["borderStrong"] = c("#C3C8CF", "#4A4A4F");
         m["textPrimary"] = c("#2B2F36", "#D4D4D4");
