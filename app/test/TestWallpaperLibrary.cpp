@@ -30,6 +30,9 @@ QString writePng(const QString& path, const QSize& size, const QColor& color)
 }
 
 //! @brief 隔离真实用户数据：启用 Qt 测试模式并清空托管目录
+//!
+//! 本二进制仅含壁纸相关用例（precess_add_test 每个目标为独立进程），
+//! 故 setTestModeEnabled 的进程级副作用不会影响其它套件。
 void prepareTestEnv()
 {
     QStandardPaths::setTestModeEnabled(true);

@@ -97,6 +97,9 @@ ApplicationWindow {
         Connections {
             target: Theme
             function onWallpaperChanged() {
+                // 先停止进行中的淡入：否则快速连切时旧动画的 onFinished 会以被改写后的
+                // incoming.source 覆盖 current（甚至清空），导致错帧或残留
+                wallpaperFadeIn.stop()
                 // 以字符串壁纸 id 为准：url 与字符串用 === 比较不可靠，
                 // 会导致清空分支被跳过、壁纸残留
                 if (Theme.wallpaper.length === 0) {

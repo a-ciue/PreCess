@@ -66,7 +66,9 @@ void removeOtherFiles(const QString& keep)
 WallpaperProvider::WallpaperProvider()
     : QQuickImageProvider(QQuickImageProvider::Image)
 {
-    // 构造发生在 GUI 线程，缓存主屏解码上限（含设备像素比）供后续（可能非 GUI）线程读取
+    // 构造发生在 GUI 线程：在此一次性求值主屏解码上限（含设备像素比）。requestImage
+    // 在 Image.asynchronous 下可能由异步加载线程调用，故只读缓存成员，避免在请求路径
+    // 重复访问 QScreen（QScreen 非线程安全）
     if (auto* screen = QGuiApplication::primaryScreen()) {
         const QSize logical = screen->geometry().size();
         const qreal dpr = screen->devicePixelRatio();
