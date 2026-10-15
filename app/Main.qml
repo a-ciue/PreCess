@@ -99,15 +99,14 @@ ApplicationWindow {
             function onWallpaperChanged() {
                 // 以字符串壁纸 id 为准：url 与字符串用 === 比较不可靠，
                 // 会导致清空分支被跳过、壁纸残留
-                const id = Theme.wallpaper
-                if (id.length === 0) {
+                if (Theme.wallpaper.length === 0) {
                     wallpaperCurrent.source = ""
                     wallpaperIncoming.source = ""
                     wallpaperIncoming.opacity = 0
                     return
                 }
                 wallpaperIncoming.opacity = 0
-                wallpaperIncoming.source = "image://wallpaper/" + id
+                wallpaperIncoming.source = Theme.wallpaperSource
             }
         }
 

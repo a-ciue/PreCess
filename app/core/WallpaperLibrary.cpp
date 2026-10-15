@@ -132,9 +132,19 @@ QString WallpaperLibrary::importWallpaper(const QUrl& source_url)
     if (!kAllowedSuffixes.contains(suffix))
         return {};
 
-    // 仅校验可解码（不限制分辨率与图片大小）
+    // 校验可解码（不限制分辨率与图片大小）；再做一次小尺寸解码，拒绝
+    // “能识别格式但内容损坏”的文件。支持缩放解码的格式不会全量解码。
     QImageReader reader(source_path);
     if (!reader.canRead())
+        return {};
+    const QSize original_size = reader.size();
+    if (original_size.isValid() && !original_size.isEmpty()) {
+        const qreal ratio = qMin(qreal(64) / original_size.width(), qreal(64) / original_size.height());
+        if (ratio < 1.0)
+            reader.setScaledSize(QSize(qMax(1, qCeil(original_size.width() * ratio)),
+                qMax(1, qCeil(original_size.height() * ratio))));
+    }
+    if (reader.read().isNull())
         return {};
 
     const QString content_hash = fileContentHash(source_path);

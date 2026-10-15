@@ -60,9 +60,7 @@ Item {
                         onClicked: panelStack.currentIndex = 1
                     }
 
-                    Item {
-                        Layout.fillHeight: true
-                    }
+                    Item { Layout.fillHeight: true }
                 }
             }
 
@@ -77,11 +75,11 @@ Item {
                 Layout.margins: 8
                 currentIndex: 0
 
+                // 主题页内容较高，窗口变小时纵向滚动便于查看
                 ScrollView {
                     id: themeScroll
                     Layout.fillWidth: true
                     Layout.fillHeight: true
-                    // 主题页内容较高，窗口变小时纵向滚动便于查看
                     ScrollBar.horizontal.policy: ScrollBar.AlwaysOff
                     ScrollBar.vertical.policy: ScrollBar.AsNeeded
                     clip: true
@@ -150,6 +148,14 @@ Item {
                                         visible: source != ""
                                     }
 
+                                    // 主题色调遮罩：与实际背景一致（浅色白亮化、深色灰暗化）
+                                    Rectangle {
+                                        anchors.fill: parent
+                                        anchors.margins: 1
+                                        color: Theme.wallpaperTint
+                                        visible: Theme.wallpaper !== ""
+                                    }
+
                                     Label {
                                         anchors.centerIn: parent
                                         visible: Theme.wallpaper === ""
@@ -175,21 +181,17 @@ Item {
                                         implicitHeight: 26
                                         enabled: Theme.wallpaper !== ""
                                         onClicked: {
-                                            Wallpaper.removeWallpaper();
-                                            Theme.setWallpaper("");
+                                            Wallpaper.removeWallpaper()
+                                            Theme.setWallpaper("")
                                         }
                                     }
                                 }
 
-                                Item {
-                                    Layout.fillWidth: true
-                                }
+                                Item { Layout.fillWidth: true }
                             }
                         }
 
-                        Item {
-                            Layout.fillHeight: true
-                        }
+                        Item { Layout.fillHeight: true }
                     }
                 }
 
@@ -228,9 +230,9 @@ Item {
                                 anchors.fill: parent
                                 onClicked: {
                                     if (pluginListView.currentIndex === index) {
-                                        pluginListView.currentIndex = -1;
+                                        pluginListView.currentIndex = -1
                                     } else {
-                                        pluginListView.currentIndex = index;
+                                        pluginListView.currentIndex = index
                                     }
                                 }
                             }
@@ -246,11 +248,10 @@ Item {
 
         RowLayout {
             Layout.fillWidth: true
-            visible: panelStack.currentIndex === 1 && QModelManager.systemPluginManager.canLoadExternalPlugins
+            visible: panelStack.currentIndex === 1
+                && QModelManager.systemPluginManager.canLoadExternalPlugins
 
-            Item {
-                Layout.fillWidth: true
-            }
+            Item { Layout.fillWidth: true }
 
             Button {
                 icon.source: "qrc:/images/toolbar/Panels/plugin-register.svg"
@@ -275,10 +276,10 @@ Item {
                 implicitHeight: 26
                 enabled: pluginListView.currentIndex !== -1
                 onClicked: {
-                    var selectedPlugin = QModelManager.systemPluginManager.pluginNames[pluginListView.currentIndex];
-                    var pluginPath = QModelManager.systemPluginManager.getPluginPath(selectedPlugin);
-                    QModelManager.systemPluginManager.unregisterPlugin(pluginPath);
-                    pluginListView.currentIndex = -1;
+                    var selectedPlugin = QModelManager.systemPluginManager.pluginNames[pluginListView.currentIndex]
+                    var pluginPath = QModelManager.systemPluginManager.getPluginPath(selectedPlugin)
+                    QModelManager.systemPluginManager.unregisterPlugin(pluginPath)
+                    pluginListView.currentIndex = -1
                 }
             }
         }
@@ -287,9 +288,7 @@ Item {
             Layout.fillWidth: true
             visible: panelStack.currentIndex === 0
 
-            Item {
-                Layout.fillWidth: true
-            }
+            Item { Layout.fillWidth: true }
 
             Button {
                 icon.source: "qrc:/images/toolbar/Common/restore-defaults.svg"
@@ -318,9 +317,9 @@ Item {
         nameFilters: ["Plugin files (*.dll *.so)", "All files (*)"]
 
         onAccepted: {
-            var result = QModelManager.systemPluginManager.registerPlugin(selectedFile);
+            var result = QModelManager.systemPluginManager.registerPlugin(selectedFile)
             if (!result) {
-                registerFailureDialog.open();
+                registerFailureDialog.open()
             }
         }
     }
@@ -362,11 +361,11 @@ Item {
         nameFilters: ["图片文件 (*.jpg *.jpeg *.png *.webp *.bmp)", "所有文件 (*)"]
 
         onAccepted: {
-            var id = Wallpaper.importWallpaper(selectedFile);
+            var id = Wallpaper.importWallpaper(selectedFile)
             if (id.length > 0)
-                Theme.setWallpaper(id);
+                Theme.setWallpaper(id)
             else
-                wallpaperFailureDialog.open();
+                wallpaperFailureDialog.open()
         }
     }
 
