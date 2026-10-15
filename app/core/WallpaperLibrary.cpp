@@ -16,6 +16,7 @@
 #include <QStandardPaths>
 #include <QStringList>
 #include <QtMath>
+#include <spdlog/spdlog.h>
 
 namespace {
 
@@ -56,8 +57,8 @@ void removeOtherFiles(const QString& keep)
 {
     QDir dir(WallpaperLibrary::userWallpaperDir());
     for (const QString& name : wallpaperFiles()) {
-        if (name != keep)
-            dir.remove(name);
+        if (name != keep && !dir.remove(name))
+            spdlog::warn("wallpaper: failed to remove stale file: {}", dir.filePath(name).toStdString());
     }
 }
 
@@ -125,20 +126,26 @@ QString WallpaperLibrary::userWallpaperDir()
 
 QString WallpaperLibrary::importWallpaper(const QUrl& source_url)
 {
-    if (!source_url.isLocalFile())
+    if (!source_url.isLocalFile()) {
+        spdlog::warn("wallpaper: rejected non-local source: {}", source_url.toString().toStdString());
         return {};
+    }
 
     const QString source_path = source_url.toLocalFile();
     const QFileInfo info(source_path);
     const QString suffix = info.suffix().toLower();
-    if (!kAllowedSuffixes.contains(suffix))
+    if (!kAllowedSuffixes.contains(suffix)) {
+        spdlog::debug("wallpaper: rejected unsupported suffix: {}", source_path.toStdString());
         return {};
+    }
 
     // 校验可解码（不限制分辨率与图片大小）；再做一次小尺寸解码，拒绝
     // “能识别格式但内容损坏”的文件。支持缩放解码的格式不会全量解码。
     QImageReader reader(source_path);
-    if (!reader.canRead())
+    if (!reader.canRead()) {
+        spdlog::debug("wallpaper: rejected unreadable file: {}", source_path.toStdString());
         return {};
+    }
     const QSize original_size = reader.size();
     if (original_size.isValid() && !original_size.isEmpty()) {
         const qreal ratio = qMin(qreal(64) / original_size.width(), qreal(64) / original_size.height());
@@ -146,22 +153,31 @@ QString WallpaperLibrary::importWallpaper(const QUrl& source_url)
             reader.setScaledSize(QSize(qMax(1, qCeil(original_size.width() * ratio)),
                 qMax(1, qCeil(original_size.height() * ratio))));
     }
-    if (reader.read().isNull())
+    if (reader.read().isNull()) {
+        spdlog::debug("wallpaper: rejected undecodable file: {}", source_path.toStdString());
         return {};
+    }
 
     const QString content_hash = fileContentHash(source_path);
-    if (content_hash.isEmpty())
+    if (content_hash.isEmpty()) {
+        spdlog::error("wallpaper: failed to hash source: {}", source_path.toStdString());
         return {};
+    }
 
     const QString store_name = content_hash.left(16) + QLatin1Char('.') + suffix;
     QDir dir(userWallpaperDir());
-    if (!dir.exists() && !dir.mkpath(QStringLiteral(".")))
+    if (!dir.exists() && !dir.mkpath(QStringLiteral("."))) {
+        spdlog::error("wallpaper: failed to create directory: {}", dir.absolutePath().toStdString());
         return {};
+    }
 
     const QString target_path = dir.filePath(store_name);
     // 同内容重复导入：目标已存在则跳过复制，仍返回同一 id
-    if (!QFile::exists(target_path) && !QFile::copy(source_path, target_path))
+    if (!QFile::exists(target_path) && !QFile::copy(source_path, target_path)) {
+        spdlog::error("wallpaper: failed to copy {} -> {}", source_path.toStdString(),
+            target_path.toStdString());
         return {};
+    }
 
     // 单张模式：删除除新图外的其它文件
     removeOtherFiles(store_name);
@@ -175,8 +191,12 @@ bool WallpaperLibrary::removeWallpaper()
         return true;
 
     bool ok = true;
-    for (const QString& name : wallpaperFiles())
-        ok = dir.remove(name) && ok;
+    for (const QString& name : wallpaperFiles()) {
+        if (!dir.remove(name)) {
+            spdlog::warn("wallpaper: failed to remove file: {}", dir.filePath(name).toStdString());
+            ok = false;
+        }
+    }
     return ok;
 }
 

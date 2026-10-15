@@ -356,9 +356,9 @@ Item {
     // 壁纸导入：选择本地图片，交由 C++ 校验并复制到托管目录
     FileDialog {
         id: wallpaperFileDialog
-        title: "请选择背景图片"
+        title: qsTr("请选择背景图片")
         fileMode: FileDialog.OpenFile
-        nameFilters: ["图片文件 (*.jpg *.jpeg *.png *.webp *.bmp)", "所有文件 (*)"]
+        nameFilters: [qsTr("图片文件 (*.jpg *.jpeg *.png *.webp *.bmp)"), qsTr("所有文件 (*)")]
 
         onAccepted: {
             var id = Wallpaper.importWallpaper(selectedFile)
@@ -371,7 +371,7 @@ Item {
 
     Dialog {
         id: wallpaperFailureDialog
-        title: "导入失败"
+        title: qsTr("导入失败")
         standardButtons: Dialog.Ok
         modal: true
         anchors.centerIn: parent
@@ -392,7 +392,7 @@ Item {
         palette.placeholderText: Theme.textDisabled
 
         Label {
-            text: "无法导入所选图片，请确认是有效的图片文件"
+            text: qsTr("无法导入所选图片，请确认是有效的图片文件")
         }
     }
 }

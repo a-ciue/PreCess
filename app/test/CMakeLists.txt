@@ -123,4 +123,5 @@ precess_test_link_libraries(TestWallpaperLibrary
     Qt${VTK_QT_VERSION}::Core
     Qt${VTK_QT_VERSION}::Gui
     Qt${VTK_QT_VERSION}::Quick
+    spdlog::spdlog
 )
