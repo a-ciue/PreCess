@@ -1,6 +1,5 @@
 #include "QRenderWindow.h"
 #include "FeatureSystem.h"
-#include "GeometryActor.h"
 #include "GeometryActorManager.h"
 #include "GeometryDataVtk.h"
 #include "InteractionService.h"
@@ -15,7 +14,6 @@
 #include "Selection.h"
 #include "renderStrategy/AttributeCommon.h"
 
-#include <QScopeGuard>
 #include <spdlog/spdlog.h>
 #include <vtkCallbackCommand.h>
 #include <vtkCamera.h>
@@ -29,6 +27,7 @@
 
 #include <algorithm>
 #include <cmath>
+#include <functional>
 #include <limits>
 #include <memory>
 #include <optional>
@@ -287,7 +286,17 @@ QQuickVTKItem::vtkUserData QRenderWindow::initializeVTK(vtkRenderWindow* renderW
     // initializeVTK 的 GUI 同步边界只重放已完成结果，不访问 GUI Filter。
     for (const auto& [component_id, snapshot] : mesh_snapshots_)
         vtk->mesh_actor_manager_->loadMesh(component_id, snapshot, vtk->renderer_);
+    if (model_query_) {
+        for (const auto& [id, visible] : geometry_visibility_) {
+            if (auto geometry = model_query_->getGeometryVtkDataByComponent(id)) {
+                vtk->geometry_actor_manager_->loadGeometry(*geometry,
+                    model_query_->getComponentName(id).toStdString());
+                vtk->geometry_actor_manager_->setVisibility(id, visible);
+            }
+        }
+    }
     render_selection_revision_ = selection_revision_;
+    render_selection_epoch_ = selection_epoch_;
     vtk->selection_observer_tag_ = vtk->style_->AddObserver(vtkCommand::SelectionChangedEvent, this, &QRenderWindow::publishSelection);
     publishSelection();
     return vtk;
@@ -313,7 +322,7 @@ void QRenderWindow::destroyingVTK(vtkRenderWindow* renderWindow, vtkUserData use
 
 void QRenderWindow::resetCamera()
 {
-    enqueueRenderOperation([this](vtkRenderWindow* renderWindow, vtkUserData userData) {
+    dispatch_async([this](vtkRenderWindow* renderWindow, vtkUserData userData) {
         auto* vtk = Data::SafeDownCast(userData);
         if (vtk->renderer_) {
             vtk->renderer_->ResetCamera();
@@ -370,60 +379,53 @@ void QRenderWindow::deleteModel(Index model_id)
 
 void QRenderWindow::deleteComponent(Index component_id)
 {
-    enqueueMeshOperation([this, component_id] {
-        mesh_pipeline_data_.erase(component_id);
-        mesh_snapshots_.erase(component_id);
-        geometry_visibility_.erase(component_id);
-        dispatch_async([component_id, this](vtkRenderWindow* renderWindow, vtkUserData userData) -> void {
-            Data* vtk = Data::SafeDownCast(userData);
+    clearSelection();
+    mesh_pipeline_data_.erase(component_id);
+    mesh_snapshots_.erase(component_id);
+    geometry_visibility_.erase(component_id);
+    dispatch_async([component_id, this](vtkRenderWindow* renderWindow, vtkUserData userData) -> void {
+        Data* vtk = Data::SafeDownCast(userData);
 
-            if (vtk->mesh_actor_manager_) {
-                vtk->mesh_actor_manager_->deleteComponent(component_id);
-            }
+        if (vtk->mesh_actor_manager_) {
+            vtk->mesh_actor_manager_->deleteComponent(component_id);
+        }
 
-            if (vtk->geometry_actor_manager_) {
-                vtk->geometry_actor_manager_->deleteComponent(component_id);
-            }
-
-            this->select_manager_->clearSelection();
-            publishSelection();
-        });
+        if (vtk->geometry_actor_manager_) {
+            vtk->geometry_actor_manager_->deleteComponent(component_id);
+        }
     });
 }
 
 void QRenderWindow::setMeshClip(bool on)
 {
-    enqueueMeshOperation([this, on] {
-        const auto revision = ++clip_revision_;
-        if (!on) {
-            auto plane = mesh_clip_;
-            plane.enabled = false;
-            applyClipPlane(plane);
+    const auto revision = ++clip_revision_;
+    if (!on) {
+        auto plane = mesh_clip_;
+        plane.enabled = false;
+        applyClipPlane(plane);
+    }
+    dispatch_async([on, revision](vtkRenderWindow*, vtkUserData user_data) {
+        auto* vtk = Data::SafeDownCast(user_data);
+        vtk->clip_revision_ = revision;
+        if (on) {
+            double bounds[6] { };
+            vtk->renderer_->ComputeVisiblePropBounds(bounds);
+            double origin[3] { (bounds[0] + bounds[1]) / 2, (bounds[2] + bounds[3]) / 2,
+                (bounds[4] + bounds[5]) / 2 };
+            vtk->plane_widget_->GetDisplaySizedImplicitPlaneRepresentation()->SetOrigin(origin);
+            vtk->plane_widget_->InvokeEvent(vtkCommand::InteractionEvent);
+            vtk->plane_widget_->On();
+        } else {
+            vtk->plane_widget_->Off();
         }
-        dispatch_async([on, revision](vtkRenderWindow*, vtkUserData user_data) {
-            auto* vtk = Data::SafeDownCast(user_data);
-            vtk->clip_revision_ = revision;
-            if (on) {
-                double bounds[6] { };
-                vtk->renderer_->ComputeVisiblePropBounds(bounds);
-                double origin[3] { (bounds[0] + bounds[1]) / 2, (bounds[2] + bounds[3]) / 2,
-                    (bounds[4] + bounds[5]) / 2 };
-                vtk->plane_widget_->GetDisplaySizedImplicitPlaneRepresentation()->SetOrigin(origin);
-                vtk->plane_widget_->InvokeEvent(vtkCommand::InteractionEvent);
-                vtk->plane_widget_->On();
-            } else {
-                vtk->plane_widget_->Off();
-            }
-        });
     });
 }
 
 void QRenderWindow::publishClipPlane(const MeshClipPlane& plane, std::uint64_t revision)
 {
-    QMetaObject::invokeMethod(&selection_dispatcher_, [this, plane, revision] { enqueueMeshOperation([this, plane, revision] {
-                                                                                    if (revision == clip_revision_)
-                                                                                        applyClipPlane(plane);
-                                                                                }); }, Qt::QueuedConnection);
+    QMetaObject::invokeMethod(&selection_dispatcher_, [this, plane, revision] {
+        if (revision == clip_revision_)
+            applyClipPlane(plane); }, Qt::QueuedConnection);
 }
 
 void QRenderWindow::applyClipPlane(const MeshClipPlane& plane)
@@ -449,42 +451,18 @@ std::shared_ptr<const MeshDataSnapshot> QRenderWindow::prepareMeshSnapshot(Index
     return snapshot;
 }
 
-void QRenderWindow::enqueueMeshOperation(std::function<void()> operation)
-{
-    mesh_operations_.push_back(std::move(operation));
-    drainMeshOperations();
-}
-
-void QRenderWindow::drainMeshOperations()
-{
-    if (draining_mesh_operations_)
-        return;
-    draining_mesh_operations_ = true;
-    const auto guard = qScopeGuard([this] { draining_mesh_operations_ = false; });
-    while (!face_operation_pending_ && !mesh_operations_.empty()) {
-        auto operation = std::move(mesh_operations_.front());
-        mesh_operations_.pop_front();
-        operation();
-    }
-}
-
-void QRenderWindow::enqueueRenderOperation(std::function<void(vtkRenderWindow*, vtkUserData)> operation)
-{
-    enqueueMeshOperation([this, operation = std::move(operation)] { dispatch_async(operation); });
-}
-
 void QRenderWindow::loadMeshData(Index component_id, const MeshDataVtk& data)
 {
-    // 查询结果是借用视图，必须在当前 GUI 调用内捕获，不能把它延迟到命令队列。
+    // 查询结果是借用视图，在当前 GUI 调用内捕获自持数据再发布。
     auto pipeline = std::make_shared<MeshPipelineData>();
     pipeline->loadModelData(data);
-    enqueueMeshOperation([this, component_id, pipeline] { installMeshData(component_id, pipeline, true); });
+    installMeshData(component_id, std::move(pipeline), true);
 }
 
 void QRenderWindow::loadMeshData(Index component_id, std::unique_ptr<MeshPipelineData> pipeline)
 {
     std::shared_ptr<MeshPipelineData> prepared = std::move(pipeline);
-    enqueueMeshOperation([this, component_id, prepared] { installMeshData(component_id, prepared, false); });
+    installMeshData(component_id, std::move(prepared), false);
 }
 
 void QRenderWindow::installMeshData(Index component_id, std::shared_ptr<MeshPipelineData> pipeline, bool reset_selection)
@@ -493,23 +471,24 @@ void QRenderWindow::installMeshData(Index component_id, std::shared_ptr<MeshPipe
         if (const auto previous = mesh_pipeline_data_.find(component_id); previous != mesh_pipeline_data_.end())
             pipeline->setVisibility(previous->second->isVisibilityEnabled());
     }
+    const auto previous = mesh_pipeline_data_.find(component_id);
+    if (reset_selection || (previous != mesh_pipeline_data_.end() && previous->second->generation() != 0))
+        clearSelection();
     pipeline->setClipPlane(mesh_clip_);
     mesh_pipeline_data_[component_id] = std::move(pipeline);
     const auto snapshot = prepareMeshSnapshot(component_id);
-    dispatch_async([this, component_id, snapshot, reset_selection](vtkRenderWindow*, vtkUserData user_data) {
+    dispatch_async([component_id, snapshot](vtkRenderWindow*, vtkUserData user_data) {
         auto* vtk = Data::SafeDownCast(user_data);
-        if (reset_selection) {
-            select_manager_->clearSelection();
-            publishSelection();
-        }
         vtk->mesh_actor_manager_->loadMesh(component_id, snapshot, vtk->renderer_);
     });
+    publishComponentVisibility(component_id);
 }
 
-void QRenderWindow::hideSelectedFaces() { requestFaceOperation(FaceOperation::Hide); }
-void QRenderWindow::showSelectedFaces() { requestFaceOperation(FaceOperation::Show); }
-void QRenderWindow::isolateSelectedFaces() { requestFaceOperation(FaceOperation::Isolate); }
-void QRenderWindow::showAllHiddenFaces() { requestFaceOperation(FaceOperation::ShowAll); }
+void QRenderWindow::hideSelectedFaces() { applyFaceOperation(FaceOperation::Hide); }
+void QRenderWindow::showSelectedFaces() { applyFaceOperation(FaceOperation::Show); }
+void QRenderWindow::isolateSelectedFaces() { applyFaceOperation(FaceOperation::Isolate); }
+void QRenderWindow::showAllHiddenFaces() { applyFaceOperation(FaceOperation::ShowAll); }
+void QRenderWindow::showAll() { applyFaceOperation(FaceOperation::ShowScene); }
 
 void QRenderWindow::reverseVisibility(const QVariantList& component_ids)
 {
@@ -524,69 +503,27 @@ void QRenderWindow::reverseVisibility(const QVariantList& component_ids)
     std::sort(ids.begin(), ids.end());
     ids.erase(std::unique(ids.begin(), ids.end()), ids.end());
     if (!ids.empty())
-        requestFaceOperation(FaceOperation::Reverse, std::move(ids));
+        applyFaceOperation(FaceOperation::Reverse, ids);
 }
 
-void QRenderWindow::requestFaceOperation(FaceOperation operation, std::vector<Index> ids)
-{
-    enqueueMeshOperation([this, operation, ids = std::move(ids)] {
-        // 等选择回传后再放行后续 GUI 命令，避免较早的反转覆盖较晚的显示操作。
-        face_operation_pending_ = true;
-        dispatch_async([this, operation, ids](vtkRenderWindow*, vtkUserData user_data) {
-            auto* vtk = Data::SafeDownCast(user_data);
-            SelectedFaces selected;
-            MeshGenerations generations;
-            const bool uses_selection = operation == FaceOperation::Hide || operation == FaceOperation::Show
-                || operation == FaceOperation::Isolate;
-            if (uses_selection) {
-                selected = select_manager_->selectedFaceIdsByComponent();
-                for (const auto& [component_id, faces] : selected) {
-                    if (auto actor = vtk->mesh_actor_manager_->getComponentActor(component_id))
-                        generations[component_id] = actor->dataGeneration();
-                }
-            }
-            GeometryVisibility geometry;
-            for (auto id : vtk->geometry_actor_manager_->op().getAllComponentIds()) {
-                if (auto actor = vtk->geometry_actor_manager_->getComponentActor(id))
-                    geometry[id] = actor->isVisibilityEnabled();
-            }
-            if (operation != FaceOperation::Hide && (!uses_selection || !selected.empty())) {
-                select_manager_->clearSelection();
-                publishSelection();
-            }
-            // 空选择也回传完成通知，确保后续命令不会永久等待。
-            QMetaObject::invokeMethod(&selection_dispatcher_, [this, operation, selected = std::move(selected), generations = std::move(generations), geometry = std::move(geometry), ids] {
-                    try {
-                        applyFaceOperation(operation, selected, generations, geometry, ids);
-                    } catch (const std::exception& error) {
-                        spdlog::error("面显隐数据更新失败: {}", error.what());
-                    }
-                    face_operation_pending_ = false;
-                    drainMeshOperations(); }, Qt::QueuedConnection);
-        });
-    });
-}
-
-void QRenderWindow::applyFaceOperation(FaceOperation operation, const SelectedFaces& selected,
-    const MeshGenerations& generations, const GeometryVisibility& geometry, const std::vector<Index>& ids)
+void QRenderWindow::applyFaceOperation(FaceOperation operation, const std::vector<Index>& ids)
 {
     SelectedFaces valid_faces;
-    for (const auto& [id, faces] : selected) {
+    for (const auto& [id, faces] : selected_faces_) {
         const auto pipeline = mesh_pipeline_data_.find(id);
-        const auto generation = generations.find(id);
-        if (pipeline != mesh_pipeline_data_.end() && generation != generations.end()
+        const auto generation = selected_face_generations_.find(id);
+        if (pipeline != mesh_pipeline_data_.end() && generation != selected_face_generations_.end()
             && pipeline->second->generation() == generation->second)
             valid_faces.emplace(id, faces);
     }
     if ((operation == FaceOperation::Hide || operation == FaceOperation::Show || operation == FaceOperation::Isolate)
         && valid_faces.empty())
         return;
-    // 已有 GUI 意图优先，连续反转不能重复使用尚未安装到 Actor 的旧开关。
-    for (const auto& [id, visible] : geometry)
-        geometry_visibility_.try_emplace(id, visible);
+    if (operation != FaceOperation::Hide)
+        clearSelection();
     std::vector<std::pair<Index, std::shared_ptr<const MeshDataSnapshot>>> snapshots;
     GeometryVisibility geometry_updates;
-    std::vector<std::pair<Index, std::pair<bool, bool>>> notifications;
+    std::vector<Index> notifications;
     auto publish_mesh = [this, &snapshots](Index id) {
         if (mesh_pipeline_data_.at(id)->generation() != 0)
             snapshots.emplace_back(id, prepareMeshSnapshot(id));
@@ -598,33 +535,34 @@ void QRenderWindow::applyFaceOperation(FaceOperation operation, const SelectedFa
                 pipeline.hideFaces(faces);
             else {
                 pipeline.showFaces(faces);
-                const bool geometry_visible = geometry.contains(id) && geometry_visibility_[id];
-                notifications.emplace_back(id, std::make_pair(true, geometry_visible));
+                notifications.push_back(id);
             }
             publish_mesh(id);
         }
-    } else if (operation == FaceOperation::Isolate || operation == FaceOperation::ShowAll) {
+    } else if (operation == FaceOperation::Isolate || operation == FaceOperation::ShowAll || operation == FaceOperation::ShowScene) {
         for (auto& [id, pipeline] : mesh_pipeline_data_) {
             if (pipeline->generation() == 0)
                 continue;
-            if (operation == FaceOperation::ShowAll)
+            if (operation != FaceOperation::Isolate) {
                 pipeline->showAllFaces();
-            else {
+                if (operation == FaceOperation::ShowScene)
+                    pipeline->setVisibility(true);
+            } else {
                 const auto faces = valid_faces.find(id);
                 if (faces != valid_faces.end())
                     pipeline->isolateFaces(faces->second);
                 else
                     pipeline->setVisibility(false);
-                notifications.emplace_back(id, std::make_pair(pipeline->isVisibilityEnabled(), false));
             }
+            notifications.push_back(id);
             publish_mesh(id);
         }
-        if (operation == FaceOperation::Isolate) {
-            for (const auto& [id, visible] : geometry) {
-                geometry_updates[id] = false;
-                geometry_visibility_[id] = false;
+        if (operation == FaceOperation::Isolate || operation == FaceOperation::ShowScene) {
+            for (auto& [id, visible] : geometry_visibility_) {
+                visible = operation == FaceOperation::ShowScene;
+                geometry_updates[id] = visible;
                 if (!mesh_snapshots_.contains(id))
-                    notifications.emplace_back(id, std::make_pair(false, false));
+                    notifications.push_back(id);
             }
         }
     } else {
@@ -634,25 +572,24 @@ void QRenderWindow::applyFaceOperation(FaceOperation operation, const SelectedFa
                 ? found->second.get()
                 : nullptr;
             const bool mesh_enabled = pipeline && pipeline->isVisibilityEnabled();
-            const bool component_visible = mesh_enabled || (geometry.contains(id) && geometry_visibility_[id]);
-            bool mesh_visible = false;
+            const bool component_visible = mesh_enabled || (geometry_visibility_.contains(id) && geometry_visibility_.at(id));
             if (pipeline) {
                 if (!mesh_enabled && component_visible)
                     pipeline->setVisibility(false);
                 else
-                    mesh_visible = pipeline->reverseVisibility();
+                    pipeline->reverseVisibility();
                 publish_mesh(id);
             }
-            const bool geometry_visible = geometry.contains(id) && !component_visible;
-            if (geometry.contains(id)) {
+            const bool geometry_visible = geometry_visibility_.contains(id) && !component_visible;
+            if (geometry_visibility_.contains(id)) {
                 geometry_updates[id] = geometry_visible;
                 geometry_visibility_[id] = geometry_visible;
             }
-            notifications.emplace_back(id, std::make_pair(mesh_visible, geometry_visible));
+            notifications.push_back(id);
         }
     }
     dispatch_async([this, operation, snapshots = std::move(snapshots),
-                       geometry_updates = std::move(geometry_updates), notifications = std::move(notifications)](vtkRenderWindow*, vtkUserData user_data) {
+                       geometry_updates = std::move(geometry_updates)](vtkRenderWindow*, vtkUserData user_data) {
         auto* vtk = Data::SafeDownCast(user_data);
         for (const auto& [id, snapshot] : snapshots) {
             vtk->mesh_actor_manager_->loadMesh(id, snapshot, vtk->renderer_);
@@ -661,11 +598,12 @@ void QRenderWindow::applyFaceOperation(FaceOperation operation, const SelectedFa
         }
         for (const auto& [id, visible] : geometry_updates)
             vtk->geometry_actor_manager_->setVisibility(id, visible);
-        for (const auto& [id, visible] : notifications)
-            publishComponentVisibility(id, visible.first, visible.second);
         if (operation == FaceOperation::Hide)
             publishSelection();
     });
+    // 已投递安装命令后同步通知 GUI，后续用户操作不会再被旧渲染回传覆盖。
+    for (auto id : notifications)
+        publishComponentVisibility(id);
 }
 
 void QRenderWindow::onModelChanged(Index model_id)
@@ -680,32 +618,35 @@ void QRenderWindow::onComponentChanged(Index component_id)
 {
     if (!model_query_)
         return;
-    if (auto data = model_query_->getMeshDataByComponent(component_id))
-        loadMeshData(component_id, *data);
+    if (model_query_->getGeometryVtkDataByComponent(component_id))
+        geometry_visibility_.try_emplace(component_id, true);
+    else
+        geometry_visibility_.erase(component_id);
+    const auto mesh_data = model_query_->getMeshDataByComponent(component_id);
+    if (mesh_data)
+        loadMeshData(component_id, *mesh_data);
     else {
-        enqueueMeshOperation([this, component_id] {
-            mesh_pipeline_data_.erase(component_id);
-            mesh_snapshots_.erase(component_id);
-        });
+        clearSelection();
+        mesh_pipeline_data_.erase(component_id);
+        mesh_snapshots_.erase(component_id);
     }
-    enqueueMeshOperation([this, component_id] {
-        dispatch_async([component_id, this](vtkRenderWindow*, vtkUserData user_data) {
-            auto* vtk = Data::SafeDownCast(user_data);
-            if (!model_query_)
-                return;
-            select_manager_->clearSelection();
-            publishSelection();
-            // 几何转换仍沿用现有渲染侧路径，本次只迁移主网格 CPU 管线。
-            if (auto geometry_data = model_query_->getGeometryVtkDataByComponent(component_id)) {
-                vtk->geometry_actor_manager_->loadGeometry(*geometry_data,
-                    model_query_->getComponentName(component_id).toStdString());
-            } else {
-                vtk->geometry_actor_manager_->deleteComponent(component_id);
-            }
-            if (!model_query_->getMeshDataByComponent(component_id))
-                vtk->mesh_actor_manager_->deleteComponent(component_id);
-        });
+    const bool geometry_visible = geometry_visibility_.contains(component_id) && geometry_visibility_.at(component_id);
+    dispatch_async([component_id, geometry_visible, has_mesh = mesh_data.has_value(), this](vtkRenderWindow*, vtkUserData user_data) {
+        auto* vtk = Data::SafeDownCast(user_data);
+        if (!model_query_)
+            return;
+        // 几何转换仍沿用现有渲染侧路径，显隐结果由 GUI 决定。
+        if (auto geometry_data = model_query_->getGeometryVtkDataByComponent(component_id)) {
+            vtk->geometry_actor_manager_->loadGeometry(*geometry_data,
+                model_query_->getComponentName(component_id).toStdString());
+            vtk->geometry_actor_manager_->setVisibility(component_id, geometry_visible);
+        } else {
+            vtk->geometry_actor_manager_->deleteComponent(component_id);
+        }
+        if (!has_mesh)
+            vtk->mesh_actor_manager_->deleteComponent(component_id);
     });
+    publishComponentVisibility(component_id);
 }
 
 void QRenderWindow::setVisibility(Index model_id, bool visibility)
@@ -724,36 +665,36 @@ void QRenderWindow::setComponentVisibility(Index component_id, bool visibility)
 
 void QRenderWindow::setMeshVisibility(Index component_id, bool visibility)
 {
-    enqueueMeshOperation([this, component_id, visibility] {
-        auto& pipeline = mesh_pipeline_data_[component_id];
-        if (!pipeline)
-            pipeline = std::make_shared<MeshPipelineData>();
-        pipeline->setVisibility(visibility);
-        // 整体开关不触发 Filter 重建，只更新发布版本和渲染端开关。
-        auto snapshot = pipeline->generation() != 0 ? prepareMeshSnapshot(component_id) : nullptr;
-        dispatch_async([component_id, visibility, snapshot, this](vtkRenderWindow*, vtkUserData user_data) {
-            auto* vtk = Data::SafeDownCast(user_data);
-            if (snapshot)
-                vtk->mesh_actor_manager_->loadMesh(component_id, snapshot, vtk->renderer_);
-            else
-                vtk->mesh_actor_manager_->setVisibility(component_id, visibility);
-            select_manager_->setMeshHighlightVisible(component_id, visibility);
-            select_manager_->refreshComponentHighlight();
-        });
+    auto& pipeline = mesh_pipeline_data_[component_id];
+    if (!pipeline)
+        pipeline = std::make_shared<MeshPipelineData>();
+    pipeline->setVisibility(visibility);
+    // 整体开关不触发 Filter 重建，只更新发布版本和渲染端开关。
+    auto snapshot = pipeline->generation() != 0 ? prepareMeshSnapshot(component_id) : nullptr;
+    dispatch_async([component_id, visibility, snapshot, this](vtkRenderWindow*, vtkUserData user_data) {
+        auto* vtk = Data::SafeDownCast(user_data);
+        if (snapshot)
+            vtk->mesh_actor_manager_->loadMesh(component_id, snapshot, vtk->renderer_);
+        else
+            vtk->mesh_actor_manager_->setVisibility(component_id, visibility);
+        select_manager_->setMeshHighlightVisible(component_id, visibility);
+        select_manager_->refreshComponentHighlight();
     });
+    publishComponentVisibility(component_id);
 }
 
 void QRenderWindow::setGeometryVisibility(Index component_id, bool visibility)
 {
-    enqueueMeshOperation([this, component_id, visibility] {
+    if (geometry_visibility_.contains(component_id)
+        || (model_query_ && model_query_->getGeometryVtkDataByComponent(component_id)))
         geometry_visibility_[component_id] = visibility;
-        dispatch_async([component_id, visibility, this](vtkRenderWindow*, vtkUserData user_data) {
-            auto* vtk = Data::SafeDownCast(user_data);
-            vtk->geometry_actor_manager_->setVisibility(component_id, visibility);
-            select_manager_->setGeometryHighlightVisible(component_id, visibility);
-            select_manager_->refreshComponentHighlight();
-        });
+    dispatch_async([component_id, visibility, this](vtkRenderWindow*, vtkUserData user_data) {
+        auto* vtk = Data::SafeDownCast(user_data);
+        vtk->geometry_actor_manager_->setVisibility(component_id, visibility);
+        select_manager_->setGeometryHighlightVisible(component_id, visibility);
+        select_manager_->refreshComponentHighlight();
     });
+    publishComponentVisibility(component_id);
 }
 
 QSelection* QRenderWindow::selectedIDs()
@@ -766,21 +707,22 @@ QSelection* QRenderWindow::selectedIDs()
     return selection;
 }
 
+void QRenderWindow::invalidateSelection()
+{
+    ++selection_epoch_;
+    selection_snapshot_.reset();
+    selected_faces_.clear();
+    selected_face_generations_.clear();
+    emit selectedChanged();
+}
+
 void QRenderWindow::setSelectionRevision(int revision)
 {
     if (selection_revision_ == revision)
         return;
-    // GUI 先推进版本，使已经排队、尚未送达的旧参数结果立即失效。
     selection_revision_ = revision;
-    selection_snapshot_.reset();
     emit selectionRevisionChanged();
-    emit selectedChanged(); // 没有渲染窗口时也立即同步空选择
-    // 拾取器及高亮属于渲染线程；与后续发布使用同一版本，避免混入旧选择。
-    enqueueRenderOperation([this, revision](vtkRenderWindow*, vtkUserData) {
-        render_selection_revision_ = revision;
-        select_manager_->clearSelection();
-        publishSelection();
-    });
+    clearSelection();
 }
 
 void QRenderWindow::publishSelection()
@@ -788,21 +730,38 @@ void QRenderWindow::publishSelection()
     auto selection = select_manager_->getSelection();
     if (selection && selection->component_id < 0)
         selection->component_id = cur_component_id_;
-    // getSelection 返回独立副本；发布后只读，避免跨线程修改。
+    auto faces = select_manager_->selectedFaceIdsByComponent();
+    MeshGenerations generations;
+    for (const auto& [id, face_ids] : faces) {
+        if (auto actor = data_->mesh_actor_manager_->getComponentActor(id))
+            generations[id] = actor->dataGeneration();
+    }
     std::shared_ptr<const Selection> snapshot = std::move(selection);
     const int revision = render_selection_revision_;
-    QMetaObject::invokeMethod(&selection_dispatcher_, [this, snapshot, revision] {
-        // 用户可能在排队期间切换参数或结束选择，旧结果不能覆盖当前参数。
-        if (revision != selection_revision_)
-            return;
-        selection_snapshot_ = snapshot;
-        emit selectedChanged(); }, Qt::QueuedConnection);
+    const auto epoch = render_selection_epoch_;
+    QMetaObject::invokeMethod(&selection_dispatcher_, [this, snapshot, faces = std::move(faces), generations = std::move(generations), revision, epoch] {
+            if (revision != selection_revision_ || epoch != selection_epoch_)
+                return;
+            // 网格换代后，即使外部参数未切换，也不能恢复旧网格的选择身份。
+            for (const auto& [id, generation] : generations) {
+                const auto pipeline = mesh_pipeline_data_.find(id);
+                if (pipeline == mesh_pipeline_data_.end() || pipeline->second->generation() != generation)
+                    return;
+            }
+            selection_snapshot_ = snapshot;
+            selected_faces_ = faces;
+            selected_face_generations_ = generations;
+            emit selectedChanged(); }, Qt::QueuedConnection);
 }
 
-void QRenderWindow::publishComponentVisibility(Index component_id, bool mesh_visible, bool geometry_visible)
+void QRenderWindow::publishComponentVisibility(Index component_id)
 {
-    // QQuickVTKItem 接管自身事件，通知复用现有 GUI 调度对象。
-    QMetaObject::invokeMethod(&selection_dispatcher_, [this, component_id, mesh_visible, geometry_visible] { emit componentVisibilityChanged(component_id, mesh_visible, geometry_visible); }, Qt::QueuedConnection);
+    const auto pipeline = mesh_pipeline_data_.find(component_id);
+    const bool mesh_visible = pipeline != mesh_pipeline_data_.end() && pipeline->second->generation() != 0
+        && pipeline->second->isVisibilityEnabled();
+    const auto geometry = geometry_visibility_.find(component_id);
+    emit componentVisibilityChanged(component_id, mesh_visible,
+        geometry != geometry_visibility_.end() && geometry->second);
 }
 
 void QRenderWindow::setModelQuery(QModelQuery* query)
@@ -818,7 +777,7 @@ void QRenderWindow::setModelQuery(QModelQuery* query)
 
 void QRenderWindow::setSelectComponent(Index component_id)
 {
-    enqueueRenderOperation([component_id, this](vtkRenderWindow* renderWindow, vtkUserData userData) -> void {
+    dispatch_async([component_id, this](vtkRenderWindow* renderWindow, vtkUserData userData) -> void {
         Data* vtk = Data::SafeDownCast(userData);
         if (!vtk)
             return;
@@ -829,24 +788,32 @@ void QRenderWindow::setSelectComponent(Index component_id)
 
 void QRenderWindow::setSelectMode(QString select_mode)
 {
-    enqueueRenderOperation([select_mode, this](vtkRenderWindow* renderWindow, vtkUserData userData) -> void {
+    invalidateSelection();
+    const auto epoch = selection_epoch_;
+    const auto revision = selection_revision_;
+    dispatch_async([select_mode, epoch, revision, this](vtkRenderWindow*, vtkUserData) {
+        render_selection_epoch_ = epoch;
+        render_selection_revision_ = revision;
         select_manager_->setSelectMode(select_mode.toStdString());
-        publishSelection();
     });
 }
 
 void QRenderWindow::setFaceSelectionByAngle(bool enabled, double angle_deg)
 {
-    enqueueRenderOperation([enabled, angle_deg, this](vtkRenderWindow* renderWindow, vtkUserData userData) -> void {
+    dispatch_async([enabled, angle_deg, this](vtkRenderWindow* renderWindow, vtkUserData userData) -> void {
         select_manager_->setFaceSelectionByAngle(enabled, angle_deg);
     });
 }
 
 void QRenderWindow::clearSelection()
 {
-    enqueueRenderOperation([this](vtkRenderWindow* renderWindow, vtkUserData userData) -> void {
-        this->select_manager_->clearSelection();
-        publishSelection();
+    invalidateSelection();
+    const auto epoch = selection_epoch_;
+    const auto revision = selection_revision_;
+    dispatch_async([this, epoch, revision](vtkRenderWindow*, vtkUserData) {
+        render_selection_epoch_ = epoch;
+        render_selection_revision_ = revision;
+        select_manager_->clearSelection();
     });
 }
 
@@ -859,7 +826,7 @@ void QRenderWindow::setFeatureAdaptor(QObject* adaptor)
 
 void QRenderWindow::setScaleBarVisible(bool on)
 {
-    enqueueRenderOperation([on](vtkRenderWindow* renderWindow, vtkUserData userData) -> void {
+    dispatch_async([on](vtkRenderWindow* renderWindow, vtkUserData userData) -> void {
         Data* vtk = Data::SafeDownCast(userData);
         vtk->scale_bar_axis_->SetVisibility(on);
     });
@@ -867,7 +834,7 @@ void QRenderWindow::setScaleBarVisible(bool on)
 
 void QRenderWindow::setClick()
 {
-    enqueueRenderOperation([this](vtkRenderWindow* renderWindow, vtkUserData userData) {
+    dispatch_async([this](vtkRenderWindow* renderWindow, vtkUserData userData) {
         Data* vtk = Data::SafeDownCast(userData);
         vtk->style_->SetClick();
     });
@@ -881,7 +848,7 @@ void QRenderWindow::setAttriMode(
 {
     if (component_id < 0)
         return;
-    enqueueRenderOperation([this, component_id, attr_name, mode, args](vtkRenderWindow* renderWindow, vtkUserData userData) -> void {
+    dispatch_async([this, component_id, attr_name, mode, args](vtkRenderWindow* renderWindow, vtkUserData userData) -> void {
         Data* vtk = Data::SafeDownCast(userData);
         Mode mode_enum = static_cast<Mode>(mode);
 
@@ -922,7 +889,7 @@ void QRenderWindow::cancelComponentAttri(Index component_id)
 {
     if (component_id < 0)
         return;
-    enqueueRenderOperation([component_id](vtkRenderWindow* renderWindow, vtkUserData userData) -> void {
+    dispatch_async([component_id](vtkRenderWindow* renderWindow, vtkUserData userData) -> void {
         Data* vtk = Data::SafeDownCast(userData);
         if (vtk->mesh_actor_manager_ && vtk->mesh_actor_manager_->getCount(component_id)) {
             vtk->mesh_actor_manager_->cancelAttri(
@@ -935,7 +902,7 @@ void QRenderWindow::cancelComponentAttri(Index component_id)
 void QRenderWindow::setGeometryStyle(int style)
 {
     geometry_style_ = static_cast<GeometryRenderStyle>(style);
-    enqueueRenderOperation([style, this](vtkRenderWindow* renderWindow, vtkUserData userData) -> void {
+    dispatch_async([style, this](vtkRenderWindow* renderWindow, vtkUserData userData) -> void {
         Data* vtk = Data::SafeDownCast(userData);
         if (vtk->geometry_actor_manager_) {
             vtk->geometry_actor_manager_->setCurrentRenderStyle(static_cast<GeometryRenderStyle>(style));
@@ -956,7 +923,7 @@ int QRenderWindow::getGeometryStyle()
 void QRenderWindow::setMeshStyle(int style)
 {
     mesh_style_ = static_cast<MeshRenderStyle>(style);
-    enqueueRenderOperation([style, this](vtkRenderWindow* renderWindow, vtkUserData userData) -> void {
+    dispatch_async([style, this](vtkRenderWindow* renderWindow, vtkUserData userData) -> void {
         Data* vtk = Data::SafeDownCast(userData);
         if (vtk->mesh_actor_manager_) {
             vtk->mesh_actor_manager_->setCurrentRenderStyle(static_cast<MeshRenderStyle>(style));
@@ -976,7 +943,7 @@ int QRenderWindow::getMeshStyle()
 
 void QRenderWindow::setTopologyDiagnosticCategoryEnabled(int category, bool enabled)
 {
-    enqueueRenderOperation([category, enabled](vtkRenderWindow* renderWindow, vtkUserData userData) -> void {
+    dispatch_async([category, enabled](vtkRenderWindow* renderWindow, vtkUserData userData) -> void {
         Data* vtk = Data::SafeDownCast(userData);
         if (vtk->mesh_actor_manager_)
             vtk->mesh_actor_manager_->setTopologyDiagnosticCategoryEnabled(category, enabled);
@@ -985,7 +952,7 @@ void QRenderWindow::setTopologyDiagnosticCategoryEnabled(int category, bool enab
 
 void QRenderWindow::setDihedralAngleRange(double minimum, double maximum)
 {
-    enqueueRenderOperation([minimum, maximum](vtkRenderWindow* renderWindow, vtkUserData userData) -> void {
+    dispatch_async([minimum, maximum](vtkRenderWindow* renderWindow, vtkUserData userData) -> void {
         Data* vtk = Data::SafeDownCast(userData);
         if (vtk->mesh_actor_manager_)
             vtk->mesh_actor_manager_->setDihedralAngleRange(minimum, maximum);
@@ -994,8 +961,8 @@ void QRenderWindow::setDihedralAngleRange(double minimum, double maximum)
 
 void QRenderWindow::setGeometryTopologyDiagnosticCategoryEnabled(int category, bool enabled)
 {
-    enqueueRenderOperation([category, enabled, this](vtkRenderWindow* renderWindow,
-                               vtkUserData userData) -> void {
+    dispatch_async([category, enabled, this](vtkRenderWindow* renderWindow,
+                       vtkUserData userData) -> void {
         Data* vtk = Data::SafeDownCast(userData);
         if (!vtk || !vtk->geometry_actor_manager_)
             return;
@@ -1005,7 +972,7 @@ void QRenderWindow::setGeometryTopologyDiagnosticCategoryEnabled(int category, b
 
 void QRenderWindow::setGeometryTopologyDiagnosticSmallEdgeLength(double threshold)
 {
-    enqueueRenderOperation([threshold](vtkRenderWindow* renderWindow, vtkUserData userData) -> void {
+    dispatch_async([threshold](vtkRenderWindow* renderWindow, vtkUserData userData) -> void {
         Data* vtk = Data::SafeDownCast(userData);
         if (!vtk || !vtk->geometry_actor_manager_)
             return;
@@ -1015,7 +982,7 @@ void QRenderWindow::setGeometryTopologyDiagnosticSmallEdgeLength(double threshol
 
 void QRenderWindow::setGeometryTopologyDiagnosticSmallFaceArea(double threshold)
 {
-    enqueueRenderOperation([threshold](vtkRenderWindow* renderWindow, vtkUserData userData) -> void {
+    dispatch_async([threshold](vtkRenderWindow* renderWindow, vtkUserData userData) -> void {
         Data* vtk = Data::SafeDownCast(userData);
         if (!vtk || !vtk->geometry_actor_manager_)
             return;

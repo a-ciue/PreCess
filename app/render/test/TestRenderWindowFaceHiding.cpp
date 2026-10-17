@@ -2,15 +2,19 @@
  * @file TestRenderWindowFaceHiding.cpp
  * @brief 面隐藏与恢复时选择快照、高亮及面身份的视口回归测试
  */
+#include "ComponentData.h"
 #include "GeometryActor.h"
 #include "GeometryActorManager.h"
+#include "GeometryData.h"
 #include "MakeMeshData.h"
 #include "MakeMeshDataVtk.h"
 #include "MeshActorManager.h"
 #include "MeshActorSelectOp.h"
 #include "MeshPipelineData.h"
+#include "ModelLayer.h"
 #include "QRenderWindow.h"
 #include "QRenderWindowStyle.h"
+#include "SessionQuery.h"
 
 #include <BRep_Builder.hxx>
 #include <QElapsedTimer>
@@ -70,6 +74,9 @@ QGuiApplication& testApplication()
 //! @brief 两个不重叠的面共用真实视口，覆盖公共菜单入口的异步调度与拾取。
 struct FaceHidingViewport {
     MeshData mesh;
+    ModelLayer model;
+    session::SessionQuery native_query { model };
+    QModelQuery query { &native_query };
     QQuickWindow window;
     QRenderWindow item;
 
@@ -102,6 +109,33 @@ struct FaceHidingViewport {
         });
         item.setSelectMode("Face");
         window.show();
+    }
+
+    //! @brief 建立真实模型查询并加载几何，覆盖 GUI 状态初始化和渲染安装路径。
+    void loadGeometry(Index component_id, bool publish = true)
+    {
+        if (!query.hasComponent(component_id)) {
+            ComponentDatas components;
+            for (Index id = 0; id <= 10; ++id) {
+                auto component = std::make_unique<ComponentData>();
+                if (id == 7)
+                    component->mesh = mesh.clone();
+                components.push_back(std::move(component));
+            }
+            model.addModel("geometry fixture", std::move(components));
+            item.setModelQuery(&query);
+        }
+        BRep_Builder builder;
+        TopoDS_Compound shape;
+        TopoDS_Vertex vertex;
+        builder.MakeCompound(shape);
+        builder.MakeVertex(vertex, gp_Pnt(100.0, 100.0, 0.0), 1.0e-7);
+        builder.Add(shape, vertex);
+        auto geometry = std::make_unique<GeometryData>();
+        geometry->setRootShape(shape);
+        model.findComponent(component_id)->geometry = std::move(geometry);
+        if (publish)
+            item.onComponentChanged(component_id);
     }
 
     //! @brief 在视口对象析构前释放场景图，确保 VTK 服务按原有生命周期清理。
@@ -506,17 +540,11 @@ TEST_CASE("QRenderWindow reversing geometry follows the original component visib
     SECTION("both visible") { geometry_enabled = true; }
     SECTION("both hidden") { mesh_enabled = false; }
     SECTION("hidden render style preserves the component visibility switch") { hidden_style = true; }
+    env.loadGeometry(7);
     env.item.setMeshVisibility(7, mesh_enabled);
-    env.item.dispatch_async([geometry_enabled, hidden_style](vtkRenderWindow*, QQuickVTKItem::vtkUserData user_data) {
+    env.item.setGeometryVisibility(7, geometry_enabled);
+    env.item.dispatch_async([hidden_style](vtkRenderWindow*, QQuickVTKItem::vtkUserData user_data) {
         auto* data = QRenderWindow::Data::SafeDownCast(user_data);
-        BRep_Builder builder;
-        TopoDS_Compound shape;
-        TopoDS_Vertex vertex;
-        builder.MakeCompound(shape);
-        builder.MakeVertex(vertex, gp_Pnt(100.0, 100.0, 0.0), 1.0e-7);
-        builder.Add(shape, vertex);
-        data->geometry_actor_manager_->loadGeometry({ shape, 7 });
-        data->geometry_actor_manager_->setVisibility(7, geometry_enabled);
         if (hidden_style) {
             data->mesh_actor_manager_->getComponentActor(7)->setRenderStyle(MeshRenderStyle::Hidden);
             data->geometry_actor_manager_->getComponentActor(7)->setRenderStyle(GeometryRenderStyle::Hidden);
@@ -578,6 +606,9 @@ TEST_CASE("QRenderWindow isolating faces keeps selections from multiple componen
     std::unique_ptr<MeshData> second_mesh;
     FaceHidingViewport env;
     REQUIRE(env.flush());
+    env.loadGeometry(7);
+    env.loadGeometry(10);
+    REQUIRE(env.flush());
     env.selectFace(0);
     second_mesh = env.mesh.clone();
     for (auto& point : second_mesh->vertex_positions_)
@@ -589,18 +620,6 @@ TEST_CASE("QRenderWindow isolating faces keeps selections from multiple componen
     auto unselected_data = std::make_unique<MeshPipelineData>();
     unselected_data->loadModelData(MakeMeshDataVtk(env.mesh));
     env.item.loadMeshData(9, std::move(unselected_data));
-    env.item.dispatch_async([](vtkRenderWindow*, QQuickVTKItem::vtkUserData user_data) {
-        auto* data = QRenderWindow::Data::SafeDownCast(user_data);
-        // 纯几何组件也属于全场景隔离范围，不能只遍历网格管理器。
-        BRep_Builder builder;
-        TopoDS_Compound shape;
-        TopoDS_Vertex vertex;
-        builder.MakeCompound(shape);
-        builder.MakeVertex(vertex, gp_Pnt(100.0, 100.0, 0.0), 1.0e-7);
-        builder.Add(shape, vertex);
-        data->geometry_actor_manager_->loadGeometry({ shape, 7 });
-        data->geometry_actor_manager_->loadGeometry({ shape, 10 });
-    });
     REQUIRE(env.flush());
     env.selectFace(0, 1.5);
     REQUIRE(env.selectedFaceIds().size() == 2);
@@ -778,8 +797,8 @@ TEST_CASE("QRenderWindow rejects invalid and overflowing reverse visibility comp
         CHECK(notifications.at(7) == std::make_pair(false, false));
 }
 
-//! @brief 面命令尚未导出选择时释放真实场景图，重建后必须继续消费原命令及后续操作。
-TEST_CASE("QRenderWindow pending face operations resume after scene graph recreation")
+//! @brief GUI 已完成面命令后释放真实场景图，重建后按原顺序安装快照和整体开关。
+TEST_CASE("QRenderWindow submitted face operations survive scene graph recreation")
 {
     qputenv("QSG_RENDER_LOOP", "threaded");
     testApplication();
@@ -796,7 +815,7 @@ TEST_CASE("QRenderWindow pending face operations resume after scene graph recrea
     QObject::connect(&env.window, &QQuickWindow::sceneGraphInvalidated, &env.window, [&invalidated] { invalidated.store(true); }, Qt::DirectConnection);
     QObject::connect(&env.window, &QQuickWindow::sceneGraphInitialized, &env.window, [&recreated] { recreated.store(true); }, Qt::DirectConnection);
 
-    // 先提交面命令再关闭窗口：pending 已置位，但尚未进入下一次渲染同步；后续开关等待其完成。
+    // GUI 同步完成面数据计算，渲染安装尚未进入下一次同步，随后关闭窗口。
     env.item.showAllHiddenFaces();
     env.item.setMeshVisibility(7, false);
     env.item.dispatch_async([&exported](vtkRenderWindow*, QQuickVTKItem::vtkUserData) { exported.store(true); });
@@ -811,7 +830,7 @@ TEST_CASE("QRenderWindow pending face operations resume after scene graph recrea
     REQUIRE(invalidated.load());
     REQUIRE_FALSE(exported.load());
 
-    // 新场景必须先执行保留的面命令，再执行整体隐藏，不能因重建清掉 pending 而倒序。
+    // 新场景重放缓存与已有渲染命令后，必须保留最新整体开关和已恢复的面集。
     env.window.show();
     REQUIRE(env.flush());
     REQUIRE(recreated.load());
@@ -825,7 +844,7 @@ TEST_CASE("QRenderWindow pending face operations resume after scene graph recrea
     REQUIRE(env.flush());
     CHECK_FALSE(visible);
 
-    // 再提交一次反转，验证 GUI 队列已解除等待且可继续处理新操作。
+    // 再提交一次反转，验证场景重建后仍可继续处理新操作。
     env.item.reverseVisibility({ 7 });
     REQUIRE(env.flush());
     env.item.dispatch_async([&visible](vtkRenderWindow*, QQuickVTKItem::vtkUserData user_data) {
@@ -834,4 +853,150 @@ TEST_CASE("QRenderWindow pending face operations resume after scene graph recrea
     });
     REQUIRE(env.flush());
     CHECK(visible);
+}
+
+//! @brief 对象树先收到反转再主动显示时，不允许渲染完成后的旧通知覆盖新图标。
+TEST_CASE("QRenderWindow publishes GUI visibility decisions without stale render notifications")
+{
+    testApplication();
+    bool tree_visible = true;
+    FaceHidingViewport env;
+    REQUIRE(env.flush());
+    QObject::connect(&env.item, &QRenderWindow::componentVisibilityChanged, &env.item,
+        [&tree_visible](Index id, bool mesh_visible, bool geometry_visible) {
+            if (id == 7)
+                tree_visible = mesh_visible || geometry_visible;
+        });
+    env.item.reverseVisibility({ 7 });
+    CHECK_FALSE(tree_visible); // GUI 决定后立即同步，不等待渲染往返。
+    tree_visible = true; // 模拟对象树显示按钮的即时反馈。
+    env.item.setMeshVisibility(7, true);
+    CHECK(tree_visible);
+    REQUIRE(env.flush());
+    bool actor_visible = false;
+    env.item.dispatch_async([&actor_visible](vtkRenderWindow*, QQuickVTKItem::vtkUserData user_data) {
+        auto* data = QRenderWindow::Data::SafeDownCast(user_data);
+        actor_visible = data->mesh_actor_manager_->getComponentActor(7)->isVisibilityEnabled();
+    });
+    REQUIRE(env.flush());
+    CHECK(actor_visible);
+    CHECK(tree_visible);
+}
+
+//! @brief 主动清理与数据换代立即作废 GUI 选择，迟到的旧消息不能再恢复面命令输入。
+TEST_CASE("QRenderWindow invalidates GUI face selections before late selection delivery")
+{
+    testApplication();
+    QObject gui_dispatcher;
+    FaceHidingViewport env;
+    REQUIRE(env.flush());
+    env.selectFace(0);
+    REQUIRE(env.selectedFaceIds() == std::vector<Index>({ 0 }));
+    enum class Change { Clear,
+        Mode,
+        Parameter,
+        Reload };
+    Change change = Change::Clear;
+    SECTION("explicit clearing") { }
+    SECTION("selection mode changes") { change = Change::Mode; }
+    SECTION("parameter context changes") { change = Change::Parameter; }
+    SECTION("mesh generation changes") { change = Change::Reload; }
+    bool cleared_immediately = false;
+    bool changed = false;
+    env.item.dispatch_async([&](vtkRenderWindow*, QQuickVTKItem::vtkUserData user_data) {
+        // GUI 清理消息先排队，随后发布仍属于旧版本的选择消息，稳定复现迟到回传。
+        QMetaObject::invokeMethod(&gui_dispatcher, [&] {
+            if (change == Change::Clear)
+                env.item.clearSelection();
+            else if (change == Change::Mode)
+                env.item.setSelectMode("Component");
+            else if (change == Change::Parameter)
+                env.item.setSelectionRevision(env.item.selectionRevision() + 1);
+            else
+                env.item.loadMeshData(7, MakeMeshDataVtk(env.mesh));
+            cleared_immediately = env.selectedFaceIds().empty();
+            env.item.hideSelectedFaces(); // 渲染侧尚有旧选择，GUI 不得再取用它。
+            changed = true; }, Qt::QueuedConnection);
+        auto* data = QRenderWindow::Data::SafeDownCast(user_data);
+        data->style_->InvokeEvent(vtkCommand::SelectionChangedEvent);
+    });
+    REQUIRE(env.flush());
+    REQUIRE(changed);
+    CHECK(cleared_immediately);
+    CHECK(env.selectedFaceIds().empty());
+    CHECK(env.visibleFaceIds() == std::vector<Index>({ 0, 1 }));
+}
+
+//! @brief 几何状态由模型加载初始化，重载保留开关，移除后不能在全局反转中复活。
+TEST_CASE("QRenderWindow maintains GUI geometry visibility across load update and removal")
+{
+    testApplication();
+    std::map<Index, std::pair<bool, bool>> visibility;
+    FaceHidingViewport env;
+    // 真实几何已存在但尚未安装时，提前设置的开关也必须在首次加载后保留。
+    env.loadGeometry(10, false);
+    env.item.setGeometryVisibility(10, false);
+    env.item.onComponentChanged(10);
+    REQUIRE(env.flush());
+    bool initially_hidden = false;
+    env.item.dispatch_async([&initially_hidden](vtkRenderWindow*, QQuickVTKItem::vtkUserData user_data) {
+        auto* data = QRenderWindow::Data::SafeDownCast(user_data);
+        auto actor = data->geometry_actor_manager_->getComponentActor(10);
+        initially_hidden = actor && !actor->isVisibilityEnabled();
+    });
+    REQUIRE(env.flush());
+    REQUIRE(initially_hidden);
+    QObject::connect(&env.item, &QRenderWindow::componentVisibilityChanged, &env.item,
+        [&visibility](Index id, bool mesh_visible, bool geometry_visible) {
+            visibility[id] = { mesh_visible, geometry_visible };
+        });
+    env.item.setGeometryVisibility(10, false);
+    CHECK(visibility[10] == std::make_pair(false, false));
+    env.loadGeometry(10);
+    CHECK(visibility[10] == std::make_pair(false, false));
+    env.item.reverseVisibility({ 10 });
+    CHECK(visibility[10] == std::make_pair(false, true));
+    REQUIRE(env.flush());
+    SECTION("geometry removal clears presence")
+    {
+        env.model.findComponent(10)->geometry.reset();
+        env.item.onComponentChanged(10);
+    }
+    SECTION("component removal clears presence")
+    {
+        env.model.removeComponent(10);
+        env.item.deleteComponent(10);
+    }
+    SECTION("scene recreation preserves hidden geometry")
+    {
+        env.item.setGeometryVisibility(10, false);
+        REQUIRE(env.flush());
+        env.window.hide();
+        env.window.releaseResources();
+        QCoreApplication::processEvents();
+        env.window.show();
+        REQUIRE(env.flush());
+        bool hidden = false;
+        env.item.dispatch_async([&hidden](vtkRenderWindow*, QQuickVTKItem::vtkUserData user_data) {
+            auto* data = QRenderWindow::Data::SafeDownCast(user_data);
+            auto actor = data->geometry_actor_manager_->getComponentActor(10);
+            hidden = actor && !actor->isVisibilityEnabled();
+        });
+        REQUIRE(env.flush());
+        CHECK(hidden);
+        env.item.reverseVisibility({ 10 });
+        CHECK(visibility[10] == std::make_pair(false, true));
+        REQUIRE(env.flush());
+        return;
+    }
+    env.item.reverseVisibility({ 10 });
+    CHECK(visibility[10] == std::make_pair(false, false));
+    REQUIRE(env.flush());
+    bool geometry_removed = false;
+    env.item.dispatch_async([&geometry_removed](vtkRenderWindow*, QQuickVTKItem::vtkUserData user_data) {
+        auto* data = QRenderWindow::Data::SafeDownCast(user_data);
+        geometry_removed = !data->geometry_actor_manager_->hasComponent(10);
+    });
+    REQUIRE(env.flush());
+    CHECK(geometry_removed);
 }

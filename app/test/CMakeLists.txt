@@ -50,7 +50,9 @@ precess_test_link_libraries(TestQModelDeletion modelQml Qt6::Qml)
 precess_add_test(TestUndoQml TestUndoQml.cpp ../TreeModel.cpp ../TreeModel.h)
 set_target_properties(TestUndoQml PROPERTIES AUTOMOC ON)
 target_include_directories(TestUndoQml PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}/..")
-precess_test_link_libraries(TestUndoQml modelQml modelQmlplugin SystemQmlplugin renderQmlplugin renderQml Qt6::QuickControls2)
+precess_test_link_libraries(TestUndoQml modelQml modelQmlplugin SystemQmlplugin renderQmlplugin renderQml vtkPart Qt6::QuickControls2)
+# 显隐入口回归会重建实际 VTK 场景，以检查恢复后的面集和隔离样式。
+vtk_module_autoinit(TARGETS TestUndoQml MODULES VTK::GUISupportQtQuick VTK::RenderingOpenGL2 VTK::InteractionStyle)
 qt_add_resources(TestUndoQml undo_ui
     PREFIX "/undo-ui"
     BASE "${CMAKE_CURRENT_SOURCE_DIR}/.."

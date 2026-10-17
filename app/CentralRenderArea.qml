@@ -838,11 +838,7 @@ Page {
             StyledMenuItem {
                 text: "全部显示"
                 shown: !viewportMenu.hasPicks
-                onTriggered: {
-                    App.registry.objectTree.showAllNodes()
-                    // 同时恢复局部隐藏面并结束面隔离。
-                    myItem.showAllHiddenFaces()
-                }
+                onTriggered: myItem.showAll()
             }
 
             StyledMenuItem {

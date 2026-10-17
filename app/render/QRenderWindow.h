@@ -28,8 +28,6 @@
 #include <vtkRenderWindowInteractor.h>
 #include <vtkRenderer.h>
 
-#include <deque>
-#include <functional>
 #include <memory>
 
 class MeshActor;
@@ -194,12 +192,14 @@ public:
     Q_INVOKABLE void isolateSelectedFaces();
 
     /**
-     * @brief 恢复全部局部隐藏面并结束面隔离（右键菜单"全部显示"）
+     * @brief 仅恢复局部隐藏面并结束面隔离，保留组件整体显隐开关
      */
     Q_INVOKABLE void showAllHiddenFaces();
+    /** @brief 恢复全部组件的网格和几何，清除人工隐藏并结束面隔离，保留裁剪。 */
+    Q_INVOKABLE void showAll();
 
     /**
-     * @brief 在渲染线程反转场景组件显隐；几何沿用组件整体开关，网格兼容局部隐藏面
+     * @brief 在 GUI 线程决定场景组件的反转结果；几何沿用组件整体开关，网格兼容局部隐藏面
      * @param component_ids 对象树提供的场景组件 id，结果经信号同步回对象树
      */
     Q_INVOKABLE void reverseVisibility(const QVariantList& component_ids);
@@ -254,56 +254,51 @@ signals:
     void meshStyleChanged();
     void clicked();
     void rightClicked();
-    /** @brief 在 GUI 线程通知对象树同步渲染操作后的网格、几何显隐开关。 */
+    /** @brief 在 GUI 决定显隐后同步通知对象树，渲染线程只安装结果。 */
     void componentVisibilityChanged(Index component_id, bool mesh_visible, bool geometry_visible);
 
 private:
-    /** @brief 面命令只在渲染端导出原始选择，在 GUI 端执行数据操作。 */
+    /** @brief GUI 根据已发布选择执行面显隐，结果经渲染队列单向安装。 */
     enum class FaceOperation { Hide,
         Show,
         Isolate,
         ShowAll,
+        ShowScene,
         Reverse };
     using SelectedFaces = std::unordered_map<Index, std::vector<vtkIdType>>;
     using MeshGenerations = std::unordered_map<Index, std::uint64_t>;
     using GeometryVisibility = std::unordered_map<Index, bool>;
-    /** @brief 捕获渲染端选择与几何开关，不跨线程访问 GUI 管线。 */
-    void requestFaceOperation(FaceOperation operation, std::vector<Index> ids = { });
-    /** @brief 在 GUI 线程计算面命令，发布独立结果并保留原交互语义。 */
-    void applyFaceOperation(FaceOperation operation, const SelectedFaces& selected,
-        const MeshGenerations& generations, const GeometryVisibility& geometry, const std::vector<Index>& ids);
+    /** @brief 直接使用 GUI 缓存的选择和网格代次计算显隐结果。 */
+    void applyFaceOperation(FaceOperation operation, const std::vector<Index>& ids = { });
+    /** @brief 立即作废 GUI 选择，并推进内部版本，拒绝清理前的迟到消息。 */
+    void invalidateSelection();
     /** @brief 发布当前组件结果，缓存用于场景图重建。 */
     std::shared_ptr<const MeshDataSnapshot> prepareMeshSnapshot(Index component_id);
     /** @brief 将裁剪控件值排队交给 GUI，并丢弃停用前的旧交互。 */
     void publishClipPlane(const MeshClipPlane& plane, std::uint64_t revision);
     /** @brief 在 GUI 线程更新所有主网格的隐藏/裁剪数据。 */
     void applyClipPlane(const MeshClipPlane& plane);
-    /** @brief 将 GUI 数据变更按调用顺序串行处理，面选择回传期间暂存后续操作。 */
-    void enqueueMeshOperation(std::function<void()> operation);
-    /** @brief 消费待处理的 GUI 操作，遇到异步选择导出时暂停。 */
-    void drainMeshOperations();
-    /** @brief 让选择和样式等渲染命令等待先前的数据操作，保持原有调用顺序。 */
-    void enqueueRenderOperation(std::function<void(vtkRenderWindow*, vtkUserData)> operation);
     /** @brief 安装已自持的 GUI 数据，按需保留原整体开关并清理选择。 */
     void installMeshData(Index component_id, std::shared_ptr<MeshPipelineData> pipeline, bool reset_selection);
-    std::deque<std::function<void()>> mesh_operations_; //> 仅 GUI 访问，保持混合命令顺序
-    bool draining_mesh_operations_ { };
-    bool face_operation_pending_ { };
     std::unordered_map<Index, std::shared_ptr<MeshPipelineData>> mesh_pipeline_data_; //> 仅 GUI 访问
     std::unordered_map<Index, std::shared_ptr<const MeshDataSnapshot>> mesh_snapshots_; //> 发布后只读
-    GeometryVisibility geometry_visibility_; //> GUI 接收的最新几何开关意图
+    GeometryVisibility geometry_visibility_; //> 仅含已存在几何的 GUI 整体显隐状态
     MeshClipPlane mesh_clip_;
     std::uint64_t clip_revision_ { };
 
     //! @brief 渲染线程制作选择快照，排队交付 GUI 线程，禁止 QML 直接读取拾取器。
     void publishSelection();
-    /** @brief 将渲染线程得到的组件显隐结果排队发送到 GUI 线程。 */
-    void publishComponentVisibility(Index component_id, bool mesh_visible, bool geometry_visible);
+    /** @brief 在 GUI 线程发布当前显隐结果，对象树只接收最新状态。 */
+    void publishComponentVisibility(Index component_id);
     // QQuickVTKItem 会接管事件分发，GUI 排队通知交给独立 QObject。
     QObject selection_dispatcher_;
     std::shared_ptr<const Selection> selection_snapshot_; //> 仅 GUI 线程访问
     int selection_revision_ { }; //> GUI 侧版本
     int render_selection_revision_ { }; //> 渲染侧已应用版本
+    SelectedFaces selected_faces_; //> 与 QML 选择同批回传的原始面 ID，仅 GUI 访问
+    MeshGenerations selected_face_generations_; //> 各选中组件的源网格代次，仅 GUI 访问
+    std::uint64_t selection_epoch_ { }; //> GUI 主动清理与上下文切换的内部版本
+    std::uint64_t render_selection_epoch_ { }; //> 当前渲染选择所属内部版本
 
     GeometryRenderStyle geometry_style_ { GeometryRenderStyle::SurfaceWithEdges };
     MeshRenderStyle mesh_style_ { MeshRenderStyle::FaceWithEdges };

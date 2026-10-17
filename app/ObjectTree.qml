@@ -469,12 +469,8 @@ Pane {
     }
 
     function showAllNodes() {
-        treeModel.setAllVisibility(true)
-        for (let i = 0; i < treeModel.rowCount(); i++) {
-            let idx = treeModel.index(i, 0)
-            App.modelVisibilityUpdated(
-                treeModel.data(idx, TreeModel.NodeIdRole), true)
-        }
+        // 由渲染窗口统一恢复组件、隐藏面和隔离状态，再同步对象树。
+        App.registry.renderWindow.showAll()
     }
 
     function isolateNode(nodeId) {
