@@ -81,7 +81,8 @@ struct FaceHidingViewport {
     QRenderWindow item;
 
     //! @brief 加载原面 0、1；隐藏面 0 后，面 1 的渲染单元索引会压缩为 0。
-    FaceHidingViewport()
+    //! @param show_window 是否立即显示窗口；false 用于验证首次场景初始化前的命令。
+    explicit FaceHidingViewport(bool show_window = true)
     {
         // 复用已验证的演示网格体数据，将测试面放在体和边之外，避免拾取遮挡。
         mesh = MakeMeshData();
@@ -108,7 +109,8 @@ struct FaceHidingViewport {
             camera->SetParallelScale(2.0);
         });
         item.setSelectMode("Face");
-        window.show();
+        if (show_window)
+            window.show();
     }
 
     //! @brief 建立真实模型查询并加载几何，覆盖 GUI 状态初始化和渲染安装路径。
@@ -999,4 +1001,118 @@ TEST_CASE("QRenderWindow maintains GUI geometry visibility across load update an
     });
     REQUIRE(env.flush());
     CHECK(geometry_removed);
+}
+
+//! @brief 预加载显隐只保存 GUI 意图，首次初始化不能被更早的开关命令覆盖。
+TEST_CASE("QRenderWindow preserves latest pre-load mesh visibility during scene initialization")
+{
+    qputenv("QSG_RENDER_LOOP", "threaded");
+    testApplication();
+    bool initial_visibility = false;
+    bool final_visibility = true;
+    bool update_after_load = true;
+    SECTION("hide before loading then show") { }
+    SECTION("show before loading then hide")
+    {
+        initial_visibility = true;
+        final_visibility = false;
+    }
+    SECTION("retain hidden state from before loading")
+    {
+        final_visibility = false;
+        update_after_load = false;
+    }
+    bool gui_visible = false;
+    FaceHidingViewport env(false);
+    QObject::connect(&env.item, &QRenderWindow::componentVisibilityChanged, &env.item,
+        [&gui_visible](Index id, bool mesh_visible, bool) {
+            if (id == 8)
+                gui_visible = mesh_visible;
+        });
+    // 所有命令都先于首次场景初始化，初始化会先重放 GUI 缓存中的最新快照。
+    env.item.setMeshVisibility(8, initial_visibility);
+    env.item.loadMeshData(8, MakeMeshDataVtk(env.mesh));
+    if (update_after_load)
+        env.item.setMeshVisibility(8, final_visibility);
+    CHECK(gui_visible == final_visibility);
+    env.window.show();
+    REQUIRE(env.flush());
+    bool has_actor = false;
+    bool actor_visible = false;
+    env.item.dispatch_async([&has_actor, &actor_visible](vtkRenderWindow*, QQuickVTKItem::vtkUserData user_data) {
+        auto* data = QRenderWindow::Data::SafeDownCast(user_data);
+        auto actor = data->mesh_actor_manager_->getComponentActor(8);
+        has_actor = actor != nullptr;
+        actor_visible = actor && actor->isVisibilityEnabled();
+    });
+    REQUIRE(env.flush());
+    REQUIRE(has_actor);
+    CHECK(actor_visible == final_visibility);
+    CHECK(gui_visible == final_visibility);
+}
+
+//! @brief 场景重建必须恢复窗口选择的样式，不能把隐藏、线框或透明重置为默认表面。
+TEST_CASE("QRenderWindow preserves mesh and geometry styles across scene graph recreation")
+{
+    qputenv("QSG_RENDER_LOOP", "threaded");
+    testApplication();
+    MeshRenderStyle mesh_style = MeshRenderStyle::Hidden;
+    GeometryRenderStyle geometry_style = GeometryRenderStyle::Hidden;
+    SECTION("hidden styles") { }
+    SECTION("wireframe styles")
+    {
+        mesh_style = MeshRenderStyle::WireframeSurface;
+        geometry_style = GeometryRenderStyle::Wireframe;
+    }
+    SECTION("transparent styles")
+    {
+        mesh_style = MeshRenderStyle::Transparent50;
+        geometry_style = GeometryRenderStyle::Transparent50;
+    }
+    // 标志先于视口构造，保证析构阶段的场景图信号也能安全访问。
+    std::atomic_bool invalidated { false };
+    std::atomic_bool recreated { false };
+    FaceHidingViewport env;
+    env.loadGeometry(10);
+    env.item.setMeshStyle(static_cast<int>(mesh_style));
+    env.item.setGeometryStyle(static_cast<int>(geometry_style));
+    REQUIRE(env.flush());
+    // 经渲染屏障读取实际 Actor 样式和可见性，不能只检查 GUI 属性值。
+    auto check_styles = [&] {
+        std::pair<int, int> styles { -1, -1 };
+        std::pair<bool, bool> visible { false, false };
+        env.item.dispatch_async([&styles, &visible](vtkRenderWindow*, QQuickVTKItem::vtkUserData user_data) {
+            auto* data = QRenderWindow::Data::SafeDownCast(user_data);
+            if (auto mesh = data->mesh_actor_manager_->getComponentActor(7)) {
+                styles.first = static_cast<int>(mesh->getRenderStyle());
+                visible.first = mesh->isVisible();
+            }
+            if (auto geometry = data->geometry_actor_manager_->getComponentActor(10)) {
+                styles.second = static_cast<int>(geometry->getRenderStyle());
+                visible.second = geometry->isVisible();
+            }
+        });
+        REQUIRE(env.flush());
+        CAPTURE(styles.first, styles.second, static_cast<int>(mesh_style), static_cast<int>(geometry_style));
+        CHECK(styles == std::make_pair(static_cast<int>(mesh_style), static_cast<int>(geometry_style)));
+        CHECK(visible == std::make_pair(mesh_style != MeshRenderStyle::Hidden, geometry_style != GeometryRenderStyle::Hidden));
+        CHECK(env.item.getMeshStyle() == static_cast<int>(mesh_style));
+        CHECK(env.item.getGeometryStyle() == static_cast<int>(geometry_style));
+    };
+    check_styles();
+    QObject::connect(&env.window, &QQuickWindow::sceneGraphInvalidated, &env.window, [&invalidated] { invalidated.store(true); }, Qt::DirectConnection);
+    QObject::connect(&env.window, &QQuickWindow::sceneGraphInitialized, &env.window, [&recreated] { recreated.store(true); }, Qt::DirectConnection);
+    env.window.hide();
+    env.window.releaseResources();
+    QElapsedTimer timer;
+    timer.start();
+    while (!invalidated.load() && timer.elapsed() < 5000) {
+        QCoreApplication::processEvents(QEventLoop::AllEvents, 10);
+        QThread::msleep(1);
+    }
+    REQUIRE(invalidated.load());
+    env.window.show();
+    REQUIRE(env.flush());
+    REQUIRE(recreated.load());
+    check_styles();
 }

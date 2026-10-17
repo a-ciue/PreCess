@@ -283,6 +283,9 @@ QQuickVTKItem::vtkUserData QRenderWindow::initializeVTK(vtkRenderWindow* renderW
         vtk->plane_widget_->On();
     }
 
+    // 先恢复窗口样式，再重放数据，避免新 Actor 将隐藏、线框或透明重置为默认表面。
+    vtk->mesh_actor_manager_->setCurrentRenderStyle(mesh_style_);
+    vtk->geometry_actor_manager_->setCurrentRenderStyle(geometry_style_);
     // initializeVTK 的 GUI 同步边界只重放已完成结果，不访问 GUI Filter。
     for (const auto& [component_id, snapshot] : mesh_snapshots_)
         vtk->mesh_actor_manager_->loadMesh(component_id, snapshot, vtk->renderer_);
@@ -669,17 +672,17 @@ void QRenderWindow::setMeshVisibility(Index component_id, bool visibility)
     if (!pipeline)
         pipeline = std::make_shared<MeshPipelineData>();
     pipeline->setVisibility(visibility);
-    // 整体开关不触发 Filter 重建，只更新发布版本和渲染端开关。
-    auto snapshot = pipeline->generation() != 0 ? prepareMeshSnapshot(component_id) : nullptr;
-    dispatch_async([component_id, visibility, snapshot, this](vtkRenderWindow*, vtkUserData user_data) {
-        auto* vtk = Data::SafeDownCast(user_data);
-        if (snapshot)
+    // 未加载时只保存 GUI 意图，由首次有效快照携带，避免旧的无版本命令覆盖新状态。
+    if (pipeline->generation() != 0) {
+        // 整体开关不触发 Filter 重建，只更新发布版本和渲染端开关。
+        const auto snapshot = prepareMeshSnapshot(component_id);
+        dispatch_async([component_id, visibility, snapshot, this](vtkRenderWindow*, vtkUserData user_data) {
+            auto* vtk = Data::SafeDownCast(user_data);
             vtk->mesh_actor_manager_->loadMesh(component_id, snapshot, vtk->renderer_);
-        else
-            vtk->mesh_actor_manager_->setVisibility(component_id, visibility);
-        select_manager_->setMeshHighlightVisible(component_id, visibility);
-        select_manager_->refreshComponentHighlight();
-    });
+            select_manager_->setMeshHighlightVisible(component_id, visibility);
+            select_manager_->refreshComponentHighlight();
+        });
+    }
     publishComponentVisibility(component_id);
 }
 
