@@ -46,7 +46,14 @@ Item{
             model: root.subFeatures.map(info => ({ text: info.label || info.display_name }))
             textRole: "text"
             enabled: root.hasSubFeatureChoice
+            FontMetrics {
+                id: subFeatureFontMetrics
+                font: subFeatureSelector.font
+            }
             background: Rectangle {
+                // Fusion 的自然高度来自背景；替换背景后仍须容纳字体和内边距。
+                implicitHeight: Math.max(28, subFeatureFontMetrics.height
+                    + subFeatureSelector.topPadding + subFeatureSelector.bottomPadding)
                 radius: Theme.radiusControl
                 color: !subFeatureSelector.enabled ? Theme.surfaceAlt
                      : subFeatureSelector.down ? Theme.primaryTint

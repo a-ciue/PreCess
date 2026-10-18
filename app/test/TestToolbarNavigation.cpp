@@ -611,6 +611,29 @@ TEST_CASE("Actual toolbar renders declared feature entries and preserves active 
     CHECK(selector->property("count").toInt() == 2);
     CHECK(selector->property("visible").toBool());
     CHECK(selector->property("currentText").toString() == first.label());
+    // 自定义背景仍须提供自然高度，避免布局把方法选择框压成细线。
+    for (const int font_size : { 13, 24 }) {
+        auto font = selector->property("font").value<QFont>();
+        font.setPixelSize(font_size);
+        REQUIRE(selector->setProperty("font", font));
+        for (const int panel_width : { 260, 600 }) {
+            sidebar_item->setWidth(panel_width);
+            QEventLoop loop;
+            QTimer::singleShot(50, &loop, &QEventLoop::quit);
+            loop.exec();
+            auto* content = selector->property("contentItem").value<QQuickItem*>();
+            REQUIRE(content);
+            CHECK(selector->height() >= 28);
+            CHECK(content->height() >= content->property("contentHeight").toReal());
+            auto* parameters = findItem(sidebar_item, "operationParameters");
+            REQUIRE(parameters);
+            CHECK(parameters->mapToItem(sidebar_item, QPointF()).y()
+                >= selector->mapToItem(sidebar_item, QPointF(0, selector->height())).y());
+        }
+    }
+    if (const auto capture = qEnvironmentVariable("PRECESS_NAVIGATION_CAPTURE"); !capture.isEmpty())
+        REQUIRE(window.grabWindow().save(capture + "-method-selector.png"));
+    sidebar_item->setWidth(360);
     REQUIRE(QMetaObject::invokeMethod(sidebar.get(), "setParam", Q_ARG(QVariant, 0), Q_ARG(QVariant, 9.0)));
     REQUIRE(QMetaObject::invokeMethod(triangle, "clicked"));
     CHECK(sidebar->property("parameters").value<QJSValue>().property(0).toNumber() == 9.0);
