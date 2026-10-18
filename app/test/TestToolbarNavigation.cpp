@@ -864,6 +864,19 @@ TEST_CASE("Installed external algorithms appear in the actual toolbar and open t
         REQUIRE(target->isEnabled());
         REQUIRE(target->width() > 0);
         REQUIRE(target->height() > 0);
+        // 等宽按钮可能超出一屏，先滚动所属菜单，再验证真实可点击区域。
+        for (auto* ancestor = target->parentItem(); ancestor; ancestor = ancestor->parentItem()) {
+            if (!ancestor->objectName().startsWith("featureMenuPage_"))
+                continue;
+            const auto bounds = target->mapRectToItem(ancestor, QRectF(0, 0, target->width(), target->height()));
+            const auto offset = ancestor->property("contentX").toReal();
+            if (bounds.left() < 0)
+                ancestor->setProperty("contentX", offset + bounds.left());
+            else if (bounds.right() > ancestor->width())
+                ancestor->setProperty("contentX", offset + bounds.right() - ancestor->width());
+            settle();
+            break;
+        }
         const auto scene_bounds = target->mapRectToScene(QRectF(0, 0, target->width(), target->height()));
         REQUIRE(QRectF(QPointF(0, 0), QSizeF(window.size())).contains(scene_bounds));
         clickItem(window, target);
@@ -888,6 +901,13 @@ TEST_CASE("Installed external algorithms appear in the actual toolbar and open t
         CHECK(engine.newQObject(entry).property("icon").property("source").toString() == url);
     };
     show_feature_menu("几何");
+    auto* long_entry = findItem(item, "featureEntry_category:CreateLineFromVertices");
+    REQUIRE(long_entry);
+    CHECK(long_entry->width() == 88);
+    auto* long_title = findItem(long_entry, "featureEntryTitle_category:CreateLineFromVertices");
+    REQUIRE(long_title);
+    CHECK(long_title->property("lineCount").toInt() == 2);
+    CHECK(long_title->property("maximumLineCount").toInt() == 2);
     check_entry_icon("SplitEdge", "qrc:/images/toolbar/Geometry/split-edge.svg");
     check_entry_icon("MergeEdge", "qrc:/images/toolbar/Geometry/merge-edge.svg");
     check_entry_icon("SplitFace", "qrc:/images/toolbar/Geometry/split-face.svg");
@@ -1007,6 +1027,17 @@ TEST_CASE("Installed external algorithms appear in the actual toolbar and open t
         click_visible(tetrahedron);
         CHECK(buttons->height() <= 40);
         checkOperationButtonsAtBottom(sidebar_item);
+    }
+    show_feature_menu("网格生成算法");
+    // 分类名称必须直接可辨，不能只靠悬停提示区分四种网格生成入口。
+    for (const auto& category : { "triangle", "quadrilateral", "tetrahedron", "hexahedron" }) {
+        auto* entry = findItem(item, QString("featureEntry_category:") + category);
+        REQUIRE(entry);
+        CHECK(entry->width() == 88);
+        auto* title = findItem(entry, QString("featureEntryTitle_category:") + category);
+        REQUIRE(title);
+        CHECK_FALSE(title->property("truncated").toBool());
+        CHECK(title->property("lineCount").toInt() <= 2);
     }
     auto* triangle = findItem(item, "featureEntry_category:triangle");
     click_visible(triangle);

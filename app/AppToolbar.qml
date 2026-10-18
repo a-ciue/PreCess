@@ -31,7 +31,7 @@ ColumnLayout {
     property real windowHeight: 600
 
     // 限制页高范围，给小窗口保留文字空间，避免大窗口工具栏过度放大。
-    readonly property real ribbonPageHeight: Math.max(64, Math.min(96, windowHeight / 12))
+    readonly property real ribbonPageHeight: Math.max(80, Math.min(96, windowHeight / 12))
     // 从独立尺寸推导图标，避免依赖布局分配后的按钮高度形成反馈环。
     readonly property real ribbonIconSize: Math.round(ribbonPageHeight * 0.5)
 
@@ -601,6 +601,7 @@ ColumnLayout {
                             Repeater {
                                 model: featureGroupRow.modelData.items
                                 RibbonActionButton {
+                                    id: featureEntryButton
                                     required property var modelData
                                     objectName: "featureEntry_" + modelData.id
                                     icon.source: modelData.icon || "qrc:/images/toolbar/precess_extra_plugin.svg"
@@ -608,10 +609,51 @@ ColumnLayout {
                                     icon.height: root.ribbonIconSize
                                     icon.color: "transparent"
                                     Layout.fillHeight: true
-                                    // 长标题不再撑大图标间距，完整名称通过悬停提示查看。
-                                    Layout.maximumWidth: featureMenuPage.modelData.name === "几何"
-                                        ? Math.max(88, root.ribbonIconSize + 20) : Infinity
+                                    // 固定列宽让各组图标等距，长标题使用两行，余下内容通过悬停查看。
+                                    Layout.minimumWidth: 88
+                                    Layout.preferredWidth: 88
+                                    Layout.maximumWidth: 88
+                                    topPadding: 4
+                                    bottomPadding: 4
                                     text: modelData.title
+                                    contentItem: Item {
+                                        implicitWidth: Math.max(featureEntryImage.width, featureEntryTitle.implicitWidth)
+                                        implicitHeight: root.ribbonIconSize + featureEntryButton.spacing + featureEntryTitle.height
+                                        Image {
+                                            id: featureEntryImage
+                                            anchors.horizontalCenter: parent.horizontalCenter
+                                            width: height
+                                            height: Math.max(16, Math.min(root.ribbonIconSize,
+                                                parent.height - featureEntryButton.spacing - featureEntryTitle.height))
+                                            source: featureEntryButton.icon.source
+                                            sourceSize.width: root.ribbonIconSize
+                                            sourceSize.height: root.ribbonIconSize
+                                            fillMode: Image.PreserveAspectFit
+                                            opacity: featureEntryButton.enabled ? 1 : 0.4
+                                        }
+                                        Label {
+                                            id: featureEntryTitle
+                                            objectName: "featureEntryTitle_" + featureEntryButton.modelData.id
+                                            anchors.top: featureEntryImage.bottom
+                                            anchors.topMargin: featureEntryButton.spacing
+                                            width: parent.width
+                                            height: featureEntryTitleMetrics.implicitHeight
+                                            text: featureEntryButton.text
+                                            font: featureEntryButton.font
+                                            color: featureEntryButton.palette.buttonText
+                                            horizontalAlignment: Text.AlignHCenter
+                                            wrapMode: Text.Wrap
+                                            maximumLineCount: 2
+                                            elide: Text.ElideRight
+                                        }
+                                        // 按中文回退字体测量两行高度，避免系统默认字体指标偏小而提前省略。
+                                        Text {
+                                            id: featureEntryTitleMetrics
+                                            visible: false
+                                            text: "网\n网"
+                                            font: featureEntryButton.font
+                                        }
+                                    }
                                     ToolTip.visible: hovered
                                     ToolTip.delay: 500
                                     ToolTip.text: text
