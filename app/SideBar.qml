@@ -332,11 +332,21 @@ Item{
                 }
             }
             Button{
+                objectName: "browseParameter_" + index
                 icon.source: "qrc:/images/toolbar/Panels/browse-file.svg"
-                icon.width: 14
-                icon.height: 14
+                icon.width: 18
+                icon.height: 18
                 icon.color: "transparent"
-                text: qsTr("浏览…")
+                display: AbstractButton.IconOnly
+                Layout.preferredWidth: 28
+                Layout.minimumWidth: 28
+                Layout.maximumWidth: 28
+                Layout.preferredHeight: 28
+                padding: 5
+                Accessible.name: qsTr("浏览文件")
+                ToolTip.visible: hovered
+                ToolTip.delay: 500
+                ToolTip.text: qsTr("浏览文件")
                 flat: true
                 onClicked:{
                     parameterFileDialog.open()
