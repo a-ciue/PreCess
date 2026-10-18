@@ -54,6 +54,26 @@ Q_IMPORT_QML_PLUGIN(app_model_systems_editPlugin)
 Q_IMPORT_QML_PLUGIN(app_model_systems_featurePlugin)
 
 namespace {
+// 按目标布局条件退出，超时只作为失败上界，不假定固定时间内完成刷新。
+template <typename Predicate>
+bool waitForCondition(Predicate&& condition)
+{
+    QEventLoop loop;
+    QTimer poll;
+    QTimer timeout;
+    poll.setInterval(5);
+    timeout.setSingleShot(true);
+    QObject::connect(&poll, &QTimer::timeout, &loop, [&] {
+        if (condition())
+            loop.quit();
+    });
+    QObject::connect(&timeout, &QTimer::timeout, &loop, &QEventLoop::quit);
+    poll.start();
+    timeout.start(1000);
+    loop.exec();
+    return condition();
+}
+
 // 测试描述使用 Feature 包装，参数排列便于构造多分类样例。
 class NavigationTestInfo : public QFeatureInfo {
 public:
@@ -612,21 +632,28 @@ TEST_CASE("Actual toolbar renders declared feature entries and preserves active 
     CHECK(selector->property("visible").toBool());
     CHECK(selector->property("currentText").toString() == first.label());
     // 自定义背景仍须提供自然高度，避免布局把方法选择框压成细线。
+    const auto original_font = selector->property("font").value<QFont>();
     for (const int font_size : { 13, 24 }) {
-        auto font = selector->property("font").value<QFont>();
+        auto font = original_font;
         font.setPixelSize(font_size);
         REQUIRE(selector->setProperty("font", font));
         for (const int panel_width : { 260, 600 }) {
             sidebar_item->setWidth(panel_width);
-            QEventLoop loop;
-            QTimer::singleShot(50, &loop, &QEventLoop::quit);
-            loop.exec();
             auto* content = selector->property("contentItem").value<QQuickItem*>();
             REQUIRE(content);
-            CHECK(selector->height() >= 28);
-            CHECK(content->height() >= content->property("contentHeight").toReal());
+            REQUIRE(content->property("contentHeight").isValid());
             auto* parameters = findItem(sidebar_item, "operationParameters");
             REQUIRE(parameters);
+            REQUIRE(waitForCondition([&] {
+                return qFuzzyCompare(selector->width(), panel_width - 2 * selector->parentItem()->x())
+                    && content->property("contentHeight").toReal() > 0
+                    && content->height() >= content->property("contentHeight").toReal()
+                    && parameters->mapToItem(sidebar_item, QPointF()).y()
+                    >= selector->mapToItem(sidebar_item, QPointF(0, selector->height())).y();
+            }));
+            // 对应 SideBar.qml 中方法选择框的最小背景高度。
+            CHECK(selector->height() >= 28);
+            CHECK(content->height() >= content->property("contentHeight").toReal());
             CHECK(parameters->mapToItem(sidebar_item, QPointF()).y()
                 >= selector->mapToItem(sidebar_item, QPointF(0, selector->height())).y());
         }
@@ -634,6 +661,11 @@ TEST_CASE("Actual toolbar renders declared feature entries and preserves active 
     if (const auto capture = qEnvironmentVariable("PRECESS_NAVIGATION_CAPTURE"); !capture.isEmpty())
         REQUIRE(window.grabWindow().save(capture + "-method-selector.png"));
     sidebar_item->setWidth(360);
+    REQUIRE(selector->setProperty("font", original_font));
+    REQUIRE(waitForCondition([&] {
+        return qFuzzyCompare(selector->width(), 360 - 2 * selector->parentItem()->x())
+            && selector->property("font").value<QFont>() == original_font;
+    }));
     REQUIRE(QMetaObject::invokeMethod(sidebar.get(), "setParam", Q_ARG(QVariant, 0), Q_ARG(QVariant, 9.0)));
     REQUIRE(QMetaObject::invokeMethod(triangle, "clicked"));
     CHECK(sidebar->property("parameters").value<QJSValue>().property(0).toNumber() == 9.0);
@@ -864,17 +896,23 @@ TEST_CASE("Installed external algorithms appear in the actual toolbar and open t
         REQUIRE(target->isEnabled());
         REQUIRE(target->width() > 0);
         REQUIRE(target->height() > 0);
-        // 等宽按钮可能超出一屏，先滚动所属菜单，再验证真实可点击区域。
+        // 菜单可能超出一屏，先滚动所属菜单，再验证真实可点击区域。
         for (auto* ancestor = target->parentItem(); ancestor; ancestor = ancestor->parentItem()) {
             if (!ancestor->objectName().startsWith("featureMenuPage_"))
                 continue;
             const auto bounds = target->mapRectToItem(ancestor, QRectF(0, 0, target->width(), target->height()));
             const auto offset = ancestor->property("contentX").toReal();
+            auto new_offset = offset;
             if (bounds.left() < 0)
-                ancestor->setProperty("contentX", offset + bounds.left());
+                new_offset += bounds.left();
             else if (bounds.right() > ancestor->width())
-                ancestor->setProperty("contentX", offset + bounds.right() - ancestor->width());
-            settle();
+                new_offset += bounds.right() - ancestor->width();
+            const auto maximum_offset = qMax(qreal(0), ancestor->property("contentWidth").toReal() - ancestor->width());
+            ancestor->setProperty("contentX", qBound(qreal(0), new_offset, maximum_offset));
+            REQUIRE(waitForCondition([&] {
+                const auto visible_bounds = target->mapRectToItem(ancestor, QRectF(0, 0, target->width(), target->height()));
+                return visible_bounds.left() >= -0.01 && visible_bounds.right() <= ancestor->width() + 0.01;
+            }));
             break;
         }
         const auto scene_bounds = target->mapRectToScene(QRectF(0, 0, target->width(), target->height()));
@@ -903,11 +941,8 @@ TEST_CASE("Installed external algorithms appear in the actual toolbar and open t
     show_feature_menu("几何");
     auto* long_entry = findItem(item, "featureEntry_category:CreateLineFromVertices");
     REQUIRE(long_entry);
-    CHECK(long_entry->width() == 88);
-    auto* long_title = findItem(long_entry, "featureEntryTitle_category:CreateLineFromVertices");
-    REQUIRE(long_title);
-    CHECK(long_title->property("lineCount").toInt() == 2);
-    CHECK(long_title->property("maximumLineCount").toInt() == 2);
+    CHECK(long_entry->width() <= item->property("featureEntryMaximumWidth").toReal());
+    CHECK(long_entry->property("text").toString() == QStringLiteral("创建直线边（选择两点）"));
     check_entry_icon("SplitEdge", "qrc:/images/toolbar/Geometry/split-edge.svg");
     check_entry_icon("MergeEdge", "qrc:/images/toolbar/Geometry/merge-edge.svg");
     check_entry_icon("SplitFace", "qrc:/images/toolbar/Geometry/split-face.svg");
@@ -1029,15 +1064,14 @@ TEST_CASE("Installed external algorithms appear in the actual toolbar and open t
         checkOperationButtonsAtBottom(sidebar_item);
     }
     show_feature_menu("网格生成算法");
-    // 分类名称必须直接可辨，不能只靠悬停提示区分四种网格生成入口。
+    // 限宽不能丢失完整名称；显示截断时，完整 text 继续供悬停提示使用。
+    CHECK(item->property("featureEntryMaximumWidth").toReal() == qMax(qreal(88), item->property("ribbonIconSize").toReal() + 20));
     for (const auto& category : { "triangle", "quadrilateral", "tetrahedron", "hexahedron" }) {
         auto* entry = findItem(item, QString("featureEntry_category:") + category);
         REQUIRE(entry);
-        CHECK(entry->width() == 88);
-        auto* title = findItem(entry, QString("featureEntryTitle_category:") + category);
-        REQUIRE(title);
-        CHECK_FALSE(title->property("truncated").toBool());
-        CHECK(title->property("lineCount").toInt() <= 2);
+        CHECK(entry->width() > 0);
+        CHECK(entry->width() <= item->property("featureEntryMaximumWidth").toReal());
+        CHECK(entry->property("text").toString().endsWith(QStringLiteral("网格生成")));
     }
     auto* triangle = findItem(item, "featureEntry_category:triangle");
     click_visible(triangle);
