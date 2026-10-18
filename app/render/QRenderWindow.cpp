@@ -380,20 +380,16 @@ void QRenderWindow::deleteModel(Index model_id)
 
 void QRenderWindow::deleteComponent(Index component_id)
 {
-    clearSelection();
     mesh_pipeline_data_.erase(component_id);
     mesh_snapshots_.erase(component_id);
     geometry_visibility_.erase(component_id);
-    dispatch_async([component_id, this](vtkRenderWindow* renderWindow, vtkUserData userData) -> void {
-        Data* vtk = Data::SafeDownCast(userData);
-
-        if (vtk->mesh_actor_manager_) {
-            vtk->mesh_actor_manager_->deleteComponent(component_id);
-        }
-
-        if (vtk->geometry_actor_manager_) {
-            vtk->geometry_actor_manager_->deleteComponent(component_id);
-        }
+    dispatch_async([component_id, revision = selection_revision_, this](vtkRenderWindow*, vtkUserData user_data) {
+        auto* vtk = Data::SafeDownCast(user_data);
+        render_selection_revision_ = revision;
+        select_manager_->clearSelection();
+        vtk->mesh_actor_manager_->deleteComponent(component_id);
+        vtk->geometry_actor_manager_->deleteComponent(component_id);
+        publishSelection();
     });
 }
 
@@ -438,10 +434,14 @@ void QRenderWindow::applyClipPlane(const MeshClipPlane& plane)
         if (pipeline->generation() != 0)
             snapshots.emplace_back(component_id, prepareMeshSnapshot(component_id));
     }
-    dispatch_async([snapshots = std::move(snapshots)](vtkRenderWindow*, vtkUserData user_data) {
+    dispatch_async([this, revision = selection_revision_, snapshots = std::move(snapshots)](vtkRenderWindow*, vtkUserData user_data) {
         auto* vtk = Data::SafeDownCast(user_data);
+        // 裁剪会重排面下标，清理、安装和选择发布必须在同一次渲染回调内完成。
+        render_selection_revision_ = revision;
+        select_manager_->clearSelection();
         for (const auto& [component_id, snapshot] : snapshots)
             vtk->mesh_actor_manager_->loadMesh(component_id, snapshot, vtk->renderer_);
+        publishSelection();
     });
 }
 
@@ -459,14 +459,16 @@ void QRenderWindow::loadMeshData(Index component_id, const MeshDataVtk& data)
     pipeline->loadModelData(data);
     if (const auto previous = mesh_pipeline_data_.find(component_id); previous != mesh_pipeline_data_.end())
         pipeline->setVisibility(previous->second->isVisibilityEnabled());
-    // 加载路径统一清理旧选择，渲染侧清理完成后才回传空选择。
-    clearSelection();
     pipeline->setClipPlane(mesh_clip_);
     mesh_pipeline_data_[component_id] = std::move(pipeline);
     const auto snapshot = prepareMeshSnapshot(component_id);
-    dispatch_async([component_id, snapshot](vtkRenderWindow*, vtkUserData user_data) {
+    dispatch_async([this, component_id, snapshot, revision = selection_revision_](vtkRenderWindow*, vtkUserData user_data) {
         auto* vtk = Data::SafeDownCast(user_data);
+        // 原选择使用旧数据下标，必须在替换数据前清空，安装后再回传空快照。
+        render_selection_revision_ = revision;
+        select_manager_->clearSelection();
         vtk->mesh_actor_manager_->loadMesh(component_id, snapshot, vtk->renderer_);
+        publishSelection();
     });
     publishComponentVisibility(component_id);
 }
@@ -524,8 +526,6 @@ void QRenderWindow::applyFaceOperation(FaceOperation operation, const std::vecto
     if ((operation == FaceOperation::Hide || operation == FaceOperation::Show || operation == FaceOperation::Isolate)
         && valid_faces.empty())
         return;
-    if (operation != FaceOperation::Hide)
-        clearSelection();
     std::vector<std::pair<Index, std::shared_ptr<const MeshDataSnapshot>>> snapshots;
     GeometryVisibility geometry_updates;
     std::vector<Index> notifications;
@@ -551,31 +551,27 @@ void QRenderWindow::applyFaceOperation(FaceOperation operation, const std::vecto
             notifications.push_back(id);
             publish_mesh(id);
         }
-    } else if (operation == FaceOperation::Isolate || operation == FaceOperation::ShowScene) {
-        for (auto& [id, pipeline] : mesh_pipeline_data_) {
-            if (pipeline->generation() == 0)
-                continue;
-            if (operation != FaceOperation::Isolate) {
-                pipeline->showAllFaces();
-                if (operation == FaceOperation::ShowScene)
-                    pipeline->setVisibility(true);
-            } else {
-                const auto faces = valid_faces.find(id);
-                if (faces != valid_faces.end())
-                    pipeline->isolateFaces(faces->second);
-                else
-                    pipeline->setVisibility(false);
-            }
+    } else if (operation == FaceOperation::Isolate) {
+        // 面隔离仅作用于选择携带的组件，不改变其他组件及几何的显隐。
+        for (const auto& [id, faces] : valid_faces) {
+            mesh_pipeline_data_.at(id)->isolateFaces(faces);
             notifications.push_back(id);
             publish_mesh(id);
         }
-        if (operation == FaceOperation::Isolate || operation == FaceOperation::ShowScene) {
-            for (auto& [id, visible] : geometry_visibility_) {
-                visible = operation == FaceOperation::ShowScene;
-                geometry_updates[id] = visible;
-                if (!mesh_snapshots_.contains(id))
-                    notifications.push_back(id);
-            }
+    } else if (operation == FaceOperation::ShowScene) {
+        for (auto& [id, pipeline] : mesh_pipeline_data_) {
+            if (pipeline->generation() == 0)
+                continue;
+            pipeline->showAllFaces();
+            pipeline->setVisibility(true);
+            notifications.push_back(id);
+            publish_mesh(id);
+        }
+        for (auto& [id, visible] : geometry_visibility_) {
+            visible = true;
+            geometry_updates[id] = visible;
+            if (!mesh_snapshots_.contains(id))
+                notifications.push_back(id);
         }
     } else {
         for (auto id : ids) {
@@ -600,18 +596,17 @@ void QRenderWindow::applyFaceOperation(FaceOperation operation, const std::vecto
             notifications.push_back(id);
         }
     }
-    dispatch_async([this, operation, snapshots = std::move(snapshots),
+    dispatch_async([this, revision = selection_revision_, snapshots = std::move(snapshots),
                        geometry_updates = std::move(geometry_updates)](vtkRenderWindow*, vtkUserData user_data) {
         auto* vtk = Data::SafeDownCast(user_data);
-        for (const auto& [id, snapshot] : snapshots) {
+        // 所有面操作统一释放旧下标与高亮，再安装新数据并发布空选择。
+        render_selection_revision_ = revision;
+        select_manager_->clearSelection();
+        for (const auto& [id, snapshot] : snapshots)
             vtk->mesh_actor_manager_->loadMesh(id, snapshot, vtk->renderer_);
-            if (operation == FaceOperation::Hide)
-                select_manager_->setMeshHighlightVisible(id, false);
-        }
         for (const auto& [id, visible] : geometry_updates)
             vtk->geometry_actor_manager_->setVisibility(id, visible);
-        if (operation == FaceOperation::Hide)
-            publishSelection();
+        publishSelection();
     });
     // 已投递安装命令后同步通知 GUI，后续用户操作不会再被旧渲染回传覆盖。
     for (auto id : notifications)
@@ -638,15 +633,18 @@ void QRenderWindow::onComponentChanged(Index component_id)
     if (mesh_data)
         loadMeshData(component_id, *mesh_data);
     else {
-        clearSelection();
         mesh_pipeline_data_.erase(component_id);
         mesh_snapshots_.erase(component_id);
     }
     const bool geometry_visible = geometry_visibility_.contains(component_id) && geometry_visibility_.at(component_id);
-    dispatch_async([component_id, geometry_visible, has_mesh = mesh_data.has_value(), this](vtkRenderWindow*, vtkUserData user_data) {
+    dispatch_async([component_id, geometry_visible, has_mesh = mesh_data.has_value(), revision = selection_revision_, this](vtkRenderWindow*, vtkUserData user_data) {
         auto* vtk = Data::SafeDownCast(user_data);
         if (!model_query_)
             return;
+        if (!has_mesh) {
+            render_selection_revision_ = revision;
+            select_manager_->clearSelection();
+        }
         // 几何转换仍沿用现有渲染侧路径，显隐结果由 GUI 决定。
         if (auto geometry_data = model_query_->getGeometryVtkDataByComponent(component_id)) {
             vtk->geometry_actor_manager_->loadGeometry(*geometry_data,
@@ -655,8 +653,10 @@ void QRenderWindow::onComponentChanged(Index component_id)
         } else {
             vtk->geometry_actor_manager_->deleteComponent(component_id);
         }
-        if (!has_mesh)
+        if (!has_mesh) {
             vtk->mesh_actor_manager_->deleteComponent(component_id);
+            publishSelection();
+        }
     });
     publishComponentVisibility(component_id);
 }

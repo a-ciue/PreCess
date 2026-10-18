@@ -217,7 +217,6 @@ void MeshPipelineData::loadModelData(const MeshDataVtk& data)
     vtkNew<vtkIdTypeArray> original_point_ids_;
     generation_ = ++next_mesh_generation;
     hidden_face_ids_.clear();
-    faces_only_ = false;
     dirty_ = true;
     // 本方法所有 SetArray 均使用 save=1：VTK 借用 vector 缓冲，不负责释放。
     // source_ 与已发布快照共同保活这些缓冲，不能把 save 改为 0。
@@ -380,7 +379,6 @@ void MeshPipelineData::isolateFaces(const std::vector<vtkIdType>& face_ids)
         if (!shown[static_cast<std::size_t>(id)])
             hidden_face_ids_.push_back(id);
     }
-    faces_only_ = true;
     visible_ = true;
     dirty_ = true;
 }
@@ -392,7 +390,6 @@ void MeshPipelineData::showAllFaces()
         hidden_face_ids_.clear();
         dirty_ = true;
     }
-    faces_only_ = false;
 }
 
 bool MeshPipelineData::reverseVisibility()
@@ -501,7 +498,6 @@ std::shared_ptr<const MeshDataSnapshot> MeshPipelineData::createSnapshot()
     snapshot->generation = generation_;
     snapshot->revision = ++revision_;
     snapshot->visible = visible_;
-    snapshot->faces_only = faces_only_;
     snapshot->clip = clip_;
     return snapshot;
 }

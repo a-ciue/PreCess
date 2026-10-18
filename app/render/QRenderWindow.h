@@ -178,13 +178,13 @@ public:
      * @brief 隐藏面选择器当前高亮选中的面（右键菜单"隐藏"）
      *
      * 仅面选择模式有效，其余模式为空操作；隐藏为渲染层单元过滤，
-     * 不修改模型数据，被隐藏面不渲染也不可拾取；保留选择以便再次显示。
+     * 不修改模型数据，被隐藏面不渲染也不可拾取；安装结果时清空选择和高亮。
      */
     Q_INVOKABLE void hideSelectedFaces();
 
     /** @brief 显示面选择器选中的原始面，保留其余面和几何的显隐。 */
     Q_INVOKABLE void showSelectedFaces();
-    /** @brief 在整个场景仅显示面选择器选中的面，遮住其余网格和几何。 */
+    /** @brief 仅在所选面所属组件内隐藏其他面，保留其他组件、几何及同组件其他对象的显示。 */
     Q_INVOKABLE void isolateSelectedFaces();
 
     /**

@@ -34,7 +34,6 @@ struct MeshDataSnapshot {
     std::uint64_t generation { };
     std::uint64_t revision { };
     bool visible { true };
-    bool faces_only { false };
     MeshClipPlane clip;
     std::shared_ptr<const MeshData> source;
     std::shared_ptr<const MeshDataVtk> model_data;
@@ -66,7 +65,7 @@ public:
     void hideFaces(const std::vector<vtkIdType>& face_ids);
     /** @brief 恢复指定原始面；整体关闭时仅显示指定面。 */
     void showFaces(const std::vector<vtkIdType>& face_ids);
-    /** @brief 仅保留指定原始面，并启用面隔离显示域。 */
+    /** @brief 仅保留指定原始面，不改变同组件其他渲染对象的样式。 */
     void isolateFaces(const std::vector<vtkIdType>& face_ids);
     /** @brief 恢复全部人工隐藏面并结束面隔离。 */
     void showAllFaces();
@@ -97,7 +96,6 @@ private:
     std::vector<vtkIdType> hidden_face_ids_;
     MeshClipPlane clip_;
     bool visible_ { true };
-    bool faces_only_ { false };
     bool dirty_ { true };
     std::uint64_t generation_ { };
     std::uint64_t revision_ { };

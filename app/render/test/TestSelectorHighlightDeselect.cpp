@@ -9,7 +9,6 @@
 #include <vtkNew.h>
 #include <vtkCellData.h>
 #include <vtkIdTypeArray.h>
-#include <vtkPlane.h>
 #include <vtkPartitionedDataSet.h>
 #include <vtkPolyData.h>
 #include <vtkPolyDataMapper.h>
@@ -104,7 +103,7 @@ TEST_CASE("FaceSelectorHighlight clears highlight when last face is deselected")
     REQUIRE(partitionCellCount(*highlight_data) == 0);
 }
 
-TEST_CASE("FaceSelectorHighlight maps point area and angle picks after retaining hidden faces")
+TEST_CASE("FaceSelectorHighlight maps point area and angle picks after replacing rendered face data")
 {
     OffscreenMesh env;
     vtkNew<vtkPartitionedDataSet> highlight_data;
@@ -117,9 +116,9 @@ TEST_CASE("FaceSelectorHighlight maps point area and angle picks after retaining
     // 使用原面 0 的预拾取结果，随后将它隐藏，使剩余面的渲染下标发生压缩。
     selector.select(0, 0, nullptr, face_actor, 0, -1, SelectOp::Append);
     REQUIRE(selector.get().ids == std::vector<Index>({ 0 }));
+    selector.clear();
     env.actor->hideFaces({ 0 });
-    selector.enableHighlight();
-    CHECK(selector.get().ids == std::vector<Index>({ 0 }));
+    CHECK(selector.get().ids.empty());
     CHECK(partitionCellCount(*highlight_data) == 0);
     mapper->Update();
     auto* poly = mapper->GetInput();
@@ -132,10 +131,10 @@ TEST_CASE("FaceSelectorHighlight maps point area and angle picks after retaining
     SECTION("point toggle")
     {
         selector.select(0, 0, nullptr, face_actor, 0, -1, SelectOp::Toggle);
-        CHECK(selector.get().ids == std::vector<Index>({ 0, picked_id }));
+        CHECK(selector.get().ids == std::vector<Index>({ picked_id }));
         CHECK(partitionCellCount(*highlight_data) == 1);
         selector.select(0, 0, nullptr, face_actor, 0, -1, SelectOp::Toggle);
-        CHECK(selector.get().ids == std::vector<Index>({ 0 }));
+        CHECK(selector.get().ids.empty());
         CHECK(partitionCellCount(*highlight_data) == 0);
     }
     SECTION("area append and remove")
@@ -144,10 +143,10 @@ TEST_CASE("FaceSelectorHighlight maps point area and angle picks after retaining
         selector.selectArea(hits, 0, 0, 1, 1, SelectOp::Append);
         auto selected = selector.get().ids;
         std::sort(selected.begin(), selected.end());
-        CHECK(selected == std::vector<Index>({ 0, picked_id }));
+        CHECK(selected == std::vector<Index>({ picked_id }));
         CHECK(partitionCellCount(*highlight_data) == 1);
         selector.selectArea(hits, 0, 0, 1, 1, SelectOp::Remove);
-        CHECK(selector.get().ids == std::vector<Index>({ 0 }));
+        CHECK(selector.get().ids.empty());
         CHECK(partitionCellCount(*highlight_data) == 0);
     }
     SECTION("angle spread")
@@ -155,59 +154,13 @@ TEST_CASE("FaceSelectorHighlight maps point area and angle picks after retaining
         selector.setSpreadOptions({ true, 30.0 });
         selector.select(0, 0, nullptr, face_actor, 0, -1, SelectOp::Toggle);
         const auto selected = selector.get().ids;
-        CHECK(std::find(selected.begin(), selected.end(), 0) != selected.end());
+        CHECK(std::find(selected.begin(), selected.end(), 0) == selected.end());
         CHECK(std::find(selected.begin(), selected.end(), picked_id) != selected.end());
-        CHECK(partitionCellCount(*highlight_data) == selected.size() - 1);
+        CHECK(partitionCellCount(*highlight_data) == selected.size());
         selector.select(0, 0, nullptr, face_actor, 0, -1, SelectOp::Toggle);
-        CHECK(selector.get().ids == std::vector<Index>({ 0 }));
+        CHECK(selector.get().ids.empty());
         CHECK(partitionCellCount(*highlight_data) == 0);
     }
-}
-
-TEST_CASE("FaceSelectorHighlight retains original selection across clipping and hiding")
-{
-    OffscreenMesh env;
-    vtkNew<vtkPartitionedDataSet> highlight_data;
-    MeshActorSelectOp select_op(env.actor);
-    FaceSelectorHighlight selector(*env.renderer, *highlight_data, 0, select_op);
-    auto* face_actor = vtkActor::SafeDownCast(&select_op.getFaceActor());
-    REQUIRE(face_actor);
-    auto* mapper = vtkPolyDataMapper::SafeDownCast(face_actor->GetMapper());
-    REQUIRE(mapper);
-    selector.select(0, 0, nullptr, face_actor, 0, -1, SelectOp::Append);
-    double bounds[6] { };
-    mapper->GetInput()->GetCellBounds(0, bounds);
-    vtkNew<vtkPlane> plane;
-    plane->SetOrigin((bounds[0] + bounds[1]) / 2, (bounds[2] + bounds[3]) / 2, (bounds[4] + bounds[5]) / 2);
-    plane->SetNormal(bounds[0] < bounds[1] ? 1.0 : 0.0, bounds[0] < bounds[1] ? 0.0 : 1.0, 0.0);
-    env.actor->setClipPlane(plane);
-    selector.enableHighlight();
-    auto* ids = vtkIdTypeArray::SafeDownCast(mapper->GetInput()->GetCellData()->GetArray("PrecessFaceIds"));
-    REQUIRE(ids);
-    vtkIdType matching_cells = 0;
-    for (vtkIdType i = 0; i < ids->GetNumberOfTuples(); ++i) {
-        if (ids->GetValue(i) == 0)
-            ++matching_cells;
-    }
-    // 实际裁剪器按整面提取，跨越裁剪平面的面被剔除，但逻辑选择仍须保留。
-    REQUIRE(matching_cells == 0);
-    CHECK(selector.get().ids == std::vector<Index>({ 0 }));
-    CHECK(partitionCellCount(*highlight_data) == 0);
-    // 将裁剪面移到原面外侧，使原面完整进入可见集合并恢复高亮。
-    plane->SetOrigin(bounds[0] < bounds[1] ? bounds[1] + 1.0 : (bounds[0] + bounds[1]) / 2,
-                     bounds[0] < bounds[1] ? (bounds[2] + bounds[3]) / 2 : bounds[3] + 1.0, (bounds[4] + bounds[5]) / 2);
-    env.actor->setClipPlane(plane); // 数据侧显式提交更新后的平面值。
-    selector.enableHighlight();
-    CHECK(selector.get().ids == std::vector<Index>({ 0 }));
-    CHECK(partitionCellCount(*highlight_data) == 1);
-    env.actor->hideFaces({ 0 });
-    selector.enableHighlight();
-    CHECK(selector.get().ids == std::vector<Index>({ 0 }));
-    CHECK(partitionCellCount(*highlight_data) == 0);
-    env.actor->showFaces({ 0 });
-    selector.enableHighlight();
-    CHECK(selector.get().ids == std::vector<Index>({ 0 }));
-    CHECK(partitionCellCount(*highlight_data) == 1);
 }
 
 TEST_CASE("EdgeSelectorHighlight clears highlight when last edge is deselected")

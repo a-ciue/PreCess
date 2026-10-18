@@ -85,7 +85,6 @@ private:
     std::unique_ptr<IAttributeRenderStrategy> render_strategy_;
     MeshRenderStyle style_ { MeshRenderStyle::FaceWithEdges };
     bool visibility_ { true };
-    bool faces_only_ { false }; //> 面隔离期间遮住不经过面过滤管线的渲染对象
     std::shared_ptr<const MeshDataVtk> model_data_;
     std::shared_ptr<const MeshDataSnapshot> data_snapshot_;
     std::uint64_t data_generation_ { };

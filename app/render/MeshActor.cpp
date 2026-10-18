@@ -89,13 +89,12 @@ void MeshActor::applyDataSnapshot(std::shared_ptr<const MeshDataSnapshot> snapsh
         || (snapshot->generation == data_generation_ && snapshot->revision <= data_revision_))
         return;
     const bool reloaded = snapshot->generation != data_generation_;
-    const bool display_changed = visibility_ != snapshot->visible || faces_only_ != snapshot->faces_only;
+    const bool display_changed = visibility_ != snapshot->visible;
     data_snapshot_ = std::move(snapshot);
     const auto& data = *data_snapshot_;
     data_generation_ = data.generation;
     data_revision_ = data.revision;
     visibility_ = data.visible;
-    faces_only_ = data.faces_only;
     if (reloaded) {
         // 属性和选择继续读取完整原始数据，但包装独立于 GUI 管线。
         model_data_ = data.model_data;
@@ -173,7 +172,7 @@ MeshRenderStyle MeshActor::getRenderStyle() const
 
 void MeshActor::applyStyle()
 {
-    topology_diagnostics_->setMeshVisible(visibility_ && style_ != MeshRenderStyle::Hidden && !faces_only_);
+    topology_diagnostics_->setMeshVisible(visibility_ && style_ != MeshRenderStyle::Hidden);
     if (style_ == MeshRenderStyle::Hidden || !visibility_) {
         solid_actor_->SetVisibility(false);
         face_actor_->SetVisibility(false);
@@ -267,12 +266,6 @@ void MeshActor::applyStyle()
     default:
         break;
     }
-    // 样式或组件显隐变化后仍保持隔离，所选面的线框由 face_actor_ 自身绘制。
-    if (faces_only_) {
-        solid_actor_->SetVisibility(false);
-        edge_actor_->SetVisibility(false);
-        glyph3D_actor_->SetVisibility(false);
-    }
 }
 
 TopologyDiagnosticActor& MeshActor::topologyDiagnostics()
@@ -302,8 +295,5 @@ void MeshActor::renderAttribute(
         AttributeOperator op(this);
         render_strategy_->render(op, attr_name, args);
         syncDisplayAttributes();
-        // 属性策略可直接开启独立箭头，完成后仍须遵守面隔离遮罩。
-        if (faces_only_)
-            glyph3D_actor_->VisibilityOff();
     }
 }

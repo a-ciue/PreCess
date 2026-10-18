@@ -448,7 +448,7 @@ TEST_CASE("showFaces restores requested faces while preserving other hidden face
     env.actor->showFaces({ });
     CHECK(faceIdValues(env.faceOutput()) == expected);
 
-    // 父组件隐藏时，显示所选面不会恢复同组件其余面、体或独立边。
+    // 父组件隐藏时仅恢复指定面集合，其他渲染对象继续遵循当前组件开关与样式。
     env.actor->setVisibility(false);
     env.actor->showFaces({ -1 });
     CHECK_FALSE(env.actor->isVisible());
@@ -456,8 +456,8 @@ TEST_CASE("showFaces restores requested faces while preserving other hidden face
     CHECK(env.actor->isVisible());
     CHECK(faceIdValues(env.faceOutput()) == std::vector<vtkIdType>({ 1 }));
     MeshActorSelectOp op(env.actor);
-    CHECK_FALSE(op.getSolidActor().GetVisibility());
-    CHECK_FALSE(op.getEdgeActor().GetVisibility());
+    CHECK(op.getSolidActor().GetVisibility());
+    CHECK(op.getEdgeActor().GetVisibility());
 }
 
 TEST_CASE("face isolation survives style changes and ends on restore or reload")
@@ -469,11 +469,11 @@ TEST_CASE("face isolation survives style changes and ends on restore or reload")
     CHECK(faceIdValues(env.faceOutput()) == std::vector<vtkIdType>({ 0, 2 }));
     env.actor->setRenderStyle(MeshRenderStyle::Face);
     env.actor->setRenderStyle(MeshRenderStyle::FaceWithEdges);
-    CHECK_FALSE(op.getSolidActor().GetVisibility());
-    CHECK_FALSE(op.getEdgeActor().GetVisibility());
+    CHECK(op.getSolidActor().GetVisibility());
+    CHECK(op.getEdgeActor().GetVisibility());
     env.actor->showFaces({ 1 });
     CHECK(faceIdValues(env.faceOutput()) == std::vector<vtkIdType>({ 0, 1, 2 }));
-    CHECK_FALSE(op.getSolidActor().GetVisibility());
+    CHECK(op.getSolidActor().GetVisibility());
     env.actor->showAllFaces();
     CHECK(faceIdValues(env.faceOutput()) == original_ids);
     CHECK(op.getSolidActor().GetVisibility());
@@ -490,8 +490,8 @@ TEST_CASE("face isolation survives style changes and ends on restore or reload")
     CHECK(op.getSolidActor().GetVisibility());
 }
 
-//! @brief 隔离约束必须覆盖所有向量属性来源及后续标量渲染。
-TEST_CASE("face isolation constrains vector and scalar attribute rendering")
+//! @brief 面隔离只改变面集合，向量和标量显示仍由原有属性策略决定。
+TEST_CASE("face isolation preserves ordinary vector and scalar attribute rendering")
 {
     FaceHidingEnv env(makeAttributeMesh());
     AttributeOperator attribute_op(env.actor.get());
@@ -511,18 +511,18 @@ TEST_CASE("face isolation constrains vector and scalar attribute rendering")
     REQUIRE(attribute_op.getGlyph3DMapper()->GetInput()->GetNumberOfCells() > 0);
     REQUIRE(glyph->GetVisibility());
     env.actor->isolateFaces({ 0, 2 });
-    REQUIRE_FALSE(glyph->GetVisibility());
+    REQUIRE(glyph->GetVisibility());
 
-    // 隔离后重新应用向量，属性策略不能打开不经过面过滤管线的覆盖层。
+    // 隔离不再屏蔽同组件的向量、体和独立边。
     env.actor->renderAttribute(attribute, { });
-    CHECK_FALSE(glyph->GetVisibility());
-    CHECK_FALSE(select_op.getSolidActor().GetVisibility());
-    CHECK_FALSE(select_op.getEdgeActor().GetVisibility());
+    CHECK(glyph->GetVisibility());
+    CHECK(select_op.getSolidActor().GetVisibility());
+    CHECK(select_op.getEdgeActor().GetVisibility());
     CHECK(faceIdValues(env.faceOutput()) == std::vector<vtkIdType>({ 0, 2 }));
     env.actor->setRenderStrategy(std::make_unique<AttriRenderStrategyScalar>());
     env.actor->renderAttribute("f_isolation_scalar_1", { });
     CHECK_FALSE(glyph->GetVisibility());
-    CHECK_FALSE(select_op.getSolidActor().GetVisibility());
+    CHECK(select_op.getSolidActor().GetVisibility());
     CHECK(faceIdValues(env.faceOutput()) == std::vector<vtkIdType>({ 0, 2 }));
 
     // 同一场景结束隔离后验证策略恢复，避免另建重复的属性测试环境。
