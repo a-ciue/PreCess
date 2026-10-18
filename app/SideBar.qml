@@ -46,6 +46,14 @@ Item{
             model: root.subFeatures.map(info => ({ text: info.label || info.display_name }))
             textRole: "text"
             enabled: root.hasSubFeatureChoice
+            background: Rectangle {
+                radius: Theme.radiusControl
+                color: !subFeatureSelector.enabled ? Theme.surfaceAlt
+                     : subFeatureSelector.down ? Theme.primaryTint
+                     : subFeatureSelector.hovered ? Theme.hoverOverlay : Theme.surface
+                border.width: subFeatureSelector.visualFocus ? 2 : 1
+                border.color: subFeatureSelector.visualFocus ? Theme.primary : Theme.borderStrong
+            }
             currentIndex: root.activeOp && root.activeOp.info
                 ? root.subFeatures.findIndex(info => info.name === root.activeOp.info.name) : -1
             onActivated: index => root.session.selectSubFeature(index)
