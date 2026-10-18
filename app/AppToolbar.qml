@@ -608,7 +608,13 @@ ColumnLayout {
                                     icon.height: root.ribbonIconSize
                                     icon.color: "transparent"
                                     Layout.fillHeight: true
+                                    // 长标题不再撑大图标间距，完整名称通过悬停提示查看。
+                                    Layout.maximumWidth: featureMenuPage.modelData.name === "几何"
+                                        ? Math.max(88, root.ribbonIconSize + 20) : Infinity
                                     text: modelData.title
+                                    ToolTip.visible: hovered
+                                    ToolTip.delay: 500
+                                    ToolTip.text: text
                                     checkable: true
                                     autoExclusive: true
                                     checked: !!(App.activeOperation && App.activeOperation.entryId === modelData.id)
