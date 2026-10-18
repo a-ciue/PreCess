@@ -56,8 +56,8 @@ Item{
                     + subFeatureSelector.topPadding + subFeatureSelector.bottomPadding)
                 radius: Theme.radiusControl
                 color: !subFeatureSelector.enabled ? Theme.surfaceAlt
-                     : subFeatureSelector.down ? Theme.primaryTint
-                     : subFeatureSelector.hovered ? Theme.hoverOverlay : Theme.surface
+                     : subFeatureSelector.down ? Theme.panelHeaderSurface
+                     : subFeatureSelector.hovered ? Theme.hoverOverlay : Theme.primaryTint
                 border.width: subFeatureSelector.visualFocus ? 2 : 1
                 border.color: subFeatureSelector.visualFocus ? Theme.primary : Theme.borderStrong
             }
