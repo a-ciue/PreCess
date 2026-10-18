@@ -10,13 +10,14 @@
 #include "MeshActorManager.h"
 #include "MeshActorSelectOp.h"
 #include "MeshData.h"
-#include "MeshPipelineData.h"
 #include "ModelLayer.h"
 #include "QFeatureInfo.h"
 #include "QModelManager.h"
 #include "QRenderWindow.h"
+#include "QRenderWindowStyle.h"
 #include "QSelection.h"
 #include "TreeModel.h"
+#include <QElapsedTimer>
 #include <QEventLoop>
 #include <QFile>
 #include <QGuiApplication>
@@ -25,12 +26,17 @@
 #include <QQmlEngine>
 #include <QQmlExtensionPlugin>
 #include <QQuickVTKItem.h>
+#include <QQuickWindow>
 #include <QScopeGuard>
 #include <QTemporaryDir>
+#include <QThread>
 #include <QTimer>
+#include <atomic>
 #include <catch2/catch_test_macros.hpp>
+#include <cmath>
 #include <map>
 #include <utility>
+#include <vtkCamera.h>
 #include <vtkPolyData.h>
 #include <vtkPolyDataMapper.h>
 #include <vtkRenderWindow.h>
@@ -60,7 +66,12 @@ public:
 };
 QGuiApplication& application()
 {
+    // Windows 离屏平台没有 OpenGL，使用不可见原生窗口执行真实拾取回归。
+#ifdef Q_OS_WIN
+    qputenv("QT_QPA_PLATFORM", "windows");
+#else
     qputenv("QT_QPA_PLATFORM", "offscreen");
+#endif
     qputenv("QT_FORCE_STDERR_LOGGING", "1");
     QQuickVTKItem::setGraphicsApi();
     static int argc = 1;
@@ -210,11 +221,68 @@ TEST_CASE("Actual QML show all entries restore hidden faces and end isolation", 
     REQUIRE(tree->refresh());
     auto data = f.manager->getModelQuery()->getMeshDataByComponent(id);
     REQUIRE(data);
-    auto pipeline = std::make_unique<MeshPipelineData>();
-    pipeline->loadModelData(*data);
-    pipeline->isolateFaces({ 0 });
-    pipeline->setVisibility(false);
-    viewport->loadMeshData(id, std::move(pipeline));
+    // 正式加载和真实面选择准备隔离状态，不向窗口注入测试专用管线。
+    viewport->loadMeshData(id, *data);
+    QQuickWindow host;
+    host.resize(600, 600);
+    host.setFlags(Qt::Tool | Qt::FramelessWindowHint | Qt::WindowDoesNotAcceptFocus);
+    host.setOpacity(0.0);
+    host.setPersistentSceneGraph(false);
+    host.setPersistentGraphics(false);
+    auto* page = qobject_cast<QQuickItem*>(f.viewport.get());
+    REQUIRE(page);
+    page->setParentItem(host.contentItem());
+    page->setSize(QSizeF(600, 600));
+    const auto cleanup = qScopeGuard([&] {
+        host.hide();
+        host.releaseResources();
+        QCoreApplication::processEvents();
+        page->setParentItem(nullptr);
+    });
+    // 逐轮消费渲染命令及 GUI 快照回传，保证后续操作使用已经送达的选择。
+    auto flush = [&] {
+        QElapsedTimer timer;
+        timer.start();
+        for (int round = 0; round < 8; ++round) {
+            auto completed = std::make_shared<std::atomic_bool>(false);
+            viewport->dispatch_async([completed](vtkRenderWindow*, QQuickVTKItem::vtkUserData) { completed->store(true); });
+            while (!completed->load() && timer.elapsed() < 5000) {
+                QCoreApplication::processEvents(QEventLoop::AllEvents, 10);
+                QThread::msleep(1);
+            }
+            if (!completed->load())
+                return false;
+            QCoreApplication::processEvents();
+        }
+        return true;
+    };
+    viewport->setSelectMode("Face");
+    host.show();
+    REQUIRE(flush());
+    viewport->dispatch_async([](vtkRenderWindow* render_window, QQuickVTKItem::vtkUserData user_data) {
+        auto* scene = QRenderWindow::Data::SafeDownCast(user_data);
+        auto* camera = scene->renderer_->GetActiveCamera();
+        camera->SetPosition(0.5, 0.5, 5.0);
+        camera->SetFocalPoint(0.5, 0.5, 0.0);
+        camera->SetViewUp(0.0, 1.0, 0.0);
+        camera->SetParallelScale(1.0);
+        scene->renderer_->ResetCameraClippingRange();
+        scene->renderer_->SetWorldPoint(0.75, 0.25, 0.0, 1.0);
+        scene->renderer_->WorldToDisplay();
+        double display[3] { };
+        scene->renderer_->GetDisplayPoint(display);
+        render_window->GetInteractor()->SetEventPosition(
+            static_cast<int>(std::lround(display[0])), static_cast<int>(std::lround(display[1])));
+        scene->style_->SetClick();
+        scene->style_->OnLeftButtonUp();
+    });
+    REQUIRE(flush());
+    std::unique_ptr<QSelection> selection(viewport->selectedIDs());
+    REQUIRE(selection);
+    REQUIRE(selection->get()->ids == std::vector<Index>({ 0 }));
+    viewport->isolateSelectedFaces();
+    REQUIRE(flush());
+    viewport->setMeshVisibility(id, false);
     REQUIRE_FALSE(tree->data(tree->findIndexByNodeId(id, 1), TreeModel::IsVisibleRole).toBool());
 
     SECTION("object tree toolbar")
@@ -235,29 +303,32 @@ TEST_CASE("Actual QML show all entries restore hidden faces and end isolation", 
     }
     CHECK(tree->data(tree->findIndexByNodeId(id, 1), TreeModel::IsVisibleRole).toBool());
 
-    // 无需启动 OpenGL，直接重建场景并读取 GUI 缓存的最终快照，验证两个入口确实清除了面约束。
-    vtkNew<vtkRenderWindow> window;
-    vtkNew<vtkRenderWindowInteractor> interactor;
-    interactor->SetRenderWindow(window);
-    auto user_data = viewport->initializeVTK(window);
-    const auto cleanup = qScopeGuard([&] {
-        viewport->destroyingVTK(window, user_data);
+    REQUIRE(flush());
+    vtkIdType face_count = -1;
+    bool visible = false;
+    bool ordinary_style = false;
+    viewport->dispatch_async([&face_count, &visible, &ordinary_style, id](vtkRenderWindow*, QQuickVTKItem::vtkUserData user_data) {
         auto* scene = QRenderWindow::Data::SafeDownCast(user_data);
-        window->RemoveRenderer(scene->overlay_renderer_);
-        window->RemoveRenderer(scene->renderer_);
+        auto actor = scene->mesh_actor_manager_->getComponentActor(id);
+        if (!actor)
+            return;
+        MeshActorSelectOp select_op(actor);
+        auto* face_actor = vtkActor::SafeDownCast(&select_op.getFaceActor());
+        auto* mapper = face_actor ? vtkPolyDataMapper::SafeDownCast(face_actor->GetMapper()) : nullptr;
+        if (mapper) {
+            mapper->Update();
+            face_count = mapper->GetInput()->GetNumberOfCells();
+        }
+        visible = actor->isVisibilityEnabled();
+        ordinary_style = select_op.getEdgeActor().GetVisibility();
     });
-    auto* scene = QRenderWindow::Data::SafeDownCast(user_data);
-    auto actor = scene->mesh_actor_manager_->getComponentActor(id);
-    REQUIRE(actor);
-    MeshActorSelectOp select_op(actor);
-    auto* face_actor = vtkActor::SafeDownCast(&select_op.getFaceActor());
-    REQUIRE(face_actor);
-    auto* mapper = vtkPolyDataMapper::SafeDownCast(face_actor->GetMapper());
-    REQUIRE(mapper);
-    mapper->Update();
-    CHECK(mapper->GetInput()->GetNumberOfCells() == 2);
-    CHECK(actor->isVisibilityEnabled());
-    CHECK(select_op.getEdgeActor().GetVisibility()); // 结束面隔离后，样式恢复为正常面线框。
+    REQUIRE(flush());
+    CHECK(face_count == 2);
+    CHECK(visible);
+    CHECK(ordinary_style); // 结束面隔离后，样式恢复为正常面线框。
+    // 复用当前场景验证对象树反转入口，避免单独构建一套 QML 场景。
+    REQUIRE(QMetaObject::invokeMethod(f.tree.get(), "reverseDisplayed"));
+    CHECK_FALSE(tree->data(tree->findIndexByNodeId(id, 1), TreeModel::IsVisibleRole).toBool());
 }
 
 TEST_CASE("Actual QML aligns face and component visibility menu entries", "[QML][visibility]")

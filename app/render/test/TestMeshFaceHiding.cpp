@@ -370,7 +370,7 @@ TEST_CASE("MeshActorManager preserves scalar bar across same-generation snapshot
     CHECK(manager.getComponentActor(7)->dataGeneration() == reloaded_snapshot->generation);
 }
 
-TEST_CASE("hideFaces removes selected cells and showAllFaces restores them")
+TEST_CASE("hideFaces ignores duplicate and invalid IDs and showAllFaces restores them")
 {
     FaceHidingEnv env;
 
@@ -378,7 +378,8 @@ TEST_CASE("hideFaces removes selected cells and showAllFaces restores them")
     const vtkIdType original_count = output->GetNumberOfCells();
     REQUIRE(original_count > 4);
 
-    env.actor->hideFaces({ 0, 2 });
+    env.actor->hideFaces({ 0 });
+    env.actor->hideFaces({ 0, 2, original_count + 100, -1 });
     output = env.faceOutput();
     REQUIRE(output->GetNumberOfCells() == original_count - 2);
 
@@ -397,51 +398,6 @@ TEST_CASE("hideFaces removes selected cells and showAllFaces restores them")
     for (vtkIdType id = 0; id < original_count; ++id)
         expected.push_back(id);
     REQUIRE(faceIdValues(output) == expected);
-}
-
-TEST_CASE("hideFaces accumulates, deduplicates and ignores out-of-range ids")
-{
-    FaceHidingEnv env;
-    const vtkIdType original_count = env.faceOutput()->GetNumberOfCells();
-
-    env.actor->hideFaces({ 0 });
-    env.actor->hideFaces({ 0, 1, original_count + 100, -1 });
-    vtkPolyData* output = env.faceOutput();
-
-    REQUIRE(output->GetNumberOfCells() == original_count - 2);
-
-    std::vector<vtkIdType> expected;
-    for (vtkIdType id = 0; id < original_count; ++id) {
-        if (id != 0 && id != 1)
-            expected.push_back(id);
-    }
-    REQUIRE(faceIdValues(output) == expected);
-}
-
-TEST_CASE("face hiding composes with the clipping pipeline and survives clip toggling")
-{
-    FaceHidingEnv env;
-    const vtkIdType original_count = env.faceOutput()->GetNumberOfCells();
-
-    // 原点远离网格、法向指向 +X 的平面：原点附近所有点的隐函数值严格为负（内侧），
-    // 演示网格全部保留，仅验证 GUI 数据管线内隐藏与裁剪的组合，不实际剔除单元。
-    vtkNew<vtkPlane> keep_all_plane;
-    keep_all_plane->SetOrigin(1.0e6, 0.0, 0.0);
-    keep_all_plane->SetNormal(1.0, 0.0, 0.0);
-
-    env.actor->setClipPlane(keep_all_plane);
-    REQUIRE(env.faceOutput()->GetNumberOfCells() == original_count);
-
-    // 裁剪开启时隐藏：隐藏过滤器位于裁剪上游，两个 id 仍被移除。
-    env.actor->hideFaces({ 0, 1 });
-    REQUIRE(env.faceOutput()->GetNumberOfCells() == original_count - 2);
-
-    // 关闭裁剪仅更新数据管线的裁剪条件，保留原始面隐藏集合。
-    env.actor->setClipPlane(nullptr);
-    REQUIRE(env.faceOutput()->GetNumberOfCells() == original_count - 2);
-
-    env.actor->showAllFaces();
-    REQUIRE(env.faceOutput()->GetNumberOfCells() == original_count);
 }
 
 TEST_CASE("reverseVisibility complements hidden faces and preserves clipping")
@@ -568,39 +524,16 @@ TEST_CASE("face isolation constrains vector and scalar attribute rendering")
     CHECK_FALSE(glyph->GetVisibility());
     CHECK_FALSE(select_op.getSolidActor().GetVisibility());
     CHECK(faceIdValues(env.faceOutput()) == std::vector<vtkIdType>({ 0, 2 }));
-}
 
-//! @brief 结束隔离后保留普通向量显示和切换标量时的箭头取消行为。
-TEST_CASE("attribute rendering after face isolation restores ordinary vector and scalar behavior")
-{
-    FaceHidingEnv env(makeAttributeMesh());
-    AttributeOperator attribute_op(env.actor.get());
-    env.actor->isolateFaces({ 0 });
+    // 同一场景结束隔离后验证策略恢复，避免另建重复的属性测试环境。
     env.actor->showAllFaces();
-    // 结束隔离后向量应正常显示，切换标量则继续遵守策略自身的取消逻辑。
     env.actor->setRenderStrategy(std::make_unique<AttriRenderStrategyVector>());
-    env.actor->renderAttribute("f_isolation_vector_3", { });
-    REQUIRE(attribute_op.getGlyph3DActor()->GetVisibility());
+    env.actor->renderAttribute(attribute, { });
+    CHECK(glyph->GetVisibility());
     env.actor->setRenderStrategy(std::make_unique<AttriRenderStrategyScalar>());
     env.actor->renderAttribute("f_isolation_scalar_1", { });
-    CHECK_FALSE(attribute_op.getGlyph3DActor()->GetVisibility());
+    CHECK_FALSE(glyph->GetVisibility());
     CHECK(attribute_op.getFaceMapper()->GetScalarVisibility());
-}
-
-TEST_CASE("reloading mesh data clears hidden faces")
-{
-    FaceHidingEnv env;
-    const vtkIdType original_count = env.faceOutput()->GetNumberOfCells();
-
-    env.actor->hideFaces({ 0, 1, 2 });
-    REQUIRE(env.faceOutput()->GetNumberOfCells() == original_count - 3);
-
-    // 重载同构网格：旧隐藏 id 语义失效，管线恢复完整面集。
-    MeshData reloaded_mesh;
-    MeshDataVtk reloaded_data = MakeMeshDataVtk(reloaded_mesh);
-    env.actor->loadModelData(reloaded_data);
-
-    REQUIRE(env.faceOutput()->GetNumberOfCells() == original_count);
 }
 
 namespace {

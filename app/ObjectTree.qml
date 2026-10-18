@@ -569,18 +569,7 @@ Pane {
     }
 
     function reverseDisplayed() {
-        let componentIds = []
-        let modelCount = treeModel.rowCount()
-        for (let mi = 0; mi < modelCount; mi++) {
-            let modelIdx = treeModel.index(mi, 0)
-            let compCount = treeModel.rowCount(modelIdx)
-            for (let ci = 0; ci < compCount; ci++) {
-                let compIdx = treeModel.index(ci, 0, modelIdx)
-                let cid = treeModel.data(compIdx, TreeModel.NodeIdRole)
-                componentIds.push(cid)
-            }
-        }
-        App.registry.renderWindow.reverseVisibility(componentIds)
+        App.registry.renderWindow.reverseSceneVisibility()
     }
 
     Component.onCompleted: {

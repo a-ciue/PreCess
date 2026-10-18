@@ -13,7 +13,6 @@
 #include "QSelection.h"
 #include <QQuickVTKItem.h>
 #include <QVTKRenderWindowAdapter.h>
-#include <QVariantList>
 #include <unordered_map>
 
 #include <QtQml/QQmlApplicationEngine>
@@ -106,8 +105,7 @@ public:
     Q_INVOKABLE void setFaceSelectionByAngle(bool enabled, double angle_deg);
 
     /**
-     * @brief 清空Selection
-     * @param select_mode
+     * @brief 投递选择与高亮清空命令，GUI 缓存仅在收到渲染侧空快照后更新
      */
     Q_INVOKABLE void clearSelection();
 
@@ -161,10 +159,8 @@ public:
     /** @brief 设置几何拓扑诊断的细小面面积阈值。 */
     Q_INVOKABLE void setGeometryTopologyDiagnosticSmallFaceArea(double threshold);
 
-    /** @brief 在 GUI 线程准备自持网格数据，再投递完成的快照。 */
+    /** @brief 捕获自持网格，继承整体开关和裁剪，清理旧选择后提交组件快照。 */
     void loadMeshData(Index component_id, const MeshDataVtk& data);
-    /** @brief 接管在同一 GUI 线程准备好的组件管线。 */
-    void loadMeshData(Index component_id, std::unique_ptr<MeshPipelineData> pipeline);
 
     Q_INVOKABLE void onModelChanged(Index model_id);
     Q_INVOKABLE void onComponentChanged(Index component_id);
@@ -192,17 +188,19 @@ public:
     Q_INVOKABLE void isolateSelectedFaces();
 
     /**
-     * @brief 仅恢复局部隐藏面并结束面隔离，保留组件整体显隐开关
+     * @brief 恢复目标组件的人工隐藏面并结束其面隔离，保留整体开关与裁剪
      */
-    Q_INVOKABLE void showAllHiddenFaces();
+    Q_INVOKABLE void showAllHiddenFaces(Index component_id);
     /** @brief 恢复全部组件的网格和几何，清除人工隐藏并结束面隔离，保留裁剪。 */
     Q_INVOKABLE void showAll();
 
     /**
-     * @brief 在 GUI 线程决定场景组件的反转结果；几何沿用组件整体开关，网格兼容局部隐藏面
-     * @param component_ids 对象树提供的场景组件 id，结果经信号同步回对象树
+     * @brief 反转目标组件；几何沿用组件整体开关，网格兼容局部隐藏面
+     * @param component_id 目标组件，局部隐藏面的反转规则与场景反转一致
      */
-    Q_INVOKABLE void reverseVisibility(const QVariantList& component_ids);
+    Q_INVOKABLE void reverseComponentVisibility(Index component_id);
+    /** @brief 反转 GUI 记录的整个网格和几何场景，不依赖对象树提供组件列表。 */
+    Q_INVOKABLE void reverseSceneVisibility();
 
     Q_SLOT void setClick();
 
@@ -262,7 +260,7 @@ private:
     enum class FaceOperation { Hide,
         Show,
         Isolate,
-        ShowAll,
+        RestoreComponent,
         ShowScene,
         Reverse };
     using SelectedFaces = std::unordered_map<Index, std::vector<vtkIdType>>;
@@ -270,17 +268,15 @@ private:
     using GeometryVisibility = std::unordered_map<Index, bool>;
     /** @brief 直接使用 GUI 缓存的选择和网格代次计算显隐结果。 */
     void applyFaceOperation(FaceOperation operation, const std::vector<Index>& ids = { });
-    /** @brief 立即作废 GUI 选择，并推进内部版本，拒绝清理前的迟到消息。 */
-    void invalidateSelection();
+    /** @brief 查询 GUI 记录的有效网格与几何组件并集，供场景反转确定范围。 */
+    std::vector<Index> getSceneComponentIds() const;
     /** @brief 发布当前组件结果，缓存用于场景图重建。 */
     std::shared_ptr<const MeshDataSnapshot> prepareMeshSnapshot(Index component_id);
     /** @brief 将裁剪控件值排队交给 GUI，并丢弃停用前的旧交互。 */
     void publishClipPlane(const MeshClipPlane& plane, std::uint64_t revision);
     /** @brief 在 GUI 线程更新所有主网格的隐藏/裁剪数据。 */
     void applyClipPlane(const MeshClipPlane& plane);
-    /** @brief 安装已自持的 GUI 数据，按需保留原整体开关并清理选择。 */
-    void installMeshData(Index component_id, std::shared_ptr<MeshPipelineData> pipeline, bool reset_selection);
-    std::unordered_map<Index, std::shared_ptr<MeshPipelineData>> mesh_pipeline_data_; //> 仅 GUI 访问
+    std::unordered_map<Index, std::unique_ptr<MeshPipelineData>> mesh_pipeline_data_; //> GUI 独占可变管线
     std::unordered_map<Index, std::shared_ptr<const MeshDataSnapshot>> mesh_snapshots_; //> 发布后只读
     GeometryVisibility geometry_visibility_; //> 仅含已存在几何的 GUI 整体显隐状态
     MeshClipPlane mesh_clip_;
@@ -297,8 +293,6 @@ private:
     int render_selection_revision_ { }; //> 渲染侧已应用版本
     SelectedFaces selected_faces_; //> 与 QML 选择同批回传的原始面 ID，仅 GUI 访问
     MeshGenerations selected_face_generations_; //> 各选中组件的源网格代次，仅 GUI 访问
-    std::uint64_t selection_epoch_ { }; //> GUI 主动清理与上下文切换的内部版本
-    std::uint64_t render_selection_epoch_ { }; //> 当前渲染选择所属内部版本
 
     GeometryRenderStyle geometry_style_ { GeometryRenderStyle::SurfaceWithEdges };
     MeshRenderStyle mesh_style_ { MeshRenderStyle::FaceWithEdges };

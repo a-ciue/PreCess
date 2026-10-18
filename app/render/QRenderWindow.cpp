@@ -28,7 +28,6 @@
 #include <algorithm>
 #include <cmath>
 #include <functional>
-#include <limits>
 #include <memory>
 #include <optional>
 #include <string>
@@ -299,7 +298,6 @@ QQuickVTKItem::vtkUserData QRenderWindow::initializeVTK(vtkRenderWindow* renderW
         }
     }
     render_selection_revision_ = selection_revision_;
-    render_selection_epoch_ = selection_epoch_;
     vtk->selection_observer_tag_ = vtk->style_->AddObserver(vtkCommand::SelectionChangedEvent, this, &QRenderWindow::publishSelection);
     publishSelection();
     return vtk;
@@ -457,26 +455,12 @@ std::shared_ptr<const MeshDataSnapshot> QRenderWindow::prepareMeshSnapshot(Index
 void QRenderWindow::loadMeshData(Index component_id, const MeshDataVtk& data)
 {
     // 查询结果是借用视图，在当前 GUI 调用内捕获自持数据再发布。
-    auto pipeline = std::make_shared<MeshPipelineData>();
+    auto pipeline = std::make_unique<MeshPipelineData>();
     pipeline->loadModelData(data);
-    installMeshData(component_id, std::move(pipeline), true);
-}
-
-void QRenderWindow::loadMeshData(Index component_id, std::unique_ptr<MeshPipelineData> pipeline)
-{
-    std::shared_ptr<MeshPipelineData> prepared = std::move(pipeline);
-    installMeshData(component_id, std::move(prepared), false);
-}
-
-void QRenderWindow::installMeshData(Index component_id, std::shared_ptr<MeshPipelineData> pipeline, bool reset_selection)
-{
-    if (reset_selection) {
-        if (const auto previous = mesh_pipeline_data_.find(component_id); previous != mesh_pipeline_data_.end())
-            pipeline->setVisibility(previous->second->isVisibilityEnabled());
-    }
-    const auto previous = mesh_pipeline_data_.find(component_id);
-    if (reset_selection || (previous != mesh_pipeline_data_.end() && previous->second->generation() != 0))
-        clearSelection();
+    if (const auto previous = mesh_pipeline_data_.find(component_id); previous != mesh_pipeline_data_.end())
+        pipeline->setVisibility(previous->second->isVisibilityEnabled());
+    // 加载路径统一清理旧选择，渲染侧清理完成后才回传空选择。
+    clearSelection();
     pipeline->setClipPlane(mesh_clip_);
     mesh_pipeline_data_[component_id] = std::move(pipeline);
     const auto snapshot = prepareMeshSnapshot(component_id);
@@ -490,21 +474,39 @@ void QRenderWindow::installMeshData(Index component_id, std::shared_ptr<MeshPipe
 void QRenderWindow::hideSelectedFaces() { applyFaceOperation(FaceOperation::Hide); }
 void QRenderWindow::showSelectedFaces() { applyFaceOperation(FaceOperation::Show); }
 void QRenderWindow::isolateSelectedFaces() { applyFaceOperation(FaceOperation::Isolate); }
-void QRenderWindow::showAllHiddenFaces() { applyFaceOperation(FaceOperation::ShowAll); }
+void QRenderWindow::showAllHiddenFaces(Index component_id)
+{
+    const auto pipeline = mesh_pipeline_data_.find(component_id);
+    if (pipeline != mesh_pipeline_data_.end() && pipeline->second->generation() != 0)
+        applyFaceOperation(FaceOperation::RestoreComponent, { component_id });
+}
 void QRenderWindow::showAll() { applyFaceOperation(FaceOperation::ShowScene); }
 
-void QRenderWindow::reverseVisibility(const QVariantList& component_ids)
+void QRenderWindow::reverseComponentVisibility(Index component_id)
+{
+    const auto pipeline = mesh_pipeline_data_.find(component_id);
+    if ((pipeline != mesh_pipeline_data_.end() && pipeline->second->generation() != 0)
+        || geometry_visibility_.contains(component_id))
+        applyFaceOperation(FaceOperation::Reverse, { component_id });
+}
+
+std::vector<Index> QRenderWindow::getSceneComponentIds() const
 {
     std::vector<Index> ids;
-    // 先按宽整数解析再校验，避免非法值变为组件 0，或溢出后误命中其他组件。
-    for (const auto& id : component_ids) {
-        bool ok = false;
-        const auto component_id = id.toLongLong(&ok);
-        if (ok && component_id >= 0 && component_id <= std::numeric_limits<Index>::max())
-            ids.push_back(static_cast<Index>(component_id));
+    for (const auto& [id, pipeline] : mesh_pipeline_data_) {
+        if (pipeline->generation() != 0)
+            ids.push_back(id);
     }
+    for (const auto& [id, visible] : geometry_visibility_)
+        ids.push_back(id);
     std::sort(ids.begin(), ids.end());
     ids.erase(std::unique(ids.begin(), ids.end()), ids.end());
+    return ids;
+}
+
+void QRenderWindow::reverseSceneVisibility()
+{
+    const auto ids = getSceneComponentIds();
     if (!ids.empty())
         applyFaceOperation(FaceOperation::Reverse, ids);
 }
@@ -542,7 +544,14 @@ void QRenderWindow::applyFaceOperation(FaceOperation operation, const std::vecto
             }
             publish_mesh(id);
         }
-    } else if (operation == FaceOperation::Isolate || operation == FaceOperation::ShowAll || operation == FaceOperation::ShowScene) {
+    } else if (operation == FaceOperation::RestoreComponent) {
+        // 组件恢复只清除目标网格的人工隐藏与隔离，不改其他组件及几何开关。
+        for (auto id : ids) {
+            mesh_pipeline_data_.at(id)->showAllFaces();
+            notifications.push_back(id);
+            publish_mesh(id);
+        }
+    } else if (operation == FaceOperation::Isolate || operation == FaceOperation::ShowScene) {
         for (auto& [id, pipeline] : mesh_pipeline_data_) {
             if (pipeline->generation() == 0)
                 continue;
@@ -670,7 +679,7 @@ void QRenderWindow::setMeshVisibility(Index component_id, bool visibility)
 {
     auto& pipeline = mesh_pipeline_data_[component_id];
     if (!pipeline)
-        pipeline = std::make_shared<MeshPipelineData>();
+        pipeline = std::make_unique<MeshPipelineData>();
     pipeline->setVisibility(visibility);
     // 未加载时只保存 GUI 意图，由首次有效快照携带，避免旧的无版本命令覆盖新状态。
     if (pipeline->generation() != 0) {
@@ -710,15 +719,6 @@ QSelection* QRenderWindow::selectedIDs()
     return selection;
 }
 
-void QRenderWindow::invalidateSelection()
-{
-    ++selection_epoch_;
-    selection_snapshot_.reset();
-    selected_faces_.clear();
-    selected_face_generations_.clear();
-    emit selectedChanged();
-}
-
 void QRenderWindow::setSelectionRevision(int revision)
 {
     if (selection_revision_ == revision)
@@ -741,9 +741,8 @@ void QRenderWindow::publishSelection()
     }
     std::shared_ptr<const Selection> snapshot = std::move(selection);
     const int revision = render_selection_revision_;
-    const auto epoch = render_selection_epoch_;
-    QMetaObject::invokeMethod(&selection_dispatcher_, [this, snapshot, faces = std::move(faces), generations = std::move(generations), revision, epoch] {
-            if (revision != selection_revision_ || epoch != selection_epoch_)
+    QMetaObject::invokeMethod(&selection_dispatcher_, [this, snapshot, faces = std::move(faces), generations = std::move(generations), revision] {
+            if (revision != selection_revision_)
                 return;
             // 网格换代后，即使外部参数未切换，也不能恢复旧网格的选择身份。
             for (const auto& [id, generation] : generations) {
@@ -791,13 +790,11 @@ void QRenderWindow::setSelectComponent(Index component_id)
 
 void QRenderWindow::setSelectMode(QString select_mode)
 {
-    invalidateSelection();
-    const auto epoch = selection_epoch_;
     const auto revision = selection_revision_;
-    dispatch_async([select_mode, epoch, revision, this](vtkRenderWindow*, vtkUserData) {
-        render_selection_epoch_ = epoch;
+    dispatch_async([select_mode, revision, this](vtkRenderWindow*, vtkUserData) {
         render_selection_revision_ = revision;
         select_manager_->setSelectMode(select_mode.toStdString());
+        publishSelection();
     });
 }
 
@@ -810,13 +807,11 @@ void QRenderWindow::setFaceSelectionByAngle(bool enabled, double angle_deg)
 
 void QRenderWindow::clearSelection()
 {
-    invalidateSelection();
-    const auto epoch = selection_epoch_;
     const auto revision = selection_revision_;
-    dispatch_async([this, epoch, revision](vtkRenderWindow*, vtkUserData) {
-        render_selection_epoch_ = epoch;
+    dispatch_async([this, revision](vtkRenderWindow*, vtkUserData) {
         render_selection_revision_ = revision;
         select_manager_->clearSelection();
+        publishSelection();
     });
 }
 

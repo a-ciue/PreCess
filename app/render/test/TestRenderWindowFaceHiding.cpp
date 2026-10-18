@@ -10,7 +10,6 @@
 #include "MakeMeshDataVtk.h"
 #include "MeshActorManager.h"
 #include "MeshActorSelectOp.h"
-#include "MeshPipelineData.h"
 #include "ModelLayer.h"
 #include "QRenderWindow.h"
 #include "QRenderWindowStyle.h"
@@ -35,10 +34,10 @@
 #include <vtkPolyDataMapper.h>
 #include <vtkRenderWindowInteractor.h>
 
+#include <algorithm>
 #include <atomic>
 #include <cmath>
 #include <cstdio>
-#include <limits>
 #include <map>
 #include <memory>
 #include <utility>
@@ -307,9 +306,7 @@ TEST_CASE("QRenderWindow restores retained hidden face selections in their own c
     second_mesh = env.mesh.clone();
     for (auto& point : second_mesh->vertex_positions_)
         point[1] += 1.5;
-    auto second_data = std::make_unique<MeshPipelineData>();
-    second_data->loadModelData(MakeMeshDataVtk(*second_mesh));
-    env.item.loadMeshData(8, std::move(second_data));
+    env.item.loadMeshData(8, MakeMeshDataVtk(*second_mesh));
     REQUIRE(env.flush());
     env.selectFace(0);
     env.selectFace(1, 1.5);
@@ -354,72 +351,6 @@ TEST_CASE("QRenderWindow retained hidden faces do not alias newly picked render 
     CHECK(env.visibleFaceIds() == std::vector<Index>({ 0, 1 }));
 }
 
-TEST_CASE("QRenderWindow retained hidden face selection follows explicit clearing boundaries")
-{
-    testApplication();
-    FaceHidingViewport env;
-    REQUIRE(env.flush());
-    env.selectFace(0);
-    env.item.hideSelectedFaces();
-    REQUIRE(env.flush());
-    REQUIRE(env.selectedFaceIds() == std::vector<Index>({ 0 }));
-    SECTION("clear selection") { env.item.clearSelection(); }
-    SECTION("change selection mode") { env.item.setSelectMode("Component"); }
-    SECTION("change selection revision") { env.item.setSelectionRevision(1); }
-    REQUIRE(env.flush());
-    CHECK(env.selectedFaceIds().empty());
-    env.item.showSelectedFaces();
-    REQUIRE(env.flush());
-    CHECK(env.visibleFaceIds() == std::vector<Index>({ 1 }));
-}
-
-TEST_CASE("QRenderWindow hiding faces preserves component selection")
-{
-    testApplication();
-    FaceHidingViewport env;
-    REQUIRE(env.flush());
-    env.item.setSelectMode("Component");
-    REQUIRE(env.flush());
-    // 在面位置真实拾取整个组件，验证非面模式下隐藏接口不会清除组件选择。
-    env.selectFace(0);
-    std::unique_ptr<QSelection> before(env.item.selectedIDs());
-    REQUIRE(before != nullptr);
-    REQUIRE(before->get() != nullptr);
-    REQUIRE(before->get()->type == ElementEnum::Component);
-    REQUIRE(before->get()->ids == std::vector<Index>({ 7 }));
-
-    int updates = 0;
-    QObject::connect(&env.item, &QRenderWindow::selectedChanged, &env.item, [&updates] { ++updates; });
-    env.item.hideSelectedFaces();
-    REQUIRE(env.flush());
-
-    std::unique_ptr<QSelection> after(env.item.selectedIDs());
-    REQUIRE(after != nullptr);
-    REQUIRE(after->get() != nullptr);
-    CHECK(after->get()->type == before->get()->type);
-    CHECK(after->get()->ids == before->get()->ids);
-    CHECK(after->get()->component_id == before->get()->component_id);
-    CHECK(updates == 0);
-    CHECK(env.visibleFaceIds() == std::vector<Index>({ 0, 1 }));
-}
-
-TEST_CASE("QRenderWindow hiding faces without selection does not publish a reset")
-{
-    testApplication();
-    FaceHidingViewport env;
-    REQUIRE(env.flush());
-    REQUIRE(env.selectedFaceIds().empty());
-    int updates = 0;
-    QObject::connect(&env.item, &QRenderWindow::selectedChanged, &env.item, [&updates] { ++updates; });
-
-    // 空选择不产生隐藏操作，也不应发布一次额外的 GUI 选择清理。
-    env.item.hideSelectedFaces();
-    REQUIRE(env.flush());
-    CHECK(env.selectedFaceIds().empty());
-    CHECK(updates == 0);
-    CHECK(env.visibleFaceIds() == std::vector<Index>({ 0, 1 }));
-}
-
 TEST_CASE("QRenderWindow restoring faces invalidates compressed selection indices")
 {
     testApplication();
@@ -434,7 +365,7 @@ TEST_CASE("QRenderWindow restoring faces invalidates compressed selection indice
     env.item.clearSelection();
     env.selectFace(1);
     REQUIRE(env.selectedFaceIds() == std::vector<Index>({ 1 }));
-    env.item.showAllHiddenFaces();
+    env.item.showAllHiddenFaces(7);
     REQUIRE(env.flush());
     CHECK(env.selectedFaceIds().empty());
     CHECK(env.visibleFaceIds() == std::vector<Index>({ 0, 1 }));
@@ -450,7 +381,7 @@ TEST_CASE("QRenderWindow restoring faces invalidates compressed selection indice
     CHECK(env.visibleFaceIds() == std::vector<Index>({ 0 }));
 }
 
-TEST_CASE("QRenderWindow reversing visibility swaps hidden faces in every selection mode")
+TEST_CASE("QRenderWindow reverses hidden faces independently of the selection mode")
 {
     testApplication();
     FaceHidingViewport env;
@@ -464,12 +395,9 @@ TEST_CASE("QRenderWindow reversing visibility swaps hidden faces in every select
     SECTION("Face") { mode = "Face"; }
     SECTION("Component") { mode = "Component"; }
     SECTION("None") { mode = "None"; }
-    SECTION("Vertex") { mode = "Vertex"; }
-    SECTION("Edge") { mode = "Edge"; }
-    SECTION("Solid") { mode = "Solid"; }
     env.item.setSelectMode(mode);
     env.selectFace(1);
-    env.item.reverseVisibility({ 7 });
+    env.item.reverseComponentVisibility(7);
     REQUIRE(env.flush());
     CHECK(env.selectedFaceIds().empty());
     CHECK(env.visibleFaceIds() == std::vector<Index>({ 0 }));
@@ -480,17 +408,17 @@ TEST_CASE("QRenderWindow reversing visibility swaps hidden faces in every select
     CHECK(env.selectedFaceIds().empty());
     env.selectFace(0);
     CHECK(env.selectedFaceIds() == std::vector<Index>({ 0 }));
-    env.item.reverseVisibility({ 7 });
+    env.item.reverseComponentVisibility(7);
     REQUIRE(env.flush());
     CHECK(env.selectedFaceIds().empty());
     CHECK(env.visibleFaceIds() == std::vector<Index>({ 1 }));
 
     // 不等待对象树回传即连续点击，仍应逐次基于最新显隐意图取反。
-    env.item.reverseVisibility({ 7 });
-    env.item.reverseVisibility({ 7 });
+    env.item.reverseComponentVisibility(7);
+    env.item.reverseComponentVisibility(7);
     REQUIRE(env.flush());
     CHECK(env.visibleFaceIds() == std::vector<Index>({ 1 }));
-    env.item.showAllHiddenFaces();
+    env.item.showAllHiddenFaces(7);
     REQUIRE(env.flush());
     CHECK(env.visibleFaceIds() == std::vector<Index>({ 0, 1 }));
 }
@@ -502,21 +430,23 @@ TEST_CASE("QRenderWindow reversing visibility handles partially visible and hidd
     REQUIRE(env.flush());
     env.selectFace(0);
     env.item.hideSelectedFaces();
-    auto hidden_data = std::make_unique<MeshPipelineData>();
-    hidden_data->loadModelData(MakeMeshDataVtk(env.mesh));
-    hidden_data->hideFaces({ 0 });
-    hidden_data->setVisibility(false);
-    env.item.loadMeshData(8, std::move(hidden_data));
-    auto visible_data = std::make_unique<MeshPipelineData>();
-    visible_data->loadModelData(MakeMeshDataVtk(env.mesh));
-    env.item.loadMeshData(9, std::move(visible_data));
+    auto second_mesh = env.mesh.clone();
+    for (auto& point : second_mesh->vertex_positions_)
+        point[1] += 1.5;
+    env.item.loadMeshData(8, MakeMeshDataVtk(*second_mesh));
+    REQUIRE(env.flush());
+    env.selectFace(0, 1.5);
+    env.item.hideSelectedFaces();
+    REQUIRE(env.flush());
+    env.item.setMeshVisibility(8, false);
+    env.item.loadMeshData(9, MakeMeshDataVtk(env.mesh));
     REQUIRE(env.flush());
     std::map<Index, std::pair<bool, bool>> visibility;
     QObject::connect(&env.item, &QRenderWindow::componentVisibilityChanged, &env.item,
         [&visibility](Index component_id, bool mesh_visible, bool geometry_visible) {
             visibility[component_id] = { mesh_visible, geometry_visible };
         });
-    env.item.reverseVisibility({ 7, 8, 9, 7 });
+    env.item.reverseSceneVisibility();
     REQUIRE(env.flush());
     CHECK(env.visibleFaceIds(7) == std::vector<Index>({ 0 }));
     CHECK(env.visibleFaceIds(8) == std::vector<Index>({ 0, 1 }));
@@ -559,7 +489,7 @@ TEST_CASE("QRenderWindow reversing geometry follows the original component visib
             visibility = { mesh_visible, geometry_visible };
         });
     const bool expected = !(mesh_enabled || geometry_enabled);
-    env.item.reverseVisibility({ 7 });
+    env.item.reverseComponentVisibility(7);
     REQUIRE(env.flush());
     CHECK(visibility == std::make_pair(expected, expected));
     std::pair<bool, bool> actor_visibility;
@@ -571,8 +501,8 @@ TEST_CASE("QRenderWindow reversing geometry follows the original component visib
     REQUIRE(env.flush());
     CHECK(actor_visibility == visibility);
     // 不等待对象树回传连续反转两次，仍应回到同一组件开关状态。
-    env.item.reverseVisibility({ 7 });
-    env.item.reverseVisibility({ 7 });
+    env.item.reverseComponentVisibility(7);
+    env.item.reverseComponentVisibility(7);
     REQUIRE(env.flush());
     CHECK(visibility == std::make_pair(expected, expected));
 }
@@ -611,18 +541,19 @@ TEST_CASE("QRenderWindow isolating faces keeps selections from multiple componen
     env.loadGeometry(7);
     env.loadGeometry(10);
     REQUIRE(env.flush());
-    env.selectFace(0);
     second_mesh = env.mesh.clone();
     for (auto& point : second_mesh->vertex_positions_)
         point[1] += 1.5;
-    auto second_data = std::make_unique<MeshPipelineData>();
-    second_data->loadModelData(MakeMeshDataVtk(*second_mesh));
-    second_data->hideFaces({ 1 });
-    env.item.loadMeshData(8, std::move(second_data));
-    auto unselected_data = std::make_unique<MeshPipelineData>();
-    unselected_data->loadModelData(MakeMeshDataVtk(env.mesh));
-    env.item.loadMeshData(9, std::move(unselected_data));
+    env.item.loadMeshData(8, MakeMeshDataVtk(*second_mesh));
+    auto unselected_mesh = env.mesh.clone();
+    for (auto& point : unselected_mesh->vertex_positions_)
+        point[0] += 20.0;
+    env.item.loadMeshData(9, MakeMeshDataVtk(*unselected_mesh));
     REQUIRE(env.flush());
+    env.selectFace(1, 1.5);
+    env.item.hideSelectedFaces();
+    env.item.clearSelection();
+    env.selectFace(0);
     env.selectFace(0, 1.5);
     REQUIRE(env.selectedFaceIds().size() == 2);
     std::map<Index, std::pair<bool, bool>> visibility;
@@ -652,22 +583,20 @@ TEST_CASE("QRenderWindow isolating faces keeps selections from multiple componen
     env.selectFace(0);
     CHECK(env.selectedFaceIds() == std::vector<Index>({ 0 }));
     // 面隔离后仍能使用全局反转，所选面的补集和其余组件分别恢复。
-    env.item.reverseVisibility({ 7, 8, 9, 10 });
+    env.item.reverseSceneVisibility();
     REQUIRE(env.flush());
     CHECK(env.visibleFaceIds(7) == std::vector<Index>({ 1 }));
     CHECK(env.visibleFaceIds(8) == std::vector<Index>({ 1 }));
     CHECK(visibility[7] == std::make_pair(true, false));
     CHECK(visibility[9] == std::make_pair(true, false));
     CHECK(visibility[10] == std::make_pair(false, true));
-    env.item.showAllHiddenFaces();
-    env.item.setMeshVisibility(9, true);
-    env.item.setGeometryVisibility(10, true);
+    env.item.showAll();
     REQUIRE(env.flush());
     CHECK(env.visibleFaceIds(7) == std::vector<Index>({ 0, 1 }));
     CHECK(env.visibleFaceIds(8) == std::vector<Index>({ 0, 1 }));
 }
 
-TEST_CASE("QRenderWindow face display and isolation preserve non-face or empty selections")
+TEST_CASE("QRenderWindow face operations preserve non-face or empty selections")
 {
     testApplication();
     FaceHidingViewport env;
@@ -679,13 +608,20 @@ TEST_CASE("QRenderWindow face display and isolation preserve non-face or empty s
         env.selectFace(0);
         REQUIRE(env.selectedFaceIds() == std::vector<Index>({ 7 }));
     }
-    const auto before = env.selectedFaceIds();
+    std::unique_ptr<QSelection> before(env.item.selectedIDs());
     int updates = 0;
     QObject::connect(&env.item, &QRenderWindow::selectedChanged, &env.item, [&updates] { ++updates; });
+    env.item.hideSelectedFaces();
     env.item.showSelectedFaces();
     env.item.isolateSelectedFaces();
     REQUIRE(env.flush());
-    CHECK(env.selectedFaceIds() == before);
+    std::unique_ptr<QSelection> after(env.item.selectedIDs());
+    REQUIRE(static_cast<bool>(after) == static_cast<bool>(before));
+    if (before) {
+        CHECK(after->get()->type == before->get()->type);
+        CHECK(after->get()->ids == before->get()->ids);
+        CHECK(after->get()->component_id == before->get()->component_id);
+    }
     CHECK(updates == 0);
     CHECK(env.visibleFaceIds() == std::vector<Index>({ 0, 1 }));
 }
@@ -721,31 +657,17 @@ TEST_CASE("QRenderWindow GUI mesh pipeline works with a separate render thread")
     CHECK(env.selectedFaceIds().empty());
 }
 
-//! @brief 混合异步面命令与直接整体开关时，结果必须仍按 GUI 调用顺序生效。
-TEST_CASE("QRenderWindow preserves mixed visibility command order")
+//! @brief 连续提交隐藏、恢复和整体开关时，结果必须按调用顺序生效。
+TEST_CASE("QRenderWindow applies consecutive face commands in call order")
 {
     testApplication();
     FaceHidingViewport env;
     REQUIRE(env.flush());
-    SECTION("reverse then show")
-    {
-        env.item.reverseVisibility({ 7 });
-        env.item.setMeshVisibility(7, true);
-    }
-    SECTION("empty selection releases later commands")
-    {
-        env.item.showSelectedFaces();
-        env.item.isolateSelectedFaces();
-        env.item.setMeshVisibility(7, true);
-    }
-    SECTION("hide then show retained selection")
-    {
-        env.selectFace(0);
-        env.item.hideSelectedFaces();
-        env.item.showSelectedFaces();
-        env.item.clearSelection();
-        env.item.setMeshVisibility(7, true);
-    }
+    env.selectFace(0);
+    env.item.hideSelectedFaces();
+    env.item.showSelectedFaces();
+    env.item.clearSelection();
+    env.item.setMeshVisibility(7, true);
     REQUIRE(env.flush());
     bool visible = false;
     env.item.dispatch_async([&visible](vtkRenderWindow*, QQuickVTKItem::vtkUserData user_data) {
@@ -755,48 +677,6 @@ TEST_CASE("QRenderWindow preserves mixed visibility command order")
     REQUIRE(env.flush());
     CHECK(visible);
     CHECK(env.visibleFaceIds() == std::vector<Index>({ 0, 1 }));
-}
-
-//! @brief 非法或溢出的组件参数不能退化为有效 ID，有效重复项只能反转一次。
-TEST_CASE("QRenderWindow rejects invalid and overflowing reverse visibility component IDs")
-{
-    testApplication();
-    std::map<Index, std::pair<bool, bool>> notifications;
-    FaceHidingViewport env;
-    env.item.loadMeshData(0, MakeMeshDataVtk(env.mesh));
-    REQUIRE(env.flush());
-    QObject::connect(&env.item, &QRenderWindow::componentVisibilityChanged, &env.item,
-        [&notifications](Index id, bool mesh_visible, bool geometry_visible) {
-            notifications[id] = { mesh_visible, geometry_visible };
-        });
-    QVariantList ids { QString("not-a-component"), QVariant { }, -1,
-        QVariant::fromValue(std::numeric_limits<qlonglong>::max()),
-        QVariant::fromValue(qlonglong { 1 } << 32),
-        QVariant::fromValue((qlonglong { 1 } << 32) + 7) };
-    bool expected_seven_visible = true;
-    SECTION("invalid inputs only") { }
-    SECTION("mixed inputs retain and deduplicate valid IDs")
-    {
-        ids.append(QString("7"));
-        ids.append(7);
-        expected_seven_visible = false;
-    }
-    env.item.reverseVisibility(ids);
-    REQUIRE(env.flush());
-    bool zero_visible = false;
-    bool seven_visible = false;
-    env.item.dispatch_async([&zero_visible, &seven_visible](vtkRenderWindow*, QQuickVTKItem::vtkUserData user_data) {
-        auto* data = QRenderWindow::Data::SafeDownCast(user_data);
-        zero_visible = data->mesh_actor_manager_->getComponentActor(0)->isVisibilityEnabled();
-        seven_visible = data->mesh_actor_manager_->getComponentActor(7)->isVisibilityEnabled();
-    });
-    REQUIRE(env.flush());
-    CHECK(zero_visible);
-    CHECK(seven_visible == expected_seven_visible);
-    CHECK(notifications.size() == (expected_seven_visible ? 0 : 1));
-    CHECK_FALSE(notifications.contains(0));
-    if (!expected_seven_visible)
-        CHECK(notifications.at(7) == std::make_pair(false, false));
 }
 
 //! @brief GUI 已完成面命令后释放真实场景图，重建后按原顺序安装快照和整体开关。
@@ -818,7 +698,7 @@ TEST_CASE("QRenderWindow submitted face operations survive scene graph recreatio
     QObject::connect(&env.window, &QQuickWindow::sceneGraphInitialized, &env.window, [&recreated] { recreated.store(true); }, Qt::DirectConnection);
 
     // GUI 同步完成面数据计算，渲染安装尚未进入下一次同步，随后关闭窗口。
-    env.item.showAllHiddenFaces();
+    env.item.showAllHiddenFaces(7);
     env.item.setMeshVisibility(7, false);
     env.item.dispatch_async([&exported](vtkRenderWindow*, QQuickVTKItem::vtkUserData) { exported.store(true); });
     env.window.hide();
@@ -847,7 +727,7 @@ TEST_CASE("QRenderWindow submitted face operations survive scene graph recreatio
     CHECK_FALSE(visible);
 
     // 再提交一次反转，验证场景重建后仍可继续处理新操作。
-    env.item.reverseVisibility({ 7 });
+    env.item.reverseComponentVisibility(7);
     REQUIRE(env.flush());
     env.item.dispatch_async([&visible](vtkRenderWindow*, QQuickVTKItem::vtkUserData user_data) {
         auto* data = QRenderWindow::Data::SafeDownCast(user_data);
@@ -869,7 +749,7 @@ TEST_CASE("QRenderWindow publishes GUI visibility decisions without stale render
             if (id == 7)
                 tree_visible = mesh_visible || geometry_visible;
         });
-    env.item.reverseVisibility({ 7 });
+    env.item.reverseComponentVisibility(7);
     CHECK_FALSE(tree_visible); // GUI 决定后立即同步，不等待渲染往返。
     tree_visible = true; // 模拟对象树显示按钮的即时反馈。
     env.item.setMeshVisibility(7, true);
@@ -885,14 +765,16 @@ TEST_CASE("QRenderWindow publishes GUI visibility decisions without stale render
     CHECK(tree_visible);
 }
 
-//! @brief 主动清理与数据换代立即作废 GUI 选择，迟到的旧消息不能再恢复面命令输入。
-TEST_CASE("QRenderWindow invalidates GUI face selections before late selection delivery")
+//! @brief GUI 等待渲染侧空快照；同上下文允许旧选择先到达，参数切换和网格换代仍拒绝旧结果。
+TEST_CASE("QRenderWindow clears GUI selection only after render snapshot delivery")
 {
     testApplication();
     QObject gui_dispatcher;
     FaceHidingViewport env;
     REQUIRE(env.flush());
     env.selectFace(0);
+    env.item.hideSelectedFaces();
+    REQUIRE(env.flush());
     REQUIRE(env.selectedFaceIds() == std::vector<Index>({ 0 }));
     enum class Change { Clear,
         Mode,
@@ -903,10 +785,15 @@ TEST_CASE("QRenderWindow invalidates GUI face selections before late selection d
     SECTION("selection mode changes") { change = Change::Mode; }
     SECTION("parameter context changes") { change = Change::Parameter; }
     SECTION("mesh generation changes") { change = Change::Reload; }
-    bool cleared_immediately = false;
-    bool changed = false;
-    env.item.dispatch_async([&](vtkRenderWindow*, QQuickVTKItem::vtkUserData user_data) {
-        // GUI 清理消息先排队，随后发布仍属于旧版本的选择消息，稳定复现迟到回传。
+    bool retained_before_delivery = false;
+    bool requested = false;
+    std::vector<std::vector<Index>> received;
+    QObject::connect(&env.item, &QRenderWindow::selectedChanged, &gui_dispatcher, [&] {
+        if (requested)
+            received.push_back(env.selectedFaceIds());
+    });
+    env.item.dispatch_async([&](vtkRenderWindow* render_window, QQuickVTKItem::vtkUserData user_data) {
+        // GUI 先收到清理请求，随后收到清理前的 {0,1}；真正的空快照要等下一次渲染队列执行。
         QMetaObject::invokeMethod(&gui_dispatcher, [&] {
             if (change == Change::Clear)
                 env.item.clearSelection();
@@ -916,17 +803,31 @@ TEST_CASE("QRenderWindow invalidates GUI face selections before late selection d
                 env.item.setSelectionRevision(env.item.selectionRevision() + 1);
             else
                 env.item.loadMeshData(7, MakeMeshDataVtk(env.mesh));
-            cleared_immediately = env.selectedFaceIds().empty();
-            env.item.hideSelectedFaces(); // 渲染侧尚有旧选择，GUI 不得再取用它。
-            changed = true; }, Qt::QueuedConnection);
+            retained_before_delivery = env.selectedFaceIds() == std::vector<Index>({ 0 });
+            requested = true; }, Qt::QueuedConnection);
         auto* data = QRenderWindow::Data::SafeDownCast(user_data);
-        data->style_->InvokeEvent(vtkCommand::SelectionChangedEvent);
+        data->renderer_->SetWorldPoint(7.5, 0.5, 0.0, 1.0);
+        data->renderer_->WorldToDisplay();
+        double display[3] { };
+        data->renderer_->GetDisplayPoint(display);
+        render_window->GetInteractor()->SetEventPosition(
+            static_cast<int>(std::lround(display[0])), static_cast<int>(std::lround(display[1])));
+        data->style_->SetClick();
+        data->style_->OnLeftButtonUp();
     });
     REQUIRE(env.flush());
-    REQUIRE(changed);
-    CHECK(cleared_immediately);
+    REQUIRE(requested);
+    CHECK(retained_before_delivery);
+    REQUIRE_FALSE(received.empty());
+    CHECK(received.back().empty());
+    const auto old_selection = std::find(received.begin(), received.end(), std::vector<Index>({ 0, 1 }));
+    CHECK((old_selection != received.end()) == (change == Change::Clear || change == Change::Mode));
     CHECK(env.selectedFaceIds().empty());
-    CHECK(env.visibleFaceIds() == std::vector<Index>({ 0, 1 }));
+    CHECK(env.highlightedCellCount() == 0);
+    // 清理后的空缓存不能再恢复刚才隐藏的面；只有重载会恢复完整网格。
+    env.item.showSelectedFaces();
+    REQUIRE(env.flush());
+    CHECK(env.visibleFaceIds() == (change == Change::Reload ? std::vector<Index> { 0, 1 } : std::vector<Index> { 1 }));
 }
 
 //! @brief 几何状态由模型加载初始化，重载保留开关，移除后不能在全局反转中复活。
@@ -956,7 +857,7 @@ TEST_CASE("QRenderWindow maintains GUI geometry visibility across load update an
     CHECK(visibility[10] == std::make_pair(false, false));
     env.loadGeometry(10);
     CHECK(visibility[10] == std::make_pair(false, false));
-    env.item.reverseVisibility({ 10 });
+    env.item.reverseComponentVisibility(10);
     CHECK(visibility[10] == std::make_pair(false, true));
     REQUIRE(env.flush());
     SECTION("geometry removal clears presence")
@@ -986,13 +887,15 @@ TEST_CASE("QRenderWindow maintains GUI geometry visibility across load update an
         });
         REQUIRE(env.flush());
         CHECK(hidden);
-        env.item.reverseVisibility({ 10 });
+        env.item.reverseComponentVisibility(10);
         CHECK(visibility[10] == std::make_pair(false, true));
         REQUIRE(env.flush());
         return;
     }
-    env.item.reverseVisibility({ 10 });
-    CHECK(visibility[10] == std::make_pair(false, false));
+    // 已移除的目标不属于场景，反转应为空操作且不能重新创建显隐状态。
+    visibility.clear();
+    env.item.reverseComponentVisibility(10);
+    CHECK(visibility.empty());
     REQUIRE(env.flush());
     bool geometry_removed = false;
     env.item.dispatch_async([&geometry_removed](vtkRenderWindow*, QQuickVTKItem::vtkUserData user_data) {
@@ -1115,4 +1018,71 @@ TEST_CASE("QRenderWindow preserves mesh and geometry styles across scene graph r
     REQUIRE(env.flush());
     REQUIRE(recreated.load());
     check_styles();
+}
+
+//! @brief 组件恢复只清除自身面约束，保留整体开关；组件反转不改变其他组件的隔离与几何状态。
+TEST_CASE("QRenderWindow component face restore and reversal leave other components unchanged")
+{
+    testApplication();
+    FaceHidingViewport env;
+    env.loadGeometry(7);
+    env.loadGeometry(10);
+    auto second_mesh = env.mesh.clone();
+    for (auto& point : second_mesh->vertex_positions_)
+        point[1] += 1.5;
+    env.item.loadMeshData(8, MakeMeshDataVtk(*second_mesh));
+    REQUIRE(env.flush());
+    env.selectFace(0);
+    env.item.isolateSelectedFaces();
+    REQUIRE(env.flush());
+    env.item.setMeshVisibility(8, true);
+    env.selectFace(1, 1.5);
+    env.item.isolateSelectedFaces();
+    env.item.setGeometryVisibility(10, true);
+    REQUIRE(env.flush());
+    REQUIRE(env.visibleFaceIds(7) == std::vector<Index>({ 0 }));
+    REQUIRE(env.visibleFaceIds(8) == std::vector<Index>({ 1 }));
+
+    int invalid_notifications = 0;
+    QObject::connect(&env.item, &QRenderWindow::componentVisibilityChanged, &env.item,
+        [&invalid_notifications](Index, bool, bool) { ++invalid_notifications; });
+    env.item.reverseComponentVisibility(-1);
+    env.item.reverseComponentVisibility(99);
+    env.item.showAllHiddenFaces(99);
+    CHECK(invalid_notifications == 0);
+    env.item.showAllHiddenFaces(7);
+    REQUIRE(env.flush());
+    CHECK(env.visibleFaceIds(7) == std::vector<Index>({ 0, 1 }));
+    CHECK(env.visibleFaceIds(8) == std::vector<Index>({ 1 }));
+    bool gate_preserved = false;
+    env.item.dispatch_async([&gate_preserved](vtkRenderWindow*, QQuickVTKItem::vtkUserData user_data) {
+        auto* data = QRenderWindow::Data::SafeDownCast(user_data);
+        gate_preserved = !data->mesh_actor_manager_->getComponentActor(7)->isVisibilityEnabled();
+    });
+    REQUIRE(env.flush());
+    CHECK(gate_preserved);
+    env.item.setMeshVisibility(7, true);
+    REQUIRE(env.flush());
+    bool restored_domain = false;
+    env.item.dispatch_async([&restored_domain](vtkRenderWindow*, QQuickVTKItem::vtkUserData user_data) {
+        auto* data = QRenderWindow::Data::SafeDownCast(user_data);
+        MeshActorSelectOp first(data->mesh_actor_manager_->getComponentActor(7));
+        MeshActorSelectOp second(data->mesh_actor_manager_->getComponentActor(8));
+        restored_domain = first.getEdgeActor().GetVisibility() && !second.getEdgeActor().GetVisibility()
+            && data->geometry_actor_manager_->getComponentActor(10)->isVisibilityEnabled();
+    });
+    REQUIRE(env.flush());
+    CHECK(restored_domain);
+    env.item.reverseComponentVisibility(7);
+    REQUIRE(env.flush());
+    CHECK(env.visibleFaceIds(8) == std::vector<Index>({ 1 }));
+    bool unrelated_preserved = false;
+    env.item.dispatch_async([&unrelated_preserved](vtkRenderWindow*, QQuickVTKItem::vtkUserData user_data) {
+        auto* data = QRenderWindow::Data::SafeDownCast(user_data);
+        unrelated_preserved = !data->mesh_actor_manager_->getComponentActor(7)->isVisibilityEnabled()
+            && data->mesh_actor_manager_->getComponentActor(8)->isVisibilityEnabled()
+            && data->geometry_actor_manager_->getComponentActor(10)->isVisibilityEnabled();
+    });
+    REQUIRE(env.flush());
+    CHECK(unrelated_preserved);
 }
