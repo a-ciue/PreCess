@@ -34,6 +34,7 @@ ColumnLayout {
     readonly property real ribbonPageHeight: Math.max(64, Math.min(96, windowHeight / 12))
     // 从独立尺寸推导图标，避免依赖布局分配后的按钮高度形成反馈环。
     readonly property real ribbonIconSize: Math.round(ribbonPageHeight * 0.5)
+    readonly property real featureEntryMaximumWidth: Math.max(88, root.ribbonIconSize + 20)
 
     signal resetLayoutRequested()
     signal objectTreeToggled()
@@ -610,7 +611,12 @@ ColumnLayout {
                                     icon.height: root.ribbonIconSize
                                     icon.color: "transparent"
                                     Layout.fillHeight: true
+                                    // 长标题不再撑大图标间距，完整名称通过悬停提示查看。
+                                    Layout.maximumWidth: root.featureEntryMaximumWidth
                                     text: modelData.title
+                                    ToolTip.visible: hovered
+                                    ToolTip.delay: 500
+                                    ToolTip.text: text
                                     checkable: true
                                     autoExclusive: true
                                     checked: !!(App.activeOperation && App.activeOperation.entryId === modelData.id)
