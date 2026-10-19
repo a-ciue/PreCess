@@ -33,6 +33,8 @@ protected:
     void HighlightHandle() override { }
 
 private:
+    //! @brief 按实际渲染像素生成清晰的圆点和字形缓存，仅尺寸变化时调用。
+    void buildAtlas(int width, int height);
     void updateProjection();
     struct Impl;
     std::unique_ptr<Impl> impl_;

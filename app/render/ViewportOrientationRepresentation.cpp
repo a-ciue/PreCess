@@ -1,8 +1,9 @@
 #include "ViewportOrientationRepresentation.h"
 
+#include <QFontDatabase>
+#include <QFontMetricsF>
 #include <QImage>
 #include <QPainter>
-#include <spdlog/spdlog.h>
 #include <vtkCellArray.h>
 #include <vtkCoordinate.h>
 #include <vtkFloatArray.h>
@@ -21,6 +22,7 @@
 
 #include <algorithm>
 #include <array>
+#include <cmath>
 #include <cstring>
 
 namespace {
@@ -30,7 +32,6 @@ constexpr double kAxisLength = 38.0;
 constexpr double kHandleRadius = 10.0;
 constexpr double kHoverRadius = 54.0;
 constexpr double kSpriteSize = 28.0;
-constexpr int kSpritePixels = 84;
 
 struct Handle {
     int axis;
@@ -71,8 +72,8 @@ struct ViewportOrientationRepresentation::Impl {
     bool has_projection = false;
     bool image_dirty = true;
     QImage canvas;
-    QImage atlas { QStringLiteral(":/orientation/assets/orientation-handles.png") };
-    QImage hover { QStringLiteral(":/orientation/assets/orientation-hover.png") };
+    QImage atlas;
+    QSize sprite_size;
     int last_width {};
     int last_height {};
     int last_axis { -2 };
@@ -85,13 +86,11 @@ vtkStandardNewMacro(ViewportOrientationRepresentation);
 ViewportOrientationRepresentation::ViewportOrientationRepresentation()
     : impl_(std::make_unique<Impl>())
 {
-    if (impl_->atlas.isNull() || impl_->hover.isNull())
-        spdlog::warn("Failed to load viewport orientation atlas or hover resource.");
     SetSize(120, 120);
     SetPadding(12, 12);
-    SetXAxisColor(0.96, 0.28, 0.38);
-    SetYAxisColor(0.56, 0.78, 0.20);
-    SetZAxisColor(0.24, 0.55, 0.95);
+    SetXAxisColor(0.91, 0.23, 0.32);
+    SetYAxisColor(0.43, 0.66, 0.10);
+    SetZAxisColor(0.16, 0.47, 0.85);
     // vtkImageMapper 每帧重新包装输入并上传纹理；固定绑定同一图像才能复用 GPU 存储。
     impl_->texture->SetInputData(impl_->image);
     impl_->texture->SetColorModeToDirectScalars();
@@ -120,6 +119,52 @@ ViewportOrientationRepresentation::ViewportOrientationRepresentation()
 
 ViewportOrientationRepresentation::~ViewportOrientationRepresentation() = default;
 
+void ViewportOrientationRepresentation::buildAtlas(int width, int height)
+{
+    const double scale_x = width / kCanvasSize;
+    const double scale_y = height / kCanvasSize;
+    impl_->sprite_size = QSize(static_cast<int>(std::ceil(kSpriteSize * scale_x)),
+        static_cast<int>(std::ceil(kSpriteSize * scale_y)));
+    const auto cell = impl_->sprite_size;
+    impl_->atlas = QImage(cell.width() * 12, cell.height(), QImage::Format_ARGB32_Premultiplied);
+    impl_->atlas.fill(Qt::transparent);
+    QPainter painter(&impl_->atlas);
+    painter.setRenderHint(QPainter::Antialiasing);
+    painter.setRenderHint(QPainter::TextAntialiasing);
+    QFont font = QFontDatabase::systemFont(QFontDatabase::GeneralFont);
+    font.setWeight(QFont::DemiBold);
+    font.setHintingPreference(QFont::PreferFullHinting);
+    for (int axis = 0; axis < 3; ++axis) {
+        const auto* rgb = GetAxisColor(axis);
+        const QColor color = QColor::fromRgbF(rgb[0], rgb[1], rgb[2]);
+        for (int direction = 0; direction < 2; ++direction) {
+            for (int hovered = 0; hovered < 2; ++hovered) {
+                const int column = axis * 4 + direction * 2 + hovered;
+                const QPointF center(column * cell.width() + cell.width() / 2.0, cell.height() / 2.0);
+                const QRectF circle(center.x() - kHandleRadius * scale_x, center.y() - kHandleRadius * scale_y,
+                    2 * kHandleRadius * scale_x, 2 * kHandleRadius * scale_y);
+                painter.setBrush(direction == 0 || hovered ? color : QColor(16, 22, 30, 100));
+                const QColor outline = hovered ? QColor(255, 255, 255) : (direction == 0 ? color.darker(125) : color);
+                painter.setPen(QPen(outline, (hovered ? 1.5 : 1.25) * scale_y));
+                painter.drawEllipse(circle);
+                if (direction != 0 && !hovered)
+                    continue;
+                // 正轴不再为负号让出字号；负轴仅悬停时使用略小的完整标签。
+                font.setPixelSize(std::max(1, static_cast<int>(std::lround((direction == 0 ? 12.0 : 10.0) * scale_y))));
+                painter.setFont(font);
+                const QString label = (direction == 0 ? QString() : QStringLiteral("−")) + QString("XYZ").at(axis);
+                const auto bounds = QFontMetricsF(font).tightBoundingRect(label);
+                const QPoint origin(static_cast<int>(std::lround(center.x() - bounds.center().x())),
+                    static_cast<int>(std::lround(center.y() - bounds.center().y())));
+                painter.setPen(QColor(0, 0, 0, 210));
+                painter.drawText(origin + QPoint(0, std::max(1, static_cast<int>(std::lround(scale_y)))), label);
+                painter.setPen(Qt::white);
+                painter.drawText(origin, label);
+            }
+        }
+    }
+}
+
 void ViewportOrientationRepresentation::updateProjection()
 {
     std::array<double, 9> rotation;
@@ -140,7 +185,7 @@ void ViewportOrientationRepresentation::updateProjection()
 void ViewportOrientationRepresentation::BuildRepresentation()
 {
     // 不调用父类：它会重建按钮几何和文字纹理；这里只保留其旋转/视角切换契约。
-    if (!Renderer || impl_->atlas.isNull() || impl_->hover.isNull())
+    if (!Renderer)
         return;
     const int* size = Renderer->GetSize();
     if (size[0] <= 0 || size[1] <= 0)
@@ -150,30 +195,37 @@ void ViewportOrientationRepresentation::BuildRepresentation()
         && PickedAxis == impl_->last_axis && PickedDir == impl_->last_direction && InteractionState == impl_->last_state)
         return;
 
-    if (impl_->canvas.size() != QSize(size[0], size[1]))
+    if (impl_->canvas.size() != QSize(size[0], size[1])) {
         impl_->canvas = QImage(size[0], size[1], QImage::Format_RGBA8888);
+        // 仅尺寸/DPR 变化时生成原生分辨率字形；旋转帧复用，不缩放预烘焙 PNG。
+        buildAtlas(size[0], size[1]);
+    }
     auto& image = impl_->canvas;
     image.fill(Qt::transparent);
     QPainter painter(&image);
     painter.setRenderHint(QPainter::Antialiasing);
-    painter.setRenderHint(QPainter::SmoothPixmapTransform);
-    painter.scale(size[0] / kCanvasSize, size[1] / kCanvasSize);
-    const QPointF center(kCenter, kCenter);
-    if (GetInteractionStateAsEnum() != InteractionStateType::Outside)
-        painter.drawImage(QRectF(0, 0, kCanvasSize, kCanvasSize), impl_->hover);
+    const double scale_x = size[0] / kCanvasSize;
+    const double scale_y = size[1] / kCanvasSize;
+    const QPointF center(kCenter * scale_x, kCenter * scale_y);
+    if (GetInteractionStateAsEnum() != InteractionStateType::Outside) {
+        painter.setPen(QPen(QColor(255, 255, 255, 24), scale_y));
+        painter.setBrush(QColor(22, 29, 40, 28));
+        painter.drawEllipse(center, kHoverRadius * scale_x, kHoverRadius * scale_y);
+    }
     for (const auto& handle : impl_->handles) {
         const bool positive = handle.direction == 0;
         const bool hovered = handle.axis == PickedAxis && handle.direction == PickedDir;
         if (positive) {
             const double* rgb = GetAxisColor(handle.axis);
-            painter.setPen(QPen(QColor::fromRgbF(rgb[0], rgb[1], rgb[2]), 1.8, Qt::SolidLine, Qt::RoundCap));
-            painter.drawLine(center, handle.center);
+            painter.setPen(QPen(QColor::fromRgbF(rgb[0], rgb[1], rgb[2]), 1.8 * scale_y, Qt::SolidLine, Qt::RoundCap));
+            painter.drawLine(center, QPointF(handle.center.x() * scale_x, handle.center.y() * scale_y));
         }
-        // 圆环、字母和高亮均来自离线 PNG 图集，旋转时只合成，不生成字形或圆环纹理。
+        // 字形缓存以整数像素位置 1:1 拷贝，避免分数坐标重采样软化细笔画。
         const int column = handle.axis * 4 + handle.direction * 2 + static_cast<int>(hovered);
-        painter.drawImage(QRectF(handle.center.x() - kSpriteSize / 2, handle.center.y() - kSpriteSize / 2,
-                              kSpriteSize, kSpriteSize),
-            impl_->atlas, QRectF(column * kSpritePixels, 0, kSpritePixels, kSpritePixels));
+        const auto cell = impl_->sprite_size;
+        painter.drawImage(QPoint(static_cast<int>(std::lround(handle.center.x() * scale_x - cell.width() / 2.0)),
+                              static_cast<int>(std::lround(handle.center.y() * scale_y - cell.height() / 2.0))),
+            impl_->atlas, QRect(column * cell.width(), 0, cell.width(), cell.height()));
     }
     painter.end();
 
@@ -243,7 +295,7 @@ int ViewportOrientationRepresentation::RenderOverlay(vtkViewport* viewport)
 {
     BuildRepresentation();
     const int* size = Renderer ? Renderer->GetSize() : nullptr;
-    return size && size[0] > 0 && size[1] > 0 && !impl_->atlas.isNull() && !impl_->hover.isNull()
+    return size && size[0] > 0 && size[1] > 0 && !impl_->atlas.isNull()
         ? impl_->actor->RenderOverlay(viewport)
         : 0;
 }

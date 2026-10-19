@@ -319,7 +319,7 @@ TEST_CASE("Viewport orientation reuses its image for unchanged rotation and hove
     }
     CHECK(image->GetMTime() == image_time);
     CHECK(image->GetScalarPointer() == pixels);
-    // 正轴纹理和负轴圆环首帧即可见，验证嵌入资源确实加载。
+    // 正轴纹理和负轴圆环首帧即可见，验证原生分辨率缓存确实生成。
     auto* positive = static_cast<unsigned char*>(image->GetScalarPointer(103, 60, 0));
     auto* ring = static_cast<unsigned char*>(image->GetScalarPointer(12, 60, 0));
     CHECK(positive[3] > 200);
