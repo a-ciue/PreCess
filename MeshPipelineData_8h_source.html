@@ -1,0 +1,221 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="zh">
+<head>
+<meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=11"/>
+<meta name="generator" content="Doxygen 1.14.0"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>PreCess: app/render/MeshPipelineData.h 源文件</title>
+<link href="tabs.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="jquery.js"></script>
+<script type="text/javascript" src="dynsections.js"></script>
+<script type="text/javascript" src="clipboard.js"></script>
+<script type="text/javascript" src="cookie.js"></script>
+<link href="search/search.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="search/searchdata.js"></script>
+<script type="text/javascript" src="search/search.js"></script>
+<link href="doxygen.css" rel="stylesheet" type="text/css" />
+</head>
+<body>
+<div id="top"><!-- do not remove this div, it is closed by doxygen! -->
+<div id="titlearea">
+<table cellspacing="0" cellpadding="0">
+ <tbody>
+ <tr id="projectrow">
+  <td id="projectlogo"><img alt="Logo" src="ZenithGrid.ico"/></td>
+  <td id="projectalign">
+   <div id="projectname">PreCess
+   </div>
+  </td>
+ </tr>
+ </tbody>
+</table>
+</div>
+<!-- end header part -->
+<!-- 制作者 Doxygen 1.14.0 -->
+<script type="text/javascript">
+var searchBox = new SearchBox("searchBox", "search/",'.html');
+</script>
+<script type="text/javascript">
+$(function() { codefold.init(); });
+</script>
+<script type="text/javascript" src="menudata.js"></script>
+<script type="text/javascript" src="menu.js"></script>
+<script type="text/javascript">
+$(function() {
+  initMenu('',true,false,'search.php','搜索',false);
+  $(function() { init_search(); });
+});
+</script>
+<div id="main-nav"></div>
+<!-- window showing the filter options -->
+<div id="MSearchSelectWindow"
+     onmouseover="return searchBox.OnSearchSelectShow()"
+     onmouseout="return searchBox.OnSearchSelectHide()"
+     onkeydown="return searchBox.OnSearchSelectKey(event)">
+</div>
+
+<!-- iframe showing the search results (closed by default) -->
+<div id="MSearchResultsWindow">
+<div id="MSearchResults">
+<div class="SRPage">
+<div id="SRIndex">
+<div id="SRResults"></div>
+<div class="SRStatus" id="Loading">载入中...</div>
+<div class="SRStatus" id="Searching">搜索中...</div>
+<div class="SRStatus" id="NoMatches">未找到</div>
+</div>
+</div>
+</div>
+</div>
+
+<div id="nav-path" class="navpath">
+  <ul>
+<li class="navelem"><a href="dir_d422163b96683743ed3963d4aac17747.html">app</a></li><li class="navelem"><a href="dir_364370753f3c0e27b80c476caf69e0e2.html">render</a></li>  </ul>
+</div>
+</div><!-- top -->
+<div id="doc-content">
+<div class="header">
+  <div class="headertitle"><div class="title">MeshPipelineData.h</div></div>
+</div><!--header-->
+<div class="contents">
+<a href="MeshPipelineData_8h.html">浏览该文件的文档.</a><div class="fragment"><div class="line"><a id="l00001" name="l00001"></a><span class="lineno">    1</span></div>
+<div class="line"><a id="l00005" name="l00005"></a><span class="lineno">    5</span><span class="preprocessor">#pragma once</span></div>
+<div class="line"><a id="l00006" name="l00006"></a><span class="lineno">    6</span> </div>
+<div class="line"><a id="l00007" name="l00007"></a><span class="lineno">    7</span><span class="preprocessor">#include &quot;<a class="code" href="Core_8h.html">Core.h</a>&quot;</span></div>
+<div class="line"><a id="l00008" name="l00008"></a><span class="lineno">    8</span><span class="preprocessor">#include &lt;array&gt;</span></div>
+<div class="line"><a id="l00009" name="l00009"></a><span class="lineno">    9</span><span class="preprocessor">#include &lt;cstdint&gt;</span></div>
+<div class="line"><a id="l00010" name="l00010"></a><span class="lineno">   10</span><span class="preprocessor">#include &lt;memory&gt;</span></div>
+<div class="line"><a id="l00011" name="l00011"></a><span class="lineno">   11</span><span class="preprocessor">#include &lt;thread&gt;</span></div>
+<div class="line"><a id="l00012" name="l00012"></a><span class="lineno">   12</span><span class="preprocessor">#include &lt;vector&gt;</span></div>
+<div class="line"><a id="l00013" name="l00013"></a><span class="lineno">   13</span><span class="preprocessor">#include &lt;vtkSmartPointer.h&gt;</span></div>
+<div class="line"><a id="l00014" name="l00014"></a><span class="lineno">   14</span><span class="preprocessor">#include &lt;vtkType.h&gt;</span></div>
+<div class="line"><a id="l00015" name="l00015"></a><span class="lineno">   15</span> </div>
+<div class="line"><a id="l00016" name="l00016"></a><span class="lineno">   16</span><span class="keyword">struct </span><a class="code hl_struct" href="structMeshData.html">MeshData</a>;</div>
+<div class="line"><a id="l00017" name="l00017"></a><span class="lineno">   17</span><span class="keyword">class </span>vtkPlane;</div>
+<div class="line"><a id="l00018" name="l00018"></a><span class="lineno">   18</span><span class="keyword">class </span>vtkPolyData;</div>
+<div class="line"><a id="l00019" name="l00019"></a><span class="lineno">   19</span><span class="keyword">class </span>vtkUnstructuredGrid;</div>
+<div class="line"><a id="l00020" name="l00020"></a><span class="lineno">   20</span></div>
+<div class="foldopen" id="foldopen00022" data-start="{" data-end="};">
+<div class="line"><a id="l00022" name="l00022"></a><span class="lineno"><a class="line" href="structMeshClipPlane.html">   22</a></span><span class="keyword">struct </span><a class="code hl_struct" href="structMeshClipPlane.html">MeshClipPlane</a> {</div>
+<div class="line"><a id="l00023" name="l00023"></a><span class="lineno"><a class="line" href="structMeshClipPlane.html#a21b5dbace66181fe89ede7e1f894e0f9">   23</a></span>    <span class="keywordtype">bool</span> <a class="code hl_variable" href="structMeshClipPlane.html#a21b5dbace66181fe89ede7e1f894e0f9">enabled</a> { <span class="keyword">false</span> };</div>
+<div class="line"><a id="l00024" name="l00024"></a><span class="lineno"><a class="line" href="structMeshClipPlane.html#ab17e0e9d7c633ea34b4dd773c0bed97a">   24</a></span>    std::array&lt;double, 3&gt; <a class="code hl_variable" href="structMeshClipPlane.html#ab17e0e9d7c633ea34b4dd773c0bed97a">origin</a> { };</div>
+<div class="line"><a id="l00025" name="l00025"></a><span class="lineno"><a class="line" href="structMeshClipPlane.html#afe3f9d5d66fba4e5c1be716ac2c956e2">   25</a></span>    std::array&lt;double, 3&gt; <a class="code hl_variable" href="structMeshClipPlane.html#afe3f9d5d66fba4e5c1be716ac2c956e2">normal</a> { 1.0, 0.0, 0.0 };</div>
+<div class="line"><a id="l00026" name="l00026"></a><span class="lineno">   26</span>};</div>
+</div>
+<div class="line"><a id="l00027" name="l00027"></a><span class="lineno">   27</span></div>
+<div class="foldopen" id="foldopen00033" data-start="{" data-end="};">
+<div class="line"><a id="l00033" name="l00033"></a><span class="lineno"><a class="line" href="structMeshDataSnapshot.html">   33</a></span><span class="keyword">struct </span><a class="code hl_struct" href="structMeshDataSnapshot.html">MeshDataSnapshot</a> {</div>
+<div class="line"><a id="l00034" name="l00034"></a><span class="lineno"><a class="line" href="structMeshDataSnapshot.html#aca829a53e848847e717d178612b049b9">   34</a></span>    std::uint64_t <a class="code hl_variable" href="structMeshDataSnapshot.html#aca829a53e848847e717d178612b049b9">generation</a> { };</div>
+<div class="line"><a id="l00035" name="l00035"></a><span class="lineno"><a class="line" href="structMeshDataSnapshot.html#aa433e122e6a35d2cb91a2aea47c91ac4">   35</a></span>    std::uint64_t <a class="code hl_variable" href="structMeshDataSnapshot.html#aa433e122e6a35d2cb91a2aea47c91ac4">revision</a> { };</div>
+<div class="line"><a id="l00036" name="l00036"></a><span class="lineno"><a class="line" href="structMeshDataSnapshot.html#a022869700f506a487a43a662b6b372a5">   36</a></span>    <span class="keywordtype">bool</span> <a class="code hl_variable" href="structMeshDataSnapshot.html#a022869700f506a487a43a662b6b372a5">visible</a> { <span class="keyword">true</span> };</div>
+<div class="line"><a id="l00037" name="l00037"></a><span class="lineno"><a class="line" href="structMeshDataSnapshot.html#a8ee94f731e5fa5830cea231530faecd0">   37</a></span>    <a class="code hl_struct" href="structMeshClipPlane.html">MeshClipPlane</a> <a class="code hl_variable" href="structMeshDataSnapshot.html#a8ee94f731e5fa5830cea231530faecd0">clip</a>;</div>
+<div class="line"><a id="l00038" name="l00038"></a><span class="lineno"><a class="line" href="structMeshDataSnapshot.html#a01b080d6678955afecd29203cf0326f0">   38</a></span>    std::shared_ptr&lt;const MeshData&gt; <a class="code hl_variable" href="structMeshDataSnapshot.html#a01b080d6678955afecd29203cf0326f0">source</a>;</div>
+<div class="line"><a id="l00039" name="l00039"></a><span class="lineno"><a class="line" href="structMeshDataSnapshot.html#a3459c1a9c67753370afccc5725898fe6">   39</a></span>    std::shared_ptr&lt;const MeshDataVtk&gt; <a class="code hl_variable" href="structMeshDataSnapshot.html#a3459c1a9c67753370afccc5725898fe6">model_data</a>;</div>
+<div class="line"><a id="l00040" name="l00040"></a><span class="lineno"><a class="line" href="structMeshDataSnapshot.html#aaccd872055e3201a62e327aa6d948fa0">   40</a></span>    vtkSmartPointer&lt;vtkPolyData&gt; <a class="code hl_variable" href="structMeshDataSnapshot.html#aaccd872055e3201a62e327aa6d948fa0">original_faces</a>;</div>
+<div class="line"><a id="l00041" name="l00041"></a><span class="lineno"><a class="line" href="structMeshDataSnapshot.html#ab43061841ecfd3c1a49d712ea8296a05">   41</a></span>    vtkSmartPointer&lt;vtkPolyData&gt; <a class="code hl_variable" href="structMeshDataSnapshot.html#ab43061841ecfd3c1a49d712ea8296a05">original_edges</a>;</div>
+<div class="line"><a id="l00042" name="l00042"></a><span class="lineno"><a class="line" href="structMeshDataSnapshot.html#a26cac46272aaa2b02b5cc3f388a0f93a">   42</a></span>    vtkSmartPointer&lt;vtkUnstructuredGrid&gt; <a class="code hl_variable" href="structMeshDataSnapshot.html#a26cac46272aaa2b02b5cc3f388a0f93a">original_solids</a>;</div>
+<div class="line"><a id="l00043" name="l00043"></a><span class="lineno"><a class="line" href="structMeshDataSnapshot.html#a45213b476ae66a7dbd1ee6c239d4e2f1">   43</a></span>    vtkSmartPointer&lt;vtkPolyData&gt; <a class="code hl_variable" href="structMeshDataSnapshot.html#a45213b476ae66a7dbd1ee6c239d4e2f1">visible_faces</a>;</div>
+<div class="line"><a id="l00044" name="l00044"></a><span class="lineno"><a class="line" href="structMeshDataSnapshot.html#a2bb8b2f75589569b11640a4565d3e2d0">   44</a></span>    vtkSmartPointer&lt;vtkPolyData&gt; <a class="code hl_variable" href="structMeshDataSnapshot.html#a2bb8b2f75589569b11640a4565d3e2d0">visible_edges</a>;</div>
+<div class="line"><a id="l00045" name="l00045"></a><span class="lineno"><a class="line" href="structMeshDataSnapshot.html#a5085d62c82a9516f54a16e3c3fcd37f0">   45</a></span>    vtkSmartPointer&lt;vtkPolyData&gt; <a class="code hl_variable" href="structMeshDataSnapshot.html#a5085d62c82a9516f54a16e3c3fcd37f0">solid_surface</a>;</div>
+<div class="line"><a id="l00046" name="l00046"></a><span class="lineno"><a class="line" href="structMeshDataSnapshot.html#a6a8b78b89269e414d84cd3035154f852">   46</a></span>    vtkSmartPointer&lt;vtkPolyData&gt; <a class="code hl_variable" href="structMeshDataSnapshot.html#a6a8b78b89269e414d84cd3035154f852">solid_internal_edges</a>;</div>
+<div class="line"><a id="l00047" name="l00047"></a><span class="lineno">   47</span>};</div>
+</div>
+<div class="line"><a id="l00048" name="l00048"></a><span class="lineno">   48</span></div>
+<div class="foldopen" id="foldopen00050" data-start="{" data-end="};">
+<div class="line"><a id="l00050" name="l00050"></a><span class="lineno"><a class="line" href="classMeshPipelineData.html">   50</a></span><span class="keyword">class </span><a class="code hl_function" href="classMeshPipelineData.html#a9e9ae8e9aaae221249c56d68ae272924">MeshPipelineData</a> {</div>
+<div class="line"><a id="l00051" name="l00051"></a><span class="lineno">   51</span><span class="keyword">public</span>:</div>
+<div class="line"><a id="l00053" name="l00053"></a><span class="lineno">   53</span>    <a class="code hl_function" href="classMeshPipelineData.html#a9e9ae8e9aaae221249c56d68ae272924">MeshPipelineData</a>();</div>
+<div class="line"><a id="l00054" name="l00054"></a><span class="lineno"><a class="line" href="classMeshPipelineData.html#a4991a127ca6c87d79edfa959e11cf8cb">   54</a></span>    <a class="code hl_function" href="classMeshPipelineData.html#a4991a127ca6c87d79edfa959e11cf8cb">~MeshPipelineData</a>();</div>
+<div class="line"><a id="l00055" name="l00055"></a><span class="lineno">   55</span></div>
+<div class="line"><a id="l00057" name="l00057"></a><span class="lineno">   57</span>    <span class="keywordtype">void</span> <a class="code hl_function" href="classMeshPipelineData.html#a4aba1a48095008779f17fe3d6d1e0b99">loadModelData</a>(<span class="keyword">const</span> <a class="code hl_struct" href="structMeshDataVtk.html">MeshDataVtk</a>&amp; data);</div>
+<div class="line"><a id="l00059" name="l00059"></a><span class="lineno">   59</span>    <span class="keywordtype">void</span> <a class="code hl_function" href="classMeshPipelineData.html#ac3df5fad0018dc4492016ab3c35fcd93">setVisibility</a>(<span class="keywordtype">bool</span> visible);</div>
+<div class="line"><a id="l00061" name="l00061"></a><span class="lineno"><a class="line" href="classMeshPipelineData.html#a0a6e2c9a569123bdef35ca57ce04ac79">   61</a></span>    <span class="keywordtype">bool</span> <a class="code hl_function" href="classMeshPipelineData.html#a0a6e2c9a569123bdef35ca57ce04ac79">isVisibilityEnabled</a>()<span class="keyword"> const </span>{ <span class="keywordflow">return</span> <a class="code hl_variable" href="classMeshPipelineData.html#a54bb0b69428c0add2a04b63e14eededf">visible_</a>; }</div>
+<div class="line"><a id="l00063" name="l00063"></a><span class="lineno"><a class="line" href="classMeshPipelineData.html#a7e0cf4bc57653eff50477f4b94e8ba5a">   63</a></span>    <span class="keywordtype">bool</span> <a class="code hl_function" href="classMeshPipelineData.html#a7e0cf4bc57653eff50477f4b94e8ba5a">isVisible</a>()<span class="keyword"> const </span>{ <span class="keywordflow">return</span> <a class="code hl_variable" href="classMeshPipelineData.html#a54bb0b69428c0add2a04b63e14eededf">visible_</a>; }</div>
+<div class="line"><a id="l00065" name="l00065"></a><span class="lineno">   65</span>    <span class="keywordtype">void</span> <a class="code hl_function" href="classMeshPipelineData.html#add653fb80890a6298448119982699f29">hideFaces</a>(<span class="keyword">const</span> std::vector&lt;vtkIdType&gt;&amp; face_ids);</div>
+<div class="line"><a id="l00067" name="l00067"></a><span class="lineno">   67</span>    <span class="keywordtype">void</span> <a class="code hl_function" href="classMeshPipelineData.html#a3642d6fc6d06a0ddbe8977ad7d95502a">showFaces</a>(<span class="keyword">const</span> std::vector&lt;vtkIdType&gt;&amp; face_ids);</div>
+<div class="line"><a id="l00069" name="l00069"></a><span class="lineno">   69</span>    <span class="keywordtype">void</span> <a class="code hl_function" href="classMeshPipelineData.html#a21b628f70b45a764e3805056f6753c1e">isolateFaces</a>(<span class="keyword">const</span> std::vector&lt;vtkIdType&gt;&amp; face_ids);</div>
+<div class="line"><a id="l00071" name="l00071"></a><span class="lineno">   71</span>    <span class="keywordtype">void</span> <a class="code hl_function" href="classMeshPipelineData.html#a593546ec5f48f6df9949f34f39fac85c">showAllFaces</a>();</div>
+<div class="line"><a id="l00073" name="l00073"></a><span class="lineno">   73</span>    <span class="keywordtype">bool</span> <a class="code hl_function" href="classMeshPipelineData.html#a77b1e80cf738a9f75f9f83c274a9f4bf">reverseVisibility</a>();</div>
+<div class="line"><a id="l00075" name="l00075"></a><span class="lineno">   75</span>    <span class="keywordtype">void</span> <a class="code hl_function" href="classMeshPipelineData.html#a6582799cf885ccf1857f27811bacad9e">setClipPlane</a>(vtkPlane* plane);</div>
+<div class="line"><a id="l00077" name="l00077"></a><span class="lineno">   77</span>    <span class="keywordtype">void</span> <a class="code hl_function" href="classMeshPipelineData.html#a6582799cf885ccf1857f27811bacad9e">setClipPlane</a>(<span class="keyword">const</span> <a class="code hl_struct" href="structMeshClipPlane.html">MeshClipPlane</a>&amp; plane);</div>
+<div class="line"><a id="l00079" name="l00079"></a><span class="lineno">   79</span>    std::shared_ptr&lt;const MeshDataSnapshot&gt; <a class="code hl_function" href="classMeshPipelineData.html#a9315eceb2567f00f234f1a8d6c444ee4">createSnapshot</a>();</div>
+<div class="line"><a id="l00081" name="l00081"></a><span class="lineno"><a class="line" href="classMeshPipelineData.html#a9be712cec076bb74cc6d83ff1f2f5a42">   81</a></span>    std::uint64_t <a class="code hl_function" href="classMeshPipelineData.html#a9be712cec076bb74cc6d83ff1f2f5a42">generation</a>()<span class="keyword"> const </span>{ <span class="keywordflow">return</span> <a class="code hl_variable" href="classMeshPipelineData.html#ae256452bd72044ea4259f1e31af036ab">generation_</a>; }</div>
+<div class="line"><a id="l00082" name="l00082"></a><span class="lineno">   82</span> </div>
+<div class="line"><a id="l00083" name="l00083"></a><span class="lineno">   83</span><span class="keyword">private</span>:</div>
+<div class="line"><a id="l00085" name="l00085"></a><span class="lineno">   85</span>    <span class="keywordtype">void</span> <a class="code hl_function" href="classMeshPipelineData.html#a6f521e731711ca3d39f6d40e757d6759">assertOwnerThread</a>() <span class="keyword">const</span>;</div>
+<div class="line"><a id="l00087" name="l00087"></a><span class="lineno">   87</span>    <span class="keywordtype">void</span> <a class="code hl_function" href="classMeshPipelineData.html#aadce644f13b327c9d0798ac03c32fe0f">rebuildOutputs</a>();</div>
+<div class="line"><a id="l00088" name="l00088"></a><span class="lineno">   88</span> </div>
+<div class="line"><a id="l00089" name="l00089"></a><span class="lineno"><a class="line" href="classMeshPipelineData.html#ad6c7236e844d3bcf0f094ab1e7b1e848">   89</a></span>    std::thread::id <a class="code hl_variable" href="classMeshPipelineData.html#ad6c7236e844d3bcf0f094ab1e7b1e848">owner_thread_</a>;</div>
+<div class="line"><a id="l00090" name="l00090"></a><span class="lineno"><a class="line" href="classMeshPipelineData.html#a239fa9e35c5047ac537796124f56222a">   90</a></span>    std::shared_ptr&lt;const MeshData&gt; <a class="code hl_variable" href="classMeshPipelineData.html#a239fa9e35c5047ac537796124f56222a">source_</a>;</div>
+<div class="line"><a id="l00091" name="l00091"></a><span class="lineno"><a class="line" href="classMeshPipelineData.html#ace77578f477f8090d4dfa125f3b99bad">   91</a></span>    std::shared_ptr&lt;const MeshDataVtk&gt; <a class="code hl_variable" href="classMeshPipelineData.html#ace77578f477f8090d4dfa125f3b99bad">model_data_</a>;</div>
+<div class="line"><a id="l00092" name="l00092"></a><span class="lineno"><a class="line" href="classMeshPipelineData.html#a4b249ac9a3abd66dee8e3fe01ce10ec7">   92</a></span>    vtkSmartPointer&lt;vtkPolyData&gt; <a class="code hl_variable" href="classMeshPipelineData.html#a4b249ac9a3abd66dee8e3fe01ce10ec7">face_data_</a>;</div>
+<div class="line"><a id="l00093" name="l00093"></a><span class="lineno"><a class="line" href="classMeshPipelineData.html#a04605fd66d822836071549e959994135">   93</a></span>    vtkSmartPointer&lt;vtkPolyData&gt; <a class="code hl_variable" href="classMeshPipelineData.html#a04605fd66d822836071549e959994135">edge_data_</a>;</div>
+<div class="line"><a id="l00094" name="l00094"></a><span class="lineno"><a class="line" href="classMeshPipelineData.html#a203191c1b426ab0ec9b2e890a65ca699">   94</a></span>    vtkSmartPointer&lt;vtkUnstructuredGrid&gt; <a class="code hl_variable" href="classMeshPipelineData.html#a203191c1b426ab0ec9b2e890a65ca699">solid_data_</a>;</div>
+<div class="line"><a id="l00095" name="l00095"></a><span class="lineno"><a class="line" href="classMeshPipelineData.html#af6bf25513bd623fdfd892d5bf6f7faea">   95</a></span>    std::shared_ptr&lt;MeshDataSnapshot&gt; <a class="code hl_variable" href="classMeshPipelineData.html#af6bf25513bd623fdfd892d5bf6f7faea">prepared_</a>;</div>
+<div class="line"><a id="l00096" name="l00096"></a><span class="lineno"><a class="line" href="classMeshPipelineData.html#ac221d1459c7a516e72ce1e8d5349d34a">   96</a></span>    std::vector&lt;vtkIdType&gt; <a class="code hl_variable" href="classMeshPipelineData.html#ac221d1459c7a516e72ce1e8d5349d34a">hidden_face_ids_</a>;</div>
+<div class="line"><a id="l00097" name="l00097"></a><span class="lineno"><a class="line" href="classMeshPipelineData.html#ad9fbe3c2abfc85c98ee6d9d72d331cb5">   97</a></span>    <a class="code hl_struct" href="structMeshClipPlane.html">MeshClipPlane</a> <a class="code hl_variable" href="classMeshPipelineData.html#ad9fbe3c2abfc85c98ee6d9d72d331cb5">clip_</a>;</div>
+<div class="line"><a id="l00098" name="l00098"></a><span class="lineno"><a class="line" href="classMeshPipelineData.html#a54bb0b69428c0add2a04b63e14eededf">   98</a></span>    <span class="keywordtype">bool</span> <a class="code hl_variable" href="classMeshPipelineData.html#a54bb0b69428c0add2a04b63e14eededf">visible_</a> { <span class="keyword">true</span> };</div>
+<div class="line"><a id="l00099" name="l00099"></a><span class="lineno"><a class="line" href="classMeshPipelineData.html#afae0ad285b0f67636f139926535de460">   99</a></span>    <span class="keywordtype">bool</span> <a class="code hl_variable" href="classMeshPipelineData.html#afae0ad285b0f67636f139926535de460">dirty_</a> { <span class="keyword">true</span> };</div>
+<div class="line"><a id="l00100" name="l00100"></a><span class="lineno"><a class="line" href="classMeshPipelineData.html#ae256452bd72044ea4259f1e31af036ab">  100</a></span>    std::uint64_t <a class="code hl_variable" href="classMeshPipelineData.html#ae256452bd72044ea4259f1e31af036ab">generation_</a> { };</div>
+<div class="line"><a id="l00101" name="l00101"></a><span class="lineno"><a class="line" href="classMeshPipelineData.html#a07104c2fe37e76913d7d44d57ea621e9">  101</a></span>    std::uint64_t <a class="code hl_variable" href="classMeshPipelineData.html#a07104c2fe37e76913d7d44d57ea621e9">revision_</a> { };</div>
+<div class="line"><a id="l00102" name="l00102"></a><span class="lineno">  102</span>};</div>
+</div>
+<div class="ttc" id="aCore_8h_html"><div class="ttname"><a href="Core_8h.html">Core.h</a></div></div>
+<div class="ttc" id="aclassMeshPipelineData_html_a04605fd66d822836071549e959994135"><div class="ttname"><a href="classMeshPipelineData.html#a04605fd66d822836071549e959994135">MeshPipelineData::edge_data_</a></div><div class="ttdeci">vtkSmartPointer&lt; vtkPolyData &gt; edge_data_</div><div class="ttdef"><b>定义</b> MeshPipelineData.h:93</div></div>
+<div class="ttc" id="aclassMeshPipelineData_html_a07104c2fe37e76913d7d44d57ea621e9"><div class="ttname"><a href="classMeshPipelineData.html#a07104c2fe37e76913d7d44d57ea621e9">MeshPipelineData::revision_</a></div><div class="ttdeci">std::uint64_t revision_</div><div class="ttdef"><b>定义</b> MeshPipelineData.h:101</div></div>
+<div class="ttc" id="aclassMeshPipelineData_html_a0a6e2c9a569123bdef35ca57ce04ac79"><div class="ttname"><a href="classMeshPipelineData.html#a0a6e2c9a569123bdef35ca57ce04ac79">MeshPipelineData::isVisibilityEnabled</a></div><div class="ttdeci">bool isVisibilityEnabled() const</div><div class="ttdoc">查询数据侧整体网格开关。</div><div class="ttdef"><b>定义</b> MeshPipelineData.h:61</div></div>
+<div class="ttc" id="aclassMeshPipelineData_html_a203191c1b426ab0ec9b2e890a65ca699"><div class="ttname"><a href="classMeshPipelineData.html#a203191c1b426ab0ec9b2e890a65ca699">MeshPipelineData::solid_data_</a></div><div class="ttdeci">vtkSmartPointer&lt; vtkUnstructuredGrid &gt; solid_data_</div><div class="ttdef"><b>定义</b> MeshPipelineData.h:94</div></div>
+<div class="ttc" id="aclassMeshPipelineData_html_a21b628f70b45a764e3805056f6753c1e"><div class="ttname"><a href="classMeshPipelineData.html#a21b628f70b45a764e3805056f6753c1e">MeshPipelineData::isolateFaces</a></div><div class="ttdeci">void isolateFaces(const std::vector&lt; vtkIdType &gt; &amp;face_ids)</div><div class="ttdoc">仅保留指定原始面，不改变同组件其他渲染对象的样式。</div><div class="ttdef"><b>定义</b> MeshPipelineData.cpp:367</div></div>
+<div class="ttc" id="aclassMeshPipelineData_html_a239fa9e35c5047ac537796124f56222a"><div class="ttname"><a href="classMeshPipelineData.html#a239fa9e35c5047ac537796124f56222a">MeshPipelineData::source_</a></div><div class="ttdeci">std::shared_ptr&lt; const MeshData &gt; source_</div><div class="ttdef"><b>定义</b> MeshPipelineData.h:90</div></div>
+<div class="ttc" id="aclassMeshPipelineData_html_a3642d6fc6d06a0ddbe8977ad7d95502a"><div class="ttname"><a href="classMeshPipelineData.html#a3642d6fc6d06a0ddbe8977ad7d95502a">MeshPipelineData::showFaces</a></div><div class="ttdeci">void showFaces(const std::vector&lt; vtkIdType &gt; &amp;face_ids)</div><div class="ttdoc">恢复指定原始面；整体关闭时仅显示指定面。</div><div class="ttdef"><b>定义</b> MeshPipelineData.cpp:344</div></div>
+<div class="ttc" id="aclassMeshPipelineData_html_a4991a127ca6c87d79edfa959e11cf8cb"><div class="ttname"><a href="classMeshPipelineData.html#a4991a127ca6c87d79edfa959e11cf8cb">MeshPipelineData::~MeshPipelineData</a></div><div class="ttdeci">~MeshPipelineData()</div></div>
+<div class="ttc" id="aclassMeshPipelineData_html_a4aba1a48095008779f17fe3d6d1e0b99"><div class="ttname"><a href="classMeshPipelineData.html#a4aba1a48095008779f17fe3d6d1e0b99">MeshPipelineData::loadModelData</a></div><div class="ttdeci">void loadModelData(const MeshDataVtk &amp;data)</div><div class="ttdoc">捕获自持的原始网格并重置旧面隐藏，保留整体开关与裁剪参数。</div><div class="ttdef"><b>定义</b> MeshPipelineData.cpp:183</div></div>
+<div class="ttc" id="aclassMeshPipelineData_html_a4b249ac9a3abd66dee8e3fe01ce10ec7"><div class="ttname"><a href="classMeshPipelineData.html#a4b249ac9a3abd66dee8e3fe01ce10ec7">MeshPipelineData::face_data_</a></div><div class="ttdeci">vtkSmartPointer&lt; vtkPolyData &gt; face_data_</div><div class="ttdef"><b>定义</b> MeshPipelineData.h:92</div></div>
+<div class="ttc" id="aclassMeshPipelineData_html_a54bb0b69428c0add2a04b63e14eededf"><div class="ttname"><a href="classMeshPipelineData.html#a54bb0b69428c0add2a04b63e14eededf">MeshPipelineData::visible_</a></div><div class="ttdeci">bool visible_</div><div class="ttdef"><b>定义</b> MeshPipelineData.h:98</div></div>
+<div class="ttc" id="aclassMeshPipelineData_html_a593546ec5f48f6df9949f34f39fac85c"><div class="ttname"><a href="classMeshPipelineData.html#a593546ec5f48f6df9949f34f39fac85c">MeshPipelineData::showAllFaces</a></div><div class="ttdeci">void showAllFaces()</div><div class="ttdoc">恢复全部人工隐藏面并结束面隔离。</div><div class="ttdef"><b>定义</b> MeshPipelineData.cpp:386</div></div>
+<div class="ttc" id="aclassMeshPipelineData_html_a6582799cf885ccf1857f27811bacad9e"><div class="ttname"><a href="classMeshPipelineData.html#a6582799cf885ccf1857f27811bacad9e">MeshPipelineData::setClipPlane</a></div><div class="ttdeci">void setClipPlane(vtkPlane *plane)</div><div class="ttdoc">复制调用线程中的裁剪平面参数，nullptr 表示停用。</div><div class="ttdef"><b>定义</b> MeshPipelineData.cpp:415</div></div>
+<div class="ttc" id="aclassMeshPipelineData_html_a6f521e731711ca3d39f6d40e757d6759"><div class="ttname"><a href="classMeshPipelineData.html#a6f521e731711ca3d39f6d40e757d6759">MeshPipelineData::assertOwnerThread</a></div><div class="ttdeci">void assertOwnerThread() const</div><div class="ttdoc">防止 GUI 管线意外被渲染线程调用。</div><div class="ttdef"><b>定义</b> MeshPipelineData.cpp:177</div></div>
+<div class="ttc" id="aclassMeshPipelineData_html_a77b1e80cf738a9f75f9f83c274a9f4bf"><div class="ttname"><a href="classMeshPipelineData.html#a77b1e80cf738a9f75f9f83c274a9f4bf">MeshPipelineData::reverseVisibility</a></div><div class="ttdeci">bool reverseVisibility()</div><div class="ttdoc">沿用当前整体与局部面显隐的反转规则，返回整体开关。</div><div class="ttdef"><b>定义</b> MeshPipelineData.cpp:395</div></div>
+<div class="ttc" id="aclassMeshPipelineData_html_a7e0cf4bc57653eff50477f4b94e8ba5a"><div class="ttname"><a href="classMeshPipelineData.html#a7e0cf4bc57653eff50477f4b94e8ba5a">MeshPipelineData::isVisible</a></div><div class="ttdeci">bool isVisible() const</div><div class="ttdoc">查询数据侧整体网格开关，供单线程调用者使用。</div><div class="ttdef"><b>定义</b> MeshPipelineData.h:63</div></div>
+<div class="ttc" id="aclassMeshPipelineData_html_a9315eceb2567f00f234f1a8d6c444ee4"><div class="ttname"><a href="classMeshPipelineData.html#a9315eceb2567f00f234f1a8d6c444ee4">MeshPipelineData::createSnapshot</a></div><div class="ttdeci">std::shared_ptr&lt; const MeshDataSnapshot &gt; createSnapshot()</div><div class="ttdoc">主动计算需要更新的数据；每次发布递增版本，绝不重新执行旧输出管线。</div><div class="ttdef"><b>定义</b> MeshPipelineData.cpp:490</div></div>
+<div class="ttc" id="aclassMeshPipelineData_html_a9be712cec076bb74cc6d83ff1f2f5a42"><div class="ttname"><a href="classMeshPipelineData.html#a9be712cec076bb74cc6d83ff1f2f5a42">MeshPipelineData::generation</a></div><div class="ttdeci">std::uint64_t generation() const</div><div class="ttdoc">返回原始网格代次，用于丢弃旧选择消息。</div><div class="ttdef"><b>定义</b> MeshPipelineData.h:81</div></div>
+<div class="ttc" id="aclassMeshPipelineData_html_a9e9ae8e9aaae221249c56d68ae272924"><div class="ttname"><a href="classMeshPipelineData.html#a9e9ae8e9aaae221249c56d68ae272924">MeshPipelineData::MeshPipelineData</a></div><div class="ttdeci">MeshPipelineData()</div><div class="ttdoc">绑定创建线程，所有后续计算也必须在该线程执行。</div><div class="ttdef"><b>定义</b> MeshPipelineData.cpp:170</div></div>
+<div class="ttc" id="aclassMeshPipelineData_html_aadce644f13b327c9d0798ac03c32fe0f"><div class="ttname"><a href="classMeshPipelineData.html#aadce644f13b327c9d0798ac03c32fe0f">MeshPipelineData::rebuildOutputs</a></div><div class="ttdeci">void rebuildOutputs()</div><div class="ttdoc">重建独立的计算实例，旧快照所引用的输出不再被修改。</div><div class="ttdef"><b>定义</b> MeshPipelineData.cpp:434</div></div>
+<div class="ttc" id="aclassMeshPipelineData_html_ac221d1459c7a516e72ce1e8d5349d34a"><div class="ttname"><a href="classMeshPipelineData.html#ac221d1459c7a516e72ce1e8d5349d34a">MeshPipelineData::hidden_face_ids_</a></div><div class="ttdeci">std::vector&lt; vtkIdType &gt; hidden_face_ids_</div><div class="ttdef"><b>定义</b> MeshPipelineData.h:96</div></div>
+<div class="ttc" id="aclassMeshPipelineData_html_ac3df5fad0018dc4492016ab3c35fcd93"><div class="ttname"><a href="classMeshPipelineData.html#ac3df5fad0018dc4492016ab3c35fcd93">MeshPipelineData::setVisibility</a></div><div class="ttdeci">void setVisibility(bool visible)</div><div class="ttdoc">更新整体网格开关，不改变隐藏集合。</div><div class="ttdef"><b>定义</b> MeshPipelineData.cpp:323</div></div>
+<div class="ttc" id="aclassMeshPipelineData_html_ace77578f477f8090d4dfa125f3b99bad"><div class="ttname"><a href="classMeshPipelineData.html#ace77578f477f8090d4dfa125f3b99bad">MeshPipelineData::model_data_</a></div><div class="ttdeci">std::shared_ptr&lt; const MeshDataVtk &gt; model_data_</div><div class="ttdef"><b>定义</b> MeshPipelineData.h:91</div></div>
+<div class="ttc" id="aclassMeshPipelineData_html_ad6c7236e844d3bcf0f094ab1e7b1e848"><div class="ttname"><a href="classMeshPipelineData.html#ad6c7236e844d3bcf0f094ab1e7b1e848">MeshPipelineData::owner_thread_</a></div><div class="ttdeci">std::thread::id owner_thread_</div><div class="ttdef"><b>定义</b> MeshPipelineData.h:89</div></div>
+<div class="ttc" id="aclassMeshPipelineData_html_ad9fbe3c2abfc85c98ee6d9d72d331cb5"><div class="ttname"><a href="classMeshPipelineData.html#ad9fbe3c2abfc85c98ee6d9d72d331cb5">MeshPipelineData::clip_</a></div><div class="ttdeci">MeshClipPlane clip_</div><div class="ttdef"><b>定义</b> MeshPipelineData.h:97</div></div>
+<div class="ttc" id="aclassMeshPipelineData_html_add653fb80890a6298448119982699f29"><div class="ttname"><a href="classMeshPipelineData.html#add653fb80890a6298448119982699f29">MeshPipelineData::hideFaces</a></div><div class="ttdeci">void hideFaces(const std::vector&lt; vtkIdType &gt; &amp;face_ids)</div><div class="ttdoc">隐藏有效的原始面 ID，累积并去重。</div><div class="ttdef"><b>定义</b> MeshPipelineData.cpp:329</div></div>
+<div class="ttc" id="aclassMeshPipelineData_html_ae256452bd72044ea4259f1e31af036ab"><div class="ttname"><a href="classMeshPipelineData.html#ae256452bd72044ea4259f1e31af036ab">MeshPipelineData::generation_</a></div><div class="ttdeci">std::uint64_t generation_</div><div class="ttdef"><b>定义</b> MeshPipelineData.h:100</div></div>
+<div class="ttc" id="aclassMeshPipelineData_html_af6bf25513bd623fdfd892d5bf6f7faea"><div class="ttname"><a href="classMeshPipelineData.html#af6bf25513bd623fdfd892d5bf6f7faea">MeshPipelineData::prepared_</a></div><div class="ttdeci">std::shared_ptr&lt; MeshDataSnapshot &gt; prepared_</div><div class="ttdef"><b>定义</b> MeshPipelineData.h:95</div></div>
+<div class="ttc" id="aclassMeshPipelineData_html_afae0ad285b0f67636f139926535de460"><div class="ttname"><a href="classMeshPipelineData.html#afae0ad285b0f67636f139926535de460">MeshPipelineData::dirty_</a></div><div class="ttdeci">bool dirty_</div><div class="ttdef"><b>定义</b> MeshPipelineData.h:99</div></div>
+<div class="ttc" id="astructMeshClipPlane_html"><div class="ttname"><a href="structMeshClipPlane.html">MeshClipPlane</a></div><div class="ttdoc">跨线程传递的裁剪参数，不共享可变 vtkPlane。</div><div class="ttdef"><b>定义</b> MeshPipelineData.h:22</div></div>
+<div class="ttc" id="astructMeshClipPlane_html_a21b5dbace66181fe89ede7e1f894e0f9"><div class="ttname"><a href="structMeshClipPlane.html#a21b5dbace66181fe89ede7e1f894e0f9">MeshClipPlane::enabled</a></div><div class="ttdeci">bool enabled</div><div class="ttdef"><b>定义</b> MeshPipelineData.h:23</div></div>
+<div class="ttc" id="astructMeshClipPlane_html_ab17e0e9d7c633ea34b4dd773c0bed97a"><div class="ttname"><a href="structMeshClipPlane.html#ab17e0e9d7c633ea34b4dd773c0bed97a">MeshClipPlane::origin</a></div><div class="ttdeci">std::array&lt; double, 3 &gt; origin</div><div class="ttdef"><b>定义</b> MeshPipelineData.h:24</div></div>
+<div class="ttc" id="astructMeshClipPlane_html_afe3f9d5d66fba4e5c1be716ac2c956e2"><div class="ttname"><a href="structMeshClipPlane.html#afe3f9d5d66fba4e5c1be716ac2c956e2">MeshClipPlane::normal</a></div><div class="ttdeci">std::array&lt; double, 3 &gt; normal</div><div class="ttdef"><b>定义</b> MeshPipelineData.h:25</div></div>
+<div class="ttc" id="astructMeshDataSnapshot_html"><div class="ttname"><a href="structMeshDataSnapshot.html">MeshDataSnapshot</a></div><div class="ttdoc">已完成计算的网格快照；发布后不再改写，数组由源数据或 VTK 自持。</div><div class="ttdef"><b>定义</b> MeshPipelineData.h:33</div></div>
+<div class="ttc" id="astructMeshDataSnapshot_html_a01b080d6678955afecd29203cf0326f0"><div class="ttname"><a href="structMeshDataSnapshot.html#a01b080d6678955afecd29203cf0326f0">MeshDataSnapshot::source</a></div><div class="ttdeci">std::shared_ptr&lt; const MeshData &gt; source</div><div class="ttdef"><b>定义</b> MeshPipelineData.h:38</div></div>
+<div class="ttc" id="astructMeshDataSnapshot_html_a022869700f506a487a43a662b6b372a5"><div class="ttname"><a href="structMeshDataSnapshot.html#a022869700f506a487a43a662b6b372a5">MeshDataSnapshot::visible</a></div><div class="ttdeci">bool visible</div><div class="ttdef"><b>定义</b> MeshPipelineData.h:36</div></div>
+<div class="ttc" id="astructMeshDataSnapshot_html_a26cac46272aaa2b02b5cc3f388a0f93a"><div class="ttname"><a href="structMeshDataSnapshot.html#a26cac46272aaa2b02b5cc3f388a0f93a">MeshDataSnapshot::original_solids</a></div><div class="ttdeci">vtkSmartPointer&lt; vtkUnstructuredGrid &gt; original_solids</div><div class="ttdef"><b>定义</b> MeshPipelineData.h:42</div></div>
+<div class="ttc" id="astructMeshDataSnapshot_html_a2bb8b2f75589569b11640a4565d3e2d0"><div class="ttname"><a href="structMeshDataSnapshot.html#a2bb8b2f75589569b11640a4565d3e2d0">MeshDataSnapshot::visible_edges</a></div><div class="ttdeci">vtkSmartPointer&lt; vtkPolyData &gt; visible_edges</div><div class="ttdef"><b>定义</b> MeshPipelineData.h:44</div></div>
+<div class="ttc" id="astructMeshDataSnapshot_html_a3459c1a9c67753370afccc5725898fe6"><div class="ttname"><a href="structMeshDataSnapshot.html#a3459c1a9c67753370afccc5725898fe6">MeshDataSnapshot::model_data</a></div><div class="ttdeci">std::shared_ptr&lt; const MeshDataVtk &gt; model_data</div><div class="ttdef"><b>定义</b> MeshPipelineData.h:39</div></div>
+<div class="ttc" id="astructMeshDataSnapshot_html_a45213b476ae66a7dbd1ee6c239d4e2f1"><div class="ttname"><a href="structMeshDataSnapshot.html#a45213b476ae66a7dbd1ee6c239d4e2f1">MeshDataSnapshot::visible_faces</a></div><div class="ttdeci">vtkSmartPointer&lt; vtkPolyData &gt; visible_faces</div><div class="ttdef"><b>定义</b> MeshPipelineData.h:43</div></div>
+<div class="ttc" id="astructMeshDataSnapshot_html_a5085d62c82a9516f54a16e3c3fcd37f0"><div class="ttname"><a href="structMeshDataSnapshot.html#a5085d62c82a9516f54a16e3c3fcd37f0">MeshDataSnapshot::solid_surface</a></div><div class="ttdeci">vtkSmartPointer&lt; vtkPolyData &gt; solid_surface</div><div class="ttdef"><b>定义</b> MeshPipelineData.h:45</div></div>
+<div class="ttc" id="astructMeshDataSnapshot_html_a6a8b78b89269e414d84cd3035154f852"><div class="ttname"><a href="structMeshDataSnapshot.html#a6a8b78b89269e414d84cd3035154f852">MeshDataSnapshot::solid_internal_edges</a></div><div class="ttdeci">vtkSmartPointer&lt; vtkPolyData &gt; solid_internal_edges</div><div class="ttdef"><b>定义</b> MeshPipelineData.h:46</div></div>
+<div class="ttc" id="astructMeshDataSnapshot_html_a8ee94f731e5fa5830cea231530faecd0"><div class="ttname"><a href="structMeshDataSnapshot.html#a8ee94f731e5fa5830cea231530faecd0">MeshDataSnapshot::clip</a></div><div class="ttdeci">MeshClipPlane clip</div><div class="ttdef"><b>定义</b> MeshPipelineData.h:37</div></div>
+<div class="ttc" id="astructMeshDataSnapshot_html_aa433e122e6a35d2cb91a2aea47c91ac4"><div class="ttname"><a href="structMeshDataSnapshot.html#aa433e122e6a35d2cb91a2aea47c91ac4">MeshDataSnapshot::revision</a></div><div class="ttdeci">std::uint64_t revision</div><div class="ttdef"><b>定义</b> MeshPipelineData.h:35</div></div>
+<div class="ttc" id="astructMeshDataSnapshot_html_aaccd872055e3201a62e327aa6d948fa0"><div class="ttname"><a href="structMeshDataSnapshot.html#aaccd872055e3201a62e327aa6d948fa0">MeshDataSnapshot::original_faces</a></div><div class="ttdeci">vtkSmartPointer&lt; vtkPolyData &gt; original_faces</div><div class="ttdef"><b>定义</b> MeshPipelineData.h:40</div></div>
+<div class="ttc" id="astructMeshDataSnapshot_html_ab43061841ecfd3c1a49d712ea8296a05"><div class="ttname"><a href="structMeshDataSnapshot.html#ab43061841ecfd3c1a49d712ea8296a05">MeshDataSnapshot::original_edges</a></div><div class="ttdeci">vtkSmartPointer&lt; vtkPolyData &gt; original_edges</div><div class="ttdef"><b>定义</b> MeshPipelineData.h:41</div></div>
+<div class="ttc" id="astructMeshDataSnapshot_html_aca829a53e848847e717d178612b049b9"><div class="ttname"><a href="structMeshDataSnapshot.html#aca829a53e848847e717d178612b049b9">MeshDataSnapshot::generation</a></div><div class="ttdeci">std::uint64_t generation</div><div class="ttdef"><b>定义</b> MeshPipelineData.h:34</div></div>
+<div class="ttc" id="astructMeshDataVtk_html"><div class="ttname"><a href="structMeshDataVtk.html">MeshDataVtk</a></div><div class="ttdoc">用于存储网格数据以供 VTK 渲染使用的结构体</div><div class="ttdef"><b>定义</b> Core.h:84</div></div>
+<div class="ttc" id="astructMeshData_html"><div class="ttname"><a href="structMeshData.html">MeshData</a></div><div class="ttdef"><b>定义</b> MeshData.h:39</div></div>
+</div><!-- fragment --></div><!-- contents -->
+<!-- start footer part -->
+<hr class="footer"/><address class="footer"><small>
+制作者&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.14.0
+</small></address>
+</div><!-- doc-content -->
+</body>
+</html>

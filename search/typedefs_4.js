@@ -2,8 +2,9 @@ var searchData=
 [
   ['geomedgeid_0',['GeomEdgeId',['../Core_8h.html#a2c620d553d3620740a24da5c348c7a70',1,'Core.h']]],
   ['geometryselectionvtk_1',['GeometrySelectionVtk',['../GeometrySelectorHighlight_8h.html#ac326fa7688042f57d37e2dffc01ddbac',1,'GeometrySelectorHighlight.h']]],
-  ['geomfaceid_2',['GeomFaceId',['../Core_8h.html#ab5877cbde257d16ef48544f6e31bca90',1,'Core.h']]],
-  ['geomsolidid_3',['GeomSolidId',['../Core_8h.html#a09b977d80717477b28230209e7cc183f',1,'Core.h']]],
-  ['geomvertexid_4',['GeomVertexId',['../Core_8h.html#aefd45ef2a67b50be304576981920f50a',1,'Core.h']]],
-  ['globalid_5',['GlobalID',['../classMeshIDMap.html#a50f7289b75b1ed94c9ad3429581758fb',1,'MeshIDMap']]]
+  ['geometryvisibility_2',['GeometryVisibility',['../structQRenderWindow.html#a5ca4cfcaa35a0330ba92c70da7044f1c',1,'QRenderWindow']]],
+  ['geomfaceid_3',['GeomFaceId',['../Core_8h.html#ab5877cbde257d16ef48544f6e31bca90',1,'Core.h']]],
+  ['geomsolidid_4',['GeomSolidId',['../Core_8h.html#a09b977d80717477b28230209e7cc183f',1,'Core.h']]],
+  ['geomvertexid_5',['GeomVertexId',['../Core_8h.html#aefd45ef2a67b50be304576981920f50a',1,'Core.h']]],
+  ['globalid_6',['GlobalID',['../classMeshIDMap.html#a50f7289b75b1ed94c9ad3429581758fb',1,'MeshIDMap']]]
 ];

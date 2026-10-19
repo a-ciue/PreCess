@@ -1,0 +1,26 @@
+<map id="app/render/MeshPipelineData.h" name="app/render/MeshPipelineData.h">
+<area shape="rect" id="Node000001" title="GUI 线程持有的网格基础数据、面隐藏及裁剪管线。" alt="" coords="248,5,475,31"/>
+<area shape="rect" id="Node000002" href="$Core_8h.html" title=" " alt="" coords="165,79,229,104"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="336,33,238,76,235,71,334,28"/>
+<area shape="rect" id="Node000003" title=" " alt="" coords="5,152,61,177"/>
+<area shape="poly" id="edge7_Node000001_Node000003" title=" " alt="" coords="302,33,230,52,154,81,102,112,59,145,56,141,99,108,152,76,228,47,301,28"/>
+<area shape="rect" id="Node000005" title=" " alt="" coords="243,152,320,177"/>
+<area shape="poly" id="edge9_Node000001_Node000005" title=" " alt="" coords="357,32,297,141,292,139,352,30"/>
+<area shape="rect" id="Node000007" title=" " alt="" coords="345,152,407,177"/>
+<area shape="poly" id="edge11_Node000001_Node000007" title=" " alt="" coords="360,31,354,64,355,104,367,139,362,141,349,104,349,64,355,30"/>
+<area shape="rect" id="Node000008" title=" " alt="" coords="364,79,431,104"/>
+<area shape="poly" id="edge8_Node000001_Node000008" title=" " alt="" coords="370,30,388,65,383,68,365,32"/>
+<area shape="rect" id="Node000009" title=" " alt="" coords="455,79,519,104"/>
+<area shape="poly" id="edge10_Node000001_Node000009" title=" " alt="" coords="383,28,456,69,453,74,380,33"/>
+<area shape="rect" id="Node000010" title=" " alt="" coords="543,79,681,104"/>
+<area shape="poly" id="edge12_Node000001_Node000010" title=" " alt="" coords="402,28,559,72,557,77,401,33"/>
+<area shape="rect" id="Node000011" title=" " alt="" coords="705,79,791,104"/>
+<area shape="poly" id="edge13_Node000001_Node000011" title=" " alt="" coords="429,28,692,76,691,81,428,33"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="172,106,74,149,71,144,170,102"/>
+<area shape="rect" id="Node000004" title=" " alt="" coords="168,152,219,177"/>
+<area shape="poly" id="edge3_Node000002_Node000004" title=" " alt="" coords="199,104,197,139,192,138,194,104"/>
+<area shape="poly" id="edge4_Node000002_Node000005" title=" " alt="" coords="213,102,259,141,255,145,209,106"/>
+<area shape="rect" id="Node000006" title=" " alt="" coords="85,152,144,177"/>
+<area shape="poly" id="edge5_Node000002_Node000006" title=" " alt="" coords="186,106,140,145,137,141,182,102"/>
+<area shape="poly" id="edge6_Node000002_Node000007" title=" " alt="" coords="227,102,335,144,333,149,225,107"/>
+</map>

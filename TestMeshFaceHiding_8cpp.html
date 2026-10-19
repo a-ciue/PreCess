@@ -1,0 +1,468 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="zh">
+<head>
+<meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=11"/>
+<meta name="generator" content="Doxygen 1.14.0"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>PreCess: app/render/test/TestMeshFaceHiding.cpp 文件参考</title>
+<link href="tabs.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="jquery.js"></script>
+<script type="text/javascript" src="dynsections.js"></script>
+<script type="text/javascript" src="clipboard.js"></script>
+<script type="text/javascript" src="cookie.js"></script>
+<link href="search/search.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="search/searchdata.js"></script>
+<script type="text/javascript" src="search/search.js"></script>
+<link href="doxygen.css" rel="stylesheet" type="text/css" />
+</head>
+<body>
+<div id="top"><!-- do not remove this div, it is closed by doxygen! -->
+<div id="titlearea">
+<table cellspacing="0" cellpadding="0">
+ <tbody>
+ <tr id="projectrow">
+  <td id="projectlogo"><img alt="Logo" src="ZenithGrid.ico"/></td>
+  <td id="projectalign">
+   <div id="projectname">PreCess
+   </div>
+  </td>
+ </tr>
+ </tbody>
+</table>
+</div>
+<!-- end header part -->
+<!-- 制作者 Doxygen 1.14.0 -->
+<script type="text/javascript">
+var searchBox = new SearchBox("searchBox", "search/",'.html');
+</script>
+<script type="text/javascript">
+$(function() { codefold.init(); });
+</script>
+<script type="text/javascript" src="menudata.js"></script>
+<script type="text/javascript" src="menu.js"></script>
+<script type="text/javascript">
+$(function() {
+  initMenu('',true,false,'search.php','搜索',false);
+  $(function() { init_search(); });
+});
+</script>
+<div id="main-nav"></div>
+<!-- window showing the filter options -->
+<div id="MSearchSelectWindow"
+     onmouseover="return searchBox.OnSearchSelectShow()"
+     onmouseout="return searchBox.OnSearchSelectHide()"
+     onkeydown="return searchBox.OnSearchSelectKey(event)">
+</div>
+
+<!-- iframe showing the search results (closed by default) -->
+<div id="MSearchResultsWindow">
+<div id="MSearchResults">
+<div class="SRPage">
+<div id="SRIndex">
+<div id="SRResults"></div>
+<div class="SRStatus" id="Loading">载入中...</div>
+<div class="SRStatus" id="Searching">搜索中...</div>
+<div class="SRStatus" id="NoMatches">未找到</div>
+</div>
+</div>
+</div>
+</div>
+
+<div id="nav-path" class="navpath">
+  <ul>
+<li class="navelem"><a href="dir_d422163b96683743ed3963d4aac17747.html">app</a></li><li class="navelem"><a href="dir_364370753f3c0e27b80c476caf69e0e2.html">render</a></li><li class="navelem"><a href="dir_ea7bf32d4afef5a01f2beaa3de806056.html">test</a></li>  </ul>
+</div>
+</div><!-- top -->
+<div id="doc-content">
+<div class="header">
+  <div class="summary">
+<a href="#func-members">函数</a>  </div>
+  <div class="headertitle"><div class="title">TestMeshFaceHiding.cpp 文件参考</div></div>
+</div><!--header-->
+<div class="contents">
+<div class="textblock"><code>#include &quot;<a class="el" href="MakeMeshDataVtk_8h_source.html">MakeMeshDataVtk.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="MakeMeshData_8h_source.html">MakeMeshData.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="FaceHideFilter_8h_source.html">FaceHideFilter.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="TestMeshActorWithData_8h_source.html">TestMeshActorWithData.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="MeshActorManager_8h_source.html">MeshActorManager.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="MeshActorSelectOp_8h_source.html">MeshActorSelectOp.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="MeshPipelineData_8h_source.html">MeshPipelineData.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="AttributeOperator_8h_source.html">renderStrategy/AttributeOperator.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="AttriRenderStrategyScalar_8h_source.html">renderStrategy/AttriRenderStrategyScalar.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="AttriRenderStrategyVector_8h_source.html">renderStrategy/AttriRenderStrategyVector.h</a>&quot;</code><br />
+<code>#include &lt;catch2/catch_test_macros.hpp&gt;</code><br />
+<code>#include &lt;vtkActor.h&gt;</code><br />
+<code>#include &lt;vtkAlgorithmOutput.h&gt;</code><br />
+<code>#include &lt;vtkCamera.h&gt;</code><br />
+<code>#include &lt;vtkCellArray.h&gt;</code><br />
+<code>#include &lt;vtkCellData.h&gt;</code><br />
+<code>#include &lt;vtkDoubleArray.h&gt;</code><br />
+<code>#include &lt;vtkHardwareSelector.h&gt;</code><br />
+<code>#include &lt;vtkIdTypeArray.h&gt;</code><br />
+<code>#include &lt;vtkImageData.h&gt;</code><br />
+<code>#include &lt;vtkNew.h&gt;</code><br />
+<code>#include &lt;vtkPlane.h&gt;</code><br />
+<code>#include &lt;vtkPoints.h&gt;</code><br />
+<code>#include &lt;vtkPolyData.h&gt;</code><br />
+<code>#include &lt;vtkPolyDataMapper.h&gt;</code><br />
+<code>#include &lt;vtkProperty.h&gt;</code><br />
+<code>#include &lt;vtkPropCollection.h&gt;</code><br />
+<code>#include &lt;vtkRenderWindow.h&gt;</code><br />
+<code>#include &lt;vtkRenderer.h&gt;</code><br />
+<code>#include &lt;vtkScalarBarActor.h&gt;</code><br />
+<code>#include &lt;vtkSelection.h&gt;</code><br />
+<code>#include &lt;vtkSmartPointer.h&gt;</code><br />
+<code>#include &lt;vtkTrivialProducer.h&gt;</code><br />
+<code>#include &lt;vtkUnstructuredGrid.h&gt;</code><br />
+<code>#include &lt;vtkWindowToImageFilter.h&gt;</code><br />
+<code>#include &lt;algorithm&gt;</code><br />
+<code>#include &lt;memory&gt;</code><br />
+<code>#include &lt;string&gt;</code><br />
+<code>#include &lt;utility&gt;</code><br />
+<code>#include &lt;vector&gt;</code><br />
+</div><div class="textblock"><div class="dynheader">
+TestMeshFaceHiding.cpp 的引用(Include)关系图:</div>
+<div class="dyncontent">
+<div class="center"><img src="TestMeshFaceHiding_8cpp__incl.png" border="0" usemap="#aapp_2render_2test_2TestMeshFaceHiding_8cpp" loading="lazy" alt=""/></div>
+<map name="aapp_2render_2test_2TestMeshFaceHiding_8cpp" id="aapp_2render_2test_2TestMeshFaceHiding_8cpp">
+<area shape="rect" title=" " alt="" coords="1557,5,1744,45"/>
+<area shape="rect" href="MakeMeshDataVtk_8h.html" title=" " alt="" coords="807,189,964,214"/>
+<area shape="poly" title=" " alt="" coords="1557,30,1414,35,1247,46,1092,65,1030,79,984,96,958,113,935,135,901,179,897,175,931,131,954,109,981,91,1028,74,1091,60,1246,41,1413,30,1557,25"/>
+<area shape="rect" title=" " alt="" coords="1668,489,1745,515"/>
+<area shape="poly" title=" " alt="" coords="1633,47,1616,67,1603,89,1597,112,1599,122,1605,132,1625,146,1655,156,1733,167,1816,172,1879,179,1930,187,1977,189,2060,191,2097,196,2133,208,2168,231,2202,268,2219,297,2224,324,2219,349,2205,371,2183,391,2154,409,2082,439,1997,463,1909,480,1760,499,1759,494,1908,474,1996,457,2080,434,2152,405,2180,387,2201,368,2214,347,2219,324,2214,299,2198,271,2164,235,2131,213,2096,201,2060,196,1977,195,1930,192,1878,184,1815,177,1733,173,1653,162,1622,151,1601,135,1594,124,1592,111,1598,87,1612,63,1629,44"/>
+<area shape="rect" title=" " alt="" coords="1136,489,1195,515"/>
+<area shape="poly" title=" " alt="" coords="1557,30,1219,33,770,42,549,51,355,62,206,77,154,86,119,96,75,114,40,133,27,145,18,159,11,177,9,200,9,283,11,330,17,348,34,366,57,379,96,391,211,414,363,435,535,453,881,481,1122,496,1122,501,881,486,535,459,362,441,210,420,94,396,55,384,30,370,13,351,5,331,4,283,4,200,6,176,13,157,23,141,37,129,73,109,118,91,152,81,205,72,355,57,549,45,770,37,1219,27,1557,24"/>
+<area shape="rect" title=" " alt="" coords="819,489,882,515"/>
+<area shape="poly" title=" " alt="" coords="1557,29,1287,31,944,40,779,48,634,60,525,76,488,85,464,96,438,121,411,160,385,209,363,263,346,317,337,368,338,411,343,427,351,439,374,451,417,461,545,478,689,489,806,496,805,501,689,495,544,483,416,466,372,456,347,443,338,429,333,411,332,368,341,316,358,261,380,207,407,157,434,117,461,91,486,80,524,70,634,55,778,43,944,34,1287,26,1557,24"/>
+<area shape="rect" href="MeshPipelineData_8h.html" title="GUI 线程持有的网格基础数据、面隐藏及裁剪管线。" alt="" coords="1039,343,1191,368"/>
+<area shape="poly" title=" " alt="" coords="1558,45,1481,65,1405,96,1345,138,1268,206,1137,335,1133,331,1265,202,1342,134,1403,91,1480,60,1556,40"/>
+<area shape="rect" title=" " alt="" coords="939,416,1077,441"/>
+<area shape="poly" title=" " alt="" coords="1557,30,1430,34,1285,44,1153,64,1101,78,1064,96,1035,117,1017,139,1007,165,1004,200,1004,283,1009,402,1003,402,999,283,999,200,1002,164,1012,136,1032,113,1061,91,1100,73,1152,59,1285,39,1430,29,1557,25"/>
+<area shape="rect" title=" " alt="" coords="380,343,468,368"/>
+<area shape="poly" title=" " alt="" coords="1557,29,1294,30,963,38,804,46,666,58,561,74,526,84,504,95,480,120,461,148,447,180,438,213,427,278,425,329,420,328,422,277,432,212,442,178,457,146,476,116,501,91,524,79,560,69,665,53,804,41,963,32,1294,24,1557,23"/>
+<area shape="rect" title=" " alt="" coords="44,343,175,368"/>
+<area shape="poly" title=" " alt="" coords="1557,31,1213,39,762,52,359,71,224,83,182,89,161,96,137,117,119,144,108,175,102,209,100,276,107,329,102,329,95,276,96,208,103,174,114,142,133,113,159,91,181,84,224,78,358,66,762,47,1213,33,1557,26"/>
+<area shape="rect" title=" " alt="" coords="493,343,587,368"/>
+<area shape="poly" title=" " alt="" coords="1557,29,1303,31,984,40,831,49,698,60,597,76,563,85,541,95,520,118,507,146,502,178,502,211,514,277,532,329,527,331,509,278,497,212,496,177,502,145,515,115,538,91,561,80,596,71,697,55,830,43,984,35,1303,26,1557,24"/>
+<area shape="rect" title=" " alt="" coords="612,343,761,368"/>
+<area shape="poly" title=" " alt="" coords="1557,29,1311,31,1006,39,859,48,733,60,637,75,605,85,585,95,542,140,528,164,519,188,515,213,518,239,527,266,542,293,568,319,602,336,600,341,565,323,538,296,522,268,513,240,510,213,514,187,523,162,538,137,582,91,603,80,636,70,732,54,859,42,1005,34,1311,25,1557,24"/>
+<area shape="rect" href="MakeMeshData_8h.html" title=" " alt="" coords="1306,189,1441,214"/>
+<area shape="poly" title=" " alt="" coords="1558,46,1500,65,1447,95,1427,114,1410,135,1386,177,1381,175,1406,132,1423,110,1444,91,1498,60,1556,41"/>
+<area shape="rect" href="FaceHideFilter_8h.html" title="类型保真的 vtkPolyData 整单元移除过滤器（右键隐藏面功能使用）" alt="" coords="172,101,297,126"/>
+<area shape="poly" title=" " alt="" coords="1557,30,1340,35,1039,45,694,65,343,96,306,101,306,96,342,91,693,59,1039,40,1340,29,1557,25"/>
+<area shape="rect" href="TestMeshActorWithData_8h.html" title="在测试所属线程准备网格数据，并向渲染对象发布计算结果。" alt="" coords="1039,189,1230,214"/>
+<area shape="poly" title=" " alt="" coords="1557,34,1421,42,1271,55,1144,72,1101,83,1079,95,1073,105,1072,115,1078,137,1093,159,1112,178,1108,182,1089,162,1073,139,1066,115,1068,103,1075,91,1099,78,1143,67,1270,49,1421,36,1557,28"/>
+<area shape="rect" href="MeshActorManager_8h.html" title=" " alt="" coords="1465,189,1623,214"/>
+<area shape="poly" title=" " alt="" coords="1557,38,1530,46,1503,58,1479,74,1459,95,1454,106,1454,117,1465,140,1487,161,1512,179,1509,184,1483,166,1461,143,1449,118,1449,105,1455,92,1475,70,1500,53,1528,41,1556,33"/>
+<area shape="rect" href="MeshActorSelectOp_8h.html" title=" " alt="" coords="1770,343,1931,368"/>
+<area shape="poly" title=" " alt="" coords="1616,48,1589,66,1566,87,1554,110,1555,121,1560,131,1591,143,1659,160,1861,199,2063,238,2132,254,2164,267,2171,282,2165,296,2150,308,2129,319,2074,334,2010,345,1945,352,1944,346,2009,340,2073,329,2127,314,2147,304,2160,293,2165,282,2161,271,2130,259,2062,243,1860,204,1658,165,1589,148,1557,135,1550,122,1549,109,1562,84,1585,62,1613,43"/>
+<area shape="rect" title=" " alt="" coords="1999,269,2150,295"/>
+<area shape="poly" title=" " alt="" coords="1589,48,1551,64,1520,84,1509,95,1503,107,1503,119,1510,131,1529,141,1573,155,1711,192,2011,264,2010,269,1710,198,1572,161,1527,146,1506,135,1498,120,1498,106,1505,92,1516,80,1549,59,1587,43"/>
+<area shape="rect" href="AttributeOperator_8h.html" title=" " alt="" coords="602,181,782,221"/>
+<area shape="poly" title=" " alt="" coords="1557,34,1223,56,1052,74,982,85,929,96,885,113,844,136,748,178,746,173,841,131,883,109,927,91,981,79,1051,69,1223,51,1557,29"/>
+<area shape="rect" title=" " alt="" coords="551,269,662,295"/>
+<area shape="poly" title=" " alt="" coords="1557,30,1320,33,1027,42,887,51,765,62,673,77,642,86,623,95,598,122,588,149,588,182,593,221,601,256,596,257,588,222,583,182,583,148,593,119,620,91,640,81,672,72,764,57,886,45,1027,37,1320,27,1557,24"/>
+<area shape="rect" href="AttriRenderStrategyScalar_8h.html" title=" " alt="" coords="633,93,831,133"/>
+<area shape="poly" title=" " alt="" coords="1557,35,1246,58,857,96,844,98,844,92,857,91,1246,53,1557,30"/>
+<area shape="rect" href="AttriRenderStrategyVector_8h.html" title=" " alt="" coords="1089,93,1287,133"/>
+<area shape="poly" title=" " alt="" coords="1557,47,1300,94,1299,89,1556,41"/>
+<area shape="rect" title=" " alt="" coords="1615,101,1833,126"/>
+<area shape="poly" title=" " alt="" coords="1669,44,1707,88,1703,91,1665,47"/>
+<area shape="rect" title=" " alt="" coords="1857,101,2020,126"/>
+<area shape="poly" title=" " alt="" coords="1714,43,1888,94,1886,99,1713,48"/>
+<area shape="rect" title=" " alt="" coords="2044,101,2151,126"/>
+<area shape="poly" title=" " alt="" coords="1744,38,1881,60,2032,91,2047,94,2046,100,2031,96,1880,65,1743,43"/>
+<area shape="rect" title=" " alt="" coords="2175,101,2289,126"/>
+<area shape="poly" title=" " alt="" coords="1744,32,1938,55,2051,71,2163,91,2180,95,2179,100,2162,96,2050,76,1937,60,1744,38"/>
+<area shape="rect" title=" " alt="" coords="2313,101,2447,126"/>
+<area shape="poly" title=" " alt="" coords="1744,30,1997,51,2149,68,2302,91,2324,95,2323,100,2301,96,2149,74,1996,56,1744,35"/>
+<area shape="rect" title=" " alt="" coords="2472,101,2643,126"/>
+<area shape="poly" title=" " alt="" coords="1745,28,2062,49,2261,67,2460,91,2491,96,2490,101,2459,96,2260,73,2062,55,1744,34"/>
+<area shape="rect" title=" " alt="" coords="2667,101,2794,126"/>
+<area shape="poly" title=" " alt="" coords="1744,25,1915,29,2142,39,2397,59,2655,91,2677,95,2676,100,2654,96,2397,64,2141,45,1914,34,1744,30"/>
+<area shape="rect" title=" " alt="" coords="2819,101,2901,126"/>
+<area shape="poly" title=" " alt="" coords="1744,26,1982,33,2289,45,2589,64,2713,77,2807,91,2820,94,2818,99,2806,96,2712,82,2588,70,2288,51,1982,38,1744,31"/>
+<area shape="rect" title=" " alt="" coords="2925,101,3016,126"/>
+<area shape="poly" title=" " alt="" coords="1744,26,2002,32,2340,45,2672,64,2809,76,2914,91,2928,94,2927,99,2913,96,2809,81,2671,69,2339,50,2002,38,1744,31"/>
+<area shape="rect" title=" " alt="" coords="3040,101,3155,126"/>
+<area shape="poly" title=" " alt="" coords="1744,26,2023,33,2393,46,2760,65,2913,77,3028,91,3048,95,3047,100,3027,96,2912,82,2760,70,2393,51,2023,38,1744,31"/>
+<area shape="rect" title=" " alt="" coords="3179,101,3341,126"/>
+<area shape="poly" title=" " alt="" coords="1744,23,1992,24,2344,32,2752,53,2962,69,3167,91,3197,95,3197,101,3166,96,2961,74,2752,58,2344,37,1992,29,1744,28"/>
+<area shape="rect" title=" " alt="" coords="3366,101,3474,126"/>
+<area shape="poly" title=" " alt="" coords="1744,25,2082,29,2547,40,3013,60,3207,74,3354,91,3372,95,3371,100,3353,96,3206,79,3013,65,2547,46,2081,35,1744,30"/>
+<area shape="rect" title=" " alt="" coords="3499,101,3651,126"/>
+<area shape="poly" title=" " alt="" coords="1744,25,2105,32,2609,44,3116,63,3327,76,3487,91,3515,95,3514,100,3486,96,3326,81,3115,69,2609,49,2105,37,1744,31"/>
+<area shape="rect" title=" " alt="" coords="3675,101,3789,126"/>
+<area shape="poly" title=" " alt="" coords="1744,24,2136,27,2691,37,2981,45,3252,57,3486,72,3663,91,3683,95,3682,100,3662,96,3486,77,3252,62,2981,51,2691,42,2136,33,1744,30"/>
+<area shape="rect" title=" " alt="" coords="3813,101,3928,126"/>
+<area shape="poly" title=" " alt="" coords="1744,24,2160,26,2755,35,3067,43,3359,55,3611,71,3802,91,3822,95,3821,100,3801,96,3611,76,3359,60,3067,49,2755,40,2160,32,1744,29"/>
+<area shape="rect" title=" " alt="" coords="3953,101,4103,126"/>
+<area shape="poly" title=" " alt="" coords="1744,24,2183,28,2819,39,3466,59,3736,73,3940,91,3969,95,3968,101,3940,96,3736,78,3465,64,2819,44,2183,34,1744,30"/>
+<area shape="rect" title=" " alt="" coords="4127,101,4294,126"/>
+<area shape="poly" title=" " alt="" coords="1744,24,2214,28,2900,39,3601,58,3895,73,4116,91,4148,95,4148,101,4116,96,3894,78,3601,64,2900,44,2214,34,1744,30"/>
+<area shape="rect" title=" " alt="" coords="4319,101,4513,126"/>
+<area shape="poly" title=" " alt="" coords="1744,25,2245,29,2987,40,3748,60,4066,74,4307,91,4346,96,4345,101,4306,96,4066,79,3747,65,2987,45,2245,34,1744,30"/>
+<area shape="rect" title=" " alt="" coords="4537,101,4623,126"/>
+<area shape="poly" title=" " alt="" coords="1744,24,2335,29,3204,40,3645,49,4038,60,4345,74,4453,82,4526,91,4540,94,4539,99,4525,96,4453,87,4345,79,4038,65,3645,54,3204,45,2335,34,1744,30"/>
+<area shape="rect" title=" " alt="" coords="4647,101,4707,126"/>
+<area shape="poly" title=" " alt="" coords="1744,24,2355,25,3259,33,3719,42,4128,53,4447,70,4560,79,4635,91,4644,93,4642,98,4634,96,4560,85,4447,75,4128,59,3719,47,3259,39,2355,31,1744,29"/>
+<area shape="rect" href="MeshActor_8h.html" title=" " alt="" coords="859,269,962,295"/>
+<area shape="poly" title=" " alt="" coords="891,213,905,256,900,257,886,215"/>
+<area shape="poly" title=" " alt="" coords="880,216,848,257,824,279,797,297,756,309,702,313,574,310,509,310,450,314,402,324,384,333,370,344,353,369,347,390,352,408,365,425,386,439,415,452,487,471,572,484,660,492,806,498,805,503,659,498,571,490,486,476,413,457,384,444,361,428,347,411,342,390,348,366,366,341,381,329,400,319,449,308,509,305,574,305,702,307,755,303,795,292,821,275,844,253,876,213"/>
+<area shape="rect" href="MeshData_8h.html" title=" " alt="" coords="1237,269,1337,295"/>
+<area shape="poly" title=" " alt="" coords="944,211,1224,266,1223,271,943,217"/>
+<area shape="rect" title=" " alt="" coords="686,269,783,295"/>
+<area shape="poly" title=" " alt="" coords="864,217,770,265,768,261,862,212"/>
+<area shape="rect" href="Core_8h.html" title=" " alt="" coords="1253,416,1317,441"/>
+<area shape="poly" title=" " alt="" coords="925,293,968,329,997,349,1028,366,1083,387,1140,402,1240,420,1239,425,1139,407,1081,392,1025,370,994,353,965,333,921,297"/>
+<area shape="poly" title=" " alt="" coords="903,296,866,346,848,380,834,416,834,447,842,476,837,477,829,448,829,416,843,378,862,343,898,293"/>
+<area shape="poly" title=" " alt="" coords="944,292,1070,336,1068,341,942,297"/>
+<area shape="poly" title=" " alt="" coords="903,296,883,330,879,349,883,367,908,392,941,409,938,414,905,396,879,369,873,349,878,328,898,294"/>
+<area shape="rect" title=" " alt="" coords="1418,343,1542,368"/>
+<area shape="poly" title=" " alt="" coords="962,287,1405,342,1404,347,962,292"/>
+<area shape="poly" title=" " alt="" coords="859,294,840,297,663,320,482,345,481,340,662,315,839,292,858,289"/>
+<area shape="poly" title=" " alt="" coords="859,291,796,297,188,350,188,345,796,292,859,286"/>
+<area shape="poly" title=" " alt="" coords="859,296,601,345,600,340,858,291"/>
+<area shape="poly" title=" " alt="" coords="875,297,737,341,735,336,874,292"/>
+<area shape="rect" title=" " alt="" coords="1327,489,1383,515"/>
+<area shape="poly" title=" " alt="" coords="1299,440,1336,478,1332,481,1295,444"/>
+<area shape="poly" title=" " alt="" coords="1318,433,1654,489,1653,494,1317,438"/>
+<area shape="poly" title=" " alt="" coords="1267,444,1198,484,1196,480,1265,439"/>
+<area shape="poly" title=" " alt="" coords="1253,438,896,496,895,491,1252,433"/>
+<area shape="poly" title=" " alt="" coords="1143,366,1246,408,1244,413,1141,370"/>
+<area shape="poly" title=" " alt="" coords="1132,366,1243,439,1320,481,1317,486,1240,444,1129,370"/>
+<area shape="poly" title=" " alt="" coords="1162,365,1655,485,1654,491,1161,371"/>
+<area shape="poly" title=" " alt="" coords="1117,369,1112,405,1104,426,1091,443,1057,462,1006,477,896,497,895,492,1004,472,1055,457,1087,439,1099,423,1107,404,1112,368"/>
+<area shape="poly" title=" " alt="" coords="1099,370,1038,411,1035,406,1096,366"/>
+<area shape="poly" title=" " alt="" coords="1289,295,1288,402,1283,402,1284,295"/>
+<area shape="poly" title=" " alt="" coords="1293,294,1332,415,1350,475,1345,477,1327,417,1288,296"/>
+<area shape="poly" title=" " alt="" coords="1302,293,1348,327,1408,366,1476,401,1546,434,1664,482,1662,487,1544,439,1474,406,1405,370,1345,331,1299,297"/>
+<area shape="poly" title=" " alt="" coords="1282,296,1181,478,1176,476,1278,294"/>
+<area shape="poly" title=" " alt="" coords="1318,292,1437,335,1435,340,1317,297"/>
+<area shape="poly" title=" " alt="" coords="1362,216,1311,262,1308,258,1359,212"/>
+<area shape="poly" title=" " alt="" coords="206,129,168,150,150,165,135,183,119,219,111,259,108,297,109,329,104,329,103,297,105,258,114,218,131,180,146,161,165,146,203,124"/>
+<area shape="rect" title=" " alt="" coords="145,189,324,214"/>
+<area shape="poly" title=" " alt="" coords="237,126,237,174,232,174,232,126"/>
+<area shape="poly" title=" " alt="" coords="1103,217,957,267,955,262,1101,211"/>
+<area shape="poly" title=" " alt="" coords="1136,214,1120,329,1115,329,1130,214"/>
+<area shape="poly" title=" " alt="" coords="1493,217,1454,224,1189,258,976,278,975,273,1188,253,1453,219,1492,211"/>
+<area shape="poly" title=" " alt="" coords="1517,216,1489,231,1464,250,1449,271,1448,282,1453,293,1467,308,1486,318,1528,330,1546,336,1559,343,1564,354,1557,370,1541,382,1519,393,1459,409,1391,420,1331,427,1330,421,1391,415,1458,404,1517,388,1538,378,1552,366,1559,354,1556,346,1544,340,1526,335,1484,322,1464,312,1448,296,1443,283,1444,269,1460,246,1487,226,1515,212"/>
+<area shape="poly" title=" " alt="" coords="1612,211,1937,267,1956,292,1964,318,1961,343,1946,370,1929,386,1907,400,1847,426,1773,447,1690,464,1524,488,1396,500,1396,495,1523,483,1690,459,1772,442,1845,421,1904,396,1926,382,1942,366,1956,342,1959,318,1951,295,1934,272,1611,217"/>
+<area shape="poly" title=" " alt="" coords="1490,217,1226,272,1124,302,1081,319,1028,345,975,377,928,418,870,480,866,477,925,414,972,373,1025,340,1079,314,1122,297,1225,267,1488,211"/>
+<area shape="poly" title=" " alt="" coords="1491,217,1445,237,1425,252,1409,271,1405,288,1413,304,1428,320,1447,334,1444,338,1425,324,1408,307,1400,288,1404,268,1421,248,1442,232,1489,212"/>
+<area shape="rect" href="MeshActorManagerSelectOp_8h.html" title=" " alt="" coords="1463,269,1681,295"/>
+<area shape="poly" title=" " alt="" coords="1550,213,1566,255,1561,257,1545,215"/>
+<area shape="rect" href="TopologyDiagnosticCategory_8h.html" title="定义拓扑诊断可视化类别" alt="" coords="1705,269,1924,295"/>
+<area shape="poly" title=" " alt="" coords="1584,211,1763,263,1761,268,1582,217"/>
+<area shape="poly" title=" " alt="" coords="1602,211,1643,219,1986,267,1985,272,1642,224,1601,217"/>
+<area shape="poly" title=" " alt="" coords="1584,294,1604,329,1608,350,1601,370,1582,384,1555,396,1482,413,1402,423,1331,428,1331,423,1401,418,1481,408,1553,391,1579,380,1596,366,1603,350,1599,331,1579,296"/>
+<area shape="poly" title=" " alt="" coords="1628,292,1668,310,1687,324,1702,341,1717,375,1722,412,1720,447,1715,476,1710,475,1715,446,1716,412,1712,376,1698,344,1683,328,1666,315,1626,297"/>
+<area shape="poly" title=" " alt="" coords="1589,293,1605,308,1620,328,1628,348,1627,359,1622,370,1607,381,1583,392,1510,413,1413,433,1300,451,1069,481,896,499,895,494,1069,475,1300,446,1412,427,1509,408,1581,387,1605,377,1618,366,1622,358,1623,349,1616,330,1601,312,1585,297"/>
+<area shape="poly" title=" " alt="" coords="1559,297,1507,336,1504,332,1555,293"/>
+<area shape="poly" title=" " alt="" coords="1617,292,1793,337,1792,342,1616,297"/>
+<area shape="poly" title=" " alt="" coords="1841,370,1730,481,1726,477,1837,367"/>
+<area shape="poly" title=" " alt="" coords="1770,366,1092,423,1091,418,1769,361"/>
+<area shape="poly" title=" " alt="" coords="745,219,866,262,865,267,743,224"/>
+<area shape="poly" title=" " alt="" coords="673,224,631,262,628,258,669,220"/>
+<area shape="poly" title=" " alt="" coords="725,135,709,170,704,168,721,132"/>
+<area shape="poly" title=" " alt="" coords="1287,120,1516,143,1793,177,1924,197,2036,219,2119,242,2147,255,2164,267,2178,279,2195,288,2232,299,2262,305,2272,308,2274,315,2249,328,2179,349,1845,444,1718,472,1592,489,1480,499,1397,503,1396,497,1480,494,1592,484,1718,467,1843,439,2177,344,2247,323,2269,313,2268,312,2261,310,2230,304,2193,293,2175,284,2161,271,2145,259,2118,247,2035,224,1923,202,1792,182,1515,148,1287,126"/>
+<area shape="poly" title=" " alt="" coords="1089,134,796,184,795,179,1088,128"/>
+</map>
+</div>
+</div><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 id="header-func-members" class="groupheader"><a id="func-members" name="func-members"></a>
+函数</h2></td></tr>
+<tr class="memitem:abad9002628bd1198ac078d82b525fdbe" id="r_abad9002628bd1198ac078d82b525fdbe"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#abad9002628bd1198ac078d82b525fdbe">TEST_CASE</a> (&quot;FaceHideFilter preserves global cell attributes across mixed cell categories&quot;)</td></tr>
+<tr class="memitem:aa5555dcbd188127499bcac4499cdd9b3" id="r_aa5555dcbd188127499bcac4499cdd9b3"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#aa5555dcbd188127499bcac4499cdd9b3">TEST_CASE</a> (&quot;MeshPipelineData preserves original typed IDs and published snapshots across hiding and clipping&quot;)</td></tr>
+<tr class="memitem:af4a10a151b2bbe492fcf17ed019ecc0f" id="r_af4a10a151b2bbe492fcf17ed019ecc0f"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#af4a10a151b2bbe492fcf17ed019ecc0f">TEST_CASE</a> (&quot;MeshActor consumes completed mesh data through trivial producers&quot;)</td></tr>
+<tr class="memitem:ab24dcd4c6bd8cfa23d8f75eacf573b83" id="r_ab24dcd4c6bd8cfa23d8f75eacf573b83"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ab24dcd4c6bd8cfa23d8f75eacf573b83">TEST_CASE</a> (&quot;MeshActorManager preserves scalar bar across same-generation snapshots and clears it on reload&quot;)</td></tr>
+<tr class="memitem:ae5de886268b929cf47b9025b900d1dcd" id="r_ae5de886268b929cf47b9025b900d1dcd"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ae5de886268b929cf47b9025b900d1dcd">TEST_CASE</a> (&quot;hideFaces ignores duplicate and invalid IDs and showAllFaces restores them&quot;)</td></tr>
+<tr class="memitem:ac9d702cc941dbd8d4470ccd32a0786e2" id="r_ac9d702cc941dbd8d4470ccd32a0786e2"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ac9d702cc941dbd8d4470ccd32a0786e2">TEST_CASE</a> (&quot;reverseVisibility complements hidden faces and preserves clipping&quot;)</td></tr>
+<tr class="memitem:aae07ac40455a1c5a238676795a5bfe70" id="r_aae07ac40455a1c5a238676795a5bfe70"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#aae07ac40455a1c5a238676795a5bfe70">TEST_CASE</a> (&quot;showFaces restores requested faces while preserving other hidden faces&quot;)</td></tr>
+<tr class="memitem:ae275796fa82f42753854741bc6edf6cd" id="r_ae275796fa82f42753854741bc6edf6cd"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ae275796fa82f42753854741bc6edf6cd">TEST_CASE</a> (&quot;face isolation survives style changes and ends on restore or reload&quot;)</td></tr>
+<tr class="memitem:adcd33dc7d42868fc58fa4706a8aa8864" id="r_adcd33dc7d42868fc58fa4706a8aa8864"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#adcd33dc7d42868fc58fa4706a8aa8864">TEST_CASE</a> (&quot;face isolation preserves ordinary vector and scalar attribute rendering&quot;)</td></tr>
+<tr class="memdesc:adcd33dc7d42868fc58fa4706a8aa8864"><td class="mdescLeft">&#160;</td><td class="mdescRight">面隔离只改变面集合，向量和标量显示仍由原有属性策略决定。  <br /></td></tr>
+<tr class="memitem:a65fd70c4b4396f2082c36782c086a2af" id="r_a65fd70c4b4396f2082c36782c086a2af"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a65fd70c4b4396f2082c36782c086a2af">TEST_CASE</a> (&quot;showAllFaces restores triangular surface wireframe after extensive hiding&quot;)</td></tr>
+</table>
+<a name="doc-func-members" id="doc-func-members"></a><h2 id="header-doc-func-members" class="groupheader">函数说明</h2>
+<a id="adcd33dc7d42868fc58fa4706a8aa8864" name="adcd33dc7d42868fc58fa4706a8aa8864"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#adcd33dc7d42868fc58fa4706a8aa8864">&#9670;&#160;</a></span>TEST_CASE() <span class="overload">[1/10]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">TEST_CASE </td>
+          <td>(</td>
+          <td class="paramtype">&quot;face isolation preserves ordinary vector and scalar attribute rendering&quot;</td>          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>面隔离只改变面集合，向量和标量显示仍由原有属性策略决定。 </p>
+
+</div>
+</div>
+<a id="ae275796fa82f42753854741bc6edf6cd" name="ae275796fa82f42753854741bc6edf6cd"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ae275796fa82f42753854741bc6edf6cd">&#9670;&#160;</a></span>TEST_CASE() <span class="overload">[2/10]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">TEST_CASE </td>
+          <td>(</td>
+          <td class="paramtype">&quot;face isolation survives style changes and ends on restore or reload&quot;</td>          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="abad9002628bd1198ac078d82b525fdbe" name="abad9002628bd1198ac078d82b525fdbe"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#abad9002628bd1198ac078d82b525fdbe">&#9670;&#160;</a></span>TEST_CASE() <span class="overload">[3/10]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">TEST_CASE </td>
+          <td>(</td>
+          <td class="paramtype">&quot;FaceHideFilter preserves global cell attributes across mixed cell categories&quot;</td>          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="ae5de886268b929cf47b9025b900d1dcd" name="ae5de886268b929cf47b9025b900d1dcd"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ae5de886268b929cf47b9025b900d1dcd">&#9670;&#160;</a></span>TEST_CASE() <span class="overload">[4/10]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">TEST_CASE </td>
+          <td>(</td>
+          <td class="paramtype">&quot;hideFaces ignores duplicate and invalid IDs and showAllFaces restores them&quot;</td>          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="af4a10a151b2bbe492fcf17ed019ecc0f" name="af4a10a151b2bbe492fcf17ed019ecc0f"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#af4a10a151b2bbe492fcf17ed019ecc0f">&#9670;&#160;</a></span>TEST_CASE() <span class="overload">[5/10]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">TEST_CASE </td>
+          <td>(</td>
+          <td class="paramtype">&quot;MeshActor consumes completed mesh data through trivial producers&quot;</td>          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="ab24dcd4c6bd8cfa23d8f75eacf573b83" name="ab24dcd4c6bd8cfa23d8f75eacf573b83"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ab24dcd4c6bd8cfa23d8f75eacf573b83">&#9670;&#160;</a></span>TEST_CASE() <span class="overload">[6/10]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">TEST_CASE </td>
+          <td>(</td>
+          <td class="paramtype">&quot;MeshActorManager preserves scalar bar across same-generation snapshots and clears it on reload&quot;</td>          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="aa5555dcbd188127499bcac4499cdd9b3" name="aa5555dcbd188127499bcac4499cdd9b3"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aa5555dcbd188127499bcac4499cdd9b3">&#9670;&#160;</a></span>TEST_CASE() <span class="overload">[7/10]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">TEST_CASE </td>
+          <td>(</td>
+          <td class="paramtype">&quot;MeshPipelineData preserves original typed IDs and published snapshots across hiding and clipping&quot;</td>          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="ac9d702cc941dbd8d4470ccd32a0786e2" name="ac9d702cc941dbd8d4470ccd32a0786e2"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ac9d702cc941dbd8d4470ccd32a0786e2">&#9670;&#160;</a></span>TEST_CASE() <span class="overload">[8/10]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">TEST_CASE </td>
+          <td>(</td>
+          <td class="paramtype">&quot;reverseVisibility complements hidden faces and preserves clipping&quot;</td>          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a65fd70c4b4396f2082c36782c086a2af" name="a65fd70c4b4396f2082c36782c086a2af"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a65fd70c4b4396f2082c36782c086a2af">&#9670;&#160;</a></span>TEST_CASE() <span class="overload">[9/10]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">TEST_CASE </td>
+          <td>(</td>
+          <td class="paramtype">&quot;showAllFaces restores triangular surface wireframe after extensive hiding&quot;</td>          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="aae07ac40455a1c5a238676795a5bfe70" name="aae07ac40455a1c5a238676795a5bfe70"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aae07ac40455a1c5a238676795a5bfe70">&#9670;&#160;</a></span>TEST_CASE() <span class="overload">[10/10]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">TEST_CASE </td>
+          <td>(</td>
+          <td class="paramtype">&quot;showFaces restores requested faces while preserving other hidden faces&quot;</td>          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+</div><!-- contents -->
+<!-- start footer part -->
+<hr class="footer"/><address class="footer"><small>
+制作者&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.14.0
+</small></address>
+</div><!-- doc-content -->
+</body>
+</html>

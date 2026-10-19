@@ -76,7 +76,6 @@ $(function() {
 <a href="#pub-methods">Public 成员函数</a> &#124;
 <a href="#pub-static-attribs">静态 Public 属性</a> &#124;
 <a href="#pri-methods">Private 成员函数</a> &#124;
-<a href="#pri-static-methods">静态 Private 成员函数</a> &#124;
 <a href="#pri-attribs">Private 属性</a> &#124;
 <a href="classMeshActor-members.html">所有成员列表</a>  </div>
   <div class="headertitle"><div class="title">MeshActor类 参考</div></div>
@@ -88,66 +87,96 @@ $(function() {
 
 <p><code>#include &lt;<a class="el" href="MeshActor_8h_source.html">MeshActor.h</a>&gt;</code></p>
 <div class="dynheader">
+类 MeshActor 继承关系图:</div>
+<div class="dyncontent">
+<div class="center"><img src="classMeshActor__inherit__graph.png" border="0" usemap="#aMeshActor_inherit__map" loading="lazy" alt="Inheritance graph"/></div>
+<map name="aMeshActor_inherit__map" id="aMeshActor_inherit__map">
+<area shape="rect" title="负责管理Model的Actor" alt="" coords="49,5,140,31"/>
+<area shape="rect" href="classTestMeshActorWithData.html" title="将既有测试的显隐操作转发到数据管线，保留对 MeshActor 的行为断言。" alt="" coords="5,79,184,104"/>
+<area shape="poly" title=" " alt="" coords="97,44,97,79,92,79,92,44"/>
+</map>
+<center><span class="legend">[<a href="graph_legend.html">图例</a>]</span></center></div>
+<div class="dynheader">
 MeshActor 的协作图:</div>
 <div class="dyncontent">
 <div class="center"><img src="classMeshActor__coll__graph.png" border="0" usemap="#aMeshActor_coll__map" loading="lazy" alt="Collaboration graph"/></div>
 <map name="aMeshActor_coll__map" id="aMeshActor_coll__map">
-<area shape="rect" title="负责管理Model的Actor" alt="" coords="3012,386,3103,411"/>
-<area shape="rect" title=" " alt="" coords="2616,289,2811,329"/>
-<area shape="poly" title=" " alt="" coords="2825,317,2907,331,2989,355,3017,368,3040,384,3038,388,3014,373,2987,360,2905,336,2824,322"/>
-<area shape="rect" href="classIAttributeRenderStrategy.html" title="属性渲染策略接口" alt="" coords="2184,297,2368,322"/>
-<area shape="poly" title=" " alt="" coords="2382,307,2616,307,2616,312,2382,312"/>
-<area shape="rect" title=" " alt="" coords="2392,352,2592,392"/>
-<area shape="poly" title=" " alt="" coords="2606,374,2988,392,3012,393,3012,399,2988,397,2606,379"/>
-<area shape="rect" href="structMeshDataVtk.html" title="用于存储网格数据以供 VTK 渲染使用的结构体" alt="" coords="1835,378,1946,403"/>
-<area shape="poly" title=" " alt="" coords="1960,386,2392,372,2392,378,1960,391"/>
-<area shape="rect" href="classTopologyDiagnosticActor.html" title="把拓扑诊断集合渲染为独立的边、点和面 Actor" alt="" coords="2185,462,2367,487"/>
-<area shape="poly" title=" " alt="" coords="1960,403,2217,459,2216,465,1959,408"/>
-<area shape="rect" title=" " alt="" coords="1386,271,1551,311"/>
-<area shape="poly" title=" " alt="" coords="1566,294,1658,306,1754,327,1817,350,1868,376,1865,380,1815,355,1753,332,1657,311,1565,299"/>
-<area shape="rect" title=" " alt="" coords="5,509,163,534"/>
-<area shape="poly" title=" " alt="" coords="102,496,141,452,197,403,230,380,266,362,304,350,343,345,1470,345,1612,349,1754,364,1836,377,1835,382,1753,369,1612,354,1470,351,343,351,305,355,268,367,232,385,200,407,144,456,106,499"/>
-<area shape="rect" href="structBlockData.html" title=" " alt="" coords="300,509,389,534"/>
-<area shape="poly" title=" " alt="" coords="176,519,300,519,300,524,176,524"/>
-<area shape="rect" href="structMeshTopologyDiagnosticResult.html" title="保存一次网格拓扑诊断得到的特殊实体集合" alt="" coords="1356,619,1581,645"/>
-<area shape="poly" title=" " alt="" coords="117,539,160,564,215,590,278,610,311,616,343,619,1049,619,1356,625,1356,630,1049,624,343,624,310,622,277,616,213,595,158,569,114,544"/>
-<area shape="rect" title=" " alt="" coords="1385,385,1553,425"/>
-<area shape="poly" title=" " alt="" coords="1566,399,1835,390,1835,395,1567,405"/>
-<area shape="rect" title=" " alt="" coords="960,387,1135,413"/>
-<area shape="poly" title=" " alt="" coords="1149,399,1384,402,1384,407,1148,404"/>
-<area shape="rect" title=" " alt="" coords="1377,483,1561,523"/>
-<area shape="poly" title=" " alt="" coords="1575,518,1619,520,1665,516,1710,505,1752,486,1761,477,1764,466,1767,454,1775,441,1809,417,1844,401,1847,406,1812,422,1779,445,1772,456,1769,467,1765,479,1755,490,1712,510,1666,521,1619,525,1575,524"/>
-<area shape="rect" title=" " alt="" coords="1004,441,1091,466"/>
-<area shape="poly" title=" " alt="" coords="1105,456,1332,480,1377,486,1376,491,1332,485,1104,461"/>
-<area shape="rect" title=" " alt="" coords="574,433,713,473"/>
-<area shape="poly" title=" " alt="" coords="726,451,1004,451,1004,456,726,456"/>
-<area shape="rect" title=" " alt="" coords="965,494,1130,519"/>
-<area shape="poly" title=" " alt="" coords="1144,504,1332,503,1376,502,1376,507,1332,508,1144,509"/>
-<area shape="rect" title=" " alt="" coords="1357,547,1580,573"/>
-<area shape="poly" title=" " alt="" coords="1526,573,1579,583,1639,585,1669,582,1699,575,1727,564,1752,547,1762,536,1766,524,1765,499,1763,471,1767,456,1775,441,1804,417,1837,401,1839,406,1807,421,1779,444,1772,458,1769,471,1771,498,1771,525,1766,539,1755,551,1729,569,1701,580,1670,587,1639,590,1578,588,1525,579"/>
-<area shape="rect" href="structBlockDatas.html" title=" " alt="" coords="999,545,1095,570"/>
-<area shape="poly" title=" " alt="" coords="1109,555,1188,556,1357,557,1357,562,1188,561,1109,561"/>
-<area shape="rect" title=" " alt="" coords="549,509,737,534"/>
-<area shape="poly" title=" " alt="" coords="752,528,999,550,999,556,751,534"/>
-<area shape="poly" title=" " alt="" coords="403,519,549,519,549,524,403,524"/>
-<area shape="rect" title=" " alt="" coords="2617,424,2809,464"/>
-<area shape="poly" title=" " alt="" coords="2823,435,2904,427,2988,415,3014,409,3015,414,2988,420,2905,432,2824,440"/>
-<area shape="poly" title=" " alt="" coords="2381,465,2617,448,2617,453,2381,470"/>
-<area shape="rect" title=" " alt="" coords="1795,455,1987,495"/>
-<area shape="poly" title=" " alt="" coords="2001,472,2184,472,2184,477,2001,477"/>
-<area shape="rect" href="structTopologyDiagnosticActor_1_1DiagnosticPipeline.html" title="保存一种图元的诊断数据、裁剪器、映射器和 Actor" alt="" coords="1799,548,1982,588"/>
-<area shape="poly" title=" " alt="" coords="1996,566,2077,559,2159,540,2214,514,2257,485,2260,490,2217,519,2161,545,2078,564,1996,571"/>
-<area shape="rect" title=" " alt="" coords="1777,612,2004,652"/>
-<area shape="poly" title=" " alt="" coords="2018,628,2090,616,2125,605,2159,591,2194,567,2224,538,2265,486,2269,489,2228,542,2197,572,2161,596,2127,610,2091,621,2019,633"/>
-<area shape="poly" title=" " alt="" coords="1595,629,1777,629,1777,635,1595,635"/>
-<area shape="rect" title=" " alt="" coords="931,704,1164,744"/>
-<area shape="poly" title=" " alt="" coords="1178,736,1255,734,1294,729,1331,720,1368,705,1402,684,1452,643,1456,647,1405,688,1370,709,1333,725,1295,734,1255,740,1178,742"/>
-<area shape="rect" href="structTopologyDiagnosticEdge.html" title="一条可直接用于诊断渲染的网格边" alt="" coords="553,711,734,737"/>
-<area shape="poly" title=" " alt="" coords="748,721,930,721,930,727,748,727"/>
-<area shape="rect" title=" " alt="" coords="261,711,428,737"/>
-<area shape="poly" title=" " alt="" coords="441,721,553,721,553,727,441,727"/>
-<area shape="rect" href="structFaceAttributeOffsetState.html" title=" " alt="" coords="2623,489,2804,514"/>
-<area shape="poly" title=" " alt="" coords="2818,500,2903,489,2946,478,2987,462,3020,437,3045,410,3049,414,3024,441,2989,466,2948,483,2904,494,2818,505"/>
+<area shape="rect" title="负责管理Model的Actor" alt="" coords="3321,574,3412,599"/>
+<area shape="rect" title=" " alt="" coords="2928,445,3123,485"/>
+<area shape="poly" title=" " alt="" coords="3137,468,3218,483,3260,496,3299,514,3334,542,3359,572,3355,576,3331,546,3296,518,3258,501,3217,488,3136,473"/>
+<area shape="rect" href="classIAttributeRenderStrategy.html" title="属性渲染策略接口" alt="" coords="2504,453,2688,478"/>
+<area shape="poly" title=" " alt="" coords="2702,463,2928,463,2928,468,2702,468"/>
+<area shape="rect" title=" " alt="" coords="2195,567,2364,607"/>
+<area shape="poly" title=" " alt="" coords="2378,584,3321,584,3321,589,2378,589"/>
+<area shape="rect" href="structMeshDataSnapshot.html" title="已完成计算的网格快照；发布后不再改写，数组由源数据或 VTK 自持。" alt="" coords="2522,506,2670,531"/>
+<area shape="poly" title=" " alt="" coords="2377,563,2535,529,2537,534,2379,568"/>
+<area shape="rect" href="structMeshDataVtk.html" title="用于存储网格数据以供 VTK 渲染使用的结构体" alt="" coords="1839,690,1950,715"/>
+<area shape="poly" title=" " alt="" coords="1950,683,2211,604,2213,609,1952,688"/>
+<area shape="rect" href="classTopologyDiagnosticActor.html" title="把拓扑诊断集合渲染为独立的边、点和面 Actor" alt="" coords="2188,747,2371,773"/>
+<area shape="poly" title=" " alt="" coords="1964,706,2059,716,2164,731,2230,745,2229,750,2164,736,2058,721,1963,711"/>
+<area shape="rect" title=" " alt="" coords="1390,464,1555,504"/>
+<area shape="poly" title=" " alt="" coords="1570,504,1587,514,1596,523,1600,533,1603,541,1611,549,1630,558,1648,563,1682,563,1717,562,1737,565,1759,574,1800,600,1836,632,1886,688,1882,691,1832,635,1797,604,1756,578,1735,570,1717,567,1682,568,1647,568,1628,563,1608,553,1599,544,1595,535,1591,526,1584,518,1567,508"/>
+<area shape="rect" href="structMeshData.html" title=" " alt="" coords="1851,427,1939,453"/>
+<area shape="poly" title=" " alt="" coords="1569,471,1609,467,1850,442,1851,447,1610,472,1569,476"/>
+<area shape="rect" title=" " alt="" coords="5,733,163,758"/>
+<area shape="poly" title=" " alt="" coords="105,767,143,812,199,863,231,886,267,904,304,917,343,921,1474,921,1622,928,1702,924,1734,916,1756,903,1770,883,1775,863,1774,841,1768,819,1763,796,1760,773,1765,749,1779,726,1807,708,1838,700,1840,705,1809,713,1783,730,1770,751,1766,773,1768,795,1774,818,1779,840,1781,863,1775,886,1759,907,1735,921,1703,929,1622,933,1474,927,343,927,303,922,265,909,229,890,195,867,139,816,101,771"/>
+<area shape="rect" href="structBlockData.html" title=" " alt="" coords="300,631,389,657"/>
+<area shape="poly" title=" " alt="" coords="130,725,310,654,312,659,132,730"/>
+<area shape="poly" title=" " alt="" coords="84,718,99,605,114,531,138,455,171,383,192,351,215,322,242,299,272,281,306,269,343,265,1474,265,1556,265,1621,268,1683,281,1759,312,1800,338,1836,370,1886,425,1882,429,1832,373,1797,342,1756,317,1682,286,1620,273,1556,270,1474,271,343,271,307,275,274,286,245,303,219,326,196,354,176,385,143,457,120,533,104,606,90,719"/>
+<area shape="rect" href="structMeshTopologyDiagnosticResult.html" title="保存一次网格拓扑诊断得到的特殊实体集合" alt="" coords="1360,1014,1585,1039"/>
+<area shape="poly" title=" " alt="" coords="95,771,121,851,143,900,170,951,204,997,244,1036,266,1051,290,1062,316,1069,343,1072,1053,1072,1148,1068,1243,1060,1403,1037,1403,1042,1244,1065,1148,1074,1053,1077,343,1077,315,1075,288,1067,264,1056,241,1040,200,1001,166,954,138,903,116,853,89,772"/>
+<area shape="rect" title=" " alt="" coords="1389,528,1557,568"/>
+<area shape="poly" title=" " alt="" coords="1536,570,1610,596,1651,605,1684,610,1717,615,1758,627,1824,657,1875,688,1873,692,1821,662,1756,632,1716,620,1683,615,1650,611,1609,601,1534,576"/>
+<area shape="poly" title=" " alt="" coords="1570,527,1609,520,1683,510,1757,495,1816,473,1867,450,1869,455,1818,478,1758,500,1684,515,1610,525,1571,532"/>
+<area shape="rect" title=" " alt="" coords="964,205,1139,230"/>
+<area shape="poly" title=" " alt="" coords="1072,239,1117,295,1184,369,1267,447,1313,483,1361,514,1390,527,1387,532,1359,518,1310,487,1264,451,1180,373,1113,299,1068,243"/>
+<area shape="rect" href="structMeshClipPlane.html" title="跨线程传递的裁剪参数，不共享可变 vtkPlane。" alt="" coords="1624,214,1743,239"/>
+<area shape="poly" title=" " alt="" coords="1152,216,1624,223,1624,228,1152,221"/>
+<area shape="rect" title=" " alt="" coords="1381,693,1565,733"/>
+<area shape="poly" title=" " alt="" coords="1517,739,1587,796,1598,811,1611,823,1651,840,1686,848,1720,844,1756,823,1765,813,1769,802,1768,778,1766,752,1770,739,1780,726,1807,709,1838,701,1840,706,1809,714,1783,730,1775,741,1772,753,1773,778,1774,803,1769,816,1759,827,1722,849,1686,854,1650,845,1608,828,1594,815,1583,799,1514,744"/>
+<area shape="poly" title=" " alt="" coords="1578,724,1682,728,1726,725,1756,715,1777,679,1816,601,1885,452,1890,454,1820,603,1782,682,1759,719,1727,730,1682,734,1578,729"/>
+<area shape="rect" title=" " alt="" coords="1008,699,1095,725"/>
+<area shape="poly" title=" " alt="" coords="1108,710,1381,710,1381,716,1108,715"/>
+<area shape="rect" title=" " alt="" coords="574,488,713,528"/>
+<area shape="poly" title=" " alt="" coords="726,491,773,489,823,493,871,508,893,520,913,535,926,554,931,573,926,611,921,648,925,666,937,684,952,695,970,703,1008,711,1007,716,968,709,949,700,933,687,920,668,916,648,921,610,926,573,921,556,909,539,890,524,869,513,822,499,773,494,727,496"/>
+<area shape="rect" title=" " alt="" coords="969,647,1134,673"/>
+<area shape="poly" title=" " alt="" coords="1148,665,1336,687,1381,694,1380,699,1336,692,1147,671"/>
+<area shape="rect" title=" " alt="" coords="1361,809,1584,834"/>
+<area shape="poly" title=" " alt="" coords="1505,839,1558,869,1625,894,1660,901,1694,902,1727,894,1756,877,1769,860,1774,843,1769,806,1763,766,1767,746,1779,726,1807,708,1838,700,1840,705,1809,713,1783,730,1772,748,1768,766,1774,805,1779,844,1774,863,1759,881,1729,899,1695,907,1659,907,1623,899,1555,873,1502,844"/>
+<area shape="rect" href="structBlockDatas.html" title=" " alt="" coords="1003,754,1099,779"/>
+<area shape="poly" title=" " alt="" coords="1113,772,1375,806,1374,811,1113,777"/>
+<area shape="rect" title=" " alt="" coords="549,575,737,601"/>
+<area shape="poly" title=" " alt="" coords="730,571,783,565,836,562,881,566,899,570,912,578,928,597,933,616,932,637,928,657,921,697,925,716,937,736,951,747,967,755,1003,764,1002,769,965,760,948,752,933,739,920,718,916,697,922,656,927,636,928,617,923,599,909,582,897,575,880,571,836,567,784,570,731,576"/>
+<area shape="poly" title=" " alt="" coords="402,631,574,598,575,603,403,636"/>
+<area shape="rect" title=" " alt="" coords="2941,509,3110,549"/>
+<area shape="poly" title=" " alt="" coords="3124,538,3209,549,3298,565,3323,571,3322,577,3297,571,3208,555,3123,543"/>
+<area shape="poly" title=" " alt="" coords="2684,518,2941,525,2940,530,2684,523"/>
+<area shape="poly" title=" " alt="" coords="1744,240,2371,415,2403,421,2429,424,2454,430,2482,446,2491,457,2495,468,2498,478,2506,487,2535,504,2533,508,2502,491,2493,480,2490,469,2486,459,2478,450,2452,435,2428,429,2402,426,2370,420,1743,246"/>
+<area shape="rect" title=" " alt="" coords="2195,429,2364,469"/>
+<area shape="poly" title=" " alt="" coords="2378,468,2538,503,2536,509,2377,473"/>
+<area shape="poly" title=" " alt="" coords="1952,439,2194,445,2194,450,1952,444"/>
+<area shape="rect" title=" " alt="" coords="1396,385,1549,439"/>
+<area shape="poly" title=" " alt="" coords="1563,407,1657,408,1758,413,1851,428,1850,433,1757,419,1657,413,1563,412"/>
+<area shape="rect" title=" " alt="" coords="1396,306,1549,361"/>
+<area shape="poly" title=" " alt="" coords="1564,333,1660,347,1711,361,1759,380,1771,392,1783,403,1817,419,1851,429,1850,434,1815,424,1780,408,1768,396,1756,385,1709,366,1659,352,1563,338"/>
+<area shape="rect" title=" " alt="" coords="2712,644,2904,684"/>
+<area shape="poly" title=" " alt="" coords="2917,653,3096,634,3197,620,3297,603,3322,597,3323,602,3298,608,3198,626,3097,640,2918,659"/>
+<area shape="poly" title=" " alt="" coords="2364,742,2711,679,2712,684,2364,747"/>
+<area shape="rect" title=" " alt="" coords="1799,740,1991,780"/>
+<area shape="poly" title=" " alt="" coords="2005,757,2188,757,2188,763,2005,763"/>
+<area shape="rect" href="structTopologyDiagnosticActor_1_1DiagnosticPipeline.html" title="保存一种图元的诊断数据、裁剪器、映射器和 Actor" alt="" coords="1803,833,1986,873"/>
+<area shape="poly" title=" " alt="" coords="2000,851,2081,844,2163,825,2218,799,2260,771,2263,775,2220,804,2165,831,2082,849,2000,857"/>
+<area shape="rect" title=" " alt="" coords="1781,900,2008,940"/>
+<area shape="poly" title=" " alt="" coords="2022,915,2094,902,2129,891,2163,876,2197,853,2227,824,2268,771,2272,775,2231,827,2201,857,2165,881,2131,896,2095,907,2023,920"/>
+<area shape="poly" title=" " alt="" coords="1555,1009,1652,988,1757,963,1837,938,1838,943,1758,968,1653,994,1556,1014"/>
+<area shape="rect" title=" " alt="" coords="935,988,1168,1028"/>
+<area shape="poly" title=" " alt="" coords="1182,1022,1192,1023,1360,1027,1360,1032,1192,1028,1181,1027"/>
+<area shape="rect" href="structTopologyDiagnosticEdge.html" title="一条可直接用于诊断渲染的网格边" alt="" coords="553,962,734,987"/>
+<area shape="poly" title=" " alt="" coords="748,980,935,996,934,1001,747,986"/>
+<area shape="rect" title=" " alt="" coords="261,962,428,987"/>
+<area shape="poly" title=" " alt="" coords="441,972,553,972,553,977,441,977"/>
+<area shape="rect" href="structFaceAttributeOffsetState.html" title=" " alt="" coords="2935,695,3116,721"/>
+<area shape="poly" title=" " alt="" coords="3130,718,3172,718,3215,713,3257,703,3296,686,3319,667,3337,643,3359,598,3363,601,3341,646,3323,671,3299,690,3259,708,3216,719,3172,723,3130,724"/>
 </map>
 <center><span class="legend">[<a href="graph_legend.html">图例</a>]</span></center></div>
 <table class="memberdecls">
@@ -155,11 +184,14 @@ MeshActor 的协作图:</div>
 Public 成员函数</h2></td></tr>
 <tr class="memitem:a6a2e6e19e2be3e5c7ff30c18ce98ca7c" id="r_a6a2e6e19e2be3e5c7ff30c18ce98ca7c"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a6a2e6e19e2be3e5c7ff30c18ce98ca7c">MeshActor</a> (vtkRenderer *renderer)</td></tr>
 <tr class="memitem:a21ef1656d52d5ce899fa1cafe2ea1bd2" id="r_a21ef1656d52d5ce899fa1cafe2ea1bd2"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a21ef1656d52d5ce899fa1cafe2ea1bd2">~MeshActor</a> ()</td></tr>
-<tr class="memitem:a70be0e3ea4dc333f6454667209f68f98" id="r_a70be0e3ea4dc333f6454667209f68f98"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a70be0e3ea4dc333f6454667209f68f98">loadModelData</a> (const <a class="el" href="structMeshDataVtk.html">MeshDataVtk</a> &amp;model_data)</td></tr>
+<tr class="memitem:a208cfdc2462999e0d21981888a17a373" id="r_a208cfdc2462999e0d21981888a17a373"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a208cfdc2462999e0d21981888a17a373">applyDataSnapshot</a> (std::shared_ptr&lt; const <a class="el" href="structMeshDataSnapshot.html">MeshDataSnapshot</a> &gt; snapshot)</td></tr>
+<tr class="memdesc:a208cfdc2462999e0d21981888a17a373"><td class="mdescLeft">&#160;</td><td class="mdescRight">安装 GUI 线程已完成的只读数据快照，拒绝旧代次和旧版本。  <br /></td></tr>
+<tr class="memitem:a523d8de236496605b0daa9db09aad572" id="r_a523d8de236496605b0daa9db09aad572"><td class="memItemLeft" align="right" valign="top">std::uint64_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a523d8de236496605b0daa9db09aad572">dataGeneration</a> () const</td></tr>
+<tr class="memdesc:a523d8de236496605b0daa9db09aad572"><td class="mdescLeft">&#160;</td><td class="mdescRight">返回当前源数据代次，供选择消息校验原始面身份。  <br /></td></tr>
 <tr class="memitem:adf6ab9d3e2278feb471c0fd00f6e8806" id="r_adf6ab9d3e2278feb471c0fd00f6e8806"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#adf6ab9d3e2278feb471c0fd00f6e8806">setVisibility</a> (bool visibility)</td></tr>
 <tr class="memitem:ab282e66574859c8e77ed021be2903cfa" id="r_ab282e66574859c8e77ed021be2903cfa"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ab282e66574859c8e77ed021be2903cfa">isVisible</a> () const</td></tr>
-<tr class="memitem:a870cd1059f6d3e15b5ca4681cc4762dc" id="r_a870cd1059f6d3e15b5ca4681cc4762dc"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a870cd1059f6d3e15b5ca4681cc4762dc">setClipPlane</a> (vtkPlane *plane)</td></tr>
-<tr class="memdesc:a870cd1059f6d3e15b5ca4681cc4762dc"><td class="mdescLeft">&#160;</td><td class="mdescRight">设置或取消裁剪平面  <br /></td></tr>
+<tr class="memitem:a92d607c7023bc0203893e261a2847035" id="r_a92d607c7023bc0203893e261a2847035"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a92d607c7023bc0203893e261a2847035">isVisibilityEnabled</a> () const</td></tr>
+<tr class="memdesc:a92d607c7023bc0203893e261a2847035"><td class="mdescLeft">&#160;</td><td class="mdescRight">查询网格显隐开关，供组件级反转使用，不受渲染样式影响。  <br /></td></tr>
 <tr class="memitem:a64c57941dca1731223759b114865d354" id="r_a64c57941dca1731223759b114865d354"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a64c57941dca1731223759b114865d354">setRenderStyle</a> (<a class="el" href="Core_8h.html#a5162a7a03ccc48523246f10d0adb676d">MeshRenderStyle</a> style)</td></tr>
 <tr class="memitem:ab0a3a1a69b1c3b4fe0d1bf539874baf4" id="r_ab0a3a1a69b1c3b4fe0d1bf539874baf4"><td class="memItemLeft" align="right" valign="top"><a class="el" href="Core_8h.html#a5162a7a03ccc48523246f10d0adb676d">MeshRenderStyle</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ab0a3a1a69b1c3b4fe0d1bf539874baf4">getRenderStyle</a> () const</td></tr>
 <tr class="memitem:afa6c6e17e6a1d5c6abf292f4780ace5f" id="r_afa6c6e17e6a1d5c6abf292f4780ace5f"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#afa6c6e17e6a1d5c6abf292f4780ace5f">cancelActiveAttribute</a> ()</td></tr>
@@ -179,10 +211,8 @@ Public 成员函数</h2></td></tr>
 <tr class="heading"><td colspan="2"><h2 id="header-pri-methods" class="groupheader"><a id="pri-methods" name="pri-methods"></a>
 Private 成员函数</h2></td></tr>
 <tr class="memitem:adfebe3e1e9a07ae8ed70461a91a20d91" id="r_adfebe3e1e9a07ae8ed70461a91a20d91"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#adfebe3e1e9a07ae8ed70461a91a20d91">applyStyle</a> ()</td></tr>
-</table><table class="memberdecls">
-<tr class="heading"><td colspan="2"><h2 id="header-pri-static-methods" class="groupheader"><a id="pri-static-methods" name="pri-static-methods"></a>
-静态 Private 成员函数</h2></td></tr>
-<tr class="memitem:a08e40a529ad491478178c2a8c38d1b37" id="r_a08e40a529ad491478178c2a8c38d1b37"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a08e40a529ad491478178c2a8c38d1b37">_createSolidUGird</a> (const <a class="el" href="structMeshDataVtk.html">MeshDataVtk</a> &amp;model_data, vtkPoints &amp;points, vtkUnstructuredGrid &amp;solid_data)</td></tr>
+<tr class="memitem:a8049860aa3c7fd31f5817402d965af83" id="r_a8049860aa3c7fd31f5817402d965af83"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a8049860aa3c7fd31f5817402d965af83">syncDisplayAttributes</a> ()</td></tr>
+<tr class="memdesc:a8049860aa3c7fd31f5817402d965af83"><td class="mdescLeft">&#160;</td><td class="mdescRight">将原始数据的活跃属性选择同步到本线程的可见数据包装。  <br /></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 id="header-pri-attribs" class="groupheader"><a id="pri-attribs" name="pri-attribs"></a>
 Private 属性</h2></td></tr>
@@ -191,14 +221,20 @@ Private 属性</h2></td></tr>
 <tr class="memitem:a1f2a7b61a383143395c2df36655e7a50" id="r_a1f2a7b61a383143395c2df36655e7a50"><td class="memItemLeft" align="right" valign="top">std::unique_ptr&lt; <a class="el" href="classIAttributeRenderStrategy.html">IAttributeRenderStrategy</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a1f2a7b61a383143395c2df36655e7a50">render_strategy_</a></td></tr>
 <tr class="memitem:adc5a88c786013abf18f4244fbf9ed74a" id="r_adc5a88c786013abf18f4244fbf9ed74a"><td class="memItemLeft" align="right" valign="top"><a class="el" href="Core_8h.html#a5162a7a03ccc48523246f10d0adb676d">MeshRenderStyle</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#adc5a88c786013abf18f4244fbf9ed74a">style_</a> { <a class="el" href="Core_8h.html#a5162a7a03ccc48523246f10d0adb676da27744f658fdd5ba66afc23eb0706ae78">MeshRenderStyle::FaceWithEdges</a> }</td></tr>
 <tr class="memitem:a4450097e60e604999bf9895eac4829ef" id="r_a4450097e60e604999bf9895eac4829ef"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a4450097e60e604999bf9895eac4829ef">visibility_</a> { true }</td></tr>
-<tr class="memitem:ac25f309b6193f4dee2fc8b15286bf4e4" id="r_ac25f309b6193f4dee2fc8b15286bf4e4"><td class="memItemLeft" align="right" valign="top">std::unique_ptr&lt; <a class="el" href="structMeshDataVtk.html">MeshDataVtk</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ac25f309b6193f4dee2fc8b15286bf4e4">model_data_</a></td></tr>
+<tr class="memitem:a7237608201e97259d7ea04a8b27fc2a5" id="r_a7237608201e97259d7ea04a8b27fc2a5"><td class="memItemLeft" align="right" valign="top">std::shared_ptr&lt; const <a class="el" href="structMeshDataVtk.html">MeshDataVtk</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a7237608201e97259d7ea04a8b27fc2a5">model_data_</a></td></tr>
+<tr class="memitem:ace6a46fd0eff8e1558d6339a81c54af8" id="r_ace6a46fd0eff8e1558d6339a81c54af8"><td class="memItemLeft" align="right" valign="top">std::shared_ptr&lt; const <a class="el" href="structMeshDataSnapshot.html">MeshDataSnapshot</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ace6a46fd0eff8e1558d6339a81c54af8">data_snapshot_</a></td></tr>
+<tr class="memitem:ae45a353c8f08f9d0b39aec58dd5fa461" id="r_ae45a353c8f08f9d0b39aec58dd5fa461"><td class="memItemLeft" align="right" valign="top">std::uint64_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ae45a353c8f08f9d0b39aec58dd5fa461">data_generation_</a> { }</td></tr>
+<tr class="memitem:ab2dae73c7a920ed36a7f706257f845d9" id="r_ab2dae73c7a920ed36a7f706257f845d9"><td class="memItemLeft" align="right" valign="top">std::uint64_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ab2dae73c7a920ed36a7f706257f845d9">data_revision_</a> { }</td></tr>
 <tr class="memitem:a1913d1fc44e953dcf603cbe143bb9ac7" id="r_a1913d1fc44e953dcf603cbe143bb9ac7"><td class="memItemLeft" align="right" valign="top">std::unique_ptr&lt; <a class="el" href="classTopologyDiagnosticActor.html">TopologyDiagnosticActor</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a1913d1fc44e953dcf603cbe143bb9ac7">topology_diagnostics_</a></td></tr>
-<tr class="memitem:aef69d9e95a452055e5c9f268b386a933" id="r_aef69d9e95a452055e5c9f268b386a933"><td class="memItemLeft" align="right" valign="top">vtkPlane *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#aef69d9e95a452055e5c9f268b386a933">clip_plane_</a> {}</td></tr>
-<tr class="memitem:a19805d0c0e844a809f0bbb4e67bd48bf" id="r_a19805d0c0e844a809f0bbb4e67bd48bf"><td class="memItemLeft" align="right" valign="top">vtkNew&lt; vtkExtractPolyDataGeometry &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a19805d0c0e844a809f0bbb4e67bd48bf">edge_clipper_</a></td></tr>
-<tr class="memitem:ace16406699e97aad5866e3e3b97c0eb5" id="r_ace16406699e97aad5866e3e3b97c0eb5"><td class="memItemLeft" align="right" valign="top">vtkNew&lt; vtkExtractPolyDataGeometry &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ace16406699e97aad5866e3e3b97c0eb5">face_clipper_</a></td></tr>
-<tr class="memitem:a697071c9b72ff73137641b9cf68d4ff7" id="r_a697071c9b72ff73137641b9cf68d4ff7"><td class="memItemLeft" align="right" valign="top">vtkNew&lt; vtkExtractGeometry &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a697071c9b72ff73137641b9cf68d4ff7">solid_clipper_</a></td></tr>
-<tr class="memitem:a77d183db5363426d681904313ab57144" id="r_a77d183db5363426d681904313ab57144"><td class="memItemLeft" align="right" valign="top">vtkNew&lt; vtkGeometryFilter &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a77d183db5363426d681904313ab57144">solid_filter_</a></td></tr>
-<tr class="memitem:a455e99ee83a81dd1c396e0104294f955" id="r_a455e99ee83a81dd1c396e0104294f955"><td class="memItemLeft" align="right" valign="top">vtkNew&lt; vtkExtractEdges &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a455e99ee83a81dd1c396e0104294f955">solid_edge_extractor_</a></td></tr>
+<tr class="memitem:a09d0d77b5045dd9c62fc829b5fbaa0d4" id="r_a09d0d77b5045dd9c62fc829b5fbaa0d4"><td class="memItemLeft" align="right" valign="top">vtkNew&lt; vtkTrivialProducer &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a09d0d77b5045dd9c62fc829b5fbaa0d4">face_source_</a></td></tr>
+<tr class="memitem:a9a3772c927c5f540c4cbc3bbf86784ae" id="r_a9a3772c927c5f540c4cbc3bbf86784ae"><td class="memItemLeft" align="right" valign="top">vtkNew&lt; vtkTrivialProducer &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a9a3772c927c5f540c4cbc3bbf86784ae">edge_source_</a></td></tr>
+<tr class="memitem:a1fccbc2d7e1e90391041813767e7a478" id="r_a1fccbc2d7e1e90391041813767e7a478"><td class="memItemLeft" align="right" valign="top">vtkNew&lt; vtkTrivialProducer &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a1fccbc2d7e1e90391041813767e7a478">solid_surface_source_</a></td></tr>
+<tr class="memitem:af3d7376c946d39411b9c07163bfeba4e" id="r_af3d7376c946d39411b9c07163bfeba4e"><td class="memItemLeft" align="right" valign="top">vtkNew&lt; vtkTrivialProducer &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#af3d7376c946d39411b9c07163bfeba4e">solid_internal_source_</a></td></tr>
+<tr class="memitem:a9bd5ea6023bb740dd7632287af2e6bb0" id="r_a9bd5ea6023bb740dd7632287af2e6bb0"><td class="memItemLeft" align="right" valign="top">vtkNew&lt; vtkPlane &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a9bd5ea6023bb740dd7632287af2e6bb0">clip_plane_</a></td></tr>
+<tr class="memitem:a2bd0ef091fc740c7d244a176ea5f42d8" id="r_a2bd0ef091fc740c7d244a176ea5f42d8"><td class="memItemLeft" align="right" valign="top">vtkSmartPointer&lt; vtkPolyData &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a2bd0ef091fc740c7d244a176ea5f42d8">visible_faces_</a></td></tr>
+<tr class="memitem:a9ebc133f12fd796029da68c8365e91c6" id="r_a9ebc133f12fd796029da68c8365e91c6"><td class="memItemLeft" align="right" valign="top">vtkSmartPointer&lt; vtkPolyData &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a9ebc133f12fd796029da68c8365e91c6">visible_edges_</a></td></tr>
+<tr class="memitem:a16558244ca7eae0f6f74c92fad3b40d9" id="r_a16558244ca7eae0f6f74c92fad3b40d9"><td class="memItemLeft" align="right" valign="top">vtkSmartPointer&lt; vtkPolyData &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a16558244ca7eae0f6f74c92fad3b40d9">solid_surface_</a></td></tr>
+<tr class="memitem:a19553cfe556edbf0bb4977e03b7854c6" id="r_a19553cfe556edbf0bb4977e03b7854c6"><td class="memItemLeft" align="right" valign="top">vtkSmartPointer&lt; vtkPolyData &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a19553cfe556edbf0bb4977e03b7854c6">solid_internal_edges_</a></td></tr>
 <tr class="memitem:ab0bc13100593d5a6e211fb88fc51ebcf" id="r_ab0bc13100593d5a6e211fb88fc51ebcf"><td class="memItemLeft" align="right" valign="top">vtkNew&lt; vtkPolyDataMapper &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ab0bc13100593d5a6e211fb88fc51ebcf">edge_mapper_</a></td></tr>
 <tr class="memitem:a24ffeddc6e0250548410968a538359e5" id="r_a24ffeddc6e0250548410968a538359e5"><td class="memItemLeft" align="right" valign="top">vtkNew&lt; vtkPolyDataMapper &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a24ffeddc6e0250548410968a538359e5">face_mapper_</a></td></tr>
 <tr class="memitem:ac5178957eeb57603a430427b2c053f60" id="r_ac5178957eeb57603a430427b2c053f60"><td class="memItemLeft" align="right" valign="top">vtkNew&lt; vtkPolyDataMapper &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ac5178957eeb57603a430427b2c053f60">solid_mapper_</a></td></tr>
@@ -216,7 +252,6 @@ Private 属性</h2></td></tr>
 <tr class="memitem:aa41c3951fe0448bf88ba389b30a7357c" id="r_aa41c3951fe0448bf88ba389b30a7357c"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structFaceAttributeOffsetState.html">FaceAttributeOffsetState</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#aa41c3951fe0448bf88ba389b30a7357c">face_attribute_offset_</a></td></tr>
 <tr class="memitem:a091cfe29cd9274e75e1f5888de353e0d" id="r_a091cfe29cd9274e75e1f5888de353e0d"><td class="memItemLeft" align="right" valign="top">vtkRenderer *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a091cfe29cd9274e75e1f5888de353e0d">renderer_</a></td></tr>
 <tr class="memitem:a755434ea393bd38d967d1d482ba95dac" id="r_a755434ea393bd38d967d1d482ba95dac"><td class="memItemLeft" align="right" valign="top">vtkNew&lt; vtkPoints &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a755434ea393bd38d967d1d482ba95dac">points_</a></td></tr>
-<tr class="memitem:a91bee7bb17cd1d38a1dfc29296b6ecf6" id="r_a91bee7bb17cd1d38a1dfc29296b6ecf6"><td class="memItemLeft" align="right" valign="top">vtkNew&lt; vtkIdTypeArray &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a91bee7bb17cd1d38a1dfc29296b6ecf6">original_point_ids_</a></td></tr>
 </table>
 <a name="details" id="details"></a><h2 id="header-details" class="groupheader">详细描述</h2>
 <div class="textblock"><p>负责管理Model的Actor </p>
@@ -264,37 +299,22 @@ Private 属性</h2></td></tr>
 </div>
 </div>
 <a name="doc-func-members" id="doc-func-members"></a><h2 id="header-doc-func-members" class="groupheader">成员函数说明</h2>
-<a id="a08e40a529ad491478178c2a8c38d1b37" name="a08e40a529ad491478178c2a8c38d1b37"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a08e40a529ad491478178c2a8c38d1b37">&#9670;&#160;</a></span>_createSolidUGird()</h2>
+<a id="a208cfdc2462999e0d21981888a17a373" name="a208cfdc2462999e0d21981888a17a373"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a208cfdc2462999e0d21981888a17a373">&#9670;&#160;</a></span>applyDataSnapshot()</h2>
 
 <div class="memitem">
 <div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">void MeshActor::_createSolidUGird </td>
+          <td class="memname">void MeshActor::applyDataSnapshot </td>
           <td>(</td>
-          <td class="paramtype">const <a class="el" href="structMeshDataVtk.html">MeshDataVtk</a> &amp;</td>          <td class="paramname"><span class="paramname"><em>model_data</em></span>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
+          <td class="paramtype">std::shared_ptr&lt; const <a class="el" href="structMeshDataSnapshot.html">MeshDataSnapshot</a> &gt;</td>          <td class="paramname"><span class="paramname"><em>snapshot</em></span></td><td>)</td>
           <td></td>
-          <td class="paramtype">vtkPoints &amp;</td>          <td class="paramname"><span class="paramname"><em>points</em></span>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">vtkUnstructuredGrid &amp;</td>          <td class="paramname"><span class="paramname"><em>solid_data</em></span>&#160;)</td>
         </tr>
       </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel static">static</span><span class="mlabel private">private</span></span>  </td>
-  </tr>
-</table>
 </div><div class="memdoc">
+
+<p>安装 GUI 线程已完成的只读数据快照，拒绝旧代次和旧版本。 </p>
 
 </div>
 </div>
@@ -342,6 +362,33 @@ Private 属性</h2></td></tr>
 
 </div>
 </div>
+<a id="a523d8de236496605b0daa9db09aad572" name="a523d8de236496605b0daa9db09aad572"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a523d8de236496605b0daa9db09aad572">&#9670;&#160;</a></span>dataGeneration()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::uint64_t MeshActor::dataGeneration </td>
+          <td>(</td>
+          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel inline">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>返回当前源数据代次，供选择消息校验原始面身份。 </p>
+
+</div>
+</div>
 <a id="ab0a3a1a69b1c3b4fe0d1bf539874baf4" name="ab0a3a1a69b1c3b4fe0d1bf539874baf4"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#ab0a3a1a69b1c3b4fe0d1bf539874baf4">&#9670;&#160;</a></span>getRenderStyle()</h2>
 
@@ -359,6 +406,33 @@ Private 属性</h2></td></tr>
 
 </div>
 </div>
+<a id="a92d607c7023bc0203893e261a2847035" name="a92d607c7023bc0203893e261a2847035"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a92d607c7023bc0203893e261a2847035">&#9670;&#160;</a></span>isVisibilityEnabled()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool MeshActor::isVisibilityEnabled </td>
+          <td>(</td>
+          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel inline">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>查询网格显隐开关，供组件级反转使用，不受渲染样式影响。 </p>
+
+</div>
+</div>
 <a id="ab282e66574859c8e77ed021be2903cfa" name="ab282e66574859c8e77ed021be2903cfa"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#ab282e66574859c8e77ed021be2903cfa">&#9670;&#160;</a></span>isVisible()</h2>
 
@@ -370,23 +444,6 @@ Private 属性</h2></td></tr>
           <td>(</td>
           <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
           <td> const</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a id="a70be0e3ea4dc333f6454667209f68f98" name="a70be0e3ea4dc333f6454667209f68f98"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a70be0e3ea4dc333f6454667209f68f98">&#9670;&#160;</a></span>loadModelData()</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">void MeshActor::loadModelData </td>
-          <td>(</td>
-          <td class="paramtype">const <a class="el" href="structMeshDataVtk.html">MeshDataVtk</a> &amp;</td>          <td class="paramname"><span class="paramname"><em>model_data</em></span></td><td>)</td>
-          <td></td>
         </tr>
       </table>
 </div><div class="memdoc">
@@ -417,31 +474,6 @@ Private 属性</h2></td></tr>
   <table class="params">
     <tr><td class="paramname">attr_name</td><td>属性名称 </td></tr>
     <tr><td class="paramname">args</td><td>渲染参数 </td></tr>
-  </table>
-  </dd>
-</dl>
-
-</div>
-</div>
-<a id="a870cd1059f6d3e15b5ca4681cc4762dc" name="a870cd1059f6d3e15b5ca4681cc4762dc"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a870cd1059f6d3e15b5ca4681cc4762dc">&#9670;&#160;</a></span>setClipPlane()</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">void MeshActor::setClipPlane </td>
-          <td>(</td>
-          <td class="paramtype">vtkPlane *</td>          <td class="paramname"><span class="paramname"><em>plane</em></span></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p>设置或取消裁剪平面 </p>
-<dl class="params"><dt>参数</dt><dd>
-  <table class="params">
-    <tr><td class="paramname">plane</td><td>裁剪平面，传入nullptr则取消裁剪 </td></tr>
   </table>
   </dd>
 </dl>
@@ -507,6 +539,33 @@ Private 属性</h2></td></tr>
 
 </div>
 </div>
+<a id="a8049860aa3c7fd31f5817402d965af83" name="a8049860aa3c7fd31f5817402d965af83"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a8049860aa3c7fd31f5817402d965af83">&#9670;&#160;</a></span>syncDisplayAttributes()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void MeshActor::syncDisplayAttributes </td>
+          <td>(</td>
+          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel private">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>将原始数据的活跃属性选择同步到本线程的可见数据包装。 </p>
+
+</div>
+</div>
 <a id="afb1ee275a5181ed0efa89343db38c253" name="afb1ee275a5181ed0efa89343db38c253"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#afb1ee275a5181ed0efa89343db38c253">&#9670;&#160;</a></span>topologyDiagnostics()</h2>
 
@@ -549,8 +608,8 @@ Private 属性</h2></td></tr>
 
 </div>
 </div>
-<a id="aef69d9e95a452055e5c9f268b386a933" name="aef69d9e95a452055e5c9f268b386a933"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#aef69d9e95a452055e5c9f268b386a933">&#9670;&#160;</a></span>clip_plane_</h2>
+<a id="a9bd5ea6023bb740dd7632287af2e6bb0" name="a9bd5ea6023bb740dd7632287af2e6bb0"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a9bd5ea6023bb740dd7632287af2e6bb0">&#9670;&#160;</a></span>clip_plane_</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -559,7 +618,7 @@ Private 属性</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">vtkPlane* MeshActor::clip_plane_ {}</td>
+          <td class="memname">vtkNew&lt;vtkPlane&gt; MeshActor::clip_plane_</td>
         </tr>
       </table>
   </td>
@@ -587,6 +646,72 @@ Private 属性</h2></td></tr>
   </td>
   <td class="mlabels-right">
 <span class="mlabels"><span class="mlabel static">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="ae45a353c8f08f9d0b39aec58dd5fa461" name="ae45a353c8f08f9d0b39aec58dd5fa461"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ae45a353c8f08f9d0b39aec58dd5fa461">&#9670;&#160;</a></span>data_generation_</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::uint64_t MeshActor::data_generation_ { }</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel private">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="ab2dae73c7a920ed36a7f706257f845d9" name="ab2dae73c7a920ed36a7f706257f845d9"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ab2dae73c7a920ed36a7f706257f845d9">&#9670;&#160;</a></span>data_revision_</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::uint64_t MeshActor::data_revision_ { }</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel private">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="ace6a46fd0eff8e1558d6339a81c54af8" name="ace6a46fd0eff8e1558d6339a81c54af8"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ace6a46fd0eff8e1558d6339a81c54af8">&#9670;&#160;</a></span>data_snapshot_</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::shared_ptr&lt;const <a class="el" href="structMeshDataSnapshot.html">MeshDataSnapshot</a>&gt; MeshActor::data_snapshot_</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel private">private</span></span>  </td>
   </tr>
 </table>
 </div><div class="memdoc">
@@ -637,28 +762,6 @@ Private 属性</h2></td></tr>
 
 </div>
 </div>
-<a id="a19805d0c0e844a809f0bbb4e67bd48bf" name="a19805d0c0e844a809f0bbb4e67bd48bf"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a19805d0c0e844a809f0bbb4e67bd48bf">&#9670;&#160;</a></span>edge_clipper_</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">vtkNew&lt;vtkExtractPolyDataGeometry&gt; MeshActor::edge_clipper_</td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel private">private</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-</div>
-</div>
 <a id="aeea019c4c105bbd7e7b37f2e1043c6a3" name="aeea019c4c105bbd7e7b37f2e1043c6a3"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#aeea019c4c105bbd7e7b37f2e1043c6a3">&#9670;&#160;</a></span>edge_data_</h2>
 
@@ -692,6 +795,28 @@ Private 属性</h2></td></tr>
       <table class="memname">
         <tr>
           <td class="memname">vtkNew&lt;vtkPolyDataMapper&gt; MeshActor::edge_mapper_</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel private">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a9a3772c927c5f540c4cbc3bbf86784ae" name="a9a3772c927c5f540c4cbc3bbf86784ae"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a9a3772c927c5f540c4cbc3bbf86784ae">&#9670;&#160;</a></span>edge_source_</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">vtkNew&lt;vtkTrivialProducer&gt; MeshActor::edge_source_</td>
         </tr>
       </table>
   </td>
@@ -769,28 +894,6 @@ Private 属性</h2></td></tr>
 
 </div>
 </div>
-<a id="ace16406699e97aad5866e3e3b97c0eb5" name="ace16406699e97aad5866e3e3b97c0eb5"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ace16406699e97aad5866e3e3b97c0eb5">&#9670;&#160;</a></span>face_clipper_</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">vtkNew&lt;vtkExtractPolyDataGeometry&gt; MeshActor::face_clipper_</td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel private">private</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-</div>
-</div>
 <a id="a30097e3b4bb76d38d6a17eb132c10c65" name="a30097e3b4bb76d38d6a17eb132c10c65"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a30097e3b4bb76d38d6a17eb132c10c65">&#9670;&#160;</a></span>face_data_</h2>
 
@@ -824,6 +927,28 @@ Private 属性</h2></td></tr>
       <table class="memname">
         <tr>
           <td class="memname">vtkNew&lt;vtkPolyDataMapper&gt; MeshActor::face_mapper_</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel private">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a09d0d77b5045dd9c62fc829b5fbaa0d4" name="a09d0d77b5045dd9c62fc829b5fbaa0d4"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a09d0d77b5045dd9c62fc829b5fbaa0d4">&#9670;&#160;</a></span>face_source_</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">vtkNew&lt;vtkTrivialProducer&gt; MeshActor::face_source_</td>
         </tr>
       </table>
   </td>
@@ -901,8 +1026,8 @@ Private 属性</h2></td></tr>
 
 </div>
 </div>
-<a id="ac25f309b6193f4dee2fc8b15286bf4e4" name="ac25f309b6193f4dee2fc8b15286bf4e4"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ac25f309b6193f4dee2fc8b15286bf4e4">&#9670;&#160;</a></span>model_data_</h2>
+<a id="a7237608201e97259d7ea04a8b27fc2a5" name="a7237608201e97259d7ea04a8b27fc2a5"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a7237608201e97259d7ea04a8b27fc2a5">&#9670;&#160;</a></span>model_data_</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -911,29 +1036,7 @@ Private 属性</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">std::unique_ptr&lt;<a class="el" href="structMeshDataVtk.html">MeshDataVtk</a>&gt; MeshActor::model_data_</td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel private">private</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a id="a91bee7bb17cd1d38a1dfc29296b6ecf6" name="a91bee7bb17cd1d38a1dfc29296b6ecf6"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a91bee7bb17cd1d38a1dfc29296b6ecf6">&#9670;&#160;</a></span>original_point_ids_</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">vtkNew&lt;vtkIdTypeArray&gt; MeshActor::original_point_ids_</td>
+          <td class="memname">std::shared_ptr&lt;const <a class="el" href="structMeshDataVtk.html">MeshDataVtk</a>&gt; MeshActor::model_data_</td>
         </tr>
       </table>
   </td>
@@ -1077,28 +1180,6 @@ Private 属性</h2></td></tr>
 
 </div>
 </div>
-<a id="a697071c9b72ff73137641b9cf68d4ff7" name="a697071c9b72ff73137641b9cf68d4ff7"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a697071c9b72ff73137641b9cf68d4ff7">&#9670;&#160;</a></span>solid_clipper_</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">vtkNew&lt;vtkExtractGeometry&gt; MeshActor::solid_clipper_</td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel private">private</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-</div>
-</div>
 <a id="a85f7b5b251069428e1ee0a8da09c7b27" name="a85f7b5b251069428e1ee0a8da09c7b27"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a85f7b5b251069428e1ee0a8da09c7b27">&#9670;&#160;</a></span>solid_data_</h2>
 
@@ -1121,8 +1202,8 @@ Private 属性</h2></td></tr>
 
 </div>
 </div>
-<a id="a455e99ee83a81dd1c396e0104294f955" name="a455e99ee83a81dd1c396e0104294f955"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a455e99ee83a81dd1c396e0104294f955">&#9670;&#160;</a></span>solid_edge_extractor_</h2>
+<a id="a19553cfe556edbf0bb4977e03b7854c6" name="a19553cfe556edbf0bb4977e03b7854c6"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a19553cfe556edbf0bb4977e03b7854c6">&#9670;&#160;</a></span>solid_internal_edges_</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -1131,7 +1212,7 @@ Private 属性</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">vtkNew&lt;vtkExtractEdges&gt; MeshActor::solid_edge_extractor_</td>
+          <td class="memname">vtkSmartPointer&lt;vtkPolyData&gt; MeshActor::solid_internal_edges_</td>
         </tr>
       </table>
   </td>
@@ -1143,8 +1224,8 @@ Private 属性</h2></td></tr>
 
 </div>
 </div>
-<a id="a77d183db5363426d681904313ab57144" name="a77d183db5363426d681904313ab57144"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a77d183db5363426d681904313ab57144">&#9670;&#160;</a></span>solid_filter_</h2>
+<a id="af3d7376c946d39411b9c07163bfeba4e" name="af3d7376c946d39411b9c07163bfeba4e"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#af3d7376c946d39411b9c07163bfeba4e">&#9670;&#160;</a></span>solid_internal_source_</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -1153,7 +1234,7 @@ Private 属性</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">vtkNew&lt;vtkGeometryFilter&gt; MeshActor::solid_filter_</td>
+          <td class="memname">vtkNew&lt;vtkTrivialProducer&gt; MeshActor::solid_internal_source_</td>
         </tr>
       </table>
   </td>
@@ -1176,6 +1257,50 @@ Private 属性</h2></td></tr>
       <table class="memname">
         <tr>
           <td class="memname">vtkNew&lt;vtkPolyDataMapper&gt; MeshActor::solid_mapper_</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel private">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a16558244ca7eae0f6f74c92fad3b40d9" name="a16558244ca7eae0f6f74c92fad3b40d9"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a16558244ca7eae0f6f74c92fad3b40d9">&#9670;&#160;</a></span>solid_surface_</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">vtkSmartPointer&lt;vtkPolyData&gt; MeshActor::solid_surface_</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel private">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a1fccbc2d7e1e90391041813767e7a478" name="a1fccbc2d7e1e90391041813767e7a478"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a1fccbc2d7e1e90391041813767e7a478">&#9670;&#160;</a></span>solid_surface_source_</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">vtkNew&lt;vtkTrivialProducer&gt; MeshActor::solid_surface_source_</td>
         </tr>
       </table>
   </td>
@@ -1242,6 +1367,50 @@ Private 属性</h2></td></tr>
       <table class="memname">
         <tr>
           <td class="memname">bool MeshActor::visibility_ { true }</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel private">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a9ebc133f12fd796029da68c8365e91c6" name="a9ebc133f12fd796029da68c8365e91c6"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a9ebc133f12fd796029da68c8365e91c6">&#9670;&#160;</a></span>visible_edges_</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">vtkSmartPointer&lt;vtkPolyData&gt; MeshActor::visible_edges_</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel private">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a2bd0ef091fc740c7d244a176ea5f42d8" name="a2bd0ef091fc740c7d244a176ea5f42d8"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a2bd0ef091fc740c7d244a176ea5f42d8">&#9670;&#160;</a></span>visible_faces_</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">vtkSmartPointer&lt;vtkPolyData&gt; MeshActor::visible_faces_</td>
         </tr>
       </table>
   </td>

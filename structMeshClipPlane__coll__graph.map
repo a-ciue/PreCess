@@ -1,0 +1,5 @@
+<map id="MeshClipPlane" name="MeshClipPlane">
+<area shape="rect" id="Node000001" title="跨线程传递的裁剪参数，不共享可变 vtkPlane。" alt="" coords="33,121,152,147"/>
+<area shape="rect" id="Node000002" title=" " alt="" coords="5,5,180,31"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="95,45,95,121,90,121,90,45"/>
+</map>

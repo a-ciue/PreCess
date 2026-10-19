@@ -82,8 +82,7 @@ var menudata={children:[
 {text:"z",url:"functions_z.html#index_z"},
 {text:"~",url:"functions_~.html#index__7E"}]},
 {text:"函数",url:"functions_func.html",children:[
-{text:"_",url:"functions_func.html#index__5F"},
-{text:"a",url:"functions_func_a.html#index_a"},
+{text:"a",url:"functions_func.html#index_a"},
 {text:"b",url:"functions_func_b.html#index_b"},
 {text:"c",url:"functions_func_c.html#index_c"},
 {text:"d",url:"functions_func_d.html#index_d"},
@@ -134,7 +133,16 @@ var menudata={children:[
 {text:"v",url:"functions_vars_v.html#index_v"},
 {text:"w",url:"functions_vars_w.html#index_w"},
 {text:"z",url:"functions_vars_z.html#index_z"}]},
-{text:"类型定义",url:"functions_type.html"},
+{text:"类型定义",url:"functions_type.html",children:[
+{text:"b",url:"functions_type.html#index_b"},
+{text:"c",url:"functions_type.html#index_c"},
+{text:"e",url:"functions_type.html#index_e"},
+{text:"g",url:"functions_type.html#index_g"},
+{text:"l",url:"functions_type.html#index_l"},
+{text:"m",url:"functions_type.html#index_m"},
+{text:"p",url:"functions_type.html#index_p"},
+{text:"s",url:"functions_type.html#index_s"},
+{text:"t",url:"functions_type.html#index_t"}]},
 {text:"枚举",url:"functions_enum.html"},
 {text:"枚举值",url:"functions_eval.html"},
 {text:"属性",url:"functions_prop.html",children:[

@@ -1,0 +1,558 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="zh">
+<head>
+<meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=11"/>
+<meta name="generator" content="Doxygen 1.14.0"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>PreCess: TestMeshActorWithData类 参考</title>
+<link href="tabs.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="jquery.js"></script>
+<script type="text/javascript" src="dynsections.js"></script>
+<script type="text/javascript" src="clipboard.js"></script>
+<script type="text/javascript" src="cookie.js"></script>
+<link href="search/search.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="search/searchdata.js"></script>
+<script type="text/javascript" src="search/search.js"></script>
+<link href="doxygen.css" rel="stylesheet" type="text/css" />
+</head>
+<body>
+<div id="top"><!-- do not remove this div, it is closed by doxygen! -->
+<div id="titlearea">
+<table cellspacing="0" cellpadding="0">
+ <tbody>
+ <tr id="projectrow">
+  <td id="projectlogo"><img alt="Logo" src="ZenithGrid.ico"/></td>
+  <td id="projectalign">
+   <div id="projectname">PreCess
+   </div>
+  </td>
+ </tr>
+ </tbody>
+</table>
+</div>
+<!-- end header part -->
+<!-- 制作者 Doxygen 1.14.0 -->
+<script type="text/javascript">
+var searchBox = new SearchBox("searchBox", "search/",'.html');
+</script>
+<script type="text/javascript">
+$(function() { codefold.init(); });
+</script>
+<script type="text/javascript" src="menudata.js"></script>
+<script type="text/javascript" src="menu.js"></script>
+<script type="text/javascript">
+$(function() {
+  initMenu('',true,false,'search.php','搜索',false);
+  $(function() { init_search(); });
+});
+</script>
+<div id="main-nav"></div>
+<!-- window showing the filter options -->
+<div id="MSearchSelectWindow"
+     onmouseover="return searchBox.OnSearchSelectShow()"
+     onmouseout="return searchBox.OnSearchSelectHide()"
+     onkeydown="return searchBox.OnSearchSelectKey(event)">
+</div>
+
+<!-- iframe showing the search results (closed by default) -->
+<div id="MSearchResultsWindow">
+<div id="MSearchResults">
+<div class="SRPage">
+<div id="SRIndex">
+<div id="SRResults"></div>
+<div class="SRStatus" id="Loading">载入中...</div>
+<div class="SRStatus" id="Searching">搜索中...</div>
+<div class="SRStatus" id="NoMatches">未找到</div>
+</div>
+</div>
+</div>
+</div>
+
+</div><!-- top -->
+<div id="doc-content">
+<div class="header">
+  <div class="summary">
+<a href="#pub-methods">Public 成员函数</a> &#124;
+<a href="#pri-methods">Private 成员函数</a> &#124;
+<a href="#pri-attribs">Private 属性</a> &#124;
+<a href="classTestMeshActorWithData-members.html">所有成员列表</a>  </div>
+  <div class="headertitle"><div class="title">TestMeshActorWithData类 参考</div></div>
+</div><!--header-->
+<div class="contents">
+
+<p>将既有测试的显隐操作转发到数据管线，保留对 <a class="el" href="classMeshActor.html" title="负责管理Model的Actor">MeshActor</a> 的行为断言。  
+ <a href="#details">更多...</a></p>
+
+<p><code>#include &lt;<a class="el" href="TestMeshActorWithData_8h_source.html">TestMeshActorWithData.h</a>&gt;</code></p>
+<div class="dynheader">
+类 TestMeshActorWithData 继承关系图:</div>
+<div class="dyncontent">
+<div class="center"><img src="classTestMeshActorWithData__inherit__graph.png" border="0" usemap="#aTestMeshActorWithData_inherit__map" loading="lazy" alt="Inheritance graph"/></div>
+<map name="aTestMeshActorWithData_inherit__map" id="aTestMeshActorWithData_inherit__map">
+<area shape="rect" title="将既有测试的显隐操作转发到数据管线，保留对 MeshActor 的行为断言。" alt="" coords="5,79,184,104"/>
+<area shape="rect" href="classMeshActor.html" title="负责管理Model的Actor" alt="" coords="49,5,140,31"/>
+<area shape="poly" title=" " alt="" coords="97,44,97,79,92,79,92,44"/>
+</map>
+<center><span class="legend">[<a href="graph_legend.html">图例</a>]</span></center></div>
+<div class="dynheader">
+TestMeshActorWithData 的协作图:</div>
+<div class="dyncontent">
+<div class="center"><img src="classTestMeshActorWithData__coll__graph.png" border="0" usemap="#aTestMeshActorWithData_coll__map" loading="lazy" alt="Collaboration graph"/></div>
+<map name="aTestMeshActorWithData_coll__map" id="aTestMeshActorWithData_coll__map">
+<area shape="rect" title="将既有测试的显隐操作转发到数据管线，保留对 MeshActor 的行为断言。" alt="" coords="3560,775,3739,801"/>
+<area shape="rect" href="classMeshActor.html" title="负责管理Model的Actor" alt="" coords="3351,637,3442,662"/>
+<area shape="poly" title=" " alt="" coords="3435,667,3626,773,3624,778,3432,671"/>
+<area shape="rect" title=" " alt="" coords="2931,476,3125,516"/>
+<area shape="poly" title=" " alt="" coords="3140,496,3223,510,3265,523,3304,542,3333,563,3357,588,3390,635,3386,638,3353,592,3329,567,3301,546,3263,528,3221,515,3139,501"/>
+<area shape="rect" href="classIAttributeRenderStrategy.html" title="属性渲染策略接口" alt="" coords="2504,483,2688,509"/>
+<area shape="poly" title=" " alt="" coords="2702,493,2931,493,2931,499,2702,499"/>
+<area shape="rect" title=" " alt="" coords="2195,712,2364,752"/>
+<area shape="poly" title=" " alt="" coords="2378,722,3351,650,3351,655,2378,727"/>
+<area shape="rect" href="structMeshDataSnapshot.html" title="已完成计算的网格快照；发布后不再改写，数组由源数据或 VTK 自持。" alt="" coords="2522,918,2670,943"/>
+<area shape="poly" title=" " alt="" coords="2313,760,2351,794,2396,828,2486,879,2564,915,2562,920,2484,884,2393,833,2348,798,2309,764"/>
+<area shape="rect" href="classMeshPipelineData.html" title="在创建线程串行修改网格数据，主动计算后向渲染端发布轻量快照。" alt="" coords="3327,889,3467,914"/>
+<area shape="poly" title=" " alt="" coords="2378,743,2916,816,3303,872,3356,886,3355,891,3302,877,2915,822,2377,748"/>
+<area shape="rect" href="structMeshDataVtk.html" title="用于存储网格数据以供 VTK 渲染使用的结构体" alt="" coords="1839,578,1950,603"/>
+<area shape="poly" title=" " alt="" coords="1944,606,2225,709,2223,714,1942,611"/>
+<area shape="rect" href="classTopologyDiagnosticActor.html" title="把拓扑诊断集合渲染为独立的边、点和面 Actor" alt="" coords="2188,521,2371,546"/>
+<area shape="poly" title=" " alt="" coords="1963,583,2058,574,2164,559,2232,543,2233,549,2164,564,2059,579,1964,588"/>
+<area shape="rect" title=" " alt="" coords="1390,599,1555,639"/>
+<area shape="poly" title=" " alt="" coords="1569,610,1839,592,1839,597,1569,615"/>
+<area shape="rect" href="structMeshData.html" title=" " alt="" coords="1851,961,1939,986"/>
+<area shape="poly" title=" " alt="" coords="1516,645,1554,679,1588,721,1596,747,1597,769,1598,789,1611,809,1629,821,1645,827,1680,826,1716,823,1737,825,1759,834,1801,862,1838,898,1887,959,1883,962,1834,901,1798,867,1756,838,1735,830,1716,828,1680,831,1645,832,1626,826,1607,813,1593,791,1591,770,1591,748,1583,724,1550,683,1513,649"/>
+<area shape="rect" title=" " alt="" coords="5,354,163,379"/>
+<area shape="poly" title=" " alt="" coords="105,389,143,433,199,483,232,506,267,524,304,537,343,541,1474,541,1576,545,1677,555,1840,578,1839,583,1676,560,1575,550,1474,547,343,547,303,542,265,529,229,510,196,487,140,437,101,392"/>
+<area shape="rect" href="structBlockData.html" title=" " alt="" coords="300,239,389,265"/>
+<area shape="poly" title=" " alt="" coords="125,346,314,262,316,267,128,351"/>
+<area shape="poly" title=" " alt="" coords="91,393,114,568,135,690,163,820,198,942,218,997,240,1046,263,1086,288,1117,315,1136,344,1143,1474,1143,1556,1142,1620,1135,1681,1118,1756,1086,1795,1062,1830,1034,1881,984,1884,988,1834,1038,1798,1067,1759,1090,1683,1123,1621,1140,1556,1147,1474,1148,343,1148,313,1141,285,1121,259,1089,235,1048,213,999,193,944,158,821,130,691,109,568,86,393"/>
+<area shape="rect" href="structMeshTopologyDiagnosticResult.html" title="保存一次网格拓扑诊断得到的特殊实体集合" alt="" coords="1360,158,1585,183"/>
+<area shape="poly" title=" " alt="" coords="91,340,120,266,143,221,172,176,206,133,246,98,291,74,317,68,343,65,1053,65,1197,60,1259,65,1337,84,1373,99,1407,119,1458,156,1455,160,1404,123,1371,104,1335,89,1258,70,1197,66,1053,71,343,71,318,73,293,79,249,103,210,137,176,179,148,224,125,269,96,342"/>
+<area shape="rect" title=" " alt="" coords="1389,909,1557,949"/>
+<area shape="poly" title=" " alt="" coords="1492,896,1540,836,1572,805,1608,780,1629,771,1649,767,1684,767,1718,767,1736,763,1756,754,1801,719,1838,676,1867,634,1885,602,1889,605,1871,637,1843,679,1805,722,1759,758,1738,768,1718,773,1684,773,1649,772,1631,776,1611,785,1575,810,1543,839,1496,899"/>
+<area shape="poly" title=" " alt="" coords="1558,951,1586,960,1610,969,1675,978,1741,980,1850,975,1851,981,1741,985,1674,983,1609,975,1584,965,1556,956"/>
+<area shape="rect" title=" " alt="" coords="964,1041,1139,1066"/>
+<area shape="poly" title=" " alt="" coords="1108,1034,1403,947,1405,952,1109,1039"/>
+<area shape="rect" href="structMeshClipPlane.html" title="跨线程传递的裁剪参数，不共享可变 vtkPlane。" alt="" coords="2220,1029,2339,1054"/>
+<area shape="poly" title=" " alt="" coords="1092,1069,1205,1117,1281,1144,1368,1170,1462,1192,1560,1207,1659,1212,1757,1204,1830,1190,1904,1172,2046,1129,2165,1085,2248,1052,2250,1057,2167,1090,2047,1134,1906,1177,1831,1195,1758,1209,1659,1217,1559,1212,1461,1197,1367,1175,1280,1149,1203,1122,1090,1074"/>
+<area shape="rect" title=" " alt="" coords="1381,735,1565,775"/>
+<area shape="poly" title=" " alt="" coords="1578,732,1756,696,1794,675,1829,648,1880,601,1883,605,1833,653,1797,679,1758,701,1579,737"/>
+<area shape="poly" title=" " alt="" coords="1500,784,1563,864,1611,916,1705,937,1851,963,1850,968,1704,942,1608,921,1559,867,1495,787"/>
+<area shape="rect" title=" " alt="" coords="1008,769,1095,794"/>
+<area shape="poly" title=" " alt="" coords="1109,781,1214,783,1336,777,1380,771,1381,777,1336,783,1214,788,1108,787"/>
+<area shape="rect" title=" " alt="" coords="574,761,713,801"/>
+<area shape="poly" title=" " alt="" coords="727,779,1008,779,1008,784,727,784"/>
+<area shape="rect" title=" " alt="" coords="969,715,1134,741"/>
+<area shape="poly" title=" " alt="" coords="1148,731,1381,746,1380,752,1148,737"/>
+<area shape="rect" title=" " alt="" coords="1361,415,1584,441"/>
+<area shape="poly" title=" " alt="" coords="1571,441,1618,453,1667,471,1715,494,1759,523,1768,534,1772,545,1775,554,1783,563,1810,577,1840,585,1838,590,1808,582,1780,567,1770,557,1767,547,1763,537,1756,527,1712,498,1665,476,1616,459,1570,446"/>
+<area shape="rect" href="structBlockDatas.html" title=" " alt="" coords="1003,278,1099,303"/>
+<area shape="poly" title=" " alt="" coords="1105,305,1433,413,1431,418,1103,310"/>
+<area shape="rect" title=" " alt="" coords="549,190,737,215"/>
+<area shape="poly" title=" " alt="" coords="736,186,822,184,867,188,911,197,950,213,986,235,1038,276,1035,280,983,239,948,218,910,203,866,193,822,189,736,191"/>
+<area shape="poly" title=" " alt="" coords="403,240,566,213,566,218,404,245"/>
+<area shape="rect" title=" " alt="" coords="2943,712,3113,752"/>
+<area shape="poly" title=" " alt="" coords="3127,737,3213,733,3258,726,3302,713,3325,703,3347,689,3381,660,3384,665,3350,693,3328,707,3304,719,3260,731,3214,738,3127,742"/>
+<area shape="poly" title=" " alt="" coords="2604,904,2619,870,2642,830,2672,792,2711,760,2752,746,2811,737,2943,730,2943,735,2812,742,2753,751,2713,765,2676,795,2646,833,2624,873,2609,906"/>
+<area shape="rect" title=" " alt="" coords="2928,964,3128,1004"/>
+<area shape="poly" title=" " alt="" coords="2684,939,2928,969,2927,974,2683,944"/>
+<area shape="poly" title=" " alt="" coords="2329,1022,2558,941,2559,946,2330,1027"/>
+<area shape="poly" title=" " alt="" coords="2352,1040,2688,1038,2907,1030,3128,1013,3218,1008,3256,1001,3301,983,3327,968,3349,949,3383,913,3387,916,3353,953,3330,972,3304,988,3257,1006,3219,1013,3128,1019,2907,1035,2688,1044,2352,1045"/>
+<area shape="rect" title=" " alt="" coords="2195,911,2364,951"/>
+<area shape="poly" title=" " alt="" coords="2378,928,2522,928,2522,933,2378,933"/>
+<area shape="poly" title=" " alt="" coords="2364,905,2394,900,2509,888,2606,881,2772,881,2939,888,3152,892,3303,892,3327,893,3326,898,3303,897,3152,897,2939,893,2772,886,2607,887,2510,893,2395,905,2365,910"/>
+<area shape="poly" title=" " alt="" coords="1952,964,2194,937,2195,943,1952,970"/>
+<area shape="rect" title=" " alt="" coords="1396,1053,1549,1107"/>
+<area shape="poly" title=" " alt="" coords="1563,1081,1658,1076,1708,1069,1756,1056,1792,1041,1826,1022,1877,984,1880,988,1829,1026,1795,1046,1758,1061,1709,1074,1659,1082,1564,1087"/>
+<area shape="rect" title=" " alt="" coords="1396,974,1549,1029"/>
+<area shape="poly" title=" " alt="" coords="1563,1018,1657,1028,1707,1028,1757,1023,1817,1005,1867,984,1869,989,1819,1010,1758,1028,1708,1034,1657,1034,1563,1024"/>
+<area shape="rect" title=" " alt="" coords="2712,539,2904,579"/>
+<area shape="poly" title=" " alt="" coords="2918,556,3003,559,3100,567,3203,581,3303,603,3342,617,3375,634,3373,639,3340,622,3302,608,3202,586,3100,572,3003,564,2918,561"/>
+<area shape="poly" title=" " alt="" coords="2385,536,2712,551,2712,557,2385,541"/>
+<area shape="rect" title=" " alt="" coords="1799,361,1991,401"/>
+<area shape="poly" title=" " alt="" coords="2005,377,2085,388,2126,399,2165,415,2201,438,2231,467,2272,519,2268,522,2227,471,2197,442,2163,420,2125,404,2084,393,2004,383"/>
+<area shape="rect" href="structTopologyDiagnosticActor_1_1DiagnosticPipeline.html" title="保存一种图元的诊断数据、裁剪器、映射器和 Actor" alt="" coords="1803,449,1986,489"/>
+<area shape="poly" title=" " alt="" coords="2000,478,2164,503,2232,518,2231,523,2164,508,2000,483"/>
+<area shape="rect" title=" " alt="" coords="1781,513,2008,553"/>
+<area shape="poly" title=" " alt="" coords="2022,531,2188,531,2188,536,2022,536"/>
+<area shape="poly" title=" " alt="" coords="1507,189,1561,227,1629,282,1699,349,1731,387,1760,427,1768,448,1770,466,1772,483,1783,500,1799,511,1796,515,1779,503,1767,485,1764,467,1763,449,1755,429,1727,390,1695,353,1625,286,1558,231,1504,193"/>
+<area shape="rect" title=" " alt="" coords="935,128,1168,168"/>
+<area shape="poly" title=" " alt="" coords="1182,166,1192,167,1277,171,1360,171,1360,177,1277,176,1192,172,1181,171"/>
+<area shape="rect" href="structTopologyDiagnosticEdge.html" title="一条可直接用于诊断渲染的网格边" alt="" coords="553,117,734,142"/>
+<area shape="poly" title=" " alt="" coords="748,131,935,140,934,145,747,137"/>
+<area shape="rect" title=" " alt="" coords="261,117,428,142"/>
+<area shape="poly" title=" " alt="" coords="441,127,553,127,553,132,441,132"/>
+<area shape="rect" href="structFaceAttributeOffsetState.html" title=" " alt="" coords="2937,611,3119,637"/>
+<area shape="poly" title=" " alt="" coords="3133,628,3351,644,3351,649,3132,634"/>
+<area shape="poly" title=" " alt="" coords="3438,880,3619,798,3621,803,3440,885"/>
+<area shape="poly" title=" " alt="" coords="3142,979,3221,970,3302,951,3343,933,3376,912,3379,916,3345,937,3304,956,3222,975,3142,984"/>
+<area shape="rect" title=" " alt="" coords="2936,914,3120,939"/>
+<area shape="poly" title=" " alt="" coords="3133,924,3216,921,3302,915,3328,911,3329,917,3303,920,3216,926,3134,929"/>
+</map>
+<center><span class="legend">[<a href="graph_legend.html">图例</a>]</span></center></div>
+<table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 id="header-pub-methods" class="groupheader"><a id="pub-methods" name="pub-methods"></a>
+Public 成员函数</h2></td></tr>
+<tr class="memitem:a54ad2c4f435cc7934ed5fd4264698985" id="r_a54ad2c4f435cc7934ed5fd4264698985"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a54ad2c4f435cc7934ed5fd4264698985">TestMeshActorWithData</a> (vtkRenderer *renderer)</td></tr>
+<tr class="memdesc:a54ad2c4f435cc7934ed5fd4264698985"><td class="mdescLeft">&#160;</td><td class="mdescRight">绑定渲染器；数据管线与测试对象在同一线程创建和更新。  <br /></td></tr>
+<tr class="memitem:a4abb6a777496e2b28c969782c71fbb92" id="r_a4abb6a777496e2b28c969782c71fbb92"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a4abb6a777496e2b28c969782c71fbb92">loadModelData</a> (const <a class="el" href="structMeshDataVtk.html">MeshDataVtk</a> &amp;model_data)</td></tr>
+<tr class="memdesc:a4abb6a777496e2b28c969782c71fbb92"><td class="mdescLeft">&#160;</td><td class="mdescRight">加载基础网格，并发布清空旧隐藏状态后的渲染结果。  <br /></td></tr>
+<tr class="memitem:a5456e04b16f23e79f7ea3e9d78d7e418" id="r_a5456e04b16f23e79f7ea3e9d78d7e418"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a5456e04b16f23e79f7ea3e9d78d7e418">setVisibility</a> (bool visibility)</td></tr>
+<tr class="memdesc:a5456e04b16f23e79f7ea3e9d78d7e418"><td class="mdescLeft">&#160;</td><td class="mdescRight">同步数据管线的整体显隐，供后续反转和指定面恢复使用。  <br /></td></tr>
+<tr class="memitem:a993b0cce6401fdeaef1e1d48fedb7ec2" id="r_a993b0cce6401fdeaef1e1d48fedb7ec2"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a993b0cce6401fdeaef1e1d48fedb7ec2">hideFaces</a> (const std::vector&lt; vtkIdType &gt; &amp;face_ids)</td></tr>
+<tr class="memdesc:a993b0cce6401fdeaef1e1d48fedb7ec2"><td class="mdescLeft">&#160;</td><td class="mdescRight">按原始面 ID 累积隐藏，并安装更新后的可见数据。  <br /></td></tr>
+<tr class="memitem:ae73a696ebe1ff7dcce54783ff5e2ad45" id="r_ae73a696ebe1ff7dcce54783ff5e2ad45"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ae73a696ebe1ff7dcce54783ff5e2ad45">showFaces</a> (const std::vector&lt; vtkIdType &gt; &amp;face_ids)</td></tr>
+<tr class="memdesc:ae73a696ebe1ff7dcce54783ff5e2ad45"><td class="mdescLeft">&#160;</td><td class="mdescRight">恢复指定原始面，同时保留其他面的显隐。  <br /></td></tr>
+<tr class="memitem:a01772923046eccc31b172ef0119a7fa7" id="r_a01772923046eccc31b172ef0119a7fa7"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a01772923046eccc31b172ef0119a7fa7">isolateFaces</a> (const std::vector&lt; vtkIdType &gt; &amp;face_ids)</td></tr>
+<tr class="memdesc:a01772923046eccc31b172ef0119a7fa7"><td class="mdescLeft">&#160;</td><td class="mdescRight">隔离指定原始面，并将隔离状态与数据一同发布。  <br /></td></tr>
+<tr class="memitem:a3e8eeec806a7b7bda5599234cd0d7c93" id="r_a3e8eeec806a7b7bda5599234cd0d7c93"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a3e8eeec806a7b7bda5599234cd0d7c93">showAllFaces</a> ()</td></tr>
+<tr class="memdesc:a3e8eeec806a7b7bda5599234cd0d7c93"><td class="mdescLeft">&#160;</td><td class="mdescRight">清空手动隐藏和隔离状态，并发布完整可见面集。  <br /></td></tr>
+<tr class="memitem:a6d31476df422c88d2195fe5ef7ac877b" id="r_a6d31476df422c88d2195fe5ef7ac877b"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a6d31476df422c88d2195fe5ef7ac877b">reverseVisibility</a> ()</td></tr>
+<tr class="memdesc:a6d31476df422c88d2195fe5ef7ac877b"><td class="mdescLeft">&#160;</td><td class="mdescRight">反转手动显隐，并返回更新后的整体显隐开关。  <br /></td></tr>
+<tr class="memitem:a38102f7c5f29007e7834a51f2526c881" id="r_a38102f7c5f29007e7834a51f2526c881"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a38102f7c5f29007e7834a51f2526c881">setClipPlane</a> (vtkPlane *plane)</td></tr>
+<tr class="memdesc:a38102f7c5f29007e7834a51f2526c881"><td class="mdescLeft">&#160;</td><td class="mdescRight">在测试所属线程更新整单元裁剪，并发布其输出。  <br /></td></tr>
+<tr class="inherit_header pub_methods_classMeshActor"><td colspan="2" onclick="javascript:dynsection.toggleInherit('pub_methods_classMeshActor')"><span class="dynarrow"><span class="arrowhead closed"></span></span>Public 成员函数 继承自 <a class="el" href="classMeshActor.html">MeshActor</a></td></tr>
+<tr class="memitem:a6a2e6e19e2be3e5c7ff30c18ce98ca7c inherit pub_methods_classMeshActor" id="r_a6a2e6e19e2be3e5c7ff30c18ce98ca7c"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classMeshActor.html#a6a2e6e19e2be3e5c7ff30c18ce98ca7c">MeshActor</a> (vtkRenderer *renderer)</td></tr>
+<tr class="memitem:a21ef1656d52d5ce899fa1cafe2ea1bd2 inherit pub_methods_classMeshActor" id="r_a21ef1656d52d5ce899fa1cafe2ea1bd2"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classMeshActor.html#a21ef1656d52d5ce899fa1cafe2ea1bd2">~MeshActor</a> ()</td></tr>
+<tr class="memitem:a208cfdc2462999e0d21981888a17a373 inherit pub_methods_classMeshActor" id="r_a208cfdc2462999e0d21981888a17a373"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classMeshActor.html#a208cfdc2462999e0d21981888a17a373">applyDataSnapshot</a> (std::shared_ptr&lt; const <a class="el" href="structMeshDataSnapshot.html">MeshDataSnapshot</a> &gt; snapshot)</td></tr>
+<tr class="memdesc:a208cfdc2462999e0d21981888a17a373 inherit pub_methods_classMeshActor"><td class="mdescLeft">&#160;</td><td class="mdescRight">安装 GUI 线程已完成的只读数据快照，拒绝旧代次和旧版本。  <br /></td></tr>
+<tr class="memitem:a523d8de236496605b0daa9db09aad572 inherit pub_methods_classMeshActor" id="r_a523d8de236496605b0daa9db09aad572"><td class="memItemLeft" align="right" valign="top">std::uint64_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classMeshActor.html#a523d8de236496605b0daa9db09aad572">dataGeneration</a> () const</td></tr>
+<tr class="memdesc:a523d8de236496605b0daa9db09aad572 inherit pub_methods_classMeshActor"><td class="mdescLeft">&#160;</td><td class="mdescRight">返回当前源数据代次，供选择消息校验原始面身份。  <br /></td></tr>
+<tr class="memitem:adf6ab9d3e2278feb471c0fd00f6e8806 inherit pub_methods_classMeshActor" id="r_adf6ab9d3e2278feb471c0fd00f6e8806"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classMeshActor.html#adf6ab9d3e2278feb471c0fd00f6e8806">setVisibility</a> (bool visibility)</td></tr>
+<tr class="memitem:ab282e66574859c8e77ed021be2903cfa inherit pub_methods_classMeshActor" id="r_ab282e66574859c8e77ed021be2903cfa"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classMeshActor.html#ab282e66574859c8e77ed021be2903cfa">isVisible</a> () const</td></tr>
+<tr class="memitem:a92d607c7023bc0203893e261a2847035 inherit pub_methods_classMeshActor" id="r_a92d607c7023bc0203893e261a2847035"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classMeshActor.html#a92d607c7023bc0203893e261a2847035">isVisibilityEnabled</a> () const</td></tr>
+<tr class="memdesc:a92d607c7023bc0203893e261a2847035 inherit pub_methods_classMeshActor"><td class="mdescLeft">&#160;</td><td class="mdescRight">查询网格显隐开关，供组件级反转使用，不受渲染样式影响。  <br /></td></tr>
+<tr class="memitem:a64c57941dca1731223759b114865d354 inherit pub_methods_classMeshActor" id="r_a64c57941dca1731223759b114865d354"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classMeshActor.html#a64c57941dca1731223759b114865d354">setRenderStyle</a> (<a class="el" href="Core_8h.html#a5162a7a03ccc48523246f10d0adb676d">MeshRenderStyle</a> style)</td></tr>
+<tr class="memitem:ab0a3a1a69b1c3b4fe0d1bf539874baf4 inherit pub_methods_classMeshActor" id="r_ab0a3a1a69b1c3b4fe0d1bf539874baf4"><td class="memItemLeft" align="right" valign="top"><a class="el" href="Core_8h.html#a5162a7a03ccc48523246f10d0adb676d">MeshRenderStyle</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classMeshActor.html#ab0a3a1a69b1c3b4fe0d1bf539874baf4">getRenderStyle</a> () const</td></tr>
+<tr class="memitem:afa6c6e17e6a1d5c6abf292f4780ace5f inherit pub_methods_classMeshActor" id="r_afa6c6e17e6a1d5c6abf292f4780ace5f"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classMeshActor.html#afa6c6e17e6a1d5c6abf292f4780ace5f">cancelActiveAttribute</a> ()</td></tr>
+<tr class="memdesc:afa6c6e17e6a1d5c6abf292f4780ace5f inherit pub_methods_classMeshActor"><td class="mdescLeft">&#160;</td><td class="mdescRight">取消属性渲染  <br /></td></tr>
+<tr class="memitem:a1b72ea664e95655da04569384dc7f065 inherit pub_methods_classMeshActor" id="r_a1b72ea664e95655da04569384dc7f065"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classMeshActor.html#a1b72ea664e95655da04569384dc7f065">setRenderStrategy</a> (std::unique_ptr&lt; <a class="el" href="classIAttributeRenderStrategy.html">IAttributeRenderStrategy</a> &gt; strategy)</td></tr>
+<tr class="memdesc:a1b72ea664e95655da04569384dc7f065 inherit pub_methods_classMeshActor"><td class="mdescLeft">&#160;</td><td class="mdescRight">设置渲染策略  <br /></td></tr>
+<tr class="memitem:a7989eba2f4be427fe6f87bdc00e7f670 inherit pub_methods_classMeshActor" id="r_a7989eba2f4be427fe6f87bdc00e7f670"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classMeshActor.html#a7989eba2f4be427fe6f87bdc00e7f670">renderAttribute</a> (const std::string &amp;attr_name, std::map&lt; std::string, std::any &gt; args)</td></tr>
+<tr class="memdesc:a7989eba2f4be427fe6f87bdc00e7f670 inherit pub_methods_classMeshActor"><td class="mdescLeft">&#160;</td><td class="mdescRight">渲染属性  <br /></td></tr>
+<tr class="memitem:afb1ee275a5181ed0efa89343db38c253 inherit pub_methods_classMeshActor" id="r_afb1ee275a5181ed0efa89343db38c253"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classTopologyDiagnosticActor.html">TopologyDiagnosticActor</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classMeshActor.html#afb1ee275a5181ed0efa89343db38c253">topologyDiagnostics</a> ()</td></tr>
+<tr class="memdesc:afb1ee275a5181ed0efa89343db38c253 inherit pub_methods_classMeshActor"><td class="mdescLeft">&#160;</td><td class="mdescRight">获取本组件独立的拓扑诊断渲染对象  <br /></td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 id="header-pri-methods" class="groupheader"><a id="pri-methods" name="pri-methods"></a>
+Private 成员函数</h2></td></tr>
+<tr class="memitem:a0081ecac0f72c7e4179ddd0d99763524" id="r_a0081ecac0f72c7e4179ddd0d99763524"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a0081ecac0f72c7e4179ddd0d99763524">publishData</a> ()</td></tr>
+<tr class="memdesc:a0081ecac0f72c7e4179ddd0d99763524"><td class="mdescLeft">&#160;</td><td class="mdescRight">显式发布管线输出，渲染对象仅安装数据而不连接计算过滤器。  <br /></td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 id="header-pri-attribs" class="groupheader"><a id="pri-attribs" name="pri-attribs"></a>
+Private 属性</h2></td></tr>
+<tr class="memitem:a8a38eb3e083055c46f89e69847d66a96" id="r_a8a38eb3e083055c46f89e69847d66a96"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classMeshPipelineData.html">MeshPipelineData</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a8a38eb3e083055c46f89e69847d66a96">data_</a></td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 id="header-inherited" class="groupheader"><a id="inherited" name="inherited"></a>
+额外继承的成员函数</h2></td></tr>
+<tr class="inherit_header pub_static_attribs_classMeshActor"><td colspan="2" onclick="javascript:dynsection.toggleInherit('pub_static_attribs_classMeshActor')"><span class="dynarrow"><span class="arrowhead closed"></span></span>静态 Public 属性 继承自 <a class="el" href="classMeshActor.html">MeshActor</a></td></tr>
+<tr class="memitem:ac380af301cd858ea21543c6776a24e14 inherit pub_static_attribs_classMeshActor" id="r_ac380af301cd858ea21543c6776a24e14"><td class="memItemLeft" align="right" valign="top">static vtkNew&lt; vtkMinimalStandardRandomSequence &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classMeshActor.html#ac380af301cd858ea21543c6776a24e14">randomSequence</a></td></tr>
+<tr class="memitem:a780070ae950cbd0e2799be889fe9b5f5 inherit pub_static_attribs_classMeshActor" id="r_a780070ae950cbd0e2799be889fe9b5f5"><td class="memItemLeft" align="right" valign="top">static vtkNew&lt; vtkNamedColors &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classMeshActor.html#a780070ae950cbd0e2799be889fe9b5f5">colors</a></td></tr>
+</table>
+<a name="details" id="details"></a><h2 id="header-details" class="groupheader">详细描述</h2>
+<div class="textblock"><p>将既有测试的显隐操作转发到数据管线，保留对 <a class="el" href="classMeshActor.html" title="负责管理Model的Actor">MeshActor</a> 的行为断言。 </p>
+</div><a name="doc-constructors" id="doc-constructors"></a><h2 id="header-doc-constructors" class="groupheader">构造及析构函数说明</h2>
+<a id="a54ad2c4f435cc7934ed5fd4264698985" name="a54ad2c4f435cc7934ed5fd4264698985"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a54ad2c4f435cc7934ed5fd4264698985">&#9670;&#160;</a></span>TestMeshActorWithData()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">TestMeshActorWithData::TestMeshActorWithData </td>
+          <td>(</td>
+          <td class="paramtype">vtkRenderer *</td>          <td class="paramname"><span class="paramname"><em>renderer</em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel inline">inline</span><span class="mlabel explicit">explicit</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>绑定渲染器；数据管线与测试对象在同一线程创建和更新。 </p>
+
+</div>
+</div>
+<a name="doc-func-members" id="doc-func-members"></a><h2 id="header-doc-func-members" class="groupheader">成员函数说明</h2>
+<a id="a993b0cce6401fdeaef1e1d48fedb7ec2" name="a993b0cce6401fdeaef1e1d48fedb7ec2"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a993b0cce6401fdeaef1e1d48fedb7ec2">&#9670;&#160;</a></span>hideFaces()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void TestMeshActorWithData::hideFaces </td>
+          <td>(</td>
+          <td class="paramtype">const std::vector&lt; vtkIdType &gt; &amp;</td>          <td class="paramname"><span class="paramname"><em>face_ids</em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel inline">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>按原始面 ID 累积隐藏，并安装更新后的可见数据。 </p>
+
+</div>
+</div>
+<a id="a01772923046eccc31b172ef0119a7fa7" name="a01772923046eccc31b172ef0119a7fa7"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a01772923046eccc31b172ef0119a7fa7">&#9670;&#160;</a></span>isolateFaces()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void TestMeshActorWithData::isolateFaces </td>
+          <td>(</td>
+          <td class="paramtype">const std::vector&lt; vtkIdType &gt; &amp;</td>          <td class="paramname"><span class="paramname"><em>face_ids</em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel inline">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>隔离指定原始面，并将隔离状态与数据一同发布。 </p>
+
+</div>
+</div>
+<a id="a4abb6a777496e2b28c969782c71fbb92" name="a4abb6a777496e2b28c969782c71fbb92"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a4abb6a777496e2b28c969782c71fbb92">&#9670;&#160;</a></span>loadModelData()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void TestMeshActorWithData::loadModelData </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="structMeshDataVtk.html">MeshDataVtk</a> &amp;</td>          <td class="paramname"><span class="paramname"><em>model_data</em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel inline">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>加载基础网格，并发布清空旧隐藏状态后的渲染结果。 </p>
+
+</div>
+</div>
+<a id="a0081ecac0f72c7e4179ddd0d99763524" name="a0081ecac0f72c7e4179ddd0d99763524"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a0081ecac0f72c7e4179ddd0d99763524">&#9670;&#160;</a></span>publishData()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void TestMeshActorWithData::publishData </td>
+          <td>(</td>
+          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel inline">inline</span><span class="mlabel private">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>显式发布管线输出，渲染对象仅安装数据而不连接计算过滤器。 </p>
+
+</div>
+</div>
+<a id="a6d31476df422c88d2195fe5ef7ac877b" name="a6d31476df422c88d2195fe5ef7ac877b"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a6d31476df422c88d2195fe5ef7ac877b">&#9670;&#160;</a></span>reverseVisibility()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool TestMeshActorWithData::reverseVisibility </td>
+          <td>(</td>
+          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel inline">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>反转手动显隐，并返回更新后的整体显隐开关。 </p>
+
+</div>
+</div>
+<a id="a38102f7c5f29007e7834a51f2526c881" name="a38102f7c5f29007e7834a51f2526c881"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a38102f7c5f29007e7834a51f2526c881">&#9670;&#160;</a></span>setClipPlane()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void TestMeshActorWithData::setClipPlane </td>
+          <td>(</td>
+          <td class="paramtype">vtkPlane *</td>          <td class="paramname"><span class="paramname"><em>plane</em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel inline">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>在测试所属线程更新整单元裁剪，并发布其输出。 </p>
+
+</div>
+</div>
+<a id="a5456e04b16f23e79f7ea3e9d78d7e418" name="a5456e04b16f23e79f7ea3e9d78d7e418"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a5456e04b16f23e79f7ea3e9d78d7e418">&#9670;&#160;</a></span>setVisibility()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void TestMeshActorWithData::setVisibility </td>
+          <td>(</td>
+          <td class="paramtype">bool</td>          <td class="paramname"><span class="paramname"><em>visibility</em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel inline">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>同步数据管线的整体显隐，供后续反转和指定面恢复使用。 </p>
+
+</div>
+</div>
+<a id="a3e8eeec806a7b7bda5599234cd0d7c93" name="a3e8eeec806a7b7bda5599234cd0d7c93"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a3e8eeec806a7b7bda5599234cd0d7c93">&#9670;&#160;</a></span>showAllFaces()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void TestMeshActorWithData::showAllFaces </td>
+          <td>(</td>
+          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel inline">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>清空手动隐藏和隔离状态，并发布完整可见面集。 </p>
+
+</div>
+</div>
+<a id="ae73a696ebe1ff7dcce54783ff5e2ad45" name="ae73a696ebe1ff7dcce54783ff5e2ad45"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ae73a696ebe1ff7dcce54783ff5e2ad45">&#9670;&#160;</a></span>showFaces()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void TestMeshActorWithData::showFaces </td>
+          <td>(</td>
+          <td class="paramtype">const std::vector&lt; vtkIdType &gt; &amp;</td>          <td class="paramname"><span class="paramname"><em>face_ids</em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel inline">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>恢复指定原始面，同时保留其他面的显隐。 </p>
+
+</div>
+</div>
+<a name="doc-variable-members" id="doc-variable-members"></a><h2 id="header-doc-variable-members" class="groupheader">类成员变量说明</h2>
+<a id="a8a38eb3e083055c46f89e69847d66a96" name="a8a38eb3e083055c46f89e69847d66a96"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a8a38eb3e083055c46f89e69847d66a96">&#9670;&#160;</a></span>data_</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classMeshPipelineData.html">MeshPipelineData</a> TestMeshActorWithData::data_</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel private">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<hr/>该类的文档由以下文件生成:<ul>
+<li>app/render/test/<a class="el" href="TestMeshActorWithData_8h_source.html">TestMeshActorWithData.h</a></li>
+</ul>
+</div><!-- contents -->
+<!-- start footer part -->
+<hr class="footer"/><address class="footer"><small>
+制作者&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.14.0
+</small></address>
+</div><!-- doc-content -->
+</body>
+</html>

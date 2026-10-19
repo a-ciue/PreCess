@@ -86,6 +86,8 @@ $(function() {
 <li>select_mode_&#160;:&#160;<a class="el" href="classGeometrySelectManager.html#a1817cd2e7cb3f1b24f98ae6c1237c0e0">GeometrySelectManager</a>, <a class="el" href="classMeshSelectManager.html#ab67e7de3176223cb534fba0dcae5b8f2">MeshSelectManager</a>, <a class="el" href="classSelectManager.html#a4e813a093c7bf9aff625fa6a8e8115ee">SelectManager</a></li>
 <li>select_op_&#160;:&#160;<a class="el" href="classEdgeSelectorHighlight.html#a31b82dd0e7d72873520649f408f9ceec">EdgeSelectorHighlight</a>, <a class="el" href="classFaceSelectorHighlight.html#a30cb9cb2a9e59ebf48b34a489085f47d">FaceSelectorHighlight</a>, <a class="el" href="classGeometryEdgeSelectorHighlight.html#a298bcfe80af5bfc7b298c9894910a48b">GeometryEdgeSelectorHighlight</a>, <a class="el" href="classGeometryFaceSelectorHighlight.html#a95b2a5e773d70bb7bf6687f9594c6dc3">GeometryFaceSelectorHighlight</a>, <a class="el" href="classGeometrySolidSelectorHighlight.html#a7cd0961cb323be30c582e0340e9af62a">GeometrySolidSelectorHighlight</a>, <a class="el" href="classGeometryVertexSelectorHighlight.html#a047a10e22b23b9ffbedf4210cf46e47e">GeometryVertexSelectorHighlight</a>, <a class="el" href="classSolidSelectorHighlight.html#aaab03a907e69bcc988c8c769ca643bb6">SolidSelectorHighlight</a>, <a class="el" href="classVertexSelectorHighlight.html#acaeaecf27e7de5c5b48d841a6835ff2f">VertexSelectorHighlight</a></li>
 <li>selected_components_&#160;:&#160;<a class="el" href="classComponentSelectorHighlight.html#accd19cf59912d8f05b26a686b737d170">ComponentSelectorHighlight</a></li>
+<li>selected_face_generations_&#160;:&#160;<a class="el" href="structQRenderWindow.html#ae36b69ba4b93f384f0f2f7b42b0454e0">QRenderWindow</a></li>
+<li>selected_faces_&#160;:&#160;<a class="el" href="structQRenderWindow.html#ad07c3e4dfd2a326b52748c2cb54d5bd7">QRenderWindow</a></li>
 <li>selected_ids_&#160;:&#160;<a class="el" href="classSolidSelectorHighlight.html#a1e402dda8ca48a38142e15f6dc79cc62">SolidSelectorHighlight</a>, <a class="el" href="classVertexSelectorHighlight.html#a91ee95e32dbc304a942194973f9d22da">VertexSelectorHighlight</a></li>
 <li>selection_dispatcher_&#160;:&#160;<a class="el" href="structQRenderWindow.html#af4c12dd66096d6412f84d2613d68a15a">QRenderWindow</a></li>
 <li>selection_observer_tag_&#160;:&#160;<a class="el" href="structQRenderWindow_1_1Data.html#a886931a604a6ce75f1fb062611cee15d">QRenderWindow::Data</a></li>
@@ -132,21 +134,26 @@ $(function() {
 <li>solid_actor_&#160;:&#160;<a class="el" href="classMeshActor.html#a3219e67668babcb42b25490ce9cbd757">MeshActor</a></li>
 <li>solid_attributes_&#160;:&#160;<a class="el" href="structMeshData.html#ab004dfebf0c4360823c3933cf1abdbdf">MeshData</a>, <a class="el" href="structMeshDataVtk.html#a91615d19d609703b932511bc828ac9fa">MeshDataVtk</a></li>
 <li>solid_cell_centers_&#160;:&#160;<a class="el" href="classMeshActor.html#afccac8fed61ff143d50889c6b140a782">MeshActor</a></li>
-<li>solid_clipper_&#160;:&#160;<a class="el" href="classMeshActor.html#a697071c9b72ff73137641b9cf68d4ff7">MeshActor</a></li>
 <li>solid_count&#160;:&#160;<a class="el" href="structsession_1_1GeometrySummary.html#a3957419695757d9d4e7eaf74f5e1a874">session::GeometrySummary</a>, <a class="el" href="structsession_1_1MeshSummary.html#a22336914f267dd8a3fba14b83427eef2">session::MeshSummary</a></li>
-<li>solid_data_&#160;:&#160;<a class="el" href="classMeshActor.html#a85f7b5b251069428e1ee0a8da09c7b27">MeshActor</a></li>
-<li>solid_edge_extractor_&#160;:&#160;<a class="el" href="classMeshActor.html#a455e99ee83a81dd1c396e0104294f955">MeshActor</a></li>
+<li>solid_data_&#160;:&#160;<a class="el" href="classMeshActor.html#a85f7b5b251069428e1ee0a8da09c7b27">MeshActor</a>, <a class="el" href="classMeshPipelineData.html#a203191c1b426ab0ec9b2e890a65ca699">MeshPipelineData</a></li>
 <li>solid_faces_&#160;:&#160;<a class="el" href="structMeshData.html#ae15cb77405762cfcbdfb94aedc989bf7">MeshData</a></li>
 <li>solid_faces_offset_&#160;:&#160;<a class="el" href="structMeshData.html#a42e7d0fbfabc2ba7b5c8c02b61ad0c95">MeshData</a></li>
 <li>solid_faces_vertices_&#160;:&#160;<a class="el" href="structMeshData.html#adee7d6dbdcf8576aabd676d15553c84d">MeshData</a></li>
 <li>solid_faces_vertices_offset_&#160;:&#160;<a class="el" href="structMeshData.html#a57683f0d4db0df4ed8e4baf2363d7ac3">MeshData</a></li>
-<li>solid_filter_&#160;:&#160;<a class="el" href="classMeshActor.html#a77d183db5363426d681904313ab57144">MeshActor</a></li>
 <li>solid_id_to_shape_&#160;:&#160;<a class="el" href="classGeometryRegistry.html#aeaabb6ad30ad47bd04584df4539b73f8">GeometryRegistry</a></li>
+<li>solid_internal_edges&#160;:&#160;<a class="el" href="structMeshDataSnapshot.html#a6a8b78b89269e414d84cd3035154f852">MeshDataSnapshot</a></li>
+<li>solid_internal_edges_&#160;:&#160;<a class="el" href="classMeshActor.html#a19553cfe556edbf0bb4977e03b7854c6">MeshActor</a></li>
+<li>solid_internal_source_&#160;:&#160;<a class="el" href="classMeshActor.html#af3d7376c946d39411b9c07163bfeba4e">MeshActor</a></li>
 <li>solid_local_to_global&#160;:&#160;<a class="el" href="structGeometrySubshapeIndex.html#ae3d43b3c79b3eea8f3d2f1b0402691e5">GeometrySubshapeIndex</a></li>
 <li>solid_mapper_&#160;:&#160;<a class="el" href="classMeshActor.html#ac5178957eeb57603a430427b2c053f60">MeshActor</a></li>
+<li>solid_surface&#160;:&#160;<a class="el" href="structMeshDataSnapshot.html#a5085d62c82a9516f54a16e3c3fcd37f0">MeshDataSnapshot</a></li>
+<li>solid_surface_&#160;:&#160;<a class="el" href="classMeshActor.html#a16558244ca7eae0f6f74c92fad3b40d9">MeshActor</a></li>
+<li>solid_surface_source_&#160;:&#160;<a class="el" href="classMeshActor.html#a1fccbc2d7e1e90391041813767e7a478">MeshActor</a></li>
 <li>solid_types_&#160;:&#160;<a class="el" href="structMeshData.html#ae8d8335933110be77b6e91222a56ea71">MeshData</a></li>
 <li>solid_vertices_&#160;:&#160;<a class="el" href="structMeshData.html#ab5f1e587332750f98d252f4ed1b30099">MeshData</a></li>
 <li>solid_vertices_offset_&#160;:&#160;<a class="el" href="structMeshData.html#aaea9d3e989bd31e8f46d25ded9b3d5d6">MeshData</a></li>
+<li>source&#160;:&#160;<a class="el" href="structMeshDataSnapshot.html#a01b080d6678955afecd29203cf0326f0">MeshDataSnapshot</a></li>
+<li>source_&#160;:&#160;<a class="el" href="classMeshPipelineData.html#a239fa9e35c5047ac537796124f56222a">MeshPipelineData</a></li>
 <li>source_region_&#160;:&#160;<a class="el" href="classdock_1_1DragSession.html#a53d9dc4cd7e1f0eeff5cc46b494ebaf1">dock::DragSession</a></li>
 <li>source_xde_leaf_id&#160;:&#160;<a class="el" href="structComponentData.html#abf85f22cb8e516c571219d03bddf9fc7">ComponentData</a></li>
 <li>specular&#160;:&#160;<a class="el" href="structtinyobj_1_1material__t.html#ac03664c37a93e4da3441036abd0ad153">tinyobj::material_t</a></li>

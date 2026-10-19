@@ -1,0 +1,195 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="zh">
+<head>
+<meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=11"/>
+<meta name="generator" content="Doxygen 1.14.0"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>PreCess: app/render/test/TestMeshActorWithData.h 文件参考</title>
+<link href="tabs.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="jquery.js"></script>
+<script type="text/javascript" src="dynsections.js"></script>
+<script type="text/javascript" src="clipboard.js"></script>
+<script type="text/javascript" src="cookie.js"></script>
+<link href="search/search.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="search/searchdata.js"></script>
+<script type="text/javascript" src="search/search.js"></script>
+<link href="doxygen.css" rel="stylesheet" type="text/css" />
+</head>
+<body>
+<div id="top"><!-- do not remove this div, it is closed by doxygen! -->
+<div id="titlearea">
+<table cellspacing="0" cellpadding="0">
+ <tbody>
+ <tr id="projectrow">
+  <td id="projectlogo"><img alt="Logo" src="ZenithGrid.ico"/></td>
+  <td id="projectalign">
+   <div id="projectname">PreCess
+   </div>
+  </td>
+ </tr>
+ </tbody>
+</table>
+</div>
+<!-- end header part -->
+<!-- 制作者 Doxygen 1.14.0 -->
+<script type="text/javascript">
+var searchBox = new SearchBox("searchBox", "search/",'.html');
+</script>
+<script type="text/javascript">
+$(function() { codefold.init(); });
+</script>
+<script type="text/javascript" src="menudata.js"></script>
+<script type="text/javascript" src="menu.js"></script>
+<script type="text/javascript">
+$(function() {
+  initMenu('',true,false,'search.php','搜索',false);
+  $(function() { init_search(); });
+});
+</script>
+<div id="main-nav"></div>
+<!-- window showing the filter options -->
+<div id="MSearchSelectWindow"
+     onmouseover="return searchBox.OnSearchSelectShow()"
+     onmouseout="return searchBox.OnSearchSelectHide()"
+     onkeydown="return searchBox.OnSearchSelectKey(event)">
+</div>
+
+<!-- iframe showing the search results (closed by default) -->
+<div id="MSearchResultsWindow">
+<div id="MSearchResults">
+<div class="SRPage">
+<div id="SRIndex">
+<div id="SRResults"></div>
+<div class="SRStatus" id="Loading">载入中...</div>
+<div class="SRStatus" id="Searching">搜索中...</div>
+<div class="SRStatus" id="NoMatches">未找到</div>
+</div>
+</div>
+</div>
+</div>
+
+<div id="nav-path" class="navpath">
+  <ul>
+<li class="navelem"><a href="dir_d422163b96683743ed3963d4aac17747.html">app</a></li><li class="navelem"><a href="dir_364370753f3c0e27b80c476caf69e0e2.html">render</a></li><li class="navelem"><a href="dir_ea7bf32d4afef5a01f2beaa3de806056.html">test</a></li>  </ul>
+</div>
+</div><!-- top -->
+<div id="doc-content">
+<div class="header">
+  <div class="summary">
+<a href="#nested-classes">类</a>  </div>
+  <div class="headertitle"><div class="title">TestMeshActorWithData.h 文件参考</div></div>
+</div><!--header-->
+<div class="contents">
+
+<p>在测试所属线程准备网格数据，并向渲染对象发布计算结果。  
+<a href="#details">更多...</a></p>
+<div class="textblock"><code>#include &quot;<a class="el" href="MeshActor_8h_source.html">MeshActor.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="MeshPipelineData_8h_source.html">MeshPipelineData.h</a>&quot;</code><br />
+</div><div class="textblock"><div class="dynheader">
+TestMeshActorWithData.h 的引用(Include)关系图:</div>
+<div class="dyncontent">
+<div class="center"><img src="TestMeshActorWithData_8h__incl.png" border="0" usemap="#aapp_2render_2test_2TestMeshActorWithData_8h" loading="lazy" alt=""/></div>
+<map name="aapp_2render_2test_2TestMeshActorWithData_8h" id="aapp_2render_2test_2TestMeshActorWithData_8h">
+<area shape="rect" title="在测试所属线程准备网格数据，并向渲染对象发布计算结果。" alt="" coords="604,5,791,45"/>
+<area shape="rect" href="MeshActor_8h.html" title=" " alt="" coords="1062,93,1165,119"/>
+<area shape="poly" title=" " alt="" coords="791,42,1049,90,1048,95,790,47"/>
+<area shape="rect" href="MeshPipelineData_8h.html" title="GUI 线程持有的网格基础数据、面隐藏及裁剪管线。" alt="" coords="103,174,255,199"/>
+<area shape="poly" title=" " alt="" coords="637,48,230,172,229,167,636,43"/>
+<area shape="rect" href="Core_8h.html" title=" " alt="" coords="445,262,509,287"/>
+<area shape="poly" title=" " alt="" coords="1062,110,882,112,646,119,531,127,432,137,358,151,333,159,319,169,313,177,312,186,319,205,361,225,436,254,434,259,359,229,315,208,306,186,308,175,315,165,331,155,356,146,431,132,531,121,645,114,882,106,1062,105"/>
+<area shape="rect" title=" " alt="" coords="446,343,509,368"/>
+<area shape="poly" title=" " alt="" coords="1165,104,1366,104,1633,110,1764,118,1878,128,1963,144,1992,153,2010,165,2017,175,2020,187,2010,208,1979,230,1926,248,1855,265,1768,280,1558,305,1318,324,1072,338,842,347,522,356,522,351,842,342,1072,333,1318,319,1557,300,1767,275,1854,260,1925,243,1976,225,2006,205,2014,186,2012,178,2006,169,1990,158,1962,149,1877,134,1764,123,1633,116,1366,109,1165,109"/>
+<area shape="poly" title=" " alt="" coords="1062,111,730,127,504,144,274,169,244,174,243,169,273,164,503,139,730,122,1062,106"/>
+<area shape="rect" title=" " alt="" coords="1229,262,1368,287"/>
+<area shape="poly" title=" " alt="" coords="1165,104,1361,105,1622,111,1749,118,1859,129,1942,144,1970,154,1987,165,1995,175,1997,187,1995,198,1987,209,1975,217,1956,224,1899,237,1734,256,1544,268,1382,274,1382,269,1544,263,1734,251,1898,232,1954,219,1973,212,1983,205,1990,196,1992,187,1990,178,1983,169,1968,158,1941,149,1858,134,1748,124,1621,116,1361,110,1165,110"/>
+<area shape="rect" href="AttributeCommon_8h.html" title=" " alt="" coords="330,167,510,207"/>
+<area shape="poly" title=" " alt="" coords="1062,114,833,134,524,169,523,164,833,128,1062,108"/>
+<area shape="rect" href="IAttributeRenderStrategy_8h.html" title=" " alt="" coords="2079,255,2263,295"/>
+<area shape="poly" title=" " alt="" coords="1165,105,1376,110,1662,121,1929,138,2025,150,2081,164,2105,180,2126,200,2156,241,2152,245,2122,203,2102,184,2079,169,2024,155,1929,143,1662,126,1376,116,1165,111"/>
+<area shape="rect" title=" " alt="" coords="535,174,609,199"/>
+<area shape="poly" title=" " alt="" coords="1062,112,867,128,744,145,622,169,612,172,611,167,621,164,744,139,867,123,1062,107"/>
+<area shape="rect" title=" " alt="" coords="634,174,758,199"/>
+<area shape="poly" title=" " alt="" coords="1062,118,930,139,771,169,753,173,752,168,770,164,929,134,1061,112"/>
+<area shape="rect" title=" " alt="" coords="783,174,871,199"/>
+<area shape="poly" title=" " alt="" coords="1066,121,883,169,873,172,872,167,882,164,1064,116"/>
+<area shape="rect" title=" " alt="" coords="895,174,1127,199"/>
+<area shape="poly" title=" " alt="" coords="1100,121,1039,167,1035,163,1097,117"/>
+<area shape="rect" title=" " alt="" coords="1151,174,1281,199"/>
+<area shape="poly" title=" " alt="" coords="1130,117,1191,163,1188,167,1127,121"/>
+<area shape="rect" title=" " alt="" coords="1305,167,1513,207"/>
+<area shape="poly" title=" " alt="" coords="1157,116,1326,161,1325,166,1156,121"/>
+<area shape="rect" title=" " alt="" coords="1538,174,1681,199"/>
+<area shape="poly" title=" " alt="" coords="1165,111,1326,132,1526,164,1548,168,1547,174,1525,169,1326,137,1165,116"/>
+<area shape="rect" title=" " alt="" coords="1705,174,1799,199"/>
+<area shape="poly" title=" " alt="" coords="1165,107,1395,122,1543,139,1693,164,1707,167,1706,173,1691,169,1543,144,1394,127,1165,112"/>
+<area shape="rect" title=" " alt="" coords="1824,174,1973,199"/>
+<area shape="poly" title=" " alt="" coords="1165,107,1441,124,1625,141,1811,164,1837,169,1836,174,1810,169,1624,146,1441,129,1165,112"/>
+<area shape="rect" title=" " alt="" coords="141,343,197,368"/>
+<area shape="poly" title=" " alt="" coords="446,287,211,346,210,341,444,282"/>
+<area shape="rect" title=" " alt="" coords="913,343,964,368"/>
+<area shape="poly" title=" " alt="" coords="510,279,901,345,900,350,509,284"/>
+<area shape="rect" title=" " alt="" coords="303,343,380,368"/>
+<area shape="poly" title=" " alt="" coords="459,290,375,338,372,333,456,285"/>
+<area shape="rect" title=" " alt="" coords="1705,343,1764,368"/>
+<area shape="poly" title=" " alt="" coords="510,275,1691,349,1691,354,510,281"/>
+<area shape="poly" title=" " alt="" coords="480,288,480,329,475,329,475,288"/>
+<area shape="poly" title=" " alt="" coords="227,197,320,221,427,252,435,255,434,260,426,257,319,226,225,202"/>
+<area shape="poly" title=" " alt="" coords="177,200,163,255,163,294,167,329,162,329,157,295,157,254,172,199"/>
+<area shape="poly" title=" " alt="" coords="181,199,185,244,192,270,206,293,224,310,245,323,290,341,289,346,243,328,221,314,202,296,188,272,180,245,176,200"/>
+<area shape="poly" title=" " alt="" coords="239,197,311,218,349,233,384,252,429,290,463,330,459,333,426,294,381,257,346,238,309,223,238,202"/>
+<area shape="rect" title=" " alt="" coords="216,262,283,287"/>
+<area shape="poly" title=" " alt="" coords="190,198,233,249,229,253,186,201"/>
+<area shape="rect" title=" " alt="" coords="307,262,371,287"/>
+<area shape="poly" title=" " alt="" coords="201,197,306,253,304,258,199,202"/>
+<area shape="poly" title=" " alt="" coords="255,197,318,204,574,227,827,245,1215,267,1215,272,827,250,574,232,317,209,255,202"/>
+<area shape="rect" title=" " alt="" coords="5,262,91,287"/>
+<area shape="poly" title=" " alt="" coords="163,202,79,257,76,252,160,197"/>
+<area shape="poly" title=" " alt="" coords="2079,295,2060,297,1733,326,1414,344,1148,353,978,356,977,351,1148,347,1414,338,1733,321,2060,292,2078,290"/>
+<area shape="poly" title=" " alt="" coords="2079,295,1778,349,1777,344,2078,290"/>
+<area shape="rect" title=" " alt="" coords="2147,343,2194,368"/>
+<area shape="poly" title=" " alt="" coords="2173,295,2173,329,2168,329,2168,295"/>
+</map>
+</div>
+</div><div class="textblock"><div class="dynheader">
+此图展示该文件被哪些文件直接或间接地引用了:</div>
+<div class="dyncontent">
+<div class="center"><img src="TestMeshActorWithData_8h__dep__incl.png" border="0" usemap="#aapp_2render_2test_2TestMeshActorWithData_8hdep" loading="lazy" alt=""/></div>
+<map name="aapp_2render_2test_2TestMeshActorWithData_8hdep" id="aapp_2render_2test_2TestMeshActorWithData_8hdep">
+<area shape="rect" title="在测试所属线程准备网格数据，并向渲染对象发布计算结果。" alt="" coords="733,5,919,45"/>
+<area shape="rect" href="TestEdgeSelectorHighlight_8cpp.html" title=" " alt="" coords="5,93,188,133"/>
+<area shape="poly" title=" " alt="" coords="719,38,481,61,200,96,189,98,188,92,199,91,480,56,719,33"/>
+<area shape="rect" href="TestFaceSelectorHighlight_8cpp.html" title=" " alt="" coords="212,93,392,133"/>
+<area shape="poly" title=" " alt="" coords="720,45,405,96,393,98,392,93,404,91,719,40"/>
+<area shape="rect" href="TestMeshActor_8cpp.html" title=" " alt="" coords="417,93,603,133"/>
+<area shape="poly" title=" " alt="" coords="744,52,580,96,578,91,743,46"/>
+<area shape="rect" href="TestMeshData_8cpp.html" title=" " alt="" coords="627,93,814,133"/>
+<area shape="poly" title=" " alt="" coords="794,56,746,95,742,91,791,52"/>
+<area shape="rect" href="TestMeshFaceHiding_8cpp.html" title=" " alt="" coords="838,93,1025,133"/>
+<area shape="poly" title=" " alt="" coords="861,52,910,91,906,95,858,56"/>
+<area shape="rect" href="TestSelectorHighlightDeselect_8cpp.html" title=" " alt="" coords="1049,93,1253,133"/>
+<area shape="poly" title=" " alt="" coords="911,46,1081,91,1079,96,910,51"/>
+<area shape="rect" href="TestSolidSelectorHighlight_8cpp.html" title=" " alt="" coords="1277,93,1460,133"/>
+<area shape="poly" title=" " alt="" coords="933,39,1266,91,1277,93,1276,98,1266,96,933,45"/>
+<area shape="rect" href="TestVertexSelectorHighlight_8cpp.html" title=" " alt="" coords="1484,93,1677,133"/>
+<area shape="poly" title=" " alt="" coords="933,33,1180,56,1473,91,1484,92,1483,98,1472,96,1180,61,933,38"/>
+</map>
+</div>
+</div>
+<p><a href="TestMeshActorWithData_8h_source.html">浏览该文件的源代码.</a></p>
+<table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 id="header-nested-classes" class="groupheader"><a id="nested-classes" name="nested-classes"></a>
+类</h2></td></tr>
+<tr class="memitem:TestMeshActorWithData" id="r_TestMeshActorWithData"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classTestMeshActorWithData.html">TestMeshActorWithData</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">将既有测试的显隐操作转发到数据管线，保留对 <a class="el" href="classMeshActor.html" title="负责管理Model的Actor">MeshActor</a> 的行为断言。  <a href="classTestMeshActorWithData.html#details">更多...</a><br /></td></tr>
+</table>
+<a name="details" id="details"></a><h2 id="header-details" class="groupheader">详细描述</h2>
+<div class="textblock"><p>在测试所属线程准备网格数据，并向渲染对象发布计算结果。 </p>
+</div></div><!-- contents -->
+<!-- start footer part -->
+<hr class="footer"/><address class="footer"><small>
+制作者&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.14.0
+</small></address>
+</div><!-- doc-content -->
+</body>
+</html>

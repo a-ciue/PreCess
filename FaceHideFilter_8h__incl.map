@@ -1,0 +1,7 @@
+<map id="app/render/FaceHideFilter.h" name="app/render/FaceHideFilter.h">
+<area shape="rect" id="Node000001" title="类型保真的 vtkPolyData 整单元移除过滤器（右键隐藏面功能使用）" alt="" coords="61,5,259,31"/>
+<area shape="rect" id="Node000002" title=" " alt="" coords="5,79,136,104"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="147,33,98,72,94,68,144,29"/>
+<area shape="rect" id="Node000003" title=" " alt="" coords="160,79,339,104"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="176,29,226,68,222,72,173,33"/>
+</map>
