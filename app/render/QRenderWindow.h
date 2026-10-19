@@ -252,7 +252,14 @@ signals:
     /** @brief 在 GUI 决定显隐后同步通知对象树，渲染线程只安装结果。 */
     void componentVisibilityChanged(Index component_id, bool mesh_visible, bool geometry_visible);
 
+protected:
+    void itemChange(ItemChange change, const ItemChangeData& value) override;
+
 private:
+    //! @brief GUI 线程保存 DPR，并将叠加层像素尺寸更新排入渲染队列。
+    void updateOverlayScale(qreal ratio);
+    qreal overlay_device_pixel_ratio_ { 1.0 };
+
     /** @brief GUI 根据已发布选择执行面显隐，结果经渲染队列单向安装。 */
     enum class FaceOperation { Hide,
         Show,

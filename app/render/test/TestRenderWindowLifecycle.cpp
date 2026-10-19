@@ -20,7 +20,10 @@
 #include <vtkActor.h>
 #include <vtkActorCollection.h>
 #include <vtkRenderWindowInteractor.h>
+#include <vtkTextProperty.h>
 #include <vtkWeakPointer.h>
+
+#include <cmath>
 
 namespace {
 class CountingTexture : public vtkOpenGLTexture {
@@ -47,6 +50,52 @@ QGuiApplication& testApplication()
     static QGuiApplication app(argc, argv);
     return app;
 }
+}
+
+TEST_CASE("QRenderWindow keeps overlay logical sizes across DPR and VTK DPI changes")
+{
+    testApplication();
+    class DprRenderWindow : public QRenderWindow {
+    public:
+        using QRenderWindow::itemChange;
+    };
+    DprRenderWindow item;
+    for (const double ratio : { 1.0, 1.25, 1.5, 2.0, 1.0 }) {
+        item.itemChange(QQuickItem::ItemDevicePixelRatioHasChanged, QQuickItem::ItemChangeData(ratio));
+        for (const int dpi : { 72, 144 }) {
+            INFO("DPR=" << ratio << ", VTK DPI=" << dpi);
+            vtkNew<vtkRenderWindow> window;
+            window->SetDPI(dpi);
+            window->SetSize(1200, 900);
+            vtkNew<vtkRenderWindowInteractor> interactor;
+            interactor->SetRenderWindow(window);
+            auto user_data = item.initializeVTK(window);
+            auto* data = QRenderWindow::Data::SafeDownCast(user_data);
+            auto* orientation = ViewportOrientationRepresentation::SafeDownCast(data->orientationWidget->GetRepresentation());
+            REQUIRE(orientation != nullptr);
+            const int expected_size = static_cast<int>(std::lround(120 * ratio));
+            CHECK(orientation->GetSize()[0] == expected_size);
+            CHECK(orientation->GetPadding()[0] == static_cast<int>(std::lround(12 * ratio)));
+            CHECK(data->scale_bar_axis_->GetUseFontSizeFromProperty());
+            const int font_size = data->scale_bar_axis_->GetLabelTextProperty()->GetFontSize();
+            CHECK(font_size == static_cast<int>(std::lround(12 * ratio * 72 / dpi)));
+            // widget 的视口和命中范围必须随 DPR 一起变，不能只放大贴图。
+            data->orientationWidget->SquareResize();
+            orientation->BuildRepresentation();
+            CHECK(orientation->GetRenderer()->GetSize()[0] == expected_size);
+            const int* origin = orientation->GetRenderer()->GetOrigin();
+            CHECK(orientation->containsPoint(origin[0] + expected_size / 2, origin[1] + expected_size / 2));
+            CHECK_FALSE(orientation->containsPoint(origin[0], origin[1]));
+            window->SetSize(1600, 1000);
+            data->orientationWidget->SquareResize();
+            CHECK(orientation->GetRenderer()->GetSize()[0] == expected_size);
+            CHECK(data->scale_bar_axis_->GetLabelTextProperty()->GetFontSize() == font_size);
+            item.destroyingVTK(window, user_data);
+            window->RemoveRenderer(data->overlay_renderer_);
+            window->RemoveRenderer(data->renderer_);
+            user_data = nullptr;
+        }
+    }
 }
 
 TEST_CASE("QRenderWindow releases interaction actors before recreating VTK resources")
