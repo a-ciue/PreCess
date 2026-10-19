@@ -1,20 +1,26 @@
 #include "MakeMeshDataVtk.h"
 
-#include "MeshActor.h"
+#include "TestMeshActorWithData.h"
 #include "MeshActorSelectOp.h"
 #include "SelectorHighlight.h"
 #include "renderStrategy/AttributeOperator.h"
 #include "renderStrategy/AttriRenderStrategyScalar.h"
 #include <catch2/catch_test_macros.hpp>
 #include <vtkNew.h>
+#include <vtkCellData.h>
+#include <vtkIdTypeArray.h>
 #include <vtkPartitionedDataSet.h>
 #include <vtkPolyData.h>
+#include <vtkPolyDataMapper.h>
 #include <vtkRenderer.h>
 #include <vtkRenderWindow.h>
 #include <vtkSmartPointer.h>
 
 #include <array>
 #include <memory>
+#include <algorithm>
+#include <unordered_map>
+#include <unordered_set>
 #include <utility>
 
 namespace {
@@ -24,7 +30,7 @@ struct OffscreenMesh {
     MeshData mesh;
     vtkSmartPointer<vtkRenderer> renderer;
     vtkSmartPointer<vtkRenderWindow> render_window;
-    std::shared_ptr<MeshActor> actor;
+    std::shared_ptr<TestMeshActorWithData> actor;
 
     OffscreenMesh()
     {
@@ -36,7 +42,7 @@ struct OffscreenMesh {
         render_window->SetMultiSamples(0);
         render_window->AddRenderer(renderer);
         render_window->SetSize(600, 600);
-        actor = std::make_shared<MeshActor>(renderer);
+        actor = std::make_shared<TestMeshActorWithData>(renderer);
         actor->loadModelData(model_data);
         renderer->ResetCamera();
         render_window->Render();
@@ -95,6 +101,66 @@ TEST_CASE("FaceSelectorHighlight clears highlight when last face is deselected")
     // 再次点击同一位置取消选中：高亮必须清空而不是残留上一次的内容
     selector.select(x, y);
     REQUIRE(partitionCellCount(*highlight_data) == 0);
+}
+
+TEST_CASE("FaceSelectorHighlight maps point area and angle picks after replacing rendered face data")
+{
+    OffscreenMesh env;
+    vtkNew<vtkPartitionedDataSet> highlight_data;
+    MeshActorSelectOp select_op(env.actor);
+    FaceSelectorHighlight selector(*env.renderer, *highlight_data, 0, select_op);
+    auto* face_actor = vtkActor::SafeDownCast(&select_op.getFaceActor());
+    REQUIRE(face_actor);
+    auto* mapper = vtkPolyDataMapper::SafeDownCast(face_actor->GetMapper());
+    REQUIRE(mapper);
+    // 使用原面 0 的预拾取结果，随后将它隐藏，使剩余面的渲染下标发生压缩。
+    selector.select(0, 0, nullptr, face_actor, 0, -1, SelectOp::Append);
+    REQUIRE(selector.get().ids == std::vector<Index>({ 0 }));
+    selector.clear();
+    env.actor->hideFaces({ 0 });
+    CHECK(selector.get().ids.empty());
+    CHECK(partitionCellCount(*highlight_data) == 0);
+    mapper->Update();
+    auto* poly = mapper->GetInput();
+    auto* ids = vtkIdTypeArray::SafeDownCast(poly->GetCellData()->GetArray("PrecessFaceIds"));
+    REQUIRE(ids);
+    REQUIRE(ids->GetNumberOfTuples() > 0);
+    const Index picked_id = static_cast<Index>(ids->GetValue(0));
+    REQUIRE(picked_id != 0);
+
+    SECTION("point toggle")
+    {
+        selector.select(0, 0, nullptr, face_actor, 0, -1, SelectOp::Toggle);
+        CHECK(selector.get().ids == std::vector<Index>({ picked_id }));
+        CHECK(partitionCellCount(*highlight_data) == 1);
+        selector.select(0, 0, nullptr, face_actor, 0, -1, SelectOp::Toggle);
+        CHECK(selector.get().ids.empty());
+        CHECK(partitionCellCount(*highlight_data) == 0);
+    }
+    SECTION("area append and remove")
+    {
+        std::unordered_map<vtkProp*, std::unordered_set<vtkIdType>> hits { { face_actor, { 0 } } };
+        selector.selectArea(hits, 0, 0, 1, 1, SelectOp::Append);
+        auto selected = selector.get().ids;
+        std::sort(selected.begin(), selected.end());
+        CHECK(selected == std::vector<Index>({ picked_id }));
+        CHECK(partitionCellCount(*highlight_data) == 1);
+        selector.selectArea(hits, 0, 0, 1, 1, SelectOp::Remove);
+        CHECK(selector.get().ids.empty());
+        CHECK(partitionCellCount(*highlight_data) == 0);
+    }
+    SECTION("angle spread")
+    {
+        selector.setSpreadOptions({ true, 30.0 });
+        selector.select(0, 0, nullptr, face_actor, 0, -1, SelectOp::Toggle);
+        const auto selected = selector.get().ids;
+        CHECK(std::find(selected.begin(), selected.end(), 0) == selected.end());
+        CHECK(std::find(selected.begin(), selected.end(), picked_id) != selected.end());
+        CHECK(partitionCellCount(*highlight_data) == selected.size());
+        selector.select(0, 0, nullptr, face_actor, 0, -1, SelectOp::Toggle);
+        CHECK(selector.get().ids.empty());
+        CHECK(partitionCellCount(*highlight_data) == 0);
+    }
 }
 
 TEST_CASE("EdgeSelectorHighlight clears highlight when last edge is deselected")

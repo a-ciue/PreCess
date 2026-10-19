@@ -5,6 +5,7 @@
 #include "renderStrategy/AttributeCommon.h"
 #include "MakeMeshData.h"
 #include "MakeMeshDataVtk.h"
+#include "TestMeshActorWithData.h"
 #include <spdlog/spdlog.h>
 #include <vtkCallbackCommand.h>
 #include <vtkRenderWindow.h>
@@ -86,16 +87,16 @@ int main(int argc, char* argv[])
     vtkSmartPointer<vtkRenderWindowInteractor> interactor = vtkSmartPointer<vtkRenderWindowInteractor>::New();
     interactor->SetRenderWindow(renderWindow);
 
-    // 创建 MeshActor（点集由 actor 从 model_data.vertex_positions_ 自建）
-    std::shared_ptr<MeshActor> meshActor = std::make_shared<MeshActor>(renderer);
+    // 创建 MeshActor（点集由测试数据管线从 model_data.vertex_positions_ 创建）
+    std::shared_ptr<TestMeshActorWithData> meshActor = std::make_shared<TestMeshActorWithData>(renderer);
     meshActor->loadModelData(test_mesh_data);
 
-    std::shared_ptr<MeshActor> meshActor2 = std::make_shared<MeshActor>(renderer);
+    std::shared_ptr<TestMeshActorWithData> meshActor2 = std::make_shared<TestMeshActorWithData>(renderer);
     meshActor2->loadModelData(test_mesh_data2);
     // 按键交互逻辑
     vtkSmartPointer<vtkCallbackCommand> key_press_callback = vtkSmartPointer<vtkCallbackCommand>::New();
     key_press_callback->SetCallback(KeyPressCallbackFunc);
-    key_press_callback->SetClientData(meshActor.get());
+    key_press_callback->SetClientData(static_cast<MeshActor*>(meshActor.get()));
     if (interactor->AddObserver(vtkCommand::KeyPressEvent, key_press_callback) == 0) {
         spdlog::error("Failed to add key press observer!");
     }

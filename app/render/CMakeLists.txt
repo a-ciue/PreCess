@@ -1,7 +1,10 @@
 add_library(vtkPart STATIC 
     MeshActor.cpp
+    MeshPipelineData.cpp
+    MeshPipelineData.h
     MeshActorSelectOp.cpp
     MeshAreaPick.cpp
+    FaceHideFilter.cpp
     GeometryActorSelectOp.cpp
     GeometrySelectorHighlight.cpp
     QRenderWindowStyle.cpp

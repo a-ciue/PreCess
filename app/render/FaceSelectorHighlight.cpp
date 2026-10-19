@@ -217,23 +217,24 @@ SelectionVtk FaceSelectorHighlight::get()
 {
     SelectionVtk back_selection;
     back_selection.type = ElementEnum::Face;
-
-    // 经 face polydata 的面索引数组换算模型面 id：
-    // 不裁剪时数组为恒等（索引即面 id）；裁剪开启时 cell 重排，数组随裁剪链透传仍指向原模型面。
+    if (selections_.empty())
+        return back_selection;
     auto* face_actor = vtkActor::SafeDownCast(&select_op_.getFaceActor());
     auto* mapper = face_actor ? vtkPolyDataMapper::SafeDownCast(face_actor->GetMapper()) : nullptr;
-    auto* poly = mapper ? mapper->GetInput() : nullptr;
-    auto* face_ids = poly
-        ? vtkIdTypeArray::SafeDownCast(poly->GetCellData()->GetArray("PrecessFaceIds"))
-        : nullptr;
-
-    for (const auto& face : selections_) {
-        if (face_ids && face >= 0 && face < face_ids->GetNumberOfTuples())
-            back_selection.ids.push_back(static_cast<Index>(face_ids->GetValue(face)));
-        else
-            back_selection.ids.push_back(static_cast<Index>(face)); // 数组缺失时按索引即 id 兜底
+    if (!mapper)
+        return back_selection;
+    mapper->Update();
+    auto* poly = mapper->GetInput();
+    if (!poly)
+        return back_selection;
+    auto* face_ids = vtkIdTypeArray::SafeDownCast(poly->GetCellData()->GetArray("PrecessFaceIds"));
+    // 内部只持有当前渲染下标，对外导出时才读取稳定的原始面身份。
+    for (vtkIdType render_id : selections_) {
+        if (render_id < 0 || render_id >= poly->GetNumberOfCells()
+            || (face_ids && render_id >= face_ids->GetNumberOfTuples()))
+            continue;
+        back_selection.ids.push_back(static_cast<Index>(face_ids ? face_ids->GetValue(render_id) : render_id));
     }
-
     return back_selection;
 }
 
@@ -261,15 +262,18 @@ void FaceSelectorHighlight::enableHighlight()
     auto* mapper = vtkPolyDataMapper::SafeDownCast(face_actor->GetMapper());
     if (!mapper)
         return;
+    // 数据更新前由外部清空选择；高亮直接提取当前渲染下标，无需反向查询。
+    mapper->Update();
     auto* poly = mapper->GetInput();
     if (!poly)
         return;
-
     vtkNew<vtkCellArray> cell_array;
-    for (const auto& face : selections_) {
+    for (vtkIdType render_id : selections_) {
+        if (render_id < 0 || render_id >= poly->GetNumberOfCells())
+            continue;
         vtkIdType point_count = 0;
         const vtkIdType* point_ids = nullptr;
-        poly->GetCellPoints(face, point_count, point_ids);
+        poly->GetCellPoints(render_id, point_count, point_ids);
         cell_array->InsertNextCell(point_count, point_ids);
     }
 
@@ -337,7 +341,7 @@ void FaceSelectorHighlight::select(double posx, double posy,
         removeSelected(picked_faces, selections_);
         break;
     case SelectOp::Toggle:
-        if (isSelected(picked_cell_id, selections_))
+        if (isSelected(picked_faces.front(), selections_))
             removeSelected(picked_faces, selections_);
         else
             addSelected(picked_faces, selections_);
@@ -381,7 +385,7 @@ void FaceSelectorHighlight::selectArea(
 
     // 按 op 对框内命中的面做集合运算：Append->并集；Remove->差集；Toggle->对称差。
     std::unordered_set<vtkIdType> cur(selections_.begin(), selections_.end());
-    std::unordered_set<vtkIdType> picked_set(picked.begin(), picked.end());
+    const auto& picked_set = picked;
     std::unordered_set<vtkIdType> result;
     switch (op) {
     case SelectOp::Append:

@@ -1,4 +1,5 @@
 #include "MakeMeshDataVtk.h"
+#include "TestMeshActorWithData.h"
 #include "SelectorHighlight.h"
 #include <vtkPartitionedDataSet.h>
 #include "spdlog/spdlog.h"
@@ -65,8 +66,8 @@ int main(int argc, char* argv[])
     vtkNew<SolidPickInteractorStyle> style;
     interactor->SetInteractorStyle(style);
 
-    // 创建 MeshActor 并加载数据（点集由 actor 从 model_data.vertex_positions_ 自建）
-    std::shared_ptr meshActor = std::make_shared<MeshActor>(renderer);
+    // 创建 MeshActor 并加载数据（点集由测试数据管线从 model_data.vertex_positions_ 创建）
+    std::shared_ptr meshActor = std::make_shared<TestMeshActorWithData>(renderer);
     meshActor->loadModelData(test_mesh_data);
 
     // 体元高亮选择器

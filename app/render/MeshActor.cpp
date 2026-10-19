@@ -1,16 +1,13 @@
 #include "MeshActor.h"
+#include "Core.h"
 #include "TopologyDiagnosticActor.h"
 #include "renderStrategy/AttributeOperator.h"
-#include "Core.h"
+#include <algorithm>
 #include <spdlog/spdlog.h>
 #include <stdexcept>
 #include <vtkActor.h>
-#include <vtkCellArray.h>
 #include <vtkCellData.h>
-#include <vtkDoubleArray.h>
-#include <vtkExtractGeometry.h>
-#include <vtkExtractPolyDataGeometry.h>
-#include <vtkGeometryFilter.h>
+#include <vtkDataSetAttributes.h>
 #include <vtkMinimalStandardRandomSequence.h>
 #include <vtkNamedColors.h>
 #include <vtkPlane.h>
@@ -21,77 +18,27 @@
 #include <vtkPropAssembly.h>
 #include <vtkProperty.h>
 #include <vtkRenderer.h>
-#include <vtkSMPTools.h>
+#include <vtkTrivialProducer.h>
 #include <vtkUnstructuredGrid.h>
 vtkNew<vtkMinimalStandardRandomSequence> MeshActor::randomSequence;
 vtkNew<vtkNamedColors> MeshActor::colors;
 
 namespace {
-// 将组件局部点属性写入 PointData，供面/体 mapper 按点属性渲染。
-void addPointAttributes(
-    vtkPointData& point_data,
-    const std::map<std::string, std::vector<double>>& attributes,
-    vtkIdType point_count)
+/** @brief 为渲染端建立独立数据集包装，底层只读数组由快照保活。 */
+vtkSmartPointer<vtkPolyData> renderPolyData(vtkPolyData* input)
 {
-    if (point_count <= 0)
-        return;
-
-    const size_t num_points = static_cast<size_t>(point_count);
-    for (const auto& [attr_name, attr_values] : attributes) {
-        if (attr_values.empty())
-            continue;
-
-        // 属性数组按 [point0 分量..., point1 分量...] 存放，总长度必须是点数的整数倍。
-        if (attr_values.size() % num_points != 0) {
-            spdlog::error("Attribute {} size mismatch: {} values for {} points",
-                attr_name, attr_values.size(), num_points);
-            continue;
-        }
-
-        // PointData 是当前 VTK 数据对象自己的局部点数组，tuple 与局部点 id 一一对应。
-        const size_t ncomp = attr_values.size() / num_points;
-        auto array = vtkSmartPointer<vtkDoubleArray>::New();
-        array->SetNumberOfComponents(static_cast<int>(ncomp));
-        array->SetName(attr_name.c_str());
-        array->SetNumberOfTuples(point_count);
-        for (size_t i = 0; i < num_points; ++i)
-            array->SetTuple(static_cast<vtkIdType>(i), &attr_values[i * ncomp]);
-        point_data.AddArray(array);
-    }
+    auto result = vtkSmartPointer<vtkPolyData>::New();
+    result->ShallowCopy(input);
+    return result;
 }
 
-// 将边、面或体属性写入对应 VTK 数据对象的 CellData。
-void addCellAttributes(
-    vtkCellData& cell_data,
-    const std::map<std::string, std::vector<double>>& attributes,
-    vtkIdType cell_count,
-    const char* cell_kind)
+/** @brief 按数组名称同步活跃标量与 UV，保持过滤后的点/单元对应关系。 */
+void syncAttributes(vtkDataSetAttributes& source, vtkDataSetAttributes& output)
 {
-    if (cell_count <= 0)
-        return;
-
-    const size_t num_cells = static_cast<size_t>(cell_count);
-    for (const auto& [attr_name, attr_values] : attributes) {
-        // CellData 是当前 VTK 数据对象自己的局部 cell 数组，不需要全局偏移。
-        if (attr_values.size() < num_cells) {
-            spdlog::error("Attribute {} has insufficient values for {} cells", attr_name, cell_kind);
-            continue;
-        }
-        if (attr_values.size() % num_cells != 0) {
-            spdlog::error("Attribute {} size mismatch: {} values for {} {} cells",
-                attr_name, attr_values.size(), num_cells, cell_kind);
-            continue;
-        }
-
-        const size_t ncomp = attr_values.size() / num_cells;
-        auto array = vtkSmartPointer<vtkDoubleArray>::New();
-        array->SetNumberOfComponents(static_cast<int>(ncomp));
-        array->SetName(attr_name.c_str());
-        array->SetNumberOfTuples(cell_count);
-        for (size_t i = 0; i < num_cells; ++i)
-            array->SetTuple(static_cast<vtkIdType>(i), &attr_values[i * ncomp]);
-        cell_data.AddArray(array);
-    }
+    auto* scalars = source.GetScalars();
+    output.SetActiveScalars(scalars ? scalars->GetName() : nullptr);
+    auto* tcoords = source.GetTCoords();
+    output.SetTCoords(tcoords ? output.GetArray(tcoords->GetName()) : nullptr);
 }
 }
 
@@ -115,6 +62,15 @@ MeshActor::MeshActor(vtkRenderer* renderer)
     this->edge_actor_->SetMapper(edge_mapper_);
     this->glyph3D_actor_->SetMapper(glyph3D_mapper_);
     topology_diagnostics_ = std::make_unique<TopologyDiagnosticActor>(renderer_);
+
+    for (auto* source : { face_source_.GetPointer(), edge_source_.GetPointer(),
+             solid_surface_source_.GetPointer(), solid_internal_source_.GetPointer() }) {
+        vtkNew<vtkPolyData> empty;
+        source->SetOutput(empty);
+    }
+    face_mapper_->SetInputConnection(face_source_->GetOutputPort());
+    edge_mapper_->SetInputConnection(edge_source_->GetOutputPort());
+    solid_mapper_->SetInputConnection(solid_surface_source_->GetOutputPort());
 }
 
 MeshActor::~MeshActor()
@@ -127,129 +83,69 @@ MeshActor::~MeshActor()
     }
 }
 
-void MeshActor::loadModelData(const MeshDataVtk& model_data)
+void MeshActor::applyDataSnapshot(std::shared_ptr<const MeshDataSnapshot> snapshot)
 {
-    this->model_data_ = std::make_unique<MeshDataVtk>(model_data);
-
-    // 单元中心只依赖当前网格；重新加载后先失效，首次向量渲染时再按需计算。
-    edge_cell_centers_ = nullptr;
-    face_cell_centers_ = nullptr;
-    solid_cell_centers_ = nullptr;
-
-    // 组件私有点集：坐标自持，连通性数组直接以局部点 id 作 VTK 点索引
-    const auto& positions = model_data.vertex_positions_;
-    const vtkIdType point_count = static_cast<vtkIdType>(positions.size());
-    vtkNew<vtkAOSDataArrayTemplate<double>> point_array;
-    point_array->SetNumberOfComponents(3);
-    if (point_count > 0)
-        point_array->SetArray(const_cast<double*>(positions.front().data()), point_count * 3, 1);
-    points_->SetData(point_array);
-
-    // 拾取标签 vtkOriginalPointIds：存局部点 id，高亮提取直接作 VTK 点索引；
-    // 与提取过滤器自动生成的同名数组同语义（均为局部点下标），裁剪链上被覆盖也不影响取值
-    original_point_ids_->SetName("vtkOriginalPointIds");
-    original_point_ids_->SetNumberOfComponents(1);
-    original_point_ids_->SetNumberOfTuples(point_count);
-    vtkSMPTools::For(0, point_count,
-        [&](vtkIdType begin, vtkIdType end) {
-            for (vtkIdType id = begin; id < end; ++id) {
-                original_point_ids_->SetValue(id, static_cast<Index>(id));
-            }
-        });
-    original_point_ids_->Modified();
-
-    // face data
-    vtkPolyData* face_poly = this->face_data_;
-    {
-        auto poly_data = vtkSmartPointer<vtkCellArray>::New();
-        auto index_array = vtkSmartPointer<vtkAOSDataArrayTemplate<Index>>::New();
-        auto& vtk_indices = this->model_data_->vtk_face_cells_;
-        index_array->SetArray(const_cast<Index*>(vtk_indices.data()), vtk_indices.size(), 1);
-
-        auto offset_array = vtkSmartPointer<vtkAOSDataArrayTemplate<Index>>::New();
-        auto& vtk_offsets = this->model_data_->vtk_face_cells_offset_;
-        offset_array->SetArray(const_cast<Index*>(vtk_offsets.data()), vtk_offsets.size(), 1);
-
-        poly_data->SetData(offset_array, index_array);
-
-        // face poly data
-        face_poly->SetPoints(points_);
-        face_poly->SetPolys(poly_data);
-
-        face_poly->GetPointData()->AddArray(original_point_ids_.GetPointer());
-
-        // 面索引数组：不裁剪时索引即模型面 id；随裁剪链透传，裁剪开启时拾取仍能映射回模型面
-        vtkNew<vtkIdTypeArray> face_ids;
-        face_ids->SetNumberOfComponents(1);
-        face_ids->SetName("PrecessFaceIds");
-        face_ids->SetNumberOfTuples(face_poly->GetNumberOfCells());
-        vtkSMPTools::For(0, face_poly->GetNumberOfCells(),
-            [&](vtkIdType begin, vtkIdType end) {
-                for (vtkIdType id = begin; id < end; ++id) {
-                    face_ids->SetValue(id, id);
-                }
-            });
-        face_poly->GetCellData()->AddArray(face_ids);
-
-        // 处理面属性
-        addPointAttributes(*face_poly->GetPointData(), model_data.vertex_attributes_, point_count);
-        addCellAttributes(*face_poly->GetCellData(), model_data.face_attributes_,
-            face_poly->GetNumberOfCells(), "face");
+    if (!snapshot || snapshot->generation < data_generation_
+        || (snapshot->generation == data_generation_ && snapshot->revision <= data_revision_))
+        return;
+    const bool reloaded = snapshot->generation != data_generation_;
+    const bool display_changed = visibility_ != snapshot->visible;
+    data_snapshot_ = std::move(snapshot);
+    const auto& data = *data_snapshot_;
+    data_generation_ = data.generation;
+    data_revision_ = data.revision;
+    visibility_ = data.visible;
+    if (reloaded) {
+        // 属性和选择继续读取完整原始数据，但包装独立于 GUI 管线。
+        model_data_ = data.model_data;
+        face_data_->ShallowCopy(data.original_faces);
+        edge_data_->ShallowCopy(data.original_edges);
+        solid_data_->ShallowCopy(data.original_solids);
+        points_->SetData(solid_data_->GetPoints()->GetData());
+        // vtkPoints 的边界等缓存也归本线程，不能共享 GUI 点对象的可变缓存。
+        face_data_->SetPoints(points_);
+        edge_data_->SetPoints(points_);
+        solid_data_->SetPoints(points_);
+        edge_cell_centers_ = nullptr;
+        face_cell_centers_ = nullptr;
+        solid_cell_centers_ = nullptr;
+        edge_mapper_->ScalarVisibilityOff();
+        face_mapper_->ScalarVisibilityOff();
+        solid_mapper_->ScalarVisibilityOff();
+        topology_diagnostics_->loadModelData(*model_data_);
     }
+    visible_faces_ = renderPolyData(data.visible_faces);
+    visible_edges_ = renderPolyData(data.visible_edges);
+    solid_surface_ = renderPolyData(data.solid_surface);
+    solid_internal_edges_ = renderPolyData(data.solid_internal_edges);
+    face_source_->SetOutput(visible_faces_);
+    edge_source_->SetOutput(visible_edges_);
+    solid_surface_source_->SetOutput(solid_surface_);
+    solid_internal_source_->SetOutput(solid_internal_edges_);
+    clip_plane_->SetOrigin(data.clip.origin.data());
+    clip_plane_->SetNormal(data.clip.normal.data());
+    topology_diagnostics_->setClipPlane(data.clip.enabled ? clip_plane_.GetPointer() : nullptr);
+    syncDisplayAttributes();
+    // 发布新的连通性后刷新绘制缓存，不能因连接未改变而复用旧线框着色器。
+    face_mapper_->Modified();
+    if (reloaded || display_changed)
+        applyStyle();
+}
 
-    // edge data
-    vtkPolyData* edge_poly = this->edge_data_;
-    {
-        vtkNew<vtkCellArray> edge_cells;
-        vtkNew<vtkAOSDataArrayTemplate<Index>> index_array;
-        auto& vtk_indices = this->model_data_->vtk_edge_cells_;
-        index_array->SetArray(const_cast<Index*>(vtk_indices.data()), vtk_indices.size(), 1);
-        edge_cells->SetData(2, index_array);
-
-        edge_poly->SetPoints(points_);
-        edge_poly->SetLines(edge_cells);
-
-        edge_poly->GetPointData()->AddArray(original_point_ids_.GetPointer());
-        addCellAttributes(*edge_poly->GetCellData(), model_data.edge_attributes_,
-            edge_poly->GetNumberOfCells(), "edge");
-    }
-
-    // solid data
-    vtkUnstructuredGrid* solid_ugird = this->solid_data_;
-    _createSolidUGird(*this->model_data_, *points_, *solid_ugird);
-    vtkIdType solid_cells_count = solid_ugird->GetNumberOfCells();
-    vtkNew<vtkIdTypeArray> originalCellIds;
-    originalCellIds->SetNumberOfComponents(1);
-    originalCellIds->SetName("vtkOriginalCellIds");
-    originalCellIds->SetNumberOfTuples(solid_cells_count);
-    // 使用并行方式设置原始单元ID
-    vtkSMPTools::For(0, solid_cells_count,
-        [&](vtkIdType begin, vtkIdType end) {
-            for (vtkIdType cellId = begin; cellId < end; ++cellId) {
-                originalCellIds->SetValue(cellId, cellId);
-            }
-        });
-    solid_ugird->GetCellData()->AddArray(originalCellIds);
-    solid_ugird->GetPointData()->AddArray(original_point_ids_.GetPointer());
-    // 处理体属性
-    addPointAttributes(*solid_ugird->GetPointData(), model_data.vertex_attributes_, point_count);
-    addCellAttributes(*solid_ugird->GetCellData(), model_data.solid_attributes_, solid_cells_count, "solid");
-
-    solid_filter_->SetInputData(solid_ugird);
-    solid_edge_extractor_->SetInputData(solid_ugird);
-
-    // mappers
-    edge_mapper_->SetInputData(edge_poly);
-    face_mapper_->SetInputData(face_poly);
-    face_mapper_->Modified(); // 确保多边形网格被正确渲染
-    solid_mapper_->SetInputConnection(solid_filter_->GetOutputPort());
-
-    edge_mapper_->SetScalarVisibility(0);
-    face_mapper_->SetScalarVisibility(0);
-    solid_mapper_->SetScalarVisibility(0);
-    topology_diagnostics_->loadModelData(*model_data_);
-    // Actor 数据重载后恢复自身原有裁剪连接；新 Actor 的状态由渲染窗口统一同步。
-    setClipPlane(clip_plane_);
+void MeshActor::syncDisplayAttributes()
+{
+    auto sync_data = [](vtkDataSet& source, vtkPolyData& output) {
+        syncAttributes(*source.GetPointData(), *output.GetPointData());
+        syncAttributes(*source.GetCellData(), *output.GetCellData());
+    };
+    if (visible_faces_)
+        sync_data(*face_data_, *visible_faces_);
+    if (visible_edges_)
+        sync_data(*edge_data_, *visible_edges_);
+    if (solid_surface_)
+        sync_data(*solid_data_, *solid_surface_);
+    if (solid_internal_edges_)
+        sync_data(*solid_data_, *solid_internal_edges_);
 }
 
 void MeshActor::setVisibility(bool visibility)
@@ -259,31 +155,8 @@ void MeshActor::setVisibility(bool visibility)
 }
 
 bool MeshActor::isVisible() const
-{ 
-    return visibility_ && style_ != MeshRenderStyle::Hidden; 
-}
-
-void MeshActor::setClipPlane(vtkPlane* plane)
 {
-    topology_diagnostics_->setClipPlane(plane);
-    if (plane) {
-        // 网格重载会把 mapper 接回原始数据，因此每次应用裁剪平面都重新建立裁剪管线。
-        solid_clipper_->SetInputData(this->solid_data_);
-        face_clipper_->SetInputData(this->face_data_);
-        edge_clipper_->SetInputData(this->edge_data_);
-
-        solid_filter_->SetInputConnection(solid_clipper_->GetOutputPort());
-        face_mapper_->SetInputConnection(face_clipper_->GetOutputPort());
-        edge_mapper_->SetInputConnection(edge_clipper_->GetOutputPort());
-        solid_clipper_->SetImplicitFunction(plane);
-        face_clipper_->SetImplicitFunction(plane);
-        edge_clipper_->SetImplicitFunction(plane);
-    } else {
-        solid_filter_->SetInputData(this->solid_data_);
-        face_mapper_->SetInputData(this->face_data_);
-        edge_mapper_->SetInputData(this->edge_data_);
-    }
-    clip_plane_ = plane;
+    return visibility_ && style_ != MeshRenderStyle::Hidden;
 }
 
 void MeshActor::setRenderStyle(MeshRenderStyle style)
@@ -311,9 +184,9 @@ void MeshActor::applyStyle()
     glyph3D_actor_->SetVisibility(true);
 
     if (style_ == MeshRenderStyle::WireframeInternal) {
-        solid_mapper_->SetInputConnection(solid_edge_extractor_->GetOutputPort());
+        solid_mapper_->SetInputConnection(solid_internal_source_->GetOutputPort());
     } else {
-        solid_mapper_->SetInputConnection(solid_filter_->GetOutputPort());
+        solid_mapper_->SetInputConnection(solid_surface_source_->GetOutputPort());
     }
 
     switch (style_) {
@@ -400,57 +273,12 @@ TopologyDiagnosticActor& MeshActor::topologyDiagnostics()
     return *topology_diagnostics_;
 }
 
-void MeshActor::_createSolidUGird(const MeshDataVtk& model_data, vtkPoints& points, vtkUnstructuredGrid& solid_data)
-{
-    // cells
-    vtkNew<vtkCellArray> solid_cells;
-    vtkNew<vtkAOSDataArrayTemplate<Index>> index_array;
-    auto& vtk_indices = model_data.vtk_solid_cells_;
-    index_array->SetArray(const_cast<Index*>(vtk_indices.data()), vtk_indices.size(), 1);
-
-    vtkNew<vtkAOSDataArrayTemplate<Index>> offset_array;
-    auto& vtk_offsets = model_data.vtk_solid_cells_offset_;
-    offset_array->SetArray(const_cast<Index*>(vtk_offsets.data()), vtk_offsets.size(), 1);
-
-    solid_cells->SetData(offset_array, index_array);
-
-    // cell types
-    vtkNew<vtkUnsignedCharArray> cell_types;
-    auto& types = model_data.vtk_solid_cell_types_;
-    cell_types->SetArray(const_cast<unsigned char*>(types.data()), types.size(), 1);
-
-    // faces
-    vtkNew<vtkCellArray> faces;
-    vtkNew<vtkAOSDataArrayTemplate<Index>> faces_idx;
-    auto& vtk_faces = model_data.vtk_solid_faces_;
-    faces_idx->SetArray(const_cast<Index*>(vtk_faces.data()), vtk_faces.size(), 1);
-
-    vtkNew<vtkAOSDataArrayTemplate<Index>> faces_offset;
-    auto& vtk_faces_offset = model_data.vtk_solid_faces_offset_;
-    faces_offset->SetArray(const_cast<Index*>(vtk_faces_offset.data()), vtk_faces_offset.size(), 1);
-
-    faces->SetData(faces_offset, faces_idx);
-
-    // face locations
-    vtkNew<vtkCellArray> face_locations;
-    vtkNew<vtkAOSDataArrayTemplate<Index>> face_loc_idx;
-    auto& vtk_face_locations = model_data.vtk_solid_face_locations_;
-    face_loc_idx->SetArray(const_cast<Index*>(vtk_face_locations.data()), vtk_face_locations.size(), 1);
-    vtkNew<vtkAOSDataArrayTemplate<Index>> face_loc_offset;
-    auto& vtk_face_locations_offset = model_data.vtk_solid_face_locations_offset_;
-    face_loc_offset->SetArray(const_cast<Index*>(vtk_face_locations_offset.data()), vtk_face_locations_offset.size(), 1);
-    face_locations->SetData(face_loc_offset, face_loc_idx);
-
-    // solid ugrid
-    solid_data.SetPoints(&points);
-    solid_data.SetPolyhedralCells(cell_types, solid_cells, face_locations, faces);
-}
-
 void MeshActor::cancelActiveAttribute()
 {
     if (render_strategy_) {
         AttributeOperator op(this);
         render_strategy_->cancelActiveAttribute(op);
+        syncDisplayAttributes();
     }
 }
 
@@ -466,5 +294,6 @@ void MeshActor::renderAttribute(
     if (render_strategy_) {
         AttributeOperator op(this);
         render_strategy_->render(op, attr_name, args);
+        syncDisplayAttributes();
     }
 }
