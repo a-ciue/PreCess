@@ -2,6 +2,7 @@
 
 #include <QImage>
 #include <QPainter>
+#include <spdlog/spdlog.h>
 #include <vtkCellArray.h>
 #include <vtkCoordinate.h>
 #include <vtkFloatArray.h>
@@ -84,6 +85,8 @@ vtkStandardNewMacro(ViewportOrientationRepresentation);
 ViewportOrientationRepresentation::ViewportOrientationRepresentation()
     : impl_(std::make_unique<Impl>())
 {
+    if (impl_->atlas.isNull() || impl_->hover.isNull())
+        spdlog::warn("Failed to load viewport orientation atlas or hover resource.");
     SetSize(120, 120);
     SetPadding(12, 12);
     SetXAxisColor(0.96, 0.28, 0.38);

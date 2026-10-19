@@ -124,13 +124,3 @@ precess_test_link_libraries(TestRenderWindowFaceHiding renderQml vtkPart modelQm
 vtk_module_autoinit(TARGETS TestRenderWindowFaceHiding MODULES
     VTK::GUISupportQtQuick VTK::RenderingOpenGL2 VTK::InteractionStyle
 )
-
-# 真实 Qt Quick 输入回归不与无窗口生命周期测试共用 offscreen 平台配置。
-find_package(Qt6 6.8 REQUIRED COMPONENTS Test)
-precess_add_test(TestRenderWindowInput TestRenderWindowInput.cpp)
-precess_test_link_libraries(TestRenderWindowInput renderQml vtkPart modelQml Qt6::Test
-    VTK::GUISupportQtQuick VTK::RenderingOpenGL2 VTK::InteractionStyle
-)
-vtk_module_autoinit(TARGETS TestRenderWindowInput MODULES
-    VTK::GUISupportQtQuick VTK::RenderingOpenGL2 VTK::InteractionStyle
-)

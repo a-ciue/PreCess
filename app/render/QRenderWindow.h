@@ -11,7 +11,6 @@
 #include "MeshPipelineData.h"
 #include "QModelQuery.h"
 #include "QSelection.h"
-#include <QPointF>
 #include <QQuickVTKItem.h>
 #include <QVTKRenderWindowAdapter.h>
 #include <unordered_map>
@@ -200,6 +199,7 @@ public:
     /** @brief 反转 GUI 记录的整个网格和几何场景，不依赖对象树提供组件列表。 */
     Q_INVOKABLE void reverseSceneVisibility();
 
+    Q_SLOT void setClick();
 
     /**
      * @brief 设置属性渲染方式
@@ -253,8 +253,6 @@ signals:
     void componentVisibilityChanged(Index component_id, bool mesh_visible, bool geometry_visible);
 
 private:
-    //! @brief 在 VTK release 前排队点击标记，使用本次事件坐标排除坐标系操作。
-    void queueClick(QPointF press_position, QPointF release_position);
     /** @brief GUI 根据已发布选择执行面显隐，结果经渲染队列单向安装。 */
     enum class FaceOperation { Hide,
         Show,
@@ -301,7 +299,7 @@ private:
     MeshActor* cur_actor_ { };
     Index cur_component_id_ { -1 };
 
-    std::unique_ptr<QMouseEvent> click_candidate_; //> 仅判定点击，事件始终立即转发且不重放
+    std::unique_ptr<QMouseEvent> _click;
     const Data* data_ { };
 
     QModelQuery* model_query_ { };

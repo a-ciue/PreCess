@@ -15,7 +15,6 @@
 #include "ViewportOrientationRepresentation.h"
 #include "renderStrategy/AttributeCommon.h"
 
-#include <QQuickWindow>
 #include <spdlog/spdlog.h>
 #include <vtkCallbackCommand.h>
 #include <vtkCamera.h>
@@ -253,7 +252,7 @@ QQuickVTKItem::vtkUserData QRenderWindow::initializeVTK(vtkRenderWindow* renderW
     vtk->orientationWidget->SetRepresentation(orientation);
     vtk->orientationWidget->AnimateOff();
     vtk->orientationWidget->SetParentRenderer(vtk->renderer_);
-    vtk->orientationWidget->SetInteractor(renderWindow->GetInteractor());
+    vtk->orientationWidget->SetInteractor(renderWindow->GetInteractor()); // 设置坐标系控件大小（占屏幕比例）
     vtk->orientationWidget->On();
 
     vtkNew<vtkDisplaySizedImplicitPlaneRepresentation> rep;
@@ -311,13 +310,6 @@ QQuickVTKItem::vtkUserData QRenderWindow::initializeVTK(vtkRenderWindow* renderW
 void QRenderWindow::destroyingVTK(vtkRenderWindow* renderWindow, vtkUserData userData)
 {
     auto* vtk = Data::SafeDownCast(userData);
-    // 拖动中的 style 仍持有事件焦点，可能截获 Interactor 的 DeleteEvent；提前解绑避免悬空引用。
-    vtk->plane_widget_->Off();
-    vtk->plane_widget_->SetInteractor(nullptr);
-    // 智能指针管理对象内存，Off/解绑负责移除窗口上的事件观察者与 renderer 引用。
-    vtk->orientationWidget->Off();
-    vtk->orientationWidget->SetInteractor(nullptr);
-    vtk->orientationWidget->SetParentRenderer(nullptr);
     // 场景图重建会先释放旧 Data，再调用 initializeVTK；服务持有旧 renderer 的
     // 裸指针，必须在此渲染线程边界销毁，不能拖到下一次 unique_ptr 赋值或 GUI 析构。
     // 回调持有非 VTK 对象 this，必须在服务和场景图拆解前解除。
@@ -346,40 +338,37 @@ void QRenderWindow::resetCamera()
 
 bool QRenderWindow::event(QEvent* ev)
 {
-    constexpr double click_distance = 5.0;
     switch (ev->type()) {
     case QEvent::MouseButtonPress: {
         auto e = static_cast<QMouseEvent*>(ev);
-        click_candidate_.reset(e->clone());
+        _click.reset(e->clone());
         break;
     }
     case QEvent::MouseMove: {
+        if (!_click)
+            return QQuickVTKItem::event(ev);
+
         auto e = static_cast<QMouseEvent*>(ev);
-        if (click_candidate_ && (!(e->buttons() & click_candidate_->button()) || (click_candidate_->position() - e->position()).manhattanLength() > click_distance))
-            click_candidate_.reset();
-        break;
-    }
-    case QEvent::MouseButtonRelease: {
-        auto e = static_cast<QMouseEvent*>(ev);
-        if (click_candidate_ && e->button() == click_candidate_->button()) {
-            const QPointF press_position = click_candidate_->position();
-            click_candidate_.reset();
-            // release 本身也可能跨过阈值，不能依赖平台一定先发送 move。
-            if ((press_position - e->position()).manhattanLength() <= click_distance) {
-                if (e->button() == Qt::LeftButton) {
-                    queueClick(press_position, e->position());
-                    emit clicked();
-                } else if (e->button() == Qt::RightButton) {
-                    emit rightClicked();
-                }
-            }
+        if ((_click->position() - e->position()).manhattanLength() > 5) {
+            QQuickVTKItem::event(QScopedPointer<QMouseEvent>(_click.release()).get());
+            return QQuickVTKItem::event(e);
         }
         break;
     }
-    case QEvent::UngrabMouse:
-    case QEvent::FocusOut:
-        click_candidate_.reset();
+    case QEvent::MouseButtonRelease: {
+        if (!_click)
+            return QQuickVTKItem::event(ev);
+
+        setClick();
+        auto e = static_cast<QMouseEvent*>(ev);
+        if (e->button() == Qt::RightButton) {
+            emit rightClicked();
+            return QQuickVTKItem::event(ev);
+        }
+        emit clicked();
+        return QQuickVTKItem::event(ev);
         break;
+    }
     default:
         break;
     }
@@ -843,20 +832,11 @@ void QRenderWindow::setScaleBarVisible(bool on)
     });
 }
 
-void QRenderWindow::queueClick(QPointF press_position, QPointF release_position)
+void QRenderWindow::setClick()
 {
-    const qreal ratio = window() ? window()->devicePixelRatio() : 1.0;
-    dispatch_async([press_position, release_position, ratio](vtkRenderWindow* renderWindow, vtkUserData userData) {
-        auto* vtk = Data::SafeDownCast(userData);
-        auto* orientation = ViewportOrientationRepresentation::SafeDownCast(vtk->orientationWidget->GetRepresentation());
-        const auto contains = [&](QPointF position) {
-            // 与 QVTKInteractorAdapter 使用相同 DPR 舍入和 Y 翻转，不读取上一事件的坐标。
-            const int x = static_cast<int>(position.x() * ratio + 1e-5);
-            const int y = renderWindow->GetSize()[1] - 1 - static_cast<int>(position.y() * ratio + 1e-5);
-            return orientation && vtk->orientationWidget->GetEnabled() && orientation->containsPoint(x, y);
-        };
-        // 按下或释放位于圆盘均由 widget 处理；显式清除标记，避免被它吞掉 release 后残留。
-        vtk->style_->SetClick(!contains(press_position) && !contains(release_position));
+    dispatch_async([this](vtkRenderWindow* renderWindow, vtkUserData userData) {
+        Data* vtk = Data::SafeDownCast(userData);
+        vtk->style_->SetClick();
     });
 }
 

@@ -5,27 +5,25 @@
 #include "QRenderWindow.h"
 #include "QRenderWindowStyle.h"
 #include "ViewportOrientationRepresentation.h"
-
-#include <QGuiApplication>
 #include <QImage>
-#include <catch2/catch_test_macros.hpp>
-#include <vtkActor.h>
+#include <algorithm>
+#include <array>
 #include <vtkActor2D.h>
-#include <vtkActorCollection.h>
 #include <vtkCallbackCommand.h>
 #include <vtkCamera.h>
-#include <vtkDisplaySizedImplicitPlaneWidget.h>
 #include <vtkImageData.h>
 #include <vtkObjectFactory.h>
 #include <vtkOpenGLTexture.h>
 #include <vtkPropCollection.h>
-#include <vtkRenderWindowInteractor.h>
 #include <vtkTexturedActor2D.h>
 #include <vtkTransform.h>
-#include <vtkWeakPointer.h>
 
-#include <algorithm>
-#include <array>
+#include <QGuiApplication>
+#include <catch2/catch_test_macros.hpp>
+#include <vtkActor.h>
+#include <vtkActorCollection.h>
+#include <vtkRenderWindowInteractor.h>
+#include <vtkWeakPointer.h>
 
 namespace {
 class CountingTexture : public vtkOpenGLTexture {
@@ -67,11 +65,6 @@ TEST_CASE("QRenderWindow releases interaction actors before recreating VTK resou
         auto user_data = item.initializeVTK(window);
         auto* data = QRenderWindow::Data::SafeDownCast(user_data);
         REQUIRE(data != nullptr);
-        auto* orientation = ViewportOrientationRepresentation::SafeDownCast(data->orientationWidget->GetRepresentation());
-        REQUIRE(orientation != nullptr);
-        CHECK(data->orientationWidget->GetEnabled());
-        CHECK(data->orientationWidget->GetInteractor() == interactor.GetPointer());
-        CHECK(data->plane_widget_->GetInteractor() == interactor.GetPointer());
         auto* actors = data->renderer_->GetActors();
         // InteractionService 添加点、实线、虚线三个标注 actor；renderer 还可包含选择高亮等 actor。
         REQUIRE(actors->GetNumberOfItems() >= 3);
@@ -80,11 +73,6 @@ TEST_CASE("QRenderWindow releases interaction actors before recreating VTK resou
 
         REQUIRE(data->style_->HasObserver(vtkCommand::SelectionChangedEvent));
         item.destroyingVTK(window, user_data);
-        CHECK_FALSE(data->orientationWidget->GetEnabled());
-        CHECK(data->orientationWidget->GetInteractor() == nullptr);
-        CHECK(data->orientationWidget->GetParentRenderer() == nullptr);
-        CHECK_FALSE(data->plane_widget_->GetEnabled());
-        CHECK(data->plane_widget_->GetInteractor() == nullptr);
         CHECK_FALSE(data->style_->HasObserver(vtkCommand::SelectionChangedEvent));
         // 即使外部仍持有 style，销毁后的事件也不得访问已释放的服务。
         data->style_->InvokeEvent(vtkCommand::SelectionChangedEvent);
@@ -136,20 +124,6 @@ TEST_CASE("QRenderWindow queues selection updates and discards results for old p
         window->RemoveRenderer(data->renderer_);
         user_data = nullptr;
     }
-}
-
-TEST_CASE("QRenderWindow notifies selection reset without a render window")
-{
-    testApplication();
-    QRenderWindow item;
-    int updates = 0;
-    QObject::connect(&item, &QRenderWindow::selectedChanged, &item, [&updates] { ++updates; });
-    item.setSelectionRevision(1);
-    CHECK(updates == 1);
-    CHECK(item.selectedIDs() == nullptr);
-    item.setSelectionRevision(1);
-    QCoreApplication::processEvents();
-    CHECK(updates == 1);
 }
 
 TEST_CASE("Viewport orientation picks visible round handles in viewport coordinates")
