@@ -128,6 +128,7 @@ void ViewportOrientationRepresentation::updateProjection()
         for (int column = 0; column < 3; ++column)
             rotation[3 * row + column] = matrix->GetElement(row, column);
     // 原 widget 每帧 Identity/Rotate，MTime 总在变；比较实际旋转以复用六个投影。
+    // 相同旋转输入可精确命中；累积误差只会触发重算，不用容差吞掉实际视角变化。
     if (impl_->has_projection && rotation == impl_->last_rotation)
         return;
     impl_->handles = makeHandles(Transform);
@@ -139,7 +140,7 @@ void ViewportOrientationRepresentation::updateProjection()
 void ViewportOrientationRepresentation::BuildRepresentation()
 {
     // 不调用父类：它会重建按钮几何和文字纹理；这里只保留其旋转/视角切换契约。
-    if (!Renderer)
+    if (!Renderer || impl_->atlas.isNull() || impl_->hover.isNull())
         return;
     const int* size = Renderer->GetSize();
     if (size[0] <= 0 || size[1] <= 0)
@@ -242,7 +243,7 @@ int ViewportOrientationRepresentation::RenderOverlay(vtkViewport* viewport)
 {
     BuildRepresentation();
     const int* size = Renderer ? Renderer->GetSize() : nullptr;
-    return size && size[0] > 0 && size[1] > 0
+    return size && size[0] > 0 && size[1] > 0 && !impl_->atlas.isNull() && !impl_->hover.isNull()
         ? impl_->actor->RenderOverlay(viewport)
         : 0;
 }
