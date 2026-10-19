@@ -37,6 +37,9 @@
 #include <map>
 #include <utility>
 #include <vtkCamera.h>
+#include <vtkCommand.h>
+#include <vtkDisplaySizedImplicitPlaneRepresentation.h>
+#include <vtkDisplaySizedImplicitPlaneWidget.h>
 #include <vtkPolyData.h>
 #include <vtkPolyDataMapper.h>
 #include <vtkRenderWindow.h>
@@ -196,7 +199,7 @@ TEST_CASE("Actual QML synchronizes reversed mesh and geometry visibility across 
     }
 }
 
-//! @brief 工具栏和视口菜单共用渲染窗口的完整恢复入口，恢复隐藏面、整体开关和隔离样式。
+//! @brief 验证全场景恢复入口，以及模型、组件、网格菜单的恢复范围。
 TEST_CASE("Actual QML show all entries restore hidden faces and end isolation", "[QML][visibility]")
 {
     application();
@@ -212,19 +215,28 @@ TEST_CASE("Actual QML show all entries restore hidden faces and end isolation", 
     mesh.face_vertices_ = { 0, 1, 2, 0, 2, 3 };
     mesh.face_vertices_offset_ = { 0, 3, 6 };
     components.push_back(std::move(component));
+    auto second_component = std::make_unique<ComponentData>();
+    second_component->mesh = mesh.clone();
+    for (auto& point : second_component->mesh->vertex_positions_)
+        point[0] += 1.5;
+    components.push_back(std::move(second_component));
     const Index model_id = model.addModel("show all fixture", std::move(components));
-    const Index id = model.modelById(model_id)->componentIds()[0];
+    const auto component_ids = model.modelById(model_id)->componentIds();
+    const Index id = component_ids[0];
+    const Index second_id = component_ids[1];
     auto* tree = f.tree->findChild<TreeModel*>();
     auto* viewport = f.viewport->findChild<QRenderWindow*>();
     REQUIRE(tree);
     REQUIRE(viewport);
     REQUIRE(tree->refresh());
-    auto data = f.manager->getModelQuery()->getMeshDataByComponent(id);
-    REQUIRE(data);
     // 正式加载和真实面选择准备隔离状态，不向窗口注入测试专用管线。
-    viewport->loadMeshData(id, *data);
+    for (Index component_id : component_ids) {
+        auto data = f.manager->getModelQuery()->getMeshDataByComponent(component_id);
+        REQUIRE(data);
+        viewport->loadMeshData(component_id, *data);
+    }
     QQuickWindow host;
-    host.resize(600, 600);
+    host.resize(900, 600);
     host.setFlags(Qt::Tool | Qt::FramelessWindowHint | Qt::WindowDoesNotAcceptFocus);
     host.setOpacity(0.0);
     host.setPersistentSceneGraph(false);
@@ -233,11 +245,17 @@ TEST_CASE("Actual QML show all entries restore hidden faces and end isolation", 
     REQUIRE(page);
     page->setParentItem(host.contentItem());
     page->setSize(QSizeF(600, 600));
+    auto* tree_page = qobject_cast<QQuickItem*>(f.tree.get());
+    REQUIRE(tree_page);
+    tree_page->setParentItem(host.contentItem());
+    tree_page->setX(600);
+    tree_page->setSize(QSizeF(300, 600));
     const auto cleanup = qScopeGuard([&] {
         host.hide();
         host.releaseResources();
         QCoreApplication::processEvents();
         page->setParentItem(nullptr);
+        tree_page->setParentItem(nullptr);
     });
     // 逐轮消费渲染命令及 GUI 快照回传，保证后续操作使用已经送达的选择。
     auto flush = [&] {
@@ -259,32 +277,68 @@ TEST_CASE("Actual QML show all entries restore hidden faces and end isolation", 
     viewport->setSelectMode("Face");
     host.show();
     REQUIRE(flush());
-    viewport->dispatch_async([](vtkRenderWindow* render_window, QQuickVTKItem::vtkUserData user_data) {
-        auto* scene = QRenderWindow::Data::SafeDownCast(user_data);
-        auto* camera = scene->renderer_->GetActiveCamera();
-        camera->SetPosition(0.5, 0.5, 5.0);
-        camera->SetFocalPoint(0.5, 0.5, 0.0);
-        camera->SetViewUp(0.0, 1.0, 0.0);
-        camera->SetParallelScale(1.0);
-        scene->renderer_->ResetCameraClippingRange();
-        scene->renderer_->SetWorldPoint(0.75, 0.25, 0.0, 1.0);
-        scene->renderer_->WorldToDisplay();
-        double display[3] { };
-        scene->renderer_->GetDisplayPoint(display);
-        render_window->GetInteractor()->SetEventPosition(
-            static_cast<int>(std::lround(display[0])), static_cast<int>(std::lround(display[1])));
-        scene->style_->SetClick();
-        scene->style_->OnLeftButtonUp();
-    });
-    REQUIRE(flush());
-    std::unique_ptr<QSelection> selection(viewport->selectedIDs());
-    REQUIRE(selection);
-    REQUIRE(selection->get()->ids == std::vector<Index>({ 0 }));
-    viewport->isolateSelectedFaces();
-    REQUIRE(flush());
+    // 两个组件分别真实拾取原面 0，再隔离为单面，供所有恢复入口共用。
+    auto isolate_face = [&](Index component_id, double x) {
+        viewport->dispatch_async([x](vtkRenderWindow* render_window, QQuickVTKItem::vtkUserData user_data) {
+            auto* scene = QRenderWindow::Data::SafeDownCast(user_data);
+            auto* camera = scene->renderer_->GetActiveCamera();
+            camera->SetPosition(1.25, 0.5, 5.0);
+            camera->SetFocalPoint(1.25, 0.5, 0.0);
+            camera->SetViewUp(0.0, 1.0, 0.0);
+            camera->SetParallelScale(1.5);
+            scene->renderer_->ResetCameraClippingRange();
+            scene->renderer_->SetWorldPoint(x, 0.25, 0.0, 1.0);
+            scene->renderer_->WorldToDisplay();
+            double display[3] { };
+            scene->renderer_->GetDisplayPoint(display);
+            render_window->GetInteractor()->SetEventPosition(
+                static_cast<int>(std::lround(display[0])), static_cast<int>(std::lround(display[1])));
+            scene->style_->SetClick();
+            scene->style_->OnLeftButtonUp();
+        });
+        REQUIRE(flush());
+        std::unique_ptr<QSelection> selection(viewport->selectedIDs());
+        REQUIRE(selection);
+        REQUIRE(selection->get()->component_id == component_id);
+        REQUIRE(selection->get()->ids == std::vector<Index>({ 0 }));
+        viewport->isolateSelectedFaces();
+        REQUIRE(flush());
+    };
+    // 在渲染线程读取实际面集与整体开关，区分面恢复和组件显示。
+    auto check_mesh = [&](Index component_id, vtkIdType expected_faces, bool expected_visible) {
+        vtkIdType face_count = -1;
+        bool visible = false;
+        bool ordinary_style = false;
+        viewport->dispatch_async([&face_count, &visible, &ordinary_style, component_id](vtkRenderWindow*, QQuickVTKItem::vtkUserData user_data) {
+            auto* scene = QRenderWindow::Data::SafeDownCast(user_data);
+            auto actor = scene->mesh_actor_manager_->getComponentActor(component_id);
+            if (!actor)
+                return;
+            MeshActorSelectOp select_op(actor);
+            auto* face_actor = vtkActor::SafeDownCast(&select_op.getFaceActor());
+            auto* mapper = face_actor ? vtkPolyDataMapper::SafeDownCast(face_actor->GetMapper()) : nullptr;
+            if (mapper) {
+                mapper->Update();
+                face_count = mapper->GetInput()->GetNumberOfCells();
+            }
+            visible = actor->isVisibilityEnabled();
+            ordinary_style = select_op.getEdgeActor().GetVisibility();
+        });
+        REQUIRE(flush());
+        CAPTURE(component_id);
+        CHECK(face_count == expected_faces);
+        CHECK(visible == expected_visible);
+        CHECK(ordinary_style == expected_visible);
+    };
+    isolate_face(id, 0.75);
+    isolate_face(second_id, 2.25);
+    check_mesh(id, 1, true);
+    check_mesh(second_id, 1, true);
     viewport->setMeshVisibility(id, false);
     REQUIRE_FALSE(tree->data(tree->findIndexByNodeId(id, 1), TreeModel::IsVisibleRole).toBool());
 
+    QString restore_entry;
+    Index other_id = -1;
     SECTION("object tree toolbar")
     {
         REQUIRE(QMetaObject::invokeMethod(f.tree.get(), "showAllNodes"));
@@ -301,34 +355,83 @@ TEST_CASE("Actual QML show all entries restore hidden faces and end isolation", 
         REQUIRE(show_all);
         REQUIRE(QMetaObject::invokeMethod(show_all, "triggered"));
     }
-    CHECK(tree->data(tree->findIndexByNodeId(id, 1), TreeModel::IsVisibleRole).toBool());
-
-    REQUIRE(flush());
-    vtkIdType face_count = -1;
-    bool visible = false;
-    bool ordinary_style = false;
-    viewport->dispatch_async([&face_count, &visible, &ordinary_style, id](vtkRenderWindow*, QQuickVTKItem::vtkUserData user_data) {
-        auto* scene = QRenderWindow::Data::SafeDownCast(user_data);
-        auto actor = scene->mesh_actor_manager_->getComponentActor(id);
-        if (!actor)
-            return;
-        MeshActorSelectOp select_op(actor);
-        auto* face_actor = vtkActor::SafeDownCast(&select_op.getFaceActor());
-        auto* mapper = face_actor ? vtkPolyDataMapper::SafeDownCast(face_actor->GetMapper()) : nullptr;
-        if (mapper) {
-            mapper->Update();
-            face_count = mapper->GetInput()->GetNumberOfCells();
+    SECTION("object tree component face restore") { restore_entry = QString("restoreHiddenFaces-1-%1").arg(id); }
+    SECTION("object tree mesh face restore") { restore_entry = QString("restoreHiddenFaces-2-%1").arg(id); }
+    SECTION("object tree model face restore")
+    {
+        restore_entry = QString("restoreHiddenFaces-0-%1").arg(model_id);
+        ComponentDatas other_components;
+        auto other_component = std::make_unique<ComponentData>();
+        other_component->mesh = mesh.clone();
+        other_components.push_back(std::move(other_component));
+        const Index other_model_id = model.addModel("unrelated fixture", std::move(other_components));
+        other_id = model.modelById(other_model_id)->componentIds()[0];
+        REQUIRE(tree->refresh());
+        auto data = f.manager->getModelQuery()->getMeshDataByComponent(other_id);
+        REQUIRE(data);
+        viewport->loadMeshData(other_id, *data);
+        // A 整体隐藏后，在同一位置拾取其他模型的面，验证恢复不会越过模型边界。
+        isolate_face(other_id, 0.75);
+        check_mesh(other_id, 1, true);
+        viewport->setMeshClip(true);
+        viewport->dispatch_async([](vtkRenderWindow*, QQuickVTKItem::vtkUserData user_data) {
+            auto* scene = QRenderWindow::Data::SafeDownCast(user_data);
+            auto* plane = scene->plane_widget_->GetDisplaySizedImplicitPlaneRepresentation();
+            // 裁掉目标模型的第二个组件，恢复隐藏面后它仍应受该裁剪约束。
+            plane->SetOrigin(1.25, 0.0, 0.0);
+            plane->SetNormal(1.0, 0.0, 0.0);
+            scene->plane_widget_->InvokeEvent(vtkCommand::InteractionEvent);
+        });
+        REQUIRE(flush());
+        check_mesh(second_id, 0, true);
+    }
+    if (!restore_entry.isEmpty()) {
+        // 展开并布局真实对象树 delegate，再触发对应节点实际创建的菜单项。
+        auto* tree_view = f.tree->findChild<QObject*>("objectTreeView");
+        REQUIRE(tree_view);
+        REQUIRE(QMetaObject::invokeMethod(tree_view, "expandRecursively", Q_ARG(int, -1), Q_ARG(int, -1)));
+        REQUIRE(QMetaObject::invokeMethod(tree_view, "forceLayout"));
+        REQUIRE(flush());
+        auto node_index = tree->findIndexByNodeId(id, 1);
+        const bool restore_model = restore_entry.startsWith("restoreHiddenFaces-0-");
+        if (restore_model)
+            node_index = node_index.parent();
+        else if (restore_entry.startsWith("restoreHiddenFaces-2-"))
+            node_index = tree->index(0, 0, node_index);
+        QQuickItem* delegate = nullptr;
+        REQUIRE(QMetaObject::invokeMethod(tree_view, "itemAtIndex",
+            Q_RETURN_ARG(QQuickItem*, delegate), Q_ARG(QModelIndex, node_index)));
+        REQUIRE(delegate);
+        auto* restore = delegate->findChild<QObject*>(restore_entry);
+        REQUIRE(restore);
+        CHECK(restore->property("text").toString() == "恢复隐藏面");
+        auto* menu = restore->property("menu").value<QObject*>();
+        REQUIRE(menu);
+        REQUIRE(QMetaObject::invokeMethod(menu, "open"));
+        REQUIRE(flush());
+        CHECK(restore->property("visible").toBool());
+        CHECK(restore->property("height").toDouble() > 0);
+        REQUIRE(QMetaObject::invokeMethod(restore, "triggered"));
+        REQUIRE(QMetaObject::invokeMethod(menu, "close"));
+        CHECK_FALSE(tree->data(tree->findIndexByNodeId(id, 1), TreeModel::IsVisibleRole).toBool());
+        check_mesh(id, 2, false);
+        check_mesh(second_id, restore_model ? 0 : 1, true);
+        if (restore_model) {
+            check_mesh(other_id, 1, true);
+            // 停用裁剪后，同模型两个组件均恢复完整面集，其他模型仍保留隐藏面。
+            viewport->setMeshClip(false);
+            check_mesh(id, 2, false);
+            check_mesh(second_id, 2, true);
+            check_mesh(other_id, 1, true);
         }
-        visible = actor->isVisibilityEnabled();
-        ordinary_style = select_op.getEdgeActor().GetVisibility();
-    });
-    REQUIRE(flush());
-    CHECK(face_count == 2);
-    CHECK(visible);
-    CHECK(ordinary_style); // 结束面隔离后，样式恢复为正常面线框。
-    // 复用当前场景验证对象树反转入口，避免单独构建一套 QML 场景。
-    REQUIRE(QMetaObject::invokeMethod(f.tree.get(), "reverseDisplayed"));
-    CHECK_FALSE(tree->data(tree->findIndexByNodeId(id, 1), TreeModel::IsVisibleRole).toBool());
+    } else {
+        CHECK(tree->data(tree->findIndexByNodeId(id, 1), TreeModel::IsVisibleRole).toBool());
+        check_mesh(id, 2, true);
+        check_mesh(second_id, 2, true);
+        // 复用当前场景验证对象树反转入口，避免单独构建一套 QML 场景。
+        REQUIRE(QMetaObject::invokeMethod(f.tree.get(), "reverseDisplayed"));
+        CHECK_FALSE(tree->data(tree->findIndexByNodeId(id, 1), TreeModel::IsVisibleRole).toBool());
+    }
 }
 
 TEST_CASE("Actual QML aligns face and component visibility menu entries", "[QML][visibility]")

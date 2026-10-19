@@ -13,6 +13,8 @@
 #include <vtkPolyData.h>
 #include <vtkSmartPointer.h>
 
+#include <stdexcept>
+#include <string>
 #include <vector>
 
 vtkStandardNewMacro(FaceHideFilter);
@@ -73,6 +75,9 @@ vtkNew<vtkCellArray> copyVisibleCells(vtkCellArray* in_cells,
         new_point_ids->SetNumberOfIds(point_id_count);
         for (vtkIdType j = 0; j < point_id_count; ++j) {
             const vtkIdType point_id = point_ids->GetId(j);
+            // 非法连通性必须拒绝整个请求，不能跳过坏点后生成变形的单元。
+            if (point_id < 0 || static_cast<size_t>(point_id) >= point_map.size())
+                throw std::out_of_range("单元 " + std::to_string(cell_id) + " 引用了无效点 ID " + std::to_string(point_id));
             vtkIdType new_point_id = point_map[static_cast<size_t>(point_id)];
             if (new_point_id == -1) {
                 new_point_id = out_points->InsertNextPoint(in_points->GetPoint(point_id));
@@ -168,19 +173,26 @@ int FaceHideFilter::RequestData(
     // 全局单元 id 顺序为 verts → lines → polys → strips（与 vtkRemovePolyData 文档一致）。
     vtkIdType cell_id = 0;
     vtkIdType out_cell_id = 0;
-    auto out_verts = copyVisibleCells(input->GetVerts(), removed, cell_id, out_cell_id, point_map,
-        in_points, in_point_data, out_points, out_point_data, in_cell_data, out_cell_data);
-    auto out_lines = copyVisibleCells(input->GetLines(), removed, cell_id, out_cell_id, point_map,
-        in_points, in_point_data, out_points, out_point_data, in_cell_data, out_cell_data);
-    auto out_polys = copyVisibleCells(input->GetPolys(), removed, cell_id, out_cell_id, point_map,
-        in_points, in_point_data, out_points, out_point_data, in_cell_data, out_cell_data);
-    auto out_strips = copyVisibleCells(input->GetStrips(), removed, cell_id, out_cell_id, point_map,
-        in_points, in_point_data, out_points, out_point_data, in_cell_data, out_cell_data);
+    try {
+        auto out_verts = copyVisibleCells(input->GetVerts(), removed, cell_id, out_cell_id, point_map,
+            in_points, in_point_data, out_points, out_point_data, in_cell_data, out_cell_data);
+        auto out_lines = copyVisibleCells(input->GetLines(), removed, cell_id, out_cell_id, point_map,
+            in_points, in_point_data, out_points, out_point_data, in_cell_data, out_cell_data);
+        auto out_polys = copyVisibleCells(input->GetPolys(), removed, cell_id, out_cell_id, point_map,
+            in_points, in_point_data, out_points, out_point_data, in_cell_data, out_cell_data);
+        auto out_strips = copyVisibleCells(input->GetStrips(), removed, cell_id, out_cell_id, point_map,
+            in_points, in_point_data, out_points, out_point_data, in_cell_data, out_cell_data);
 
-    output->SetVerts(out_verts);
-    output->SetLines(out_lines);
-    output->SetPolys(out_polys);
-    output->SetStrips(out_strips);
+        output->SetVerts(out_verts);
+        output->SetLines(out_lines);
+        output->SetPolys(out_polys);
+        output->SetStrips(out_strips);
+    } catch (const std::out_of_range& error) {
+        // VTK 回调边界以失败状态返回，并释放已经复制的部分输出。
+        spdlog::error("FaceHideFilter::RequestData 输入连通性无效：{}", error.what());
+        output->Initialize();
+        return 0;
+    }
 
     return 1;
 }

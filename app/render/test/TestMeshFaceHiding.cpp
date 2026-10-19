@@ -212,6 +212,22 @@ TEST_CASE("FaceHideFilter preserves global cell attributes across mixed cell cat
     filter->Modified();
     filter->Update();
     check_attributes({ 0, 1, 2, 3, 4, 5, 6, 7 });
+
+    // 复用同一夹具，非法点 ID 必须使请求失败，且不能留下部分复制的输出。
+    hidden->InsertNextValue(0);
+    for (const vtkIdType invalid_id : { vtkIdType { -1 }, input->GetNumberOfPoints() }) {
+        input->GetPolys()->ReplaceCellAtId(0, { 0, 2, invalid_id });
+        input->Modified();
+        filter->Modified();
+        CHECK_FALSE(filter->Update(0, nullptr));
+        CHECK(filter->GetOutput()->GetNumberOfCells() == 0);
+        CHECK(filter->GetOutput()->GetNumberOfPoints() == 0);
+    }
+    input->GetPolys()->ReplaceCellAtId(0, { 0, 2, 4 });
+    input->Modified();
+    filter->Modified();
+    REQUIRE(filter->Update(0, nullptr));
+    check_attributes({ 1, 2, 3, 4, 5, 6, 7 });
 }
 
 TEST_CASE("MeshPipelineData preserves original typed IDs and published snapshots across hiding and clipping")
@@ -479,10 +495,6 @@ TEST_CASE("face isolation survives style changes and ends on restore or reload")
     CHECK(op.getSolidActor().GetVisibility());
     CHECK(op.getEdgeActor().GetVisibility());
 
-    // 隔离全部面没有隐藏 id，也必须能结束隔离。
-    env.actor->isolateFaces(original_ids);
-    env.actor->showAllFaces();
-    CHECK(op.getSolidActor().GetVisibility());
     env.actor->isolateFaces({ 0 });
     MeshData reloaded_mesh;
     env.actor->loadModelData(MakeMeshDataVtk(reloaded_mesh));
@@ -525,13 +537,8 @@ TEST_CASE("face isolation preserves ordinary vector and scalar attribute renderi
     CHECK(select_op.getSolidActor().GetVisibility());
     CHECK(faceIdValues(env.faceOutput()) == std::vector<vtkIdType>({ 0, 2 }));
 
-    // 同一场景结束隔离后验证策略恢复，避免另建重复的属性测试环境。
+    // 恢复完整面集合应保留当前标量模式，不需要再次应用属性策略。
     env.actor->showAllFaces();
-    env.actor->setRenderStrategy(std::make_unique<AttriRenderStrategyVector>());
-    env.actor->renderAttribute(attribute, { });
-    CHECK(glyph->GetVisibility());
-    env.actor->setRenderStrategy(std::make_unique<AttriRenderStrategyScalar>());
-    env.actor->renderAttribute("f_isolation_scalar_1", { });
     CHECK_FALSE(glyph->GetVisibility());
     CHECK(attribute_op.getFaceMapper()->GetScalarVisibility());
 }

@@ -136,6 +136,7 @@ Pane {
 
     TreeView {
         id: treeView
+        objectName: "objectTreeView"
         anchors { left: parent.left; right: parent.right; top: headerBar.bottom; bottom: parent.bottom }
         model: treeModel
         columnSpacing: 0
@@ -362,6 +363,25 @@ Pane {
                     onTriggered: objectTree.showNode(
                         viewDelegate.model.nodeId, viewDelegate.depth,
                         viewDelegate.model.nodeType, viewDelegate.model.componentId)
+                }
+
+                // 按模型或组件范围恢复隐藏面，保留整体开关、裁剪及范围外状态。
+                MenuItem {
+                    objectName: "restoreHiddenFaces-" + viewDelegate.model.nodeType + "-"
+                                + (viewDelegate.depth === 0 ? viewDelegate.model.nodeId : viewDelegate.model.componentId)
+                    text: "恢复隐藏面"
+                    visible: viewDelegate.depth <= 1
+                             || (viewDelegate.depth === 2 && viewDelegate.model.nodeType === objectTree._nodeTypeMesh)
+                    height: visible ? implicitHeight : 0
+                    onTriggered: {
+                        if (viewDelegate.depth === 0) {
+                            let components = QModelManager.query.getComponentsSummary(viewDelegate.model.nodeId)
+                            for (let component of components)
+                                App.registry.renderWindow.showAllHiddenFaces(component.component_id)
+                        } else {
+                            App.registry.renderWindow.showAllHiddenFaces(viewDelegate.model.componentId)
+                        }
+                    }
                 }
 
                 MenuSeparator {}
