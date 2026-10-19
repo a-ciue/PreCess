@@ -350,12 +350,18 @@ ApplicationWindow {
         QModelManager.featureSystem.setActiveComponent(App.selection.activeComponentId)
 
         Qt.callLater(function() {
+            let imported = false
             for (let i = 0; i < commandLineArgs.length; ++i) {
                 let ok = QModelManager.ioSystem.read("All files", commandLineArgs[i], [])
                 if (!ok) {
                     console.exception("启动打开失败: " + commandLineArgs[i]);
+                } else {
+                    imported = true
                 }
             }
+            // 导入通知先排队加载 Actor，再重置相机；视口创建时的重置早于启动导入。
+            if (imported && App.registry.renderWindow)
+                App.registry.renderWindow.resetCamera()
         })
     }
 }
