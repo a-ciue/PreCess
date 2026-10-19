@@ -102,6 +102,12 @@ TEST_CASE("QRenderWindow queues selection updates and discards results for old p
     QRenderWindow item;
     int updates = 0;
     QObject::connect(&item, &QRenderWindow::selectedChanged, &item, [&updates] { ++updates; });
+    // 场景尚未创建时清空只排队，GUI 不提前发布完成通知。
+    item.setSelectionRevision(1);
+    item.setSelectionRevision(1);
+    QCoreApplication::processEvents();
+    CHECK(updates == 0);
+    CHECK(item.selectedIDs() == nullptr);
 
     for (int cycle = 0; cycle < 2; ++cycle) {
         vtkNew<vtkRenderWindow> window;
@@ -119,10 +125,10 @@ TEST_CASE("QRenderWindow queues selection updates and discards results for old p
         CHECK(updates == before);
         if (cycle == 0) {
             item.setSelectionRevision(item.selectionRevision() + 1);
-            CHECK(updates == before + 1); // 重置通知同步送达
+            CHECK(updates == before); // GUI 不模拟清理完成，旧上下文的回传也不能更新新参数。
         }
         QCoreApplication::processEvents();
-        CHECK(updates == before + 1);
+        CHECK(updates == before + (cycle == 0 ? 0 : 1));
         CHECK(item.selectedIDs() == nullptr); // None 模式的空选择也正常发布
 
         item.destroyingVTK(window, user_data);

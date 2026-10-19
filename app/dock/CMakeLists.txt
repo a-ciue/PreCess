@@ -27,6 +27,7 @@ add_library(dock STATIC
     ui/DropZoneOverlay.cpp
     ui/GlobalMouseRelay.cpp
     ui/DockRuntime.cpp
+    ui/DockTheme.h
     ui/QmlRegistration.cpp
     ui/DividerItem.cpp
 )
@@ -42,6 +43,7 @@ target_link_libraries(dock PUBLIC
 # 视图 QML 资源（C++ 侧按 qrc:/precess/dock/<文件名> 加载）
 set(dock_qml_files
     ui/qml/PanelGroup.qml
+    ui/qml/DockMenu.qml
     ui/qml/Divider.qml
     ui/qml/DropZones.qml
     ui/qml/DockWindow.qml

@@ -93,6 +93,13 @@ vtk_module_autoinit(TARGETS TestInteractionService MODULES VTK::InteractionStyle
 precess_add_test(TestMeshTopologyDiagnostics TestMeshTopologyDiagnostics.cpp)
 precess_test_link_libraries(TestMeshTopologyDiagnostics vtkPart TestDeps)
 
+# TestMeshFaceHiding（右键隐藏选中面：FaceHideFilter 过滤链与裁剪组合、恢复、重载清空）
+precess_add_test(TestMeshFaceHiding TestMeshFaceHiding.cpp)
+precess_test_link_libraries(TestMeshFaceHiding vtkPart TestDeps
+    VTK::RenderingOpenGL2 VTK::InteractionStyle VTK::CommonColor VTK::RenderingCore VTK::RenderingUI VTK::FiltersGeometry VTK::FiltersExtraction
+)
+vtk_module_autoinit(TARGETS TestMeshFaceHiding MODULES VTK::RenderingOpenGL2 VTK::InteractionStyle VTK::CommonColor VTK::RenderingCore VTK::RenderingUI VTK::FiltersGeometry VTK::FiltersExtraction)
+
 # TestSelectorHighlightDeselect（回归：取消最后一个选中后，partition 高亮必须清空而不是残留）
 precess_add_test(TestSelectorHighlightDeselect TestSelectorHighlightDeselect.cpp)
 precess_test_link_libraries(TestSelectorHighlightDeselect vtkPart TestDeps spdlog::spdlog
@@ -106,6 +113,15 @@ precess_test_link_libraries(TestRenderWindowLifecycle renderQml vtkPart modelQml
     VTK::GUISupportQtQuick VTK::RenderingOpenGL2 VTK::InteractionStyle
 )
 vtk_module_autoinit(TARGETS TestRenderWindowLifecycle MODULES
+    VTK::GUISupportQtQuick VTK::RenderingOpenGL2 VTK::InteractionStyle
+)
+
+# 面隐藏与恢复必须同步 GUI 选择快照，并丢弃过滤管线的旧渲染索引。
+precess_add_test(TestRenderWindowFaceHiding TestRenderWindowFaceHiding.cpp)
+precess_test_link_libraries(TestRenderWindowFaceHiding renderQml vtkPart modelQml TestDeps
+    VTK::GUISupportQtQuick VTK::RenderingOpenGL2 VTK::InteractionStyle
+)
+vtk_module_autoinit(TARGETS TestRenderWindowFaceHiding MODULES
     VTK::GUISupportQtQuick VTK::RenderingOpenGL2 VTK::InteractionStyle
 )
 

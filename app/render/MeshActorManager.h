@@ -4,9 +4,11 @@
 #include "MeshActor.h"
 #include "MeshActorManagerSelectOp.h"
 #include "TopologyDiagnosticCategory.h"
-#include <unordered_map>
 #include <array>
+#include <unordered_map>
+#include <vector>
 #include <vtkScalarBarActor.h>
+#include <vtkType.h>
 
 class vtkRenderer;
 
@@ -17,11 +19,11 @@ public:
     bool hasComponent(Index component_id) const;
     std::shared_ptr<MeshActor> getComponentActor(Index component_id) const;
     void deleteComponent(Index component_id);
-    void loadMesh(Index component_id, const MeshDataVtk& model_data,
+    /** @brief 安装 GUI 线程已完成的网格快照，不在渲染线程执行源网格过滤。 */
+    void loadMesh(Index component_id, std::shared_ptr<const MeshDataSnapshot> snapshot,
         vtkRenderer* renderer);
 
     void setVisibility(Index component_id, bool visibility);
-    void setClipPlane(vtkPlane* plane);
     void setCurrentRenderStyle(MeshRenderStyle style);
     MeshRenderStyle getCurrentRenderStyle() const;
 
@@ -47,7 +49,6 @@ private:
     std::unordered_map<Index, std::shared_ptr<MeshActor>> component_actors_;
     vtkRenderer* renderer_ {};
     MeshRenderStyle current_style_ { MeshRenderStyle::FaceWithEdges };
-    vtkPlane* clip_plane_ { };
     std::array<bool, kTopologyDiagnosticCategoryCount> topology_diagnostic_category_enabled_ {};
     double dihedral_minimum_ { 0.0 };
     double dihedral_maximum_ { 150.0 };

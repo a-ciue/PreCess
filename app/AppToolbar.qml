@@ -34,6 +34,7 @@ ColumnLayout {
     readonly property real ribbonPageHeight: Math.max(64, Math.min(96, windowHeight / 12))
     // 从独立尺寸推导图标，避免依赖布局分配后的按钮高度形成反馈环。
     readonly property real ribbonIconSize: Math.round(ribbonPageHeight * 0.5)
+    readonly property real featureEntryMaximumWidth: Math.max(88, root.ribbonIconSize + 20)
 
     signal resetLayoutRequested()
     signal objectTreeToggled()
@@ -337,7 +338,7 @@ ColumnLayout {
                     id: viewBtn
                     text: "视图"
                     onClicked: viewMenu.popup(viewBtn, 0, viewBtn.height)
-                    Menu {
+                    AppMenu {
                         id: viewMenu
                         closePolicy: Popup.CloseOnEscape | Popup.CloseOnPressOutsideParent
 
@@ -544,11 +545,13 @@ ColumnLayout {
                         bottomPadding: 4
                         objectName: "algorithmAction_" + modelData.name
                         icon.source: root.getIconForPlugin(modelData.name)
-                        // 按钮文字和内边距先占位，图标使用剩余高度。
-                        icon.height: Math.max(16, Math.min(root.ribbonIconSize,
+                        // 正方形图标边长用局部源；避免 icon.width 绑定 icon.height
+                        // （同组子属性互绑会经 iconChanged 自触绑定循环）
+                        readonly property real actionIconSize: Math.max(16, Math.min(root.ribbonIconSize,
                             root.ribbonPageHeight - topPadding - bottomPadding
                             - spacing - actionFontMetrics.height))
-                        icon.width: icon.height
+                        icon.width: actionIconSize
+                        icon.height: actionIconSize
                         icon.color: "transparent"
                         Layout.fillHeight: true
                         text: modelData.display_name
@@ -608,7 +611,12 @@ ColumnLayout {
                                     icon.height: root.ribbonIconSize
                                     icon.color: "transparent"
                                     Layout.fillHeight: true
+                                    // 长标题不再撑大图标间距，完整名称通过悬停提示查看。
+                                    Layout.maximumWidth: root.featureEntryMaximumWidth
                                     text: modelData.title
+                                    ToolTip.visible: hovered
+                                    ToolTip.delay: 500
+                                    ToolTip.text: text
                                     checkable: true
                                     autoExclusive: true
                                     checked: !!(App.activeOperation && App.activeOperation.entryId === modelData.id)

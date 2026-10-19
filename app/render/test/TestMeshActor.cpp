@@ -1,6 +1,6 @@
 #include "Core.h"
 #include "MakeMeshDataVtk.h"
-#include "MeshActor.h"
+#include "TestMeshActorWithData.h"
 #include <vtkCellType.h>
 #include <vtkInteractorStyleTrackballCamera.h>
 #include <vtkNew.h>
@@ -37,7 +37,7 @@ int main(int argc, char** argv)
     vtkNew<vtkInteractorStyleTrackballCamera> style;
     renderWindowInteractor->SetInteractorStyle(style);
 
-    MeshActor meshActor(renderer);
+    TestMeshActorWithData meshActor(renderer);
     meshActor.loadModelData(test_mesh_data);
     meshActor.setVisibility(true);
 

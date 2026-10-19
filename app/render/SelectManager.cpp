@@ -103,6 +103,13 @@ void SelectManager::clearSelection()
     geom_->clearSelection();
 }
 
+std::unordered_map<Index, std::vector<vtkIdType>> SelectManager::selectedFaceIdsByComponent()
+{
+    if (select_mode_ != SelectMode::Face)
+        return {};
+    return mesh_->selectedFacesByComponent();
+}
+
 void SelectManager::setMeshIdQuery(const IMeshIdQuery* id_query)
 {
     mesh_->setMeshIdQuery(id_query);

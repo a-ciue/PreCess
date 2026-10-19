@@ -6,6 +6,7 @@
  */
 
 import QtQuick
+import PreCess.Docking as Docking
 
 Item {
     id: root
@@ -17,6 +18,14 @@ Item {
     //! @brief 标签插入标记：[{x, y, width, height}]，无效时不显示
     property var tabInsert: null
 
+    // 落点配色：取自 Docking.Theme.colors（与 app/Theme.qml 同步）
+    readonly property color accent: Docking.Theme.colors.dropAccent
+    readonly property color zoneFill: Docking.Theme.colors.dropZoneFill
+    readonly property color zoneBorder: Docking.Theme.colors.dropZoneBorder
+    readonly property color zoneMarker: Docking.Theme.colors.dropZoneMarker
+    //! 活跃态前景/边框（在强调填充上保持对比）
+    readonly property color activeFore: Docking.Theme.colors.dropZoneActiveFore
+
     // 标签插入标记（悬停目标分组的标题栏/标签栏条带时显示竖线）
     Rectangle {
         visible: root.tabInsert !== null && root.tabInsert !== undefined
@@ -25,7 +34,7 @@ Item {
         y: root.tabInsert ? root.tabInsert.y : 0
         width: root.tabInsert ? root.tabInsert.width : 0
         height: root.tabInsert ? root.tabInsert.height : 0
-        color: "#2f6fb5"
+        color: root.accent
         radius: 1
     }
 
@@ -38,7 +47,7 @@ Item {
         width: root.targetFrame ? root.targetFrame.width : 0
         height: root.targetFrame ? root.targetFrame.height : 0
         color: "transparent"
-        border.color: "#2f6fb5"
+        border.color: root.accent
         border.width: 2
         radius: 2
     }
@@ -54,9 +63,9 @@ Item {
             width: modelData.width
             height: modelData.height
             radius: 3
-            color: modelData.active ? "#2f6fb5" : "#cfe0f3"
+            color: modelData.active ? root.accent : root.zoneFill
             opacity: modelData.active ? 0.9 : 0.6
-            border.color: modelData.active ? "#ffffff" : "#8fb2d9"
+            border.color: modelData.active ? root.activeFore : root.zoneBorder
             border.width: modelData.active ? 2 : 1
 
             // 位置标记：中心方框画大方块，其余画小方块
@@ -65,7 +74,7 @@ Item {
                 width: Math.max(6, parent.width / 3)
                 height: width
                 radius: 1
-                color: modelData.active ? "#ffffff" : "#9fb9d6"
+                color: modelData.active ? root.activeFore : root.zoneMarker
                 opacity: 0.9
             }
         }
