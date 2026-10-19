@@ -127,6 +127,7 @@ public:
      */
     Q_INVOKABLE void setVisibility(Index model_id, bool visibility);
     Q_INVOKABLE void setComponentVisibility(Index component_id, bool visibility);
+    /** @brief 设置网格显隐；显示时恢复人工隐藏面和面隔离，保留几何及裁剪。 */
     Q_INVOKABLE void setMeshVisibility(Index component_id, bool visibility);
     Q_INVOKABLE void setGeometryVisibility(Index component_id, bool visibility);
 
@@ -187,10 +188,6 @@ public:
     /** @brief 仅在所选面所属组件内隐藏其他面，保留其他组件、几何及同组件其他对象的显示。 */
     Q_INVOKABLE void isolateSelectedFaces();
 
-    /**
-     * @brief 恢复目标组件的人工隐藏面并结束其面隔离，保留整体开关与裁剪
-     */
-    Q_INVOKABLE void showAllHiddenFaces(Index component_id);
     /** @brief 恢复全部组件的网格和几何，清除人工隐藏并结束面隔离，保留裁剪。 */
     Q_INVOKABLE void showAll();
 
@@ -260,7 +257,6 @@ private:
     enum class FaceOperation { Hide,
         Show,
         Isolate,
-        RestoreComponent,
         ShowScene,
         Reverse };
     using SelectedFaces = std::unordered_map<Index, std::vector<vtkIdType>>;

@@ -24,6 +24,7 @@
 #include <vtkMath.h>
 #include <vtkObjectFactory.h>
 #include <vtkPlane.h>
+#include <vtkPolyData.h>
 
 #include <algorithm>
 #include <cmath>
@@ -476,12 +477,6 @@ void QRenderWindow::loadMeshData(Index component_id, const MeshDataVtk& data)
 void QRenderWindow::hideSelectedFaces() { applyFaceOperation(FaceOperation::Hide); }
 void QRenderWindow::showSelectedFaces() { applyFaceOperation(FaceOperation::Show); }
 void QRenderWindow::isolateSelectedFaces() { applyFaceOperation(FaceOperation::Isolate); }
-void QRenderWindow::showAllHiddenFaces(Index component_id)
-{
-    const auto pipeline = mesh_pipeline_data_.find(component_id);
-    if (pipeline != mesh_pipeline_data_.end() && pipeline->second->generation() != 0)
-        applyFaceOperation(FaceOperation::RestoreComponent, { component_id });
-}
 void QRenderWindow::showAll() { applyFaceOperation(FaceOperation::ShowScene); }
 
 void QRenderWindow::reverseComponentVisibility(Index component_id)
@@ -542,13 +537,6 @@ void QRenderWindow::applyFaceOperation(FaceOperation operation, const std::vecto
                 pipeline.showFaces(faces);
                 notifications.push_back(id);
             }
-            publish_mesh(id);
-        }
-    } else if (operation == FaceOperation::RestoreComponent) {
-        // 组件恢复只清除目标网格的人工隐藏与隔离，不改其他组件及几何开关。
-        for (auto id : ids) {
-            mesh_pipeline_data_.at(id)->showAllFaces();
-            notifications.push_back(id);
             publish_mesh(id);
         }
     } else if (operation == FaceOperation::Isolate) {
@@ -681,15 +669,26 @@ void QRenderWindow::setMeshVisibility(Index component_id, bool visibility)
     if (!pipeline)
         pipeline = std::make_unique<MeshPipelineData>();
     pipeline->setVisibility(visibility);
+    if (visibility)
+        pipeline->showAllFaces();
     // 未加载时只保存 GUI 意图，由首次有效快照携带，避免旧的无版本命令覆盖新状态。
     if (pipeline->generation() != 0) {
-        // 整体开关不触发 Filter 重建，只更新发布版本和渲染端开关。
+        const auto previous = mesh_snapshots_.at(component_id);
         const auto snapshot = prepareMeshSnapshot(component_id);
-        dispatch_async([component_id, visibility, snapshot, this](vtkRenderWindow*, vtkUserData user_data) {
+        // 仅恢复导致面输出重建时清理旧下标，普通显隐切换保留有效选择。
+        const bool faces_changed = previous->visible_faces != snapshot->visible_faces;
+        dispatch_async([component_id, visibility, snapshot, faces_changed,
+                           revision = selection_revision_, this](vtkRenderWindow*, vtkUserData user_data) {
             auto* vtk = Data::SafeDownCast(user_data);
+            if (faces_changed) {
+                render_selection_revision_ = revision;
+                select_manager_->clearSelection();
+            }
             vtk->mesh_actor_manager_->loadMesh(component_id, snapshot, vtk->renderer_);
             select_manager_->setMeshHighlightVisible(component_id, visibility);
             select_manager_->refreshComponentHighlight();
+            if (faces_changed)
+                publishSelection();
         });
     }
     publishComponentVisibility(component_id);

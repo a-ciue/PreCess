@@ -295,7 +295,7 @@ Pane {
                             App.componentVisibilityUpdated(viewDelegate.model.nodeId, newVis, newVis)
                         else if (viewDelegate.depth === 2 && (viewDelegate.model.nodeType === objectTree._nodeTypeMesh
                             || viewDelegate.model.nodeType === objectTree._nodeTypeGeometry))
-                            objectTree.emitComponentVisibility(viewDelegate.model.componentId)
+                            objectTree.emitComponentVisibility(viewDelegate.model.componentId, viewDelegate.model.nodeType)
                         return
                     }
                     if (mouse.button === Qt.RightButton) {
@@ -412,7 +412,8 @@ Pane {
         }
     }
 
-    function emitComponentVisibility(componentId) {
+    // 子节点只更新对应对象，避免几何显隐触发网格显示时的面恢复。
+    function emitComponentVisibility(componentId, nodeType) {
         let compIdx = treeModel.findIndexByNodeId(componentId, 1)
         if (!compIdx || !compIdx.valid) return
         let meshVis = false, geomVis = false
@@ -423,7 +424,12 @@ Pane {
             if (cType === objectTree._nodeTypeMesh) meshVis = cVis
             else if (cType === objectTree._nodeTypeGeometry) geomVis = cVis
         }
-        App.componentVisibilityUpdated(componentId, meshVis, geomVis)
+        if (nodeType === objectTree._nodeTypeMesh)
+            App.registry.renderWindow.setMeshVisibility(componentId, meshVis)
+        else if (nodeType === objectTree._nodeTypeGeometry)
+            App.registry.renderWindow.setGeometryVisibility(componentId, geomVis)
+        else
+            App.componentVisibilityUpdated(componentId, meshVis, geomVis)
     }
 
     function hideNode(nodeId, depth, nodeType, componentId) {
@@ -435,7 +441,7 @@ Pane {
         else if (depth === 1)
             App.componentVisibilityUpdated(nodeId, false, false)
         else if (depth === 2 && (nodeType === objectTree._nodeTypeMesh || nodeType === objectTree._nodeTypeGeometry))
-            emitComponentVisibility(componentId)
+            emitComponentVisibility(componentId, nodeType)
     }
 
     // 显示目标节点时同步恢复范围内的人工隐藏面，保留裁剪及范围外状态。
@@ -443,19 +449,12 @@ Pane {
         let idx = treeModel.findIndexByNodeId(nodeId, depth)
         if (!idx || !idx.valid) return
         treeModel.setVisibility(idx, true)
-        if (depth === 0) {
+        if (depth === 0)
             App.modelVisibilityUpdated(nodeId, true)
-            let components = QModelManager.query.getComponentsSummary(nodeId)
-            for (let component of components)
-                App.registry.renderWindow.showAllHiddenFaces(component.component_id)
-        } else if (depth === 1) {
+        else if (depth === 1)
             App.componentVisibilityUpdated(nodeId, true, true)
-            App.registry.renderWindow.showAllHiddenFaces(nodeId)
-        } else if (depth === 2 && (nodeType === objectTree._nodeTypeMesh || nodeType === objectTree._nodeTypeGeometry)) {
-            emitComponentVisibility(componentId)
-            if (nodeType === objectTree._nodeTypeMesh)
-                App.registry.renderWindow.showAllHiddenFaces(componentId)
-        }
+        else if (depth === 2 && (nodeType === objectTree._nodeTypeMesh || nodeType === objectTree._nodeTypeGeometry))
+            emitComponentVisibility(componentId, nodeType)
     }
 
     function deleteNode(nodeId, depth, nodeType, componentId) {
@@ -512,7 +511,9 @@ Pane {
                 let idx = treeModel.findIndexByNodeId(cid, 1)
                 if (idx && idx.valid) {
                     treeModel.setVisibility(idx, vis)
-                    App.componentVisibilityUpdated(cid, vis, vis)
+                    // 目标组件在下方按最终子节点状态提交，避免先显示网格再隔离几何。
+                    if (!vis)
+                        App.componentVisibilityUpdated(cid, false, false)
                 }
             }
         }

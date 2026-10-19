@@ -334,6 +334,10 @@ TEST_CASE("Actual QML show all entries restore hidden faces and end isolation", 
     isolate_face(second_id, 2.25);
     check_mesh(id, 1, true);
     check_mesh(second_id, 1, true);
+    // 几何子节点的显隐通知不得顺带显示网格并清除已有隐藏面。
+    REQUIRE(QMetaObject::invokeMethod(f.tree.get(), "emitComponentVisibility",
+        Q_ARG(QVariant, id), Q_ARG(QVariant, static_cast<int>(TreeNode::NodeType::Geometry))));
+    check_mesh(id, 1, true);
     viewport->setMeshVisibility(id, false);
     REQUIRE_FALSE(tree->data(tree->findIndexByNodeId(id, 1), TreeModel::IsVisibleRole).toBool());
 

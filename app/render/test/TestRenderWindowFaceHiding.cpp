@@ -270,11 +270,11 @@ TEST_CASE("QRenderWindow hiding faces clears selection and highlighting")
     CHECK(env.selectedFaceIds().empty());
     CHECK(env.visibleFaceIds() == std::vector<Index>({ 1 }));
     CHECK(env.highlightedCellCount() == 0);
-    // 清空后不能再用旧选择恢复隐藏面，只能通过组件恢复入口恢复。
+    // 清空后不能再用旧选择恢复隐藏面，改由网格显示入口恢复。
     env.item.showSelectedFaces();
     REQUIRE(env.flush());
     CHECK(env.visibleFaceIds() == std::vector<Index>({ 1 }));
-    env.item.showAllHiddenFaces(7);
+    env.item.setMeshVisibility(7, true);
     REQUIRE(env.flush());
     CHECK(env.visibleFaceIds() == std::vector<Index>({ 0, 1 }));
 }
@@ -299,11 +299,11 @@ TEST_CASE("QRenderWindow hides original face IDs in their own components")
     CHECK(env.highlightedCellCount() == 0);
     CHECK(env.visibleFaceIds(7) == std::vector<Index>({ 1 }));
     CHECK(env.visibleFaceIds(8) == std::vector<Index>({ 0 }));
-    env.item.showAllHiddenFaces(7);
+    env.item.setMeshVisibility(7, true);
     REQUIRE(env.flush());
     CHECK(env.visibleFaceIds(7) == std::vector<Index>({ 0, 1 }));
     CHECK(env.visibleFaceIds(8) == std::vector<Index>({ 0 }));
-    env.item.showAllHiddenFaces(8);
+    env.item.setMeshVisibility(8, true);
     REQUIRE(env.flush());
     CHECK(env.visibleFaceIds(8) == std::vector<Index>({ 0, 1 }));
 }
@@ -330,7 +330,7 @@ TEST_CASE("QRenderWindow exports original IDs when picking compressed render ind
     CHECK(env.selectedFaceIds().empty());
     CHECK(env.visibleFaceIds().empty());
     CHECK(env.highlightedCellCount() == 0);
-    env.item.showAllHiddenFaces(7);
+    env.item.setMeshVisibility(7, true);
     REQUIRE(env.flush());
     CHECK(env.visibleFaceIds() == std::vector<Index>({ 0, 1 }));
 }
@@ -345,7 +345,7 @@ TEST_CASE("QRenderWindow data updates invalidate compressed selection indices")
     REQUIRE(env.flush());
     env.selectFace(1);
     REQUIRE(env.selectedFaceIds() == std::vector<Index>({ 1 }));
-    SECTION("restore") { env.item.showAllHiddenFaces(7); }
+    SECTION("restore") { env.item.setMeshVisibility(7, true); }
     SECTION("clip") { env.item.setMeshClip(true); }
     SECTION("isolate") { env.item.isolateSelectedFaces(); }
     SECTION("reverse") { env.item.reverseComponentVisibility(7); }
@@ -355,7 +355,7 @@ TEST_CASE("QRenderWindow data updates invalidate compressed selection indices")
     CHECK(env.highlightedCellCount() == 0);
     // 恢复后没有新选择时隐藏应为空操作；重新拾取仍只能影响原面 1。
     env.item.setMeshClip(false);
-    env.item.showAllHiddenFaces(7);
+    env.item.setMeshVisibility(7, true);
     REQUIRE(env.flush());
     env.item.hideSelectedFaces();
     REQUIRE(env.flush());
@@ -404,7 +404,7 @@ TEST_CASE("QRenderWindow reverses hidden faces independently of the selection mo
     env.item.reverseComponentVisibility(7);
     REQUIRE(env.flush());
     CHECK(env.visibleFaceIds() == std::vector<Index>({ 1 }));
-    env.item.showAllHiddenFaces(7);
+    env.item.setMeshVisibility(7, true);
     REQUIRE(env.flush());
     CHECK(env.visibleFaceIds() == std::vector<Index>({ 0, 1 }));
 }
@@ -641,7 +641,7 @@ TEST_CASE("QRenderWindow GUI mesh pipeline works with a separate render thread")
     env.item.setMeshClip(false);
     REQUIRE(env.flush());
     CHECK(env.visibleFaceIds() == std::vector<Index>({ 1 }));
-    env.item.showAllHiddenFaces(7);
+    env.item.setMeshVisibility(7, true);
     REQUIRE(env.flush());
     CHECK(env.visibleFaceIds() == std::vector<Index>({ 0, 1 }));
     CHECK(env.selectedFaceIds().empty());
@@ -688,7 +688,7 @@ TEST_CASE("QRenderWindow submitted face operations survive scene graph recreatio
     QObject::connect(&env.window, &QQuickWindow::sceneGraphInitialized, &env.window, [&recreated] { recreated.store(true); }, Qt::DirectConnection);
 
     // GUI 同步完成面数据计算，渲染安装尚未进入下一次同步，随后关闭窗口。
-    env.item.showAllHiddenFaces(7);
+    env.item.setMeshVisibility(7, true);
     env.item.setMeshVisibility(7, false);
     env.item.dispatch_async([&exported](vtkRenderWindow*, QQuickVTKItem::vtkUserData) { exported.store(true); });
     env.window.hide();
@@ -753,6 +753,11 @@ TEST_CASE("QRenderWindow publishes GUI visibility decisions without stale render
     REQUIRE(env.flush());
     CHECK(actor_visible);
     CHECK(tree_visible);
+    // 没有隐藏面时重复显示不重建面下标，仍保留有效选择。
+    env.selectFace(0);
+    env.item.setMeshVisibility(7, true);
+    REQUIRE(env.flush());
+    CHECK(env.selectedFaceIds() == std::vector<Index>({ 0 }));
 }
 
 //! @brief GUI 等待渲染侧空快照；同上下文允许旧选择先到达，参数切换和网格换代仍拒绝旧结果。
@@ -1010,7 +1015,7 @@ TEST_CASE("QRenderWindow preserves mesh and geometry styles across scene graph r
     check_styles();
 }
 
-//! @brief 组件恢复只清除自身面约束，保留整体开关；组件反转不改变其他组件的隔离与几何状态。
+//! @brief 网格显示恢复自身隐藏面；组件反转不改变其他组件的隔离与几何状态。
 TEST_CASE("QRenderWindow component face restore and reversal leave other components unchanged")
 {
     testApplication();
@@ -1038,22 +1043,19 @@ TEST_CASE("QRenderWindow component face restore and reversal leave other compone
         [&invalid_notifications](Index, bool, bool) { ++invalid_notifications; });
     env.item.reverseComponentVisibility(-1);
     env.item.reverseComponentVisibility(99);
-    env.item.showAllHiddenFaces(99);
     CHECK(invalid_notifications == 0);
     env.item.setMeshVisibility(7, false);
-    env.item.showAllHiddenFaces(7);
+    env.item.setMeshVisibility(7, true);
     REQUIRE(env.flush());
     CHECK(env.visibleFaceIds(7) == std::vector<Index>({ 0, 1 }));
     CHECK(env.visibleFaceIds(8) == std::vector<Index>({ 1 }));
-    bool gate_preserved = false;
-    env.item.dispatch_async([&gate_preserved](vtkRenderWindow*, QQuickVTKItem::vtkUserData user_data) {
+    bool mesh_shown = false;
+    env.item.dispatch_async([&mesh_shown](vtkRenderWindow*, QQuickVTKItem::vtkUserData user_data) {
         auto* data = QRenderWindow::Data::SafeDownCast(user_data);
-        gate_preserved = !data->mesh_actor_manager_->getComponentActor(7)->isVisibilityEnabled();
+        mesh_shown = data->mesh_actor_manager_->getComponentActor(7)->isVisibilityEnabled();
     });
     REQUIRE(env.flush());
-    CHECK(gate_preserved);
-    env.item.setMeshVisibility(7, true);
-    REQUIRE(env.flush());
+    CHECK(mesh_shown);
     bool restored_domain = false;
     env.item.dispatch_async([&restored_domain](vtkRenderWindow*, QQuickVTKItem::vtkUserData user_data) {
         auto* data = QRenderWindow::Data::SafeDownCast(user_data);
