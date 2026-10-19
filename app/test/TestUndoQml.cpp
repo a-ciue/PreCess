@@ -199,7 +199,7 @@ TEST_CASE("Actual QML synchronizes reversed mesh and geometry visibility across 
     }
 }
 
-//! @brief 验证全场景恢复入口，以及模型、组件、网格菜单的恢复范围。
+//! @brief 验证全场景恢复入口，以及模型、组件、网格“显示”菜单的恢复范围。
 TEST_CASE("Actual QML show all entries restore hidden faces and end isolation", "[QML][visibility]")
 {
     application();
@@ -355,11 +355,11 @@ TEST_CASE("Actual QML show all entries restore hidden faces and end isolation", 
         REQUIRE(show_all);
         REQUIRE(QMetaObject::invokeMethod(show_all, "triggered"));
     }
-    SECTION("object tree component face restore") { restore_entry = QString("restoreHiddenFaces-1-%1").arg(id); }
-    SECTION("object tree mesh face restore") { restore_entry = QString("restoreHiddenFaces-2-%1").arg(id); }
-    SECTION("object tree model face restore")
+    SECTION("object tree component show") { restore_entry = QString("showNode-1-%1").arg(id); }
+    SECTION("object tree mesh show") { restore_entry = QString("showNode-2-%1").arg(id); }
+    SECTION("object tree model show")
     {
-        restore_entry = QString("restoreHiddenFaces-0-%1").arg(model_id);
+        restore_entry = QString("showNode-0-%1").arg(model_id);
         ComponentDatas other_components;
         auto other_component = std::make_unique<ComponentData>();
         other_component->mesh = mesh.clone();
@@ -393,10 +393,10 @@ TEST_CASE("Actual QML show all entries restore hidden faces and end isolation", 
         REQUIRE(QMetaObject::invokeMethod(tree_view, "forceLayout"));
         REQUIRE(flush());
         auto node_index = tree->findIndexByNodeId(id, 1);
-        const bool restore_model = restore_entry.startsWith("restoreHiddenFaces-0-");
+        const bool restore_model = restore_entry.startsWith("showNode-0-");
         if (restore_model)
             node_index = node_index.parent();
-        else if (restore_entry.startsWith("restoreHiddenFaces-2-"))
+        else if (restore_entry.startsWith("showNode-2-"))
             node_index = tree->index(0, 0, node_index);
         QQuickItem* delegate = nullptr;
         REQUIRE(QMetaObject::invokeMethod(tree_view, "itemAtIndex",
@@ -404,7 +404,9 @@ TEST_CASE("Actual QML show all entries restore hidden faces and end isolation", 
         REQUIRE(delegate);
         auto* restore = delegate->findChild<QObject*>(restore_entry);
         REQUIRE(restore);
-        CHECK(restore->property("text").toString() == "恢复隐藏面");
+        CHECK(restore->property("text").toString() == "显示");
+        for (auto* item : delegate->findChildren<QObject*>())
+            CHECK(item->property("text").toString() != "恢复隐藏面");
         auto* menu = restore->property("menu").value<QObject*>();
         REQUIRE(menu);
         REQUIRE(QMetaObject::invokeMethod(menu, "open"));
@@ -413,14 +415,14 @@ TEST_CASE("Actual QML show all entries restore hidden faces and end isolation", 
         CHECK(restore->property("height").toDouble() > 0);
         REQUIRE(QMetaObject::invokeMethod(restore, "triggered"));
         REQUIRE(QMetaObject::invokeMethod(menu, "close"));
-        CHECK_FALSE(tree->data(tree->findIndexByNodeId(id, 1), TreeModel::IsVisibleRole).toBool());
-        check_mesh(id, 2, false);
+        CHECK(tree->data(tree->findIndexByNodeId(id, 1), TreeModel::IsVisibleRole).toBool());
+        check_mesh(id, 2, true);
         check_mesh(second_id, restore_model ? 0 : 1, true);
         if (restore_model) {
             check_mesh(other_id, 1, true);
             // 停用裁剪后，同模型两个组件均恢复完整面集，其他模型仍保留隐藏面。
             viewport->setMeshClip(false);
-            check_mesh(id, 2, false);
+            check_mesh(id, 2, true);
             check_mesh(second_id, 2, true);
             check_mesh(other_id, 1, true);
         }

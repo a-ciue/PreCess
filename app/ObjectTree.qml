@@ -359,29 +359,12 @@ Pane {
                 }
 
                 MenuItem {
+                    objectName: "showNode-" + viewDelegate.model.nodeType + "-"
+                                + (viewDelegate.depth === 0 ? viewDelegate.model.nodeId : viewDelegate.model.componentId)
                     text: "显示"
                     onTriggered: objectTree.showNode(
                         viewDelegate.model.nodeId, viewDelegate.depth,
                         viewDelegate.model.nodeType, viewDelegate.model.componentId)
-                }
-
-                // 按模型或组件范围恢复隐藏面，保留整体开关、裁剪及范围外状态。
-                MenuItem {
-                    objectName: "restoreHiddenFaces-" + viewDelegate.model.nodeType + "-"
-                                + (viewDelegate.depth === 0 ? viewDelegate.model.nodeId : viewDelegate.model.componentId)
-                    text: "恢复隐藏面"
-                    visible: viewDelegate.depth <= 1
-                             || (viewDelegate.depth === 2 && viewDelegate.model.nodeType === objectTree._nodeTypeMesh)
-                    height: visible ? implicitHeight : 0
-                    onTriggered: {
-                        if (viewDelegate.depth === 0) {
-                            let components = QModelManager.query.getComponentsSummary(viewDelegate.model.nodeId)
-                            for (let component of components)
-                                App.registry.renderWindow.showAllHiddenFaces(component.component_id)
-                        } else {
-                            App.registry.renderWindow.showAllHiddenFaces(viewDelegate.model.componentId)
-                        }
-                    }
                 }
 
                 MenuSeparator {}
@@ -455,16 +438,24 @@ Pane {
             emitComponentVisibility(componentId)
     }
 
+    // 显示目标节点时同步恢复范围内的人工隐藏面，保留裁剪及范围外状态。
     function showNode(nodeId, depth, nodeType, componentId) {
         let idx = treeModel.findIndexByNodeId(nodeId, depth)
         if (!idx || !idx.valid) return
         treeModel.setVisibility(idx, true)
-        if (depth === 0)
+        if (depth === 0) {
             App.modelVisibilityUpdated(nodeId, true)
-        else if (depth === 1)
+            let components = QModelManager.query.getComponentsSummary(nodeId)
+            for (let component of components)
+                App.registry.renderWindow.showAllHiddenFaces(component.component_id)
+        } else if (depth === 1) {
             App.componentVisibilityUpdated(nodeId, true, true)
-        else if (depth === 2 && (nodeType === objectTree._nodeTypeMesh || nodeType === objectTree._nodeTypeGeometry))
+            App.registry.renderWindow.showAllHiddenFaces(nodeId)
+        } else if (depth === 2 && (nodeType === objectTree._nodeTypeMesh || nodeType === objectTree._nodeTypeGeometry)) {
             emitComponentVisibility(componentId)
+            if (nodeType === objectTree._nodeTypeMesh)
+                App.registry.renderWindow.showAllHiddenFaces(componentId)
+        }
     }
 
     function deleteNode(nodeId, depth, nodeType, componentId) {
