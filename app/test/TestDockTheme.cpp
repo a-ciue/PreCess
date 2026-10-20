@@ -4,9 +4,9 @@
  */
 #include "ui/DockTheme.h"
 
-#include <catch2/catch_test_macros.hpp>
 #include <QColor>
 #include <QVariantMap>
+#include <catch2/catch_test_macros.hpp>
 
 namespace {
 
@@ -25,22 +25,31 @@ TEST_CASE("DockTheme: default light colors", "[DockTheme]")
     dock::ui::DockTheme theme;
     REQUIRE_FALSE(theme.dark());
 
+    // 无壁纸：面令牌保持不透明
     const QVariantMap light = theme.colors();
     REQUIRE(light.value("border").value<QColor>() == QColor("#D9DDE3"));
-    REQUIRE(light.value("surface").value<QColor>() == withAlpha("#FFFFFF", 0.72));
-    REQUIRE(light.value("surfaceAlt").value<QColor>() == withAlpha("#F7F8FA", 0.62));
-    REQUIRE(light.value("panelHeaderSurface").value<QColor>() == withAlpha("#E6EDF5", 0.70));
+    REQUIRE(light.value("surface").value<QColor>() == QColor("#FFFFFF"));
+    REQUIRE(light.value("surfaceAlt").value<QColor>() == QColor("#F7F8FA"));
+    REQUIRE(light.value("panelHeaderSurface").value<QColor>() == QColor("#E6EDF5"));
     // 菜单面保持不透明
     REQUIRE(light.value("menuSurface").value<QColor>() == QColor("#FFFFFF"));
     // 壁纸遮罩：浅色白亮化
     REQUIRE(light.value("wallpaperTint").value<QColor>() == withAlpha("#FFFFFF", 0.45));
     REQUIRE(light.value("dropAccent").value<QColor>() == QColor("#2f6fb5"));
     REQUIRE(light.value("dropZoneActiveFore").value<QColor>() == QColor("#FFFFFF"));
+
+    // 有壁纸：面令牌切换为半透明
+    theme.setWallpaperUrl(QStringLiteral("image://wallpaper/abc.png"));
+    const QVariantMap wallpaper = theme.colors();
+    REQUIRE(wallpaper.value("surface").value<QColor>() == withAlpha("#FFFFFF", 0.72));
+    REQUIRE(wallpaper.value("surfaceAlt").value<QColor>() == withAlpha("#F7F8FA", 0.62));
+    REQUIRE(wallpaper.value("panelHeaderSurface").value<QColor>() == withAlpha("#E6EDF5", 0.70));
 }
 
 TEST_CASE("DockTheme: dark colors after setDark", "[DockTheme]")
 {
     dock::ui::DockTheme theme;
+    theme.setWallpaperUrl(QStringLiteral("image://wallpaper/abc.png"));
     theme.setDark(true);
     REQUIRE(theme.dark());
 
@@ -54,6 +63,18 @@ TEST_CASE("DockTheme: dark colors after setDark", "[DockTheme]")
     REQUIRE(dark.value("wallpaperTint").value<QColor>() == withAlpha("#1F1F24", 0.55));
     REQUIRE(dark.value("dropAccent").value<QColor>() == QColor("#4EA1F3"));
     REQUIRE(dark.value("dropZoneActiveFore").value<QColor>() == QColor("#FFFFFF"));
+}
+
+TEST_CASE("DockTheme: clearing wallpaper restores opaque surfaces", "[DockTheme]")
+{
+    dock::ui::DockTheme theme;
+    theme.setWallpaperUrl(QStringLiteral("image://wallpaper/abc.png"));
+    REQUIRE(theme.colors().value("surface").value<QColor>() == withAlpha("#FFFFFF", 0.72));
+
+    theme.setWallpaperUrl(QString());
+    REQUIRE(theme.wallpaperUrl().isEmpty());
+    REQUIRE(theme.colors().value("surface").value<QColor>() == QColor("#FFFFFF"));
+    REQUIRE(theme.colors().value("surfaceAlt").value<QColor>() == QColor("#F7F8FA"));
 }
 
 TEST_CASE("DockTheme: wallpaper url propagates", "[DockTheme]")

@@ -40,6 +40,7 @@ qt_add_qml_module(${MYNAME}
             PreferenceCategoryButton.qml
             AppearancePreview.qml
             ThemeModeSwitch.qml
+            WallpaperBackground.qml
             OutputLog.qml
             Theme.qml
             AppMenu.qml

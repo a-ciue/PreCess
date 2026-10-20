@@ -57,86 +57,15 @@ ApplicationWindow {
     palette.toolTipBase: Theme.menuSurface
     palette.toolTipText: Theme.textPrimary
 
-    // 壁纸背景层：纯色兜底 + 双缓冲图片淡入淡出（无壁纸时露出 windowBackground）
-    background: Item {
-        Rectangle {
-            anchors.fill: parent
-            color: Theme.windowBackground
+    // 壁纸背景层：纯色兜底、双图淡入与加载失败回退由独立组件承载
+    background: WallpaperBackground {
+        source: Theme.wallpaperSource
+        backgroundColor: Theme.windowBackground
+        tintColor: Theme.wallpaperTint
+
+        onLoadFailed: function(imageSource) {
+            console.warn("wallpaper: failed to load", imageSource)
         }
-
-        // 当前图：承接上一次过渡结果
-        Image {
-            id: wallpaperCurrent
-            anchors.fill: parent
-            fillMode: Image.PreserveAspectCrop
-            asynchronous: true
-            visible: source != ""
-        }
-
-        // 新图：加载完成后淡入，结束后交给 current（避免切换闪烁）
-        Image {
-            id: wallpaperIncoming
-            anchors.fill: parent
-            fillMode: Image.PreserveAspectCrop
-            asynchronous: true
-            visible: source != ""
-            opacity: 0
-
-            onStatusChanged: {
-                if (status === Image.Ready)
-                    wallpaperFadeIn.restart()
-            }
-        }
-
-        // 壁纸遮罩：叠在壁纸之上随主题调色（浅色白亮化、深色灰暗化），无壁纸时不叠加
-        Rectangle {
-            anchors.fill: parent
-            color: Theme.wallpaperTint
-            visible: Theme.wallpaper !== ""
-
-            Behavior on color {
-                ColorAnimation {
-                    duration: 300
-                    easing.type: Easing.InOutCubic
-                }
-            }
-        }
-
-        NumberAnimation {
-            id: wallpaperFadeIn
-            target: wallpaperIncoming
-            property: "opacity"
-            from: 0
-            to: 1
-            duration: 400
-            easing.type: Easing.InOutCubic
-            onFinished: {
-                wallpaperCurrent.source = wallpaperIncoming.source
-                wallpaperIncoming.source = ""
-                wallpaperIncoming.opacity = 0
-            }
-        }
-
-        Connections {
-            target: Theme
-            function onWallpaperChanged() {
-                // 先停止进行中的淡入：否则快速连切时旧动画的 onFinished 会以被改写后的
-                // incoming.source 覆盖 current（甚至清空），导致错帧或残留
-                wallpaperFadeIn.stop()
-                // 以字符串壁纸 id 为准：url 与字符串用 === 比较不可靠，
-                // 会导致清空分支被跳过、壁纸残留
-                if (Theme.wallpaper.length === 0) {
-                    wallpaperCurrent.source = ""
-                    wallpaperIncoming.source = ""
-                    wallpaperIncoming.opacity = 0
-                    return
-                }
-                wallpaperIncoming.opacity = 0
-                wallpaperIncoming.source = Theme.wallpaperSource
-            }
-        }
-
-        Component.onCompleted: wallpaperCurrent.source = Theme.wallpaperSource
     }
 
     // 冻结任务忙碌态（聚合位经共享任务状态源单点暴露）：算法执行 ∨ 功能冻结任务——
@@ -162,11 +91,16 @@ ApplicationWindow {
         value: Theme.wallpaperSource
     }
 
-    // 同步应用调色板：ToolTip 等按应用调色板取色的弹窗据此跟随主题
+    // 同步应用调色板：ToolTip 等按应用调色板取色的弹窗据此跟随主题与壁纸状态
     Binding {
         target: AppPalette
         property: "dark"
         value: Theme.dark
+    }
+    Binding {
+        target: AppPalette
+        property: "hasWallpaper"
+        value: Theme.hasWallpaper
     }
 
     // 布局持久化：JSON 快照存于 QSettings；退出保存，启动恢复

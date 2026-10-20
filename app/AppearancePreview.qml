@@ -35,17 +35,18 @@ Item {
         }
 
         Image {
+            id: wallpaperImage
             anchors.fill: parent
             source: root.wallpaperSource
             fillMode: Image.PreserveAspectCrop
             asynchronous: true
-            visible: root.hasWallpaper
+            visible: root.hasWallpaper && status !== Image.Error
         }
 
         Rectangle {
             anchors.fill: parent
             color: Theme.wallpaperTint
-            visible: root.hasWallpaper
+            visible: root.hasWallpaper && wallpaperImage.status !== Image.Error
 
             Behavior on color {
                 ColorAnimation {

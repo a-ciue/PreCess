@@ -133,3 +133,17 @@ precess_test_link_libraries(TestWallpaperLibrary
     Qt${VTK_QT_VERSION}::Quick
     spdlog::spdlog
 )
+
+# 带 EXIF Orientation=6 的测试图片（400x200，显示方向 200x400）
+qt_add_resources(TestWallpaperLibrary wallpaper_test_data
+    PREFIX "/test-data"
+    BASE "${CMAKE_CURRENT_SOURCE_DIR}/data"
+    FILES data/wallpaper_exif6.jpg)
+
+# 壁纸背景组件：淡入交接、清除与失败回退
+precess_add_test(TestWallpaperBackground TestWallpaperBackground.cpp)
+precess_test_link_libraries(TestWallpaperBackground Qt6::Quick Qt6::Qml)
+qt_add_resources(TestWallpaperBackground wallpaper_background
+    PREFIX "/wallpaper-bg"
+    BASE "${CMAKE_CURRENT_SOURCE_DIR}/.."
+    FILES ../WallpaperBackground.qml)

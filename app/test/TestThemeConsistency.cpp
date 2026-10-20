@@ -8,19 +8,21 @@
 #include "core/ThemePalette.h"
 #include "ui/DockTheme.h"
 
-#include <catch2/catch_test_macros.hpp>
 #include <QColor>
 #include <QPalette>
 #include <QVariantMap>
+#include <catch2/catch_test_macros.hpp>
 
 namespace {
 
-void verifyConsistency(bool dark)
+void verifyConsistency(bool dark, bool has_wallpaper)
 {
-    const QPalette palette = app::core::buildThemePalette(dark);
+    const QPalette palette = app::core::buildThemePalette(dark, has_wallpaper);
 
     dock::ui::DockTheme dock_theme;
     dock_theme.setDark(dark);
+    dock_theme.setWallpaperUrl(has_wallpaper ? QStringLiteral("image://wallpaper/test.png")
+                                             : QString());
     const QVariantMap colors = dock_theme.colors();
 
     auto dock_color = [&colors](const char* key) {
@@ -50,12 +52,22 @@ void verifyConsistency(bool dark)
 
 }
 
-TEST_CASE("Theme consistency: light", "[ThemeConsistency]")
+TEST_CASE("Theme consistency: light, no wallpaper", "[ThemeConsistency]")
 {
-    verifyConsistency(false);
+    verifyConsistency(false, false);
 }
 
-TEST_CASE("Theme consistency: dark", "[ThemeConsistency]")
+TEST_CASE("Theme consistency: light, wallpaper", "[ThemeConsistency]")
 {
-    verifyConsistency(true);
+    verifyConsistency(false, true);
+}
+
+TEST_CASE("Theme consistency: dark, no wallpaper", "[ThemeConsistency]")
+{
+    verifyConsistency(true, false);
+}
+
+TEST_CASE("Theme consistency: dark, wallpaper", "[ThemeConsistency]")
+{
+    verifyConsistency(true, true);
 }

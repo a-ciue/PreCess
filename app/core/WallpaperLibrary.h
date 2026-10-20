@@ -21,27 +21,34 @@
  * @brief image://wallpaper/ 图像提供者
  *
  * id 为托管目录内的文件名；非法 id 或缺失文件返回空图像，QML 侧回退纯色背景。
- * 不限制导入分辨率/大小，但按“自适应填充”语义解码：优先采用 QML 请求尺寸，
- * 否则以主屏分辨率（含设备像素比）为解码上限，避免超高清图全量解码。
+ * 解码遵循“不放大、限制输出规模、按 EXIF 方向显示”的规则：优先采用 QML 请求
+ * 尺寸，否则以主屏分辨率（含设备像素比）为解码上限；小图保留原始像素由显示层
+ * 放大，超大图按像素总量与最长边上限降低解码分辨率。
  */
-class WallpaperProvider : public QQuickImageProvider
-{
+class WallpaperProvider : public QQuickImageProvider {
 public:
-    WallpaperProvider();
+    //! @brief 解码输出上限；测试可注入更小值验证降采样路径
+    struct DecodeLimits {
+        qint64 max_pixels = 16'000'000;
+        int max_dimension = 8192;
+    };
 
-    /** @brief 把 id 解析为托管目录内的图片并按目标尺寸（KeepAspectRatioByExpanding）缩放 */
+    explicit WallpaperProvider(DecodeLimits limits = {});
+
+    /** @brief 按 EXIF 方向读取并缩放到目标尺寸（KeepAspectRatioByExpanding，禁止放大） */
     QImage requestImage(const QString& id, QSize* size, const QSize& requestedSize) override;
 
 private:
     //! @brief 无 QML 请求尺寸时的解码上限（主屏分辨率 × 设备像素比）
     QSize decode_limit_;
+    //! @brief 输出规模上限
+    DecodeLimits limits_;
 };
 
 /**
  * @brief 壁纸库 QML 单例：导入/移除/启动校验用户壁纸
  */
-class WallpaperLibrary : public QObject
-{
+class WallpaperLibrary : public QObject {
     Q_OBJECT
     QML_NAMED_ELEMENT(Wallpaper)
     QML_SINGLETON
@@ -60,7 +67,7 @@ public:
     Q_INVOKABLE bool removeWallpaper();
 
     /**
-     * @brief 启动校验：id 有效且文件存在则保留；失效时采纳唯一残留或回退空
+     * @brief 启动校验：id 有效且文件存在则保留并清理其它残留；否则清理残留并回退纯色
      * @param id 当前持久化的壁纸 id
      * @return 可用的壁纸 id，或空串（纯色默认）
      */

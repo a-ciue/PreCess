@@ -19,20 +19,21 @@ Rectangle {
 
     // 自定义壁纸：由 app 侧 Binding 推入 Docking.Theme.wallpaperUrl；无壁纸时露出纯色底
     Image {
+        id: wallpaperImage
         anchors.fill: parent
         anchors.margins: 1
         source: Docking.Theme.wallpaperUrl
         fillMode: Image.PreserveAspectCrop
         asynchronous: true
-        visible: source != ""
+        visible: source.toString() !== "" && status !== Image.Error
     }
 
-    // 壁纸遮罩：随主题调色（浅色白亮化、深色灰暗化），无壁纸时不叠加
+    // 壁纸遮罩：随主题调色（浅色白亮化、深色灰暗化），无壁纸或加载失败时不叠加
     Rectangle {
         anchors.fill: parent
         anchors.margins: 1
         color: Docking.Theme.colors.wallpaperTint
-        visible: Docking.Theme.wallpaperUrl !== ""
+        visible: Docking.Theme.wallpaperUrl !== "" && wallpaperImage.status !== Image.Error
 
         Behavior on color {
             ColorAnimation {

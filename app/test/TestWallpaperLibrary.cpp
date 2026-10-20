@@ -5,7 +5,6 @@
 
 #include "WallpaperLibrary.h"
 
-#include <catch2/catch_test_macros.hpp>
 #include <QColor>
 #include <QCoreApplication>
 #include <QDir>
@@ -16,6 +15,7 @@
 #include <QStandardPaths>
 #include <QString>
 #include <QUrl>
+#include <catch2/catch_test_macros.hpp>
 
 namespace {
 
@@ -26,6 +26,20 @@ QString writePng(const QString& path, const QSize& size, const QColor& color)
     QImage image(size, QImage::Format_RGB32);
     image.fill(color);
     image.save(path, "PNG");
+    return path;
+}
+
+//! @brief 把 qrc 测试图片复制到临时目录，供需要本地文件的导入入口使用
+QString copyResource(const QString& resource, const QString& path)
+{
+    QFile source(resource);
+    if (!source.open(QIODevice::ReadOnly))
+        return {};
+    QFile target(path);
+    if (!target.open(QIODevice::WriteOnly | QIODevice::Truncate))
+        return {};
+    if (target.write(source.readAll()) < 0)
+        return {};
     return path;
 }
 
@@ -111,7 +125,7 @@ TEST_CASE("WallpaperLibrary: import copies and single-slot replaces", "[Wallpape
     REQUIRE(storedCount() == 0);
 }
 
-TEST_CASE("WallpaperLibrary: reconcile falls back safely", "[Wallpaper]")
+TEST_CASE("WallpaperLibrary: reconcile follows the saved choice", "[Wallpaper]")
 {
     prepareTestEnv();
     WallpaperLibrary library;
@@ -120,12 +134,15 @@ TEST_CASE("WallpaperLibrary: reconcile falls back safely", "[Wallpaper]")
     const QString id = library.importWallpaper(QUrl::fromLocalFile(image));
     REQUIRE_FALSE(id.isEmpty());
 
-    // id 失效但目录有残留：采纳唯一残留，不清空
-    const QString adopted = library.reconcile(QStringLiteral("deadbeef.png"));
-    REQUIRE(adopted == id);
+    // 有效 id：保留并清理其它残留
+    REQUIRE(library.reconcile(id) == id);
     REQUIRE(storedCount() == 1);
 
-    // 无选择：回退纯色并清理残留
+    // id 失效：严格回退纯色，不按目录内容猜选其它图片
+    REQUIRE(library.reconcile(QStringLiteral("deadbeef.png")).isEmpty());
+    REQUIRE(storedCount() == 0);
+
+    // 无选择：保持纯色
     REQUIRE(library.reconcile(QString()).isEmpty());
     REQUIRE(storedCount() == 0);
 }
@@ -150,4 +167,76 @@ TEST_CASE("WallpaperProvider: adaptive scale and invalid id", "[Wallpaper]")
 
     // 非法 id（含路径成分）返回空图，不越出托管目录
     REQUIRE(provider.requestImage(QStringLiteral("../evil.png"), nullptr, QSize(10, 10)).isNull());
+}
+
+TEST_CASE("WallpaperProvider: never upscales small images", "[Wallpaper]")
+{
+    prepareTestEnv();
+    WallpaperLibrary library;
+
+    const QString image = writePng(QDir::tempPath() + "/wallpaper_small_provider.png", QSize(64, 48), Qt::darkBlue);
+    const QString id = library.importWallpaper(QUrl::fromLocalFile(image));
+    REQUIRE_FALSE(id.isEmpty());
+
+    WallpaperProvider provider;
+    const QImage decoded = provider.requestImage(id, nullptr, QSize(100, 100));
+    REQUIRE_FALSE(decoded.isNull());
+    // 小图保留原始像素，由显示层放大
+    REQUIRE(decoded.size() == QSize(64, 48));
+}
+
+TEST_CASE("WallpaperProvider: thin images stay bounded", "[Wallpaper]")
+{
+    prepareTestEnv();
+    WallpaperLibrary library;
+
+    const QString image = writePng(QDir::tempPath() + "/wallpaper_thin_provider.png", QSize(4000, 10), Qt::darkRed);
+    const QString id = library.importWallpaper(QUrl::fromLocalFile(image));
+    REQUIRE_FALSE(id.isEmpty());
+
+    WallpaperProvider provider;
+    const QImage decoded = provider.requestImage(id, nullptr, QSize(192, 108));
+    REQUIRE_FALSE(decoded.isNull());
+    // 铺满所需的放大交给显示层，不生成 43200x108 的中间图
+    REQUIRE(decoded.size() == QSize(4000, 10));
+}
+
+TEST_CASE("WallpaperProvider: caps output pixels", "[Wallpaper]")
+{
+    prepareTestEnv();
+    WallpaperLibrary library;
+
+    const QString image = writePng(QDir::tempPath() + "/wallpaper_large_provider.png", QSize(4000, 2000), Qt::darkGreen);
+    const QString id = library.importWallpaper(QUrl::fromLocalFile(image));
+    REQUIRE_FALSE(id.isEmpty());
+
+    WallpaperProvider::DecodeLimits limits;
+    limits.max_pixels = 10000;
+    limits.max_dimension = 1000;
+    WallpaperProvider provider(limits);
+
+    const QImage decoded = provider.requestImage(id, nullptr, QSize(192, 108));
+    REQUIRE_FALSE(decoded.isNull());
+    REQUIRE(qint64(decoded.width()) * decoded.height() <= limits.max_pixels);
+    REQUIRE(qMax(decoded.width(), decoded.height()) <= limits.max_dimension);
+}
+
+TEST_CASE("WallpaperProvider: applies EXIF orientation", "[Wallpaper]")
+{
+    prepareTestEnv();
+    WallpaperLibrary library;
+
+    const QString path = QDir::tempPath() + "/wallpaper_exif6.jpg";
+    QFile::remove(path);
+    REQUIRE_FALSE(copyResource(QStringLiteral(":/test-data/wallpaper_exif6.jpg"), path).isEmpty());
+    const QString id = library.importWallpaper(QUrl::fromLocalFile(path));
+    REQUIRE_FALSE(id.isEmpty());
+
+    WallpaperProvider provider;
+    QSize out_size;
+    // 原始 400x200 + Orientation=6 显示为 200x400；缩放到 100x200
+    const QImage decoded = provider.requestImage(id, &out_size, QSize(100, 100));
+    REQUIRE_FALSE(decoded.isNull());
+    REQUIRE(decoded.size() == QSize(100, 200));
+    REQUIRE(out_size == decoded.size());
 }

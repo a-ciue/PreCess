@@ -6,11 +6,11 @@
 #include "WallpaperLibrary.h"
 
 #include <QCryptographicHash>
-#include <QDateTime>
 #include <QDir>
 #include <QFile>
 #include <QFileInfo>
 #include <QGuiApplication>
+#include <QImageIOHandler>
 #include <QImageReader>
 #include <QScreen>
 #include <QStandardPaths>
@@ -62,10 +62,53 @@ void removeOtherFiles(const QString& keep)
     }
 }
 
+//! @brief 按目标覆盖尺寸与输出上限计算解码尺寸；绝不放大
+QSize constrainedImageSize(const QSize& source, const QSize& target,
+    const WallpaperProvider::DecodeLimits& limits)
+{
+    if (!source.isValid() || source.isEmpty())
+        return {};
+
+    qreal scale = 1.0;
+    if (target.isValid() && !target.isEmpty()) {
+        scale = qMin(qreal(1), qMax(qreal(target.width()) / source.width(), qreal(target.height()) / source.height()));
+    }
+
+    if (limits.max_pixels > 0) {
+        const qreal pixels = qreal(source.width()) * source.height() * scale * scale;
+        if (pixels > limits.max_pixels)
+            scale *= qSqrt(qreal(limits.max_pixels) / pixels);
+    }
+
+    if (limits.max_dimension > 0) {
+        const qreal longest = qMax(source.width(), source.height()) * scale;
+        if (longest > limits.max_dimension)
+            scale *= qreal(limits.max_dimension) / longest;
+    }
+
+    // 向下取整，保证取整后仍不越过像素/边长上限
+    return QSize(qMax(1, qFloor(source.width() * scale)),
+        qMax(1, qFloor(source.height() * scale)));
 }
 
-WallpaperProvider::WallpaperProvider()
+//! @brief 最终兜底：确保插件忽略 setScaledSize 时仍不放大、不超限
+QImage fitDecodedImage(QImage image, const QSize& target,
+    const WallpaperProvider::DecodeLimits& limits)
+{
+    if (image.isNull())
+        return image;
+
+    const QSize constrained = constrainedImageSize(image.size(), target, limits);
+    if (!constrained.isValid() || constrained == image.size())
+        return image;
+    return image.scaled(constrained, Qt::IgnoreAspectRatio, Qt::SmoothTransformation);
+}
+
+} // namespace
+
+WallpaperProvider::WallpaperProvider(DecodeLimits limits)
     : QQuickImageProvider(QQuickImageProvider::Image)
+    , limits_(limits)
 {
     // 构造发生在 GUI 线程：在此一次性求值主屏解码上限（含设备像素比）。requestImage
     // 在 Image.asynchronous 下可能由异步加载线程调用，故只读缓存成员，避免在请求路径
@@ -86,28 +129,37 @@ QImage WallpaperProvider::requestImage(const QString& id, QSize* size, const QSi
 
     const QString path = WallpaperLibrary::userWallpaperDir() + QLatin1Char('/') + id;
     QImageReader reader(path);
-    if (!reader.canRead())
+    if (!reader.canRead()) {
+        spdlog::debug("wallpaper: cannot read image: {}", path.toStdString());
         return {};
-
-    // 目标尺寸：优先 QML 请求尺寸，否则回退主屏解码上限；不限制导入图片的原始分辨率
-    const QSize target = (requestedSize.isValid() && !requestedSize.isEmpty()) ? requestedSize : decode_limit_;
-
-    QImage image;
-    const QSize source_size = reader.size();
-    if (!target.isEmpty() && source_size.isValid() && !source_size.isEmpty()) {
-        // 按 KeepAspectRatioByExpanding 计算缩放尺寸，边解码边缩放（支持缩放的插件可省去全量解码）
-        const qreal ratio = qMax(qreal(target.width()) / source_size.width(),
-            qreal(target.height()) / source_size.height());
-        reader.setScaledSize(QSize(qCeil(source_size.width() * ratio), qCeil(source_size.height() * ratio)));
-        image = reader.read();
-    } else {
-        image = reader.read();
-        if (!image.isNull() && !target.isEmpty())
-            image = image.scaled(target, Qt::KeepAspectRatioByExpanding, Qt::SmoothTransformation);
     }
 
-    if (image.isNull())
+    // 按 EXIF 方向显示；尺寸计算使用旋转后的宽高
+    reader.setAutoTransform(true);
+    const QSize raw_size = reader.size();
+    const bool swaps_axes = (reader.transformation() & QImageIOHandler::TransformationRotate90) != 0;
+    const QSize oriented_size = swaps_axes ? raw_size.transposed() : raw_size;
+
+    // 目标尺寸：优先 QML 请求尺寸，否则回退主屏解码上限
+    const QSize target = (requestedSize.isValid() && !requestedSize.isEmpty()) ? requestedSize : decode_limit_;
+
+    // 先按目标与上限设置解码尺寸，避免插件先全量解码再缩放
+    if (oriented_size.isValid() && !oriented_size.isEmpty()) {
+        const QSize oriented_scaled = constrainedImageSize(oriented_size, target, limits_);
+        const QSize raw_scaled = swaps_axes ? oriented_scaled.transposed() : oriented_scaled;
+        reader.setScaledSize(raw_scaled);
+    }
+
+    QImage image = fitDecodedImage(reader.read(), target, limits_);
+    if (image.isNull()) {
+        spdlog::debug("wallpaper: failed to decode {}: {}", path.toStdString(),
+            reader.errorString().toStdString());
         return {};
+    }
+
+    spdlog::debug("wallpaper: decoded {}x{} from {}x{} (swap axes: {}, target {}x{})",
+        image.width(), image.height(), raw_size.width(), raw_size.height(), swaps_axes, target.width(),
+        target.height());
     if (size)
         *size = image.size();
     return image;
@@ -207,23 +259,7 @@ QString WallpaperLibrary::reconcile(const QString& id)
         removeOtherFiles(id);
         return id;
     }
-    // 选择失效但目录仍有残留：采纳最新一张，避免唯一一张被误清
-    if (!id.isEmpty() && !files.isEmpty()) {
-        QDir dir(userWallpaperDir());
-        QString newest;
-        QDateTime newest_time;
-        for (const QString& name : files) {
-            const QDateTime modified = QFileInfo(dir.filePath(name)).lastModified();
-            if (newest.isEmpty() || modified > newest_time) {
-                newest = name;
-                newest_time = modified;
-            }
-        }
-        removeOtherFiles(newest);
-        return newest;
-    }
-    // 无选择：清理残留，回退纯色
-    if (id.isEmpty())
-        removeOtherFiles(QString());
+    // 选择为空或失效：严格回退纯色，不按目录内容推断用户选择；同时清理残留
+    removeOtherFiles(QString());
     return {};
 }

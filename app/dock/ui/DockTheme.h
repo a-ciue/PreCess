@@ -22,8 +22,7 @@ namespace dock::ui {
  * colors() 返回当前明暗下已解析的颜色表（键见实现），dark 变化时整体刷新；
  * 从而避免各 dock QML 各自复写浅/深色对。
  */
-class DockTheme : public QObject
-{
+class DockTheme : public QObject {
     Q_OBJECT
     Q_PROPERTY(bool dark READ dark WRITE setDark NOTIFY darkChanged)
     Q_PROPERTY(QVariantMap colors READ colors NOTIFY colorsChanged)
@@ -41,12 +40,17 @@ public:
     /** @brief 自定义壁纸图像源（由 app 侧 Binding 驱动） */
     QString wallpaperUrl() const { return wallpaper_url_; }
 
-    /** @brief 设置壁纸图像源 */
+    /** @brief 设置壁纸图像源；空 ↔ 非空变化时刷新半透明面令牌 */
     void setWallpaperUrl(const QString& url)
     {
         if (wallpaper_url_ == url)
             return;
+        const bool had_wallpaper = !wallpaper_url_.isEmpty();
         wallpaper_url_ = url;
+        if (had_wallpaper != !wallpaper_url_.isEmpty()) {
+            colors_dirty_ = true;
+            emit colorsChanged();
+        }
         emit wallpaperUrlChanged();
     }
 
@@ -71,10 +75,11 @@ public:
         auto c = [d](const char* light, const char* dark_hex) {
             return QColor(QLatin1String(d ? dark_hex : light));
         };
-        // 半透明面令牌（与 app/Theme.qml、ThemePalette.h 同步）
-        auto ca = [d](const char* light, const char* dark_hex, qreal alpha) {
+        // 面令牌：有壁纸时半透明以透出背景；无壁纸时保持不透明
+        const bool has_wallpaper = !wallpaper_url_.isEmpty();
+        auto ca = [d, has_wallpaper](const char* light, const char* dark_hex, qreal alpha) {
             QColor color(QLatin1String(d ? dark_hex : light));
-            color.setAlphaF(alpha);
+            color.setAlphaF(has_wallpaper ? alpha : 1.0);
             return color;
         };
 

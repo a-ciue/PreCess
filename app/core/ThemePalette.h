@@ -12,17 +12,16 @@
 
 namespace app::core {
 
-/** @brief 组装指定明暗的应用调色板 */
-inline QPalette buildThemePalette(bool dark)
+/** @brief 组装指定明暗与壁纸状态的应用调色板 */
+inline QPalette buildThemePalette(bool dark, bool has_wallpaper)
 {
     auto themed = [dark](const char* light, const char* dark_hex) {
         return QColor(QLatin1String(dark ? dark_hex : light));
     };
-    // 半透明面令牌（与 Theme.qml 的 surface / surfaceAlt 同步）；深浅主题均为半透明
-    // 以便透出壁纸背景。
-    auto themed_alpha = [dark](const char* light, const char* dark_hex, qreal alpha) {
+    // 面令牌：有壁纸时半透明以透出背景；无壁纸时保持不透明（与 Theme.qml 同步）
+    auto themed_alpha = [dark, has_wallpaper](const char* light, const char* dark_hex, qreal alpha) {
         QColor color(QLatin1String(dark ? dark_hex : light));
-        color.setAlphaF(alpha);
+        color.setAlphaF(has_wallpaper ? alpha : 1.0);
         return color;
     };
 

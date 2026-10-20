@@ -4,9 +4,9 @@
  */
 #include "core/ThemePalette.h"
 
-#include <catch2/catch_test_macros.hpp>
 #include <QColor>
 #include <QPalette>
+#include <catch2/catch_test_macros.hpp>
 
 namespace {
 
@@ -22,7 +22,7 @@ QColor withAlpha(const char* hex, qreal alpha)
 
 TEST_CASE("ThemePalette: light roles", "[ThemePalette]")
 {
-    const QPalette p = app::core::buildThemePalette(false);
+    const QPalette p = app::core::buildThemePalette(false, true);
     REQUIRE(p.color(QPalette::Window) == QColor("#F3F4F6"));
     REQUIRE(p.color(QPalette::Base) == withAlpha("#FFFFFF", 0.72));
     REQUIRE(p.color(QPalette::Text) == QColor("#2B2F36"));
@@ -33,11 +33,24 @@ TEST_CASE("ThemePalette: light roles", "[ThemePalette]")
 
 TEST_CASE("ThemePalette: dark roles", "[ThemePalette]")
 {
-    const QPalette p = app::core::buildThemePalette(true);
+    const QPalette p = app::core::buildThemePalette(true, true);
     REQUIRE(p.color(QPalette::Window) == QColor("#1E1E1E"));
     REQUIRE(p.color(QPalette::Base) == withAlpha("#252526", 0.72));
     REQUIRE(p.color(QPalette::Text) == QColor("#D4D4D4"));
     REQUIRE(p.color(QPalette::Highlight) == QColor("#4EA1F3"));
     REQUIRE(p.color(QPalette::ToolTipBase) == QColor("#252526"));
     REQUIRE(p.color(QPalette::ToolTipText) == QColor("#D4D4D4"));
+}
+
+TEST_CASE("ThemePalette: surfaces stay opaque without wallpaper", "[ThemePalette]")
+{
+    const QPalette light = app::core::buildThemePalette(false, false);
+    REQUIRE(light.color(QPalette::Base) == QColor("#FFFFFF"));
+    REQUIRE(light.color(QPalette::AlternateBase) == QColor("#F7F8FA"));
+    REQUIRE(light.color(QPalette::Button) == QColor("#F7F8FA"));
+
+    const QPalette dark = app::core::buildThemePalette(true, false);
+    REQUIRE(dark.color(QPalette::Base) == QColor("#252526"));
+    REQUIRE(dark.color(QPalette::AlternateBase) == QColor("#2D2D30"));
+    REQUIRE(dark.color(QPalette::Button) == QColor("#2D2D30"));
 }
