@@ -6,6 +6,10 @@
  * 而非窗口调色板；本单例把主题明暗写入应用调色板，由 Main.qml 绑定
  * Theme.dark 驱动。菜单/对话框另有显式 palette 绑定，不依赖本单例。
  *
+ * 注意：Fusion 样式的默认控件调色板来自平台主题，后创建的控件不会读取
+ * 应用调色板；控件继承依赖 Main.qml 在 ApplicationWindow 上的 palette 绑定，
+ * 不能以本单例替代。
+ *
  * 调色板角色色值由 ThemePalette.h 提供（须与 app/Theme.qml 保持一致）。
  */
 

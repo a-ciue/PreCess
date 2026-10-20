@@ -76,7 +76,8 @@ int main(int argc, char* argv[])
     QCoreApplication::setApplicationName(QStringLiteral("PreCess"));
     // 全平台统一 Fusion 运行时样式：QML 一律用运行时样式选择（裸 import
     // QtQuick.Controls），禁止文件内显式 import 特定样式，避免样式混用。
-    // 调色板在 Main.qml 的 ApplicationWindow 上设置（浅色固定，屏蔽系统深色主题）
+    // 控件调色板由 Main.qml 的 ApplicationWindow 绑定 Theme 令牌；Fusion 的
+    // 默认控件调色板取自平台主题，应用调色板只覆盖 ToolTip 等弹窗。
     QQuickStyle::setStyle("Fusion");
 #ifdef __EMSCRIPTEN__
     // wasm 平台需手动加载捆绑的字体，否则无法显示中文

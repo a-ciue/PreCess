@@ -64,6 +64,14 @@ qt_add_resources(TestBusyMask busy_mask
     BASE "${CMAKE_CURRENT_SOURCE_DIR}/.."
     FILES ../Main.qml)
 
+# 验证主窗口窗口级调色板：启动后动态创建的 Fusion 控件继承 Theme 令牌
+precess_add_test(TestThemeWindowPalette TestThemeWindowPalette.cpp)
+precess_test_link_libraries(TestThemeWindowPalette Qt6::QuickControls2 Qt6::Qml)
+qt_add_resources(TestThemeWindowPalette theme_window
+    PREFIX "/theme-window"
+    BASE "${CMAKE_CURRENT_SOURCE_DIR}/.."
+    FILES ../Main.qml)
+
 # 加载实际工具栏，覆盖通用父入口和旧算法列表入口。
 precess_add_test(TestToolbarNavigation TestToolbarNavigation.cpp)
 precess_test_link_libraries(TestToolbarNavigation modelQml modelQmlplugin SystemQmlplugin renderQmlplugin renderQml Qt6::QuickControls2 Qt6::Svg)

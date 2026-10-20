@@ -34,6 +34,29 @@ ApplicationWindow {
     color: Theme.windowBackground
     flags: Qt.platform.os === "wasm" ? (Qt.Window | Qt.FramelessWindowHint) : Qt.Window
 
+    // Fusion 控件的默认调色板取自平台主题（Windows 系统色），不读取
+    // QGuiApplication 应用调色板。窗口级绑定才能让启动后动态创建的控件
+    // （功能参数面板、插件声明的参数控件、设置页下拉等）继承当前主题；
+    // 应用调色板（AppPalette）仍负责 ToolTip 等窗口外的弹窗。
+    palette.window: Theme.windowBackground
+    palette.windowText: Theme.textPrimary
+    palette.base: Theme.surface
+    palette.alternateBase: Theme.surfaceAlt
+    palette.text: Theme.textPrimary
+    palette.button: Theme.surfaceAlt
+    palette.buttonText: Theme.textPrimary
+    palette.highlight: Theme.primary
+    palette.highlightedText: Theme.textOnPrimary
+    palette.placeholderText: Theme.textDisabled
+    palette.mid: Theme.borderStrong
+    palette.midlight: Theme.border
+    palette.light: Theme.surface
+    palette.dark: Theme.borderStrong
+    palette.shadow: Theme.scrollBarHover
+    palette.link: Theme.primary
+    palette.toolTipBase: Theme.menuSurface
+    palette.toolTipText: Theme.textPrimary
+
     // 壁纸背景层：纯色兜底 + 双缓冲图片淡入淡出（无壁纸时露出 windowBackground）
     background: Item {
         Rectangle {
