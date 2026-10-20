@@ -19,6 +19,11 @@ Item {
     implicitHeight: Math.max(150, Math.min(230, Math.round(width * 0.5625)))
     Accessible.ignored: true
 
+    // 各面统一使用同一段颜色过渡，避免时长/缓动在多处复制后漂移
+    component SurfaceTransition: ColorAnimation {
+        duration: 220
+    }
+
     Rectangle {
         id: frame
         anchors.fill: parent
@@ -29,9 +34,7 @@ Item {
         border.color: Theme.border
 
         Behavior on color {
-            ColorAnimation {
-                duration: 220
-            }
+            SurfaceTransition {}
         }
 
         Image {
@@ -49,9 +52,7 @@ Item {
             visible: root.hasWallpaper && wallpaperImage.status !== Image.Error
 
             Behavior on color {
-                ColorAnimation {
-                    duration: 220
-                }
+                SurfaceTransition {}
             }
         }
 
@@ -67,9 +68,7 @@ Item {
             color: Theme.panelHeaderSurface
 
             Behavior on color {
-                ColorAnimation {
-                    duration: 220
-                }
+                SurfaceTransition {}
             }
 
             Rectangle {
@@ -142,9 +141,7 @@ Item {
             color: Theme.surfaceAlt
 
             Behavior on color {
-                ColorAnimation {
-                    duration: 220
-                }
+                SurfaceTransition {}
             }
 
             Rectangle {
@@ -186,9 +183,7 @@ Item {
             color: Theme.surfaceAlt
 
             Behavior on color {
-                ColorAnimation {
-                    duration: 220
-                }
+                SurfaceTransition {}
             }
 
             Rectangle {
@@ -267,9 +262,7 @@ Item {
             color: Theme.surface
 
             Behavior on color {
-                ColorAnimation {
-                    duration: 220
-                }
+                SurfaceTransition {}
             }
 
             Rectangle {

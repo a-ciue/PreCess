@@ -201,6 +201,29 @@ TEST_CASE("WallpaperProvider: thin images stay bounded", "[Wallpaper]")
     REQUIRE(decoded.size() == QSize(4000, 10));
 }
 
+TEST_CASE("WallpaperProvider: scales formats without scaled decoding", "[Wallpaper]")
+{
+    prepareTestEnv();
+    WallpaperLibrary library;
+
+    const QString path = QDir::tempPath() + "/wallpaper_unscaled.bmp";
+    QImage source(QSize(2000, 1000), QImage::Format_RGB32);
+    source.fill(Qt::yellow);
+    REQUIRE(source.save(path, "BMP"));
+    const QString id = library.importWallpaper(QUrl::fromLocalFile(path));
+    REQUIRE_FALSE(id.isEmpty());
+
+    WallpaperProvider provider;
+    QSize out_size;
+    const QImage decoded = provider.requestImage(id, &out_size, QSize(192, 108));
+    REQUIRE_FALSE(decoded.isNull());
+    // BMP 等插件可能忽略 setScaledSize；read 后仍须缩到覆盖目标与上限之内
+    REQUIRE(decoded.size() != QSize(2000, 1000));
+    REQUIRE(decoded.width() <= 216);
+    REQUIRE(decoded.height() <= 108);
+    REQUIRE(out_size == decoded.size());
+}
+
 TEST_CASE("WallpaperProvider: caps output pixels", "[Wallpaper]")
 {
     prepareTestEnv();

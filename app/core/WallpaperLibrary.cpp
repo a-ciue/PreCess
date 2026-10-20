@@ -150,6 +150,7 @@ QImage WallpaperProvider::requestImage(const QString& id, QSize* size, const QSi
         reader.setScaledSize(raw_scaled);
     }
 
+    // 部分格式插件（如 BMP）会忽略 setScaledSize，read 后统一由 fitDecodedImage 兜底
     QImage image = fitDecodedImage(reader.read(), target, limits_);
     if (image.isNull()) {
         spdlog::debug("wallpaper: failed to decode {}: {}", path.toStdString(),

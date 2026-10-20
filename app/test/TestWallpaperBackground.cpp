@@ -115,6 +115,8 @@ TEST_CASE("WallpaperBackground hands off, clears and falls back", "[QML][Wallpap
     background->setProperty("source", first);
     QCoreApplication::processEvents();
     background->setProperty("source", QUrl());
+    // 清除时遮罩同步隐藏，不能留下 300ms 的过渡残影
+    CHECK_FALSE(tint->property("visible").toBool());
     REQUIRE(waitFor([&] {
         return current->property("source").toUrl().isEmpty()
             && incoming->property("source").toUrl().isEmpty();
