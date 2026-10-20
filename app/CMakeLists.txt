@@ -37,6 +37,9 @@ qt_add_qml_module(${MYNAME}
             JavaScriptConsole.qml
             PythonConsole.qml
             PreferencesWindow.qml
+            PreferenceCategoryButton.qml
+            AppearancePreview.qml
+            ThemeModeSwitch.qml
             OutputLog.qml
             Theme.qml
             AppMenu.qml
