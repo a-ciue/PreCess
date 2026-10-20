@@ -21,6 +21,8 @@ ToolButton {
     rightPadding: tabMode ? Theme.spacingSm : Theme.spacingMd
     padding: 0
     hoverEnabled: true
+    // 选中态由外部 active 驱动，按钮自身不维护 checked 状态
+    checkable: false
 
     Accessible.role: Accessible.PageTab
     Accessible.name: text

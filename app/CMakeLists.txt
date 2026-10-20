@@ -41,6 +41,7 @@ qt_add_qml_module(${MYNAME}
             AppearancePreview.qml
             ThemeModeSwitch.qml
             WallpaperBackground.qml
+            ThemedDialog.qml
             OutputLog.qml
             Theme.qml
             AppMenu.qml

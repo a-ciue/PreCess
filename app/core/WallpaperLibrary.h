@@ -24,6 +24,9 @@
  * 解码遵循“不放大、限制输出规模、按 EXIF 方向显示”的规则：优先采用 QML 请求
  * 尺寸，否则以主屏分辨率（含设备像素比）为解码上限；小图保留原始像素由显示层
  * 放大，超大图按像素总量与最长边上限降低解码分辨率。
+ *
+ * QML 引擎会按 image:// URL 缓存 provider 结果；当前请求不设置 sourceSize，
+ * 不随布局变化重复解码，因此不需要额外的 provider 内部缓存。
  */
 class WallpaperProvider : public QQuickImageProvider {
 public:

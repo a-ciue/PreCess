@@ -429,29 +429,12 @@ Item {
         }
     }
 
-    Dialog {
+    ThemedDialog {
         id: registerFailureDialog
         title: "注册失败"
         standardButtons: Dialog.Ok
         modal: true
         anchors.centerIn: parent
-
-        // 显式绑定 Theme 令牌：对话框弹窗按创建时快照取窗口 palette，
-        // 直接绑定 Theme 才能跟随主题切换；弹窗用不透明 menuSurface 保证可读
-        palette.window: Theme.menuSurface
-        palette.base: Theme.menuSurface
-        palette.windowText: Theme.textPrimary
-        palette.text: Theme.textPrimary
-        palette.button: Theme.menuSurface
-        palette.buttonText: Theme.textPrimary
-        palette.highlight: Theme.primary
-        palette.highlightedText: Theme.textOnPrimary
-        palette.mid: Theme.borderStrong
-        palette.midlight: Theme.border
-        palette.dark: Theme.borderStrong
-        palette.light: Theme.menuSurface
-        palette.shadow: Theme.scrollBarHover
-        palette.placeholderText: Theme.textDisabled
 
         Label {
             text: "插件注册失败"
@@ -474,27 +457,12 @@ Item {
         }
     }
 
-    Dialog {
+    ThemedDialog {
         id: wallpaperFailureDialog
         title: qsTr("导入失败")
         standardButtons: Dialog.Ok
         modal: true
         anchors.centerIn: parent
-
-        palette.window: Theme.menuSurface
-        palette.base: Theme.menuSurface
-        palette.windowText: Theme.textPrimary
-        palette.text: Theme.textPrimary
-        palette.button: Theme.menuSurface
-        palette.buttonText: Theme.textPrimary
-        palette.highlight: Theme.primary
-        palette.highlightedText: Theme.textOnPrimary
-        palette.mid: Theme.borderStrong
-        palette.midlight: Theme.border
-        palette.dark: Theme.borderStrong
-        palette.light: Theme.menuSurface
-        palette.shadow: Theme.scrollBarHover
-        palette.placeholderText: Theme.textDisabled
 
         Label {
             text: qsTr("无法导入所选图片，请确认是有效的图片文件")

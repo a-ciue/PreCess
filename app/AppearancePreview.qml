@@ -49,7 +49,7 @@ Item {
         Rectangle {
             anchors.fill: parent
             color: Theme.wallpaperTint
-            visible: root.hasWallpaper && wallpaperImage.status !== Image.Error
+            visible: root.hasWallpaper && wallpaperImage.status === Image.Ready
 
             Behavior on color {
                 SurfaceTransition {}

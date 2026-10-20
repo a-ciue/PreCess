@@ -33,7 +33,7 @@ Rectangle {
         anchors.fill: parent
         anchors.margins: 1
         color: Docking.Theme.colors.wallpaperTint
-        visible: Docking.Theme.wallpaperUrl !== "" && wallpaperImage.status !== Image.Error
+        visible: Docking.Theme.wallpaperUrl !== "" && wallpaperImage.status === Image.Ready
 
         Behavior on color {
             ColorAnimation {

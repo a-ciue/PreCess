@@ -62,6 +62,8 @@ Item {
                 height: parent.height
                 padding: 0
                 hoverEnabled: true
+                // 选中态由外部 currentIndex 驱动，按钮自身不维护 checked 状态
+                checkable: false
 
                 Accessible.role: Accessible.RadioButton
                 Accessible.name: modelData

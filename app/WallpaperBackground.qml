@@ -21,6 +21,8 @@ Item {
     property int fadeDuration: 400
     //! @brief 当前选择是否加载失败
     readonly property bool failed: _failed
+    //! @brief 是否有已就绪的图片可供遮罩叠加
+    readonly property bool hasReadyImage: currentImage.status === Image.Ready || incomingImage.status === Image.Ready
 
     //! @brief 选择的壁纸加载失败
     signal loadFailed(url imageSource)
@@ -70,7 +72,7 @@ Item {
         objectName: "wallpaperTint"
         anchors.fill: parent
         color: root.tintColor
-        visible: root.source.toString() !== "" && !root.failed
+        visible: root.source.toString() !== "" && !root.failed && root.hasReadyImage
 
         Behavior on color {
             ColorAnimation {
