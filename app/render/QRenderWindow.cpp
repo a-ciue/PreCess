@@ -12,8 +12,10 @@
 #include "QSelection.h"
 #include "SelectManager.h"
 #include "Selection.h"
+#include "ViewportOrientationRepresentation.h"
 #include "renderStrategy/AttributeCommon.h"
 
+#include <QQuickWindow>
 #include <spdlog/spdlog.h>
 #include <vtkCallbackCommand.h>
 #include <vtkCamera.h>
@@ -25,6 +27,7 @@
 #include <vtkObjectFactory.h>
 #include <vtkPlane.h>
 #include <vtkPolyData.h>
+#include <vtkTextProperty.h>
 
 #include <algorithm>
 #include <cmath>
@@ -36,8 +39,26 @@
 #include <vector>
 
 namespace {
-//! @brief 比例尺刻度字号因子（vtkAxisActor2D::FontFactor，默认 1.0，取值区间 0.1~2.0）
-constexpr double kScaleBarFontFactor = 0.7;
+constexpr double kOrientationSize = 120.0;
+constexpr double kOrientationPadding = 12.0;
+constexpr double kScaleBarFontPixels = 12.0;
+
+//! @brief 仅在渲染线程应用逻辑像素到 VTK 像素的换算，初建和跨屏更新共用此路径。
+void applyOverlayScale(vtkRenderWindow* window, QRenderWindow::Data* data, qreal ratio)
+{
+    auto* orientation = static_cast<ViewportOrientationRepresentation*>(data->orientationWidget->GetRepresentation());
+    const int size = std::max(1, static_cast<int>(std::lround(kOrientationSize * ratio)));
+    const int padding = static_cast<int>(std::lround(kOrientationPadding * ratio));
+    orientation->SetSize(size, size);
+    orientation->SetPadding(padding, padding);
+    // VTK 字号以点为单位，文本映射器还会乘 window DPI / 72；抵消它以免重复缩放。
+    const double dpi = std::max(1, window->GetDPI());
+    data->scale_bar_axis_->GetLabelTextProperty()->SetFontSize(
+        std::max(1, static_cast<int>(std::lround(kScaleBarFontPixels * ratio * 72.0 / dpi))));
+    data->scale_bar_axis_->SetTickLength(static_cast<int>(std::lround(5.0 * ratio)));
+    data->scale_bar_axis_->SetMinorTickLength(static_cast<int>(std::lround(3.0 * ratio)));
+    data->scale_bar_axis_->SetTickOffset(static_cast<int>(std::lround(2.0 * ratio)));
+}
 
 //! @brief 相机/视口输入未变则整段跳过；变化时按 1-2-5 整数档反算精确段长并居中重设端点，
 //!        使标尺段长与刻度值随相机缩放联动更新
@@ -169,6 +190,27 @@ QRenderWindow::QRenderWindow() = default;
 
 QRenderWindow::~QRenderWindow() = default;
 
+void QRenderWindow::itemChange(ItemChange change, const ItemChangeData& value)
+{
+    QQuickVTKItem::itemChange(change, value);
+    if (change == ItemDevicePixelRatioHasChanged)
+        updateOverlayScale(value.realValue);
+    else if (change == ItemSceneChange)
+        updateOverlayScale(value.window ? value.window->devicePixelRatio() : 1.0);
+}
+
+void QRenderWindow::updateOverlayScale(qreal ratio)
+{
+    if (!std::isfinite(ratio) || ratio <= 0.0)
+        return;
+    if (ratio == overlay_device_pixel_ratio_)
+        return;
+    overlay_device_pixel_ratio_ = ratio;
+    dispatch_async([ratio](vtkRenderWindow* window, vtkUserData user_data) {
+        applyOverlayScale(window, Data::SafeDownCast(user_data), ratio);
+    });
+}
+
 QQuickVTKItem::vtkUserData QRenderWindow::initializeVTK(vtkRenderWindow* renderWindow)
 {
     vtkNew<Data> vtk;
@@ -206,9 +248,8 @@ QQuickVTKItem::vtkUserData QRenderWindow::initializeVTK(vtkRenderWindow* renderW
     vtk->scale_bar_axis_->GetPositionCoordinate()->SetValue(0.39, 0.05);
     vtk->scale_bar_axis_->GetPosition2Coordinate()->SetCoordinateSystemToNormalizedViewport();
     vtk->scale_bar_axis_->GetPosition2Coordinate()->SetValue(0.61, 0.05);
-    // 刻度字号取默认的一半：FontFactor 默认 1.0（取值区间 0.1~2.0），与 LabelFactor 共同决定
-    // 标注字号；直接改 TextProperty 的字号会被轴重建刻度时的内部计算覆盖，故走 FontFactor
-    vtk->scale_bar_axis_->SetFontFactor(kScaleBarFontFactor);
+    // 固定逻辑字号，不再让 VTK 根据视口尺寸重算文字大小。
+    vtk->scale_bar_axis_->UseFontSizeFromPropertyOn();
     vtk->scale_bar_axis_->SetNumberOfLabels(3);
     vtk->scale_bar_axis_->SetLabelFormat("%.6g");
     vtk->scale_bar_axis_->SetTitleVisibility(false);
@@ -247,6 +288,9 @@ QQuickVTKItem::vtkUserData QRenderWindow::initializeVTK(vtkRenderWindow* renderW
     // 注入渲染刷新回调（与 setFeatureAdaptor 互补，确保两者先后顺序均能生效）
     injectRenderRefreshCallback();
 
+    vtkNew<ViewportOrientationRepresentation> orientation;
+    vtk->orientationWidget->SetRepresentation(orientation);
+    applyOverlayScale(renderWindow, vtk, overlay_device_pixel_ratio_);
     vtk->orientationWidget->AnimateOff();
     vtk->orientationWidget->SetParentRenderer(vtk->renderer_);
     vtk->orientationWidget->SetInteractor(renderWindow->GetInteractor()); // 设置坐标系控件大小（占屏幕比例）

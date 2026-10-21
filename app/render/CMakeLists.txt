@@ -56,6 +56,8 @@ qt_add_qml_module(renderQml
     SOURCES
         QRenderWindow.h
         QRenderWindow.cpp
+        ViewportOrientationRepresentation.h
+        ViewportOrientationRepresentation.cpp
 )
 target_link_libraries(renderQml PRIVATE 
     vtkPart modelQml 
