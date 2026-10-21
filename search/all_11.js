@@ -62,12 +62,13 @@ var searchData=
   ['qtlogsink_59',['QtLogSink',['../classQtLogSink.html',1,'']]],
   ['qtlogsink_3c_20std_3a_3amutex_20_3e_60',['QtLogSink&lt; std::mutex &gt;',['../classQtLogSink.html',1,'']]],
   ['qtlogsink_5fmt_61',['QtLogSink_mt',['../QLogManager_8cpp.html#a0b97978c57fb16b5b3a72628fa59c7fe',1,'QLogManager.cpp']]],
-  ['query_62',['query',['../classQModelManager.html#afab38d2de8a7aba39444a3ba26290098',1,'QModelManager::query'],['../structQRenderWindow.html#ab9e2e5f1552c568a0ebf7d1d18cb4ecc',1,'QRenderWindow::query'],['../classsession_1_1Session.html#a4f59a80d06e76a55e96783b1c96570fa',1,'session::Session::query()']]],
-  ['query_5f_63',['query_',['../classQModelManager.html#a99ca7f7ca124277e834c170903b2074b',1,'QModelManager::query_'],['../classsession_1_1Session.html#a4d85fd826417ea7f8591659313a9c336',1,'session::Session::query_']]],
-  ['qundostackadaptor_64',['QUndoStackAdaptor',['../classQUndoStackAdaptor.html',1,'QUndoStackAdaptor'],['../classQUndoStackAdaptor.html#a06067baaa5944d16d6bf80439f59a03b',1,'QUndoStackAdaptor::QUndoStackAdaptor()']]],
-  ['qundostackadaptor_2ecpp_65',['QUndoStackAdaptor.cpp',['../QUndoStackAdaptor_8cpp.html',1,'']]],
-  ['qundostackadaptor_2eh_66',['QUndoStackAdaptor.h',['../QUndoStackAdaptor_8h.html',1,'']]],
-  ['qwasmbridge_67',['QWasmBridge',['../classQWasmBridge.html',1,'QWasmBridge'],['../classQWasmBridge.html#a777a95b186baf4db42e8f295edaa83de',1,'QWasmBridge::QWasmBridge()']]],
-  ['qwasmbridge_2ecpp_68',['QWasmBridge.cpp',['../QWasmBridge_8cpp.html',1,'']]],
-  ['qwasmbridge_2eh_69',['QWasmBridge.h',['../QWasmBridge_8h.html',1,'']]]
+  ['quad_62',['quad',['../structViewportOrientationRepresentation_1_1Impl.html#a644938d0afd5b14905ac6c5adb7df98b',1,'ViewportOrientationRepresentation::Impl']]],
+  ['query_63',['query',['../classQModelManager.html#afab38d2de8a7aba39444a3ba26290098',1,'QModelManager::query'],['../structQRenderWindow.html#ab9e2e5f1552c568a0ebf7d1d18cb4ecc',1,'QRenderWindow::query'],['../classsession_1_1Session.html#a4f59a80d06e76a55e96783b1c96570fa',1,'session::Session::query()']]],
+  ['query_5f_64',['query_',['../classQModelManager.html#a99ca7f7ca124277e834c170903b2074b',1,'QModelManager::query_'],['../classsession_1_1Session.html#a4d85fd826417ea7f8591659313a9c336',1,'session::Session::query_']]],
+  ['qundostackadaptor_65',['QUndoStackAdaptor',['../classQUndoStackAdaptor.html',1,'QUndoStackAdaptor'],['../classQUndoStackAdaptor.html#a06067baaa5944d16d6bf80439f59a03b',1,'QUndoStackAdaptor::QUndoStackAdaptor()']]],
+  ['qundostackadaptor_2ecpp_66',['QUndoStackAdaptor.cpp',['../QUndoStackAdaptor_8cpp.html',1,'']]],
+  ['qundostackadaptor_2eh_67',['QUndoStackAdaptor.h',['../QUndoStackAdaptor_8h.html',1,'']]],
+  ['qwasmbridge_68',['QWasmBridge',['../classQWasmBridge.html',1,'QWasmBridge'],['../classQWasmBridge.html#a777a95b186baf4db42e8f295edaa83de',1,'QWasmBridge::QWasmBridge()']]],
+  ['qwasmbridge_2ecpp_69',['QWasmBridge.cpp',['../QWasmBridge_8cpp.html',1,'']]],
+  ['qwasmbridge_2eh_70',['QWasmBridge.h',['../QWasmBridge_8h.html',1,'']]]
 ];

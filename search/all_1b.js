@@ -81,6 +81,7 @@ var searchData=
   ['_7eugridmodel_78',['~UGridModel',['../classUGridModel.html#aeba96366937e1483eeec6504e1c418b8',1,'UGridModel']]],
   ['_7eundorecorder_79',['~UndoRecorder',['../classUndoRecorder.html#aeab708d1704c16dc3253ff0c6f4fdad7',1,'UndoRecorder']]],
   ['_7evertexselectorhighlight_80',['~VertexSelectorHighlight',['../classVertexSelectorHighlight.html#a1ed2ecf6f65f2a1e7243344dd6eff0ae',1,'VertexSelectorHighlight']]],
-  ['_7ewriteoperation_81',['~WriteOperation',['../classModelLayer_1_1WriteOperation.html#a98891654d35bcb07f6325216d5e19e26',1,'ModelLayer::WriteOperation']]],
-  ['_7ewriteprivilege_82',['~WritePrivilege',['../classModelLayer_1_1WritePrivilege.html#acfe6a4b5181fe1d8abe4cdf89b645bd6',1,'ModelLayer::WritePrivilege']]]
+  ['_7eviewportorientationrepresentation_81',['~ViewportOrientationRepresentation',['../classViewportOrientationRepresentation.html#a38822cb584735ad992df4f00cbb0c62f',1,'ViewportOrientationRepresentation']]],
+  ['_7ewriteoperation_82',['~WriteOperation',['../classModelLayer_1_1WriteOperation.html#a98891654d35bcb07f6325216d5e19e26',1,'ModelLayer::WriteOperation']]],
+  ['_7ewriteprivilege_83',['~WritePrivilege',['../classModelLayer_1_1WritePrivilege.html#acfe6a4b5181fe1d8abe4cdf89b645bd6',1,'ModelLayer::WritePrivilege']]]
 ];

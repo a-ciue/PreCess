@@ -76,6 +76,7 @@ $(function() {
 <a href="#nested-classes">类</a> &#124;
 <a href="#signals">信号</a> &#124;
 <a href="#pub-methods">Public 成员函数</a> &#124;
+<a href="#pro-methods">Protected 成员函数</a> &#124;
 <a href="#properties">属性</a> &#124;
 <a href="#pri-types">Private 类型</a> &#124;
 <a href="#pri-methods">Private 成员函数</a> &#124;
@@ -305,6 +306,10 @@ Public 成员函数</h2></td></tr>
 <tr class="memdesc:aa69334af80f5adb3103840d94780db49"><td class="mdescLeft">&#160;</td><td class="mdescRight">取消指定 Component 的属性渲染 在控制台中调用示例： myItem.cancelComponentAttri(App.selection.activeComponentId)  <br /></td></tr>
 <tr class="memitem:acb350e137abe53836f74a1568abec6df" id="r_acb350e137abe53836f74a1568abec6df"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#acb350e137abe53836f74a1568abec6df">event</a> (QEvent *ev) override</td></tr>
 </table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 id="header-pro-methods" class="groupheader"><a id="pro-methods" name="pro-methods"></a>
+Protected 成员函数</h2></td></tr>
+<tr class="memitem:a964b70e4990fde44109eea5954f57a58" id="r_a964b70e4990fde44109eea5954f57a58"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a964b70e4990fde44109eea5954f57a58">itemChange</a> (ItemChange change, const ItemChangeData &amp;value) override</td></tr>
+</table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 id="header-properties" class="groupheader"><a id="properties" name="properties"></a>
 属性</h2></td></tr>
 <tr class="memitem:a4c03bb09521541323af430677bf4f0df" id="r_a4c03bb09521541323af430677bf4f0df"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classQSelection.html">QSelection</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a4c03bb09521541323af430677bf4f0df">selectedIDs</a></td></tr>
@@ -331,6 +336,8 @@ Private 类型</h2></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 id="header-pri-methods" class="groupheader"><a id="pri-methods" name="pri-methods"></a>
 Private 成员函数</h2></td></tr>
+<tr class="memitem:ad44bb50bc0862fb932721d40cb14db4f" id="r_ad44bb50bc0862fb932721d40cb14db4f"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ad44bb50bc0862fb932721d40cb14db4f">updateOverlayScale</a> (qreal ratio)</td></tr>
+<tr class="memdesc:ad44bb50bc0862fb932721d40cb14db4f"><td class="mdescLeft">&#160;</td><td class="mdescRight">GUI 线程保存 DPR，并将叠加层像素尺寸更新排入渲染队列。  <br /></td></tr>
 <tr class="memitem:a3e242ca44f9f71bb203c072e2b5a300f" id="r_a3e242ca44f9f71bb203c072e2b5a300f"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a3e242ca44f9f71bb203c072e2b5a300f">applyFaceOperation</a> (<a class="el" href="#a1c156ab2d21b1b6bfb3fa2f3448be242">FaceOperation</a> operation, const std::vector&lt; <a class="el" href="Core_8h.html#a1673229bf7fec9388ac2a829a52d69b3">Index</a> &gt; &amp;<a class="el" href="TestComponentModel_8cpp.html#a5b425756f8f086f69cb81301d88866ca">ids</a>={ })</td></tr>
 <tr class="memdesc:a3e242ca44f9f71bb203c072e2b5a300f"><td class="mdescLeft">&#160;</td><td class="mdescRight">直接使用 GUI 缓存的选择和网格代次计算显隐结果。  <br /></td></tr>
 <tr class="memitem:aca6b6e3437e4d80b7cc60ce818d5c8f9" id="r_aca6b6e3437e4d80b7cc60ce818d5c8f9"><td class="memItemLeft" align="right" valign="top">std::vector&lt; <a class="el" href="Core_8h.html#a1673229bf7fec9388ac2a829a52d69b3">Index</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#aca6b6e3437e4d80b7cc60ce818d5c8f9">getSceneComponentIds</a> () const</td></tr>
@@ -350,6 +357,7 @@ Private 成员函数</h2></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 id="header-pri-attribs" class="groupheader"><a id="pri-attribs" name="pri-attribs"></a>
 Private 属性</h2></td></tr>
+<tr class="memitem:a0c83623634e6901493a5981f04243445" id="r_a0c83623634e6901493a5981f04243445"><td class="memItemLeft" align="right" valign="top">qreal&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a0c83623634e6901493a5981f04243445">overlay_device_pixel_ratio_</a> { 1.0 }</td></tr>
 <tr class="memitem:a83e71d7a8823ba6480f57004cb9d0110" id="r_a83e71d7a8823ba6480f57004cb9d0110"><td class="memItemLeft" align="right" valign="top">std::unordered_map&lt; <a class="el" href="Core_8h.html#a1673229bf7fec9388ac2a829a52d69b3">Index</a>, std::unique_ptr&lt; <a class="el" href="classMeshPipelineData.html">MeshPipelineData</a> &gt; &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a83e71d7a8823ba6480f57004cb9d0110">mesh_pipeline_data_</a></td></tr>
 <tr class="memitem:aa27b26863ab1ecf106e4f504d5c95cf6" id="r_aa27b26863ab1ecf106e4f504d5c95cf6"><td class="memItemLeft" align="right" valign="top">std::unordered_map&lt; <a class="el" href="Core_8h.html#a1673229bf7fec9388ac2a829a52d69b3">Index</a>, std::shared_ptr&lt; const <a class="el" href="structMeshDataSnapshot.html">MeshDataSnapshot</a> &gt; &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#aa27b26863ab1ecf106e4f504d5c95cf6">mesh_snapshots_</a></td></tr>
 <tr class="memitem:aa2a239a28aaf05047e9f6d83f56eec3e" id="r_aa2a239a28aaf05047e9f6d83f56eec3e"><td class="memItemLeft" align="right" valign="top"><a class="el" href="#a5ca4cfcaa35a0330ba92c70da7044f1c">GeometryVisibility</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#aa2a239a28aaf05047e9f6d83f56eec3e">geometry_visibility_</a></td></tr>
@@ -949,6 +957,35 @@ Private 属性</h2></td></tr>
 </div><div class="memdoc">
 
 <p>仅在所选面所属组件内隐藏其他面，保留其他组件、几何及同组件其他对象的显示。 </p>
+
+</div>
+</div>
+<a id="a964b70e4990fde44109eea5954f57a58" name="a964b70e4990fde44109eea5954f57a58"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a964b70e4990fde44109eea5954f57a58">&#9670;&#160;</a></span>itemChange()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void QRenderWindow::itemChange </td>
+          <td>(</td>
+          <td class="paramtype">ItemChange</td>          <td class="paramname"><span class="paramname"><em>change</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const ItemChangeData &amp;</td>          <td class="paramname"><span class="paramname"><em>value</em></span>&#160;)</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel override">override</span><span class="mlabel protected">protected</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
 
 </div>
 </div>
@@ -1862,6 +1899,33 @@ Private 属性</h2></td></tr>
 
 </div>
 </div>
+<a id="ad44bb50bc0862fb932721d40cb14db4f" name="ad44bb50bc0862fb932721d40cb14db4f"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ad44bb50bc0862fb932721d40cb14db4f">&#9670;&#160;</a></span>updateOverlayScale()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void QRenderWindow::updateOverlayScale </td>
+          <td>(</td>
+          <td class="paramtype">qreal</td>          <td class="paramname"><span class="paramname"><em>ratio</em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel private">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>GUI 线程保存 DPR，并将叠加层像素尺寸更新排入渲染队列。 </p>
+
+</div>
+</div>
 <a name="doc-variable-members" id="doc-variable-members"></a><h2 id="header-doc-variable-members" class="groupheader">类成员变量说明</h2>
 <a id="a51af1a11dab47d58481f2d9789ddba70" name="a51af1a11dab47d58481f2d9789ddba70"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a51af1a11dab47d58481f2d9789ddba70">&#9670;&#160;</a></span>_click</h2>
@@ -2182,6 +2246,28 @@ Private 属性</h2></td></tr>
       <table class="memname">
         <tr>
           <td class="memname"><a class="el" href="classQModelQuery.html">QModelQuery</a>* QRenderWindow::model_query_ { }</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel private">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a0c83623634e6901493a5981f04243445" name="a0c83623634e6901493a5981f04243445"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a0c83623634e6901493a5981f04243445">&#9670;&#160;</a></span>overlay_device_pixel_ratio_</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">qreal QRenderWindow::overlay_device_pixel_ratio_ { 1.0 }</td>
         </tr>
       </table>
   </td>

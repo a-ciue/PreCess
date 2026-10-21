@@ -55,5 +55,5 @@ var searchData=
   ['isvisible_52',['isVisible',['../classdock_1_1LayoutNode.html#ad36b85d576c6561f4b8bd46649ef88af',1,'dock::LayoutNode::isVisible()'],['../classGeometryActor.html#a759354bf71834f77ef7b454503da7b89',1,'GeometryActor::isVisible()'],['../classGeometryActorSelectOp.html#a265e3b2255dac5ef6b2052373d3952b6',1,'GeometryActorSelectOp::isVisible()'],['../classMeshActor.html#ab282e66574859c8e77ed021be2903cfa',1,'MeshActor::isVisible()'],['../classMeshActorSelectOp.html#aa8b745bea4e35603b91fbaa658c0d0b1',1,'MeshActorSelectOp::isVisible()'],['../classMeshPipelineData.html#a7e0cf4bc57653eff50477f4b94e8ba5a',1,'MeshPipelineData::isVisible()']]],
   ['isworldpointinscreenbox_53',['isWorldPointInScreenBox',['../namespacearea__pick.html#a7df035eaa21f6bccef3ab356a7118c9d',1,'area_pick']]],
   ['iswritepending_54',['isWritePending',['../classQTaskStatus.html#a3e927232fe3193583993fa47eed5a7d6',1,'QTaskStatus']]],
-  ['itemchange_55',['itemChange',['../classdock_1_1ui_1_1DockHostItem.html#afc8425cd84813aca24a0198ef9229dab',1,'dock::ui::DockHostItem']]]
+  ['itemchange_55',['itemChange',['../classdock_1_1ui_1_1DockHostItem.html#afc8425cd84813aca24a0198ef9229dab',1,'dock::ui::DockHostItem::itemChange()'],['../structQRenderWindow.html#a964b70e4990fde44109eea5954f57a58',1,'QRenderWindow::itemChange()']]]
 ];

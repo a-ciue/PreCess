@@ -1,0 +1,7 @@
+<map id="app/render/ViewportOrientationRepresentation.h" name="app/render/ViewportOrientationRepresentation.h">
+<area shape="rect" id="Node000001" title="圆点轴标：保留 VTK 视角切换与旋转交互，使用屏幕空间绘制。" alt="" coords="133,5,359,45"/>
+<area shape="rect" id="Node000002" title=" " alt="" coords="5,93,284,119"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="223,48,172,87,169,82,220,43"/>
+<area shape="rect" id="Node000003" title=" " alt="" coords="309,93,386,119"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="272,43,323,82,320,87,269,48"/>
+</map>

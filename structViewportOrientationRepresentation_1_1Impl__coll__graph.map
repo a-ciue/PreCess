@@ -1,0 +1,9 @@
+<map id="ViewportOrientationRepresentation::Impl" name="ViewportOrientationRepresentation::Impl">
+<area shape="rect" id="Node000001" title=" " alt="" coords="67,197,319,237"/>
+<area shape="rect" id="Node000002" title=" " alt="" coords="5,101,181,127"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="116,135,176,195,173,199,112,138"/>
+<area shape="rect" id="Node000003" title=" " alt="" coords="12,5,175,31"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="96,45,96,101,91,101,91,45"/>
+<area shape="rect" id="Node000004" title=" " alt="" coords="206,101,381,127"/>
+<area shape="poly" id="edge3_Node000001_Node000004" title=" " alt="" coords="274,138,214,199,210,195,270,135"/>
+</map>

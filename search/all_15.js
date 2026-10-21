@@ -47,12 +47,14 @@ var searchData=
   ['updateguest_44',['updateGuest',['../classdock_1_1ui_1_1PanelGroupItem.html#a9d1be4b5a429d938dadf4f180f5fde95',1,'dock::ui::PanelGroupItem']]],
   ['updatehighlight_45',['updateHighlight',['../classComponentSelectorHighlight.html#aca183f4c287a4ed3fa2d826b1a743c23',1,'ComponentSelectorHighlight']]],
   ['updatehover_46',['updateHover',['../classdock_1_1DragSession.html#a2243b3bb8e1fbd846412c03911e10ed7',1,'dock::DragSession']]],
-  ['updaterubberband_47',['updateRubberBand',['../classQRenderWindowStyle.html#a6100f44a2b1388628da205f453e7c646',1,'QRenderWindowStyle']]],
-  ['updatespreadcache_48',['updateSpreadCache',['../classFaceSelectorHighlight.html#a83f58e0e8e4ac3f7120f5449699af1be',1,'FaceSelectorHighlight']]],
-  ['updatezonerects_49',['updateZoneRects',['../classdock_1_1ui_1_1DockAreaItem.html#ab80e9f9c091b30c2f6cd92247c1df8ba',1,'dock::ui::DockAreaItem']]],
-  ['updating_5ftabs_5f_50',['updating_tabs_',['../classdock_1_1ui_1_1PanelGroupItem.html#a4bbdf9e2f68b991253aa30bd1bd611f1',1,'dock::ui::PanelGroupItem']]],
-  ['updatingtabs_51',['updatingTabs',['../classdock_1_1ui_1_1PanelGroupItem.html#a4e86ca6c2f5a475b37fe19b31857fa22',1,'dock::ui::PanelGroupItem']]],
-  ['usemtl_5fcb_52',['usemtl_cb',['../structtinyobj_1_1callback__t.html#af328b54be3e8cecd0e3d04ba302a0ca1',1,'tinyobj::callback_t']]],
-  ['user_5f_53',['user_',['../classsession_1_1Session_1_1ObserverRelay.html#a46899841927eafce300cbceeba250d00',1,'session::Session::ObserverRelay']]],
-  ['uv_54',['UV',['../AttributeCommon_8h.html#a46c8a310cf4c094f8c80e1cb8dc1f911adeaa2adbeb26802ae61609c3f3642d82',1,'AttributeCommon.h']]]
+  ['updateoverlayscale_47',['updateOverlayScale',['../structQRenderWindow.html#ad44bb50bc0862fb932721d40cb14db4f',1,'QRenderWindow']]],
+  ['updateprojection_48',['updateProjection',['../classViewportOrientationRepresentation.html#a6392a6c1141ec6f9265892953099e4bf',1,'ViewportOrientationRepresentation']]],
+  ['updaterubberband_49',['updateRubberBand',['../classQRenderWindowStyle.html#a6100f44a2b1388628da205f453e7c646',1,'QRenderWindowStyle']]],
+  ['updatespreadcache_50',['updateSpreadCache',['../classFaceSelectorHighlight.html#a83f58e0e8e4ac3f7120f5449699af1be',1,'FaceSelectorHighlight']]],
+  ['updatezonerects_51',['updateZoneRects',['../classdock_1_1ui_1_1DockAreaItem.html#ab80e9f9c091b30c2f6cd92247c1df8ba',1,'dock::ui::DockAreaItem']]],
+  ['updating_5ftabs_5f_52',['updating_tabs_',['../classdock_1_1ui_1_1PanelGroupItem.html#a4bbdf9e2f68b991253aa30bd1bd611f1',1,'dock::ui::PanelGroupItem']]],
+  ['updatingtabs_53',['updatingTabs',['../classdock_1_1ui_1_1PanelGroupItem.html#a4e86ca6c2f5a475b37fe19b31857fa22',1,'dock::ui::PanelGroupItem']]],
+  ['usemtl_5fcb_54',['usemtl_cb',['../structtinyobj_1_1callback__t.html#af328b54be3e8cecd0e3d04ba302a0ca1',1,'tinyobj::callback_t']]],
+  ['user_5f_55',['user_',['../classsession_1_1Session_1_1ObserverRelay.html#a46899841927eafce300cbceeba250d00',1,'session::Session::ObserverRelay']]],
+  ['uv_56',['UV',['../AttributeCommon_8h.html#a46c8a310cf4c094f8c80e1cb8dc1f911adeaa2adbeb26802ae61609c3f3642d82',1,'AttributeCommon.h']]]
 ];

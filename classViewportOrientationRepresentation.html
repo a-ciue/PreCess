@@ -1,0 +1,628 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="zh">
+<head>
+<meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=11"/>
+<meta name="generator" content="Doxygen 1.14.0"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>PreCess: ViewportOrientationRepresentation类 参考</title>
+<link href="tabs.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="jquery.js"></script>
+<script type="text/javascript" src="dynsections.js"></script>
+<script type="text/javascript" src="clipboard.js"></script>
+<script type="text/javascript" src="cookie.js"></script>
+<link href="search/search.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="search/searchdata.js"></script>
+<script type="text/javascript" src="search/search.js"></script>
+<link href="doxygen.css" rel="stylesheet" type="text/css" />
+</head>
+<body>
+<div id="top"><!-- do not remove this div, it is closed by doxygen! -->
+<div id="titlearea">
+<table cellspacing="0" cellpadding="0">
+ <tbody>
+ <tr id="projectrow">
+  <td id="projectlogo"><img alt="Logo" src="ZenithGrid.ico"/></td>
+  <td id="projectalign">
+   <div id="projectname">PreCess
+   </div>
+  </td>
+ </tr>
+ </tbody>
+</table>
+</div>
+<!-- end header part -->
+<!-- 制作者 Doxygen 1.14.0 -->
+<script type="text/javascript">
+var searchBox = new SearchBox("searchBox", "search/",'.html');
+</script>
+<script type="text/javascript">
+$(function() { codefold.init(); });
+</script>
+<script type="text/javascript" src="menudata.js"></script>
+<script type="text/javascript" src="menu.js"></script>
+<script type="text/javascript">
+$(function() {
+  initMenu('',true,false,'search.php','搜索',false);
+  $(function() { init_search(); });
+});
+</script>
+<div id="main-nav"></div>
+<!-- window showing the filter options -->
+<div id="MSearchSelectWindow"
+     onmouseover="return searchBox.OnSearchSelectShow()"
+     onmouseout="return searchBox.OnSearchSelectHide()"
+     onkeydown="return searchBox.OnSearchSelectKey(event)">
+</div>
+
+<!-- iframe showing the search results (closed by default) -->
+<div id="MSearchResultsWindow">
+<div id="MSearchResults">
+<div class="SRPage">
+<div id="SRIndex">
+<div id="SRResults"></div>
+<div class="SRStatus" id="Loading">载入中...</div>
+<div class="SRStatus" id="Searching">搜索中...</div>
+<div class="SRStatus" id="NoMatches">未找到</div>
+</div>
+</div>
+</div>
+</div>
+
+</div><!-- top -->
+<div id="doc-content">
+<div class="header">
+  <div class="summary">
+<a href="#nested-classes">类</a> &#124;
+<a href="#pub-methods">Public 成员函数</a> &#124;
+<a href="#pub-static-methods">静态 Public 成员函数</a> &#124;
+<a href="#pro-methods">Protected 成员函数</a> &#124;
+<a href="#pri-methods">Private 成员函数</a> &#124;
+<a href="#pri-attribs">Private 属性</a> &#124;
+<a href="classViewportOrientationRepresentation-members.html">所有成员列表</a>  </div>
+  <div class="headertitle"><div class="title">ViewportOrientationRepresentation类 参考</div></div>
+</div><!--header-->
+<div class="contents">
+
+<p><code>#include &lt;<a class="el" href="ViewportOrientationRepresentation_8h_source.html">ViewportOrientationRepresentation.h</a>&gt;</code></p>
+<div class="dynheader">
+类 ViewportOrientationRepresentation 继承关系图:</div>
+<div class="dyncontent">
+<div class="center"><img src="classViewportOrientationRepresentation__inherit__graph.png" border="0" usemap="#aViewportOrientationRepresentation_inherit__map" loading="lazy" alt="Inheritance graph"/></div>
+<map name="aViewportOrientationRepresentation_inherit__map" id="aViewportOrientationRepresentation_inherit__map">
+<area shape="rect" title=" " alt="" coords="13,79,265,104"/>
+<area shape="rect" title=" " alt="" coords="5,5,272,31"/>
+<area shape="poly" title=" " alt="" coords="141,44,141,79,136,79,136,44"/>
+</map>
+<center><span class="legend">[<a href="graph_legend.html">图例</a>]</span></center></div>
+<div class="dynheader">
+ViewportOrientationRepresentation 的协作图:</div>
+<div class="dyncontent">
+<div class="center"><img src="classViewportOrientationRepresentation__coll__graph.png" border="0" usemap="#aViewportOrientationRepresentation_coll__map" loading="lazy" alt="Collaboration graph"/></div>
+<map name="aViewportOrientationRepresentation_coll__map" id="aViewportOrientationRepresentation_coll__map">
+<area shape="rect" title=" " alt="" coords="1287,37,1539,63"/>
+<area shape="rect" title=" " alt="" coords="927,5,1193,31"/>
+<area shape="poly" title=" " alt="" coords="1207,29,1287,36,1286,41,1207,34"/>
+<area shape="rect" title=" " alt="" coords="963,55,1157,109"/>
+<area shape="poly" title=" " alt="" coords="1171,70,1262,62,1286,60,1287,65,1263,67,1171,75"/>
+<area shape="rect" href="structViewportOrientationRepresentation_1_1Impl.html" title=" " alt="" coords="600,62,852,102"/>
+<area shape="poly" title=" " alt="" coords="865,79,962,79,962,85,865,85"/>
+<area shape="rect" title=" " alt="" coords="285,43,461,68"/>
+<area shape="poly" title=" " alt="" coords="475,60,600,70,600,75,475,66"/>
+<area shape="rect" title=" " alt="" coords="5,43,168,68"/>
+<area shape="poly" title=" " alt="" coords="182,53,285,53,285,58,182,58"/>
+<area shape="rect" title=" " alt="" coords="286,96,461,121"/>
+<area shape="poly" title=" " alt="" coords="474,102,576,95,600,93,600,99,576,101,475,107"/>
+</map>
+<center><span class="legend">[<a href="graph_legend.html">图例</a>]</span></center></div>
+<table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 id="header-nested-classes" class="groupheader"><a id="nested-classes" name="nested-classes"></a>
+类</h2></td></tr>
+<tr class="memitem:Impl" id="r_Impl"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structViewportOrientationRepresentation_1_1Impl.html">Impl</a></td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 id="header-pub-methods" class="groupheader"><a id="pub-methods" name="pub-methods"></a>
+Public 成员函数</h2></td></tr>
+<tr class="memitem:a8fce3d171b44621768df0af92774d035" id="r_a8fce3d171b44621768df0af92774d035"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a8fce3d171b44621768df0af92774d035">vtkTypeMacro</a> (<a class="el" href="classViewportOrientationRepresentation.html">ViewportOrientationRepresentation</a>, vtkCameraOrientationRepresentation)</td></tr>
+<tr class="memitem:ae10ea6264ef099178e9c2a30fdfbc571" id="r_ae10ea6264ef099178e9c2a30fdfbc571"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ae10ea6264ef099178e9c2a30fdfbc571">BuildRepresentation</a> () override</td></tr>
+<tr class="memitem:a9bc1c37bf0fcb00966830d2bf2d2c2da" id="r_a9bc1c37bf0fcb00966830d2bf2d2c2da"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a9bc1c37bf0fcb00966830d2bf2d2c2da">containsPoint</a> (int x, int y) const</td></tr>
+<tr class="memdesc:a9bc1c37bf0fcb00966830d2bf2d2c2da"><td class="mdescLeft">&#160;</td><td class="mdescRight">只读屏幕圆盘命中测试，不触发拾取、渲染或交互状态变更。  <br /></td></tr>
+<tr class="memitem:a7f41a74a54f8f3832d4f8f372788bf94" id="r_a7f41a74a54f8f3832d4f8f372788bf94"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a7f41a74a54f8f3832d4f8f372788bf94">GetActors</a> (vtkPropCollection *) override</td></tr>
+<tr class="memitem:affa87991f19be4616f17509c5295cc8d" id="r_affa87991f19be4616f17509c5295cc8d"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#affa87991f19be4616f17509c5295cc8d">GetActors2D</a> (vtkPropCollection *props) override</td></tr>
+<tr class="memitem:a867fbb804b4559a7fe8750b5e8f14944" id="r_a867fbb804b4559a7fe8750b5e8f14944"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a867fbb804b4559a7fe8750b5e8f14944">ComputeInteractionState</a> (int x, int y, int modify=0) override</td></tr>
+<tr class="memitem:aa26b714529bf47940178a8befa3701e7" id="r_aa26b714529bf47940178a8befa3701e7"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#aa26b714529bf47940178a8befa3701e7">RenderOpaqueGeometry</a> (vtkViewport *) override</td></tr>
+<tr class="memitem:ac5e38a6da1e38e845add97fee64fcfd6" id="r_ac5e38a6da1e38e845add97fee64fcfd6"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ac5e38a6da1e38e845add97fee64fcfd6">RenderTranslucentPolygonalGeometry</a> (vtkViewport *) override</td></tr>
+<tr class="memitem:aab20fe7b22266093983f08b606afe627" id="r_aab20fe7b22266093983f08b606afe627"><td class="memItemLeft" align="right" valign="top">vtkTypeBool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#aab20fe7b22266093983f08b606afe627">HasTranslucentPolygonalGeometry</a> () override</td></tr>
+<tr class="memitem:ab7a805fac51aa6c2f428d5663dc388e8" id="r_ab7a805fac51aa6c2f428d5663dc388e8"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ab7a805fac51aa6c2f428d5663dc388e8">RenderOverlay</a> (vtkViewport *viewport) override</td></tr>
+<tr class="memitem:aece0578bb92fa704f95e2f2eb8a806df" id="r_aece0578bb92fa704f95e2f2eb8a806df"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#aece0578bb92fa704f95e2f2eb8a806df">ReleaseGraphicsResources</a> (vtkWindow *window) override</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 id="header-pub-static-methods" class="groupheader"><a id="pub-static-methods" name="pub-static-methods"></a>
+静态 Public 成员函数</h2></td></tr>
+<tr class="memitem:a9e6cde65e4adc4ead929345b08179469" id="r_a9e6cde65e4adc4ead929345b08179469"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="classViewportOrientationRepresentation.html">ViewportOrientationRepresentation</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a9e6cde65e4adc4ead929345b08179469">New</a> ()</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 id="header-pro-methods" class="groupheader"><a id="pro-methods" name="pro-methods"></a>
+Protected 成员函数</h2></td></tr>
+<tr class="memitem:aeed4a88ac0ee6a54f0cae0e33e187c62" id="r_aeed4a88ac0ee6a54f0cae0e33e187c62"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#aeed4a88ac0ee6a54f0cae0e33e187c62">ViewportOrientationRepresentation</a> ()</td></tr>
+<tr class="memitem:a38822cb584735ad992df4f00cbb0c62f" id="r_a38822cb584735ad992df4f00cbb0c62f"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a38822cb584735ad992df4f00cbb0c62f">~ViewportOrientationRepresentation</a> () override</td></tr>
+<tr class="memitem:affd151ee7cc10b821d874cc76735e663" id="r_affd151ee7cc10b821d874cc76735e663"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#affd151ee7cc10b821d874cc76735e663">HighlightHandle</a> () override</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 id="header-pri-methods" class="groupheader"><a id="pri-methods" name="pri-methods"></a>
+Private 成员函数</h2></td></tr>
+<tr class="memitem:af4b3eb2ff4d2d542e6baaa381706458d" id="r_af4b3eb2ff4d2d542e6baaa381706458d"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#af4b3eb2ff4d2d542e6baaa381706458d">buildAtlas</a> (int width, int height)</td></tr>
+<tr class="memdesc:af4b3eb2ff4d2d542e6baaa381706458d"><td class="mdescLeft">&#160;</td><td class="mdescRight">按实际渲染像素生成清晰的圆点和字形缓存，仅尺寸变化时调用。  <br /></td></tr>
+<tr class="memitem:a6392a6c1141ec6f9265892953099e4bf" id="r_a6392a6c1141ec6f9265892953099e4bf"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a6392a6c1141ec6f9265892953099e4bf">updateProjection</a> ()</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 id="header-pri-attribs" class="groupheader"><a id="pri-attribs" name="pri-attribs"></a>
+Private 属性</h2></td></tr>
+<tr class="memitem:af172e698bac91e33cb20ff6f48e531e8" id="r_af172e698bac91e33cb20ff6f48e531e8"><td class="memItemLeft" align="right" valign="top">std::unique_ptr&lt; <a class="el" href="structViewportOrientationRepresentation_1_1Impl.html">Impl</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#af172e698bac91e33cb20ff6f48e531e8">impl_</a></td></tr>
+</table>
+<a name="doc-constructors" id="doc-constructors"></a><h2 id="header-doc-constructors" class="groupheader">构造及析构函数说明</h2>
+<a id="aeed4a88ac0ee6a54f0cae0e33e187c62" name="aeed4a88ac0ee6a54f0cae0e33e187c62"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aeed4a88ac0ee6a54f0cae0e33e187c62">&#9670;&#160;</a></span>ViewportOrientationRepresentation()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">ViewportOrientationRepresentation::ViewportOrientationRepresentation </td>
+          <td>(</td>
+          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel protected">protected</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a38822cb584735ad992df4f00cbb0c62f" name="a38822cb584735ad992df4f00cbb0c62f"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a38822cb584735ad992df4f00cbb0c62f">&#9670;&#160;</a></span>~ViewportOrientationRepresentation()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">ViewportOrientationRepresentation::~ViewportOrientationRepresentation </td>
+          <td>(</td>
+          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel override">override</span><span class="mlabel protected">protected</span><span class="mlabel default">default</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a name="doc-func-members" id="doc-func-members"></a><h2 id="header-doc-func-members" class="groupheader">成员函数说明</h2>
+<a id="af4b3eb2ff4d2d542e6baaa381706458d" name="af4b3eb2ff4d2d542e6baaa381706458d"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#af4b3eb2ff4d2d542e6baaa381706458d">&#9670;&#160;</a></span>buildAtlas()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void ViewportOrientationRepresentation::buildAtlas </td>
+          <td>(</td>
+          <td class="paramtype">int</td>          <td class="paramname"><span class="paramname"><em>width</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int</td>          <td class="paramname"><span class="paramname"><em>height</em></span>&#160;)</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel private">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>按实际渲染像素生成清晰的圆点和字形缓存，仅尺寸变化时调用。 </p>
+
+</div>
+</div>
+<a id="ae10ea6264ef099178e9c2a30fdfbc571" name="ae10ea6264ef099178e9c2a30fdfbc571"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ae10ea6264ef099178e9c2a30fdfbc571">&#9670;&#160;</a></span>BuildRepresentation()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void ViewportOrientationRepresentation::BuildRepresentation </td>
+          <td>(</td>
+          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel override">override</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a867fbb804b4559a7fe8750b5e8f14944" name="a867fbb804b4559a7fe8750b5e8f14944"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a867fbb804b4559a7fe8750b5e8f14944">&#9670;&#160;</a></span>ComputeInteractionState()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">int ViewportOrientationRepresentation::ComputeInteractionState </td>
+          <td>(</td>
+          <td class="paramtype">int</td>          <td class="paramname"><span class="paramname"><em>x</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int</td>          <td class="paramname"><span class="paramname"><em>y</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int</td>          <td class="paramname"><span class="paramname"><em>modify</em></span><span class="paramdefsep"> = </span><span class="paramdefval">0</span>&#160;)</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel override">override</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a9bc1c37bf0fcb00966830d2bf2d2c2da" name="a9bc1c37bf0fcb00966830d2bf2d2c2da"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a9bc1c37bf0fcb00966830d2bf2d2c2da">&#9670;&#160;</a></span>containsPoint()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool ViewportOrientationRepresentation::containsPoint </td>
+          <td>(</td>
+          <td class="paramtype">int</td>          <td class="paramname"><span class="paramname"><em>x</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int</td>          <td class="paramname"><span class="paramname"><em>y</em></span>&#160;) const</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>只读屏幕圆盘命中测试，不触发拾取、渲染或交互状态变更。 </p>
+
+</div>
+</div>
+<a id="a7f41a74a54f8f3832d4f8f372788bf94" name="a7f41a74a54f8f3832d4f8f372788bf94"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a7f41a74a54f8f3832d4f8f372788bf94">&#9670;&#160;</a></span>GetActors()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void ViewportOrientationRepresentation::GetActors </td>
+          <td>(</td>
+          <td class="paramtype">vtkPropCollection *</td>          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel inline">inline</span><span class="mlabel override">override</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="affa87991f19be4616f17509c5295cc8d" name="affa87991f19be4616f17509c5295cc8d"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#affa87991f19be4616f17509c5295cc8d">&#9670;&#160;</a></span>GetActors2D()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void ViewportOrientationRepresentation::GetActors2D </td>
+          <td>(</td>
+          <td class="paramtype">vtkPropCollection *</td>          <td class="paramname"><span class="paramname"><em>props</em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel override">override</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="aab20fe7b22266093983f08b606afe627" name="aab20fe7b22266093983f08b606afe627"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aab20fe7b22266093983f08b606afe627">&#9670;&#160;</a></span>HasTranslucentPolygonalGeometry()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">vtkTypeBool ViewportOrientationRepresentation::HasTranslucentPolygonalGeometry </td>
+          <td>(</td>
+          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel inline">inline</span><span class="mlabel override">override</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="affd151ee7cc10b821d874cc76735e663" name="affd151ee7cc10b821d874cc76735e663"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#affd151ee7cc10b821d874cc76735e663">&#9670;&#160;</a></span>HighlightHandle()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void ViewportOrientationRepresentation::HighlightHandle </td>
+          <td>(</td>
+          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel inline">inline</span><span class="mlabel override">override</span><span class="mlabel protected">protected</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a9e6cde65e4adc4ead929345b08179469" name="a9e6cde65e4adc4ead929345b08179469"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a9e6cde65e4adc4ead929345b08179469">&#9670;&#160;</a></span>New()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classViewportOrientationRepresentation.html">ViewportOrientationRepresentation</a> * ViewportOrientationRepresentation::New </td>
+          <td>(</td>
+          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel static">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="aece0578bb92fa704f95e2f2eb8a806df" name="aece0578bb92fa704f95e2f2eb8a806df"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aece0578bb92fa704f95e2f2eb8a806df">&#9670;&#160;</a></span>ReleaseGraphicsResources()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void ViewportOrientationRepresentation::ReleaseGraphicsResources </td>
+          <td>(</td>
+          <td class="paramtype">vtkWindow *</td>          <td class="paramname"><span class="paramname"><em>window</em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel override">override</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="aa26b714529bf47940178a8befa3701e7" name="aa26b714529bf47940178a8befa3701e7"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aa26b714529bf47940178a8befa3701e7">&#9670;&#160;</a></span>RenderOpaqueGeometry()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">int ViewportOrientationRepresentation::RenderOpaqueGeometry </td>
+          <td>(</td>
+          <td class="paramtype">vtkViewport *</td>          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel inline">inline</span><span class="mlabel override">override</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="ab7a805fac51aa6c2f428d5663dc388e8" name="ab7a805fac51aa6c2f428d5663dc388e8"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ab7a805fac51aa6c2f428d5663dc388e8">&#9670;&#160;</a></span>RenderOverlay()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">int ViewportOrientationRepresentation::RenderOverlay </td>
+          <td>(</td>
+          <td class="paramtype">vtkViewport *</td>          <td class="paramname"><span class="paramname"><em>viewport</em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel override">override</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="ac5e38a6da1e38e845add97fee64fcfd6" name="ac5e38a6da1e38e845add97fee64fcfd6"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ac5e38a6da1e38e845add97fee64fcfd6">&#9670;&#160;</a></span>RenderTranslucentPolygonalGeometry()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">int ViewportOrientationRepresentation::RenderTranslucentPolygonalGeometry </td>
+          <td>(</td>
+          <td class="paramtype">vtkViewport *</td>          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel inline">inline</span><span class="mlabel override">override</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a6392a6c1141ec6f9265892953099e4bf" name="a6392a6c1141ec6f9265892953099e4bf"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a6392a6c1141ec6f9265892953099e4bf">&#9670;&#160;</a></span>updateProjection()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void ViewportOrientationRepresentation::updateProjection </td>
+          <td>(</td>
+          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel private">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a8fce3d171b44621768df0af92774d035" name="a8fce3d171b44621768df0af92774d035"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a8fce3d171b44621768df0af92774d035">&#9670;&#160;</a></span>vtkTypeMacro()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">ViewportOrientationRepresentation::vtkTypeMacro </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="classViewportOrientationRepresentation.html">ViewportOrientationRepresentation</a></td>          <td class="paramname"><span class="paramname"><em></em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">vtkCameraOrientationRepresentation</td>          <td class="paramname"><span class="paramname"><em></em></span>&#160;)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a name="doc-variable-members" id="doc-variable-members"></a><h2 id="header-doc-variable-members" class="groupheader">类成员变量说明</h2>
+<a id="af172e698bac91e33cb20ff6f48e531e8" name="af172e698bac91e33cb20ff6f48e531e8"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#af172e698bac91e33cb20ff6f48e531e8">&#9670;&#160;</a></span>impl_</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::unique_ptr&lt;<a class="el" href="structViewportOrientationRepresentation_1_1Impl.html">Impl</a>&gt; ViewportOrientationRepresentation::impl_</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel private">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<hr/>该类的文档由以下文件生成:<ul>
+<li>app/render/<a class="el" href="ViewportOrientationRepresentation_8h_source.html">ViewportOrientationRepresentation.h</a></li>
+<li>app/render/<a class="el" href="ViewportOrientationRepresentation_8cpp.html">ViewportOrientationRepresentation.cpp</a></li>
+</ul>
+</div><!-- contents -->
+<!-- start footer part -->
+<hr class="footer"/><address class="footer"><small>
+制作者&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.14.0
+</small></address>
+</div><!-- doc-content -->
+</body>
+</html>
