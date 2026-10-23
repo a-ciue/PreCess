@@ -66,6 +66,35 @@ qt_add_resources(TestBusyMask busy_mask
     BASE "${CMAKE_CURRENT_SOURCE_DIR}/.."
     FILES ../Main.qml)
 
+# 偏好设置面板运行时 smoke：紧凑布局、主题开关与壁纸动作按钮
+precess_add_test(TestPreferencesWindow TestPreferencesWindow.cpp)
+set_target_properties(TestPreferencesWindow PROPERTIES AUTOMOC ON)
+precess_test_link_libraries(TestPreferencesWindow
+    modelQml modelQmlplugin
+    coreQml coreQmlplugin
+    SystemQmlplugin
+    Qt${VTK_QT_VERSION}::QuickControls2
+    Qt${VTK_QT_VERSION}::Qml
+    Qt${VTK_QT_VERSION}::Quick
+)
+qt_add_resources(TestPreferencesWindow preferences_ui
+    PREFIX "/preferences-ui"
+    BASE "${CMAKE_CURRENT_SOURCE_DIR}/.."
+    FILES
+        ../PreferencesWindow.qml
+        ../PreferenceCategoryButton.qml
+        ../ThemeModeSwitch.qml
+        ../ThemedDialog.qml
+        ../Theme.qml)
+
+# 验证主窗口窗口级调色板：启动后动态创建的 Fusion 控件继承 Theme 令牌
+precess_add_test(TestThemeWindowPalette TestThemeWindowPalette.cpp)
+precess_test_link_libraries(TestThemeWindowPalette Qt6::QuickControls2 Qt6::Qml)
+qt_add_resources(TestThemeWindowPalette theme_window
+    PREFIX "/theme-window"
+    BASE "${CMAKE_CURRENT_SOURCE_DIR}/.."
+    FILES ../Main.qml)
+
 # 加载实际工具栏，覆盖通用父入口和旧算法列表入口。
 precess_add_test(TestToolbarNavigation TestToolbarNavigation.cpp)
 precess_test_link_libraries(TestToolbarNavigation modelQml modelQmlplugin SystemQmlplugin renderQmlplugin renderQml Qt6::QuickControls2 Qt6::Svg)
@@ -96,19 +125,76 @@ qt_add_resources(TestToolbarNavigation navigation_icons
         "${CMAKE_SOURCE_DIR}/resource/toolbar/Geometry/geometry-reconstruction.svg"
         "${CMAKE_SOURCE_DIR}/resource/toolbar/Panels/preview.svg")
 
-# AppPalette 应用调色板角色随明暗解析（纯函数，无需应用实例）
-precess_add_test(TestAppPalette TestAppPalette.cpp)
-target_include_directories(TestAppPalette PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}/..")
-precess_test_link_libraries(TestAppPalette Qt${VTK_QT_VERSION}::Gui)
+# Theme.qml 角色键契约与壁纸失败降级
+precess_add_test(TestThemeQml TestThemeQml.cpp)
+target_include_directories(TestThemeQml PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}/..")
+precess_test_link_libraries(TestThemeQml
+    Qt${VTK_QT_VERSION}::Core
+    Qt${VTK_QT_VERSION}::Gui
+    Qt${VTK_QT_VERSION}::Qml
+    Qt${VTK_QT_VERSION}::Quick
+)
+qt_add_resources(TestThemeQml theme_qml
+    PREFIX "/theme-qml"
+    BASE "${CMAKE_CURRENT_SOURCE_DIR}/.."
+    FILES ../Theme.qml)
 
-# DockTheme 停靠配色表随明暗整体刷新
+# AppPalette 角色表适配与应用级调色板刷新
+precess_add_test(TestAppPalette TestAppPalette.cpp ../core/AppPalette.h)
+set_target_properties(TestAppPalette PROPERTIES AUTOMOC ON)
+target_include_directories(TestAppPalette PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}/..")
+precess_test_link_libraries(TestAppPalette Qt${VTK_QT_VERSION}::Gui Qt${VTK_QT_VERSION}::Qml)
+
+# DockTheme 只保存宿主推送的配色表并通知
 precess_add_test(TestDockTheme TestDockTheme.cpp ../dock/ui/DockTheme.h)
 set_target_properties(TestDockTheme PROPERTIES AUTOMOC ON)
 target_include_directories(TestDockTheme PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}/../dock")
 precess_test_link_libraries(TestDockTheme Qt${VTK_QT_VERSION}::Core Qt${VTK_QT_VERSION}::Gui)
 
-# 主题色跨文件一致性：ThemePalette 与 DockTheme 重叠语义相等
-precess_add_test(TestThemeConsistency TestThemeConsistency.cpp ../dock/ui/DockTheme.h)
-set_target_properties(TestThemeConsistency PROPERTIES AUTOMOC ON)
-target_include_directories(TestThemeConsistency PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}/.." "${CMAKE_CURRENT_SOURCE_DIR}/../dock")
-precess_test_link_libraries(TestThemeConsistency Qt${VTK_QT_VERSION}::Core Qt${VTK_QT_VERSION}::Gui)
+# 主题配色管道：同一份角色表到达应用调色板与停靠主题
+precess_add_test(TestThemePipeline
+    TestThemePipeline.cpp
+    ../core/AppPalette.h
+    ../dock/ui/DockTheme.h
+)
+set_target_properties(TestThemePipeline PROPERTIES AUTOMOC ON)
+target_include_directories(TestThemePipeline PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}/.." "${CMAKE_CURRENT_SOURCE_DIR}/../dock")
+precess_test_link_libraries(TestThemePipeline Qt${VTK_QT_VERSION}::Core Qt${VTK_QT_VERSION}::Gui Qt${VTK_QT_VERSION}::Qml)
+
+# 浮窗公共祖先的普通控件调色板继承
+precess_add_test(TestDockWindowPalette TestDockWindowPalette.cpp)
+target_include_directories(TestDockWindowPalette PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}/../dock")
+precess_test_link_libraries(TestDockWindowPalette
+    dock
+    Qt${VTK_QT_VERSION}::QuickControls2
+    Qt${VTK_QT_VERSION}::Qml
+)
+
+# WallpaperLibrary 壁纸库：导入校验、单张替换、移除与启动校验
+precess_add_test(TestWallpaperLibrary
+    TestWallpaperLibrary.cpp
+    "${CMAKE_CURRENT_SOURCE_DIR}/../core/WallpaperLibrary.cpp"
+    "${CMAKE_CURRENT_SOURCE_DIR}/../core/WallpaperLibrary.h"
+)
+set_target_properties(TestWallpaperLibrary PROPERTIES AUTOMOC ON)
+target_include_directories(TestWallpaperLibrary PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}/../core")
+precess_test_link_libraries(TestWallpaperLibrary
+    Qt${VTK_QT_VERSION}::Core
+    Qt${VTK_QT_VERSION}::Gui
+    Qt${VTK_QT_VERSION}::Quick
+    spdlog::spdlog
+)
+
+# 带 EXIF Orientation=6 的测试图片（400x200，显示方向 200x400）
+qt_add_resources(TestWallpaperLibrary wallpaper_test_data
+    PREFIX "/test-data"
+    BASE "${CMAKE_CURRENT_SOURCE_DIR}/data"
+    FILES data/wallpaper_exif6.jpg)
+
+# 壁纸背景组件：淡入交接、清除与失败回退
+precess_add_test(TestWallpaperBackground TestWallpaperBackground.cpp)
+precess_test_link_libraries(TestWallpaperBackground Qt6::Quick Qt6::Qml)
+qt_add_resources(TestWallpaperBackground wallpaper_background
+    PREFIX "/wallpaper-bg"
+    BASE "${CMAKE_CURRENT_SOURCE_DIR}/.."
+    FILES ../WallpaperBackground.qml)

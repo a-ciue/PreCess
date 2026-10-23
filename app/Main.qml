@@ -34,27 +34,86 @@ ApplicationWindow {
     color: Theme.windowBackground
     flags: Qt.platform.os === "wasm" ? (Qt.Window | Qt.FramelessWindowHint) : Qt.Window
 
+    // Fusion 控件的默认调色板取自平台主题（Windows 系统色），不读取
+    // QGuiApplication 应用调色板。窗口级绑定才能让启动后动态创建的控件
+    // （功能参数面板、插件声明的参数控件、设置页下拉等）继承当前主题；
+    // 应用调色板（AppPalette）仍负责 ToolTip 等窗口外的弹窗。
+    // 角色颜色全部来自 Theme.controlPalette，此处不重复产品配色规则。
+    palette.window: Theme.controlPalette.window
+    palette.windowText: Theme.controlPalette.windowText
+    palette.base: Theme.controlPalette.base
+    palette.alternateBase: Theme.controlPalette.alternateBase
+    palette.text: Theme.controlPalette.text
+    palette.button: Theme.controlPalette.button
+    palette.buttonText: Theme.controlPalette.buttonText
+    palette.highlight: Theme.controlPalette.highlight
+    palette.highlightedText: Theme.controlPalette.highlightedText
+    palette.placeholderText: Theme.controlPalette.placeholderText
+    palette.mid: Theme.controlPalette.mid
+    palette.midlight: Theme.controlPalette.midlight
+    palette.light: Theme.controlPalette.light
+    palette.dark: Theme.controlPalette.dark
+    palette.shadow: Theme.controlPalette.shadow
+    palette.link: Theme.controlPalette.link
+    palette.toolTipBase: Theme.controlPalette.toolTipBase
+    palette.toolTipText: Theme.controlPalette.toolTipText
+
+    // 壁纸背景层：纯色兜底、双图淡入与加载失败回退由独立组件承载
+    background: WallpaperBackground {
+        id: wallpaperBackground
+        source: Theme.wallpaperSource
+        backgroundColor: Theme.windowBackground
+        tintColor: Theme.wallpaperTint
+
+        onLoadFailed: function(imageSource) {
+            console.warn("wallpaper: failed to load", imageSource)
+        }
+    }
+
     // 冻结任务忙碌态（聚合位经共享任务状态源单点暴露）：算法执行 ∨ 功能冻结任务——
     // 忙碌遮罩、快捷键与工具栏禁用据此驱动；自由任务不置位（不打断用户操作）
     readonly property bool frozenBusy: QModelManager.taskStatus.frozenBusy
     // 操作状态由窗口持有，侧栏隐藏或重建不会结束当前操作。
     readonly property OperationSession operationSession: OperationSession {}
 
-    // 调色板统一由 AppPalette 写入应用调色板（随 Theme.dark 同步），窗口/控件
-    // 与弹窗均据此渲染，避免在此重复列举角色色值。
-
-    // 把应用主题明暗推送给 dock 模块（dock 刻意不反向依赖 app）
-    Binding {
-        target: Docking.Theme
-        property: "dark"
-        value: Theme.dark
-    }
-
-    // 同步应用调色板：ToolTip 等按应用调色板取色的弹窗据此跟随主题
+    // 配色由 Theme 统一解析；AppPalette 与 dock 只接收结果，不自行计算。
+    // ToolTip 等按应用调色板取色的弹窗据此跟随主题与壁纸状态。
     Binding {
         target: AppPalette
-        property: "dark"
-        value: Theme.dark
+        property: "colors"
+        value: Theme.controlPalette
+    }
+
+    // 壁纸加载失败时保留用户选择，仅把面色令牌临时降级为不透明
+    Binding {
+        target: Theme
+        property: "wallpaperReady"
+        value: !wallpaperBackground.failed
+    }
+
+    // 把 dock 绘制色、普通控件调色板与弹窗调色板推送给 dock 模块
+    // （dock 刻意不反向依赖 app）。
+    Binding {
+        target: Docking.Theme
+        property: "colors"
+        value: Theme.dockColors
+    }
+    Binding {
+        target: Docking.Theme
+        property: "controlPalette"
+        value: Theme.controlPalette
+    }
+    Binding {
+        target: Docking.Theme
+        property: "popupPalette"
+        value: Theme.popupPalette
+    }
+
+    // 把自定义壁纸图像源推送给 dock 模块（浮动窗口经 Docking.Theme.wallpaperUrl 读取）
+    Binding {
+        target: Docking.Theme
+        property: "wallpaperUrl"
+        value: Theme.wallpaperSource
     }
 
     // 布局持久化：JSON 快照存于 QSettings；退出保存，启动恢复
@@ -345,6 +404,9 @@ ApplicationWindow {
     }
 
     Component.onCompleted: {
+        // 启动校验自定义壁纸：仅当持久化 id 对应文件仍存在时保留，否则清理残留并回退纯色
+        Theme.setWallpaper(Wallpaper.reconcile(Theme.wallpaper))
+
         // 同步当前活动模型/组件到功能系统（功能菜单由 AppToolbar 自行构建）
         QModelManager.featureSystem.setActiveModel(App.selection.activeModelId)
         QModelManager.featureSystem.setActiveComponent(App.selection.activeComponentId)

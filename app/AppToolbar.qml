@@ -199,7 +199,7 @@ ColumnLayout {
         width: 380
         padding: Theme.spacingMd
         background: Rectangle {
-            color: Theme.surface
+            color: Theme.menuSurface
             border.color: Theme.border
             radius: Theme.radiusMenu
         }

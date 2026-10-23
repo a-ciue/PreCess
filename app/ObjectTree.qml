@@ -14,6 +14,8 @@ Pane {
     id: objectTree
     padding: 0
     clip: true
+    // 背景由停靠面板的统一面底板承载（Fusion 默认 Pane 背景为不透明 palette.window）
+    background: null
 
     TreeModel {
         id: treeModel

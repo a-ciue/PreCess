@@ -1,37 +1,68 @@
 /**
  * @file TestDockTheme.cpp
- * @brief DockTheme 单元测试：明暗切换后配色表整体刷新
+ * @brief DockTheme 单元测试：宿主推送的配色表与壁纸源按原值保存并通知
  */
 #include "ui/DockTheme.h"
 
-#include <catch2/catch_test_macros.hpp>
 #include <QColor>
+#include <QString>
 #include <QVariantMap>
+#include <catch2/catch_test_macros.hpp>
 
-TEST_CASE("DockTheme: default light colors", "[DockTheme]")
+TEST_CASE("DockTheme: stores pushed maps and notifies on change", "[DockTheme]")
 {
     dock::ui::DockTheme theme;
-    REQUIRE_FALSE(theme.dark());
+    int colors_changes = 0;
+    int control_changes = 0;
+    int popup_changes = 0;
+    QObject::connect(&theme, &dock::ui::DockTheme::colorsChanged, [&] { ++colors_changes; });
+    QObject::connect(&theme, &dock::ui::DockTheme::controlPaletteChanged, [&] { ++control_changes; });
+    QObject::connect(&theme, &dock::ui::DockTheme::popupPaletteChanged, [&] { ++popup_changes; });
 
-    const QVariantMap light = theme.colors();
-    REQUIRE(light.value("border").value<QColor>() == QColor("#D9DDE3"));
-    REQUIRE(light.value("surface").value<QColor>() == QColor("#FFFFFF"));
-    REQUIRE(light.value("panelHeaderSurface").value<QColor>() == QColor("#E6EDF5"));
-    REQUIRE(light.value("dropAccent").value<QColor>() == QColor("#2f6fb5"));
-    REQUIRE(light.value("dropZoneActiveFore").value<QColor>() == QColor("#FFFFFF"));
+    const QVariantMap colors {
+        { QStringLiteral("surface"), QColor("#112233") },
+        { QStringLiteral("wallpaperTint"), QColor("#445566") }
+    };
+    const QVariantMap control {
+        { QStringLiteral("base"), QColor("#778899") },
+        { QStringLiteral("text"), QColor("#aabbcc") }
+    };
+    const QVariantMap popup {
+        { QStringLiteral("window"), QColor("#ddeeff") }
+    };
+
+    theme.setColors(colors);
+    theme.setControlPalette(control);
+    theme.setPopupPalette(popup);
+
+    REQUIRE(theme.colors() == colors);
+    REQUIRE(theme.controlPalette() == control);
+    REQUIRE(theme.popupPalette() == popup);
+    REQUIRE(colors_changes == 1);
+    REQUIRE(control_changes == 1);
+    REQUIRE(popup_changes == 1);
+
+    // 相同值不重复通知
+    theme.setColors(colors);
+    theme.setControlPalette(control);
+    theme.setPopupPalette(popup);
+    REQUIRE(colors_changes == 1);
+    REQUIRE(control_changes == 1);
+    REQUIRE(popup_changes == 1);
 }
 
-TEST_CASE("DockTheme: dark colors after setDark", "[DockTheme]")
+TEST_CASE("DockTheme: wallpaper url propagates", "[DockTheme]")
 {
     dock::ui::DockTheme theme;
-    theme.setDark(true);
-    REQUIRE(theme.dark());
+    REQUIRE(theme.wallpaperUrl().isEmpty());
 
-    const QVariantMap dark = theme.colors();
-    REQUIRE(dark.value("border").value<QColor>() == QColor("#3E3E42"));
-    REQUIRE(dark.value("surface").value<QColor>() == QColor("#252526"));
-    REQUIRE(dark.value("textPrimary").value<QColor>() == QColor("#D4D4D4"));
-    REQUIRE(dark.value("primary").value<QColor>() == QColor("#4EA1F3"));
-    REQUIRE(dark.value("dropAccent").value<QColor>() == QColor("#4EA1F3"));
-    REQUIRE(dark.value("dropZoneActiveFore").value<QColor>() == QColor("#FFFFFF"));
+    int changes = 0;
+    QObject::connect(&theme, &dock::ui::DockTheme::wallpaperUrlChanged, [&] { ++changes; });
+
+    theme.setWallpaperUrl(QStringLiteral("image://wallpaper/abc.png"));
+    REQUIRE(theme.wallpaperUrl() == QStringLiteral("image://wallpaper/abc.png"));
+    REQUIRE(changes == 1);
+
+    theme.setWallpaperUrl(QStringLiteral("image://wallpaper/abc.png"));
+    REQUIRE(changes == 1);
 }
