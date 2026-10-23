@@ -1,0 +1,36 @@
+<map id="app/test/TestThemePipeline.cpp" name="app/test/TestThemePipeline.cpp">
+<area shape="rect" id="Node000001" title="主题配色管道：同一份已解析角色表到达应用调色板与停靠主题" alt="" coords="288,5,517,31"/>
+<area shape="rect" id="Node000002" href="$AppPalette_8h.html" title="应用级调色板单例：把 Theme 已解析的角色表应用到 QGuiApplication" alt="" coords="335,79,471,104"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="405,31,405,65,400,65,400,31"/>
+<area shape="rect" id="Node000003" title=" " alt="" coords="234,152,361,177"/>
+<area shape="poly" id="edge17_Node000001_Node000003" title=" " alt="" coords="382,33,352,53,325,80,311,110,303,139,298,138,306,108,321,77,349,49,379,28"/>
+<area shape="rect" id="Node000005" title=" " alt="" coords="95,225,201,251"/>
+<area shape="poly" id="edge19_Node000001_Node000005" title=" " alt="" coords="288,29,218,36,148,47,88,62,48,81,26,102,12,125,9,149,20,176,32,191,47,203,83,220,81,225,45,207,28,195,15,179,4,150,7,123,22,99,45,76,86,57,147,42,217,31,287,24"/>
+<area shape="rect" id="Node000008" title=" " alt="" coords="637,225,704,251"/>
+<area shape="poly" id="edge16_Node000001_Node000008" title=" " alt="" coords="510,28,571,43,634,67,692,102,717,124,738,151,743,170,736,189,722,206,704,220,700,216,718,202,732,186,738,170,734,153,713,128,689,106,632,71,570,48,509,33"/>
+<area shape="rect" id="Node000009" title=" " alt="" coords="757,225,835,251"/>
+<area shape="poly" id="edge18_Node000001_Node000009" title=" " alt="" coords="518,23,607,41,651,56,694,76,729,105,757,142,777,179,791,212,786,214,772,182,752,145,725,109,691,81,649,61,605,46,517,29"/>
+<area shape="rect" id="Node000012" href="$DockTheme_8h.html" title="停靠组件主题承载对象：保存 app 侧推送的已解析配色并通知 dock QML" alt="" coords="59,79,187,104"/>
+<area shape="poly" id="edge12_Node000001_Node000012" title=" " alt="" coords="358,33,182,78,181,73,357,28"/>
+<area shape="rect" id="Node000014" title=" " alt="" coords="849,79,1068,104"/>
+<area shape="poly" id="edge20_Node000001_Node000014" title=" " alt="" coords="492,28,856,74,855,80,492,33"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="387,106,327,147,324,142,384,102"/>
+<area shape="rect" id="Node000004" title=" " alt="" coords="135,152,209,177"/>
+<area shape="poly" id="edge3_Node000002_Node000004" title=" " alt="" coords="366,107,223,151,221,145,365,101"/>
+<area shape="poly" id="edge4_Node000002_Node000005" title=" " alt="" coords="404,105,397,141,388,162,374,179,338,204,297,222,255,232,216,238,215,232,254,227,295,216,335,200,370,175,383,159,392,140,399,104"/>
+<area shape="rect" id="Node000006" title=" " alt="" coords="585,152,724,177"/>
+<area shape="poly" id="edge5_Node000002_Node000006" title=" " alt="" coords="444,101,601,146,600,151,443,107"/>
+<area shape="rect" id="Node000007" href="$ThemePalette_8h.html" title="主题应用调色板构造：把 Theme 已解析的角色颜色表转成 QPalette" alt="" coords="437,152,561,177"/>
+<area shape="poly" id="edge6_Node000002_Node000007" title=" " alt="" coords="420,102,474,141,470,146,417,106"/>
+<area shape="poly" id="edge11_Node000007_Node000005" title=" " alt="" coords="443,180,216,226,215,221,442,175"/>
+<area shape="poly" id="edge7_Node000007_Node000008" title=" " alt="" coords="527,175,631,218,629,222,525,180"/>
+<area shape="poly" id="edge8_Node000007_Node000009" title=" " alt="" coords="547,175,744,222,743,227,546,180"/>
+<area shape="rect" id="Node000010" title=" " alt="" coords="356,225,449,251"/>
+<area shape="poly" id="edge9_Node000007_Node000010" title=" " alt="" coords="485,180,431,219,428,215,482,175"/>
+<area shape="rect" id="Node000011" title=" " alt="" coords="474,225,553,251"/>
+<area shape="poly" id="edge10_Node000007_Node000011" title=" " alt="" coords="504,177,511,211,506,212,499,178"/>
+<area shape="poly" id="edge13_Node000012_Node000004" title=" " alt="" coords="133,103,159,139,154,142,129,106"/>
+<area shape="poly" id="edge15_Node000012_Node000005" title=" " alt="" coords="92,106,64,119,40,136,26,155,25,165,29,176,54,201,85,218,83,223,50,205,24,179,20,166,21,153,36,132,62,115,90,102"/>
+<area shape="rect" id="Node000013" title=" " alt="" coords="39,152,110,177"/>
+<area shape="poly" id="edge14_Node000012_Node000013" title=" " alt="" coords="117,106,92,142,88,139,113,103"/>
+</map>

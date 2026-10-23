@@ -82,41 +82,65 @@ $(function() {
 </div><!--header-->
 <div class="contents">
 
-<p>主题应用调色板单元测试：角色随明暗正确解析  
+<p>主题调色板适配测试：角色表映射、alpha 保留与应用级调色板刷新  
 <a href="#details">更多...</a></p>
-<div class="textblock"><code>#include &quot;<a class="el" href="ThemePalette_8h_source.html">core/ThemePalette.h</a>&quot;</code><br />
-<code>#include &lt;catch2/catch_test_macros.hpp&gt;</code><br />
+<div class="textblock"><code>#include &quot;<a class="el" href="AppPalette_8h_source.html">core/AppPalette.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="ThemePalette_8h_source.html">core/ThemePalette.h</a>&quot;</code><br />
 <code>#include &lt;QColor&gt;</code><br />
+<code>#include &lt;QGuiApplication&gt;</code><br />
 <code>#include &lt;QPalette&gt;</code><br />
+<code>#include &lt;QVariantMap&gt;</code><br />
+<code>#include &lt;catch2/catch_approx.hpp&gt;</code><br />
+<code>#include &lt;catch2/catch_test_macros.hpp&gt;</code><br />
 </div><div class="textblock"><div class="dynheader">
 TestAppPalette.cpp 的引用(Include)关系图:</div>
 <div class="dyncontent">
 <div class="center"><img src="TestAppPalette_8cpp__incl.png" border="0" usemap="#aapp_2test_2TestAppPalette_8cpp" loading="lazy" alt=""/></div>
 <map name="aapp_2test_2TestAppPalette_8cpp" id="aapp_2test_2TestAppPalette_8cpp">
-<area shape="rect" title="主题应用调色板单元测试：角色随明暗正确解析" alt="" coords="57,5,260,31"/>
-<area shape="rect" href="ThemePalette_8h.html" title="主题应用调色板构造：纯函数，不依赖 QML 与应用实例，便于单测" alt="" coords="23,79,179,104"/>
-<area shape="poly" title=" " alt="" coords="151,33,122,70,117,66,147,29"/>
-<area shape="rect" title=" " alt="" coords="15,152,81,177"/>
-<area shape="poly" title=" " alt="" coords="87,33,45,51,27,64,13,80,8,95,11,110,29,140,25,143,6,112,3,94,8,77,24,60,43,46,85,28"/>
-<area shape="rect" title=" " alt="" coords="115,152,192,177"/>
-<area shape="poly" title=" " alt="" coords="171,30,191,63,196,83,195,105,186,125,175,142,170,140,181,122,190,103,191,84,186,65,167,33"/>
-<area shape="rect" title=" " alt="" coords="255,79,473,104"/>
-<area shape="poly" title=" " alt="" coords="193,28,319,72,317,77,191,33"/>
-<area shape="poly" title=" " alt="" coords="95,106,67,143,63,140,91,103"/>
-<area shape="poly" title=" " alt="" coords="112,103,139,139,135,142,108,106"/>
+<area shape="rect" title="主题调色板适配测试：角色表映射、alpha 保留与应用级调色板刷新" alt="" coords="521,5,724,31"/>
+<area shape="rect" href="AppPalette_8h.html" title="应用级调色板单例：把 Theme 已解析的角色表应用到 QGuiApplication" alt="" coords="272,79,408,104"/>
+<area shape="poly" title=" " alt="" coords="578,33,399,78,398,73,576,28"/>
+<area shape="rect" title=" " alt="" coords="23,152,150,177"/>
+<area shape="poly" title=" " alt="" coords="521,31,395,49,327,63,261,81,183,113,118,147,116,143,180,108,259,76,326,58,394,43,521,25"/>
+<area shape="rect" title=" " alt="" coords="233,225,340,251"/>
+<area shape="poly" title=" " alt="" coords="521,28,382,41,228,64,156,81,93,101,43,125,26,139,13,153,8,165,13,176,25,186,45,196,98,211,160,222,219,229,219,234,159,227,96,216,43,201,22,191,8,179,3,165,8,151,22,135,41,121,91,96,154,76,227,59,382,35,521,22"/>
+<area shape="rect" href="ThemePalette_8h.html" title="主题应用调色板构造：把 Theme 已解析的角色颜色表转成 QPalette" alt="" coords="487,152,611,177"/>
+<area shape="poly" title=" " alt="" coords="619,32,564,141,559,138,614,30"/>
+<area shape="rect" title=" " alt="" coords="600,225,666,251"/>
+<area shape="poly" title=" " alt="" coords="626,31,635,211,629,211,620,31"/>
+<area shape="rect" title=" " alt="" coords="690,225,768,251"/>
+<area shape="poly" title=" " alt="" coords="631,30,720,212,715,214,626,32"/>
+<area shape="rect" title=" " alt="" coords="737,79,921,104"/>
+<area shape="poly" title=" " alt="" coords="657,28,784,72,782,77,655,33"/>
+<area shape="rect" title=" " alt="" coords="945,79,1164,104"/>
+<area shape="poly" title=" " alt="" coords="692,28,972,74,971,79,691,33"/>
+<area shape="poly" title=" " alt="" coords="300,107,142,151,140,146,298,101"/>
+<area shape="rect" title=" " alt="" coords="174,152,249,177"/>
+<area shape="poly" title=" " alt="" coords="321,106,246,147,244,143,318,102"/>
+<area shape="poly" title=" " alt="" coords="336,105,314,153,295,213,290,211,309,151,331,103"/>
+<area shape="rect" title=" " alt="" coords="324,152,462,177"/>
+<area shape="poly" title=" " alt="" coords="351,103,379,140,374,143,346,106"/>
+<area shape="poly" title=" " alt="" coords="374,101,503,145,501,150,373,107"/>
+<area shape="poly" title=" " alt="" coords="508,180,343,224,342,219,506,175"/>
+<area shape="poly" title=" " alt="" coords="564,175,610,214,607,218,561,179"/>
+<area shape="poly" title=" " alt="" coords="579,175,688,218,686,223,577,180"/>
+<area shape="rect" title=" " alt="" coords="482,225,576,251"/>
+<area shape="poly" title=" " alt="" coords="548,178,539,213,533,211,543,177"/>
+<area shape="rect" title=" " alt="" coords="379,225,458,251"/>
+<area shape="poly" title=" " alt="" coords="529,180,453,221,450,216,527,175"/>
 </map>
 </div>
 </div><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 id="header-func-members" class="groupheader"><a id="func-members" name="func-members"></a>
 函数</h2></td></tr>
-<tr class="memitem:ad8dcac133f40a01cef29911710f1f1d4" id="r_ad8dcac133f40a01cef29911710f1f1d4"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ad8dcac133f40a01cef29911710f1f1d4">TEST_CASE</a> (&quot;ThemePalette: light roles&quot;, &quot;[ThemePalette]&quot;)</td></tr>
-<tr class="memitem:a7dfc86c16b841317a4f6ba0ecd87ea52" id="r_a7dfc86c16b841317a4f6ba0ecd87ea52"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a7dfc86c16b841317a4f6ba0ecd87ea52">TEST_CASE</a> (&quot;ThemePalette: dark roles&quot;, &quot;[ThemePalette]&quot;)</td></tr>
+<tr class="memitem:aaf79d767b025ac012dd14b4f8dd7b848" id="r_aaf79d767b025ac012dd14b4f8dd7b848"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#aaf79d767b025ac012dd14b4f8dd7b848">TEST_CASE</a> (&quot;ThemePalette: resolved role colors map to QPalette&quot;, &quot;[ThemePalette]&quot;)</td></tr>
+<tr class="memitem:a2b40daf58b869bb377cfa55fe861cf89" id="r_a2b40daf58b869bb377cfa55fe861cf89"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a2b40daf58b869bb377cfa55fe861cf89">TEST_CASE</a> (&quot;AppPalette: applies resolved roles to the application palette&quot;, &quot;[AppPalette]&quot;)</td></tr>
 </table>
 <a name="details" id="details"></a><h2 id="header-details" class="groupheader">详细描述</h2>
-<div class="textblock"><p>主题应用调色板单元测试：角色随明暗正确解析 </p>
+<div class="textblock"><p>主题调色板适配测试：角色表映射、alpha 保留与应用级调色板刷新 </p>
 </div><a name="doc-func-members" id="doc-func-members"></a><h2 id="header-doc-func-members" class="groupheader">函数说明</h2>
-<a id="a7dfc86c16b841317a4f6ba0ecd87ea52" name="a7dfc86c16b841317a4f6ba0ecd87ea52"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a7dfc86c16b841317a4f6ba0ecd87ea52">&#9670;&#160;</a></span>TEST_CASE() <span class="overload">[1/2]</span></h2>
+<a id="a2b40daf58b869bb377cfa55fe861cf89" name="a2b40daf58b869bb377cfa55fe861cf89"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a2b40daf58b869bb377cfa55fe861cf89">&#9670;&#160;</a></span>TEST_CASE() <span class="overload">[1/2]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -124,20 +148,20 @@ TestAppPalette.cpp 的引用(Include)关系图:</div>
         <tr>
           <td class="memname">TEST_CASE </td>
           <td>(</td>
-          <td class="paramtype">&quot;ThemePalette: dark roles&quot;</td>          <td class="paramname"><span class="paramname"><em></em></span>, </td>
+          <td class="paramtype">&quot;AppPalette: applies resolved roles to the application palette&quot;</td>          <td class="paramname"><span class="paramname"><em></em></span>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">&quot;&quot;</td>          <td class="paramname"><span class="paramname"><em></em></span>[ThemePalette]&#160;)</td>
+          <td class="paramtype">&quot;&quot;</td>          <td class="paramname"><span class="paramname"><em></em></span>[AppPalette]&#160;)</td>
         </tr>
       </table>
 </div><div class="memdoc">
 
 </div>
 </div>
-<a id="ad8dcac133f40a01cef29911710f1f1d4" name="ad8dcac133f40a01cef29911710f1f1d4"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ad8dcac133f40a01cef29911710f1f1d4">&#9670;&#160;</a></span>TEST_CASE() <span class="overload">[2/2]</span></h2>
+<a id="aaf79d767b025ac012dd14b4f8dd7b848" name="aaf79d767b025ac012dd14b4f8dd7b848"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aaf79d767b025ac012dd14b4f8dd7b848">&#9670;&#160;</a></span>TEST_CASE() <span class="overload">[2/2]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -145,7 +169,7 @@ TestAppPalette.cpp 的引用(Include)关系图:</div>
         <tr>
           <td class="memname">TEST_CASE </td>
           <td>(</td>
-          <td class="paramtype">&quot;ThemePalette: light roles&quot;</td>          <td class="paramname"><span class="paramname"><em></em></span>, </td>
+          <td class="paramtype">&quot;ThemePalette: resolved role colors map to QPalette&quot;</td>          <td class="paramname"><span class="paramname"><em></em></span>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>

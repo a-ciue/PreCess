@@ -1,0 +1,172 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="zh">
+<head>
+<meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=11"/>
+<meta name="generator" content="Doxygen 1.14.0"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>PreCess: app/test/TestThemePipeline.cpp 文件参考</title>
+<link href="tabs.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="jquery.js"></script>
+<script type="text/javascript" src="dynsections.js"></script>
+<script type="text/javascript" src="clipboard.js"></script>
+<script type="text/javascript" src="cookie.js"></script>
+<link href="search/search.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="search/searchdata.js"></script>
+<script type="text/javascript" src="search/search.js"></script>
+<link href="doxygen.css" rel="stylesheet" type="text/css" />
+</head>
+<body>
+<div id="top"><!-- do not remove this div, it is closed by doxygen! -->
+<div id="titlearea">
+<table cellspacing="0" cellpadding="0">
+ <tbody>
+ <tr id="projectrow">
+  <td id="projectlogo"><img alt="Logo" src="ZenithGrid.ico"/></td>
+  <td id="projectalign">
+   <div id="projectname">PreCess
+   </div>
+  </td>
+ </tr>
+ </tbody>
+</table>
+</div>
+<!-- end header part -->
+<!-- 制作者 Doxygen 1.14.0 -->
+<script type="text/javascript">
+var searchBox = new SearchBox("searchBox", "search/",'.html');
+</script>
+<script type="text/javascript">
+$(function() { codefold.init(); });
+</script>
+<script type="text/javascript" src="menudata.js"></script>
+<script type="text/javascript" src="menu.js"></script>
+<script type="text/javascript">
+$(function() {
+  initMenu('',true,false,'search.php','搜索',false);
+  $(function() { init_search(); });
+});
+</script>
+<div id="main-nav"></div>
+<!-- window showing the filter options -->
+<div id="MSearchSelectWindow"
+     onmouseover="return searchBox.OnSearchSelectShow()"
+     onmouseout="return searchBox.OnSearchSelectHide()"
+     onkeydown="return searchBox.OnSearchSelectKey(event)">
+</div>
+
+<!-- iframe showing the search results (closed by default) -->
+<div id="MSearchResultsWindow">
+<div id="MSearchResults">
+<div class="SRPage">
+<div id="SRIndex">
+<div id="SRResults"></div>
+<div class="SRStatus" id="Loading">载入中...</div>
+<div class="SRStatus" id="Searching">搜索中...</div>
+<div class="SRStatus" id="NoMatches">未找到</div>
+</div>
+</div>
+</div>
+</div>
+
+<div id="nav-path" class="navpath">
+  <ul>
+<li class="navelem"><a href="dir_d422163b96683743ed3963d4aac17747.html">app</a></li><li class="navelem"><a href="dir_effe5c348e70d16252aa6de5fa9356c9.html">test</a></li>  </ul>
+</div>
+</div><!-- top -->
+<div id="doc-content">
+<div class="header">
+  <div class="summary">
+<a href="#func-members">函数</a>  </div>
+  <div class="headertitle"><div class="title">TestThemePipeline.cpp 文件参考</div></div>
+</div><!--header-->
+<div class="contents">
+
+<p>主题配色管道：同一份已解析角色表到达应用调色板与停靠主题  
+<a href="#details">更多...</a></p>
+<div class="textblock"><code>#include &quot;<a class="el" href="AppPalette_8h_source.html">core/AppPalette.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="DockTheme_8h_source.html">ui/DockTheme.h</a>&quot;</code><br />
+<code>#include &lt;QColor&gt;</code><br />
+<code>#include &lt;QGuiApplication&gt;</code><br />
+<code>#include &lt;QPalette&gt;</code><br />
+<code>#include &lt;QVariantMap&gt;</code><br />
+<code>#include &lt;catch2/catch_test_macros.hpp&gt;</code><br />
+</div><div class="textblock"><div class="dynheader">
+TestThemePipeline.cpp 的引用(Include)关系图:</div>
+<div class="dyncontent">
+<div class="center"><img src="TestThemePipeline_8cpp__incl.png" border="0" usemap="#aapp_2test_2TestThemePipeline_8cpp" loading="lazy" alt=""/></div>
+<map name="aapp_2test_2TestThemePipeline_8cpp" id="aapp_2test_2TestThemePipeline_8cpp">
+<area shape="rect" title="主题配色管道：同一份已解析角色表到达应用调色板与停靠主题" alt="" coords="288,5,517,31"/>
+<area shape="rect" href="AppPalette_8h.html" title="应用级调色板单例：把 Theme 已解析的角色表应用到 QGuiApplication" alt="" coords="335,79,471,104"/>
+<area shape="poly" title=" " alt="" coords="405,31,405,65,400,65,400,31"/>
+<area shape="rect" title=" " alt="" coords="234,152,361,177"/>
+<area shape="poly" title=" " alt="" coords="382,33,352,53,325,80,311,110,303,139,298,138,306,108,321,77,349,49,379,28"/>
+<area shape="rect" title=" " alt="" coords="95,225,201,251"/>
+<area shape="poly" title=" " alt="" coords="288,29,218,36,148,47,88,62,48,81,26,102,12,125,9,149,20,176,32,191,47,203,83,220,81,225,45,207,28,195,15,179,4,150,7,123,22,99,45,76,86,57,147,42,217,31,287,24"/>
+<area shape="rect" title=" " alt="" coords="637,225,704,251"/>
+<area shape="poly" title=" " alt="" coords="510,28,571,43,634,67,692,102,717,124,738,151,743,170,736,189,722,206,704,220,700,216,718,202,732,186,738,170,734,153,713,128,689,106,632,71,570,48,509,33"/>
+<area shape="rect" title=" " alt="" coords="757,225,835,251"/>
+<area shape="poly" title=" " alt="" coords="518,23,607,41,651,56,694,76,729,105,757,142,777,179,791,212,786,214,772,182,752,145,725,109,691,81,649,61,605,46,517,29"/>
+<area shape="rect" href="DockTheme_8h.html" title="停靠组件主题承载对象：保存 app 侧推送的已解析配色并通知 dock QML" alt="" coords="59,79,187,104"/>
+<area shape="poly" title=" " alt="" coords="358,33,182,78,181,73,357,28"/>
+<area shape="rect" title=" " alt="" coords="849,79,1068,104"/>
+<area shape="poly" title=" " alt="" coords="492,28,856,74,855,80,492,33"/>
+<area shape="poly" title=" " alt="" coords="387,106,327,147,324,142,384,102"/>
+<area shape="rect" title=" " alt="" coords="135,152,209,177"/>
+<area shape="poly" title=" " alt="" coords="366,107,223,151,221,145,365,101"/>
+<area shape="poly" title=" " alt="" coords="404,105,397,141,388,162,374,179,338,204,297,222,255,232,216,238,215,232,254,227,295,216,335,200,370,175,383,159,392,140,399,104"/>
+<area shape="rect" title=" " alt="" coords="585,152,724,177"/>
+<area shape="poly" title=" " alt="" coords="444,101,601,146,600,151,443,107"/>
+<area shape="rect" href="ThemePalette_8h.html" title="主题应用调色板构造：把 Theme 已解析的角色颜色表转成 QPalette" alt="" coords="437,152,561,177"/>
+<area shape="poly" title=" " alt="" coords="420,102,474,141,470,146,417,106"/>
+<area shape="poly" title=" " alt="" coords="443,180,216,226,215,221,442,175"/>
+<area shape="poly" title=" " alt="" coords="527,175,631,218,629,222,525,180"/>
+<area shape="poly" title=" " alt="" coords="547,175,744,222,743,227,546,180"/>
+<area shape="rect" title=" " alt="" coords="356,225,449,251"/>
+<area shape="poly" title=" " alt="" coords="485,180,431,219,428,215,482,175"/>
+<area shape="rect" title=" " alt="" coords="474,225,553,251"/>
+<area shape="poly" title=" " alt="" coords="504,177,511,211,506,212,499,178"/>
+<area shape="poly" title=" " alt="" coords="133,103,159,139,154,142,129,106"/>
+<area shape="poly" title=" " alt="" coords="92,106,64,119,40,136,26,155,25,165,29,176,54,201,85,218,83,223,50,205,24,179,20,166,21,153,36,132,62,115,90,102"/>
+<area shape="rect" title=" " alt="" coords="39,152,110,177"/>
+<area shape="poly" title=" " alt="" coords="117,106,92,142,88,139,113,103"/>
+</map>
+</div>
+</div><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 id="header-func-members" class="groupheader"><a id="func-members" name="func-members"></a>
+函数</h2></td></tr>
+<tr class="memitem:a19315504dc87438695e3e6806ea02d00" id="r_a19315504dc87438695e3e6806ea02d00"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a19315504dc87438695e3e6806ea02d00">TEST_CASE</a> (&quot;One resolved role map reaches app palette and dock theme&quot;, &quot;[ThemePipeline]&quot;)</td></tr>
+</table>
+<a name="details" id="details"></a><h2 id="header-details" class="groupheader">详细描述</h2>
+<div class="textblock"><p>主题配色管道：同一份已解析角色表到达应用调色板与停靠主题 </p>
+<p>配色规则只在 <a class="el" href="Theme_8qml.html">app/Theme.qml</a> 维护；本测试固定一份输入，验证两个接收端 都按原值接收，避免再次出现跨模块各自计算配色。 </p>
+</div><a name="doc-func-members" id="doc-func-members"></a><h2 id="header-doc-func-members" class="groupheader">函数说明</h2>
+<a id="a19315504dc87438695e3e6806ea02d00" name="a19315504dc87438695e3e6806ea02d00"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a19315504dc87438695e3e6806ea02d00">&#9670;&#160;</a></span>TEST_CASE()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">TEST_CASE </td>
+          <td>(</td>
+          <td class="paramtype">&quot;One resolved role map reaches app palette and dock theme&quot;</td>          <td class="paramname"><span class="paramname"><em></em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">&quot;&quot;</td>          <td class="paramname"><span class="paramname"><em></em></span>[ThemePipeline]&#160;)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+</div><!-- contents -->
+<!-- start footer part -->
+<hr class="footer"/><address class="footer"><small>
+制作者&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.14.0
+</small></address>
+</div><!-- doc-content -->
+</body>
+</html>

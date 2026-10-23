@@ -113,32 +113,45 @@ dock::ui::DockTheme 的协作图:</div>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 id="header-signals" class="groupheader"><a id="signals" name="signals"></a>
 信号</h2></td></tr>
-<tr class="memitem:aeae33e6209047625009989e3269b1d62" id="r_aeae33e6209047625009989e3269b1d62"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#aeae33e6209047625009989e3269b1d62">darkChanged</a> ()</td></tr>
 <tr class="memitem:a076b498b372c40e69ec2898b5b159d3c" id="r_a076b498b372c40e69ec2898b5b159d3c"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a076b498b372c40e69ec2898b5b159d3c">colorsChanged</a> ()</td></tr>
+<tr class="memitem:a2db7d09796302de402342dd165be6397" id="r_a2db7d09796302de402342dd165be6397"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a2db7d09796302de402342dd165be6397">controlPaletteChanged</a> ()</td></tr>
+<tr class="memitem:abe0c607c54fd47fda1a7666c08bc58a2" id="r_abe0c607c54fd47fda1a7666c08bc58a2"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#abe0c607c54fd47fda1a7666c08bc58a2">popupPaletteChanged</a> ()</td></tr>
+<tr class="memitem:ac0c3d85fee52c03c62be64033318f76c" id="r_ac0c3d85fee52c03c62be64033318f76c"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ac0c3d85fee52c03c62be64033318f76c">wallpaperUrlChanged</a> ()</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 id="header-pub-methods" class="groupheader"><a id="pub-methods" name="pub-methods"></a>
 Public 成员函数</h2></td></tr>
 <tr class="memitem:af935f59ac3fc0ba9c432987bfae1ec9a" id="r_af935f59ac3fc0ba9c432987bfae1ec9a"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#af935f59ac3fc0ba9c432987bfae1ec9a">DockTheme</a> (QObject *parent=nullptr)</td></tr>
-<tr class="memitem:a2dfbc0d5a6a4f03774240c055117cb9e" id="r_a2dfbc0d5a6a4f03774240c055117cb9e"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a2dfbc0d5a6a4f03774240c055117cb9e">dark</a> () const</td></tr>
-<tr class="memitem:a59c6758fc39869306865759992b5afa0" id="r_a59c6758fc39869306865759992b5afa0"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a59c6758fc39869306865759992b5afa0">setDark</a> (bool <a class="el" href="#a38a831e484a73418b786f461f94049a8">dark</a>)</td></tr>
-<tr class="memdesc:a59c6758fc39869306865759992b5afa0"><td class="mdescLeft">&#160;</td><td class="mdescRight">设置明暗（由 app 侧 Binding 驱动）  <br /></td></tr>
 <tr class="memitem:a6e04a980c609fa75404b894a5d125e33" id="r_a6e04a980c609fa75404b894a5d125e33"><td class="memItemLeft" align="right" valign="top">QVariantMap&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a6e04a980c609fa75404b894a5d125e33">colors</a> () const</td></tr>
-<tr class="memdesc:a6e04a980c609fa75404b894a5d125e33"><td class="mdescLeft">&#160;</td><td class="mdescRight">当前明暗下的颜色表（惰性缓存；须与 <a class="el" href="Theme_8qml.html">app/Theme.qml</a> 对应令牌同步）  <br /></td></tr>
+<tr class="memdesc:a6e04a980c609fa75404b894a5d125e33"><td class="mdescLeft">&#160;</td><td class="mdescRight">停靠外壳绘制色（由 Theme.dockColors 推送）  <br /></td></tr>
+<tr class="memitem:a4d5b42dea76f968c367bf761204af839" id="r_a4d5b42dea76f968c367bf761204af839"><td class="memItemLeft" align="right" valign="top">QVariantMap&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a4d5b42dea76f968c367bf761204af839">controlPalette</a> () const</td></tr>
+<tr class="memdesc:a4d5b42dea76f968c367bf761204af839"><td class="mdescLeft">&#160;</td><td class="mdescRight">普通控件调色板（由 Theme.controlPalette 推送）  <br /></td></tr>
+<tr class="memitem:af5f10fc979da66d5825e71356c7a4242" id="r_af5f10fc979da66d5825e71356c7a4242"><td class="memItemLeft" align="right" valign="top">QVariantMap&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#af5f10fc979da66d5825e71356c7a4242">popupPalette</a> () const</td></tr>
+<tr class="memdesc:af5f10fc979da66d5825e71356c7a4242"><td class="mdescLeft">&#160;</td><td class="mdescRight">弹窗调色板（由 Theme.popupPalette 推送）  <br /></td></tr>
+<tr class="memitem:a13081027af69310935ae41a53426b0eb" id="r_a13081027af69310935ae41a53426b0eb"><td class="memItemLeft" align="right" valign="top">QString&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a13081027af69310935ae41a53426b0eb">wallpaperUrl</a> () const</td></tr>
+<tr class="memdesc:a13081027af69310935ae41a53426b0eb"><td class="mdescLeft">&#160;</td><td class="mdescRight">自定义壁纸图像源（由 app 侧 Binding 驱动）  <br /></td></tr>
+<tr class="memitem:adc5011d407a9aff6a37dc9038e1a9acc" id="r_adc5011d407a9aff6a37dc9038e1a9acc"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#adc5011d407a9aff6a37dc9038e1a9acc">setColors</a> (const QVariantMap &amp;<a class="el" href="#a905dbba462f5de781d4d66f875e68486">colors</a>)</td></tr>
+<tr class="memitem:a7bbaab92d30856f1ff089464b5bbb1a9" id="r_a7bbaab92d30856f1ff089464b5bbb1a9"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a7bbaab92d30856f1ff089464b5bbb1a9">setControlPalette</a> (const QVariantMap &amp;palette)</td></tr>
+<tr class="memitem:a88d538a3e7114edc7d7b82c947166aa9" id="r_a88d538a3e7114edc7d7b82c947166aa9"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a88d538a3e7114edc7d7b82c947166aa9">setPopupPalette</a> (const QVariantMap &amp;palette)</td></tr>
+<tr class="memitem:a91017e328bd300511134face00714b39" id="r_a91017e328bd300511134face00714b39"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a91017e328bd300511134face00714b39">setWallpaperUrl</a> (const QString &amp;url)</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 id="header-properties" class="groupheader"><a id="properties" name="properties"></a>
 属性</h2></td></tr>
-<tr class="memitem:a38a831e484a73418b786f461f94049a8" id="r_a38a831e484a73418b786f461f94049a8"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a38a831e484a73418b786f461f94049a8">dark</a></td></tr>
 <tr class="memitem:a905dbba462f5de781d4d66f875e68486" id="r_a905dbba462f5de781d4d66f875e68486"><td class="memItemLeft" align="right" valign="top">QVariantMap&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a905dbba462f5de781d4d66f875e68486">colors</a></td></tr>
+<tr class="memitem:aaa96a6fdac9303243e76a33eb9e1bad4" id="r_aaa96a6fdac9303243e76a33eb9e1bad4"><td class="memItemLeft" align="right" valign="top">QVariantMap&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#aaa96a6fdac9303243e76a33eb9e1bad4">controlPalette</a></td></tr>
+<tr class="memitem:ad840137e1c044dfe4b4404fd4c245a84" id="r_ad840137e1c044dfe4b4404fd4c245a84"><td class="memItemLeft" align="right" valign="top">QVariantMap&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ad840137e1c044dfe4b4404fd4c245a84">popupPalette</a></td></tr>
+<tr class="memitem:a3c9dc162e7717cddf2f31afcfa4d033e" id="r_a3c9dc162e7717cddf2f31afcfa4d033e"><td class="memItemLeft" align="right" valign="top">QString&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a3c9dc162e7717cddf2f31afcfa4d033e">wallpaperUrl</a></td></tr>
+<tr class="memdesc:a3c9dc162e7717cddf2f31afcfa4d033e"><td class="mdescLeft">&#160;</td><td class="mdescRight">自定义壁纸图像源（app 侧 Binding 推入；空串时浮窗显示纯色兜底）  <br /></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 id="header-pri-attribs" class="groupheader"><a id="pri-attribs" name="pri-attribs"></a>
 Private 属性</h2></td></tr>
-<tr class="memitem:af58bec0a0efcacb1c2bd2e064126ef43" id="r_af58bec0a0efcacb1c2bd2e064126ef43"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#af58bec0a0efcacb1c2bd2e064126ef43">dark_</a> = false</td></tr>
-<tr class="memitem:ae402a216bb58f127d5670376fd91da3b" id="r_ae402a216bb58f127d5670376fd91da3b"><td class="memItemLeft" align="right" valign="top">QVariantMap&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ae402a216bb58f127d5670376fd91da3b">colors_cache_</a></td></tr>
-<tr class="memitem:a7ece1c3651edea3b1de2c6851f6466d3" id="r_a7ece1c3651edea3b1de2c6851f6466d3"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a7ece1c3651edea3b1de2c6851f6466d3">colors_dirty_</a> = true</td></tr>
+<tr class="memitem:ac318a8e7c16a96971f3ddbc2ac62cec9" id="r_ac318a8e7c16a96971f3ddbc2ac62cec9"><td class="memItemLeft" align="right" valign="top">QVariantMap&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ac318a8e7c16a96971f3ddbc2ac62cec9">colors_</a></td></tr>
+<tr class="memitem:ac255a64f777e27fef89cb09e6224c6e8" id="r_ac255a64f777e27fef89cb09e6224c6e8"><td class="memItemLeft" align="right" valign="top">QVariantMap&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ac255a64f777e27fef89cb09e6224c6e8">control_palette_</a></td></tr>
+<tr class="memitem:ae85676bd5702fcf3eb2f6f01350586cc" id="r_ae85676bd5702fcf3eb2f6f01350586cc"><td class="memItemLeft" align="right" valign="top">QVariantMap&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ae85676bd5702fcf3eb2f6f01350586cc">popup_palette_</a></td></tr>
+<tr class="memitem:a38fd63becd742d9e9452289d21c56eb2" id="r_a38fd63becd742d9e9452289d21c56eb2"><td class="memItemLeft" align="right" valign="top">QString&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a38fd63becd742d9e9452289d21c56eb2">wallpaper_url_</a></td></tr>
 </table>
 <a name="details" id="details"></a><h2 id="header-details" class="groupheader">详细描述</h2>
 <div class="textblock"><p>停靠组件主题单例 </p>
-<p><a class="el" href="#a905dbba462f5de781d4d66f875e68486">colors()</a> 返回当前明暗下已解析的颜色表（键见实现），dark 变化时整体刷新； 从而避免各 dock QML 各自复写浅/深色对。 </p>
+<p>三个颜色表均由宿主推送：colors 供外壳绘制，controlPalette 供浮窗公共祖先 绑定普通控件调色板，popupPalette 供菜单/弹窗使用。 </p>
 </div><a name="doc-constructors" id="doc-constructors"></a><h2 id="header-doc-constructors" class="groupheader">构造及析构函数说明</h2>
 <a id="af935f59ac3fc0ba9c432987bfae1ec9a" name="af935f59ac3fc0ba9c432987bfae1ec9a"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#af935f59ac3fc0ba9c432987bfae1ec9a">&#9670;&#160;</a></span>DockTheme()</h2>
@@ -189,7 +202,7 @@ Private 属性</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p>当前明暗下的颜色表（惰性缓存；须与 <a class="el" href="Theme_8qml.html">app/Theme.qml</a> 对应令牌同步） </p>
+<p>停靠外壳绘制色（由 Theme.dockColors 推送） </p>
 
 </div>
 </div>
@@ -218,8 +231,8 @@ Private 属性</h2></td></tr>
 
 </div>
 </div>
-<a id="a2dfbc0d5a6a4f03774240c055117cb9e" name="a2dfbc0d5a6a4f03774240c055117cb9e"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a2dfbc0d5a6a4f03774240c055117cb9e">&#9670;&#160;</a></span>dark()</h2>
+<a id="a4d5b42dea76f968c367bf761204af839" name="a4d5b42dea76f968c367bf761204af839"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a4d5b42dea76f968c367bf761204af839">&#9670;&#160;</a></span>controlPalette()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -228,7 +241,7 @@ Private 属性</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">bool dock::ui::DockTheme::dark </td>
+          <td class="memname">QVariantMap dock::ui::DockTheme::controlPalette </td>
           <td>(</td>
           <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
           <td> const</td>
@@ -241,10 +254,12 @@ Private 属性</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
+<p>普通控件调色板（由 Theme.controlPalette 推送） </p>
+
 </div>
 </div>
-<a id="aeae33e6209047625009989e3269b1d62" name="aeae33e6209047625009989e3269b1d62"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#aeae33e6209047625009989e3269b1d62">&#9670;&#160;</a></span>darkChanged</h2>
+<a id="a2db7d09796302de402342dd165be6397" name="a2db7d09796302de402342dd165be6397"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a2db7d09796302de402342dd165be6397">&#9670;&#160;</a></span>controlPaletteChanged</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -253,7 +268,7 @@ Private 属性</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">void dock::ui::DockTheme::darkChanged </td>
+          <td class="memname">void dock::ui::DockTheme::controlPaletteChanged </td>
           <td>(</td>
           <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
           <td></td>
@@ -268,8 +283,8 @@ Private 属性</h2></td></tr>
 
 </div>
 </div>
-<a id="a59c6758fc39869306865759992b5afa0" name="a59c6758fc39869306865759992b5afa0"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a59c6758fc39869306865759992b5afa0">&#9670;&#160;</a></span>setDark()</h2>
+<a id="af5f10fc979da66d5825e71356c7a4242" name="af5f10fc979da66d5825e71356c7a4242"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#af5f10fc979da66d5825e71356c7a4242">&#9670;&#160;</a></span>popupPalette()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -278,9 +293,61 @@ Private 属性</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">void dock::ui::DockTheme::setDark </td>
+          <td class="memname">QVariantMap dock::ui::DockTheme::popupPalette </td>
           <td>(</td>
-          <td class="paramtype">bool</td>          <td class="paramname"><span class="paramname"><em>dark</em></span></td><td>)</td>
+          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel inline">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>弹窗调色板（由 Theme.popupPalette 推送） </p>
+
+</div>
+</div>
+<a id="abe0c607c54fd47fda1a7666c08bc58a2" name="abe0c607c54fd47fda1a7666c08bc58a2"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#abe0c607c54fd47fda1a7666c08bc58a2">&#9670;&#160;</a></span>popupPaletteChanged</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void dock::ui::DockTheme::popupPaletteChanged </td>
+          <td>(</td>
+          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel signal">signal</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="adc5011d407a9aff6a37dc9038e1a9acc" name="adc5011d407a9aff6a37dc9038e1a9acc"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#adc5011d407a9aff6a37dc9038e1a9acc">&#9670;&#160;</a></span>setColors()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void dock::ui::DockTheme::setColors </td>
+          <td>(</td>
+          <td class="paramtype">const QVariantMap &amp;</td>          <td class="paramname"><span class="paramname"><em>colors</em></span></td><td>)</td>
           <td></td>
         </tr>
       </table>
@@ -291,13 +358,138 @@ Private 属性</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p>设置明暗（由 app 侧 Binding 驱动） </p>
+</div>
+</div>
+<a id="a7bbaab92d30856f1ff089464b5bbb1a9" name="a7bbaab92d30856f1ff089464b5bbb1a9"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a7bbaab92d30856f1ff089464b5bbb1a9">&#9670;&#160;</a></span>setControlPalette()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void dock::ui::DockTheme::setControlPalette </td>
+          <td>(</td>
+          <td class="paramtype">const QVariantMap &amp;</td>          <td class="paramname"><span class="paramname"><em>palette</em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel inline">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a88d538a3e7114edc7d7b82c947166aa9" name="a88d538a3e7114edc7d7b82c947166aa9"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a88d538a3e7114edc7d7b82c947166aa9">&#9670;&#160;</a></span>setPopupPalette()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void dock::ui::DockTheme::setPopupPalette </td>
+          <td>(</td>
+          <td class="paramtype">const QVariantMap &amp;</td>          <td class="paramname"><span class="paramname"><em>palette</em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel inline">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a91017e328bd300511134face00714b39" name="a91017e328bd300511134face00714b39"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a91017e328bd300511134face00714b39">&#9670;&#160;</a></span>setWallpaperUrl()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void dock::ui::DockTheme::setWallpaperUrl </td>
+          <td>(</td>
+          <td class="paramtype">const QString &amp;</td>          <td class="paramname"><span class="paramname"><em>url</em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel inline">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a13081027af69310935ae41a53426b0eb" name="a13081027af69310935ae41a53426b0eb"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a13081027af69310935ae41a53426b0eb">&#9670;&#160;</a></span>wallpaperUrl()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">QString dock::ui::DockTheme::wallpaperUrl </td>
+          <td>(</td>
+          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel inline">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>自定义壁纸图像源（由 app 侧 Binding 驱动） </p>
+
+</div>
+</div>
+<a id="ac0c3d85fee52c03c62be64033318f76c" name="ac0c3d85fee52c03c62be64033318f76c"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ac0c3d85fee52c03c62be64033318f76c">&#9670;&#160;</a></span>wallpaperUrlChanged</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void dock::ui::DockTheme::wallpaperUrlChanged </td>
+          <td>(</td>
+          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel signal">signal</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
 
 </div>
 </div>
 <a name="doc-variable-members" id="doc-variable-members"></a><h2 id="header-doc-variable-members" class="groupheader">类成员变量说明</h2>
-<a id="ae402a216bb58f127d5670376fd91da3b" name="ae402a216bb58f127d5670376fd91da3b"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ae402a216bb58f127d5670376fd91da3b">&#9670;&#160;</a></span>colors_cache_</h2>
+<a id="ac318a8e7c16a96971f3ddbc2ac62cec9" name="ac318a8e7c16a96971f3ddbc2ac62cec9"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ac318a8e7c16a96971f3ddbc2ac62cec9">&#9670;&#160;</a></span>colors_</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -306,20 +498,20 @@ Private 属性</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">QVariantMap dock::ui::DockTheme::colors_cache_</td>
+          <td class="memname">QVariantMap dock::ui::DockTheme::colors_</td>
         </tr>
       </table>
   </td>
   <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel mutable">mutable</span><span class="mlabel private">private</span></span>  </td>
+<span class="mlabels"><span class="mlabel private">private</span></span>  </td>
   </tr>
 </table>
 </div><div class="memdoc">
 
 </div>
 </div>
-<a id="a7ece1c3651edea3b1de2c6851f6466d3" name="a7ece1c3651edea3b1de2c6851f6466d3"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a7ece1c3651edea3b1de2c6851f6466d3">&#9670;&#160;</a></span>colors_dirty_</h2>
+<a id="ac255a64f777e27fef89cb09e6224c6e8" name="ac255a64f777e27fef89cb09e6224c6e8"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ac255a64f777e27fef89cb09e6224c6e8">&#9670;&#160;</a></span>control_palette_</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -328,20 +520,20 @@ Private 属性</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">bool dock::ui::DockTheme::colors_dirty_ = true</td>
+          <td class="memname">QVariantMap dock::ui::DockTheme::control_palette_</td>
         </tr>
       </table>
   </td>
   <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel mutable">mutable</span><span class="mlabel private">private</span></span>  </td>
+<span class="mlabels"><span class="mlabel private">private</span></span>  </td>
   </tr>
 </table>
 </div><div class="memdoc">
 
 </div>
 </div>
-<a id="af58bec0a0efcacb1c2bd2e064126ef43" name="af58bec0a0efcacb1c2bd2e064126ef43"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#af58bec0a0efcacb1c2bd2e064126ef43">&#9670;&#160;</a></span>dark_</h2>
+<a id="ae85676bd5702fcf3eb2f6f01350586cc" name="ae85676bd5702fcf3eb2f6f01350586cc"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ae85676bd5702fcf3eb2f6f01350586cc">&#9670;&#160;</a></span>popup_palette_</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -350,7 +542,29 @@ Private 属性</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">bool dock::ui::DockTheme::dark_ = false</td>
+          <td class="memname">QVariantMap dock::ui::DockTheme::popup_palette_</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel private">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a38fd63becd742d9e9452289d21c56eb2" name="a38fd63becd742d9e9452289d21c56eb2"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a38fd63becd742d9e9452289d21c56eb2">&#9670;&#160;</a></span>wallpaper_url_</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">QString dock::ui::DockTheme::wallpaper_url_</td>
         </tr>
       </table>
   </td>
@@ -378,15 +592,15 @@ Private 属性</h2></td></tr>
       </table>
   </td>
   <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel read">read</span></span>  </td>
+<span class="mlabels"><span class="mlabel read">read</span><span class="mlabel write">write</span></span>  </td>
   </tr>
 </table>
 </div><div class="memdoc">
 
 </div>
 </div>
-<a id="a38a831e484a73418b786f461f94049a8" name="a38a831e484a73418b786f461f94049a8"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a38a831e484a73418b786f461f94049a8">&#9670;&#160;</a></span>dark</h2>
+<a id="aaa96a6fdac9303243e76a33eb9e1bad4" name="aaa96a6fdac9303243e76a33eb9e1bad4"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aaa96a6fdac9303243e76a33eb9e1bad4">&#9670;&#160;</a></span>controlPalette</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -395,7 +609,7 @@ Private 属性</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">bool dock::ui::DockTheme::dark</td>
+          <td class="memname">QVariantMap dock::ui::DockTheme::controlPalette</td>
         </tr>
       </table>
   </td>
@@ -404,6 +618,52 @@ Private 属性</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+
+</div>
+</div>
+<a id="ad840137e1c044dfe4b4404fd4c245a84" name="ad840137e1c044dfe4b4404fd4c245a84"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ad840137e1c044dfe4b4404fd4c245a84">&#9670;&#160;</a></span>popupPalette</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">QVariantMap dock::ui::DockTheme::popupPalette</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel read">read</span><span class="mlabel write">write</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a3c9dc162e7717cddf2f31afcfa4d033e" name="a3c9dc162e7717cddf2f31afcfa4d033e"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a3c9dc162e7717cddf2f31afcfa4d033e">&#9670;&#160;</a></span>wallpaperUrl</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">QString dock::ui::DockTheme::wallpaperUrl</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel read">read</span><span class="mlabel write">write</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>自定义壁纸图像源（app 侧 Binding 推入；空串时浮窗显示纯色兜底） </p>
 
 </div>
 </div>

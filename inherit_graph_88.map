@@ -1,3 +1,5 @@
 <map id="类继承关系图" name="类继承关系图">
-<area shape="rect" id="Node000000" href="$classMeshActorManager.html" title=" " alt="" coords="5,5,153,31"/>
+<area shape="rect" id="Node000000" href="$classMeshActor.html" title="负责管理Model的Actor" alt="" coords="5,5,96,31"/>
+<area shape="rect" id="Node000001" href="$classTestMeshActorWithData.html" title="将既有测试的显隐操作转发到数据管线，保留对 MeshActor 的行为断言。" alt="" coords="144,5,323,31"/>
+<area shape="poly" id="edge62_Node000000_Node000001" title=" " alt="" coords="109,15,144,15,144,21,109,21"/>
 </map>

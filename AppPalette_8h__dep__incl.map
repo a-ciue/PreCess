@@ -1,0 +1,7 @@
+<map id="app/core/AppPalette.h" name="app/core/AppPalette.h">
+<area shape="rect" id="Node000001" title="应用级调色板单例：把 Theme 已解析的角色表应用到 QGuiApplication" alt="" coords="145,5,309,31"/>
+<area shape="rect" id="Node000002" href="$TestAppPalette_8cpp.html" title="主题调色板适配测试：角色表映射、alpha 保留与应用级调色板刷新" alt="" coords="5,79,208,104"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="197,40,128,81,125,76,194,35"/>
+<area shape="rect" id="Node000003" href="$TestThemePipeline_8cpp.html" title="主题配色管道：同一份已解析角色表到达应用调色板与停靠主题" alt="" coords="232,79,461,104"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="259,35,328,76,326,81,257,40"/>
+</map>

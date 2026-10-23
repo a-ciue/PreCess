@@ -2,7 +2,7 @@ var searchData=
 [
   ['kdefaultfloatingwindowsize_0',['kDefaultFloatingWindowSize',['../structdock_1_1DockMetrics.html#a5b8eddf834a39475c6e4833cc64df00d',1,'dock::DockMetrics']]],
   ['kdividerthickness_1',['kDividerThickness',['../namespacedock.html#ad5d0462dc9b83f6221f6b2622d1069d9',1,'dock']]],
-  ['key_2',['key',['../structsystems_1_1feature_1_1KeyEvent.html#a9bedb9aa15de7e07ea134ae1a8021383',1,'systems::feature::KeyEvent::key'],['../structsystems_1_1feature_1_1KeyBinding.html#adc1616d6c802e1b2c387e00fbab679fe',1,'systems::feature::KeyBinding::key']]],
+  ['key_2',['key',['../structapp_1_1core_1_1ThemeRoleBinding.html#a3cf73e9f969c637fb14ccd9be897f975',1,'app::core::ThemeRoleBinding::key'],['../structsystems_1_1feature_1_1KeyEvent.html#a9bedb9aa15de7e07ea134ae1a8021383',1,'systems::feature::KeyEvent::key'],['../structsystems_1_1feature_1_1KeyBinding.html#adc1616d6c802e1b2c387e00fbab679fe',1,'systems::feature::KeyBinding::key']]],
   ['key_5fbindings_3',['key_bindings',['../structsystems_1_1feature_1_1FeatureInfo.html#a3efd03279e42a437fe51e1b4b57f78c2',1,'systems::feature::FeatureInfo']]],
   ['key_5fbindings_5f_4',['key_bindings_',['../classsystems_1_1feature_1_1FeatureRegistrar.html#a87493b591edf7ae2a91daa1e5bbaac7b',1,'systems::feature::FeatureRegistrar']]],
   ['kgeometrytopologydiagnosticcategorycount_5',['kGeometryTopologyDiagnosticCategoryCount',['../GeometryTopologyDiagnosticCategory_8h.html#aff8180424a63973f34d58f1bea07285b',1,'GeometryTopologyDiagnosticCategory.h']]],
@@ -19,9 +19,10 @@ var searchData=
   ['kmaxsizelimit_16',['kMaxSizeLimit',['../namespacedock.html#abc474d09d97bd8c32375258274a0fa84',1,'dock']]],
   ['kseparatorlayerz_17',['kSeparatorLayerZ',['../structdock_1_1DockMetrics.html#a1ef65e0420462b9cd66752f0fb8fda06',1,'dock::DockMetrics']]],
   ['kstartdragdistance_18',['kStartDragDistance',['../structdock_1_1DockMetrics.html#a46d0832f331871638c0a4ef87f8855ca',1,'dock::DockMetrics']]],
-  ['ktitlebarheight_19',['kTitleBarHeight',['../structdock_1_1DockMetrics.html#a8acda70b17cd267be407c2da34bfa9b1',1,'dock::DockMetrics']]],
-  ['ktopologydiagnosticcategorycount_20',['kTopologyDiagnosticCategoryCount',['../TopologyDiagnosticCategory_8h.html#a9bed0bb17f9e1b21d556ece03a64cb57',1,'TopologyDiagnosticCategory.h']]],
-  ['ktypecount_21',['kTypeCount',['../structGeometrySubshapeIndex.html#a8220fb5df165f1baa794452a195d44ce',1,'GeometrySubshapeIndex']]],
-  ['kzonemargin_22',['kZoneMargin',['../structdock_1_1DockMetrics.html#a31033060bfd989990398a211862d66a0',1,'dock::DockMetrics']]],
-  ['kzonesize_23',['kZoneSize',['../structdock_1_1DockMetrics.html#a14b4e325cbd998ae58b2e6b4822bdd46',1,'dock::DockMetrics']]]
+  ['kthemeroles_19',['kThemeRoles',['../namespaceapp_1_1core.html#a99ba3ffcc74d5c09d9650067dafd13dd',1,'app::core']]],
+  ['ktitlebarheight_20',['kTitleBarHeight',['../structdock_1_1DockMetrics.html#a8acda70b17cd267be407c2da34bfa9b1',1,'dock::DockMetrics']]],
+  ['ktopologydiagnosticcategorycount_21',['kTopologyDiagnosticCategoryCount',['../TopologyDiagnosticCategory_8h.html#a9bed0bb17f9e1b21d556ece03a64cb57',1,'TopologyDiagnosticCategory.h']]],
+  ['ktypecount_22',['kTypeCount',['../structGeometrySubshapeIndex.html#a8220fb5df165f1baa794452a195d44ce',1,'GeometrySubshapeIndex']]],
+  ['kzonemargin_23',['kZoneMargin',['../structdock_1_1DockMetrics.html#a31033060bfd989990398a211862d66a0',1,'dock::DockMetrics']]],
+  ['kzonesize_24',['kZoneSize',['../structdock_1_1DockMetrics.html#a14b4e325cbd998ae58b2e6b4822bdd46',1,'dock::DockMetrics']]]
 ];

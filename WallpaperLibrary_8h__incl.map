@@ -1,0 +1,19 @@
+<map id="app/core/WallpaperLibrary.h" name="app/core/WallpaperLibrary.h">
+<area shape="rect" id="Node000001" title="自定义壁纸库：托管用户导入的壁纸并把文件名解析为图像" alt="" coords="363,5,566,31"/>
+<area shape="rect" id="Node000002" title=" " alt="" coords="5,79,79,104"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="383,33,251,53,93,81,92,76,250,48,382,28"/>
+<area shape="rect" id="Node000003" title=" " alt="" coords="103,79,178,104"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="412,33,192,81,191,76,410,28"/>
+<area shape="rect" id="Node000004" title=" " alt="" coords="203,79,367,104"/>
+<area shape="poly" id="edge3_Node000001_Node000004" title=" " alt="" coords="437,33,328,76,326,71,435,28"/>
+<area shape="rect" id="Node000005" title=" " alt="" coords="391,79,450,104"/>
+<area shape="poly" id="edge4_Node000001_Node000005" title=" " alt="" coords="460,32,437,68,433,66,455,30"/>
+<area shape="rect" id="Node000006" title=" " alt="" coords="475,79,545,104"/>
+<area shape="poly" id="edge5_Node000001_Node000006" title=" " alt="" coords="474,30,498,66,493,69,470,32"/>
+<area shape="rect" id="Node000007" title=" " alt="" coords="569,79,675,104"/>
+<area shape="poly" id="edge6_Node000001_Node000007" title=" " alt="" coords="491,28,585,71,583,75,489,33"/>
+<area shape="rect" id="Node000008" title=" " alt="" coords="699,79,750,104"/>
+<area shape="poly" id="edge7_Node000001_Node000008" title=" " alt="" coords="510,28,687,76,685,81,508,33"/>
+<area shape="rect" id="Node000009" title=" " alt="" coords="774,79,913,104"/>
+<area shape="poly" id="edge8_Node000001_Node000009" title=" " alt="" coords="526,28,769,73,768,79,525,33"/>
+</map>

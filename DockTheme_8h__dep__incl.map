@@ -1,9 +1,9 @@
 <map id="app/dock/ui/DockTheme.h" name="app/dock/ui/DockTheme.h">
-<area shape="rect" id="Node000001" title="停靠组件主题承载对象：向 dock QML 暴露当前明暗与已解析配色" alt="" coords="274,5,465,31"/>
+<area shape="rect" id="Node000001" title="停靠组件主题承载对象：保存 app 侧推送的已解析配色并通知 dock QML" alt="" coords="274,5,465,31"/>
 <area shape="rect" id="Node000002" href="$QmlRegistration_8cpp.html" title="QML 类型注册与组件初始化" alt="" coords="5,79,240,104"/>
 <area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="317,37,163,81,162,76,316,32"/>
-<area shape="rect" id="Node000003" href="$TestDockTheme_8cpp.html" title="DockTheme 单元测试：明暗切换后配色表整体刷新" alt="" coords="264,79,475,104"/>
+<area shape="rect" id="Node000003" href="$TestDockTheme_8cpp.html" title="DockTheme 单元测试：宿主推送的配色表与壁纸源按原值保存并通知" alt="" coords="264,79,475,104"/>
 <area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="372,44,372,79,367,79,367,44"/>
-<area shape="rect" id="Node000004" href="$TestThemeConsistency_8cpp.html" title="主题色跨文件一致性：ThemePalette（应用调色板）与 DockTheme（停靠配色）" alt="" coords="499,79,754,104"/>
-<area shape="poly" id="edge3_Node000001_Node000004" title=" " alt="" coords="424,32,586,76,584,81,423,37"/>
+<area shape="rect" id="Node000004" href="$TestThemePipeline_8cpp.html" title="主题配色管道：同一份已解析角色表到达应用调色板与停靠主题" alt="" coords="499,79,728,104"/>
+<area shape="poly" id="edge3_Node000001_Node000004" title=" " alt="" coords="422,32,575,76,573,81,421,37"/>
 </map>

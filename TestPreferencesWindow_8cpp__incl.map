@@ -1,0 +1,29 @@
+<map id="app/test/TestPreferencesWindow.cpp" name="app/test/TestPreferencesWindow.cpp">
+<area shape="rect" id="Node000001" title="偏好设置面板运行时 smoke：实际 QML 加载、紧凑布局与壁纸动作按钮" alt="" coords="880,5,1063,45"/>
+<area shape="rect" id="Node000002" title=" " alt="" coords="5,93,140,119"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="880,35,563,58,154,96,153,91,562,52,879,30"/>
+<area shape="rect" id="Node000003" title=" " alt="" coords="164,93,291,119"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="880,37,625,60,305,96,304,90,624,55,879,32"/>
+<area shape="rect" id="Node000004" title=" " alt="" coords="315,93,449,119"/>
+<area shape="poly" id="edge3_Node000001_Node000004" title=" " alt="" coords="880,41,463,96,462,90,880,36"/>
+<area shape="rect" id="Node000005" title=" " alt="" coords="473,93,584,119"/>
+<area shape="poly" id="edge4_Node000001_Node000005" title=" " alt="" coords="880,45,598,95,597,90,879,40"/>
+<area shape="rect" id="Node000006" title=" " alt="" coords="608,93,711,119"/>
+<area shape="poly" id="edge5_Node000001_Node000006" title=" " alt="" coords="897,48,719,93,717,87,896,43"/>
+<area shape="rect" id="Node000007" title=" " alt="" coords="735,93,898,119"/>
+<area shape="poly" id="edge6_Node000001_Node000007" title=" " alt="" coords="935,48,853,89,850,85,933,43"/>
+<area shape="rect" id="Node000008" title=" " alt="" coords="922,93,1021,119"/>
+<area shape="poly" id="edge7_Node000001_Node000008" title=" " alt="" coords="974,46,974,79,969,79,969,46"/>
+<area shape="rect" id="Node000009" title=" " alt="" coords="1045,93,1148,119"/>
+<area shape="poly" id="edge8_Node000001_Node000009" title=" " alt="" coords="1003,43,1068,84,1065,88,1000,48"/>
+<area shape="rect" id="Node000010" title=" " alt="" coords="1173,93,1258,119"/>
+<area shape="poly" id="edge9_Node000001_Node000010" title=" " alt="" coords="1031,43,1167,86,1166,92,1029,48"/>
+<area shape="rect" id="Node000011" title=" " alt="" coords="1282,93,1407,119"/>
+<area shape="poly" id="edge10_Node000001_Node000011" title=" " alt="" coords="1061,43,1277,88,1276,93,1060,48"/>
+<area shape="rect" id="Node000012" title=" " alt="" coords="1431,93,1650,119"/>
+<area shape="poly" id="edge11_Node000001_Node000012" title=" " alt="" coords="1063,37,1445,89,1444,94,1062,42"/>
+<area shape="rect" id="Node000013" title=" " alt="" coords="1674,93,1751,119"/>
+<area shape="poly" id="edge12_Node000001_Node000013" title=" " alt="" coords="1063,29,1328,50,1492,68,1661,91,1660,96,1492,73,1327,55,1063,35"/>
+<area shape="rect" id="Node000014" title=" " alt="" coords="1775,93,1983,119"/>
+<area shape="poly" id="edge13_Node000001_Node000014" title=" " alt="" coords="1063,31,1762,91,1761,96,1063,37"/>
+</map>

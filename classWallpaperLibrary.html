@@ -1,0 +1,564 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="zh">
+<head>
+<meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=11"/>
+<meta name="generator" content="Doxygen 1.14.0"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>PreCess: WallpaperLibrary类 参考</title>
+<link href="tabs.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="jquery.js"></script>
+<script type="text/javascript" src="dynsections.js"></script>
+<script type="text/javascript" src="clipboard.js"></script>
+<script type="text/javascript" src="cookie.js"></script>
+<link href="search/search.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="search/searchdata.js"></script>
+<script type="text/javascript" src="search/search.js"></script>
+<link href="doxygen.css" rel="stylesheet" type="text/css" />
+</head>
+<body>
+<div id="top"><!-- do not remove this div, it is closed by doxygen! -->
+<div id="titlearea">
+<table cellspacing="0" cellpadding="0">
+ <tbody>
+ <tr id="projectrow">
+  <td id="projectlogo"><img alt="Logo" src="ZenithGrid.ico"/></td>
+  <td id="projectalign">
+   <div id="projectname">PreCess
+   </div>
+  </td>
+ </tr>
+ </tbody>
+</table>
+</div>
+<!-- end header part -->
+<!-- 制作者 Doxygen 1.14.0 -->
+<script type="text/javascript">
+var searchBox = new SearchBox("searchBox", "search/",'.html');
+</script>
+<script type="text/javascript">
+$(function() { codefold.init(); });
+</script>
+<script type="text/javascript" src="menudata.js"></script>
+<script type="text/javascript" src="menu.js"></script>
+<script type="text/javascript">
+$(function() {
+  initMenu('',true,false,'search.php','搜索',false);
+  $(function() { init_search(); });
+});
+</script>
+<div id="main-nav"></div>
+<!-- window showing the filter options -->
+<div id="MSearchSelectWindow"
+     onmouseover="return searchBox.OnSearchSelectShow()"
+     onmouseout="return searchBox.OnSearchSelectHide()"
+     onkeydown="return searchBox.OnSearchSelectKey(event)">
+</div>
+
+<!-- iframe showing the search results (closed by default) -->
+<div id="MSearchResultsWindow">
+<div id="MSearchResults">
+<div class="SRPage">
+<div id="SRIndex">
+<div id="SRResults"></div>
+<div class="SRStatus" id="Loading">载入中...</div>
+<div class="SRStatus" id="Searching">搜索中...</div>
+<div class="SRStatus" id="NoMatches">未找到</div>
+</div>
+</div>
+</div>
+</div>
+
+</div><!-- top -->
+<div id="doc-content">
+<div class="header">
+  <div class="summary">
+<a href="#signals">信号</a> &#124;
+<a href="#pub-methods">Public 成员函数</a> &#124;
+<a href="#pub-static-methods">静态 Public 成员函数</a> &#124;
+<a href="#properties">属性</a> &#124;
+<a href="#pri-methods">Private 成员函数</a> &#124;
+<a href="#pri-attribs">Private 属性</a> &#124;
+<a href="classWallpaperLibrary-members.html">所有成员列表</a>  </div>
+  <div class="headertitle"><div class="title">WallpaperLibrary类 参考</div></div>
+</div><!--header-->
+<div class="contents">
+
+<p>壁纸库 QML 单例：导入/移除/启动校验用户壁纸  
+ <a href="#details">更多...</a></p>
+
+<p><code>#include &lt;<a class="el" href="WallpaperLibrary_8h_source.html">WallpaperLibrary.h</a>&gt;</code></p>
+<div class="dynheader">
+类 WallpaperLibrary 继承关系图:</div>
+<div class="dyncontent">
+<div class="center"><img src="classWallpaperLibrary__inherit__graph.png" border="0" usemap="#aWallpaperLibrary_inherit__map" loading="lazy" alt="Inheritance graph"/></div>
+<map name="aWallpaperLibrary_inherit__map" id="aWallpaperLibrary_inherit__map">
+<area shape="rect" title="壁纸库 QML 单例：导入/移除/启动校验用户壁纸" alt="" coords="5,79,137,104"/>
+<area shape="rect" title=" " alt="" coords="34,5,109,31"/>
+<area shape="poly" title=" " alt="" coords="74,44,74,79,69,79,69,44"/>
+</map>
+<center><span class="legend">[<a href="graph_legend.html">图例</a>]</span></center></div>
+<div class="dynheader">
+WallpaperLibrary 的协作图:</div>
+<div class="dyncontent">
+<div class="center"><img src="classWallpaperLibrary__coll__graph.png" border="0" usemap="#aWallpaperLibrary_coll__map" loading="lazy" alt="Collaboration graph"/></div>
+<map name="aWallpaperLibrary_coll__map" id="aWallpaperLibrary_coll__map">
+<area shape="rect" title="壁纸库 QML 单例：导入/移除/启动校验用户壁纸" alt="" coords="5,79,137,104"/>
+<area shape="rect" title=" " alt="" coords="34,5,109,31"/>
+<area shape="poly" title=" " alt="" coords="74,44,74,79,69,79,69,44"/>
+</map>
+<center><span class="legend">[<a href="graph_legend.html">图例</a>]</span></center></div>
+<table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 id="header-signals" class="groupheader"><a id="signals" name="signals"></a>
+信号</h2></td></tr>
+<tr class="memitem:a36bb603da045bb0700cab9f68c2890ca" id="r_a36bb603da045bb0700cab9f68c2890ca"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a36bb603da045bb0700cab9f68c2890ca">importingChanged</a> ()</td></tr>
+<tr class="memitem:a93907ba62dccddbfd7021fea947ed004" id="r_a93907ba62dccddbfd7021fea947ed004"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a93907ba62dccddbfd7021fea947ed004">importFinished</a> (const QString &amp;<a class="el" href="TestComponentModel_8cpp.html#a39f48d78b28941e045e423f59f774459">id</a>)</td></tr>
+<tr class="memitem:a565bc1b9b4350c7e6dbfdfdbc8ac0739" id="r_a565bc1b9b4350c7e6dbfdfdbc8ac0739"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a565bc1b9b4350c7e6dbfdfdbc8ac0739">importFailed</a> ()</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 id="header-pub-methods" class="groupheader"><a id="pub-methods" name="pub-methods"></a>
+Public 成员函数</h2></td></tr>
+<tr class="memitem:aba1a72fafbf08c25baa284f181cf4329" id="r_aba1a72fafbf08c25baa284f181cf4329"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#aba1a72fafbf08c25baa284f181cf4329">WallpaperLibrary</a> (QObject *parent=nullptr)</td></tr>
+<tr class="memitem:a0943260fa2eea01578f7922b083d2b18" id="r_a0943260fa2eea01578f7922b083d2b18"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a0943260fa2eea01578f7922b083d2b18">~WallpaperLibrary</a> () override</td></tr>
+<tr class="memitem:a697c2707d23333f70460de74e5d42fb4" id="r_a697c2707d23333f70460de74e5d42fb4"><td class="memItemLeft" align="right" valign="top">Q_INVOKABLE QString&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a697c2707d23333f70460de74e5d42fb4">importWallpaper</a> (const QUrl &amp;source_url)</td></tr>
+<tr class="memdesc:a697c2707d23333f70460de74e5d42fb4"><td class="mdescLeft">&#160;</td><td class="mdescRight">同步导入壁纸：校验后复制到托管目录并删除旧图  <br /></td></tr>
+<tr class="memitem:a04e85b2cc9bd922422307ae0edfbbe14" id="r_a04e85b2cc9bd922422307ae0edfbbe14"><td class="memItemLeft" align="right" valign="top">Q_INVOKABLE void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a04e85b2cc9bd922422307ae0edfbbe14">importWallpaperAsync</a> (const QUrl &amp;source_url)</td></tr>
+<tr class="memdesc:a04e85b2cc9bd922422307ae0edfbbe14"><td class="mdescLeft">&#160;</td><td class="mdescRight">异步导入壁纸（工作线程校验/哈希/复制，GUI 线程回传结果）  <br /></td></tr>
+<tr class="memitem:a7b3986e87ed3eb801462bb65d7de3620" id="r_a7b3986e87ed3eb801462bb65d7de3620"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a7b3986e87ed3eb801462bb65d7de3620">importing</a> () const</td></tr>
+<tr class="memdesc:a7b3986e87ed3eb801462bb65d7de3620"><td class="mdescLeft">&#160;</td><td class="mdescRight">是否有异步导入正在进行  <br /></td></tr>
+<tr class="memitem:a0b977d30ac85a944763d300a1fd35f22" id="r_a0b977d30ac85a944763d300a1fd35f22"><td class="memItemLeft" align="right" valign="top">Q_INVOKABLE bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a0b977d30ac85a944763d300a1fd35f22">removeWallpaper</a> ()</td></tr>
+<tr class="memdesc:a0b977d30ac85a944763d300a1fd35f22"><td class="mdescLeft">&#160;</td><td class="mdescRight">删除托管目录内的壁纸文件  <br /></td></tr>
+<tr class="memitem:a12e92a50bee2c660725fb62510eaf857" id="r_a12e92a50bee2c660725fb62510eaf857"><td class="memItemLeft" align="right" valign="top">Q_INVOKABLE QString&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a12e92a50bee2c660725fb62510eaf857">reconcile</a> (const QString &amp;<a class="el" href="TestComponentModel_8cpp.html#a39f48d78b28941e045e423f59f774459">id</a>)</td></tr>
+<tr class="memdesc:a12e92a50bee2c660725fb62510eaf857"><td class="mdescLeft">&#160;</td><td class="mdescRight">启动校验：id 有效且文件存在则保留并清理其它残留；否则清理残留并回退纯色  <br /></td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 id="header-pub-static-methods" class="groupheader"><a id="pub-static-methods" name="pub-static-methods"></a>
+静态 Public 成员函数</h2></td></tr>
+<tr class="memitem:a799b3ed8ad8fa300e72785b0312a9f2a" id="r_a799b3ed8ad8fa300e72785b0312a9f2a"><td class="memItemLeft" align="right" valign="top">static QString&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a799b3ed8ad8fa300e72785b0312a9f2a">userWallpaperDir</a> ()</td></tr>
+<tr class="memdesc:a799b3ed8ad8fa300e72785b0312a9f2a"><td class="mdescLeft">&#160;</td><td class="mdescRight">托管目录（AppDataLocation/wallpapers）  <br /></td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 id="header-properties" class="groupheader"><a id="properties" name="properties"></a>
+属性</h2></td></tr>
+<tr class="memitem:a651da107931d1e31c5ca5fab5390be68" id="r_a651da107931d1e31c5ca5fab5390be68"><td class="memItemLeft" align="right" valign="top">QML_SINGLETONbool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a651da107931d1e31c5ca5fab5390be68">importing</a></td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 id="header-pri-methods" class="groupheader"><a id="pri-methods" name="pri-methods"></a>
+Private 成员函数</h2></td></tr>
+<tr class="memitem:ad66975859ad784c87530e83a5a8eaf9a" id="r_ad66975859ad784c87530e83a5a8eaf9a"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ad66975859ad784c87530e83a5a8eaf9a">finishImport</a> (const QString &amp;<a class="el" href="TestComponentModel_8cpp.html#a39f48d78b28941e045e423f59f774459">id</a>)</td></tr>
+<tr class="memdesc:ad66975859ad784c87530e83a5a8eaf9a"><td class="mdescLeft">&#160;</td><td class="mdescRight">工作线程完成后在 GUI 线程收尾  <br /></td></tr>
+<tr class="memitem:a5a205091cd0176573783e72360e3697e" id="r_a5a205091cd0176573783e72360e3697e"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a5a205091cd0176573783e72360e3697e">setImporting</a> (bool <a class="el" href="#a651da107931d1e31c5ca5fab5390be68">importing</a>)</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 id="header-pri-attribs" class="groupheader"><a id="pri-attribs" name="pri-attribs"></a>
+Private 属性</h2></td></tr>
+<tr class="memitem:ae830e5128aecbb636e2cbc957b6ec3e3" id="r_ae830e5128aecbb636e2cbc957b6ec3e3"><td class="memItemLeft" align="right" valign="top">QThreadPool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ae830e5128aecbb636e2cbc957b6ec3e3">import_pool_</a></td></tr>
+<tr class="memitem:a5a6d015d1c4edf7ebb838983e37e1b1b" id="r_a5a6d015d1c4edf7ebb838983e37e1b1b"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a5a6d015d1c4edf7ebb838983e37e1b1b">importing_</a> = false</td></tr>
+</table>
+<a name="details" id="details"></a><h2 id="header-details" class="groupheader">详细描述</h2>
+<div class="textblock"><p>壁纸库 QML 单例：导入/移除/启动校验用户壁纸 </p>
+</div><a name="doc-constructors" id="doc-constructors"></a><h2 id="header-doc-constructors" class="groupheader">构造及析构函数说明</h2>
+<a id="aba1a72fafbf08c25baa284f181cf4329" name="aba1a72fafbf08c25baa284f181cf4329"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aba1a72fafbf08c25baa284f181cf4329">&#9670;&#160;</a></span>WallpaperLibrary()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">WallpaperLibrary::WallpaperLibrary </td>
+          <td>(</td>
+          <td class="paramtype">QObject *</td>          <td class="paramname"><span class="paramname"><em>parent</em></span><span class="paramdefsep"> = </span><span class="paramdefval">nullptr</span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel explicit">explicit</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a0943260fa2eea01578f7922b083d2b18" name="a0943260fa2eea01578f7922b083d2b18"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a0943260fa2eea01578f7922b083d2b18">&#9670;&#160;</a></span>~WallpaperLibrary()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">WallpaperLibrary::~WallpaperLibrary </td>
+          <td>(</td>
+          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel override">override</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a name="doc-func-members" id="doc-func-members"></a><h2 id="header-doc-func-members" class="groupheader">成员函数说明</h2>
+<a id="ad66975859ad784c87530e83a5a8eaf9a" name="ad66975859ad784c87530e83a5a8eaf9a"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ad66975859ad784c87530e83a5a8eaf9a">&#9670;&#160;</a></span>finishImport()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void WallpaperLibrary::finishImport </td>
+          <td>(</td>
+          <td class="paramtype">const QString &amp;</td>          <td class="paramname"><span class="paramname"><em>id</em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel private">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>工作线程完成后在 GUI 线程收尾 </p>
+
+</div>
+</div>
+<a id="a565bc1b9b4350c7e6dbfdfdbc8ac0739" name="a565bc1b9b4350c7e6dbfdfdbc8ac0739"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a565bc1b9b4350c7e6dbfdfdbc8ac0739">&#9670;&#160;</a></span>importFailed</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void WallpaperLibrary::importFailed </td>
+          <td>(</td>
+          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel signal">signal</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a93907ba62dccddbfd7021fea947ed004" name="a93907ba62dccddbfd7021fea947ed004"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a93907ba62dccddbfd7021fea947ed004">&#9670;&#160;</a></span>importFinished</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void WallpaperLibrary::importFinished </td>
+          <td>(</td>
+          <td class="paramtype">const QString &amp;</td>          <td class="paramname"><span class="paramname"><em>id</em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel signal">signal</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a7b3986e87ed3eb801462bb65d7de3620" name="a7b3986e87ed3eb801462bb65d7de3620"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a7b3986e87ed3eb801462bb65d7de3620">&#9670;&#160;</a></span>importing()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool WallpaperLibrary::importing </td>
+          <td>(</td>
+          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel inline">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>是否有异步导入正在进行 </p>
+
+</div>
+</div>
+<a id="a36bb603da045bb0700cab9f68c2890ca" name="a36bb603da045bb0700cab9f68c2890ca"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a36bb603da045bb0700cab9f68c2890ca">&#9670;&#160;</a></span>importingChanged</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void WallpaperLibrary::importingChanged </td>
+          <td>(</td>
+          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel signal">signal</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a697c2707d23333f70460de74e5d42fb4" name="a697c2707d23333f70460de74e5d42fb4"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a697c2707d23333f70460de74e5d42fb4">&#9670;&#160;</a></span>importWallpaper()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">QString WallpaperLibrary::importWallpaper </td>
+          <td>(</td>
+          <td class="paramtype">const QUrl &amp;</td>          <td class="paramname"><span class="paramname"><em>source_url</em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>同步导入壁纸：校验后复制到托管目录并删除旧图 </p>
+<dl class="params"><dt>参数</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">source_url</td><td>本地图片 URL </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>返回</dt><dd>成功返回托管文件名（id），失败返回空串 </dd></dl>
+
+</div>
+</div>
+<a id="a04e85b2cc9bd922422307ae0edfbbe14" name="a04e85b2cc9bd922422307ae0edfbbe14"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a04e85b2cc9bd922422307ae0edfbbe14">&#9670;&#160;</a></span>importWallpaperAsync()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void WallpaperLibrary::importWallpaperAsync </td>
+          <td>(</td>
+          <td class="paramtype">const QUrl &amp;</td>          <td class="paramname"><span class="paramname"><em>source_url</em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>异步导入壁纸（工作线程校验/哈希/复制，GUI 线程回传结果） </p>
+<dl class="params"><dt>参数</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">source_url</td><td>本地图片 URL </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="a12e92a50bee2c660725fb62510eaf857" name="a12e92a50bee2c660725fb62510eaf857"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a12e92a50bee2c660725fb62510eaf857">&#9670;&#160;</a></span>reconcile()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">QString WallpaperLibrary::reconcile </td>
+          <td>(</td>
+          <td class="paramtype">const QString &amp;</td>          <td class="paramname"><span class="paramname"><em>id</em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>启动校验：id 有效且文件存在则保留并清理其它残留；否则清理残留并回退纯色 </p>
+<p>异步导入进行中时跳过目录操作并原样返回 id，避免与工作线程的复制/清理竞态。 </p><dl class="params"><dt>参数</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">id</td><td>当前持久化的壁纸 id </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>返回</dt><dd>可用的壁纸 id，或空串（纯色默认） </dd></dl>
+
+</div>
+</div>
+<a id="a0b977d30ac85a944763d300a1fd35f22" name="a0b977d30ac85a944763d300a1fd35f22"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a0b977d30ac85a944763d300a1fd35f22">&#9670;&#160;</a></span>removeWallpaper()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool WallpaperLibrary::removeWallpaper </td>
+          <td>(</td>
+          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>删除托管目录内的壁纸文件 </p>
+<dl class="section return"><dt>返回</dt><dd>false 表示导入占用中或清理因在途解码被延后，残留留待后续清理 </dd></dl>
+
+</div>
+</div>
+<a id="a5a205091cd0176573783e72360e3697e" name="a5a205091cd0176573783e72360e3697e"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a5a205091cd0176573783e72360e3697e">&#9670;&#160;</a></span>setImporting()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void WallpaperLibrary::setImporting </td>
+          <td>(</td>
+          <td class="paramtype">bool</td>          <td class="paramname"><span class="paramname"><em>importing</em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel private">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a799b3ed8ad8fa300e72785b0312a9f2a" name="a799b3ed8ad8fa300e72785b0312a9f2a"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a799b3ed8ad8fa300e72785b0312a9f2a">&#9670;&#160;</a></span>userWallpaperDir()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">QString WallpaperLibrary::userWallpaperDir </td>
+          <td>(</td>
+          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel static">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>托管目录（AppDataLocation/wallpapers） </p>
+
+</div>
+</div>
+<a name="doc-variable-members" id="doc-variable-members"></a><h2 id="header-doc-variable-members" class="groupheader">类成员变量说明</h2>
+<a id="ae830e5128aecbb636e2cbc957b6ec3e3" name="ae830e5128aecbb636e2cbc957b6ec3e3"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ae830e5128aecbb636e2cbc957b6ec3e3">&#9670;&#160;</a></span>import_pool_</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">QThreadPool WallpaperLibrary::import_pool_</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel private">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a5a6d015d1c4edf7ebb838983e37e1b1b" name="a5a6d015d1c4edf7ebb838983e37e1b1b"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a5a6d015d1c4edf7ebb838983e37e1b1b">&#9670;&#160;</a></span>importing_</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool WallpaperLibrary::importing_ = false</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel private">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a name="doc-property-members" id="doc-property-members"></a><h2 id="header-doc-property-members" class="groupheader">属性说明</h2>
+<a id="a651da107931d1e31c5ca5fab5390be68" name="a651da107931d1e31c5ca5fab5390be68"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a651da107931d1e31c5ca5fab5390be68">&#9670;&#160;</a></span>importing</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">QML_SINGLETONbool WallpaperLibrary::importing</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel read">read</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<hr/>该类的文档由以下文件生成:<ul>
+<li>app/core/<a class="el" href="WallpaperLibrary_8h_source.html">WallpaperLibrary.h</a></li>
+<li>app/core/<a class="el" href="WallpaperLibrary_8cpp.html">WallpaperLibrary.cpp</a></li>
+</ul>
+</div><!-- contents -->
+<!-- start footer part -->
+<hr class="footer"/><address class="footer"><small>
+制作者&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.14.0
+</small></address>
+</div><!-- doc-content -->
+</body>
+</html>

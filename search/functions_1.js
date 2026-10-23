@@ -20,7 +20,7 @@ var searchData=
   ['buildatlas_17',['buildAtlas',['../classViewportOrientationRepresentation.html#af4b3eb2ff4d2d542e6baaa381706458d',1,'ViewportOrientationRepresentation']]],
   ['buildhighlight_18',['buildHighlight',['../classGeometryActorSelectOp.html#a1b944073d9d1cb680389fa7b0a5d6645',1,'GeometryActorSelectOp']]],
   ['buildrepresentation_19',['BuildRepresentation',['../classViewportOrientationRepresentation.html#ae10ea6264ef099178e9c2a30fdfbc571',1,'ViewportOrientationRepresentation']]],
-  ['buildthemepalette_20',['buildThemePalette',['../namespaceapp_1_1core.html#a2739a0708d725ea6aa1db7327fc092e7',1,'app::core']]],
+  ['buildthemepalette_20',['buildThemePalette',['../namespaceapp_1_1core.html#a1b700a11b9482c058f6ff03a57291e9f',1,'app::core']]],
   ['bus_21',['bus',['../classsystems_1_1feature_1_1FeatureEventGateway.html#ad003b345cd3f6550e455993e2e476385',1,'systems::feature::FeatureEventGateway']]],
   ['busychanged_22',['busyChanged',['../classQTaskStatus.html#a64372caa9076395bf5d88cbb826a0312',1,'QTaskStatus']]]
 ];

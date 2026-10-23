@@ -82,43 +82,46 @@ $(function() {
 </div><!--header-->
 <div class="contents">
 
-<p>DockTheme 单元测试：明暗切换后配色表整体刷新  
+<p>DockTheme 单元测试：宿主推送的配色表与壁纸源按原值保存并通知  
 <a href="#details">更多...</a></p>
 <div class="textblock"><code>#include &quot;<a class="el" href="DockTheme_8h_source.html">ui/DockTheme.h</a>&quot;</code><br />
-<code>#include &lt;catch2/catch_test_macros.hpp&gt;</code><br />
 <code>#include &lt;QColor&gt;</code><br />
+<code>#include &lt;QString&gt;</code><br />
 <code>#include &lt;QVariantMap&gt;</code><br />
+<code>#include &lt;catch2/catch_test_macros.hpp&gt;</code><br />
 </div><div class="textblock"><div class="dynheader">
 TestDockTheme.cpp 的引用(Include)关系图:</div>
 <div class="dyncontent">
 <div class="center"><img src="TestDockTheme_8cpp__incl.png" border="0" usemap="#aapp_2test_2TestDockTheme_8cpp" loading="lazy" alt=""/></div>
 <map name="aapp_2test_2TestDockTheme_8cpp" id="aapp_2test_2TestDockTheme_8cpp">
-<area shape="rect" title="DockTheme 单元测试：明暗切换后配色表整体刷新" alt="" coords="85,5,296,31"/>
-<area shape="rect" href="DockTheme_8h.html" title="停靠组件主题承载对象：向 dock QML 暴露当前明暗与已解析配色" alt="" coords="76,79,204,104"/>
-<area shape="poly" title=" " alt="" coords="184,33,158,69,154,66,180,29"/>
-<area shape="rect" title=" " alt="" coords="5,152,72,177"/>
-<area shape="poly" title=" " alt="" coords="145,33,103,51,83,64,66,80,51,109,43,138,38,137,46,107,62,77,80,60,101,47,143,28"/>
-<area shape="rect" title=" " alt="" coords="195,152,301,177"/>
-<area shape="poly" title=" " alt="" coords="198,30,218,78,242,138,237,140,214,80,193,32"/>
-<area shape="rect" title=" " alt="" coords="279,79,497,104"/>
-<area shape="poly" title=" " alt="" coords="223,28,344,71,342,76,221,33"/>
-<area shape="poly" title=" " alt="" coords="125,106,68,146,65,142,122,102"/>
-<area shape="rect" title=" " alt="" coords="96,152,171,177"/>
-<area shape="poly" title=" " alt="" coords="142,105,138,139,133,138,136,104"/>
-<area shape="poly" title=" " alt="" coords="159,102,220,142,217,147,156,106"/>
+<area shape="rect" title="DockTheme 单元测试：宿主推送的配色表与壁纸源按原值保存并通知" alt="" coords="138,5,349,31"/>
+<area shape="rect" href="DockTheme_8h.html" title="停靠组件主题承载对象：保存 app 侧推送的已解析配色并通知 dock QML" alt="" coords="78,79,206,104"/>
+<area shape="poly" title=" " alt="" coords="229,33,171,73,168,68,226,28"/>
+<area shape="rect" title=" " alt="" coords="5,152,76,177"/>
+<area shape="poly" title=" " alt="" coords="159,33,110,51,88,64,68,80,52,109,45,139,39,138,47,107,64,77,85,60,108,46,157,28"/>
+<area shape="rect" title=" " alt="" coords="199,152,306,177"/>
+<area shape="poly" title=" " alt="" coords="247,31,254,138,248,138,241,31"/>
+<area shape="rect" title=" " alt="" coords="281,79,347,104"/>
+<area shape="poly" title=" " alt="" coords="257,29,295,67,291,71,253,33"/>
+<area shape="rect" title=" " alt="" coords="371,79,590,104"/>
+<area shape="poly" title=" " alt="" coords="282,28,430,72,428,77,281,33"/>
+<area shape="rect" title=" " alt="" coords="101,152,175,177"/>
+<area shape="poly" title=" " alt="" coords="144,104,142,139,137,138,139,104"/>
+<area shape="poly" title=" " alt="" coords="127,106,70,146,67,142,124,102"/>
+<area shape="poly" title=" " alt="" coords="161,102,224,142,221,147,158,106"/>
 </map>
 </div>
 </div><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 id="header-func-members" class="groupheader"><a id="func-members" name="func-members"></a>
 函数</h2></td></tr>
-<tr class="memitem:a280a518d4ea02366872a5ab96dfe5215" id="r_a280a518d4ea02366872a5ab96dfe5215"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a280a518d4ea02366872a5ab96dfe5215">TEST_CASE</a> (&quot;DockTheme: default light colors&quot;, &quot;[DockTheme]&quot;)</td></tr>
-<tr class="memitem:a973ee8a1aebf021586f4e8f0156c36e3" id="r_a973ee8a1aebf021586f4e8f0156c36e3"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a973ee8a1aebf021586f4e8f0156c36e3">TEST_CASE</a> (&quot;DockTheme: dark colors after setDark&quot;, &quot;[DockTheme]&quot;)</td></tr>
+<tr class="memitem:a979ddc4e45bd0a07af1d534a22769a85" id="r_a979ddc4e45bd0a07af1d534a22769a85"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a979ddc4e45bd0a07af1d534a22769a85">TEST_CASE</a> (&quot;DockTheme: stores pushed maps and notifies on change&quot;, &quot;[DockTheme]&quot;)</td></tr>
+<tr class="memitem:a5e11112005a4eae5bf6ff574d8d9564c" id="r_a5e11112005a4eae5bf6ff574d8d9564c"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a5e11112005a4eae5bf6ff574d8d9564c">TEST_CASE</a> (&quot;DockTheme: wallpaper url propagates&quot;, &quot;[DockTheme]&quot;)</td></tr>
 </table>
 <a name="details" id="details"></a><h2 id="header-details" class="groupheader">详细描述</h2>
-<div class="textblock"><p>DockTheme 单元测试：明暗切换后配色表整体刷新 </p>
+<div class="textblock"><p>DockTheme 单元测试：宿主推送的配色表与壁纸源按原值保存并通知 </p>
 </div><a name="doc-func-members" id="doc-func-members"></a><h2 id="header-doc-func-members" class="groupheader">函数说明</h2>
-<a id="a973ee8a1aebf021586f4e8f0156c36e3" name="a973ee8a1aebf021586f4e8f0156c36e3"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a973ee8a1aebf021586f4e8f0156c36e3">&#9670;&#160;</a></span>TEST_CASE() <span class="overload">[1/2]</span></h2>
+<a id="a979ddc4e45bd0a07af1d534a22769a85" name="a979ddc4e45bd0a07af1d534a22769a85"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a979ddc4e45bd0a07af1d534a22769a85">&#9670;&#160;</a></span>TEST_CASE() <span class="overload">[1/2]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -126,7 +129,7 @@ TestDockTheme.cpp 的引用(Include)关系图:</div>
         <tr>
           <td class="memname">TEST_CASE </td>
           <td>(</td>
-          <td class="paramtype">&quot;DockTheme: dark colors after setDark&quot;</td>          <td class="paramname"><span class="paramname"><em></em></span>, </td>
+          <td class="paramtype">&quot;DockTheme: stores pushed maps and notifies on change&quot;</td>          <td class="paramname"><span class="paramname"><em></em></span>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
@@ -138,8 +141,8 @@ TestDockTheme.cpp 的引用(Include)关系图:</div>
 
 </div>
 </div>
-<a id="a280a518d4ea02366872a5ab96dfe5215" name="a280a518d4ea02366872a5ab96dfe5215"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a280a518d4ea02366872a5ab96dfe5215">&#9670;&#160;</a></span>TEST_CASE() <span class="overload">[2/2]</span></h2>
+<a id="a5e11112005a4eae5bf6ff574d8d9564c" name="a5e11112005a4eae5bf6ff574d8d9564c"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a5e11112005a4eae5bf6ff574d8d9564c">&#9670;&#160;</a></span>TEST_CASE() <span class="overload">[2/2]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -147,7 +150,7 @@ TestDockTheme.cpp 的引用(Include)关系图:</div>
         <tr>
           <td class="memname">TEST_CASE </td>
           <td>(</td>
-          <td class="paramtype">&quot;DockTheme: default light colors&quot;</td>          <td class="paramname"><span class="paramname"><em></em></span>, </td>
+          <td class="paramtype">&quot;DockTheme: wallpaper url propagates&quot;</td>          <td class="paramname"><span class="paramname"><em></em></span>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>

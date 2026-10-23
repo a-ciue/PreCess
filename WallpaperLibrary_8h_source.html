@@ -1,0 +1,182 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="zh">
+<head>
+<meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=11"/>
+<meta name="generator" content="Doxygen 1.14.0"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>PreCess: app/core/WallpaperLibrary.h 源文件</title>
+<link href="tabs.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="jquery.js"></script>
+<script type="text/javascript" src="dynsections.js"></script>
+<script type="text/javascript" src="clipboard.js"></script>
+<script type="text/javascript" src="cookie.js"></script>
+<link href="search/search.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="search/searchdata.js"></script>
+<script type="text/javascript" src="search/search.js"></script>
+<link href="doxygen.css" rel="stylesheet" type="text/css" />
+</head>
+<body>
+<div id="top"><!-- do not remove this div, it is closed by doxygen! -->
+<div id="titlearea">
+<table cellspacing="0" cellpadding="0">
+ <tbody>
+ <tr id="projectrow">
+  <td id="projectlogo"><img alt="Logo" src="ZenithGrid.ico"/></td>
+  <td id="projectalign">
+   <div id="projectname">PreCess
+   </div>
+  </td>
+ </tr>
+ </tbody>
+</table>
+</div>
+<!-- end header part -->
+<!-- 制作者 Doxygen 1.14.0 -->
+<script type="text/javascript">
+var searchBox = new SearchBox("searchBox", "search/",'.html');
+</script>
+<script type="text/javascript">
+$(function() { codefold.init(); });
+</script>
+<script type="text/javascript" src="menudata.js"></script>
+<script type="text/javascript" src="menu.js"></script>
+<script type="text/javascript">
+$(function() {
+  initMenu('',true,false,'search.php','搜索',false);
+  $(function() { init_search(); });
+});
+</script>
+<div id="main-nav"></div>
+<!-- window showing the filter options -->
+<div id="MSearchSelectWindow"
+     onmouseover="return searchBox.OnSearchSelectShow()"
+     onmouseout="return searchBox.OnSearchSelectHide()"
+     onkeydown="return searchBox.OnSearchSelectKey(event)">
+</div>
+
+<!-- iframe showing the search results (closed by default) -->
+<div id="MSearchResultsWindow">
+<div id="MSearchResults">
+<div class="SRPage">
+<div id="SRIndex">
+<div id="SRResults"></div>
+<div class="SRStatus" id="Loading">载入中...</div>
+<div class="SRStatus" id="Searching">搜索中...</div>
+<div class="SRStatus" id="NoMatches">未找到</div>
+</div>
+</div>
+</div>
+</div>
+
+<div id="nav-path" class="navpath">
+  <ul>
+<li class="navelem"><a href="dir_d422163b96683743ed3963d4aac17747.html">app</a></li><li class="navelem"><a href="dir_5e85e2a5f246395b1a431b829cc36374.html">core</a></li>  </ul>
+</div>
+</div><!-- top -->
+<div id="doc-content">
+<div class="header">
+  <div class="headertitle"><div class="title">WallpaperLibrary.h</div></div>
+</div><!--header-->
+<div class="contents">
+<a href="WallpaperLibrary_8h.html">浏览该文件的文档.</a><div class="fragment"><div class="line"><a id="l00001" name="l00001"></a><span class="lineno">    1</span></div>
+<div class="line"><a id="l00009" name="l00009"></a><span class="lineno">    9</span> </div>
+<div class="line"><a id="l00010" name="l00010"></a><span class="lineno">   10</span><span class="preprocessor">#pragma once</span></div>
+<div class="line"><a id="l00011" name="l00011"></a><span class="lineno">   11</span> </div>
+<div class="line"><a id="l00012" name="l00012"></a><span class="lineno">   12</span><span class="preprocessor">#include &lt;QImage&gt;</span></div>
+<div class="line"><a id="l00013" name="l00013"></a><span class="lineno">   13</span><span class="preprocessor">#include &lt;QObject&gt;</span></div>
+<div class="line"><a id="l00014" name="l00014"></a><span class="lineno">   14</span><span class="preprocessor">#include &lt;QQuickImageProvider&gt;</span></div>
+<div class="line"><a id="l00015" name="l00015"></a><span class="lineno">   15</span><span class="preprocessor">#include &lt;QSize&gt;</span></div>
+<div class="line"><a id="l00016" name="l00016"></a><span class="lineno">   16</span><span class="preprocessor">#include &lt;QString&gt;</span></div>
+<div class="line"><a id="l00017" name="l00017"></a><span class="lineno">   17</span><span class="preprocessor">#include &lt;QThreadPool&gt;</span></div>
+<div class="line"><a id="l00018" name="l00018"></a><span class="lineno">   18</span><span class="preprocessor">#include &lt;QUrl&gt;</span></div>
+<div class="line"><a id="l00019" name="l00019"></a><span class="lineno">   19</span><span class="preprocessor">#include &lt;qqmlintegration.h&gt;</span></div>
+<div class="line"><a id="l00020" name="l00020"></a><span class="lineno">   20</span></div>
+<div class="foldopen" id="foldopen00032" data-start="{" data-end="};">
+<div class="line"><a id="l00032" name="l00032"></a><span class="lineno"><a class="line" href="classWallpaperProvider.html">   32</a></span><span class="keyword">class </span><a class="code hl_function" href="classWallpaperProvider.html#abc9610bfaba9a0ec6039c67bc78fc4be">WallpaperProvider</a> : <span class="keyword">public</span> QQuickImageProvider {</div>
+<div class="line"><a id="l00033" name="l00033"></a><span class="lineno">   33</span><span class="keyword">public</span>:</div>
+<div class="foldopen" id="foldopen00035" data-start="{" data-end="};">
+<div class="line"><a id="l00035" name="l00035"></a><span class="lineno"><a class="line" href="structWallpaperProvider_1_1DecodeLimits.html">   35</a></span>    <span class="keyword">struct </span><a class="code hl_struct" href="structWallpaperProvider_1_1DecodeLimits.html">DecodeLimits</a> {</div>
+<div class="line"><a id="l00036" name="l00036"></a><span class="lineno"><a class="line" href="structWallpaperProvider_1_1DecodeLimits.html#ade27c8db74d0207e242ccad2a4703891">   36</a></span>        qint64 <a class="code hl_variable" href="structWallpaperProvider_1_1DecodeLimits.html#ade27c8db74d0207e242ccad2a4703891">max_pixels</a> = 16&#39;000&#39;000;</div>
+<div class="line"><a id="l00037" name="l00037"></a><span class="lineno"><a class="line" href="structWallpaperProvider_1_1DecodeLimits.html#a1d82eccbc2ab81434b5e65d0911ab1d1">   37</a></span>        <span class="keywordtype">int</span> <a class="code hl_variable" href="structWallpaperProvider_1_1DecodeLimits.html#a1d82eccbc2ab81434b5e65d0911ab1d1">max_dimension</a> = 8192;</div>
+<div class="line"><a id="l00038" name="l00038"></a><span class="lineno">   38</span>    };</div>
+</div>
+<div class="line"><a id="l00039" name="l00039"></a><span class="lineno">   39</span></div>
+<div class="line"><a id="l00045" name="l00045"></a><span class="lineno">   45</span>    <span class="keyword">explicit</span> <a class="code hl_function" href="classWallpaperProvider.html#abc9610bfaba9a0ec6039c67bc78fc4be">WallpaperProvider</a>(<a class="code hl_struct" href="structWallpaperProvider_1_1DecodeLimits.html">DecodeLimits</a> limits = {}, QSize decode_limit_override = {},</div>
+<div class="line"><a id="l00046" name="l00046"></a><span class="lineno">   46</span>        <span class="keywordtype">bool</span> query_primary_screen = <span class="keyword">true</span>);</div>
+<div class="line"><a id="l00047" name="l00047"></a><span class="lineno">   47</span></div>
+<div class="line"><a id="l00049" name="l00049"></a><span class="lineno">   49</span>    QImage <a class="code hl_function" href="classWallpaperProvider.html#a09357a239dfc346bc83ddb1e19773daa">requestImage</a>(<span class="keyword">const</span> QString&amp; <span class="keywordtype">id</span>, QSize* size, <span class="keyword">const</span> QSize&amp; requestedSize) <span class="keyword">override</span>;</div>
+<div class="line"><a id="l00050" name="l00050"></a><span class="lineno">   50</span> </div>
+<div class="line"><a id="l00051" name="l00051"></a><span class="lineno">   51</span><span class="keyword">private</span>:</div>
+<div class="line"><a id="l00053" name="l00053"></a><span class="lineno"><a class="line" href="classWallpaperProvider.html#a24ac9d679c9e38d1fa104ca6a1b333d8">   53</a></span>    QSize <a class="code hl_variable" href="classWallpaperProvider.html#a24ac9d679c9e38d1fa104ca6a1b333d8">decode_limit_</a>;</div>
+<div class="line"><a id="l00055" name="l00055"></a><span class="lineno"><a class="line" href="classWallpaperProvider.html#a185ae01614def9f55f02789603e862f6">   55</a></span>    <a class="code hl_struct" href="structWallpaperProvider_1_1DecodeLimits.html">DecodeLimits</a> <a class="code hl_variable" href="classWallpaperProvider.html#a185ae01614def9f55f02789603e862f6">limits_</a>;</div>
+<div class="line"><a id="l00056" name="l00056"></a><span class="lineno">   56</span>};</div>
+</div>
+<div class="line"><a id="l00057" name="l00057"></a><span class="lineno">   57</span></div>
+<div class="foldopen" id="foldopen00061" data-start="{" data-end="};">
+<div class="line"><a id="l00061" name="l00061"></a><span class="lineno"><a class="line" href="classWallpaperLibrary.html">   61</a></span><span class="keyword">class </span><a class="code hl_function" href="classWallpaperLibrary.html#aba1a72fafbf08c25baa284f181cf4329">WallpaperLibrary</a> : <span class="keyword">public</span> QObject {</div>
+<div class="line"><a id="l00062" name="l00062"></a><span class="lineno">   62</span>    Q_OBJECT</div>
+<div class="line"><a id="l00063" name="l00063"></a><span class="lineno">   63</span>    QML_NAMED_ELEMENT(Wallpaper)</div>
+<div class="line"><a id="l00064" name="l00064"></a><span class="lineno">   64</span>    QML_SINGLETON</div>
+<div class="line"><a id="l00065" name="l00065"></a><span class="lineno"><a class="line" href="classWallpaperLibrary.html#a651da107931d1e31c5ca5fab5390be68">   65</a></span>    Q_PROPERTY(<span class="keywordtype">bool</span> <a class="code hl_property" href="classWallpaperLibrary.html#a651da107931d1e31c5ca5fab5390be68">importing</a> READ <a class="code hl_property" href="classWallpaperLibrary.html#a651da107931d1e31c5ca5fab5390be68">importing</a> NOTIFY <a class="code hl_signal" href="classWallpaperLibrary.html#a36bb603da045bb0700cab9f68c2890ca">importingChanged</a>)</div>
+<div class="line"><a id="l00066" name="l00066"></a><span class="lineno">   66</span> </div>
+<div class="line"><a id="l00067" name="l00067"></a><span class="lineno">   67</span><span class="keyword">public</span>:</div>
+<div class="line"><a id="l00068" name="l00068"></a><span class="lineno">   68</span>    <span class="keyword">explicit</span> <a class="code hl_function" href="classWallpaperLibrary.html#aba1a72fafbf08c25baa284f181cf4329">WallpaperLibrary</a>(QObject* parent = <span class="keyword">nullptr</span>);</div>
+<div class="line"><a id="l00069" name="l00069"></a><span class="lineno">   69</span>    <a class="code hl_function" href="classWallpaperLibrary.html#a0943260fa2eea01578f7922b083d2b18">~WallpaperLibrary</a>() <span class="keyword">override</span>;</div>
+<div class="line"><a id="l00070" name="l00070"></a><span class="lineno">   70</span></div>
+<div class="line"><a id="l00076" name="l00076"></a><span class="lineno">   76</span>    Q_INVOKABLE QString <a class="code hl_function" href="classWallpaperLibrary.html#a697c2707d23333f70460de74e5d42fb4">importWallpaper</a>(<span class="keyword">const</span> QUrl&amp; source_url);</div>
+<div class="line"><a id="l00077" name="l00077"></a><span class="lineno">   77</span></div>
+<div class="line"><a id="l00082" name="l00082"></a><span class="lineno">   82</span>    Q_INVOKABLE <span class="keywordtype">void</span> <a class="code hl_function" href="classWallpaperLibrary.html#a04e85b2cc9bd922422307ae0edfbbe14">importWallpaperAsync</a>(<span class="keyword">const</span> QUrl&amp; source_url);</div>
+<div class="line"><a id="l00083" name="l00083"></a><span class="lineno">   83</span></div>
+<div class="line"><a id="l00085" name="l00085"></a><span class="lineno"><a class="line" href="classWallpaperLibrary.html#a7b3986e87ed3eb801462bb65d7de3620">   85</a></span>    <span class="keywordtype">bool</span> <a class="code hl_function" href="classWallpaperLibrary.html#a7b3986e87ed3eb801462bb65d7de3620">importing</a>()<span class="keyword"> const </span>{ <span class="keywordflow">return</span> <a class="code hl_variable" href="classWallpaperLibrary.html#a5a6d015d1c4edf7ebb838983e37e1b1b">importing_</a>; }</div>
+<div class="line"><a id="l00086" name="l00086"></a><span class="lineno">   86</span></div>
+<div class="line"><a id="l00091" name="l00091"></a><span class="lineno">   91</span>    Q_INVOKABLE <span class="keywordtype">bool</span> <a class="code hl_function" href="classWallpaperLibrary.html#a0b977d30ac85a944763d300a1fd35f22">removeWallpaper</a>();</div>
+<div class="line"><a id="l00092" name="l00092"></a><span class="lineno">   92</span></div>
+<div class="line"><a id="l00100" name="l00100"></a><span class="lineno">  100</span>    Q_INVOKABLE QString <a class="code hl_function" href="classWallpaperLibrary.html#a12e92a50bee2c660725fb62510eaf857">reconcile</a>(<span class="keyword">const</span> QString&amp; <span class="keywordtype">id</span>);</div>
+<div class="line"><a id="l00101" name="l00101"></a><span class="lineno">  101</span></div>
+<div class="line"><a id="l00103" name="l00103"></a><span class="lineno">  103</span>    <span class="keyword">static</span> QString <a class="code hl_function" href="classWallpaperLibrary.html#a799b3ed8ad8fa300e72785b0312a9f2a">userWallpaperDir</a>();</div>
+<div class="line"><a id="l00104" name="l00104"></a><span class="lineno">  104</span> </div>
+<div class="line"><a id="l00105" name="l00105"></a><span class="lineno">  105</span>signals:</div>
+<div class="line"><a id="l00106" name="l00106"></a><span class="lineno"><a class="line" href="classWallpaperLibrary.html#a36bb603da045bb0700cab9f68c2890ca">  106</a></span>    <span class="keywordtype">void</span> <a class="code hl_signal" href="classWallpaperLibrary.html#a36bb603da045bb0700cab9f68c2890ca">importingChanged</a>();</div>
+<div class="line"><a id="l00107" name="l00107"></a><span class="lineno"><a class="line" href="classWallpaperLibrary.html#a93907ba62dccddbfd7021fea947ed004">  107</a></span>    <span class="keywordtype">void</span> <a class="code hl_signal" href="classWallpaperLibrary.html#a93907ba62dccddbfd7021fea947ed004">importFinished</a>(<span class="keyword">const</span> QString&amp; <span class="keywordtype">id</span>);</div>
+<div class="line"><a id="l00108" name="l00108"></a><span class="lineno"><a class="line" href="classWallpaperLibrary.html#a565bc1b9b4350c7e6dbfdfdbc8ac0739">  108</a></span>    <span class="keywordtype">void</span> <a class="code hl_signal" href="classWallpaperLibrary.html#a565bc1b9b4350c7e6dbfdfdbc8ac0739">importFailed</a>();</div>
+<div class="line"><a id="l00109" name="l00109"></a><span class="lineno">  109</span> </div>
+<div class="line"><a id="l00110" name="l00110"></a><span class="lineno">  110</span><span class="keyword">private</span>:</div>
+<div class="line"><a id="l00112" name="l00112"></a><span class="lineno">  112</span>    <span class="keywordtype">void</span> <a class="code hl_function" href="classWallpaperLibrary.html#ad66975859ad784c87530e83a5a8eaf9a">finishImport</a>(<span class="keyword">const</span> QString&amp; <span class="keywordtype">id</span>);</div>
+<div class="line"><a id="l00113" name="l00113"></a><span class="lineno">  113</span>    <span class="keywordtype">void</span> <a class="code hl_function" href="classWallpaperLibrary.html#a5a205091cd0176573783e72360e3697e">setImporting</a>(<span class="keywordtype">bool</span> <a class="code hl_property" href="classWallpaperLibrary.html#a651da107931d1e31c5ca5fab5390be68">importing</a>);</div>
+<div class="line"><a id="l00114" name="l00114"></a><span class="lineno">  114</span> </div>
+<div class="line"><a id="l00115" name="l00115"></a><span class="lineno"><a class="line" href="classWallpaperLibrary.html#ae830e5128aecbb636e2cbc957b6ec3e3">  115</a></span>    QThreadPool <a class="code hl_variable" href="classWallpaperLibrary.html#ae830e5128aecbb636e2cbc957b6ec3e3">import_pool_</a>;</div>
+<div class="line"><a id="l00116" name="l00116"></a><span class="lineno"><a class="line" href="classWallpaperLibrary.html#a5a6d015d1c4edf7ebb838983e37e1b1b">  116</a></span>    <span class="keywordtype">bool</span> <a class="code hl_variable" href="classWallpaperLibrary.html#a5a6d015d1c4edf7ebb838983e37e1b1b">importing_</a> = <span class="keyword">false</span>;</div>
+<div class="line"><a id="l00117" name="l00117"></a><span class="lineno">  117</span>};</div>
+</div>
+<div class="ttc" id="aclassWallpaperLibrary_html_a04e85b2cc9bd922422307ae0edfbbe14"><div class="ttname"><a href="classWallpaperLibrary.html#a04e85b2cc9bd922422307ae0edfbbe14">WallpaperLibrary::importWallpaperAsync</a></div><div class="ttdeci">Q_INVOKABLE void importWallpaperAsync(const QUrl &amp;source_url)</div><div class="ttdoc">异步导入壁纸（工作线程校验/哈希/复制，GUI 线程回传结果）</div><div class="ttdef"><b>定义</b> WallpaperLibrary.cpp:322</div></div>
+<div class="ttc" id="aclassWallpaperLibrary_html_a0943260fa2eea01578f7922b083d2b18"><div class="ttname"><a href="classWallpaperLibrary.html#a0943260fa2eea01578f7922b083d2b18">WallpaperLibrary::~WallpaperLibrary</a></div><div class="ttdeci">~WallpaperLibrary() override</div><div class="ttdef"><b>定义</b> WallpaperLibrary.cpp:236</div></div>
+<div class="ttc" id="aclassWallpaperLibrary_html_a0b977d30ac85a944763d300a1fd35f22"><div class="ttname"><a href="classWallpaperLibrary.html#a0b977d30ac85a944763d300a1fd35f22">WallpaperLibrary::removeWallpaper</a></div><div class="ttdeci">Q_INVOKABLE bool removeWallpaper()</div><div class="ttdoc">删除托管目录内的壁纸文件</div><div class="ttdef"><b>定义</b> WallpaperLibrary.cpp:360</div></div>
+<div class="ttc" id="aclassWallpaperLibrary_html_a12e92a50bee2c660725fb62510eaf857"><div class="ttname"><a href="classWallpaperLibrary.html#a12e92a50bee2c660725fb62510eaf857">WallpaperLibrary::reconcile</a></div><div class="ttdeci">Q_INVOKABLE QString reconcile(const QString &amp;id)</div><div class="ttdoc">启动校验：id 有效且文件存在则保留并清理其它残留；否则清理残留并回退纯色</div><div class="ttdef"><b>定义</b> WallpaperLibrary.cpp:367</div></div>
+<div class="ttc" id="aclassWallpaperLibrary_html_a36bb603da045bb0700cab9f68c2890ca"><div class="ttname"><a href="classWallpaperLibrary.html#a36bb603da045bb0700cab9f68c2890ca">WallpaperLibrary::importingChanged</a></div><div class="ttdeci">void importingChanged()</div></div>
+<div class="ttc" id="aclassWallpaperLibrary_html_a565bc1b9b4350c7e6dbfdfdbc8ac0739"><div class="ttname"><a href="classWallpaperLibrary.html#a565bc1b9b4350c7e6dbfdfdbc8ac0739">WallpaperLibrary::importFailed</a></div><div class="ttdeci">void importFailed()</div></div>
+<div class="ttc" id="aclassWallpaperLibrary_html_a5a205091cd0176573783e72360e3697e"><div class="ttname"><a href="classWallpaperLibrary.html#a5a205091cd0176573783e72360e3697e">WallpaperLibrary::setImporting</a></div><div class="ttdeci">void setImporting(bool importing)</div><div class="ttdef"><b>定义</b> WallpaperLibrary.cpp:352</div></div>
+<div class="ttc" id="aclassWallpaperLibrary_html_a5a6d015d1c4edf7ebb838983e37e1b1b"><div class="ttname"><a href="classWallpaperLibrary.html#a5a6d015d1c4edf7ebb838983e37e1b1b">WallpaperLibrary::importing_</a></div><div class="ttdeci">bool importing_</div><div class="ttdef"><b>定义</b> WallpaperLibrary.h:116</div></div>
+<div class="ttc" id="aclassWallpaperLibrary_html_a651da107931d1e31c5ca5fab5390be68"><div class="ttname"><a href="classWallpaperLibrary.html#a651da107931d1e31c5ca5fab5390be68">WallpaperLibrary::importing</a></div><div class="ttdeci">QML_SINGLETONbool importing</div><div class="ttdef"><b>定义</b> WallpaperLibrary.h:65</div></div>
+<div class="ttc" id="aclassWallpaperLibrary_html_a697c2707d23333f70460de74e5d42fb4"><div class="ttname"><a href="classWallpaperLibrary.html#a697c2707d23333f70460de74e5d42fb4">WallpaperLibrary::importWallpaper</a></div><div class="ttdeci">Q_INVOKABLE QString importWallpaper(const QUrl &amp;source_url)</div><div class="ttdoc">同步导入壁纸：校验后复制到托管目录并删除旧图</div><div class="ttdef"><b>定义</b> WallpaperLibrary.cpp:311</div></div>
+<div class="ttc" id="aclassWallpaperLibrary_html_a799b3ed8ad8fa300e72785b0312a9f2a"><div class="ttname"><a href="classWallpaperLibrary.html#a799b3ed8ad8fa300e72785b0312a9f2a">WallpaperLibrary::userWallpaperDir</a></div><div class="ttdeci">static QString userWallpaperDir()</div><div class="ttdoc">托管目录（AppDataLocation/wallpapers）</div><div class="ttdef"><b>定义</b> WallpaperLibrary.cpp:242</div></div>
+<div class="ttc" id="aclassWallpaperLibrary_html_a7b3986e87ed3eb801462bb65d7de3620"><div class="ttname"><a href="classWallpaperLibrary.html#a7b3986e87ed3eb801462bb65d7de3620">WallpaperLibrary::importing</a></div><div class="ttdeci">bool importing() const</div><div class="ttdoc">是否有异步导入正在进行</div><div class="ttdef"><b>定义</b> WallpaperLibrary.h:85</div></div>
+<div class="ttc" id="aclassWallpaperLibrary_html_a93907ba62dccddbfd7021fea947ed004"><div class="ttname"><a href="classWallpaperLibrary.html#a93907ba62dccddbfd7021fea947ed004">WallpaperLibrary::importFinished</a></div><div class="ttdeci">void importFinished(const QString &amp;id)</div></div>
+<div class="ttc" id="aclassWallpaperLibrary_html_aba1a72fafbf08c25baa284f181cf4329"><div class="ttname"><a href="classWallpaperLibrary.html#aba1a72fafbf08c25baa284f181cf4329">WallpaperLibrary::WallpaperLibrary</a></div><div class="ttdeci">WallpaperLibrary(QObject *parent=nullptr)</div><div class="ttdef"><b>定义</b> WallpaperLibrary.cpp:229</div></div>
+<div class="ttc" id="aclassWallpaperLibrary_html_ad66975859ad784c87530e83a5a8eaf9a"><div class="ttname"><a href="classWallpaperLibrary.html#ad66975859ad784c87530e83a5a8eaf9a">WallpaperLibrary::finishImport</a></div><div class="ttdeci">void finishImport(const QString &amp;id)</div><div class="ttdoc">工作线程完成后在 GUI 线程收尾</div><div class="ttdef"><b>定义</b> WallpaperLibrary.cpp:338</div></div>
+<div class="ttc" id="aclassWallpaperLibrary_html_ae830e5128aecbb636e2cbc957b6ec3e3"><div class="ttname"><a href="classWallpaperLibrary.html#ae830e5128aecbb636e2cbc957b6ec3e3">WallpaperLibrary::import_pool_</a></div><div class="ttdeci">QThreadPool import_pool_</div><div class="ttdef"><b>定义</b> WallpaperLibrary.h:115</div></div>
+<div class="ttc" id="aclassWallpaperProvider_html_a09357a239dfc346bc83ddb1e19773daa"><div class="ttname"><a href="classWallpaperProvider.html#a09357a239dfc346bc83ddb1e19773daa">WallpaperProvider::requestImage</a></div><div class="ttdeci">QImage requestImage(const QString &amp;id, QSize *size, const QSize &amp;requestedSize) override</div><div class="ttdoc">按 EXIF 方向读取并缩放到目标尺寸（KeepAspectRatioByExpanding，禁止放大）</div><div class="ttdef"><b>定义</b> WallpaperLibrary.cpp:164</div></div>
+<div class="ttc" id="aclassWallpaperProvider_html_a185ae01614def9f55f02789603e862f6"><div class="ttname"><a href="classWallpaperProvider.html#a185ae01614def9f55f02789603e862f6">WallpaperProvider::limits_</a></div><div class="ttdeci">DecodeLimits limits_</div><div class="ttdoc">输出规模上限</div><div class="ttdef"><b>定义</b> WallpaperLibrary.h:55</div></div>
+<div class="ttc" id="aclassWallpaperProvider_html_a24ac9d679c9e38d1fa104ca6a1b333d8"><div class="ttname"><a href="classWallpaperProvider.html#a24ac9d679c9e38d1fa104ca6a1b333d8">WallpaperProvider::decode_limit_</a></div><div class="ttdeci">QSize decode_limit_</div><div class="ttdoc">无 QML 请求尺寸时的解码上限（主屏分辨率 × 设备像素比）</div><div class="ttdef"><b>定义</b> WallpaperLibrary.h:53</div></div>
+<div class="ttc" id="aclassWallpaperProvider_html_abc9610bfaba9a0ec6039c67bc78fc4be"><div class="ttname"><a href="classWallpaperProvider.html#abc9610bfaba9a0ec6039c67bc78fc4be">WallpaperProvider::WallpaperProvider</a></div><div class="ttdeci">WallpaperProvider(DecodeLimits limits={}, QSize decode_limit_override={}, bool query_primary_screen=true)</div><div class="ttdef"><b>定义</b> WallpaperLibrary.cpp:139</div></div>
+<div class="ttc" id="astructWallpaperProvider_1_1DecodeLimits_html"><div class="ttname"><a href="structWallpaperProvider_1_1DecodeLimits.html">WallpaperProvider::DecodeLimits</a></div><div class="ttdoc">解码输出上限；测试可注入更小值验证降采样路径</div><div class="ttdef"><b>定义</b> WallpaperLibrary.h:35</div></div>
+<div class="ttc" id="astructWallpaperProvider_1_1DecodeLimits_html_a1d82eccbc2ab81434b5e65d0911ab1d1"><div class="ttname"><a href="structWallpaperProvider_1_1DecodeLimits.html#a1d82eccbc2ab81434b5e65d0911ab1d1">WallpaperProvider::DecodeLimits::max_dimension</a></div><div class="ttdeci">int max_dimension</div><div class="ttdef"><b>定义</b> WallpaperLibrary.h:37</div></div>
+<div class="ttc" id="astructWallpaperProvider_1_1DecodeLimits_html_ade27c8db74d0207e242ccad2a4703891"><div class="ttname"><a href="structWallpaperProvider_1_1DecodeLimits.html#ade27c8db74d0207e242ccad2a4703891">WallpaperProvider::DecodeLimits::max_pixels</a></div><div class="ttdeci">qint64 max_pixels</div><div class="ttdef"><b>定义</b> WallpaperLibrary.h:36</div></div>
+</div><!-- fragment --></div><!-- contents -->
+<!-- start footer part -->
+<hr class="footer"/><address class="footer"><small>
+制作者&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.14.0
+</small></address>
+</div><!-- doc-content -->
+</body>
+</html>

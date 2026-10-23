@@ -1,0 +1,170 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="zh">
+<head>
+<meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=11"/>
+<meta name="generator" content="Doxygen 1.14.0"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>PreCess: app/test/TestPreferencesWindow.cpp 文件参考</title>
+<link href="tabs.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="jquery.js"></script>
+<script type="text/javascript" src="dynsections.js"></script>
+<script type="text/javascript" src="clipboard.js"></script>
+<script type="text/javascript" src="cookie.js"></script>
+<link href="search/search.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="search/searchdata.js"></script>
+<script type="text/javascript" src="search/search.js"></script>
+<link href="doxygen.css" rel="stylesheet" type="text/css" />
+</head>
+<body>
+<div id="top"><!-- do not remove this div, it is closed by doxygen! -->
+<div id="titlearea">
+<table cellspacing="0" cellpadding="0">
+ <tbody>
+ <tr id="projectrow">
+  <td id="projectlogo"><img alt="Logo" src="ZenithGrid.ico"/></td>
+  <td id="projectalign">
+   <div id="projectname">PreCess
+   </div>
+  </td>
+ </tr>
+ </tbody>
+</table>
+</div>
+<!-- end header part -->
+<!-- 制作者 Doxygen 1.14.0 -->
+<script type="text/javascript">
+var searchBox = new SearchBox("searchBox", "search/",'.html');
+</script>
+<script type="text/javascript">
+$(function() { codefold.init(); });
+</script>
+<script type="text/javascript" src="menudata.js"></script>
+<script type="text/javascript" src="menu.js"></script>
+<script type="text/javascript">
+$(function() {
+  initMenu('',true,false,'search.php','搜索',false);
+  $(function() { init_search(); });
+});
+</script>
+<div id="main-nav"></div>
+<!-- window showing the filter options -->
+<div id="MSearchSelectWindow"
+     onmouseover="return searchBox.OnSearchSelectShow()"
+     onmouseout="return searchBox.OnSearchSelectHide()"
+     onkeydown="return searchBox.OnSearchSelectKey(event)">
+</div>
+
+<!-- iframe showing the search results (closed by default) -->
+<div id="MSearchResultsWindow">
+<div id="MSearchResults">
+<div class="SRPage">
+<div id="SRIndex">
+<div id="SRResults"></div>
+<div class="SRStatus" id="Loading">载入中...</div>
+<div class="SRStatus" id="Searching">搜索中...</div>
+<div class="SRStatus" id="NoMatches">未找到</div>
+</div>
+</div>
+</div>
+</div>
+
+<div id="nav-path" class="navpath">
+  <ul>
+<li class="navelem"><a href="dir_d422163b96683743ed3963d4aac17747.html">app</a></li><li class="navelem"><a href="dir_effe5c348e70d16252aa6de5fa9356c9.html">test</a></li>  </ul>
+</div>
+</div><!-- top -->
+<div id="doc-content">
+<div class="header">
+  <div class="summary">
+<a href="#func-members">函数</a>  </div>
+  <div class="headertitle"><div class="title">TestPreferencesWindow.cpp 文件参考</div></div>
+</div><!--header-->
+<div class="contents">
+
+<p>偏好设置面板运行时 smoke：实际 QML 加载、紧凑布局与壁纸动作按钮  
+<a href="#details">更多...</a></p>
+<div class="textblock"><code>#include &lt;QCoreApplication&gt;</code><br />
+<code>#include &lt;QGuiApplication&gt;</code><br />
+<code>#include &lt;QQmlComponent&gt;</code><br />
+<code>#include &lt;QQmlContext&gt;</code><br />
+<code>#include &lt;QQmlEngine&gt;</code><br />
+<code>#include &lt;QQmlExtensionPlugin&gt;</code><br />
+<code>#include &lt;QQuickItem&gt;</code><br />
+<code>#include &lt;QQuickStyle&gt;</code><br />
+<code>#include &lt;QSettings&gt;</code><br />
+<code>#include &lt;QStandardPaths&gt;</code><br />
+<code>#include &lt;catch2/catch_test_macros.hpp&gt;</code><br />
+<code>#include &lt;memory&gt;</code><br />
+<code>#include &quot;TestPreferencesWindow.moc&quot;</code><br />
+</div><div class="textblock"><div class="dynheader">
+TestPreferencesWindow.cpp 的引用(Include)关系图:</div>
+<div class="dyncontent">
+<div class="center"><img src="TestPreferencesWindow_8cpp__incl.png" border="0" usemap="#aapp_2test_2TestPreferencesWindow_8cpp" loading="lazy" alt=""/></div>
+<map name="aapp_2test_2TestPreferencesWindow_8cpp" id="aapp_2test_2TestPreferencesWindow_8cpp">
+<area shape="rect" title="偏好设置面板运行时 smoke：实际 QML 加载、紧凑布局与壁纸动作按钮" alt="" coords="880,5,1063,45"/>
+<area shape="rect" title=" " alt="" coords="5,93,140,119"/>
+<area shape="poly" title=" " alt="" coords="880,35,563,58,154,96,153,91,562,52,879,30"/>
+<area shape="rect" title=" " alt="" coords="164,93,291,119"/>
+<area shape="poly" title=" " alt="" coords="880,37,625,60,305,96,304,90,624,55,879,32"/>
+<area shape="rect" title=" " alt="" coords="315,93,449,119"/>
+<area shape="poly" title=" " alt="" coords="880,41,463,96,462,90,880,36"/>
+<area shape="rect" title=" " alt="" coords="473,93,584,119"/>
+<area shape="poly" title=" " alt="" coords="880,45,598,95,597,90,879,40"/>
+<area shape="rect" title=" " alt="" coords="608,93,711,119"/>
+<area shape="poly" title=" " alt="" coords="897,48,719,93,717,87,896,43"/>
+<area shape="rect" title=" " alt="" coords="735,93,898,119"/>
+<area shape="poly" title=" " alt="" coords="935,48,853,89,850,85,933,43"/>
+<area shape="rect" title=" " alt="" coords="922,93,1021,119"/>
+<area shape="poly" title=" " alt="" coords="974,46,974,79,969,79,969,46"/>
+<area shape="rect" title=" " alt="" coords="1045,93,1148,119"/>
+<area shape="poly" title=" " alt="" coords="1003,43,1068,84,1065,88,1000,48"/>
+<area shape="rect" title=" " alt="" coords="1173,93,1258,119"/>
+<area shape="poly" title=" " alt="" coords="1031,43,1167,86,1166,92,1029,48"/>
+<area shape="rect" title=" " alt="" coords="1282,93,1407,119"/>
+<area shape="poly" title=" " alt="" coords="1061,43,1277,88,1276,93,1060,48"/>
+<area shape="rect" title=" " alt="" coords="1431,93,1650,119"/>
+<area shape="poly" title=" " alt="" coords="1063,37,1445,89,1444,94,1062,42"/>
+<area shape="rect" title=" " alt="" coords="1674,93,1751,119"/>
+<area shape="poly" title=" " alt="" coords="1063,29,1328,50,1492,68,1661,91,1660,96,1492,73,1327,55,1063,35"/>
+<area shape="rect" title=" " alt="" coords="1775,93,1983,119"/>
+<area shape="poly" title=" " alt="" coords="1063,31,1762,91,1761,96,1063,37"/>
+</map>
+</div>
+</div><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 id="header-func-members" class="groupheader"><a id="func-members" name="func-members"></a>
+函数</h2></td></tr>
+<tr class="memitem:a09fa35cdac59971183fc37763a3cd29a" id="r_a09fa35cdac59971183fc37763a3cd29a"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a09fa35cdac59971183fc37763a3cd29a">TEST_CASE</a> (&quot;Preferences window loads and follows compact and wide layouts&quot;, &quot;[QML][Preferences]&quot;)</td></tr>
+</table>
+<a name="details" id="details"></a><h2 id="header-details" class="groupheader">详细描述</h2>
+<div class="textblock"><p>偏好设置面板运行时 smoke：实际 QML 加载、紧凑布局与壁纸动作按钮 </p>
+</div><a name="doc-func-members" id="doc-func-members"></a><h2 id="header-doc-func-members" class="groupheader">函数说明</h2>
+<a id="a09fa35cdac59971183fc37763a3cd29a" name="a09fa35cdac59971183fc37763a3cd29a"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a09fa35cdac59971183fc37763a3cd29a">&#9670;&#160;</a></span>TEST_CASE()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">TEST_CASE </td>
+          <td>(</td>
+          <td class="paramtype">&quot;Preferences window loads and follows compact and wide layouts&quot;</td>          <td class="paramname"><span class="paramname"><em></em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">&quot;&quot;</td>          <td class="paramname"><span class="paramname"><em></em></span>[QML][Preferences]&#160;)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+</div><!-- contents -->
+<!-- start footer part -->
+<hr class="footer"/><address class="footer"><small>
+制作者&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.14.0
+</small></address>
+</div><!-- doc-content -->
+</body>
+</html>

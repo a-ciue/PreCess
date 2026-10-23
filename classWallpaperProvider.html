@@ -1,0 +1,273 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="zh">
+<head>
+<meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=11"/>
+<meta name="generator" content="Doxygen 1.14.0"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>PreCess: WallpaperProvider类 参考</title>
+<link href="tabs.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="jquery.js"></script>
+<script type="text/javascript" src="dynsections.js"></script>
+<script type="text/javascript" src="clipboard.js"></script>
+<script type="text/javascript" src="cookie.js"></script>
+<link href="search/search.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="search/searchdata.js"></script>
+<script type="text/javascript" src="search/search.js"></script>
+<link href="doxygen.css" rel="stylesheet" type="text/css" />
+</head>
+<body>
+<div id="top"><!-- do not remove this div, it is closed by doxygen! -->
+<div id="titlearea">
+<table cellspacing="0" cellpadding="0">
+ <tbody>
+ <tr id="projectrow">
+  <td id="projectlogo"><img alt="Logo" src="ZenithGrid.ico"/></td>
+  <td id="projectalign">
+   <div id="projectname">PreCess
+   </div>
+  </td>
+ </tr>
+ </tbody>
+</table>
+</div>
+<!-- end header part -->
+<!-- 制作者 Doxygen 1.14.0 -->
+<script type="text/javascript">
+var searchBox = new SearchBox("searchBox", "search/",'.html');
+</script>
+<script type="text/javascript">
+$(function() { codefold.init(); });
+</script>
+<script type="text/javascript" src="menudata.js"></script>
+<script type="text/javascript" src="menu.js"></script>
+<script type="text/javascript">
+$(function() {
+  initMenu('',true,false,'search.php','搜索',false);
+  $(function() { init_search(); });
+});
+</script>
+<div id="main-nav"></div>
+<!-- window showing the filter options -->
+<div id="MSearchSelectWindow"
+     onmouseover="return searchBox.OnSearchSelectShow()"
+     onmouseout="return searchBox.OnSearchSelectHide()"
+     onkeydown="return searchBox.OnSearchSelectKey(event)">
+</div>
+
+<!-- iframe showing the search results (closed by default) -->
+<div id="MSearchResultsWindow">
+<div id="MSearchResults">
+<div class="SRPage">
+<div id="SRIndex">
+<div id="SRResults"></div>
+<div class="SRStatus" id="Loading">载入中...</div>
+<div class="SRStatus" id="Searching">搜索中...</div>
+<div class="SRStatus" id="NoMatches">未找到</div>
+</div>
+</div>
+</div>
+</div>
+
+</div><!-- top -->
+<div id="doc-content">
+<div class="header">
+  <div class="summary">
+<a href="#nested-classes">类</a> &#124;
+<a href="#pub-methods">Public 成员函数</a> &#124;
+<a href="#pri-attribs">Private 属性</a> &#124;
+<a href="classWallpaperProvider-members.html">所有成员列表</a>  </div>
+  <div class="headertitle"><div class="title">WallpaperProvider类 参考</div></div>
+</div><!--header-->
+<div class="contents">
+
+<p>image://wallpaper/ 图像提供者  
+ <a href="#details">更多...</a></p>
+
+<p><code>#include &lt;<a class="el" href="WallpaperLibrary_8h_source.html">WallpaperLibrary.h</a>&gt;</code></p>
+<div class="dynheader">
+类 WallpaperProvider 继承关系图:</div>
+<div class="dyncontent">
+<div class="center"><img src="classWallpaperProvider__inherit__graph.png" border="0" usemap="#aWallpaperProvider_inherit__map" loading="lazy" alt="Inheritance graph"/></div>
+<map name="aWallpaperProvider_inherit__map" id="aWallpaperProvider_inherit__map">
+<area shape="rect" title="image://wallpaper/ 图像提供者" alt="" coords="17,79,158,104"/>
+<area shape="rect" title=" " alt="" coords="5,5,169,31"/>
+<area shape="poly" title=" " alt="" coords="90,44,90,79,85,79,85,44"/>
+</map>
+<center><span class="legend">[<a href="graph_legend.html">图例</a>]</span></center></div>
+<div class="dynheader">
+WallpaperProvider 的协作图:</div>
+<div class="dyncontent">
+<div class="center"><img src="classWallpaperProvider__coll__graph.png" border="0" usemap="#aWallpaperProvider_coll__map" loading="lazy" alt="Collaboration graph"/></div>
+<map name="aWallpaperProvider_coll__map" id="aWallpaperProvider_coll__map">
+<area shape="rect" title="image://wallpaper/ 图像提供者" alt="" coords="107,116,249,141"/>
+<area shape="rect" title=" " alt="" coords="5,13,169,38"/>
+<area shape="poly" title=" " alt="" coords="109,47,170,114,166,118,105,50"/>
+<area shape="rect" href="structWallpaperProvider_1_1DecodeLimits.html" title="解码输出上限；测试可注入更小值验证降采样路径" alt="" coords="194,5,343,45"/>
+<area shape="poly" title=" " alt="" coords="245,57,190,118,186,114,241,54"/>
+</map>
+<center><span class="legend">[<a href="graph_legend.html">图例</a>]</span></center></div>
+<table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 id="header-nested-classes" class="groupheader"><a id="nested-classes" name="nested-classes"></a>
+类</h2></td></tr>
+<tr class="memitem:DecodeLimits" id="r_DecodeLimits"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structWallpaperProvider_1_1DecodeLimits.html">DecodeLimits</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">解码输出上限；测试可注入更小值验证降采样路径  <a href="structWallpaperProvider_1_1DecodeLimits.html#details">更多...</a><br /></td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 id="header-pub-methods" class="groupheader"><a id="pub-methods" name="pub-methods"></a>
+Public 成员函数</h2></td></tr>
+<tr class="memitem:abc9610bfaba9a0ec6039c67bc78fc4be" id="r_abc9610bfaba9a0ec6039c67bc78fc4be"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#abc9610bfaba9a0ec6039c67bc78fc4be">WallpaperProvider</a> (<a class="el" href="structWallpaperProvider_1_1DecodeLimits.html">DecodeLimits</a> limits={}, QSize decode_limit_override={}, bool query_primary_screen=true)</td></tr>
+<tr class="memitem:a09357a239dfc346bc83ddb1e19773daa" id="r_a09357a239dfc346bc83ddb1e19773daa"><td class="memItemLeft" align="right" valign="top">QImage&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a09357a239dfc346bc83ddb1e19773daa">requestImage</a> (const QString &amp;<a class="el" href="TestComponentModel_8cpp.html#a39f48d78b28941e045e423f59f774459">id</a>, QSize *size, const QSize &amp;requestedSize) override</td></tr>
+<tr class="memdesc:a09357a239dfc346bc83ddb1e19773daa"><td class="mdescLeft">&#160;</td><td class="mdescRight">按 EXIF 方向读取并缩放到目标尺寸（KeepAspectRatioByExpanding，禁止放大）  <br /></td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 id="header-pri-attribs" class="groupheader"><a id="pri-attribs" name="pri-attribs"></a>
+Private 属性</h2></td></tr>
+<tr class="memitem:a24ac9d679c9e38d1fa104ca6a1b333d8" id="r_a24ac9d679c9e38d1fa104ca6a1b333d8"><td class="memItemLeft" align="right" valign="top">QSize&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a24ac9d679c9e38d1fa104ca6a1b333d8">decode_limit_</a></td></tr>
+<tr class="memdesc:a24ac9d679c9e38d1fa104ca6a1b333d8"><td class="mdescLeft">&#160;</td><td class="mdescRight">无 QML 请求尺寸时的解码上限（主屏分辨率 × 设备像素比）  <br /></td></tr>
+<tr class="memitem:a185ae01614def9f55f02789603e862f6" id="r_a185ae01614def9f55f02789603e862f6"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structWallpaperProvider_1_1DecodeLimits.html">DecodeLimits</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a185ae01614def9f55f02789603e862f6">limits_</a></td></tr>
+<tr class="memdesc:a185ae01614def9f55f02789603e862f6"><td class="mdescLeft">&#160;</td><td class="mdescRight">输出规模上限  <br /></td></tr>
+</table>
+<a name="details" id="details"></a><h2 id="header-details" class="groupheader">详细描述</h2>
+<div class="textblock"><p>image://wallpaper/ 图像提供者 </p>
+<p>id 为托管目录内的文件名；非法 id 或缺失文件返回空图像，QML 侧回退纯色背景。 解码遵循“不放大、限制输出规模、按 EXIF 方向显示”的规则：优先采用 QML 请求 尺寸，否则以主屏分辨率（含设备像素比）为解码上限；小图保留原始像素由显示层 放大，超大图按像素总量与最长边上限降低解码分辨率。</p>
+<p>QML 引擎会按 image:// URL 缓存 provider 结果；当前请求不设置 sourceSize， 不随布局变化重复解码，因此不需要额外的 provider 内部缓存。 </p>
+</div><a name="doc-constructors" id="doc-constructors"></a><h2 id="header-doc-constructors" class="groupheader">构造及析构函数说明</h2>
+<a id="abc9610bfaba9a0ec6039c67bc78fc4be" name="abc9610bfaba9a0ec6039c67bc78fc4be"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#abc9610bfaba9a0ec6039c67bc78fc4be">&#9670;&#160;</a></span>WallpaperProvider()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">WallpaperProvider::WallpaperProvider </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="structWallpaperProvider_1_1DecodeLimits.html">DecodeLimits</a></td>          <td class="paramname"><span class="paramname"><em>limits</em></span><span class="paramdefsep"> = </span><span class="paramdefval">{}</span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">QSize</td>          <td class="paramname"><span class="paramname"><em>decode_limit_override</em></span><span class="paramdefsep"> = </span><span class="paramdefval">{}</span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">bool</td>          <td class="paramname"><span class="paramname"><em>query_primary_screen</em></span><span class="paramdefsep"> = </span><span class="paramdefval">true</span>&#160;)</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel explicit">explicit</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<dl class="params"><dt>参数</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">limits</td><td>输出规模上限 </td></tr>
+    <tr><td class="paramname">decode_limit_override</td><td>显式解码目标；有效时优先于主屏探测 </td></tr>
+    <tr><td class="paramname">query_primary_screen</td><td>是否探测主屏分辨率；false 时直接使用兜底目标 </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a name="doc-func-members" id="doc-func-members"></a><h2 id="header-doc-func-members" class="groupheader">成员函数说明</h2>
+<a id="a09357a239dfc346bc83ddb1e19773daa" name="a09357a239dfc346bc83ddb1e19773daa"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a09357a239dfc346bc83ddb1e19773daa">&#9670;&#160;</a></span>requestImage()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">QImage WallpaperProvider::requestImage </td>
+          <td>(</td>
+          <td class="paramtype">const QString &amp;</td>          <td class="paramname"><span class="paramname"><em>id</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">QSize *</td>          <td class="paramname"><span class="paramname"><em>size</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const QSize &amp;</td>          <td class="paramname"><span class="paramname"><em>requestedSize</em></span>&#160;)</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel override">override</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>按 EXIF 方向读取并缩放到目标尺寸（KeepAspectRatioByExpanding，禁止放大） </p>
+
+</div>
+</div>
+<a name="doc-variable-members" id="doc-variable-members"></a><h2 id="header-doc-variable-members" class="groupheader">类成员变量说明</h2>
+<a id="a24ac9d679c9e38d1fa104ca6a1b333d8" name="a24ac9d679c9e38d1fa104ca6a1b333d8"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a24ac9d679c9e38d1fa104ca6a1b333d8">&#9670;&#160;</a></span>decode_limit_</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">QSize WallpaperProvider::decode_limit_</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel private">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>无 QML 请求尺寸时的解码上限（主屏分辨率 × 设备像素比） </p>
+
+</div>
+</div>
+<a id="a185ae01614def9f55f02789603e862f6" name="a185ae01614def9f55f02789603e862f6"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a185ae01614def9f55f02789603e862f6">&#9670;&#160;</a></span>limits_</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="structWallpaperProvider_1_1DecodeLimits.html">DecodeLimits</a> WallpaperProvider::limits_</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel private">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>输出规模上限 </p>
+
+</div>
+</div>
+<hr/>该类的文档由以下文件生成:<ul>
+<li>app/core/<a class="el" href="WallpaperLibrary_8h_source.html">WallpaperLibrary.h</a></li>
+<li>app/core/<a class="el" href="WallpaperLibrary_8cpp.html">WallpaperLibrary.cpp</a></li>
+</ul>
+</div><!-- contents -->
+<!-- start footer part -->
+<hr class="footer"/><address class="footer"><small>
+制作者&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.14.0
+</small></address>
+</div><!-- doc-content -->
+</body>
+</html>

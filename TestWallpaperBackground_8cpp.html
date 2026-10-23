@@ -1,0 +1,184 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="zh">
+<head>
+<meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=11"/>
+<meta name="generator" content="Doxygen 1.14.0"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>PreCess: app/test/TestWallpaperBackground.cpp 文件参考</title>
+<link href="tabs.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="jquery.js"></script>
+<script type="text/javascript" src="dynsections.js"></script>
+<script type="text/javascript" src="clipboard.js"></script>
+<script type="text/javascript" src="cookie.js"></script>
+<link href="search/search.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="search/searchdata.js"></script>
+<script type="text/javascript" src="search/search.js"></script>
+<link href="doxygen.css" rel="stylesheet" type="text/css" />
+</head>
+<body>
+<div id="top"><!-- do not remove this div, it is closed by doxygen! -->
+<div id="titlearea">
+<table cellspacing="0" cellpadding="0">
+ <tbody>
+ <tr id="projectrow">
+  <td id="projectlogo"><img alt="Logo" src="ZenithGrid.ico"/></td>
+  <td id="projectalign">
+   <div id="projectname">PreCess
+   </div>
+  </td>
+ </tr>
+ </tbody>
+</table>
+</div>
+<!-- end header part -->
+<!-- 制作者 Doxygen 1.14.0 -->
+<script type="text/javascript">
+var searchBox = new SearchBox("searchBox", "search/",'.html');
+</script>
+<script type="text/javascript">
+$(function() { codefold.init(); });
+</script>
+<script type="text/javascript" src="menudata.js"></script>
+<script type="text/javascript" src="menu.js"></script>
+<script type="text/javascript">
+$(function() {
+  initMenu('',true,false,'search.php','搜索',false);
+  $(function() { init_search(); });
+});
+</script>
+<div id="main-nav"></div>
+<!-- window showing the filter options -->
+<div id="MSearchSelectWindow"
+     onmouseover="return searchBox.OnSearchSelectShow()"
+     onmouseout="return searchBox.OnSearchSelectHide()"
+     onkeydown="return searchBox.OnSearchSelectKey(event)">
+</div>
+
+<!-- iframe showing the search results (closed by default) -->
+<div id="MSearchResultsWindow">
+<div id="MSearchResults">
+<div class="SRPage">
+<div id="SRIndex">
+<div id="SRResults"></div>
+<div class="SRStatus" id="Loading">载入中...</div>
+<div class="SRStatus" id="Searching">搜索中...</div>
+<div class="SRStatus" id="NoMatches">未找到</div>
+</div>
+</div>
+</div>
+</div>
+
+<div id="nav-path" class="navpath">
+  <ul>
+<li class="navelem"><a href="dir_d422163b96683743ed3963d4aac17747.html">app</a></li><li class="navelem"><a href="dir_effe5c348e70d16252aa6de5fa9356c9.html">test</a></li>  </ul>
+</div>
+</div><!-- top -->
+<div id="doc-content">
+<div class="header">
+  <div class="summary">
+<a href="#func-members">函数</a>  </div>
+  <div class="headertitle"><div class="title">TestWallpaperBackground.cpp 文件参考</div></div>
+</div><!--header-->
+<div class="contents">
+
+<p>壁纸背景组件行为测试：A→B 淡入、淡入中清除、加载失败回退  
+<a href="#details">更多...</a></p>
+<div class="textblock"><code>#include &lt;QColor&gt;</code><br />
+<code>#include &lt;QCoreApplication&gt;</code><br />
+<code>#include &lt;QElapsedTimer&gt;</code><br />
+<code>#include &lt;QEventLoop&gt;</code><br />
+<code>#include &lt;QGuiApplication&gt;</code><br />
+<code>#include &lt;QImage&gt;</code><br />
+<code>#include &lt;QQmlComponent&gt;</code><br />
+<code>#include &lt;QQmlEngine&gt;</code><br />
+<code>#include &lt;QQuickImageProvider&gt;</code><br />
+<code>#include &lt;QQuickItem&gt;</code><br />
+<code>#include &lt;QQuickWindow&gt;</code><br />
+<code>#include &lt;QThread&gt;</code><br />
+<code>#include &lt;QUrl&gt;</code><br />
+<code>#include &lt;catch2/catch_test_macros.hpp&gt;</code><br />
+<code>#include &lt;functional&gt;</code><br />
+<code>#include &lt;memory&gt;</code><br />
+</div><div class="textblock"><div class="dynheader">
+TestWallpaperBackground.cpp 的引用(Include)关系图:</div>
+<div class="dyncontent">
+<div class="center"><img src="TestWallpaperBackground_8cpp__incl.png" border="0" usemap="#aapp_2test_2TestWallpaperBackground_8cpp" loading="lazy" alt=""/></div>
+<map name="aapp_2test_2TestWallpaperBackground_8cpp" id="aapp_2test_2TestWallpaperBackground_8cpp">
+<area shape="rect" title="壁纸背景组件行为测试：A→B 淡入、淡入中清除、加载失败回退" alt="" coords="924,5,1199,31"/>
+<area shape="rect" title=" " alt="" coords="5,79,72,104"/>
+<area shape="poly" title=" " alt="" coords="924,22,757,26,549,35,320,53,86,81,85,76,319,48,549,30,757,21,924,17"/>
+<area shape="rect" title=" " alt="" coords="97,79,231,104"/>
+<area shape="poly" title=" " alt="" coords="924,29,617,49,245,81,245,76,617,43,924,24"/>
+<area shape="rect" title=" " alt="" coords="255,79,377,104"/>
+<area shape="poly" title=" " alt="" coords="924,31,679,51,390,81,390,76,679,46,923,26"/>
+<area shape="rect" title=" " alt="" coords="401,79,501,104"/>
+<area shape="poly" title=" " alt="" coords="931,33,738,53,515,81,514,76,738,48,930,28"/>
+<area shape="rect" title=" " alt="" coords="525,79,651,104"/>
+<area shape="poly" title=" " alt="" coords="985,33,665,81,665,76,984,28"/>
+<area shape="rect" title=" " alt="" coords="675,79,749,104"/>
+<area shape="poly" title=" " alt="" coords="1001,33,763,81,762,76,999,28"/>
+<area shape="rect" title=" " alt="" coords="773,79,907,104"/>
+<area shape="poly" title=" " alt="" coords="1027,33,889,77,888,72,1025,28"/>
+<area shape="rect" title=" " alt="" coords="931,79,1034,104"/>
+<area shape="poly" title=" " alt="" coords="1050,33,1007,71,1004,68,1047,29"/>
+<area shape="rect" title=" " alt="" coords="1058,79,1222,104"/>
+<area shape="poly" title=" " alt="" coords="1076,29,1119,68,1115,71,1072,33"/>
+<area shape="rect" title=" " alt="" coords="1247,79,1345,104"/>
+<area shape="poly" title=" " alt="" coords="1100,28,1246,72,1244,77,1098,33"/>
+<area shape="rect" title=" " alt="" coords="1370,79,1491,104"/>
+<area shape="poly" title=" " alt="" coords="1121,28,1358,73,1357,79,1120,33"/>
+<area shape="rect" title=" " alt="" coords="1516,79,1593,104"/>
+<area shape="poly" title=" " alt="" coords="1166,28,1321,48,1502,76,1502,81,1320,53,1165,33"/>
+<area shape="rect" title=" " alt="" coords="1617,79,1668,104"/>
+<area shape="poly" title=" " alt="" coords="1199,25,1388,42,1495,57,1604,76,1604,82,1494,62,1387,48,1199,30"/>
+<area shape="rect" title=" " alt="" coords="1692,79,1911,104"/>
+<area shape="poly" title=" " alt="" coords="1180,28,1679,76,1678,81,1180,33"/>
+<area shape="rect" title=" " alt="" coords="1935,79,2022,104"/>
+<area shape="poly" title=" " alt="" coords="1199,21,1525,38,1721,54,1922,76,1921,81,1721,59,1524,43,1199,26"/>
+<area shape="rect" title=" " alt="" coords="2047,79,2124,104"/>
+<area shape="poly" title=" " alt="" coords="1199,18,1365,23,1572,33,1801,50,2033,76,2032,81,1800,55,1572,38,1365,28,1199,24"/>
+</map>
+</div>
+</div><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 id="header-func-members" class="groupheader"><a id="func-members" name="func-members"></a>
+函数</h2></td></tr>
+<tr class="memitem:a63863704543dc4710029b313e874d8df" id="r_a63863704543dc4710029b313e874d8df"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a63863704543dc4710029b313e874d8df">TEST_CASE</a> (&quot;WallpaperBackground hands off, clears and falls back&quot;, &quot;[QML][Wallpaper]&quot;)</td></tr>
+</table>
+<a name="details" id="details"></a><h2 id="header-details" class="groupheader">详细描述</h2>
+<div class="textblock"><p>壁纸背景组件行为测试：A→B 淡入、淡入中清除、加载失败回退 </p>
+</div><a name="doc-func-members" id="doc-func-members"></a><h2 id="header-doc-func-members" class="groupheader">函数说明</h2>
+<a id="a63863704543dc4710029b313e874d8df" name="a63863704543dc4710029b313e874d8df"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a63863704543dc4710029b313e874d8df">&#9670;&#160;</a></span>TEST_CASE()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">TEST_CASE </td>
+          <td>(</td>
+          <td class="paramtype">&quot;WallpaperBackground hands</td>          <td class="paramname"><span class="paramname"><em>off</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">clears and falls back&quot;</td>          <td class="paramname"><span class="paramname"><em></em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">&quot;&quot;</td>          <td class="paramname"><span class="paramname"><em></em></span>[QML][Wallpaper]&#160;)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+</div><!-- contents -->
+<!-- start footer part -->
+<hr class="footer"/><address class="footer"><small>
+制作者&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.14.0
+</small></address>
+</div><!-- doc-content -->
+</body>
+</html>

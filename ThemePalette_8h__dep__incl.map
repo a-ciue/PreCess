@@ -1,9 +1,12 @@
 <map id="app/core/ThemePalette.h" name="app/core/ThemePalette.h">
-<area shape="rect" id="Node000001" title="主题应用调色板构造：纯函数，不依赖 QML 与应用实例，便于单测" alt="" coords="203,5,387,31"/>
-<area shape="rect" id="Node000002" href="$AppPalette_8h.html" title="应用级调色板单例：让 ToolTip 等按应用调色板取色的弹窗跟随主题" alt="" coords="5,79,169,104"/>
-<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="250,38,122,81,120,76,248,33"/>
-<area shape="rect" id="Node000003" href="$TestAppPalette_8cpp.html" title="主题应用调色板单元测试：角色随明暗正确解析" alt="" coords="194,79,397,104"/>
-<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="298,44,298,79,293,79,293,44"/>
-<area shape="rect" id="Node000004" href="$TestThemeConsistency_8cpp.html" title="主题色跨文件一致性：ThemePalette（应用调色板）与 DockTheme（停靠配色）" alt="" coords="421,79,676,104"/>
-<area shape="poly" id="edge3_Node000001_Node000004" title=" " alt="" coords="350,32,508,76,507,81,349,37"/>
+<area shape="rect" id="Node000001" title="主题应用调色板构造：把 Theme 已解析的角色颜色表转成 QPalette" alt="" coords="135,5,319,31"/>
+<area shape="rect" id="Node000002" href="$AppPalette_8h.html" title="应用级调色板单例：把 Theme 已解析的角色表应用到 QGuiApplication" alt="" coords="145,79,309,104"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="229,44,229,79,224,79,224,44"/>
+<area shape="rect" id="Node000003" href="$TestAppPalette_8cpp.html" title="主题调色板适配测试：角色表映射、alpha 保留与应用级调色板刷新" alt="" coords="5,152,208,177"/>
+<area shape="poly" id="edge4_Node000001_Node000003" title=" " alt="" coords="187,39,158,57,134,80,124,98,117,118,110,152,105,151,112,116,119,96,130,77,155,53,184,35"/>
+<area shape="rect" id="Node000005" href="$TestThemeQml_8cpp.html" title="Theme.qml 契约：角色键完整、壁纸失败仅运行时降级面色" alt="" coords="333,79,537,104"/>
+<area shape="poly" id="edge5_Node000001_Node000005" title=" " alt="" coords="274,33,402,76,400,81,272,38"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="197,113,128,154,125,149,194,109"/>
+<area shape="rect" id="Node000004" href="$TestThemePipeline_8cpp.html" title="主题配色管道：同一份已解析角色表到达应用调色板与停靠主题" alt="" coords="232,152,461,177"/>
+<area shape="poly" id="edge3_Node000002_Node000004" title=" " alt="" coords="259,109,328,149,326,154,257,113"/>
 </map>

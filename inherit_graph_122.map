@@ -1,3 +1,5 @@
 <map id="类继承关系图" name="类继承关系图">
-<area shape="rect" id="Node000000" href="$structSelection.html" title="存储选择的对象" alt="" coords="5,5,88,31"/>
+<area shape="rect" id="Node000000" title=" " alt="" coords="5,5,169,31"/>
+<area shape="rect" id="Node000001" href="$classWallpaperProvider.html" title="image://wallpaper/ 图像提供者" alt="" coords="217,5,359,31"/>
+<area shape="poly" id="edge66_Node000000_Node000001" title=" " alt="" coords="183,15,217,15,217,21,183,21"/>
 </map>

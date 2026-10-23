@@ -56,5 +56,6 @@ var searchData=
   ['updatingtabs_53',['updatingTabs',['../classdock_1_1ui_1_1PanelGroupItem.html#a4e86ca6c2f5a475b37fe19b31857fa22',1,'dock::ui::PanelGroupItem']]],
   ['usemtl_5fcb_54',['usemtl_cb',['../structtinyobj_1_1callback__t.html#af328b54be3e8cecd0e3d04ba302a0ca1',1,'tinyobj::callback_t']]],
   ['user_5f_55',['user_',['../classsession_1_1Session_1_1ObserverRelay.html#a46899841927eafce300cbceeba250d00',1,'session::Session::ObserverRelay']]],
-  ['uv_56',['UV',['../AttributeCommon_8h.html#a46c8a310cf4c094f8c80e1cb8dc1f911adeaa2adbeb26802ae61609c3f3642d82',1,'AttributeCommon.h']]]
+  ['userwallpaperdir_56',['userWallpaperDir',['../classWallpaperLibrary.html#a799b3ed8ad8fa300e72785b0312a9f2a',1,'WallpaperLibrary']]],
+  ['uv_57',['UV',['../AttributeCommon_8h.html#a46c8a310cf4c094f8c80e1cb8dc1f911adeaa2adbeb26802ae61609c3f3642d82',1,'AttributeCommon.h']]]
 ];

@@ -80,49 +80,95 @@ $(function() {
 </div><!--header-->
 <div class="contents">
 <a href="ThemePalette_8h.html">浏览该文件的文档.</a><div class="fragment"><div class="line"><a id="l00001" name="l00001"></a><span class="lineno">    1</span></div>
-<div class="line"><a id="l00007" name="l00007"></a><span class="lineno">    7</span> </div>
-<div class="line"><a id="l00008" name="l00008"></a><span class="lineno">    8</span><span class="preprocessor">#pragma once</span></div>
-<div class="line"><a id="l00009" name="l00009"></a><span class="lineno">    9</span> </div>
-<div class="line"><a id="l00010" name="l00010"></a><span class="lineno">   10</span><span class="preprocessor">#include &lt;QColor&gt;</span></div>
-<div class="line"><a id="l00011" name="l00011"></a><span class="lineno">   11</span><span class="preprocessor">#include &lt;QPalette&gt;</span></div>
-<div class="line"><a id="l00012" name="l00012"></a><span class="lineno">   12</span> </div>
-<div class="foldopen" id="foldopen00013" data-start="{" data-end="}">
-<div class="line"><a id="l00013" name="l00013"></a><span class="lineno"><a class="line" href="namespaceapp.html">   13</a></span><span class="keyword">namespace </span><a class="code hl_namespace" href="namespaceapp_1_1core.html">app::core</a> {</div>
-<div class="line"><a id="l00014" name="l00014"></a><span class="lineno">   14</span></div>
-<div class="foldopen" id="foldopen00016" data-start="{" data-end="}">
-<div class="line"><a id="l00016" name="l00016"></a><span class="lineno"><a class="line" href="namespaceapp_1_1core.html#a2739a0708d725ea6aa1db7327fc092e7">   16</a></span><span class="keyword">inline</span> QPalette <a class="code hl_function" href="namespaceapp_1_1core.html#a2739a0708d725ea6aa1db7327fc092e7">buildThemePalette</a>(<span class="keywordtype">bool</span> dark)</div>
-<div class="line"><a id="l00017" name="l00017"></a><span class="lineno">   17</span>{</div>
-<div class="line"><a id="l00018" name="l00018"></a><span class="lineno">   18</span>    <span class="keyword">auto</span> themed = [dark](<span class="keyword">const</span> <span class="keywordtype">char</span>* light, <span class="keyword">const</span> <span class="keywordtype">char</span>* dark_hex) {</div>
-<div class="line"><a id="l00019" name="l00019"></a><span class="lineno">   19</span>        <span class="keywordflow">return</span> QColor(QLatin1String(dark ? dark_hex : light));</div>
-<div class="line"><a id="l00020" name="l00020"></a><span class="lineno">   20</span>    };</div>
-<div class="line"><a id="l00021" name="l00021"></a><span class="lineno">   21</span> </div>
-<div class="line"><a id="l00022" name="l00022"></a><span class="lineno">   22</span>    QPalette palette;</div>
-<div class="line"><a id="l00023" name="l00023"></a><span class="lineno">   23</span>    palette.setColor(QPalette::Window, themed(<span class="stringliteral">&quot;#F3F4F6&quot;</span>, <span class="stringliteral">&quot;#1E1E1E&quot;</span>));</div>
-<div class="line"><a id="l00024" name="l00024"></a><span class="lineno">   24</span>    palette.setColor(QPalette::WindowText, themed(<span class="stringliteral">&quot;#2B2F36&quot;</span>, <span class="stringliteral">&quot;#D4D4D4&quot;</span>));</div>
-<div class="line"><a id="l00025" name="l00025"></a><span class="lineno">   25</span>    palette.setColor(QPalette::Base, themed(<span class="stringliteral">&quot;#FFFFFF&quot;</span>, <span class="stringliteral">&quot;#252526&quot;</span>));</div>
-<div class="line"><a id="l00026" name="l00026"></a><span class="lineno">   26</span>    palette.setColor(QPalette::AlternateBase, themed(<span class="stringliteral">&quot;#F7F8FA&quot;</span>, <span class="stringliteral">&quot;#2D2D30&quot;</span>));</div>
-<div class="line"><a id="l00027" name="l00027"></a><span class="lineno">   27</span>    palette.setColor(QPalette::Text, themed(<span class="stringliteral">&quot;#2B2F36&quot;</span>, <span class="stringliteral">&quot;#D4D4D4&quot;</span>));</div>
-<div class="line"><a id="l00028" name="l00028"></a><span class="lineno">   28</span>    palette.setColor(QPalette::Button, themed(<span class="stringliteral">&quot;#F7F8FA&quot;</span>, <span class="stringliteral">&quot;#2D2D30&quot;</span>));</div>
-<div class="line"><a id="l00029" name="l00029"></a><span class="lineno">   29</span>    palette.setColor(QPalette::ButtonText, themed(<span class="stringliteral">&quot;#2B2F36&quot;</span>, <span class="stringliteral">&quot;#D4D4D4&quot;</span>));</div>
-<div class="line"><a id="l00030" name="l00030"></a><span class="lineno">   30</span>    palette.setColor(QPalette::Highlight, themed(<span class="stringliteral">&quot;#1976D2&quot;</span>, <span class="stringliteral">&quot;#4EA1F3&quot;</span>));</div>
-<div class="line"><a id="l00031" name="l00031"></a><span class="lineno">   31</span>    palette.setColor(QPalette::HighlightedText, themed(<span class="stringliteral">&quot;#FFFFFF&quot;</span>, <span class="stringliteral">&quot;#FFFFFF&quot;</span>));</div>
-<div class="line"><a id="l00032" name="l00032"></a><span class="lineno">   32</span>    palette.setColor(QPalette::PlaceholderText, themed(<span class="stringliteral">&quot;#9CA3AF&quot;</span>, <span class="stringliteral">&quot;#6B6F76&quot;</span>));</div>
-<div class="line"><a id="l00033" name="l00033"></a><span class="lineno">   33</span>    palette.setColor(QPalette::Mid, themed(<span class="stringliteral">&quot;#C3C8CF&quot;</span>, <span class="stringliteral">&quot;#4A4A4F&quot;</span>));</div>
-<div class="line"><a id="l00034" name="l00034"></a><span class="lineno">   34</span>    palette.setColor(QPalette::Midlight, themed(<span class="stringliteral">&quot;#D9DDE3&quot;</span>, <span class="stringliteral">&quot;#3E3E42&quot;</span>));</div>
-<div class="line"><a id="l00035" name="l00035"></a><span class="lineno">   35</span>    palette.setColor(QPalette::Light, themed(<span class="stringliteral">&quot;#FFFFFF&quot;</span>, <span class="stringliteral">&quot;#252526&quot;</span>));</div>
-<div class="line"><a id="l00036" name="l00036"></a><span class="lineno">   36</span>    palette.setColor(QPalette::Dark, themed(<span class="stringliteral">&quot;#C3C8CF&quot;</span>, <span class="stringliteral">&quot;#4A4A4F&quot;</span>));</div>
-<div class="line"><a id="l00037" name="l00037"></a><span class="lineno">   37</span>    palette.setColor(QPalette::Shadow, themed(<span class="stringliteral">&quot;#B7BDC7&quot;</span>, <span class="stringliteral">&quot;#5A5A5A&quot;</span>));</div>
-<div class="line"><a id="l00038" name="l00038"></a><span class="lineno">   38</span>    palette.setColor(QPalette::Link, themed(<span class="stringliteral">&quot;#1976D2&quot;</span>, <span class="stringliteral">&quot;#4EA1F3&quot;</span>));</div>
-<div class="line"><a id="l00039" name="l00039"></a><span class="lineno">   39</span>    palette.setColor(QPalette::ToolTipBase, themed(<span class="stringliteral">&quot;#FFFFFF&quot;</span>, <span class="stringliteral">&quot;#252526&quot;</span>));</div>
-<div class="line"><a id="l00040" name="l00040"></a><span class="lineno">   40</span>    palette.setColor(QPalette::ToolTipText, themed(<span class="stringliteral">&quot;#2B2F36&quot;</span>, <span class="stringliteral">&quot;#D4D4D4&quot;</span>));</div>
-<div class="line"><a id="l00041" name="l00041"></a><span class="lineno">   41</span>    <span class="keywordflow">return</span> palette;</div>
-<div class="line"><a id="l00042" name="l00042"></a><span class="lineno">   42</span>}</div>
+<div class="line"><a id="l00008" name="l00008"></a><span class="lineno">    8</span> </div>
+<div class="line"><a id="l00009" name="l00009"></a><span class="lineno">    9</span><span class="preprocessor">#pragma once</span></div>
+<div class="line"><a id="l00010" name="l00010"></a><span class="lineno">   10</span> </div>
+<div class="line"><a id="l00011" name="l00011"></a><span class="lineno">   11</span><span class="preprocessor">#include &lt;QColor&gt;</span></div>
+<div class="line"><a id="l00012" name="l00012"></a><span class="lineno">   12</span><span class="preprocessor">#include &lt;QPalette&gt;</span></div>
+<div class="line"><a id="l00013" name="l00013"></a><span class="lineno">   13</span><span class="preprocessor">#include &lt;QStringList&gt;</span></div>
+<div class="line"><a id="l00014" name="l00014"></a><span class="lineno">   14</span><span class="preprocessor">#include &lt;QVariant&gt;</span></div>
+<div class="line"><a id="l00015" name="l00015"></a><span class="lineno">   15</span><span class="preprocessor">#include &lt;QVariantMap&gt;</span></div>
+<div class="line"><a id="l00016" name="l00016"></a><span class="lineno">   16</span> </div>
+<div class="foldopen" id="foldopen00017" data-start="{" data-end="}">
+<div class="line"><a id="l00017" name="l00017"></a><span class="lineno"><a class="line" href="namespaceapp.html">   17</a></span><span class="keyword">namespace </span><a class="code hl_namespace" href="namespaceapp_1_1core.html">app::core</a> {</div>
+<div class="line"><a id="l00018" name="l00018"></a><span class="lineno">   18</span></div>
+<div class="foldopen" id="foldopen00020" data-start="{" data-end="};">
+<div class="line"><a id="l00020" name="l00020"></a><span class="lineno"><a class="line" href="structapp_1_1core_1_1ThemeRoleBinding.html">   20</a></span><span class="keyword">struct </span><a class="code hl_struct" href="structapp_1_1core_1_1ThemeRoleBinding.html">ThemeRoleBinding</a> {</div>
+<div class="line"><a id="l00021" name="l00021"></a><span class="lineno"><a class="line" href="structapp_1_1core_1_1ThemeRoleBinding.html#a554838f640d3c9b0bdabd45f8bc52732">   21</a></span>    QPalette::ColorRole <a class="code hl_variable" href="structapp_1_1core_1_1ThemeRoleBinding.html#a554838f640d3c9b0bdabd45f8bc52732">role</a>;</div>
+<div class="line"><a id="l00022" name="l00022"></a><span class="lineno"><a class="line" href="structapp_1_1core_1_1ThemeRoleBinding.html#a3cf73e9f969c637fb14ccd9be897f975">   22</a></span>    <span class="keyword">const</span> <span class="keywordtype">char</span>* <a class="code hl_variable" href="structapp_1_1core_1_1ThemeRoleBinding.html#a3cf73e9f969c637fb14ccd9be897f975">key</a>;</div>
+<div class="line"><a id="l00023" name="l00023"></a><span class="lineno">   23</span>};</div>
 </div>
-<div class="line"><a id="l00043" name="l00043"></a><span class="lineno">   43</span> </div>
-<div class="line"><a id="l00044" name="l00044"></a><span class="lineno">   44</span>}</div>
+<div class="line"><a id="l00024" name="l00024"></a><span class="lineno">   24</span> </div>
+<div class="foldopen" id="foldopen00025" data-start="{" data-end="};">
+<div class="line"><a id="l00025" name="l00025"></a><span class="lineno"><a class="line" href="namespaceapp_1_1core.html#a99ba3ffcc74d5c09d9650067dafd13dd">   25</a></span><span class="keyword">inline</span> <span class="keyword">constexpr</span> <a class="code hl_struct" href="structapp_1_1core_1_1ThemeRoleBinding.html">ThemeRoleBinding</a> <a class="code hl_variable" href="namespaceapp_1_1core.html#a99ba3ffcc74d5c09d9650067dafd13dd">kThemeRoles</a>[] {</div>
+<div class="line"><a id="l00026" name="l00026"></a><span class="lineno">   26</span>    { QPalette::Window, <span class="stringliteral">&quot;window&quot;</span> },</div>
+<div class="line"><a id="l00027" name="l00027"></a><span class="lineno">   27</span>    { QPalette::WindowText, <span class="stringliteral">&quot;windowText&quot;</span> },</div>
+<div class="line"><a id="l00028" name="l00028"></a><span class="lineno">   28</span>    { QPalette::Base, <span class="stringliteral">&quot;base&quot;</span> },</div>
+<div class="line"><a id="l00029" name="l00029"></a><span class="lineno">   29</span>    { QPalette::AlternateBase, <span class="stringliteral">&quot;alternateBase&quot;</span> },</div>
+<div class="line"><a id="l00030" name="l00030"></a><span class="lineno">   30</span>    { QPalette::Text, <span class="stringliteral">&quot;text&quot;</span> },</div>
+<div class="line"><a id="l00031" name="l00031"></a><span class="lineno">   31</span>    { QPalette::Button, <span class="stringliteral">&quot;button&quot;</span> },</div>
+<div class="line"><a id="l00032" name="l00032"></a><span class="lineno">   32</span>    { QPalette::ButtonText, <span class="stringliteral">&quot;buttonText&quot;</span> },</div>
+<div class="line"><a id="l00033" name="l00033"></a><span class="lineno">   33</span>    { QPalette::Highlight, <span class="stringliteral">&quot;highlight&quot;</span> },</div>
+<div class="line"><a id="l00034" name="l00034"></a><span class="lineno">   34</span>    { QPalette::HighlightedText, <span class="stringliteral">&quot;highlightedText&quot;</span> },</div>
+<div class="line"><a id="l00035" name="l00035"></a><span class="lineno">   35</span>    { QPalette::PlaceholderText, <span class="stringliteral">&quot;placeholderText&quot;</span> },</div>
+<div class="line"><a id="l00036" name="l00036"></a><span class="lineno">   36</span>    { QPalette::Mid, <span class="stringliteral">&quot;mid&quot;</span> },</div>
+<div class="line"><a id="l00037" name="l00037"></a><span class="lineno">   37</span>    { QPalette::Midlight, <span class="stringliteral">&quot;midlight&quot;</span> },</div>
+<div class="line"><a id="l00038" name="l00038"></a><span class="lineno">   38</span>    { QPalette::Light, <span class="stringliteral">&quot;light&quot;</span> },</div>
+<div class="line"><a id="l00039" name="l00039"></a><span class="lineno">   39</span>    { QPalette::Dark, <span class="stringliteral">&quot;dark&quot;</span> },</div>
+<div class="line"><a id="l00040" name="l00040"></a><span class="lineno">   40</span>    { QPalette::Shadow, <span class="stringliteral">&quot;shadow&quot;</span> },</div>
+<div class="line"><a id="l00041" name="l00041"></a><span class="lineno">   41</span>    { QPalette::Link, <span class="stringliteral">&quot;link&quot;</span> },</div>
+<div class="line"><a id="l00042" name="l00042"></a><span class="lineno">   42</span>    { QPalette::ToolTipBase, <span class="stringliteral">&quot;toolTipBase&quot;</span> },</div>
+<div class="line"><a id="l00043" name="l00043"></a><span class="lineno">   43</span>    { QPalette::ToolTipText, <span class="stringliteral">&quot;toolTipText&quot;</span> },</div>
+<div class="line"><a id="l00044" name="l00044"></a><span class="lineno">   44</span>};</div>
 </div>
-<div class="ttc" id="anamespaceapp_1_1core_html"><div class="ttname"><a href="namespaceapp_1_1core.html">app::core</a></div><div class="ttdef"><b>定义</b> ThemePalette.h:13</div></div>
-<div class="ttc" id="anamespaceapp_1_1core_html_a2739a0708d725ea6aa1db7327fc092e7"><div class="ttname"><a href="namespaceapp_1_1core.html#a2739a0708d725ea6aa1db7327fc092e7">app::core::buildThemePalette</a></div><div class="ttdeci">QPalette buildThemePalette(bool dark)</div><div class="ttdoc">组装指定明暗的应用调色板</div><div class="ttdef"><b>定义</b> ThemePalette.h:16</div></div>
+<div class="line"><a id="l00045" name="l00045"></a><span class="lineno">   45</span></div>
+<div class="foldopen" id="foldopen00053" data-start="{" data-end="}">
+<div class="line"><a id="l00053" name="l00053"></a><span class="lineno"><a class="line" href="namespaceapp_1_1core.html#a7a3a3c1f076b7845e8b25a4777b35153">   53</a></span><span class="keyword">inline</span> <span class="keywordtype">void</span> <a class="code hl_function" href="namespaceapp_1_1core.html#a7a3a3c1f076b7845e8b25a4777b35153">setThemeColor</a>(QPalette&amp; palette, QPalette::ColorRole role,</div>
+<div class="line"><a id="l00054" name="l00054"></a><span class="lineno">   54</span>    <span class="keyword">const</span> QVariantMap&amp; colors, <span class="keyword">const</span> <span class="keywordtype">char</span>* key)</div>
+<div class="line"><a id="l00055" name="l00055"></a><span class="lineno">   55</span>{</div>
+<div class="line"><a id="l00056" name="l00056"></a><span class="lineno">   56</span>    <span class="keyword">const</span> QVariant value = colors.value(QLatin1String(key));</div>
+<div class="line"><a id="l00057" name="l00057"></a><span class="lineno">   57</span>    <span class="keywordflow">if</span> (!value.isValid())</div>
+<div class="line"><a id="l00058" name="l00058"></a><span class="lineno">   58</span>        <span class="keywordflow">return</span>;</div>
+<div class="line"><a id="l00059" name="l00059"></a><span class="lineno">   59</span> </div>
+<div class="line"><a id="l00060" name="l00060"></a><span class="lineno">   60</span>    <span class="keyword">const</span> QColor color = value.canConvert&lt;QColor&gt;() ? value.value&lt;QColor&gt;()</div>
+<div class="line"><a id="l00061" name="l00061"></a><span class="lineno">   61</span>                                                    : QColor(value.toString());</div>
+<div class="line"><a id="l00062" name="l00062"></a><span class="lineno">   62</span>    <span class="keywordflow">if</span> (color.isValid())</div>
+<div class="line"><a id="l00063" name="l00063"></a><span class="lineno">   63</span>        palette.setColor(role, color);</div>
+<div class="line"><a id="l00064" name="l00064"></a><span class="lineno">   64</span>}</div>
+</div>
+<div class="line"><a id="l00065" name="l00065"></a><span class="lineno">   65</span></div>
+<div class="foldopen" id="foldopen00067" data-start="{" data-end="}">
+<div class="line"><a id="l00067" name="l00067"></a><span class="lineno"><a class="line" href="namespaceapp_1_1core.html#a054c2120002d28b7b3e8e0223b199eaa">   67</a></span><span class="keyword">inline</span> QStringList <a class="code hl_function" href="namespaceapp_1_1core.html#a054c2120002d28b7b3e8e0223b199eaa">missingThemeRoles</a>(<span class="keyword">const</span> QVariantMap&amp; colors)</div>
+<div class="line"><a id="l00068" name="l00068"></a><span class="lineno">   68</span>{</div>
+<div class="line"><a id="l00069" name="l00069"></a><span class="lineno">   69</span>    QStringList missing;</div>
+<div class="line"><a id="l00070" name="l00070"></a><span class="lineno">   70</span>    <span class="keywordflow">for</span> (<span class="keyword">const</span> <a class="code hl_struct" href="structapp_1_1core_1_1ThemeRoleBinding.html">ThemeRoleBinding</a>&amp; binding : <a class="code hl_variable" href="namespaceapp_1_1core.html#a99ba3ffcc74d5c09d9650067dafd13dd">kThemeRoles</a>) {</div>
+<div class="line"><a id="l00071" name="l00071"></a><span class="lineno">   71</span>        <span class="keywordflow">if</span> (!colors.contains(QLatin1String(binding.key)))</div>
+<div class="line"><a id="l00072" name="l00072"></a><span class="lineno">   72</span>            missing.append(QLatin1String(binding.key));</div>
+<div class="line"><a id="l00073" name="l00073"></a><span class="lineno">   73</span>    }</div>
+<div class="line"><a id="l00074" name="l00074"></a><span class="lineno">   74</span>    <span class="keywordflow">return</span> missing;</div>
+<div class="line"><a id="l00075" name="l00075"></a><span class="lineno">   75</span>}</div>
+</div>
+<div class="line"><a id="l00076" name="l00076"></a><span class="lineno">   76</span></div>
+<div class="foldopen" id="foldopen00078" data-start="{" data-end="}">
+<div class="line"><a id="l00078" name="l00078"></a><span class="lineno"><a class="line" href="namespaceapp_1_1core.html#a1b700a11b9482c058f6ff03a57291e9f">   78</a></span><span class="keyword">inline</span> QPalette <a class="code hl_function" href="namespaceapp_1_1core.html#a1b700a11b9482c058f6ff03a57291e9f">buildThemePalette</a>(<span class="keyword">const</span> QVariantMap&amp; colors)</div>
+<div class="line"><a id="l00079" name="l00079"></a><span class="lineno">   79</span>{</div>
+<div class="line"><a id="l00080" name="l00080"></a><span class="lineno">   80</span>    QPalette palette;</div>
+<div class="line"><a id="l00081" name="l00081"></a><span class="lineno">   81</span>    <span class="keywordflow">for</span> (<span class="keyword">const</span> <a class="code hl_struct" href="structapp_1_1core_1_1ThemeRoleBinding.html">ThemeRoleBinding</a>&amp; binding : <a class="code hl_variable" href="namespaceapp_1_1core.html#a99ba3ffcc74d5c09d9650067dafd13dd">kThemeRoles</a>)</div>
+<div class="line"><a id="l00082" name="l00082"></a><span class="lineno">   82</span>        <a class="code hl_function" href="namespaceapp_1_1core.html#a7a3a3c1f076b7845e8b25a4777b35153">setThemeColor</a>(palette, binding.role, colors, binding.key);</div>
+<div class="line"><a id="l00083" name="l00083"></a><span class="lineno">   83</span>    <span class="keywordflow">return</span> palette;</div>
+<div class="line"><a id="l00084" name="l00084"></a><span class="lineno">   84</span>}</div>
+</div>
+<div class="line"><a id="l00085" name="l00085"></a><span class="lineno">   85</span> </div>
+<div class="line"><a id="l00086" name="l00086"></a><span class="lineno">   86</span>}</div>
+</div>
+<div class="ttc" id="anamespaceapp_1_1core_html"><div class="ttname"><a href="namespaceapp_1_1core.html">app::core</a></div><div class="ttdef"><b>定义</b> ThemePalette.h:17</div></div>
+<div class="ttc" id="anamespaceapp_1_1core_html_a054c2120002d28b7b3e8e0223b199eaa"><div class="ttname"><a href="namespaceapp_1_1core.html#a054c2120002d28b7b3e8e0223b199eaa">app::core::missingThemeRoles</a></div><div class="ttdeci">QStringList missingThemeRoles(const QVariantMap &amp;colors)</div><div class="ttdoc">返回 roles 中缺失于 colors 的角色键，供契约测试与诊断使用</div><div class="ttdef"><b>定义</b> ThemePalette.h:67</div></div>
+<div class="ttc" id="anamespaceapp_1_1core_html_a1b700a11b9482c058f6ff03a57291e9f"><div class="ttname"><a href="namespaceapp_1_1core.html#a1b700a11b9482c058f6ff03a57291e9f">app::core::buildThemePalette</a></div><div class="ttdeci">QPalette buildThemePalette(const QVariantMap &amp;colors)</div><div class="ttdoc">将 Theme.controlPalette 的已解析角色颜色组装为应用调色板</div><div class="ttdef"><b>定义</b> ThemePalette.h:78</div></div>
+<div class="ttc" id="anamespaceapp_1_1core_html_a7a3a3c1f076b7845e8b25a4777b35153"><div class="ttname"><a href="namespaceapp_1_1core.html#a7a3a3c1f076b7845e8b25a4777b35153">app::core::setThemeColor</a></div><div class="ttdeci">void setThemeColor(QPalette &amp;palette, QPalette::ColorRole role, const QVariantMap &amp;colors, const char *key)</div><div class="ttdoc">读取角色颜色；缺失或无效时跳过，保留 QPalette 原值</div><div class="ttdef"><b>定义</b> ThemePalette.h:53</div></div>
+<div class="ttc" id="anamespaceapp_1_1core_html_a99ba3ffcc74d5c09d9650067dafd13dd"><div class="ttname"><a href="namespaceapp_1_1core.html#a99ba3ffcc74d5c09d9650067dafd13dd">app::core::kThemeRoles</a></div><div class="ttdeci">constexpr ThemeRoleBinding kThemeRoles[]</div><div class="ttdef"><b>定义</b> ThemePalette.h:25</div></div>
+<div class="ttc" id="astructapp_1_1core_1_1ThemeRoleBinding_html"><div class="ttname"><a href="structapp_1_1core_1_1ThemeRoleBinding.html">app::core::ThemeRoleBinding</a></div><div class="ttdoc">主题角色与 QML 角色键的对应关系；AppPalette 与 Theme.qml 的契约</div><div class="ttdef"><b>定义</b> ThemePalette.h:20</div></div>
+<div class="ttc" id="astructapp_1_1core_1_1ThemeRoleBinding_html_a3cf73e9f969c637fb14ccd9be897f975"><div class="ttname"><a href="structapp_1_1core_1_1ThemeRoleBinding.html#a3cf73e9f969c637fb14ccd9be897f975">app::core::ThemeRoleBinding::key</a></div><div class="ttdeci">const char * key</div><div class="ttdef"><b>定义</b> ThemePalette.h:22</div></div>
+<div class="ttc" id="astructapp_1_1core_1_1ThemeRoleBinding_html_a554838f640d3c9b0bdabd45f8bc52732"><div class="ttname"><a href="structapp_1_1core_1_1ThemeRoleBinding.html#a554838f640d3c9b0bdabd45f8bc52732">app::core::ThemeRoleBinding::role</a></div><div class="ttdeci">QPalette::ColorRole role</div><div class="ttdef"><b>定义</b> ThemePalette.h:21</div></div>
 </div><!-- fragment --></div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>

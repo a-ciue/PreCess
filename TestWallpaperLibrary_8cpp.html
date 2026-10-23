@@ -1,0 +1,515 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="zh">
+<head>
+<meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=11"/>
+<meta name="generator" content="Doxygen 1.14.0"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>PreCess: app/test/TestWallpaperLibrary.cpp 文件参考</title>
+<link href="tabs.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="jquery.js"></script>
+<script type="text/javascript" src="dynsections.js"></script>
+<script type="text/javascript" src="clipboard.js"></script>
+<script type="text/javascript" src="cookie.js"></script>
+<link href="search/search.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="search/searchdata.js"></script>
+<script type="text/javascript" src="search/search.js"></script>
+<link href="doxygen.css" rel="stylesheet" type="text/css" />
+</head>
+<body>
+<div id="top"><!-- do not remove this div, it is closed by doxygen! -->
+<div id="titlearea">
+<table cellspacing="0" cellpadding="0">
+ <tbody>
+ <tr id="projectrow">
+  <td id="projectlogo"><img alt="Logo" src="ZenithGrid.ico"/></td>
+  <td id="projectalign">
+   <div id="projectname">PreCess
+   </div>
+  </td>
+ </tr>
+ </tbody>
+</table>
+</div>
+<!-- end header part -->
+<!-- 制作者 Doxygen 1.14.0 -->
+<script type="text/javascript">
+var searchBox = new SearchBox("searchBox", "search/",'.html');
+</script>
+<script type="text/javascript">
+$(function() { codefold.init(); });
+</script>
+<script type="text/javascript" src="menudata.js"></script>
+<script type="text/javascript" src="menu.js"></script>
+<script type="text/javascript">
+$(function() {
+  initMenu('',true,false,'search.php','搜索',false);
+  $(function() { init_search(); });
+});
+</script>
+<div id="main-nav"></div>
+<!-- window showing the filter options -->
+<div id="MSearchSelectWindow"
+     onmouseover="return searchBox.OnSearchSelectShow()"
+     onmouseout="return searchBox.OnSearchSelectHide()"
+     onkeydown="return searchBox.OnSearchSelectKey(event)">
+</div>
+
+<!-- iframe showing the search results (closed by default) -->
+<div id="MSearchResultsWindow">
+<div id="MSearchResults">
+<div class="SRPage">
+<div id="SRIndex">
+<div id="SRResults"></div>
+<div class="SRStatus" id="Loading">载入中...</div>
+<div class="SRStatus" id="Searching">搜索中...</div>
+<div class="SRStatus" id="NoMatches">未找到</div>
+</div>
+</div>
+</div>
+</div>
+
+<div id="nav-path" class="navpath">
+  <ul>
+<li class="navelem"><a href="dir_d422163b96683743ed3963d4aac17747.html">app</a></li><li class="navelem"><a href="dir_effe5c348e70d16252aa6de5fa9356c9.html">test</a></li>  </ul>
+</div>
+</div><!-- top -->
+<div id="doc-content">
+<div class="header">
+  <div class="summary">
+<a href="#func-members">函数</a>  </div>
+  <div class="headertitle"><div class="title">TestWallpaperLibrary.cpp 文件参考</div></div>
+</div><!--header-->
+<div class="contents">
+
+<p><a class="el" href="classWallpaperLibrary.html" title="壁纸库 QML 单例：导入/移除/启动校验用户壁纸">WallpaperLibrary</a> 单元测试：导入校验、单张替换、移除与启动校验  
+<a href="#details">更多...</a></p>
+<div class="textblock"><code>#include &quot;<a class="el" href="WallpaperLibrary_8h_source.html">WallpaperLibrary.h</a>&quot;</code><br />
+<code>#include &lt;QColor&gt;</code><br />
+<code>#include &lt;QCoreApplication&gt;</code><br />
+<code>#include &lt;QDir&gt;</code><br />
+<code>#include &lt;QElapsedTimer&gt;</code><br />
+<code>#include &lt;QEventLoop&gt;</code><br />
+<code>#include &lt;QFile&gt;</code><br />
+<code>#include &lt;QFileInfo&gt;</code><br />
+<code>#include &lt;QImage&gt;</code><br />
+<code>#include &lt;QSize&gt;</code><br />
+<code>#include &lt;QStandardPaths&gt;</code><br />
+<code>#include &lt;QString&gt;</code><br />
+<code>#include &lt;QUrl&gt;</code><br />
+<code>#include &lt;catch2/catch_test_macros.hpp&gt;</code><br />
+</div><div class="textblock"><div class="dynheader">
+TestWallpaperLibrary.cpp 的引用(Include)关系图:</div>
+<div class="dyncontent">
+<div class="center"><img src="TestWallpaperLibrary_8cpp__incl.png" border="0" usemap="#aapp_2test_2TestWallpaperLibrary_8cpp" loading="lazy" alt=""/></div>
+<map name="aapp_2test_2TestWallpaperLibrary_8cpp" id="aapp_2test_2TestWallpaperLibrary_8cpp">
+<area shape="rect" title="WallpaperLibrary 单元测试：导入校验、单张替换、移除与启动校验" alt="" coords="741,5,981,31"/>
+<area shape="rect" href="WallpaperLibrary_8h.html" title="自定义壁纸库：托管用户导入的壁纸并把文件名解析为图像" alt="" coords="375,79,517,104"/>
+<area shape="poly" title=" " alt="" coords="794,33,527,79,526,74,794,28"/>
+<area shape="rect" title=" " alt="" coords="5,152,79,177"/>
+<area shape="poly" title=" " alt="" coords="740,25,522,42,397,58,275,81,168,114,80,149,78,144,166,109,273,76,397,53,521,36,740,20"/>
+<area shape="rect" title=" " alt="" coords="103,152,162,177"/>
+<area shape="poly" title=" " alt="" coords="741,28,561,46,461,61,363,81,257,114,171,149,169,144,256,109,361,76,460,56,560,41,740,23"/>
+<area shape="rect" title=" " alt="" coords="767,152,837,177"/>
+<area shape="poly" title=" " alt="" coords="763,33,674,52,639,65,617,80,613,91,617,102,634,112,669,124,754,149,753,154,667,129,632,117,613,106,608,91,613,77,636,60,673,47,762,28"/>
+<area shape="rect" title=" " alt="" coords="862,152,913,177"/>
+<area shape="poly" title=" " alt="" coords="741,30,688,39,645,54,632,64,625,74,625,87,633,102,655,124,678,137,700,144,725,145,781,144,813,144,849,150,848,155,813,150,781,149,725,151,700,149,675,142,652,129,629,106,620,88,620,73,628,60,643,49,686,34,740,24"/>
+<area shape="rect" title=" " alt="" coords="643,79,710,104"/>
+<area shape="poly" title=" " alt="" coords="832,33,721,76,719,71,830,28"/>
+<area shape="rect" title=" " alt="" coords="735,79,869,104"/>
+<area shape="poly" title=" " alt="" coords="853,33,822,70,818,67,849,29"/>
+<area shape="rect" title=" " alt="" coords="894,79,945,104"/>
+<area shape="poly" title=" " alt="" coords="872,29,903,67,899,70,868,33"/>
+<area shape="rect" title=" " alt="" coords="969,79,1091,104"/>
+<area shape="poly" title=" " alt="" coords="889,28,991,71,989,76,887,33"/>
+<area shape="rect" title=" " alt="" coords="1115,79,1215,104"/>
+<area shape="poly" title=" " alt="" coords="910,28,1103,73,1102,78,909,33"/>
+<area shape="rect" title=" " alt="" coords="1239,79,1293,104"/>
+<area shape="poly" title=" " alt="" coords="951,28,1077,47,1226,76,1225,81,1076,52,950,33"/>
+<area shape="rect" title=" " alt="" coords="1318,79,1398,104"/>
+<area shape="poly" title=" " alt="" coords="964,28,1121,48,1305,76,1304,81,1120,53,964,33"/>
+<area shape="rect" title=" " alt="" coords="1422,79,1547,104"/>
+<area shape="poly" title=" " alt="" coords="980,28,1409,76,1408,81,979,33"/>
+<area shape="rect" title=" " alt="" coords="1571,79,1790,104"/>
+<area shape="poly" title=" " alt="" coords="981,27,1557,76,1557,81,981,32"/>
+<area shape="poly" title=" " alt="" coords="375,106,93,155,92,149,374,101"/>
+<area shape="rect" title=" " alt="" coords="186,152,261,177"/>
+<area shape="poly" title=" " alt="" coords="411,107,273,150,271,145,409,101"/>
+<area shape="rect" title=" " alt="" coords="285,152,449,177"/>
+<area shape="poly" title=" " alt="" coords="435,106,392,145,388,141,432,102"/>
+<area shape="poly" title=" " alt="" coords="390,107,176,154,175,149,389,101"/>
+<area shape="poly" title=" " alt="" coords="510,101,754,149,753,155,509,107"/>
+<area shape="rect" title=" " alt="" coords="473,152,579,177"/>
+<area shape="poly" title=" " alt="" coords="461,102,505,141,501,145,457,106"/>
+<area shape="poly" title=" " alt="" coords="518,97,667,116,849,149,848,155,666,122,517,103"/>
+<area shape="rect" title=" " alt="" coords="603,152,742,177"/>
+<area shape="poly" title=" " alt="" coords="483,101,624,145,622,150,482,107"/>
+</map>
+</div>
+</div><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 id="header-func-members" class="groupheader"><a id="func-members" name="func-members"></a>
+函数</h2></td></tr>
+<tr class="memitem:a765ee27afe5001700ff58f394d9dd804" id="r_a765ee27afe5001700ff58f394d9dd804"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a765ee27afe5001700ff58f394d9dd804">TEST_CASE</a> (&quot;WallpaperLibrary: reject invalid sources&quot;, &quot;[Wallpaper]&quot;)</td></tr>
+<tr class="memitem:a5bf67191746133d562ab34e857578bd5" id="r_a5bf67191746133d562ab34e857578bd5"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a5bf67191746133d562ab34e857578bd5">TEST_CASE</a> (&quot;WallpaperLibrary: accepts any resolution and file size&quot;, &quot;[Wallpaper]&quot;)</td></tr>
+<tr class="memitem:ae699f22ce57b01152e7a09c82b5ec84a" id="r_ae699f22ce57b01152e7a09c82b5ec84a"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ae699f22ce57b01152e7a09c82b5ec84a">TEST_CASE</a> (&quot;WallpaperLibrary: async import completes and reports result&quot;, &quot;[Wallpaper]&quot;)</td></tr>
+<tr class="memitem:a2e729218cc133f14ebdd347172ec78a8" id="r_a2e729218cc133f14ebdd347172ec78a8"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a2e729218cc133f14ebdd347172ec78a8">TEST_CASE</a> (&quot;WallpaperLibrary: async import reports invalid source&quot;, &quot;[Wallpaper]&quot;)</td></tr>
+<tr class="memitem:a14abee6534ec9aa44e1d878aebcdba71" id="r_a14abee6534ec9aa44e1d878aebcdba71"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a14abee6534ec9aa44e1d878aebcdba71">TEST_CASE</a> (&quot;WallpaperLibrary: async import defers stale cleanup&quot;, &quot;[Wallpaper]&quot;)</td></tr>
+<tr class="memitem:add4f838d2d0321c0008b86778a92591e" id="r_add4f838d2d0321c0008b86778a92591e"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#add4f838d2d0321c0008b86778a92591e">TEST_CASE</a> (&quot;WallpaperLibrary: reconcile skips while import is running&quot;, &quot;[Wallpaper]&quot;)</td></tr>
+<tr class="memitem:a847f238a0f0c2cd1ca8bb107b3087bae" id="r_a847f238a0f0c2cd1ca8bb107b3087bae"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a847f238a0f0c2cd1ca8bb107b3087bae">TEST_CASE</a> (&quot;WallpaperLibrary: import copies and single-slot replaces&quot;, &quot;[Wallpaper]&quot;)</td></tr>
+<tr class="memitem:a9b40d1f62f4e3c8ad45a799ca908976c" id="r_a9b40d1f62f4e3c8ad45a799ca908976c"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a9b40d1f62f4e3c8ad45a799ca908976c">TEST_CASE</a> (&quot;WallpaperLibrary: destruction before completion keeps previous file&quot;, &quot;[Wallpaper]&quot;)</td></tr>
+<tr class="memitem:abafb074b6017efa813bfaa79fc235799" id="r_abafb074b6017efa813bfaa79fc235799"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#abafb074b6017efa813bfaa79fc235799">TEST_CASE</a> (&quot;WallpaperLibrary: reconcile follows the saved choice&quot;, &quot;[Wallpaper]&quot;)</td></tr>
+<tr class="memitem:a59d730bbdcf16645cd98d953ca4bc0a1" id="r_a59d730bbdcf16645cd98d953ca4bc0a1"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a59d730bbdcf16645cd98d953ca4bc0a1">TEST_CASE</a> (&quot;WallpaperProvider: adaptive scale and invalid id&quot;, &quot;[Wallpaper]&quot;)</td></tr>
+<tr class="memitem:a34a0eef72de87890020c67574f77e72d" id="r_a34a0eef72de87890020c67574f77e72d"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a34a0eef72de87890020c67574f77e72d">TEST_CASE</a> (&quot;WallpaperProvider: headless fallback bounds targetless decode&quot;, &quot;[Wallpaper]&quot;)</td></tr>
+<tr class="memitem:a06c548f67f2b0267ba42ba1f18f8fc80" id="r_a06c548f67f2b0267ba42ba1f18f8fc80"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a06c548f67f2b0267ba42ba1f18f8fc80">TEST_CASE</a> (&quot;WallpaperProvider: never upscales small images&quot;, &quot;[Wallpaper]&quot;)</td></tr>
+<tr class="memitem:ae08ce24883dde02ce342586fa6d88ac8" id="r_ae08ce24883dde02ce342586fa6d88ac8"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ae08ce24883dde02ce342586fa6d88ac8">TEST_CASE</a> (&quot;WallpaperProvider: thin images stay bounded&quot;, &quot;[Wallpaper]&quot;)</td></tr>
+<tr class="memitem:abfefcce78bb01035bbeca0ac250763cf" id="r_abfefcce78bb01035bbeca0ac250763cf"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#abfefcce78bb01035bbeca0ac250763cf">TEST_CASE</a> (&quot;WallpaperProvider: scales formats without scaled decoding&quot;, &quot;[Wallpaper]&quot;)</td></tr>
+<tr class="memitem:a71bc98208f5470260d966111408408b8" id="r_a71bc98208f5470260d966111408408b8"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a71bc98208f5470260d966111408408b8">TEST_CASE</a> (&quot;WallpaperProvider: caps output pixels&quot;, &quot;[Wallpaper]&quot;)</td></tr>
+<tr class="memitem:a947c7f303c0ef5cddfbe1eaa6826cefb" id="r_a947c7f303c0ef5cddfbe1eaa6826cefb"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a947c7f303c0ef5cddfbe1eaa6826cefb">TEST_CASE</a> (&quot;WallpaperProvider: applies EXIF orientation&quot;, &quot;[Wallpaper]&quot;)</td></tr>
+</table>
+<a name="details" id="details"></a><h2 id="header-details" class="groupheader">详细描述</h2>
+<div class="textblock"><p><a class="el" href="classWallpaperLibrary.html" title="壁纸库 QML 单例：导入/移除/启动校验用户壁纸">WallpaperLibrary</a> 单元测试：导入校验、单张替换、移除与启动校验 </p>
+</div><a name="doc-func-members" id="doc-func-members"></a><h2 id="header-doc-func-members" class="groupheader">函数说明</h2>
+<a id="a5bf67191746133d562ab34e857578bd5" name="a5bf67191746133d562ab34e857578bd5"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a5bf67191746133d562ab34e857578bd5">&#9670;&#160;</a></span>TEST_CASE() <span class="overload">[1/16]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">TEST_CASE </td>
+          <td>(</td>
+          <td class="paramtype">&quot;WallpaperLibrary: accepts any resolution and file size&quot;</td>          <td class="paramname"><span class="paramname"><em></em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">&quot;&quot;</td>          <td class="paramname"><span class="paramname"><em></em></span>[Wallpaper]&#160;)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="ae699f22ce57b01152e7a09c82b5ec84a" name="ae699f22ce57b01152e7a09c82b5ec84a"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ae699f22ce57b01152e7a09c82b5ec84a">&#9670;&#160;</a></span>TEST_CASE() <span class="overload">[2/16]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">TEST_CASE </td>
+          <td>(</td>
+          <td class="paramtype">&quot;WallpaperLibrary: async import completes and reports result&quot;</td>          <td class="paramname"><span class="paramname"><em></em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">&quot;&quot;</td>          <td class="paramname"><span class="paramname"><em></em></span>[Wallpaper]&#160;)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a14abee6534ec9aa44e1d878aebcdba71" name="a14abee6534ec9aa44e1d878aebcdba71"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a14abee6534ec9aa44e1d878aebcdba71">&#9670;&#160;</a></span>TEST_CASE() <span class="overload">[3/16]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">TEST_CASE </td>
+          <td>(</td>
+          <td class="paramtype">&quot;WallpaperLibrary: async import defers stale cleanup&quot;</td>          <td class="paramname"><span class="paramname"><em></em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">&quot;&quot;</td>          <td class="paramname"><span class="paramname"><em></em></span>[Wallpaper]&#160;)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a2e729218cc133f14ebdd347172ec78a8" name="a2e729218cc133f14ebdd347172ec78a8"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a2e729218cc133f14ebdd347172ec78a8">&#9670;&#160;</a></span>TEST_CASE() <span class="overload">[4/16]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">TEST_CASE </td>
+          <td>(</td>
+          <td class="paramtype">&quot;WallpaperLibrary: async import reports invalid source&quot;</td>          <td class="paramname"><span class="paramname"><em></em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">&quot;&quot;</td>          <td class="paramname"><span class="paramname"><em></em></span>[Wallpaper]&#160;)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a9b40d1f62f4e3c8ad45a799ca908976c" name="a9b40d1f62f4e3c8ad45a799ca908976c"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a9b40d1f62f4e3c8ad45a799ca908976c">&#9670;&#160;</a></span>TEST_CASE() <span class="overload">[5/16]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">TEST_CASE </td>
+          <td>(</td>
+          <td class="paramtype">&quot;WallpaperLibrary: destruction before completion keeps previous file&quot;</td>          <td class="paramname"><span class="paramname"><em></em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">&quot;&quot;</td>          <td class="paramname"><span class="paramname"><em></em></span>[Wallpaper]&#160;)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a847f238a0f0c2cd1ca8bb107b3087bae" name="a847f238a0f0c2cd1ca8bb107b3087bae"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a847f238a0f0c2cd1ca8bb107b3087bae">&#9670;&#160;</a></span>TEST_CASE() <span class="overload">[6/16]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">TEST_CASE </td>
+          <td>(</td>
+          <td class="paramtype">&quot;WallpaperLibrary: import copies and single-slot replaces&quot;</td>          <td class="paramname"><span class="paramname"><em></em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">&quot;&quot;</td>          <td class="paramname"><span class="paramname"><em></em></span>[Wallpaper]&#160;)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="abafb074b6017efa813bfaa79fc235799" name="abafb074b6017efa813bfaa79fc235799"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#abafb074b6017efa813bfaa79fc235799">&#9670;&#160;</a></span>TEST_CASE() <span class="overload">[7/16]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">TEST_CASE </td>
+          <td>(</td>
+          <td class="paramtype">&quot;WallpaperLibrary: reconcile follows the saved choice&quot;</td>          <td class="paramname"><span class="paramname"><em></em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">&quot;&quot;</td>          <td class="paramname"><span class="paramname"><em></em></span>[Wallpaper]&#160;)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="add4f838d2d0321c0008b86778a92591e" name="add4f838d2d0321c0008b86778a92591e"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#add4f838d2d0321c0008b86778a92591e">&#9670;&#160;</a></span>TEST_CASE() <span class="overload">[8/16]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">TEST_CASE </td>
+          <td>(</td>
+          <td class="paramtype">&quot;WallpaperLibrary: reconcile skips while import is running&quot;</td>          <td class="paramname"><span class="paramname"><em></em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">&quot;&quot;</td>          <td class="paramname"><span class="paramname"><em></em></span>[Wallpaper]&#160;)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a765ee27afe5001700ff58f394d9dd804" name="a765ee27afe5001700ff58f394d9dd804"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a765ee27afe5001700ff58f394d9dd804">&#9670;&#160;</a></span>TEST_CASE() <span class="overload">[9/16]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">TEST_CASE </td>
+          <td>(</td>
+          <td class="paramtype">&quot;WallpaperLibrary: reject invalid sources&quot;</td>          <td class="paramname"><span class="paramname"><em></em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">&quot;&quot;</td>          <td class="paramname"><span class="paramname"><em></em></span>[Wallpaper]&#160;)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a59d730bbdcf16645cd98d953ca4bc0a1" name="a59d730bbdcf16645cd98d953ca4bc0a1"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a59d730bbdcf16645cd98d953ca4bc0a1">&#9670;&#160;</a></span>TEST_CASE() <span class="overload">[10/16]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">TEST_CASE </td>
+          <td>(</td>
+          <td class="paramtype">&quot;WallpaperProvider: adaptive scale and invalid id&quot;</td>          <td class="paramname"><span class="paramname"><em></em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">&quot;&quot;</td>          <td class="paramname"><span class="paramname"><em></em></span>[Wallpaper]&#160;)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a947c7f303c0ef5cddfbe1eaa6826cefb" name="a947c7f303c0ef5cddfbe1eaa6826cefb"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a947c7f303c0ef5cddfbe1eaa6826cefb">&#9670;&#160;</a></span>TEST_CASE() <span class="overload">[11/16]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">TEST_CASE </td>
+          <td>(</td>
+          <td class="paramtype">&quot;WallpaperProvider: applies EXIF orientation&quot;</td>          <td class="paramname"><span class="paramname"><em></em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">&quot;&quot;</td>          <td class="paramname"><span class="paramname"><em></em></span>[Wallpaper]&#160;)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a71bc98208f5470260d966111408408b8" name="a71bc98208f5470260d966111408408b8"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a71bc98208f5470260d966111408408b8">&#9670;&#160;</a></span>TEST_CASE() <span class="overload">[12/16]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">TEST_CASE </td>
+          <td>(</td>
+          <td class="paramtype">&quot;WallpaperProvider: caps output pixels&quot;</td>          <td class="paramname"><span class="paramname"><em></em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">&quot;&quot;</td>          <td class="paramname"><span class="paramname"><em></em></span>[Wallpaper]&#160;)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a34a0eef72de87890020c67574f77e72d" name="a34a0eef72de87890020c67574f77e72d"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a34a0eef72de87890020c67574f77e72d">&#9670;&#160;</a></span>TEST_CASE() <span class="overload">[13/16]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">TEST_CASE </td>
+          <td>(</td>
+          <td class="paramtype">&quot;WallpaperProvider: headless fallback bounds targetless decode&quot;</td>          <td class="paramname"><span class="paramname"><em></em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">&quot;&quot;</td>          <td class="paramname"><span class="paramname"><em></em></span>[Wallpaper]&#160;)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a06c548f67f2b0267ba42ba1f18f8fc80" name="a06c548f67f2b0267ba42ba1f18f8fc80"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a06c548f67f2b0267ba42ba1f18f8fc80">&#9670;&#160;</a></span>TEST_CASE() <span class="overload">[14/16]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">TEST_CASE </td>
+          <td>(</td>
+          <td class="paramtype">&quot;WallpaperProvider: never upscales small images&quot;</td>          <td class="paramname"><span class="paramname"><em></em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">&quot;&quot;</td>          <td class="paramname"><span class="paramname"><em></em></span>[Wallpaper]&#160;)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="abfefcce78bb01035bbeca0ac250763cf" name="abfefcce78bb01035bbeca0ac250763cf"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#abfefcce78bb01035bbeca0ac250763cf">&#9670;&#160;</a></span>TEST_CASE() <span class="overload">[15/16]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">TEST_CASE </td>
+          <td>(</td>
+          <td class="paramtype">&quot;WallpaperProvider: scales formats without scaled decoding&quot;</td>          <td class="paramname"><span class="paramname"><em></em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">&quot;&quot;</td>          <td class="paramname"><span class="paramname"><em></em></span>[Wallpaper]&#160;)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="ae08ce24883dde02ce342586fa6d88ac8" name="ae08ce24883dde02ce342586fa6d88ac8"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ae08ce24883dde02ce342586fa6d88ac8">&#9670;&#160;</a></span>TEST_CASE() <span class="overload">[16/16]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">TEST_CASE </td>
+          <td>(</td>
+          <td class="paramtype">&quot;WallpaperProvider: thin images stay bounded&quot;</td>          <td class="paramname"><span class="paramname"><em></em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">&quot;&quot;</td>          <td class="paramname"><span class="paramname"><em></em></span>[Wallpaper]&#160;)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+</div><!-- contents -->
+<!-- start footer part -->
+<hr class="footer"/><address class="footer"><small>
+制作者&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.14.0
+</small></address>
+</div><!-- doc-content -->
+</body>
+</html>

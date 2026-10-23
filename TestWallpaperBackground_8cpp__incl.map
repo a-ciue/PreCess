@@ -1,0 +1,35 @@
+<map id="app/test/TestWallpaperBackground.cpp" name="app/test/TestWallpaperBackground.cpp">
+<area shape="rect" id="Node000001" title="壁纸背景组件行为测试：A→B 淡入、淡入中清除、加载失败回退" alt="" coords="924,5,1199,31"/>
+<area shape="rect" id="Node000002" title=" " alt="" coords="5,79,72,104"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="924,22,757,26,549,35,320,53,86,81,85,76,319,48,549,30,757,21,924,17"/>
+<area shape="rect" id="Node000003" title=" " alt="" coords="97,79,231,104"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="924,29,617,49,245,81,245,76,617,43,924,24"/>
+<area shape="rect" id="Node000004" title=" " alt="" coords="255,79,377,104"/>
+<area shape="poly" id="edge3_Node000001_Node000004" title=" " alt="" coords="924,31,679,51,390,81,390,76,679,46,923,26"/>
+<area shape="rect" id="Node000005" title=" " alt="" coords="401,79,501,104"/>
+<area shape="poly" id="edge4_Node000001_Node000005" title=" " alt="" coords="931,33,738,53,515,81,514,76,738,48,930,28"/>
+<area shape="rect" id="Node000006" title=" " alt="" coords="525,79,651,104"/>
+<area shape="poly" id="edge5_Node000001_Node000006" title=" " alt="" coords="985,33,665,81,665,76,984,28"/>
+<area shape="rect" id="Node000007" title=" " alt="" coords="675,79,749,104"/>
+<area shape="poly" id="edge6_Node000001_Node000007" title=" " alt="" coords="1001,33,763,81,762,76,999,28"/>
+<area shape="rect" id="Node000008" title=" " alt="" coords="773,79,907,104"/>
+<area shape="poly" id="edge7_Node000001_Node000008" title=" " alt="" coords="1027,33,889,77,888,72,1025,28"/>
+<area shape="rect" id="Node000009" title=" " alt="" coords="931,79,1034,104"/>
+<area shape="poly" id="edge8_Node000001_Node000009" title=" " alt="" coords="1050,33,1007,71,1004,68,1047,29"/>
+<area shape="rect" id="Node000010" title=" " alt="" coords="1058,79,1222,104"/>
+<area shape="poly" id="edge9_Node000001_Node000010" title=" " alt="" coords="1076,29,1119,68,1115,71,1072,33"/>
+<area shape="rect" id="Node000011" title=" " alt="" coords="1247,79,1345,104"/>
+<area shape="poly" id="edge10_Node000001_Node000011" title=" " alt="" coords="1100,28,1246,72,1244,77,1098,33"/>
+<area shape="rect" id="Node000012" title=" " alt="" coords="1370,79,1491,104"/>
+<area shape="poly" id="edge11_Node000001_Node000012" title=" " alt="" coords="1121,28,1358,73,1357,79,1120,33"/>
+<area shape="rect" id="Node000013" title=" " alt="" coords="1516,79,1593,104"/>
+<area shape="poly" id="edge12_Node000001_Node000013" title=" " alt="" coords="1166,28,1321,48,1502,76,1502,81,1320,53,1165,33"/>
+<area shape="rect" id="Node000014" title=" " alt="" coords="1617,79,1668,104"/>
+<area shape="poly" id="edge13_Node000001_Node000014" title=" " alt="" coords="1199,25,1388,42,1495,57,1604,76,1604,82,1494,62,1387,48,1199,30"/>
+<area shape="rect" id="Node000015" title=" " alt="" coords="1692,79,1911,104"/>
+<area shape="poly" id="edge14_Node000001_Node000015" title=" " alt="" coords="1180,28,1679,76,1678,81,1180,33"/>
+<area shape="rect" id="Node000016" title=" " alt="" coords="1935,79,2022,104"/>
+<area shape="poly" id="edge15_Node000001_Node000016" title=" " alt="" coords="1199,21,1525,38,1721,54,1922,76,1921,81,1721,59,1524,43,1199,26"/>
+<area shape="rect" id="Node000017" title=" " alt="" coords="2047,79,2124,104"/>
+<area shape="poly" id="edge16_Node000001_Node000017" title=" " alt="" coords="1199,18,1365,23,1572,33,1801,50,2033,76,2032,81,1800,55,1572,38,1365,28,1199,24"/>
+</map>

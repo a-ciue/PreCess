@@ -77,19 +77,34 @@ $(function() {
 <div id="doc-content">
 <div class="header">
   <div class="summary">
-<a href="#func-members">函数</a>  </div>
+<a href="#nested-classes">类</a> &#124;
+<a href="#func-members">函数</a> &#124;
+<a href="#var-members">变量</a>  </div>
   <div class="headertitle"><div class="title">app::core 命名空间参考</div></div>
 </div><!--header-->
 <div class="contents">
 <table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 id="header-nested-classes" class="groupheader"><a id="nested-classes" name="nested-classes"></a>
+类</h2></td></tr>
+<tr class="memitem:ThemeRoleBinding" id="r_ThemeRoleBinding"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structapp_1_1core_1_1ThemeRoleBinding.html">ThemeRoleBinding</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">主题角色与 QML 角色键的对应关系；AppPalette 与 <a class="el" href="Theme_8qml.html">Theme.qml</a> 的契约  <a href="structapp_1_1core_1_1ThemeRoleBinding.html#details">更多...</a><br /></td></tr>
+</table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 id="header-func-members" class="groupheader"><a id="func-members" name="func-members"></a>
 函数</h2></td></tr>
-<tr class="memitem:a2739a0708d725ea6aa1db7327fc092e7" id="r_a2739a0708d725ea6aa1db7327fc092e7"><td class="memItemLeft" align="right" valign="top">QPalette&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a2739a0708d725ea6aa1db7327fc092e7">buildThemePalette</a> (bool dark)</td></tr>
-<tr class="memdesc:a2739a0708d725ea6aa1db7327fc092e7"><td class="mdescLeft">&#160;</td><td class="mdescRight">组装指定明暗的应用调色板  <br /></td></tr>
+<tr class="memitem:a7a3a3c1f076b7845e8b25a4777b35153" id="r_a7a3a3c1f076b7845e8b25a4777b35153"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a7a3a3c1f076b7845e8b25a4777b35153">setThemeColor</a> (QPalette &amp;palette, QPalette::ColorRole role, const QVariantMap &amp;colors, const char *key)</td></tr>
+<tr class="memdesc:a7a3a3c1f076b7845e8b25a4777b35153"><td class="mdescLeft">&#160;</td><td class="mdescRight">读取角色颜色；缺失或无效时跳过，保留 QPalette 原值  <br /></td></tr>
+<tr class="memitem:a054c2120002d28b7b3e8e0223b199eaa" id="r_a054c2120002d28b7b3e8e0223b199eaa"><td class="memItemLeft" align="right" valign="top">QStringList&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a054c2120002d28b7b3e8e0223b199eaa">missingThemeRoles</a> (const QVariantMap &amp;colors)</td></tr>
+<tr class="memdesc:a054c2120002d28b7b3e8e0223b199eaa"><td class="mdescLeft">&#160;</td><td class="mdescRight">返回 roles 中缺失于 colors 的角色键，供契约测试与诊断使用  <br /></td></tr>
+<tr class="memitem:a1b700a11b9482c058f6ff03a57291e9f" id="r_a1b700a11b9482c058f6ff03a57291e9f"><td class="memItemLeft" align="right" valign="top">QPalette&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a1b700a11b9482c058f6ff03a57291e9f">buildThemePalette</a> (const QVariantMap &amp;colors)</td></tr>
+<tr class="memdesc:a1b700a11b9482c058f6ff03a57291e9f"><td class="mdescLeft">&#160;</td><td class="mdescRight">将 Theme.controlPalette 的已解析角色颜色组装为应用调色板  <br /></td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 id="header-var-members" class="groupheader"><a id="var-members" name="var-members"></a>
+变量</h2></td></tr>
+<tr class="memitem:a99ba3ffcc74d5c09d9650067dafd13dd" id="r_a99ba3ffcc74d5c09d9650067dafd13dd"><td class="memItemLeft" align="right" valign="top">constexpr <a class="el" href="structapp_1_1core_1_1ThemeRoleBinding.html">ThemeRoleBinding</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a99ba3ffcc74d5c09d9650067dafd13dd">kThemeRoles</a> []</td></tr>
 </table>
 <a name="doc-func-members" id="doc-func-members"></a><h2 id="header-doc-func-members" class="groupheader">函数说明</h2>
-<a id="a2739a0708d725ea6aa1db7327fc092e7" name="a2739a0708d725ea6aa1db7327fc092e7"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a2739a0708d725ea6aa1db7327fc092e7">&#9670;&#160;</a></span>buildThemePalette()</h2>
+<a id="a1b700a11b9482c058f6ff03a57291e9f" name="a1b700a11b9482c058f6ff03a57291e9f"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a1b700a11b9482c058f6ff03a57291e9f">&#9670;&#160;</a></span>buildThemePalette()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -100,7 +115,7 @@ $(function() {
         <tr>
           <td class="memname">QPalette app::core::buildThemePalette </td>
           <td>(</td>
-          <td class="paramtype">bool</td>          <td class="paramname"><span class="paramname"><em>dark</em></span></td><td>)</td>
+          <td class="paramtype">const QVariantMap &amp;</td>          <td class="paramname"><span class="paramname"><em>colors</em></span></td><td>)</td>
           <td></td>
         </tr>
       </table>
@@ -111,8 +126,128 @@ $(function() {
 </table>
 </div><div class="memdoc">
 
-<p>组装指定明暗的应用调色板 </p>
+<p>将 Theme.controlPalette 的已解析角色颜色组装为应用调色板 </p>
 
+</div>
+</div>
+<a id="a054c2120002d28b7b3e8e0223b199eaa" name="a054c2120002d28b7b3e8e0223b199eaa"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a054c2120002d28b7b3e8e0223b199eaa">&#9670;&#160;</a></span>missingThemeRoles()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">QStringList app::core::missingThemeRoles </td>
+          <td>(</td>
+          <td class="paramtype">const QVariantMap &amp;</td>          <td class="paramname"><span class="paramname"><em>colors</em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel inline">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>返回 roles 中缺失于 colors 的角色键，供契约测试与诊断使用 </p>
+
+</div>
+</div>
+<a id="a7a3a3c1f076b7845e8b25a4777b35153" name="a7a3a3c1f076b7845e8b25a4777b35153"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a7a3a3c1f076b7845e8b25a4777b35153">&#9670;&#160;</a></span>setThemeColor()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void app::core::setThemeColor </td>
+          <td>(</td>
+          <td class="paramtype">QPalette &amp;</td>          <td class="paramname"><span class="paramname"><em>palette</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">QPalette::ColorRole</td>          <td class="paramname"><span class="paramname"><em>role</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const QVariantMap &amp;</td>          <td class="paramname"><span class="paramname"><em>colors</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const char *</td>          <td class="paramname"><span class="paramname"><em>key</em></span>&#160;)</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel inline">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>读取角色颜色；缺失或无效时跳过，保留 QPalette 原值 </p>
+<dl class="params"><dt>参数</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">palette</td><td>目标调色板 </td></tr>
+    <tr><td class="paramname">role</td><td>目标角色 </td></tr>
+    <tr><td class="paramname">colors</td><td>Theme 推送的角色表 </td></tr>
+    <tr><td class="paramname">key</td><td>角色键（与 QML palette.* 同名） </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a name="doc-var-members" id="doc-var-members"></a><h2 id="header-doc-var-members" class="groupheader">变量说明</h2>
+<a id="a99ba3ffcc74d5c09d9650067dafd13dd" name="a99ba3ffcc74d5c09d9650067dafd13dd"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a99ba3ffcc74d5c09d9650067dafd13dd">&#9670;&#160;</a></span>kThemeRoles</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="structapp_1_1core_1_1ThemeRoleBinding.html">ThemeRoleBinding</a> app::core::kThemeRoles[]</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel inline">inline</span><span class="mlabel constexpr">constexpr</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<b>初始值:</b><div class="fragment"><div class="line">{</div>
+<div class="line">    { QPalette::Window, <span class="stringliteral">&quot;window&quot;</span> },</div>
+<div class="line">    { QPalette::WindowText, <span class="stringliteral">&quot;windowText&quot;</span> },</div>
+<div class="line">    { QPalette::Base, <span class="stringliteral">&quot;base&quot;</span> },</div>
+<div class="line">    { QPalette::AlternateBase, <span class="stringliteral">&quot;alternateBase&quot;</span> },</div>
+<div class="line">    { QPalette::Text, <span class="stringliteral">&quot;text&quot;</span> },</div>
+<div class="line">    { QPalette::Button, <span class="stringliteral">&quot;button&quot;</span> },</div>
+<div class="line">    { QPalette::ButtonText, <span class="stringliteral">&quot;buttonText&quot;</span> },</div>
+<div class="line">    { QPalette::Highlight, <span class="stringliteral">&quot;highlight&quot;</span> },</div>
+<div class="line">    { QPalette::HighlightedText, <span class="stringliteral">&quot;highlightedText&quot;</span> },</div>
+<div class="line">    { QPalette::PlaceholderText, <span class="stringliteral">&quot;placeholderText&quot;</span> },</div>
+<div class="line">    { QPalette::Mid, <span class="stringliteral">&quot;mid&quot;</span> },</div>
+<div class="line">    { QPalette::Midlight, <span class="stringliteral">&quot;midlight&quot;</span> },</div>
+<div class="line">    { QPalette::Light, <span class="stringliteral">&quot;light&quot;</span> },</div>
+<div class="line">    { QPalette::Dark, <span class="stringliteral">&quot;dark&quot;</span> },</div>
+<div class="line">    { QPalette::Shadow, <span class="stringliteral">&quot;shadow&quot;</span> },</div>
+<div class="line">    { QPalette::Link, <span class="stringliteral">&quot;link&quot;</span> },</div>
+<div class="line">    { QPalette::ToolTipBase, <span class="stringliteral">&quot;toolTipBase&quot;</span> },</div>
+<div class="line">    { QPalette::ToolTipText, <span class="stringliteral">&quot;toolTipText&quot;</span> },</div>
+<div class="line">}</div>
+</div><!-- fragment -->
 </div>
 </div>
 </div><!-- contents -->

@@ -82,12 +82,11 @@ $(function() {
 </div><!--header-->
 <div class="contents">
 
-<p>应用级调色板单例：让 ToolTip 等按应用调色板取色的弹窗跟随主题  
+<p>应用级调色板单例：把 Theme 已解析的角色表应用到 QGuiApplication  
 <a href="#details">更多...</a></p>
-<div class="textblock"><code>#include &lt;QColor&gt;</code><br />
-<code>#include &lt;QGuiApplication&gt;</code><br />
+<div class="textblock"><code>#include &lt;QGuiApplication&gt;</code><br />
 <code>#include &lt;QObject&gt;</code><br />
-<code>#include &lt;QPalette&gt;</code><br />
+<code>#include &lt;QVariantMap&gt;</code><br />
 <code>#include &lt;qqmlintegration.h&gt;</code><br />
 <code>#include &quot;<a class="el" href="ThemePalette_8h_source.html">ThemePalette.h</a>&quot;</code><br />
 </div><div class="textblock"><div class="dynheader">
@@ -95,21 +94,38 @@ AppPalette.h 的引用(Include)关系图:</div>
 <div class="dyncontent">
 <div class="center"><img src="AppPalette_8h__incl.png" border="0" usemap="#aapp_2core_2AppPalette_8h" loading="lazy" alt=""/></div>
 <map name="aapp_2core_2AppPalette_8h" id="aapp_2core_2AppPalette_8h">
-<area shape="rect" title="应用级调色板单例：让 ToolTip 等按应用调色板取色的弹窗跟随主题" alt="" coords="196,5,360,31"/>
-<area shape="rect" title=" " alt="" coords="195,152,262,177"/>
-<area shape="poly" title=" " alt="" coords="196,29,89,48,44,62,28,71,17,80,9,99,13,114,29,127,53,137,117,151,182,158,181,164,116,157,51,142,26,131,9,117,3,99,13,77,25,67,42,57,88,43,195,24"/>
-<area shape="rect" title=" " alt="" coords="28,79,155,104"/>
-<area shape="poly" title=" " alt="" coords="249,33,135,76,134,71,247,28"/>
-<area shape="rect" title=" " alt="" coords="179,79,254,104"/>
-<area shape="poly" title=" " alt="" coords="270,33,238,70,234,66,266,29"/>
-<area shape="rect" title=" " alt="" coords="413,152,490,177"/>
-<area shape="poly" title=" " alt="" coords="360,21,424,28,489,39,545,55,566,65,580,77,587,90,587,102,580,114,569,123,539,140,504,153,502,148,537,135,566,119,576,110,581,101,582,91,576,80,563,69,543,60,488,44,423,33,360,27"/>
-<area shape="rect" title=" " alt="" coords="427,79,566,104"/>
-<area shape="poly" title=" " alt="" coords="314,28,449,72,447,77,312,33"/>
-<area shape="rect" href="ThemePalette_8h.html" title="主题应用调色板构造：纯函数，不依赖 QML 与应用实例，便于单测" alt="" coords="279,79,403,104"/>
-<area shape="poly" title=" " alt="" coords="290,29,323,66,319,70,286,33"/>
-<area shape="poly" title=" " alt="" coords="324,106,260,147,257,142,321,102"/>
-<area shape="poly" title=" " alt="" coords="360,102,423,142,420,147,357,106"/>
+<area shape="rect" title="应用级调色板单例：把 Theme 已解析的角色表应用到 QGuiApplication" alt="" coords="187,5,351,31"/>
+<area shape="rect" title=" " alt="" coords="5,79,132,104"/>
+<area shape="poly" title=" " alt="" coords="237,33,115,76,114,71,236,28"/>
+<area shape="rect" title=" " alt="" coords="157,79,231,104"/>
+<area shape="poly" title=" " alt="" coords="259,33,218,71,214,67,255,29"/>
+<area shape="rect" title=" " alt="" coords="243,152,350,177"/>
+<area shape="poly" title=" " alt="" coords="274,31,294,138,289,139,268,32"/>
+<area shape="rect" title=" " alt="" coords="306,79,445,104"/>
+<area shape="poly" title=" " alt="" coords="287,28,348,69,345,73,284,33"/>
+<area shape="rect" href="ThemePalette_8h.html" title="主题应用调色板构造：把 Theme 已解析的角色颜色表转成 QPalette" alt="" coords="469,79,593,104"/>
+<area shape="poly" title=" " alt="" coords="312,28,476,72,475,78,310,33"/>
+<area shape="poly" title=" " alt="" coords="494,107,348,151,347,145,493,101"/>
+<area shape="rect" title=" " alt="" coords="387,152,454,177"/>
+<area shape="poly" title=" " alt="" coords="515,106,452,147,449,142,512,102"/>
+<area shape="rect" title=" " alt="" coords="478,152,555,177"/>
+<area shape="poly" title=" " alt="" coords="532,105,524,139,519,138,526,104"/>
+<area shape="rect" title=" " alt="" coords="579,152,673,177"/>
+<area shape="poly" title=" " alt="" coords="548,102,601,141,598,146,545,106"/>
+<area shape="rect" title=" " alt="" coords="697,152,776,177"/>
+<area shape="poly" title=" " alt="" coords="565,101,691,145,690,150,563,107"/>
+</map>
+</div>
+</div><div class="textblock"><div class="dynheader">
+此图展示该文件被哪些文件直接或间接地引用了:</div>
+<div class="dyncontent">
+<div class="center"><img src="AppPalette_8h__dep__incl.png" border="0" usemap="#aapp_2core_2AppPalette_8hdep" loading="lazy" alt=""/></div>
+<map name="aapp_2core_2AppPalette_8hdep" id="aapp_2core_2AppPalette_8hdep">
+<area shape="rect" title="应用级调色板单例：把 Theme 已解析的角色表应用到 QGuiApplication" alt="" coords="145,5,309,31"/>
+<area shape="rect" href="TestAppPalette_8cpp.html" title="主题调色板适配测试：角色表映射、alpha 保留与应用级调色板刷新" alt="" coords="5,79,208,104"/>
+<area shape="poly" title=" " alt="" coords="197,40,128,81,125,76,194,35"/>
+<area shape="rect" href="TestThemePipeline_8cpp.html" title="主题配色管道：同一份已解析角色表到达应用调色板与停靠主题" alt="" coords="232,79,461,104"/>
+<area shape="poly" title=" " alt="" coords="259,35,328,76,326,81,257,40"/>
 </map>
 </div>
 </div>
@@ -120,9 +136,9 @@ AppPalette.h 的引用(Include)关系图:</div>
 <tr class="memitem:AppPalette" id="r_AppPalette"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classAppPalette.html">AppPalette</a></td></tr>
 </table>
 <a name="details" id="details"></a><h2 id="header-details" class="groupheader">详细描述</h2>
-<div class="textblock"><p>应用级调色板单例：让 ToolTip 等按应用调色板取色的弹窗跟随主题 </p>
-<p>部分弹窗（如 ToolTip）在本应用中按 QGuiApplication::palette() 取色， 而非窗口调色板；本单例把主题明暗写入应用调色板，由 <a class="el" href="Main_8qml.html">Main.qml</a> 绑定 Theme.dark 驱动。菜单/对话框另有显式 palette 绑定，不依赖本单例。</p>
-<p>调色板角色色值由 <a class="el" href="ThemePalette_8h.html" title="主题应用调色板构造：纯函数，不依赖 QML 与应用实例，便于单测">ThemePalette.h</a> 提供（须与 <a class="el" href="Theme_8qml.html">app/Theme.qml</a> 保持一致）。 </p>
+<div class="textblock"><p>应用级调色板单例：把 Theme 已解析的角色表应用到 QGuiApplication </p>
+<p>部分弹窗（如 ToolTip）按 QGuiApplication::palette() 取色。本单例只接收 Theme.controlPalette 推送的已解析颜色，经 <a class="el" href="ThemePalette_8h.html" title="主题应用调色板构造：把 Theme 已解析的角色颜色表转成 QPalette">ThemePalette.h</a> 转成 QPalette 后 写入应用调色板；自身不再保存明暗/壁纸状态，也不重新计算产品配色。</p>
+<p>注意：Fusion 样式的默认控件调色板来自平台主题，后创建的控件不会读取 应用调色板；控件继承依赖 <a class="el" href="Main_8qml.html">Main.qml</a> 在 ApplicationWindow 上的 palette 绑定， 不能以本单例替代。 </p>
 </div></div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>

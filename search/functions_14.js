@@ -34,5 +34,6 @@ var searchData=
   ['updateprojection_31',['updateProjection',['../classViewportOrientationRepresentation.html#a6392a6c1141ec6f9265892953099e4bf',1,'ViewportOrientationRepresentation']]],
   ['updaterubberband_32',['updateRubberBand',['../classQRenderWindowStyle.html#a6100f44a2b1388628da205f453e7c646',1,'QRenderWindowStyle']]],
   ['updatespreadcache_33',['updateSpreadCache',['../classFaceSelectorHighlight.html#a83f58e0e8e4ac3f7120f5449699af1be',1,'FaceSelectorHighlight']]],
-  ['updatezonerects_34',['updateZoneRects',['../classdock_1_1ui_1_1DockAreaItem.html#ab80e9f9c091b30c2f6cd92247c1df8ba',1,'dock::ui::DockAreaItem']]]
+  ['updatezonerects_34',['updateZoneRects',['../classdock_1_1ui_1_1DockAreaItem.html#ab80e9f9c091b30c2f6cd92247c1df8ba',1,'dock::ui::DockAreaItem']]],
+  ['userwallpaperdir_35',['userWallpaperDir',['../classWallpaperLibrary.html#a799b3ed8ad8fa300e72785b0312a9f2a',1,'WallpaperLibrary']]]
 ];

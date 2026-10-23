@@ -107,27 +107,28 @@ AppPalette 的协作图:</div>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 id="header-signals" class="groupheader"><a id="signals" name="signals"></a>
 信号</h2></td></tr>
-<tr class="memitem:ad23c5053a2b9d1c4b5d6310c147a29fe" id="r_ad23c5053a2b9d1c4b5d6310c147a29fe"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ad23c5053a2b9d1c4b5d6310c147a29fe">darkChanged</a> ()</td></tr>
+<tr class="memitem:a9404e86161d33cc997029a8c568a47eb" id="r_a9404e86161d33cc997029a8c568a47eb"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a9404e86161d33cc997029a8c568a47eb">colorsChanged</a> ()</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 id="header-pub-methods" class="groupheader"><a id="pub-methods" name="pub-methods"></a>
 Public 成员函数</h2></td></tr>
 <tr class="memitem:afe1e419a370c09c91e26be082855af43" id="r_afe1e419a370c09c91e26be082855af43"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#afe1e419a370c09c91e26be082855af43">AppPalette</a> (QObject *parent=nullptr)</td></tr>
-<tr class="memitem:a495c82b2f6d6261895d9c46224d600ca" id="r_a495c82b2f6d6261895d9c46224d600ca"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a495c82b2f6d6261895d9c46224d600ca">dark</a> () const</td></tr>
-<tr class="memitem:a6ce9b4f65e8a1d124778dc7dcca34193" id="r_a6ce9b4f65e8a1d124778dc7dcca34193"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a6ce9b4f65e8a1d124778dc7dcca34193">setDark</a> (bool <a class="el" href="#a039c31db31dd5cecf0e242631cbb8766">dark</a>)</td></tr>
-<tr class="memdesc:a6ce9b4f65e8a1d124778dc7dcca34193"><td class="mdescLeft">&#160;</td><td class="mdescRight">设置明暗并刷新应用调色板（由 Theme.dark 驱动）  <br /></td></tr>
+<tr class="memitem:a7ebb6333db916aea2b91930ce0a06a5a" id="r_a7ebb6333db916aea2b91930ce0a06a5a"><td class="memItemLeft" align="right" valign="top">QVariantMap&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a7ebb6333db916aea2b91930ce0a06a5a">colors</a> () const</td></tr>
+<tr class="memdesc:a7ebb6333db916aea2b91930ce0a06a5a"><td class="mdescLeft">&#160;</td><td class="mdescRight">当前已解析的角色颜色表（由 Theme.controlPalette 驱动）  <br /></td></tr>
+<tr class="memitem:a5888f0328f4450b7efcd8ae0d1cbb87e" id="r_a5888f0328f4450b7efcd8ae0d1cbb87e"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a5888f0328f4450b7efcd8ae0d1cbb87e">setColors</a> (const QVariantMap &amp;<a class="el" href="#a1573403beb3c4c9cd6dd7d6b930c7a42">colors</a>)</td></tr>
+<tr class="memdesc:a5888f0328f4450b7efcd8ae0d1cbb87e"><td class="mdescLeft">&#160;</td><td class="mdescRight">接收主题角色表并刷新应用调色板  <br /></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 id="header-properties" class="groupheader"><a id="properties" name="properties"></a>
 属性</h2></td></tr>
-<tr class="memitem:a039c31db31dd5cecf0e242631cbb8766" id="r_a039c31db31dd5cecf0e242631cbb8766"><td class="memItemLeft" align="right" valign="top">QML_SINGLETONbool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a039c31db31dd5cecf0e242631cbb8766">dark</a></td></tr>
+<tr class="memitem:a1573403beb3c4c9cd6dd7d6b930c7a42" id="r_a1573403beb3c4c9cd6dd7d6b930c7a42"><td class="memItemLeft" align="right" valign="top">QML_SINGLETONQVariantMap&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a1573403beb3c4c9cd6dd7d6b930c7a42">colors</a></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 id="header-pri-methods" class="groupheader"><a id="pri-methods" name="pri-methods"></a>
 Private 成员函数</h2></td></tr>
 <tr class="memitem:a370d001bf4e20d319e23952a6ef4d1d3" id="r_a370d001bf4e20d319e23952a6ef4d1d3"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a370d001bf4e20d319e23952a6ef4d1d3">applyPalette</a> ()</td></tr>
-<tr class="memdesc:a370d001bf4e20d319e23952a6ef4d1d3"><td class="mdescLeft">&#160;</td><td class="mdescRight">按当前明暗刷新应用调色板  <br /></td></tr>
+<tr class="memdesc:a370d001bf4e20d319e23952a6ef4d1d3"><td class="mdescLeft">&#160;</td><td class="mdescRight">按 Theme 已解析的角色表刷新应用调色板  <br /></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 id="header-pri-attribs" class="groupheader"><a id="pri-attribs" name="pri-attribs"></a>
 Private 属性</h2></td></tr>
-<tr class="memitem:a1fd7cab806dd910e62855a630306082e" id="r_a1fd7cab806dd910e62855a630306082e"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a1fd7cab806dd910e62855a630306082e">dark_</a> = false</td></tr>
+<tr class="memitem:a72a82709c2663d92cbf9fea5b9015f65" id="r_a72a82709c2663d92cbf9fea5b9015f65"><td class="memItemLeft" align="right" valign="top">QVariantMap&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a72a82709c2663d92cbf9fea5b9015f65">colors_</a></td></tr>
 </table>
 <a name="doc-constructors" id="doc-constructors"></a><h2 id="header-doc-constructors" class="groupheader">构造及析构函数说明</h2>
 <a id="afe1e419a370c09c91e26be082855af43" name="afe1e419a370c09c91e26be082855af43"></a>
@@ -179,12 +180,12 @@ Private 属性</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p>按当前明暗刷新应用调色板 </p>
+<p>按 Theme 已解析的角色表刷新应用调色板 </p>
 
 </div>
 </div>
-<a id="a495c82b2f6d6261895d9c46224d600ca" name="a495c82b2f6d6261895d9c46224d600ca"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a495c82b2f6d6261895d9c46224d600ca">&#9670;&#160;</a></span>dark()</h2>
+<a id="a7ebb6333db916aea2b91930ce0a06a5a" name="a7ebb6333db916aea2b91930ce0a06a5a"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a7ebb6333db916aea2b91930ce0a06a5a">&#9670;&#160;</a></span>colors()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -193,7 +194,7 @@ Private 属性</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">bool AppPalette::dark </td>
+          <td class="memname">QVariantMap AppPalette::colors </td>
           <td>(</td>
           <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
           <td> const</td>
@@ -206,10 +207,12 @@ Private 属性</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
+<p>当前已解析的角色颜色表（由 Theme.controlPalette 驱动） </p>
+
 </div>
 </div>
-<a id="ad23c5053a2b9d1c4b5d6310c147a29fe" name="ad23c5053a2b9d1c4b5d6310c147a29fe"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ad23c5053a2b9d1c4b5d6310c147a29fe">&#9670;&#160;</a></span>darkChanged</h2>
+<a id="a9404e86161d33cc997029a8c568a47eb" name="a9404e86161d33cc997029a8c568a47eb"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a9404e86161d33cc997029a8c568a47eb">&#9670;&#160;</a></span>colorsChanged</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -218,7 +221,7 @@ Private 属性</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">void AppPalette::darkChanged </td>
+          <td class="memname">void AppPalette::colorsChanged </td>
           <td>(</td>
           <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
           <td></td>
@@ -233,8 +236,8 @@ Private 属性</h2></td></tr>
 
 </div>
 </div>
-<a id="a6ce9b4f65e8a1d124778dc7dcca34193" name="a6ce9b4f65e8a1d124778dc7dcca34193"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a6ce9b4f65e8a1d124778dc7dcca34193">&#9670;&#160;</a></span>setDark()</h2>
+<a id="a5888f0328f4450b7efcd8ae0d1cbb87e" name="a5888f0328f4450b7efcd8ae0d1cbb87e"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a5888f0328f4450b7efcd8ae0d1cbb87e">&#9670;&#160;</a></span>setColors()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -243,9 +246,9 @@ Private 属性</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">void AppPalette::setDark </td>
+          <td class="memname">void AppPalette::setColors </td>
           <td>(</td>
-          <td class="paramtype">bool</td>          <td class="paramname"><span class="paramname"><em>dark</em></span></td><td>)</td>
+          <td class="paramtype">const QVariantMap &amp;</td>          <td class="paramname"><span class="paramname"><em>colors</em></span></td><td>)</td>
           <td></td>
         </tr>
       </table>
@@ -256,13 +259,13 @@ Private 属性</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p>设置明暗并刷新应用调色板（由 Theme.dark 驱动） </p>
+<p>接收主题角色表并刷新应用调色板 </p>
 
 </div>
 </div>
 <a name="doc-variable-members" id="doc-variable-members"></a><h2 id="header-doc-variable-members" class="groupheader">类成员变量说明</h2>
-<a id="a1fd7cab806dd910e62855a630306082e" name="a1fd7cab806dd910e62855a630306082e"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a1fd7cab806dd910e62855a630306082e">&#9670;&#160;</a></span>dark_</h2>
+<a id="a72a82709c2663d92cbf9fea5b9015f65" name="a72a82709c2663d92cbf9fea5b9015f65"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a72a82709c2663d92cbf9fea5b9015f65">&#9670;&#160;</a></span>colors_</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -271,7 +274,7 @@ Private 属性</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">bool AppPalette::dark_ = false</td>
+          <td class="memname">QVariantMap AppPalette::colors_</td>
         </tr>
       </table>
   </td>
@@ -284,8 +287,8 @@ Private 属性</h2></td></tr>
 </div>
 </div>
 <a name="doc-property-members" id="doc-property-members"></a><h2 id="header-doc-property-members" class="groupheader">属性说明</h2>
-<a id="a039c31db31dd5cecf0e242631cbb8766" name="a039c31db31dd5cecf0e242631cbb8766"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a039c31db31dd5cecf0e242631cbb8766">&#9670;&#160;</a></span>dark</h2>
+<a id="a1573403beb3c4c9cd6dd7d6b930c7a42" name="a1573403beb3c4c9cd6dd7d6b930c7a42"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a1573403beb3c4c9cd6dd7d6b930c7a42">&#9670;&#160;</a></span>colors</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -294,7 +297,7 @@ Private 属性</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">QML_SINGLETONbool AppPalette::dark</td>
+          <td class="memname">QML_SINGLETONQVariantMap AppPalette::colors</td>
         </tr>
       </table>
   </td>

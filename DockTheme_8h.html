@@ -83,23 +83,23 @@ $(function() {
 </div><!--header-->
 <div class="contents">
 
-<p>停靠组件主题承载对象：向 dock QML 暴露当前明暗与已解析配色  
+<p>停靠组件主题承载对象：保存 app 侧推送的已解析配色并通知 dock QML  
 <a href="#details">更多...</a></p>
-<div class="textblock"><code>#include &lt;QColor&gt;</code><br />
-<code>#include &lt;QObject&gt;</code><br />
+<div class="textblock"><code>#include &lt;QObject&gt;</code><br />
+<code>#include &lt;QString&gt;</code><br />
 <code>#include &lt;QVariantMap&gt;</code><br />
 </div><div class="textblock"><div class="dynheader">
 DockTheme.h 的引用(Include)关系图:</div>
 <div class="dyncontent">
 <div class="center"><img src="DockTheme_8h__incl.png" border="0" usemap="#aapp_2dock_2ui_2DockTheme_8h" loading="lazy" alt=""/></div>
 <map name="aapp_2dock_2ui_2DockTheme_8h" id="aapp_2dock_2ui_2DockTheme_8h">
-<area shape="rect" title="停靠组件主题承载对象：向 dock QML 暴露当前明暗与已解析配色" alt="" coords="38,5,229,31"/>
-<area shape="rect" title=" " alt="" coords="5,79,72,104"/>
-<area shape="poly" title=" " alt="" coords="120,33,67,72,64,68,117,29"/>
-<area shape="rect" title=" " alt="" coords="96,79,171,104"/>
-<area shape="poly" title=" " alt="" coords="136,31,136,65,131,65,131,31"/>
-<area shape="rect" title=" " alt="" coords="195,79,301,104"/>
-<area shape="poly" title=" " alt="" coords="153,28,219,69,216,74,150,33"/>
+<area shape="rect" title="停靠组件主题承载对象：保存 app 侧推送的已解析配色并通知 dock QML" alt="" coords="45,5,235,31"/>
+<area shape="rect" title=" " alt="" coords="5,79,80,104"/>
+<area shape="poly" title=" " alt="" coords="126,33,71,72,68,68,123,29"/>
+<area shape="rect" title=" " alt="" coords="105,79,175,104"/>
+<area shape="poly" title=" " alt="" coords="143,31,143,65,137,65,137,31"/>
+<area shape="rect" title=" " alt="" coords="200,79,307,104"/>
+<area shape="poly" title=" " alt="" coords="160,28,225,69,222,74,157,33"/>
 </map>
 </div>
 </div><div class="textblock"><div class="dynheader">
@@ -107,13 +107,13 @@ DockTheme.h 的引用(Include)关系图:</div>
 <div class="dyncontent">
 <div class="center"><img src="DockTheme_8h__dep__incl.png" border="0" usemap="#aapp_2dock_2ui_2DockTheme_8hdep" loading="lazy" alt=""/></div>
 <map name="aapp_2dock_2ui_2DockTheme_8hdep" id="aapp_2dock_2ui_2DockTheme_8hdep">
-<area shape="rect" title="停靠组件主题承载对象：向 dock QML 暴露当前明暗与已解析配色" alt="" coords="274,5,465,31"/>
+<area shape="rect" title="停靠组件主题承载对象：保存 app 侧推送的已解析配色并通知 dock QML" alt="" coords="274,5,465,31"/>
 <area shape="rect" href="QmlRegistration_8cpp.html" title="QML 类型注册与组件初始化" alt="" coords="5,79,240,104"/>
 <area shape="poly" title=" " alt="" coords="317,37,163,81,162,76,316,32"/>
-<area shape="rect" href="TestDockTheme_8cpp.html" title="DockTheme 单元测试：明暗切换后配色表整体刷新" alt="" coords="264,79,475,104"/>
+<area shape="rect" href="TestDockTheme_8cpp.html" title="DockTheme 单元测试：宿主推送的配色表与壁纸源按原值保存并通知" alt="" coords="264,79,475,104"/>
 <area shape="poly" title=" " alt="" coords="372,44,372,79,367,79,367,44"/>
-<area shape="rect" href="TestThemeConsistency_8cpp.html" title="主题色跨文件一致性：ThemePalette（应用调色板）与 DockTheme（停靠配色）" alt="" coords="499,79,754,104"/>
-<area shape="poly" title=" " alt="" coords="424,32,586,76,584,81,423,37"/>
+<area shape="rect" href="TestThemePipeline_8cpp.html" title="主题配色管道：同一份已解析角色表到达应用调色板与停靠主题" alt="" coords="499,79,728,104"/>
+<area shape="poly" title=" " alt="" coords="422,32,575,76,573,81,421,37"/>
 </map>
 </div>
 </div>
@@ -130,8 +130,8 @@ DockTheme.h 的引用(Include)关系图:</div>
 <tr class="memitem:dock_3A_3Aui" id="r_dock_3A_3Aui"><td class="memItemLeft" align="right" valign="top">namespace &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacedock_1_1ui.html">dock::ui</a></td></tr>
 </table>
 <a name="details" id="details"></a><h2 id="header-details" class="groupheader">详细描述</h2>
-<div class="textblock"><p>停靠组件主题承载对象：向 dock QML 暴露当前明暗与已解析配色 </p>
-<p>dock 模块刻意仅依赖 Qt、不反向依赖 app，故由本对象承载明暗标志与配色表； app 侧经 QML Binding 把 Theme.dark 推入，dock QML 读取 colors 中的已解析值。 色值须与 <a class="el" href="Theme_8qml.html">app/Theme.qml</a> 对应令牌保持一致。 </p>
+<div class="textblock"><p>停靠组件主题承载对象：保存 app 侧推送的已解析配色并通知 dock QML </p>
+<p>dock 模块刻意仅依赖 Qt、不反向依赖 app，故由本对象承载配色表；app 侧经 QML Binding 把 Theme 的 dockColors / controlPalette / popupPalette 推入， dock QML 只读取已解析值。本对象不再保存明暗状态或计算产品配色。 </p>
 </div></div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
