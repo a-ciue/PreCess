@@ -12,6 +12,7 @@
 #include <QGuiApplication>
 #include <QImageIOHandler>
 #include <QImageReader>
+#include <QPointer>
 #include <QReadWriteLock>
 #include <QRunnable>
 #include <QScreen>
@@ -314,9 +315,13 @@ void WallpaperLibrary::importWallpaperAsync(const QUrl& source_url)
         return;
 
     setImporting(true);
-    import_pool_.start(QRunnable::create([this, source_url] {
+    // context 对象析构时 Qt 会移除队列事件；QPointer 再提供一层显式存活保护
+    QPointer<WallpaperLibrary> guard(this);
+    import_pool_.start(QRunnable::create([this, guard, source_url] {
         const QString id = importWallpaperImpl(source_url);
-        QMetaObject::invokeMethod(this, [this, id] { finishImport(id); }, Qt::QueuedConnection);
+        QMetaObject::invokeMethod(this, [guard, id] {
+            if (guard)
+                guard->finishImport(id); }, Qt::QueuedConnection);
     }));
 }
 

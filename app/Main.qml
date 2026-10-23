@@ -404,7 +404,7 @@ ApplicationWindow {
     }
 
     Component.onCompleted: {
-        // 启动校验自定义壁纸：选择失效时回退纯色（必要时采纳托管目录内的唯一残留）
+        // 启动校验自定义壁纸：仅当持久化 id 对应文件仍存在时保留，否则清理残留并回退纯色
         Theme.setWallpaper(Wallpaper.reconcile(Theme.wallpaper))
 
         // 同步当前活动模型/组件到功能系统（功能菜单由 AppToolbar 自行构建）
