@@ -162,6 +162,40 @@ TEST_CASE("WallpaperLibrary: async import reports invalid source", "[Wallpaper]"
     REQUIRE(storedCount() == 0);
 }
 
+TEST_CASE("WallpaperLibrary: async import defers stale cleanup", "[Wallpaper]")
+{
+    testApplication();
+    prepareTestEnv();
+    WallpaperLibrary library;
+
+    const QString first = writePng(QDir::tempPath() + "/wallpaper_cleanup_first.png", QSize(64, 48), Qt::red);
+    REQUIRE_FALSE(library.importWallpaper(QUrl::fromLocalFile(first)).isEmpty());
+
+    const QString second = writePng(QDir::tempPath() + "/wallpaper_cleanup_second.png", QSize(320, 240), Qt::blue);
+    int count_in_signal = -1;
+    bool finished = false;
+    bool failed = false;
+    QObject::connect(&library, &WallpaperLibrary::importFinished, [&](const QString&) {
+        count_in_signal = storedCount();
+        finished = true;
+    });
+    QObject::connect(&library, &WallpaperLibrary::importFailed, [&] { failed = true; });
+
+    library.importWallpaperAsync(QUrl::fromLocalFile(second));
+
+    QElapsedTimer timer;
+    timer.start();
+    while (!finished && !failed && timer.elapsed() < 5000)
+        QCoreApplication::processEvents(QEventLoop::AllEvents, 20);
+
+    REQUIRE_FALSE(library.importing());
+    REQUIRE(finished);
+    REQUIRE_FALSE(failed);
+    // 回调时旧图仍存在，清理在其后执行
+    REQUIRE(count_in_signal == 2);
+    REQUIRE(storedCount() == 1);
+}
+
 TEST_CASE("WallpaperLibrary: reconcile skips while import is running", "[Wallpaper]")
 {
     testApplication();
@@ -265,6 +299,24 @@ TEST_CASE("WallpaperProvider: adaptive scale and invalid id", "[Wallpaper]")
 
     // 非法 id（含路径成分）返回空图，不越出托管目录
     REQUIRE(provider.requestImage(QStringLiteral("../evil.png"), nullptr, QSize(10, 10)).isNull());
+}
+
+TEST_CASE("WallpaperProvider: headless fallback bounds targetless decode", "[Wallpaper]")
+{
+    prepareTestEnv();
+    WallpaperLibrary library;
+
+    const QString image = writePng(QDir::tempPath() + "/wallpaper_headless.png", QSize(4500, 3000), Qt::darkCyan);
+    const QString id = library.importWallpaper(QUrl::fromLocalFile(image));
+    REQUIRE_FALSE(id.isEmpty());
+
+    // 强制无主屏分支：空 requestedSize 应回退 4K 目标而不是保留原图尺寸
+    WallpaperProvider provider(WallpaperProvider::DecodeLimits {}, QSize(), false);
+    const QImage decoded = provider.requestImage(id, nullptr, QSize());
+    REQUIRE_FALSE(decoded.isNull());
+    REQUIRE(decoded.size() != QSize(4500, 3000));
+    REQUIRE(decoded.width() < 4500);
+    REQUIRE(decoded.height() < 3000);
 }
 
 TEST_CASE("WallpaperProvider: never upscales small images", "[Wallpaper]")

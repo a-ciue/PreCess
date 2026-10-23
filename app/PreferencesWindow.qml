@@ -374,7 +374,7 @@ Item {
                 icon.width: 16
                 icon.height: 16
                 icon.color: "transparent"
-                text: "注册"
+                text: qsTr("注册")
                 flat: true
                 implicitWidth: 70
                 implicitHeight: 26
@@ -386,7 +386,7 @@ Item {
                 icon.width: 16
                 icon.height: 16
                 icon.color: "transparent"
-                text: "注销"
+                text: qsTr("注销")
                 flat: true
                 implicitWidth: 70
                 implicitHeight: 26
@@ -418,13 +418,13 @@ Item {
 
     ThemedDialog {
         id: registerFailureDialog
-        title: "注册失败"
+        title: qsTr("注册失败")
         standardButtons: Dialog.Ok
         modal: true
         anchors.centerIn: parent
 
         Label {
-            text: "插件注册失败"
+            text: qsTr("插件注册失败")
         }
     }
 

@@ -37,7 +37,13 @@ public:
         int max_dimension = 8192;
     };
 
-    explicit WallpaperProvider(DecodeLimits limits = {});
+    /**
+     * @param limits 输出规模上限
+     * @param decode_limit_override 显式解码目标；有效时优先于主屏探测
+     * @param query_primary_screen 是否探测主屏分辨率；false 时直接使用兜底目标
+     */
+    explicit WallpaperProvider(DecodeLimits limits = {}, QSize decode_limit_override = {},
+        bool query_primary_screen = true);
 
     /** @brief 按 EXIF 方向读取并缩放到目标尺寸（KeepAspectRatioByExpanding，禁止放大） */
     QImage requestImage(const QString& id, QSize* size, const QSize& requestedSize) override;
