@@ -52,14 +52,20 @@ QStringList wallpaperFiles()
     return dir.entryList(QDir::Files | QDir::NoDotAndDotDot);
 }
 
-//! @brief 删除托管目录内除 keep 之外的壁纸文件
-void removeOtherFiles(const QString& keep)
+//! @brief 删除托管目录内除 keep 之外的壁纸文件，返回是否全部删除成功
+bool removeOtherFiles(const QString& keep)
 {
     QDir dir(WallpaperLibrary::userWallpaperDir());
+    bool ok = true;
     for (const QString& name : wallpaperFiles()) {
-        if (name != keep && !dir.remove(name))
+        if (name == keep)
+            continue;
+        if (!dir.remove(name)) {
             spdlog::warn("wallpaper: failed to remove stale file: {}", dir.filePath(name).toStdString());
+            ok = false;
+        }
     }
+    return ok;
 }
 
 //! @brief 按目标覆盖尺寸与输出上限计算解码尺寸；绝不放大
@@ -239,18 +245,7 @@ QString WallpaperLibrary::importWallpaper(const QUrl& source_url)
 
 bool WallpaperLibrary::removeWallpaper()
 {
-    QDir dir(userWallpaperDir());
-    if (!dir.exists())
-        return true;
-
-    bool ok = true;
-    for (const QString& name : wallpaperFiles()) {
-        if (!dir.remove(name)) {
-            spdlog::warn("wallpaper: failed to remove file: {}", dir.filePath(name).toStdString());
-            ok = false;
-        }
-    }
-    return ok;
+    return removeOtherFiles(QString());
 }
 
 QString WallpaperLibrary::reconcile(const QString& id)

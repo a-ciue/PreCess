@@ -4,7 +4,8 @@
  *
  * 颜色按角色命名（primary / surface / border / textXxx），界面统一引用本文件。
  * 明暗由 Theme.mode 驱动并持久化于 QSettings，每个颜色令牌按 dark 求值，
- * 切换后所有绑定点自动更新；独立 dock 模块的局部配色经 Docking.Theme 同步。
+ * 切换后所有绑定点自动更新。调色板角色对应关系与 dock 配色表也在此集中定义，
+ * 由 Main.qml 推送给 AppPalette 与 Docking.Theme；其他模块只接收和展示。
  * 字号按紧凑桌面工具取模数音阶：基准 13px、小二度（1.125）取整。
  */
 
@@ -54,7 +55,6 @@ QtObject {
         _settings.wallpaper = id
     }
 
-    // 修改配色时同步检查 dock/ui/qml 的局部配色（经 Docking.Theme.dark 选择）。
     // ---- 交互色（浅色延续既有交互蓝 #1976D2，深色提亮）----
     readonly property color primary: dark ? "#4EA1F3" : "#1976D2"
     readonly property color primaryHover: dark ? "#6BB3F5" : "#1565C0"
@@ -108,6 +108,93 @@ QtObject {
     // ---- 滚动条 ----
     readonly property color scrollBarIdle: dark ? "#424242" : "#D5D9DF"
     readonly property color scrollBarHover: dark ? "#5A5A5A" : "#B7BDC7"
+
+    // ---- 停靠外壳专用 ----
+    //! 停靠标题栏按钮图标
+    readonly property color dockChromeIcon: dark ? "#9DA1A6" : "#5A616B"
+    //! 停靠标题栏按钮悬停面
+    readonly property color dockChromeHover: dark ? "#3A3A3D" : "#E2E6EB"
+    //! 停靠分隔条悬停强调色
+    readonly property color dockDividerHover: dark ? "#5A87C0" : "#7aa7d9"
+    //! 拖放落点强调色
+    readonly property color dockDropAccent: dark ? "#4EA1F3" : "#2f6fb5"
+    //! 拖放落点填充
+    readonly property color dockDropZoneFill: dark ? "#2A3A4D" : "#cfe0f3"
+    //! 拖放落点边框
+    readonly property color dockDropZoneBorder: dark ? "#3E5C7D" : "#8fb2d9"
+    //! 拖放落点位置标记
+    readonly property color dockDropZoneMarker: dark ? "#6E86A3" : "#9fb9d6"
+    //! 活跃落点前景/边框（刻意两主题同值：在蓝色强调填充上保持对比）
+    readonly property color dockDropZoneActiveFore: "#FFFFFF"
+
+    // ---- 调色板角色表 ----
+    //! 普通控件调色板：主窗口、面板、应用级 QPalette；有壁纸时面色半透明
+    readonly property var controlPalette: ({
+            window: windowBackground,
+            windowText: textPrimary,
+            base: surface,
+            alternateBase: surfaceAlt,
+            text: textPrimary,
+            button: surfaceAlt,
+            buttonText: textPrimary,
+            highlight: primary,
+            highlightedText: textOnPrimary,
+            placeholderText: textDisabled,
+            mid: borderStrong,
+            midlight: border,
+            light: surface,
+            dark: borderStrong,
+            shadow: scrollBarHover,
+            link: primary,
+            toolTipBase: menuSurface,
+            toolTipText: textPrimary
+        })
+    //! 弹窗调色板：菜单与对话框共享；面保持不透明，保证壁纸上的可读性
+    readonly property var popupPalette: ({
+            window: menuSurface,
+            windowText: textPrimary,
+            base: menuSurface,
+            alternateBase: menuSurface,
+            text: textPrimary,
+            button: menuSurface,
+            buttonText: textPrimary,
+            highlight: primary,
+            highlightedText: textOnPrimary,
+            placeholderText: textDisabled,
+            mid: borderStrong,
+            midlight: border,
+            light: menuSurface,
+            dark: borderStrong,
+            shadow: scrollBarHover,
+            link: primary,
+            toolTipBase: menuSurface,
+            toolTipText: textPrimary
+        })
+    //! 停靠组件绘制色；与 dock QML 读取的键一一对应
+    readonly property var dockColors: ({
+            windowBackground: windowBackground,
+            surface: surface,
+            surfaceAlt: surfaceAlt,
+            panelHeaderSurface: panelHeaderSurface,
+            menuSurface: menuSurface,
+            wallpaperTint: wallpaperTint,
+            border: border,
+            borderStrong: borderStrong,
+            textPrimary: textPrimary,
+            textDisabled: textDisabled,
+            textOnPrimary: textOnPrimary,
+            primary: primary,
+            danger: danger,
+            scrollBarHover: scrollBarHover,
+            chromeIcon: dockChromeIcon,
+            chromeHover: dockChromeHover,
+            dividerHover: dockDividerHover,
+            dropAccent: dockDropAccent,
+            dropZoneFill: dockDropZoneFill,
+            dropZoneBorder: dockDropZoneBorder,
+            dropZoneMarker: dockDropZoneMarker,
+            dropZoneActiveFore: dockDropZoneActiveFore
+        })
 
     // ---- 字号（基准 13，小二度音阶取整）----
     readonly property int fontSizeLarge: 15

@@ -1,25 +1,21 @@
 /**
  * @file AppPalette.h
- * @brief 应用级调色板单例：让 ToolTip 等按应用调色板取色的弹窗跟随主题
+ * @brief 应用级调色板单例：把 Theme 已解析的角色表应用到 QGuiApplication
  *
- * 部分弹窗（如 ToolTip）在本应用中按 QGuiApplication::palette() 取色，
- * 而非窗口调色板；本单例把主题明暗与壁纸状态写入应用调色板，由 Main.qml
- * 绑定 Theme.dark / Theme.hasWallpaper 驱动。菜单/对话框另有显式 palette
- * 绑定，不依赖本单例。
+ * 部分弹窗（如 ToolTip）按 QGuiApplication::palette() 取色。本单例只接收
+ * Theme.controlPalette 推送的已解析颜色，经 ThemePalette.h 转成 QPalette 后
+ * 写入应用调色板；自身不再保存明暗/壁纸状态，也不重新计算产品配色。
  *
  * 注意：Fusion 样式的默认控件调色板来自平台主题，后创建的控件不会读取
  * 应用调色板；控件继承依赖 Main.qml 在 ApplicationWindow 上的 palette 绑定，
  * 不能以本单例替代。
- *
- * 调色板角色色值由 ThemePalette.h 提供（须与 app/Theme.qml 保持一致）。
  */
 
 #pragma once
 
-#include <QColor>
 #include <QGuiApplication>
 #include <QObject>
-#include <QPalette>
+#include <QVariantMap>
 #include <qqmlintegration.h>
 
 #include "ThemePalette.h"
@@ -28,50 +24,36 @@ class AppPalette : public QObject {
     Q_OBJECT
     QML_ELEMENT
     QML_SINGLETON
-    Q_PROPERTY(bool dark READ dark WRITE setDark NOTIFY darkChanged)
-    Q_PROPERTY(bool hasWallpaper READ hasWallpaper WRITE setHasWallpaper NOTIFY hasWallpaperChanged)
+    Q_PROPERTY(QVariantMap colors READ colors WRITE setColors NOTIFY colorsChanged)
 
 public:
     explicit AppPalette(QObject* parent = nullptr)
         : QObject(parent)
     {
-        applyPalette();
     }
 
-    bool dark() const { return dark_; }
-    bool hasWallpaper() const { return has_wallpaper_; }
+    /** @brief 当前已解析的角色颜色表（由 Theme.controlPalette 驱动） */
+    QVariantMap colors() const { return colors_; }
 
-    /** @brief 设置明暗并刷新应用调色板（由 Theme.dark 驱动） */
-    void setDark(bool dark)
+    /** @brief 接收主题角色表并刷新应用调色板 */
+    void setColors(const QVariantMap& colors)
     {
-        if (dark_ == dark)
+        if (colors_ == colors)
             return;
-        dark_ = dark;
+        colors_ = colors;
         applyPalette();
-        emit darkChanged();
-    }
-
-    /** @brief 设置壁纸状态并刷新应用调色板（由 Theme.hasWallpaper 驱动） */
-    void setHasWallpaper(bool has_wallpaper)
-    {
-        if (has_wallpaper_ == has_wallpaper)
-            return;
-        has_wallpaper_ = has_wallpaper;
-        applyPalette();
-        emit hasWallpaperChanged();
+        emit colorsChanged();
     }
 
 signals:
-    void darkChanged();
-    void hasWallpaperChanged();
+    void colorsChanged();
 
 private:
-    //! @brief 按当前明暗与壁纸状态刷新应用调色板
+    //! @brief 按 Theme 已解析的角色表刷新应用调色板
     void applyPalette()
     {
-        QGuiApplication::setPalette(app::core::buildThemePalette(dark_, has_wallpaper_));
+        QGuiApplication::setPalette(app::core::buildThemePalette(colors_));
     }
 
-    bool dark_ = false;
-    bool has_wallpaper_ = false;
+    QVariantMap colors_;
 };

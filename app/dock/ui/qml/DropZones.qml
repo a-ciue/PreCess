@@ -18,7 +18,7 @@ Item {
     //! @brief 标签插入标记：[{x, y, width, height}]，无效时不显示
     property var tabInsert: null
 
-    // 落点配色：取自 Docking.Theme.colors（与 app/Theme.qml 同步）
+    // 落点配色：取自 app 侧推送的 Docking.Theme.colors
     readonly property color accent: Docking.Theme.colors.dropAccent
     readonly property color zoneFill: Docking.Theme.colors.dropZoneFill
     readonly property color zoneBorder: Docking.Theme.colors.dropZoneBorder

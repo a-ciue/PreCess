@@ -17,7 +17,7 @@ Rectangle {
     //! @brief 关联的 PanelGroupItem（C++）
     property var groupView: null
 
-    // 面板外框配色：取自 Docking.Theme.colors（与 app/Theme.qml 对应令牌同步）
+    // 面板外框配色：取自 app 侧推送的 Docking.Theme.colors
     readonly property color panelBorder: Docking.Theme.colors.border
     readonly property color titleBarSurface: Docking.Theme.colors.panelHeaderSurface
     readonly property color titleText: Docking.Theme.colors.textPrimary

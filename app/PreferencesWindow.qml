@@ -2,8 +2,8 @@
  * @file PreferencesWindow.qml
  * @brief 偏好设置：主题与背景、插件注册与卸载
  *
- * 主题页把明暗与壁纸收束到同一张工作区标本上，文案只保留控件名与动作名；
- * 窄面板下分类导航自动转为顶部横向标签，更改即时生效。
+ * 主题页只保留主题与壁纸动作，更改直接作用于真实工作区；窄面板下分类导航
+ * 自动转为顶部横向标签，所有更改即时生效。
  */
 
 import QtQuick
@@ -17,13 +17,38 @@ import app.model
 Item {
     id: root
 
-    // 收窄面板宽度可以保留；高度不足以展示预览时由滚动区承接。
-    implicitHeight: 340
+    // 删除迷你预览后按内容收紧，与默认面板高度一致；高度不足时由滚动区承接。
+    implicitHeight: 200
 
     //! @brief 面板窄于该值时，左侧分类栏切换为顶部横向标签
     readonly property bool compact: width < 440
     //! @brief 插件页底栏与分隔线的统一可见条件
     readonly property bool pluginFooterVisible: panelStack.currentIndex === 1 && QModelManager.systemPluginManager.canLoadExternalPlugins
+
+    //! @brief 壁纸操作按钮：使用点只提供文案、可见性、无障碍名称与动作
+    component ActionButton: Button {
+        id: actionButton
+
+        implicitHeight: 24
+        padding: 4
+        hoverEnabled: true
+        Layout.alignment: Qt.AlignVCenter
+
+        background: Rectangle {
+            radius: Theme.radiusControl
+            color: actionButton.hovered ? Theme.hoverOverlay : "transparent"
+            border.width: actionButton.visualFocus ? 1 : 0
+            border.color: Theme.primary
+        }
+
+        contentItem: Text {
+            text: actionButton.text
+            color: actionButton.hovered ? Theme.textPrimary : Theme.textSecondary
+            font.pixelSize: Theme.fontSizeCaption
+            horizontalAlignment: Text.AlignHCenter
+            verticalAlignment: Text.AlignVCenter
+        }
+    }
 
     ColumnLayout {
         anchors.fill: parent
@@ -198,7 +223,7 @@ Item {
                             }
                         }
 
-                        // 壁纸：动作在标题行，预览即工作区标本
+                        // 壁纸：动作在标题行；真实工作区即预览
                         ColumnLayout {
                             Layout.fillWidth: true
                             spacing: Theme.spacingSm
@@ -217,94 +242,20 @@ Item {
                                     Layout.fillWidth: true
                                 }
 
-                                Button {
-                                    id: wallpaperActionButton
-                                    implicitHeight: 24
-                                    padding: 4
-                                    hoverEnabled: true
-                                    Layout.alignment: Qt.AlignVCenter
+                                ActionButton {
                                     text: Theme.wallpaper !== "" ? qsTr("更换图片") : qsTr("添加图片")
-
                                     Accessible.name: text
-
                                     onClicked: wallpaperFileDialog.open()
-
-                                    background: Rectangle {
-                                        radius: Theme.radiusControl
-                                        color: wallpaperActionButton.hovered ? Theme.hoverOverlay : "transparent"
-                                        border.width: wallpaperActionButton.visualFocus ? 1 : 0
-                                        border.color: Theme.primary
-                                    }
-
-                                    contentItem: Text {
-                                        text: wallpaperActionButton.text
-                                        color: wallpaperActionButton.hovered ? Theme.textPrimary : Theme.textSecondary
-                                        font.pixelSize: Theme.fontSizeCaption
-                                        horizontalAlignment: Text.AlignHCenter
-                                        verticalAlignment: Text.AlignVCenter
-                                    }
                                 }
 
-                                Button {
-                                    id: clearWallpaperButton
+                                ActionButton {
                                     visible: Theme.wallpaper !== ""
-                                    implicitHeight: 24
-                                    padding: 4
-                                    hoverEnabled: true
-                                    Layout.alignment: Qt.AlignVCenter
                                     text: qsTr("移除")
-
                                     Accessible.name: qsTr("移除背景壁纸")
-
                                     onClicked: {
                                         Wallpaper.removeWallpaper();
                                         Theme.setWallpaper("");
                                     }
-
-                                    background: Rectangle {
-                                        radius: Theme.radiusControl
-                                        color: clearWallpaperButton.hovered ? Theme.hoverOverlay : "transparent"
-                                        border.width: clearWallpaperButton.visualFocus ? 1 : 0
-                                        border.color: Theme.primary
-                                    }
-
-                                    contentItem: Text {
-                                        text: clearWallpaperButton.text
-                                        color: clearWallpaperButton.hovered ? Theme.textPrimary : Theme.textSecondary
-                                        font.pixelSize: Theme.fontSizeCaption
-                                        horizontalAlignment: Text.AlignHCenter
-                                        verticalAlignment: Text.AlignVCenter
-                                    }
-                                }
-                            }
-
-                            Item {
-                                Layout.fillWidth: true
-                                Layout.preferredHeight: appearancePreview.implicitHeight
-
-                                AppearancePreview {
-                                    id: appearancePreview
-                                    anchors.fill: parent
-                                    wallpaperSource: Theme.wallpaperSource
-                                }
-
-                                Rectangle {
-                                    anchors.fill: parent
-                                    radius: Theme.radiusMenu
-                                    color: "transparent"
-                                    border.width: previewHover.containsMouse ? 1 : 0
-                                    border.color: Theme.primary
-                                }
-
-                                MouseArea {
-                                    id: previewHover
-                                    anchors.fill: parent
-                                    hoverEnabled: true
-                                    cursorShape: Qt.PointingHandCursor
-
-                                    Accessible.ignored: true
-
-                                    onClicked: wallpaperFileDialog.open()
                                 }
                             }
                         }

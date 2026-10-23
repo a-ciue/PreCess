@@ -38,24 +38,25 @@ ApplicationWindow {
     // QGuiApplication 应用调色板。窗口级绑定才能让启动后动态创建的控件
     // （功能参数面板、插件声明的参数控件、设置页下拉等）继承当前主题；
     // 应用调色板（AppPalette）仍负责 ToolTip 等窗口外的弹窗。
-    palette.window: Theme.windowBackground
-    palette.windowText: Theme.textPrimary
-    palette.base: Theme.surface
-    palette.alternateBase: Theme.surfaceAlt
-    palette.text: Theme.textPrimary
-    palette.button: Theme.surfaceAlt
-    palette.buttonText: Theme.textPrimary
-    palette.highlight: Theme.primary
-    palette.highlightedText: Theme.textOnPrimary
-    palette.placeholderText: Theme.textDisabled
-    palette.mid: Theme.borderStrong
-    palette.midlight: Theme.border
-    palette.light: Theme.surface
-    palette.dark: Theme.borderStrong
-    palette.shadow: Theme.scrollBarHover
-    palette.link: Theme.primary
-    palette.toolTipBase: Theme.menuSurface
-    palette.toolTipText: Theme.textPrimary
+    // 角色颜色全部来自 Theme.controlPalette，此处不重复产品配色规则。
+    palette.window: Theme.controlPalette.window
+    palette.windowText: Theme.controlPalette.windowText
+    palette.base: Theme.controlPalette.base
+    palette.alternateBase: Theme.controlPalette.alternateBase
+    palette.text: Theme.controlPalette.text
+    palette.button: Theme.controlPalette.button
+    palette.buttonText: Theme.controlPalette.buttonText
+    palette.highlight: Theme.controlPalette.highlight
+    palette.highlightedText: Theme.controlPalette.highlightedText
+    palette.placeholderText: Theme.controlPalette.placeholderText
+    palette.mid: Theme.controlPalette.mid
+    palette.midlight: Theme.controlPalette.midlight
+    palette.light: Theme.controlPalette.light
+    palette.dark: Theme.controlPalette.dark
+    palette.shadow: Theme.controlPalette.shadow
+    palette.link: Theme.controlPalette.link
+    palette.toolTipBase: Theme.controlPalette.toolTipBase
+    palette.toolTipText: Theme.controlPalette.toolTipText
 
     // 壁纸背景层：纯色兜底、双图淡入与加载失败回退由独立组件承载
     background: WallpaperBackground {
@@ -74,14 +75,30 @@ ApplicationWindow {
     // 操作状态由窗口持有，侧栏隐藏或重建不会结束当前操作。
     readonly property OperationSession operationSession: OperationSession {}
 
-    // 调色板统一由 AppPalette 写入应用调色板（随 Theme.dark 同步），窗口/控件
-    // 与弹窗均据此渲染，避免在此重复列举角色色值。
+    // 配色由 Theme 统一解析；AppPalette 与 dock 只接收结果，不自行计算。
+    // ToolTip 等按应用调色板取色的弹窗据此跟随主题与壁纸状态。
+    Binding {
+        target: AppPalette
+        property: "colors"
+        value: Theme.controlPalette
+    }
 
-    // 把应用主题明暗推送给 dock 模块（dock 刻意不反向依赖 app）
+    // 把 dock 绘制色、普通控件调色板与弹窗调色板推送给 dock 模块
+    // （dock 刻意不反向依赖 app）。
     Binding {
         target: Docking.Theme
-        property: "dark"
-        value: Theme.dark
+        property: "colors"
+        value: Theme.dockColors
+    }
+    Binding {
+        target: Docking.Theme
+        property: "controlPalette"
+        value: Theme.controlPalette
+    }
+    Binding {
+        target: Docking.Theme
+        property: "popupPalette"
+        value: Theme.popupPalette
     }
 
     // 把自定义壁纸图像源推送给 dock 模块（浮动窗口经 Docking.Theme.wallpaperUrl 读取）
@@ -89,18 +106,6 @@ ApplicationWindow {
         target: Docking.Theme
         property: "wallpaperUrl"
         value: Theme.wallpaperSource
-    }
-
-    // 同步应用调色板：ToolTip 等按应用调色板取色的弹窗据此跟随主题与壁纸状态
-    Binding {
-        target: AppPalette
-        property: "dark"
-        value: Theme.dark
-    }
-    Binding {
-        target: AppPalette
-        property: "hasWallpaper"
-        value: Theme.hasWallpaper
     }
 
     // 布局持久化：JSON 快照存于 QSettings；退出保存，启动恢复

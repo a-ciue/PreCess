@@ -52,20 +52,30 @@ TEST_CASE("Main window palette reaches controls created after startup", "[QML][t
     }
     REQUIRE(palette_role_count >= 18);
 
-    // 固定假令牌，避免测试依赖本机 QSettings 中的主题选择。
+    // 固定假角色表，避免测试依赖本机 QSettings 中的主题选择。
     const QColor surface("#112233");
+    QVariantMap control_palette;
+    control_palette.insert("window", QColor("#010203"));
+    control_palette.insert("windowText", QColor("#040506"));
+    control_palette.insert("base", surface);
+    control_palette.insert("alternateBase", QColor("#070809"));
+    control_palette.insert("text", QColor("#0a0b0c"));
+    control_palette.insert("button", QColor("#0d0e0f"));
+    control_palette.insert("buttonText", QColor("#101112"));
+    control_palette.insert("highlight", QColor("#131415"));
+    control_palette.insert("highlightedText", QColor("#161718"));
+    control_palette.insert("placeholderText", QColor("#191a1b"));
+    control_palette.insert("mid", QColor("#1c1d1e"));
+    control_palette.insert("midlight", QColor("#1f2021"));
+    control_palette.insert("light", QColor("#222324"));
+    control_palette.insert("dark", QColor("#252627"));
+    control_palette.insert("shadow", QColor("#28292a"));
+    control_palette.insert("link", QColor("#2b2c2d"));
+    control_palette.insert("toolTipBase", QColor("#2e2f30"));
+    control_palette.insert("toolTipText", QColor("#313233"));
+
     QVariantMap theme_tokens;
-    theme_tokens.insert("windowBackground", QColor("#010203"));
-    theme_tokens.insert("textPrimary", QColor("#040506"));
-    theme_tokens.insert("surface", surface);
-    theme_tokens.insert("surfaceAlt", QColor("#070809"));
-    theme_tokens.insert("primary", QColor("#0a0b0c"));
-    theme_tokens.insert("textOnPrimary", QColor("#0d0e0f"));
-    theme_tokens.insert("textDisabled", QColor("#101112"));
-    theme_tokens.insert("borderStrong", QColor("#131415"));
-    theme_tokens.insert("border", QColor("#161718"));
-    theme_tokens.insert("scrollBarHover", QColor("#191a1b"));
-    theme_tokens.insert("menuSurface", QColor("#1c1d1e"));
+    theme_tokens.insert("controlPalette", control_palette);
 
     QByteArray fixture = R"QML(
 import QtQuick

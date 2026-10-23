@@ -38,7 +38,6 @@ qt_add_qml_module(${MYNAME}
             PythonConsole.qml
             PreferencesWindow.qml
             PreferenceCategoryButton.qml
-            AppearancePreview.qml
             ThemeModeSwitch.qml
             WallpaperBackground.qml
             ThemedDialog.qml

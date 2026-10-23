@@ -9,13 +9,34 @@ import PreCess.Docking as Docking
 Rectangle {
     id: root
 
-    // 浮动窗口底与边框：取自 Docking.Theme.colors（与 app/Theme.qml 同步）
+    // 浮动窗口底与边框：取自 app 侧推送的 Docking.Theme.colors
     readonly property color surfaceWindow: Docking.Theme.colors.windowBackground
     readonly property color windowBorder: Docking.Theme.colors.borderStrong
 
     color: surfaceWindow
     border.color: windowBorder
     border.width: 1
+
+    // 浮窗是独立 QQuickWindow，不会继承主窗口 palette；在内容公共祖先绑定
+    // 普通控件调色板，使既有面板与之后创建的输入框/下拉框自然继承。
+    palette.window: Docking.Theme.controlPalette.window
+    palette.windowText: Docking.Theme.controlPalette.windowText
+    palette.base: Docking.Theme.controlPalette.base
+    palette.alternateBase: Docking.Theme.controlPalette.alternateBase
+    palette.text: Docking.Theme.controlPalette.text
+    palette.button: Docking.Theme.controlPalette.button
+    palette.buttonText: Docking.Theme.controlPalette.buttonText
+    palette.highlight: Docking.Theme.controlPalette.highlight
+    palette.highlightedText: Docking.Theme.controlPalette.highlightedText
+    palette.placeholderText: Docking.Theme.controlPalette.placeholderText
+    palette.mid: Docking.Theme.controlPalette.mid
+    palette.midlight: Docking.Theme.controlPalette.midlight
+    palette.light: Docking.Theme.controlPalette.light
+    palette.dark: Docking.Theme.controlPalette.dark
+    palette.shadow: Docking.Theme.controlPalette.shadow
+    palette.link: Docking.Theme.controlPalette.link
+    palette.toolTipBase: Docking.Theme.controlPalette.toolTipBase
+    palette.toolTipText: Docking.Theme.controlPalette.toolTipText
 
     // 自定义壁纸：由 app 侧 Binding 推入 Docking.Theme.wallpaperUrl；无壁纸时露出纯色底
     Image {

@@ -102,22 +102,36 @@ qt_add_resources(TestToolbarNavigation navigation_icons
         "${CMAKE_SOURCE_DIR}/resource/toolbar/Geometry/geometry-reconstruction.svg"
         "${CMAKE_SOURCE_DIR}/resource/toolbar/Panels/preview.svg")
 
-# AppPalette 应用调色板角色随明暗解析（纯函数，无需应用实例）
-precess_add_test(TestAppPalette TestAppPalette.cpp)
+# AppPalette 角色表适配与应用级调色板刷新
+precess_add_test(TestAppPalette TestAppPalette.cpp ../core/AppPalette.h)
+set_target_properties(TestAppPalette PROPERTIES AUTOMOC ON)
 target_include_directories(TestAppPalette PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}/..")
-precess_test_link_libraries(TestAppPalette Qt${VTK_QT_VERSION}::Gui)
+precess_test_link_libraries(TestAppPalette Qt${VTK_QT_VERSION}::Gui Qt${VTK_QT_VERSION}::Qml)
 
-# DockTheme 停靠配色表随明暗整体刷新
+# DockTheme 只保存宿主推送的配色表并通知
 precess_add_test(TestDockTheme TestDockTheme.cpp ../dock/ui/DockTheme.h)
 set_target_properties(TestDockTheme PROPERTIES AUTOMOC ON)
 target_include_directories(TestDockTheme PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}/../dock")
 precess_test_link_libraries(TestDockTheme Qt${VTK_QT_VERSION}::Core Qt${VTK_QT_VERSION}::Gui)
 
-# 主题色跨文件一致性：ThemePalette 与 DockTheme 重叠语义相等
-precess_add_test(TestThemeConsistency TestThemeConsistency.cpp ../dock/ui/DockTheme.h)
-set_target_properties(TestThemeConsistency PROPERTIES AUTOMOC ON)
-target_include_directories(TestThemeConsistency PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}/.." "${CMAKE_CURRENT_SOURCE_DIR}/../dock")
-precess_test_link_libraries(TestThemeConsistency Qt${VTK_QT_VERSION}::Core Qt${VTK_QT_VERSION}::Gui)
+# 主题配色管道：同一份角色表到达应用调色板与停靠主题
+precess_add_test(TestThemePipeline
+    TestThemePipeline.cpp
+    ../core/AppPalette.h
+    ../dock/ui/DockTheme.h
+)
+set_target_properties(TestThemePipeline PROPERTIES AUTOMOC ON)
+target_include_directories(TestThemePipeline PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}/.." "${CMAKE_CURRENT_SOURCE_DIR}/../dock")
+precess_test_link_libraries(TestThemePipeline Qt${VTK_QT_VERSION}::Core Qt${VTK_QT_VERSION}::Gui Qt${VTK_QT_VERSION}::Qml)
+
+# 浮窗公共祖先的普通控件调色板继承
+precess_add_test(TestDockWindowPalette TestDockWindowPalette.cpp)
+target_include_directories(TestDockWindowPalette PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}/../dock")
+precess_test_link_libraries(TestDockWindowPalette
+    dock
+    Qt${VTK_QT_VERSION}::QuickControls2
+    Qt${VTK_QT_VERSION}::Qml
+)
 
 # WallpaperLibrary 壁纸库：导入校验、单张替换、移除与启动校验
 precess_add_test(TestWallpaperLibrary
