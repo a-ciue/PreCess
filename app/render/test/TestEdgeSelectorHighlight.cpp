@@ -1,4 +1,5 @@
 #include "MakeMeshDataVtk.h"
+#include "TestMeshActorWithData.h"
 
 #include "SelectorHighlight.h"
 #include <vtkPartitionedDataSet.h>
@@ -65,8 +66,8 @@ int main(int argc, char* argv[])
     vtkSmartPointer<EdgePickInteractorStyle> style = vtkSmartPointer<EdgePickInteractorStyle>::New();
     interactor->SetInteractorStyle(style);
 
-    // 创建MeshActor（点集由 actor 从 model_data.vertex_positions_ 自建）
-    std::shared_ptr meshActor = std::make_shared<MeshActor>(renderer);
+    // 创建MeshActor（点集由测试数据管线从 model_data.vertex_positions_ 创建）
+    std::shared_ptr meshActor = std::make_shared<TestMeshActorWithData>(renderer);
     // 加载模型数据
     meshActor->loadModelData(test_mesh_data);
 

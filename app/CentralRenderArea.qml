@@ -94,7 +94,7 @@ Page {
 
                 Timer { id: geoSubCloseTimer; interval: geoBtn.subMenuCloseDelay; onTriggered: { geoFaceMenu.close(); geoTransMenu.close(); geoWireMenu.close() } }
 
-                Menu {
+                AppMenu {
                     id: geoMenu
                     closePolicy: Popup.CloseOnEscape | Popup.CloseOnPressOutsideParent
                     onAboutToShow: { y = -height }
@@ -206,7 +206,7 @@ Page {
                     exclusive: true
                 }
 
-                Menu {
+                AppMenu {
                     id: geoFaceMenu
                     MenuItem {
                         text: "有边"
@@ -223,7 +223,7 @@ Page {
                         onTriggered: myItem.setGeometryStyle(1)
                     }
                 }
-                Menu {
+                AppMenu {
                     id: geoTransMenu
                     MenuItem {
                         text: "75%"
@@ -247,7 +247,7 @@ Page {
                         onTriggered: myItem.setGeometryStyle(4)
                     }
                 }
-                Menu {
+                AppMenu {
                     id: geoWireMenu
                     MenuItem {
                         text: "带曲面线"
@@ -291,7 +291,7 @@ Page {
 
                 Timer { id: meshSubCloseTimer; interval: meshBtn.subMenuCloseDelay; onTriggered: { meshFaceMenu.close(); meshTransMenu.close(); meshWireMenu.close() } }
 
-                Menu {
+                AppMenu {
                     id: meshMenu
                     closePolicy: Popup.CloseOnEscape | Popup.CloseOnPressOutsideParent
                     onAboutToShow: { y = -height }
@@ -354,7 +354,7 @@ Page {
                     }
                 }
 
-                Menu {
+                AppMenu {
                     id: meshFaceMenu
                     MenuItem {
                         text: "带网格线"
@@ -371,7 +371,7 @@ Page {
                         onTriggered: myItem.setMeshStyle(1)
                     }
                 }
-                Menu {
+                AppMenu {
                     id: meshTransMenu
                     MenuItem {
                         text: "75%"
@@ -395,7 +395,7 @@ Page {
                         onTriggered: myItem.setMeshStyle(4)
                     }
                 }
-                Menu {
+                AppMenu {
                     id: meshWireMenu
                     MenuItem {
                         text: "带内部线"
@@ -421,7 +421,7 @@ Page {
                 Layout.fillHeight: true
                 onClicked: topologyDiagnosticMenu.visible ? topologyDiagnosticMenu.close() : topologyDiagnosticMenu.open()
 
-                Menu {
+                AppMenu {
                     id: topologyDiagnosticMenu
                     closePolicy: Popup.CloseOnEscape | Popup.CloseOnPressOutsideParent
                     onAboutToShow: { y = -height }
@@ -532,7 +532,7 @@ Page {
                 Layout.fillHeight: true
                 onClicked: geometryTopologyDiagnosticMenu.visible ? geometryTopologyDiagnosticMenu.close() : geometryTopologyDiagnosticMenu.open()
 
-                Menu {
+                AppMenu {
                     id: geometryTopologyDiagnosticMenu
                     closePolicy: Popup.CloseOnEscape | Popup.CloseOnPressOutsideParent
                     onAboutToShow: { y = -height }
@@ -723,6 +723,10 @@ Page {
                     App.selection.selectionUpdated(myItem.selectedIDs)
             }
 
+            onComponentVisibilityChanged: function(componentId, meshVisible, geometryVisible) {
+                App.registry.objectTree.syncComponentVisibility(componentId, meshVisible, geometryVisible)
+            }
+
             Component.onCompleted: {
                 myItem.setFaceSelectionByAngle(root.faceSelectByAngle, root.faceSelectAngle)
             }
@@ -801,68 +805,89 @@ Page {
             }
         }
 
-        Menu {
+        AppMenu {
             id: viewportMenu
+            objectName: "viewportVisibilityMenu"
 
             property var pickedIds: []
+            // 面和组件共用所选对象操作；空选择时显示全局显隐操作。
+            property bool faceMode: App.selection.selectMode === "Face"
+            property bool hasFacePicks: false
+            property bool hasPicks: faceMode ? hasFacePicks : pickedIds.length > 0
 
-            onOpened: {
-                let sel = myItem.selectedIDs
+            // 根据选择快照刷新菜单，确保弹出前完成所选对象判断。
+            function refreshSelection(sel) {
                 pickedIds = sel ? sel.getAsComponentIds() : []
+                // 选择模式已标识选面；Element 的继承枚举未导出到 QML，不能用于比较。
+                hasFacePicks = faceMode && !!sel && sel.size() > 0
             }
+
+            onAboutToShow: refreshSelection(myItem.selectedIDs)
 
             // 视口菜单项：shown 控制显隐（无拾取时显示整组操作，有拾取时显示对象操作）
             component StyledMenuItem: MenuItem {
                 id: control
                 property bool shown: true
+                // shown 控制显隐，active 控制可点。
+                property bool active: true
 
                 visible: shown
-                enabled: shown
+                enabled: shown && active
             }
 
             component StyledSeparator: MenuSeparator {}
 
             StyledMenuItem {
                 text: "隐藏"
-                shown: viewportMenu.pickedIds.length > 0
+                shown: viewportMenu.hasPicks
                 onTriggered: {
-                    for (let i = 0; i < viewportMenu.pickedIds.length; i++)
-                        App.registry.objectTree.hideNode(viewportMenu.pickedIds[i], 1)
+                    if (viewportMenu.faceMode)
+                        myItem.hideSelectedFaces()
+                    else {
+                        for (let i = 0; i < viewportMenu.pickedIds.length; i++)
+                            App.registry.objectTree.hideNode(viewportMenu.pickedIds[i], 1)
+                    }
                 }
             }
 
             StyledMenuItem {
                 text: "隔离"
-                shown: viewportMenu.pickedIds.length > 0
+                shown: viewportMenu.hasPicks
                 onTriggered: {
-                    if (viewportMenu.pickedIds.length > 0)
+                    if (viewportMenu.faceMode)
+                        myItem.isolateSelectedFaces()
+                    else if (viewportMenu.pickedIds.length > 0)
                         App.registry.objectTree.isolateSelection(viewportMenu.pickedIds)
                 }
             }
 
             StyledMenuItem {
                 text: "显示"
-                shown: viewportMenu.pickedIds.length > 0
+                shown: viewportMenu.hasPicks
                 onTriggered: {
-                    for (let i = 0; i < viewportMenu.pickedIds.length; i++)
-                        App.registry.objectTree.showNode(viewportMenu.pickedIds[i], 1)
+                    if (viewportMenu.faceMode)
+                        myItem.showSelectedFaces()
+                    else {
+                        for (let i = 0; i < viewportMenu.pickedIds.length; i++)
+                            App.registry.objectTree.showNode(viewportMenu.pickedIds[i], 1)
+                    }
                 }
             }
 
             StyledSeparator {
-                visible: viewportMenu.pickedIds.length > 0
+                visible: viewportMenu.hasPicks
             }
 
             StyledMenuItem {
                 text: "全部隐藏"
-                shown: viewportMenu.pickedIds.length === 0
+                shown: !viewportMenu.hasPicks
                 onTriggered: App.registry.objectTree.hideAllNodes()
             }
 
             StyledMenuItem {
                 text: "全部显示"
-                shown: viewportMenu.pickedIds.length === 0
-                onTriggered: App.registry.objectTree.showAllNodes()
+                shown: !viewportMenu.hasPicks
+                onTriggered: myItem.showAll()
             }
 
             StyledMenuItem {

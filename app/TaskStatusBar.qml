@@ -11,14 +11,14 @@ import app.model
 Rectangle {
     id: root
     height: 26
-    color: "#f0f0f0"
+    color: Theme.surfaceAlt
 
     Rectangle {
         anchors.top: parent.top
         anchors.left: parent.left
         anchors.right: parent.right
         height: 1
-        color: "#c8c8c8"
+        color: Theme.border
     }
 
     RowLayout {
@@ -32,7 +32,7 @@ Rectangle {
             Layout.fillWidth: true
             Layout.minimumWidth: 0
             font.pixelSize: 12
-            color: "#444441"
+            color: Theme.textPrimary
             elide: Text.ElideRight
             text: {
                 var task = QModelManager.taskStatus;
@@ -65,11 +65,11 @@ Rectangle {
             hoverEnabled: true
             background: Rectangle {
                 radius: 3
-                color: cancelButton.hovered ? "#fbe4e4" : "transparent"
+                color: cancelButton.hovered ? Theme.dangerTint : "transparent"
             }
             contentItem: Text {
                 text: "✕"
-                color: "#c62828"
+                color: Theme.danger
                 font.pixelSize: 12
                 font.bold: true
                 horizontalAlignment: Text.AlignHCenter
@@ -84,14 +84,14 @@ Rectangle {
         Label {
             visible: QModelManager.taskStatus.running && QModelManager.taskStatus.progress > 0
             font.pixelSize: 12
-            color: "#444441"
+            color: Theme.textPrimary
             text: Math.round(QModelManager.taskStatus.progress * 100) + "%"
         }
 
         Label {
             visible: QModelManager.taskStatus.writePending
             font.pixelSize: 11
-            color: "#ef6c00"
+            color: Theme.warning
             text: qsTr("任务处理中…（模型编辑暂不可用）")
         }
     }

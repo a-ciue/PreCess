@@ -1,7 +1,10 @@
 add_library(vtkPart STATIC 
     MeshActor.cpp
+    MeshPipelineData.cpp
+    MeshPipelineData.h
     MeshActorSelectOp.cpp
     MeshAreaPick.cpp
+    FaceHideFilter.cpp
     GeometryActorSelectOp.cpp
     GeometrySelectorHighlight.cpp
     QRenderWindowStyle.cpp
@@ -53,6 +56,8 @@ qt_add_qml_module(renderQml
     SOURCES
         QRenderWindow.h
         QRenderWindow.cpp
+        ViewportOrientationRepresentation.h
+        ViewportOrientationRepresentation.cpp
 )
 target_link_libraries(renderQml PRIVATE 
     vtkPart modelQml 

@@ -119,7 +119,7 @@ private:
     MeshActorSelectOp select_op_;
     vtkPartitionedDataSet* highlight_data_;
     unsigned int partition_id_;
-    std::vector<vtkIdType> selections_;
+    std::vector<vtkIdType> selections_; //> 当前渲染面下标，外部更新数据前必须清空
     FaceSelectionSpreadOptions spread_options_;
     FaceSpreadCache spread_cache_;
     vtkSmartPointer<vtkPolyData> selections_poly_;

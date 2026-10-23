@@ -1,4 +1,5 @@
 #include "MakeMeshDataVtk.h"
+#include "TestMeshActorWithData.h"
 #include "MeshIdQuery.h"
 #include "SelectorHighlight.h"
 #include <iostream>
@@ -44,7 +45,7 @@ int selfCheck()
     MeshDataVtk test_mesh_data = MakeMeshDataVtk(mesh);
 
     vtkNew<vtkRenderer> renderer;
-    auto mesh_actor = std::make_shared<MeshActor>(renderer);
+    auto mesh_actor = std::make_shared<TestMeshActorWithData>(renderer);
     mesh_actor->loadModelData(test_mesh_data);
     MeshActorSelectOp select_op(mesh_actor);
 
@@ -133,8 +134,8 @@ int main(int argc, char* argv[])
     vtkSmartPointer<VertexPickInteractorStyle> style = vtkSmartPointer<VertexPickInteractorStyle>::New();
     interactor->SetInteractorStyle(style);
 
-    // 创建MeshActor（点集由 actor 从 model_data.vertex_positions_ 自建）
-    std::shared_ptr meshActor = std::make_shared<MeshActor>(renderer);
+    // 创建MeshActor（点集由测试数据管线从 model_data.vertex_positions_ 创建）
+    std::shared_ptr meshActor = std::make_shared<TestMeshActorWithData>(renderer);
     // 加载模型数据
     meshActor->loadModelData(test_mesh_data);
 

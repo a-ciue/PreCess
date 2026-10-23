@@ -17,16 +17,14 @@ Rectangle {
     //! @brief 关联的 PanelGroupItem（C++）
     property var groupView: null
 
-    // 面板外框配色（与 app 侧 Theme 令牌取值保持一致；dock 模块刻意
-    // 仅依赖 Qt、不反向依赖 app，故以局部常量对齐配色）
-    // 修改这些配色时须同步检查 app/Theme.qml 中的对应令牌。
-    readonly property color panelBorder: "#D9DDE3"
-    readonly property color titleBarSurface: "#E6EDF5" // Theme.panelHeaderSurface
-    readonly property color titleText: "#2B2F36"
-    readonly property color chromeIcon: "#5A616B"
-    readonly property color chromeHover: "#E2E6EB"
-    readonly property color closeHover: "#D32F2F"
-    readonly property color reorderAccent: "#1976D2"
+    // 面板外框配色：取自 Docking.Theme.colors（与 app/Theme.qml 对应令牌同步）
+    readonly property color panelBorder: Docking.Theme.colors.border
+    readonly property color titleBarSurface: Docking.Theme.colors.panelHeaderSurface
+    readonly property color titleText: Docking.Theme.colors.textPrimary
+    readonly property color chromeIcon: Docking.Theme.colors.chromeIcon
+    readonly property color chromeHover: Docking.Theme.colors.chromeHover
+    readonly property color closeHover: Docking.Theme.colors.danger
+    readonly property color reorderAccent: Docking.Theme.colors.primary
 
     color: "transparent"
     border.color: panelBorder
@@ -203,7 +201,7 @@ Rectangle {
                     }
 
                     // 标签右键菜单（浮动/回停、关闭、关闭其他）
-                    Menu {
+                    DockMenu {
                         id: tabMenu
                         MenuItem {
                             text: root.groupView && root.groupView.detached ? qsTr("回停") : qsTr("浮动")
@@ -263,7 +261,7 @@ Rectangle {
                     hoverEnabled: true
                     onClicked: tabsMenu.popup()
                 }
-                Menu {
+                DockMenu {
                     id: tabsMenu
                     Instantiator {
                         model: root.groupView ? root.groupView.tabNames : []
@@ -348,7 +346,7 @@ Rectangle {
         }
 
         // 标题栏右键菜单（浮动/回停、关闭分组、关闭其他分组）
-        Menu {
+        DockMenu {
             id: titleMenu
             MenuItem {
                 text: root.groupView && root.groupView.detached ? qsTr("回停分组") : qsTr("浮动分组")

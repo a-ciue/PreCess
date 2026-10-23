@@ -211,6 +211,29 @@ std::unique_ptr<Selection> MeshSelectManager::getSelection()
     return result;
 }
 
+std::unordered_map<Index, std::vector<vtkIdType>> MeshSelectManager::selectedFacesByComponent()
+{
+    std::unordered_map<Index, std::vector<vtkIdType>> result;
+    if (select_mode_ != SelectMode::Face)
+        return result;
+
+    for (auto& [comp_id, selector] : component_selectors_) {
+        auto* face_selector = dynamic_cast<FaceSelectorHighlight*>(selector.get());
+        if (!face_selector)
+            continue;
+
+        SelectionVtk selection = face_selector->get();
+        if (selection.ids.empty())
+            continue;
+
+        auto& face_ids = result[comp_id];
+        face_ids.reserve(selection.ids.size());
+        for (Index id : selection.ids)
+            face_ids.push_back(static_cast<vtkIdType>(id));
+    }
+    return result;
+}
+
 SelectorHighlight* MeshSelectManager::getOrCreateSelector(Index component_id)
 {
     auto it = component_selectors_.find(component_id);

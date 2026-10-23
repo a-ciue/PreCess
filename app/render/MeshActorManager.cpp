@@ -1,10 +1,10 @@
 #include "MeshActorManager.h"
 #include "Core.h"
-#include "renderStrategy/AttriRenderStrategyScalar.h"
-#include "renderStrategy/AttriRenderStrategyVector.h"
-#include "renderStrategy/AttriRenderStrategyUV.h"
-#include "renderStrategy/AttriRenderStrategyRGB.h"
 #include "TopologyDiagnosticActor.h"
+#include "renderStrategy/AttriRenderStrategyRGB.h"
+#include "renderStrategy/AttriRenderStrategyScalar.h"
+#include "renderStrategy/AttriRenderStrategyUV.h"
+#include "renderStrategy/AttriRenderStrategyVector.h"
 #include <spdlog/spdlog.h>
 #include <vtkRenderer.h>
 #include <vtkTextProperty.h>
@@ -61,25 +61,30 @@ bool MeshActorManager::hasComponent(Index component_id) const
     return this->component_actors_.count(component_id) != 0;
 }
 
-void MeshActorManager::loadMesh(Index component_id, const MeshDataVtk& model_data, vtkRenderer* renderer)
+void MeshActorManager::loadMesh(Index component_id, std::shared_ptr<const MeshDataSnapshot> snapshot, vtkRenderer* renderer)
 {
     if (!this->component_actors_.count(component_id))
         this->component_actors_[component_id] = std::make_shared<MeshActor>(renderer);
 
-    if (scalar_bar_component_id_ == component_id) {
-        scalar_bar_->SetVisibility(false);
-        scalar_bar_component_id_ = -1;
-    }
     auto& actor = this->component_actors_[component_id];
+    // 旧网格的回传不能重置新网格的属性颜色条或重新注册拾取对象。
+    if (snapshot->generation < actor->dataGeneration())
+        return;
     for (size_t category = 0; category < topology_diagnostic_category_enabled_.size(); ++category) {
         actor->topologyDiagnostics().setCategoryEnabled(
             static_cast<TopologyDiagnosticCategory>(category), topology_diagnostic_category_enabled_[category]);
     }
     actor->topologyDiagnostics().setDihedralAngleRange(dihedral_minimum_, dihedral_maximum_);
-    actor->setClipPlane(clip_plane_);
-    actor->loadModelData(model_data);
-    actor->setRenderStyle(current_style_);
-    op_.registerProps(component_id, actor);
+    const bool reloaded = actor->dataGeneration() != snapshot->generation;
+    if (reloaded && scalar_bar_component_id_ == component_id) {
+        scalar_bar_->SetVisibility(false);
+        scalar_bar_component_id_ = -1;
+    }
+    actor->applyDataSnapshot(std::move(snapshot));
+    if (reloaded) {
+        actor->setRenderStyle(current_style_);
+        op_.registerProps(component_id, actor);
+    }
 }
 
 void MeshActorManager::setVisibility(Index component_id, bool visibility)
@@ -88,19 +93,10 @@ void MeshActorManager::setVisibility(Index component_id, bool visibility)
         this->component_actors_[component_id]->setVisibility(visibility);
 }
 
-void MeshActorManager::setClipPlane(vtkPlane* plane)
-{
-    clip_plane_ = plane;
-    for (auto&& [idx, mesh_actor] : this->component_actors_) {
-        mesh_actor->setClipPlane(plane);
-    }
-}
-
 bool MeshActorManager::getCount(Index component_id)
 {
     return this->component_actors_.count(component_id);
 }
-
 
 void MeshActorManager::setCurrentRenderStyle(MeshRenderStyle style)
 {

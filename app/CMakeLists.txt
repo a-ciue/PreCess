@@ -39,6 +39,7 @@ qt_add_qml_module(${MYNAME}
             PreferencesWindow.qml
             OutputLog.qml
             Theme.qml
+            AppMenu.qml
             RibbonTabButton.qml
             RibbonActionButton.qml
 )

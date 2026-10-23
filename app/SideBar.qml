@@ -46,6 +46,21 @@ Item{
             model: root.subFeatures.map(info => ({ text: info.label || info.display_name }))
             textRole: "text"
             enabled: root.hasSubFeatureChoice
+            FontMetrics {
+                id: subFeatureFontMetrics
+                font: subFeatureSelector.font
+            }
+            background: Rectangle {
+                // Fusion 的自然高度来自背景；替换背景后仍须容纳字体和内边距。
+                implicitHeight: Math.max(28, subFeatureFontMetrics.height
+                    + subFeatureSelector.topPadding + subFeatureSelector.bottomPadding)
+                radius: Theme.radiusControl
+                color: !subFeatureSelector.enabled ? Theme.surfaceAlt
+                     : subFeatureSelector.down ? Theme.panelHeaderSurface
+                     : subFeatureSelector.hovered ? Theme.hoverOverlay : Theme.primaryTint
+                border.width: subFeatureSelector.visualFocus ? 2 : 1
+                border.color: subFeatureSelector.visualFocus ? Theme.primary : Theme.borderStrong
+            }
             currentIndex: root.activeOp && root.activeOp.info
                 ? root.subFeatures.findIndex(info => info.name === root.activeOp.info.name) : -1
             onActivated: index => root.session.selectSubFeature(index)
@@ -324,11 +339,21 @@ Item{
                 }
             }
             Button{
+                objectName: "browseParameter_" + index
                 icon.source: "qrc:/images/toolbar/Panels/browse-file.svg"
-                icon.width: 14
-                icon.height: 14
+                icon.width: 18
+                icon.height: 18
                 icon.color: "transparent"
-                text: qsTr("浏览…")
+                display: AbstractButton.IconOnly
+                Layout.preferredWidth: 28
+                Layout.minimumWidth: 28
+                Layout.maximumWidth: 28
+                Layout.preferredHeight: 28
+                padding: 5
+                Accessible.name: qsTr("浏览文件")
+                ToolTip.visible: hovered
+                ToolTip.delay: 500
+                ToolTip.text: qsTr("浏览文件")
                 flat: true
                 onClicked:{
                     parameterFileDialog.open()
