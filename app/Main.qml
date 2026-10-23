@@ -60,6 +60,7 @@ ApplicationWindow {
 
     // 壁纸背景层：纯色兜底、双图淡入与加载失败回退由独立组件承载
     background: WallpaperBackground {
+        id: wallpaperBackground
         source: Theme.wallpaperSource
         backgroundColor: Theme.windowBackground
         tintColor: Theme.wallpaperTint
@@ -81,6 +82,13 @@ ApplicationWindow {
         target: AppPalette
         property: "colors"
         value: Theme.controlPalette
+    }
+
+    // 壁纸加载失败时保留用户选择，仅把面色令牌临时降级为不透明
+    Binding {
+        target: Theme
+        property: "wallpaperReady"
+        value: !wallpaperBackground.failed
     }
 
     // 把 dock 绘制色、普通控件调色板与弹窗调色板推送给 dock 模块

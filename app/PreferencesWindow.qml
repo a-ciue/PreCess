@@ -20,10 +20,27 @@ Item {
     // 删除迷你预览后按内容收紧，与默认面板高度一致；高度不足时由滚动区承接。
     implicitHeight: 200
 
-    //! @brief 面板窄于该值时，左侧分类栏切换为顶部横向标签
-    readonly property bool compact: width < 440
+    //! @brief 窄面板断点；低于该值时左侧分类栏切换为顶部横向标签
+    readonly property int compactBreakpoint: 440
+    //! @brief 面板窄于断点时使用紧凑布局
+    readonly property bool compact: width < compactBreakpoint
     //! @brief 插件页底栏与分隔线的统一可见条件
     readonly property bool pluginFooterVisible: panelStack.currentIndex === 1 && QModelManager.systemPluginManager.canLoadExternalPlugins
+
+    //! @brief 壁纸操作反馈（重复导入等），短暂显示后自动清除
+    property string wallpaperStatus: ""
+
+    //! @brief 重复导入同一张图片时给出短暂反馈
+    function notifyAlreadyImported() {
+        wallpaperStatus = qsTr("当前壁纸已导入")
+        wallpaperStatusTimer.restart()
+    }
+
+    Timer {
+        id: wallpaperStatusTimer
+        interval: 2000
+        onTriggered: root.wallpaperStatus = ""
+    }
 
     //! @brief 壁纸操作按钮：使用点只提供文案、可见性、无障碍名称与动作
     component ActionButton: Button {
@@ -171,6 +188,8 @@ Item {
                             }
 
                             ThemeModeSwitch {
+                                objectName: "themeModeSwitch"
+                                compact: root.compact
                                 Layout.fillWidth: true
                                 Layout.minimumWidth: 108
                                 Layout.maximumWidth: 190
@@ -243,13 +262,19 @@ Item {
                                 }
 
                                 ActionButton {
-                                    text: Theme.wallpaper !== "" ? qsTr("更换图片") : qsTr("添加图片")
+                                    objectName: "wallpaperActionButton"
+                                    enabled: !Wallpaper.importing
+                                    text: Wallpaper.importing
+                                          ? qsTr("导入中…")
+                                          : Theme.wallpaper !== "" ? qsTr("更换图片") : qsTr("添加图片")
                                     Accessible.name: text
                                     onClicked: wallpaperFileDialog.open()
                                 }
 
                                 ActionButton {
+                                    objectName: "clearWallpaperButton"
                                     visible: Theme.wallpaper !== ""
+                                    enabled: !Wallpaper.importing
                                     text: qsTr("移除")
                                     Accessible.name: qsTr("移除背景壁纸")
                                     onClicked: {
@@ -257,6 +282,15 @@ Item {
                                         Theme.setWallpaper("");
                                     }
                                 }
+                            }
+
+                            Label {
+                                Layout.fillWidth: true
+                                visible: text !== ""
+                                text: root.wallpaperStatus
+                                color: Theme.textSecondary
+                                font.pixelSize: Theme.fontSizeCaption
+                                elide: Text.ElideRight
                             }
                         }
                     }
@@ -279,13 +313,14 @@ Item {
 
                         delegate: Rectangle {
                             width: ListView.view.width
-                            height: 34
+                            height: Math.max(34, pluginNameText.implicitHeight + 12)
                             radius: Theme.radiusControl
                             color: pluginListView.currentIndex === index ? Theme.primaryTint : rowHover.containsMouse ? Theme.hoverOverlay : "transparent"
                             border.width: pluginListView.currentIndex === index ? 1 : 0
                             border.color: Theme.primary
 
                             Text {
+                                id: pluginNameText
                                 anchors.left: parent.left
                                 anchors.leftMargin: 10
                                 anchors.right: parent.right
@@ -368,9 +403,10 @@ Item {
 
     FileDialog {
         id: pluginFileDialog
-        title: "请选择插件文件"
+        title: qsTr("请选择插件文件")
         fileMode: FileDialog.OpenFile
-        nameFilters: ["Plugin files (*.dll *.so)", "All files (*)"]
+        //: 只翻译“插件文件”，括号内的通配符保持原样
+        nameFilters: [qsTr("插件文件") + " (*.dll *.so)", qsTr("所有文件") + " (*)"]
 
         onAccepted: {
             var result = QModelManager.systemPluginManager.registerPlugin(selectedFile);
@@ -392,19 +428,33 @@ Item {
         }
     }
 
-    // 壁纸导入：选择本地图片，交由 C++ 校验并复制到托管目录
+    // 壁纸导入：选择本地图片，交由 C++ 异步校验并复制到托管目录
     FileDialog {
         id: wallpaperFileDialog
         title: qsTr("请选择背景图片")
         fileMode: FileDialog.OpenFile
-        nameFilters: ["图片文件 (*.jpg *.jpeg *.png *.webp *.bmp)", "所有文件 (*)"]
+        //: 只翻译“图片文件”，括号内的通配符保持原样
+        nameFilters: [
+            qsTr("图片文件") + " (*.jpg *.jpeg *.png *.webp *.bmp)",
+            qsTr("所有文件") + " (*)"
+        ]
 
-        onAccepted: {
-            var id = Wallpaper.importWallpaper(selectedFile);
-            if (id.length > 0)
-                Theme.setWallpaper(id);
-            else
-                wallpaperFailureDialog.open();
+        onAccepted: Wallpaper.importWallpaperAsync(selectedFile)
+    }
+
+    Connections {
+        target: Wallpaper
+
+        function onImportFinished(id) {
+            if (id === Theme.wallpaper) {
+                root.notifyAlreadyImported();
+                return;
+            }
+            Theme.setWallpaper(id);
+        }
+
+        function onImportFailed() {
+            wallpaperFailureDialog.open();
         }
     }
 

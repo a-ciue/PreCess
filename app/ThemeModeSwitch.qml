@@ -11,11 +11,13 @@ Item {
 
     //! @brief 当前选中的段（0 = 浅色，1 = 深色）
     property int currentIndex: 0
+    //! @brief 窄面板模式：缩短控件但保留文字
+    property bool compact: false
     //! @brief 用户点击某一段时发出，参数为段下标
     signal activated(int index)
 
-    implicitWidth: 176
-    implicitHeight: 30
+    implicitWidth: compact ? 116 : 176
+    implicitHeight: compact ? 26 : 30
 
     readonly property real segmentWidth: (width - 4) / 2
 

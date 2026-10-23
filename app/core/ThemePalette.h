@@ -10,10 +10,38 @@
 
 #include <QColor>
 #include <QPalette>
+#include <QStringList>
 #include <QVariant>
 #include <QVariantMap>
 
 namespace app::core {
+
+//! @brief 主题角色与 QML 角色键的对应关系；AppPalette 与 Theme.qml 的契约
+struct ThemeRoleBinding {
+    QPalette::ColorRole role;
+    const char* key;
+};
+
+inline constexpr ThemeRoleBinding kThemeRoles[] {
+    { QPalette::Window, "window" },
+    { QPalette::WindowText, "windowText" },
+    { QPalette::Base, "base" },
+    { QPalette::AlternateBase, "alternateBase" },
+    { QPalette::Text, "text" },
+    { QPalette::Button, "button" },
+    { QPalette::ButtonText, "buttonText" },
+    { QPalette::Highlight, "highlight" },
+    { QPalette::HighlightedText, "highlightedText" },
+    { QPalette::PlaceholderText, "placeholderText" },
+    { QPalette::Mid, "mid" },
+    { QPalette::Midlight, "midlight" },
+    { QPalette::Light, "light" },
+    { QPalette::Dark, "dark" },
+    { QPalette::Shadow, "shadow" },
+    { QPalette::Link, "link" },
+    { QPalette::ToolTipBase, "toolTipBase" },
+    { QPalette::ToolTipText, "toolTipText" },
+};
 
 /**
  * @brief 读取角色颜色；缺失或无效时跳过，保留 QPalette 原值
@@ -35,28 +63,23 @@ inline void setThemeColor(QPalette& palette, QPalette::ColorRole role,
         palette.setColor(role, color);
 }
 
+/** @brief 返回 roles 中缺失于 colors 的角色键，供契约测试与诊断使用 */
+inline QStringList missingThemeRoles(const QVariantMap& colors)
+{
+    QStringList missing;
+    for (const ThemeRoleBinding& binding : kThemeRoles) {
+        if (!colors.contains(QLatin1String(binding.key)))
+            missing.append(QLatin1String(binding.key));
+    }
+    return missing;
+}
+
 /** @brief 将 Theme.controlPalette 的已解析角色颜色组装为应用调色板 */
 inline QPalette buildThemePalette(const QVariantMap& colors)
 {
     QPalette palette;
-    setThemeColor(palette, QPalette::Window, colors, "window");
-    setThemeColor(palette, QPalette::WindowText, colors, "windowText");
-    setThemeColor(palette, QPalette::Base, colors, "base");
-    setThemeColor(palette, QPalette::AlternateBase, colors, "alternateBase");
-    setThemeColor(palette, QPalette::Text, colors, "text");
-    setThemeColor(palette, QPalette::Button, colors, "button");
-    setThemeColor(palette, QPalette::ButtonText, colors, "buttonText");
-    setThemeColor(palette, QPalette::Highlight, colors, "highlight");
-    setThemeColor(palette, QPalette::HighlightedText, colors, "highlightedText");
-    setThemeColor(palette, QPalette::PlaceholderText, colors, "placeholderText");
-    setThemeColor(palette, QPalette::Mid, colors, "mid");
-    setThemeColor(palette, QPalette::Midlight, colors, "midlight");
-    setThemeColor(palette, QPalette::Light, colors, "light");
-    setThemeColor(palette, QPalette::Dark, colors, "dark");
-    setThemeColor(palette, QPalette::Shadow, colors, "shadow");
-    setThemeColor(palette, QPalette::Link, colors, "link");
-    setThemeColor(palette, QPalette::ToolTipBase, colors, "toolTipBase");
-    setThemeColor(palette, QPalette::ToolTipText, colors, "toolTipText");
+    for (const ThemeRoleBinding& binding : kThemeRoles)
+        setThemeColor(palette, binding.role, colors, binding.key);
     return palette;
 }
 

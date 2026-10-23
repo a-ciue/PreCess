@@ -14,6 +14,7 @@
 #include <QQuickImageProvider>
 #include <QSize>
 #include <QString>
+#include <QThreadPool>
 #include <QUrl>
 #include <qqmlintegration.h>
 
@@ -55,16 +56,27 @@ class WallpaperLibrary : public QObject {
     Q_OBJECT
     QML_NAMED_ELEMENT(Wallpaper)
     QML_SINGLETON
+    Q_PROPERTY(bool importing READ importing NOTIFY importingChanged)
 
 public:
     explicit WallpaperLibrary(QObject* parent = nullptr);
+    ~WallpaperLibrary() override;
 
     /**
-     * @brief 导入壁纸：校验后复制到托管目录并删除旧图
+     * @brief 同步导入壁纸：校验后复制到托管目录并删除旧图
      * @param source_url 本地图片 URL
      * @return 成功返回托管文件名（id），失败返回空串
      */
     Q_INVOKABLE QString importWallpaper(const QUrl& source_url);
+
+    /**
+     * @brief 异步导入壁纸（工作线程校验/哈希/复制，GUI 线程回传结果）
+     * @param source_url 本地图片 URL
+     */
+    Q_INVOKABLE void importWallpaperAsync(const QUrl& source_url);
+
+    //! @brief 是否有异步导入正在进行
+    bool importing() const { return importing_; }
 
     /** @brief 删除托管目录内的壁纸文件 */
     Q_INVOKABLE bool removeWallpaper();
@@ -78,4 +90,17 @@ public:
 
     /** @brief 托管目录（AppDataLocation/wallpapers） */
     static QString userWallpaperDir();
+
+signals:
+    void importingChanged();
+    void importFinished(const QString& id);
+    void importFailed();
+
+private:
+    //! @brief 工作线程完成后在 GUI 线程收尾
+    void finishImport(const QString& id);
+    void setImporting(bool importing);
+
+    QThreadPool import_pool_;
+    bool importing_ = false;
 };

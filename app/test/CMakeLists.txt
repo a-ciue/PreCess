@@ -64,6 +64,27 @@ qt_add_resources(TestBusyMask busy_mask
     BASE "${CMAKE_CURRENT_SOURCE_DIR}/.."
     FILES ../Main.qml)
 
+# 偏好设置面板运行时 smoke：紧凑布局、主题开关与壁纸动作按钮
+precess_add_test(TestPreferencesWindow TestPreferencesWindow.cpp)
+set_target_properties(TestPreferencesWindow PROPERTIES AUTOMOC ON)
+precess_test_link_libraries(TestPreferencesWindow
+    modelQml modelQmlplugin
+    coreQml coreQmlplugin
+    SystemQmlplugin
+    Qt${VTK_QT_VERSION}::QuickControls2
+    Qt${VTK_QT_VERSION}::Qml
+    Qt${VTK_QT_VERSION}::Quick
+)
+qt_add_resources(TestPreferencesWindow preferences_ui
+    PREFIX "/preferences-ui"
+    BASE "${CMAKE_CURRENT_SOURCE_DIR}/.."
+    FILES
+        ../PreferencesWindow.qml
+        ../PreferenceCategoryButton.qml
+        ../ThemeModeSwitch.qml
+        ../ThemedDialog.qml
+        ../Theme.qml)
+
 # 验证主窗口窗口级调色板：启动后动态创建的 Fusion 控件继承 Theme 令牌
 precess_add_test(TestThemeWindowPalette TestThemeWindowPalette.cpp)
 precess_test_link_libraries(TestThemeWindowPalette Qt6::QuickControls2 Qt6::Qml)
@@ -101,6 +122,20 @@ qt_add_resources(TestToolbarNavigation navigation_icons
         "${CMAKE_SOURCE_DIR}/resource/toolbar/Geometry/auto-geometry-repair.svg"
         "${CMAKE_SOURCE_DIR}/resource/toolbar/Geometry/geometry-reconstruction.svg"
         "${CMAKE_SOURCE_DIR}/resource/toolbar/Panels/preview.svg")
+
+# Theme.qml 角色键契约与壁纸失败降级
+precess_add_test(TestThemeQml TestThemeQml.cpp)
+target_include_directories(TestThemeQml PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}/..")
+precess_test_link_libraries(TestThemeQml
+    Qt${VTK_QT_VERSION}::Core
+    Qt${VTK_QT_VERSION}::Gui
+    Qt${VTK_QT_VERSION}::Qml
+    Qt${VTK_QT_VERSION}::Quick
+)
+qt_add_resources(TestThemeQml theme_qml
+    PREFIX "/theme-qml"
+    BASE "${CMAKE_CURRENT_SOURCE_DIR}/.."
+    FILES ../Theme.qml)
 
 # AppPalette 角色表适配与应用级调色板刷新
 precess_add_test(TestAppPalette TestAppPalette.cpp ../core/AppPalette.h)

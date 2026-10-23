@@ -12,6 +12,7 @@
 #include <QGuiApplication>
 #include <QImageIOHandler>
 #include <QImageReader>
+#include <QRunnable>
 #include <QScreen>
 #include <QStandardPaths>
 #include <QStringList>
@@ -175,6 +176,14 @@ QImage WallpaperProvider::requestImage(const QString& id, QSize* size, const QSi
 WallpaperLibrary::WallpaperLibrary(QObject* parent)
     : QObject(parent)
 {
+    // 单槽：同一时间只允许一个导入任务，避免单张模式互相删除结果
+    import_pool_.setMaxThreadCount(1);
+}
+
+WallpaperLibrary::~WallpaperLibrary()
+{
+    // 工作线程可能仍在使用壁纸目录；析构前等待，避免对象销毁后回投
+    import_pool_.waitForDone();
 }
 
 QString WallpaperLibrary::userWallpaperDir()
@@ -183,7 +192,10 @@ QString WallpaperLibrary::userWallpaperDir()
         + QStringLiteral("/wallpapers");
 }
 
-QString WallpaperLibrary::importWallpaper(const QUrl& source_url)
+namespace {
+
+//! @brief 同步导入实现；不触碰 WallpaperLibrary 状态，可在工作线程调用
+QString importWallpaperImpl(const QUrl& source_url)
 {
     if (!source_url.isLocalFile()) {
         spdlog::warn("wallpaper: rejected non-local source: {}", source_url.toString().toStdString());
@@ -224,7 +236,7 @@ QString WallpaperLibrary::importWallpaper(const QUrl& source_url)
     }
 
     const QString store_name = content_hash.left(16) + QLatin1Char('.') + suffix;
-    QDir dir(userWallpaperDir());
+    QDir dir(WallpaperLibrary::userWallpaperDir());
     if (!dir.exists() && !dir.mkpath(QStringLiteral("."))) {
         spdlog::error("wallpaper: failed to create directory: {}", dir.absolutePath().toStdString());
         return {};
@@ -243,8 +255,48 @@ QString WallpaperLibrary::importWallpaper(const QUrl& source_url)
     return store_name;
 }
 
+}
+
+QString WallpaperLibrary::importWallpaper(const QUrl& source_url)
+{
+    if (importing_)
+        return {};
+    return importWallpaperImpl(source_url);
+}
+
+void WallpaperLibrary::importWallpaperAsync(const QUrl& source_url)
+{
+    if (importing_)
+        return;
+
+    setImporting(true);
+    import_pool_.start(QRunnable::create([this, source_url] {
+        const QString id = importWallpaperImpl(source_url);
+        QMetaObject::invokeMethod(this, [this, id] { finishImport(id); }, Qt::QueuedConnection);
+    }));
+}
+
+void WallpaperLibrary::finishImport(const QString& id)
+{
+    setImporting(false);
+    if (id.isEmpty())
+        emit importFailed();
+    else
+        emit importFinished(id);
+}
+
+void WallpaperLibrary::setImporting(bool importing)
+{
+    if (importing_ == importing)
+        return;
+    importing_ = importing;
+    emit importingChanged();
+}
+
 bool WallpaperLibrary::removeWallpaper()
 {
+    if (importing_)
+        return false;
     return removeOtherFiles(QString());
 }
 

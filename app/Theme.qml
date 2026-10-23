@@ -36,6 +36,10 @@ QtObject {
     readonly property string wallpaper: _settings.wallpaper
     //! @brief 是否启用自定义壁纸（决定面板是否透出背景）
     readonly property bool hasWallpaper: wallpaper.length > 0
+    //! @brief 壁纸当前是否可显示（运行时状态，不持久化；加载失败时仅降级面色）
+    property bool wallpaperReady: true
+    //! @brief 面板是否按壁纸半透明：选择存在且图像已就绪
+    readonly property bool wallpaperSurfacesActive: hasWallpaper && wallpaperReady
     //! @brief 壁纸图像源（经 image://wallpaper/ 解析到托管目录；空串 = 无壁纸）
     readonly property url wallpaperSource: wallpaper.length > 0 ? "image://wallpaper/" + wallpaper : ""
 
@@ -72,18 +76,18 @@ QtObject {
     // ---- 面与背景 ----
     //! 应用底色（中央区、ribbon 页背景）；同时作为无壁纸时的兜底背景，保持不透明
     readonly property color windowBackground: dark ? "#1E1E1E" : "#F3F4F6"
-    //! 面板 / 输入控件等前景面：有壁纸时半透明透出背景；无壁纸时保持不透明
-    readonly property color surface: hasWallpaper ? (dark ? Qt.rgba(0.145, 0.145, 0.149, 0.72)
-                                                          : Qt.rgba(1.0, 1.0, 1.0, 0.72))
-                                                   : (dark ? "#252526" : "#FFFFFF")
-    //! 工具栏、面板次级面：有壁纸时半透明
-    readonly property color surfaceAlt: hasWallpaper ? (dark ? Qt.rgba(0.176, 0.176, 0.188, 0.62)
-                                                             : Qt.rgba(0.969, 0.973, 0.980, 0.62))
-                                                      : (dark ? "#2D2D30" : "#F7F8FA")
-    //! 停靠面板标题面，与内容区拉开层次；有壁纸时半透明
-    readonly property color panelHeaderSurface: hasWallpaper ? (dark ? Qt.rgba(0.2, 0.2, 0.212, 0.70)
-                                                                     : Qt.rgba(0.902, 0.929, 0.961, 0.70))
-                                                              : (dark ? "#333336" : "#E6EDF5")
+    //! 面板 / 输入控件等前景面：壁纸可用时半透明透出背景；否则保持不透明
+    readonly property color surface: wallpaperSurfacesActive ? (dark ? Qt.rgba(0.145, 0.145, 0.149, 0.72)
+                                                                    : Qt.rgba(1.0, 1.0, 1.0, 0.72))
+                                                             : (dark ? "#252526" : "#FFFFFF")
+    //! 工具栏、面板次级面：壁纸可用时半透明
+    readonly property color surfaceAlt: wallpaperSurfacesActive ? (dark ? Qt.rgba(0.176, 0.176, 0.188, 0.62)
+                                                                       : Qt.rgba(0.969, 0.973, 0.980, 0.62))
+                                                                : (dark ? "#2D2D30" : "#F7F8FA")
+    //! 停靠面板标题面，与内容区拉开层次；壁纸可用时半透明
+    readonly property color panelHeaderSurface: wallpaperSurfacesActive ? (dark ? Qt.rgba(0.2, 0.2, 0.212, 0.70)
+                                                                               : Qt.rgba(0.902, 0.929, 0.961, 0.70))
+                                                                        : (dark ? "#333336" : "#E6EDF5")
     //! 菜单 / 弹窗前景面：不透明，保证弹窗内文字在壁纸上可读
     readonly property color menuSurface: dark ? "#252526" : "#FFFFFF"
     //! 壁纸遮罩：叠在壁纸之上，使自定义背景随主题调色（浅色白亮化、深色灰暗化）

@@ -8,6 +8,8 @@
 #include <QColor>
 #include <QCoreApplication>
 #include <QDir>
+#include <QElapsedTimer>
+#include <QEventLoop>
 #include <QFile>
 #include <QFileInfo>
 #include <QImage>
@@ -18,6 +20,15 @@
 #include <catch2/catch_test_macros.hpp>
 
 namespace {
+
+QCoreApplication& testApplication()
+{
+    static int argc = 1;
+    static char name[] = "TestWallpaperLibrary";
+    static char* argv[] = { name, nullptr };
+    static QCoreApplication app(argc, argv);
+    return app;
+}
 
 //! @brief 生成指定尺寸与颜色的测试图片并保存为 PNG
 QString writePng(const QString& path, const QSize& size, const QColor& color)
@@ -94,6 +105,61 @@ TEST_CASE("WallpaperLibrary: accepts any resolution and file size", "[Wallpaper]
     const QString small = writePng(QDir::tempPath() + "/wallpaper_small.png", QSize(64, 48), Qt::blue);
     REQUIRE_FALSE(library.importWallpaper(QUrl::fromLocalFile(small)).isEmpty());
     REQUIRE(storedCount() == 1);
+}
+
+TEST_CASE("WallpaperLibrary: async import completes and reports result", "[Wallpaper]")
+{
+    testApplication();
+    prepareTestEnv();
+    WallpaperLibrary library;
+
+    const QString image = writePng(QDir::tempPath() + "/wallpaper_async.png", QSize(320, 240), Qt::yellow);
+    QString imported_id;
+    bool finished = false;
+    bool failed = false;
+    QObject::connect(&library, &WallpaperLibrary::importFinished, [&](const QString& id) {
+        imported_id = id;
+        finished = true;
+    });
+    QObject::connect(&library, &WallpaperLibrary::importFailed, [&] { failed = true; });
+
+    library.importWallpaperAsync(QUrl::fromLocalFile(image));
+    REQUIRE(library.importing());
+
+    QElapsedTimer timer;
+    timer.start();
+    while (!finished && !failed && timer.elapsed() < 5000)
+        QCoreApplication::processEvents(QEventLoop::AllEvents, 20);
+
+    REQUIRE_FALSE(library.importing());
+    REQUIRE(finished);
+    REQUIRE_FALSE(failed);
+    REQUIRE_FALSE(imported_id.isEmpty());
+    REQUIRE(storedCount() == 1);
+}
+
+TEST_CASE("WallpaperLibrary: async import reports invalid source", "[Wallpaper]")
+{
+    testApplication();
+    prepareTestEnv();
+    WallpaperLibrary library;
+
+    bool finished = false;
+    bool failed = false;
+    QObject::connect(&library, &WallpaperLibrary::importFinished, [&](const QString&) { finished = true; });
+    QObject::connect(&library, &WallpaperLibrary::importFailed, [&] { failed = true; });
+
+    library.importWallpaperAsync(QUrl(QStringLiteral("http://example.com/a.png")));
+
+    QElapsedTimer timer;
+    timer.start();
+    while (!finished && !failed && timer.elapsed() < 5000)
+        QCoreApplication::processEvents(QEventLoop::AllEvents, 20);
+
+    REQUIRE_FALSE(library.importing());
+    REQUIRE_FALSE(finished);
+    REQUIRE(failed);
+    REQUIRE(storedCount() == 0);
 }
 
 TEST_CASE("WallpaperLibrary: import copies and single-slot replaces", "[Wallpaper]")
