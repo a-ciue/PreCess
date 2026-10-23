@@ -302,6 +302,12 @@ bool WallpaperLibrary::removeWallpaper()
 
 QString WallpaperLibrary::reconcile(const QString& id)
 {
+    // 导入任务可能正在复制/清理单张目录；此时不读目录、不动文件，保持当前选择
+    if (importing_) {
+        spdlog::debug("wallpaper: reconcile skipped while importing");
+        return id;
+    }
+
     const QStringList files = wallpaperFiles();
     if (!id.isEmpty() && files.contains(id)) {
         removeOtherFiles(id);

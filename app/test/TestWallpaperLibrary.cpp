@@ -162,6 +162,38 @@ TEST_CASE("WallpaperLibrary: async import reports invalid source", "[Wallpaper]"
     REQUIRE(storedCount() == 0);
 }
 
+TEST_CASE("WallpaperLibrary: reconcile skips while import is running", "[Wallpaper]")
+{
+    testApplication();
+    prepareTestEnv();
+    WallpaperLibrary library;
+
+    const QString first = writePng(QDir::tempPath() + "/wallpaper_reconcile_first.png", QSize(64, 48), Qt::red);
+    const QString saved_id = library.importWallpaper(QUrl::fromLocalFile(first));
+    REQUIRE_FALSE(saved_id.isEmpty());
+
+    const QString second = writePng(QDir::tempPath() + "/wallpaper_reconcile_second.png", QSize(320, 240), Qt::blue);
+    bool finished = false;
+    bool failed = false;
+    QObject::connect(&library, &WallpaperLibrary::importFinished, [&](const QString&) { finished = true; });
+    QObject::connect(&library, &WallpaperLibrary::importFailed, [&] { failed = true; });
+
+    library.importWallpaperAsync(QUrl::fromLocalFile(second));
+    REQUIRE(library.importing());
+    // 导入期间不读目录、不清理文件，保持当前选择
+    REQUIRE(library.reconcile(saved_id) == saved_id);
+
+    QElapsedTimer timer;
+    timer.start();
+    while (!finished && !failed && timer.elapsed() < 5000)
+        QCoreApplication::processEvents(QEventLoop::AllEvents, 20);
+
+    REQUIRE_FALSE(library.importing());
+    REQUIRE(finished);
+    REQUIRE_FALSE(failed);
+    REQUIRE(storedCount() == 1);
+}
+
 TEST_CASE("WallpaperLibrary: import copies and single-slot replaces", "[Wallpaper]")
 {
     prepareTestEnv();

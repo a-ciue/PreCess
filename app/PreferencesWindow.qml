@@ -32,8 +32,8 @@ Item {
 
     //! @brief 重复导入同一张图片时给出短暂反馈
     function notifyAlreadyImported() {
-        wallpaperStatus = qsTr("当前壁纸已导入")
-        wallpaperStatusTimer.restart()
+        wallpaperStatus = qsTr("当前壁纸已导入");
+        wallpaperStatusTimer.restart();
     }
 
     Timer {
