@@ -138,10 +138,26 @@ TEST_CASE("Preferences window loads and follows compact and wide layouts", "[QML
     REQUIRE(add_button->property("text").toString() == QStringLiteral("更换图片"));
     REQUIRE(clear_button->isVisible());
 
-    // 重复导入同一 id：不重复写 Theme，给出短暂反馈
+    // 显示正常时重复导入同一 id：不重复写 Theme，给出短暂反馈
     REQUIRE(QMetaObject::invokeMethod(wallpaper, "importFinished", Q_ARG(QString, QStringLiteral("test.png"))));
     QCoreApplication::processEvents();
     REQUIRE(window->property("wallpaperStatus").toString() == QStringLiteral("当前壁纸已导入"));
+    const int retry_token = theme->property("wallpaperReloadToken").toInt();
+
+    // 同 id 但显示失败：触发现有背景重新加载，而不是误报“已导入”
+    window->setProperty("wallpaperStatus", QString());
+    theme->setProperty("wallpaperReady", false);
+    REQUIRE(QMetaObject::invokeMethod(wallpaper, "importFinished", Q_ARG(QString, QStringLiteral("test.png"))));
+    QCoreApplication::processEvents();
+    REQUIRE(theme->property("wallpaperReloadToken").toInt() == retry_token + 1);
+    REQUIRE(window->property("wallpaperStatus").toString().isEmpty());
+
+    // 恢复后再次同 id：回到正常的“已导入”提示
+    theme->setProperty("wallpaperReady", true);
+    REQUIRE(QMetaObject::invokeMethod(wallpaper, "importFinished", Q_ARG(QString, QStringLiteral("test.png"))));
+    QCoreApplication::processEvents();
+    REQUIRE(window->property("wallpaperStatus").toString() == QStringLiteral("当前壁纸已导入"));
+    REQUIRE(theme->property("wallpaperReloadToken").toInt() == retry_token + 1);
 
     window->setSize(QSizeF(650, 420));
     QCoreApplication::processEvents();

@@ -76,6 +76,13 @@ TEST_CASE("Theme.qml exposes complete role maps and downgrades failed wallpaper"
     REQUIRE(colorOf(control, "base").alphaF() == Catch::Approx(0.72).epsilon(0.001));
     REQUIRE(colorOf(control, "alternateBase").alphaF() == Catch::Approx(0.62).epsilon(0.001));
 
+    // 同 id 重试：身份不变，但图像源通过运行时令牌变化
+    const QUrl original_source = theme->property("wallpaperSource").toUrl();
+    REQUIRE(QMetaObject::invokeMethod(theme, "retryWallpaper"));
+    REQUIRE(theme->property("wallpaperReloadToken").toInt() == 1);
+    REQUIRE(theme->property("wallpaper").toString() == QStringLiteral("test.png"));
+    REQUIRE(theme->property("wallpaperSource").toUrl() != original_source);
+
     // 加载失败：保留选择，但面色临时回退为不透明
     theme->setProperty("wallpaperReady", false);
     QCoreApplication::processEvents();

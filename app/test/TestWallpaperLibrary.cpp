@@ -257,6 +257,32 @@ TEST_CASE("WallpaperLibrary: import copies and single-slot replaces", "[Wallpape
     REQUIRE(storedCount() == 0);
 }
 
+TEST_CASE("WallpaperLibrary: destruction before completion keeps previous file", "[Wallpaper]")
+{
+    testApplication();
+    prepareTestEnv();
+
+    const QString first = writePng(QDir::tempPath() + "/wallpaper_exit_first.png", QSize(64, 48), Qt::red);
+    const QString second = writePng(QDir::tempPath() + "/wallpaper_exit_second.png", QSize(320, 240), Qt::blue);
+    QString saved_id;
+    {
+        WallpaperLibrary library;
+        saved_id = library.importWallpaper(QUrl::fromLocalFile(first));
+        REQUIRE_FALSE(saved_id.isEmpty());
+        library.importWallpaperAsync(QUrl::fromLocalFile(second));
+        REQUIRE(library.importing());
+    } // 析构等待 worker，但不处理排队的完成回调
+
+    const QString saved_path = WallpaperLibrary::userWallpaperDir() + QLatin1Char('/') + saved_id;
+    REQUIRE(QFile::exists(saved_path));
+
+    // 模拟下次启动 reconcile：保留旧选择并清理可能残留的新图
+    WallpaperLibrary recovered;
+    REQUIRE(recovered.reconcile(saved_id) == saved_id);
+    REQUIRE(storedCount() == 1);
+    REQUIRE(QFile::exists(saved_path));
+}
+
 TEST_CASE("WallpaperLibrary: reconcile follows the saved choice", "[Wallpaper]")
 {
     prepareTestEnv();
@@ -296,6 +322,9 @@ TEST_CASE("WallpaperProvider: adaptive scale and invalid id", "[Wallpaper]")
     REQUIRE(scaled.width() >= 100);
     REQUIRE(scaled.height() >= 100);
     REQUIRE(out_size == scaled.size());
+
+    // 运行时缓存破除参数不参与文件名解析
+    REQUIRE_FALSE(provider.requestImage(id + QStringLiteral("?v=1"), nullptr, QSize(100, 100)).isNull());
 
     // 非法 id（含路径成分）返回空图，不越出托管目录
     REQUIRE(provider.requestImage(QStringLiteral("../evil.png"), nullptr, QSize(10, 10)).isNull());

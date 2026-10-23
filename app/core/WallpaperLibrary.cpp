@@ -154,10 +154,19 @@ QImage WallpaperProvider::requestImage(const QString& id, QSize* size, const QSi
 {
     if (size)
         *size = QSize();
-    if (!isSafeId(id))
+
+    // 忽略缓存破除参数；id 本身仍是托管目录内的稳定文件名
+    QString normalized_id = id;
+    const int query = normalized_id.indexOf(QLatin1Char('?'));
+    if (query >= 0)
+        normalized_id.truncate(query);
+    const int fragment = normalized_id.indexOf(QLatin1Char('#'));
+    if (fragment >= 0)
+        normalized_id.truncate(fragment);
+    if (!isSafeId(normalized_id))
         return {};
 
-    const QString path = WallpaperLibrary::userWallpaperDir() + QLatin1Char('/') + id;
+    const QString path = WallpaperLibrary::userWallpaperDir() + QLatin1Char('/') + normalized_id;
     const QSize target = (requestedSize.isValid() && !requestedSize.isEmpty())
         ? requestedSize
         : (decode_limit_.isValid() && !decode_limit_.isEmpty() ? decode_limit_ : kHeadlessDecodeLimit);

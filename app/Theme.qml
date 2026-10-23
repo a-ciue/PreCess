@@ -38,10 +38,14 @@ QtObject {
     readonly property bool hasWallpaper: wallpaper.length > 0
     //! @brief 壁纸当前是否可显示（运行时状态，不持久化；加载失败时仅降级面色）
     property bool wallpaperReady: true
+    //! @brief 运行时重载令牌：仅用于打破 QML 图像缓存，不持久化
+    property int wallpaperReloadToken: 0
     //! @brief 面板是否按壁纸半透明：选择存在且图像已就绪
     readonly property bool wallpaperSurfacesActive: hasWallpaper && wallpaperReady
     //! @brief 壁纸图像源（经 image://wallpaper/ 解析到托管目录；空串 = 无壁纸）
-    readonly property url wallpaperSource: wallpaper.length > 0 ? "image://wallpaper/" + wallpaper : ""
+    readonly property url wallpaperSource: wallpaper.length > 0
+        ? "image://wallpaper/" + wallpaper + (wallpaperReloadToken > 0 ? "?v=" + wallpaperReloadToken : "")
+        : ""
 
     /**
      * @brief 设置主题模式
@@ -56,7 +60,15 @@ QtObject {
      * @param id 托管壁纸 id（空串表示回退主题纯色）
      */
     function setWallpaper(id) {
+        if (_settings.wallpaper !== id)
+            wallpaperReloadToken = 0
         _settings.wallpaper = id
+    }
+
+    /** @brief 同一壁纸 id 显示失败后强制重新加载图像 */
+    function retryWallpaper() {
+        if (wallpaper.length > 0)
+            wallpaperReloadToken += 1
     }
 
     // ---- 交互色（浅色延续既有交互蓝 #1976D2，深色提亮）----

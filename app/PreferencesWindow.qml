@@ -447,7 +447,10 @@ Item {
 
         function onImportFinished(id) {
             if (id === Theme.wallpaper) {
-                root.notifyAlreadyImported();
+                if (Theme.wallpaperReady)
+                    root.notifyAlreadyImported();
+                else
+                    Theme.retryWallpaper();
                 return;
             }
             Theme.setWallpaper(id);
