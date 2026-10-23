@@ -8,6 +8,7 @@
 #include <BRepAdaptor_Curve.hxx>
 #include <BRepGProp.hxx>
 #include <GProp_GProps.hxx>
+#include <IVtkVTK_ShapeData.hxx>
 #include <IVtk_Types.hxx>
 #include <NCollection_Map.hxx>
 #include <Standard_Failure.hxx>
@@ -20,6 +21,7 @@
 #include <TopoDS_Shape.hxx>
 #include <gp_Pnt.hxx>
 #include <vtkCellArray.h>
+#include <vtkCellData.h>
 #include <vtkDataArray.h>
 #include <vtkExtractSelection.h>
 #include <vtkGeometryFilter.h>
@@ -91,11 +93,13 @@ void appendShapeId(NCollection_Map<IVtk_IdType>& ids,
  * 主几何管线更新。提取后的数据只在诊断结果变化时重建。
  */
 void extractDiagnosticCells(vtkPolyData* source,
-    vtkDataArray* subshape_ids,
     const NCollection_Map<IVtk_IdType>& selected_subshapes,
     vtkPolyData& output)
 {
     output.Initialize();
+    auto* subshape_ids = source
+        ? source->GetCellData()->GetArray(IVtkVTK_ShapeData::ARRNAME_SUBSHAPE_IDS())
+        : nullptr;
     if (!source || !subshape_ids || selected_subshapes.Extent() == 0) {
         output.Modified();
         return;
@@ -197,42 +201,53 @@ GeometryTopologyDiagnosticActor::~GeometryTopologyDiagnosticActor()
     renderer_->RemoveActor(small_face_marker_.actor);
 }
 
-void GeometryTopologyDiagnosticActor::bindRender(vtkRenderer* renderer)
+GeometryTopologyDiagnosticActor::DisplayData GeometryTopologyDiagnosticActor::prepareDisplay(
+    vtkPolyData* lines, vtkPolyData* faces) const
 {
-    auto move_actor = [this, renderer](vtkActor* actor) {
-        renderer_->RemoveActor(actor);
-        renderer->AddActor(actor);
-    };
-    for (auto& pipeline : pipelines_)
-        move_actor(pipeline.actor);
-    move_actor(invalid_edge_pipeline_.actor);
-    move_actor(small_edge_marker_.actor);
-    move_actor(small_face_marker_.actor);
-    renderer_ = renderer;
+    DisplayData display;
+    display.invalid_edges = vtkSmartPointer<vtkPolyData>::New();
+    for (size_t i = 0; i < pipelines_.size(); ++i) {
+        display.categories[i] = vtkSmartPointer<vtkPolyData>::New();
+        if (category_computed_[i])
+            extractCategory(static_cast<GeometryTopologyDiagnosticCategory>(i), lines, faces,
+                *display.categories[i], *display.invalid_edges);
+    }
+    return display;
 }
 
-void GeometryTopologyDiagnosticActor::copySettingsFrom(const GeometryTopologyDiagnosticActor& source)
+GeometryTopologyDiagnosticActor::DisplayData GeometryTopologyDiagnosticActor::captureDisplay() const
 {
-    category_enabled_ = source.category_enabled_;
-    small_edge_length_threshold_ = source.small_edge_length_threshold_;
-    small_face_area_threshold_ = source.small_face_area_threshold_;
-    component_label_ = source.component_label_;
+    DisplayData display;
+    display.invalid_edges = vtkSmartPointer<vtkPolyData>::New();
+    display.invalid_edges->ShallowCopy(invalid_edge_pipeline_.data);
+    for (size_t i = 0; i < pipelines_.size(); ++i) {
+        display.categories[i] = vtkSmartPointer<vtkPolyData>::New();
+        display.categories[i]->ShallowCopy(pipelines_[i].data);
+    }
+    return display;
+}
+
+void GeometryTopologyDiagnosticActor::commitDisplay(const DisplayData& display,
+    vtkPolyData* lines, vtkPolyData* faces)
+{
+    line_data_ = lines;
+    face_data_ = faces;
+    for (size_t i = 0; i < pipelines_.size(); ++i)
+        pipelines_[i].data->ShallowCopy(display.categories[i]);
+    invalid_edge_pipeline_.data->ShallowCopy(display.invalid_edges);
+    applyVisibility();
 }
 
 void GeometryTopologyDiagnosticActor::loadShape(const TopoDS_Shape& shape,
     const GeometryDiagnosticOccShapeHandle& occ_shape,
     vtkPolyData* line_data,
-    vtkDataArray* line_sub_ids,
-    vtkPolyData* face_data,
-    vtkDataArray* face_sub_ids)
+    vtkPolyData* face_data)
 {
     owned_shape_ = std::make_unique<TopoDS_Shape>(shape);
     shape_ = owned_shape_.get();
     occ_shape_ = occ_shape;
     line_data_ = line_data;
     face_data_ = face_data;
-    line_sub_ids_ = line_sub_ids;
-    face_sub_ids_ = face_sub_ids;
     diagnostics_.reset();
     category_computed_.fill(false);
 
@@ -494,9 +509,17 @@ void GeometryTopologyDiagnosticActor::logDiagnosticDetails(
 void GeometryTopologyDiagnosticActor::rebuildCategory(GeometryTopologyDiagnosticCategory category)
 {
     ensureDiagnostics(category);
+    extractCategory(category, line_data_, face_data_,
+        *pipelines_[categoryIndex(category)].data, *invalid_edge_pipeline_.data);
+    if (diagnostics_)
+        rebuildSizeMarker(category);
+}
+
+void GeometryTopologyDiagnosticActor::extractCategory(GeometryTopologyDiagnosticCategory category,
+    vtkPolyData* lines, vtkPolyData* faces, vtkPolyData& output, vtkPolyData& invalid_edges) const
+{
     if (!diagnostics_)
         return;
-
     NCollection_Map<IVtk_IdType> ids;
     NCollection_Map<IVtk_IdType> invalid_edge_ids;
     switch (category) {
@@ -555,14 +578,9 @@ void GeometryTopologyDiagnosticActor::rebuildCategory(GeometryTopologyDiagnostic
         break;
     }
     const bool edge_category = isEdgeCategory(category);
-    extractDiagnosticCells(edge_category ? line_data_ : face_data_,
-        edge_category ? line_sub_ids_ : face_sub_ids_, ids,
-        *pipelines_[categoryIndex(category)].data);
-    if (category == GeometryTopologyDiagnosticCategory::InvalidTopology) {
-        extractDiagnosticCells(line_data_, line_sub_ids_, invalid_edge_ids,
-            *invalid_edge_pipeline_.data);
-    }
-    rebuildSizeMarker(category);
+    extractDiagnosticCells(edge_category ? lines : faces, ids, output);
+    if (category == GeometryTopologyDiagnosticCategory::InvalidTopology)
+        extractDiagnosticCells(lines, invalid_edge_ids, invalid_edges);
 }
 
 void GeometryTopologyDiagnosticActor::rebuildSizeMarker(

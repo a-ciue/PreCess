@@ -14,7 +14,9 @@
 #include "QRenderWindow.h"
 #include "QRenderWindowStyle.h"
 #include "SessionQuery.h"
+#include "SurfacePrecisionFailure.h"
 
+#include <BRepPrimAPI_MakeSphere.hxx>
 #include <BRep_Builder.hxx>
 #include <QElapsedTimer>
 #include <QGuiApplication>
@@ -23,6 +25,7 @@
 #include <TopoDS_Compound.hxx>
 #include <TopoDS_Vertex.hxx>
 #include <catch2/catch_test_macros.hpp>
+#include <catch2/generators/catch_generators.hpp>
 #include <gp_Pnt.hxx>
 #include <vtkActorCollection.h>
 #include <vtkCamera.h>
@@ -1078,4 +1081,83 @@ TEST_CASE("QRenderWindow component face restore and reversal leave other compone
     });
     REQUIRE(env.flush());
     CHECK(unrelated_preserved);
+}
+
+//! @brief 复用真实渲染队列验证精细度菜单路径，测试不读取视口私有成员。
+TEST_CASE("QRenderWindow surface precision preserves published geometry and component selections", "[precision]")
+{
+    const QString mode = QString::fromLatin1(GENERATE("GeometryFace", "GeometrySolid", "Component"));
+    qputenv("QSG_RENDER_LOOP", "threaded");
+    testApplication();
+    FaceHidingViewport env;
+    env.loadGeometry(10, false);
+    env.model.findComponent(10)->geometry->setRootShape(BRepPrimAPI_MakeSphere(10.0).Shape());
+    env.model.findComponent(10)->geometry->ensureIndexBuilt(env.model.geomRegistry());
+    env.item.onComponentChanged(10);
+    env.item.setMeshVisibility(7, false);
+    env.item.setSelectMode(mode);
+    env.item.dispatch_async([](vtkRenderWindow* window, QQuickVTKItem::vtkUserData user_data) {
+        auto* data = QRenderWindow::Data::SafeDownCast(user_data);
+        auto* camera = data->renderer_->GetActiveCamera();
+        camera->SetPosition(0, 0, 100);
+        camera->SetFocalPoint(0, 0, 0);
+        camera->SetParallelScale(12);
+    });
+    REQUIRE(env.flush());
+    env.item.dispatch_async([](vtkRenderWindow* window, QQuickVTKItem::vtkUserData user_data) {
+        auto* data = QRenderWindow::Data::SafeDownCast(user_data);
+        data->renderer_->SetWorldPoint(3, 2, std::sqrt(87.0), 1);
+        data->renderer_->WorldToDisplay();
+        const auto* point = data->renderer_->GetDisplayPoint();
+        window->GetInteractor()->SetEventPosition(static_cast<int>(point[0]), static_cast<int>(point[1]));
+        data->style_->SetClick();
+        data->style_->OnLeftButtonUp();
+    });
+    REQUIRE(env.flush());
+    const auto selected = env.selectedFaceIds();
+    REQUIRE_FALSE(selected.empty());
+    const auto standard_count = env.highlightedCellCount();
+    REQUIRE(standard_count > 0);
+    env.item.setSurfacePrecision(3);
+    REQUIRE(env.flush());
+    CHECK(env.selectedFaceIds() == selected);
+    CHECK(env.highlightedCellCount() > standard_count);
+    env.item.setSurfacePrecision(0);
+    REQUIRE(env.flush());
+    CHECK(env.selectedFaceIds() == selected);
+    CHECK(env.highlightedCellCount() < standard_count);
+}
+
+TEST_CASE("QRenderWindow surface precision failures return actual level and allow newer requests", "[precision][failure]")
+{
+    const auto kind = GENERATE(SurfacePrecisionFailure::Kind::Standard,
+        SurfacePrecisionFailure::Kind::Occ, SurfacePrecisionFailure::Kind::Unknown);
+    qputenv("QSG_RENDER_LOOP", "threaded");
+    testApplication();
+    FaceHidingViewport env;
+    env.loadGeometry(10, false);
+    env.model.findComponent(10)->geometry->setRootShape(BRepPrimAPI_MakeSphere(10.0).Shape());
+    env.item.onComponentChanged(10);
+    REQUIRE(env.flush());
+    {
+        SurfacePrecisionFailure failure(1, kind);
+        env.item.setSurfacePrecision(3);
+        REQUIRE(env.flush());
+        CHECK(failure.rebuilds() == 1);
+        CHECK(env.item.getSurfacePrecision() == 1);
+    }
+    {
+        SurfacePrecisionFailure failure(1, kind);
+        env.item.setSurfacePrecision(3);
+        env.item.setSurfacePrecision(2);
+        REQUIRE(env.flush());
+        CHECK(failure.rebuilds() == 2);
+        CHECK(env.item.getSurfacePrecision() == 2);
+    }
+    int actual = -1;
+    env.item.dispatch_async([&actual](vtkRenderWindow*, QQuickVTKItem::vtkUserData user_data) {
+        actual = QRenderWindow::Data::SafeDownCast(user_data)->geometry_actor_manager_->getSurfacePrecision();
+    });
+    REQUIRE(env.flush());
+    CHECK(actual == 2);
 }

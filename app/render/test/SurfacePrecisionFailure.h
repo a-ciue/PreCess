@@ -39,6 +39,7 @@ public:
 
     ~SurfacePrecisionFailure() { spdlog::set_default_logger(original_logger_); }
     int rebuilds() const { return sink_->rebuilds; }
+    int diagnosticLogs() const { return sink_->diagnostic_logs; }
 
 private:
     struct FailureSink : spdlog::sinks::base_sink<std::mutex> {
@@ -49,12 +50,15 @@ private:
         void sink_it_(const spdlog::details::log_msg& message) override
         {
             const std::string_view text(message.payload.data(), message.payload.size());
+            if (text.starts_with("几何拓扑诊断"))
+                ++diagnostic_logs;
             if (text.starts_with("[SurfacePrecision]") && ++rebuilds == fail_on)
                 throw std::runtime_error("injected rebuild failure");
         }
         void flush_() override { }
         int fail_on;
         int rebuilds {};
+        int diagnostic_logs {};
     };
     std::shared_ptr<spdlog::logger> original_logger_;
     std::shared_ptr<FailureSink> sink_;

@@ -68,7 +68,6 @@ void GeometryActorManager::loadGeometry(
     }
 
     auto& actor_ptr = component_actors_[component_id];
-    actor_ptr->setSurfacePrecision(surface_precision_);
     // 先同步类别开关但不计算，避免复用 Actor 时对即将替换的旧 Shape 重建诊断。
     actor_ptr->topologyDiagnostics().setCategoryFlagsOnly(
         topology_diagnostic_category_enabled_);
@@ -79,7 +78,7 @@ void GeometryActorManager::loadGeometry(
     // 已启用的诊断会在 loadShape 中立即执行，因此必须先设置日志标签。
     actor_ptr->topologyDiagnostics().setComponentLabel(
         componentLabel(component_id, component_name));
-    actor_ptr->loadShape(geometry_data);
+    actor_ptr->loadShape(geometry_data, surface_precision_);
     actor_ptr->setRenderStyle(current_style_);
     op_.registerProps(component_id, actor_ptr);
 }
@@ -98,7 +97,7 @@ void GeometryActorManager::setCurrentRenderStyle(GeometryRenderStyle style)
     current_style_ = style;
     for (auto& [id, actor] : component_actors_) {
         actor->setRenderStyle(style);
-        // 隐藏时切档会移除旧敏感实体，恢复显示时必须按当前样式重新启用拾取。
+        // 显示样式恢复时，同步启用之前因 Hidden 禁用的拾取模式。
         op_.setShapePickingEnabled(actor, actor->isVisible());
     }
 }
@@ -112,32 +111,27 @@ void GeometryActorManager::setSurfacePrecision(int precision)
 {
     if (!surface_precision::isValid(precision) || precision == surface_precision_)
         return;
-    // 所有三角化及诊断均在独立副本上完成，准备失败时连旧 Picker 缓存也不触碰。
     struct PreparedComponent {
-        Index id;
         std::shared_ptr<GeometryActor> actor;
-        std::unique_ptr<GeometryActor> display;
+        GeometryActor::DisplayData display;
+        GeometryActor::DisplayData previous;
     };
     std::vector<PreparedComponent> prepared;
     prepared.reserve(component_actors_.size());
     for (const auto& [id, actor] : component_actors_)
-        prepared.push_back({ id, actor, actor->prepareSurfacePrecision(precision) });
+        prepared.push_back({ actor, actor->prepareDisplay(precision), actor->captureDisplay() });
 
     size_t committed = 0;
     try {
         for (auto& component : prepared) {
-            // Picker 敏感实体引用旧拓扑，必须在交换前移除、交换后重新创建。
-            op_.unregisterProps(component.actor);
-            component.actor->swapDisplay(*component.display);
+            // 数据原位写入可能触发 VTK 观察者；当前组件必须在第一次写之前纳入回滚。
             ++committed;
-            op_.registerProps(component.id, component.actor);
+            component.actor->commitDisplay(component.display);
         }
     } catch (...) {
         while (committed > 0) {
             auto& component = prepared[--committed];
-            op_.unregisterProps(component.actor);
-            component.actor->swapDisplay(*component.display);
-            op_.registerProps(component.id, component.actor);
+            component.actor->commitDisplay(component.previous);
         }
         throw;
     }

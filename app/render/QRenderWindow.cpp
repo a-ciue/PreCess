@@ -985,10 +985,10 @@ void QRenderWindow::applySurfacePrecision(vtkUserData user_data, int precision, 
         return;
     const quint64 scene_generation = surface_precision_scene_generation_;
     try {
-        // 三角化重建替换了高亮指向的显示缓存，精细度更新后直接清空选择高亮。
+        // 仅原位更新显示数据；拾取身份和 GUI 选择快照保持有效。
         vtk->geometry_actor_manager_->setSurfacePrecision(precision);
         if (select_manager_)
-            select_manager_->clearSelection();
+            select_manager_->refreshGeometryHighlight();
         scheduleRender();
     } catch (const Standard_Failure& error) {
         spdlog::error("曲面显示精细度切换失败: {}", error.GetMessageString());

@@ -38,9 +38,8 @@ public:
     static int toleranceForMode(SelectMode m);
 
     IVtk_IdType getShapeId() const;
-    /** @brief 获取显示副本，供拾取缓存管理与显示检查使用。 */
-    const OccShapeHandle& getOccShape() const;
-    vtkPolyData* getLineOnlyPolyData() const;
+    /** @brief 从全部 Picker 移除本几何的敏感实体，并解除 Shape 的缓存引用。 */
+    void removeFromPickers(const std::vector<vtkSmartPointer<IVtkTools_ShapePicker>>& pickers) const;
     void disableSelectionModes(IVtkTools_ShapePicker* picker) const;
     void enableSelectionMode(IVtkTools_ShapePicker* picker, SelectMode mode) const;
 

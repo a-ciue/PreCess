@@ -19,9 +19,12 @@
 #include <BRep_Builder.hxx>
 #include <BRep_Tool.hxx>
 #include <Geom2d_Line.hxx>
+#include <GeomAPI_ProjectPointOnSurf.hxx>
 #include <Geom_BSplineSurface.hxx>
 #include <IVtkOCC_Shape.hxx>
 #include <IVtkTools_ShapeDataSource.hxx>
+#include <IVtkTools_ShapePicker.hxx>
+#include <IVtkTools_SubPolyDataFilter.hxx>
 #include <Poly_Triangulation.hxx>
 #include <TColStd_Array1OfInteger.hxx>
 #include <TColStd_Array1OfReal.hxx>
@@ -34,11 +37,17 @@
 #include <TopoDS_Wire.hxx>
 #include <catch2/catch_approx.hpp>
 #include <catch2/catch_test_macros.hpp>
+#include <catch2/generators/catch_generators.hpp>
 #include <gp_Dir2d.hxx>
 #include <gp_Pnt2d.hxx>
 #include <vtkActor.h>
 #include <vtkActorCollection.h>
+#include <vtkCallbackCommand.h>
 #include <vtkCamera.h>
+#include <vtkCell.h>
+#include <vtkCellData.h>
+#include <vtkCompositePolyDataMapper.h>
+#include <vtkPartitionedDataSet.h>
 #include <vtkPolyData.h>
 #include <vtkPolyDataMapper.h>
 #include <vtkProperty.h>
@@ -48,6 +57,7 @@
 #include <array>
 #include <cmath>
 #include <memory>
+#include <unordered_set>
 #include <vector>
 
 namespace {
@@ -87,6 +97,12 @@ struct GeometryScene {
         GeometryActorSelectOp op(actor());
         auto* mapper = vtkPolyDataMapper::SafeDownCast(op.getPolyActor().GetMapper());
         return mapper ? mapper->GetInput() : nullptr;
+    }
+
+    vtkPolyData* lines() const
+    {
+        auto filter = GeometryActorSelectOp(actor()).buildHighlight(SelectMode::GeometryEdge);
+        return vtkPolyData::SafeDownCast(filter->GetInput());
     }
 
     std::array<double, 2> project(const gp_Pnt& point)
@@ -230,8 +246,8 @@ TEST_CASE("CAD surface standard precision retains the original IVtk default", "[
     REQUIRE(scene.polygons() != nullptr);
     GeometryActorSelectOp op(scene.actor());
     CHECK(scene.polygons()->GetNumberOfPolys() == reference_source->GetOutput()->GetNumberOfPolys());
-    CHECK(op.getLineOnlyPolyData()->GetNumberOfLines() == reference_source->GetOutput()->GetNumberOfLines());
-    CHECK(op.getLineOnlyPolyData()->GetNumberOfVerts() == reference_source->GetOutput()->GetNumberOfVerts());
+    CHECK(scene.lines()->GetNumberOfLines() == reference_source->GetOutput()->GetNumberOfLines());
+    CHECK(scene.lines()->GetNumberOfVerts() == reference_source->GetOutput()->GetNumberOfVerts());
 }
 
 TEST_CASE("CAD surface precision rebuilds in both directions and applies to later imports", "[geometry][precision]")
@@ -242,15 +258,14 @@ TEST_CASE("CAD surface precision rebuilds in both directions and applies to late
         REQUIRE(cache.triangulation.IsNull());
     scene.load();
     checkTriangulationsUnchanged(original_caches);
-    const OccShapeHandle original_display = GeometryActorSelectOp(scene.actor()).getOccShape();
-    REQUIRE_FALSE(original_display->GetShape().IsSame(*scene.geometry.rootShape));
+    auto* original_polygons = scene.polygons();
+    auto* original_actor = &GeometryActorSelectOp(scene.actor()).getPolyActor();
     std::array<vtkIdType, 4> counts {};
     for (int precision = 0; precision < 4; ++precision) {
         scene.manager.setSurfacePrecision(precision);
         counts[precision] = scene.polygons()->GetNumberOfPolys();
-        const auto& display = GeometryActorSelectOp(scene.actor()).getOccShape();
-        CHECK(display->GetId() == original_display->GetId());
-        CHECK_FALSE(display->GetShape().IsSame(*scene.geometry.rootShape));
+        CHECK(scene.polygons() == original_polygons);
+        CHECK(&GeometryActorSelectOp(scene.actor()).getPolyActor() == original_actor);
         checkTriangulationsUnchanged(original_caches);
     }
     INFO("sphere triangle counts: " << counts[0] << ", " << counts[1] << ", " << counts[2] << ", " << counts[3]);
@@ -335,7 +350,16 @@ TEST_CASE("CAD precision rebuild keeps original geometry selections pickable", "
         selection.select(display[0], display[1]);
         REQUIRE(selection.getSelection()->ids == std::vector<Index> { pick.expected_gid });
         for (int precision : { 3, 0, 1 }) {
+            CAPTURE(precision);
+            auto* previous_data = vtkPartitionedDataSet::SafeDownCast(highlight->GetMapper()->GetInputDataObject(0, 0));
+            const auto before_cells = previous_data->GetNumberOfCells();
+            CAPTURE(before_cells);
             scene.manager.setSurfacePrecision(precision);
+            selection.refreshHighlight();
+            scene.window->Render();
+            auto* data = vtkPartitionedDataSet::SafeDownCast(highlight->GetMapper()->GetInputDataObject(0, 0));
+            REQUIRE(data != nullptr);
+            REQUIRE(data->GetNumberOfCells() > 0);
             // 选择按几何身份的 gid 标识，不随三角化重建失效。
             CHECK(selection.getSelection()->ids == std::vector<Index> { pick.expected_gid });
         }
@@ -356,21 +380,28 @@ TEST_CASE("CAD precision rebuild retains a trimmed rational B-spline surface hol
     for (int precision : { 0, 3 }) {
         scene.manager.setSurfacePrecision(precision);
         counts[count_index++] = scene.polygons()->GetNumberOfPolys();
-        const OccShapeHandle& display = GeometryActorSelectOp(scene.actor()).getOccShape();
-        TopExp_Explorer face(display->GetShape(), TopAbs_FACE);
+        // 从实际显示点反求 UV，验证三角片没有填平裁剪孔；不读取私有显示拓扑。
+        TopExp_Explorer face(*scene.geometry.rootShape, TopAbs_FACE);
         REQUIRE(face.More());
-        TopLoc_Location location;
-        const auto triangulation = BRep_Tool::Triangulation(TopoDS::Face(face.Current()), location);
-        REQUIRE_FALSE(triangulation.IsNull());
-        REQUIRE(triangulation->HasUVNodes());
-        for (int i = 1; i <= triangulation->NbTriangles(); ++i) {
-            int a, b, c;
-            triangulation->Triangle(i).Get(a, b, c);
-            const gp_Pnt2d uv_a = triangulation->UVNode(a);
-            const gp_Pnt2d uv_b = triangulation->UVNode(b);
-            const gp_Pnt2d uv_c = triangulation->UVNode(c);
-            const double u = (uv_a.X() + uv_b.X() + uv_c.X()) / 3.0;
-            const double v = (uv_a.Y() + uv_b.Y() + uv_c.Y()) / 3.0;
+        const auto surface = BRep_Tool::Surface(TopoDS::Face(face.Current()));
+        std::vector<gp_Pnt2d> uv_points;
+        for (vtkIdType i = 0; i < scene.polygons()->GetNumberOfPoints(); ++i) {
+            const double* p = scene.polygons()->GetPoint(i);
+            GeomAPI_ProjectPointOnSurf projection(gp_Pnt(p[0], p[1], p[2]), surface);
+            REQUIRE(projection.NbPoints() > 0);
+            double u, v;
+            projection.LowerDistanceParameters(u, v);
+            uv_points.emplace_back(u, v);
+        }
+        for (vtkIdType i = 0; i < scene.polygons()->GetNumberOfCells(); ++i) {
+            auto* triangle = scene.polygons()->GetCell(i);
+            REQUIRE(triangle->GetNumberOfPoints() == 3);
+            double u = 0.0, v = 0.0;
+            for (int j = 0; j < 3; ++j) {
+                const auto& uv = uv_points[triangle->GetPointId(j)];
+                u += uv.X() / 3.0;
+                v += uv.Y() / 3.0;
+            }
             REQUIRE_FALSE((u > 0.350001 && u < 0.649999 && v > 0.350001 && v < 0.649999));
         }
     }
@@ -436,8 +467,8 @@ TEST_CASE("CAD precision changes safely handle no components and an empty compou
         REQUIRE(scene.polygons() != nullptr);
         CHECK(scene.polygons()->GetNumberOfCells() == 0);
         GeometryActorSelectOp op(scene.actor());
-        REQUIRE(op.getLineOnlyPolyData() != nullptr);
-        CHECK(op.getLineOnlyPolyData()->GetNumberOfCells() == 0);
+        REQUIRE(scene.lines() != nullptr);
+        CHECK(scene.lines()->GetNumberOfCells() == 0);
     }
 }
 
@@ -446,21 +477,20 @@ TEST_CASE("CAD actor precision failure preserves display caches and permits retr
     GeometryScene scene(BRepPrimAPI_MakeSphere(10.0).Shape());
     scene.load();
     const auto actor = scene.actor();
-    const auto original_shape = GeometryActorSelectOp(actor).getOccShape();
-    const auto caches = captureTriangulations(original_shape->GetShape());
+    const auto caches = captureTriangulations(*scene.geometry.rootShape);
+    const auto triangle_count = scene.polygons()->GetNumberOfPolys();
     vtkSmartPointer<vtkPolyData> polygons = scene.polygons();
     const int actor_count = scene.renderer->GetActors()->GetNumberOfItems();
     SurfacePrecisionFailure failure;
-    REQUIRE_THROWS_AS(actor->setSurfacePrecision(3), std::runtime_error);
+    REQUIRE_THROWS_AS(scene.manager.setSurfacePrecision(3), std::runtime_error);
     CHECK(failure.rebuilds() == 1);
-    CHECK(actor->getSurfacePrecision() == 1);
+    CHECK(scene.manager.getSurfacePrecision() == 1);
     CHECK(scene.polygons() == polygons);
-    CHECK(GeometryActorSelectOp(actor).getOccShape() == original_shape);
     CHECK(scene.renderer->GetActors()->GetNumberOfItems() == actor_count);
     checkTriangulationsUnchanged(caches);
-    REQUIRE_NOTHROW(actor->setSurfacePrecision(3));
-    CHECK(actor->getSurfacePrecision() == 3);
-    CHECK(scene.polygons()->GetNumberOfPolys() > polygons->GetNumberOfPolys());
+    REQUIRE_NOTHROW(scene.manager.setSurfacePrecision(3));
+    CHECK(scene.manager.getSurfacePrecision() == 3);
+    CHECK(scene.polygons()->GetNumberOfPolys() > triangle_count);
 }
 
 TEST_CASE("CAD batch precision failure keeps every component pickable and retries atomically", "[geometry][precision][failure][render]")
@@ -487,33 +517,23 @@ TEST_CASE("CAD batch precision failure keeps every component pickable and retrie
     const auto selected = selection.getSelection()->ids;
     REQUIRE(selected == std::vector<Index> { scene.geometry.index.faceGlobalId(1) });
 
-    std::array<OccShapeHandle, 2> shapes;
+    std::array<vtkIdType, 2> triangle_counts;
     std::array<vtkSmartPointer<vtkPolyData>, 2> polygons;
     for (int i = 0; i < 2; ++i) {
         GeometryActorSelectOp op(scene.manager.getComponentActor(kComponentId + i));
-        shapes[i] = op.getOccShape();
         polygons[i] = vtkPolyDataMapper::SafeDownCast(op.getPolyActor().GetMapper())->GetInput();
-        REQUIRE_FALSE(shapes[i]->GetSelectableObject().IsNull());
+        triangle_counts[i] = polygons[i]->GetNumberOfPolys();
     }
-    const auto first_selectable = shapes[0]->GetSelectableObject();
-    const auto second_selectable = shapes[1]->GetSelectableObject();
-    const auto first_caches = captureTriangulations(shapes[0]->GetShape());
-    const auto second_caches = captureTriangulations(shapes[1]->GetShape());
     const int actor_count = scene.renderer->GetActors()->GetNumberOfItems();
     SurfacePrecisionFailure failure(2);
     REQUIRE_THROWS_AS(scene.manager.setSurfacePrecision(3), std::runtime_error);
     REQUIRE(failure.rebuilds() == 2); // 第一个组件已准备成功，第二个在重建末尾失败。
     CHECK(scene.manager.getSurfacePrecision() == 1);
     CHECK(scene.renderer->GetActors()->GetNumberOfItems() == actor_count);
-    CHECK(shapes[0]->GetSelectableObject() == first_selectable);
-    CHECK(shapes[1]->GetSelectableObject() == second_selectable);
-    checkTriangulationsUnchanged(first_caches);
-    checkTriangulationsUnchanged(second_caches);
     for (int i = 0; i < 2; ++i) {
         const auto actor = scene.manager.getComponentActor(kComponentId + i);
         GeometryActorSelectOp op(actor);
-        CHECK(actor->getSurfacePrecision() == 1);
-        CHECK(op.getOccShape() == shapes[i]);
+        CHECK(scene.manager.getSurfacePrecision() == 1);
         CHECK(vtkPolyDataMapper::SafeDownCast(op.getPolyActor().GetMapper())->GetInput() == polygons[i]);
         CHECK(scene.manager.op().getComponentId(&op.getPolyActor()) == kComponentId + i);
     }
@@ -529,19 +549,151 @@ TEST_CASE("CAD batch precision failure keeps every component pickable and retrie
     for (int i = 0; i < 2; ++i) {
         const auto actor = scene.manager.getComponentActor(kComponentId + i);
         GeometryActorSelectOp op(actor);
-        CHECK(actor->getSurfacePrecision() == 3);
+        CHECK(scene.manager.getSurfacePrecision() == 3);
         CHECK(actor->getRenderStyle() == GeometryRenderStyle::Transparent25);
         CHECK(op.getPolyActor().GetProperty()->GetOpacity() == Catch::Approx(0.25));
         CHECK(vtkPolyDataMapper::SafeDownCast(op.getPolyActor().GetMapper())->GetInput()->GetNumberOfPolys()
-            > polygons[i]->GetNumberOfPolys());
-        REQUIRE_FALSE(op.getOccShape()->GetSelectableObject().IsNull());
+            > triangle_counts[i]);
+        CHECK(vtkPolyDataMapper::SafeDownCast(op.getPolyActor().GetMapper())->GetInput() == polygons[i]);
     }
     CHECK(selection.getSelection()->ids == selected);
+    CHECK(failure.diagnosticLogs() == 0);
     scene.window->Render();
     selection.select(display[0], display[1]);
     REQUIRE(selection.getSelection()->ids.empty());
     selection.select(display[0], display[1], SelectOp::Append);
     CHECK(selection.getSelection()->ids == selected);
     scene.manager.loadGeometry({ *later.rootShape, kComponentId + 2, &later.index });
-    CHECK(scene.manager.getComponentActor(kComponentId + 2)->getSurfacePrecision() == 3);
+    GeometryActorSelectOp later_op(scene.manager.getComponentActor(kComponentId + 2));
+    CHECK(vtkPolyDataMapper::SafeDownCast(later_op.getPolyActor().GetMapper())->GetInput()->GetNumberOfPolys()
+        == scene.polygons()->GetNumberOfPolys());
+}
+
+TEST_CASE("CAD display precision keeps independent picking and refreshes curved highlights", "[geometry][precision][render]")
+{
+    GeometryScene scene(BRepPrimAPI_MakeSphere(10.0).Shape());
+    scene.load();
+    scene.lookDownZ(gp_Pnt(0, 0, 0));
+    const auto center = scene.project(gp_Pnt(3, 2, std::sqrt(87.0)));
+
+    // 不向 Manager 注册此 Picker：切档若替换拾取 Shape，其缓存不会被补注册掩盖。
+    vtkNew<IVtkTools_ShapePicker> picker;
+    picker->SetRenderer(scene.renderer);
+    picker->SetAreaSelection(false);
+    GeometryActorSelectOp op(scene.actor());
+    op.enableSelectionMode(picker, SelectMode::GeometryFace);
+    REQUIRE(picker->Pick(center[0], center[1], 0, scene.renderer) > 0);
+    const auto sub_id = picker->GetPickedSubShapesIds(kComponentId).First();
+    auto* actor = &op.getPolyActor();
+    const auto* mapper = actor->GetMapper();
+    vtkNew<vtkPartitionedDataSet> data;
+    GeometryFaceSelectorHighlight selection(*data, 0, op);
+    selection.toggle(sub_id, scene.geometry.index.faceGlobalId(1), SelectOp::Append);
+    const auto selected = selection.get().ids;
+    for (int precision : { 0, 3, 1, 2 }) {
+        scene.manager.setSurfacePrecision(precision);
+        selection.enableHighlight();
+        scene.window->Render();
+        CHECK(&op.getPolyActor() == actor);
+        CHECK(op.getPolyActor().GetMapper() == mapper);
+        CHECK(selection.get().ids == selected);
+        CHECK(data->GetNumberOfCells() == scene.polygons()->GetNumberOfCells());
+        // 从中心到轮廓附近都实际拾取，确认固定标准拾取精度匹配各显示档位。
+        for (double x : { 0.0, 3.0, 8.0, 9.8 }) {
+            const auto point = scene.project(gp_Pnt(x, 0, std::sqrt(100.0 - x * x)));
+            REQUIRE(picker->Pick(point[0], point[1], 0, scene.renderer) > 0);
+            CHECK(picker->GetPickedSubShapesIds(kComponentId).First() == sub_id);
+            IVtk_IdType picked_id;
+            CHECK(op.resolvePickedSubshape(picker, kComponentId, SelectMode::GeometryFace, picked_id)
+                == scene.geometry.index.faceGlobalId(1));
+        }
+    }
+    op.removeFromPickers({ picker });
+    CHECK(picker->Pick(center[0], center[1], 0, scene.renderer) == 0);
+}
+
+TEST_CASE("CAD commit failure restores current and previous display data before retry", "[geometry][precision][failure][render]")
+{
+    const int fail_on = GENERATE(1, 2);
+    const bool fail_in_diagnostics = GENERATE(false, true);
+    GeometryScene scene(BRepPrimAPI_MakeSphere(10.0).Shape());
+    scene.load();
+    GeometryData later;
+    later.setRootShape(BRepPrimAPI_MakeSphere(gp_Pnt(30, 0, 0), 10.0).Shape());
+    later.ensureIndexBuilt(scene.registry);
+    scene.manager.loadGeometry({ *later.rootShape, kComponentId + 1, &later.index });
+    scene.manager.setTopologyDiagnosticSmallFaceArea(2000);
+    scene.manager.setTopologyDiagnosticCategoryEnabled(static_cast<int>(GeometryTopologyDiagnosticCategory::SmallFace), true);
+
+    std::vector<vtkPolyData*> targets;
+    std::vector<vtkPolyData*> all_data;
+    for (int i = 0; i < 2; ++i) {
+        GeometryActorSelectOp op(scene.manager.getComponentActor(kComponentId + i));
+        auto* polygons = vtkPolyDataMapper::SafeDownCast(op.getPolyActor().GetMapper())->GetInput();
+        all_data.push_back(polygons);
+        all_data.push_back(vtkPolyData::SafeDownCast(op.buildHighlight(SelectMode::GeometryEdge)->GetInput()));
+        if (!fail_in_diagnostics)
+            targets.push_back(polygons);
+    }
+    auto* actors = scene.renderer->GetActors();
+    actors->InitTraversal();
+    while (auto* actor = actors->GetNextActor()) {
+        if (actor->GetPickable())
+            continue;
+        auto* mapper = vtkPolyDataMapper::SafeDownCast(actor->GetMapper());
+        if (!mapper)
+            continue;
+        all_data.push_back(mapper->GetInput());
+        if (fail_in_diagnostics && actor->GetVisibility() && actor->GetProperty()->GetOpacity() == 0.4)
+            targets.push_back(mapper->GetInput());
+    }
+    REQUIRE(targets.size() == 2);
+    std::vector<vtkSmartPointer<vtkPolyData>> previous;
+    for (auto* data : all_data) {
+        auto snapshot = vtkSmartPointer<vtkPolyData>::New();
+        snapshot->ShallowCopy(data);
+        previous.push_back(snapshot);
+    }
+    struct FailureState {
+        int fail_on;
+        bool fired = false;
+        std::unordered_set<vtkObject*> visited;
+    } state { fail_on };
+    vtkNew<vtkCallbackCommand> callback;
+    callback->SetClientData(&state);
+    callback->SetCallback([](vtkObject* object, unsigned long, void* client, void*) {
+        auto& state = *static_cast<FailureState*>(client);
+        if (!state.fired && state.visited.insert(object).second && state.visited.size() == state.fail_on) {
+            state.fired = true;
+            throw std::runtime_error("injected display commit failure");
+        }
+    });
+    std::vector<unsigned long> observers;
+    for (auto* target : targets)
+        observers.push_back(target->AddObserver(vtkCommand::ModifiedEvent, callback));
+    REQUIRE_THROWS_AS(scene.manager.setSurfacePrecision(3), std::runtime_error);
+    for (size_t i = 0; i < targets.size(); ++i)
+        targets[i]->RemoveObserver(observers[i]);
+    REQUIRE(state.fired);
+    CHECK(scene.manager.getSurfacePrecision() == 1);
+    for (size_t i = 0; i < all_data.size(); ++i) {
+        CHECK(all_data[i]->GetPoints() == previous[i]->GetPoints());
+        CHECK(all_data[i]->GetPolys() == previous[i]->GetPolys());
+        CHECK(all_data[i]->GetLines() == previous[i]->GetLines());
+        CHECK(all_data[i]->GetNumberOfCells() == previous[i]->GetNumberOfCells());
+    }
+    REQUIRE_NOTHROW(scene.manager.setSurfacePrecision(3));
+    CHECK(scene.manager.getSurfacePrecision() == 3);
+    CHECK(scene.polygons()->GetNumberOfCells() > previous.front()->GetNumberOfCells());
+}
+
+TEST_CASE("CAD picker cleanup tolerates an unloaded actor", "[geometry][precision]")
+{
+    vtkNew<vtkRenderer> renderer;
+    auto actor = std::make_shared<GeometryActor>(renderer);
+    GeometryActorSelectOp op(actor);
+    vtkNew<IVtkTools_ShapePicker> picker;
+    CHECK(op.getShapeId() == -1);
+    REQUIRE_NOTHROW(op.removeFromPickers({ picker }));
+    REQUIRE_NOTHROW(op.disableSelectionModes(picker));
 }

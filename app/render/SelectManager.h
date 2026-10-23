@@ -53,6 +53,8 @@ public:
     //! @brief 注入模型层 id 查询接口，供选择器解析单元 id（如边端点对 -> 边 id）
     void setMeshIdQuery(const IMeshIdQuery* id_query);
     void refreshComponentHighlight();
+    /** @brief 曲面切档后刷新几何与组件高亮，不改变选择快照。 */
+    void refreshGeometryHighlight();
     void setGeometryHighlightVisible(bool visible);
     void setGeometryHighlightVisible(Index component_id, bool visible);
     void setMeshHighlightVisible(bool visible);

@@ -421,7 +421,7 @@ TEST_CASE("QRenderWindow applies requested surface precision across scene rebuil
     auto* data = QRenderWindow::Data::SafeDownCast(user_data);
     data->geometry_actor_manager_->loadGeometry({ sphere, 123, nullptr });
     CHECK(data->geometry_actor_manager_->getSurfacePrecision() == 3);
-    CHECK(data->geometry_actor_manager_->getComponentActor(123)->getSurfacePrecision() == 3);
+    CHECK(data->geometry_actor_manager_->hasComponent(123));
     item.destroyingVTK(window, user_data);
     window->RemoveRenderer(data->overlay_renderer_);
     window->RemoveRenderer(data->renderer_);

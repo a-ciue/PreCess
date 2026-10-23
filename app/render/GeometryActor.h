@@ -3,6 +3,7 @@
 #include "Core.h"
 #include "GeometryDataVtk.h"
 #include "GeometrySubshapeIndex.h"
+#include "GeometryTopologyDiagnosticActor.h"
 #include "SurfacePrecision.h"
 #include <vtkActor.h>
 #include <vtkDataArray.h>
@@ -26,11 +27,7 @@ public:
     GeometryActor(vtkRenderer* renderer);
     ~GeometryActor();
 
-    void loadShape(const GeometryDataVtk& geometry_data);
-
-    /** @brief 设置显示用曲面精细度：0 粗糙、1 标准、2 精细、3 非常精细。 */
-    void setSurfacePrecision(int precision);
-    int getSurfacePrecision() const { return surface_precision_; }
+    void loadShape(const GeometryDataVtk& geometry_data, int precision = surface_precision::kDefault);
 
     void setVisibility(bool visibility);
     bool isVisible() const;
@@ -43,25 +40,27 @@ public:
 private:
     void deleteGeometryActor();
     void applyStyle();
-    void rebuildShape(int precision);
-    /** @brief 在独立 renderer 与拓扑副本上准备切档，失败不触碰当前显示。 */
-    std::unique_ptr<GeometryActor> prepareSurfacePrecision(int precision) const;
-    /** @brief 交换已准备好的显示数据，保留供选择高亮引用的 GeometryActor 身份。 */
-    void swapDisplay(GeometryActor& other);
+    /** @brief 仅含显示数据；候选与回滚快照均不创建场景、拾取或诊断对象。 */
+    struct DisplayData {
+        vtkSmartPointer<vtkPolyData> lines;
+        vtkSmartPointer<vtkPolyData> polygons;
+        GeometryTopologyDiagnosticActor::DisplayData diagnostics;
+    };
+    DisplayData prepareDisplay(int precision, bool include_diagnostics = true) const;
+    DisplayData captureDisplay() const;
+    /** @brief 原位更新数据对象，保留 Mapper、高亮过滤器及 Picker 的身份。 */
+    void commitDisplay(const DisplayData& display);
+    void createActors();
 
     GeometryRenderStyle style_ { GeometryRenderStyle::SurfaceWithEdges };
-    int surface_precision_ { surface_precision::kDefault };
     bool visibility_;
     OccShapeHandle occ_shape_;
-    // 显示拓扑独立持有三角缓存，gid 沿用原模型，不注册到业务 GeometryRegistry。
-    std::unique_ptr<GeometrySubshapeIndex> display_geometry_index_;
-    const GeometrySubshapeIndex* geometry_index_ { nullptr };
+    // 固定标准精度的拾取副本，与模型/撤销快照及可变显示三角化隔离。
+    std::unique_ptr<GeometrySubshapeIndex> picking_geometry_index_;
 
     vtkSmartPointer<vtkActor> poly_actor_ = vtkSmartPointer<vtkActor>::New();
     vtkSmartPointer<vtkActor> line_actor_ = vtkSmartPointer<vtkActor>::New();
     vtkSmartPointer<vtkRenderer> renderer_;
-    vtkSmartPointer<vtkDataArray> line_sub_id_array_;
-    vtkSmartPointer<vtkDataArray> poly_sub_id_array_;
 
     vtkSmartPointer<vtkPolyData> poly_only_;
     vtkSmartPointer<vtkPolyData> line_only_;
