@@ -14,6 +14,7 @@
 #include "SurfacePrecision.h"
 #include <QQuickVTKItem.h>
 #include <QVTKRenderWindowAdapter.h>
+#include <atomic>
 #include <unordered_map>
 
 #include <QtQml/QQmlApplicationEngine>
@@ -309,7 +310,7 @@ private:
     GeometryRenderStyle geometry_style_ { GeometryRenderStyle::SurfaceWithEdges };
     int surface_precision_ { surface_precision::kDefault }; //> GUI 侧当前请求档位
     quint64 surface_precision_revision_ {}; //> 防止旧切档结果覆盖新的 GUI 请求
-    quint64 surface_precision_scene_generation_ {}; //> 场景销毁或重建后丢弃旧档位回执
+    std::atomic<quint64> surface_precision_scene_generation_ {}; //> 渲染线程更新，GUI 回执跨线程校验
     MeshRenderStyle mesh_style_ { MeshRenderStyle::FaceWithEdges };
 
     std::unique_ptr<SelectManager> select_manager_;
