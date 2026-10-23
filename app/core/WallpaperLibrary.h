@@ -84,7 +84,10 @@ public:
     //! @brief 是否有异步导入正在进行
     bool importing() const { return importing_; }
 
-    /** @brief 删除托管目录内的壁纸文件 */
+    /**
+     * @brief 删除托管目录内的壁纸文件
+     * @return false 表示导入占用中或清理因在途解码被延后，残留留待后续清理
+     */
     Q_INVOKABLE bool removeWallpaper();
 
     /**

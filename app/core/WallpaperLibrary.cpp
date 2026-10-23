@@ -15,6 +15,7 @@
 #include <QPointer>
 #include <QReadWriteLock>
 #include <QRunnable>
+#include <QScopeGuard>
 #include <QScreen>
 #include <QStandardPaths>
 #include <QStringList>
@@ -66,9 +67,18 @@ QStringList wallpaperFiles()
 }
 
 //! @brief 删除托管目录内除 keep 之外的壁纸文件，返回是否全部删除成功
+//!
+//! 不阻塞 GUI：若 provider 正在解码并持有读锁，则暂留残留并返回 false，
+//! 由下一次导入、移除或启动 reconcile 再次清理。
 bool removeOtherFiles(const QString& keep)
 {
-    QWriteLocker locker(&wallpaperFileLock());
+    QReadWriteLock& lock = wallpaperFileLock();
+    if (!lock.tryLockForWrite()) {
+        spdlog::debug("wallpaper: cleanup deferred; image decode in progress");
+        return false;
+    }
+    const auto unlock = qScopeGuard([&lock] { lock.unlock(); });
+
     QDir dir(WallpaperLibrary::userWallpaperDir());
     bool ok = true;
     for (const QString& name : wallpaperFiles()) {
@@ -177,7 +187,7 @@ QImage WallpaperProvider::requestImage(const QString& id, QSize* size, const QSi
     QImage image;
 
     {
-        // 与 removeOtherFiles 的写锁互斥：清理旧图等待在途读取结束
+        // 与 removeOtherFiles 的写锁互斥；清理侧使用 tryLock，不会阻塞 GUI
         QReadLocker locker(&wallpaperFileLock());
         QImageReader reader(path);
         if (!reader.canRead()) {
@@ -333,8 +343,8 @@ void WallpaperLibrary::finishImport(const QString& id)
         return;
     }
 
-    // 先让 GUI 直连槽把 Theme.wallpaper 切到新 id，再清理旧图；
-    // 清理与 provider 读取由 wallpaperFileLock 互斥，避免删除在途文件
+    // 先让 GUI 直连槽把 Theme.wallpaper 切到新 id，再尝试清理旧图；
+    // 若 provider 正在解码，清理会暂留残留并交给后续清理，不阻塞 GUI
     emit importFinished(id);
     removeOtherFiles(id);
 }
