@@ -78,17 +78,16 @@ std::vector<FeatureNavigationEntry> FeatureSystem::getNavigationEntries() const
             // 插件描述优先；同类按功能身份选来源，不依赖加载顺序。
             if (found == candidates.end() || found->second.provider.empty() || name < found->second.provider) {
                 auto resolved_category = category;
-                if (resolved_category.menu_path.empty()) {
-                    const auto host = std::find_if(navigation_entries_.begin(), navigation_entries_.end(), [&](const auto& declared) { return declared.id == category.id; });
-                    if (host != navigation_entries_.end())
+                const auto host = std::find_if(navigation_entries_.begin(), navigation_entries_.end(), [&](const auto& declared) { return declared.id == category.id; });
+                if (host != navigation_entries_.end()) {
+                    if (resolved_category.menu_path.empty())
                         resolved_category.menu_path = host->menu_path;
-                }
-                if (const auto host = std::find_if(navigation_entries_.begin(), navigation_entries_.end(), [&](const auto& declared) { return declared.id == category.id; });
-                    host != navigation_entries_.end() && resolved_category.menu_path == host->menu_path) {
-                    if (resolved_category.menu_id.empty())
-                        resolved_category.menu_id = host->menu_id;
-                    if (resolved_category.group_id.empty())
-                        resolved_category.group_id = host->group_id;
+                    if (resolved_category.menu_path == host->menu_path) {
+                        if (resolved_category.menu_id.empty())
+                            resolved_category.menu_id = host->menu_id;
+                        if (resolved_category.group_id.empty())
+                            resolved_category.group_id = host->group_id;
+                    }
                 }
                 candidates.insert_or_assign(category.id, Candidate { std::move(resolved_category), name });
             }
