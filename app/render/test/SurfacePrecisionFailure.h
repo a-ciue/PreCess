@@ -30,7 +30,7 @@ public:
                 throw std::runtime_error("injected rebuild failure");
         });
         auto logger = std::make_shared<spdlog::logger>("precision-failure", sink);
-        logger->set_level(spdlog::level::info);
+        logger->set_level(spdlog::level::debug);
         // spdlog 默认会吞掉 sink 异常；显式让错误处理器将异常传回重建调用者。
         logger->set_error_handler([kind](const std::string&) {
             if (kind == Kind::Occ)

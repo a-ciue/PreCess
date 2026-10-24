@@ -175,7 +175,7 @@ GeometryActor::DisplayData GeometryActor::prepareDisplay(int precision, bool inc
     const double elapsed_ms = std::chrono::duration<double, std::milli>(
         std::chrono::steady_clock::now() - started)
                                   .count();
-    spdlog::info("[SurfacePrecision] component={} level={} triangles={} rebuild_ms={:.1f}",
+    spdlog::debug("[SurfacePrecision] component={} level={} triangles={} rebuild_ms={:.1f}",
         occ_shape_->GetId(), precision, nP, elapsed_ms);
     return display;
 }
