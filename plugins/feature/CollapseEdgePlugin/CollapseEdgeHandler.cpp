@@ -25,7 +25,7 @@ void CollapseEdgeHandler::setup(FeatureRegistrar& reg, FeatureContext& /*ctx*/)
 {
     reg.addParameter({ ArgTypeEnum::Selector, "目标边", "GeometryEdge", "请选择一条需要压缩的几何边" });
     reg.addParameter({ ArgTypeEnum::Combo, "目标位置", "默认,起点,终点,中点|0", "自动选择优先保留约束更多、修改风险更高的端点" });
-    reg.navigation().addEntry({ "CollapseEdge", "压缩边", "qrc:/images/toolbar/Geometry/collapse-edge.svg", 0, "几何/拓扑" });
+    reg.navigation().addEntry({ "CollapseEdge", "压缩边", "qrc:/images/toolbar/Geometry/collapse-edge.svg", 0, "几何/拓扑", "geometry", "topology" });
 }
 
 std::any CollapseEdgeHandler::execute(FeatureContext& ctx)

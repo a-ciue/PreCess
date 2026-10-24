@@ -31,9 +31,11 @@ navigation.addOrder({ "entry:quadrilateral", "MyQuadFeature", 10 });
 
 宿主产品配置位于 `app/model/QModelManager.cpp`，四类网格入口及顶部菜单的默认顺序均在这里声明；四边形入口内的 Ricci 流方法通过同一配置优先显示。新增或调整顺序无需在通用 QML 中按菜单名称编写判断。
 
+内置功能显式使用 `geometry`、`tools`、`examples`、`features` 菜单 ID，几何分组使用 `topology`、`repair`。工具栏页签与页面的 `objectName` 分别采用 `featureTab_<菜单ID>`、`featureMenuPage_<菜单ID>`，改显示标题不影响自动化定位。
+
 ## 兼容与更新
 
-`FeatureNavigationEntry` 新增可选的 `menu_id`、`group_id`；`menu_path` 继续表达显示名称及位置。旧插件不填 ID 时分别回退到菜单段和分组段，空路径仍归入“功能”，无分组时分组 ID 为 `default`。同一宿主入口继承宿主路径时也继承其稳定 ID；插件显式声明另一个路径时不继承。旧声明需迁移为稳定 ID 后，才能保证改标题不改变排序身份。
+`FeatureNavigationEntry` 新增可选的 `menu_id`、`group_id`；`menu_path` 继续表达显示名称及位置。旧插件不填 ID 时分别回退到菜单段和分组段，空路径仍归入稳定 ID 为 `features` 的“功能”菜单，无分组时分组 ID 为 `default`。旧条目先复用相同显示路径下唯一明确声明的菜单／分组 ID；没有声明或同名声明有歧义时再回退到路径文字，避免误合并。同一宿主入口继承宿主路径时也继承其稳定 ID；插件显式声明另一个路径时不继承。旧声明需迁移为稳定 ID 后，才能保证改标题不改变排序身份。
 
 没有排序覆盖时，菜单默认值为 1000，分组为 0；图标和子功能沿用已有默认值。未知排序目标不会创建空菜单，只在目标出现时生效。插件卸载后重新解析其声明；宿主入口和覆盖不随插件卸载消失。
 

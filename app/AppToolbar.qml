@@ -549,7 +549,7 @@ ColumnLayout {
             Flickable {
                 id: featureMenuPage
                 required property var modelData
-                objectName: "featureMenuPage_" + modelData.name
+                objectName: "featureMenuPage_" + modelData.id
                 Layout.fillWidth: true
                 Layout.fillHeight: true
                 contentWidth: featureGroups.implicitWidth

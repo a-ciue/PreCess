@@ -40,7 +40,7 @@ function buildEntries(infos, categories, orders) {
             icon: category.icon || "",
             order: category.order || 0,
             menu_path: category.menu_path || "功能",
-            menu_id: category.menu_id || "",
+            menu_id: category.menu_id || (category.menu_path ? "" : "features"),
             group_id: category.group_id || "",
             items: items
         })
@@ -60,20 +60,36 @@ function buildEntries(infos, categories, orders) {
             icon: info.icon || "",
             order: info.order || 0,
             menu_path: "功能",
+            menu_id: "features",
             items: [info]
         })
     }
     return entries
 }
 
+// 旧路径仅继承唯一的显式父 ID；同名父节点有歧义时保留旧路径回退。
+function recordParentId(ids, path, id) {
+    if (id)
+        ids.set(path, !ids.has(path) || ids.get(path) === id ? id : "")
+}
+
 function buildMenus(entries, orders) {
-    const menus = []
-    for (const entry of entries) {
+    const menuIds = new Map()
+    const groupIds = new Map()
+    const locations = entries.map(entry => {
         const path = (entry.menu_path || "功能").split("/")
-        const name = path[0] || "功能"
-        const groupName = path.length > 1 ? path[1] : ""
-        const menuId = entry.menu_id || name
-        const groupId = entry.group_id || groupName || "default"
+        return { entry: entry, name: path[0] || "功能", groupName: path[1] || "" }
+    })
+    for (const location of locations)
+        recordParentId(menuIds, location.name, location.entry.menu_id)
+    for (const location of locations) {
+        location.menuId = location.entry.menu_id || menuIds.get(location.name) || location.name
+        location.groupPath = JSON.stringify([location.menuId, location.groupName])
+        recordParentId(groupIds, location.groupPath, location.entry.group_id)
+    }
+    const menus = []
+    for (const { entry, name, groupName, menuId, groupPath } of locations) {
+        const groupId = entry.group_id || groupIds.get(groupPath) || groupName || "default"
         let menu = menus.find(item => item.id === menuId)
         if (!menu) {
             menu = { id: menuId, name: name, order: orderFor(orders, "", menuId, 1000), groups: [] }
@@ -106,7 +122,7 @@ function buildTabs(menus, builtins, pageStart, orders) {
     for (let index = 0; index < menus.length; ++index) {
         const menu = menus[index]
         tabs.push({id: menu.id, name: menu.name, order: menu.order,
-            objectName: "featureTab_" + menu.name, pageIndex: pageStart + index})
+            objectName: "featureTab_" + menu.id, pageIndex: pageStart + index})
     }
     return tabs.sort(compareNodes)
 }

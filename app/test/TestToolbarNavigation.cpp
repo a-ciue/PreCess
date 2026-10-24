@@ -535,7 +535,7 @@ TEST_CASE("Actual toolbar renders declared feature entries and preserves active 
     auto operation = engine.newObject();
     operation.setProperty("marker", 42);
     REQUIRE(app->setProperty("activeOperation", QVariant::fromValue(operation)));
-    auto* tab = findItem(item, "featureTab_网格生成算法");
+    auto* tab = findItem(item, "featureTab_mesh-generation");
     REQUIRE(tab);
     auto* legacy_tab = findItem(item, "otherAlgorithmTab");
     REQUIRE(legacy_tab);
@@ -549,15 +549,15 @@ TEST_CASE("Actual toolbar renders declared feature entries and preserves active 
     REQUIRE(QMetaObject::invokeMethod(tab, "clicked"));
     QCoreApplication::processEvents();
     CHECK(toolbar->property("activeCategory").toInt() == 3);
-    REQUIRE(findItem(item, "featureMenuPage_网格生成算法"));
-    CHECK(findItem(item, "featureMenuPage_网格生成算法")->isVisible());
+    REQUIRE(findItem(item, "featureMenuPage_mesh-generation"));
+    CHECK(findItem(item, "featureMenuPage_mesh-generation")->isVisible());
     CHECK_FALSE(findItem(item, "algorithmPage_other")->isVisible());
     CHECK(app->property("activeOperation").value<QJSValue>().strictlyEquals(operation));
 
     // 窄窗口保留四类入口，通过横向滚动访问完整文字。
     item->setWidth(300);
     QCoreApplication::processEvents();
-    auto* categories = findItem(item, "featureMenuPage_网格生成算法");
+    auto* categories = findItem(item, "featureMenuPage_mesh-generation");
     REQUIRE(categories);
     CHECK(categories->property("contentWidth").toReal() > categories->width());
     item->setWidth(800);
@@ -845,12 +845,12 @@ TEST_CASE("Installed external algorithms appear in the actual toolbar and open t
         clickItem(window, target);
         settle();
     };
-    const auto show_feature_menu = [&](const QString& name) {
-        auto* tab = findItem(item, "featureTab_" + name);
+    const auto show_feature_menu = [&](const QString& id) {
+        auto* tab = findItem(item, "featureTab_" + id);
         REQUIRE(tab);
         if (!tab->property("checked").toBool())
             click_visible(tab);
-        auto* page = findItem(item, "featureMenuPage_" + name);
+        auto* page = findItem(item, "featureMenuPage_" + id);
         REQUIRE(page);
         REQUIRE(page->isVisible());
         REQUIRE(page->width() > 0);
@@ -863,7 +863,7 @@ TEST_CASE("Installed external algorithms appear in the actual toolbar and open t
         REQUIRE(entry);
         CHECK(engine.newQObject(entry).property("icon").property("source").toString() == url);
     };
-    show_feature_menu("几何");
+    show_feature_menu("geometry");
     check_entry_icon("SplitEdge", "qrc:/images/toolbar/Geometry/split-edge.svg");
     check_entry_icon("MergeEdge", "qrc:/images/toolbar/Geometry/merge-edge.svg");
     check_entry_icon("SplitFace", "qrc:/images/toolbar/Geometry/split-face.svg");
@@ -875,7 +875,7 @@ TEST_CASE("Installed external algorithms appear in the actual toolbar and open t
     check_entry_icon("AutoGeometryRepair", "qrc:/images/toolbar/Geometry/auto-geometry-repair.svg");
     if (const auto capture = qEnvironmentVariable("PRECESS_NAVIGATION_CAPTURE"); !capture.isEmpty())
         REQUIRE(window.grabWindow().save(capture + "-geometry-icons.png"));
-    show_feature_menu("功能");
+    show_feature_menu("features");
     check_entry_icon("MeshBoolean", "qrc:/zenithgrid-addons/MeshBooleanPlugin/icons/mesh-boolean.svg");
     for (const int size : { 16, 24, 32 })
         checkSvgResource(":/zenithgrid-addons/MeshBooleanPlugin/icons/mesh-boolean.svg", size);
@@ -886,7 +886,7 @@ TEST_CASE("Installed external algorithms appear in the actual toolbar and open t
     CHECK_FALSE(QFile::exists(":/images/toolbar/Mesh/mesh-repair.svg"));
     if (const auto capture = qEnvironmentVariable("PRECESS_NAVIGATION_CAPTURE"); !capture.isEmpty())
         REQUIRE(window.grabWindow().save(capture + "-mesh-icons.png"));
-    show_feature_menu("网格生成算法");
+    show_feature_menu("mesh-generation");
     if (has_algorithm("RicciFlowPlugin")) {
         click_visible(findItem(item, "featureEntry_category:quadrilateral"));
         auto* quad_selector = findItem(sidebar_item, "subFeatureSelector");
@@ -946,7 +946,7 @@ TEST_CASE("Installed external algorithms appear in the actual toolbar and open t
     REQUIRE(selector);
     for (int cycle = 0; cycle < 3; ++cycle) {
         INFO(cycle);
-        show_feature_menu("几何");
+        show_feature_menu("geometry");
         click_visible(box);
         CHECK(buttons->height() <= 40);
         checkOperationButtonsAtBottom(sidebar_item);
@@ -995,7 +995,7 @@ TEST_CASE("Installed external algorithms appear in the actual toolbar and open t
             REQUIRE(component->geometry->rootShape);
             CHECK_FALSE(component->geometry->rootShape->IsNull());
         }
-        show_feature_menu("网格生成算法");
+        show_feature_menu("mesh-generation");
         click_visible(tetrahedron);
         CHECK(buttons->height() <= 40);
         checkOperationButtonsAtBottom(sidebar_item);
@@ -1004,7 +1004,7 @@ TEST_CASE("Installed external algorithms appear in the actual toolbar and open t
     click_visible(triangle);
     select_feature("GmshPlugin");
     CHECK(parameters->property("count").toInt() > 0);
-    show_feature_menu("网格生成算法");
+    show_feature_menu("mesh-generation");
     if (const auto capture = qEnvironmentVariable("PRECESS_NAVIGATION_CAPTURE"); !capture.isEmpty())
         REQUIRE(window.grabWindow().save(capture + "-single.png"));
     auto* quadrilateral = findItem(item, "featureEntry_category:quadrilateral");
@@ -1300,7 +1300,7 @@ TEST_CASE("Non-mesh feature entries handle zero one and multiple children across
     auto* app = engine.singletonInstance<QObject*>("app.core", "App");
     REQUIRE(app);
     settle();
-    CHECK_FALSE(findItem(item, "featureTab_网格生成算法"));
+    CHECK_FALSE(findItem(item, "featureTab_mesh-generation"));
     auto* construction_tab = findItem(item, "featureTab_几何工具");
     REQUIRE(construction_tab);
     auto* legacy_tab = findItem(item, "otherAlgorithmTab");
@@ -1559,7 +1559,8 @@ TEST_CASE("Navigation sorts every sibling level with stable ids and scoped overr
             {id: "advanced", title: "Advanced", menu_path: "Renamed/Advanced", menu_id: "mesh", group_id: "advanced"},
             {id: "tri", title: "Tri", order: 0, menu_path: "Renamed/Basic", menu_id: "mesh", group_id: "basic"},
             {id: "quad", title: "Quad", order: 100, menu_path: "Renamed/Basic", menu_id: "mesh", group_id: "basic"},
-            {id: "other", title: "Other", menu_path: "Other"}
+            {id: "other", title: "Other", menu_path: "Other"},
+            {id: "legacy", title: "Legacy", order: 200, menu_path: "Renamed/Basic"}
         ];
         var children = [
             {name: "a", entry_ids: ["quad", "tri"], order: 0},
@@ -1572,8 +1573,19 @@ TEST_CASE("Navigation sorts every sibling level with stable ids and scoped overr
             {id: "view", order: 10000, pageIndex: -1},
             {id: "other-algorithms", order: 40, pageIndex: 2}
         ], 3, rules);
+        const renamed = declarations.map(entry => Object.assign({}, entry, {
+            menu_path: entry.menu_path.replace("Renamed", "Translated").replace("Basic", "Localized")
+        }));
+        const renamedMenus = buildMenus(buildEntries(children, renamed, rules), rules);
         const ids = items => items.map(item => item.id || item.name).join(",");
         ({
+            renamedTab: buildTabs(renamedMenus, [], 3, rules)[0].objectName,
+            renamedGroup: renamedMenus[0].groups[0].id,
+            ambiguous: ids(buildMenus(buildEntries([], [
+                {id: "a", title: "A", menu_path: "Same", menu_id: "a"},
+                {id: "b", title: "B", menu_path: "Same", menu_id: "b"},
+                {id: "legacy", title: "Legacy", menu_path: "Same"}
+            ]), [])),
             tabs: ids(tabs), groups: ids(menus[0].groups),
             icons: ids(menus[0].groups[0].items),
             quad: ids(entries.find(entry => entry.categoryId === "quad").items),
@@ -1584,7 +1596,10 @@ TEST_CASE("Navigation sorts every sibling level with stable ids and scoped overr
     REQUIRE_FALSE(result.isError());
     CHECK(result.property("tabs").toString() == "file,mesh,other-algorithms,Other,view");
     CHECK(result.property("groups").toString() == "basic,advanced");
-    CHECK(result.property("icons").toString() == "category:quad,category:tri");
+    CHECK(result.property("icons").toString() == "category:quad,category:tri,category:legacy");
+    CHECK(result.property("renamedTab").toString() == "featureTab_mesh");
+    CHECK(result.property("renamedGroup").toString() == "basic");
+    CHECK(result.property("ambiguous").toString() == "Same,a,b");
     CHECK(result.property("quad").toString() == "z,a");
     CHECK(result.property("tri").toString() == "a,z");
     CHECK(result.property("stable").toBool());

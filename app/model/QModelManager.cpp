@@ -32,9 +32,9 @@ QModelManager::QModelManager(std::string_view argv0, QObject* parent)
         { "hexahedron", "六面体网格生成", "qrc:/images/toolbar/Mesh/hexa-meshing.svg", 40, "网格生成算法", "mesh-generation" } });
 
     session_->featureSystem().setNavigationOrder({ { "", "file", 10 }, { "", "edit", 20 }, { "", "mesh-generation", 30 },
-        { "", "other-algorithms", 40 }, { "", "几何", 50 }, { "", "工具", 60 },
-        { "", "示例", 70 }, { "", "功能", 80 }, { "", "view", 10000 },
-        { "menu:几何", "default", 10 }, { "menu:几何", "拓扑", 20 }, { "menu:几何", "修复", 30 },
+        { "", "other-algorithms", 40 }, { "", "geometry", 50 }, { "", "tools", 60 },
+        { "", "examples", 70 }, { "", "features", 80 }, { "", "view", 10000 },
+        { "menu:geometry", "default", 10 }, { "menu:geometry", "topology", 20 }, { "menu:geometry", "repair", 30 },
         { "group:mesh-generation/default", "category:triangle", 10 },
         { "group:mesh-generation/default", "category:quadrilateral", 20 },
         { "group:mesh-generation/default", "category:tetrahedron", 30 },

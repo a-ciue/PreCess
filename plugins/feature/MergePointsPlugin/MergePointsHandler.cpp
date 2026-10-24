@@ -35,7 +35,7 @@ void MergePointsHandler::setup(FeatureRegistrar& reg, FeatureContext& /*ctx*/)
     reg.addParameter({ ArgTypeEnum::Selector, "第二个几何点", "GeometryVertex", "请选择第二个几何点" });
     reg.addParameter({ ArgTypeEnum::Combo, "合并到", "保留第一点,保留第二点,中点|0",
         "合并后公共顶点所在位置；相邻曲线和面随之变形" });
-    reg.navigation().addEntry({ "MergePoints", "点合并", "qrc:/images/toolbar/Geometry/merge-points.svg", 0, "几何/拓扑" });
+    reg.navigation().addEntry({ "MergePoints", "点合并", "qrc:/images/toolbar/Geometry/merge-points.svg", 0, "几何/拓扑", "geometry", "topology" });
 }
 
 std::any MergePointsHandler::execute(FeatureContext& ctx)
