@@ -30,6 +30,7 @@ std::unique_ptr<MeshData> MeshData::clone() const
     copy->face_attributes_ = face_attributes_;
     copy->edge_attributes_ = edge_attributes_;
     copy->solid_attributes_ = solid_attributes_;
+    copy->source_metadata_ = source_metadata_;
 
     return copy;
 }
@@ -55,6 +56,7 @@ void MeshData::clear()
     face_attributes_.clear();
     edge_attributes_.clear();
     solid_attributes_.clear();
+    source_metadata_.clear();
 }
 
 void MeshData::init()

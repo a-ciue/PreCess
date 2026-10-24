@@ -145,6 +145,8 @@ struct MeshData {
     std::map<std::string, std::vector<double>> face_attributes_;
     std::map<std::string, std::vector<double>> edge_attributes_;
     std::map<std::string, std::vector<double>> solid_attributes_;
+    //! @brief 网格来源的 UTF-8 元数据快照（如外部节点身份、单位与交付合同），不代表编辑后仍满足原合同。
+    std::map<std::string, std::string> source_metadata_;
  
     /**
      * @brief 深拷贝网格数据（坐标/连通性/属性；不含待删的 patches_/blocks_），用于快照/恢复
