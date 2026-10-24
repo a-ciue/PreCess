@@ -173,7 +173,19 @@ QVariantList QFeatureSystemAdaptor::getNavigationEntries() const
         result.append(QVariantMap { { "id", QString::fromStdString(category.id) },
             { "title", QString::fromStdString(category.title) },
             { "icon", QString::fromStdString(category.icon) }, { "order", category.order },
-            { "menu_path", QString::fromStdString(category.menu_path) } });
+            { "menu_path", QString::fromStdString(category.menu_path) },
+            { "menu_id", QString::fromStdString(category.menu_id) },
+            { "group_id", QString::fromStdString(category.group_id) } });
+    }
+    return result;
+}
+
+QVariantList QFeatureSystemAdaptor::getNavigationOrder() const
+{
+    QVariantList result;
+    for (const auto& order : feature_system_->getNavigationOrder()) {
+        result.append(QVariantMap { { "parent", QString::fromStdString(order.parent) },
+            { "id", QString::fromStdString(order.id) }, { "order", order.order } });
     }
     return result;
 }

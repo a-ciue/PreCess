@@ -25,6 +25,7 @@ class QFeatureSystemAdaptor : public QObject {
     QML_UNCREATABLE("QFeatureSystemAdaptor is provided by C++")
     Q_PROPERTY(QList<QFeatureInfo*> featuresInfo READ getFeaturesInfo NOTIFY featuresInfoChanged)
     Q_PROPERTY(QVariantList navigationDefinitions READ getNavigationEntries NOTIFY featuresInfoChanged)
+    Q_PROPERTY(QVariantList navigationOrder READ getNavigationOrder NOTIFY featuresInfoChanged)
 public:
     QFeatureSystemAdaptor(FeatureSystem& feature_system);
     ~QFeatureSystemAdaptor() override;
@@ -69,6 +70,7 @@ public:
      */
     QList<QFeatureInfo*> getFeaturesInfo() const;
     QVariantList getNavigationEntries() const;
+    QVariantList getNavigationOrder() const;
 
     /**
      * @brief 获取底层功能系统指针（interaction 交互状态等系统级接口用）

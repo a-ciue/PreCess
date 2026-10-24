@@ -26,10 +26,20 @@ QModelManager::QModelManager(std::string_view argv0, QObject* parent)
     });
 
     // 产品默认入口由应用声明；无实现时仍显示空态，通用功能系统不内置网格类别。
-    session_->featureSystem().setNavigationEntries({ { "triangle", "三角形网格生成", "qrc:/images/toolbar/Mesh/triangle-meshing.svg", 10, "网格生成算法" },
-        { "quadrilateral", "四边形网格生成", "qrc:/images/toolbar/Mesh/quad-meshing.svg", 20, "网格生成算法" },
-        { "tetrahedron", "四面体网格生成", "qrc:/images/toolbar/Algorithm/tetgen.svg", 30, "网格生成算法" },
-        { "hexahedron", "六面体网格生成", "qrc:/images/toolbar/Mesh/hexa-meshing.svg", 40, "网格生成算法" } });
+    session_->featureSystem().setNavigationEntries({ { "triangle", "三角形网格生成", "qrc:/images/toolbar/Mesh/triangle-meshing.svg", 10, "网格生成算法", "mesh-generation" },
+        { "quadrilateral", "四边形网格生成", "qrc:/images/toolbar/Mesh/quad-meshing.svg", 20, "网格生成算法", "mesh-generation" },
+        { "tetrahedron", "四面体网格生成", "qrc:/images/toolbar/Algorithm/tetgen.svg", 30, "网格生成算法", "mesh-generation" },
+        { "hexahedron", "六面体网格生成", "qrc:/images/toolbar/Mesh/hexa-meshing.svg", 40, "网格生成算法", "mesh-generation" } });
+
+    session_->featureSystem().setNavigationOrder({ { "", "file", 10 }, { "", "edit", 20 }, { "", "mesh-generation", 30 },
+        { "", "other-algorithms", 40 }, { "", "几何", 50 }, { "", "工具", 60 },
+        { "", "示例", 70 }, { "", "功能", 80 }, { "", "view", 10000 },
+        { "menu:几何", "default", 10 }, { "menu:几何", "拓扑", 20 }, { "menu:几何", "修复", 30 },
+        { "group:mesh-generation/default", "category:triangle", 10 },
+        { "group:mesh-generation/default", "category:quadrilateral", 20 },
+        { "group:mesh-generation/default", "category:tetrahedron", 30 },
+        { "group:mesh-generation/default", "category:hexahedron", 40 },
+        { "entry:quadrilateral", "RicciFlowPlugin", -100 } });
 
     query_ = std::make_unique<QModelQuery>(&session_->query(), this);
 

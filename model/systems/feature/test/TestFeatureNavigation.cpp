@@ -15,6 +15,7 @@ namespace {
 class Mesher : public FeatureHandler {
 public:
     std::vector<FeatureNavigationEntry> categories;
+    std::vector<FeatureNavigationOrder> orders;
     std::string default_size = "1";
     int* setup_calls = nullptr;
     void setup(FeatureRegistrar& registrar, FeatureContext&) override
@@ -22,6 +23,8 @@ public:
         if (setup_calls)
             ++*setup_calls;
         registrar.addParameter({ ArgTypeEnum::Float, "size", default_size });
+        for (const auto& order : orders)
+            registrar.navigation().addOrder(order);
         for (const auto& category : categories)
             registrar.navigation().addEntry(category);
     }
@@ -217,4 +220,55 @@ TEST_CASE("Feature replacement preserves matching parameters and initializes cha
     changed->default_size = "2";
     REQUIRE(features.registerHandler({ .name = "mesher" }, FeatureSystem::SystemHandlerPtr { changed.release() }));
     CHECK(*features.params("mesher")->value(0).get<ArgTypeEnum::Float>() == 2.0);
+}
+
+TEST_CASE("Navigation order merges by parent and provider with host priority", "[FeatureSystem][navigation]")
+{
+    ModelLayer model;
+    core::EventBus events;
+    FeatureSystem features(model, events);
+    int changes = 0;
+    features.setOnFeatureInfosChanged([&] { ++changes; });
+    const auto install = [&](const std::string& name, int value) {
+        auto handler = std::make_unique<Mesher>();
+        handler->orders = { { "", "geometry", value }, { "entry:quad", "shared", value } };
+        REQUIRE(features.registerHandler({ .name = name }, FeatureSystem::SystemHandlerPtr { handler.release() }));
+    };
+    install("z", 90);
+    install("a", 10);
+    CHECK(features.getNavigationOrder() == std::vector<FeatureNavigationOrder> { { "", "geometry", 10 }, { "entry:quad", "shared", 10 } });
+    const auto snapshot = features.getNavigationOrder();
+    features.unregisterHandler({ .name = "a" });
+    features.unregisterHandler({ .name = "z" });
+    install("a", 10);
+    install("z", 90);
+    CHECK(features.getNavigationOrder() == snapshot);
+    features.setNavigationOrder({ { "", "geometry", 0 }, { "", "geometry", 100 }, { "", "", -1 } });
+    CHECK(features.getNavigationOrder() == std::vector<FeatureNavigationOrder> { { "", "geometry", 0 }, { "entry:quad", "shared", 10 } });
+    const auto before = changes;
+    features.setNavigationOrder({ { "", "geometry", 0 } });
+    CHECK(changes == before);
+    {
+        auto occupation = model.beginWriteOperation(false);
+        CHECK_THROWS_AS(features.setNavigationOrder({}), ModelOperationBusy);
+        CHECK(changes == before);
+    }
+    features.unregisterHandler({ .name = "a" });
+    CHECK(features.getNavigationOrder().back().order == 90);
+    features.unregisterHandler({ .name = "z" });
+    CHECK(features.getNavigationOrder() == std::vector<FeatureNavigationOrder> { { "", "geometry", 0 } });
+}
+
+TEST_CASE("Navigation inherits stable parent ids only at the host location", "[FeatureSystem][navigation]")
+{
+    ModelLayer model;
+    core::EventBus events;
+    FeatureSystem features(model, events);
+    features.setNavigationEntries({ { "quad", "Quad", "", 20, "Mesh/Generate", "mesh", "generate" } });
+    REQUIRE(features.registerHandler({ .name = "solver" }, mesher({ { "quad", "Quad", "", 0 } })));
+    CHECK(features.getNavigationEntries().front().menu_id == "mesh");
+    CHECK(features.getNavigationEntries().front().group_id == "generate");
+    REQUIRE(features.registerHandler({ .name = "solver" }, mesher({ { "quad", "Quad", "", 0, "Other" } })));
+    CHECK(features.getNavigationEntries().front().menu_id.empty());
+    CHECK(features.getNavigationEntries().front().group_id.empty());
 }

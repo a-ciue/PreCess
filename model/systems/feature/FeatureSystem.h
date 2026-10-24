@@ -97,6 +97,10 @@ public:
     void setNavigationEntries(std::vector<FeatureNavigationEntry> entries);
     /** @brief 聚合宿主与功能声明的入口；相同 id 按提供者身份确定来源。 */
     std::vector<FeatureNavigationEntry> getNavigationEntries() const;
+    /** @brief 设置产品排序覆盖；宿主优先于插件，仅允许空闲时变更。 */
+    void setNavigationOrder(std::vector<FeatureNavigationOrder> orders);
+    /** @brief 合并排序声明；插件冲突按功能身份选首项，不依赖加载顺序。 */
+    std::vector<FeatureNavigationOrder> getNavigationOrder() const;
     /**
      * @brief 获取功能的参数集（UI 展示当前值用），功能不存在时为 nullptr
      */
@@ -207,6 +211,7 @@ private:
     core::EventBus* event_bus_; //< 事件总线引用
     UndoStack* undo_stack_ { nullptr }; //< undo 栈引用（可空：无栈时边界退化为仅 flush）
     std::unordered_map<std::string, FeatureEntry> entries_; //< 功能条目，key 为功能唯一名称
+    std::vector<FeatureNavigationOrder> navigation_order_;
     std::vector<FeatureNavigationEntry> navigation_entries_; //!< 宿主声明的常驻父入口，不含业务分类假设
     std::optional<std::string> pending_feature_; //!< 占用期最后一个有效目标；空字符串表示退出
     std::string current_feature_; //< 当前进入的功能名（空=无；setFeatureActive 驱动进入/退出）

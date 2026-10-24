@@ -8,6 +8,13 @@
 #include <utility>
 #include <vector>
 namespace systems::feature {
+/** @brief 同一父节点内的排序覆盖；根菜单的 parent 为空，id 不使用翻译后的标题。 */
+struct FeatureNavigationOrder {
+    std::string parent;
+    std::string id;
+    int order { 0 };
+    bool operator==(const FeatureNavigationOrder&) const = default;
+};
 /** @brief 一个功能图标入口；不同功能声明相同 id 时成为该入口的子功能。 */
 struct FeatureNavigationEntry {
     std::string id; //> 稳定身份，不从标题或图标推断
@@ -15,6 +22,8 @@ struct FeatureNavigationEntry {
     std::string icon;
     int order { 0 };
     std::string menu_path; //> 菜单/分组；留空时继承宿主同 id 的路径，最终回退“功能”
+    std::string menu_id; //> 可选稳定菜单身份；旧声明回退到 menu_path 的菜单段
+    std::string group_id; //> 可选稳定分组身份；旧声明回退到 menu_path 的分组段
     bool operator==(const FeatureNavigationEntry&) const = default;
 };
 /** @brief 统一声明入口与子功能显示属性，不区分普通菜单和分类。 */
@@ -29,6 +38,16 @@ public:
             return;
         entries_.push_back(std::move(entry));
     }
+    /** @brief 声明父节点内的顺序；同一 parent/id 重复声明保留首项。 */
+    void addOrder(FeatureNavigationOrder order)
+    {
+        if (order.id.empty())
+            return;
+        if (std::any_of(orders_.begin(), orders_.end(), [&](const auto& existing) { return existing.parent == order.parent && existing.id == order.id; }))
+            return;
+        orders_.push_back(std::move(order));
+    }
+    const std::vector<FeatureNavigationOrder>& orders() const noexcept { return orders_; }
     /** @brief 子功能标题；空时使用功能 display_name，不覆盖入口标题。 */
     void setLabel(std::string label) { label_ = std::move(label); }
     void setIcon(std::string icon) { icon_ = std::move(icon); }
@@ -55,6 +74,7 @@ public:
 
 private:
     std::vector<FeatureNavigationEntry> entries_;
+    std::vector<FeatureNavigationOrder> orders_;
     std::string icon_;
     int order_ { 0 };
     std::string label_;

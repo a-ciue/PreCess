@@ -23,7 +23,8 @@ ColumnLayout {
     property int activeCategory: -1
     property var algorithmSystem: QModelManager.algorithmSystem
     property var featureSystem: QModelManager.featureSystem
-    readonly property var navigationEntries: FeatureNavigation.buildEntries(root.featureSystem.featuresInfo, root.featureSystem.navigationDefinitions)
+    readonly property var navigationOrder: root.featureSystem.navigationOrder || []
+    readonly property var navigationEntries: FeatureNavigation.buildEntries(root.featureSystem.featuresInfo, root.featureSystem.navigationDefinitions, root.navigationOrder)
     readonly property var algorithmInfos: root.algorithmSystem.algorithmsInfo
     // StackLayout: 文件 0、编辑 1、旧算法 2，后续均由功能菜单声明生成。
     readonly property int algorithmPageStart: 2
@@ -102,37 +103,20 @@ ColumnLayout {
 
     // 功能 ribbon 结构：[{ name: 菜单名, groups: [{ name: 分组名, items: [入口对象] }] }]，由 rebuildFeatureMenus 维护
     property var featureMenus: []
-    // 产品层指定前置菜单；页签排序保留原页面身份，避免影响切换和注册表刷新。
-    property var leadingFeatureMenus: []
-    readonly property var navigationTabs: {
-        const leading = []
-        const trailing = []
-        for (let index = 0; index < root.featureMenus.length; ++index) {
-            const menu = root.featureMenus[index]
-            const tab = {
-                name: menu.name,
-                objectName: "featureTab_" + menu.name,
-                pageIndex: root.featurePageStart + index
-            }
-            if (root.leadingFeatureMenus.indexOf(menu.name) >= 0)
-                leading.push(tab)
-            else
-                trailing.push(tab)
-        }
-        return leading.concat([{
-            name: qsTr("其他算法"),
-            objectName: "otherAlgorithmTab",
-            pageIndex: root.algorithmPageStart
-        }], trailing)
-    }
+    readonly property var navigationTabs: FeatureNavigation.buildTabs(root.featureMenus, [
+        {id: "file", name: qsTr("文件"), objectName: "fileCategory", pageIndex: 0, order: 10},
+        {id: "edit", name: qsTr("编辑"), objectName: "editCategory", pageIndex: 1, order: 20},
+        {id: "other-algorithms", name: qsTr("其他算法"), objectName: "otherAlgorithmTab", pageIndex: root.algorithmPageStart, order: 40},
+        {id: "view", name: qsTr("视图"), objectName: "viewCategory", pageIndex: -1, order: 10000, popup: true}
+    ], root.featurePageStart, root.navigationOrder)
 
     // 普通单项与聚合入口共用菜单声明；注册变化后按菜单身份保持当前页。
     function rebuildFeatureMenus() {
         const index = root.activeCategory - root.featurePageStart
-        const name = index >= 0 && index < root.featureMenus.length ? root.featureMenus[index].name : ""
-        root.featureMenus = FeatureNavigation.buildMenus(root.navigationEntries)
-        if (name) {
-            const nextIndex = root.featureMenus.findIndex(menu => menu.name === name)
+        const menuId = index >= 0 && index < root.featureMenus.length ? root.featureMenus[index].id : ""
+        root.featureMenus = FeatureNavigation.buildMenus(root.navigationEntries, root.navigationOrder)
+        if (menuId) {
+            const nextIndex = root.featureMenus.findIndex(menu => menu.id === menuId)
             root.activeCategory = nextIndex < 0 ? -1 : root.featurePageStart + nextIndex
         }
     }
@@ -306,21 +290,6 @@ ColumnLayout {
                 id: navigationRow
                 spacing: 2
 
-                RibbonTabButton {
-                    text: "文件"
-                    checkable: true
-                    checked: activeCategory === 0
-                    onClicked: activeCategory = (activeCategory === 0) ? -1 : 0
-                }
-
-                RibbonTabButton {
-                    objectName: "editCategory"
-                    text: qsTr("编辑")
-                    checkable: true
-                    checked: activeCategory === 1
-                    onClicked: activeCategory = (activeCategory === 1) ? -1 : 1
-                }
-
                 // 功能菜单页均由声明生成，不区分具体业务类型。
                 Repeater {
                     model: root.navigationTabs
@@ -328,70 +297,71 @@ ColumnLayout {
                         required property var modelData
                         objectName: modelData.objectName
                         text: modelData.name
-                        checkable: true
-                        checked: activeCategory === modelData.pageIndex
-                        onClicked: activeCategory = checked ? modelData.pageIndex : -1
-                    }
-                }
-
-                RibbonTabButton {
-                    id: viewBtn
-                    text: "视图"
-                    onClicked: viewMenu.popup(viewBtn, 0, viewBtn.height)
-                    AppMenu {
-                        id: viewMenu
-                        closePolicy: Popup.CloseOnEscape | Popup.CloseOnPressOutsideParent
-
-                        Action {
-                            text: "对象树"
-                            checkable: true
-                            checked: objectTreeOpen
-                            onToggled: objectTreeToggled()
-                        }
-                        Action {
-                            text: "操作面板"
-                            checkable: true
-                            checked: propertyListOpen
-                            onToggled: propertyListToggled()
-                        }
-                        Action {
-                            text: "属性渲染"
-                            checkable: true
-                            checked: attributeRenderOpen
-                            onToggled: attributeRenderToggled()
-                        }
-                        Action {
-                            text: "JavaScript 控制台"
-                            checkable: true
-                            checked: consoleOpen
-                            onToggled: consoleToggled()
-                        }
-                        Action {
-                            text: "Python 控制台"
-                            checkable: true
-                            checked: pythonConsoleOpen
-                            onToggled: pythonConsoleToggled()
-                        }
-                        Action {
-                            text: "日志"
-                            checkable: true
-                            checked: outputLogOpen
-                            onToggled: outputLogToggled()
-                        }
-                        Action {
-                            text: "偏好设置"
-                            checkable: true
-                            checked: preferencesOpen
-                            onToggled: preferencesToggled()
-                        }
-                        MenuSeparator {}
-                        Action {
-                            text: qsTr("恢复默认布局")
-                            onTriggered: root.resetLayoutRequested()
+                        checkable: !modelData.popup
+                        checked: !modelData.popup && activeCategory === modelData.pageIndex
+                        onClicked: {
+                            if (modelData.popup)
+                                viewMenu.popup(this, 0, height)
+                            else
+                                activeCategory = checked ? modelData.pageIndex : -1
                         }
                     }
                 }
             }
+        }
+    }
+
+    AppMenu {
+        id: viewMenu
+        objectName: "viewMenu"
+        closePolicy: Popup.CloseOnEscape | Popup.CloseOnPressOutsideParent
+
+        Action {
+            text: "对象树"
+            checkable: true
+            checked: objectTreeOpen
+            onToggled: objectTreeToggled()
+        }
+        Action {
+            text: "操作面板"
+            checkable: true
+            checked: propertyListOpen
+            onToggled: propertyListToggled()
+        }
+        Action {
+            text: "属性渲染"
+            checkable: true
+            checked: attributeRenderOpen
+            onToggled: attributeRenderToggled()
+        }
+        Action {
+            text: "JavaScript 控制台"
+            checkable: true
+            checked: consoleOpen
+            onToggled: consoleToggled()
+        }
+        Action {
+            text: "Python 控制台"
+            checkable: true
+            checked: pythonConsoleOpen
+            onToggled: pythonConsoleToggled()
+        }
+        Action {
+            text: "日志"
+            checkable: true
+            checked: outputLogOpen
+            onToggled: outputLogToggled()
+        }
+        Action {
+            text: "偏好设置"
+            checkable: true
+            checked: preferencesOpen
+            onToggled: preferencesToggled()
+        }
+        MenuSeparator {}
+        Action {
+            text: qsTr("恢复默认布局")
+            onTriggered: root.resetLayoutRequested()
         }
     }
 

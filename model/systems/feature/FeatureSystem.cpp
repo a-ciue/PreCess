@@ -30,6 +30,38 @@ void FeatureSystem::setNavigationEntries(std::vector<FeatureNavigationEntry> cat
     on_feature_infos_changed_();
 }
 
+void FeatureSystem::setNavigationOrder(std::vector<FeatureNavigationOrder> orders)
+{
+    model_layer_->assertOperationIdle();
+    FeatureNavigation navigation;
+    for (auto& order : orders)
+        navigation.addOrder(std::move(order));
+    if (navigation_order_ == navigation.orders())
+        return;
+    navigation_order_ = navigation.orders();
+    on_feature_infos_changed_();
+}
+
+std::vector<FeatureNavigationOrder> FeatureSystem::getNavigationOrder() const
+{
+    std::map<std::pair<std::string, std::string>, FeatureNavigationOrder> orders;
+    for (const auto& order : navigation_order_)
+        orders.emplace(std::make_pair(order.parent, order.id), order);
+    // 宿主覆盖始终保留；显式按功能名排序，避免依赖 unordered_map 的遍历顺序。
+    std::vector<std::string> providers;
+    for (const auto& [name, entry] : entries_)
+        providers.push_back(name);
+    std::sort(providers.begin(), providers.end());
+    for (const auto& name : providers) {
+        for (const auto& order : entries_.at(name).info.navigation.orders())
+            orders.emplace(std::make_pair(order.parent, order.id), order);
+    }
+    std::vector<FeatureNavigationOrder> result;
+    for (const auto& [key, order] : orders)
+        result.push_back(order);
+    return result;
+}
+
 std::vector<FeatureNavigationEntry> FeatureSystem::getNavigationEntries() const
 {
     struct Candidate {
@@ -50,6 +82,13 @@ std::vector<FeatureNavigationEntry> FeatureSystem::getNavigationEntries() const
                     const auto host = std::find_if(navigation_entries_.begin(), navigation_entries_.end(), [&](const auto& declared) { return declared.id == category.id; });
                     if (host != navigation_entries_.end())
                         resolved_category.menu_path = host->menu_path;
+                }
+                if (const auto host = std::find_if(navigation_entries_.begin(), navigation_entries_.end(), [&](const auto& declared) { return declared.id == category.id; });
+                    host != navigation_entries_.end() && resolved_category.menu_path == host->menu_path) {
+                    if (resolved_category.menu_id.empty())
+                        resolved_category.menu_id = host->menu_id;
+                    if (resolved_category.group_id.empty())
+                        resolved_category.group_id = host->group_id;
                 }
                 candidates.insert_or_assign(category.id, Candidate { std::move(resolved_category), name });
             }

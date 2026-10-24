@@ -513,7 +513,6 @@ TEST_CASE("Actual toolbar renders declared feature entries and preserves active 
     auto provider = engine.newQObject(feature_adaptor);
     std::unique_ptr<QObject> toolbar(component.createWithInitialProperties({
         { "featureSystem", QVariant::fromValue(provider) },
-        { "leadingFeatureMenus", QStringList { "网格生成算法" } },
     }));
     INFO(component.errorString().toStdString());
     REQUIRE(toolbar);
@@ -888,6 +887,22 @@ TEST_CASE("Installed external algorithms appear in the actual toolbar and open t
     if (const auto capture = qEnvironmentVariable("PRECESS_NAVIGATION_CAPTURE"); !capture.isEmpty())
         REQUIRE(window.grabWindow().save(capture + "-mesh-icons.png"));
     show_feature_menu("网格生成算法");
+    if (has_algorithm("RicciFlowPlugin")) {
+        click_visible(findItem(item, "featureEntry_category:quadrilateral"));
+        auto* quad_selector = findItem(sidebar_item, "subFeatureSelector");
+        REQUIRE(quad_selector);
+        const auto quad_features = sidebar->property("subFeatures").value<QJSValue>();
+        REQUIRE(quad_features.property("length").toInt() > 0);
+        CHECK(quad_features.property(0).property("name").toString() == "RicciFlowPlugin");
+        CHECK(quad_selector->property("currentIndex").toInt() == 0);
+        CHECK(engine.singletonInstance<QObject*>("app.core", "App")->property("activeOperation").value<QJSValue>().property("info").property("name").toString() == "RicciFlowPlugin");
+        if (const auto capture = qEnvironmentVariable("PRECESS_NAVIGATION_CAPTURE"); !capture.isEmpty()) {
+            click_visible(quad_selector);
+            REQUIRE(window.grabWindow().save(capture + "-ricci-order.png"));
+            pressKey(window, Qt::Key_Escape);
+            settle();
+        }
+    }
     auto* tetrahedron = findItem(item, "featureEntry_category:tetrahedron");
     click_visible(tetrahedron);
     auto* selector = findItem(sidebar_item, "subFeatureSelector");
@@ -1256,11 +1271,11 @@ TEST_CASE("Non-mesh feature entries handle zero one and multiple children across
     INFO(component.errorString().toStdString());
     REQUIRE(component.isReady());
     QQmlEngine::setObjectOwnership(&adaptor, QQmlEngine::CppOwnership);
+    system.setNavigationOrder({ { "", "几何工具", 30 } });
     auto provider = engine.newQObject(&adaptor);
     auto session = createSession(engine, provider);
     std::unique_ptr<QObject> toolbar(component.createWithInitialProperties({
         { "featureSystem", QVariant::fromValue(provider) },
-        { "leadingFeatureMenus", QStringList { "几何工具", "不存在的菜单" } },
     }));
     auto* item = qobject_cast<QQuickItem*>(toolbar.get());
     REQUIRE(item);
@@ -1376,6 +1391,18 @@ TEST_CASE("Non-mesh feature entries handle zero one and multiple children across
     CHECK(activations == single_activations);
     CHECK(parameters->property("values").value<QJSValue>().property(0).toNumber() == 9.0);
     CHECK(selection->property("listeningSelectorIndex").toInt() == 0);
+    // 下拉列表重排后按功能名保留选择，不重进功能、不清空参数或选择监听。
+    system.setNavigationOrder({ { "", "几何工具", 30 }, { "entry:repair", "second", -10 } });
+    settle();
+    CHECK(session->property("subFeatures").value<QJSValue>().property(0).property("name").toString() == "second");
+    CHECK(app->property("activeOperation").value<QJSValue>().property("info").property("name").toString() == "first");
+    CHECK(selector->property("currentIndex").toInt() == 1);
+    CHECK(activations == single_activations);
+    CHECK(parameters->property("values").value<QJSValue>().property(0).toNumber() == 9.0);
+    CHECK(selection->property("listeningSelectorIndex").toInt() == 0);
+    system.setNavigationOrder({ { "", "几何工具", 30 } });
+    settle();
+    CHECK(selector->property("currentIndex").toInt() == 0);
     auto operation = app->property("activeOperation").value<QJSValue>();
     auto execute = operation.property("execute");
     REQUIRE(execute.isCallable());
@@ -1486,4 +1513,126 @@ TEST_CASE("Non-mesh feature entries handle zero one and multiple children across
     CHECK(app->property("activeOperation").isNull());
     CHECK_FALSE(buttons->isVisible());
     QModelManager::argv0 = {};
+}
+
+TEST_CASE("Navigation sorts every sibling level with stable ids and scoped overrides", "[navigation][feature]")
+{
+    application();
+    QJSEngine engine;
+    QFile source(":/navigation-ui/FeatureNavigation.js");
+    REQUIRE(source.open(QIODevice::ReadOnly));
+    REQUIRE_FALSE(engine.evaluate(QString::fromUtf8(source.readAll()).remove(".pragma library")).isError());
+    const auto result = engine.evaluate(R"JS(
+        var rules = [
+            {parent: "", id: "mesh", order: 30},
+            {parent: "menu:mesh", id: "basic", order: -1},
+            {parent: "group:mesh/basic", id: "category:quad", order: -10},
+            {parent: "entry:quad", id: "z", order: -1}
+        ];
+        var declarations = [
+            {id: "advanced", title: "Advanced", menu_path: "Renamed/Advanced", menu_id: "mesh", group_id: "advanced"},
+            {id: "tri", title: "Tri", order: 0, menu_path: "Renamed/Basic", menu_id: "mesh", group_id: "basic"},
+            {id: "quad", title: "Quad", order: 100, menu_path: "Renamed/Basic", menu_id: "mesh", group_id: "basic"},
+            {id: "other", title: "Other", menu_path: "Other"}
+        ];
+        var children = [
+            {name: "a", entry_ids: ["quad", "tri"], order: 0},
+            {name: "z", entry_ids: ["quad", "tri"], order: 0}
+        ];
+        var entries = buildEntries(children, declarations, rules);
+        var menus = buildMenus(entries, rules);
+        var tabs = buildTabs(menus, [
+            {id: "file", order: 10, pageIndex: 0},
+            {id: "view", order: 10000, pageIndex: -1},
+            {id: "other-algorithms", order: 40, pageIndex: 2}
+        ], 3, rules);
+        JSON.stringify({
+            menus: menus.map(menu => menu.id),
+            groups: menus[0].groups.map(group => group.id),
+            icons: menus[0].groups[0].items.map(entry => entry.id),
+            quad: entries.find(entry => entry.categoryId === "quad").items.map(info => info.name),
+            tri: entries.find(entry => entry.categoryId === "tri").items.map(info => info.name),
+            tabs: tabs.map(tab => tab.id),
+            page: tabs.find(tab => tab.id === "mesh").pageIndex,
+            unchanged: children[0].name === "a" && declarations[0].id === "advanced",
+            reverse: JSON.stringify(buildMenus(buildEntries(children.slice().reverse(), declarations.slice().reverse(), rules), rules)) === JSON.stringify(menus)
+        })
+    )JS");
+    INFO(result.toString().toStdString());
+    REQUIRE_FALSE(result.isError());
+    CHECK(result.toString() == R"({"menus":["mesh","Other"],"groups":["basic","advanced"],"icons":["category:quad","category:tri"],"quad":["z","a"],"tri":["a","z"],"tabs":["file","mesh","other-algorithms","Other","view"],"page":3,"unchanged":true,"reverse":true})");
+    // 显式零值覆盖和同序 ID 兜底，不依赖标题或输入顺序。
+    CHECK(engine.evaluate(R"JS(orderFor([{parent:"",id:"x",order:0}], "", "x", 20))JS").toInt() == 0);
+    CHECK(engine.evaluate(R"JS(buildTabs([], [{id:"b",order:0},{id:"a",order:0}], 3, []).map(t=>t.id).join(","))JS").toString() == "a,b");
+}
+
+TEST_CASE("Actual toolbar reorders builtins and menus without changing the current identity", "[navigation][QML]")
+{
+    application();
+    QTemporaryDir directory;
+    REQUIRE(directory.isValid());
+    const auto executable = (directory.path() + "/isolated/Test.exe").toStdString();
+    QModelManager::argv0 = executable;
+    QQmlEngine engine;
+    static const int theme_type = qmlRegisterSingletonType(QUrl("qrc:/navigation-ui/Theme.qml"), "OrderedNavigationUi", 1, 0, "Theme");
+    engine.rootContext()->setContextProperty("Theme", engine.singletonInstance<QObject*>(theme_type));
+    QQmlComponent component(&engine, QUrl("qrc:/navigation-ui/AppToolbar.qml"));
+    INFO(component.errorString().toStdString());
+    REQUIRE(component.isReady());
+    auto* manager = engine.singletonInstance<QModelManager*>("app.model", "QModelManager");
+    auto* adaptor = manager->getFeatureSystemAdaptor();
+    auto& system = *adaptor->featureSystem();
+    system.setNavigationEntries({ { "a", "First", "", 0, "Alpha", "alpha" },
+        { "b", "Second", "", 0, "Beta", "beta" } });
+    system.setNavigationOrder({ { "", "alpha", 30 }, { "", "beta", 50 } });
+    std::unique_ptr<QObject> toolbar(component.createWithInitialProperties({ { "featureSystem", QVariant::fromValue(engine.newQObject(adaptor)) } }));
+    REQUIRE(toolbar);
+    auto* item = qobject_cast<QQuickItem*>(toolbar.get());
+    REQUIRE(item);
+    QQuickWindow window;
+    window.resize(900, 180);
+    item->setParentItem(window.contentItem());
+    item->setSize(QSizeF(900, 180));
+    window.show();
+    const auto settle = [] {
+        QEventLoop loop;
+        QTimer::singleShot(60, &loop, &QEventLoop::quit);
+        loop.exec();
+    };
+    settle();
+    auto* alpha = findItem(item, "featureTab_Alpha");
+    REQUIRE(alpha);
+    clickItem(window, alpha);
+    settle();
+    CHECK(toolbar->property("activeCategory").toInt() == 3);
+    auto* app = engine.singletonInstance<QObject*>("app.core", "App");
+    auto marker = engine.newObject();
+    marker.setProperty("marker", 42);
+    REQUIRE(app->setProperty("activeOperation", QVariant::fromValue(marker)));
+    // 反转菜单顺序，同时把视图移到最前、文件移到最后。
+    system.setNavigationOrder({ { "", "alpha", 50 }, { "", "beta", 30 },
+        { "", "view", -10 }, { "", "file", 20000 } });
+    settle();
+    CHECK(toolbar->property("activeCategory").toInt() == 4);
+    REQUIRE(findItem(item, "featureMenuPage_Alpha"));
+    CHECK(findItem(item, "featureMenuPage_Alpha")->isVisible());
+    CHECK(app->property("activeOperation").value<QJSValue>().strictlyEquals(marker));
+    auto* view = findItem(item, "viewCategory");
+    auto* file = findItem(item, "fileCategory");
+    auto* beta = findItem(item, "featureTab_Beta");
+    alpha = findItem(item, "featureTab_Alpha");
+    REQUIRE(view);
+    REQUIRE(file);
+    REQUIRE(beta);
+    REQUIRE(alpha);
+    CHECK(view->mapToItem(item, QPointF()).x() < beta->mapToItem(item, QPointF()).x());
+    CHECK(beta->mapToItem(item, QPointF()).x() < alpha->mapToItem(item, QPointF()).x());
+    CHECK(alpha->mapToItem(item, QPointF()).x() < file->mapToItem(item, QPointF()).x());
+    // 弹出菜单不应清除或改变当前 ribbon 页。
+    clickItem(window, view);
+    settle();
+    CHECK(toolbar->property("activeCategory").toInt() == 4);
+    auto* view_menu = toolbar->findChild<QObject*>("viewMenu");
+    REQUIRE(view_menu);
+    CHECK(view_menu->property("visible").toBool());
 }

@@ -1,25 +1,38 @@
 .pragma library
 
+// parent: 根菜单为空；menu:<id> 下为分组；group:<menu>/<group> 下为入口；entry:<id> 下为子功能。
+function orderFor(orders, parent, id, fallback) {
+    const declaration = (orders || []).find(item => item.parent === parent && item.id === id)
+    return declaration ? declaration.order : fallback
+}
+
+function compareNodes(a, b) {
+    return a.order - b.order || (a.id < b.id ? -1 : a.id > b.id ? 1 : 0)
+}
+
 function compareFeatures(a, b) {
     return (a.order || 0) - (b.order || 0)
         || (a.name < b.name ? -1 : a.name > b.name ? 1 : 0)
 }
 
-function buildFeatures(infos, categoryId) {
+function buildFeatures(infos, categoryId, orders) {
     const features = []
     for (const info of infos) {
         if ((info.entry_ids || []).indexOf(categoryId) >= 0
                 && !features.some(feature => feature.name === info.name))
             features.push(info)
     }
-    return features.sort(compareFeatures)
+    return features.sort((a, b) =>
+        orderFor(orders, "entry:" + categoryId, a.name, a.order || 0)
+        - orderFor(orders, "entry:" + categoryId, b.name, b.order || 0)
+        || (a.name < b.name ? -1 : a.name > b.name ? 1 : 0))
 }
 
 // 父入口只聚合叶子功能；同一 Handler 可出现在多个入口，不复制执行状态。
-function buildEntries(infos, categories) {
+function buildEntries(infos, categories, orders) {
     const entries = []
     for (const category of categories) {
-        const items = buildFeatures(infos, category.id)
+        const items = buildFeatures(infos, category.id, orders)
         entries.push({
             id: "category:" + category.id,
             categoryId: category.id,
@@ -27,6 +40,8 @@ function buildEntries(infos, categories) {
             icon: category.icon || "",
             order: category.order || 0,
             menu_path: category.menu_path || "功能",
+            menu_id: category.menu_id || "",
+            group_id: category.group_id || "",
             items: items
         })
     }
@@ -51,27 +66,47 @@ function buildEntries(infos, categories) {
     return entries
 }
 
-function buildMenus(entries) {
+function buildMenus(entries, orders) {
     const menus = []
     for (const entry of entries) {
         const path = (entry.menu_path || "功能").split("/")
         const name = path[0] || "功能"
         const groupName = path.length > 1 ? path[1] : ""
-        let menu = menus.find(item => item.name === name)
+        const menuId = entry.menu_id || name
+        const groupId = entry.group_id || groupName || "default"
+        let menu = menus.find(item => item.id === menuId)
         if (!menu) {
-            menu = { name: name, groups: [] }
+            menu = { id: menuId, name: name, order: orderFor(orders, "", menuId, 1000), groups: [] }
             menus.push(menu)
         }
-        let group = menu.groups.find(item => item.name === groupName)
+        let group = menu.groups.find(item => item.id === groupId)
         if (!group) {
-            group = { name: groupName, items: [] }
+            group = { id: groupId, name: groupName, order: orderFor(orders, "menu:" + menuId, groupId, 0), items: [] }
             menu.groups.push(group)
         }
         group.items.push(entry)
     }
     for (const menu of menus) {
-        for (const group of menu.groups)
-            group.items.sort((a, b) => a.order - b.order || (a.id < b.id ? -1 : a.id > b.id ? 1 : 0))
+        menu.groups.sort(compareNodes)
+        for (const group of menu.groups) {
+            const parent = "group:" + menu.id + "/" + group.id
+            group.items.sort((a, b) =>
+                orderFor(orders, parent, a.id, a.order) - orderFor(orders, parent, b.id, b.order)
+                || (a.id < b.id ? -1 : a.id > b.id ? 1 : 0))
+        }
     }
-    return menus
+    return menus.sort(compareNodes)
+}
+
+// 页面索引仅定位内容，不参与显示顺序；内置菜单和插件菜单使用相同排序规则。
+function buildTabs(menus, builtins, pageStart, orders) {
+    const tabs = builtins.map(tab => Object.assign({}, tab, {
+        order: orderFor(orders, "", tab.id, tab.order)
+    }))
+    for (let index = 0; index < menus.length; ++index) {
+        const menu = menus[index]
+        tabs.push({id: menu.id, name: menu.name, order: menu.order,
+            objectName: "featureTab_" + menu.name, pageIndex: pageStart + index})
+    }
+    return tabs.sort(compareNodes)
 }
