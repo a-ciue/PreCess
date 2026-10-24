@@ -5,11 +5,10 @@
 #pragma once
 
 #include <Standard_Failure.hxx>
-#include <spdlog/sinks/base_sink.h>
+#include <spdlog/sinks/callback_sink.h>
 #include <spdlog/spdlog.h>
 
 #include <memory>
-#include <mutex>
 #include <stdexcept>
 #include <string>
 #include <string_view>
@@ -22,9 +21,15 @@ public:
 
     explicit SurfacePrecisionFailure(int fail_on = 1, Kind kind = Kind::Standard)
         : original_logger_(spdlog::default_logger())
-        , sink_(std::make_shared<FailureSink>(fail_on))
     {
-        auto logger = std::make_shared<spdlog::logger>("precision-failure", sink_);
+        auto sink = std::make_shared<spdlog::sinks::callback_sink_mt>([this, fail_on](const spdlog::details::log_msg& message) {
+            const std::string_view text(message.payload.data(), message.payload.size());
+            if (text.starts_with("几何拓扑诊断"))
+                ++diagnostic_logs_;
+            if (text.starts_with("[SurfacePrecision]") && ++rebuilds_ == fail_on)
+                throw std::runtime_error("injected rebuild failure");
+        });
+        auto logger = std::make_shared<spdlog::logger>("precision-failure", sink);
         logger->set_level(spdlog::level::info);
         // spdlog 默认会吞掉 sink 异常；显式让错误处理器将异常传回重建调用者。
         logger->set_error_handler([kind](const std::string&) {
@@ -38,28 +43,13 @@ public:
     }
 
     ~SurfacePrecisionFailure() { spdlog::set_default_logger(original_logger_); }
-    int rebuilds() const { return sink_->rebuilds; }
-    int diagnosticLogs() const { return sink_->diagnostic_logs; }
+    SurfacePrecisionFailure(const SurfacePrecisionFailure&) = delete;
+    SurfacePrecisionFailure& operator=(const SurfacePrecisionFailure&) = delete;
+    int rebuilds() const { return rebuilds_; }
+    int diagnosticLogs() const { return diagnostic_logs_; }
 
 private:
-    struct FailureSink : spdlog::sinks::base_sink<std::mutex> {
-        explicit FailureSink(int fail_on)
-            : fail_on(fail_on)
-        {
-        }
-        void sink_it_(const spdlog::details::log_msg& message) override
-        {
-            const std::string_view text(message.payload.data(), message.payload.size());
-            if (text.starts_with("几何拓扑诊断"))
-                ++diagnostic_logs;
-            if (text.starts_with("[SurfacePrecision]") && ++rebuilds == fail_on)
-                throw std::runtime_error("injected rebuild failure");
-        }
-        void flush_() override { }
-        int fail_on;
-        int rebuilds {};
-        int diagnostic_logs {};
-    };
     std::shared_ptr<spdlog::logger> original_logger_;
-    std::shared_ptr<FailureSink> sink_;
+    int rebuilds_ {};
+    int diagnostic_logs_ {};
 };
