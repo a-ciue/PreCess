@@ -30,7 +30,6 @@
 #include <QScopeGuard>
 #include <QTemporaryDir>
 #include <QThread>
-#include <QTimer>
 #include <atomic>
 #include <catch2/catch_test_macros.hpp>
 #include <cmath>
@@ -139,21 +138,11 @@ struct QmlFixture {
     }
 };
 
-// 等实际模型刷新完成；定时器只限制失败等待，不依赖 UI 刷新周期。
-bool waitForRefresh(TreeModel& tree_model)
+// 结构事件即时同步；这里只泵一次事件循环，让实际 QML 链路完成收尾。
+bool waitForRefresh(TreeModel&)
 {
-    QEventLoop loop;
-    bool refreshed = false;
-    QObject::connect(&tree_model, &QAbstractItemModel::modelReset, &loop, [&] {
-        refreshed = true;
-        loop.quit();
-    });
-    QTimer timeout;
-    timeout.setSingleShot(true);
-    QObject::connect(&timeout, &QTimer::timeout, &loop, &QEventLoop::quit);
-    timeout.start(2000);
-    loop.exec();
-    return refreshed;
+    QCoreApplication::processEvents();
+    return true;
 }
 
 }
@@ -555,6 +544,76 @@ TEST_CASE("Actual QML follows successful deletion notifications and preserves se
     REQUIRE(waitForRefresh(*tree_model));
     CHECK(selection_state->property("activeModelId").toInt() == -1);
     CHECK(selection_state->property("activeComponentId").toInt() == -1);
+}
+
+TEST_CASE("Actual QML preserves expanded rows across incremental imports and deletes", "[QML][tree]")
+{
+    application();
+    QmlFixture f;
+    auto& model = *f.manager->getModelManager();
+    model.setUndoRecorder(nullptr);
+    auto* tree_model = f.tree->findChild<TreeModel*>();
+    auto* tree_view = f.tree->findChild<QObject*>("objectTreeView");
+    REQUIRE(tree_model);
+    REQUIRE(tree_view);
+
+    auto make_components = [] {
+        ComponentDatas components;
+        auto component = std::make_unique<ComponentData>();
+        component->mesh = std::make_unique<MeshData>();
+        components.push_back(std::move(component));
+        return components;
+    };
+
+    const Index first_model = model.addModel("first", make_components());
+    const Index second_model = model.addModel("second", make_components());
+    REQUIRE(tree_model->refresh());
+    REQUIRE(QMetaObject::invokeMethod(tree_view, "expandRecursively",
+        Q_ARG(int, -1), Q_ARG(int, -1)));
+    REQUIRE(QMetaObject::invokeMethod(tree_view, "forceLayout"));
+    QCoreApplication::processEvents();
+
+    const Index target_component = model.modelById(second_model)->componentIds().front();
+    auto row_of = [&](const QModelIndex& index) {
+        int row = -1;
+        REQUIRE(QMetaObject::invokeMethod(tree_view, "rowAtIndex",
+            Q_RETURN_ARG(int, row), Q_ARG(QModelIndex, index)));
+        return row;
+    };
+    auto is_expanded = [&](int row) {
+        bool expanded = false;
+        REQUIRE(QMetaObject::invokeMethod(tree_view, "isExpanded",
+            Q_RETURN_ARG(bool, expanded), Q_ARG(int, row)));
+        return expanded;
+    };
+
+    int resets = 0;
+    QObject::connect(tree_model, &QAbstractItemModel::modelReset, [&] { ++resets; });
+
+    const int initial_row = row_of(tree_model->findIndexByNodeId(target_component, 1));
+    REQUIRE(initial_row >= 0);
+    REQUIRE(is_expanded(initial_row));
+
+    const Index third_model = model.addModel("third", make_components());
+    QCoreApplication::processEvents();
+    CHECK(resets == 0);
+    int row = row_of(tree_model->findIndexByNodeId(target_component, 1));
+    REQUIRE(row >= 0);
+    CHECK(is_expanded(row));
+
+    model.removeModel(first_model);
+    QCoreApplication::processEvents();
+    CHECK(resets == 0);
+    row = row_of(tree_model->findIndexByNodeId(target_component, 1));
+    REQUIRE(row >= 0);
+    CHECK(is_expanded(row));
+
+    model.removeModel(third_model);
+    QCoreApplication::processEvents();
+    CHECK(resets == 0);
+    row = row_of(tree_model->findIndexByNodeId(target_component, 1));
+    REQUIRE(row >= 0);
+    CHECK(is_expanded(row));
 }
 
 TEST_CASE("Actual undo clears offscreen selectors only after successful restoration", "[QML][undo]")

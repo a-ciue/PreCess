@@ -1,15 +1,34 @@
 #include "TreeModel.h"
 #include "QModelQuery.h"
 
+#include <QDebug>
+#include <QTimer>
 #include <QVariantList>
 #include <QVariantMap>
+#include <algorithm>
 #include <functional>
+
+namespace {
+TreeNode* findChildOfType(TreeNode* parent, TreeNode::NodeType type)
+{
+    for (TreeNode* child : parent->children) {
+        if (child->nodeType == type)
+            return child;
+    }
+    return nullptr;
+}
+}
 
 TreeModel::TreeModel(QObject* parent)
     : QAbstractItemModel(parent)
 {
     rootNode = new TreeNode("root");
     rootNode->nodeId = -1;
+
+    data_sync_timer_ = new QTimer(this);
+    data_sync_timer_->setSingleShot(true);
+    data_sync_timer_->setInterval(50);
+    connect(data_sync_timer_, &QTimer::timeout, this, &TreeModel::flushPendingDataSync);
 }
 
 TreeModel::~TreeModel()
@@ -127,141 +146,833 @@ bool TreeModel::refresh()
     if (!modelQuery_)
         return false;
 
-    auto oldRoot = rootNode;
+    if (!initialized_) {
+        beginResetModel();
+        rebuildAllFromQuery();
+        initialized_ = true;
+        endResetModel();
+        return true;
+    }
+
+    if (reconcileAllFromQuery())
+        return true;
+
+    qWarning() << "TreeModel: incremental reconcile failed, fallback to full reset";
+    beginResetModel();
+    rebuildAllFromQuery();
+    initialized_ = true;
+    endResetModel();
+    return true;
+}
+
+void TreeModel::fillComponentData(ComponentNodeInfo& info) const
+{
+    if (info.has_mesh) {
+        const QVariantMap mesh = modelQuery_->getMeshSummary(info.id);
+        info.mesh.face_count = mesh["face_count"].toInt();
+        info.mesh.solid_count = mesh["solid_count"].toInt();
+    }
+    if (info.has_geometry) {
+        const QVariantMap geometry = modelQuery_->getGeometrySummary(info.id);
+        info.geometry.vertex_count = geometry["vertex_count"].toInt();
+        info.geometry.edge_count = geometry["edge_count"].toInt();
+        info.geometry.face_count = geometry["face_count"].toInt();
+        info.geometry.solid_count = geometry["solid_count"].toInt();
+    }
+}
+
+TreeModel::ComponentNodeInfo TreeModel::queryComponent(Index component_id) const
+{
+    ComponentNodeInfo info;
+    info.id = component_id;
+    if (!modelQuery_)
+        return info;
+
+    const Index model_id = modelQuery_->findModelIdByComponent(component_id);
+    if (model_id >= 0) {
+        const QVariantList components = modelQuery_->getComponentsSummary(model_id);
+        for (const QVariant& value : components) {
+            const QVariantMap component = value.toMap();
+            if (component["component_id"].toInt() != component_id)
+                continue;
+            info.name = component["name"].toString();
+            info.has_mesh = component["has_mesh"].toBool();
+            info.has_geometry = component["has_geometry"].toBool();
+            fillComponentData(info);
+            return info;
+        }
+    }
+
+    info.name = modelQuery_->getComponentName(component_id);
+    info.has_mesh = modelQuery_->getMeshSummary(component_id)["has_mesh"].toBool();
+    info.has_geometry = modelQuery_->getGeometrySummary(component_id)["has_geometry"].toBool();
+    fillComponentData(info);
+    return info;
+}
+
+TreeModel::ModelNodeInfo TreeModel::queryModel(Index model_id) const
+{
+    ModelNodeInfo info;
+    info.id = model_id;
+    if (!modelQuery_)
+        return info;
+
+    info.name = modelQuery_->getModelName(model_id);
+    const QVariantList components = modelQuery_->getComponentsSummary(model_id);
+    info.component_count = components.size();
+    info.components.reserve(components.size());
+    for (const QVariant& value : components) {
+        const QVariantMap component = value.toMap();
+        ComponentNodeInfo component_info;
+        component_info.id = component["component_id"].toInt();
+        component_info.name = component["name"].toString();
+        component_info.has_mesh = component["has_mesh"].toBool();
+        component_info.has_geometry = component["has_geometry"].toBool();
+        fillComponentData(component_info);
+        info.components.push_back(std::move(component_info));
+    }
+    return info;
+}
+
+TreeNode* TreeModel::buildMeshNode(const MeshNodeInfo& info)
+{
+    auto* node = new TreeNode("Mesh", QString::number(info.face_count + info.solid_count));
+    node->nodeId = next_fake_id_--;
+    node->nodeType = TreeNode::NodeType::Mesh;
+
+    if (info.face_count > 0) {
+        auto* child = new TreeNode("2D", QString::number(info.face_count), node);
+        child->nodeId = next_fake_id_--;
+        child->nodeType = TreeNode::NodeType::D2;
+    }
+    if (info.solid_count > 0) {
+        auto* child = new TreeNode("3D", QString::number(info.solid_count), node);
+        child->nodeId = next_fake_id_--;
+        child->nodeType = TreeNode::NodeType::D3;
+    }
+    return node;
+}
+
+TreeNode* TreeModel::buildGeometryNode(const GeometryNodeInfo& info)
+{
+    auto* node = new TreeNode("Geometry",
+        QString::number(info.vertex_count + info.edge_count + info.face_count + info.solid_count));
+    node->nodeId = next_fake_id_--;
+    node->nodeType = TreeNode::NodeType::Geometry;
+
+    if (info.vertex_count > 0) {
+        auto* child = new TreeNode("Vertex", QString::number(info.vertex_count), node);
+        child->nodeId = next_fake_id_--;
+        child->nodeType = TreeNode::NodeType::Vertex;
+    }
+    if (info.edge_count > 0) {
+        auto* child = new TreeNode("Edge", QString::number(info.edge_count), node);
+        child->nodeId = next_fake_id_--;
+        child->nodeType = TreeNode::NodeType::Edge;
+    }
+    if (info.face_count > 0) {
+        auto* child = new TreeNode("Face", QString::number(info.face_count), node);
+        child->nodeId = next_fake_id_--;
+        child->nodeType = TreeNode::NodeType::Face;
+    }
+    if (info.solid_count > 0) {
+        auto* child = new TreeNode("Solid", QString::number(info.solid_count), node);
+        child->nodeId = next_fake_id_--;
+        child->nodeType = TreeNode::NodeType::Solid;
+    }
+    return node;
+}
+
+TreeNode* TreeModel::buildComponentNode(const ComponentNodeInfo& info)
+{
+    auto* node = new TreeNode(info.name);
+    node->nodeId = info.id;
+    node->nodeType = TreeNode::NodeType::Component;
+
+    if (info.has_mesh) {
+        TreeNode* mesh = buildMeshNode(info.mesh);
+        mesh->parent = node;
+        node->children.push_back(mesh);
+    }
+    if (info.has_geometry) {
+        TreeNode* geometry = buildGeometryNode(info.geometry);
+        geometry->parent = node;
+        node->children.push_back(geometry);
+    }
+
+    ensureSubVisibilityEntry(node, info);
+    applyStoredVisibility(node);
+    return node;
+}
+
+TreeNode* TreeModel::buildModelNode(const ModelNodeInfo& info)
+{
+    auto* node = new TreeNode(info.name, QString::number(info.component_count));
+    node->nodeId = info.id;
+    node->nodeType = TreeNode::NodeType::Model;
+
+    for (const ComponentNodeInfo& component_info : info.components) {
+        TreeNode* component = buildComponentNode(component_info);
+        component->parent = node;
+        node->children.push_back(component);
+    }
+
+    bool any_visible = false;
+    for (TreeNode* child : node->children) {
+        if (child->isVisible) {
+            any_visible = true;
+            break;
+        }
+    }
+    node->isVisible = any_visible || node->children.isEmpty();
+    return node;
+}
+
+void TreeModel::ensureSubVisibilityEntry(TreeNode* component_node, const ComponentNodeInfo& info)
+{
+    if (sub_visibility_.find(component_node->nodeId) != sub_visibility_.end())
+        return;
+    if (!info.has_mesh && !info.has_geometry)
+        return;
+    sub_visibility_[component_node->nodeId] = { info.has_mesh, info.has_geometry };
+}
+
+void TreeModel::applyStoredVisibility(TreeNode* component_node)
+{
+    auto it = components_visibility_.find(component_node->nodeId);
+    if (it == components_visibility_.end()) {
+        component_node->isVisible = true;
+        components_visibility_[component_node->nodeId] = true;
+    } else {
+        component_node->isVisible = it->second;
+    }
+    syncSubNodes(component_node);
+}
+
+void TreeModel::registerSubtree(TreeNode* node)
+{
+    if (!node)
+        return;
+
+    if (node->nodeType == TreeNode::NodeType::Model)
+        model_nodes_[node->nodeId] = node;
+    else if (node->nodeType == TreeNode::NodeType::Component)
+        component_nodes_[node->nodeId] = node;
+
+    for (TreeNode* child : node->children)
+        registerSubtree(child);
+}
+
+void TreeModel::unregisterSubtree(TreeNode* node)
+{
+    if (!node)
+        return;
+
+    if (node->nodeType == TreeNode::NodeType::Model) {
+        model_nodes_.erase(node->nodeId);
+        pending_model_ids_.erase(node->nodeId);
+    } else if (node->nodeType == TreeNode::NodeType::Component) {
+        component_nodes_.erase(node->nodeId);
+        pending_component_ids_.erase(node->nodeId);
+        components_visibility_.erase(node->nodeId);
+        sub_visibility_.erase(node->nodeId);
+    }
+
+    for (TreeNode* child : node->children)
+        unregisterSubtree(child);
+}
+
+QModelIndex TreeModel::indexOfNode(TreeNode* node) const
+{
+    if (!node || node == rootNode || !node->parent)
+        return QModelIndex();
+
+    const int row = node->parent->children.indexOf(node);
+    if (row < 0)
+        return QModelIndex();
+    return createIndex(row, 0, node);
+}
+
+void TreeModel::notifyNodeData(TreeNode* node, const QVector<int>& roles)
+{
+    const QModelIndex index = indexOfNode(node);
+    if (index.isValid())
+        emit dataChanged(index, index, roles);
+}
+
+void TreeModel::insertChildNode(TreeNode* parent, int row, TreeNode* node)
+{
+    if (!parent || !node)
+        return;
+
+    const int max_row = static_cast<int>(parent->children.size());
+    row = std::clamp(row, 0, max_row);
+    const QModelIndex parent_index = indexOfNode(parent);
+
+    beginInsertRows(parent_index, row, row);
+    node->parent = parent;
+    parent->children.insert(row, node);
+    registerSubtree(node);
+    endInsertRows();
+}
+
+void TreeModel::removeChildNode(TreeNode* node)
+{
+    if (!node || !node->parent)
+        return;
+
+    TreeNode* parent = node->parent;
+    const int row = parent->children.indexOf(node);
+    if (row < 0)
+        return;
+
+    const QModelIndex parent_index = indexOfNode(parent);
+
+    beginRemoveRows(parent_index, row, row);
+    unregisterSubtree(node);
+    parent->children.removeAt(row);
+    node->parent = nullptr;
+    delete node;
+    endRemoveRows();
+}
+
+void TreeModel::moveChildNode(TreeNode* parent, int from, int to)
+{
+    if (!parent || from < 0 || from >= parent->children.size())
+        return;
+
+    const int max_row = static_cast<int>(parent->children.size()) - 1;
+    to = std::clamp(to, 0, max_row);
+    if (from == to)
+        return;
+
+    const int destination = (to > from) ? (to + 1) : to;
+    const QModelIndex parent_index = indexOfNode(parent);
+
+    if (!beginMoveRows(parent_index, from, from, parent_index, destination))
+        return;
+
+    TreeNode* node = parent->children.takeAt(from);
+    parent->children.insert(to, node);
+    endMoveRows();
+}
+
+void TreeModel::updateAncestorVisibility(TreeNode* node)
+{
+    for (TreeNode* current = node; current && current != rootNode; current = current->parent) {
+        bool any_visible = false;
+        for (TreeNode* child : current->children) {
+            if (child->isVisible) {
+                any_visible = true;
+                break;
+            }
+        }
+
+        const bool visible = any_visible || current->children.isEmpty();
+        if (current->isVisible != visible) {
+            current->isVisible = visible;
+            notifyNodeData(current, { IsVisibleRole });
+        }
+    }
+}
+
+void TreeModel::rebuildAllFromQuery()
+{
+    delete rootNode;
     rootNode = new TreeNode("root");
     rootNode->nodeId = -1;
 
-    beginResetModel();
+    model_nodes_.clear();
+    component_nodes_.clear();
+    pending_model_ids_.clear();
+    pending_component_ids_.clear();
+    if (data_sync_timer_)
+        data_sync_timer_->stop();
 
-    QVariantList models = modelQuery_->listModels();
-    int fakeId = -2;
-    for (const QVariant& mv : models) {
-        QVariantMap m = mv.toMap();
-        int mid = m["model_id"].toInt();
-        QString mname = m["name"].toString();
-        int ccount = m["component_count"].toInt();
-
-        TreeNode* mNode = new TreeNode(mname, QString::number(ccount), rootNode);
-        mNode->nodeId = mid;
-        mNode->nodeType = TreeNode::NodeType::Model;
-
-        QVariantList comps = modelQuery_->getComponentsSummary(mid);
-        for (const QVariant& cv : comps) {
-            QVariantMap c = cv.toMap();
-            int cid = c["component_id"].toInt();
-            QString cname = c["name"].toString();
-            bool hasMesh = c["has_mesh"].toBool();
-            bool hasGeometry = c["has_geometry"].toBool();
-
-            TreeNode* cNode = new TreeNode(cname, "", mNode);
-            cNode->nodeId = cid;
-            cNode->nodeType = TreeNode::NodeType::Component;
-
-            if (hasMesh) {
-                QVariantMap ms = modelQuery_->getMeshSummary(cid);
-                int fc = ms["face_count"].toInt();
-                int sc = ms["solid_count"].toInt();
-
-                TreeNode* meshN = new TreeNode("Mesh", QString::number(fc + sc), cNode);
-                meshN->nodeId = fakeId--;
-                meshN->nodeType = TreeNode::NodeType::Mesh;
-
-                if (fc > 0) {
-                    TreeNode* n2d = new TreeNode("2D", QString::number(fc), meshN);
-                    n2d->nodeId = fakeId--;
-                    n2d->nodeType = TreeNode::NodeType::D2;
-                }
-                if (sc > 0) {
-                    TreeNode* n3d = new TreeNode("3D", QString::number(sc), meshN);
-                    n3d->nodeId = fakeId--;
-                    n3d->nodeType = TreeNode::NodeType::D3;
-                }
-            }
-
-            if (hasGeometry) {
-                QVariantMap gs = modelQuery_->getGeometrySummary(cid);
-                int vc = gs["vertex_count"].toInt();
-                int ec = gs["edge_count"].toInt();
-                int fc = gs["face_count"].toInt();
-                int sc = gs["solid_count"].toInt();
-
-                TreeNode* geoN = new TreeNode("Geometry", QString::number(vc + ec + fc + sc), cNode);
-                geoN->nodeId = fakeId--;
-                geoN->nodeType = TreeNode::NodeType::Geometry;
-
-                if (vc > 0) {
-                    TreeNode* vn = new TreeNode("Vertex", QString::number(vc), geoN);
-                    vn->nodeId = fakeId--;
-                    vn->nodeType = TreeNode::NodeType::Vertex;
-                }
-                if (ec > 0) {
-                    TreeNode* en = new TreeNode("Edge", QString::number(ec), geoN);
-                    en->nodeId = fakeId--;
-                    en->nodeType = TreeNode::NodeType::Edge;
-                }
-                if (fc > 0) {
-                    TreeNode* fn = new TreeNode("Face", QString::number(fc), geoN);
-                    fn->nodeId = fakeId--;
-                    fn->nodeType = TreeNode::NodeType::Face;
-                }
-                if (sc > 0) {
-                    TreeNode* sn = new TreeNode("Solid", QString::number(sc), geoN);
-                    sn->nodeId = fakeId--;
-                    sn->nodeType = TreeNode::NodeType::Solid;
-                }
-            }
-        }
+    const QVariantList models = modelQuery_->listModels();
+    for (const QVariant& value : models) {
+        const QVariantMap model = value.toMap();
+        TreeNode* node = buildModelNode(queryModel(model["model_id"].toInt()));
+        node->parent = rootNode;
+        rootNode->children.push_back(node);
+        registerSubtree(node);
     }
 
-    // Restore persisted visibility and prune stale entries
-    std::unordered_map<int, bool> freshComp;
-    std::unordered_map<int, std::pair<bool, bool>> freshSub;
-    for (TreeNode* mNode : rootNode->children) {
-        for (TreeNode* cNode : mNode->children) {
-            int ckey = cNode->nodeId;
-            auto cit = components_visibility_.find(ckey);
-            cNode->isVisible = (cit != components_visibility_.end()) ? cit->second : true;
-            freshComp[ckey] = cNode->isVisible;
+    std::unordered_set<Index> live_component_ids;
+    for (const auto& [component_id, node] : component_nodes_)
+        live_component_ids.insert(component_id);
 
-            // Restore sub visibility
-            auto sit = sub_visibility_.find(ckey);
-            bool def_mesh = true, def_geom = true;
-            if (sit != sub_visibility_.end()) {
-                def_mesh = sit->second.first;
-                def_geom = sit->second.second;
-            }
-            for (TreeNode* child : cNode->children) {
-                if (child->nodeType == TreeNode::NodeType::Mesh) {
-                    child->isVisible = def_mesh;
-                    freshSub[ckey].first = child->isVisible;
-                } else if (child->nodeType == TreeNode::NodeType::Geometry) {
-                    child->isVisible = def_geom;
-                    freshSub[ckey].second = child->isVisible;
-                }
-            }
-        }
+    for (auto it = components_visibility_.begin(); it != components_visibility_.end();) {
+        if (live_component_ids.count(it->first) == 0)
+            it = components_visibility_.erase(it);
+        else
+            ++it;
     }
-    components_visibility_ = std::move(freshComp);
-    sub_visibility_ = std::move(freshSub);
+    for (auto it = sub_visibility_.begin(); it != sub_visibility_.end();) {
+        if (live_component_ids.count(it->first) == 0)
+            it = sub_visibility_.erase(it);
+        else
+            ++it;
+    }
+}
 
-    for (TreeNode* mNode : rootNode->children) {
-        for (TreeNode* cNode : mNode->children) {
-            syncSubNodes(cNode);
-        }
-    }
-    for (TreeNode* mNode : rootNode->children) {
-        for (TreeNode* cNode : mNode->children) {
-            for (TreeNode* child : cNode->children) {
-                if (child->nodeType == TreeNode::NodeType::Mesh || child->nodeType == TreeNode::NodeType::Geometry)
-                    propagateUp(child);
-            }
-        }
+bool TreeModel::reconcileAllFromQuery()
+{
+    const QVariantList models = modelQuery_->listModels();
+
+    std::unordered_set<Index> desired_model_ids;
+    for (const QVariant& value : models)
+        desired_model_ids.insert(value.toMap()["model_id"].toInt());
+
+    const QVector<TreeNode*> existing_models = rootNode->children;
+    for (TreeNode* node : existing_models) {
+        if (node->nodeType == TreeNode::NodeType::Model && desired_model_ids.count(node->nodeId) == 0)
+            removeChildNode(node);
     }
 
-    endResetModel();
-    
-    delete oldRoot;
+    for (int i = 0; i < models.size(); ++i) {
+        const int model_id = models[i].toMap()["model_id"].toInt();
+        auto it = model_nodes_.find(model_id);
+        if (it == model_nodes_.end()) {
+            TreeNode* node = buildModelNode(queryModel(model_id));
+            insertChildNode(rootNode, i, node);
+            continue;
+        }
+
+        TreeNode* node = it->second;
+        const int row = rootNode->children.indexOf(node);
+        if (row != i)
+            moveChildNode(rootNode, row, i);
+        if (!syncModelNode(node, queryModel(model_id)))
+            return false;
+    }
+
+    std::unordered_set<Index> live_component_ids;
+    for (const auto& [component_id, node] : component_nodes_)
+        live_component_ids.insert(component_id);
+
+    for (auto it = components_visibility_.begin(); it != components_visibility_.end();) {
+        if (live_component_ids.count(it->first) == 0)
+            it = components_visibility_.erase(it);
+        else
+            ++it;
+    }
+    for (auto it = sub_visibility_.begin(); it != sub_visibility_.end();) {
+        if (live_component_ids.count(it->first) == 0)
+            it = sub_visibility_.erase(it);
+        else
+            ++it;
+    }
     return true;
+}
+
+bool TreeModel::syncModelNode(TreeNode* node, const ModelNodeInfo& info)
+{
+    if (node->name != info.name) {
+        node->name = info.name;
+        notifyNodeData(node, { NameRole });
+    }
+
+    std::unordered_set<Index> desired_component_ids;
+    for (const ComponentNodeInfo& component : info.components)
+        desired_component_ids.insert(component.id);
+
+    const QVector<TreeNode*> existing_components = node->children;
+    for (TreeNode* child : existing_components) {
+        if (child->nodeType == TreeNode::NodeType::Component && desired_component_ids.count(child->nodeId) == 0)
+            removeChildNode(child);
+    }
+
+    for (int i = 0; i < info.components.size(); ++i) {
+        const ComponentNodeInfo& component_info = info.components[i];
+        auto it = component_nodes_.find(component_info.id);
+        if (it == component_nodes_.end()) {
+            insertChildNode(node, i, buildComponentNode(component_info));
+            continue;
+        }
+
+        TreeNode* component = it->second;
+        if (component->parent != node)
+            return false;
+
+        const int row = node->children.indexOf(component);
+        if (row != i)
+            moveChildNode(node, row, i);
+        if (!syncComponentNode(component, component_info))
+            return false;
+    }
+
+    const QString number = QString::number(node->children.size());
+    if (node->number != number) {
+        node->number = number;
+        notifyNodeData(node, { NumberRole });
+    }
+    updateAncestorVisibility(node);
+    return true;
+}
+
+bool TreeModel::syncComponentNode(TreeNode* node, const ComponentNodeInfo& info)
+{
+    if (node->name != info.name) {
+        node->name = info.name;
+        notifyNodeData(node, { NameRole });
+    }
+
+    ensureSubVisibilityEntry(node, info);
+
+    TreeNode* mesh = findChildOfType(node, TreeNode::NodeType::Mesh);
+    TreeNode* geometry = findChildOfType(node, TreeNode::NodeType::Geometry);
+
+    if (!info.has_mesh && mesh)
+        removeChildNode(mesh);
+    if (!info.has_geometry && geometry)
+        removeChildNode(geometry);
+
+    mesh = findChildOfType(node, TreeNode::NodeType::Mesh);
+    if (info.has_mesh) {
+        if (!mesh) {
+            insertChildNode(node, 0, buildMeshNode(info.mesh));
+        } else {
+            const int row = node->children.indexOf(mesh);
+            if (row != 0)
+                moveChildNode(node, row, 0);
+            syncMeshNode(mesh, info.mesh);
+        }
+    }
+
+    geometry = findChildOfType(node, TreeNode::NodeType::Geometry);
+    if (info.has_geometry) {
+        const int target_row = info.has_mesh ? 1 : 0;
+        if (!geometry) {
+            insertChildNode(node, target_row, buildGeometryNode(info.geometry));
+        } else {
+            const int row = node->children.indexOf(geometry);
+            if (row != target_row)
+                moveChildNode(node, row, target_row);
+            syncGeometryNode(geometry, info.geometry);
+        }
+    }
+
+    if (!info.has_mesh && !info.has_geometry) {
+        sub_visibility_.erase(node->nodeId);
+    } else {
+        auto& entry = sub_visibility_[node->nodeId];
+        if (!info.has_mesh)
+            entry.first = false;
+        if (!info.has_geometry)
+            entry.second = false;
+    }
+
+    syncSubNodes(node);
+    updateAncestorVisibility(node);
+    return true;
+}
+
+bool TreeModel::syncMeshNode(TreeNode* node, const MeshNodeInfo& info)
+{
+    const QString number = QString::number(info.face_count + info.solid_count);
+    if (node->number != number) {
+        node->number = number;
+        notifyNodeData(node, { NumberRole });
+    }
+
+    TreeNode* d2 = findChildOfType(node, TreeNode::NodeType::D2);
+    TreeNode* d3 = findChildOfType(node, TreeNode::NodeType::D3);
+
+    if (info.face_count <= 0 && d2)
+        removeChildNode(d2);
+    if (info.solid_count <= 0 && d3)
+        removeChildNode(d3);
+
+    if (info.face_count > 0) {
+        d2 = findChildOfType(node, TreeNode::NodeType::D2);
+        if (!d2) {
+            auto* child = new TreeNode("2D", QString::number(info.face_count));
+            child->nodeId = next_fake_id_--;
+            child->nodeType = TreeNode::NodeType::D2;
+            insertChildNode(node, 0, child);
+        } else {
+            const int row = node->children.indexOf(d2);
+            if (row != 0)
+                moveChildNode(node, row, 0);
+            const QString count = QString::number(info.face_count);
+            if (d2->number != count) {
+                d2->number = count;
+                notifyNodeData(d2, { NumberRole });
+            }
+        }
+    }
+
+    if (info.solid_count > 0) {
+        d3 = findChildOfType(node, TreeNode::NodeType::D3);
+        const int target_row = info.face_count > 0 ? 1 : 0;
+        if (!d3) {
+            auto* child = new TreeNode("3D", QString::number(info.solid_count));
+            child->nodeId = next_fake_id_--;
+            child->nodeType = TreeNode::NodeType::D3;
+            insertChildNode(node, target_row, child);
+        } else {
+            const int row = node->children.indexOf(d3);
+            if (row != target_row)
+                moveChildNode(node, row, target_row);
+            const QString count = QString::number(info.solid_count);
+            if (d3->number != count) {
+                d3->number = count;
+                notifyNodeData(d3, { NumberRole });
+            }
+        }
+    }
+
+    syncSubNodes(node);
+    return true;
+}
+
+bool TreeModel::syncGeometryNode(TreeNode* node, const GeometryNodeInfo& info)
+{
+    const QString number = QString::number(info.vertex_count + info.edge_count + info.face_count + info.solid_count);
+    if (node->number != number) {
+        node->number = number;
+        notifyNodeData(node, { NumberRole });
+    }
+
+    struct ChildSpec {
+        TreeNode::NodeType type;
+        const char* name;
+        int count;
+    };
+    const ChildSpec specs[] = {
+        { TreeNode::NodeType::Vertex, "Vertex", info.vertex_count },
+        { TreeNode::NodeType::Edge, "Edge", info.edge_count },
+        { TreeNode::NodeType::Face, "Face", info.face_count },
+        { TreeNode::NodeType::Solid, "Solid", info.solid_count },
+    };
+
+    for (const ChildSpec& spec : specs) {
+        TreeNode* child = findChildOfType(node, spec.type);
+        if (spec.count <= 0 && child) {
+            removeChildNode(child);
+            continue;
+        }
+    }
+
+    int target_row = 0;
+    for (const ChildSpec& spec : specs) {
+        if (spec.count <= 0)
+            continue;
+
+        TreeNode* child = findChildOfType(node, spec.type);
+        if (!child) {
+            auto* created = new TreeNode(spec.name, QString::number(spec.count));
+            created->nodeId = next_fake_id_--;
+            created->nodeType = spec.type;
+            insertChildNode(node, target_row, created);
+        } else {
+            const int row = node->children.indexOf(child);
+            if (row != target_row)
+                moveChildNode(node, row, target_row);
+            const QString count = QString::number(spec.count);
+            if (child->number != count) {
+                child->number = count;
+                notifyNodeData(child, { NumberRole });
+            }
+        }
+        ++target_row;
+    }
+
+    syncSubNodes(node);
+    return true;
+}
+
+bool TreeModel::syncModelAdded(Index model_id)
+{
+    if (!initialized_)
+        return refresh();
+    if (!modelQuery_->hasModel(model_id))
+        return true;
+
+    auto existing = model_nodes_.find(model_id);
+    if (existing != model_nodes_.end())
+        return syncModelNode(existing->second, queryModel(model_id));
+
+    const QVariantList models = modelQuery_->listModels();
+    int row = -1;
+    for (int i = 0; i < models.size(); ++i) {
+        if (models[i].toMap()["model_id"].toInt() == model_id) {
+            row = i;
+            break;
+        }
+    }
+    if (row < 0)
+        return true;
+
+    insertChildNode(rootNode, row, buildModelNode(queryModel(model_id)));
+    return true;
+}
+
+bool TreeModel::syncModelRemoved(Index model_id)
+{
+    if (!initialized_)
+        return refresh();
+
+    auto it = model_nodes_.find(model_id);
+    if (it == model_nodes_.end()) {
+        pending_model_ids_.erase(model_id);
+        return true;
+    }
+
+    removeChildNode(it->second);
+    pending_model_ids_.erase(model_id);
+    return true;
+}
+
+bool TreeModel::syncModelChanged(Index model_id)
+{
+    if (!initialized_)
+        return refresh();
+
+    auto it = model_nodes_.find(model_id);
+    if (it == model_nodes_.end()) {
+        if (!modelQuery_->hasModel(model_id))
+            return true;
+        return syncModelAdded(model_id);
+    }
+    return syncModelNode(it->second, queryModel(model_id));
+}
+
+bool TreeModel::syncModelNameChanged(Index model_id, const QString& name)
+{
+    if (!initialized_)
+        return refresh();
+
+    auto it = model_nodes_.find(model_id);
+    if (it == model_nodes_.end()) {
+        if (!modelQuery_->hasModel(model_id))
+            return true;
+        return syncModelAdded(model_id);
+    }
+
+    if (it->second->name != name) {
+        it->second->name = name;
+        notifyNodeData(it->second, { NameRole });
+    }
+    return true;
+}
+
+bool TreeModel::syncComponentChanged(Index component_id)
+{
+    if (!initialized_)
+        return refresh();
+
+    auto it = component_nodes_.find(component_id);
+    if (it == component_nodes_.end()) {
+        const Index model_id = modelQuery_->findModelIdByComponent(component_id);
+        if (model_id < 0)
+            return true;
+
+        auto model_it = model_nodes_.find(model_id);
+        if (model_it == model_nodes_.end())
+            return refresh();
+
+        const QVariantList components = modelQuery_->getComponentsSummary(model_id);
+        int row = -1;
+        for (int i = 0; i < components.size(); ++i) {
+            if (components[i].toMap()["component_id"].toInt() == component_id) {
+                row = i;
+                break;
+            }
+        }
+        if (row < 0)
+            return true;
+
+        TreeNode* component = buildComponentNode(queryComponent(component_id));
+        insertChildNode(model_it->second, row, component);
+
+        const QString number = QString::number(model_it->second->children.size());
+        if (model_it->second->number != number) {
+            model_it->second->number = number;
+            notifyNodeData(model_it->second, { NumberRole });
+        }
+        updateAncestorVisibility(component);
+        return true;
+    }
+
+    if (modelQuery_->findModelIdByComponent(component_id) < 0)
+        return syncComponentRemoved(component_id);
+
+    return syncComponentNode(it->second, queryComponent(component_id));
+}
+
+bool TreeModel::syncComponentRemoved(Index component_id)
+{
+    if (!initialized_)
+        return refresh();
+
+    auto it = component_nodes_.find(component_id);
+    if (it == component_nodes_.end()) {
+        pending_component_ids_.erase(component_id);
+        return true;
+    }
+
+    TreeNode* component = it->second;
+    TreeNode* model = component->parent;
+    removeChildNode(component);
+    pending_component_ids_.erase(component_id);
+
+    if (model && model->nodeType == TreeNode::NodeType::Model) {
+        const QString number = QString::number(model->children.size());
+        if (model->number != number) {
+            model->number = number;
+            notifyNodeData(model, { NumberRole });
+        }
+        updateAncestorVisibility(model);
+    }
+    return true;
+}
+
+void TreeModel::queueModelChanged(Index model_id)
+{
+    if (!initialized_) {
+        refresh();
+        return;
+    }
+    pending_model_ids_.insert(model_id);
+    if (!data_sync_timer_->isActive())
+        data_sync_timer_->start();
+}
+
+void TreeModel::queueComponentChanged(Index component_id)
+{
+    if (!initialized_) {
+        refresh();
+        return;
+    }
+    if (component_nodes_.find(component_id) == component_nodes_.end()) {
+        syncComponentChanged(component_id);
+        return;
+    }
+    pending_component_ids_.insert(component_id);
+    if (!data_sync_timer_->isActive())
+        data_sync_timer_->start();
+}
+
+void TreeModel::flushPendingDataSync()
+{
+    std::unordered_set<Index> model_ids = std::move(pending_model_ids_);
+    const std::unordered_set<Index> component_ids = std::move(pending_component_ids_);
+    pending_model_ids_.clear();
+    pending_component_ids_.clear();
+
+    for (Index component_id : component_ids) {
+        auto it = component_nodes_.find(component_id);
+        if (it == component_nodes_.end())
+            continue;
+        TreeNode* model = it->second->parent;
+        if (model && model->nodeType == TreeNode::NodeType::Model)
+            model_ids.insert(model->nodeId);
+    }
+
+    for (Index model_id : model_ids)
+        syncModelChanged(model_id);
 }
 
 void TreeModel::setComponentVisibility(TreeNode* comp, bool visible)

@@ -31,52 +31,47 @@ Pane {
     readonly property int _nodeTypeMesh: 2
     readonly property int _nodeTypeGeometry: 3
 
-    Timer {
-        id: refreshTimer
-        interval: 100
-        repeat: false
-        onTriggered: {
-            treeModel.refresh()
-            // 选中项仍然有效时保留，不重置为 -1
-            let compId = App.selection.activeComponentId
-            let modelId = App.selection.activeModelId
-            if (compId >= 0 && !QModelManager.query.hasComponent(compId))
-                compId = -1
-            if (compId >= 0) {
-                // 组件有效时以组件为准同步所属模型
-                modelId = QModelManager.query.findModelIdByComponent(compId)
-            } else if (modelId >= 0 && !QModelManager.query.hasModel(modelId)) {
-                modelId = -1
-            }
-            App.selection.activeComponentId = compId
-            App.selection.activeModelId = modelId
-        }
-    }
-
     Connections {
         target: QModelManager.observer
-        function onModelAdded(modelId)   { refreshTimer.restart() }
-        function onModelChanged(modelId) { refreshTimer.restart() }
+
+        function onModelAdded(modelId) {
+            treeModel.syncModelAdded(modelId)
+        }
+
         function onModelRemoved(modelId) {
             if (App.selection.activeModelId === modelId) {
                 treeView.selectionModel.clear()
                 App.selection.activeComponentId = -1
                 App.selection.activeModelId = -1
             }
-            refreshTimer.restart()
+            treeModel.syncModelRemoved(modelId)
         }
+
+        function onModelChanged(modelId) {
+            treeModel.queueModelChanged(modelId)
+        }
+
+        function onModelNameChanged(modelId, newName) {
+            treeModel.syncModelNameChanged(modelId, newName)
+        }
+
         function onComponentRemoved(componentId) {
             if (App.selection.activeComponentId === componentId) {
                 // 实际删除当前组件后保留所属模型，并选择剩余的第一个组件。
                 const ownerModelId = App.selection.activeModelId
                 treeView.selectionModel.clear()
                 App.selection.activeComponentId = -1
+                treeModel.syncComponentRemoved(componentId)
                 App.selection.activeComponentId = QModelManager.query.hasModel(ownerModelId)
                         ? objectTree.firstComponentId(ownerModelId) : -1
+            } else {
+                treeModel.syncComponentRemoved(componentId)
             }
-            refreshTimer.restart()
         }
-        function onComponentChanged(componentId) { refreshTimer.restart() }
+
+        function onComponentChanged(componentId) {
+            treeModel.queueComponentChanged(componentId)
+        }
     }
 
     Rectangle {
@@ -587,6 +582,7 @@ Pane {
     }
 
     Component.onCompleted: {
+        treeModel.refresh()
         App.registry.treeModel = treeModel
         App.registry.objectTree = objectTree
     }
