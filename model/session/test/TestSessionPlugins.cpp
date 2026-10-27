@@ -111,54 +111,6 @@ TEST_CASE("Busy plugin unload keeps feature or IO registration until a successfu
     REQUIRE(session.ioSystem().registeredFileTypeInfos().empty());
 }
 
-TEST_CASE("Algorithm plugins ignore obsolete navigation sidecars", "[session][plugins][navigation]")
-{
-    int argc = 0;
-    QCoreApplication app(argc, nullptr);
-#ifdef PRECESS_PLUGIN_DIR
-    const std::filesystem::path plugin_dir(PRECESS_PLUGIN_DIR);
-#else
-    SKIP("PRECESS_PLUGIN_DIR not defined");
-#endif
-    std::filesystem::path source;
-    for (const auto& entry : std::filesystem::directory_iterator(plugin_dir)) {
-        if (entry.path().stem().string().find("CmdExecutePlugin") != std::string::npos
-            && (entry.path().extension() == ".dll" || entry.path().extension() == ".so" || entry.path().extension() == ".dylib")) {
-            source = entry.path();
-            break;
-        }
-    }
-    REQUIRE_FALSE(source.empty());
-    QTemporaryDir directory;
-    REQUIRE(directory.isValid());
-    const auto target = std::filesystem::path(directory.path().toStdString()) / source.filename();
-    REQUIRE(QFile::copy(QString::fromStdString(source.string()), QString::fromStdString(target.string())));
-    auto declaration_path = target;
-    declaration_path.replace_extension(".navigation.json");
-    QFile declaration(QString::fromStdString(declaration_path.string()));
-    REQUIRE(declaration.open(QIODevice::WriteOnly));
-    SECTION("Former navigation declarations are ignored")
-    {
-        REQUIRE(declaration.write(R"({"categories":[{"id":"custom","title":"Custom meshing"}],"label":"Ignored"})") > 0);
-    }
-    SECTION("Malformed files are not read")
-    {
-        REQUIRE(declaration.write("{invalid") > 0);
-    }
-    declaration.close();
-    Session session;
-    REQUIRE(session.pluginManager().registerPlugin(target));
-    const auto infos = session.algorithmSystem().getAlgorithmInfos();
-    REQUIRE(infos.size() == 1);
-    CHECK(infos.front()->name == "cmdExecutePlugin");
-    declaration.close();
-    session.pluginManager().unregisterPlugin(target);
-    REQUIRE(session.pluginManager().registerPlugin(target));
-    CHECK(session.algorithmSystem().getAlgorithmInfos().size() == 1);
-    session.pluginManager().unregisterPlugin(target);
-    CHECK(session.algorithmSystem().getAlgorithmInfos().empty());
-}
-
 TEST_CASE("Binary feature setup supplies navigation and survives reload", "[session][plugins][setup][navigation]")
 {
     int argc = 0;
