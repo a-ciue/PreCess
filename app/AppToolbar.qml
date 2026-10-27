@@ -56,8 +56,7 @@ ColumnLayout {
     // 算法与编辑系统尚无图标声明字段，暂保留其名称映射。
     readonly property var pluginIconMap: ({
         "CreateFacePlugin": "qrc:/images/toolbar/Edit/create-face.svg",
-        "DeleteFacePlugin": "qrc:/images/toolbar/Edit/delete-face.svg",
-        "cmdExecutePlugin": "qrc:/images/toolbar/Algorithm/cmd.svg"
+        "DeleteFacePlugin": "qrc:/images/toolbar/Edit/delete-face.svg"
     })
     function getIconForPlugin(pluginName) {
         return pluginIconMap[pluginName] || "qrc:/images/toolbar/precess_extra_plugin.svg"

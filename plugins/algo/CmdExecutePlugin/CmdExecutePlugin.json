@@ -1,7 +1,0 @@
-{
-  "system": "AlgorithmSystem",
-  "handler": {
-    "name": "cmdExecutePlugin",
-    "display_name": "执行cmd命令"
-  }
-}
