@@ -47,7 +47,7 @@ navigation.addOrder({ "entry:quadrilateral", "MyQuadFeature", 10 });
 
 宿主继续通过 `setNavigationEntries(...)` 声明四类常驻网格入口；没有功能实现时显示空态并禁用执行。四边形入口内的 Ricci 流方法仍由入口内排序规则优先显示。未声明入口的功能仍归入默认“功能”菜单。
 
-C++ 入口已删除 `menu_path`。`QFeatureSystemAdaptor` 根据菜单与分组定义，查询时生成现有 QML 所需的 `menu_path`、`menu_id`、`group_id`，并附加独立的 `menu_title`、`group_title` 显示字段。导航脚本优先读取独立标题，以完整保留标题中的 `/`；显式空 `group_title` 保持未分组区域，缺少独立字段的旧展示数据继续按路径解析。父节点顺序转换成现有 `navigationOrder` 格式。这些是派生的展示数据，不额外保存可修改的父节点配置。`AppToolbar.qml`、`FeatureNavigation.js`、`OperationSession.qml` 继续消费原有格式。
+C++ 入口和 QML 展示数据均不使用 `menu_path`。`QFeatureSystemAdaptor` 根据注册定义输出 `menu_id`、`group_id` 和独立的 `menu_title`、`group_title`，标题中的 `/` 按普通字符处理。导航脚本将空 `group_id` 映射为未分组的 `default` 区域；未声明入口的功能生成入口时使用默认菜单 ID `features` 和标题“功能”；与正式 `features` 入口混合时，菜单显示标题沿用先聚合的正式入口。父节点顺序转换成现有 `navigationOrder` 格式；展示数据由注册定义派生，不额外保存可修改的父节点配置。
 
 页签与页面的 `objectName` 分别使用 `featureTab_<菜单ID>`、`featureMenuPage_<菜单ID>`。导航刷新按菜单 ID 保持当前页，按入口 ID、功能名称保持当前操作、参数与选择监听。显示顺序与页面索引分离，视图弹出菜单及文件、编辑页面继续执行原有行为。
 

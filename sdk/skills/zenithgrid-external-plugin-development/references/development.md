@@ -25,7 +25,7 @@ registrar.navigation().setLabel("稳态求解器");
 
 `FeatureNavigationEntry` 依次为稳定 `id`、入口标题、入口图标、入口排序、`menu_id`、可选的 `group_id`。入口必须引用已注册或本次声明的菜单；非空分组 ID 必须属于该菜单。ID 不含 `/`，标题仅用于显示。不同功能注册相同 id 即属于同一个入口；一个子功能直接显示参数，多个子功能显示选择器。同一功能可声明多个入口，共享一份参数和执行状态。id 不从标题或图标推断；同一功能内重复 id 保留首个有效声明，空 id 或标题被忽略。
 
-C++ 入口已删除 `menu_path`，Qt 适配器按注册定义生成现有 QML 展示路径。空 `group_id` 表示未分组，适配器映射为 `default` 区域；插件无需显式注册 `default`。菜单、分组顺序来自各自定义，入口和子功能的 `registrar.navigation().addOrder` 可按 `group:<菜单ID>/<分组ID>` 或 `entry:<入口ID>` 覆盖，宿主的 `FeatureSystem::setNavigationOrder` 继续优先。`registrar.navigation().setLabel/setIcon/setOrder` 配置子功能的显示名称、图标与排序，不覆盖入口描述；`registrar.navigation().setEntryDefault(id, parameter, value)` 声明入口参数预设（Combo 为选项索引字符串）。宿主可通过 `FeatureSystem::setNavigationEntries` 保留常驻入口；零子功能显示空态并禁用执行。未声明入口的功能自动归入默认“功能”菜单。
+C++ 入口与 QML 展示数据均不使用 `menu_path`，Qt 适配器按注册定义提供菜单、分组的 ID 与标题。空 `group_id` 表示未分组，导航脚本映射为 `default` 区域；插件无需显式注册 `default`。菜单、分组顺序来自各自定义，入口和子功能的 `registrar.navigation().addOrder` 可按 `group:<菜单ID>/<分组ID>` 或 `entry:<入口ID>` 覆盖，宿主的 `FeatureSystem::setNavigationOrder` 继续优先。`registrar.navigation().setLabel/setIcon/setOrder` 配置子功能的显示名称、图标与排序，不覆盖入口描述；`registrar.navigation().setEntryDefault(id, parameter, value)` 声明入口参数预设（Combo 为选项索引字符串）。宿主可通过 `FeatureSystem::setNavigationEntries` 保留常驻入口；零子功能显示空态并禁用执行。未声明入口的功能自动归入默认“功能”菜单。
 
 导航在 `setup` 声明，JSON 保留身份与能力。
 

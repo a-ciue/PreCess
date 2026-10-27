@@ -39,11 +39,10 @@ function buildEntries(infos, categories, orders) {
             title: category.title,
             icon: category.icon || "",
             order: category.order || 0,
-            menu_path: category.menu_path || "功能",
             menu_title: category.menu_title,
             group_title: category.group_title,
-            menu_id: category.menu_id || (category.menu_path ? "" : "features"),
-            group_id: category.group_id || "",
+            menu_id: category.menu_id,
+            group_id: category.group_id,
             items: items
         })
     }
@@ -61,40 +60,23 @@ function buildEntries(infos, categories, orders) {
             title: info.label || info.display_name,
             icon: info.icon || "",
             order: info.order || 0,
-            menu_path: "功能",
             menu_id: "features",
+            menu_title: "功能",
+            group_id: "",
+            group_title: "",
             items: [info]
         })
     }
     return entries
 }
 
-// 旧路径仅继承唯一的显式父 ID；同名父节点有歧义时保留旧路径回退。
-function recordParentId(ids, path, id) {
-    if (id)
-        ids.set(path, !ids.has(path) || ids.get(path) === id ? id : "")
-}
-
 function buildMenus(entries, orders) {
-    const menuIds = new Map()
-    const groupIds = new Map()
-    const locations = entries.map(entry => {
-        const path = (entry.menu_path || "功能").split("/")
-        // 独立标题允许包含路径分隔符；显式空分组标题仍表示未分组区域。
-        return { entry: entry,
-            name: entry.menu_title !== undefined ? entry.menu_title : path[0] || "功能",
-            groupName: entry.group_title !== undefined ? entry.group_title : path[1] || "" }
-    })
-    for (const location of locations)
-        recordParentId(menuIds, location.name, location.entry.menu_id)
-    for (const location of locations) {
-        location.menuId = location.entry.menu_id || menuIds.get(location.name) || location.name
-        location.groupPath = JSON.stringify([location.menuId, location.groupName])
-        recordParentId(groupIds, location.groupPath, location.entry.group_id)
-    }
     const menus = []
-    for (const { entry, name, groupName, menuId, groupPath } of locations) {
-        const groupId = entry.group_id || groupIds.get(groupPath) || groupName || "default"
+    for (const entry of entries) {
+        const menuId = entry.menu_id
+        const groupId = entry.group_id || "default"
+        const name = entry.menu_title
+        const groupName = entry.group_title
         let menu = menus.find(item => item.id === menuId)
         if (!menu) {
             menu = { id: menuId, name: name, order: orderFor(orders, "", menuId, 1000), groups: [] }

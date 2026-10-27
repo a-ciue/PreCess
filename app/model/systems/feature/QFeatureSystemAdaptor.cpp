@@ -181,7 +181,7 @@ void QFeatureSystemAdaptor::setActiveComponent(int id)
 
 QVariantList QFeatureSystemAdaptor::getNavigationEntries() const
 {
-    // 路径仅为现有 QML 的展示协议；父节点身份与标题统一取自系统注册表。
+    // 父节点身份与标题统一取自系统注册表。
     std::map<std::string, std::string> menu_titles;
     for (const auto& menu : feature_system_->getNavigationMenus())
         menu_titles.emplace(menu.id, menu.title);
@@ -192,13 +192,9 @@ QVariantList QFeatureSystemAdaptor::getNavigationEntries() const
     for (const auto& category : feature_system_->getNavigationEntries()) {
         const auto& menu_title = menu_titles.at(category.menu_id);
         const auto group_title = category.group_id.empty() ? std::string {} : group_titles.at({ category.menu_id, category.group_id });
-        std::string menu_path = menu_title;
-        if (!category.group_id.empty())
-            menu_path += "/" + group_title;
         result.append(QVariantMap { { "id", QString::fromStdString(category.id) },
             { "title", QString::fromStdString(category.title) },
             { "icon", QString::fromStdString(category.icon) }, { "order", category.order },
-            { "menu_path", QString::fromStdString(menu_path) },
             { "menu_title", QString::fromStdString(menu_title) },
             { "group_title", QString::fromStdString(group_title) },
             { "menu_id", QString::fromStdString(category.menu_id) },

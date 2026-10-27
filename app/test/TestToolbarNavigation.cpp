@@ -265,11 +265,11 @@ TEST_CASE("Feature navigation aggregates generic entries and shares executable c
     REQUIRE_FALSE(engine.evaluate(QString::fromUtf8(source.readAll()).remove(".pragma library")).isError());
     const auto result = engine.evaluate(R"JS(
         const categories = [
-            {id: "construction", title: "几何构造", icon: "qrc:/construct.svg", order: 10, menu_path: "几何工具/构造"},
-            {id: "repair", title: "曲面修复", order: 20, menu_path: "几何工具/修复"},
-            {id: "empty", title: "后处理", order: 30, menu_path: "分析工具/结果"},
-            {id: "plain-basic", title: "普通功能", menu_path: "修复工具/基本"},
-            {id: "plain-shortcut", title: "普通功能", menu_path: "几何工具/快捷"}
+            {id: "construction", title: "几何构造", icon: "qrc:/construct.svg", order: 10, menu_id: "geometry", menu_title: "几何工具", group_id: "construction", group_title: "构造"},
+            {id: "repair", title: "曲面修复", order: 20, menu_id: "geometry", menu_title: "几何工具", group_id: "repair", group_title: "修复"},
+            {id: "empty", title: "后处理", order: 30, menu_id: "analysis", menu_title: "分析工具", group_id: "result", group_title: "结果"},
+            {id: "plain-basic", title: "普通功能", menu_id: "repair", menu_title: "修复工具", group_id: "basic", group_title: "基本"},
+            {id: "plain-shortcut", title: "普通功能", menu_id: "geometry", menu_title: "几何工具", group_id: "shortcut", group_title: "快捷"}
         ];
         const shared = {name: "shared", entry_ids: ["construction", "repair"], order: -1};
         const entries = buildEntries([
@@ -285,10 +285,10 @@ TEST_CASE("Feature navigation aggregates generic entries and shares executable c
             construction: find("category:construction").items.map(info => info.name),
             repair: find("category:repair").items.map(info => info.name),
             empty: find("category:empty").items.length,
-            menu: find("category:construction").menu_path,
+            menu: find("category:construction").menu_id + "/" + find("category:construction").group_id,
             icon: find("category:construction").icon,
             plain: find("category:plain-basic").items.map(info => info.name),
-            plainMenu: find("category:plain-basic").menu_path,
+            plainMenu: find("category:plain-basic").menu_title + "/" + find("category:plain-basic").group_title,
             plainEntries: entries.filter(entry => entry.items.length && entry.items[0].name === "plain").length,
             unlisted: find("feature:unlisted").items.map(info => info.name),
             sameChild: find("category:construction").items[0] === find("category:repair").items[0],
@@ -297,12 +297,12 @@ TEST_CASE("Feature navigation aggregates generic entries and shares executable c
     )JS");
     INFO(result.toString().toStdString());
     REQUIRE_FALSE(result.isError());
-    CHECK(result.toString() == R"({"construction":["shared","a","z"],"repair":["shared"],"empty":0,"menu":"几何工具/构造","icon":"qrc:/construct.svg","plain":["plain"],"plainMenu":"修复工具/基本","plainEntries":2,"unlisted":["unlisted"],"sameChild":true,"zero":[0,0,0,0,0]})");
+    CHECK(result.toString() == R"({"construction":["shared","a","z"],"repair":["shared"],"empty":0,"menu":"geometry/construction","icon":"qrc:/construct.svg","plain":["plain"],"plainMenu":"修复工具/基本","plainEntries":2,"unlisted":["unlisted"],"sameChild":true,"zero":[0,0,0,0,0]})");
     const auto menus = engine.evaluate(R"JS(
         const declarations = [
-            {id: "advanced", title: "高级", menu_path: "修复工具/高级"},
-            {id: "construct", title: "构造", menu_path: "几何工具/构造"},
-            {id: "basic", title: "基本", menu_path: "修复工具/基本"}
+            {id: "advanced", title: "高级", menu_id: "repair", menu_title: "修复工具", group_id: "advanced", group_title: "高级"},
+            {id: "construct", title: "构造", menu_id: "geometry", menu_title: "几何工具", group_id: "construct", group_title: "构造"},
+            {id: "basic", title: "基本", menu_id: "repair", menu_title: "修复工具", group_id: "basic", group_title: "基本"}
         ];
         const declaredInfos = [
             {name: "z", display_name: "Z", entry_ids: ["advanced"], order: 5},
@@ -325,8 +325,8 @@ TEST_CASE("Feature navigation aggregates generic entries and shares executable c
     CHECK(menu_result.value("forward").toArray().size() == 2);
     const auto single_menu = engine.evaluate(R"JS(
         JSON.stringify(buildMenus(buildEntries([], [
-            {id: "triangle", title: "三角形网格生成", menu_path: "网格生成算法"},
-            {id: "tetrahedron", title: "四面体网格生成", menu_path: "网格生成算法"}
+            {id: "triangle", title: "三角形网格生成", menu_id: "mesh", menu_title: "网格生成算法", group_id: "", group_title: ""},
+            {id: "tetrahedron", title: "四面体网格生成", menu_id: "mesh", menu_title: "网格生成算法", group_id: "", group_title: ""}
         ])).map(menu => ({name: menu.name, groups: menu.groups.map(group => ({
             name: group.name, ids: group.items.map(entry => entry.id)
         }))})))
@@ -338,7 +338,10 @@ TEST_CASE("Feature navigation aggregates generic entries and shares executable c
         { "construction", "repair" });
     engine.globalObject().setProperty("qtInfo", engine.newQObject(&info));
     const auto qt_entries = engine.evaluate(R"JS(
-        buildEntries([qtInfo], [{id: "construction", title: "几何构造"}, {id: "repair", title: "曲面修复"}])
+        buildEntries([qtInfo], [
+            {id: "construction", title: "几何构造", menu_id: "geometry", menu_title: "几何", group_id: "", group_title: ""},
+            {id: "repair", title: "曲面修复", menu_id: "geometry", menu_title: "几何", group_id: "repair", group_title: "修复"}
+        ])
             .filter(entry => entry.items.length > 0)
             .map(entry => entry.id + ":" + entry.items[0].name).join(",")
     )JS");
@@ -387,18 +390,22 @@ TEST_CASE("Unified entries keep parent presentation independent of child present
     REQUIRE(entries.size() == 2);
     CHECK(entries[0].toMap().value("title").toString() == "First title");
     CHECK(entries[0].toMap().value("icon").toString() == "qrc:/first.svg");
-    CHECK(entries[0].toMap().value("menu_path").toString() == "Tools/First");
+    CHECK_FALSE(entries[0].toMap().contains("menu_path"));
+    CHECK(entries[0].toMap().value("menu_title").toString() == "Tools");
+    CHECK(entries[0].toMap().value("group_title").toString() == "First");
     CHECK(entries[1].toMap().value("title").toString() == "Second title");
-    CHECK(entries[1].toMap().value("menu_path").toString() == "Tools/Second");
+    CHECK_FALSE(entries[1].toMap().contains("menu_path"));
+    CHECK(entries[1].toMap().value("menu_title").toString() == "Tools");
+    CHECK(entries[1].toMap().value("group_title").toString() == "Second");
     QJSEngine engine;
     QFile source(":/navigation-ui/FeatureNavigation.js");
     REQUIRE(source.open(QIODevice::ReadOnly));
     REQUIRE_FALSE(engine.evaluate(QString::fromUtf8(source.readAll()).remove(".pragma library")).isError());
     engine.globalObject().setProperty("feature", engine.newQObject(infos[0]));
     engine.globalObject().setProperty("declarations", engine.toScriptValue(entries));
-    const auto paths = engine.evaluate("buildEntries([feature], declarations).map(entry => entry.menu_path).join('|')");
-    REQUIRE_FALSE(paths.isError());
-    CHECK(paths.toString() == "Tools/First|Tools/Second");
+    const auto parents = engine.evaluate("buildEntries([feature], declarations).map(entry => entry.menu_id + '/' + entry.group_id).join('|')");
+    REQUIRE_FALSE(parents.isError());
+    CHECK(parents.toString() == "tools/first|tools/second");
     qDeleteAll(infos);
 }
 
@@ -422,7 +429,8 @@ TEST_CASE("Registered parents generate the existing QML layout without empty fea
         { "plain", "未分组入口", "", 0, "geometry" },
         { "split", "拓扑入口", "", 0, "geometry", "topology" } });
     const auto definitions = adaptor.getNavigationEntries();
-    CHECK(definitions[0].toMap().value("menu_path").toString() == "几何");
+    CHECK_FALSE(definitions[0].toMap().contains("menu_path"));
+    CHECK(definitions[0].toMap().value("menu_title").toString() == "几何");
     CHECK(definitions[0].toMap().value("group_id").toString().isEmpty());
     CHECK_FALSE(system.tryRegisterNavigationMenu({ "geometry", "插件标题", -100 }));
     CHECK_FALSE(system.tryRegisterNavigationGroup({ "geometry", "repair", "插件分组", -100 }));
@@ -443,17 +451,17 @@ TEST_CASE("Registered parents generate the existing QML layout without empty fea
         ], 3, rules);
         ({ menus: menus.map(menu => menu.id).join(","),
            groups: menus[0].groups.map(group => group.id).join(","),
-           paths: definitions.map(entry => entry.menu_path).join("|"),
+           titles: definitions.map(entry => entry.menu_title + "/" + entry.group_title).join("|"),
            tabs: tabs.map(tab => tab.id).join(",") })
     )JS");
     REQUIRE_FALSE(result.isError());
     CHECK(result.property("menus").toString() == "geometry");
     CHECK(result.property("groups").toString() == "default,topology,repair");
-    CHECK(result.property("paths").toString() == "几何|几何/修复|几何/拓扑");
+    CHECK(result.property("titles").toString() == "几何/|几何/修复|几何/拓扑");
     CHECK(result.property("tabs").toString() == "file,edit,geometry,view");
 }
 
-TEST_CASE("Feature menus use entry paths and give unlisted features one default entry", "[navigation][Qt]")
+TEST_CASE("Feature menus use declared parents and give unlisted features one default entry", "[navigation][Qt]")
 {
     application();
     QJSEngine engine;
@@ -464,19 +472,28 @@ TEST_CASE("Feature menus use entry paths and give unlisted features one default 
     engine.globalObject().setProperty("unlisted", engine.newQObject(&unlisted));
     const auto result = engine.evaluate(R"JS(
         const entries = buildEntries([
-            {name: "bound", entry_ids: ["configured", "default"], menu_path: "Ignored/Child"},
+            {name: "bound", entry_ids: ["configured", "default"]},
             unlisted, unlisted
         ], [
-            {id: "configured", title: "指定菜单", menu_path: "Tools/Configured"},
-            {id: "default", title: "默认菜单"}
+            {id: "configured", title: "指定菜单", menu_id: "tools", menu_title: "Tools", group_id: "configured", group_title: "Configured"},
+            {id: "default", title: "默认菜单", menu_id: "features", menu_title: "功能", group_id: "", group_title: ""}
         ]);
         JSON.stringify(entries.map(entry => ({
-            id: entry.id, path: entry.menu_path, names: entry.items.map(info => info.name)
+            id: entry.id, menu: entry.menu_id, title: entry.menu_title,
+            group: entry.group_id, groupTitle: entry.group_title, names: entry.items.map(info => info.name)
         })))
     )JS");
     INFO(result.toString().toStdString());
     REQUIRE_FALSE(result.isError());
-    CHECK(result.toString() == R"([{"id":"category:configured","path":"Tools/Configured","names":["bound"]},{"id":"category:default","path":"功能","names":["bound"]},{"id":"feature:unlisted","path":"功能","names":["unlisted"]}])");
+    CHECK(result.toString() == R"([{"id":"category:configured","menu":"tools","title":"Tools","group":"configured","groupTitle":"Configured","names":["bound"]},{"id":"category:default","menu":"features","title":"功能","group":"","groupTitle":"","names":["bound"]},{"id":"feature:unlisted","menu":"features","title":"功能","group":"","groupTitle":"","names":["unlisted"]}])");
+    const auto default_menus = engine.evaluate(R"JS(
+        JSON.stringify([[], [{id: "declared", title: "已声明", menu_id: "features", menu_title: "注册功能", group_id: "", group_title: ""}]]
+            .map(categories => buildMenus(buildEntries([unlisted], categories))
+                .map(menu => ({id: menu.id, name: menu.name, group: menu.groups[0].id,
+                    items: menu.groups[0].items.map(entry => entry.id)}))))
+    )JS");
+    REQUIRE_FALSE(default_menus.isError());
+    CHECK(default_menus.toString() == R"([[{"id":"features","name":"功能","group":"default","items":["feature:unlisted"]}],[{"id":"features","name":"注册功能","group":"default","items":["category:declared","feature:unlisted"]}]])");
 }
 
 TEST_CASE("Actual toolbar preserves legacy algorithm parameters and execution", "[navigation][QML][legacy]")
@@ -1065,7 +1082,11 @@ TEST_CASE("Installed external algorithms appear in the actual toolbar and open t
     auto* quadrilateral = findItem(item, "featureEntry_category:quadrilateral");
     click_visible(quadrilateral);
     select_feature("GmshPlugin");
-    CHECK(selector->property("currentText").toString() == "曲面网格生成");
+    const auto selected_info = app->property("activeOperation").value<QJSValue>().property("info");
+    CHECK(selected_info.property("name").toString() == "GmshPlugin");
+    const auto label = selected_info.property("label").toString();
+    CHECK(selector->property("currentText").toString()
+        == (label.isEmpty() ? selected_info.property("display_name").toString() : label));
     CHECK(sidebar->property("parameters").value<QJSValue>().property(6).toInt() == 1);
     if (const auto capture = qEnvironmentVariable("PRECESS_NAVIGATION_CAPTURE"); !capture.isEmpty())
         REQUIRE(window.grabWindow().save(capture + "-quad.png"));
@@ -1628,11 +1649,11 @@ TEST_CASE("Navigation sorts every sibling level with stable ids and scoped overr
             {parent: "entry:quad", id: "z", order: -1}
         ];
         var declarations = [
-            {id: "advanced", title: "Advanced", menu_path: "Renamed/Advanced", menu_id: "mesh", group_id: "advanced"},
-            {id: "tri", title: "Tri", order: 0, menu_path: "Renamed/Basic", menu_id: "mesh", group_id: "basic"},
-            {id: "quad", title: "Quad", order: 100, menu_path: "Renamed/Basic", menu_id: "mesh", group_id: "basic"},
-            {id: "other", title: "Other", menu_path: "Other"},
-            {id: "legacy", title: "Legacy", order: 200, menu_path: "Renamed/Basic"}
+            {id: "advanced", title: "Advanced", menu_id: "mesh", menu_title: "Renamed", group_id: "advanced", group_title: "Advanced"},
+            {id: "tri", title: "Tri", order: 0, menu_id: "mesh", menu_title: "Renamed", group_id: "basic", group_title: "Basic"},
+            {id: "quad", title: "Quad", order: 100, menu_id: "mesh", menu_title: "Renamed", group_id: "basic", group_title: "Basic"},
+            {id: "other", title: "Other", menu_id: "other", menu_title: "Other", group_id: "", group_title: ""},
+            {id: "extra", title: "Extra", order: 200, menu_id: "mesh", menu_title: "Renamed", group_id: "basic", group_title: "Basic"}
         ];
         var children = [
             {name: "a", entry_ids: ["quad", "tri"], order: 0},
@@ -1646,18 +1667,22 @@ TEST_CASE("Navigation sorts every sibling level with stable ids and scoped overr
             {id: "other-algorithms", order: 40, pageIndex: 2}
         ], 3, rules);
         const renamed = declarations.map(entry => Object.assign({}, entry, {
-            menu_path: entry.menu_path.replace("Renamed", "Translated").replace("Basic", "Localized")
+            menu_title: entry.menu_title.replace("Renamed", "Translated"),
+            group_title: entry.group_title.replace("Basic", "Localized")
         }));
         const renamedMenus = buildMenus(buildEntries(children, renamed, rules), rules);
         const ids = items => items.map(item => item.id || item.name).join(",");
         ({
             renamedTab: buildTabs(renamedMenus, [], 3, rules)[0].objectName,
             renamedGroup: renamedMenus[0].groups[0].id,
-            ambiguous: ids(buildMenus(buildEntries([], [
-                {id: "a", title: "A", menu_path: "Same", menu_id: "a"},
-                {id: "b", title: "B", menu_path: "Same", menu_id: "b"},
-                {id: "legacy", title: "Legacy", menu_path: "Same"}
+            sameTitle: ids(buildMenus(buildEntries([], [
+                {id: "a", title: "A", menu_id: "a", menu_title: "Same", group_id: "", group_title: ""},
+                {id: "b", title: "B", menu_id: "b", menu_title: "Same", group_id: "", group_title: ""}
             ]), [])),
+            sameGroupTitle: ids(buildMenus(buildEntries([], [
+                {id: "a", title: "A", menu_id: "m", menu_title: "Menu", group_id: "a", group_title: "Same"},
+                {id: "b", title: "B", menu_id: "m", menu_title: "Menu", group_id: "b", group_title: "Same"}
+            ]), [])[0].groups),
             tabs: ids(tabs), groups: ids(menus[0].groups),
             icons: ids(menus[0].groups[0].items),
             quad: ids(entries.find(entry => entry.categoryId === "quad").items),
@@ -1666,12 +1691,13 @@ TEST_CASE("Navigation sorts every sibling level with stable ids and scoped overr
         })
     )JS");
     REQUIRE_FALSE(result.isError());
-    CHECK(result.property("tabs").toString() == "file,mesh,other-algorithms,Other,view");
+    CHECK(result.property("tabs").toString() == "file,mesh,other-algorithms,other,view");
     CHECK(result.property("groups").toString() == "basic,advanced");
-    CHECK(result.property("icons").toString() == "category:quad,category:tri,category:legacy");
+    CHECK(result.property("icons").toString() == "category:quad,category:tri,category:extra");
     CHECK(result.property("renamedTab").toString() == "featureTab_mesh");
     CHECK(result.property("renamedGroup").toString() == "basic");
-    CHECK(result.property("ambiguous").toString() == "Same,a,b");
+    CHECK(result.property("sameTitle").toString() == "a,b");
+    CHECK(result.property("sameGroupTitle").toString() == "a,b");
     CHECK(result.property("quad").toString() == "z,a");
     CHECK(result.property("tri").toString() == "a,z");
     CHECK(result.property("stable").toBool());
@@ -1752,9 +1778,6 @@ TEST_CASE("Registered navigation titles preserve slash characters without invent
     engine.globalObject().setProperty("rules", engine.toScriptValue(adaptor.getNavigationOrder()));
     const auto result = engine.evaluate(R"JS(
         const menus = buildMenus(buildEntries([], definitions, rules), rules);
-        const legacy = buildMenus(buildEntries([], [
-            {id: "legacy", title: "Legacy", menu_path: "Old/Group"}
-        ], []), []);
         ({
             menuCount: menus.length,
             menuId: menus[0].id,
@@ -1764,9 +1787,7 @@ TEST_CASE("Registered navigation titles preserve slash characters without invent
             plainEntry: menus[0].groups[0].items[0].categoryId,
             namedGroupName: menus[0].groups[1].name,
             namedEntry: menus[0].groups[1].items[0].categoryId,
-            tabName: buildTabs(menus, [], 3, rules)[0].name,
-            legacyMenuName: legacy[0].name,
-            legacyGroupName: legacy[0].groups[0].name
+            tabName: buildTabs(menus, [], 3, rules)[0].name
         })
     )JS");
     REQUIRE_FALSE(result.isError());
@@ -1779,6 +1800,4 @@ TEST_CASE("Registered navigation titles preserve slash characters without invent
     CHECK(result.property("namedGroupName").toString() == "拓扑/修复");
     CHECK(result.property("namedEntry").toString() == "grouped");
     CHECK(result.property("tabName").toString() == "CAD/几何");
-    CHECK(result.property("legacyMenuName").toString() == "Old");
-    CHECK(result.property("legacyGroupName").toString() == "Group");
 }
