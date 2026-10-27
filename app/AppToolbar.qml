@@ -118,12 +118,19 @@ ColumnLayout {
             else
                 trailing.push(tab)
         }
-        return leading.concat([{
+        // 无旧算法时隐藏页签；页面索引保持不变，页签隐藏即不可达。
+        const algorithmTabs = root.algorithmInfos.length > 0 ? [{
             name: qsTr("其他算法"),
             objectName: "otherAlgorithmTab",
             pageIndex: root.algorithmPageStart
-        }], trailing)
+        }] : []
+        return leading.concat(algorithmTabs, trailing)
     }
+
+    // 算法清空后收起正停留的其他算法页（幂等状态应用）。
+    onAlgorithmInfosChanged: if (root.algorithmInfos.length === 0
+        && root.activeCategory === root.algorithmPageStart)
+        root.activeCategory = -1
 
     // 普通单项与聚合入口共用菜单声明；注册变化后按菜单身份保持当前页。
     function rebuildFeatureMenus() {
@@ -561,14 +568,6 @@ ColumnLayout {
                         }
                     }
                 }
-            }
-
-            Label {
-                parent: algorithmPage
-                anchors.centerIn: parent
-                visible: root.algorithmInfos.length === 0
-                text: qsTr("暂无可用算法")
-                color: Theme.textSecondary
             }
         }
 
