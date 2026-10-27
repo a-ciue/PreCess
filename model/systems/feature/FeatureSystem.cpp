@@ -13,6 +13,7 @@
 #include <spdlog/spdlog.h>
 
 #include <algorithm>
+#include <cmath>
 #include <map>
 #include <optional>
 #include <stdexcept>
@@ -22,8 +23,8 @@ namespace systems::feature {
 namespace {
     void validateNavigationMenu(const FeatureNavigationMenu& menu)
     {
-        if (menu.id.empty() || menu.id.find('/') != std::string::npos || menu.title.empty())
-            throw std::invalid_argument("FeatureSystem: navigation menu requires an id without '/' and a title");
+        if (menu.id.empty() || menu.id.find('/') != std::string::npos || menu.title.empty() || !std::isfinite(menu.order))
+            throw std::invalid_argument("FeatureSystem: navigation menu requires an id without '/', title and finite order");
     }
 
     bool hasNavigationMenu(const std::vector<FeatureNavigationMenu>& menus, const std::string& id)
@@ -35,7 +36,7 @@ namespace {
     {
         if (!hasNavigationMenu(menus, group.menu_id))
             throw std::invalid_argument("FeatureSystem: navigation group references an unregistered menu: " + group.menu_id);
-        if (group.id.empty() != group.title.empty() || group.id.find('/') != std::string::npos || group.id == "default")
+        if (group.id.empty() != group.title.empty() || group.id.find('/') != std::string::npos || group.id == "default" || !std::isfinite(group.order))
             throw std::invalid_argument("FeatureSystem: navigation group requires an id without '/' and title; default is reserved for the ungrouped region");
     }
 
@@ -49,6 +50,8 @@ namespace {
                     return group.menu_id == entry.menu_id && group.id == entry.group_id;
                 }))
                 throw std::invalid_argument("FeatureSystem: navigation entry references an unregistered group: " + entry.group_id);
+            if (!std::isfinite(entry.order))
+                throw std::invalid_argument("FeatureSystem: navigation entry order must be finite");
         }
     }
 }

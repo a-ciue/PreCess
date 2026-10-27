@@ -7,6 +7,7 @@
 #include "FeatureSystem.h"
 #include "ModelLayer.h"
 #include <catch2/catch_test_macros.hpp>
+#include <limits>
 #include <stdexcept>
 #include <type_traits>
 #include <utility>
@@ -62,12 +63,12 @@ TEST_CASE("Navigation declarations maintain valid unique categories during setup
     navigation.addEntry({ "", "Missing id", "", 0 });
     navigation.addEntry({ "analysis", "", "", 0 });
     CHECK(navigation.entries().empty());
-    const FeatureNavigationEntry category { "analysis", "Analysis", "qrc:/analysis.svg", 1, "simulation", "solvers" };
+    const FeatureNavigationEntry category { "analysis", "Analysis", "qrc:/analysis.svg", 1.5, "simulation", "solvers" };
     navigation.addEntry(category);
     navigation.addEntry({ "analysis", "Duplicate", "", 2, "other" });
     navigation.setLabel("Steady solver");
     navigation.setIcon("qrc:/solver.svg");
-    navigation.setOrder(3);
+    navigation.setOrder(3.25);
     navigation.setEntryDefault("analysis", "iterations", "10");
     navigation.setEntryDefault("analysis", "iterations", "20");
 
@@ -80,7 +81,7 @@ TEST_CASE("Navigation declarations maintain valid unique categories during setup
     CHECK(declaration.entries() == std::vector<FeatureNavigationEntry> { category });
     CHECK(declaration.label() == "Steady solver");
     CHECK(declaration.icon() == "qrc:/solver.svg");
-    CHECK(declaration.order() == 3);
+    CHECK(declaration.order() == 3.25);
     CHECK(declaration.entryDefaults().at("analysis").at("iterations") == "20");
     auto category_ids = declaration.entryIds();
     category_ids.clear();
@@ -113,7 +114,7 @@ TEST_CASE("Host entries persist independently of plugins", "[FeatureSystem][navi
     core::EventBus events;
     FeatureSystem features(model, events);
     registerTestParents(features);
-    const FeatureNavigationEntry host { "analysis", "Analysis", "qrc:/analysis.svg", 1, "simulation", "solvers" };
+    const FeatureNavigationEntry host { "analysis", "Analysis", "qrc:/analysis.svg", 1.5, "simulation", "solvers" };
     features.setNavigationEntries({ host });
     CHECK(features.getNavigationEntries() == std::vector<FeatureNavigationEntry> { host });
     REQUIRE(features.registerHandler({ .name = "ordinary" }, mesher({})));
@@ -149,14 +150,14 @@ TEST_CASE("Shared entry providers remain deterministic with explicit parent refe
     CHECK(features.getNavigationEntries() == std::vector<FeatureNavigationEntry> { first });
 }
 
-TEST_CASE("Entries sort by declared order then stable identity across parents", "[FeatureSystem][navigation]")
+TEST_CASE("Entries sort by fractional order then stable identity across parents", "[FeatureSystem][navigation]")
 {
     ModelLayer model;
     core::EventBus events;
     FeatureSystem features(model, events);
-    const FeatureNavigationEntry first { "z", "First", "", -20, "tools" };
-    const FeatureNavigationEntry second { "a", "Second", "", -10, "simulation", "solvers" };
-    const FeatureNavigationEntry third { "b", "Third", "", -10, "extensions" };
+    const FeatureNavigationEntry first { "z", "First", "", -10.75, "tools" };
+    const FeatureNavigationEntry second { "a", "Second", "", -10.25, "simulation", "solvers" };
+    const FeatureNavigationEntry third { "b", "Third", "", -10.25, "extensions" };
     REQUIRE(features.registerHandler({ .name = "mesher" }, mesher({ third, second, first })));
     CHECK(features.getNavigationEntries() == std::vector<FeatureNavigationEntry> { first, second, third });
 }
@@ -234,22 +235,22 @@ TEST_CASE("Entry and subfeature order merges retain host and provider priority",
     FeatureSystem features(model, events);
     int changes = 0;
     features.setOnFeatureInfosChanged([&] { ++changes; });
-    const auto install = [&](const std::string& name, int value) {
+    const auto install = [&](const std::string& name, double value) {
         auto handler = std::make_unique<Mesher>();
         handler->orders = { { "group:mesh/default", "category:quad", value }, { "entry:quad", "shared", value } };
         REQUIRE(features.registerHandler({ .name = name }, FeatureSystem::SystemHandlerPtr { handler.release() }));
     };
     install("z", 90);
-    install("a", 10);
-    const std::vector<FeatureNavigationOrder> expected { { "entry:quad", "shared", 10 }, { "group:mesh/default", "category:quad", 10 } };
+    install("a", 10.25);
+    const std::vector<FeatureNavigationOrder> expected { { "entry:quad", "shared", 10.25 }, { "group:mesh/default", "category:quad", 10.25 } };
     CHECK(features.getNavigationOrder() == expected);
     features.unregisterHandler({ .name = "a" });
     features.unregisterHandler({ .name = "z" });
-    install("a", 10);
+    install("a", 10.25);
     install("z", 90);
     CHECK(features.getNavigationOrder() == expected);
     features.setNavigationOrder({ { "group:mesh/default", "category:quad", 0 }, { "group:mesh/default", "category:quad", 100 }, { "", "", -1 } });
-    CHECK(features.getNavigationOrder() == std::vector<FeatureNavigationOrder> { { "entry:quad", "shared", 10 }, { "group:mesh/default", "category:quad", 0 } });
+    CHECK(features.getNavigationOrder() == std::vector<FeatureNavigationOrder> { { "entry:quad", "shared", 10.25 }, { "group:mesh/default", "category:quad", 0 } });
     const auto before = changes;
     features.setNavigationOrder({ { "group:mesh/default", "category:quad", 0 } });
     CHECK(changes == before);
@@ -275,16 +276,16 @@ TEST_CASE("Navigation menus and groups keep first successful definitions and sco
     features.setOnFeatureInfosChanged([&] { ++changes; });
     CHECK(FeatureNavigationMenu {}.order == 1000);
     CHECK(FeatureNavigationGroup {}.order == 0);
-    REQUIRE(features.tryRegisterNavigationMenu({ "geometry", "几何", 50 }));
+    REQUIRE(features.tryRegisterNavigationMenu({ "geometry", "几何", 50.5 }));
     CHECK_FALSE(features.tryRegisterNavigationMenu({ "geometry", "Replacement", -1 }));
-    REQUIRE(features.tryRegisterNavigationMenu({ "analysis", "Analysis", 50 }));
+    REQUIRE(features.tryRegisterNavigationMenu({ "analysis", "Analysis", 50.5 }));
     REQUIRE(features.tryRegisterNavigationGroup({ "geometry", "repair", "修复", 30 }));
     CHECK_FALSE(features.tryRegisterNavigationGroup({ "geometry", "repair", "Replacement", -1 }));
     REQUIRE(features.tryRegisterNavigationGroup({ "analysis", "repair", "Analysis repair", 30 }));
     REQUIRE(features.tryRegisterNavigationGroup({ "geometry", "", "", 10 }));
     REQUIRE(features.tryRegisterNavigationGroup({ "geometry", "topology", "拓扑", 20 }));
     CHECK(changes == 6);
-    CHECK(features.getNavigationMenus() == std::vector<FeatureNavigationMenu> { { "analysis", "Analysis", 50 }, { "geometry", "几何", 50 } });
+    CHECK(features.getNavigationMenus() == std::vector<FeatureNavigationMenu> { { "analysis", "Analysis", 50.5 }, { "geometry", "几何", 50.5 } });
     CHECK(features.getNavigationGroups() == std::vector<FeatureNavigationGroup> { { "analysis", "repair", "Analysis repair", 30 }, { "geometry", "", "", 10 }, { "geometry", "topology", "拓扑", 20 }, { "geometry", "repair", "修复", 30 } });
     auto plugin = std::make_unique<Mesher>();
     plugin->menus = { { "geometry", "Plugin geometry", -100 } };
@@ -385,6 +386,7 @@ TEST_CASE("Direct parent registration validates definitions and respects model o
     CHECK_THROWS_AS(features.tryRegisterNavigationMenu({ "", "No id" }), std::invalid_argument);
     CHECK_THROWS_AS(features.tryRegisterNavigationMenu({ "empty", "" }), std::invalid_argument);
     CHECK_THROWS_AS(features.tryRegisterNavigationMenu({ "geometry/repair", "Invalid identity" }), std::invalid_argument);
+    CHECK_THROWS_AS(features.tryRegisterNavigationMenu({ "nan", "NaN", std::numeric_limits<double>::quiet_NaN() }), std::invalid_argument);
     CHECK_THROWS_AS(features.tryRegisterNavigationGroup({ "missing", "group", "Group" }), std::invalid_argument);
     REQUIRE(features.tryRegisterNavigationMenu({ "geometry", "Geometry/Build", 50 }));
     CHECK(features.getNavigationMenus().front().title == "Geometry/Build");

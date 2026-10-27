@@ -13,7 +13,7 @@ namespace systems::feature {
 struct FeatureNavigationMenu {
     std::string id;
     std::string title;
-    int order { 1000 };
+    double order { 1000 };
     bool operator==(const FeatureNavigationMenu&) const = default;
 };
 /** @brief 菜单内的分组；空 id 和空标题共同表示未分组区域的布局。 */
@@ -21,14 +21,14 @@ struct FeatureNavigationGroup {
     std::string menu_id;
     std::string id;
     std::string title;
-    int order { 0 };
+    double order { 0 };
     bool operator==(const FeatureNavigationGroup&) const = default;
 };
 /** @brief 同一分组内入口或同一入口内子功能的排序覆盖，id 不使用翻译后的标题。 */
 struct FeatureNavigationOrder {
     std::string parent;
     std::string id;
-    int order { 0 };
+    double order { 0 };
     bool operator==(const FeatureNavigationOrder&) const = default;
 };
 /** @brief 一个功能图标入口；不同功能声明相同 id 时成为该入口的子功能。 */
@@ -36,7 +36,7 @@ struct FeatureNavigationEntry {
     std::string id; //> 稳定身份，不从标题或图标推断
     std::string title;
     std::string icon;
-    int order { 0 };
+    double order { 0 };
     std::string menu_id; //> 必填，引用独立注册的菜单
     std::string group_id; //> 可选，空值表示菜单内的未分组区域
     bool operator==(const FeatureNavigationEntry&) const = default;
@@ -68,8 +68,8 @@ public:
     /** @brief 子功能标题；空时使用功能 display_name，不覆盖入口标题。 */
     void setLabel(std::string label) { label_ = std::move(label); }
     void setIcon(std::string icon) { icon_ = std::move(icon); }
-    /** @brief 子功能在入口内的排序；入口排序由 addEntry 的描述指定。 */
-    void setOrder(int order) { order_ = order; }
+    /** @brief 子功能在入口内的排序，支持小数插入；入口排序由 addEntry 的描述指定。 */
+    void setOrder(double order) { order_ = order; }
     /** @brief 按入口声明参数默认值，Combo 使用选项索引的字符串。 */
     void setEntryDefault(std::string entry, std::string parameter, std::string value)
     {
@@ -86,14 +86,14 @@ public:
     const std::vector<FeatureNavigationEntry>& entries() const noexcept { return entries_; }
     const std::string& label() const noexcept { return label_; }
     const std::string& icon() const noexcept { return icon_; }
-    int order() const noexcept { return order_; }
+    double order() const noexcept { return order_; }
     const std::map<std::string, std::map<std::string, std::string>>& entryDefaults() const noexcept { return entry_defaults_; }
 
 private:
     std::vector<FeatureNavigationEntry> entries_;
     std::vector<FeatureNavigationOrder> orders_;
     std::string icon_;
-    int order_ { 0 };
+    double order_ { 0 };
     std::string label_;
     std::map<std::string, std::map<std::string, std::string>> entry_defaults_;
 };

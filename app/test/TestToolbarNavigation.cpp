@@ -60,7 +60,7 @@ class NavigationTestInfo : public QFeatureInfo {
 public:
     NavigationTestInfo(QString name, QString display_name, QString description, QList<QArgType*> args,
         QObject* parent = nullptr, QStringList categories = {}, QString icon = {},
-        int order = 0, QString label = {}, QVariantMap defaults = {})
+        double order = 0, QString label = {}, QVariantMap defaults = {})
         : QFeatureInfo(std::move(name), std::move(display_name), std::move(description), std::move(icon),
               std::move(args), false, parent, std::move(categories), order, std::move(label), std::move(defaults))
     {
@@ -1277,7 +1277,7 @@ TEST_CASE("Non-mesh feature entries handle zero one and multiple children across
     QModelManager::argv0 = executable;
     class CategoryHandler : public systems::feature::FeatureHandler {
     public:
-        CategoryHandler(systems::feature::FeatureNavigationEntry category, int order, int& activations, int& deactivations)
+        CategoryHandler(systems::feature::FeatureNavigationEntry category, double order, int& activations, int& deactivations)
             : category_(std::move(category))
             , order_(order)
             , activations_(activations)
@@ -1306,7 +1306,7 @@ TEST_CASE("Non-mesh feature entries handle zero one and multiple children across
 
     private:
         systems::feature::FeatureNavigationEntry category_;
-        int order_;
+        double order_;
         int& activations_;
         int& deactivations_;
     };
@@ -1436,7 +1436,7 @@ TEST_CASE("Non-mesh feature entries handle zero one and multiple children across
     CHECK_FALSE(selector->isVisible());
     int activations = 0;
     int deactivations = 0;
-    const auto install = [&](const auto& metadata, const auto& declaration, int order) {
+    const auto install = [&](const auto& metadata, const auto& declaration, double order) {
         return system.registerHandler(metadata, systems::feature::FeatureSystem::SystemHandlerPtr { std::make_unique<CategoryHandler>(declaration, order, activations, deactivations).release() });
     };
     // 后装单个子功能直接进入参数；最后提供者卸载后保留显式声明的入口。
@@ -1455,11 +1455,11 @@ TEST_CASE("Non-mesh feature entries handle zero one and multiple children across
     CHECK(session->property("parameterModel").value<QObject*>()->property("values").value<QJSValue>().property("length").toInt() == 0);
     checkOperationButtonsAtBottom(sidebar_item);
     const systems::feature::FeatureNavigationEntry category {
-        "repair", "曲面修复", "qrc:/images/toolbar/Mesh/hexa-meshing.svg", 5, "geometry", "repair"
+        "repair", "曲面修复", "qrc:/images/toolbar/Mesh/hexa-meshing.svg", 5.5, "geometry", "repair"
     };
     const systems::feature::HandlerMetaData first { .name = "first", .display_name = "first" };
     const systems::feature::HandlerMetaData second { .name = "second", .display_name = "second" };
-    REQUIRE(install(first, category, 10));
+    REQUIRE(install(first, category, 10.25));
     settle();
     auto* button = findItem(item, "featureEntry_category:repair");
     REQUIRE(button);
@@ -1477,9 +1477,10 @@ TEST_CASE("Non-mesh feature entries handle zero one and multiple children across
     REQUIRE(selection);
     selection->setProperty("listeningSelectorIndex", 0);
     const int single_activations = activations;
-    REQUIRE(install(second, category, 20));
+    REQUIRE(install(second, category, 10.75));
     settle();
     CHECK(adaptor.getNavigationEntries().size() == 2);
+    CHECK(adaptor.getNavigationEntries().front().toMap().value("order").toDouble() == 5.5);
     CHECK(session->property("subFeatures").value<QJSValue>().property("length").toInt() == 2);
     CHECK(session->property("panelTitle").toString() == "操作面板 - 曲面修复");
     CHECK(selector->isVisible());
@@ -1487,8 +1488,9 @@ TEST_CASE("Non-mesh feature entries handle zero one and multiple children across
     CHECK(activations == single_activations);
     CHECK(parameters->property("values").value<QJSValue>().property(0).toNumber() == 9.0);
     CHECK(selection->property("listeningSelectorIndex").toInt() == 0);
+    CHECK(app->property("activeOperation").value<QJSValue>().property("info").property("order").toNumber() == 10.25);
     // 下拉列表重排后按功能名保留选择，不重进功能、不清空参数或选择监听。
-    system.setNavigationOrder({ { "entry:repair", "second", -10 } });
+    system.setNavigationOrder({ { "entry:repair", "second", 10.125 } });
     settle();
     CHECK(session->property("subFeatures").value<QJSValue>().property(0).property("name").toString() == "second");
     CHECK(app->property("activeOperation").value<QJSValue>().property("info").property("name").toString() == "first");
@@ -1546,7 +1548,7 @@ TEST_CASE("Non-mesh feature entries handle zero one and multiple children across
     CHECK(parameters->property("values").value<QJSValue>().property(0).toNumber() == 9.0);
     CHECK(selection->property("listeningSelectorIndex").toInt() == 0);
     CHECK(activations == before_refresh + 1);
-    REQUIRE(install(second, category, 20));
+    REQUIRE(install(second, category, 10.75));
     settle();
     // 当前子功能退出后改选仍在的提供者；最后一个退出后清理整个临时入口。
     system.unregisterHandler(first);

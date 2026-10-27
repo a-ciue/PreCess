@@ -1,6 +1,6 @@
 # 导航注册与排序声明
 
-顶部菜单、分组、功能入口和下拉子功能按同一父节点内的 `order` 升序排列；相同时按稳定 ID 的字典序排列。标题仅用于显示，不参与身份或排序判断。
+顶部菜单、分组、功能入口和下拉子功能按同一父节点内的 `order` 升序排列；相同时按稳定 ID 的字典序排列。`order` 使用 `double`，可用 `10.5` 等小数在已有顺序码之间插入。标题仅用于显示，不参与身份或排序判断。
 
 ## 菜单、分组与入口
 
@@ -14,10 +14,10 @@
 registrar.addNavigationMenu({ "mesh-generation", "网格生成算法", 30 });
 registrar.addNavigationGroup({ "mesh-generation", "surface", "曲面", 10 });
 auto& navigation = registrar.navigation();
-navigation.addEntry({ "quadrilateral", "四边形网格生成", "", 20,
+navigation.addEntry({ "quadrilateral", "四边形网格生成", "", 20.5,
     "mesh-generation", "surface" });
 navigation.setLabel("四边形方法");
-navigation.setOrder(10);
+navigation.setOrder(10.5);
 navigation.addOrder({ "group:mesh-generation/surface", "category:quadrilateral", 20 });
 navigation.addOrder({ "entry:quadrilateral", "MyQuadFeature", 10 });
 ```
