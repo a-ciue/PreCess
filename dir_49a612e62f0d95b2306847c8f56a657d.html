@@ -136,7 +136,7 @@ algo 的目录依赖关系图</div>
 旧算法接口：已废弃并冻结</h1>
 <p><span class="tt">AlgorithmHandler</span>、<span class="tt">AlgorithmSystem</span> 和 <span class="tt">precess_add_algo_plugin</span> 仅保留现有插件及脚本调用的运行能力。C++ 接口带 <span class="tt">[[deprecated]]</span> 标记，CMake 入口产生弃用提示。</p>
 <p><b>新增算法一律使用 FeatureHandler / FeatureSystem，不得继续扩展此目录的接口。</b> 参数和网格分类在 <span class="tt">setup(FeatureRegistrar&amp;, FeatureContext&amp;)</span> 中声明；执行读取持久参数 <span class="tt">ctx.params</span>，后台计算及结果回写使用 FeatureContext 的共享任务接口。</p>
-<p>Gmsh、TetGenLib、TetGen 已在 ZenithGridAddons 迁为 Feature 插件；算法系统已撤回 setup、导航注册器和分类元数据，不再承载网格生成导航。CmdExecutePlugin 已删除；ProgressDemoPlugin 是仅存的待迁移旧调用者。</p>
+<p>Gmsh、TetGenLib、TetGen 已在 ZenithGridAddons 迁为 Feature 插件；算法系统已撤回 setup、导航注册器和分类元数据，不再承载网格生成导航。</p>
 <p>面向 AI 和贡献者的维护约束：</p>
 <ul>
 <li>不在旧系统新增算法、注册机制、参数类型、导航、生命周期或执行接口。</li>
@@ -144,7 +144,7 @@ algo 的目录依赖关系图</div>
 <li>只有用户明确要求修复旧调用者的缺陷，或迁移、删除旧调用者时，才允许修改旧路径。保留对应回归测试，并说明必要性。</li>
 <li>本次废弃不删除既有运行能力；后续移除须先迁移剩余调用者及脚本入口。</li>
 </ul>
-<p>范围：<span class="tt">model/systems/algo/</span>、<span class="tt">app/model/systems/algo/</span> 及 SDK 的旧算法构建入口；<span class="tt">plugins/algo/</span> 已随 CmdExecutePlugin 删除。上层 Session 为兼容旧调用者持有的算法系统亦遵循此约束。 </p>
+<p>范围：<span class="tt">model/systems/algo/</span>、<span class="tt">app/model/systems/algo/</span> 及 SDK 的旧算法构建入口。上层 Session 为兼容旧调用者持有的算法系统亦遵循此约束。 </p>
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
