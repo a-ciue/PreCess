@@ -53,7 +53,7 @@
 - `plugins/`：项目内产品插件，依赖 `model/systems`、`model/data`、`core`，随主工程构建，不依赖 `app`。
 - `examples/`：同时支持随主程序构建和 SDK 独立构建的示例，源码及测试随 SDK 分发；主工程通过 `PRECESS_BUILD_EXAMPLES` 决定是否构建。
 - `python/`：precess Python 绑定模块（pyd）与内嵌解释器宿主 `python::Runtime`（LGPLv3，无 Qt；依赖 `model/session`）。
-  - `plugins/algo/`、`plugins/edit/`：已废弃的旧算法/编辑插件，仅保留已有调用者；`plugins/io/`：模型 IO 插件；`plugins/feature/`：功能插件（`FeatureHandler`，json 的 `system` 字段为 `FeatureSystem`）。
+  - `plugins/edit/`：已废弃的旧编辑插件，仅保留已有调用者；`plugins/io/`：模型 IO 插件；`plugins/feature/`：功能插件（`FeatureHandler`，json 的 `system` 字段为 `FeatureSystem`）。
 
 **依赖速记**：`app → model → core`；`plugins → model + core`；QML 只调依赖包功能、不写主业务逻辑。
 
