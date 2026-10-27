@@ -18,8 +18,6 @@ navigation.addEntry({ "quadrilateral", "四边形网格生成", "", 20.5,
     "mesh-generation", "surface" });
 navigation.setLabel("四边形方法");
 navigation.setOrder(10.5);
-navigation.addOrder({ "group:mesh-generation/surface", "category:quadrilateral", 20 });
-navigation.addOrder({ "entry:quadrilateral", "MyQuadFeature", 10 });
 ```
 
 `FeatureRegistrar` 是临时收集器；`setup`、参数准备和父节点引用验证成功后，系统才接纳本次菜单、分组及功能，并统一通知界面刷新。失败注册不保留本次父节点定义。
@@ -37,7 +35,15 @@ navigation.addOrder({ "entry:quadrilateral", "MyQuadFeature", 10 });
 | 分组内图标 | `group:<菜单ID>/<分组ID>` | `category:<入口ID>`，默认未归类功能为 `feature:<功能内部名称>` |
 | 入口内下拉子功能 | `entry:<入口ID>` | 功能内部名称 |
 
-无分组入口在展示数据中使用 `default` 分组，因此对应覆盖规则为 `group:<菜单ID>/default`。入口的 `order` 是图标的默认顺序；`navigation.setOrder(...)` 是该功能在所有入口内的默认顺序。覆盖仅改变展示，同一功能在不同入口里的顺序可以不同。
+无分组入口在展示数据中使用 `default` 分组，因此对应覆盖规则为 `group:<菜单ID>/default`。普通用法直接在菜单、分组、入口的声明中填写顺序，并用 `navigation.setOrder(...)` 设置该功能在所有入口内的默认顺序，不需要再对同一顺序添加覆盖。
+
+需要特殊排序时才声明覆盖。例如，注册名为 `MyQuadFeature` 的功能同时关联 `quadrilateral` 和 `triangle` 入口，若只需调整它在 `triangle` 内的位置，可在该功能的 `setup` 中调用：
+
+```cpp
+navigation.addOrder({ "entry:triangle", "MyQuadFeature", -10 });
+```
+
+覆盖仅改变展示，功能在其他入口继续使用默认顺序。宿主需要固定产品布局时，可通过 `FeatureSystem::setNavigationOrder(...)` 提供入口或子功能的完整覆盖列表。
 
 入口、子功能的排序覆盖仍为宿主优先；多个插件声明相同父子节点时，取功能内部名称字典序最小者。单个来源重复声明保留首项，空子项 ID 被忽略，显式 `0` 是有效覆盖。未知排序目标不会创建空菜单，只在目标出现时生效；插件卸载后移除其覆盖，宿主覆盖继续保留。
 
@@ -45,7 +51,7 @@ navigation.addOrder({ "entry:quadrilateral", "MyQuadFeature", 10 });
 
 产品默认布局位于 `app/model/QModelManager.cpp`：文件 `10`、编辑 `20`、网格生成 `30`、其他算法 `40`、几何 `50`、工具 `60`、示例 `70`、功能 `80`、视图 `10000`。几何菜单内仍为未分组区域 `10`、拓扑 `20`、修复 `30`。应用可注册 `{ "geometry", "", "", 10 }` 的无标题分组布局，插件入口继续省略 `group_id`，无需声明名为 `default` 的分组。
 
-宿主继续通过 `setNavigationEntries(...)` 声明四类常驻网格入口；没有功能实现时显示空态并禁用执行。四边形入口内的 Ricci 流方法仍由入口内排序规则优先显示。未声明入口的功能仍归入默认“功能”菜单。
+宿主继续通过 `setNavigationEntries(...)` 声明四类常驻网格入口；没有功能实现时显示空态并禁用执行。未声明入口的功能仍归入默认“功能”菜单。
 
 C++ 入口和 QML 展示数据均不使用 `menu_path`。`QFeatureSystemAdaptor` 根据注册定义输出 `menu_id`、`group_id` 和独立的 `menu_title`、`group_title`，标题中的 `/` 按普通字符处理。导航脚本将空 `group_id` 映射为未分组的 `default` 区域；未声明入口的功能生成入口时使用默认菜单 ID `features` 和标题“功能”；与正式 `features` 入口混合时，菜单显示标题沿用先聚合的正式入口。父节点顺序转换成现有 `navigationOrder` 格式；展示数据由注册定义派生，不额外保存可修改的父节点配置。
 

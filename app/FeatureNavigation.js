@@ -104,7 +104,7 @@ function buildMenus(entries, orders) {
 // 页面索引仅定位内容，不参与显示顺序；内置菜单和插件菜单使用相同排序规则。
 function buildTabs(menus, builtins, pageStart, orders) {
     const tabs = builtins.map(tab => Object.assign({}, tab, {
-        order: orderFor(orders, "", tab.id, tab.order)
+        order: orderFor(orders, "", tab.id, 1000)
     }))
     for (let index = 0; index < menus.length; ++index) {
         const menu = menus[index]

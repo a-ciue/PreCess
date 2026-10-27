@@ -14,6 +14,8 @@
 #include <QUrl>
 #include <filesystem>
 #include <spdlog/spdlog.h>
+#include <string>
+#include <utility>
 #include <vector>
 
 QModelManager::QModelManager(std::string_view argv0, QObject* parent)
@@ -37,17 +39,20 @@ QModelManager::QModelManager(std::string_view argv0, QObject* parent)
     features.tryRegisterNavigationGroup({ "geometry", "topology", "拓扑", 20 });
     features.tryRegisterNavigationGroup({ "geometry", "repair", "修复", 30 });
 
-    // 无实现时仍显示空态，通用功能系统不内置网格类别。
-    features.setNavigationEntries({ { "triangle", "三角形网格生成", "qrc:/images/toolbar/Mesh/triangle-meshing.svg", 10, "mesh-generation" },
+    // 无实现时仍显示空态；排序覆盖取自宿主原始定义，避免插件提供者改变产品顺序。
+    const std::vector<systems::feature::FeatureNavigationEntry> builtin_entries {
+        { "triangle", "三角形网格生成", "qrc:/images/toolbar/Mesh/triangle-meshing.svg", 10, "mesh-generation" },
         { "quadrilateral", "四边形网格生成", "qrc:/images/toolbar/Mesh/quad-meshing.svg", 20, "mesh-generation" },
         { "tetrahedron", "四面体网格生成", "qrc:/images/toolbar/Algorithm/tetgen.svg", 30, "mesh-generation" },
-        { "hexahedron", "六面体网格生成", "qrc:/images/toolbar/Mesh/hexa-meshing.svg", 40, "mesh-generation" } });
-
-    features.setNavigationOrder({ { "group:mesh-generation/default", "category:triangle", 10 },
-        { "group:mesh-generation/default", "category:quadrilateral", 20 },
-        { "group:mesh-generation/default", "category:tetrahedron", 30 },
-        { "group:mesh-generation/default", "category:hexahedron", 40 },
-        { "entry:quadrilateral", "RicciFlowPlugin", -100 } });
+        { "hexahedron", "六面体网格生成", "qrc:/images/toolbar/Mesh/hexa-meshing.svg", 40, "mesh-generation" }
+    };
+    features.setNavigationEntries(builtin_entries);
+    std::vector<systems::feature::FeatureNavigationOrder> builtin_orders;
+    for (const auto& entry : builtin_entries) {
+        const auto group_id = entry.group_id.empty() ? std::string { "default" } : entry.group_id;
+        builtin_orders.push_back({ "group:" + entry.menu_id + "/" + group_id, "category:" + entry.id, entry.order });
+    }
+    features.setNavigationOrder(std::move(builtin_orders));
 
     query_ = std::make_unique<QModelQuery>(&session_->query(), this);
 

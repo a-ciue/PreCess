@@ -42,6 +42,7 @@
 #include <TopoDS_Shape.hxx>
 #include <catch2/catch_test_macros.hpp>
 #include <catch2/generators/catch_generators.hpp>
+#include <algorithm>
 #include <memory>
 #include <stdexcept>
 
@@ -445,9 +446,9 @@ TEST_CASE("Registered parents generate the existing QML layout without empty fea
         const entries = buildEntries([], definitions, rules);
         const menus = buildMenus(entries, rules);
         const tabs = buildTabs(menus, [
-            {id: "file", order: 10, pageIndex: 0},
-            {id: "edit", order: 20, pageIndex: 1},
-            {id: "view", order: 10000, pageIndex: -1, popup: true}
+            {id: "file", pageIndex: 0},
+            {id: "edit", pageIndex: 1},
+            {id: "view", pageIndex: -1, popup: true}
         ], 3, rules);
         ({ menus: menus.map(menu => menu.id).join(","),
            groups: menus[0].groups.map(group => group.id).join(","),
@@ -1336,6 +1337,10 @@ TEST_CASE("Non-mesh feature entries handle zero one and multiple children across
     systems::feature::FeatureSystem system(model, events);
     // 通用系统没有网格内置项；宿主显式声明需要长期保留的空父入口。
     CHECK(system.getNavigationEntries().empty());
+    REQUIRE(system.tryRegisterNavigationMenu({ "file", "文件", 10 }));
+    REQUIRE(system.tryRegisterNavigationMenu({ "edit", "编辑", 20 }));
+    REQUIRE(system.tryRegisterNavigationMenu({ "other-algorithms", "其他算法", 40 }));
+    REQUIRE(system.tryRegisterNavigationMenu({ "view", "视图", 10000 }));
     REQUIRE(system.tryRegisterNavigationMenu({ "geometry", "几何工具", 30 }));
     REQUIRE(system.tryRegisterNavigationGroup({ "geometry", "construction", "构造" }));
     const systems::feature::FeatureNavigationEntry construction {
@@ -1643,7 +1648,10 @@ TEST_CASE("Navigation sorts every sibling level with stable ids and scoped overr
     REQUIRE_FALSE(engine.evaluate(QString::fromUtf8(source.readAll()).remove(".pragma library")).isError());
     const auto result = engine.evaluate(R"JS(
         var rules = [
+            {parent: "", id: "file", order: 10},
             {parent: "", id: "mesh", order: 30},
+            {parent: "", id: "other-algorithms", order: 40},
+            {parent: "", id: "view", order: 10000},
             {parent: "menu:mesh", id: "basic", order: -1},
             {parent: "group:mesh/basic", id: "category:quad", order: -10},
             {parent: "entry:quad", id: "z", order: -1}
@@ -1662,9 +1670,9 @@ TEST_CASE("Navigation sorts every sibling level with stable ids and scoped overr
         var entries = buildEntries(children, declarations, rules);
         var menus = buildMenus(entries, rules);
         var tabs = buildTabs(menus, [
-            {id: "file", order: 10, pageIndex: 0},
-            {id: "view", order: 10000, pageIndex: -1},
-            {id: "other-algorithms", order: 40, pageIndex: 2}
+            {id: "file", pageIndex: 0},
+            {id: "view", pageIndex: -1, popup: true},
+            {id: "other-algorithms", pageIndex: 2}
         ], 3, rules);
         const renamed = declarations.map(entry => Object.assign({}, entry, {
             menu_title: entry.menu_title.replace("Renamed", "Translated"),
@@ -1703,9 +1711,86 @@ TEST_CASE("Navigation sorts every sibling level with stable ids and scoped overr
     CHECK(result.property("stable").toBool());
     // 显式零值覆盖和同序 ID 兜底，不依赖标题或输入顺序。
     CHECK(engine.evaluate(R"JS(orderFor([{parent:"",id:"x",order:0}], "", "x", 20))JS").toInt() == 0);
-    CHECK(engine.evaluate(R"JS(buildTabs([], [{id:"b",order:0},{id:"a",order:0}], 3, []).map(t=>t.id).join(","))JS").toString() == "a,b");
+    CHECK(engine.evaluate(R"JS(buildTabs([], [{id:"b"},{id:"a"}], 3, []).map(t=>t.id).join(","))JS").toString() == "a,b");
+    // 无产品定义时使用统一后备值，显式小数顺序仍有效。
+    const auto fallback = engine.evaluate(R"JS(
+        JSON.stringify(buildTabs([{id: "middle", name: "M", order: 999.5}], [
+            {id: "z", pageIndex: 0}, {id: "a", pageIndex: 1}, {id: "file", pageIndex: 2}
+        ], 3, [{parent: "", id: "file", order: 0.25}]).map(tab => [tab.id, tab.order]))
+    )JS");
+    REQUIRE_FALSE(fallback.isError());
+    CHECK(fallback.toString() == R"([["file",0.25],["middle",999.5],["a",1000],["z",1000]])");
 }
 
+TEST_CASE("Product mesh entries retain their order against conflicting plugin declarations", "[navigation][Qt][registry]")
+{
+    application();
+    QTemporaryDir directory;
+    REQUIRE(directory.isValid());
+    const auto executable = (directory.path() + "/isolated/Test.exe").toStdString();
+    QModelManager manager(executable);
+    auto* adaptor = manager.getFeatureSystemAdaptor();
+    auto& system = *adaptor->featureSystem();
+    const std::vector<std::pair<QString, double>> expected_menus {
+        { "file", 10 }, { "edit", 20 }, { "mesh-generation", 30 },
+        { "other-algorithms", 40 }, { "geometry", 50 }, { "tools", 60 },
+        { "examples", 70 }, { "features", 80 }, { "view", 10000 }
+    };
+    std::vector<std::pair<QString, double>> menu_orders;
+    for (const auto& value : adaptor->getNavigationOrder()) {
+        const auto rule = value.toMap();
+        if (rule.value("parent").toString().isEmpty())
+            menu_orders.emplace_back(rule.value("id").toString(), rule.value("order").toDouble());
+    }
+    CHECK(menu_orders == expected_menus);
+    QJSEngine engine;
+    QFile source(":/navigation-ui/FeatureNavigation.js");
+    REQUIRE(source.open(QIODevice::ReadOnly));
+    REQUIRE_FALSE(engine.evaluate(QString::fromUtf8(source.readAll()).remove(".pragma library")).isError());
+    const auto read_order = [&] {
+        engine.globalObject().setProperty("definitions", engine.toScriptValue(adaptor->getNavigationEntries()));
+        engine.globalObject().setProperty("rules", engine.toScriptValue(adaptor->getNavigationOrder()));
+        return engine.evaluate(R"JS(
+            buildMenus(buildEntries([], definitions, rules), rules)[0].groups[0].items
+                .map(entry => entry.categoryId).join(",")
+        )JS");
+    };
+    // 四个产品入口无实现时仍存在，且没有附带子功能。
+    REQUIRE(system.getFeatureInfos().empty());
+    REQUIRE(adaptor->getNavigationEntries().size() == 4);
+    auto result = read_order();
+    REQUIRE_FALSE(result.isError());
+    CHECK(result.toString() == "triangle,quadrilateral,tetrahedron,hexahedron");
+    auto counts = engine.evaluate("buildEntries([], definitions, rules).map(entry => entry.items.length).join(',')");
+    REQUIRE_FALSE(counts.isError());
+    CHECK(counts.toString() == "0,0,0,0");
+
+    class ConflictingMeshEntries : public systems::feature::FeatureHandler {
+    public:
+        void setup(systems::feature::FeatureRegistrar& reg, systems::feature::FeatureContext&) override
+        {
+            reg.addNavigationMenu({ "mesh-generation", "插件菜单", -50 });
+            for (const auto& [id, order] : std::vector<std::pair<std::string, double>> {
+                     { "triangle", 400.5 }, { "quadrilateral", 300.5 },
+                     { "tetrahedron", 200.5 }, { "hexahedron", 100.5 } }) {
+                reg.navigation().addEntry({ id, id, "", order, "mesh-generation" });
+                reg.navigation().addOrder({ "group:mesh-generation/default", "category:" + id, order });
+            }
+        }
+    };
+    const systems::feature::HandlerMetaData meta { .name = "conflicting-mesh-orders" };
+    REQUIRE(system.registerHandler(meta, systems::feature::FeatureSystem::SystemHandlerPtr { std::make_unique<ConflictingMeshEntries>().release() }));
+    const auto declarations = system.getNavigationEntries();
+    const auto triangle = std::find_if(declarations.begin(), declarations.end(), [](const auto& entry) {
+        return entry.id == "triangle";
+    });
+    REQUIRE(triangle != declarations.end());
+    CHECK(triangle->order == 400.5); // 插件声明已参与聚合；宿主覆盖仍决定展示顺序。
+    result = read_order();
+    REQUIRE_FALSE(result.isError());
+    CHECK(result.toString() == "triangle,quadrilateral,tetrahedron,hexahedron");
+    system.unregisterHandler(meta);
+}
 
 TEST_CASE("Synchronous feature failures are reported across the QML boundary and allow retry", "[feature][failure][Qt]")
 {

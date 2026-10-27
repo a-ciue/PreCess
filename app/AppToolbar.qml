@@ -94,7 +94,6 @@ ColumnLayout {
         App.activeOperation = {
             entryId: entry.id,
             categoryId: entry.categoryId,
-            categoryTitle: entry.title,
             isFeature: !!info,
             info: info,
             execute: info ? function () { return root.featureSystem.invoke(info.name) } : null
@@ -104,10 +103,10 @@ ColumnLayout {
     // 功能 ribbon 结构：[{ id, name, order, groups: [{ id, name, order, items: [入口对象] }] }]，由 rebuildFeatureMenus 维护
     property var featureMenus: []
     readonly property var navigationTabs: FeatureNavigation.buildTabs(root.featureMenus, [
-        {id: "file", name: qsTr("文件"), objectName: "fileCategory", pageIndex: 0, order: 10},
-        {id: "edit", name: qsTr("编辑"), objectName: "editCategory", pageIndex: 1, order: 20},
-        {id: "other-algorithms", name: qsTr("其他算法"), objectName: "otherAlgorithmTab", pageIndex: root.algorithmPageStart, order: 40},
-        {id: "view", name: qsTr("视图"), objectName: "viewCategory", pageIndex: -1, order: 10000, popup: true}
+        {id: "file", name: qsTr("文件"), objectName: "fileCategory", pageIndex: 0},
+        {id: "edit", name: qsTr("编辑"), objectName: "editCategory", pageIndex: 1},
+        {id: "other-algorithms", name: qsTr("其他算法"), objectName: "otherAlgorithmTab", pageIndex: root.algorithmPageStart},
+        {id: "view", name: qsTr("视图"), objectName: "viewCategory", pageIndex: -1, popup: true}
     ], root.featurePageStart, root.navigationOrder)
 
     // 普通单项与聚合入口共用菜单声明；注册变化后按菜单身份保持当前页。

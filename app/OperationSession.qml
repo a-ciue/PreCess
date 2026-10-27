@@ -95,7 +95,6 @@ QtObject {
             entryId: entry.id,
             isFeature: !!info,
             categoryId: entry.categoryId,
-            categoryTitle: entry.title,
             info: info,
             execute: info ? function () {
                 return root.featureSystem.invoke(info.name);
