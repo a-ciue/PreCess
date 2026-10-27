@@ -4,7 +4,7 @@
 
 **新增算法一律使用 FeatureHandler / FeatureSystem，不得继续扩展此目录的接口。** 参数和网格分类在 `setup(FeatureRegistrar&, FeatureContext&)` 中声明；执行读取持久参数 `ctx.params`，后台计算及结果回写使用 FeatureContext 的共享任务接口。
 
-Gmsh、TetGenLib、TetGen 已在 ZenithGridAddons 迁为 Feature 插件；算法系统已撤回 setup、导航注册器和分类元数据，不再承载网格生成导航。CmdExecutePlugin 与 ProgressDemoPlugin 仍是待迁移的旧调用者。
+Gmsh、TetGenLib、TetGen 已在 ZenithGridAddons 迁为 Feature 插件；算法系统已撤回 setup、导航注册器和分类元数据，不再承载网格生成导航。ProgressDemoPlugin 示例已删除；CmdExecutePlugin 是仅存的待迁移旧调用者。
 
 面向 AI 和贡献者的维护约束：
 
