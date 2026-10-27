@@ -111,32 +111,26 @@ ColumnLayout {
             const tab = {
                 name: menu.name,
                 objectName: "featureTab_" + menu.name,
-                pageIndex: root.featurePageStart + index,
-                count: menu.groups.reduce((total, group) => total + group.items.length, 0)
+                pageIndex: root.featurePageStart + index
             }
             if (root.leadingFeatureMenus.indexOf(menu.name) >= 0)
                 leading.push(tab)
             else
                 trailing.push(tab)
         }
-        // 空菜单不做可视化：页签携带内容计数并统一过滤；页面索引保持不变，页签隐藏即不可达。
-        const all = leading.concat([{
+        // 无旧算法时隐藏页签；页面索引保持不变，页签隐藏即不可达。
+        const algorithmTabs = root.algorithmInfos.length > 0 ? [{
             name: qsTr("其他算法"),
             objectName: "otherAlgorithmTab",
-            pageIndex: root.algorithmPageStart,
-            count: root.algorithmInfos.length
-        }], trailing)
-        return all.filter(tab => tab.count > 0)
+            pageIndex: root.algorithmPageStart
+        }] : []
+        return leading.concat(algorithmTabs, trailing)
     }
 
-    // 停留在被隐藏的页时收起 ribbon（幂等状态应用）。
-    onNavigationTabsChanged: {
-        if (root.activeCategory < root.algorithmPageStart)
-            return
-        const visible = root.navigationTabs.some(tab => tab.pageIndex === root.activeCategory)
-        if (!visible)
-            root.activeCategory = -1
-    }
+    // 算法清空后收起正停留的其他算法页（幂等状态应用）。
+    onAlgorithmInfosChanged: if (root.algorithmInfos.length === 0
+        && root.activeCategory === root.algorithmPageStart)
+        root.activeCategory = -1
 
     // 普通单项与聚合入口共用菜单声明；注册变化后按菜单身份保持当前页。
     function rebuildFeatureMenus() {
