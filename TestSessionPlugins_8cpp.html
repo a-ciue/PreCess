@@ -317,36 +317,14 @@ TestSessionPlugins.cpp 的引用(Include)关系图:</div>
 函数</h2></td></tr>
 <tr class="memitem:a2f04f09c1df30c726ba91f7812dbb174" id="r_a2f04f09c1df30c726ba91f7812dbb174"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a2f04f09c1df30c726ba91f7812dbb174">TEST_CASE</a> (&quot;Session loads plugins and registers feature infos&quot;, &quot;[session][plugins]&quot;)</td></tr>
 <tr class="memitem:a1c0a1f38a6c6eaab143f7d2276677991" id="r_a1c0a1f38a6c6eaab143f7d2276677991"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a1c0a1f38a6c6eaab143f7d2276677991">TEST_CASE</a> (&quot;Busy plugin unload keeps feature or IO registration until a successful retry&quot;, &quot;[session][plugins][job]&quot;)</td></tr>
-<tr class="memitem:aa4d20d0e7291e107beaff5fc75c5e6b8" id="r_aa4d20d0e7291e107beaff5fc75c5e6b8"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#aa4d20d0e7291e107beaff5fc75c5e6b8">TEST_CASE</a> (&quot;Algorithm plugins ignore obsolete navigation sidecars&quot;, &quot;[session][plugins][navigation]&quot;)</td></tr>
 <tr class="memitem:af039a8a29fe32fe50dd9d4225aa98ba6" id="r_af039a8a29fe32fe50dd9d4225aa98ba6"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#af039a8a29fe32fe50dd9d4225aa98ba6">TEST_CASE</a> (&quot;Binary feature setup supplies navigation and survives reload&quot;, &quot;[session][plugins][setup][navigation]&quot;)</td></tr>
 </table>
 <a name="details" id="details"></a><h2 id="header-details" class="groupheader">详细描述</h2>
 <div class="textblock"><p><a class="el" href="classsession_1_1Session.html">Session</a> 插件装载冒烟测试：动态插件注册与功能信息（Qt 插件机制，需 QCoreApplication） </p>
 <p>插件目录经编译期宏 PRECESS_PLUGIN_DIR 注入（构建树 plugins 目录）， 用以验证 <a class="el" href="classsession_1_1Session.html">Session</a> 的系统装配与插件注册链路端到端可用。 </p>
 </div><a name="doc-func-members" id="doc-func-members"></a><h2 id="header-doc-func-members" class="groupheader">函数说明</h2>
-<a id="aa4d20d0e7291e107beaff5fc75c5e6b8" name="aa4d20d0e7291e107beaff5fc75c5e6b8"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#aa4d20d0e7291e107beaff5fc75c5e6b8">&#9670;&#160;</a></span>TEST_CASE() <span class="overload">[1/4]</span></h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">TEST_CASE </td>
-          <td>(</td>
-          <td class="paramtype">&quot;Algorithm plugins ignore obsolete navigation sidecars&quot;</td>          <td class="paramname"><span class="paramname"><em></em></span>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">&quot;&quot;</td>          <td class="paramname"><span class="paramname"><em></em></span>[session][plugins][navigation]&#160;)</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
 <a id="af039a8a29fe32fe50dd9d4225aa98ba6" name="af039a8a29fe32fe50dd9d4225aa98ba6"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#af039a8a29fe32fe50dd9d4225aa98ba6">&#9670;&#160;</a></span>TEST_CASE() <span class="overload">[2/4]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#af039a8a29fe32fe50dd9d4225aa98ba6">&#9670;&#160;</a></span>TEST_CASE() <span class="overload">[1/3]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -367,7 +345,7 @@ TestSessionPlugins.cpp 的引用(Include)关系图:</div>
 </div>
 </div>
 <a id="a1c0a1f38a6c6eaab143f7d2276677991" name="a1c0a1f38a6c6eaab143f7d2276677991"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a1c0a1f38a6c6eaab143f7d2276677991">&#9670;&#160;</a></span>TEST_CASE() <span class="overload">[3/4]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#a1c0a1f38a6c6eaab143f7d2276677991">&#9670;&#160;</a></span>TEST_CASE() <span class="overload">[2/3]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -388,7 +366,7 @@ TestSessionPlugins.cpp 的引用(Include)关系图:</div>
 </div>
 </div>
 <a id="a2f04f09c1df30c726ba91f7812dbb174" name="a2f04f09c1df30c726ba91f7812dbb174"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a2f04f09c1df30c726ba91f7812dbb174">&#9670;&#160;</a></span>TEST_CASE() <span class="overload">[4/4]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#a2f04f09c1df30c726ba91f7812dbb174">&#9670;&#160;</a></span>TEST_CASE() <span class="overload">[3/3]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
