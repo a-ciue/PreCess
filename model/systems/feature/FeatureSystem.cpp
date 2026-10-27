@@ -15,15 +15,95 @@
 #include <algorithm>
 #include <map>
 #include <optional>
+#include <stdexcept>
 #include <utility>
 
 namespace systems::feature {
+namespace {
+    void validateNavigationMenu(const FeatureNavigationMenu& menu)
+    {
+        if (menu.id.empty() || menu.id.find('/') != std::string::npos || menu.title.empty())
+            throw std::invalid_argument("FeatureSystem: navigation menu requires an id without '/' and a title");
+    }
+
+    bool hasNavigationMenu(const std::vector<FeatureNavigationMenu>& menus, const std::string& id)
+    {
+        return std::any_of(menus.begin(), menus.end(), [&](const auto& menu) { return menu.id == id; });
+    }
+
+    void validateNavigationGroup(const FeatureNavigationGroup& group, const std::vector<FeatureNavigationMenu>& menus)
+    {
+        if (!hasNavigationMenu(menus, group.menu_id))
+            throw std::invalid_argument("FeatureSystem: navigation group references an unregistered menu: " + group.menu_id);
+        if (group.id.empty() != group.title.empty() || group.id.find('/') != std::string::npos || group.id == "default")
+            throw std::invalid_argument("FeatureSystem: navigation group requires an id without '/' and title; default is reserved for the ungrouped region");
+    }
+
+    void validateNavigationEntries(const std::vector<FeatureNavigationEntry>& entries,
+        const std::vector<FeatureNavigationMenu>& menus, const std::vector<FeatureNavigationGroup>& groups)
+    {
+        for (const auto& entry : entries) {
+            if (entry.menu_id.empty() || !hasNavigationMenu(menus, entry.menu_id))
+                throw std::invalid_argument("FeatureSystem: navigation entry references an unregistered menu: " + entry.menu_id);
+            if (!entry.group_id.empty() && !std::any_of(groups.begin(), groups.end(), [&](const auto& group) {
+                    return group.menu_id == entry.menu_id && group.id == entry.group_id;
+                }))
+                throw std::invalid_argument("FeatureSystem: navigation entry references an unregistered group: " + entry.group_id);
+        }
+    }
+}
+
+bool FeatureSystem::tryRegisterNavigationMenu(FeatureNavigationMenu menu)
+{
+    model_layer_->assertOperationIdle();
+    validateNavigationMenu(menu);
+    if (hasNavigationMenu(navigation_menus_, menu.id))
+        return false;
+    navigation_menus_.push_back(std::move(menu));
+    on_feature_infos_changed_();
+    return true;
+}
+
+bool FeatureSystem::tryRegisterNavigationGroup(FeatureNavigationGroup group)
+{
+    model_layer_->assertOperationIdle();
+    validateNavigationGroup(group, navigation_menus_);
+    if (std::any_of(navigation_groups_.begin(), navigation_groups_.end(), [&](const auto& existing) {
+            return existing.menu_id == group.menu_id && existing.id == group.id;
+        }))
+        return false;
+    navigation_groups_.push_back(std::move(group));
+    on_feature_infos_changed_();
+    return true;
+}
+
+std::vector<FeatureNavigationMenu> FeatureSystem::getNavigationMenus() const
+{
+    auto menus = navigation_menus_;
+    std::sort(menus.begin(), menus.end(), [](const auto& a, const auto& b) {
+        return a.order != b.order ? a.order < b.order : a.id < b.id;
+    });
+    return menus;
+}
+
+std::vector<FeatureNavigationGroup> FeatureSystem::getNavigationGroups() const
+{
+    auto groups = navigation_groups_;
+    std::sort(groups.begin(), groups.end(), [](const auto& a, const auto& b) {
+        if (a.menu_id != b.menu_id)
+            return a.menu_id < b.menu_id;
+        return a.order != b.order ? a.order < b.order : a.id < b.id;
+    });
+    return groups;
+}
+
 void FeatureSystem::setNavigationEntries(std::vector<FeatureNavigationEntry> categories)
 {
     model_layer_->assertOperationIdle();
     FeatureNavigation navigation;
     for (auto& category : categories)
         navigation.addEntry(std::move(category));
+    validateNavigationEntries(navigation.entries(), navigation_menus_, navigation_groups_);
     if (navigation_entries_ == navigation.entries())
         return;
     navigation_entries_ = navigation.entries();
@@ -77,19 +157,7 @@ std::vector<FeatureNavigationEntry> FeatureSystem::getNavigationEntries() const
             auto found = candidates.find(category.id);
             // 插件描述优先；同类按功能身份选来源，不依赖加载顺序。
             if (found == candidates.end() || found->second.provider.empty() || name < found->second.provider) {
-                auto resolved_category = category;
-                const auto host = std::find_if(navigation_entries_.begin(), navigation_entries_.end(), [&](const auto& declared) { return declared.id == category.id; });
-                if (host != navigation_entries_.end()) {
-                    if (resolved_category.menu_path.empty())
-                        resolved_category.menu_path = host->menu_path;
-                    if (resolved_category.menu_path == host->menu_path) {
-                        if (resolved_category.menu_id.empty())
-                            resolved_category.menu_id = host->menu_id;
-                        if (resolved_category.group_id.empty())
-                            resolved_category.group_id = host->group_id;
-                    }
-                }
-                candidates.insert_or_assign(category.id, Candidate { std::move(resolved_category), name });
+                candidates.insert_or_assign(category.id, Candidate { category, name });
             }
         }
     }
@@ -175,24 +243,43 @@ bool FeatureSystem::registerHandler(const HandlerMetaData& meta_data, SystemHand
     // 节点内就地构造全部服务；只保留引用，不跨 setup 持有可能因扩容失效的迭代器。
     FeatureEntry& entry = entries_.try_emplace(meta_data.name, *this, meta_data).first->second;
 
-    // setup 收集声明并订阅事件；失败则撤掉整个条目，不留下半注册状态
+    // setup、参数准备与父节点校验全部成功后才接纳共享定义，失败不抢占首次注册。
     FeatureRegistrar registrar;
     try {
         handler->setup(registrar, entry.context);
+
+        // 参数对象地址不变，context 内部引用继续有效。
+        entry.params = FeatureParams(registrar.argTypes());
+        if (previous_params && std::equal(previous_params->types().begin(), previous_params->types().end(), registrar.argTypes().begin(), registrar.argTypes().end(), [](const auto& a, const auto& b) {
+                return a.name == b.name && a.type == b.type && a.content == b.content;
+            }))
+            entry.params = std::move(*previous_params);
+        entry.info.arg_types = registrar.argTypes();
+        entry.info.navigation = registrar.navigation();
+        entry.info.key_bindings = registrar.keyBindings();
+
+        auto menus = navigation_menus_;
+        auto groups = navigation_groups_;
+        for (const auto& menu : registrar.navigationMenus()) {
+            validateNavigationMenu(menu);
+            if (!hasNavigationMenu(menus, menu.id))
+                menus.push_back(menu);
+        }
+        for (const auto& group : registrar.navigationGroups()) {
+            validateNavigationGroup(group, menus);
+            if (!std::any_of(groups.begin(), groups.end(), [&](const auto& existing) {
+                    return existing.menu_id == group.menu_id && existing.id == group.id;
+                }))
+                groups.push_back(group);
+        }
+        validateNavigationEntries(entry.info.navigation.entries(), menus, groups);
+        entry.handler = std::move(handler);
+        navigation_menus_.swap(menus);
+        navigation_groups_.swap(groups);
     } catch (...) {
         entries_.erase(meta_data.name);
         throw;
     }
-    // setup 返回后载入默认值；参数对象地址不变，context 内部引用继续有效。
-    entry.params = FeatureParams(registrar.argTypes());
-    if (previous_params && std::equal(previous_params->types().begin(), previous_params->types().end(), registrar.argTypes().begin(), registrar.argTypes().end(), [](const auto& a, const auto& b) {
-            return a.name == b.name && a.type == b.type && a.content == b.content;
-        }))
-        entry.params = std::move(*previous_params);
-    entry.info.arg_types = registrar.argTypes();
-    entry.info.navigation = registrar.navigation();
-    entry.info.key_bindings = registrar.keyBindings();
-    entry.handler = std::move(handler);
 
     spdlog::info("FeatureSystem::registerHandler: Registered feature '{}'", meta_data.name);
     on_feature_infos_changed_();

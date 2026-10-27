@@ -40,6 +40,8 @@ function buildEntries(infos, categories, orders) {
             icon: category.icon || "",
             order: category.order || 0,
             menu_path: category.menu_path || "功能",
+            menu_title: category.menu_title,
+            group_title: category.group_title,
             menu_id: category.menu_id || (category.menu_path ? "" : "features"),
             group_id: category.group_id || "",
             items: items
@@ -78,7 +80,10 @@ function buildMenus(entries, orders) {
     const groupIds = new Map()
     const locations = entries.map(entry => {
         const path = (entry.menu_path || "功能").split("/")
-        return { entry: entry, name: path[0] || "功能", groupName: path[1] || "" }
+        // 独立标题允许包含路径分隔符；显式空分组标题仍表示未分组区域。
+        return { entry: entry,
+            name: entry.menu_title !== undefined ? entry.menu_title : path[0] || "功能",
+            groupName: entry.group_title !== undefined ? entry.group_title : path[1] || "" }
     })
     for (const location of locations)
         recordParentId(menuIds, location.name, location.entry.menu_id)

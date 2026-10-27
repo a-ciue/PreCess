@@ -53,7 +53,7 @@ TEST_CASE("Session loads plugins and registers feature infos", "[session][plugin
         bool has_geometry_menu = false;
         for (const systems::feature::FeatureInfo* info : infos) {
             for (const auto& menu : info->navigation.entries()) {
-                if (menu.menu_path == "几何")
+                if (menu.menu_id == "geometry")
                     has_geometry_menu = true;
             }
         }
@@ -194,9 +194,21 @@ TEST_CASE("Binary feature setup supplies navigation and survives reload", "[sess
         REQUIRE(categories.size() == 1);
         CHECK(categories.front().title == "Setup custom category");
         CHECK(categories.front().order == 5);
-        CHECK(categories.front().menu_path == "Tools/Custom");
+        CHECK(categories.front().menu_id == "setup-tools");
+        CHECK(categories.front().group_id == "custom");
+        const auto menus = session.featureSystem().getNavigationMenus();
+        REQUIRE(menus.size() == 1);
+        CHECK(menus.front().id == "setup-tools");
+        CHECK(menus.front().title == "Tools");
+        const auto groups = session.featureSystem().getNavigationGroups();
+        REQUIRE(groups.size() == 1);
+        CHECK(groups.front().menu_id == "setup-tools");
+        CHECK(groups.front().id == "custom");
+        CHECK(groups.front().title == "Custom");
         session.pluginManager().unregisterPlugin(target);
         CHECK(session.featureSystem().getFeatureInfos().empty());
         CHECK(session.featureSystem().getNavigationEntries().empty());
+        CHECK(session.featureSystem().getNavigationMenus() == menus);
+        CHECK(session.featureSystem().getNavigationGroups() == groups);
     }
 }

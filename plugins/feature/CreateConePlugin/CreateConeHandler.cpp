@@ -48,7 +48,8 @@ void CreateConeHandler::setup(FeatureRegistrar& reg, FeatureContext& /*ctx*/)
     reg.addParameter({ ArgTypeEnum::Float, "扫掠角（度）", "360", "范围为 (0, 360]" });
     reg.addParameter({ ArgTypeEnum::Combo, "写入目标",
         "添加到当前 Component,新建 Component,新建 Model|0", "选择几何创建结果的组织位置" });
-    reg.navigation().addEntry({ "CreateCone", "创建圆锥/圆台", "qrc:/images/toolbar/Geometry/cone.svg", 0, "几何", "geometry" });
+    reg.addNavigationMenu({ "geometry", "几何", 50 });
+    reg.navigation().addEntry({ "CreateCone", "创建圆锥/圆台", "qrc:/images/toolbar/Geometry/cone.svg", 0, "geometry" });
 }
 
 std::any CreateConeHandler::execute(FeatureContext& ctx)

@@ -4,11 +4,27 @@
 #pragma once
 #include <algorithm>
 #include <map>
+#include <stdexcept>
 #include <string>
 #include <utility>
 #include <vector>
 namespace systems::feature {
-/** @brief 同一父节点内的排序覆盖；根菜单的 parent 为空，id 不使用翻译后的标题。 */
+/** @brief 独立注册的导航菜单；标题仅用于展示，首次成功注册后保留至会话结束。 */
+struct FeatureNavigationMenu {
+    std::string id;
+    std::string title;
+    int order { 1000 };
+    bool operator==(const FeatureNavigationMenu&) const = default;
+};
+/** @brief 菜单内的分组；空 id 和空标题共同表示未分组区域的布局。 */
+struct FeatureNavigationGroup {
+    std::string menu_id;
+    std::string id;
+    std::string title;
+    int order { 0 };
+    bool operator==(const FeatureNavigationGroup&) const = default;
+};
+/** @brief 同一分组内入口或同一入口内子功能的排序覆盖，id 不使用翻译后的标题。 */
 struct FeatureNavigationOrder {
     std::string parent;
     std::string id;
@@ -21,9 +37,8 @@ struct FeatureNavigationEntry {
     std::string title;
     std::string icon;
     int order { 0 };
-    std::string menu_path; //> 菜单/分组；留空时继承宿主同 id 的路径，最终回退“功能”
-    std::string menu_id; //> 可选稳定菜单身份；旧声明回退到 menu_path 的菜单段
-    std::string group_id; //> 可选稳定分组身份；旧声明回退到 menu_path 的分组段
+    std::string menu_id; //> 必填，引用独立注册的菜单
+    std::string group_id; //> 可选，空值表示菜单内的未分组区域
     bool operator==(const FeatureNavigationEntry&) const = default;
 };
 /** @brief 统一声明入口与子功能显示属性，不区分普通菜单和分类。 */
@@ -38,11 +53,13 @@ public:
             return;
         entries_.push_back(std::move(entry));
     }
-    /** @brief 声明父节点内的顺序；同一 parent/id 重复声明保留首项。 */
+    /** @brief 声明入口或子功能顺序；菜单、分组顺序只能由独立定义提供。 */
     void addOrder(FeatureNavigationOrder order)
     {
         if (order.id.empty())
             return;
+        if (!order.parent.starts_with("group:") && !order.parent.starts_with("entry:"))
+            throw std::invalid_argument("FeatureNavigation::addOrder: menu and group order must be declared at registration");
         if (std::any_of(orders_.begin(), orders_.end(), [&](const auto& existing) { return existing.parent == order.parent && existing.id == order.id; }))
             return;
         orders_.push_back(std::move(order));

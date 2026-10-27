@@ -29,7 +29,9 @@ void PatchFaceHandler::setup(FeatureRegistrar& reg, FeatureContext& /*ctx*/)
 {
     reg.addParameter({ ArgTypeEnum::Selector, "边界边", "GeometryEdge",
         "选择一条孤立边或单面边界边，按总弧长最短的闭合边界环补面" });
-    reg.navigation().addEntry({ "PatchFace", "补面", "qrc:/images/toolbar/Geometry/patch-face.svg", 0, "几何/修复", "geometry", "repair" });
+    reg.addNavigationMenu({ "geometry", "几何", 50 });
+    reg.addNavigationGroup({ "geometry", "repair", "修复", 30 });
+    reg.navigation().addEntry({ "PatchFace", "补面", "qrc:/images/toolbar/Geometry/patch-face.svg", 0, "geometry", "repair" });
 }
 
 std::any PatchFaceHandler::execute(FeatureContext& ctx)

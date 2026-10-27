@@ -118,7 +118,8 @@ TEST_CASE("MergePoints feature merges two vertices at midpoint", "[MergePointsPl
     CHECK(navigation_entries.front().id == "MergePoints");
     CHECK(navigation_entries.front().icon == "qrc:/images/toolbar/Geometry/merge-points.svg");
     CHECK(navigation_entries.front().title == "点合并");
-    CHECK(navigation_entries.front().menu_path == "几何/拓扑");
+    CHECK(navigation_entries.front().menu_id == "geometry");
+    CHECK(navigation_entries.front().group_id == "topology");
 
     REQUIRE(feature_system.setParameter("MergePoints", 0,
         core::ArgObject::create<ArgTypeEnum::Selector>(

@@ -10,7 +10,9 @@
 #include <spdlog/spdlog.h>
 
 #include <any>
+#include <map>
 #include <string>
+#include <utility>
 #include <vector>
 
 namespace {
@@ -168,12 +170,26 @@ void QFeatureSystemAdaptor::setActiveComponent(int id)
 
 QVariantList QFeatureSystemAdaptor::getNavigationEntries() const
 {
+    // 路径仅为现有 QML 的展示协议；父节点身份与标题统一取自系统注册表。
+    std::map<std::string, std::string> menu_titles;
+    for (const auto& menu : feature_system_->getNavigationMenus())
+        menu_titles.emplace(menu.id, menu.title);
+    std::map<std::pair<std::string, std::string>, std::string> group_titles;
+    for (const auto& group : feature_system_->getNavigationGroups())
+        group_titles.emplace(std::make_pair(group.menu_id, group.id), group.title);
     QVariantList result;
     for (const auto& category : feature_system_->getNavigationEntries()) {
+        const auto& menu_title = menu_titles.at(category.menu_id);
+        const auto group_title = category.group_id.empty() ? std::string {} : group_titles.at({ category.menu_id, category.group_id });
+        std::string menu_path = menu_title;
+        if (!category.group_id.empty())
+            menu_path += "/" + group_title;
         result.append(QVariantMap { { "id", QString::fromStdString(category.id) },
             { "title", QString::fromStdString(category.title) },
             { "icon", QString::fromStdString(category.icon) }, { "order", category.order },
-            { "menu_path", QString::fromStdString(category.menu_path) },
+            { "menu_path", QString::fromStdString(menu_path) },
+            { "menu_title", QString::fromStdString(menu_title) },
+            { "group_title", QString::fromStdString(group_title) },
             { "menu_id", QString::fromStdString(category.menu_id) },
             { "group_id", QString::fromStdString(category.group_id) } });
     }
@@ -183,6 +199,14 @@ QVariantList QFeatureSystemAdaptor::getNavigationEntries() const
 QVariantList QFeatureSystemAdaptor::getNavigationOrder() const
 {
     QVariantList result;
+    for (const auto& menu : feature_system_->getNavigationMenus()) {
+        result.append(QVariantMap { { "parent", QString() },
+            { "id", QString::fromStdString(menu.id) }, { "order", menu.order } });
+    }
+    for (const auto& group : feature_system_->getNavigationGroups()) {
+        result.append(QVariantMap { { "parent", QString::fromStdString("menu:" + group.menu_id) },
+            { "id", QString::fromStdString(group.id.empty() ? "default" : group.id) }, { "order", group.order } });
+    }
     for (const auto& order : feature_system_->getNavigationOrder()) {
         result.append(QVariantMap { { "parent", QString::fromStdString(order.parent) },
             { "id", QString::fromStdString(order.id) }, { "order", order.order } });

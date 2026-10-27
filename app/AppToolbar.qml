@@ -101,7 +101,7 @@ ColumnLayout {
         }
     }
 
-    // 功能 ribbon 结构：[{ name: 菜单名, groups: [{ name: 分组名, items: [入口对象] }] }]，由 rebuildFeatureMenus 维护
+    // 功能 ribbon 结构：[{ id, name, order, groups: [{ id, name, order, items: [入口对象] }] }]，由 rebuildFeatureMenus 维护
     property var featureMenus: []
     readonly property var navigationTabs: FeatureNavigation.buildTabs(root.featureMenus, [
         {id: "file", name: qsTr("文件"), objectName: "fileCategory", pageIndex: 0, order: 10},

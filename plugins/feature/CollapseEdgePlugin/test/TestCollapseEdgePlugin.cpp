@@ -22,6 +22,7 @@ TEST_CASE("CollapseEdge feature registers its baseline parameters", "[CollapseEd
     CHECK(navigation_entries.front().id == "CollapseEdge");
     CHECK(navigation_entries.front().icon == "qrc:/images/toolbar/Geometry/collapse-edge.svg");
     CHECK(navigation_entries.front().title == "压缩边");
-    CHECK(navigation_entries.front().menu_path == "几何/拓扑");
+    CHECK(navigation_entries.front().menu_id == "geometry");
+    CHECK(navigation_entries.front().group_id == "topology");
     REQUIRE(std::any_cast<std::string>(system.invoke("CollapseEdge")) == "请选择一条需要压缩的几何边。");
 }

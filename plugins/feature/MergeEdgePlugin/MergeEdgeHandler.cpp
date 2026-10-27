@@ -24,7 +24,9 @@ namespace systems::feature {
 void MergeEdgeHandler::setup(FeatureRegistrar& reg, FeatureContext& /*ctx*/)
 {
     reg.addParameter({ ArgTypeEnum::Selector, "待合并边", "GeometryEdge", "请选择两条或多条连续且同域的几何边" });
-    reg.navigation().addEntry({ "MergeEdge", "合并边", "qrc:/images/toolbar/Geometry/merge-edge.svg", 0, "几何/拓扑", "geometry", "topology" });
+    reg.addNavigationMenu({ "geometry", "几何", 50 });
+    reg.addNavigationGroup({ "geometry", "topology", "拓扑", 20 });
+    reg.navigation().addEntry({ "MergeEdge", "合并边", "qrc:/images/toolbar/Geometry/merge-edge.svg", 0, "geometry", "topology" });
 }
 
 std::any MergeEdgeHandler::execute(FeatureContext& ctx)

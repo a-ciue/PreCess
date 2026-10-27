@@ -15,8 +15,10 @@ public:
     void setup(FeatureRegistrar& registrar, FeatureContext&) override
     {
         registrar.addParameter({ ArgTypeEnum::Float, "Size", "1", "" });
+        registrar.addNavigationMenu({ "setup-tools", "Tools" });
+        registrar.addNavigationGroup({ "setup-tools", "custom", "Custom" });
         auto& navigation = registrar.navigation();
-        navigation.addEntry({ "setup-custom", "Setup custom category", "", 5, "Tools/Custom" });
+        navigation.addEntry({ "setup-custom", "Setup custom category", "", 5, "setup-tools", "custom" });
         navigation.setLabel("Setup feature");
         navigation.setOrder(7);
         navigation.setEntryDefault("setup-custom", "Size", "3");

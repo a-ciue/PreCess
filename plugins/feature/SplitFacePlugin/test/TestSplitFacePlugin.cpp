@@ -201,7 +201,8 @@ TEST_CASE("SplitFace feature splits one face and records one undo operation", "[
     CHECK(navigation_entries.front().id == "SplitFace");
     CHECK(navigation_entries.front().icon == "qrc:/images/toolbar/Geometry/split-face.svg");
     CHECK(navigation_entries.front().title == "分割面");
-    CHECK(navigation_entries.front().menu_path == "几何/拓扑");
+    CHECK(navigation_entries.front().menu_id == "geometry");
+    CHECK(navigation_entries.front().group_id == "topology");
 
     const std::any hint = feature_system.invoke("SplitFace");
     REQUIRE(std::any_cast<std::string>(hint) == "请选择一个需要分割的几何面。");

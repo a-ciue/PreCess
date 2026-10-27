@@ -20,13 +20,17 @@ void FeatureDemoHandler::setup(FeatureRegistrar& reg, FeatureContext& ctx)
     // 功能参数注册
     reg.addParameter({ ArgTypeEnum::Float, "缩放因子", "1.0", "网格顶点坐标的缩放倍数" });
     reg.addParameter({ ArgTypeEnum::Bool, "自动应用", "false", "修改参数后更新临时预览，执行时形成正式记录" });
-    // 菜单选项注册：演示两级菜单路径，"功能" 菜单分页内的 "批处理" 分组
-    reg.navigation().addEntry({ "FeatureDemo_1", "功能示例", "qrc:/images/toolbar/Panels/feature-demo.svg", 0, "功能/批处理", "features", "batch" });
+    // 独立声明菜单、分组，再将入口挂入对应稳定 ID。
+    reg.addNavigationMenu({ "features", "功能", 80 });
+    reg.addNavigationGroup({ "features", "batch", "批处理", 0 });
+    reg.addNavigationGroup({ "features", "measure", "测量", 0 });
+    reg.addNavigationMenu({ "examples", "示例", 70 });
+    reg.navigation().addEntry({ "FeatureDemo_1", "功能示例", "qrc:/images/toolbar/Panels/feature-demo.svg", 0, "features", "batch" });
     // 演示页内分组竖线分隔："功能" 菜单分页内与 "批处理" 并列的 "测量" 分组
     // 同时演示自定义图标：指定 qrc 图标资源路径，未指定时使用通用插件图标
-    reg.navigation().addEntry({ "FeatureDemo_2", "功能示例", "qrc:/images/toolbar/Panels/feature-demo.svg", 0, "功能/测量", "features", "measure" });
-    // 演示单级菜单路径，归入 "示例" 菜单分页的默认分组
-    reg.navigation().addEntry({ "FeatureDemo_3", "功能示例", "qrc:/images/toolbar/Panels/feature-demo.svg", 0, "示例", "examples" });
+    reg.navigation().addEntry({ "FeatureDemo_2", "功能示例", "qrc:/images/toolbar/Panels/feature-demo.svg", 0, "features", "measure" });
+    // 不填 group_id，归入 "示例" 菜单分页的未分组区域。
+    reg.navigation().addEntry({ "FeatureDemo_3", "功能示例", "qrc:/images/toolbar/Panels/feature-demo.svg", 0, "examples" });
     // 按键事件注册：Ctrl+D
     reg.addKeyBinding({ kKeyD, kControlModifier, true });
 

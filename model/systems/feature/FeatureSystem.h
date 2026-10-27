@@ -93,11 +93,19 @@ public:
      * @brief 获取已注册功能信息列表
      */
     std::vector<FeatureInfo*> getFeatureInfos();
+    /** @brief 首次注册菜单；重复 ID 保留已有定义，操作占用期拒绝。 */
+    bool tryRegisterNavigationMenu(FeatureNavigationMenu menu);
+    /** @brief 首次注册分组；所属菜单必须存在，空 id/标题表示未分组区域布局。 */
+    bool tryRegisterNavigationGroup(FeatureNavigationGroup group);
+    /** @brief 查询会话内全部菜单定义，包含当前没有功能入口的菜单。 */
+    std::vector<FeatureNavigationMenu> getNavigationMenus() const;
+    /** @brief 查询会话内全部分组定义，插件卸载后父节点定义仍保留。 */
+    std::vector<FeatureNavigationGroup> getNavigationGroups() const;
     /** @brief 设置宿主始终保留的父入口；仅在模型操作空闲时允许变更。 */
     void setNavigationEntries(std::vector<FeatureNavigationEntry> entries);
     /** @brief 聚合宿主与功能声明的入口；相同 id 按提供者身份确定来源。 */
     std::vector<FeatureNavigationEntry> getNavigationEntries() const;
-    /** @brief 设置产品排序覆盖；宿主优先于插件，仅允许空闲时变更。 */
+    /** @brief 设置入口和子功能的产品排序覆盖；菜单、分组顺序由注册定义决定。 */
     void setNavigationOrder(std::vector<FeatureNavigationOrder> orders);
     /** @brief 合并排序声明；插件冲突按功能身份选首项，不依赖加载顺序。 */
     std::vector<FeatureNavigationOrder> getNavigationOrder() const;
@@ -211,6 +219,8 @@ private:
     core::EventBus* event_bus_; //< 事件总线引用
     UndoStack* undo_stack_ { nullptr }; //< undo 栈引用（可空：无栈时边界退化为仅 flush）
     std::unordered_map<std::string, FeatureEntry> entries_; //< 功能条目，key 为功能唯一名称
+    std::vector<FeatureNavigationMenu> navigation_menus_;
+    std::vector<FeatureNavigationGroup> navigation_groups_;
     std::vector<FeatureNavigationOrder> navigation_order_;
     std::vector<FeatureNavigationEntry> navigation_entries_; //!< 宿主声明的常驻父入口，不含业务分类假设
     std::optional<std::string> pending_feature_; //!< 占用期最后一个有效目标；空字符串表示退出
