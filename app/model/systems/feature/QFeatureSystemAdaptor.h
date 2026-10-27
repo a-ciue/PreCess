@@ -95,6 +95,8 @@ public:
     void notifyScalarAttributeDisplayRequested(Index component_id, const std::string& attribute_name);
 
 signals:
+    //! @brief 同步功能调用失败，由宿主统一显示；失败返回无效 QVariant。
+    void invocationFailed(const QString& error);
     void featuresInfoChanged();
     //! @brief 功能请求在指定 Component 上渲染标量属性
     void scalarAttributeDisplayRequested(int component_id, QString attribute_name);

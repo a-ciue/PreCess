@@ -43,6 +43,7 @@
 #include <catch2/catch_test_macros.hpp>
 #include <catch2/generators/catch_generators.hpp>
 #include <memory>
+#include <stdexcept>
 
 Q_IMPORT_QML_PLUGIN(app_corePlugin)
 Q_IMPORT_QML_PLUGIN(app_modelPlugin)
@@ -1677,6 +1678,51 @@ TEST_CASE("Navigation sorts every sibling level with stable ids and scoped overr
     CHECK(engine.evaluate(R"JS(buildTabs([], [{id:"b",order:0},{id:"a",order:0}], 3, []).map(t=>t.id).join(","))JS").toString() == "a,b");
 }
 
+
+TEST_CASE("Synchronous feature failures are reported across the QML boundary and allow retry", "[feature][failure][Qt]")
+{
+    application();
+    QModelManager::argv0 = {};
+    QQmlEngine engine;
+    auto* manager = engine.singletonInstance<QModelManager*>("app.model", "QModelManager");
+    auto* adaptor = manager->getFeatureSystemAdaptor();
+    auto* status = manager->getTaskStatus();
+    class FailingFeature : public systems::feature::FeatureHandler {
+    public:
+        int mode = 0;
+        std::any execute(systems::feature::FeatureContext&) override
+        {
+            if (mode == 0)
+                throw std::runtime_error("期望采样边长必须为有限正数");
+            if (mode == 1)
+                throw 42;
+            return std::string("成功");
+        }
+    };
+    auto handler = std::make_unique<FailingFeature>();
+    auto* probe = handler.get();
+    const systems::feature::HandlerMetaData meta { .name = "failure-probe" };
+    REQUIRE(adaptor->featureSystem()->registerHandler(meta,
+        systems::feature::FeatureSystem::SystemHandlerPtr { handler.release() }));
+    engine.globalObject().setProperty("featureBridge", engine.newQObject(adaptor));
+    int failures = 0;
+    QObject::connect(status, &QTaskStatus::taskFailed, status, [&](const QString&) { ++failures; });
+    for (const int mode : { 0, 1 }) {
+        probe->mode = mode;
+        QJSValue result;
+        REQUIRE_NOTHROW(result = engine.evaluate("featureBridge.invoke('failure-probe')"));
+        CHECK_FALSE(result.isError());
+        CHECK((result.isUndefined() || result.isNull()));
+        CHECK(status->getMessage().contains(mode == 0 ? "期望采样边长" : "未知异常"));
+        CHECK_FALSE(status->isRunning());
+        CHECK_FALSE(status->isWritePending());
+    }
+    CHECK(failures == 2);
+    probe->mode = 2;
+    CHECK(engine.evaluate("featureBridge.invoke('failure-probe')").toString() == "成功");
+    CHECK(failures == 2);
+    adaptor->featureSystem()->unregisterHandler(meta);
+}
 
 TEST_CASE("Registered navigation titles preserve slash characters without inventing groups", "[navigation][Qt][registry]")
 {

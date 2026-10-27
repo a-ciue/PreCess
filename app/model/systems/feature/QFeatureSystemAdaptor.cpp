@@ -10,6 +10,7 @@
 #include <spdlog/spdlog.h>
 
 #include <any>
+#include <exception>
 #include <map>
 #include <string>
 #include <utility>
@@ -97,7 +98,17 @@ FeatureSystem* QFeatureSystemAdaptor::featureSystem() const
 
 QVariant QFeatureSystemAdaptor::invoke(const QString& unique_name)
 {
-    return anyToQVariant(feature_system_->invoke(unique_name.toStdString()));
+    // 插件的同步校验发生在任务启动前，C++ 异常不能穿过 Qt 元调用边界。
+    try {
+        return anyToQVariant(feature_system_->invoke(unique_name.toStdString()));
+    } catch (const std::exception& error) {
+        spdlog::error("FeatureSystemAdaptor::invoke {}: {}", unique_name.toStdString(), error.what());
+        emit invocationFailed(QString::fromUtf8(error.what()));
+    } catch (...) {
+        spdlog::error("FeatureSystemAdaptor::invoke {}: unknown exception", unique_name.toStdString());
+        emit invocationFailed(tr("功能执行发生未知异常"));
+    }
+    return {};
 }
 
 void QFeatureSystemAdaptor::notifyParameterChanged(const std::string& feature, std::size_t index, const core::ArgObject& value)

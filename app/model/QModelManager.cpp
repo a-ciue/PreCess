@@ -59,6 +59,8 @@ QModelManager::QModelManager(std::string_view argv0, QObject* parent)
     io_adaptor_ = std::make_unique<systems::io::QModelIOSystemAdaptor>(session_->ioSystem());
     edit_adaptor_ = std::make_unique<systems::edit::QEditSystemAdaptor>(session_->editSystem());
     feature_adaptor_ = std::make_unique<systems::feature::QFeatureSystemAdaptor>(session_->featureSystem());
+    connect(feature_adaptor_.get(), &systems::feature::QFeatureSystemAdaptor::invocationFailed,
+        task_status_.get(), &QTaskStatus::reportFailure);
     undo_adaptor_ = std::make_unique<QUndoStackAdaptor>(session_->undoStack());
     task_status_->bindSession(*session_);
 
