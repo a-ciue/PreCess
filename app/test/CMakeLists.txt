@@ -107,7 +107,6 @@ qt_add_resources(TestToolbarNavigation navigation_icons
     PREFIX "/images"
     BASE "${CMAKE_SOURCE_DIR}/resource"
     FILES
-        "${CMAKE_SOURCE_DIR}/resource/toolbar/Algorithm/cmd.svg"
         "${CMAKE_SOURCE_DIR}/resource/toolbar/Algorithm/tetgen.svg"
         "${CMAKE_SOURCE_DIR}/resource/toolbar/Algorithm/gmsh.svg"
         "${CMAKE_SOURCE_DIR}/resource/toolbar/Mesh/triangle-meshing.svg"
