@@ -60,6 +60,17 @@ TEST_CASE("Scalar range filtering preserves original IDs and manual hiding", "[s
     const auto domain = pipeline.scalarRange("value", ElementType::FACE);
     REQUIRE(domain);
     pipeline.hideFaces({ 2 });
+    // 无面筛选和仅筛选边时，面仍使用原始下标；快速路径必须保留人工隐藏。
+    const auto manual = pipeline.createSnapshot();
+    auto* manual_ids = vtkIdTypeArray::SafeDownCast(manual->visible_faces->GetCellData()->GetArray("PrecessFaceIds"));
+    REQUIRE(manual_ids);
+    CHECK(manual_ids->LookupValue(2) == -1);
+    pipeline.setScalarDisplayRange("value", ElementType::EDGE, true, { 1.0, 1.0 });
+    const auto edge_filtered = pipeline.createSnapshot();
+    CHECK(edge_filtered->visible_faces->GetNumberOfCells() == original->visible_faces->GetNumberOfCells() - 1);
+    auto* edge_face_ids = vtkIdTypeArray::SafeDownCast(edge_filtered->visible_faces->GetCellData()->GetArray("PrecessFaceIds"));
+    REQUIRE(edge_face_ids);
+    CHECK(edge_face_ids->LookupValue(2) == -1);
     pipeline.setScalarDisplayRange("value", ElementType::FACE, true, { 1.0, 3.0 });
     const auto filtered = pipeline.createSnapshot();
     auto* ids = vtkIdTypeArray::SafeDownCast(filtered->visible_faces->GetCellData()->GetArray("PrecessFaceIds"));

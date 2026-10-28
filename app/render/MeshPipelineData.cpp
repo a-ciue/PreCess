@@ -546,12 +546,18 @@ void MeshPipelineData::rebuildOutputs()
     }
     vtkNew<FaceHideFilter> hider;
     vtkNew<vtkIdTypeArray> hidden_ids;
-    auto* original_ids = vtkIdTypeArray::SafeDownCast(range_faces->GetCellData()->GetArray("PrecessFaceIds"));
-    // 范围提取后单元下标可能压缩，人工隐藏仍按原始面身份匹配。
-    for (vtkIdType id = 0; id < range_faces->GetNumberOfCells(); ++id) {
-        const auto original_id = original_ids ? original_ids->GetValue(id) : id;
-        if (std::binary_search(hidden_face_ids_.begin(), hidden_face_ids_.end(), original_id))
+    // 未压缩的面直接沿用原始隐藏 ID，避免原有显隐和裁剪路径扫描全部面。
+    if (range_faces == face_data_) {
+        for (auto id : hidden_face_ids_)
             hidden_ids->InsertNextValue(id);
+    } else if (!hidden_face_ids_.empty()) {
+        auto* original_ids = vtkIdTypeArray::SafeDownCast(range_faces->GetCellData()->GetArray("PrecessFaceIds"));
+        // 仅在面筛选压缩下标且存在人工隐藏时，按原始身份重映射。
+        for (vtkIdType id = 0; id < range_faces->GetNumberOfCells(); ++id) {
+            const auto original_id = original_ids ? original_ids->GetValue(id) : id;
+            if (std::binary_search(hidden_face_ids_.begin(), hidden_face_ids_.end(), original_id))
+                hidden_ids->InsertNextValue(id);
+        }
     }
     hider->SetInputData(range_faces);
     hider->SetHiddenCellIds(hidden_ids);

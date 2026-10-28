@@ -14,6 +14,7 @@
 #include "QRenderWindow.h"
 #include "QRenderWindowStyle.h"
 #include "SessionQuery.h"
+#include "renderStrategy/AttributeOperator.h"
 
 #include <BRep_Builder.hxx>
 #include <QElapsedTimer>
@@ -367,6 +368,79 @@ TEST_CASE("Scalar range viewport retains parameters and the original scalar bar 
     CHECK(env.visibleFaceIds() == std::vector<Index>({ 0 }));
     env.item.cancelComponentAttri(7);
     CHECK(env.visibleFaceIds() == std::vector<Index>({ 0 }));
+}
+
+TEST_CASE("Scalar range mapping preserves geometry and background reload preserves the current legend", "[scalar-range]")
+{
+    testApplication();
+    FaceHidingViewport env;
+    env.mesh.face_attributes_["f_range_1"] = { 0.25, 0.75 };
+    env.item.loadMeshData(7, MakeMeshDataVtk(env.mesh));
+    env.item.loadMeshData(8, MakeMeshDataVtk(env.mesh));
+    env.item.setAttriMode(7, "f_range_1", 1, { { "scalar_range", QVariantList { -1.0, 2.0 } } });
+    env.item.setAttriMode(8, "f_range_1", 1, { { "scalar_range", QVariantList { 10.0, 20.0 } } });
+
+    vtkSmartPointer<vtkPolyData> input;
+    std::array<double, 2> mapping { };
+    std::array<double, 2> legend { };
+    std::array<double, 8> style { };
+    bool legend_visible = false;
+    // 只在渲染线程读取输入身份、映射与色柱；GUI 仅比较完成后的观察结果。
+    auto inspect = [&] {
+        bool found_bar = false;
+        env.item.dispatch_async([&](vtkRenderWindow*, QQuickVTKItem::vtkUserData user_data) {
+            auto* data = QRenderWindow::Data::SafeDownCast(user_data);
+            AttributeOperator op(data->mesh_actor_manager_->getComponentActor(7).get());
+            auto* mapper = op.getFaceMapper();
+            mapper->Update();
+            input = mapper->GetInput();
+            mapping = { mapper->GetScalarRange()[0], mapper->GetScalarRange()[1] };
+            auto* props = data->renderer_->GetViewProps();
+            props->InitTraversal();
+            while (auto* prop = props->GetNextProp()) {
+                auto* bar = vtkScalarBarActor::SafeDownCast(prop);
+                if (!bar)
+                    continue;
+                found_bar = true;
+                legend_visible = bar->GetVisibility();
+                legend = { bar->GetLookupTable()->GetRange()[0], bar->GetLookupTable()->GetRange()[1] };
+                style = { bar->GetPosition()[0], bar->GetPosition()[1], bar->GetWidth(), bar->GetHeight(),
+                    static_cast<double>(bar->GetOrientation()), static_cast<double>(bar->GetNumberOfLabels()),
+                    static_cast<double>(bar->GetLabelTextProperty()->GetFontSize()),
+                    static_cast<double>(bar->GetTitleTextProperty()->GetFontSize()) };
+            }
+        });
+        REQUIRE(env.flush());
+        REQUIRE(found_bar);
+    };
+    inspect();
+    const auto original_input = input;
+    const auto original_style = style;
+    REQUIRE(env.item.setScalarRange(7, "f_range_1", 2, false, -2.0, 3.0));
+    inspect();
+    CHECK(input == original_input);
+    CHECK(mapping == std::array<double, 2> { -2.0, 3.0 });
+
+    // 用户主动选择 B 后，A 的数据刷新只能恢复 A 的颜色，不能夺走 B 的色柱。
+    env.item.setAttriMode(8, "f_range_1", 1, { });
+    env.item.loadMeshData(7, MakeMeshDataVtk(env.mesh));
+    inspect();
+    CHECK(mapping == std::array<double, 2> { -2.0, 3.0 });
+    CHECK(legend == std::array<double, 2> { 10.0, 20.0 });
+    CHECK(legend_visible);
+    CHECK(style == original_style);
+
+    // 色柱已被取消时，后台刷新同样不能重新显示它；主动应用仍可正常显示。
+    env.item.cancelComponentAttri(8);
+    env.item.loadMeshData(7, MakeMeshDataVtk(env.mesh));
+    inspect();
+    CHECK_FALSE(legend_visible);
+    CHECK(mapping == std::array<double, 2> { -2.0, 3.0 });
+    env.item.setAttriMode(7, "f_range_1", 1, { });
+    inspect();
+    CHECK(legend_visible);
+    CHECK(legend == mapping);
+    CHECK(style == original_style);
 }
 
 TEST_CASE("Scalar range viewport isolates components and disallows node hiding", "[scalar-range]")

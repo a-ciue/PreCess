@@ -544,7 +544,7 @@ void QRenderWindow::loadMeshData(Index component_id, const MeshDataVtk& data)
         const auto key = active->second;
         const auto attribute = QString::fromStdString(std::get<1>(key));
         if (auto* range = ensureScalarRange(component_id, attribute, std::get<2>(key)))
-            applyScalarRange(component_id, attribute, std::get<2>(key), *range);
+            applyScalarRange(component_id, attribute, std::get<2>(key), *range, false);
         else
             active_scalar_attributes_.erase(component_id);
     }
@@ -1052,9 +1052,12 @@ void QRenderWindow::resetScalarRange(Index component_id, const QString& attribut
     emit scalarRangeChanged();
 }
 
-void QRenderWindow::applyScalarRange(Index component_id, const QString& attribute, int element_type, const ScalarRenderRange& range)
+void QRenderWindow::applyScalarRange(Index component_id, const QString& attribute, int element_type,
+    const ScalarRenderRange& range, bool activate_scalar_bar)
 {
-    scalar_bar_component_id_ = component_id;
+    const bool show_scalar_bar = activate_scalar_bar || scalar_bar_component_id_ == component_id;
+    if (activate_scalar_bar)
+        scalar_bar_component_id_ = component_id;
     auto& pipeline = *mesh_pipeline_data_.at(component_id);
     pipeline.setScalarDisplayRange(attribute.toStdString(), static_cast<ElementType>(element_type), range.filtered, range.display);
     const auto previous = mesh_snapshots_.find(component_id);
@@ -1066,13 +1069,24 @@ void QRenderWindow::applyScalarRange(Index component_id, const QString& attribut
         selected_faces_.clear();
         selected_face_generations_.clear();
     }
-    dispatch_async([this, component_id, attribute, element_type, snapshot, mapping = range.mapping, geometry_changed](vtkRenderWindow*, vtkUserData user_data) {
+    dispatch_async([this, component_id, attribute, element_type, snapshot, mapping = range.mapping,
+                       geometry_changed, show_scalar_bar](vtkRenderWindow*, vtkUserData user_data) {
         auto* vtk = Data::SafeDownCast(user_data);
-        if (geometry_changed)
+        // 映射更新不替换网格包装，避免使未变化的几何缓存失效。
+        if (geometry_changed) {
             select_manager_->clearSelection();
-        vtk->mesh_actor_manager_->loadMesh(component_id, snapshot, vtk->renderer_);
-        vtk->mesh_actor_manager_->setAttriMode(component_id, attribute.toStdString(), Mode::SCALAR,
-            { { "scalar_range", std::vector<double> { mapping[0], mapping[1] } }, { "element_type", element_type } });
+            vtk->mesh_actor_manager_->loadMesh(component_id, snapshot, vtk->renderer_);
+        }
+        const std::map<std::string, std::any> args {
+            { "scalar_range", std::vector<double> { mapping[0], mapping[1] } }, { "element_type", element_type }
+        };
+        if (show_scalar_bar) {
+            vtk->mesh_actor_manager_->setAttriMode(component_id, attribute.toStdString(), Mode::SCALAR, args);
+        } else if (auto actor = vtk->mesh_actor_manager_->getComponentActor(component_id)) {
+            // 非当前组件自动恢复时只着色，不绑定或重新显示窗口共享色柱。
+            actor->setRenderStrategy(std::make_unique<AttriRenderStrategyScalar>());
+            actor->renderAttribute(attribute.toStdString(), args);
+        }
         if (geometry_changed)
             publishSelection();
     });

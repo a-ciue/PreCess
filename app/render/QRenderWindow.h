@@ -273,8 +273,12 @@ private:
     using ScalarKey = std::tuple<Index, std::string, int>;
     /** @brief 从完整属性值域初始化状态，已有状态保留用户设置。 */
     ScalarRenderRange* ensureScalarRange(Index component_id, const QString& attribute, int element_type);
-    /** @brief GUI 生成筛选快照，渲染线程按已保存映射范围着色。 */
-    void applyScalarRange(Index component_id, const QString& attribute, int element_type, const ScalarRenderRange& range);
+    /**
+     * @brief GUI 生成筛选快照，渲染线程按已保存映射范围着色。
+     * @param activate_scalar_bar 主动应用时切换色柱；自动恢复只刷新原归属色柱。
+     */
+    void applyScalarRange(Index component_id, const QString& attribute, int element_type,
+        const ScalarRenderRange& range, bool activate_scalar_bar = true);
     /** @brief 停用当前标量范围而不删除参数，恢复非范围隐藏结果。 */
     void deactivateScalarRange(Index component_id);
     std::map<ScalarKey, ScalarRenderRange> scalar_ranges_;
