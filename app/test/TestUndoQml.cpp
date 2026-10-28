@@ -25,6 +25,7 @@
 #include <QQmlContext>
 #include <QQmlEngine>
 #include <QQmlExtensionPlugin>
+#include <QQuickStyle>
 #include <QQuickVTKItem.h>
 #include <QQuickWindow>
 #include <QScopeGuard>
@@ -76,6 +77,11 @@ QGuiApplication& application()
     qputenv("QT_QPA_PLATFORM", "offscreen");
 #endif
     qputenv("QT_FORCE_STDERR_LOGGING", "1");
+    static const bool style_set = [] {
+        QQuickStyle::setStyle("Fusion");
+        return true;
+    }();
+    Q_UNUSED(style_set);
     QQuickVTKItem::setGraphicsApi();
     static int argc = 1;
     static char name[] = "TestUndoQml";
@@ -446,6 +452,25 @@ TEST_CASE("Actual QML aligns face and component visibility menu entries", "[QML]
     QmlFixture f;
     auto* menu = f.viewport->findChild<QObject*>("viewportVisibilityMenu");
     REQUIRE(menu);
+    QQuickWindow host;
+    host.resize(600, 600);
+    host.setFlags(Qt::Tool | Qt::FramelessWindowHint | Qt::WindowDoesNotAcceptFocus);
+    host.setOpacity(0.0);
+    auto* page = qobject_cast<QQuickItem*>(f.viewport.get());
+    REQUIRE(page);
+    page->setParentItem(host.contentItem());
+    const auto cleanup = qScopeGuard([&] {
+        QMetaObject::invokeMethod(menu, "close");
+        host.hide();
+        host.releaseResources();
+        QCoreApplication::processEvents();
+        page->setParentItem(nullptr);
+    });
+    host.show();
+    QCoreApplication::processEvents();
+    REQUIRE(QMetaObject::invokeMethod(menu, "open"));
+    QCoreApplication::processEvents();
+    REQUIRE(menu->property("visible").toBool());
     std::map<QString, QObject*> items;
     for (auto* item : menu->findChildren<QObject*>()) {
         if (item->property("shown").isValid()) {
@@ -473,6 +498,32 @@ TEST_CASE("Actual QML aligns face and component visibility menu entries", "[QML]
             for (const auto& text : { QString("全部隐藏"), QString("全部显示") })
                 CHECK(items.at(text)->property("shown").toBool() == !has_picks);
             CHECK(items.at("反转显示")->property("shown").toBool());
+            // 检查实际弹出菜单中的位置：隐藏项不能留下空行。
+            QCoreApplication::processEvents();
+            auto* content = menu->property("contentItem").value<QObject*>();
+            REQUIRE(content);
+            REQUIRE(QMetaObject::invokeMethod(content, "forceLayout"));
+            QCoreApplication::processEvents();
+            const auto labels = has_picks
+                ? QStringList { "隐藏", "隔离", "显示", "反转显示" }
+                : QStringList { "全部隐藏", "全部显示", "反转显示" };
+            QQuickItem* previous = nullptr;
+            for (const auto& label : labels) {
+                auto* item = qobject_cast<QQuickItem*>(items.at(label));
+                REQUIRE(item);
+                REQUIRE(item->isVisible());
+                REQUIRE(item->height() > 0);
+                if (previous) {
+                    const auto gap = item->y() - (previous->y() + previous->height());
+                    INFO(label.toStdString() << " gap=" << gap);
+                    CHECK(gap >= 0);
+                    CHECK(gap <= 20); // 所选操作与反转显示之间允许分隔线。
+                } else {
+                    INFO(label.toStdString() << " y=" << item->y());
+                    CHECK(item->y() <= 3);
+                }
+                previous = item;
+            }
         }
     }
     // 尚未取得选择快照时也应恢复全局操作，不能保留上次菜单的选择状态。
