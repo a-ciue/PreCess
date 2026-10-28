@@ -4,16 +4,20 @@
 
 #include <algorithm>
 #include <atomic>
+#include <cmath>
+#include <limits>
 #include <spdlog/spdlog.h>
 #include <stdexcept>
 #include <vtkAOSDataArrayTemplate.h>
 #include <vtkCellArray.h>
 #include <vtkCellData.h>
 #include <vtkDoubleArray.h>
+#include <vtkExtractCells.h>
 #include <vtkExtractEdges.h>
 #include <vtkExtractGeometry.h>
 #include <vtkExtractPolyDataGeometry.h>
 #include <vtkGeometryFilter.h>
+#include <vtkIdList.h>
 #include <vtkIdTypeArray.h>
 #include <vtkPlane.h>
 #include <vtkPointData.h>
@@ -217,6 +221,8 @@ void MeshPipelineData::loadModelData(const MeshDataVtk& data)
     vtkNew<vtkIdTypeArray> original_point_ids_;
     generation_ = ++next_mesh_generation;
     hidden_face_ids_.clear();
+    scalar_ranges_.clear();
+    scalar_filtered_ = false;
     dirty_ = true;
     // 本方法所有 SetArray 均使用 save=1：VTK 借用 vector 缓冲，不负责释放。
     // source_ 与已发布快照共同保活这些缓冲，不能把 save 改为 0。
@@ -431,14 +437,123 @@ void MeshPipelineData::setClipPlane(const MeshClipPlane& plane)
     dirty_ = true;
 }
 
+vtkDataArray* MeshPipelineData::scalarValues(const std::string& attribute, ElementType type) const
+{
+    switch (type) {
+    case ElementType::VERTEX:
+        return face_data_ ? face_data_->GetPointData()->GetArray(attribute.c_str()) : nullptr;
+    case ElementType::EDGE:
+        return edge_data_ ? edge_data_->GetCellData()->GetArray(attribute.c_str()) : nullptr;
+    case ElementType::FACE:
+        return face_data_ ? face_data_->GetCellData()->GetArray(attribute.c_str()) : nullptr;
+    case ElementType::SOLID:
+        return solid_data_ ? solid_data_->GetCellData()->GetArray(attribute.c_str()) : nullptr;
+    }
+    return nullptr;
+}
+
+std::optional<std::array<double, 2>> MeshPipelineData::scalarRange(const std::string& attribute, ElementType type)
+{
+    assertOwnerThread();
+    const auto key = std::make_pair(attribute, type);
+    if (const auto found = scalar_ranges_.find(key); found != scalar_ranges_.end())
+        return found->second;
+    auto* values = scalarValues(attribute, type);
+    std::optional<std::array<double, 2>> range;
+    if (values && values->GetNumberOfComponents() == 1) {
+        double lower = std::numeric_limits<double>::infinity();
+        double upper = -lower;
+        // 统计完整原始数组，缺失值不参与值域计算。
+        for (vtkIdType id = 0; id < values->GetNumberOfTuples(); ++id) {
+            const double value = values->GetComponent(id, 0);
+            if (std::isfinite(value)) {
+                lower = std::min(lower, value);
+                upper = std::max(upper, value);
+            }
+        }
+        if (lower <= upper)
+            range = std::array<double, 2> { lower, upper };
+    }
+    scalar_ranges_.emplace(key, range);
+    return range;
+}
+
+void MeshPipelineData::setScalarDisplayRange(const std::string& attribute, ElementType type,
+    bool enabled, const std::array<double, 2>& range)
+{
+    assertOwnerThread();
+    if (!enabled) {
+        clearScalarDisplayRange();
+        return;
+    }
+    if (type == ElementType::VERTEX || !scalarRange(attribute, type)
+        || !std::isfinite(range[0]) || !std::isfinite(range[1]) || range[0] > range[1])
+        throw std::invalid_argument("标量显示范围或单元属性无效");
+    if (scalar_filtered_ && scalar_attribute_ == attribute && scalar_type_ == type && scalar_display_range_ == range)
+        return;
+    scalar_attribute_ = attribute;
+    scalar_type_ = type;
+    scalar_display_range_ = range;
+    scalar_filtered_ = true;
+    dirty_ = true;
+}
+
+void MeshPipelineData::clearScalarDisplayRange()
+{
+    assertOwnerThread();
+    if (scalar_filtered_) {
+        scalar_filtered_ = false;
+        dirty_ = true;
+    }
+}
+
 void MeshPipelineData::rebuildOutputs()
 {
     // 每次重建使用新的 Filter，下一次 Update 不会改写已发布快照引用的输出数组。
+    vtkSmartPointer<vtkPolyData> range_faces = face_data_;
+    vtkSmartPointer<vtkPolyData> range_edges = edge_data_;
+    vtkSmartPointer<vtkUnstructuredGrid> range_solids = solid_data_;
+    if (scalar_filtered_) {
+        auto* values = scalarValues(scalar_attribute_, scalar_type_);
+        vtkDataSet* input = scalar_type_ == ElementType::EDGE ? static_cast<vtkDataSet*>(edge_data_)
+            : scalar_type_ == ElementType::FACE               ? static_cast<vtkDataSet*>(face_data_)
+                                                              : static_cast<vtkDataSet*>(solid_data_);
+        vtkNew<vtkIdList> ids;
+        // 按原始单元顺序提取闭区间，原始 ID 和属性随提取结果透传。
+        for (vtkIdType id = 0; id < values->GetNumberOfTuples(); ++id) {
+            const double value = values->GetComponent(id, 0);
+            if (std::isfinite(value) && value >= scalar_display_range_[0] && value <= scalar_display_range_[1])
+                ids->InsertNextId(id);
+        }
+        vtkNew<vtkExtractCells> extract;
+        extract->SetInputData(input);
+        extract->SetCellList(ids);
+        extract->AssumeSortedAndUniqueIdsOn();
+        extract->PassThroughCellIdsOff();
+        extract->Update();
+        if (scalar_type_ == ElementType::SOLID) {
+            range_solids = vtkSmartPointer<vtkUnstructuredGrid>::New();
+            range_solids->ShallowCopy(extract->GetOutput());
+        } else {
+            vtkNew<vtkGeometryFilter> geometry;
+            geometry->SetInputData(extract->GetOutput());
+            geometry->Update();
+            if (scalar_type_ == ElementType::FACE)
+                range_faces = publishPolyData(geometry->GetOutput());
+            else
+                range_edges = publishPolyData(geometry->GetOutput());
+        }
+    }
     vtkNew<FaceHideFilter> hider;
     vtkNew<vtkIdTypeArray> hidden_ids;
-    for (auto id : hidden_face_ids_)
-        hidden_ids->InsertNextValue(id);
-    hider->SetInputData(face_data_);
+    auto* original_ids = vtkIdTypeArray::SafeDownCast(range_faces->GetCellData()->GetArray("PrecessFaceIds"));
+    // 范围提取后单元下标可能压缩，人工隐藏仍按原始面身份匹配。
+    for (vtkIdType id = 0; id < range_faces->GetNumberOfCells(); ++id) {
+        const auto original_id = original_ids ? original_ids->GetValue(id) : id;
+        if (std::binary_search(hidden_face_ids_.begin(), hidden_face_ids_.end(), original_id))
+            hidden_ids->InsertNextValue(id);
+    }
+    hider->SetInputData(range_faces);
     hider->SetHiddenCellIds(hidden_ids);
     hider->Update();
 
@@ -449,8 +564,8 @@ void MeshPipelineData::rebuildOutputs()
     vtkNew<vtkExtractPolyDataGeometry> edge_clipper;
     vtkNew<vtkExtractGeometry> solid_clipper;
     vtkPolyData* faces = hider->GetOutput();
-    vtkPolyData* edges = edge_data_;
-    vtkUnstructuredGrid* solids = solid_data_;
+    vtkPolyData* edges = range_edges;
+    vtkUnstructuredGrid* solids = range_solids;
     if (clip_.enabled) {
         face_clipper->SetInputData(faces);
         face_clipper->SetImplicitFunction(plane);
@@ -470,7 +585,8 @@ void MeshPipelineData::rebuildOutputs()
     surface->Update();
     vtkNew<vtkExtractEdges> internal_edges;
     // 保持现有内部线框样式：从完整原始体提边，不在此次迁移中改变裁剪行为。
-    internal_edges->SetInputData(solid_data_);
+    // 标量筛选体时内部线框必须跟随可见体；其余情况保留既有线框语义。
+    internal_edges->SetInputData(scalar_filtered_ && scalar_type_ == ElementType::SOLID ? solids : solid_data_.GetPointer());
     internal_edges->Update();
 
     prepared_ = std::make_shared<MeshDataSnapshot>();

@@ -124,3 +124,10 @@ precess_test_link_libraries(TestRenderWindowFaceHiding renderQml vtkPart modelQm
 vtk_module_autoinit(TARGETS TestRenderWindowFaceHiding MODULES
     VTK::GUISupportQtQuick VTK::RenderingOpenGL2 VTK::InteractionStyle
 )
+
+# 标量范围使用原始属性值域，过滤与人工隐藏、裁剪相互独立。
+precess_add_test(TestScalarRenderRange TestScalarRenderRange.cpp)
+precess_test_link_libraries(TestScalarRenderRange vtkPart TestDeps VTK::FiltersExtraction VTK::FiltersGeometry)
+vtk_module_autoinit(TARGETS TestScalarRenderRange MODULES
+    VTK::RenderingOpenGL2 VTK::InteractionStyle VTK::FiltersExtraction VTK::FiltersGeometry
+)

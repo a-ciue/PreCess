@@ -32,7 +32,11 @@
 #include <vtkPartitionedDataSet.h>
 #include <vtkPolyData.h>
 #include <vtkPolyDataMapper.h>
+#include <vtkPropCollection.h>
 #include <vtkRenderWindowInteractor.h>
+#include <vtkScalarBarActor.h>
+#include <vtkScalarsToColors.h>
+#include <vtkTextProperty.h>
 
 #include <algorithm>
 #include <atomic>
@@ -253,6 +257,144 @@ struct FaceHidingViewport {
 };
 
 } // namespace
+
+TEST_CASE("Scalar range viewport retains parameters and the original scalar bar style", "[scalar-range]")
+{
+    qputenv("QSG_RENDER_LOOP", "threaded");
+    testApplication();
+    // 标志先于视口构造，失败析构时场景图信号仍可安全访问。
+    std::atomic_bool invalidated { false };
+    FaceHidingViewport env;
+    env.mesh.face_attributes_["f_range_1"] = { 0.25, 0.75 };
+    env.mesh.face_attributes_["f_second_1"] = { 0.0, 1.0 };
+    env.item.loadMeshData(7, MakeMeshDataVtk(env.mesh));
+    REQUIRE(env.flush());
+    // 编辑尚未应用的属性只保存参数，不得抢占视口。
+    REQUIRE(env.item.setScalarRange(7, "f_range_1", 2, false, -1.0, 2.0));
+    REQUIRE(env.item.setScalarRange(7, "f_range_1", 2, true, 0.6, 0.8));
+    CHECK(env.visibleFaceIds() == std::vector<Index>({ 0, 1 }));
+    env.item.setAttriMode(7, "f_range_1", 1, { { "element_type", 2 } });
+    CHECK(env.visibleFaceIds() == std::vector<Index>({ 1 }));
+
+    std::array<double, 9> style_before { };
+    std::array<double, 9> style_after { };
+    std::array<double, 2> color_range { };
+    bool found_bar = false;
+    auto read_bar = [&](auto& style) {
+        env.item.dispatch_async([&](vtkRenderWindow*, QQuickVTKItem::vtkUserData user_data) {
+            auto* data = QRenderWindow::Data::SafeDownCast(user_data);
+            auto* props = data->renderer_->GetViewProps();
+            props->InitTraversal();
+            while (auto* prop = props->GetNextProp()) {
+                auto* bar = vtkScalarBarActor::SafeDownCast(prop);
+                if (!bar)
+                    continue;
+                found_bar = true;
+                style = { bar->GetPosition()[0], bar->GetPosition()[1], bar->GetWidth(), bar->GetHeight(),
+                    static_cast<double>(bar->GetOrientation()), static_cast<double>(bar->GetNumberOfLabels()),
+                    static_cast<double>(bar->GetLabelTextProperty()->GetFontSize()),
+                    static_cast<double>(bar->GetTitleTextProperty()->GetFontSize()), static_cast<double>(bar->GetVisibility()) };
+                color_range = { bar->GetLookupTable()->GetRange()[0], bar->GetLookupTable()->GetRange()[1] };
+            }
+        });
+        REQUIRE(env.flush());
+    };
+    read_bar(style_before);
+    REQUIRE(found_bar);
+    CHECK(color_range == std::array<double, 2> { -1.0, 2.0 });
+    REQUIRE(env.item.setScalarRange(7, "f_range_1", 2, true, 0.2, 0.3));
+    CHECK(env.visibleFaceIds() == std::vector<Index>({ 0 }));
+    read_bar(style_after);
+    CHECK(style_after == style_before);
+    CHECK(color_range == std::array<double, 2> { -1.0, 2.0 });
+
+    // 模拟浮动面板或窗口关闭后重建场景，范围、着色和色柱仍应恢复。
+    const auto connection = QObject::connect(&env.window, &QQuickWindow::sceneGraphInvalidated,
+        &env.window, [&] { invalidated.store(true); }, Qt::DirectConnection);
+    env.window.hide();
+    env.window.releaseResources();
+    QElapsedTimer timer;
+    timer.start();
+    while (!invalidated.load() && timer.elapsed() < 5000) {
+        QCoreApplication::processEvents();
+        QThread::msleep(1);
+    }
+    REQUIRE(invalidated.load());
+    QObject::disconnect(connection);
+    env.window.show();
+    REQUIRE(env.flush());
+    CHECK(env.visibleFaceIds() == std::vector<Index>({ 0 }));
+    read_bar(style_after);
+    CHECK(style_after == style_before);
+    CHECK(color_range == std::array<double, 2> { -1.0, 2.0 });
+
+    // 重建后的相机和选择器是新对象，后续拾取验证重新装配测试视角。
+    env.item.setSelectMode("Face");
+    env.item.dispatch_async([](vtkRenderWindow*, QQuickVTKItem::vtkUserData user_data) {
+        auto* data = QRenderWindow::Data::SafeDownCast(user_data);
+        auto* camera = data->renderer_->GetActiveCamera();
+        camera->SetPosition(6.5, 0.5, 5.0);
+        camera->SetFocalPoint(6.5, 0.5, 0.0);
+        camera->SetViewUp(0.0, 1.0, 0.0);
+        camera->SetParallelScale(2.0);
+    });
+    REQUIRE(env.flush());
+
+    env.item.cancelComponentAttri(7);
+    CHECK(env.visibleFaceIds() == std::vector<Index>({ 0, 1 }));
+    auto state = env.item.scalarRangeState(7, "f_range_1", 2);
+    CHECK_FALSE(state["active"].toBool());
+    CHECK(state["displayLower"].toDouble() == 0.2);
+    env.item.setAttriMode(7, "f_range_1", 1, { });
+    CHECK(env.visibleFaceIds() == std::vector<Index>({ 0 }));
+    env.item.resetScalarRange(7, "f_range_1", 2, true);
+    CHECK(env.visibleFaceIds() == std::vector<Index>({ 0, 1 }));
+    CHECK(env.item.scalarRangeState(7, "f_range_1", 2)["mappingLower"].toDouble() == -1.0);
+    env.item.setAttriMode(7, "f_second_1", 1, { });
+    REQUIRE(env.item.setScalarRange(7, "f_second_1", 2, true, 1.0, 1.0));
+    CHECK(env.visibleFaceIds() == std::vector<Index>({ 1 }));
+    env.item.setAttriMode(7, "f_range_1", 1, { });
+    CHECK(env.visibleFaceIds() == std::vector<Index>({ 0, 1 }));
+    CHECK(env.item.scalarRangeState(7, "f_second_1", 2)["displayLower"].toDouble() == 1.0);
+
+    // 筛选后的面下标压缩为零，人工隐藏仍须命中原始面 1。
+    REQUIRE(env.item.setScalarRange(7, "f_range_1", 2, true, 0.7, 0.8));
+    env.selectFace(1);
+    REQUIRE(env.selectedFaceIds() == std::vector<Index>({ 1 }));
+    env.item.hideSelectedFaces();
+    CHECK(env.visibleFaceIds().empty());
+    env.item.resetScalarRange(7, "f_range_1", 2, true);
+    CHECK(env.visibleFaceIds() == std::vector<Index>({ 0 }));
+    env.item.cancelComponentAttri(7);
+    CHECK(env.visibleFaceIds() == std::vector<Index>({ 0 }));
+}
+
+TEST_CASE("Scalar range viewport isolates components and disallows node hiding", "[scalar-range]")
+{
+    testApplication();
+    FaceHidingViewport env;
+    env.mesh.face_attributes_["f_range_1"] = { 0.25, 0.75 };
+    env.mesh.vertex_attributes_["v_range_1"].assign(env.mesh.vertex_positions_.size(), 0.5);
+    env.item.loadMeshData(7, MakeMeshDataVtk(env.mesh));
+    env.item.loadMeshData(8, MakeMeshDataVtk(env.mesh));
+    env.item.setAttriMode(7, "f_range_1", 1, { });
+    env.item.setAttriMode(8, "f_range_1", 1, { });
+    REQUIRE(env.item.setScalarRange(7, "f_range_1", 2, true, 0.2, 0.3));
+    REQUIRE(env.item.setScalarRange(8, "f_range_1", 2, true, 0.7, 0.8));
+    CHECK(env.visibleFaceIds(7) == std::vector<Index>({ 0 }));
+    CHECK(env.visibleFaceIds(8) == std::vector<Index>({ 1 }));
+    auto node = env.item.scalarRangeState(7, "v_range_1", 0);
+    CHECK(node["valid"].toBool());
+    CHECK_FALSE(node["rangeAvailable"].toBool());
+    CHECK_FALSE(env.item.setScalarRange(7, "v_range_1", 0, true, 0.0, 1.0));
+    env.item.setAttriMode(7, "v_range_1", 1, { });
+    CHECK(env.visibleFaceIds(7) == std::vector<Index>({ 0, 1 }));
+    CHECK(env.visibleFaceIds(8) == std::vector<Index>({ 1 }));
+    env.item.deleteComponent(7);
+    env.item.loadMeshData(7, MakeMeshDataVtk(env.mesh));
+    CHECK_FALSE(env.item.scalarRangeState(7, "f_range_1", 2)["filtered"].toBool());
+    REQUIRE(env.flush());
+}
 
 TEST_CASE("QRenderWindow hiding faces clears selection and highlighting")
 {

@@ -78,8 +78,10 @@ void AttriRenderStrategyScalar::render(
             array->GetRange(range);
         }
     };
-    // 判断是否是点属性
-    vtkDataArray* array = op.getFacePointData()->GetArray(attr_name.c_str());
+    // 显式实体域优先，防止不同域的同名属性读取到另一份数组。
+    const auto domain = args.find("element_type");
+    const int element_type = domain == args.end() ? -1 : std::any_cast<int>(domain->second);
+    vtkDataArray* array = element_type < 0 || element_type == 0 ? op.getFacePointData()->GetArray(attr_name.c_str()) : nullptr;
     if (array) {
         double range[2];
         resolveRange(array, range);
@@ -103,7 +105,7 @@ void AttriRenderStrategyScalar::render(
         return;
     }
     // 判断是否是边属性
-    array = op.getEdgeCellData()->GetArray(attr_name.c_str());
+    array = element_type < 0 || element_type == 1 ? op.getEdgeCellData()->GetArray(attr_name.c_str()) : nullptr;
     if (array) {
         double range[2];
         resolveRange(array, range);
@@ -118,7 +120,7 @@ void AttriRenderStrategyScalar::render(
         return;
     }
     // 判断是否是面属性
-    array = op.getFaceCellData()->GetArray(attr_name.c_str());
+    array = element_type < 0 || element_type == 2 ? op.getFaceCellData()->GetArray(attr_name.c_str()) : nullptr;
     if (array) {
         op.enableFaceAttributeOffset();
         double range[2];
@@ -134,7 +136,7 @@ void AttriRenderStrategyScalar::render(
         return;
     }
     // 判断是否是体属性
-    array = op.getSolidCellData()->GetArray(attr_name.c_str());
+    array = element_type < 0 || element_type == 3 ? op.getSolidCellData()->GetArray(attr_name.c_str()) : nullptr;
     if (array) {
         op.disableFaceAttributeOffset();
         double range[2];

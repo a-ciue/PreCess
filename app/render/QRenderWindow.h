@@ -11,6 +11,7 @@
 #include "MeshPipelineData.h"
 #include "QModelQuery.h"
 #include "QSelection.h"
+#include "ScalarRenderRange.h"
 #include <QQuickVTKItem.h>
 #include <QVTKRenderWindowAdapter.h>
 #include <unordered_map>
@@ -27,7 +28,9 @@
 #include <vtkRenderWindowInteractor.h>
 #include <vtkRenderer.h>
 
+#include <map>
 #include <memory>
+#include <tuple>
 
 class MeshActor;
 class SelectManager;
@@ -240,6 +243,14 @@ public:
      */
     Q_INVOKABLE void cancelComponentAttri(Index component_id);
 
+    /** @brief 读取当前属性独立保存的范围；查询不会自动启用渲染。 */
+    Q_INVOKABLE QVariantMap scalarRangeState(Index component_id, const QString& attribute, int element_type);
+    /** @brief 编辑一种范围；仅已应用的当前属性实时更新视口。 */
+    Q_INVOKABLE bool setScalarRange(Index component_id, const QString& attribute, int element_type,
+        bool display_mode, double lower, double upper);
+    /** @brief 仅重置所选范围，保留另一范围及其他隐藏来源。 */
+    Q_INVOKABLE void resetScalarRange(Index component_id, const QString& attribute, int element_type, bool display_mode);
+
     bool event(QEvent* ev) override;
 
 signals:
@@ -249,6 +260,8 @@ signals:
     void meshStyleChanged();
     void clicked();
     void rightClicked();
+    /** @brief 范围参数或启用状态变化，供属性面板刷新。 */
+    void scalarRangeChanged();
     /** @brief 在 GUI 决定显隐后同步通知对象树，渲染线程只安装结果。 */
     void componentVisibilityChanged(Index component_id, bool mesh_visible, bool geometry_visible);
 
@@ -256,6 +269,19 @@ protected:
     void itemChange(ItemChange change, const ItemChangeData& value) override;
 
 private:
+    /** @brief 组件、属性名和实体域共同标识一份范围状态。 */
+    using ScalarKey = std::tuple<Index, std::string, int>;
+    /** @brief 从完整属性值域初始化状态，已有状态保留用户设置。 */
+    ScalarRenderRange* ensureScalarRange(Index component_id, const QString& attribute, int element_type);
+    /** @brief GUI 生成筛选快照，渲染线程按已保存映射范围着色。 */
+    void applyScalarRange(Index component_id, const QString& attribute, int element_type, const ScalarRenderRange& range);
+    /** @brief 停用当前标量范围而不删除参数，恢复非范围隐藏结果。 */
+    void deactivateScalarRange(Index component_id);
+    std::map<ScalarKey, ScalarRenderRange> scalar_ranges_;
+    std::map<Index, ScalarKey> active_scalar_attributes_;
+    // 只记录共享色柱的归属，用于场景图重建时恢复同一属性的现有色柱。
+    Index scalar_bar_component_id_ { -1 };
+
     //! @brief GUI 线程保存 DPR，并将叠加层像素尺寸更新排入渲染队列。
     void updateOverlayScale(qreal ratio);
     qreal overlay_device_pixel_ratio_ { 1.0 };

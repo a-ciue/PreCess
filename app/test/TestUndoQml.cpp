@@ -21,6 +21,7 @@
 #include <QEventLoop>
 #include <QFile>
 #include <QGuiApplication>
+#include <QImage>
 #include <QQmlComponent>
 #include <QQmlContext>
 #include <QQmlEngine>
@@ -555,6 +556,114 @@ TEST_CASE("Actual QML follows successful deletion notifications and preserves se
     REQUIRE(waitForRefresh(*tree_model));
     CHECK(selection_state->property("activeModelId").toInt() == -1);
     CHECK(selection_state->property("activeComponentId").toInt() == -1);
+}
+
+TEST_CASE("Scalar range actual panel restores mode fields and independently resets ranges", "[QML][scalar-range]")
+{
+    application();
+    QmlFixture fixture;
+    auto component = std::make_unique<ComponentData>();
+    component->mesh = std::make_unique<MeshData>();
+    auto& mesh = *component->mesh;
+    mesh.vertex_positions_ = { { 0, 0, 0 }, { 1, 0, 0 }, { 1, 1, 0 }, { 0, 1, 0 } };
+    mesh.vertex_count_ = 4;
+    mesh.face_vertices_ = { 0, 1, 2, 0, 2, 3 };
+    mesh.face_vertices_offset_ = { 0, 3, 6 };
+    mesh.face_attributes_["f_pressure_1"] = { 0.25, 0.75 };
+    ComponentDatas components;
+    components.push_back(std::move(component));
+    auto& model = *fixture.manager->getModelManager();
+    /** @brief 使用正式功能入口安装输入，遵守会话模型的操作边界。 */
+    class ScalarPanelInput : public systems::feature::FeatureHandler {
+    public:
+        /** @brief 接管自持组件，执行前不修改活模型。 */
+        explicit ScalarPanelInput(ComponentDatas components)
+            : components_(std::move(components))
+        {
+        }
+        /** @brief 此夹具不需要参数和导航入口。 */
+        void setup(systems::feature::FeatureRegistrar&, systems::feature::FeatureContext&) override { }
+        /** @brief 在框架正式操作边界中安装组件。 */
+        std::any execute(systems::feature::FeatureContext& context) override
+        {
+            return context.model.addModel("标量范围验证", std::move(components_));
+        }
+
+    private:
+        ComponentDatas components_;
+    };
+    auto& system = *fixture.manager->getFeatureSystemAdaptor()->featureSystem();
+    systems::feature::HandlerMetaData metadata;
+    metadata.name = "ScalarPanelInput";
+    REQUIRE(system.registerHandler(metadata, systems::feature::FeatureSystem::SystemHandlerPtr { std::make_unique<ScalarPanelInput>(std::move(components)).release() }));
+    const auto model_id = std::any_cast<Index>(system.invoke("ScalarPanelInput"));
+    const auto component_id = model.modelById(model_id)->componentIds()[0];
+    auto* viewport = fixture.viewport->findChild<QRenderWindow*>();
+    REQUIRE(viewport);
+    viewport->onComponentChanged(component_id);
+    fixture.selection_state->setProperty("activeComponentId", component_id);
+    auto panel = load(fixture.engine, "AttributeRenderPanel.qml");
+    panel->setProperty("selectedIndex", 0);
+    auto* mode = panel->findChild<QObject*>("attributeRenderMode");
+    REQUIRE(mode);
+    mode->setProperty("currentIndex", 1);
+    REQUIRE(QMetaObject::invokeMethod(panel.get(), "refreshScalarState"));
+    auto* lower = panel->findChild<QObject*>("scalarRangeLower");
+    auto* upper = panel->findChild<QObject*>("scalarRangeUpper");
+    auto* slider = panel->findChild<QObject*>("scalarRangeSlider");
+    REQUIRE(lower);
+    REQUIRE(upper);
+    REQUIRE(slider);
+    CHECK(lower->property("text").toString() == "0.25");
+    CHECK(upper->property("text").toString() == "0.75");
+    lower->setProperty("text", "-1");
+    upper->setProperty("text", "2");
+    REQUIRE(QMetaObject::invokeMethod(lower, "textEdited"));
+    QVariant accepted;
+    REQUIRE(QMetaObject::invokeMethod(panel.get(), "commitRangeFields", Q_RETURN_ARG(QVariant, accepted)));
+    CHECK(accepted.toBool());
+    CHECK(slider->property("from").toDouble() == -1.0);
+    CHECK(slider->property("to").toDouble() == 2.0);
+    REQUIRE(QMetaObject::invokeMethod(panel.get(), "changeRangeMode", Q_ARG(QVariant, true)));
+    CHECK(panel->property("displayRangeMode").toBool());
+    CHECK(lower->property("text").toString() == "0.25");
+    REQUIRE(viewport->setScalarRange(component_id, "f_pressure_1", 2, true, 0.3, 0.6));
+    auto* reset = panel->findChild<QObject*>("scalarRangeReset");
+    REQUIRE(reset);
+    REQUIRE(QMetaObject::invokeMethod(reset, "clicked"));
+    const auto state = viewport->scalarRangeState(component_id, "f_pressure_1", 2);
+    CHECK_FALSE(state["filtered"].toBool());
+    CHECK(state["mappingLower"].toDouble() == -1.0);
+    CHECK(state["mappingUpper"].toDouble() == 2.0);
+    REQUIRE(QMetaObject::invokeMethod(panel.get(), "changeRangeMode", Q_ARG(QVariant, false)));
+    CHECK_FALSE(viewport->scalarRangeState(component_id, "f_pressure_1", 2)["filtered"].toBool());
+    CHECK(lower->property("text").toString() == "-1");
+    CHECK(upper->property("text").toString() == "2");
+    // 实际拖动入口经定时器自动保存最新位置，无需再点击应用。
+    REQUIRE(QMetaObject::invokeMethod(panel.get(), "queueRange", Q_ARG(QVariant, -0.5), Q_ARG(QVariant, 1.5)));
+    QElapsedTimer drag_timer;
+    drag_timer.start();
+    while (viewport->scalarRangeState(component_id, "f_pressure_1", 2)["mappingLower"].toDouble() != -0.5
+        && drag_timer.elapsed() < 1000)
+        QCoreApplication::processEvents(QEventLoop::AllEvents, 20);
+    CHECK(viewport->scalarRangeState(component_id, "f_pressure_1", 2)["mappingLower"].toDouble() == -0.5);
+    CHECK(viewport->scalarRangeState(component_id, "f_pressure_1", 2)["mappingUpper"].toDouble() == 1.5);
+    // 可选导出真实 QML 面板，供本次交付检查布局，不替代上述行为断言。
+    const auto preview_path = qEnvironmentVariable("PRECESS_SCALAR_PREVIEW");
+    if (!preview_path.isEmpty()) {
+        QQuickWindow preview;
+        preview.setFlags(Qt::Tool | Qt::WindowDoesNotAcceptFocus);
+        preview.resize(420, 370);
+        auto* item = qobject_cast<QQuickItem*>(panel.get());
+        REQUIRE(item);
+        item->setParentItem(preview.contentItem());
+        item->setSize(QSizeF(420, 370));
+        preview.show();
+        const auto image = preview.grabWindow();
+        REQUIRE_FALSE(image.isNull());
+        REQUIRE(image.save(preview_path));
+        item->setParentItem(nullptr);
+    }
 }
 
 TEST_CASE("Actual undo clears offscreen selectors only after successful restoration", "[QML][undo]")
