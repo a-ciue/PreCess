@@ -654,3 +654,48 @@ TEST_CASE("showAllFaces restores triangular surface wireframe after extensive hi
         REQUIRE(countInteriorEdgePixels(*window) == original_edges);
     }
 }
+
+TEST_CASE("MeshPipelineData reuses immutable internal edges until source reload")
+{
+    MeshData mesh;
+    MeshPipelineData data;
+    data.loadModelData(MakeMeshDataVtk(mesh));
+    const auto original = data.createSnapshot();
+    auto* edges = original->solid_internal_edges.GetPointer();
+    REQUIRE(edges->GetNumberOfCells() > 0);
+    double first_point[3];
+    edges->GetPoint(0, first_point);
+    const auto original_edge_count = edges->GetNumberOfCells();
+
+    // 裁剪掉全部体单元后，内部线框仍保持既有的完整原始体语义。
+    MeshClipPlane plane;
+    plane.enabled = true;
+    plane.origin = { -1.0e6, 0.0, 0.0 };
+    data.setClipPlane(plane);
+    const auto clipped = data.createSnapshot();
+    REQUIRE(clipped->solid_surface->GetNumberOfCells() == 0);
+    CHECK(clipped->solid_internal_edges == edges);
+    CHECK(edges->GetNumberOfCells() == original_edge_count);
+
+    data.setClipPlane(plane);
+    const auto repeated = data.createSnapshot();
+    CHECK(repeated->solid_surface == clipped->solid_surface);
+    data.hideFaces({ 0 });
+    CHECK(data.createSnapshot()->solid_internal_edges == edges);
+    data.setClipPlane(nullptr);
+    CHECK(data.createSnapshot()->solid_internal_edges == edges);
+
+    // 同一组件重新加载坐标后必须失效，旧快照仍能独立使用。
+    for (auto& position : mesh.vertex_positions_)
+        position[0] += 10.0;
+    data.loadModelData(MakeMeshDataVtk(mesh));
+    const auto reloaded = data.createSnapshot();
+    CHECK(reloaded->solid_internal_edges != edges);
+    double updated_point[3];
+    reloaded->solid_internal_edges->GetPoint(0, updated_point);
+    CHECK(updated_point[0] == first_point[0] + 10.0);
+    double retained_point[3];
+    edges->GetPoint(0, retained_point);
+    CHECK(retained_point[0] == first_point[0]);
+    CHECK(edges->GetNumberOfCells() == original_edge_count);
+}

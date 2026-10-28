@@ -11,7 +11,7 @@ SDK 包与 API 仍叫 PreCess，插件使用 C++20。新增算法一律使用 Fe
 
 - 构建、测试、加载、安装、打包：读取 [references/build.md](references/build.md)。
 - Handler、选择器、事件、模型写入、任务、预览、交互：读取 [references/development.md](references/development.md)，以已安装头文件确认签名。
-- 最小骨架参考 examples/ExternalPlugin；事件、任务、预览、旧算法进度（仅兼容示例，不用于新增插件）分别参考 FeatureDemoPlugin、TaskDemoPlugin、ScalePreviewPlugin、ProgressDemoPlugin。
+- 最小骨架参考 examples/ExternalPlugin；事件、任务、预览分别参考 FeatureDemoPlugin、TaskDemoPlugin、ScalePreviewPlugin。
 
 不固定 SDK 或编译器版本；按 SDK 的依赖/ABI 提示核对兼容性，Debug/非 Debug 不混用，不常规关闭校验。示例的活动组件查询是教学简化，正式功能用 Selector。GPL/AGPL 代码及依赖留在插件工程，不引入 LGPL SDK。
 

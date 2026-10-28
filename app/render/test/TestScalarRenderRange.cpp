@@ -96,11 +96,14 @@ TEST_CASE("Scalar range filters edge and solid cells but rejects points", "[scal
     CHECK(pipeline.createSnapshot()->visible_edges->GetNumberOfCells() == 1);
     pipeline.setScalarDisplayRange("value", ElementType::SOLID, true, { 0.0, 0.0 });
     const auto filtered = pipeline.createSnapshot();
+    CHECK(filtered->solid_surface->GetNumberOfCells() > 0);
+    CHECK(filtered->solid_surface->GetNumberOfCells() < original->solid_surface->GetNumberOfCells());
     auto* values = filtered->solid_surface->GetCellData()->GetArray("value");
     REQUIRE(values);
     for (vtkIdType id = 0; id < values->GetNumberOfTuples(); ++id)
         CHECK(values->GetComponent(id, 0) == 0.0);
-    CHECK(filtered->solid_internal_edges->GetNumberOfCells() < original->solid_internal_edges->GetNumberOfCells());
+    // 沿用 develop 的完整体内部线框语义，范围筛选仅改变体表面，不重建内部边线缓存。
+    CHECK(filtered->solid_internal_edges == original->solid_internal_edges);
     REQUIRE(filtered->solid_internal_edges->GetCellData()->GetArray("value"));
     CHECK(filtered->visible_faces->GetNumberOfCells() == original->visible_faces->GetNumberOfCells());
     CHECK_THROWS_AS(pipeline.setScalarDisplayRange("value", ElementType::VERTEX, true, { 0.0, 1.0 }), std::invalid_argument);
