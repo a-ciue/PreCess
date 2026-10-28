@@ -25,6 +25,7 @@
 #include <QQmlComponent>
 #include <QQmlContext>
 #include <QQmlEngine>
+#include <QQmlExpression>
 #include <QQmlExtensionPlugin>
 #include <QQuickVTKItem.h>
 #include <QQuickWindow>
@@ -569,7 +570,7 @@ TEST_CASE("Scalar range actual panel restores mode fields and independently rese
     mesh.vertex_count_ = 4;
     mesh.face_vertices_ = { 0, 1, 2, 0, 2, 3 };
     mesh.face_vertices_offset_ = { 0, 3, 6 };
-    mesh.face_attributes_["f_pressure_1"] = { 0.25, 0.75 };
+    mesh.face_attributes_["f_pressure_1"] = { 0.253759, 0.754987 };
     ComponentDatas components;
     components.push_back(std::move(component));
     auto& model = *fixture.manager->getModelManager();
@@ -614,20 +615,48 @@ TEST_CASE("Scalar range actual panel restores mode fields and independently rese
     REQUIRE(lower);
     REQUIRE(upper);
     REQUIRE(slider);
-    CHECK(lower->property("text").toString() == "0.25");
-    CHECK(upper->property("text").toString() == "0.75");
-    lower->setProperty("text", "-1");
-    upper->setProperty("text", "2");
+    CHECK(lower->property("text").toString() == "0.253");
+    CHECK(upper->property("text").toString() == "0.754");
+    auto* original_range = panel->findChild<QObject*>("scalarOriginalRange");
+    REQUIRE(original_range);
+    CHECK(original_range->property("text").toString() == QStringLiteral("原始范围：0.253 ～ 0.754"));
+    // 同一格式覆盖正负值、零以及两端的科学计数法边界。
+    for (const auto& [value, expected] : std::map<double, QString> {
+             { -12.34567, "-12.345" }, { 0, "0" }, { 0.000123456, "1.234e-4" },
+             { 0.001, "0.001" }, { 0.123456, "0.123" }, { 1230, "1230" },
+             { 9999.9999, "9999.999" }, { 10000, "1.000e+4" }, { 1234567, "1.234e+6" } }) {
+        QVariant formatted;
+        REQUIRE(QMetaObject::invokeMethod(panel.get(), "formatRangeValue", Q_RETURN_ARG(QVariant, formatted), Q_ARG(QVariant, value)));
+        CHECK(formatted.toString() == expected);
+    }
+    // 用户反向填写映射范围时，提交后同时交换数值、输入框及滑块端点。
+    lower->setProperty("text", "2");
+    upper->setProperty("text", "-1");
     REQUIRE(QMetaObject::invokeMethod(lower, "textEdited"));
+    REQUIRE(QMetaObject::invokeMethod(upper, "textEdited"));
     QVariant accepted;
     REQUIRE(QMetaObject::invokeMethod(panel.get(), "commitRangeFields", Q_RETURN_ARG(QVariant, accepted)));
     CHECK(accepted.toBool());
+    CHECK(lower->property("text").toString() == "-1");
+    CHECK(upper->property("text").toString() == "2");
     CHECK(slider->property("from").toDouble() == -1.0);
     CHECK(slider->property("to").toDouble() == 2.0);
     REQUIRE(QMetaObject::invokeMethod(panel.get(), "changeRangeMode", Q_ARG(QVariant, true)));
     CHECK(panel->property("displayRangeMode").toBool());
-    CHECK(lower->property("text").toString() == "0.25");
-    REQUIRE(viewport->setScalarRange(component_id, "f_pressure_1", 2, true, 0.3, 0.6));
+    CHECK(lower->property("text").toString() == "0.253");
+    // 显示范围共用同一纠正逻辑，同时保留另一份映射范围。
+    lower->setProperty("text", "0.6");
+    upper->setProperty("text", "0.3");
+    REQUIRE(QMetaObject::invokeMethod(lower, "textEdited"));
+    REQUIRE(QMetaObject::invokeMethod(upper, "textEdited"));
+    REQUIRE(QMetaObject::invokeMethod(panel.get(), "commitRangeFields", Q_RETURN_ARG(QVariant, accepted)));
+    CHECK(accepted.toBool());
+    const auto swapped_display = viewport->scalarRangeState(component_id, "f_pressure_1", 2);
+    CHECK(swapped_display["displayLower"].toDouble() == 0.3);
+    CHECK(swapped_display["displayUpper"].toDouble() == 0.6);
+    CHECK(swapped_display["mappingLower"].toDouble() == -1.0);
+    CHECK(lower->property("text").toString() == "0.3");
+    CHECK(upper->property("text").toString() == "0.6");
     auto* reset = panel->findChild<QObject*>("scalarRangeReset");
     REQUIRE(reset);
     REQUIRE(QMetaObject::invokeMethod(reset, "clicked"));
@@ -648,9 +677,20 @@ TEST_CASE("Scalar range actual panel restores mode fields and independently rese
         QCoreApplication::processEvents(QEventLoop::AllEvents, 20);
     CHECK(viewport->scalarRangeState(component_id, "f_pressure_1", 2)["mappingLower"].toDouble() == -0.5);
     CHECK(viewport->scalarRangeState(component_id, "f_pressure_1", 2)["mappingUpper"].toDouble() == 1.5);
+    // 显示截断不能改写参数；仅编辑下限时，上限仍保留原精度。
+    REQUIRE(viewport->setScalarRange(component_id, "f_pressure_1", 2, false, -0.5123456, 1.5123456));
+    CHECK(lower->property("text").toString() == "-0.512");
+    CHECK(upper->property("text").toString() == "1.512");
+    lower->setProperty("text", "-0.6123456");
+    REQUIRE(QMetaObject::invokeMethod(lower, "textEdited"));
+    REQUIRE(QMetaObject::invokeMethod(panel.get(), "commitRangeFields", Q_RETURN_ARG(QVariant, accepted)));
+    CHECK(accepted.toBool());
+    const auto precise_state = viewport->scalarRangeState(component_id, "f_pressure_1", 2);
+    CHECK(precise_state["mappingLower"].toDouble() == -0.6123456);
+    CHECK(precise_state["mappingUpper"].toDouble() == 1.5123456);
     // 可选导出真实 QML 面板，供本次交付检查布局，不替代上述行为断言。
     const auto preview_path = qEnvironmentVariable("PRECESS_SCALAR_PREVIEW");
-    if (!preview_path.isEmpty()) {
+    {
         QQuickWindow preview;
         preview.setFlags(Qt::Tool | Qt::WindowDoesNotAcceptFocus);
         preview.resize(420, 370);
@@ -661,7 +701,53 @@ TEST_CASE("Scalar range actual panel restores mode fields and independently rese
         preview.show();
         const auto image = preview.grabWindow();
         REQUIRE_FALSE(image.isNull());
-        REQUIRE(image.save(preview_path));
+        if (!preview_path.isEmpty())
+            REQUIRE(image.save(preview_path));
+        auto* lower_item = qobject_cast<QQuickItem*>(lower);
+        auto* upper_item = qobject_cast<QQuickItem*>(upper);
+        auto* slider_item = qobject_cast<QQuickItem*>(slider);
+        REQUIRE(lower_item);
+        REQUIRE(upper_item);
+        REQUIRE(slider_item);
+        CHECK(lower_item->mapToItem(item, QPointF(0, lower_item->height())).y() <= slider_item->mapToItem(item, QPointF()).y());
+        CHECK(upper_item->mapToItem(item, QPointF(0, upper_item->height())).y() <= slider_item->mapToItem(item, QPointF()).y());
+        CHECK(lower_item->mapToItem(item, QPointF()).x() == slider_item->mapToItem(item, QPointF()).x());
+        CHECK(upper_item->mapToItem(item, QPointF(upper_item->width(), 0)).x() == slider_item->mapToItem(item, QPointF(slider_item->width(), 0)).x());
+        for (const auto* name : { "scalarMappingMode", "scalarDisplayMode", "scalarRangeReset" }) {
+            auto* button = panel->findChild<QQuickItem*>(name);
+            REQUIRE(button);
+            CHECK(button->mapToItem(item, QPointF()).y() >= slider_item->mapToItem(item, QPointF(0, slider_item->height())).y());
+        }
+        auto* apply_button = panel->findChild<QQuickItem*>("attributeRenderApply");
+        auto* cancel_button = panel->findChild<QQuickItem*>("attributeRenderCancel");
+        REQUIRE(apply_button);
+        REQUIRE(cancel_button);
+        CHECK(apply_button->mapToItem(item, QPointF()).x() > item->width() / 2);
+        CHECK(cancel_button->mapToItem(item, QPointF(cancel_button->width(), 0)).x() == slider_item->mapToItem(item, QPointF(slider_item->width(), 0)).x());
+        lower_item->forceActiveFocus();
+        CHECK(lower->property("text").toString() == "-0.612");
+        upper_item->forceActiveFocus();
+        CHECK(lower->property("text").toString() == "-0.612");
+        CHECK(upper->property("text").toString() == "1.512");
+        CHECK(viewport->scalarRangeState(component_id, "f_pressure_1", 2)["mappingUpper"].toDouble() == 1.5123456);
+        // 实际属性点击信号会自动应用一次；取消后再次点击同一属性也能恢复。
+        REQUIRE(QMetaObject::invokeMethod(cancel_button, "clicked"));
+        CHECK_FALSE(viewport->scalarRangeState(component_id, "f_pressure_1", 2)["active"].toBool());
+        auto* attribute_list = panel->findChild<QObject*>("attributeRenderList");
+        REQUIRE(attribute_list);
+        auto* attribute_row = attribute_list->property("currentItem").value<QQuickItem*>();
+        REQUIRE(attribute_row);
+        auto* attribute_mouse = attribute_row->findChild<QObject*>("attributeRenderSelect");
+        REQUIRE(attribute_mouse);
+        int apply_count = 0;
+        const auto connection = QObject::connect(viewport, &QRenderWindow::scalarRangeChanged, [&] { ++apply_count; });
+        QQmlExpression click(fixture.engine.rootContext(), attribute_mouse, "clicked(null)");
+        click.evaluate();
+        QObject::disconnect(connection);
+        INFO(click.error().toString().toStdString());
+        REQUIRE_FALSE(click.hasError());
+        CHECK(apply_count == 1);
+        CHECK(viewport->scalarRangeState(component_id, "f_pressure_1", 2)["active"].toBool());
         item->setParentItem(nullptr);
     }
 }

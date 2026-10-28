@@ -25,6 +25,27 @@ Item {
     property var rangeEditTarget: null
     property var rememberedAttributes: ({})
 
+    // 普通值截断至三位小数，极值用四位有效数字；按十进制文本截取，避免乘除造成浮点误差。
+    function formatRangeValue(value) {
+        if (!Number.isFinite(value))
+            return "";
+        let magnitude = Math.abs(value);
+        if (magnitude !== 0 && (magnitude < 0.001 || magnitude >= 10000)) {
+            let parts = magnitude.toExponential().split("e");
+            let digits = (parts[0].replace(".", "") + "000").slice(0, 4);
+            return (value < 0 ? "-" : "") + digits[0] + "." + digits.slice(1) + "e" + parts[1];
+        }
+        let text = String(value);
+        let point = text.indexOf(".");
+        return point < 0 ? text : text.slice(0, point + 4).replace(/\.?0+$/, "");
+    }
+
+    // 显示文本与实际值分开，缩短数字不改变渲染参数或另一端未编辑的精度。
+    function updateRangeField(field, value) {
+        field.exactValue = value;
+        field.text = formatRangeValue(value);
+    }
+
     // 恢复当前属性的两份独立范围，拖动期间固定滑条坐标，避免端点跳动。
     function refreshScalarState() {
         let attr = selectedAttribute();
@@ -39,9 +60,9 @@ Item {
         let lower = displayRangeMode ? scalarState.displayLower : scalarState.mappingLower;
         let upper = displayRangeMode ? scalarState.displayUpper : scalarState.mappingUpper;
         if (!rangeMinField.activeFocus)
-            rangeMinField.text = String(lower);
+            updateRangeField(rangeMinField, lower);
         if (!rangeMaxField.activeFocus)
-            rangeMaxField.text = String(upper);
+            updateRangeField(rangeMaxField, upper);
         if (!rangeSlider.first.pressed && !rangeSlider.second.pressed) {
             sliderMinimum = Math.min(scalarState.minimum, lower);
             sliderMaximum = Math.max(scalarState.maximum, upper);
@@ -68,8 +89,8 @@ Item {
             lower: lower,
             upper: upper
         };
-        rangeMinField.text = String(lower);
-        rangeMaxField.text = String(upper);
+        updateRangeField(rangeMinField, lower);
+        updateRangeField(rangeMaxField, upper);
         if (!rangeUpdateTimer.running)
             rangeUpdateTimer.start();
     }
@@ -96,20 +117,30 @@ Item {
         rangeFieldsDirty = true;
     }
 
-    // 仅提交用户实际编辑的完整区间，模式切换和回填不能暗中启用筛选。
+    // 编辑完成后先交换反向区间；仅提交实际编辑，模式切换和回填不能暗中启用筛选。
     function commitRangeFields() {
         flushPendingRange();
-        if (!scalarState.valid || !rangeFieldsDirty || !rangeEditTarget)
+        if (!rangeFieldsDirty || !rangeEditTarget)
             return true;
-        let lower = optionalNumber(rangeMinField.text);
-        let upper = optionalNumber(rangeMaxField.text);
-        if (lower === null || upper === null || lower > upper) {
-            rangeError = "请输入有限数值，且下限不能大于上限";
+        let lower = rangeMinField.exactValue;
+        let upper = rangeMaxField.exactValue;
+        if (scalarState.valid && (lower === null || upper === null)) {
+            rangeError = "请输入有限数值";
             return false;
+        }
+        if (lower !== null && upper !== null && lower > upper) {
+            let previousLower = lower;
+            lower = upper;
+            upper = previousLower;
+            updateRangeField(rangeMinField, lower);
+            updateRangeField(rangeMaxField, upper);
         }
         let target = rangeEditTarget;
         rangeFieldsDirty = false;
         rangeEditTarget = null;
+        // 多分量属性沿用可选映射参数，不要求单值属性的范围状态。
+        if (!scalarState.valid)
+            return true;
         let accepted = App.registry.renderWindow.setScalarRange(target.component, target.attribute, target.type, target.display, lower, upper);
         rangeError = accepted ? "" : "当前属性不支持此范围";
         return accepted;
@@ -186,8 +217,8 @@ Item {
             let attr = selectedAttribute();
             if (attr)
                 args["element_type"] = attr.attrType;
-            let minValue = optionalNumber(rangeMinField.text);
-            let maxValue = optionalNumber(rangeMaxField.text);
+            let minValue = rangeMinField.exactValue;
+            let maxValue = rangeMaxField.exactValue;
             if (!scalarState.valid && minValue !== null && maxValue !== null)
                 args["scalar_range"] = [minValue, maxValue];
         } else if (modeCombo.currentIndex === 2) {
@@ -213,6 +244,14 @@ Item {
             return false;
 
         return modeCombo.currentIndex !== 2 || texturePathField.text.length > 0;
+    }
+
+    // 属性点击和应用按钮共用一次提交入口，沿用各渲染策略的参数检查。
+    function applySelectedAttribute() {
+        if (!canApply() || (modeCombo.currentIndex === 1 && !commitRangeFields()))
+            return;
+        let attr = selectedAttribute();
+        App.registry.renderWindow.setAttriMode(App.selection.activeComponentId, attr.name, modeCombo.currentIndex, renderArgs());
     }
 
     function urlToPath(url) {
@@ -249,6 +288,7 @@ Item {
 
         ListView {
             id: attributeList
+            objectName: "attributeRenderList"
             Layout.fillWidth: true
             Layout.fillHeight: true
             Layout.minimumHeight: 60
@@ -302,6 +342,7 @@ Item {
 
                 MouseArea {
                     id: attributeMouse
+                    objectName: "attributeRenderSelect"
                     anchors.fill: parent
                     hoverEnabled: true
                     onClicked: {
@@ -318,6 +359,7 @@ Item {
                         rangeMaxField.focus = false;
                         root.rangeError = "";
                         root.refreshScalarState();
+                        root.applySelectedAttribute();
                     }
                 }
             }
@@ -372,6 +414,82 @@ Item {
 
                 RowLayout {
                     Layout.fillWidth: true
+                    TextField {
+                        id: rangeMinField
+                        objectName: "scalarRangeLower"
+                        // 实际值独立保留，获得焦点时仍维持精简显示。
+                        property var exactValue: null
+                        Layout.fillWidth: true
+                        Layout.minimumWidth: 0
+                        placeholderText: "min"
+                        validator: DoubleValidator {}
+                        onActiveFocusChanged: {
+                            if (!activeFocus && !root.rangeFieldsDirty && exactValue !== null)
+                                text = root.formatRangeValue(exactValue);
+                        }
+                        onTextEdited: {
+                            exactValue = root.optionalNumber(text);
+                            root.markRangeEdited();
+                        }
+                        onEditingFinished: {
+                            if (root.commitRangeFields())
+                                root.refreshScalarState();
+                        }
+                    }
+                    Item {
+                        Layout.preferredWidth: 24
+                    }
+                    TextField {
+                        id: rangeMaxField
+                        objectName: "scalarRangeUpper"
+                        // 与下限独立保存精确值，避免仅编辑一端时截断另一端。
+                        property var exactValue: null
+                        Layout.fillWidth: true
+                        Layout.minimumWidth: 0
+                        horizontalAlignment: Text.AlignRight
+                        placeholderText: "max"
+                        validator: DoubleValidator {}
+                        onActiveFocusChanged: {
+                            if (!activeFocus && !root.rangeFieldsDirty && exactValue !== null)
+                                text = root.formatRangeValue(exactValue);
+                        }
+                        onTextEdited: {
+                            exactValue = root.optionalNumber(text);
+                            root.markRangeEdited();
+                        }
+                        onEditingFinished: {
+                            if (root.commitRangeFields())
+                                root.refreshScalarState();
+                        }
+                    }
+                }
+
+                RangeSlider {
+                    id: rangeSlider
+                    objectName: "scalarRangeSlider"
+                    Layout.fillWidth: true
+                    Layout.minimumWidth: 0
+                    enabled: !!root.scalarState.valid
+                    from: root.sliderMinimum
+                    to: root.sliderMaximum
+                    first.onMoved: root.queueRange(first.value, second.value)
+                    second.onMoved: root.queueRange(first.value, second.value)
+                    first.onPressedChanged: {
+                        if (!first.pressed) {
+                            root.flushPendingRange();
+                            root.refreshScalarState();
+                        }
+                    }
+                    second.onPressedChanged: {
+                        if (!second.pressed) {
+                            root.flushPendingRange();
+                            root.refreshScalarState();
+                        }
+                    }
+                }
+
+                RowLayout {
+                    Layout.fillWidth: true
                     Button {
                         objectName: "scalarMappingMode"
                         text: "映射范围"
@@ -409,64 +527,12 @@ Item {
                     }
                 }
 
-                RangeSlider {
-                    id: rangeSlider
-                    objectName: "scalarRangeSlider"
-                    Layout.fillWidth: true
-                    Layout.minimumWidth: 0
-                    enabled: !!root.scalarState.valid
-                    from: root.sliderMinimum
-                    to: root.sliderMaximum
-                    first.onMoved: root.queueRange(first.value, second.value)
-                    second.onMoved: root.queueRange(first.value, second.value)
-                    first.onPressedChanged: {
-                        if (!first.pressed) {
-                            root.flushPendingRange();
-                            root.refreshScalarState();
-                        }
-                    }
-                    second.onPressedChanged: {
-                        if (!second.pressed) {
-                            root.flushPendingRange();
-                            root.refreshScalarState();
-                        }
-                    }
-                }
-
-                RowLayout {
-                    Layout.fillWidth: true
-                    Label {
-                        text: "下限"
-                    }
-                    TextField {
-                        id: rangeMinField
-                        objectName: "scalarRangeLower"
-                        Layout.fillWidth: true
-                        Layout.minimumWidth: 0
-                        placeholderText: "min"
-                        validator: DoubleValidator {}
-                        onTextEdited: root.markRangeEdited()
-                        onEditingFinished: root.commitRangeFields()
-                    }
-                    Label {
-                        text: "上限"
-                    }
-                    TextField {
-                        id: rangeMaxField
-                        objectName: "scalarRangeUpper"
-                        Layout.fillWidth: true
-                        Layout.minimumWidth: 0
-                        placeholderText: "max"
-                        validator: DoubleValidator {}
-                        onTextEdited: root.markRangeEdited()
-                        onEditingFinished: root.commitRangeFields()
-                    }
-                }
                 Label {
+                    objectName: "scalarOriginalRange"
                     Layout.fillWidth: true
                     wrapMode: Text.Wrap
                     color: Theme.textSecondary
-                    text: root.rangeError.length > 0 ? root.rangeError : root.scalarState.valid ? "原始范围：" + root.scalarState.minimum + " ～ " + root.scalarState.maximum : "请选择有效的标量属性"
+                    text: root.rangeError.length > 0 ? root.rangeError : root.scalarState.valid ? "原始范围：" + root.formatRangeValue(root.scalarState.minimum) + " ～ " + root.formatRangeValue(root.scalarState.maximum) : "请选择有效的标量属性"
                 }
             }
 
@@ -516,8 +582,13 @@ Item {
             Layout.fillWidth: true
             spacing: Theme.spacingSm
 
+            Item {
+                Layout.fillWidth: true
+            }
+
             Button {
                 id: applyButton
+                objectName: "attributeRenderApply"
                 text: "应用"
                 enabled: root.canApply()
                 // 主操作：实心强调色按钮
@@ -532,16 +603,11 @@ Item {
                     horizontalAlignment: Text.AlignHCenter
                     verticalAlignment: Text.AlignVCenter
                 }
-                onClicked: {
-                    if (modeCombo.currentIndex === 1 && !root.commitRangeFields())
-                        return;
-                    let attr = root.selectedAttribute();
-                    if (attr)
-                        App.registry.renderWindow.setAttriMode(App.selection.activeComponentId, attr.name, modeCombo.currentIndex, root.renderArgs());
-                }
+                onClicked: root.applySelectedAttribute()
             }
 
             Button {
+                objectName: "attributeRenderCancel"
                 icon.source: "qrc:/images/toolbar/Panels/cancel-render.svg"
                 icon.width: 14
                 icon.height: 14
