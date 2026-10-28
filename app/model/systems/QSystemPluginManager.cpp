@@ -6,6 +6,7 @@
 #include <QFileInfo>
 #include <QString>
 #include <QStringList>
+#include <exception>
 #include <filesystem>
 
 namespace systems {
@@ -28,12 +29,18 @@ void QSystemPluginManager::registerStaticPlugins()
 bool QSystemPluginManager::registerPlugin(const QUrl& plugin_path)
 {
     QString plugin_path_temp = plugin_path.toLocalFile();
-    std::filesystem::path path_std = QFileInfo(plugin_path_temp).filesystemFilePath();
     bool result;
     try {
+        std::filesystem::path path_std = QFileInfo(plugin_path_temp).filesystemFilePath();
         result = system_plugin_manager_->registerPlugin(path_std);
     } catch (const ModelOperationBusy& e) {
         spdlog::warn("QSystemPluginManager: {}", e.what());
+        return false;
+    } catch (const std::exception& error) {
+        spdlog::error("QSystemPluginManager::registerPlugin: {}", error.what());
+        return false;
+    } catch (...) {
+        spdlog::error("QSystemPluginManager::registerPlugin: unknown exception");
         return false;
     }
     if (result) {
@@ -46,11 +53,17 @@ bool QSystemPluginManager::registerPlugin(const QUrl& plugin_path)
 
 void QSystemPluginManager::unregisterPlugin(const QString& plugin_path)
 {
-    std::filesystem::path path_std = QFileInfo(plugin_path).filesystemFilePath();
     try {
+        std::filesystem::path path_std = QFileInfo(plugin_path).filesystemFilePath();
         system_plugin_manager_->unregisterPlugin(path_std);
     } catch (const ModelOperationBusy& e) {
         spdlog::warn("QSystemPluginManager: {}", e.what());
+        return;
+    } catch (const std::exception& error) {
+        spdlog::error("QSystemPluginManager::unregisterPlugin: {}", error.what());
+        return;
+    } catch (...) {
+        spdlog::error("QSystemPluginManager::unregisterPlugin: unknown exception");
         return;
     }
     plugin_paths_.removeOne(plugin_path);

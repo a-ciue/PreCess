@@ -143,30 +143,51 @@ void QFeatureSystemAdaptor::notifyScalarAttributeDisplayRequested(
 
 bool QFeatureSystemAdaptor::setParameter(const QString& unique_name, int index, const QVariant& value)
 {
-    const FeatureParams* params = feature_system_->params(unique_name.toStdString());
-    if (!params || index < 0 || static_cast<std::size_t>(index) >= params->count()) {
-        spdlog::error("QFeatureSystemAdaptor::setParameter: param {} of feature {} not found", index, unique_name.toStdString());
+    try {
+        const FeatureParams* params = feature_system_->params(unique_name.toStdString());
+        if (!params || index < 0 || static_cast<std::size_t>(index) >= params->count()) {
+            spdlog::error("QFeatureSystemAdaptor::setParameter: param {} of feature {} not found", index, unique_name.toStdString());
+            return false;
+        }
+        // 按声明的参数类型把QVariant转换为ArgObject
+        QArgType q_type(params->types()[index]);
+        QArgObject q_object(q_type);
+        q_object.setValue(value);
+        if (std::optional arg = q_object.getValue()) {
+            return feature_system_->setParameter(unique_name.toStdString(), static_cast<std::size_t>(index), std::move(*arg));
+        }
+        spdlog::error("QFeatureSystemAdaptor::setParameter: param {} of feature {} not valid", index, unique_name.toStdString());
         return false;
+    } catch (const std::exception& error) {
+        spdlog::error("QFeatureSystemAdaptor::setParameter {}: {}", unique_name.toStdString(), error.what());
+    } catch (...) {
+        spdlog::error("QFeatureSystemAdaptor::setParameter {}: unknown exception", unique_name.toStdString());
     }
-    // 按声明的参数类型把QVariant转换为ArgObject
-    QArgType q_type(params->types()[index]);
-    QArgObject q_object(q_type);
-    q_object.setValue(value);
-    if (std::optional arg = q_object.getValue()) {
-        return feature_system_->setParameter(unique_name.toStdString(), static_cast<std::size_t>(index), std::move(*arg));
-    }
-    spdlog::error("QFeatureSystemAdaptor::setParameter: param {} of feature {} not valid", index, unique_name.toStdString());
     return false;
 }
 
 bool QFeatureSystemAdaptor::postKeyEvent(int key, int modifiers, bool pressed)
 {
-    return feature_system_->dispatchKeyEvent(KeyEvent { key, modifiers, pressed });
+    try {
+        return feature_system_->dispatchKeyEvent(KeyEvent { key, modifiers, pressed });
+    } catch (const std::exception& error) {
+        spdlog::error("QFeatureSystemAdaptor::postKeyEvent: {}", error.what());
+    } catch (...) {
+        spdlog::error("QFeatureSystemAdaptor::postKeyEvent: unknown exception");
+    }
+    return false;
 }
 
 bool QFeatureSystemAdaptor::setFeatureActive(const QString& unique_name)
 {
-    return feature_system_->setFeatureActive(unique_name.toStdString());
+    try {
+        return feature_system_->setFeatureActive(unique_name.toStdString());
+    } catch (const std::exception& error) {
+        spdlog::error("QFeatureSystemAdaptor::setFeatureActive {}: {}", unique_name.toStdString(), error.what());
+    } catch (...) {
+        spdlog::error("QFeatureSystemAdaptor::setFeatureActive {}: unknown exception", unique_name.toStdString());
+    }
+    return false;
 }
 
 void QFeatureSystemAdaptor::setActiveModel(int id)

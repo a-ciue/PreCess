@@ -12,9 +12,11 @@
 #include "QModelManager.h"
 #include "QSelection.h"
 #include "QTaskStatus.h"
+#include "SystemPluginManager.h"
 
 #include <QEventLoop>
 #include <QFile>
+#include <QFileInfo>
 #include <QFontDatabase>
 #include <QGuiApplication>
 #include <QImage>
@@ -33,6 +35,7 @@
 #include <QQuickItem>
 #include <QQuickWindow>
 #include <QRectF>
+#include <QScopeGuard>
 #include <QSvgRenderer>
 #include <QTemporaryDir>
 #include <QTimer>
@@ -41,6 +44,8 @@
 #include <catch2/generators/catch_generators.hpp>
 #include <memory>
 #include <stdexcept>
+#include <string>
+#include <utility>
 
 Q_IMPORT_QML_PLUGIN(app_corePlugin)
 Q_IMPORT_QML_PLUGIN(app_modelPlugin)
@@ -1503,51 +1508,6 @@ TEST_CASE("Product mesh entries retain their order against conflicting plugin de
     system.unregisterHandler(meta);
 }
 
-TEST_CASE("Synchronous feature failures are reported across the QML boundary and allow retry", "[feature][failure][Qt]")
-{
-    application();
-    QModelManager::argv0 = {};
-    QQmlEngine engine;
-    auto* manager = engine.singletonInstance<QModelManager*>("app.model", "QModelManager");
-    auto* adaptor = manager->getFeatureSystemAdaptor();
-    auto* status = manager->getTaskStatus();
-    class FailingFeature : public systems::feature::FeatureHandler {
-    public:
-        int mode = 0;
-        std::any execute(systems::feature::FeatureContext&) override
-        {
-            if (mode == 0)
-                throw std::runtime_error("期望采样边长必须为有限正数");
-            if (mode == 1)
-                throw 42;
-            return std::string("成功");
-        }
-    };
-    auto handler = std::make_unique<FailingFeature>();
-    auto* probe = handler.get();
-    const systems::feature::HandlerMetaData meta { .name = "failure-probe" };
-    REQUIRE(adaptor->featureSystem()->registerHandler(meta,
-        systems::feature::FeatureSystem::SystemHandlerPtr { handler.release() }));
-    engine.globalObject().setProperty("featureBridge", engine.newQObject(adaptor));
-    int failures = 0;
-    QObject::connect(status, &QTaskStatus::taskFailed, status, [&](const QString&) { ++failures; });
-    for (const int mode : { 0, 1 }) {
-        probe->mode = mode;
-        QJSValue result;
-        REQUIRE_NOTHROW(result = engine.evaluate("featureBridge.invoke('failure-probe')"));
-        CHECK_FALSE(result.isError());
-        CHECK((result.isUndefined() || result.isNull()));
-        CHECK(status->getMessage().contains(mode == 0 ? "期望采样边长" : "未知异常"));
-        CHECK_FALSE(status->isRunning());
-        CHECK_FALSE(status->isWritePending());
-    }
-    CHECK(failures == 2);
-    probe->mode = 2;
-    CHECK(engine.evaluate("featureBridge.invoke('failure-probe')").toString() == "成功");
-    CHECK(failures == 2);
-    adaptor->featureSystem()->unregisterHandler(meta);
-}
-
 TEST_CASE("Registered navigation titles preserve slash characters without inventing groups", "[navigation][Qt][registry]")
 {
     application();
@@ -1596,4 +1556,121 @@ TEST_CASE("Registered navigation titles preserve slash characters without invent
     CHECK(result.property("namedGroupName").toString() == "拓扑/修复");
     CHECK(result.property("namedEntry").toString() == "grouped");
     CHECK(result.property("tabName").toString() == "CAD/几何");
+}
+
+TEST_CASE("Qt feature entry points contain callback exceptions and allow retry", "[feature][failure][Qt]")
+{
+    application();
+    struct CallbackFeature : systems::feature::FeatureHandler {
+        enum class Failure { None,
+            Execute,
+            Parameter,
+            Key,
+            Activate,
+            Deactivate };
+        Failure failure { Failure::None };
+        bool unknown = false;
+        core::EventBus::Subscription subscription;
+        void failAt(Failure current)
+        {
+            if (failure != current)
+                return;
+            if (unknown)
+                throw 42;
+            throw std::runtime_error("expected feature callback failure");
+        }
+        void setup(systems::feature::FeatureRegistrar& reg, systems::feature::FeatureContext& ctx) override
+        {
+            reg.addParameter({ ArgTypeEnum::Float, "value", "1" });
+            reg.addKeyBinding({ Qt::Key_A, 0 });
+            subscription = ctx.events.subscribe<systems::feature::ParameterChangedEvent>([this](const auto&) { failAt(Failure::Parameter); });
+        }
+        std::any execute(systems::feature::FeatureContext&) override
+        {
+            failAt(Failure::Execute);
+            return std::string("ok");
+        }
+        bool onKeyEvent(const systems::feature::KeyEvent&) override
+        {
+            failAt(Failure::Key);
+            return true;
+        }
+        void activate(systems::feature::FeatureContext&) override { failAt(Failure::Activate); }
+        void deactivate(systems::feature::FeatureContext&) override { failAt(Failure::Deactivate); }
+    };
+    ModelLayer model;
+    core::EventBus events;
+    systems::feature::FeatureSystem system(model, events);
+    systems::feature::QFeatureSystemAdaptor adaptor(system);
+    auto handler = std::make_unique<CallbackFeature>();
+    auto* probe = handler.get();
+    REQUIRE(system.registerHandler({ .name = "callback-probe", .interactive = true }, systems::feature::FeatureSystem::SystemHandlerPtr { handler.release() }));
+    QJSEngine engine;
+    QQmlEngine::setObjectOwnership(&adaptor, QQmlEngine::CppOwnership);
+    engine.globalObject().setProperty("bridge", engine.newQObject(&adaptor));
+    const auto call = [&](const QString& expression) {
+        auto result = engine.evaluate(expression);
+        CHECK_FALSE(result.isError());
+        return result;
+    };
+    for (const bool unknown : { false, true }) {
+        probe->unknown = unknown;
+        probe->failure = CallbackFeature::Failure::Execute;
+        const auto result = call("bridge.invoke('callback-probe')");
+        CHECK((result.isNull() || result.isUndefined()));
+        probe->failure = CallbackFeature::Failure::Parameter;
+        CHECK_FALSE(call("bridge.setParameter('callback-probe', 0, 2)").toBool());
+        probe->failure = CallbackFeature::Failure::Key;
+        CHECK_FALSE(call("bridge.postKeyEvent(65, 0, true)").toBool());
+        probe->failure = CallbackFeature::Failure::Activate;
+        CHECK_FALSE(call("bridge.setFeatureActive('callback-probe')").toBool());
+        probe->failure = CallbackFeature::Failure::None;
+        REQUIRE(call("bridge.setFeatureActive('callback-probe')").toBool());
+        probe->failure = CallbackFeature::Failure::Deactivate;
+        CHECK_FALSE(call("bridge.setFeatureActive('')").toBool());
+        CHECK(system.activeInteraction() == nullptr);
+        probe->failure = CallbackFeature::Failure::None;
+        CHECK(call("bridge.invoke('callback-probe')").toString() == "ok");
+        CHECK(call("bridge.setParameter('callback-probe', 0, 3)").toBool());
+        CHECK(call("bridge.postKeyEvent(65, 0, true)").toBool());
+        CHECK(call("bridge.setFeatureActive('callback-probe')").toBool());
+        CHECK(call("bridge.setFeatureActive('')").toBool());
+        CHECK_FALSE(model.writesPending());
+    }
+}
+
+TEST_CASE("Qt plugin unload contains teardown exceptions and keeps registration for retry", "[plugins][failure][Qt]")
+{
+    application();
+    QTemporaryDir directory;
+    REQUIRE(directory.isValid());
+    const auto executable = (directory.path() + "/isolated/Test.exe").toStdString();
+    const auto plugin_path = directory.path() + "/" + QFileInfo(QString::fromUtf8(PRECESS_SETUP_TEST_PLUGIN)).fileName();
+    REQUIRE(QFile::copy(QString::fromUtf8(PRECESS_SETUP_TEST_PLUGIN), plugin_path));
+    QModelManager manager(executable);
+    auto* bridge = manager.getSystemPluginManager();
+    REQUIRE(bridge->registerPlugin(QUrl::fromLocalFile(plugin_path)));
+    const auto names = bridge->getPluginNames();
+    QJSEngine engine;
+    QQmlEngine::setObjectOwnership(bridge, QQmlEngine::CppOwnership);
+    engine.globalObject().setProperty("plugins", engine.newQObject(bridge));
+    engine.globalObject().setProperty("pluginPath", plugin_path);
+    const auto previous = qgetenv("PRECESS_TEST_SETUP_TEARDOWN");
+    const auto restore = qScopeGuard([previous] {
+        if (previous.isNull())
+            qunsetenv("PRECESS_TEST_SETUP_TEARDOWN");
+        else
+            qputenv("PRECESS_TEST_SETUP_TEARDOWN", previous);
+    });
+    for (const auto& failure : { QByteArray("standard"), QByteArray("unknown") }) {
+        qputenv("PRECESS_TEST_SETUP_TEARDOWN", failure);
+        const auto result = engine.evaluate("plugins.unregisterPlugin(pluginPath)");
+        CHECK_FALSE(result.isError());
+        CHECK(bridge->getPluginNames() == names);
+        CHECK(manager.getFeatureSystemAdaptor()->featureSystem()->getFeatureInfos().size() == 1);
+    }
+    qunsetenv("PRECESS_TEST_SETUP_TEARDOWN");
+    CHECK_FALSE(engine.evaluate("plugins.unregisterPlugin(pluginPath)").isError());
+    CHECK(bridge->getPluginNames().empty());
+    CHECK(manager.getFeatureSystemAdaptor()->featureSystem()->getFeatureInfos().empty());
 }

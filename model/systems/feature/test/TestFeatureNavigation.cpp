@@ -413,3 +413,43 @@ TEST_CASE("Direct parent registration validates definitions and respects model o
     CHECK(features.getNavigationMenus().size() == 1);
     CHECK(features.getNavigationGroups().size() == 1);
 }
+
+TEST_CASE("Feature shutdown continues after deactivate and teardown exceptions", "[FeatureSystem][failure]")
+{
+    struct CleanupFeature : FeatureHandler {
+        int& teardown_calls;
+        bool fail;
+        bool unknown;
+        CleanupFeature(int& calls, bool should_fail, bool unknown_exception)
+            : teardown_calls(calls)
+            , fail(should_fail)
+            , unknown(unknown_exception)
+        {
+        }
+        void throwIfFailed()
+        {
+            if (!fail)
+                return;
+            if (unknown)
+                throw 42;
+            throw std::runtime_error("expected cleanup failure");
+        }
+        void deactivate(FeatureContext&) override { throwIfFailed(); }
+        void teardown(FeatureContext&) override
+        {
+            ++teardown_calls;
+            throwIfFailed();
+        }
+    };
+    for (const bool unknown : { false, true }) {
+        ModelLayer model;
+        core::EventBus events;
+        int teardown_calls = 0;
+        auto system = std::make_unique<FeatureSystem>(model, events);
+        REQUIRE(system->registerHandler({ .name = "good" }, FeatureSystem::SystemHandlerPtr { std::make_unique<CleanupFeature>(teardown_calls, false, unknown).release() }));
+        REQUIRE(system->registerHandler({ .name = "bad" }, FeatureSystem::SystemHandlerPtr { std::make_unique<CleanupFeature>(teardown_calls, true, unknown).release() }));
+        REQUIRE(system->setFeatureActive("bad"));
+        REQUIRE_NOTHROW(system.reset());
+        CHECK(teardown_calls == 2);
+    }
+}

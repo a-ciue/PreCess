@@ -14,6 +14,7 @@
 
 #include <algorithm>
 #include <cmath>
+#include <exception>
 #include <map>
 #include <optional>
 #include <stdexcept>
@@ -190,17 +191,25 @@ FeatureSystem::~FeatureSystem()
             job_runner_->stop();
         }
     }
-    // 系统析构前先退出当前功能、再停用所有功能，让其清理状态（teardown 清理可能写模型，统一 flush）
-    exitCurrentFeature();
+    // 析构逐项兜住回调异常，继续其余功能和模型收尾。
+    const auto cleanup = [](const char* step, const auto& callback) {
+        try {
+            callback();
+        } catch (const std::exception& error) {
+            spdlog::error("FeatureSystem shutdown '{}': {}", step, error.what());
+        } catch (...) {
+            spdlog::error("FeatureSystem shutdown '{}': unknown exception", step);
+        }
+    };
+    cleanup("deactivate", [&] { exitCurrentFeature(); });
     for (auto&& [feature_name, entry] : entries_) {
         if (entry.handler) {
-            flushAfterCallback([&] { entry.handler->teardown(entry.context); });
+            cleanup(feature_name.c_str(), [&] { flushAfterCallback([&] { entry.handler->teardown(entry.context); }); });
         }
     }
     // 层兜底：系统拆解前关闭残留层（teardown 后、flush 前——恢复 before₀ 自带 flush）
-    if (undo_stack_)
-        undo_stack_->cancelScope();
-    model_layer_->flushNotifications();
+    cleanup("preview", [&] { if (undo_stack_) undo_stack_->cancelScope(); });
+    cleanup("notifications", [&] { model_layer_->flushNotifications(); });
 }
 
 void FeatureSystem::cancelPendingJobs(const std::string& owner)
@@ -407,9 +416,15 @@ void FeatureSystem::exitCurrentFeature()
     if (current_feature_.empty())
         return;
     auto cur = entries_.find(current_feature_);
+    // 回调失败仍完成预览、会话和交互清理，再把错误交给调用边界。
+    std::exception_ptr failure;
     if (cur != entries_.end() && cur->second.handler) {
         // deactivate 的渲染清理先挂上，再回滚预览、折叠会话并下线交互。
-        flushAfterCallback([&] { cur->second.handler->deactivate(cur->second.context); });
+        try {
+            flushAfterCallback([&] { cur->second.handler->deactivate(cur->second.context); });
+        } catch (...) {
+            failure = std::current_exception();
+        }
         if (undo_stack_) {
             undo_stack_->cancelScope();
             undo_stack_->endSession(current_feature_);
@@ -418,6 +433,8 @@ void FeatureSystem::exitCurrentFeature()
             cur->second.interaction_context.setActive(false);
     }
     current_feature_.clear();
+    if (failure)
+        std::rethrow_exception(failure);
 }
 
 void FeatureSystem::applyFeatureActive(const std::string& unique_name)
