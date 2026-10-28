@@ -427,6 +427,9 @@ void MeshPipelineData::setClipPlane(vtkPlane* plane)
 void MeshPipelineData::setClipPlane(const MeshClipPlane& plane)
 {
     assertOwnerThread();
+    // 控件可能重复发布同一平面，避免重算不变的裁剪输出。
+    if (clip_.enabled == plane.enabled && clip_.origin == plane.origin && clip_.normal == plane.normal)
+        return;
     clip_ = plane;
     dirty_ = true;
 }
@@ -468,10 +471,17 @@ void MeshPipelineData::rebuildOutputs()
     vtkNew<vtkGeometryFilter> surface;
     surface->SetInputData(solids);
     surface->Update();
-    vtkNew<vtkExtractEdges> internal_edges;
-    // 保持现有内部线框样式：从完整原始体提边，不在此次迁移中改变裁剪行为。
-    internal_edges->SetInputData(solid_data_);
-    internal_edges->Update();
+    // 内部线框始终来自完整原始体，与裁剪及面隐藏无关；同一源数据只提取一次。
+    // 复用已发布的只读输出，源网格重新加载（含坐标/属性更新）后才重新提边。
+    vtkSmartPointer<vtkPolyData> internal_edges;
+    if (prepared_ && prepared_->source == source_) {
+        internal_edges = prepared_->solid_internal_edges;
+    } else {
+        vtkNew<vtkExtractEdges> extractor;
+        extractor->SetInputData(solid_data_);
+        extractor->Update();
+        internal_edges = publishPolyData(extractor->GetOutput());
+    }
 
     prepared_ = std::make_shared<MeshDataSnapshot>();
     prepared_->source = source_;
@@ -483,7 +493,7 @@ void MeshPipelineData::rebuildOutputs()
     prepared_->visible_faces = publishPolyData(faces);
     prepared_->visible_edges = publishPolyData(edges);
     prepared_->solid_surface = publishPolyData(surface->GetOutput());
-    prepared_->solid_internal_edges = publishPolyData(internal_edges->GetOutput());
+    prepared_->solid_internal_edges = internal_edges;
     dirty_ = false;
 }
 
