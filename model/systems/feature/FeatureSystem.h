@@ -107,7 +107,7 @@ public:
     std::vector<FeatureNavigationEntry> getNavigationEntries() const;
     /** @brief 设置入口和子功能的产品排序覆盖；菜单、分组顺序由注册定义决定。 */
     void setNavigationOrder(std::vector<FeatureNavigationOrder> orders);
-    /** @brief 合并排序声明；插件冲突按功能身份选首项，不依赖加载顺序。 */
+    /** @brief 查询宿主排序覆盖；插件只声明入口和子功能的默认顺序。 */
     std::vector<FeatureNavigationOrder> getNavigationOrder() const;
     /**
      * @brief 获取功能的参数集（UI 展示当前值用），功能不存在时为 nullptr

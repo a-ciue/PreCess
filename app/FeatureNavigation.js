@@ -10,11 +10,6 @@ function compareNodes(a, b) {
     return a.order - b.order || (a.id < b.id ? -1 : a.id > b.id ? 1 : 0)
 }
 
-function compareFeatures(a, b) {
-    return (a.order || 0) - (b.order || 0)
-        || (a.name < b.name ? -1 : a.name > b.name ? 1 : 0)
-}
-
 function buildFeatures(infos, categoryId, orders) {
     const features = []
     for (const info of infos) {
@@ -47,8 +42,7 @@ function buildEntries(infos, categories, orders) {
         })
     }
     // 未声明入口的功能生成默认入口。
-    const unlistedFeatures = Array.from(infos).sort(compareFeatures)
-    for (const info of unlistedFeatures) {
+    for (const info of infos) {
         if ((info.entry_ids || []).length > 0)
             continue
         const id = "feature:" + info.name

@@ -60,6 +60,6 @@ void ExampleSolver::setup(FeatureRegistrar& registrar, FeatureContext&)
 }
 ```
 
-不同功能注册相同入口 id 后自动聚合：一个功能直接显示参数，多个功能显示子功能选择器。菜单和分组通过注册器独立声明，`FeatureNavigationEntry` 依次声明 id、入口标题、图标、排序、菜单 ID 和可选分组 ID，父节点引用必须有效；子功能标题通过 `setLabel` 单独配置。应用先注册产品布局，相同菜单 ID 或菜单内分组 ID 以首次成功定义为准；父节点定义随会话保留，插件卸载后空的纯功能菜单或分组隐藏。同一功能可注册到多个入口，参数和执行状态不复制。宿主通过 `setNavigationEntries` 保留空入口，零子功能时禁用执行。未声明入口时回退默认“功能”菜单。
+相同入口 ID 自动聚合子功能，同一功能的多个入口共享参数和状态。插件声明菜单、分组并引用其 ID；未声明入口时归入“功能”菜单。
 
-完整字段、参数预设与聚合规则见 [SDK 导航 reference](../sdk/skills/zenithgrid-external-plugin-development/references/development.md#统一功能入口)。功能执行、事件、任务和 undo 通过 FeatureSystem 协调。公共 Feature 头文件变化后，必须用匹配 SDK 全量重建主程序、项目内插件、示例及独立 Addons，确保 ABI 一致。
+字段和约束见 [SDK 导航 reference](../sdk/skills/zenithgrid-external-plugin-development/references/development.md#统一功能入口)。公共头变更后须重编主程序和全部插件。

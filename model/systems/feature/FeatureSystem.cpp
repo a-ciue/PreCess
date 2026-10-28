@@ -44,7 +44,7 @@ namespace {
         const std::vector<FeatureNavigationMenu>& menus, const std::vector<FeatureNavigationGroup>& groups)
     {
         for (const auto& entry : entries) {
-            if (entry.menu_id.empty() || !hasNavigationMenu(menus, entry.menu_id))
+            if (!hasNavigationMenu(menus, entry.menu_id))
                 throw std::invalid_argument("FeatureSystem: navigation entry references an unregistered menu: " + entry.menu_id);
             if (!entry.group_id.empty() && !std::any_of(groups.begin(), groups.end(), [&](const auto& group) {
                     return group.menu_id == entry.menu_id && group.id == entry.group_id;
@@ -82,22 +82,12 @@ bool FeatureSystem::tryRegisterNavigationGroup(FeatureNavigationGroup group)
 
 std::vector<FeatureNavigationMenu> FeatureSystem::getNavigationMenus() const
 {
-    auto menus = navigation_menus_;
-    std::sort(menus.begin(), menus.end(), [](const auto& a, const auto& b) {
-        return a.order != b.order ? a.order < b.order : a.id < b.id;
-    });
-    return menus;
+    return navigation_menus_;
 }
 
 std::vector<FeatureNavigationGroup> FeatureSystem::getNavigationGroups() const
 {
-    auto groups = navigation_groups_;
-    std::sort(groups.begin(), groups.end(), [](const auto& a, const auto& b) {
-        if (a.menu_id != b.menu_id)
-            return a.menu_id < b.menu_id;
-        return a.order != b.order ? a.order < b.order : a.id < b.id;
-    });
-    return groups;
+    return navigation_groups_;
 }
 
 void FeatureSystem::setNavigationEntries(std::vector<FeatureNavigationEntry> categories)
@@ -116,33 +106,26 @@ void FeatureSystem::setNavigationEntries(std::vector<FeatureNavigationEntry> cat
 void FeatureSystem::setNavigationOrder(std::vector<FeatureNavigationOrder> orders)
 {
     model_layer_->assertOperationIdle();
-    FeatureNavigation navigation;
-    for (auto& order : orders)
-        navigation.addOrder(std::move(order));
-    if (navigation_order_ == navigation.orders())
+    std::vector<FeatureNavigationOrder> accepted;
+    for (auto& order : orders) {
+        if (order.id.empty())
+            continue;
+        if (!order.parent.starts_with("group:") && !order.parent.starts_with("entry:"))
+            throw std::invalid_argument("FeatureSystem::setNavigationOrder: menu and group order must be declared at registration");
+        if (!std::isfinite(order.order))
+            throw std::invalid_argument("FeatureSystem::setNavigationOrder: order must be finite");
+        if (!std::any_of(accepted.begin(), accepted.end(), [&](const auto& existing) { return existing.parent == order.parent && existing.id == order.id; }))
+            accepted.push_back(std::move(order));
+    }
+    if (navigation_order_ == accepted)
         return;
-    navigation_order_ = navigation.orders();
+    navigation_order_ = std::move(accepted);
     on_feature_infos_changed_();
 }
 
 std::vector<FeatureNavigationOrder> FeatureSystem::getNavigationOrder() const
 {
-    std::map<std::pair<std::string, std::string>, FeatureNavigationOrder> orders;
-    for (const auto& order : navigation_order_)
-        orders.emplace(std::make_pair(order.parent, order.id), order);
-    // 宿主覆盖始终保留；显式按功能名排序，避免依赖 unordered_map 的遍历顺序。
-    std::vector<std::string> providers;
-    for (const auto& [name, entry] : entries_)
-        providers.push_back(name);
-    std::sort(providers.begin(), providers.end());
-    for (const auto& name : providers) {
-        for (const auto& order : entries_.at(name).info.navigation.orders())
-            orders.emplace(std::make_pair(order.parent, order.id), order);
-    }
-    std::vector<FeatureNavigationOrder> result;
-    for (const auto& [key, order] : orders)
-        result.push_back(order);
-    return result;
+    return navigation_order_;
 }
 
 std::vector<FeatureNavigationEntry> FeatureSystem::getNavigationEntries() const

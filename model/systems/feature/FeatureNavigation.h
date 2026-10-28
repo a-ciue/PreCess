@@ -3,6 +3,7 @@
  */
 #pragma once
 #include <algorithm>
+#include <cmath>
 #include <map>
 #include <stdexcept>
 #include <string>
@@ -24,7 +25,7 @@ struct FeatureNavigationGroup {
     double order { 0 };
     bool operator==(const FeatureNavigationGroup&) const = default;
 };
-/** @brief 同一分组内入口或同一入口内子功能的排序覆盖，id 不使用翻译后的标题。 */
+/** @brief 宿主对入口或子功能的排序覆盖，id 不使用翻译后的标题。 */
 struct FeatureNavigationOrder {
     std::string parent;
     std::string id;
@@ -53,23 +54,16 @@ public:
             return;
         entries_.push_back(std::move(entry));
     }
-    /** @brief 声明入口或子功能顺序；菜单、分组顺序只能由独立定义提供。 */
-    void addOrder(FeatureNavigationOrder order)
-    {
-        if (order.id.empty())
-            return;
-        if (!order.parent.starts_with("group:") && !order.parent.starts_with("entry:"))
-            throw std::invalid_argument("FeatureNavigation::addOrder: menu and group order must be declared at registration");
-        if (std::any_of(orders_.begin(), orders_.end(), [&](const auto& existing) { return existing.parent == order.parent && existing.id == order.id; }))
-            return;
-        orders_.push_back(std::move(order));
-    }
-    const std::vector<FeatureNavigationOrder>& orders() const noexcept { return orders_; }
     /** @brief 子功能标题；空时使用功能 display_name，不覆盖入口标题。 */
     void setLabel(std::string label) { label_ = std::move(label); }
     void setIcon(std::string icon) { icon_ = std::move(icon); }
     /** @brief 子功能在入口内的排序，支持小数插入；入口排序由 addEntry 的描述指定。 */
-    void setOrder(double order) { order_ = order; }
+    void setOrder(double order)
+    {
+        if (!std::isfinite(order))
+            throw std::invalid_argument("FeatureNavigation::setOrder: order must be finite");
+        order_ = order;
+    }
     /** @brief 按入口声明参数默认值，Combo 使用选项索引的字符串。 */
     void setEntryDefault(std::string entry, std::string parameter, std::string value)
     {
@@ -91,7 +85,6 @@ public:
 
 private:
     std::vector<FeatureNavigationEntry> entries_;
-    std::vector<FeatureNavigationOrder> orders_;
     std::string icon_;
     double order_ { 0 };
     std::string label_;

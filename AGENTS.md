@@ -162,11 +162,11 @@
   - 旧编辑系统兼容实现：`EditHandler::execute` 接收 `ModelLayer&` 与 `fallback_component_id`（对象树当前组件，仅提示、可为 -1）；目标组件由选择器参数解析，fallback 仅在选择未携带组件身份时兜底；示例见 `plugins/edit/CreateFacePlugin/`、`plugins/edit/DeleteFacePlugin/`。
   - 旧算法系统兼容实现：覆盖 `AlgorithmHandler::resolveComponentId` 按参数解析目标组件，不依赖对象树传入的 `fallback_component_id`；`HandlerContext::cur_component` 同样只视作提示。
   - 功能系统：`FeatureContext::activeModel` / `activeComponent` 是对象树选中态的动态查询，只作提示；优先注册 `Selector` 类型参数（`FeatureParams`）让用户显式选择目标。
-- **统一 Feature 功能入口**：单功能图标和多子功能图标使用同一入口注册接口。
-  - setup 用 `registrar.addNavigationMenu`、`registrar.addNavigationGroup` 声明父节点，用 `registrar.navigation().addEntry` 注册入口。入口须引用有效菜单，分组可空；相同稳定入口 ID 自动聚合，同一功能的多个入口共享参数和状态，不按标题等推断 ID。
-  - 宿主在加载插件前预注册默认布局；菜单按 ID、分组按 `(menu_id, id)` 采用首次成功接纳的定义。setup、参数准备和父引用验证成功后才接纳，失败不留定义；卸载后父定义保留，空功能菜单和分组隐藏。
-  - 菜单、分组按注册定义排序，入口和子功能可覆盖；一个功能直接显示参数，多个显示选择器，常驻入口为空时禁用执行。C++ 入口不使用 `menu_path`；注册、排序和适配细节见 `model/systems/feature/Navigation.md`。
-  - 未声明入口时归入默认“功能”菜单。执行读取 `ctx.params`，通过 `FeatureContext` 完成模型操作与共享任务。公共接口变化后全量重建主程序及所有插件 DLL，确保主程序、SDK 与插件的 ABI 一致。
+- **统一 Feature 功能入口**：
+  - setup 用 `registrar.addNavigationMenu/addNavigationGroup` 声明父节点，`registrar.navigation().addEntry` 引用稳定 ID；相同入口自动聚合，同一功能的多个入口共享参数和状态。
+  - 宿主先注册布局；父节点首次成功定义保留至会话结束，失败不留声明，卸载后空菜单和分组隐藏。
+  - 插件声明默认顺序，宿主控制排序覆盖；接口见 `model/systems/feature/Navigation.md`。单个子功能显示参数，多个显示选择器，空入口禁用执行，无入口时归入“功能”菜单。
+  - 执行使用 `ctx.params` 和 `FeatureContext`；公共头变更后全量重建主程序及全部插件 DLL，保持 ABI 一致。
 - 每个插件目录含 `*.json` 描述文件（见 `plugins/*/.../*.json`）与 `CMakeLists.txt`；新增插件参照同目录既有示例结构。
 - **SDK 示例与开发引导**：`examples/` 中的 ExternalPlugin、FeatureDemoPlugin、TaskDemoPlugin、ScalePreviewPlugin 只默认分发源码及测试，随 Development 组件安装；框架开发可用 `PRECESS_BUILD_EXAMPLES=ON` 构建。`sdk/skills/zenithgrid-external-plugin-development/` 随 SDK 安装为 `skills/zenithgrid-external-plugin-development/`，独立插件开发先读取该 skill 和任务相关 references。
 - 功能插件（`plugins/feature/`，json 的 `system` 字段为 `FeatureSystem`）实现 `FeatureHandler` 接口：注册时 `setup(FeatureRegistrar&, FeatureContext&)` 一次（声明参数/菜单/按键绑定 + 经 `ctx.events` 订阅事件 `KeyEvent`、`ParameterChangedEvent`、`ModelEvent`），注销时 `teardown()` 一次；功能随活动操作切换被反复 进入 `activate(FeatureContext&)` / 退出 `deactivate()`（GUI 线程，所有功能可感知，由 `FeatureSystem::setFeatureActive` 驱动）；菜单触发 `execute()`。功能可修改的范围限模型层对象（经 `FeatureContext` 的 `ModelLayer` / `ComponentOperator`）与自身视口交互状态（经 `ctx.interaction`）；示例见 `examples/FeatureDemoPlugin/`，交互功能示例见 `plugins/feature/MeasurePlugin/`，插件层预览范式（`ctx.undo` 层接口）示例见 `examples/ScalePreviewPlugin/`。

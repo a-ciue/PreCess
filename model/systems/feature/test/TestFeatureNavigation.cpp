@@ -6,6 +6,7 @@
 #include "FeatureRegistrar.h"
 #include "FeatureSystem.h"
 #include "ModelLayer.h"
+#include <algorithm>
 #include <catch2/catch_test_macros.hpp>
 #include <limits>
 #include <stdexcept>
@@ -19,7 +20,7 @@ public:
     std::vector<FeatureNavigationMenu> menus;
     std::vector<FeatureNavigationGroup> groups;
     std::vector<FeatureNavigationEntry> categories;
-    std::vector<FeatureNavigationOrder> orders;
+    double order { 0 };
     std::string default_size = "1";
     int* setup_calls = nullptr;
     bool fail_setup = false;
@@ -32,8 +33,7 @@ public:
             registrar.addNavigationMenu(menu);
         for (const auto& group : groups)
             registrar.addNavigationGroup(group);
-        for (const auto& order : orders)
-            registrar.navigation().addOrder(order);
+        registrar.navigation().setOrder(order);
         for (const auto& category : categories)
             registrar.navigation().addEntry(category);
         if (fail_setup)
@@ -82,6 +82,10 @@ TEST_CASE("Navigation declarations maintain valid unique categories during setup
     CHECK(declaration.label() == "Steady solver");
     CHECK(declaration.icon() == "qrc:/solver.svg");
     CHECK(declaration.order() == 3.25);
+    for (const double invalid : { std::numeric_limits<double>::quiet_NaN(), std::numeric_limits<double>::infinity(), -std::numeric_limits<double>::infinity() }) {
+        CHECK_THROWS_AS(navigation.setOrder(invalid), std::invalid_argument);
+        CHECK(declaration.order() == 3.25);
+    }
     CHECK(declaration.entryDefaults().at("analysis").at("iterations") == "20");
     auto category_ids = declaration.entryIds();
     category_ids.clear();
@@ -228,43 +232,36 @@ TEST_CASE("Feature replacement preserves matching parameters and initializes cha
     CHECK(*features.params("mesher")->value(0).get<ArgTypeEnum::Float>() == 2.0);
 }
 
-TEST_CASE("Entry and subfeature order merges retain host and provider priority", "[FeatureSystem][navigation]")
+TEST_CASE("Host order overrides validate atomically and persist through plugin changes", "[FeatureSystem][navigation]")
 {
     ModelLayer model;
     core::EventBus events;
     FeatureSystem features(model, events);
     int changes = 0;
     features.setOnFeatureInfosChanged([&] { ++changes; });
-    const auto install = [&](const std::string& name, double value) {
-        auto handler = std::make_unique<Mesher>();
-        handler->orders = { { "group:mesh/default", "category:quad", value }, { "entry:quad", "shared", value } };
-        REQUIRE(features.registerHandler({ .name = name }, FeatureSystem::SystemHandlerPtr { handler.release() }));
-    };
-    install("z", 90);
-    install("a", 10.25);
-    const std::vector<FeatureNavigationOrder> expected { { "entry:quad", "shared", 10.25 }, { "group:mesh/default", "category:quad", 10.25 } };
+    const std::vector<FeatureNavigationOrder> expected { { "entry:quad", "shared", 10.25 }, { "group:mesh/default", "category:quad", 0 } };
+    features.setNavigationOrder({ expected[0], expected[1], { "group:mesh/default", "category:quad", 100 }, { "", "", -1 } });
     CHECK(features.getNavigationOrder() == expected);
-    features.unregisterHandler({ .name = "a" });
-    features.unregisterHandler({ .name = "z" });
-    install("a", 10.25);
-    install("z", 90);
-    CHECK(features.getNavigationOrder() == expected);
-    features.setNavigationOrder({ { "group:mesh/default", "category:quad", 0 }, { "group:mesh/default", "category:quad", 100 }, { "", "", -1 } });
-    CHECK(features.getNavigationOrder() == std::vector<FeatureNavigationOrder> { { "entry:quad", "shared", 10.25 }, { "group:mesh/default", "category:quad", 0 } });
     const auto before = changes;
-    features.setNavigationOrder({ { "group:mesh/default", "category:quad", 0 } });
+    features.setNavigationOrder(expected);
     CHECK(changes == before);
     CHECK_THROWS_AS(features.setNavigationOrder({ { "", "mesh", 0 } }), std::invalid_argument);
     CHECK_THROWS_AS(features.setNavigationOrder({ { "menu:mesh", "surface", 0 } }), std::invalid_argument);
+    for (const double invalid : { std::numeric_limits<double>::quiet_NaN(), std::numeric_limits<double>::infinity(), -std::numeric_limits<double>::infinity() }) {
+        CHECK_THROWS_AS(features.setNavigationOrder({ { "entry:quad", "shared", 1 }, { "entry:quad", "other", invalid } }), std::invalid_argument);
+        CHECK(features.getNavigationOrder() == expected);
+    }
     CHECK(changes == before);
     {
         auto occupation = model.beginWriteOperation(false);
         CHECK_THROWS_AS(features.setNavigationOrder({}), ModelOperationBusy);
     }
-    features.unregisterHandler({ .name = "a" });
-    CHECK(features.getNavigationOrder().front().order == 90);
-    features.unregisterHandler({ .name = "z" });
-    CHECK(features.getNavigationOrder() == std::vector<FeatureNavigationOrder> { { "group:mesh/default", "category:quad", 0 } });
+    REQUIRE(features.registerHandler({ .name = "mesher" }, mesher({})));
+    CHECK(features.getNavigationOrder() == expected);
+    features.unregisterHandler({ .name = "mesher" });
+    CHECK(features.getNavigationOrder() == expected);
+    features.setNavigationOrder({});
+    CHECK(features.getNavigationOrder().empty());
 }
 
 TEST_CASE("Navigation menus and groups keep first successful definitions and scoped identities", "[FeatureSystem][navigation]")
@@ -285,18 +282,22 @@ TEST_CASE("Navigation menus and groups keep first successful definitions and sco
     REQUIRE(features.tryRegisterNavigationGroup({ "geometry", "", "", 10 }));
     REQUIRE(features.tryRegisterNavigationGroup({ "geometry", "topology", "拓扑", 20 }));
     CHECK(changes == 6);
-    CHECK(features.getNavigationMenus() == std::vector<FeatureNavigationMenu> { { "analysis", "Analysis", 50.5 }, { "geometry", "几何", 50.5 } });
-    CHECK(features.getNavigationGroups() == std::vector<FeatureNavigationGroup> { { "analysis", "repair", "Analysis repair", 30 }, { "geometry", "", "", 10 }, { "geometry", "topology", "拓扑", 20 }, { "geometry", "repair", "修复", 30 } });
+    const auto menus = features.getNavigationMenus();
+    const auto groups = features.getNavigationGroups();
+    CHECK(menus.size() == 2);
+    CHECK(groups.size() == 4);
+    for (const auto& expected : std::vector<FeatureNavigationMenu> { { "analysis", "Analysis", 50.5 }, { "geometry", "几何", 50.5 } })
+        CHECK(std::find(menus.begin(), menus.end(), expected) != menus.end());
+    for (const auto& expected : std::vector<FeatureNavigationGroup> { { "analysis", "repair", "Analysis repair", 30 }, { "geometry", "", "", 10 }, { "geometry", "topology", "拓扑", 20 }, { "geometry", "repair", "修复", 30 } })
+        CHECK(std::find(groups.begin(), groups.end(), expected) != groups.end());
     auto plugin = std::make_unique<Mesher>();
     plugin->menus = { { "geometry", "Plugin geometry", -100 } };
     plugin->groups = { { "geometry", "repair", "Plugin repair", -100 } };
     plugin->categories = { { "fix", "Fix", "", 0, "geometry", "repair" } };
     REQUIRE(features.registerHandler({ .name = "a" }, FeatureSystem::SystemHandlerPtr { plugin.release() }));
     CHECK(changes == 7);
-    CHECK(features.getNavigationMenus().back().title == "几何");
-    CHECK(features.getNavigationGroups().back().title == "修复");
-    const auto menus = features.getNavigationMenus();
-    const auto groups = features.getNavigationGroups();
+    CHECK(features.getNavigationMenus() == menus);
+    CHECK(features.getNavigationGroups() == groups);
     features.unregisterHandler({ .name = "a" });
     CHECK(features.getNavigationMenus() == menus);
     CHECK(features.getNavigationGroups() == groups);
@@ -353,6 +354,14 @@ TEST_CASE("Failed feature registration cannot claim parent definitions or leave 
     SECTION("a later group uses a path separator in its identity")
     {
         plugin->groups.push_back({ "custom", "commands/nested", "Nested" });
+    }
+    SECTION("entry order is not finite")
+    {
+        plugin->categories.front().order = std::numeric_limits<double>::quiet_NaN();
+    }
+    SECTION("subfeature order is not finite")
+    {
+        plugin->order = std::numeric_limits<double>::infinity();
     }
     SECTION("entry has no menu id")
     {
