@@ -57,8 +57,7 @@ ColumnLayout {
     // 算法与编辑系统尚无图标声明字段，暂保留其名称映射。
     readonly property var pluginIconMap: ({
         "CreateFacePlugin": "qrc:/images/toolbar/Edit/create-face.svg",
-        "DeleteFacePlugin": "qrc:/images/toolbar/Edit/delete-face.svg",
-        "cmdExecutePlugin": "qrc:/images/toolbar/Algorithm/cmd.svg"
+        "DeleteFacePlugin": "qrc:/images/toolbar/Edit/delete-face.svg"
     })
     function getIconForPlugin(pluginName) {
         return pluginIconMap[pluginName] || "qrc:/images/toolbar/precess_extra_plugin.svg"
@@ -102,12 +101,22 @@ ColumnLayout {
 
     // 功能 ribbon 结构：[{ id, name, order, groups: [{ id, name, order, items: [入口对象] }] }]，由 rebuildFeatureMenus 维护
     property var featureMenus: []
-    readonly property var navigationTabs: FeatureNavigation.buildTabs(root.featureMenus, [
-        {id: "file", name: qsTr("文件"), objectName: "fileCategory", pageIndex: 0},
-        {id: "edit", name: qsTr("编辑"), objectName: "editCategory", pageIndex: 1},
-        {id: "other-algorithms", name: qsTr("其他算法"), objectName: "otherAlgorithmTab", pageIndex: root.algorithmPageStart},
-        {id: "view", name: qsTr("视图"), objectName: "viewCategory", pageIndex: -1, popup: true}
-    ], root.featurePageStart, root.navigationOrder)
+    readonly property var navigationTabs: {
+        const tabs = [
+            {id: "file", name: qsTr("文件"), objectName: "fileCategory", pageIndex: 0},
+            {id: "edit", name: qsTr("编辑"), objectName: "editCategory", pageIndex: 1},
+            {id: "view", name: qsTr("视图"), objectName: "viewCategory", pageIndex: -1, popup: true}
+        ]
+        // 无旧算法时隐藏页签；页面索引保持不变，页签隐藏即不可达。
+        if (root.algorithmInfos.length > 0)
+            tabs.push({id: "other-algorithms", name: qsTr("其他算法"), objectName: "otherAlgorithmTab", pageIndex: root.algorithmPageStart})
+        return FeatureNavigation.buildTabs(root.featureMenus, tabs, root.featurePageStart, root.navigationOrder)
+    }
+
+    // 算法清空后收起正停留的其他算法页（幂等状态应用）。
+    onAlgorithmInfosChanged: if (root.algorithmInfos.length === 0
+        && root.activeCategory === root.algorithmPageStart)
+        root.activeCategory = -1
 
     // 普通单项与聚合入口共用菜单声明；注册变化后按菜单身份保持当前页。
     function rebuildFeatureMenus() {
@@ -531,14 +540,6 @@ ColumnLayout {
                         }
                     }
                 }
-            }
-
-            Label {
-                parent: algorithmPage
-                anchors.centerIn: parent
-                visible: root.algorithmInfos.length === 0
-                text: qsTr("暂无可用算法")
-                color: Theme.textSecondary
             }
         }
 

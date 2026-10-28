@@ -497,74 +497,84 @@ TEST_CASE("Feature menus use declared parents and give unlisted features one def
     CHECK(default_menus.toString() == R"([[{"id":"features","name":"功能","group":"default","items":["feature:unlisted"]}],[{"id":"features","name":"注册功能","group":"default","items":["category:declared","feature:unlisted"]}]])");
 }
 
-TEST_CASE("Actual toolbar preserves legacy algorithm parameters and execution", "[navigation][QML][legacy]")
+TEST_CASE("Legacy algorithm tab availability preserves feature page identity", "[navigation][QML][legacy]")
 {
     application();
     QTemporaryDir directory;
     REQUIRE(directory.isValid());
     const auto executable = (directory.path() + "/isolated/Test.exe").toStdString();
-    // argv0 是 string_view，必须持有路径直到 QML 宿主析构完成。
     QModelManager::argv0 = executable;
     QQmlEngine engine;
-    static const int theme_type = qmlRegisterSingletonType(QUrl("qrc:/navigation-ui/Theme.qml"), "NavigationUi", 1, 0, "Theme");
+    static const int theme_type = qmlRegisterSingletonType(QUrl("qrc:/navigation-ui/Theme.qml"), "LegacyNavigationUi", 1, 0, "Theme");
     engine.rootContext()->setContextProperty("Theme", engine.singletonInstance<QObject*>(theme_type));
-    const core::ArgType count_type { ArgTypeEnum::Int, "次数", "3", "" };
-    QArgType count(count_type);
-    // 使用已撤回导航字段的真实旧描述，不能靠 Feature 包装补齐分类数据。
-    QAlgorithmInfo info("cmdExecutePlugin", "旧算法", "", { &count });
-    engine.globalObject().setProperty("legacyInfo", engine.newQObject(&info));
-    const auto provider = engine.evaluate(R"JS(({
-        algorithmsInfo: [legacyInfo],
-        call: function(name, model, args) { this.lastCall = [name, model, args[0]]; }
-    }))JS");
-    REQUIRE_FALSE(provider.isError());
+
+    // 仅控制已有算法的可用性，不依赖已删除插件或执行旧算法。
+    QAlgorithmInfo info("legacy-regression", "旧算法", "", {});
+    auto algorithms = engine.newArray(1);
+    algorithms.setProperty(0, engine.newQObject(&info));
+    auto populated_provider = engine.newObject();
+    populated_provider.setProperty("algorithmsInfo", algorithms);
+    auto empty_provider = engine.newObject();
+    empty_provider.setProperty("algorithmsInfo", engine.newArray());
     QQmlComponent component(&engine, QUrl("qrc:/navigation-ui/AppToolbar.qml"));
     INFO(component.errorString().toStdString());
     REQUIRE(component.isReady());
-    std::unique_ptr<QObject> toolbar(component.createWithInitialProperties({ { "algorithmSystem", QVariant::fromValue(provider) } }));
+    std::unique_ptr<QObject> toolbar(component.createWithInitialProperties({ { "algorithmSystem", QVariant::fromValue(empty_provider) } }));
     REQUIRE(toolbar);
     auto* item = qobject_cast<QQuickItem*>(toolbar.get());
     REQUIRE(item);
     QQuickWindow window;
-    window.resize(800, 180);
+    window.resize(900, 180);
     item->setParentItem(window.contentItem());
-    item->setSize(QSizeF(800, 180));
-    REQUIRE(toolbar->setProperty("activeCategory", 2));
+    item->setSize(QSizeF(900, 180));
     window.show();
-    QEventLoop loop;
-    QTimer::singleShot(60, &loop, &QEventLoop::quit);
-    loop.exec();
-    auto* button = findItem(item, "algorithmAction_cmdExecutePlugin");
-    REQUIRE(button);
-    REQUIRE(button->isVisible());
-    REQUIRE(button->width() > 0);
-    auto* empty_label = findAction(item, "暂无可用算法");
-    REQUIRE(empty_label);
-    CHECK_FALSE(empty_label->isVisible());
-    auto session = createSession(engine, engine.newQObject(engine.singletonInstance<QModelManager*>("app.model", "QModelManager")->getFeatureSystemAdaptor()));
-    clickItem(window, button);
-    auto* app = engine.singletonInstance<QObject*>("app.core", "App");
-    REQUIRE(app);
-    const auto operation = app->property("activeOperation").value<QJSValue>();
-    CHECK(operation.property("info").toQObject() == &info);
-    auto* parameters = session->property("parameterModel").value<QObject*>();
-    REQUIRE(parameters);
-    CHECK(parameters->property("featureName").toString().isEmpty());
-    CHECK(parameters->property("values").value<QJSValue>().property(0).toInt() == 3);
-    auto execute = operation.property("execute");
-    REQUIRE(execute.isCallable());
-    auto args = engine.newArray(1);
-    args.setProperty(0, 7);
-    CHECK_FALSE(execute.call({ QJSValue(42), args }).isError());
-    CHECK(provider.property("lastCall").property(0).toString() == "cmdExecutePlugin");
-    CHECK(provider.property("lastCall").property(1).toInt() == 42);
-    CHECK(provider.property("lastCall").property(2).toInt() == 7);
-    auto empty_provider = engine.newObject();
-    empty_provider.setProperty("algorithmsInfo", engine.newArray());
+    const auto settle = [] {
+        QEventLoop loop;
+        QTimer::singleShot(60, &loop, &QEventLoop::quit);
+        loop.exec();
+    };
+    settle();
+    CHECK_FALSE(findItem(item, "otherAlgorithmTab"));
+    auto* feature_tab = findItem(item, "featureTab_mesh-generation");
+    REQUIRE(feature_tab);
+    clickItem(window, feature_tab);
+    settle();
+    const auto feature_page = toolbar->property("activeCategory").toInt();
+    CHECK(feature_page == 3);
+
+    REQUIRE(toolbar->setProperty("algorithmSystem", QVariant::fromValue(populated_provider)));
+    settle();
+    CHECK(toolbar->property("activeCategory").toInt() == feature_page);
+    auto* legacy_tab = findItem(item, "otherAlgorithmTab");
+    REQUIRE(legacy_tab);
+    feature_tab = findItem(item, "featureTab_mesh-generation");
+    REQUIRE(feature_tab);
+    CHECK(feature_tab->mapToItem(item, QPointF()).x() + feature_tab->width() <= legacy_tab->mapToItem(item, QPointF()).x());
+    clickItem(window, legacy_tab);
+    settle();
+    CHECK(toolbar->property("activeCategory").toInt() == 2);
+    auto* legacy_page = findItem(item, "algorithmPage_other");
+    REQUIRE(legacy_page);
+    CHECK(legacy_page->isVisible());
+
     REQUIRE(toolbar->setProperty("algorithmSystem", QVariant::fromValue(empty_provider)));
-    QCoreApplication::processEvents();
-    CHECK_FALSE(findItem(item, "algorithmAction_cmdExecutePlugin"));
-    CHECK(empty_label->isVisible());
+    settle();
+    CHECK_FALSE(findItem(item, "otherAlgorithmTab"));
+    CHECK(toolbar->property("activeCategory").toInt() == -1);
+    CHECK_FALSE(legacy_page->isVisible());
+    feature_tab = findItem(item, "featureTab_mesh-generation");
+    REQUIRE(feature_tab);
+    clickItem(window, feature_tab);
+    settle();
+    CHECK(toolbar->property("activeCategory").toInt() == feature_page);
+    REQUIRE(toolbar->setProperty("algorithmSystem", QVariant::fromValue(populated_provider)));
+    REQUIRE(toolbar->setProperty("algorithmSystem", QVariant::fromValue(empty_provider)));
+    settle();
+    CHECK(toolbar->property("activeCategory").toInt() == feature_page);
+    auto* page = findItem(item, "featureMenuPage_mesh-generation");
+    REQUIRE(page);
+    CHECK(page->isVisible());
+    QModelManager::argv0 = {};
 }
 
 TEST_CASE("Actual toolbar renders declared feature entries and preserves active operation", "[navigation][QML]")
@@ -610,21 +620,12 @@ TEST_CASE("Actual toolbar renders declared feature entries and preserves active 
     REQUIRE(app->setProperty("activeOperation", QVariant::fromValue(operation)));
     auto* tab = findItem(item, "featureTab_mesh-generation");
     REQUIRE(tab);
-    auto* legacy_tab = findItem(item, "otherAlgorithmTab");
-    REQUIRE(legacy_tab);
-    CHECK(tab->mapToItem(item, QPointF()).x() + tab->width() <= legacy_tab->mapToItem(item, QPointF()).x());
-    clickItem(window, legacy_tab);
-    QCoreApplication::processEvents();
-    CHECK(toolbar->property("activeCategory").toInt() == 2);
-    REQUIRE(findItem(item, "algorithmPage_other"));
-    CHECK(findItem(item, "algorithmPage_other")->isVisible());
     REQUIRE(tab->setProperty("checked", true));
     REQUIRE(QMetaObject::invokeMethod(tab, "clicked"));
     QCoreApplication::processEvents();
     CHECK(toolbar->property("activeCategory").toInt() == 3);
     REQUIRE(findItem(item, "featureMenuPage_mesh-generation"));
     CHECK(findItem(item, "featureMenuPage_mesh-generation")->isVisible());
-    CHECK_FALSE(findItem(item, "algorithmPage_other")->isVisible());
     CHECK(app->property("activeOperation").value<QJSValue>().strictlyEquals(operation));
 
     // 窄窗口保留四类入口，通过横向滚动访问完整文字。
@@ -1390,9 +1391,6 @@ TEST_CASE("Non-mesh feature entries handle zero one and multiple children across
     CHECK_FALSE(findItem(item, "featureTab_mesh-generation"));
     auto* construction_tab = findItem(item, "featureTab_geometry");
     REQUIRE(construction_tab);
-    auto* legacy_tab = findItem(item, "otherAlgorithmTab");
-    REQUIRE(legacy_tab);
-    CHECK(construction_tab->mapToItem(item, QPointF()).x() + construction_tab->width() <= legacy_tab->mapToItem(item, QPointF()).x());
     // 切换 StackLayout 页后先完成布局，否则隐藏页的旧几何位置会丢失首个鼠标点击。
     clickItem(window, construction_tab);
     settle();

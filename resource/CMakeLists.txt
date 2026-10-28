@@ -8,7 +8,6 @@ qt_add_resources(${MYNAME} "images"
         toolbar/Edit/create-face.svg
         toolbar/Edit/delete-face.svg
         toolbar/Algorithm/tetgen.svg
-        toolbar/Algorithm/cmd.svg
         toolbar/Algorithm/gmsh.svg
         toolbar/precess_extra_plugin.svg
         toolbar/Geometry/create-point.svg
