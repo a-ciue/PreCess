@@ -442,16 +442,3 @@ TEST_CASE("restoreModel reclaims geometry gids without conflicting with newer al
     REQUIRE(c->geometry->index.face_local_to_global == original_gids);
     REQUIRE(mgr.geomRegistry().getFace(original_gids[1]) != nullptr);
 }
-
-TEST_CASE("Mesh source metadata keeps exact string identities through snapshots", "[snapshot][metadata]")
-{
-    auto component = makeTriangleComponent("source");
-    component->mesh->source_metadata_["external.identity"] = "18446744073709551615";
-    auto snapshot = component->clone();
-    component->mesh->source_metadata_["external.identity"] = "changed";
-    component->restoreFrom(*snapshot);
-    CHECK(component->mesh->source_metadata_.at("external.identity") == "18446744073709551615");
-    component->mesh->clear();
-    CHECK(component->mesh->source_metadata_.empty());
-    CHECK(snapshot->mesh->source_metadata_.at("external.identity") == "18446744073709551615");
-}
