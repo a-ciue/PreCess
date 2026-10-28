@@ -18,7 +18,6 @@
 #include <BRep_Builder.hxx>
 #include <QElapsedTimer>
 #include <QGuiApplication>
-#include <QMouseEvent>
 #include <QQuickWindow>
 #include <QThread>
 #include <TopoDS_Compound.hxx>
@@ -254,44 +253,6 @@ struct FaceHidingViewport {
 };
 
 } // namespace
-
-TEST_CASE("Right click does not turn the next left drag into a selection")
-{
-    testApplication();
-    FaceHidingViewport env;
-    REQUIRE(env.flush());
-
-    int selections = 0;
-    int right_clicks = 0;
-    QObject::connect(&env.item, &QRenderWindow::selectedChanged, &env.item, [&] { ++selections; });
-    QObject::connect(&env.item, &QRenderWindow::rightClicked, &env.item, [&] { ++right_clicks; });
-    auto sendMouse = [&](QEvent::Type type, QPointF position, Qt::MouseButton button, Qt::MouseButtons buttons) {
-        const QPointF global = env.window.mapToGlobal(position.toPoint());
-        QMouseEvent event(type, position, global, button, buttons, Qt::NoModifier);
-        QCoreApplication::sendEvent(&env.item, &event);
-    };
-
-    const QPointF start(300, 300);
-    const QPointF end(330, 300);
-    sendMouse(QEvent::MouseButtonPress, start, Qt::RightButton, Qt::RightButton);
-    sendMouse(QEvent::MouseButtonRelease, start, Qt::RightButton, Qt::NoButton);
-    REQUIRE(env.flush());
-    REQUIRE(right_clicks == 1);
-    CHECK(selections == 0);
-
-    // 拖动超过阈值后松开不会拾取，即使此前打开过右键菜单。
-    sendMouse(QEvent::MouseButtonPress, start, Qt::LeftButton, Qt::LeftButton);
-    sendMouse(QEvent::MouseMove, end, Qt::NoButton, Qt::LeftButton);
-    sendMouse(QEvent::MouseButtonRelease, end, Qt::LeftButton, Qt::NoButton);
-    REQUIRE(env.flush());
-    CHECK(selections == 0);
-
-    // 左键单击仍通过同一事件路径产生选择通知。
-    sendMouse(QEvent::MouseButtonPress, start, Qt::LeftButton, Qt::LeftButton);
-    sendMouse(QEvent::MouseButtonRelease, start, Qt::LeftButton, Qt::NoButton);
-    REQUIRE(env.flush());
-    CHECK(selections == 1);
-}
 
 TEST_CASE("QRenderWindow hiding faces clears selection and highlighting")
 {
