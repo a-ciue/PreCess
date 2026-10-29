@@ -199,10 +199,12 @@ bool LibMeshbIO::write(int64_t meshb_idx, const MeshData& mesh_data)
         if (num_vertices > 0) {
             GmfSetKwd(meshb_idx, GmfVertices, num_vertices);
             for (int64_t i = 0; i < num_vertices; ++i) {
+                // GmfSetLin 接收 double 可变参数，按目标版本决定最终存储精度。
+                // 适配层不能预先转为 float，否则 v2/v3/v4 也会永久丢精度。
                 GmfSetLin(meshb_idx, GmfVertices,
-                    static_cast<float>(mesh_data.vertex_positions_[i][0]),
-                    static_cast<float>(mesh_data.vertex_positions_[i][1]),
-                    static_cast<float>(mesh_data.vertex_positions_[i][2]),
+                    mesh_data.vertex_positions_[i][0],
+                    mesh_data.vertex_positions_[i][1],
+                    mesh_data.vertex_positions_[i][2],
                     0); // reference = 0
             }
             spdlog::info("Wrote {} vertices", num_vertices);

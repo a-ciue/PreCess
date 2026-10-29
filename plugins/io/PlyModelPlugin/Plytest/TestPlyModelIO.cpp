@@ -160,3 +160,29 @@ TEST_CASE("PlyModelHandler ReadWrite test.ply")
 
     REQUIRE(meshes_equal(*mesh, *mesh2));
 }
+
+TEST_CASE("PLY export preserves double coordinates in header and ASCII payload", "[ply][precision]")
+{
+    const std::vector<std::array<double, 3>> expected {
+        { 1.00000001, 0, 0 }, { 1.00000002, 0, 0 }, { 170.6367188, 1, -0.12345678901234567 }
+    };
+    auto mesh = std::make_unique<MeshData>();
+    mesh->init();
+    mesh->vertex_positions_ = expected;
+    mesh->face_vertices_ = { 0, 1, 2 };
+    mesh->face_vertices_offset_ = { 0, 3 };
+    ModelLayer layer;
+    const auto ids = addMeshModelAndGetComponentIds(layer, std::move(mesh));
+    const fs::path path = core::TempFile::instance().path().string() + "_double.ply";
+    PlyModelHandler handler;
+    handler.write_components(layer, ids, path, {});
+    std::ifstream file(path);
+    const std::string text((std::istreambuf_iterator<char>(file)), {});
+    CHECK(text.find("property double x") != std::string::npos);
+    const auto payload = handler.read_model(path, {});
+    REQUIRE(payload.has_value());
+    const auto* result = requireReadableMeshModel(*payload);
+    CHECK(result->vertex_positions_ == expected);
+    CHECK(result->face_vertices_ == std::vector<Index> { 0, 1, 2 });
+    CHECK(result->face_vertices_offset_ == std::vector<Index> { 0, 3 });
+}
