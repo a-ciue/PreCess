@@ -1,22 +1,28 @@
 #include "MakeMeshDataVtk.h"
 
 #include "TestMeshActorWithData.h"
+#include "MeshActorManager.h"
 #include "MeshActorSelectOp.h"
+#include "MeshPipelineData.h"
 #include "SelectorHighlight.h"
 #include "renderStrategy/AttributeOperator.h"
 #include "renderStrategy/AttriRenderStrategyScalar.h"
 #include <catch2/catch_test_macros.hpp>
+#include <catch2/catch_approx.hpp>
+#include <vtkScalarBarActor.h>
 #include <vtkNew.h>
 #include <vtkCellData.h>
 #include <vtkIdTypeArray.h>
 #include <vtkPartitionedDataSet.h>
 #include <vtkPolyData.h>
 #include <vtkPolyDataMapper.h>
+#include <vtkPropCollection.h>
 #include <vtkRenderer.h>
 #include <vtkRenderWindow.h>
 #include <vtkSmartPointer.h>
 
 #include <array>
+#include <limits>
 #include <memory>
 #include <algorithm>
 #include <unordered_map>
@@ -84,6 +90,56 @@ TEST_CASE("Canceling attribute rendering clears active mesh scalars")
 
     REQUIRE(op.getFaceCellData()->GetScalars() == nullptr);
     REQUIRE(op.getSolidCellData()->GetScalars() == nullptr);
+}
+
+TEST_CASE("Scalar rendering isolates unavailable values from color ranges")
+{
+    MeshData mesh;
+    const MeshDataVtk model_data = MakeMeshDataVtk(mesh);
+    const std::size_t face_count = mesh.face_vertices_offset_.size() - 1;
+    REQUIRE(face_count > 1);
+    auto& values = mesh.face_attributes_["f_quality_1"];
+    values.assign(face_count, std::numeric_limits<double>::quiet_NaN());
+    mesh.face_attributes_["f_reference_1"].assign(face_count, 0.5);
+    bool has_valid_value = false;
+
+    SECTION("mixed usable and unavailable values")
+    {
+        values[0] = 0.25;
+        has_valid_value = true;
+    }
+    SECTION("all unavailable values") { }
+
+    vtkNew<vtkRenderer> renderer;
+    MeshPipelineData pipeline;
+    pipeline.loadModelData(model_data);
+    MeshActorManager manager;
+    manager.bindRender(renderer);
+    manager.loadMesh(7, pipeline.createSnapshot(), renderer);
+    AttributeOperator op(manager.getComponentActor(7).get());
+
+    // 经正式入口先显示有效属性，再切换到待测属性，验证共享色标的清理由管理器负责。
+    manager.setAttriMode(7, "f_reference_1", Mode::SCALAR, { });
+    vtkScalarBarActor* scalar_bar = nullptr;
+    auto* props = renderer->GetViewProps();
+    props->InitTraversal();
+    while (auto* prop = props->GetNextProp()) {
+        if (auto* candidate = vtkScalarBarActor::SafeDownCast(prop))
+            scalar_bar = candidate;
+    }
+    REQUIRE(scalar_bar != nullptr);
+    REQUIRE(scalar_bar->GetVisibility());
+    manager.setAttriMode(7, "f_quality_1", Mode::SCALAR, { });
+    CHECK(op.getFaceMapper()->GetScalarVisibility());
+    if (has_valid_value) {
+        CHECK(scalar_bar->GetVisibility());
+        CHECK(op.getFaceMapper()->GetScalarRange()[0] == Catch::Approx(0.25));
+        CHECK(op.getFaceMapper()->GetScalarRange()[1] == Catch::Approx(0.25));
+    } else {
+        CHECK_FALSE(scalar_bar->GetVisibility());
+        CHECK(op.getFaceMapper()->GetScalarRange()[0] == 0.0);
+        CHECK(op.getFaceMapper()->GetScalarRange()[1] == 1.0);
+    }
 }
 
 TEST_CASE("FaceSelectorHighlight clears highlight when last face is deselected")
