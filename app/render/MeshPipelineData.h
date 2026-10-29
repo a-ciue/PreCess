@@ -22,6 +22,7 @@ class vtkPlane;
 class vtkPolyData;
 class vtkUnstructuredGrid;
 class vtkDataArray;
+class vtkIdTypeArray;
 
 /** @brief 跨线程传递的裁剪参数，不共享可变 vtkPlane。 */
 struct MeshClipPlane {
@@ -48,6 +49,8 @@ struct MeshDataSnapshot {
     vtkSmartPointer<vtkPolyData> visible_faces;
     vtkSmartPointer<vtkPolyData> visible_edges;
     vtkSmartPointer<vtkPolyData> solid_surface;
+    /** @brief 裁剪后体单元的原始身份；在提取表面前保留，避免表面面序影响结果比较。 */
+    vtkSmartPointer<vtkIdTypeArray> visible_solid_ids;
     vtkSmartPointer<vtkPolyData> solid_internal_edges;
 };
 
@@ -85,8 +88,8 @@ public:
     /** @brief 设置单元显示闭区间；节点不支持筛选，重复参数不重建数据。 */
     void setScalarDisplayRange(const std::string& attribute, ElementType type,
         bool enabled, const std::array<double, 2>& range);
-    /** @brief 仅清除标量筛选，保留人工隐藏、整体显隐和裁剪。 */
-    void clearScalarDisplayRange();
+    /** @brief 仅清除标量筛选，返回是否解除已启用的筛选；保留人工隐藏、整体显隐和裁剪。 */
+    bool clearScalarDisplayRange();
     /** @brief 主动计算需要更新的数据；每次发布递增版本，绝不重新执行旧输出管线。 */
     std::shared_ptr<const MeshDataSnapshot> createSnapshot();
     /** @brief 返回原始网格代次，用于丢弃旧选择消息。 */

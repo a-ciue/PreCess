@@ -13,22 +13,25 @@
 #include "SelectManager.h"
 #include "Selection.h"
 #include "ViewportOrientationRepresentation.h"
-#include "renderStrategy/AttributeCommon.h"
 #include "renderStrategy/AttriRenderStrategyScalar.h"
+#include "renderStrategy/AttributeCommon.h"
 
 #include <QQuickWindow>
 #include <spdlog/spdlog.h>
 #include <vtkCallbackCommand.h>
 #include <vtkCamera.h>
+#include <vtkCellData.h>
 #include <vtkDisplaySizedImplicitPlaneRepresentation.h>
 #include <vtkDisplaySizedImplicitPlaneWidget.h>
 #include <vtkDoubleArray.h>
+#include <vtkIdTypeArray.h>
 #include <vtkMapper.h>
 #include <vtkMath.h>
 #include <vtkObjectFactory.h>
 #include <vtkPlane.h>
 #include <vtkPolyData.h>
 #include <vtkTextProperty.h>
+#include <vtkUnstructuredGrid.h>
 
 #include <algorithm>
 #include <cmath>
@@ -36,6 +39,7 @@
 #include <memory>
 #include <optional>
 #include <string>
+#include <tuple>
 #include <utility>
 #include <vector>
 
@@ -43,6 +47,46 @@ namespace {
 constexpr double kOrientationSize = 120.0;
 constexpr double kOrientationPadding = 12.0;
 constexpr double kScaleBarFontPixels = 12.0;
+
+/** @brief 同一源代次按原始单元身份比较筛选结果，不复制坐标，也不依赖输出单元顺序。 */
+bool hasSameScalarCells(const MeshDataSnapshot& before, const MeshDataSnapshot& after)
+{
+    if (before.generation != after.generation)
+        return false;
+    const auto same_ids = [](vtkIdTypeArray* left, vtkIdTypeArray* right, vtkIdType source_count) {
+        if (!left || !right || left->GetNumberOfValues() != right->GetNumberOfValues())
+            return false;
+        const auto count = left->GetNumberOfValues();
+        if (left == right || count == 0 || std::equal(left->GetPointer(0), left->GetPointer(0) + count, right->GetPointer(0)))
+            return true;
+        // 每个结果中的原始 ID 唯一；顺序不同则用临时位图线性比较集合，无需排序。
+        std::vector<bool> retained(source_count, false);
+        for (vtkIdType i = 0; i < count; ++i) {
+            const auto id = left->GetValue(i);
+            if (id < 0 || id >= source_count)
+                return false;
+            retained[id] = true;
+        }
+        for (vtkIdType i = 0; i < count; ++i) {
+            const auto id = right->GetValue(i);
+            if (id < 0 || id >= source_count || !retained[id])
+                return false;
+        }
+        return true;
+    };
+    const auto same_cells = [&same_ids](vtkPolyData* left, vtkPolyData* right, const char* name, vtkIdType source_count) {
+        if (left == right)
+            return true;
+        if (left->GetNumberOfCells() != right->GetNumberOfCells())
+            return false;
+        return left->GetNumberOfCells() == 0
+            || same_ids(vtkIdTypeArray::SafeDownCast(left->GetCellData()->GetArray(name)),
+                vtkIdTypeArray::SafeDownCast(right->GetCellData()->GetArray(name)), source_count);
+    };
+    return same_cells(before.visible_faces, after.visible_faces, "PrecessFaceIds", before.original_faces->GetNumberOfCells())
+        && same_cells(before.visible_edges, after.visible_edges, "vtkOriginalCellIds", before.original_edges->GetNumberOfCells())
+        && same_ids(before.visible_solid_ids, after.visible_solid_ids, before.original_solids->GetNumberOfCells());
+}
 
 //! @brief 仅在渲染线程应用逻辑像素到 VTK 像素的换算，初建和跨屏更新共用此路径。
 void applyOverlayScale(vtkRenderWindow* window, QRenderWindow::Data* data, qreal ratio)
@@ -529,25 +573,31 @@ void QRenderWindow::loadMeshData(Index component_id, const MeshDataVtk& data)
         pipeline->setVisibility(previous->second->isVisibilityEnabled());
     pipeline->setClipPlane(mesh_clip_);
     mesh_pipeline_data_[component_id] = std::move(pipeline);
-    const auto snapshot = prepareMeshSnapshot(component_id);
-    dispatch_async([this, component_id, snapshot, revision = selection_revision_](vtkRenderWindow*, vtkUserData user_data) {
-        auto* vtk = Data::SafeDownCast(user_data);
-        // 原选择使用旧数据下标，必须在替换数据前清空，安装后再回传空快照。
-        render_selection_revision_ = revision;
-        select_manager_->clearSelection();
-        vtk->mesh_actor_manager_->loadMesh(component_id, snapshot, vtk->renderer_);
-        publishSelection();
-    });
-    publishComponentVisibility(component_id);
-    // 源数据刷新后重新查询值域，但不丢弃已保存的范围和启用状态。
-    if (const auto active = active_scalar_attributes_.find(component_id); active != active_scalar_attributes_.end()) {
-        const auto key = active->second;
-        const auto attribute = QString::fromStdString(std::get<1>(key));
-        if (auto* range = ensureScalarRange(component_id, attribute, std::get<2>(key)))
-            applyScalarRange(component_id, attribute, std::get<2>(key), *range, false);
-        else
-            active_scalar_attributes_.erase(component_id);
+    // 先恢复活动属性，再只发布最终快照，避免短暂安装未筛选的网格。
+    const auto active = active_scalar_attributes_.find(component_id);
+    auto* range = active != active_scalar_attributes_.end()
+        ? ensureScalarRange(component_id, QString::fromStdString(std::get<1>(active->second)), std::get<2>(active->second))
+        : nullptr;
+    if (range) {
+        const auto& key = active->second;
+        applyScalarRange(component_id, QString::fromStdString(std::get<1>(key)), std::get<2>(key), *range, false);
+    } else {
+        active_scalar_attributes_.erase(component_id);
+        if (scalar_bar_component_id_ == component_id)
+            scalar_bar_component_id_ = -1;
+        const auto snapshot = prepareMeshSnapshot(component_id);
+        selected_faces_.clear();
+        selected_face_generations_.clear();
+        dispatch_async([this, component_id, snapshot, revision = selection_revision_](vtkRenderWindow*, vtkUserData user_data) {
+            auto* vtk = Data::SafeDownCast(user_data);
+            // 新源数据的选择索引全部失效，回传仍携带发布时的参数版本。
+            render_selection_revision_ = revision;
+            select_manager_->clearSelection();
+            vtk->mesh_actor_manager_->loadMesh(component_id, snapshot, vtk->renderer_);
+            publishSelection();
+        });
     }
+    publishComponentVisibility(component_id);
     emit scalarRangeChanged();
 }
 
@@ -1063,17 +1113,17 @@ void QRenderWindow::applyScalarRange(Index component_id, const QString& attribut
     const auto previous = mesh_snapshots_.find(component_id);
     const auto old_snapshot = previous != mesh_snapshots_.end() ? previous->second : nullptr;
     const auto snapshot = prepareMeshSnapshot(component_id);
-    const bool geometry_changed = !old_snapshot || old_snapshot->visible_faces != snapshot->visible_faces
-        || old_snapshot->visible_edges != snapshot->visible_edges || old_snapshot->solid_surface != snapshot->solid_surface;
+    const bool geometry_changed = !old_snapshot || !hasSameScalarCells(*old_snapshot, *snapshot);
     if (geometry_changed) {
         selected_faces_.clear();
         selected_face_generations_.clear();
     }
     dispatch_async([this, component_id, attribute, element_type, snapshot, mapping = range.mapping,
-                       geometry_changed, show_scalar_bar](vtkRenderWindow*, vtkUserData user_data) {
+                       geometry_changed, show_scalar_bar, revision = selection_revision_](vtkRenderWindow*, vtkUserData user_data) {
         auto* vtk = Data::SafeDownCast(user_data);
         // 映射更新不替换网格包装，避免使未变化的几何缓存失效。
         if (geometry_changed) {
+            render_selection_revision_ = revision;
             select_manager_->clearSelection();
             vtk->mesh_actor_manager_->loadMesh(component_id, snapshot, vtk->renderer_);
         }
@@ -1099,17 +1149,22 @@ void QRenderWindow::deactivateScalarRange(Index component_id)
     if (scalar_bar_component_id_ == component_id)
         scalar_bar_component_id_ = -1;
     const auto pipeline = mesh_pipeline_data_.find(component_id);
-    if (pipeline != mesh_pipeline_data_.end()) {
-        pipeline->second->clearScalarDisplayRange();
+    if (pipeline != mesh_pipeline_data_.end() && pipeline->second->clearScalarDisplayRange()) {
+        const auto previous = mesh_snapshots_.find(component_id);
+        const auto old_snapshot = previous != mesh_snapshots_.end() ? previous->second : nullptr;
         const auto snapshot = prepareMeshSnapshot(component_id);
-        selected_faces_.clear();
-        selected_face_generations_.clear();
-        dispatch_async([this, component_id, snapshot](vtkRenderWindow*, vtkUserData user_data) {
-            auto* vtk = Data::SafeDownCast(user_data);
-            select_manager_->clearSelection();
-            vtk->mesh_actor_manager_->loadMesh(component_id, snapshot, vtk->renderer_);
-            publishSelection();
-        });
+        // 筛选开关变化不代表可见结果变化，输出相同时保留网格包装和选择。
+        if (!old_snapshot || !hasSameScalarCells(*old_snapshot, *snapshot)) {
+            selected_faces_.clear();
+            selected_face_generations_.clear();
+            dispatch_async([this, component_id, snapshot, revision = selection_revision_](vtkRenderWindow*, vtkUserData user_data) {
+                auto* vtk = Data::SafeDownCast(user_data);
+                render_selection_revision_ = revision;
+                select_manager_->clearSelection();
+                vtk->mesh_actor_manager_->loadMesh(component_id, snapshot, vtk->renderer_);
+                publishSelection();
+            });
+        }
     }
     emit scalarRangeChanged();
 }

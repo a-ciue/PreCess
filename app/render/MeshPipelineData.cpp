@@ -300,6 +300,13 @@ void MeshPipelineData::loadModelData(const MeshDataVtk& data)
         edge_poly->SetLines(edge_cells);
 
         edge_poly->GetPointData()->AddArray(original_point_ids_.GetPointer());
+        // 重合边也有独立身份，不能以端点坐标判断是否为同一个原始单元。
+        vtkNew<vtkIdTypeArray> edge_ids;
+        edge_ids->SetName("vtkOriginalCellIds");
+        edge_ids->SetNumberOfTuples(edge_poly->GetNumberOfCells());
+        for (vtkIdType id = 0; id < edge_poly->GetNumberOfCells(); ++id)
+            edge_ids->SetValue(id, id);
+        edge_poly->GetCellData()->AddArray(edge_ids);
         addCellAttributes(*edge_poly->GetCellData(), model_data_->edge_attributes_,
             edge_poly->GetNumberOfCells(), "edge");
     }
@@ -501,13 +508,14 @@ void MeshPipelineData::setScalarDisplayRange(const std::string& attribute, Eleme
     dirty_ = true;
 }
 
-void MeshPipelineData::clearScalarDisplayRange()
+bool MeshPipelineData::clearScalarDisplayRange()
 {
     assertOwnerThread();
-    if (scalar_filtered_) {
-        scalar_filtered_ = false;
-        dirty_ = true;
-    }
+    if (!scalar_filtered_)
+        return false;
+    scalar_filtered_ = false;
+    dirty_ = true;
+    return true;
 }
 
 void MeshPipelineData::rebuildOutputs()
@@ -614,6 +622,10 @@ void MeshPipelineData::rebuildOutputs()
     prepared_->visible_faces = publishPolyData(faces);
     prepared_->visible_edges = publishPolyData(edges);
     prepared_->solid_surface = publishPolyData(surface->GetOutput());
+    prepared_->visible_solid_ids = vtkIdTypeArray::SafeDownCast(solids->GetCellData()->GetArray("vtkOriginalCellIds"));
+    // VTK 的空输出可能省略数组，空身份数组仍明确表示零个保留单元。
+    if (!prepared_->visible_solid_ids && solids->GetNumberOfCells() == 0)
+        prepared_->visible_solid_ids = vtkSmartPointer<vtkIdTypeArray>::New();
     prepared_->solid_internal_edges = internal_edges;
     dirty_ = false;
 }

@@ -81,7 +81,8 @@ TEST_CASE("Scalar range filtering preserves original IDs and manual hiding", "[s
     CHECK(filtered->visible_edges->GetNumberOfCells() == original->visible_edges->GetNumberOfCells());
     CHECK(filtered->solid_surface->GetNumberOfCells() == original->solid_surface->GetNumberOfCells());
     CHECK(pipeline.scalarRange("value", ElementType::FACE) == domain);
-    pipeline.clearScalarDisplayRange();
+    CHECK(pipeline.clearScalarDisplayRange());
+    CHECK_FALSE(pipeline.clearScalarDisplayRange());
     CHECK(pipeline.createSnapshot()->visible_faces->GetNumberOfCells() == original->visible_faces->GetNumberOfCells() - 1);
     CHECK(filtered->visible_faces->GetNumberOfCells() == 2);
 }
@@ -93,11 +94,18 @@ TEST_CASE("Scalar range filters edge and solid cells but rejects points", "[scal
     pipeline.loadModelData(MakeMeshDataVtk(mesh));
     const auto original = pipeline.createSnapshot();
     pipeline.setScalarDisplayRange("value", ElementType::EDGE, true, { 1.0, 1.0 });
-    CHECK(pipeline.createSnapshot()->visible_edges->GetNumberOfCells() == 1);
+    const auto edge_filtered = pipeline.createSnapshot();
+    REQUIRE(edge_filtered->visible_edges->GetNumberOfCells() == 1);
+    auto* edge_ids = vtkIdTypeArray::SafeDownCast(edge_filtered->visible_edges->GetCellData()->GetArray("vtkOriginalCellIds"));
+    REQUIRE(edge_ids);
+    CHECK(edge_ids->GetValue(0) == 1);
     pipeline.setScalarDisplayRange("value", ElementType::SOLID, true, { 0.0, 0.0 });
     const auto filtered = pipeline.createSnapshot();
     CHECK(filtered->solid_surface->GetNumberOfCells() > 0);
     CHECK(filtered->solid_surface->GetNumberOfCells() < original->solid_surface->GetNumberOfCells());
+    REQUIRE(filtered->visible_solid_ids);
+    REQUIRE(filtered->visible_solid_ids->GetNumberOfValues() == 1);
+    CHECK(filtered->visible_solid_ids->GetValue(0) == 0);
     auto* values = filtered->solid_surface->GetCellData()->GetArray("value");
     REQUIRE(values);
     for (vtkIdType id = 0; id < values->GetNumberOfTuples(); ++id)

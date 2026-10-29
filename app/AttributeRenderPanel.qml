@@ -21,7 +21,6 @@ Item {
     property real sliderMaximum: 1
     property var pendingRange: null
     property string rangeError: ""
-    property bool rangeFieldsDirty: false
     property var rangeEditTarget: null
     property var rememberedAttributes: ({})
 
@@ -86,23 +85,52 @@ Item {
         field.text = formatRangeValue(value);
     }
 
+    // 输入身份包含组件、实体域和属性名，多分量属性也有独立归属。
+    function rangeAttributeKey() {
+        let attr = selectedAttribute();
+        return attr ? JSON.stringify([App.selection.activeComponentId, attr.attrType, attr.name]) : "";
+    }
+
+    // 切换属性时放弃旧输入；普通状态刷新不调用此入口。
+    function clearRangeFields() {
+        rangeEditTarget = null;
+        rangeMinField.exactValue = null;
+        rangeMaxField.exactValue = null;
+        rangeMinField.text = "";
+        rangeMaxField.text = "";
+        rangeError = "";
+        rangeMinField.focus = false;
+        rangeMaxField.focus = false;
+    }
+
     // 恢复当前属性的两份独立范围，拖动期间固定滑条坐标，避免端点跳动。
     function refreshScalarState() {
         let attr = selectedAttribute();
         let window = App.registry.renderWindow;
-        scalarState = attr && window && modeCombo.currentIndex === 1 ? window.scalarRangeState(App.selection.activeComponentId, attr.name, attr.attrType) : {
+        let attributeKey = rangeAttributeKey();
+        let attributeChanged = scalarState.attributeKey !== attributeKey;
+        if (attributeChanged)
+            commitRangeFields();
+        let state = attr && window && modeCombo.currentIndex === 1 ? window.scalarRangeState(App.selection.activeComponentId, attr.name, attr.attrType) : {
             valid: false
         };
+        // 范围状态携带输入归属，无后端范围时仍能识别真正的属性切换。
+        state.attributeKey = attributeKey;
+        scalarState = state;
+        if (attributeChanged)
+            clearRangeFields();
         if (!scalarState.rangeAvailable)
             displayRangeMode = false;
         if (!scalarState.valid)
             return;
         let lower = displayRangeMode ? scalarState.displayLower : scalarState.mappingLower;
         let upper = displayRangeMode ? scalarState.displayUpper : scalarState.mappingUpper;
-        if (!rangeMinField.activeFocus)
-            updateRangeField(rangeMinField, lower);
-        if (!rangeMaxField.activeFocus)
-            updateRangeField(rangeMaxField, upper);
+        if (!rangeEditTarget) {
+            if (!rangeMinField.activeFocus)
+                updateRangeField(rangeMinField, lower);
+            if (!rangeMaxField.activeFocus)
+                updateRangeField(rangeMaxField, upper);
+        }
         if (!rangeSlider.first.pressed && !rangeSlider.second.pressed) {
             sliderMinimum = Math.min(scalarState.minimum, lower);
             sliderMaximum = Math.max(scalarState.maximum, upper);
@@ -147,24 +175,25 @@ Item {
     // 记录编辑开始时的身份，组件切换后仍只向原属性保存参数。
     function markRangeEdited() {
         let attr = selectedAttribute();
-        if (!rangeFieldsDirty && attr)
+        if (!rangeEditTarget && attr)
             rangeEditTarget = {
                 component: App.selection.activeComponentId,
                 attribute: attr.name,
                 type: attr.attrType,
-                display: displayRangeMode
+                display: displayRangeMode,
+                hasRange: !!scalarState.valid
             };
-        rangeFieldsDirty = true;
     }
 
     // 编辑完成后先交换反向区间；仅提交实际编辑，模式切换和回填不能暗中启用筛选。
     function commitRangeFields() {
         flushPendingRange();
-        if (!rangeFieldsDirty || !rangeEditTarget)
+        if (!rangeEditTarget)
             return true;
+        let target = rangeEditTarget;
         let lower = rangeMinField.exactValue;
         let upper = rangeMaxField.exactValue;
-        if (scalarState.valid && (lower === null || upper === null)) {
+        if (target.hasRange && (lower === null || upper === null)) {
             rangeError = "请输入有限数值";
             return false;
         }
@@ -175,13 +204,11 @@ Item {
             updateRangeField(rangeMinField, lower);
             updateRangeField(rangeMaxField, upper);
         }
-        let target = rangeEditTarget;
-        rangeFieldsDirty = false;
+        // 提交前移出待编辑状态，后端同步通知可直接回填；拒绝时恢复目标供用户纠正。
         rangeEditTarget = null;
-        // 多分量属性沿用可选映射参数，不要求单值属性的范围状态。
-        if (!scalarState.valid)
-            return true;
-        let accepted = App.registry.renderWindow.setScalarRange(target.component, target.attribute, target.type, target.display, lower, upper);
+        let accepted = !target.hasRange || App.registry.renderWindow.setScalarRange(target.component, target.attribute, target.type, target.display, lower, upper);
+        if (!accepted)
+            rangeEditTarget = target;
         rangeError = accepted ? "" : "当前属性不支持此范围";
         return accepted;
     }
@@ -198,10 +225,6 @@ Item {
 
     // 按当前组件刷新属性目录，并恢复该组件上次选择的属性和策略。
     function refreshAttributes() {
-        rangeFieldsDirty = false;
-        rangeEditTarget = null;
-        rangeMinField.focus = false;
-        rangeMaxField.focus = false;
         selectedIndex = -1;
         if (App.selection.activeComponentId >= 0) {
             componentName = QModelManager.query.getComponentName(App.selection.activeComponentId);
@@ -259,7 +282,7 @@ Item {
                 args["element_type"] = attr.attrType;
             let minValue = rangeMinField.exactValue;
             let maxValue = rangeMaxField.exactValue;
-            if (!scalarState.valid && minValue !== null && maxValue !== null)
+            if (scalarState.attributeKey === rangeAttributeKey() && !scalarState.valid && minValue !== null && maxValue !== null)
                 args["scalar_range"] = [minValue, maxValue];
         } else if (modeCombo.currentIndex === 2) {
             args["texture_path"] = texturePathField.text;
@@ -518,7 +541,7 @@ Item {
                         Accessible.name: root.displayRangeMode ? qsTr("可见单元下限") : qsTr("颜色映射下限")
                         validator: DoubleValidator {}
                         onActiveFocusChanged: {
-                            if (!activeFocus && !root.rangeFieldsDirty && exactValue !== null)
+                            if (!activeFocus && !root.rangeEditTarget && exactValue !== null)
                                 text = root.formatRangeValue(exactValue);
                         }
                         onTextEdited: {
@@ -548,7 +571,7 @@ Item {
                         Accessible.name: root.displayRangeMode ? qsTr("可见单元上限") : qsTr("颜色映射上限")
                         validator: DoubleValidator {}
                         onActiveFocusChanged: {
-                            if (!activeFocus && !root.rangeFieldsDirty && exactValue !== null)
+                            if (!activeFocus && !root.rangeEditTarget && exactValue !== null)
                                 text = root.formatRangeValue(exactValue);
                         }
                         onTextEdited: {
@@ -650,7 +673,6 @@ Item {
                         onClicked: {
                             root.pendingRange = null;
                             rangeUpdateTimer.stop();
-                            root.rangeFieldsDirty = false;
                             root.rangeEditTarget = null;
                             rangeMinField.focus = false;
                             rangeMaxField.focus = false;

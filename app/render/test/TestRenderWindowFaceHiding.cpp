@@ -310,8 +310,7 @@ TEST_CASE("Scalar range viewport retains parameters and the original scalar bar 
     CHECK(color_range == std::array<double, 2> { -1.0, 2.0 });
 
     // 模拟浮动面板或窗口关闭后重建场景，范围、着色和色柱仍应恢复。
-    const auto connection = QObject::connect(&env.window, &QQuickWindow::sceneGraphInvalidated,
-        &env.window, [&] { invalidated.store(true); }, Qt::DirectConnection);
+    const auto connection = QObject::connect(&env.window, &QQuickWindow::sceneGraphInvalidated, &env.window, [&] { invalidated.store(true); }, Qt::DirectConnection);
     env.window.hide();
     env.window.releaseResources();
     QElapsedTimer timer;
@@ -370,6 +369,86 @@ TEST_CASE("Scalar range viewport retains parameters and the original scalar bar 
     CHECK(env.visibleFaceIds() == std::vector<Index>({ 0 }));
 }
 
+TEST_CASE("Scalar range cancellation only invalidates selection when visible cells change", "[scalar-range]")
+{
+    testApplication();
+    FaceHidingViewport env;
+    env.mesh.face_attributes_["f_range_1"] = { 0.25, 0.75 };
+    env.item.loadMeshData(7, MakeMeshDataVtk(env.mesh));
+    env.item.setAttriMode(7, "f_range_1", 1, { });
+    bool geometry_changed = false;
+    std::vector<Index> original_visible { 0, 1 };
+    SECTION("mapping only") { }
+    SECTION("filter keeps every cell") { REQUIRE(env.item.setScalarRange(7, "f_range_1", 2, true, 0.0, 1.0)); }
+    SECTION("manual hiding already removes the excluded cell")
+    {
+        env.selectFace(0);
+        env.item.hideSelectedFaces();
+        REQUIRE(env.flush());
+        original_visible = { 1 };
+        REQUIRE(env.item.setScalarRange(7, "f_range_1", 2, true, 0.6, 0.8));
+    }
+    SECTION("filter removes a cell")
+    {
+        REQUIRE(env.item.setScalarRange(7, "f_range_1", 2, true, 0.6, 0.8));
+        geometry_changed = true;
+    }
+    env.selectFace(1);
+    REQUIRE(env.selectedFaceIds() == std::vector<Index> { 1 });
+    env.item.cancelComponentAttri(7);
+    REQUIRE(env.flush());
+    CHECK(env.selectedFaceIds() == (geometry_changed ? std::vector<Index> { } : std::vector<Index> { 1 }));
+    CHECK((env.highlightedCellCount() == 0) == geometry_changed);
+    CHECK(env.visibleFaceIds() == original_visible);
+    CHECK_FALSE(env.item.scalarRangeState(7, "f_range_1", 2)["active"].toBool());
+    // 取消只停用筛选，再次应用仍恢复各属性保存的参数。
+    env.item.setAttriMode(7, "f_range_1", 1, { });
+    CHECK(env.visibleFaceIds() == (geometry_changed ? std::vector<Index> { 1 } : original_visible));
+}
+
+TEST_CASE("Scalar range distinguishes coincident edges and retains selection for unchanged original cells", "[scalar-range]")
+{
+    testApplication();
+    FaceHidingViewport env;
+    env.mesh.edge_vertices_ = { 0, 1, 0, 1 };
+    env.mesh.edge_attributes_.clear();
+    env.mesh.edge_attributes_["edge_value"] = { 0.25, 0.75 };
+    env.item.loadMeshData(7, MakeMeshDataVtk(env.mesh));
+    env.item.setAttriMode(7, "edge_value", 1, { { "element_type", 1 } });
+    REQUIRE(env.item.setScalarRange(7, "edge_value", 1, true, 0.2, 0.3));
+    env.selectFace(1);
+    REQUIRE(env.selectedFaceIds() == std::vector<Index> { 1 });
+    // 参数改变但仍保留边 0 时，选择应继续保留。
+    REQUIRE(env.item.setScalarRange(7, "edge_value", 1, true, 0.1, 0.4));
+    REQUIRE(env.flush());
+    CHECK(env.selectedFaceIds() == std::vector<Index> { 1 });
+    // 两条边坐标相同，身份与标量值不同，切换后必须安装新的属性数组。
+    REQUIRE(env.item.setScalarRange(7, "edge_value", 1, true, 0.6, 0.8));
+    REQUIRE(env.flush());
+    CHECK(env.selectedFaceIds().empty());
+    vtkIdType count = 0;
+    vtkIdType original_id = -1;
+    double value = 0.0;
+    env.item.dispatch_async([&](vtkRenderWindow*, QQuickVTKItem::vtkUserData user_data) {
+        auto* data = QRenderWindow::Data::SafeDownCast(user_data);
+        AttributeOperator op(data->mesh_actor_manager_->getComponentActor(7).get());
+        auto* mapper = op.getEdgeMapper();
+        mapper->Update();
+        auto* output = mapper->GetInput();
+        count = output->GetNumberOfCells();
+        if (count != 1)
+            return;
+        if (auto* values = output->GetCellData()->GetArray("edge_value"))
+            value = values->GetComponent(0, 0);
+        if (auto* ids = vtkIdTypeArray::SafeDownCast(output->GetCellData()->GetArray("vtkOriginalCellIds")))
+            original_id = ids->GetValue(0);
+    });
+    REQUIRE(env.flush());
+    CHECK(count == 1);
+    CHECK(original_id == 1);
+    CHECK(value == 0.75);
+}
+
 TEST_CASE("Scalar range mapping preserves geometry and background reload preserves the current legend", "[scalar-range]")
 {
     testApplication();
@@ -422,9 +501,18 @@ TEST_CASE("Scalar range mapping preserves geometry and background reload preserv
     CHECK(mapping == std::array<double, 2> { -2.0, 3.0 });
 
     // 用户主动选择 B 后，A 的数据刷新只能恢复 A 的颜色，不能夺走 B 的色柱。
+    REQUIRE(env.item.setScalarRange(7, "f_range_1", 2, true, 0.6, 0.8));
     env.item.setAttriMode(8, "f_range_1", 1, { });
+    env.selectFace(1);
+    int selection_publications = 0;
+    QObject reload_observer;
+    QObject::connect(&env.item, &QRenderWindow::selectedChanged, &reload_observer, [&] { ++selection_publications; });
     env.item.loadMeshData(7, MakeMeshDataVtk(env.mesh));
     inspect();
+    // 有活动筛选的刷新只安装最终输出并回传一次选择清理结果。
+    CHECK(selection_publications == 1);
+    CHECK(env.selectedFaceIds().empty());
+    CHECK(env.visibleFaceIds() == std::vector<Index> { 1 });
     CHECK(mapping == std::array<double, 2> { -2.0, 3.0 });
     CHECK(legend == std::array<double, 2> { 10.0, 20.0 });
     CHECK(legend_visible);
@@ -441,6 +529,12 @@ TEST_CASE("Scalar range mapping preserves geometry and background reload preserv
     CHECK(legend_visible);
     CHECK(legend == mapping);
     CHECK(style == original_style);
+    // 活动属性消失时退回普通加载，不再恢复失效筛选或色柱。
+    env.mesh.face_attributes_.erase("f_range_1");
+    env.item.loadMeshData(7, MakeMeshDataVtk(env.mesh));
+    inspect();
+    CHECK_FALSE(env.item.scalarRangeState(7, "f_range_1", 2)["valid"].toBool());
+    CHECK_FALSE(legend_visible);
 }
 
 TEST_CASE("Scalar range viewport isolates components and disallows node hiding", "[scalar-range]")

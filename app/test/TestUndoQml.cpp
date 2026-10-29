@@ -579,6 +579,7 @@ TEST_CASE("Scalar range actual panel restores mode fields and independently rese
     mesh.face_vertices_ = { 0, 1, 2, 0, 2, 3 };
     mesh.face_vertices_offset_ = { 0, 3, 6 };
     mesh.face_attributes_["f_pressure_1"] = { 0.253759, 0.754987 };
+    mesh.face_attributes_["f_pressure_4"] = { 100, 101, 102, 103, 200, 201, 202, 203 };
     ComponentDatas components;
     components.push_back(std::move(component));
     auto& model = *fixture.manager->getModelManager();
@@ -869,6 +870,65 @@ TEST_CASE("Scalar range actual panel restores mode fields and independently rese
         CHECK(reset_item->mapToItem(item, QPointF()).y() >= display_button->mapToItem(item, QPointF(0, display_button->height())).y());
         item->setParentItem(nullptr);
     }
+    // 同一属性的后台刷新不能覆盖未提交输入，也不能截断未编辑端的精确值。
+    lower->setProperty("text", "0.1234567");
+    REQUIRE(QMetaObject::invokeMethod(lower, "textEdited"));
+    REQUIRE(QMetaObject::invokeMethod(panel.get(), "refreshScalarState"));
+    REQUIRE(QMetaObject::invokeMethod(panel.get(), "refreshAttributes"));
+    CHECK(lower->property("text").toString() == "0.1234567");
+    CHECK(upper->property("exactValue").toDouble() == 1.5123456);
+    REQUIRE(QMetaObject::invokeMethod(lower, "editingFinished"));
+    CHECK(viewport->scalarRangeState(component_id, "f_pressure_1", 2)["mappingLower"].toDouble() == 0.1234567);
+
+    // 使用实际属性点击入口，切换前提交旧属性，切换后多分量属性不能继承旧范围。
+    auto* attribute_list = panel->findChild<QObject*>("attributeRenderList");
+    REQUIRE(attribute_list);
+    const auto click_attribute = [&](int index) {
+        QQmlExpression row(fixture.engine.rootContext(), attribute_list, QString("itemAtIndex(%1)").arg(index));
+        auto* item = qobject_cast<QQuickItem*>(row.evaluate().value<QObject*>());
+        REQUIRE(item);
+        auto* mouse = item->findChild<QObject*>("attributeRenderSelect");
+        REQUIRE(mouse);
+        QQmlExpression click(fixture.engine.rootContext(), mouse, "clicked(null)");
+        click.evaluate();
+        REQUIRE_FALSE(click.hasError());
+    };
+    lower->setProperty("text", "0.2234567");
+    REQUIRE(QMetaObject::invokeMethod(lower, "textEdited"));
+    click_attribute(1);
+    CHECK(viewport->scalarRangeState(component_id, "f_pressure_1", 2)["mappingLower"].toDouble() == 0.2234567);
+    CHECK(lower->property("text").toString().isEmpty());
+    CHECK(upper->property("text").toString().isEmpty());
+    CHECK(lower->property("exactValue").isNull());
+    CHECK(upper->property("exactValue").isNull());
+    QVariant args;
+    REQUIRE(QMetaObject::invokeMethod(panel.get(), "renderArgs", Q_RETURN_ARG(QVariant, args)));
+    CHECK_FALSE(args.toMap().contains("scalar_range"));
+
+    // 多分量属性仍允许手动设置映射参数，并在普通刷新后保留完整精度。
+    lower->setProperty("text", "100.1234567");
+    upper->setProperty("text", "200.7654321");
+    REQUIRE(QMetaObject::invokeMethod(lower, "textEdited"));
+    REQUIRE(QMetaObject::invokeMethod(upper, "textEdited"));
+    REQUIRE(QMetaObject::invokeMethod(lower, "editingFinished"));
+    REQUIRE(QMetaObject::invokeMethod(panel.get(), "refreshAttributes"));
+    REQUIRE(QMetaObject::invokeMethod(panel.get(), "renderArgs", Q_RETURN_ARG(QVariant, args)));
+    CHECK(args.toMap()["scalar_range"].toList() == QVariantList { 100.1234567, 200.7654321 });
+    click_attribute(0);
+    CHECK(lower->property("exactValue").toDouble() == 0.2234567);
+    CHECK(upper->property("exactValue").toDouble() == 1.5123456);
+
+    // 组件切出仍向捕获的旧属性提交；空选择不能建立没有归属的编辑。
+    lower->setProperty("text", "0.3234567");
+    REQUIRE(QMetaObject::invokeMethod(lower, "textEdited"));
+    fixture.selection_state->setProperty("activeComponentId", -1);
+    CHECK(viewport->scalarRangeState(component_id, "f_pressure_1", 2)["mappingLower"].toDouble() == 0.3234567);
+    CHECK(lower->property("text").toString().isEmpty());
+    CHECK(upper->property("exactValue").isNull());
+    REQUIRE(QMetaObject::invokeMethod(lower, "textEdited"));
+    CHECK(panel->property("rangeEditTarget").isNull());
+    fixture.selection_state->setProperty("activeComponentId", component_id);
+    CHECK(lower->property("exactValue").toDouble() == 0.3234567);
 }
 
 TEST_CASE("Actual undo clears offscreen selectors only after successful restoration", "[QML][undo]")
