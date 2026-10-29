@@ -25,6 +25,46 @@ Item {
     property var rangeEditTarget: null
     property var rememberedAttributes: ({})
 
+    // 范围模式由面板状态驱动，切换校验失败时保持原选中项。
+    component RangeModeButton: ToolButton {
+        id: control
+        property bool selected: false
+
+        implicitHeight: Math.max(32, implicitContentHeight + topPadding + bottomPadding)
+        padding: Theme.spacingSm
+        font.pixelSize: Theme.fontSizeBody
+        font.weight: selected ? Font.DemiBold : Font.Normal
+        focusPolicy: Qt.StrongFocus
+        Accessible.role: Accessible.PageTab
+        Accessible.checkable: true
+        Accessible.checked: selected
+        Accessible.name: text
+
+        background: Rectangle {
+            radius: Math.max(0, Theme.radiusControl - 1)
+            color: control.down ? Theme.hoverOverlay : control.selected ? Theme.surface : control.hovered ? Theme.hoverOverlay : "transparent"
+            border.width: control.visualFocus ? 2 : 0
+            border.color: Theme.primary
+
+            Rectangle {
+                anchors.left: parent.left
+                anchors.right: parent.right
+                anchors.bottom: parent.bottom
+                anchors.margins: 4
+                height: 2
+                visible: control.selected
+                color: control.enabled ? Theme.primary : Theme.textDisabled
+            }
+        }
+        contentItem: Text {
+            text: control.text
+            font: control.font
+            color: !control.enabled ? Theme.textDisabled : control.selected || control.hovered ? Theme.textPrimary : Theme.textSecondary
+            horizontalAlignment: Text.AlignHCenter
+            verticalAlignment: Text.AlignVCenter
+        }
+    }
+
     // 普通值截断至三位小数，极值用四位有效数字；按十进制文本截取，避免乘除造成浮点误差。
     function formatRangeValue(value) {
         if (!Number.isFinite(value))
@@ -413,54 +453,27 @@ Item {
                 spacing: 4
 
                 RowLayout {
+                    objectName: "scalarOriginalRange"
                     Layout.fillWidth: true
-                    TextField {
-                        id: rangeMinField
-                        objectName: "scalarRangeLower"
-                        // 实际值独立保留，获得焦点时仍维持精简显示。
-                        property var exactValue: null
+                    visible: !!root.scalarState.valid
+                    spacing: Theme.spacingSm
+
+                    Label {
+                        objectName: "scalarOriginalLower"
                         Layout.fillWidth: true
                         Layout.minimumWidth: 0
-                        placeholderText: "min"
-                        validator: DoubleValidator {}
-                        onActiveFocusChanged: {
-                            if (!activeFocus && !root.rangeFieldsDirty && exactValue !== null)
-                                text = root.formatRangeValue(exactValue);
-                        }
-                        onTextEdited: {
-                            exactValue = root.optionalNumber(text);
-                            root.markRangeEdited();
-                        }
-                        onEditingFinished: {
-                            if (root.commitRangeFields())
-                                root.refreshScalarState();
-                        }
+                        color: Theme.textSecondary
+                        text: root.scalarState.valid ? root.formatRangeValue(root.scalarState.minimum) : ""
+                        Accessible.name: qsTr("原始范围下限：%1").arg(text)
                     }
-                    Item {
-                        Layout.preferredWidth: 24
-                    }
-                    TextField {
-                        id: rangeMaxField
-                        objectName: "scalarRangeUpper"
-                        // 与下限独立保存精确值，避免仅编辑一端时截断另一端。
-                        property var exactValue: null
+                    Label {
+                        objectName: "scalarOriginalUpper"
                         Layout.fillWidth: true
                         Layout.minimumWidth: 0
                         horizontalAlignment: Text.AlignRight
-                        placeholderText: "max"
-                        validator: DoubleValidator {}
-                        onActiveFocusChanged: {
-                            if (!activeFocus && !root.rangeFieldsDirty && exactValue !== null)
-                                text = root.formatRangeValue(exactValue);
-                        }
-                        onTextEdited: {
-                            exactValue = root.optionalNumber(text);
-                            root.markRangeEdited();
-                        }
-                        onEditingFinished: {
-                            if (root.commitRangeFields())
-                                root.refreshScalarState();
-                        }
+                        color: Theme.textSecondary
+                        text: root.scalarState.valid ? root.formatRangeValue(root.scalarState.maximum) : ""
+                        Accessible.name: qsTr("原始范围上限：%1").arg(text)
                     }
                 }
 
@@ -490,28 +503,150 @@ Item {
 
                 RowLayout {
                     Layout.fillWidth: true
-                    Button {
-                        objectName: "scalarMappingMode"
-                        text: "映射范围"
-                        highlighted: !root.displayRangeMode
-                        onClicked: root.changeRangeMode(false)
-                    }
-                    Button {
-                        objectName: "scalarDisplayMode"
-                        text: "显示范围"
-                        highlighted: root.displayRangeMode
-                        enabled: !!root.scalarState.rangeAvailable
-                        onClicked: root.changeRangeMode(true)
-                        ToolTip.visible: hovered && !enabled
-                        ToolTip.text: "仅边、面、体的单值属性支持范围隐藏"
-                    }
-                    Item {
+                    spacing: Theme.spacingSm
+
+                    TextField {
+                        id: rangeMinField
+                        objectName: "scalarRangeLower"
+                        // 实际值独立保留，获得焦点时仍维持精简显示。
+                        property var exactValue: null
                         Layout.fillWidth: true
+                        Layout.preferredWidth: 1
+                        Layout.minimumWidth: 0
+                        placeholderText: "min"
+                        horizontalAlignment: Text.AlignHCenter
+                        Accessible.name: root.displayRangeMode ? qsTr("可见单元下限") : qsTr("颜色映射下限")
+                        validator: DoubleValidator {}
+                        onActiveFocusChanged: {
+                            if (!activeFocus && !root.rangeFieldsDirty && exactValue !== null)
+                                text = root.formatRangeValue(exactValue);
+                        }
+                        onTextEdited: {
+                            exactValue = root.optionalNumber(text);
+                            root.markRangeEdited();
+                        }
+                        onEditingFinished: {
+                            if (root.commitRangeFields())
+                                root.refreshScalarState();
+                        }
+                    }
+                    Label {
+                        objectName: "scalarRangeLabel"
+                        text: qsTr("范围")
+                        color: Theme.textSecondary
+                    }
+                    TextField {
+                        id: rangeMaxField
+                        objectName: "scalarRangeUpper"
+                        // 与下限独立保存精确值，避免仅编辑一端时截断另一端。
+                        property var exactValue: null
+                        Layout.fillWidth: true
+                        Layout.preferredWidth: 1
+                        Layout.minimumWidth: 0
+                        placeholderText: "max"
+                        horizontalAlignment: Text.AlignHCenter
+                        Accessible.name: root.displayRangeMode ? qsTr("可见单元上限") : qsTr("颜色映射上限")
+                        validator: DoubleValidator {}
+                        onActiveFocusChanged: {
+                            if (!activeFocus && !root.rangeFieldsDirty && exactValue !== null)
+                                text = root.formatRangeValue(exactValue);
+                        }
+                        onTextEdited: {
+                            exactValue = root.optionalNumber(text);
+                            root.markRangeEdited();
+                        }
+                        onEditingFinished: {
+                            if (root.commitRangeFields())
+                                root.refreshScalarState();
+                        }
+                    }
+                }
+
+                GridLayout {
+                    Layout.fillWidth: true
+                    Layout.minimumWidth: 0
+                    columns: width >= rangeModeGroup.implicitWidth + rangeResetButton.implicitWidth + columnSpacing ? 2 : 1
+                    columnSpacing: Theme.spacingSm
+                    rowSpacing: Theme.spacingXs
+
+                    Rectangle {
+                        id: rangeModeGroup
+                        Layout.fillWidth: true
+                        implicitWidth: mappingModeButton.implicitWidth + displayModeButton.implicitWidth + 6
+                        implicitHeight: Math.max(mappingModeButton.implicitHeight, displayModeButton.implicitHeight) + 4
+                        radius: Theme.radiusControl
+                        color: Theme.surfaceAlt
+                        border.color: Theme.border
+
+                        RowLayout {
+                            anchors.fill: parent
+                            anchors.margins: 2
+                            spacing: 2
+
+                            RangeModeButton {
+                                id: mappingModeButton
+                                objectName: "scalarMappingMode"
+                                Layout.fillWidth: true
+                                Layout.minimumWidth: implicitWidth
+                                Layout.preferredWidth: 1
+                                text: qsTr("颜色映射")
+                                selected: !root.displayRangeMode
+                                enabled: !!root.scalarState.valid
+                                onClicked: root.changeRangeMode(false)
+                                Keys.onRightPressed: {
+                                    if (displayModeButton.enabled) {
+                                        displayModeButton.forceActiveFocus();
+                                        root.changeRangeMode(true);
+                                    }
+                                }
+                                ToolTip.visible: hovered || visualFocus
+                                ToolTip.text: qsTr("编辑颜色映射范围，保留可见单元范围")
+                                ToolTip.delay: 400
+                            }
+                            RangeModeButton {
+                                id: displayModeButton
+                                objectName: "scalarDisplayMode"
+                                Layout.fillWidth: true
+                                Layout.minimumWidth: implicitWidth
+                                Layout.preferredWidth: 1
+                                text: qsTr("可见单元")
+                                selected: root.displayRangeMode
+                                enabled: !!root.scalarState.rangeAvailable
+                                onClicked: root.changeRangeMode(true)
+                                Keys.onLeftPressed: {
+                                    mappingModeButton.forceActiveFocus();
+                                    root.changeRangeMode(false);
+                                }
+                                Accessible.description: qsTr("隐藏范围外的边、面或体单元；节点属性不支持此操作")
+                                ToolTip.visible: hovered || visualFocus
+                                ToolTip.text: qsTr("编辑可见单元范围，隐藏范围外的单元并保留颜色映射")
+                                ToolTip.delay: 400
+                            }
+                        }
                     }
                     Button {
+                        id: rangeResetButton
                         objectName: "scalarRangeReset"
-                        text: "重置"
+                        Layout.alignment: Qt.AlignRight | Qt.AlignVCenter
+                        Layout.minimumHeight: 32
+                        Layout.preferredHeight: rangeModeGroup.implicitHeight
+                        implicitWidth: Math.max(72, implicitContentWidth + leftPadding + rightPadding)
+                        leftPadding: Theme.spacingSm
+                        rightPadding: Theme.spacingSm
+                        text: qsTr("重置范围")
+                        font.pixelSize: Theme.fontSizeBody
+                        focusPolicy: Qt.StrongFocus
+                        palette.button: Theme.surfaceAlt
+                        palette.buttonText: Theme.textPrimary
+                        palette.mid: Theme.border
+                        palette.light: Theme.surface
+                        palette.dark: Theme.borderStrong
+                        palette.highlight: Theme.primary
                         enabled: !!root.scalarState.valid
+                        Accessible.name: root.displayRangeMode ? qsTr("重置可见单元范围") : qsTr("重置颜色映射范围")
+                        ToolTip.visible: hovered || visualFocus
+                        ToolTip.text: root.displayRangeMode ? qsTr("将可见单元范围恢复为原始值域，保留颜色映射") : qsTr("将颜色映射范围恢复为原始值域，保留可见单元范围")
+                        ToolTip.delay: 400
                         onClicked: {
                             root.pendingRange = null;
                             rangeUpdateTimer.stop();
@@ -528,11 +663,11 @@ Item {
                 }
 
                 Label {
-                    objectName: "scalarOriginalRange"
                     Layout.fillWidth: true
+                    visible: root.rangeError.length > 0 || !root.scalarState.valid
                     wrapMode: Text.Wrap
                     color: Theme.textSecondary
-                    text: root.rangeError.length > 0 ? root.rangeError : root.scalarState.valid ? "原始范围：" + root.formatRangeValue(root.scalarState.minimum) + " ～ " + root.formatRangeValue(root.scalarState.maximum) : "请选择有效的标量属性"
+                    text: root.rangeError.length > 0 ? root.rangeError : qsTr("请选择有效的标量属性")
                 }
             }
 
@@ -580,6 +715,7 @@ Item {
 
         RowLayout {
             Layout.fillWidth: true
+            Layout.minimumWidth: 0
             spacing: Theme.spacingSm
 
             Item {
@@ -587,38 +723,61 @@ Item {
             }
 
             Button {
-                id: applyButton
-                objectName: "attributeRenderApply"
-                text: "应用"
-                enabled: root.canApply()
-                // 主操作：实心强调色按钮
-                background: Rectangle {
-                    radius: Theme.radiusControl
-                    color: !applyButton.enabled ? Theme.scrollBarIdle : applyButton.pressed ? Theme.primaryPressed : applyButton.hovered ? Theme.primaryHover : Theme.primary
-                }
-                contentItem: Text {
-                    text: applyButton.text
-                    color: applyButton.enabled ? Theme.textOnPrimary : Theme.textDisabled
-                    font.pixelSize: Theme.fontSizeBody
-                    horizontalAlignment: Text.AlignHCenter
-                    verticalAlignment: Text.AlignVCenter
-                }
-                onClicked: root.applySelectedAttribute()
-            }
-
-            Button {
+                id: cancelButton
                 objectName: "attributeRenderCancel"
-                icon.source: "qrc:/images/toolbar/Panels/cancel-render.svg"
-                icon.width: 14
-                icon.height: 14
-                icon.color: "transparent"
-                text: "取消属性渲染"
+                Layout.alignment: Qt.AlignRight
+                Layout.minimumHeight: 32
+                leftPadding: Theme.spacingXs
+                rightPadding: Theme.spacingXs
+                text: qsTr("取消属性渲染")
+                font.pixelSize: Theme.fontSizeBody
+                focusPolicy: Qt.StrongFocus
+                palette.button: Theme.surfaceAlt
+                palette.buttonText: Theme.textPrimary
+                palette.mid: Theme.border
+                palette.light: Theme.surface
+                palette.dark: Theme.borderStrong
+                palette.highlight: Theme.primary
                 flat: true
                 enabled: App.selection.activeComponentId >= 0 && App.registry.renderWindow
+                ToolTip.visible: hovered || visualFocus
+                ToolTip.text: qsTr("关闭属性着色和范围筛选，保留参数")
+                ToolTip.delay: 400
                 onClicked: {
                     root.flushPendingRange();
                     App.registry.renderWindow.cancelComponentAttri(App.selection.activeComponentId);
                 }
+            }
+
+            Button {
+                id: applyButton
+                objectName: "attributeRenderApply"
+                Layout.alignment: Qt.AlignRight
+                implicitWidth: Math.max(64, implicitContentWidth + leftPadding + rightPadding)
+                implicitHeight: Math.max(32, implicitContentHeight + topPadding + bottomPadding)
+                padding: Theme.spacingSm
+                text: qsTr("应用")
+                font.pixelSize: Theme.fontSizeBody
+                focusPolicy: Qt.StrongFocus
+                enabled: root.canApply()
+                ToolTip.visible: hovered || visualFocus
+                ToolTip.text: qsTr("重新应用当前属性和参数；选择属性时也会自动应用")
+                ToolTip.delay: 400
+                // 主操作保留明暗主题的对比度，同时显示键盘焦点。
+                background: Rectangle {
+                    radius: Theme.radiusControl
+                    color: !applyButton.enabled ? Theme.surfaceAlt : Theme.dark ? (applyButton.down ? Theme.hoverOverlay : Theme.primaryTint) : applyButton.down ? Theme.primaryPressed : applyButton.hovered ? Theme.primaryHover : Theme.primary
+                    border.width: applyButton.visualFocus ? 2 : 1
+                    border.color: applyButton.visualFocus ? Theme.textPrimary : applyButton.enabled ? Theme.primary : Theme.border
+                }
+                contentItem: Text {
+                    text: applyButton.text
+                    color: !applyButton.enabled ? Theme.textDisabled : Theme.dark ? Theme.textPrimary : Theme.textOnPrimary
+                    font: applyButton.font
+                    horizontalAlignment: Text.AlignHCenter
+                    verticalAlignment: Text.AlignVCenter
+                }
+                onClicked: root.applySelectedAttribute()
             }
         }
     }

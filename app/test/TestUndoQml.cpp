@@ -17,11 +17,16 @@
 #include "QRenderWindowStyle.h"
 #include "QSelection.h"
 #include "TreeModel.h"
+#include "core/ThemePalette.h"
+#include <QColor>
 #include <QElapsedTimer>
 #include <QEventLoop>
 #include <QFile>
+#include <QFont>
 #include <QGuiApplication>
 #include <QImage>
+#include <QKeyEvent>
+#include <QPalette>
 #include <QQmlComponent>
 #include <QQmlContext>
 #include <QQmlEngine>
@@ -33,9 +38,11 @@
 #include <QTemporaryDir>
 #include <QThread>
 #include <QTimer>
+#include <algorithm>
 #include <atomic>
 #include <catch2/catch_test_macros.hpp>
 #include <cmath>
+#include <functional>
 #include <map>
 #include <utility>
 #include <vtkCamera.h>
@@ -564,6 +571,7 @@ TEST_CASE("Scalar range actual panel restores mode fields and independently rese
     application();
     QmlFixture fixture;
     auto component = std::make_unique<ComponentData>();
+    component->name = "范围渲染示例";
     component->mesh = std::make_unique<MeshData>();
     auto& mesh = *component->mesh;
     mesh.vertex_positions_ = { { 0, 0, 0 }, { 1, 0, 0 }, { 1, 1, 0 }, { 0, 1, 0 } };
@@ -615,11 +623,23 @@ TEST_CASE("Scalar range actual panel restores mode fields and independently rese
     REQUIRE(lower);
     REQUIRE(upper);
     REQUIRE(slider);
+    auto* mapping_button = panel->findChild<QQuickItem*>("scalarMappingMode");
+    auto* display_button = panel->findChild<QQuickItem*>("scalarDisplayMode");
+    REQUIRE(mapping_button);
+    REQUIRE(display_button);
+    CHECK(mapping_button->property("selected").toBool());
+    CHECK_FALSE(display_button->property("selected").toBool());
     CHECK(lower->property("text").toString() == "0.253");
     CHECK(upper->property("text").toString() == "0.754");
-    auto* original_range = panel->findChild<QObject*>("scalarOriginalRange");
-    REQUIRE(original_range);
-    CHECK(original_range->property("text").toString() == QStringLiteral("原始范围：0.253 ～ 0.754"));
+    auto* original_lower = panel->findChild<QQuickItem*>("scalarOriginalLower");
+    auto* original_upper = panel->findChild<QQuickItem*>("scalarOriginalUpper");
+    auto* range_label = panel->findChild<QQuickItem*>("scalarRangeLabel");
+    REQUIRE(original_lower);
+    REQUIRE(original_upper);
+    REQUIRE(range_label);
+    CHECK(original_lower->property("text").toString() == "0.253");
+    CHECK(original_upper->property("text").toString() == "0.754");
+    CHECK(range_label->property("text").toString() == QStringLiteral("范围"));
     // 同一格式覆盖正负值、零以及两端的科学计数法边界。
     for (const auto& [value, expected] : std::map<double, QString> {
              { -12.34567, "-12.345" }, { 0, "0" }, { 0.000123456, "1.234e-4" },
@@ -629,6 +649,13 @@ TEST_CASE("Scalar range actual panel restores mode fields and independently rese
         REQUIRE(QMetaObject::invokeMethod(panel.get(), "formatRangeValue", Q_RETURN_ARG(QVariant, formatted), Q_ARG(QVariant, value)));
         CHECK(formatted.toString() == expected);
     }
+    // 输入不完整时切换必须保持原模式，按钮不能先自行改变选中态。
+    lower->setProperty("text", "");
+    REQUIRE(QMetaObject::invokeMethod(lower, "textEdited"));
+    REQUIRE(QMetaObject::invokeMethod(display_button, "clicked"));
+    CHECK_FALSE(panel->property("displayRangeMode").toBool());
+    CHECK(mapping_button->property("selected").toBool());
+    CHECK_FALSE(display_button->property("selected").toBool());
     // 用户反向填写映射范围时，提交后同时交换数值、输入框及滑块端点。
     lower->setProperty("text", "2");
     upper->setProperty("text", "-1");
@@ -641,8 +668,10 @@ TEST_CASE("Scalar range actual panel restores mode fields and independently rese
     CHECK(upper->property("text").toString() == "2");
     CHECK(slider->property("from").toDouble() == -1.0);
     CHECK(slider->property("to").toDouble() == 2.0);
-    REQUIRE(QMetaObject::invokeMethod(panel.get(), "changeRangeMode", Q_ARG(QVariant, true)));
+    REQUIRE(QMetaObject::invokeMethod(display_button, "clicked"));
     CHECK(panel->property("displayRangeMode").toBool());
+    CHECK_FALSE(mapping_button->property("selected").toBool());
+    CHECK(display_button->property("selected").toBool());
     CHECK(lower->property("text").toString() == "0.253");
     // 显示范围共用同一纠正逻辑，同时保留另一份映射范围。
     lower->setProperty("text", "0.6");
@@ -709,10 +738,6 @@ TEST_CASE("Scalar range actual panel restores mode fields and independently rese
         REQUIRE(lower_item);
         REQUIRE(upper_item);
         REQUIRE(slider_item);
-        CHECK(lower_item->mapToItem(item, QPointF(0, lower_item->height())).y() <= slider_item->mapToItem(item, QPointF()).y());
-        CHECK(upper_item->mapToItem(item, QPointF(0, upper_item->height())).y() <= slider_item->mapToItem(item, QPointF()).y());
-        CHECK(lower_item->mapToItem(item, QPointF()).x() == slider_item->mapToItem(item, QPointF()).x());
-        CHECK(upper_item->mapToItem(item, QPointF(upper_item->width(), 0)).x() == slider_item->mapToItem(item, QPointF(slider_item->width(), 0)).x());
         for (const auto* name : { "scalarMappingMode", "scalarDisplayMode", "scalarRangeReset" }) {
             auto* button = panel->findChild<QQuickItem*>(name);
             REQUIRE(button);
@@ -722,8 +747,18 @@ TEST_CASE("Scalar range actual panel restores mode fields and independently rese
         auto* cancel_button = panel->findChild<QQuickItem*>("attributeRenderCancel");
         REQUIRE(apply_button);
         REQUIRE(cancel_button);
-        CHECK(apply_button->mapToItem(item, QPointF()).x() > item->width() / 2);
-        CHECK(cancel_button->mapToItem(item, QPointF(cancel_button->width(), 0)).x() == slider_item->mapToItem(item, QPointF(slider_item->width(), 0)).x());
+        CHECK(cancel_button->mapToItem(item, QPointF()).x() > item->width() / 2);
+        CHECK(apply_button->mapToItem(item, QPointF(apply_button->width(), 0)).x() == slider_item->mapToItem(item, QPointF(slider_item->width(), 0)).x());
+        CHECK(mapping_button->nextItemInFocusChain() == display_button);
+        CHECK(cancel_button->nextItemInFocusChain() == apply_button);
+        // 分段选项可用方向键切换，仍沿用同一份范围校验和状态。
+        mapping_button->forceActiveFocus();
+        QKeyEvent right_key(QEvent::KeyPress, Qt::Key_Right, Qt::NoModifier);
+        QCoreApplication::sendEvent(mapping_button, &right_key);
+        CHECK(panel->property("displayRangeMode").toBool());
+        QKeyEvent left_key(QEvent::KeyPress, Qt::Key_Left, Qt::NoModifier);
+        QCoreApplication::sendEvent(display_button, &left_key);
+        CHECK_FALSE(panel->property("displayRangeMode").toBool());
         lower_item->forceActiveFocus();
         CHECK(lower->property("text").toString() == "-0.612");
         upper_item->forceActiveFocus();
@@ -748,6 +783,90 @@ TEST_CASE("Scalar range actual panel restores mode fields and independently rese
         REQUIRE_FALSE(click.hasError());
         CHECK(apply_count == 1);
         CHECK(viewport->scalarRangeState(component_id, "f_pressure_1", 2)["active"].toBool());
+        // 明暗主题、窄面板及大字号下，按钮保持可读、可点且互不覆盖。
+        auto* theme = fixture.engine.rootContext()->contextProperty("Theme").value<QObject*>();
+        REQUIRE(theme);
+        auto* reset_item = qobject_cast<QQuickItem*>(reset);
+        REQUIRE(reset_item);
+        const auto original_palette = application().palette();
+        const auto original_mode = theme->property("mode");
+        const auto restore_theme = qScopeGuard([&] {
+            application().setPalette(original_palette);
+            QMetaObject::invokeMethod(theme, "setMode", Q_ARG(QVariant, original_mode));
+        });
+        // 计算实际前景与背景的对比度，检查自绘按钮的普通文字。
+        const auto luminance = [](const QColor& color) {
+            const auto channel = [](double value) { return value <= 0.04045 ? value / 12.92 : std::pow((value + 0.055) / 1.055, 2.4); };
+            return 0.2126 * channel(color.redF()) + 0.7152 * channel(color.greenF()) + 0.0722 * channel(color.blueF());
+        };
+        for (const int theme_mode : { 0, 1 }) {
+            REQUIRE(QMetaObject::invokeMethod(theme, "setMode", Q_ARG(QVariant, theme_mode)));
+            const auto colors = theme->property("controlPalette").value<QVariantMap>();
+            application().setPalette(app::core::buildThemePalette(colors));
+            // 独立预览没有 Main.qml 的调色板宿主，按相同角色表向可见控件注入。
+            std::function<void(QQuickItem*)> apply_palette = [&](QQuickItem* control) {
+                if (auto* palette = control->property("palette").value<QObject*>()) {
+                    for (const auto& binding : app::core::kThemeRoles)
+                        palette->setProperty(binding.key, colors.value(QLatin1String(binding.key)));
+                }
+                for (auto* child : control->childItems())
+                    apply_palette(child);
+            };
+            apply_palette(item);
+            preview.setColor(theme->property("surface").value<QColor>());
+            for (const int panel_width : { 420, 240 }) {
+                preview.resize(panel_width, 370);
+                item->setSize(QSizeF(panel_width, 370));
+                const auto themed_image = preview.grabWindow();
+                REQUIRE_FALSE(themed_image.isNull());
+                if (!preview_path.isEmpty())
+                    REQUIRE(themed_image.save(preview_path + QString(".%1-%2.png").arg(theme_mode ? "dark" : "light").arg(panel_width)));
+                // 原始范围始终位于滑条上方两端，当前范围在下方同一行编辑。
+                CHECK(original_lower->mapToItem(item, QPointF(0, original_lower->height())).y() <= slider_item->mapToItem(item, QPointF()).y());
+                CHECK(original_upper->mapToItem(item, QPointF(0, original_upper->height())).y() <= slider_item->mapToItem(item, QPointF()).y());
+                CHECK(original_lower->mapToItem(item, QPointF()).x() == slider_item->mapToItem(item, QPointF()).x());
+                CHECK(original_upper->mapToItem(item, QPointF(original_upper->width(), 0)).x() == slider_item->mapToItem(item, QPointF(slider_item->width(), 0)).x());
+                CHECK(lower_item->mapToItem(item, QPointF()).y() >= slider_item->mapToItem(item, QPointF(0, slider_item->height())).y());
+                CHECK(lower_item->mapToItem(item, QPointF()).y() == upper_item->mapToItem(item, QPointF()).y());
+                CHECK(lower_item->mapToItem(item, QPointF(lower_item->width(), 0)).x() <= range_label->mapToItem(item, QPointF()).x());
+                CHECK(range_label->mapToItem(item, QPointF(range_label->width(), 0)).x() <= upper_item->mapToItem(item, QPointF()).x());
+                CHECK(lower_item->width() == upper_item->width());
+                CHECK(range_label->mapToItem(item, QPointF(range_label->width() / 2, 0)).x() == item->width() / 2);
+                CHECK(upper_item->mapToItem(item, QPointF(upper_item->width(), 0)).x() == slider_item->mapToItem(item, QPointF(slider_item->width(), 0)).x());
+                CHECK(mapping_button->mapToItem(item, QPointF()).y() >= lower_item->mapToItem(item, QPointF(0, lower_item->height())).y());
+                for (auto* button : { mapping_button, display_button, reset_item, cancel_button, apply_button }) {
+                    const auto position = button->mapToItem(item, QPointF());
+                    CHECK(position.x() >= 0);
+                    CHECK(position.x() + button->width() <= item->width());
+                    CHECK(button->height() >= 32);
+                }
+                CHECK(mapping_button->mapToItem(item, QPointF(mapping_button->width(), 0)).x() <= display_button->mapToItem(item, QPointF()).x());
+                // 常规字号下模式组与重置保持一行，重置和模式组外框等高。
+                CHECK(reset_item->mapToItem(item, QPointF()).y() == mapping_button->parentItem()->parentItem()->mapToItem(item, QPointF()).y());
+                CHECK(reset_item->height() == mapping_button->parentItem()->parentItem()->height());
+                CHECK(display_button->mapToItem(item, QPointF(display_button->width(), 0)).x() <= reset_item->mapToItem(item, QPointF()).x());
+                CHECK(cancel_button->mapToItem(item, QPointF(cancel_button->width(), 0)).x() <= apply_button->mapToItem(item, QPointF()).x());
+                auto* foreground = apply_button->property("contentItem").value<QObject*>();
+                auto* background = apply_button->property("background").value<QObject*>();
+                REQUIRE(foreground);
+                REQUIRE(background);
+                const double text_luminance = luminance(foreground->property("color").value<QColor>());
+                const double background_luminance = luminance(background->property("color").value<QColor>());
+                CHECK((std::max(text_luminance, background_luminance) + 0.05) / (std::min(text_luminance, background_luminance) + 0.05) >= 4.5);
+            }
+        }
+        for (auto* button : { mapping_button, display_button, reset_item, cancel_button, apply_button }) {
+            auto font = button->property("font").value<QFont>();
+            font.setPixelSize(20);
+            button->setProperty("font", font);
+        }
+        const auto large_font_image = preview.grabWindow();
+        REQUIRE_FALSE(large_font_image.isNull());
+        if (!preview_path.isEmpty())
+            REQUIRE(large_font_image.save(preview_path + ".dark-large-font.png"));
+        for (auto* button : { mapping_button, display_button, reset_item, cancel_button, apply_button })
+            CHECK(button->mapToItem(item, QPointF(button->width(), 0)).x() <= item->width());
+        CHECK(reset_item->mapToItem(item, QPointF()).y() >= display_button->mapToItem(item, QPointF(0, display_button->height())).y());
         item->setParentItem(nullptr);
     }
 }
