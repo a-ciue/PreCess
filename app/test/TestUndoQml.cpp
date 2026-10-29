@@ -816,8 +816,14 @@ TEST_CASE("Scalar range actual panel restores mode fields and independently rese
             apply_palette(item);
             preview.setColor(theme->property("surface").value<QColor>());
             for (const int panel_width : { 420, 240 }) {
-                preview.resize(panel_width, 370);
-                item->setSize(QSizeF(panel_width, 370));
+                // 先完成宽度相关的换行，再按面板声明的最小高度验证真实控件边界。
+                preview.resize(panel_width, 600);
+                item->setSize(QSizeF(panel_width, 600));
+                REQUIRE_FALSE(preview.grabWindow().isNull());
+                const int minimum_height = static_cast<int>(std::ceil(item->implicitHeight()));
+                REQUIRE(minimum_height > 0);
+                preview.resize(panel_width, minimum_height);
+                item->setHeight(minimum_height);
                 const auto themed_image = preview.grabWindow();
                 REQUIRE_FALSE(themed_image.isNull());
                 if (!preview_path.isEmpty())
@@ -839,8 +845,11 @@ TEST_CASE("Scalar range actual panel restores mode fields and independently rese
                     const auto position = button->mapToItem(item, QPointF());
                     CHECK(position.x() >= 0);
                     CHECK(position.x() + button->width() <= item->width());
+                    CHECK(position.y() >= 0);
+                    CHECK(position.y() + button->height() <= item->height());
                     CHECK(button->height() >= 32);
                 }
+                CHECK(std::abs(attribute_list->property("height").toDouble() - (2 * attribute_row->height() + attribute_list->property("spacing").toDouble())) <= 1.0);
                 CHECK(mapping_button->mapToItem(item, QPointF(mapping_button->width(), 0)).x() <= display_button->mapToItem(item, QPointF()).x());
                 // 常规字号下模式组与重置保持一行，重置和模式组外框等高。
                 CHECK(reset_item->mapToItem(item, QPointF()).y() == mapping_button->parentItem()->parentItem()->mapToItem(item, QPointF()).y());
@@ -856,18 +865,56 @@ TEST_CASE("Scalar range actual panel restores mode fields and independently rese
                 CHECK((std::max(text_luminance, background_luminance) + 0.05) / (std::min(text_luminance, background_luminance) + 0.05) >= 4.5);
             }
         }
+        // 拉高后只扩展列表，底部操作区仍贴着面板底部。
+        const double compact_list_height = attribute_list->property("height").toDouble();
+        const double compact_height = item->height();
+        const double compact_apply_y = apply_button->mapToItem(item, QPointF()).y();
+        preview.resize(240, static_cast<int>(compact_height) + 80);
+        item->setHeight(compact_height + 80);
+        REQUIRE_FALSE(preview.grabWindow().isNull());
+        CHECK(std::abs(attribute_list->property("height").toDouble() - compact_list_height - 80) <= 1.0);
+        CHECK(std::abs(apply_button->mapToItem(item, QPointF()).y() - compact_apply_y - 80) <= 1.0);
+        const double normal_minimum_height = item->implicitHeight();
         for (auto* button : { mapping_button, display_button, reset_item, cancel_button, apply_button }) {
             auto font = button->property("font").value<QFont>();
             font.setPixelSize(20);
             button->setProperty("font", font);
         }
+        REQUIRE_FALSE(preview.grabWindow().isNull());
+        CHECK(item->implicitHeight() > normal_minimum_height);
+        const int large_minimum_height = static_cast<int>(std::ceil(item->implicitHeight()));
+        preview.resize(240, large_minimum_height);
+        item->setHeight(large_minimum_height);
         const auto large_font_image = preview.grabWindow();
         REQUIRE_FALSE(large_font_image.isNull());
         if (!preview_path.isEmpty())
             REQUIRE(large_font_image.save(preview_path + ".dark-large-font.png"));
-        for (auto* button : { mapping_button, display_button, reset_item, cancel_button, apply_button })
+        for (auto* button : { mapping_button, display_button, reset_item, cancel_button, apply_button }) {
             CHECK(button->mapToItem(item, QPointF(button->width(), 0)).x() <= item->width());
+            CHECK(button->mapToItem(item, QPointF(0, button->height())).y() <= item->height());
+        }
         CHECK(reset_item->mapToItem(item, QPointF()).y() >= display_button->mapToItem(item, QPointF(0, display_button->height())).y());
+        // 外层高度不足时，底部操作仍可见，范围参数可通过滚动完整访问。
+        preview.resize(240, large_minimum_height - 64);
+        item->setHeight(large_minimum_height - 64);
+        REQUIRE_FALSE(preview.grabWindow().isNull());
+        for (auto* button : { cancel_button, apply_button }) {
+            CHECK(button->mapToItem(item, QPointF()).y() >= 0);
+            CHECK(button->mapToItem(item, QPointF(0, button->height())).y() <= item->height());
+        }
+        auto* parameter_viewport = panel->findChild<QQuickItem*>("attributeRenderScroll");
+        REQUIRE(parameter_viewport);
+        CHECK(parameter_viewport->property("contentHeight").toDouble() > parameter_viewport->height());
+        parameter_viewport->setProperty("contentY", parameter_viewport->property("contentHeight").toDouble() - parameter_viewport->height());
+        const auto compact_image = preview.grabWindow();
+        REQUIRE_FALSE(compact_image.isNull());
+        if (!preview_path.isEmpty())
+            REQUIRE(compact_image.save(preview_path + ".compact-scrolled.png"));
+        for (auto* button : { mapping_button, display_button, reset_item }) {
+            CHECK(button->mapToItem(parameter_viewport, QPointF()).y() >= 0);
+            CHECK(button->mapToItem(parameter_viewport, QPointF(0, button->height())).y() <= parameter_viewport->height());
+        }
+        parameter_viewport->setProperty("contentY", 0);
         item->setParentItem(nullptr);
     }
     // 同一属性的后台刷新不能覆盖未提交输入，也不能截断未编辑端的精确值。
@@ -929,6 +976,30 @@ TEST_CASE("Scalar range actual panel restores mode fields and independently rese
     CHECK(panel->property("rangeEditTarget").isNull());
     fixture.selection_state->setProperty("activeComponentId", component_id);
     CHECK(lower->property("exactValue").toDouble() == 0.3234567);
+
+    // 窗口引用失效时，提交与重置都应保留编辑，恢复窗口后仍可继续提交。
+    auto registry = fixture.app->property("registry").value<QJSValue>();
+    REQUIRE(registry.isObject());
+    const auto render_window = registry.property("renderWindow");
+    const auto restore_window = qScopeGuard([&] { registry.setProperty("renderWindow", render_window); });
+    lower->setProperty("text", "0.4234567");
+    REQUIRE(QMetaObject::invokeMethod(lower, "textEdited"));
+    registry.setProperty("renderWindow", QJSValue(QJSValue::NullValue));
+    QQmlExpression commit_without_window(fixture.engine.rootContext(), panel.get(), "commitRangeFields()");
+    CHECK_FALSE(commit_without_window.evaluate().toBool());
+    CHECK_FALSE(commit_without_window.hasError());
+    CHECK_FALSE(panel->property("rangeEditTarget").isNull());
+    QQmlExpression reset_without_window(fixture.engine.rootContext(), reset, "clicked()");
+    reset_without_window.evaluate();
+    CHECK_FALSE(reset_without_window.hasError());
+    CHECK_FALSE(panel->property("rangeEditTarget").isNull());
+    CHECK(lower->property("exactValue").toDouble() == 0.4234567);
+    CHECK(viewport->scalarRangeState(component_id, "f_pressure_1", 2)["mappingLower"].toDouble() == 0.3234567);
+    registry.setProperty("renderWindow", render_window);
+    REQUIRE(QMetaObject::invokeMethod(panel.get(), "commitRangeFields", Q_RETURN_ARG(QVariant, accepted)));
+    CHECK(accepted.toBool());
+    CHECK(panel->property("rangeEditTarget").isNull());
+    CHECK(viewport->scalarRangeState(component_id, "f_pressure_1", 2)["mappingLower"].toDouble() == 0.4234567);
 }
 
 TEST_CASE("Actual undo clears offscreen selectors only after successful restoration", "[QML][undo]")

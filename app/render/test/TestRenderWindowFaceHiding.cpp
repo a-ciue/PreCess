@@ -282,6 +282,7 @@ TEST_CASE("Scalar range viewport retains parameters and the original scalar bar 
     std::array<double, 2> color_range { };
     bool found_bar = false;
     auto read_bar = [&](auto& style) {
+        found_bar = false;
         env.item.dispatch_async([&](vtkRenderWindow*, QQuickVTKItem::vtkUserData user_data) {
             auto* data = QRenderWindow::Data::SafeDownCast(user_data);
             auto* props = data->renderer_->GetViewProps();
@@ -299,9 +300,9 @@ TEST_CASE("Scalar range viewport retains parameters and the original scalar bar 
             }
         });
         REQUIRE(env.flush());
+        REQUIRE(found_bar);
     };
     read_bar(style_before);
-    REQUIRE(found_bar);
     CHECK(color_range == std::array<double, 2> { -1.0, 2.0 });
     REQUIRE(env.item.setScalarRange(7, "f_range_1", 2, true, 0.2, 0.3));
     CHECK(env.visibleFaceIds() == std::vector<Index>({ 0 }));

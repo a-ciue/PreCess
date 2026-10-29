@@ -380,6 +380,9 @@ QQuickVTKItem::vtkUserData QRenderWindow::initializeVTK(vtkRenderWindow* renderW
         vtk->mesh_actor_manager_->loadMesh(component_id, snapshot, vtk->renderer_);
     // 同步边界只重放已保存的着色参数，不访问 GUI 过滤器；重建窗口不丢失范围渲染。
     for (const auto& [component_id, key] : active_scalar_attributes_) {
+        // 色柱所属组件由下方 Manager 恢复，避免重复着色。
+        if (component_id == scalar_bar_component_id_)
+            continue;
         const auto range = scalar_ranges_.find(key);
         auto actor = vtk->mesh_actor_manager_->getComponentActor(component_id);
         if (!actor || range == scalar_ranges_.end())

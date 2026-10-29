@@ -9,6 +9,8 @@ import app.model
 Item {
     id: root
     clip: true
+    // 声明完整内容所需高度；外层分配不足时滚动参数，底部操作保持可见。
+    implicitHeight: panelLayout.implicitHeight + footerLayout.implicitHeight + 2 * parameterViewport.anchors.margins + panelLayout.spacing
 
     property var attributes: []
     property int selectedIndex: -1
@@ -194,7 +196,7 @@ Item {
         let lower = rangeMinField.exactValue;
         let upper = rangeMaxField.exactValue;
         if (target.hasRange && (lower === null || upper === null)) {
-            rangeError = "请输入有限数值";
+            rangeError = qsTr("请输入有限数值");
             return false;
         }
         if (lower !== null && upper !== null && lower > upper) {
@@ -206,10 +208,11 @@ Item {
         }
         // 提交前移出待编辑状态，后端同步通知可直接回填；拒绝时恢复目标供用户纠正。
         rangeEditTarget = null;
-        let accepted = !target.hasRange || App.registry.renderWindow.setScalarRange(target.component, target.attribute, target.type, target.display, lower, upper);
+        let window = App.registry.renderWindow;
+        let accepted = !target.hasRange || !!window && window.setScalarRange(target.component, target.attribute, target.type, target.display, lower, upper);
         if (!accepted)
             rangeEditTarget = target;
-        rangeError = accepted ? "" : "当前属性不支持此范围";
+        rangeError = accepted ? "" : qsTr("当前属性不支持此范围");
         return accepted;
     }
 
@@ -326,13 +329,43 @@ Item {
         return decodeURIComponent(urlString);
     }
 
-    ColumnLayout {
-        anchors.fill: parent
+    FontMetrics {
+        id: attributeFontMetrics
+        font: Qt.application.font
+    }
+
+    Flickable {
+        id: parameterViewport
+        objectName: "attributeRenderScroll"
+        anchors.left: parent.left
+        anchors.right: parent.right
+        anchors.top: parent.top
         anchors.margins: 6
+        anchors.bottom: footerLayout.top
+        contentWidth: width
+        contentHeight: panelLayout.height
+        boundsBehavior: Flickable.StopAtBounds
+        clip: true
+        // 滚动条使用右侧留白，不挤压参数区，避免窄面板因滚动条出现而再次换行。
+        ScrollBar.vertical: ScrollBar {
+            parent: root
+            anchors.top: parameterViewport.top
+            anchors.bottom: parameterViewport.bottom
+            anchors.right: parent.right
+            width: parameterViewport.anchors.rightMargin
+        }
+    }
+
+    ColumnLayout {
+        id: panelLayout
+        parent: parameterViewport.contentItem
+        width: parameterViewport.width
+        height: Math.max(implicitHeight, parameterViewport.height)
         spacing: 6
 
         RowLayout {
             Layout.fillWidth: true
+            Layout.minimumHeight: implicitHeight
             spacing: Theme.spacingXs
             Label {
                 text: "组件"
@@ -352,13 +385,17 @@ Item {
         ListView {
             id: attributeList
             objectName: "attributeRenderList"
+            // 两行使用与委托相同的行高，字体放大时不会只露出半行。
+            readonly property real rowHeight: Math.max(34, attributeFontMetrics.height + 16)
+            implicitHeight: 2 * rowHeight + spacing
             Layout.fillWidth: true
             Layout.fillHeight: true
-            Layout.minimumHeight: 60
+            Layout.minimumHeight: implicitHeight
             clip: true
             spacing: Theme.spacingXs
             model: root.attributes
             currentIndex: root.selectedIndex
+            interactive: contentHeight > height
             flickDeceleration: 100000
             boundsBehavior: Flickable.StopAtBounds
 
@@ -368,7 +405,7 @@ Item {
                 required property int index
 
                 width: attributeList.width
-                height: 34
+                height: attributeList.rowHeight
                 radius: Theme.radiusControl
                 color: root.selectedIndex === index ? Theme.primaryTint : attributeMouse.hovered ? Theme.hoverOverlay : Theme.surface
                 border.color: root.selectedIndex === index ? Theme.primary : Theme.border
@@ -392,7 +429,7 @@ Item {
                         Layout.minimumWidth: 0
 
                         ToolTip {
-                            visible: attrNameText.truncated && attributeMouse.hovered
+                            visible: attrNameText.truncated && attributeMouse.containsMouse
                             text: attrNameText.text
                             delay: 300
                         }
@@ -444,6 +481,7 @@ Item {
 
         GridLayout {
             Layout.fillWidth: true
+            Layout.minimumHeight: implicitHeight
             columns: 2
             rowSpacing: 6
             columnSpacing: 6
@@ -665,19 +703,22 @@ Item {
                         palette.light: Theme.surface
                         palette.dark: Theme.borderStrong
                         palette.highlight: Theme.primary
-                        enabled: !!root.scalarState.valid
+                        enabled: !!root.scalarState.valid && !!App.registry.renderWindow
                         Accessible.name: root.displayRangeMode ? qsTr("重置可见单元范围") : qsTr("重置颜色映射范围")
                         ToolTip.visible: hovered || visualFocus
                         ToolTip.text: root.displayRangeMode ? qsTr("将可见单元范围恢复为原始值域，保留颜色映射") : qsTr("将颜色映射范围恢复为原始值域，保留可见单元范围")
                         ToolTip.delay: 400
                         onClicked: {
+                            let window = App.registry.renderWindow;
+                            let attr = root.selectedAttribute();
+                            if (!window || !attr)
+                                return;
                             root.pendingRange = null;
                             rangeUpdateTimer.stop();
                             root.rangeEditTarget = null;
                             rangeMinField.focus = false;
                             rangeMaxField.focus = false;
-                            let attr = root.selectedAttribute();
-                            App.registry.renderWindow.resetScalarRange(App.selection.activeComponentId, attr.name, attr.attrType, root.displayRangeMode);
+                            window.resetScalarRange(App.selection.activeComponentId, attr.name, attr.attrType, root.displayRangeMode);
                             root.rangeError = "";
                             root.refreshScalarState();
                         }
@@ -734,73 +775,77 @@ Item {
                 }
             }
         }
+    }
 
-        RowLayout {
+    RowLayout {
+        id: footerLayout
+        anchors.left: parent.left
+        anchors.right: parent.right
+        anchors.bottom: parent.bottom
+        anchors.margins: 6
+        height: implicitHeight
+        spacing: Theme.spacingSm
+
+        Item {
             Layout.fillWidth: true
-            Layout.minimumWidth: 0
-            spacing: Theme.spacingSm
+        }
 
-            Item {
-                Layout.fillWidth: true
+        Button {
+            id: cancelButton
+            objectName: "attributeRenderCancel"
+            Layout.alignment: Qt.AlignRight
+            Layout.minimumHeight: 32
+            leftPadding: Theme.spacingXs
+            rightPadding: Theme.spacingXs
+            text: qsTr("取消属性渲染")
+            font.pixelSize: Theme.fontSizeBody
+            focusPolicy: Qt.StrongFocus
+            palette.button: Theme.surfaceAlt
+            palette.buttonText: Theme.textPrimary
+            palette.mid: Theme.border
+            palette.light: Theme.surface
+            palette.dark: Theme.borderStrong
+            palette.highlight: Theme.primary
+            flat: true
+            enabled: App.selection.activeComponentId >= 0 && App.registry.renderWindow
+            ToolTip.visible: hovered || visualFocus
+            ToolTip.text: qsTr("关闭属性着色和范围筛选，保留参数")
+            ToolTip.delay: 400
+            onClicked: {
+                root.flushPendingRange();
+                App.registry.renderWindow.cancelComponentAttri(App.selection.activeComponentId);
             }
+        }
 
-            Button {
-                id: cancelButton
-                objectName: "attributeRenderCancel"
-                Layout.alignment: Qt.AlignRight
-                Layout.minimumHeight: 32
-                leftPadding: Theme.spacingXs
-                rightPadding: Theme.spacingXs
-                text: qsTr("取消属性渲染")
-                font.pixelSize: Theme.fontSizeBody
-                focusPolicy: Qt.StrongFocus
-                palette.button: Theme.surfaceAlt
-                palette.buttonText: Theme.textPrimary
-                palette.mid: Theme.border
-                palette.light: Theme.surface
-                palette.dark: Theme.borderStrong
-                palette.highlight: Theme.primary
-                flat: true
-                enabled: App.selection.activeComponentId >= 0 && App.registry.renderWindow
-                ToolTip.visible: hovered || visualFocus
-                ToolTip.text: qsTr("关闭属性着色和范围筛选，保留参数")
-                ToolTip.delay: 400
-                onClicked: {
-                    root.flushPendingRange();
-                    App.registry.renderWindow.cancelComponentAttri(App.selection.activeComponentId);
-                }
+        Button {
+            id: applyButton
+            objectName: "attributeRenderApply"
+            Layout.alignment: Qt.AlignRight
+            implicitWidth: Math.max(64, implicitContentWidth + leftPadding + rightPadding)
+            implicitHeight: Math.max(32, implicitContentHeight + topPadding + bottomPadding)
+            padding: Theme.spacingSm
+            text: qsTr("应用")
+            font.pixelSize: Theme.fontSizeBody
+            focusPolicy: Qt.StrongFocus
+            enabled: root.canApply()
+            ToolTip.visible: hovered || visualFocus
+            ToolTip.text: qsTr("重新应用当前属性和参数；选择属性时也会自动应用")
+            ToolTip.delay: 400
+            // 主操作保留明暗主题的对比度，同时显示键盘焦点。
+            background: Rectangle {
+                radius: Theme.radiusControl
+                color: !applyButton.enabled ? Theme.surfaceAlt : Theme.dark ? (applyButton.down ? Theme.hoverOverlay : Theme.primaryTint) : applyButton.down ? Theme.primaryPressed : applyButton.hovered ? Theme.primaryHover : Theme.primary
+                border.width: applyButton.visualFocus ? 2 : 1
+                border.color: applyButton.visualFocus ? Theme.textPrimary : applyButton.enabled ? Theme.primary : Theme.border
             }
-
-            Button {
-                id: applyButton
-                objectName: "attributeRenderApply"
-                Layout.alignment: Qt.AlignRight
-                implicitWidth: Math.max(64, implicitContentWidth + leftPadding + rightPadding)
-                implicitHeight: Math.max(32, implicitContentHeight + topPadding + bottomPadding)
-                padding: Theme.spacingSm
-                text: qsTr("应用")
-                font.pixelSize: Theme.fontSizeBody
-                focusPolicy: Qt.StrongFocus
-                enabled: root.canApply()
-                ToolTip.visible: hovered || visualFocus
-                ToolTip.text: qsTr("重新应用当前属性和参数；选择属性时也会自动应用")
-                ToolTip.delay: 400
-                // 主操作保留明暗主题的对比度，同时显示键盘焦点。
-                background: Rectangle {
-                    radius: Theme.radiusControl
-                    color: !applyButton.enabled ? Theme.surfaceAlt : Theme.dark ? (applyButton.down ? Theme.hoverOverlay : Theme.primaryTint) : applyButton.down ? Theme.primaryPressed : applyButton.hovered ? Theme.primaryHover : Theme.primary
-                    border.width: applyButton.visualFocus ? 2 : 1
-                    border.color: applyButton.visualFocus ? Theme.textPrimary : applyButton.enabled ? Theme.primary : Theme.border
-                }
-                contentItem: Text {
-                    text: applyButton.text
-                    color: !applyButton.enabled ? Theme.textDisabled : Theme.dark ? Theme.textPrimary : Theme.textOnPrimary
-                    font: applyButton.font
-                    horizontalAlignment: Text.AlignHCenter
-                    verticalAlignment: Text.AlignVCenter
-                }
-                onClicked: root.applySelectedAttribute()
+            contentItem: Text {
+                text: applyButton.text
+                color: !applyButton.enabled ? Theme.textDisabled : Theme.dark ? Theme.textPrimary : Theme.textOnPrimary
+                font: applyButton.font
+                horizontalAlignment: Text.AlignHCenter
+                verticalAlignment: Text.AlignVCenter
             }
+            onClicked: root.applySelectedAttribute()
         }
     }
 
