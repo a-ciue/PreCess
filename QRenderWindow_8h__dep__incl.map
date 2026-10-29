@@ -1,11 +1,9 @@
 <map id="app/render/QRenderWindow.h" name="app/render/QRenderWindow.h">
-<area shape="rect" id="Node000001" title=" " alt="" coords="363,5,577,31"/>
+<area shape="rect" id="Node000001" title=" " alt="" coords="252,5,467,31"/>
 <area shape="rect" id="Node000002" href="$QRenderWindow_8cpp.html" title=" " alt="" coords="5,86,236,111"/>
-<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="406,36,172,89,171,83,405,31"/>
-<area shape="rect" id="Node000003" href="$TestRenderWindowFaceHiding_8cpp.html" title="面隐藏与恢复时选择快照、高亮及面身份的视口回归测试" alt="" coords="261,79,458,119"/>
-<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="444,41,388,81,384,76,441,36"/>
-<area shape="rect" id="Node000004" href="$TestRenderWindowLifecycle_8cpp.html" title="视口场景图销毁与重建的资源生命周期回归测试" alt="" coords="482,79,679,119"/>
-<area shape="poly" id="edge3_Node000001_Node000004" title=" " alt="" coords="499,36,556,76,552,81,496,41"/>
-<area shape="rect" id="Node000005" href="$TestUndoQml_8cpp.html" title="实际 QML 删除与选择器失效路径回归测试" alt="" coords="704,86,897,111"/>
-<area shape="poly" id="edge4_Node000001_Node000005" title=" " alt="" coords="532,31,753,83,752,89,531,36"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="312,37,156,89,155,83,311,32"/>
+<area shape="rect" id="Node000003" href="$TestRenderWindowLifecycle_8cpp.html" title="视口场景图销毁与重建的资源生命周期回归测试" alt="" coords="261,79,458,119"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="362,44,362,79,357,79,357,44"/>
+<area shape="rect" id="Node000004" href="$TestUndoQml_8cpp.html" title="实际 QML 删除与选择器失效路径回归测试" alt="" coords="483,86,676,111"/>
+<area shape="poly" id="edge3_Node000001_Node000004" title=" " alt="" coords="405,33,548,83,546,88,403,38"/>
 </map>
