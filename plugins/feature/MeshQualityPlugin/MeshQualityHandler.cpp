@@ -28,10 +28,11 @@
 #include <iomanip>
 #include <iterator>
 #include <limits>
+#include <map>
 #include <optional>
 #include <sstream>
-#include <stdexcept>
 #include <string>
+#include <utility>
 #include <vector>
 
 namespace systems::feature {
@@ -59,17 +60,15 @@ namespace {
     struct QualityResult {
         std::vector<double> values;
         std::size_t valid_count { 0 };
-        std::size_t unsupported_count { 0 };
-        std::size_t unrecognized_count { 0 };
         double minimum { 0.0 };
         double average { 0.0 };
         double maximum { 0.0 };
     };
 
     /**
-     * @brief 根据参数索引取得质量指标
+     * @brief 根据参数索引取得质量指标；非法索引返回空值。
      */
-    QualityMetric metricFromIndex(int index)
+    std::optional<QualityMetric> metricFromIndex(int index)
     {
         switch (index) {
         case 0:
@@ -87,7 +86,7 @@ namespace {
         case 6:
             return QualityMetric::TetCollapse;
         default:
-            throw std::invalid_argument("无效的质量指标");
+            return std::nullopt;
         }
     }
 
@@ -210,8 +209,7 @@ namespace {
             const Index begin = mesh.face_vertices_offset_[face_id];
             const Index end = mesh.face_vertices_offset_[face_id + 1];
             const Index point_count = end - begin;
-            if (begin < 0 || end < begin || end > static_cast<Index>(mesh.face_vertices_.size())
-                || (point_count != 3 && point_count != 4)) {
+            if (point_count != 3 && point_count != 4) {
                 error = "面质量仅支持线性三角形和四边形单元";
                 return { };
             }
@@ -271,8 +269,11 @@ namespace {
         const std::size_t solid_count = mesh.solid_vertices_offset_.empty()
             ? 0
             : mesh.solid_vertices_offset_.size() - 1;
-        if (!isValidConnectivity(mesh.solid_vertices_offset_, mesh.solid_vertices_.size())
-            || mesh.solid_types_.size() != solid_count) {
+        if (!isValidConnectivity(mesh.solid_vertices_offset_, mesh.solid_vertices_.size())) {
+            error = "体单元顶点偏移与连通性不一致";
+            return { };
+        }
+        if (mesh.solid_types_.size() != solid_count) {
             error = "体单元类型与顶点偏移数量不一致";
             return { };
         }
@@ -282,14 +283,18 @@ namespace {
         auto grid = vtkSmartPointer<vtkUnstructuredGrid>::New();
         setLocalPoints(*grid, mesh.vertex_positions_);
         records.reserve(solid_count);
+        // 仅在本次构造内复用折叠模式；键首位为原类型，其余八位为节点秩（最多六面体八角点）。
+        // 节点秩沿用实际编号排序，保持原识别的节点顺序。
+        std::map<std::array<Index, 9>, SolidCellRecord> patterns;
+        std::vector<vtkIdType> point_ids;
+        point_ids.reserve(8);
 
         for (std::size_t solid_id = 0; solid_id < mesh.solid_types_.size(); ++solid_id) {
             const unsigned char cell_type = mesh.solid_types_[solid_id];
             const Index begin = mesh.solid_vertices_offset_[solid_id];
             const Index end = mesh.solid_vertices_offset_[solid_id + 1];
             const Index expected_count = solidPointCount(cell_type);
-            if (begin < 0 || end < begin || end > static_cast<Index>(mesh.solid_vertices_.size())
-                || (expected_count > 0 && end - begin != expected_count)) {
+            if (expected_count > 0 && end - begin != expected_count) {
                 error = "体单元顶点数量与单元类型不一致";
                 return { };
             }
@@ -302,15 +307,45 @@ namespace {
                 }
             }
             const auto source_ids = std::span(mesh.solid_vertices_).subspan(begin, end - begin);
-            records.push_back(recognizeSolidCell(static_cast<Index>(solid_id), cell_type, source_ids));
-            const auto& record = records.back();
-            if (!supportsSolidType(metric, record.evaluated_type)) {
+            std::array<Index, 8> unique_ids { };
+            Index unique_count = 0;
+            if (expected_count > 0) {
+                std::copy(source_ids.begin(), source_ids.end(), unique_ids.begin());
+                auto end_ids = unique_ids.begin() + expected_count;
+                std::sort(unique_ids.begin(), end_ids);
+                unique_count = static_cast<Index>(std::unique(unique_ids.begin(), end_ids) - unique_ids.begin());
+            }
+
+            SolidCellRecord record;
+            if (expected_count > 0 && unique_count < expected_count) {
+                std::array<Index, 9> pattern { };
+                pattern[0] = cell_type;
+                for (std::size_t i = 0; i < source_ids.size(); ++i)
+                    pattern[i + 1] = static_cast<Index>(std::lower_bound(unique_ids.begin(),
+                                                            unique_ids.begin() + unique_count, source_ids[i])
+                        - unique_ids.begin());
+                auto [it, inserted] = patterns.try_emplace(pattern);
+                if (inserted)
+                    it->second = recognizeSolidCell(0, cell_type, std::span(pattern).subspan(1, source_ids.size()));
+                record = it->second;
+                record.source_cell_id = static_cast<Index>(solid_id);
+                for (auto& point_id : record.point_ids)
+                    point_id = unique_ids[point_id];
+            } else {
+                record = recognizeSolidCell(static_cast<Index>(solid_id), cell_type, source_ids);
+            }
+
+            // 节点映射只参与当前单元构造；跨阶段仅保留识别诊断字段。
+            const auto computation_ids = std::move(record.point_ids);
+            records.push_back(std::move(record));
+            const auto& diagnostic = records.back();
+            if (!supportsSolidType(metric, diagnostic.evaluated_type)) {
                 // 占位保留原单元编号；不让未识别/不支持的单元进入其他指标的默认计算。
                 grid->InsertNextCell(VTK_EMPTY_CELL, 0, static_cast<const vtkIdType*>(nullptr));
                 continue;
             }
-            std::vector<vtkIdType> point_ids(record.point_ids.begin(), record.point_ids.end());
-            grid->InsertNextCell(record.evaluated_type, static_cast<vtkIdType>(point_ids.size()), point_ids.data());
+            point_ids.assign(computation_ids.begin(), computation_ids.end());
+            grid->InsertNextCell(diagnostic.evaluated_type, static_cast<vtkIdType>(point_ids.size()), point_ids.data());
         }
         return grid;
     }
@@ -429,8 +464,7 @@ namespace {
     /**
      * @brief 运行 VTK 质量过滤器并提取逐单元数值及统计量
      */
-    std::optional<QualityResult> calculateQuality(vtkUnstructuredGrid& grid, QualityMetric metric,
-        std::span<const SolidCellRecord> records = { })
+    std::optional<QualityResult> calculateQuality(vtkUnstructuredGrid& grid, QualityMetric metric)
     {
         auto quality = vtkSmartPointer<vtkMeshQuality>::New();
         vtkDataArray* array = nullptr;
@@ -451,16 +485,6 @@ namespace {
         result.maximum = std::numeric_limits<double>::lowest();
         auto cell = vtkSmartPointer<vtkGenericCell>::New();
         for (vtkIdType cell_id = 0; cell_id < grid.GetNumberOfCells(); ++cell_id) {
-            if (!records.empty()) {
-                const auto& record = records[cell_id];
-                if (record.recognition == SolidCellRecognition::Unsupported) {
-                    ++result.unsupported_count;
-                } else if (record.evaluated_type == VTK_EMPTY_CELL) {
-                    ++result.unrecognized_count;
-                } else if (!supportsSolidType(metric, record.evaluated_type)) {
-                    ++result.unsupported_count;
-                }
-            }
             grid.GetCell(cell_id, cell);
             double value = std::numeric_limits<double>::quiet_NaN();
             if (isCellGeometryAvailable(*cell))
@@ -506,13 +530,21 @@ namespace {
 
     /** @brief 汇总实际计算类型及未识别/指标不支持数量，不把类型识别等同于质量合格。 */
     void appendRecognitionStatistics(std::ostringstream& output, std::span<const SolidCellRecord> records,
-        const QualityResult& result)
+        QualityMetric metric)
     {
-        const auto collapsed_count = std::count_if(records.begin(), records.end(), [](const auto& record) {
-            return record.recognition == SolidCellRecognition::Collapsed;
-        });
-        output << "体单元识别：折叠转换 " << collapsed_count << "，类型未识别 " << result.unrecognized_count
-               << "，指标不支持 " << result.unsupported_count << '\n';
+        std::size_t collapsed_count = 0, unrecognized_count = 0, unsupported_count = 0;
+        for (const auto& record : records) {
+            if (record.recognition == SolidCellRecognition::Collapsed)
+                ++collapsed_count;
+            if (record.recognition == SolidCellRecognition::Unsupported)
+                ++unsupported_count;
+            else if (record.evaluated_type == VTK_EMPTY_CELL)
+                ++unrecognized_count;
+            else if (!supportsSolidType(metric, record.evaluated_type))
+                ++unsupported_count;
+        }
+        output << "体单元识别：折叠转换 " << collapsed_count << "，类型未识别 " << unrecognized_count
+               << "，指标不支持 " << unsupported_count << '\n';
         for (unsigned char type : { VTK_TETRA, VTK_PYRAMID, VTK_WEDGE, VTK_HEXAHEDRON }) {
             const auto count = std::count_if(records.begin(), records.end(), [type](const auto& record) {
                 return record.evaluated_type == type;
@@ -613,9 +645,10 @@ std::any MeshQualityHandler::execute(FeatureContext& ctx)
     }
 
     const auto* metric_index = ctx.params.value(kMetricParam).get<ArgTypeEnum::Combo>();
-    if (!metric_index || *metric_index < 0 || *metric_index > static_cast<int>(QualityMetric::TetCollapse))
+    const auto metric_value = metric_index ? metricFromIndex(*metric_index) : std::nullopt;
+    if (!metric_value)
         return std::string("无效的质量指标");
-    const QualityMetric metric = metricFromIndex(*metric_index);
+    const QualityMetric metric = *metric_value;
     const MeshData& mesh = *component->mesh();
 
     std::string face_error;
@@ -633,7 +666,7 @@ std::any MeshQualityHandler::execute(FeatureContext& ctx)
         }
     }
     if (solid_grid && solid_grid->GetNumberOfCells() > 0) {
-        solid_result = calculateQuality(*solid_grid, metric, solid_records);
+        solid_result = calculateQuality(*solid_grid, metric);
         if (!solid_result) {
             solid_error = "体质量计算失败";
         }
@@ -679,7 +712,7 @@ std::any MeshQualityHandler::execute(FeatureContext& ctx)
     }
     if (solid_result) {
         appendStatistics(output, "体单元", *solid_result);
-        appendRecognitionStatistics(output, solid_records, *solid_result);
+        appendRecognitionStatistics(output, solid_records, metric);
     } else if (!solid_error.empty()) {
         output << "体：" << solid_error << '\n';
     }

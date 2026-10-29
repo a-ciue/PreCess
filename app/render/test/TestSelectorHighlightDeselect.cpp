@@ -102,6 +102,7 @@ TEST_CASE("Scalar rendering isolates unavailable values from color ranges")
     values.assign(face_count, std::numeric_limits<double>::quiet_NaN());
     mesh.face_attributes_["f_reference_1"].assign(face_count, 0.5);
     bool has_valid_value = false;
+    std::map<std::string, std::any> args;
 
     SECTION("mixed usable and unavailable values")
     {
@@ -109,6 +110,10 @@ TEST_CASE("Scalar rendering isolates unavailable values from color ranges")
         has_valid_value = true;
     }
     SECTION("all unavailable values") { }
+    SECTION("all unavailable values with an explicit color range")
+    {
+        args["scalar_range"] = std::vector<double> { -1.0, 2.0 };
+    }
 
     vtkNew<vtkRenderer> renderer;
     MeshPipelineData pipeline;
@@ -129,7 +134,7 @@ TEST_CASE("Scalar rendering isolates unavailable values from color ranges")
     }
     REQUIRE(scalar_bar != nullptr);
     REQUIRE(scalar_bar->GetVisibility());
-    manager.setAttriMode(7, "f_quality_1", Mode::SCALAR, { });
+    manager.setAttriMode(7, "f_quality_1", Mode::SCALAR, args);
     CHECK(op.getFaceMapper()->GetScalarVisibility());
     if (has_valid_value) {
         CHECK(scalar_bar->GetVisibility());
