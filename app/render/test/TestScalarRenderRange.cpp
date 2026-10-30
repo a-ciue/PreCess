@@ -51,6 +51,31 @@ TEST_CASE("Scalar range parameters reset independently and accept outside values
     CHECK_FALSE(range.setRange(true, std::numeric_limits<double>::quiet_NaN(), 1.0));
 }
 
+TEST_CASE("Scalar range linked edits and resets keep both ranges synchronized", "[scalar-range]")
+{
+    ScalarRenderRange range({ 0.2, 0.8 });
+    CHECK_FALSE(range.linked);
+    range.linked = true;
+    for (const bool display_mode : { false, true }) {
+        REQUIRE(range.setRange(display_mode, -1.0, 2.0));
+        CHECK(range.mapping == std::array<double, 2> { -1.0, 2.0 });
+        CHECK(range.display == range.mapping);
+        CHECK(range.filtered);
+        range.resetRange(display_mode);
+        CHECK(range.mapping == range.original);
+        CHECK(range.display == range.original);
+        CHECK(range.linked);
+        CHECK_FALSE(range.filtered);
+        // 重置后重新应用相同映射值，不应重新筛掉缺失值单元。
+        REQUIRE(range.setRange(false, range.mapping[0], range.mapping[1]));
+        CHECK_FALSE(range.filtered);
+    }
+    range.linked = false;
+    REQUIRE(range.setRange(false, -2.0, 3.0));
+    CHECK(range.display == range.original);
+    CHECK_FALSE(range.filtered);
+}
+
 TEST_CASE("Scalar range filtering preserves original IDs and manual hiding", "[scalar-range]")
 {
     auto mesh = scalarMesh();

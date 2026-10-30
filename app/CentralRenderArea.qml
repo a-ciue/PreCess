@@ -869,7 +869,8 @@ Page {
     }
 
     Component.onCompleted: {
-        App.registry.renderWindow = myItem
+        // 替换注册表以发出变更通知，让先创建的面板连上视口信号。
+        App.registry = Object.assign({}, App.registry, { renderWindow: myItem })
         // 注入功能系统适配器：startInteraction 按名称获取 InteractionState
         myItem.setFeatureAdaptor(QModelManager.featureSystem)
         Qt.callLater(function() { myItem.resetCamera() })

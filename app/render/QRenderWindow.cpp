@@ -975,6 +975,20 @@ void QRenderWindow::setAttriMode(
 {
     if (component_id < 0)
         return;
+    // 实体域进入 std::any 后必须为 int；在 GUI 拒绝错误类型、非整数和越界值。
+    if (auto domain = args.find("element_type"); domain != args.end()) {
+        const int type = domain->metaType().id();
+        const bool numeric = type == QMetaType::Int || type == QMetaType::UInt
+            || type == QMetaType::LongLong || type == QMetaType::ULongLong
+            || type == QMetaType::Float || type == QMetaType::Double;
+        bool converted = false;
+        const double value = domain->toDouble(&converted);
+        if (!numeric || !converted || !std::isfinite(value) || std::trunc(value) != value || value < -1 || value > 3) {
+            spdlog::warn("属性实体类型必须为 -1 到 3 的整数");
+            return;
+        }
+        *domain = static_cast<int>(value);
+    }
     if (mode == static_cast<int>(Mode::SCALAR)) {
         // 面板传递明确实体域；保留控制台旧接口按实际数组查找的能力。
         int element_type = args.value("element_type", -1).toInt();
@@ -1076,7 +1090,7 @@ QVariantMap QRenderWindow::scalarRangeState(Index component_id, const QString& a
     return { { "valid", true }, { "minimum", range->original[0] }, { "maximum", range->original[1] },
         { "mappingLower", range->mapping[0] }, { "mappingUpper", range->mapping[1] },
         { "displayLower", range->display[0] }, { "displayUpper", range->display[1] },
-        { "rangeAvailable", element_type != 0 }, { "filtered", range->filtered },
+        { "rangeAvailable", element_type != 0 }, { "filtered", range->filtered }, { "linked", range->linked },
         { "active", active != active_scalar_attributes_.end() && active->second == ScalarKey { component_id, attribute.toStdString(), element_type } } };
 }
 
@@ -1089,6 +1103,29 @@ bool QRenderWindow::setScalarRange(Index component_id, const QString& attribute,
     const auto active = active_scalar_attributes_.find(component_id);
     if (active != active_scalar_attributes_.end() && active->second == ScalarKey { component_id, attribute.toStdString(), element_type })
         applyScalarRange(component_id, attribute, element_type, *range);
+    emit scalarRangeChanged();
+    return true;
+}
+
+bool QRenderWindow::setScalarRangesLinked(Index component_id, const QString& attribute, int element_type,
+    bool display_mode, bool linked)
+{
+    auto* range = ensureScalarRange(component_id, attribute, element_type);
+    if (!range || element_type == 0)
+        return false;
+    if (range->linked == linked)
+        return true;
+    const bool ranges_differ = range->mapping != range->display;
+    range->linked = linked;
+    if (linked) {
+        const auto current = display_mode ? range->display : range->mapping;
+        // 同步已有参数，不把未改变的显示范围当作一次新的筛选操作。
+        range->setRange(false, current[0], current[1]);
+        const auto active = active_scalar_attributes_.find(component_id);
+        if (ranges_differ && active != active_scalar_attributes_.end()
+            && active->second == ScalarKey { component_id, attribute.toStdString(), element_type })
+            applyScalarRange(component_id, attribute, element_type, *range);
+    }
     emit scalarRangeChanged();
     return true;
 }

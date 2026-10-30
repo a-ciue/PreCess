@@ -9,8 +9,8 @@ import app.model
 Item {
     id: root
     clip: true
-    // 声明完整内容所需高度；外层分配不足时滚动参数，底部操作保持可见。
-    implicitHeight: panelLayout.implicitHeight + footerLayout.implicitHeight + 2 * parameterViewport.anchors.margins + panelLayout.spacing
+    // 宿主下限只保留可用视口和底部操作；完整内容高度独立用于滚动。
+    implicitHeight: parameterViewport.implicitHeight + footerLayout.implicitHeight + 2 * parameterViewport.anchors.margins + panelLayout.spacing
 
     property var attributes: []
     property int selectedIndex: -1
@@ -337,6 +337,8 @@ Item {
     Flickable {
         id: parameterViewport
         objectName: "attributeRenderScroll"
+        // 为滚动操作保留 120 逻辑像素，字体放大时至少容纳两行属性。
+        implicitHeight: Math.max(120, attributeList.implicitHeight)
         anchors.left: parent.left
         anchors.right: parent.right
         anchors.top: parent.top
@@ -591,10 +593,31 @@ Item {
                                 root.refreshScalarState();
                         }
                     }
-                    Label {
-                        objectName: "scalarRangeLabel"
-                        text: qsTr("范围")
-                        color: Theme.textSecondary
+                    ToolButton {
+                        objectName: "scalarRangeLink"
+                        implicitWidth: 32
+                        implicitHeight: 32
+                        padding: 6
+                        focusPolicy: Qt.StrongFocus
+                        icon.width: 20
+                        icon.height: 20
+                        icon.source: root.scalarState.linked ? "qrc:/images/toolbar/Panels/range-linked.svg" : "qrc:/images/toolbar/Panels/range-unlinked.svg"
+                        icon.color: !enabled ? Theme.textDisabled : root.scalarState.linked ? Theme.primary : Theme.textSecondary
+                        enabled: !!root.scalarState.valid && !!root.scalarState.rangeAvailable && !!App.registry.renderWindow
+                        Accessible.role: Accessible.CheckBox
+                        Accessible.checkable: true
+                        Accessible.checked: !!root.scalarState.linked
+                        Accessible.name: root.scalarState.linked ? qsTr("解除范围绑定") : qsTr("绑定颜色映射与可见单元范围")
+                        ToolTip.visible: hovered || visualFocus
+                        ToolTip.text: !root.scalarState.rangeAvailable ? qsTr("此属性不支持范围绑定") : root.scalarState.linked ? qsTr("已绑定：两种范围同步修改，点击解除绑定") : qsTr("以当前范围为准，绑定颜色映射与可见单元范围")
+                        ToolTip.delay: 400
+                        onClicked: {
+                            let window = App.registry.renderWindow;
+                            let attr = root.selectedAttribute();
+                            if (!window || !attr || !root.commitRangeFields())
+                                return;
+                            window.setScalarRangesLinked(App.selection.activeComponentId, attr.name, attr.attrType, root.displayRangeMode, !root.scalarState.linked);
+                        }
                     }
                     TextField {
                         id: rangeMaxField
@@ -661,7 +684,7 @@ Item {
                                     }
                                 }
                                 ToolTip.visible: hovered || visualFocus
-                                ToolTip.text: qsTr("编辑颜色映射范围，保留可见单元范围")
+                                ToolTip.text: root.scalarState.linked ? qsTr("编辑颜色映射范围，同步可见单元范围") : qsTr("编辑颜色映射范围，保留可见单元范围")
                                 ToolTip.delay: 400
                             }
                             RangeModeButton {
@@ -680,7 +703,7 @@ Item {
                                 }
                                 Accessible.description: qsTr("隐藏范围外的边、面或体单元；节点属性不支持此操作")
                                 ToolTip.visible: hovered || visualFocus
-                                ToolTip.text: qsTr("编辑可见单元范围，隐藏范围外的单元并保留颜色映射")
+                                ToolTip.text: root.scalarState.linked ? qsTr("编辑可见单元范围，同步颜色映射范围") : qsTr("编辑可见单元范围，隐藏范围外的单元并保留颜色映射")
                                 ToolTip.delay: 400
                             }
                         }
@@ -704,9 +727,9 @@ Item {
                         palette.dark: Theme.borderStrong
                         palette.highlight: Theme.primary
                         enabled: !!root.scalarState.valid && !!App.registry.renderWindow
-                        Accessible.name: root.displayRangeMode ? qsTr("重置可见单元范围") : qsTr("重置颜色映射范围")
+                        Accessible.name: root.scalarState.linked ? qsTr("重置两种范围") : root.displayRangeMode ? qsTr("重置可见单元范围") : qsTr("重置颜色映射范围")
                         ToolTip.visible: hovered || visualFocus
-                        ToolTip.text: root.displayRangeMode ? qsTr("将可见单元范围恢复为原始值域，保留颜色映射") : qsTr("将颜色映射范围恢复为原始值域，保留可见单元范围")
+                        ToolTip.text: root.scalarState.linked ? qsTr("将已绑定的两种范围一起恢复为原始值域") : root.displayRangeMode ? qsTr("将可见单元范围恢复为原始值域，保留颜色映射") : qsTr("将颜色映射范围恢复为原始值域，保留可见单元范围")
                         ToolTip.delay: 400
                         onClicked: {
                             let window = App.registry.renderWindow;

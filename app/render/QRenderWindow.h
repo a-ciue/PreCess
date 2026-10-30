@@ -245,10 +245,13 @@ public:
 
     /** @brief 读取当前属性独立保存的范围；查询不会自动启用渲染。 */
     Q_INVOKABLE QVariantMap scalarRangeState(Index component_id, const QString& attribute, int element_type);
-    /** @brief 编辑一种范围；仅已应用的当前属性实时更新视口。 */
+    /** @brief 编辑当前范围，绑定时联动另一范围；仅已应用的当前属性实时更新视口。 */
     Q_INVOKABLE bool setScalarRange(Index component_id, const QString& attribute, int element_type,
         bool display_mode, double lower, double upper);
-    /** @brief 仅重置所选范围，保留另一范围及其他隐藏来源。 */
+    /** @brief 切换两种范围的绑定；开启时以当前模式为准，关闭时保留数值。 */
+    Q_INVOKABLE bool setScalarRangesLinked(Index component_id, const QString& attribute, int element_type,
+        bool display_mode, bool linked);
+    /** @brief 重置当前范围，绑定时两份一起重置；保留其他隐藏来源。 */
     Q_INVOKABLE void resetScalarRange(Index component_id, const QString& attribute, int element_type, bool display_mode);
 
     bool event(QEvent* ev) override;
