@@ -7,12 +7,23 @@
 #include "MeshQualityHandler.h"
 #include "ModelLayer.h"
 #include "Selection.h"
+#include "SessionQuery.h"
+#include "SolidCellRecognition.h"
 
 #include <catch2/catch_approx.hpp>
 #include <catch2/catch_test_macros.hpp>
+#include <catch2/generators/catch_generators.hpp>
 
+#include <vtkCellType.h>
+#include <vtkDoubleArray.h>
+#include <vtkMeshQuality.h>
+#include <vtkNew.h>
+
+#include <algorithm>
 #include <any>
+#include <array>
 #include <cmath>
+#include <limits>
 #include <memory>
 #include <string>
 #include <vector>
@@ -21,6 +32,16 @@ using namespace systems;
 using namespace systems::feature;
 
 namespace {
+
+// 与质量指标选择器的公开选项顺序对应，测试直接验证该参数契约。
+constexpr int kScaledJacobian = 0;
+constexpr int kEquiangleSkew = 1;
+constexpr int kEdgeRatio = 2;
+constexpr int kMinAngle = 3;
+constexpr int kMaxAngle = 4;
+constexpr int kWarpage = 5;
+constexpr int kTetCollapse = 6;
+constexpr std::array kMetricKeys { "scaled_jacobian", "equiangle_skew", "edge_ratio", "min_angle", "max_angle", "warpage", "tet_collapse" };
 
 /**
  * @brief 创建同时包含理想三角形和理想四面体的单组件模型
@@ -73,6 +94,105 @@ std::shared_ptr<Selection> makeComponentSelection(Index component_id)
     selection->type = ElementEnum::Component;
     selection->ids = { component_id };
     return selection;
+}
+
+/** @brief 装配真实功能系统，使用自持网格验证插件的输入、输出及退出清理。 */
+struct QualityFixture {
+    core::EventBus bus;
+    ModelLayer model_layer;
+    FeatureSystem feature_system { model_layer, bus };
+    Index component_id { -1 };
+
+    /** @brief 将测试网格安装到组件并通过选择器指定计算目标。 */
+    explicit QualityFixture(std::unique_ptr<MeshData> mesh)
+    {
+        auto component = std::make_unique<ComponentData>();
+        component->mesh = std::move(mesh);
+        ComponentDatas components;
+        components.push_back(std::move(component));
+        const Index model_id = model_layer.addModel("QualityRegression", std::move(components));
+        component_id = model_layer.modelById(model_id)->componentIds().front();
+        FeatureSystem::SystemHandlerPtr handler { new MeshQualityHandler };
+        REQUIRE(feature_system.registerHandler(qualityMetaData(), std::move(handler)));
+        REQUIRE(feature_system.setParameter("MeshQuality", 0,
+            core::ArgObject::create<ArgTypeEnum::Selector>(makeComponentSelection(component_id))));
+    }
+
+    /** @brief 按指定指标执行真实插件并提取反馈文本。 */
+    std::string execute(int metric)
+    {
+        REQUIRE(feature_system.setParameter("MeshQuality", 1,
+            core::ArgObject::create<ArgTypeEnum::Combo>(metric)));
+        return std::any_cast<std::string>(feature_system.invoke("MeshQuality"));
+    }
+
+    /** @brief 只读查询插件写入后的网格属性。 */
+    const MeshData& mesh() const
+    {
+        return *model_layer.findComponent(component_id)->mesh;
+    }
+};
+
+/** @brief 创建单位立方体网格，供精度、异常单元和属性生命周期回归复用。 */
+std::unique_ptr<MeshData> makeHexMesh()
+{
+    auto mesh = std::make_unique<MeshData>();
+    mesh->init();
+    mesh->vertex_positions_ = {
+        { 0, 0, 0 },
+        { 1, 0, 0 },
+        { 1, 1, 0 },
+        { 0, 1, 0 },
+        { 0, 0, 1 },
+        { 1, 0, 1 },
+        { 1, 1, 1 },
+        { 0, 1, 1 },
+    };
+    mesh->solid_types_ = { VTK_HEXAHEDRON };
+    mesh->solid_vertices_ = { 0, 1, 2, 3, 4, 5, 6, 7 };
+    mesh->solid_vertices_offset_ = { 0, 8 };
+    return mesh;
+}
+
+/** @brief 用同一组坐标构造原生标准单元或其折叠六面体编码，供独立对照计算。 */
+std::unique_ptr<MeshData> makeCollapsedMesh(int type, bool folded)
+{
+    auto mesh = makeHexMesh();
+    std::vector<Index> ids;
+    if (type == VTK_WEDGE) {
+        const double height = std::sqrt(3.0) / 2.0;
+        mesh->vertex_positions_ = {
+            { 0, 0, 0 },
+            { 0.5, height, 0 },
+            { 1, 0, 0 },
+            { 0, 0, 1 },
+            { 0.5, height, 1 },
+            { 1, 0, 1 },
+        };
+        ids = { 0, 2, 2, 1, 3, 5, 5, 4 };
+    } else if (type == VTK_PYRAMID) {
+        mesh->vertex_positions_.resize(5);
+        mesh->vertex_positions_[4] = { 0.5, 0.5, std::sqrt(0.5) };
+        ids = { 0, 1, 2, 3, 4, 4, 4, 4 };
+    } else {
+        mesh->vertex_positions_ = {
+            { 0, 0, 0 },
+            { 1, 0, 0 },
+            { 0.5, std::sqrt(3.0) / 2.0, 0 },
+            { 0.5, std::sqrt(3.0) / 6.0, std::sqrt(2.0 / 3.0) },
+        };
+        ids = { 0, 1, 2, 2, 3, 3, 3, 3 };
+    }
+    if (folded) {
+        mesh->solid_vertices_ = ids;
+    } else {
+        mesh->solid_types_ = { static_cast<unsigned char>(type) };
+        mesh->solid_vertices_.resize(mesh->vertex_positions_.size());
+        for (std::size_t i = 0; i < mesh->solid_vertices_.size(); ++i)
+            mesh->solid_vertices_[i] = static_cast<Index>(i);
+    }
+    mesh->solid_vertices_offset_ = { 0, static_cast<Index>(mesh->solid_vertices_.size()) };
+    return mesh;
 }
 
 }
@@ -176,4 +296,547 @@ TEST_CASE("MeshQuality requires exactly one selected component", "[MeshQualityPl
 
     const std::any multiple_result = feature_system.invoke("MeshQuality");
     REQUIRE(std::any_cast<const std::string&>(multiple_result).find("只能选择一个 Component") != std::string::npos);
+}
+
+TEST_CASE("MeshQuality isolates unavailable values and preserves cell indices", "[MeshQualityPlugin]")
+{
+    auto mesh = makeHexMesh();
+    mesh->solid_types_.push_back(VTK_HEXAHEDRON);
+    mesh->solid_vertices_.insert(mesh->solid_vertices_.end(), { 0, 1, 2, 3, 4, 5, 4, 5 });
+    mesh->solid_vertices_offset_.push_back(16);
+    QualityFixture fixture(std::move(mesh));
+
+    for (int metric = 0; metric < 3; ++metric) {
+        INFO("metric=" << metric);
+        const auto output = fixture.execute(metric);
+        CHECK(output.find("有效 1") != std::string::npos);
+        CHECK(output.find("不可用 1") != std::string::npos);
+        CHECK(output.find("e+30") == std::string::npos);
+    }
+    for (const auto& [name, values] : fixture.mesh().solid_attributes_) {
+        INFO(name);
+        REQUIRE(values.size() == 2);
+        CHECK(std::isfinite(values[0]));
+        CHECK(std::isnan(values[1]));
+    }
+
+    // NaN 保留单元位置，VTK 的正常值域应仅由可用结果决定。
+    vtkNew<vtkDoubleArray> array;
+    for (double value : fixture.mesh().solid_attributes_.at("s_mesh_quality_scaled_jacobian_1"))
+        array->InsertNextValue(value);
+    double range[2];
+    array->GetRange(range);
+    CHECK(range[0] == Catch::Approx(1.0));
+    CHECK(range[1] == Catch::Approx(1.0));
+}
+
+TEST_CASE("MeshQuality reports entirely unavailable cells without normal statistics", "[MeshQualityPlugin]")
+{
+    auto mesh = makeHexMesh();
+    mesh->solid_vertices_[2] = 1;
+    QualityFixture fixture(std::move(mesh));
+    const auto output = fixture.execute(kScaledJacobian);
+    CHECK(output.find("有效 0") != std::string::npos);
+    CHECK(output.find("不可用 1") != std::string::npos);
+    CHECK(output.find("平均值") == std::string::npos);
+    CHECK(fixture.mesh().solid_attributes_.empty());
+}
+
+TEST_CASE("MeshQuality preserves double precision under large coordinate translations", "[MeshQualityPlugin]")
+{
+    auto mesh = makeHexMesh();
+    for (auto& point : mesh->vertex_positions_) {
+        for (auto& coordinate : point)
+            coordinate += 1e9;
+    }
+    QualityFixture fixture(std::move(mesh));
+    fixture.execute(kScaledJacobian);
+    CHECK(fixture.mesh().solid_attributes_.at("s_mesh_quality_scaled_jacobian_1")[0] == Catch::Approx(1.0));
+    fixture.execute(kEquiangleSkew);
+    CHECK(fixture.mesh().solid_attributes_.at("s_mesh_quality_equiangle_skew_1")[0] == Catch::Approx(0.0).margin(1e-12));
+    fixture.execute(kEdgeRatio);
+    CHECK(fixture.mesh().solid_attributes_.at("s_mesh_quality_edge_ratio_1")[0] == Catch::Approx(1.0));
+}
+
+TEST_CASE("MeshQuality excludes finite Verdict sentinels without repeated vertices", "[MeshQualityPlugin]")
+{
+    auto mesh = makeHexMesh();
+    mesh->vertex_positions_[1] = { 1e-10, 0, 0 };
+    QualityFixture fixture(std::move(mesh));
+    const auto output = fixture.execute(kScaledJacobian);
+    CHECK(output.find("不可用 1") != std::string::npos);
+    CHECK(fixture.mesh().solid_attributes_.empty());
+}
+
+TEST_CASE("MeshQuality collapse ratio uses each opposite face longest edge", "[MeshQualityPlugin]")
+{
+    auto mesh = std::make_unique<MeshData>();
+    mesh->init();
+    mesh->vertex_positions_ = { { 0, 0, 0 }, { 8, 0, 0 }, { 1, 2, 0 }, { -5, 8, 7 } };
+    mesh->solid_types_ = { VTK_TETRA };
+    mesh->solid_vertices_ = { 0, 1, 2, 3 };
+    mesh->solid_vertices_offset_ = { 0, 4 };
+    QualityFixture fixture(std::move(mesh));
+    fixture.execute(kTetCollapse);
+    // 四个面的高/该面最长边的最小值，独立按几何公式求得。
+    CHECK(fixture.mesh().solid_attributes_.at("s_mesh_quality_tet_collapse_1")[0]
+        == Catch::Approx(0.07842675750005629).epsilon(1e-12));
+}
+
+TEST_CASE("MeshQuality preserves preexisting attributes and reuses its own names", "[MeshQualityPlugin]")
+{
+    auto mesh = makeHexMesh();
+    mesh->face_vertices_ = { 0, 1, 2, 3 };
+    mesh->face_vertices_offset_ = { 0, 4 };
+    mesh->face_attributes_["f_mesh_quality_scaled_jacobian_1"] = { 42.0 };
+    mesh->solid_attributes_["s_mesh_quality_scaled_jacobian_1"] = { 43.0 };
+    QualityFixture fixture(std::move(mesh));
+    REQUIRE(fixture.feature_system.setFeatureActive("MeshQuality"));
+    fixture.execute(kScaledJacobian);
+    fixture.execute(kScaledJacobian);
+    CHECK(fixture.mesh().face_attributes_.at("f_mesh_quality_scaled_jacobian_1")[0] == 42.0);
+    CHECK(fixture.mesh().solid_attributes_.at("s_mesh_quality_scaled_jacobian_1")[0] == 43.0);
+    CHECK(fixture.mesh().face_attributes_.size() == 2);
+    CHECK(fixture.mesh().solid_attributes_.size() == 2);
+    REQUIRE(fixture.feature_system.setFeatureActive(""));
+    CHECK(fixture.mesh().face_attributes_.size() == 1);
+    CHECK(fixture.mesh().solid_attributes_.size() == 1);
+    CHECK(fixture.mesh().face_attributes_.at("f_mesh_quality_scaled_jacobian_1")[0] == 42.0);
+    CHECK(fixture.mesh().solid_attributes_.at("s_mesh_quality_scaled_jacobian_1")[0] == 43.0);
+}
+
+TEST_CASE("MeshQuality rejects invalid metric indices", "[MeshQualityPlugin]")
+{
+    QualityFixture fixture(makeHexMesh());
+    for (int metric : { -1, 7, 100 }) {
+        CHECK(fixture.execute(metric).find("无效的质量指标") != std::string::npos);
+        CHECK(fixture.mesh().solid_attributes_.empty());
+    }
+    // 脚本宿主也能提交错误的参数类型，不能因此静默计算另一个指标。
+    REQUIRE(fixture.feature_system.setParameter("MeshQuality", 1,
+        core::ArgObject::create<ArgTypeEnum::Float>(2.0)));
+    CHECK(std::any_cast<std::string>(fixture.feature_system.invoke("MeshQuality")).find("无效的质量指标") != std::string::npos);
+    CHECK(fixture.mesh().solid_attributes_.empty());
+}
+
+TEST_CASE("MeshQuality covers supported linear cell and metric combinations", "[MeshQualityPlugin]")
+{
+    const double height = std::sqrt(3.0) / 2.0;
+    const int cell_type = GENERATE(VTK_TRIANGLE, VTK_QUAD, VTK_TETRA, VTK_PYRAMID, VTK_WEDGE, VTK_HEXAHEDRON);
+    const int metric = GENERATE(kScaledJacobian, kEquiangleSkew, kEdgeRatio, kMinAngle, kMaxAngle, kWarpage, kTetCollapse);
+    INFO("cell_type=" << cell_type << ", metric=" << metric);
+    auto mesh = makeHexMesh();
+    switch (cell_type) {
+    case VTK_TRIANGLE:
+    case VTK_TETRA:
+        mesh->vertex_positions_ = {
+            { 0, 0, 0 },
+            { 1, 0, 0 },
+            { 0.5, height, 0 },
+            { 0.5, height / 3.0, std::sqrt(2.0 / 3.0) },
+        };
+        break;
+    case VTK_PYRAMID:
+        mesh->vertex_positions_.resize(5);
+        mesh->vertex_positions_[4] = { 0.5, 0.5, std::sqrt(0.5) };
+        break;
+    case VTK_WEDGE:
+        // VTK 的底面 0/1/2 法向朝外，背离 3/4/5 面。
+        mesh->vertex_positions_ = {
+            { 0, 0, 0 },
+            { 0.5, height, 0 },
+            { 1, 0, 0 },
+            { 0, 0, 1 },
+            { 0.5, height, 1 },
+            { 1, 0, 1 },
+        };
+        break;
+    }
+    const bool is_face = cell_type == VTK_TRIANGLE || cell_type == VTK_QUAD;
+    if (is_face) {
+        mesh->solid_types_.clear();
+        mesh->solid_vertices_.clear();
+        mesh->solid_vertices_offset_ = { 0 };
+        mesh->face_vertices_ = cell_type == VTK_TRIANGLE
+            ? std::vector<Index> { 0, 1, 2 }
+            : std::vector<Index> { 0, 1, 2, 3 };
+        mesh->face_vertices_offset_ = { 0, static_cast<Index>(mesh->face_vertices_.size()) };
+    } else {
+        mesh->solid_types_ = { static_cast<unsigned char>(cell_type) };
+        mesh->solid_vertices_.resize(mesh->vertex_positions_.size());
+        for (std::size_t i = 0; i < mesh->solid_vertices_.size(); ++i)
+            mesh->solid_vertices_[i] = static_cast<Index>(i);
+        mesh->solid_vertices_offset_ = { 0, static_cast<Index>(mesh->solid_vertices_.size()) };
+    }
+    QualityFixture fixture(std::move(mesh));
+    const auto output = fixture.execute(metric);
+    const bool supported = is_face ? metric != kTetCollapse && (metric != kWarpage || cell_type == VTK_QUAD)
+        : metric <= kEdgeRatio     ? metric != kEdgeRatio || cell_type != VTK_PYRAMID
+                                   : metric == kTetCollapse && cell_type == VTK_TETRA;
+    const auto& attributes = is_face ? fixture.mesh().face_attributes_ : fixture.mesh().solid_attributes_;
+    if (!supported) {
+        CHECK(output.find("没有可计算的单元") != std::string::npos);
+        CHECK(attributes.empty());
+        return;
+    }
+    REQUIRE(attributes.size() == 1);
+    const auto& values = attributes.at(std::string(is_face ? "f_" : "s_") + "mesh_quality_" + std::string(kMetricKeys[metric]) + "_1");
+    REQUIRE(values.size() == 1);
+    double expected = 1.0;
+    if (metric == kEquiangleSkew)
+        expected = 0.0;
+    if (metric == kMinAngle || metric == kMaxAngle)
+        expected = cell_type == VTK_TRIANGLE ? 60.0 : 90.0;
+    if (metric == kTetCollapse)
+        expected = std::sqrt(2.0 / 3.0);
+    CHECK(values[0] == Catch::Approx(expected).margin(1e-12));
+}
+
+TEST_CASE("MeshQuality keeps signed inverted and zero quality values", "[MeshQualityPlugin]")
+{
+    auto mesh = std::make_unique<MeshData>();
+    mesh->init();
+    mesh->vertex_positions_ = { { 0, 0, 0 }, { 1, 0, 0 }, { 0, 1, 0 }, { 0, 0, -1 } };
+    mesh->solid_types_ = { VTK_TETRA };
+    mesh->solid_vertices_ = { 0, 1, 2, 3 };
+    mesh->solid_vertices_offset_ = { 0, 4 };
+    SECTION("inverted tetrahedron")
+    {
+        QualityFixture fixture(std::move(mesh));
+        fixture.execute(kScaledJacobian);
+        CHECK(fixture.mesh().solid_attributes_.at("s_mesh_quality_scaled_jacobian_1")[0] < 0.0);
+        fixture.execute(kTetCollapse);
+        CHECK(fixture.mesh().solid_attributes_.at("s_mesh_quality_tet_collapse_1")[0] < 0.0);
+    }
+    SECTION("flat tetrahedron with distinct vertices")
+    {
+        mesh->vertex_positions_[3] = { 1, 1, 0 };
+        QualityFixture fixture(std::move(mesh));
+        fixture.execute(kScaledJacobian);
+        CHECK(fixture.mesh().solid_attributes_.at("s_mesh_quality_scaled_jacobian_1")[0] == 0.0);
+        fixture.execute(kTetCollapse);
+        CHECK(fixture.mesh().solid_attributes_.at("s_mesh_quality_tet_collapse_1")[0] == 0.0);
+    }
+}
+
+TEST_CASE("MeshQuality rejects malformed connectivity before calling VTK", "[MeshQualityPlugin]")
+{
+    auto mesh = makeHexMesh();
+    std::string expected_error = "体单元顶点偏移与连通性不一致";
+    SECTION("missing solid offsets") { mesh->solid_vertices_offset_.clear(); }
+    SECTION("nonzero first offset")
+    {
+        mesh->solid_vertices_.insert(mesh->solid_vertices_.begin(), 7);
+        mesh->solid_vertices_offset_ = { 1, 9 };
+    }
+    SECTION("unreferenced trailing indices") { mesh->solid_vertices_.push_back(0); }
+    SECTION("unordered offsets") { mesh->solid_vertices_offset_ = { 0, 8, 4, 8 }; }
+    SECTION("type count mismatch")
+    {
+        mesh->solid_types_.clear();
+        expected_error = "体单元类型与顶点偏移数量不一致";
+    }
+    SECTION("wrong corner count")
+    {
+        mesh->solid_vertices_.pop_back();
+        mesh->solid_vertices_offset_.back() = 7;
+        expected_error = "体单元顶点数量与单元类型不一致";
+    }
+    SECTION("invalid local point")
+    {
+        mesh->solid_vertices_[0] = 8;
+        expected_error = "体单元包含无效的点索引";
+    }
+    QualityFixture fixture(std::move(mesh));
+    const auto output = fixture.execute(kScaledJacobian);
+    CHECK(output.find(expected_error) != std::string::npos);
+    CHECK(fixture.mesh().solid_attributes_.empty());
+}
+
+TEST_CASE("MeshQuality marks coincident or nonfinite vertices unavailable for every face metric", "[MeshQualityPlugin]")
+{
+    auto mesh = makeHexMesh();
+    mesh->solid_types_.clear();
+    mesh->solid_vertices_.clear();
+    mesh->solid_vertices_offset_ = { 0 };
+    mesh->face_vertices_ = { 0, 1, 2, 3, 4, 5, 6, 7 };
+    mesh->face_vertices_offset_ = { 0, 4, 8 };
+    SECTION("coincident vertices with different IDs") { mesh->vertex_positions_[6] = mesh->vertex_positions_[5]; }
+    SECTION("infinite coordinate") { mesh->vertex_positions_[6][0] = std::numeric_limits<double>::infinity(); }
+    SECTION("NaN coordinate") { mesh->vertex_positions_[6][0] = std::numeric_limits<double>::quiet_NaN(); }
+    QualityFixture fixture(std::move(mesh));
+    for (int metric = 0; metric < 6; ++metric) {
+        const auto output = fixture.execute(metric);
+        CHECK(output.find("有效 1") != std::string::npos);
+        CHECK(output.find("不可用 1") != std::string::npos);
+    }
+    for (const auto& [name, values] : fixture.mesh().face_attributes_) {
+        INFO(name);
+        REQUIRE(values.size() == 2);
+        CHECK(std::isfinite(values[0]));
+        CHECK(std::isnan(values[1]));
+    }
+}
+
+TEST_CASE("MeshQuality evaluates folded cells as their actual standard types", "[MeshQualityPlugin]")
+{
+    const int type = GENERATE(VTK_TETRA, VTK_PYRAMID, VTK_WEDGE);
+    const int metric = GENERATE(kScaledJacobian, kEquiangleSkew, kEdgeRatio, kTetCollapse);
+    INFO("type=" << type << ", metric=" << metric);
+    auto source = makeCollapsedMesh(type, true);
+    const auto original_vertices = source->solid_vertices_;
+    const auto original_types = source->solid_types_;
+    const auto original_offsets = source->solid_vertices_offset_;
+    const auto original_positions = source->vertex_positions_;
+    QualityFixture folded(std::move(source));
+    QualityFixture native(makeCollapsedMesh(type, false));
+    const auto output = folded.execute(metric);
+    native.execute(metric);
+    const std::string key = "s_mesh_quality_" + std::string(kMetricKeys[metric]) + "_1";
+    if (native.mesh().solid_attributes_.empty()) {
+        CHECK(folded.mesh().solid_attributes_.empty());
+    } else {
+        REQUIRE(folded.mesh().solid_attributes_.size() == 1);
+        CHECK(folded.mesh().solid_attributes_.at(key)[0]
+            == Catch::Approx(native.mesh().solid_attributes_.at(key)[0]).margin(1e-12));
+    }
+    CHECK(output.find("折叠转换 1") != std::string::npos);
+    CHECK(folded.mesh().solid_vertices_ == original_vertices);
+    CHECK(folded.mesh().solid_types_ == original_types);
+    CHECK(folded.mesh().solid_vertices_offset_ == original_offsets);
+    CHECK(folded.mesh().vertex_positions_ == original_positions);
+}
+
+TEST_CASE("MeshQuality preserves original IDs across recognized and unavailable mixed cells", "[MeshQualityPlugin]")
+{
+    auto mesh = makeCollapsedMesh(VTK_PYRAMID, true);
+    const auto tetra = makeCollapsedMesh(VTK_TETRA, true);
+    // 同一组五点可同时定义金字塔、未识别折叠单元和四面体；保留原始 0/1/2 顺序。
+    mesh->solid_types_ = { VTK_HEXAHEDRON, VTK_HEXAHEDRON, VTK_HEXAHEDRON };
+    mesh->solid_vertices_.insert(mesh->solid_vertices_.end(), { 0, 1, 0, 1, 2, 3, 2, 3 });
+    mesh->solid_vertices_.insert(mesh->solid_vertices_.end(), tetra->solid_vertices_.begin(), tetra->solid_vertices_.end());
+    mesh->solid_vertices_offset_ = { 0, 8, 16, 24 };
+    const auto original_ids = mesh->solid_vertices_;
+    const auto original_types = mesh->solid_types_;
+    const auto original_offsets = mesh->solid_vertices_offset_;
+    QualityFixture fixture(std::move(mesh));
+    const auto output = fixture.execute(kEdgeRatio);
+    const auto& values = fixture.mesh().solid_attributes_.at("s_mesh_quality_edge_ratio_1");
+    REQUIRE(values.size() == 3);
+    CHECK(std::isnan(values[0])); // 金字塔已识别，但 VTK 不支持该类型的 Edge Ratio。
+    CHECK(std::isnan(values[1])); // 四个不同角点的自粘面不是标准四面体。
+    CHECK(std::isfinite(values[2]));
+    CHECK(output.find("类型未识别 1") != std::string::npos);
+    CHECK(output.find("指标不支持 1") != std::string::npos);
+    CHECK(fixture.mesh().solid_attributes_.size() == 1);
+    CHECK(fixture.mesh().solid_vertices_ == original_ids);
+    CHECK(fixture.mesh().solid_types_ == original_types);
+    CHECK(fixture.mesh().solid_vertices_offset_ == original_offsets);
+}
+
+TEST_CASE("MeshQuality keeps inverted and flat folded tetrahedra signed", "[MeshQualityPlugin]")
+{
+    auto mesh = makeCollapsedMesh(VTK_TETRA, true);
+    SECTION("inverted geometry")
+    {
+        for (auto& point : mesh->vertex_positions_)
+            point[0] = -point[0];
+        QualityFixture fixture(std::move(mesh));
+        fixture.execute(kScaledJacobian);
+        CHECK(fixture.mesh().solid_attributes_.at("s_mesh_quality_scaled_jacobian_1")[0] < 0);
+    }
+    SECTION("zero height with distinct vertices")
+    {
+        mesh->vertex_positions_[3][2] = 0;
+        QualityFixture fixture(std::move(mesh));
+        fixture.execute(kScaledJacobian);
+        CHECK(fixture.mesh().solid_attributes_.at("s_mesh_quality_scaled_jacobian_1")[0] == 0);
+    }
+}
+
+TEST_CASE("MeshQuality preserves imported diagnostic attributes without creating new ones", "[MeshQualityPlugin]")
+{
+    auto mesh = makeCollapsedMesh(VTK_WEDGE, true);
+    mesh->solid_attributes_["s_mesh_quality_recognition_status_1"] = { 99 };
+    QualityFixture fixture(std::move(mesh));
+    REQUIRE(fixture.feature_system.setFeatureActive("MeshQuality"));
+    fixture.execute(kScaledJacobian);
+    fixture.execute(kEquiangleSkew);
+    CHECK(fixture.mesh().solid_attributes_.size() == 3);
+    CHECK(fixture.mesh().solid_attributes_.at("s_mesh_quality_recognition_status_1")[0] == 99);
+    CHECK_FALSE(fixture.mesh().solid_attributes_.contains("s_mesh_quality_recognition_status_2_1"));
+    REQUIRE(fixture.feature_system.setFeatureActive(""));
+    REQUIRE(fixture.mesh().solid_attributes_.size() == 1);
+    CHECK(fixture.mesh().solid_attributes_.at("s_mesh_quality_recognition_status_1")[0] == 99);
+}
+
+TEST_CASE("MeshQuality reuses folded patterns without sharing node IDs or geometry", "[MeshQualityPlugin]")
+{
+    const int type = GENERATE(VTK_TETRA, VTK_PYRAMID, VTK_WEDGE);
+    const int metric = GENERATE(kScaledJacobian, kEdgeRatio, kTetCollapse);
+    auto mesh = makeCollapsedMesh(type, true);
+    const auto positions = mesh->vertex_positions_;
+    const auto folded_ids = mesh->solid_vertices_;
+    mesh->vertex_positions_.clear();
+    mesh->solid_types_.clear();
+    mesh->solid_vertices_.clear();
+    mesh->solid_vertices_offset_ = { 0 };
+    std::vector<double> expected_values;
+    const std::string key = "s_mesh_quality_" + std::string(kMetricKeys[metric]) + "_1";
+
+    // 相同模式使用不同实际编号、几何尺寸和朝向，防止误复用坐标或质量数值。
+    constexpr Index copy_count = 24;
+    for (Index copy = 0; copy < copy_count; ++copy) {
+        auto native = makeCollapsedMesh(type, false);
+        for (auto& point : native->vertex_positions_) {
+            point[0] *= copy % 3 == 0 ? -1.0 : 1.0 + copy * 0.01;
+            point[1] += point[2] * 0.1;
+        }
+        const Index base = static_cast<Index>(mesh->vertex_positions_.size());
+        const Index count = static_cast<Index>(positions.size());
+        for (Index i = 0; i < count; ++i)
+            mesh->vertex_positions_.push_back(native->vertex_positions_[copy % 2 ? count - i - 1 : i]);
+        for (Index id : folded_ids)
+            mesh->solid_vertices_.push_back(base + (copy % 2 ? count - id - 1 : id));
+        mesh->solid_types_.push_back(VTK_HEXAHEDRON);
+        mesh->solid_vertices_offset_.push_back(static_cast<Index>(mesh->solid_vertices_.size()));
+        QualityFixture reference(std::move(native));
+        reference.execute(metric);
+        const auto value = reference.mesh().solid_attributes_.find(key);
+        expected_values.push_back(value == reference.mesh().solid_attributes_.end()
+                ? std::numeric_limits<double>::quiet_NaN()
+                : value->second[0]);
+    }
+    // 未识别模式也复用识别结论，但不能影响后续结果槽位和诊断编号。
+    for (Index copy = 0; copy < 2; ++copy) {
+        mesh->solid_types_.push_back(VTK_HEXAHEDRON);
+        mesh->solid_vertices_.insert(mesh->solid_vertices_.end(), { 0, 1, 0, 1, 2, 3, 2, 3 });
+        mesh->solid_vertices_offset_.push_back(static_cast<Index>(mesh->solid_vertices_.size()));
+        expected_values.push_back(std::numeric_limits<double>::quiet_NaN());
+    }
+    const auto original_ids = mesh->solid_vertices_;
+    const auto original_positions = mesh->vertex_positions_;
+    QualityFixture fixture(std::move(mesh));
+    const auto output = fixture.execute(metric);
+    if (std::any_of(expected_values.begin(), expected_values.end(), [](double value) { return std::isfinite(value); })) {
+        REQUIRE(fixture.mesh().solid_attributes_.size() == 1);
+        const auto& values = fixture.mesh().solid_attributes_.at(key);
+        REQUIRE(values.size() == expected_values.size());
+        for (std::size_t i = 0; i < values.size(); ++i) {
+            INFO("cell=" << i);
+            if (std::isfinite(expected_values[i]))
+                CHECK(values[i] == Catch::Approx(expected_values[i]).margin(1e-12));
+            else
+                CHECK(std::isnan(values[i]));
+        }
+    } else {
+        CHECK(fixture.mesh().solid_attributes_.empty());
+    }
+    CHECK(output.find("折叠转换 24") != std::string::npos);
+    CHECK(output.find("类型未识别 2") != std::string::npos);
+    CHECK(fixture.mesh().solid_vertices_ == original_ids);
+    CHECK(fixture.mesh().vertex_positions_ == original_positions);
+}
+
+TEST_CASE("MeshQuality exposes only a usable selected metric", "[MeshQualityPlugin][QualityOutput]")
+{
+    auto mesh = makeCollapsedMesh(VTK_TETRA, false);
+    bool usable = false;
+    SECTION("supported tetrahedron") { usable = true; }
+    SECTION("all numerical results unavailable") { mesh->vertex_positions_[0][0] = std::numeric_limits<double>::infinity(); }
+    SECTION("unsupported hexahedra") { mesh = makeHexMesh(); }
+    SECTION("unrecognized folded cell")
+    {
+        mesh = makeHexMesh();
+        mesh->solid_vertices_[2] = 1;
+    }
+    QualityFixture fixture(std::move(mesh));
+    std::vector<std::string> requests;
+    auto subscription = fixture.bus.subscribe<ScalarAttributeDisplayRequestedEvent>(
+        [&](const auto& event) { requests.push_back(event.attribute_name); });
+    const auto output = fixture.execute(kTetCollapse);
+    const auto infos = session::SessionQuery(fixture.model_layer).componentAttributeInfos(fixture.component_id);
+    if (usable) {
+        REQUIRE(fixture.mesh().solid_attributes_.size() == 1);
+        REQUIRE(infos.size() == 1);
+        CHECK(infos.front().name == "s_mesh_quality_tet_collapse_1");
+        CHECK(requests == std::vector<std::string> { "s_mesh_quality_tet_collapse_1" });
+    } else {
+        CHECK(fixture.mesh().solid_attributes_.empty());
+        CHECK(infos.empty());
+        CHECK(requests.empty());
+        CHECK(output.find("有效 0") != std::string::npos);
+        CHECK(output.find("未生成质量属性") != std::string::npos);
+    }
+}
+
+TEST_CASE("MeshQuality removes only stale owned results of the selected metric", "[MeshQualityPlugin][QualityOutput]")
+{
+    auto mesh = makeCollapsedMesh(VTK_TETRA, false);
+    mesh->solid_attributes_["s_mesh_quality_tet_collapse_1"] = { 99.0 };
+    QualityFixture fixture(std::move(mesh));
+    REQUIRE(fixture.feature_system.setFeatureActive("MeshQuality"));
+    fixture.execute(kScaledJacobian);
+    fixture.execute(kTetCollapse);
+    REQUIRE(fixture.mesh().solid_attributes_.contains("s_mesh_quality_tet_collapse_2_1"));
+    auto op = fixture.model_layer.getComponentOperator(fixture.component_id);
+    REQUIRE(op);
+    auto& editable = op->editableMesh(MeshEditKind::Topology);
+    SECTION("invalid coordinates") { editable.vertex_positions_[0][0] = std::numeric_limits<double>::infinity(); }
+    SECTION("unsupported cell type") { editable.solid_types_[0] = VTK_VOXEL; }
+    SECTION("invalid connectivity")
+    {
+        editable.solid_vertices_.pop_back();
+        editable.solid_vertices_offset_.back() = 3;
+    }
+    fixture.model_layer.flushNotifications();
+    std::vector<std::string> requests;
+    auto subscription = fixture.bus.subscribe<ScalarAttributeDisplayRequestedEvent>(
+        [&](const auto& event) { requests.push_back(event.attribute_name); });
+    fixture.execute(kTetCollapse);
+    CHECK_FALSE(fixture.mesh().solid_attributes_.contains("s_mesh_quality_tet_collapse_2_1"));
+    CHECK(fixture.mesh().solid_attributes_.at("s_mesh_quality_tet_collapse_1") == std::vector<double> { 99.0 });
+    CHECK(fixture.mesh().solid_attributes_.contains("s_mesh_quality_scaled_jacobian_1"));
+    CHECK(requests.empty());
+    REQUIRE(fixture.feature_system.setFeatureActive(""));
+    REQUIRE(fixture.mesh().solid_attributes_.size() == 1);
+    CHECK(fixture.mesh().solid_attributes_.at("s_mesh_quality_tet_collapse_1") == std::vector<double> { 99.0 });
+}
+
+TEST_CASE("MeshQuality displays usable faces when the solid metric is unavailable", "[MeshQualityPlugin][QualityOutput]")
+{
+    auto mesh = makeCollapsedMesh(VTK_PYRAMID, false);
+    mesh->face_vertices_ = { 0, 1, 2, 3 };
+    mesh->face_vertices_offset_ = { 0, 4 };
+    QualityFixture fixture(std::move(mesh));
+    std::vector<std::string> requests;
+    auto subscription = fixture.bus.subscribe<ScalarAttributeDisplayRequestedEvent>(
+        [&](const auto& event) { requests.push_back(event.attribute_name); });
+    const auto output = fixture.execute(kEdgeRatio);
+    REQUIRE(fixture.mesh().face_attributes_.size() == 1);
+    CHECK(fixture.mesh().solid_attributes_.empty());
+    CHECK(requests == std::vector<std::string> { "f_mesh_quality_edge_ratio_1" });
+    const auto infos = session::SessionQuery(fixture.model_layer).componentAttributeInfos(fixture.component_id);
+    REQUIRE(infos.size() == 1);
+    CHECK(infos.front().name == "f_mesh_quality_edge_ratio_1");
+    CHECK(output.find("指标不支持 1") != std::string::npos);
+}
+
+TEST_CASE("MeshQuality retains partial Tet Collapse slots including zero and negative values", "[MeshQualityPlugin][QualityOutput]")
+{
+    auto mesh = makeHexMesh();
+    mesh->solid_types_ = { VTK_TETRA, VTK_HEXAHEDRON, VTK_TETRA, VTK_TETRA };
+    mesh->solid_vertices_ = { 0, 1, 3, 4, 0, 1, 2, 3, 4, 5, 6, 7, 0, 1, 2, 3, 0, 3, 1, 4 };
+    mesh->solid_vertices_offset_ = { 0, 4, 12, 16, 20 };
+    QualityFixture fixture(std::move(mesh));
+    const auto output = fixture.execute(kTetCollapse);
+    REQUIRE(fixture.mesh().solid_attributes_.size() == 1);
+    const auto& values = fixture.mesh().solid_attributes_.at("s_mesh_quality_tet_collapse_1");
+    REQUIRE(values.size() == 4);
+    CHECK(values[0] > 0.0);
+    CHECK(std::isnan(values[1]));
+    CHECK(values[2] == 0.0);
+    CHECK(values[3] < 0.0);
+    CHECK(output.find("有效 3") != std::string::npos);
+    CHECK(output.find("不可用 1") != std::string::npos);
 }
