@@ -11,7 +11,6 @@
 #include "MeshPipelineData.h"
 #include "QModelQuery.h"
 #include "QSelection.h"
-#include "ScalarRenderRange.h"
 #include <QQuickVTKItem.h>
 #include <QVTKRenderWindowAdapter.h>
 #include <unordered_map>
@@ -28,9 +27,10 @@
 #include <vtkRenderWindowInteractor.h>
 #include <vtkRenderer.h>
 
+#include <array>
 #include <map>
 #include <memory>
-#include <tuple>
+#include <optional>
 
 class MeshActor;
 class SelectManager;
@@ -243,16 +243,10 @@ public:
      */
     Q_INVOKABLE void cancelComponentAttri(Index component_id);
 
-    /** @brief 读取当前属性独立保存的范围；查询不会自动启用渲染。 */
-    Q_INVOKABLE QVariantMap scalarRangeState(Index component_id, const QString& attribute, int element_type);
-    /** @brief 编辑当前范围，绑定时联动另一范围；仅已应用的当前属性实时更新视口。 */
-    Q_INVOKABLE bool setScalarRange(Index component_id, const QString& attribute, int element_type,
-        bool display_mode, double lower, double upper);
-    /** @brief 切换两种范围的绑定；开启时以当前模式为准，关闭时保留数值。 */
-    Q_INVOKABLE bool setScalarRangesLinked(Index component_id, const QString& attribute, int element_type,
-        bool display_mode, bool linked);
-    /** @brief 重置当前范围，绑定时两份一起重置；保留其他隐藏来源。 */
-    Q_INVOKABLE void resetScalarRange(Index component_id, const QString& attribute, int element_type, bool display_mode);
+    /** @brief 查询完整原始值域和筛选能力，不读取或保存界面偏好。 */
+    Q_INVOKABLE QVariantMap scalarRangeInfo(Index component_id, const QString& attribute, int element_type);
+    /** @brief 一次应用最终配置；mapping 为空使用默认值域，display 为空关闭范围筛选。 */
+    Q_INVOKABLE bool applyScalarConfig(Index component_id, const QString& attribute, int element_type, QVariantMap config);
 
     bool event(QEvent* ev) override;
 
@@ -263,8 +257,10 @@ signals:
     void meshStyleChanged();
     void clicked();
     void rightClicked();
-    /** @brief 范围参数或启用状态变化，供属性面板刷新。 */
+    /** @brief 原始属性数据变化，通知界面重新查询元信息。 */
     void scalarRangeChanged();
+    /** @brief 通知当前执行的属性身份；空属性名表示停用，不回写界面范围偏好。 */
+    void scalarRenderingChanged(Index component_id, QString attribute, int element_type);
     /** @brief 在 GUI 决定显隐后同步通知对象树，渲染线程只安装结果。 */
     void componentVisibilityChanged(Index component_id, bool mesh_visible, bool geometry_visible);
 
@@ -272,20 +268,21 @@ protected:
     void itemChange(ItemChange change, const ItemChangeData& value) override;
 
 private:
-    /** @brief 组件、属性名和实体域共同标识一份范围状态。 */
-    using ScalarKey = std::tuple<Index, std::string, int>;
-    /** @brief 从完整属性值域初始化状态，已有状态保留用户设置。 */
-    ScalarRenderRange* ensureScalarRange(Index component_id, const QString& attribute, int element_type);
+    /** @brief 一个组件最后成功执行的配置，用于重建重放；不包含联动或历史属性偏好。 */
+    struct ScalarAppliedConfig {
+        std::string attribute;
+        int element_type { -1 };
+        std::optional<std::array<double, 2>> mapping;
+        std::optional<std::array<double, 2>> display;
+    };
     /**
      * @brief GUI 生成筛选快照，渲染线程按已保存映射范围着色。
      * @param activate_scalar_bar 主动应用时切换色柱；自动恢复只刷新原归属色柱。
      */
-    void applyScalarRange(Index component_id, const QString& attribute, int element_type,
-        const ScalarRenderRange& range, bool activate_scalar_bar = true);
-    /** @brief 停用当前标量范围而不删除参数，恢复非范围隐藏结果。 */
+    void applyScalarRange(Index component_id, const ScalarAppliedConfig& config, bool activate_scalar_bar = true);
+    /** @brief 解除当前标量配置和筛选，恢复非范围隐藏结果；界面自行保留偏好。 */
     void deactivateScalarRange(Index component_id);
-    std::map<ScalarKey, ScalarRenderRange> scalar_ranges_;
-    std::map<Index, ScalarKey> active_scalar_attributes_;
+    std::map<Index, ScalarAppliedConfig> applied_scalar_configs_;
     // 只记录共享色柱的归属，用于场景图重建时恢复同一属性的现有色柱。
     Index scalar_bar_component_id_ { -1 };
 

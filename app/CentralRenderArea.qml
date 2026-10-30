@@ -41,8 +41,17 @@ Page {
         function onScalarAttributeDisplayRequested(componentId, attributeName) {
             root.featureAttributeRenderingActive = true
             root.featureAttributeRenderingComponentId = componentId
-            // 使用标量模式显示质量属性，空参数表示采用默认标量范围。
-            myItem.setAttriMode(componentId, attributeName, 1, {})
+            // 自动显示与面板共用参数偏好；窗口仅接收最终配置。
+            let ranges = App.registry.scalarRanges
+            let attributes = QModelManager.query.getComponentAttriInfo(componentId)
+            let attribute = attributes.find(function(item) { return item.name === attributeName })
+            if (ranges && attribute) {
+                let key = ranges.ensure(componentId, attributeName, attribute.attrType,
+                    myItem.scalarRangeInfo(componentId, attributeName, attribute.attrType))
+                ranges.apply(key)
+            } else {
+                myItem.setAttriMode(componentId, attributeName, 1, {})
+            }
         }
     }
 

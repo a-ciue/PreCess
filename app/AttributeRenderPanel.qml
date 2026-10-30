@@ -15,228 +15,28 @@ Item {
     property var attributes: []
     property int selectedIndex: -1
     property string componentName: ""
-    property var scalarState: ({
+    property var rangeState: App.registry.scalarRanges
+    property string selectedKey: ""
+    property int confirmedMode: 1
+    property var rememberedAttributes: ({})
+    readonly property var currentRange: rangeState ? rangeState.parameters(selectedKey) : ({
             valid: false
         })
-    property bool displayRangeMode: false
-    property real sliderMinimum: 0
-    property real sliderMaximum: 1
-    property var pendingRange: null
-    property string rangeError: ""
-    property var rangeEditTarget: null
-    property var rememberedAttributes: ({})
 
-    // 范围模式由面板状态驱动，切换校验失败时保持原选中项。
-    component RangeModeButton: ToolButton {
-        id: control
-        property bool selected: false
-
-        implicitHeight: Math.max(32, implicitContentHeight + topPadding + bottomPadding)
-        padding: Theme.spacingSm
-        font.pixelSize: Theme.fontSizeBody
-        font.weight: selected ? Font.DemiBold : Font.Normal
-        focusPolicy: Qt.StrongFocus
-        Accessible.role: Accessible.PageTab
-        Accessible.checkable: true
-        Accessible.checked: selected
-        Accessible.name: text
-
-        background: Rectangle {
-            radius: Math.max(0, Theme.radiusControl - 1)
-            color: control.down ? Theme.hoverOverlay : control.selected ? Theme.surface : control.hovered ? Theme.hoverOverlay : "transparent"
-            border.width: control.visualFocus ? 2 : 0
-            border.color: Theme.primary
-
-            Rectangle {
-                anchors.left: parent.left
-                anchors.right: parent.right
-                anchors.bottom: parent.bottom
-                anchors.margins: 4
-                height: 2
-                visible: control.selected
-                color: control.enabled ? Theme.primary : Theme.textDisabled
-            }
-        }
-        contentItem: Text {
-            text: control.text
-            font: control.font
-            color: !control.enabled ? Theme.textDisabled : control.selected || control.hovered ? Theme.textPrimary : Theme.textSecondary
-            horizontalAlignment: Text.AlignHCenter
-            verticalAlignment: Text.AlignVCenter
-        }
-    }
-
-    // 普通值截断至三位小数，极值用四位有效数字；按十进制文本截取，避免乘除造成浮点误差。
-    function formatRangeValue(value) {
-        if (!Number.isFinite(value))
-            return "";
-        let magnitude = Math.abs(value);
-        if (magnitude !== 0 && (magnitude < 0.001 || magnitude >= 10000)) {
-            let parts = magnitude.toExponential().split("e");
-            let digits = (parts[0].replace(".", "") + "000").slice(0, 4);
-            return (value < 0 ? "-" : "") + digits[0] + "." + digits.slice(1) + "e" + parts[1];
-        }
-        let text = String(value);
-        let point = text.indexOf(".");
-        return point < 0 ? text : text.slice(0, point + 4).replace(/\.?0+$/, "");
-    }
-
-    // 显示文本与实际值分开，缩短数字不改变渲染参数或另一端未编辑的精度。
-    function updateRangeField(field, value) {
-        field.exactValue = value;
-        field.text = formatRangeValue(value);
-    }
-
-    // 输入身份包含组件、实体域和属性名，多分量属性也有独立归属。
-    function rangeAttributeKey() {
-        let attr = selectedAttribute();
-        return attr ? JSON.stringify([App.selection.activeComponentId, attr.attrType, attr.name]) : "";
-    }
-
-    // 切换属性时放弃旧输入；普通状态刷新不调用此入口。
-    function clearRangeFields() {
-        rangeEditTarget = null;
-        rangeMinField.exactValue = null;
-        rangeMaxField.exactValue = null;
-        rangeMinField.text = "";
-        rangeMaxField.text = "";
-        rangeError = "";
-        rangeMinField.focus = false;
-        rangeMaxField.focus = false;
-    }
-
-    // 恢复当前属性的两份独立范围，拖动期间固定滑条坐标，避免端点跳动。
-    function refreshScalarState() {
+    // 面板仅查询原始元信息，用户范围统一保存在界面参数对象中。
+    function refreshRangeMetadata() {
         let attr = selectedAttribute();
         let window = App.registry.renderWindow;
-        let attributeKey = rangeAttributeKey();
-        let attributeChanged = scalarState.attributeKey !== attributeKey;
-        if (attributeChanged)
-            commitRangeFields();
-        let state = attr && window && modeCombo.currentIndex === 1 ? window.scalarRangeState(App.selection.activeComponentId, attr.name, attr.attrType) : {
-            valid: false
-        };
-        // 范围状态携带输入归属，无后端范围时仍能识别真正的属性切换。
-        state.attributeKey = attributeKey;
-        scalarState = state;
-        if (attributeChanged)
-            clearRangeFields();
-        if (!scalarState.rangeAvailable)
-            displayRangeMode = false;
-        if (!scalarState.valid)
-            return;
-        let lower = displayRangeMode ? scalarState.displayLower : scalarState.mappingLower;
-        let upper = displayRangeMode ? scalarState.displayUpper : scalarState.mappingUpper;
-        if (!rangeEditTarget) {
-            if (!rangeMinField.activeFocus)
-                updateRangeField(rangeMinField, lower);
-            if (!rangeMaxField.activeFocus)
-                updateRangeField(rangeMaxField, upper);
-        }
-        if (!rangeSlider.first.pressed && !rangeSlider.second.pressed && !rangePan.dragging) {
-            sliderMinimum = Math.min(scalarState.minimum, lower);
-            sliderMaximum = Math.max(scalarState.maximum, upper);
-            // 常量属性也需要可用的滑条跨度，但原始值域和重置数值保持不变。
-            if (sliderMinimum === sliderMaximum) {
-                let padding = Math.max(0.01, Math.abs(sliderMinimum) * 0.01);
-                sliderMinimum -= padding;
-                sliderMaximum += padding;
-            }
-            rangeSlider.setValues(lower, upper);
-        }
+        selectedKey = attr && window && rangeState ? rangeState.ensure(App.selection.activeComponentId, attr.name, attr.attrType, window.scalarRangeInfo(App.selection.activeComponentId, attr.name, attr.attrType)) : "";
     }
 
-    // 合并连续拖动，仅将最新范围传给 GUI 管线；释放滑块时立即提交最后一个位置。
-    function queueRange(lower, upper) {
-        let attr = selectedAttribute();
-        if (!attr || !scalarState.valid)
-            return;
-        pendingRange = {
-            component: App.selection.activeComponentId,
-            attribute: attr.name,
-            type: attr.attrType,
-            display: displayRangeMode,
-            lower: lower,
-            upper: upper
-        };
-        updateRangeField(rangeMinField, lower);
-        updateRangeField(rangeMaxField, upper);
-        if (!rangeUpdateTimer.running)
-            rangeUpdateTimer.start();
-    }
-
-    // 请求携带捕获时的组件和属性身份，切换界面时不会写入另一属性。
-    function flushPendingRange() {
-        rangeUpdateTimer.stop();
-        let request = pendingRange;
-        pendingRange = null;
-        if (request && App.registry.renderWindow)
-            App.registry.renderWindow.setScalarRange(request.component, request.attribute, request.type, request.display, request.lower, request.upper);
-    }
-
-    // 记录编辑开始时的身份，组件切换后仍只向原属性保存参数。
-    function markRangeEdited() {
-        let attr = selectedAttribute();
-        if (!rangeEditTarget && attr)
-            rangeEditTarget = {
-                component: App.selection.activeComponentId,
-                attribute: attr.name,
-                type: attr.attrType,
-                display: displayRangeMode,
-                hasRange: !!scalarState.valid
-            };
-    }
-
-    // 编辑完成后先交换反向区间；仅提交实际编辑，模式切换和回填不能暗中启用筛选。
-    function commitRangeFields() {
-        flushPendingRange();
-        if (!rangeEditTarget)
-            return true;
-        let target = rangeEditTarget;
-        let lower = rangeMinField.exactValue;
-        let upper = rangeMaxField.exactValue;
-        if (target.hasRange && (lower === null || upper === null)) {
-            rangeError = qsTr("请输入有限数值");
-            return false;
-        }
-        if (lower !== null && upper !== null && lower > upper) {
-            let previousLower = lower;
-            lower = upper;
-            upper = previousLower;
-            updateRangeField(rangeMinField, lower);
-            updateRangeField(rangeMaxField, upper);
-        }
-        // 提交前移出待编辑状态，后端同步通知可直接回填；拒绝时恢复目标供用户纠正。
-        rangeEditTarget = null;
-        let window = App.registry.renderWindow;
-        let accepted = !target.hasRange || !!window && window.setScalarRange(target.component, target.attribute, target.type, target.display, lower, upper);
-        if (!accepted)
-            rangeEditTarget = target;
-        rangeError = accepted ? "" : qsTr("当前属性不支持此范围");
-        return accepted;
-    }
-
-    // 切换只改变编辑对象；切换前保存当前完整输入，不关闭另一种范围的效果。
-    function changeRangeMode(displayMode) {
-        if (!commitRangeFields())
-            return;
-        displayRangeMode = displayMode;
-        rangeMinField.focus = false;
-        rangeMaxField.focus = false;
-        refreshScalarState();
-    }
-
-    // 按当前组件刷新属性目录，并恢复该组件上次选择的属性和策略。
+    // 普通目录刷新恢复操作位置，同一属性的输入草稿由编辑器继续保留。
     function refreshAttributes() {
         selectedIndex = -1;
-        if (App.selection.activeComponentId >= 0) {
-            componentName = QModelManager.query.getComponentName(App.selection.activeComponentId);
-            attributes = QModelManager.query.getComponentAttriInfo(App.selection.activeComponentId);
-        } else {
-            componentName = "";
-            attributes = [];
-        }
-        let remembered = rememberedAttributes[String(App.selection.activeComponentId)];
+        let component = App.selection.activeComponentId;
+        componentName = component >= 0 ? QModelManager.query.getComponentName(component) : "";
+        attributes = component >= 0 ? QModelManager.query.getComponentAttriInfo(component) : [];
+        let remembered = rememberedAttributes[String(component)];
         if (remembered) {
             for (let index = 0; index < attributes.length; ++index) {
                 if (attributes[index].name === remembered.name && attributes[index].attrType === remembered.type) {
@@ -246,87 +46,75 @@ Item {
                 }
             }
         }
-        refreshScalarState();
+        confirmedMode = modeCombo.currentIndex;
+        refreshRangeMetadata();
     }
 
-    // 返回当前选中的属性条目，未选中时返回 null。
+    // 返回当前属性，避免目录刷新或无选中项时使用旧条目。
     function selectedAttribute() {
-        if (selectedIndex < 0 || selectedIndex >= attributes.length)
-            return null;
-        return attributes[selectedIndex];
+        return selectedIndex >= 0 && selectedIndex < attributes.length ? attributes[selectedIndex] : null;
     }
 
-    // 按属性分量数给一个常用默认模式，用户仍然可以手动切换。
+    // 保留多分量属性原有的默认渲染策略。
     function inferMode(attr) {
-        if (!attr)
-            return 1;
-        if (attr.componentCount === 2)
-            return 2;
-        if (attr.componentCount === 3)
-            return 0;
-        return 1;
+        return attr && attr.componentCount === 2 ? 2 : attr && attr.componentCount === 3 ? 0 : 1;
     }
 
-    // 只在输入框有内容时读取数值参数，空输入表示使用渲染策略默认值。
+    // 空输入沿用策略默认值，合法数值才作为可选参数发送。
     function optionalNumber(text) {
         let trimmed = text.trim();
-        if (trimmed.length === 0)
-            return null;
-        let value = Number(trimmed);
+        let value = trimmed.length > 0 ? Number(trimmed) : NaN;
         return Number.isFinite(value) ? value : null;
     }
 
-    // 组装 setAttriMode 的可选参数，保持和 QRenderWindow 控制台接口一致。
+    // 标量发送完整配置，其他策略保持已有参数入口。
     function renderArgs() {
-        let args = {};
-        if (modeCombo.currentIndex === 1) {
-            let attr = selectedAttribute();
-            if (attr)
-                args["element_type"] = attr.attrType;
-            let minValue = rangeMinField.exactValue;
-            let maxValue = rangeMaxField.exactValue;
-            if (scalarState.attributeKey === rangeAttributeKey() && !scalarState.valid && minValue !== null && maxValue !== null)
-                args["scalar_range"] = [minValue, maxValue];
-        } else if (modeCombo.currentIndex === 2) {
-            args["texture_path"] = texturePathField.text;
-        } else if (modeCombo.currentIndex === 3) {
+        if (modeCombo.currentIndex === 2)
+            return {
+                texture_path: texturePathField.text
+            };
+        if (modeCombo.currentIndex === 3) {
             let scale = optionalNumber(glyphScaleField.text);
-            if (scale !== null)
-                args["glyph_scale"] = scale;
+            return scale !== null ? {
+                glyph_scale: scale
+            } : {};
         }
-        return args;
+        return {};
     }
 
+    // 按属性分量和实体域限制原有 RGB、UV、向量策略。
     function canApply() {
         let attr = selectedAttribute();
-        if (!attr || !App.registry.renderWindow)
+        if (!attr || !App.registry.renderWindow || (modeCombo.currentIndex === 1 && !rangeState))
             return false;
-
         if (modeCombo.currentIndex === 0 && attr.componentCount !== 3)
             return false;
         if (modeCombo.currentIndex === 2 && (attr.attrType !== 0 || attr.componentCount !== 2))
             return false;
         if (modeCombo.currentIndex === 3 && attr.componentCount !== 3)
             return false;
-
         return modeCombo.currentIndex !== 2 || texturePathField.text.length > 0;
     }
 
-    // 属性点击和应用按钮共用一次提交入口，沿用各渲染策略的参数检查。
+    // 属性点击和应用共用入口，先完成草稿，再提交该属性的最终配置。
     function applySelectedAttribute() {
-        if (!canApply() || (modeCombo.currentIndex === 1 && !commitRangeFields()))
+        if (!canApply() || !rangeEditor.finishEditing(false))
             return;
         let attr = selectedAttribute();
-        App.registry.renderWindow.setAttriMode(App.selection.activeComponentId, attr.name, modeCombo.currentIndex, renderArgs());
+        if (modeCombo.currentIndex === 1) {
+            refreshRangeMetadata();
+            rangeState.apply(selectedKey);
+        } else {
+            App.registry.renderWindow.setAttriMode(App.selection.activeComponentId, attr.name, modeCombo.currentIndex, renderArgs());
+        }
     }
 
+    // 将文件选择器的 URL 转为既有渲染接口使用的本地路径。
     function urlToPath(url) {
-        let urlString = url.toString();
-        if (urlString.startsWith("file:///")) {
-            let start = urlString.charAt(9) === ":" ? 8 : 7;
-            return decodeURIComponent(urlString.substring(start));
-        }
-        return decodeURIComponent(urlString);
+        let text = url.toString();
+        if (text.startsWith("file:///"))
+            return decodeURIComponent(text.substring(text.charAt(9) === ":" ? 8 : 7));
+        return decodeURIComponent(text);
     }
 
     FontMetrics {
@@ -448,7 +236,7 @@ Item {
                     anchors.fill: parent
                     hoverEnabled: true
                     onClicked: {
-                        if (!root.commitRangeFields())
+                        if (!rangeEditor.finishEditing())
                             return;
                         root.selectedIndex = index;
                         modeCombo.currentIndex = root.inferMode(modelData);
@@ -457,10 +245,8 @@ Item {
                             type: modelData.attrType,
                             mode: modeCombo.currentIndex
                         };
-                        rangeMinField.focus = false;
-                        rangeMaxField.focus = false;
-                        root.rangeError = "";
-                        root.refreshScalarState();
+                        root.confirmedMode = modeCombo.currentIndex;
+                        root.refreshRangeMetadata();
                         root.applySelectedAttribute();
                     }
                 }
@@ -497,6 +283,11 @@ Item {
                 Layout.fillWidth: true
                 model: ["RGB", "标量", "UV", "向量"]
                 onActivated: {
+                    if (!rangeEditor.finishEditing()) {
+                        currentIndex = root.confirmedMode;
+                        return;
+                    }
+                    root.confirmedMode = currentIndex;
                     let attr = root.selectedAttribute();
                     if (attr)
                         root.rememberedAttributes[String(App.selection.activeComponentId)] = {
@@ -504,313 +295,29 @@ Item {
                             type: attr.attrType,
                             mode: currentIndex
                         };
-                    root.refreshScalarState();
+                    root.refreshRangeMetadata();
                 }
             }
 
-            ColumnLayout {
+            ScalarRangeEditor {
+                id: rangeEditor
                 Layout.fillWidth: true
                 Layout.minimumWidth: 0
                 Layout.columnSpan: 2
                 visible: modeCombo.currentIndex === 1
-                spacing: 4
-
-                RowLayout {
-                    objectName: "scalarOriginalRange"
-                    Layout.fillWidth: true
-                    visible: !!root.scalarState.valid
-                    spacing: Theme.spacingSm
-
-                    Label {
-                        objectName: "scalarOriginalLower"
-                        Layout.fillWidth: true
-                        Layout.minimumWidth: 0
-                        color: Theme.textSecondary
-                        text: root.scalarState.valid ? root.formatRangeValue(root.scalarState.minimum) : ""
-                        Accessible.name: qsTr("原始范围下限：%1").arg(text)
-                    }
-                    Label {
-                        objectName: "scalarOriginalUpper"
-                        Layout.fillWidth: true
-                        Layout.minimumWidth: 0
-                        horizontalAlignment: Text.AlignRight
-                        color: Theme.textSecondary
-                        text: root.scalarState.valid ? root.formatRangeValue(root.scalarState.maximum) : ""
-                        Accessible.name: qsTr("原始范围上限：%1").arg(text)
-                    }
+                attributeKey: root.selectedKey
+                parameters: root.currentRange
+                onRangeEdited: function (key, displayMode, lower, upper, applyImmediately) {
+                    if (root.rangeState)
+                        root.rangeState.editRange(key, displayMode, lower, upper, applyImmediately);
                 }
-
-                RangeSlider {
-                    id: rangeSlider
-                    objectName: "scalarRangeSlider"
-                    Layout.fillWidth: true
-                    Layout.minimumWidth: 0
-                    enabled: !!root.scalarState.valid
-                    from: root.sliderMinimum
-                    to: root.sliderMaximum
-                    first.onMoved: root.queueRange(first.value, second.value)
-                    second.onMoved: root.queueRange(first.value, second.value)
-                    first.onPressedChanged: {
-                        if (!first.pressed) {
-                            root.flushPendingRange();
-                            root.refreshScalarState();
-                        }
-                    }
-                    second.onPressedChanged: {
-                        if (!second.pressed) {
-                            root.flushPendingRange();
-                            root.refreshScalarState();
-                        }
-                    }
-
-                    // 区间内部在按下时接管鼠标，避免控件把最近端点跳到点击位置。
-                    MouseArea {
-                        id: rangePan
-                        anchors.fill: parent
-                        acceptedButtons: Qt.LeftButton
-                        preventStealing: true
-                        cursorShape: Qt.SizeHorCursor
-                        // 保存按下位置与原区间，以统一偏移量移动两端，避免累计误差。
-                        property bool dragging: false
-                        property real pressX: 0
-                        property real lower: 0
-                        property real upper: 0
-
-                        // 结束平移后立即提交最后位置，再恢复滑条坐标范围的自动更新。
-                        function finishDrag() {
-                            if (!dragging)
-                                return;
-                            root.flushPendingRange();
-                            dragging = false;
-                            root.refreshScalarState();
-                        }
-
-                        onPressed: function (mouse) {
-                            let first = rangeSlider.first.handle;
-                            let second = rangeSlider.second.handle;
-                            let left = Math.min(first.x + first.width, second.x + second.width);
-                            let right = Math.max(first.x, second.x);
-                            if (mouse.x <= left || mouse.x >= right) {
-                                mouse.accepted = false;
-                                return;
-                            }
-                            if (!root.commitRangeFields())
-                                return;
-                            root.refreshScalarState();
-                            pressX = mouse.x;
-                            lower = rangeSlider.first.value;
-                            upper = rangeSlider.second.value;
-                            dragging = true;
-                        }
-                        onPositionChanged: function (mouse) {
-                            if (!dragging)
-                                return;
-                            let width = rangeSlider.availableWidth - Math.max(rangeSlider.first.handle.width, rangeSlider.second.handle.width);
-                            if (width <= 0)
-                                return;
-                            let offset = (mouse.x - pressX) / width * (rangeSlider.to - rangeSlider.from) * (rangeSlider.mirrored ? -1 : 1);
-                            // 两端一起夹到轨道边界，保持原区间宽度。
-                            offset = Math.max(rangeSlider.from - lower, Math.min(rangeSlider.to - upper, offset));
-                            if (rangeSlider.first.value === lower + offset && rangeSlider.second.value === upper + offset)
-                                return;
-                            rangeSlider.setValues(lower + offset, upper + offset);
-                            root.queueRange(rangeSlider.first.value, rangeSlider.second.value);
-                        }
-                        onReleased: finishDrag()
-                        onCanceled: finishDrag()
-                    }
+                onLinkRequested: function (key, displayMode, linked) {
+                    if (root.rangeState)
+                        root.rangeState.setLinked(key, displayMode, linked);
                 }
-
-                RowLayout {
-                    Layout.fillWidth: true
-                    spacing: Theme.spacingSm
-
-                    TextField {
-                        id: rangeMinField
-                        objectName: "scalarRangeLower"
-                        // 实际值独立保留，获得焦点时仍维持精简显示。
-                        property var exactValue: null
-                        Layout.fillWidth: true
-                        Layout.preferredWidth: 1
-                        Layout.minimumWidth: 0
-                        placeholderText: "min"
-                        horizontalAlignment: Text.AlignHCenter
-                        Accessible.name: root.displayRangeMode ? qsTr("可见单元下限") : qsTr("颜色映射下限")
-                        validator: DoubleValidator {}
-                        onActiveFocusChanged: {
-                            if (!activeFocus && !root.rangeEditTarget && exactValue !== null)
-                                text = root.formatRangeValue(exactValue);
-                        }
-                        onTextEdited: {
-                            exactValue = root.optionalNumber(text);
-                            root.markRangeEdited();
-                        }
-                        onEditingFinished: {
-                            if (root.commitRangeFields())
-                                root.refreshScalarState();
-                        }
-                    }
-                    ToolButton {
-                        objectName: "scalarRangeLink"
-                        implicitWidth: 32
-                        implicitHeight: 32
-                        padding: 6
-                        focusPolicy: Qt.StrongFocus
-                        icon.width: 20
-                        icon.height: 20
-                        icon.source: root.scalarState.linked ? "qrc:/images/toolbar/Panels/range-linked.svg" : "qrc:/images/toolbar/Panels/range-unlinked.svg"
-                        icon.color: !enabled ? Theme.textDisabled : root.scalarState.linked ? Theme.primary : Theme.textSecondary
-                        enabled: !!root.scalarState.valid && !!root.scalarState.rangeAvailable && !!App.registry.renderWindow
-                        Accessible.role: Accessible.CheckBox
-                        Accessible.checkable: true
-                        Accessible.checked: !!root.scalarState.linked
-                        Accessible.name: root.scalarState.linked ? qsTr("解除范围绑定") : qsTr("绑定颜色映射与可见单元范围")
-                        ToolTip.visible: hovered || visualFocus
-                        ToolTip.text: !root.scalarState.rangeAvailable ? qsTr("此属性不支持范围绑定") : root.scalarState.linked ? qsTr("已绑定：两种范围同步修改，点击解除绑定") : qsTr("以当前范围为准，绑定颜色映射与可见单元范围")
-                        ToolTip.delay: 400
-                        onClicked: {
-                            let window = App.registry.renderWindow;
-                            let attr = root.selectedAttribute();
-                            if (!window || !attr || !root.commitRangeFields())
-                                return;
-                            window.setScalarRangesLinked(App.selection.activeComponentId, attr.name, attr.attrType, root.displayRangeMode, !root.scalarState.linked);
-                        }
-                    }
-                    TextField {
-                        id: rangeMaxField
-                        objectName: "scalarRangeUpper"
-                        // 与下限独立保存精确值，避免仅编辑一端时截断另一端。
-                        property var exactValue: null
-                        Layout.fillWidth: true
-                        Layout.preferredWidth: 1
-                        Layout.minimumWidth: 0
-                        placeholderText: "max"
-                        horizontalAlignment: Text.AlignHCenter
-                        Accessible.name: root.displayRangeMode ? qsTr("可见单元上限") : qsTr("颜色映射上限")
-                        validator: DoubleValidator {}
-                        onActiveFocusChanged: {
-                            if (!activeFocus && !root.rangeEditTarget && exactValue !== null)
-                                text = root.formatRangeValue(exactValue);
-                        }
-                        onTextEdited: {
-                            exactValue = root.optionalNumber(text);
-                            root.markRangeEdited();
-                        }
-                        onEditingFinished: {
-                            if (root.commitRangeFields())
-                                root.refreshScalarState();
-                        }
-                    }
-                }
-
-                GridLayout {
-                    Layout.fillWidth: true
-                    Layout.minimumWidth: 0
-                    columns: width >= rangeModeGroup.implicitWidth + rangeResetButton.implicitWidth + columnSpacing ? 2 : 1
-                    columnSpacing: Theme.spacingSm
-                    rowSpacing: Theme.spacingXs
-
-                    Rectangle {
-                        id: rangeModeGroup
-                        Layout.fillWidth: true
-                        implicitWidth: mappingModeButton.implicitWidth + displayModeButton.implicitWidth + 6
-                        implicitHeight: Math.max(mappingModeButton.implicitHeight, displayModeButton.implicitHeight) + 4
-                        radius: Theme.radiusControl
-                        color: Theme.surfaceAlt
-                        border.color: Theme.border
-
-                        RowLayout {
-                            anchors.fill: parent
-                            anchors.margins: 2
-                            spacing: 2
-
-                            RangeModeButton {
-                                id: mappingModeButton
-                                objectName: "scalarMappingMode"
-                                Layout.fillWidth: true
-                                Layout.minimumWidth: implicitWidth
-                                Layout.preferredWidth: 1
-                                text: qsTr("颜色映射")
-                                selected: !root.displayRangeMode
-                                enabled: !!root.scalarState.valid
-                                onClicked: root.changeRangeMode(false)
-                                Keys.onRightPressed: {
-                                    if (displayModeButton.enabled) {
-                                        displayModeButton.forceActiveFocus();
-                                        root.changeRangeMode(true);
-                                    }
-                                }
-                                ToolTip.visible: hovered || visualFocus
-                                ToolTip.text: root.scalarState.linked ? qsTr("编辑颜色映射范围，同步可见单元范围") : qsTr("编辑颜色映射范围，保留可见单元范围")
-                                ToolTip.delay: 400
-                            }
-                            RangeModeButton {
-                                id: displayModeButton
-                                objectName: "scalarDisplayMode"
-                                Layout.fillWidth: true
-                                Layout.minimumWidth: implicitWidth
-                                Layout.preferredWidth: 1
-                                text: qsTr("可见单元")
-                                selected: root.displayRangeMode
-                                enabled: !!root.scalarState.rangeAvailable
-                                onClicked: root.changeRangeMode(true)
-                                Keys.onLeftPressed: {
-                                    mappingModeButton.forceActiveFocus();
-                                    root.changeRangeMode(false);
-                                }
-                                Accessible.description: qsTr("隐藏范围外的边、面或体单元；节点属性不支持此操作")
-                                ToolTip.visible: hovered || visualFocus
-                                ToolTip.text: root.scalarState.linked ? qsTr("编辑可见单元范围，同步颜色映射范围") : qsTr("编辑可见单元范围，隐藏范围外的单元并保留颜色映射")
-                                ToolTip.delay: 400
-                            }
-                        }
-                    }
-                    Button {
-                        id: rangeResetButton
-                        objectName: "scalarRangeReset"
-                        Layout.alignment: Qt.AlignRight | Qt.AlignVCenter
-                        Layout.minimumHeight: 32
-                        Layout.preferredHeight: rangeModeGroup.implicitHeight
-                        implicitWidth: Math.max(72, implicitContentWidth + leftPadding + rightPadding)
-                        leftPadding: Theme.spacingSm
-                        rightPadding: Theme.spacingSm
-                        text: qsTr("重置范围")
-                        font.pixelSize: Theme.fontSizeBody
-                        focusPolicy: Qt.StrongFocus
-                        palette.button: Theme.surfaceAlt
-                        palette.buttonText: Theme.textPrimary
-                        palette.mid: Theme.border
-                        palette.light: Theme.surface
-                        palette.dark: Theme.borderStrong
-                        palette.highlight: Theme.primary
-                        enabled: !!root.scalarState.valid && !!App.registry.renderWindow
-                        Accessible.name: root.scalarState.linked ? qsTr("重置两种范围") : root.displayRangeMode ? qsTr("重置可见单元范围") : qsTr("重置颜色映射范围")
-                        ToolTip.visible: hovered || visualFocus
-                        ToolTip.text: root.scalarState.linked ? qsTr("将已绑定的两种范围一起恢复为原始值域") : root.displayRangeMode ? qsTr("将可见单元范围恢复为原始值域，保留颜色映射") : qsTr("将颜色映射范围恢复为原始值域，保留可见单元范围")
-                        ToolTip.delay: 400
-                        onClicked: {
-                            let window = App.registry.renderWindow;
-                            let attr = root.selectedAttribute();
-                            if (!window || !attr)
-                                return;
-                            root.pendingRange = null;
-                            rangeUpdateTimer.stop();
-                            root.rangeEditTarget = null;
-                            rangeMinField.focus = false;
-                            rangeMaxField.focus = false;
-                            window.resetScalarRange(App.selection.activeComponentId, attr.name, attr.attrType, root.displayRangeMode);
-                            root.rangeError = "";
-                            root.refreshScalarState();
-                        }
-                    }
-                }
-
-                Label {
-                    Layout.fillWidth: true
-                    visible: root.rangeError.length > 0 || !root.scalarState.valid
-                    wrapMode: Text.Wrap
-                    color: Theme.textSecondary
-                    text: root.rangeError.length > 0 ? root.rangeError : qsTr("请选择有效的标量属性")
+                onResetRequested: function (key, displayMode) {
+                    if (root.rangeState)
+                        root.rangeState.resetRange(key, displayMode);
                 }
             }
 
@@ -879,7 +386,8 @@ Item {
             rightPadding: Theme.spacingXs
             text: qsTr("取消属性渲染")
             font.pixelSize: Theme.fontSizeBody
-            focusPolicy: Qt.StrongFocus
+            // 鼠标点击不抢输入焦点，由取消入口只保存草稿；键盘仍可 Tab 聚焦。
+            focusPolicy: Qt.TabFocus
             palette.button: Theme.surfaceAlt
             palette.buttonText: Theme.textPrimary
             palette.mid: Theme.border
@@ -892,7 +400,7 @@ Item {
             ToolTip.text: qsTr("关闭属性着色和范围筛选，保留参数")
             ToolTip.delay: 400
             onClicked: {
-                root.flushPendingRange();
+                rangeEditor.finishEditing(false);
                 App.registry.renderWindow.cancelComponentAttri(App.selection.activeComponentId);
             }
         }
@@ -906,7 +414,8 @@ Item {
             padding: Theme.spacingSm
             text: qsTr("应用")
             font.pixelSize: Theme.fontSizeBody
-            focusPolicy: Qt.StrongFocus
+            // 避免鼠标按下时先失焦应用，点击入口统一完成一次最终提交。
+            focusPolicy: Qt.TabFocus
             enabled: root.canApply()
             ToolTip.visible: hovered || visualFocus
             ToolTip.text: qsTr("重新应用当前属性和参数；选择属性时也会自动应用")
@@ -937,29 +446,28 @@ Item {
         onAccepted: texturePathField.text = root.urlToPath(selectedFile)
     }
 
-    Timer {
-        id: rangeUpdateTimer
-        interval: 16
-        onTriggered: root.flushPendingRange()
-    }
-
     Connections {
         target: App.registry.renderWindow
         function onScalarRangeChanged() {
-            root.refreshScalarState();
+            root.refreshRangeMetadata();
         }
     }
 
     Connections {
         target: App.selection
         function onActiveComponentIdChanged() {
-            root.commitRangeFields();
+            rangeEditor.finishEditing();
             root.refreshAttributes();
         }
     }
 
     Connections {
         target: QModelManager.observer
+        function onComponentRemoved(component_id) {
+            delete root.rememberedAttributes[String(component_id)];
+            if (component_id === App.selection.activeComponentId)
+                root.refreshAttributes();
+        }
         function onComponentChanged(component_id) {
             if (component_id === App.selection.activeComponentId)
                 root.refreshAttributes();

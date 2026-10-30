@@ -21,6 +21,7 @@ QtObject {
         property var renderWindow: null
         property var treeModel: null
         property var objectTree: null
+        property var scalarRanges: null
     }
 
     signal modelVisibilityUpdated(int modelId, bool visible)

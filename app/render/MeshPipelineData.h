@@ -85,6 +85,8 @@ public:
     void setClipPlane(const MeshClipPlane& plane);
     /** @brief 查询完整单值属性的有限值域，缓存不受隐藏和裁剪影响。 */
     std::optional<std::array<double, 2>> scalarRange(const std::string& attribute, ElementType type);
+    /** @brief 查询指定实体域属性的分量数；不存在时返回零，用于提交前验证属性身份。 */
+    int scalarAttributeComponents(const std::string& attribute, ElementType type) const;
     /** @brief 设置单元显示闭区间；节点不支持筛选，重复参数不重建数据。 */
     void setScalarDisplayRange(const std::string& attribute, ElementType type,
         bool enabled, const std::array<double, 2>& range);

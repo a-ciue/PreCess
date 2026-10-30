@@ -34,16 +34,44 @@
 #include <vtkUnstructuredGrid.h>
 
 #include <algorithm>
+#include <any>
 #include <cmath>
 #include <functional>
 #include <memory>
 #include <optional>
 #include <string>
-#include <tuple>
 #include <utility>
 #include <vector>
 
 namespace {
+/** @brief 解析可选闭区间，空值表示采用默认映射或关闭筛选；错误值不产生部分配置。 */
+bool readScalarRange(const QVariant& value, std::optional<std::array<double, 2>>& range)
+{
+    range.reset();
+    if (!value.isValid() || value.isNull())
+        return true;
+    const auto limits = value.toList();
+    if (limits.size() != 2)
+        return false;
+    bool lower_ok = false;
+    bool upper_ok = false;
+    const double lower = limits[0].toDouble(&lower_ok);
+    const double upper = limits[1].toDouble(&upper_ok);
+    if (!lower_ok || !upper_ok || !std::isfinite(lower) || !std::isfinite(upper) || lower > upper)
+        return false;
+    range = std::array<double, 2> { lower, upper };
+    return true;
+}
+
+/** @brief 组装渲染策略参数，重放和首次执行共用同一份实际映射配置。 */
+std::map<std::string, std::any> scalarRenderArgs(int element_type, const std::optional<std::array<double, 2>>& mapping)
+{
+    std::map<std::string, std::any> args { { "element_type", element_type } };
+    if (mapping)
+        args.emplace("scalar_range", std::vector<double> { (*mapping)[0], (*mapping)[1] });
+    return args;
+}
+
 constexpr double kOrientationSize = 120.0;
 constexpr double kOrientationPadding = 12.0;
 constexpr double kScaleBarFontPixels = 12.0;
@@ -378,25 +406,19 @@ QQuickVTKItem::vtkUserData QRenderWindow::initializeVTK(vtkRenderWindow* renderW
     // initializeVTK 的 GUI 同步边界只重放已完成结果，不访问 GUI Filter。
     for (const auto& [component_id, snapshot] : mesh_snapshots_)
         vtk->mesh_actor_manager_->loadMesh(component_id, snapshot, vtk->renderer_);
-    // 同步边界只重放已保存的着色参数，不访问 GUI 过滤器；重建窗口不丢失范围渲染。
-    for (const auto& [component_id, key] : active_scalar_attributes_) {
-        // 色柱所属组件由下方 Manager 恢复，避免重复着色。
+    // 同步边界只重放已成功执行的配置，不读取界面历史偏好或 GUI 过滤器。
+    for (const auto& [component_id, config] : applied_scalar_configs_) {
         if (component_id == scalar_bar_component_id_)
             continue;
-        const auto range = scalar_ranges_.find(key);
-        auto actor = vtk->mesh_actor_manager_->getComponentActor(component_id);
-        if (!actor || range == scalar_ranges_.end())
-            continue;
-        actor->setRenderStrategy(std::make_unique<AttriRenderStrategyScalar>());
-        actor->renderAttribute(std::get<1>(key),
-            { { "scalar_range", std::vector<double> { range->second.mapping[0], range->second.mapping[1] } },
-                { "element_type", std::get<2>(key) } });
+        if (auto actor = vtk->mesh_actor_manager_->getComponentActor(component_id)) {
+            actor->setRenderStrategy(std::make_unique<AttriRenderStrategyScalar>());
+            actor->renderAttribute(config.attribute, scalarRenderArgs(config.element_type, config.mapping));
+        }
     }
-    if (const auto active = active_scalar_attributes_.find(scalar_bar_component_id_); active != active_scalar_attributes_.end()) {
-        const auto& range = scalar_ranges_.at(active->second);
-        vtk->mesh_actor_manager_->setAttriMode(scalar_bar_component_id_, std::get<1>(active->second), Mode::SCALAR,
-            { { "scalar_range", std::vector<double> { range.mapping[0], range.mapping[1] } },
-                { "element_type", std::get<2>(active->second) } });
+    if (const auto active = applied_scalar_configs_.find(scalar_bar_component_id_); active != applied_scalar_configs_.end()) {
+        const auto& config = active->second;
+        vtk->mesh_actor_manager_->setAttriMode(scalar_bar_component_id_, config.attribute, Mode::SCALAR,
+            scalarRenderArgs(config.element_type, config.mapping));
     }
     if (model_query_) {
         for (const auto& [id, visible] : geometry_visibility_) {
@@ -490,10 +512,10 @@ void QRenderWindow::deleteModel(Index model_id)
 
 void QRenderWindow::deleteComponent(Index component_id)
 {
-    active_scalar_attributes_.erase(component_id);
+    applied_scalar_configs_.erase(component_id);
     if (scalar_bar_component_id_ == component_id)
         scalar_bar_component_id_ = -1;
-    std::erase_if(scalar_ranges_, [component_id](const auto& entry) { return std::get<0>(entry.first) == component_id; });
+    emit scalarRenderingChanged(component_id, { }, -1);
     mesh_pipeline_data_.erase(component_id);
     mesh_snapshots_.erase(component_id);
     emit scalarRangeChanged();
@@ -578,15 +600,15 @@ void QRenderWindow::loadMeshData(Index component_id, const MeshDataVtk& data)
     pipeline->setClipPlane(mesh_clip_);
     mesh_pipeline_data_[component_id] = std::move(pipeline);
     // 先恢复活动属性，再只发布最终快照，避免短暂安装未筛选的网格。
-    const auto active = active_scalar_attributes_.find(component_id);
-    auto* range = active != active_scalar_attributes_.end()
-        ? ensureScalarRange(component_id, QString::fromStdString(std::get<1>(active->second)), std::get<2>(active->second))
-        : nullptr;
-    if (range) {
-        const auto& key = active->second;
-        applyScalarRange(component_id, QString::fromStdString(std::get<1>(key)), std::get<2>(key), *range, false);
+    const auto active = applied_scalar_configs_.find(component_id);
+    const bool restorable = active != applied_scalar_configs_.end()
+        && mesh_pipeline_data_.at(component_id)->scalarAttributeComponents(active->second.attribute, static_cast<ElementType>(active->second.element_type)) > 0
+        && (!active->second.display || mesh_pipeline_data_.at(component_id)->scalarRange(active->second.attribute, static_cast<ElementType>(active->second.element_type)));
+    if (restorable) {
+        applyScalarRange(component_id, active->second, false);
     } else {
-        active_scalar_attributes_.erase(component_id);
+        if (applied_scalar_configs_.erase(component_id))
+            emit scalarRenderingChanged(component_id, { }, -1);
         if (scalar_bar_component_id_ == component_id)
             scalar_bar_component_id_ = -1;
         const auto snapshot = prepareMeshSnapshot(component_id);
@@ -991,45 +1013,26 @@ void QRenderWindow::setAttriMode(
         *domain = static_cast<int>(value);
     }
     if (mode == static_cast<int>(Mode::SCALAR)) {
-        // 范围校验先于状态变更，单值与多分量旧接口共用规范化后的端点。
-        std::optional<std::array<double, 2>> mapping_limits;
-        if (auto argument = args.find("scalar_range"); argument != args.end()) {
-            const auto limits = argument->toList();
-            if (limits.size() != 2) {
-                spdlog::warn("标量映射范围必须包含两个端点");
-                return;
-            }
-            bool lower_ok = false;
-            bool upper_ok = false;
-            const double lower = limits[0].toDouble(&lower_ok);
-            const double upper = limits[1].toDouble(&upper_ok);
-            if (!lower_ok || !upper_ok || !std::isfinite(lower) || !std::isfinite(upper) || lower > upper) {
+        // 兼容控制台入口：显式提供的 scalar_range 必须有效，省略则使用数据默认值域。
+        if (const auto argument = args.constFind("scalar_range"); argument != args.cend()) {
+            std::optional<std::array<double, 2>> limits;
+            if (argument->isNull() || !readScalarRange(*argument, limits) || !limits) {
                 spdlog::warn("标量映射范围无效");
                 return;
             }
-            mapping_limits = std::array<double, 2> { lower, upper };
-            *argument = QVariantList { lower, upper };
         }
-        // 面板传递明确实体域；保留控制台旧接口按实际数组查找的能力。
         int element_type = args.value("element_type", -1).toInt();
-        ScalarRenderRange* range = nullptr;
-        if (element_type >= 0) {
-            range = ensureScalarRange(component_id, attr_name, element_type);
-        } else {
+        const auto pipeline = mesh_pipeline_data_.find(component_id);
+        if (element_type < 0 && pipeline != mesh_pipeline_data_.end()) {
+            // 旧入口未指定实体域时按实际数组查找，不把身份推断带入新配置接口。
             for (element_type = 0; element_type < 4; ++element_type) {
-                range = ensureScalarRange(component_id, attr_name, element_type);
-                if (range)
+                if (pipeline->second->scalarAttributeComponents(attr_name.toStdString(), static_cast<ElementType>(element_type)) > 0)
                     break;
             }
         }
-        if (range) {
-            if (mapping_limits)
-                range->setRange(false, (*mapping_limits)[0], (*mapping_limits)[1]);
-            active_scalar_attributes_.insert_or_assign(component_id, ScalarKey { component_id, attr_name.toStdString(), element_type });
-            applyScalarRange(component_id, attr_name, element_type, *range);
-            emit scalarRangeChanged();
-            return;
-        }
+        applyScalarConfig(component_id, attr_name, element_type,
+            { { "mapping", args.value("scalar_range") }, { "display", QVariant() } });
+        return;
     }
     deactivateScalarRange(component_id);
     scalar_bar_component_id_ = -1;
@@ -1085,88 +1088,48 @@ void QRenderWindow::cancelComponentAttri(Index component_id)
     });
 }
 
-ScalarRenderRange* QRenderWindow::ensureScalarRange(Index component_id, const QString& attribute, int element_type)
+QVariantMap QRenderWindow::scalarRangeInfo(Index component_id, const QString& attribute, int element_type)
 {
     const auto pipeline = mesh_pipeline_data_.find(component_id);
     if (pipeline == mesh_pipeline_data_.end() || element_type < 0 || element_type > 3)
-        return nullptr;
+        return { { "valid", false }, { "rangeAvailable", false } };
     const auto original = pipeline->second->scalarRange(attribute.toStdString(), static_cast<ElementType>(element_type));
     if (!original)
-        return nullptr;
-    auto [entry, inserted] = scalar_ranges_.try_emplace(ScalarKey { component_id, attribute.toStdString(), element_type }, *original);
-    entry->second.original = *original;
-    return &entry->second;
+        return { { "valid", false }, { "rangeAvailable", false } };
+    return { { "valid", true }, { "minimum", (*original)[0] }, { "maximum", (*original)[1] },
+        { "rangeAvailable", element_type != 0 } };
 }
 
-QVariantMap QRenderWindow::scalarRangeState(Index component_id, const QString& attribute, int element_type)
+bool QRenderWindow::applyScalarConfig(Index component_id, const QString& attribute, int element_type, QVariantMap config)
 {
-    auto* range = ensureScalarRange(component_id, attribute, element_type);
-    if (!range)
-        return { { "valid", false } };
-    const auto active = active_scalar_attributes_.find(component_id);
-    return { { "valid", true }, { "minimum", range->original[0] }, { "maximum", range->original[1] },
-        { "mappingLower", range->mapping[0] }, { "mappingUpper", range->mapping[1] },
-        { "displayLower", range->display[0] }, { "displayUpper", range->display[1] },
-        { "rangeAvailable", element_type != 0 }, { "filtered", range->filtered }, { "linked", range->linked },
-        { "active", active != active_scalar_attributes_.end() && active->second == ScalarKey { component_id, attribute.toStdString(), element_type } } };
-}
-
-bool QRenderWindow::setScalarRange(Index component_id, const QString& attribute, int element_type,
-    bool display_mode, double lower, double upper)
-{
-    auto* range = ensureScalarRange(component_id, attribute, element_type);
-    if (!range || (display_mode && element_type == 0) || !range->setRange(display_mode, lower, upper))
+    const auto pipeline = mesh_pipeline_data_.find(component_id);
+    ScalarAppliedConfig applied { attribute.toStdString(), element_type, { }, { } };
+    // 先验证完整配置，再改筛选和活动身份；失败不能取消原来的有效着色。
+    if (pipeline == mesh_pipeline_data_.end() || element_type < 0 || element_type > 3
+        || pipeline->second->scalarAttributeComponents(applied.attribute, static_cast<ElementType>(element_type)) == 0
+        || !readScalarRange(config.value("mapping"), applied.mapping)
+        || !readScalarRange(config.value("display"), applied.display)
+        || (applied.display && (element_type == 0 || !pipeline->second->scalarRange(applied.attribute, static_cast<ElementType>(element_type))))) {
+        spdlog::warn("标量渲染配置或属性身份无效");
         return false;
-    const auto active = active_scalar_attributes_.find(component_id);
-    if (active != active_scalar_attributes_.end() && active->second == ScalarKey { component_id, attribute.toStdString(), element_type })
-        applyScalarRange(component_id, attribute, element_type, *range);
-    emit scalarRangeChanged();
-    return true;
-}
-
-bool QRenderWindow::setScalarRangesLinked(Index component_id, const QString& attribute, int element_type,
-    bool display_mode, bool linked)
-{
-    auto* range = ensureScalarRange(component_id, attribute, element_type);
-    if (!range || element_type == 0)
-        return false;
-    if (range->linked == linked)
-        return true;
-    const bool ranges_differ = range->mapping != range->display;
-    range->linked = linked;
-    if (linked) {
-        const auto current = display_mode ? range->display : range->mapping;
-        // 同步已有参数，不把未改变的显示范围当作一次新的筛选操作。
-        range->setRange(false, current[0], current[1]);
-        const auto active = active_scalar_attributes_.find(component_id);
-        if (ranges_differ && active != active_scalar_attributes_.end()
-            && active->second == ScalarKey { component_id, attribute.toStdString(), element_type })
-            applyScalarRange(component_id, attribute, element_type, *range);
     }
-    emit scalarRangeChanged();
+    // 单值默认映射来自完整原始数组，之后的重建只重放已执行配置。
+    if (!applied.mapping)
+        applied.mapping = pipeline->second->scalarRange(applied.attribute, static_cast<ElementType>(element_type));
+    applyScalarRange(component_id, applied);
+    applied_scalar_configs_.insert_or_assign(component_id, std::move(applied));
+    emit scalarRenderingChanged(component_id, attribute, element_type);
     return true;
 }
 
-void QRenderWindow::resetScalarRange(Index component_id, const QString& attribute, int element_type, bool display_mode)
-{
-    auto* range = ensureScalarRange(component_id, attribute, element_type);
-    if (!range || (display_mode && element_type == 0))
-        return;
-    range->resetRange(display_mode);
-    const auto active = active_scalar_attributes_.find(component_id);
-    if (active != active_scalar_attributes_.end() && active->second == ScalarKey { component_id, attribute.toStdString(), element_type })
-        applyScalarRange(component_id, attribute, element_type, *range);
-    emit scalarRangeChanged();
-}
-
-void QRenderWindow::applyScalarRange(Index component_id, const QString& attribute, int element_type,
-    const ScalarRenderRange& range, bool activate_scalar_bar)
+void QRenderWindow::applyScalarRange(Index component_id, const ScalarAppliedConfig& config, bool activate_scalar_bar)
 {
     const bool show_scalar_bar = activate_scalar_bar || scalar_bar_component_id_ == component_id;
     if (activate_scalar_bar)
         scalar_bar_component_id_ = component_id;
     auto& pipeline = *mesh_pipeline_data_.at(component_id);
-    pipeline.setScalarDisplayRange(attribute.toStdString(), static_cast<ElementType>(element_type), range.filtered, range.display);
+    pipeline.setScalarDisplayRange(config.attribute, static_cast<ElementType>(config.element_type), config.display.has_value(),
+        config.display.value_or(std::array<double, 2> { }));
     const auto previous = mesh_snapshots_.find(component_id);
     const auto old_snapshot = previous != mesh_snapshots_.end() ? previous->second : nullptr;
     const auto snapshot = prepareMeshSnapshot(component_id);
@@ -1175,8 +1138,8 @@ void QRenderWindow::applyScalarRange(Index component_id, const QString& attribut
         selected_faces_.clear();
         selected_face_generations_.clear();
     }
-    dispatch_async([this, component_id, attribute, element_type, snapshot, mapping = range.mapping,
-                       geometry_changed, show_scalar_bar, revision = selection_revision_](vtkRenderWindow*, vtkUserData user_data) {
+    dispatch_async([this, component_id, config, snapshot, geometry_changed, show_scalar_bar,
+                       revision = selection_revision_](vtkRenderWindow*, vtkUserData user_data) {
         auto* vtk = Data::SafeDownCast(user_data);
         // 映射更新不替换网格包装，避免使未变化的几何缓存失效。
         if (geometry_changed) {
@@ -1184,15 +1147,13 @@ void QRenderWindow::applyScalarRange(Index component_id, const QString& attribut
             select_manager_->clearSelection();
             vtk->mesh_actor_manager_->loadMesh(component_id, snapshot, vtk->renderer_);
         }
-        const std::map<std::string, std::any> args {
-            { "scalar_range", std::vector<double> { mapping[0], mapping[1] } }, { "element_type", element_type }
-        };
+        const auto args = scalarRenderArgs(config.element_type, config.mapping);
         if (show_scalar_bar) {
-            vtk->mesh_actor_manager_->setAttriMode(component_id, attribute.toStdString(), Mode::SCALAR, args);
+            vtk->mesh_actor_manager_->setAttriMode(component_id, config.attribute, Mode::SCALAR, args);
         } else if (auto actor = vtk->mesh_actor_manager_->getComponentActor(component_id)) {
             // 非当前组件自动恢复时只着色，不绑定或重新显示窗口共享色柱。
             actor->setRenderStrategy(std::make_unique<AttriRenderStrategyScalar>());
-            actor->renderAttribute(attribute.toStdString(), args);
+            actor->renderAttribute(config.attribute, args);
         }
         if (geometry_changed)
             publishSelection();
@@ -1201,7 +1162,7 @@ void QRenderWindow::applyScalarRange(Index component_id, const QString& attribut
 
 void QRenderWindow::deactivateScalarRange(Index component_id)
 {
-    if (!active_scalar_attributes_.erase(component_id))
+    if (!applied_scalar_configs_.erase(component_id))
         return;
     if (scalar_bar_component_id_ == component_id)
         scalar_bar_component_id_ = -1;
@@ -1223,7 +1184,7 @@ void QRenderWindow::deactivateScalarRange(Index component_id)
             });
         }
     }
-    emit scalarRangeChanged();
+    emit scalarRenderingChanged(component_id, { }, -1);
 }
 
 void QRenderWindow::setGeometryStyle(int style)

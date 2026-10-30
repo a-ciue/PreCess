@@ -462,6 +462,13 @@ vtkDataArray* MeshPipelineData::scalarValues(const std::string& attribute, Eleme
     return nullptr;
 }
 
+int MeshPipelineData::scalarAttributeComponents(const std::string& attribute, ElementType type) const
+{
+    assertOwnerThread();
+    auto* values = scalarValues(attribute, type);
+    return values ? values->GetNumberOfComponents() : 0;
+}
+
 std::optional<std::array<double, 2>> MeshPipelineData::scalarRange(const std::string& attribute, ElementType type)
 {
     assertOwnerThread();

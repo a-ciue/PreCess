@@ -29,6 +29,15 @@ precess_test_link_libraries(TestQPythonRuntime
 precess_add_test(TestJobProgressSlot TestJobProgressSlot.cpp)
 target_include_directories(TestJobProgressSlot PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}/../model")
 
+# 参数规则使用纯 QtObject 与 Core 应用验证，不创建图形窗口。
+precess_add_test(TestScalarRangeState TestScalarRangeState.cpp)
+precess_test_link_libraries(TestScalarRangeState Qt6::Qml)
+qt_add_resources(TestScalarRangeState scalar_state
+    PREFIX "/scalar-state"
+    BASE "${CMAKE_CURRENT_SOURCE_DIR}/.."
+    FILES ../ScalarRangeState.qml
+)
+
 # 单槽任务的 Qt 状态合流，直接编译展示对象以避免链接应用目标。
 precess_add_test(TestQTaskStatus
     TestQTaskStatus.cpp

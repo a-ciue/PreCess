@@ -62,16 +62,17 @@ TEST_CASE("Scalar range arguments reject invalid input without changing active s
     QRenderWindow item;
     auto mesh = MakeMeshDataWithAtri();
     item.loadMeshData(7, MakeMeshDataVtk(mesh));
-    item.setAttriMode(7, "f_scalar_1", static_cast<int>(Mode::SCALAR),
-        { { "element_type", 2 }, { "scalar_range", QVariantList { 0.25, 0.75 } } });
-    REQUIRE(item.setScalarRangesLinked(7, "f_scalar_1", 2, false, true));
-    const auto saved = item.scalarRangeState(7, "f_scalar_1", 2);
-    REQUIRE(saved.value("active").toBool());
-    REQUIRE(saved.value("linked").toBool());
+    QString active_attribute;
     int notifications = 0;
-    QObject::connect(&item, &QRenderWindow::scalarRangeChanged, &item, [&] { ++notifications; });
+    QObject::connect(&item, &QRenderWindow::scalarRenderingChanged, &item,
+        [&](Index, const QString& attribute, int) { active_attribute = attribute; ++notifications; });
+    REQUIRE(item.applyScalarConfig(7, "f_scalar_1", 2,
+        { { "mapping", QVariantList { 0.25, 0.75 } }, { "display", QVariantList { 0.25, 0.75 } } }));
+    const auto original = item.scalarRangeInfo(7, "f_scalar_1", 2);
+    REQUIRE(original.value("valid").toBool());
+    notifications = 0;
     const QVariantList invalid_ranges {
-        QVariant(), 3.0, QString("invalid"), QVariantMap { }, QVariantList { },
+        3.0, QString("invalid"), QVariantMap { }, QVariantList { },
         QVariantList { 0.0 }, QVariantList { 0.0, 1.0, 2.0 },
         QVariantList { QString("invalid"), QString("invalid") },
         QVariantList { QVariant(), 1.0 }, QVariantList { 0.0, QVariantMap { } },
@@ -79,28 +80,31 @@ TEST_CASE("Scalar range arguments reject invalid input without changing active s
         QVariantList { 0.0, std::numeric_limits<double>::infinity() },
         QVariantList { 2.0, 1.0 }
     };
-    // 单值状态路径与多分量旧接口都必须在任何渲染状态变更前拒绝非法范围。
+    // 完整配置及旧入口都必须在任何活动身份变更前拒绝非法范围。
     for (const auto& attribute : { "f_scalar_1", "f_normal_3" }) {
         for (const auto& invalid : invalid_ranges) {
             INFO("attribute=" << attribute << ", range=" << invalid.toString().toStdString());
+            CHECK_FALSE(item.applyScalarConfig(7, attribute, 2, { { "mapping", invalid } }));
             item.setAttriMode(7, attribute, static_cast<int>(Mode::SCALAR),
                 { { "element_type", 2 }, { "scalar_range", invalid } });
-            CHECK(item.scalarRangeState(7, "f_scalar_1", 2) == saved);
+            CHECK(active_attribute == "f_scalar_1");
             CHECK(notifications == 0);
         }
     }
-    // 省略范围沿用已存参数；可转换数字、相等端点和超出原始值域仍合法。
-    item.setAttriMode(7, "f_scalar_1", static_cast<int>(Mode::SCALAR), { { "element_type", 2 } });
-    CHECK(item.scalarRangeState(7, "f_scalar_1", 2) == saved);
-    for (const auto& limits : { QVariantList { QString("-2.5"), QString("3.5") }, QVariantList { 0.0, 0.0 } }) {
-        item.setAttriMode(7, "f_scalar_1", static_cast<int>(Mode::SCALAR),
-            { { "element_type", 2 }, { "scalar_range", limits } });
-        const auto state = item.scalarRangeState(7, "f_scalar_1", 2);
-        CHECK(state.value("mappingLower").toDouble() == limits[0].toDouble());
-        CHECK(state.value("mappingUpper").toDouble() == limits[1].toDouble());
-        CHECK(state.value("displayLower") == state.value("mappingLower"));
-        CHECK(state.value("displayUpper") == state.value("mappingUpper"));
-    }
+    CHECK_FALSE(item.applyScalarConfig(7, "missing", 2, { }));
+    CHECK_FALSE(item.applyScalarConfig(7, "f_normal_3", 2, { { "display", QVariantList { 0.0, 1.0 } } }));
+    CHECK_FALSE(item.applyScalarConfig(7, "f_scalar_1", 2, { { "display", QVariantList { 2.0, 1.0 } } }));
+    item.setAttriMode(7, "f_scalar_1", static_cast<int>(Mode::SCALAR), { { "scalar_range", QVariant() } });
+    CHECK(notifications == 0);
+    CHECK(item.scalarRangeInfo(7, "f_scalar_1", 2) == original);
+    // 可选默认映射、多分量属性、相等端点及超出原始值域仍然合法。
+    REQUIRE(item.applyScalarConfig(7, "f_normal_3", 2, { { "mapping", QVariant() }, { "display", QVariant() } }));
+    CHECK(active_attribute == "f_normal_3");
+    REQUIRE(item.applyScalarConfig(7, "f_scalar_1", 2, { { "mapping", QVariantList { QString("-2.5"), QString("3.5") } } }));
+    REQUIRE(item.applyScalarConfig(7, "f_scalar_1", 2, { { "mapping", QVariantList { 0.0, 0.0 } } }));
+    item.cancelComponentAttri(7);
+    CHECK(active_attribute.isEmpty());
+    CHECK(item.scalarRangeInfo(7, "f_scalar_1", 2) == original);
 }
 
 TEST_CASE("QRenderWindow keeps overlay logical sizes across DPR and VTK DPI changes")
