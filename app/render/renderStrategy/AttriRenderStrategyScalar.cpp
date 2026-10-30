@@ -59,6 +59,14 @@ void AttriRenderStrategyScalar::render(
     const std::string& attr_name,
     std::map<std::string, std::any> args)
 {
+    // GUI 已统一实体域类型；直接调用策略时也拒绝错误参数，保留原有着色。
+    const auto domain = args.find("element_type");
+    const auto* typed_domain = domain == args.end() ? nullptr : std::any_cast<int>(&domain->second);
+    if (domain != args.end() && (!typed_domain || *typed_domain < -1 || *typed_domain > 3)) {
+        spdlog::warn("属性实体类型必须为 -1 到 3 的 int");
+        return;
+    }
+    const int element_type = typed_domain ? *typed_domain : -1;
     this->cancelActiveAttribute(op);
     // 提取scalar_range参数
     std::vector<double> scalar_range;
@@ -79,8 +87,6 @@ void AttriRenderStrategyScalar::render(
         }
     };
     // 显式实体域优先，防止不同域的同名属性读取到另一份数组。
-    const auto domain = args.find("element_type");
-    const int element_type = domain == args.end() ? -1 : std::any_cast<int>(domain->second);
     vtkDataArray* array = element_type < 0 || element_type == 0 ? op.getFacePointData()->GetArray(attr_name.c_str()) : nullptr;
     if (array) {
         double range[2];

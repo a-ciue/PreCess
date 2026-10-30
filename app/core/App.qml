@@ -16,7 +16,12 @@ QtObject {
 
     property var activeOperation: null
     property bool importDragActive: false
-    property var registry: ({})
+    // 注册表对象保持稳定，各控件引用通过属性变更通知各自的绑定。
+    readonly property QtObject registry: QtObject {
+        property var renderWindow: null
+        property var treeModel: null
+        property var objectTree: null
+    }
 
     signal modelVisibilityUpdated(int modelId, bool visible)
     signal componentVisibilityUpdated(int componentId, bool meshVisible, bool geometryVisible)

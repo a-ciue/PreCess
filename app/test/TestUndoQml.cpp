@@ -20,7 +20,6 @@
 #include <QQmlComponent>
 #include <QQmlContext>
 #include <QQmlEngine>
-#include <QQmlExpression>
 #include <QQmlExtensionPlugin>
 #include <QQuickVTKItem.h>
 #include <QQuickWindow>

@@ -111,6 +111,20 @@ MeshData makeAttributeMesh()
 
 } // namespace
 
+TEST_CASE("Scalar range rejects invalid strategy domains without clearing active coloring", "[scalar-range]")
+{
+    FaceHidingEnv env(makeAttributeMesh());
+    AttributeOperator op(env.actor.get());
+    AttriRenderStrategyScalar strategy;
+    strategy.render(op, "f_isolation_scalar_1", { { "element_type", 2 } });
+    REQUIRE(op.getFaceCellData()->GetScalars());
+    for (const auto& invalid : { std::any(2.0), std::any(2LL), std::any(std::string("2")), std::any(4) }) {
+        CHECK_NOTHROW(strategy.render(op, "f_isolation_scalar_1", { { "element_type", invalid } }));
+        CHECK(op.getFaceCellData()->GetScalars());
+        CHECK(op.getFaceMapper()->GetScalarVisibility());
+    }
+}
+
 TEST_CASE("FaceHideFilter preserves global cell attributes across mixed cell categories")
 {
     vtkNew<vtkPolyData> input;
@@ -238,6 +252,8 @@ TEST_CASE("MeshPipelineData preserves original typed IDs and published snapshots
     const auto original_snapshot = data.createSnapshot();
     REQUIRE(original_snapshot->visible_faces != nullptr);
     REQUIRE(original_snapshot->original_solids != nullptr);
+    REQUIRE(original_snapshot->visible_solid_ids != nullptr);
+    CHECK(original_snapshot->visible_solid_ids->GetNumberOfValues() == original_snapshot->original_solids->GetNumberOfCells());
     const auto original_ids = faceIdValues(original_snapshot->visible_faces);
     REQUIRE(original_ids.size() > 2);
 

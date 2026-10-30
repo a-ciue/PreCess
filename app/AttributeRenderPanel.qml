@@ -133,7 +133,7 @@ Item {
             if (!rangeMaxField.activeFocus)
                 updateRangeField(rangeMaxField, upper);
         }
-        if (!rangeSlider.first.pressed && !rangeSlider.second.pressed) {
+        if (!rangeSlider.first.pressed && !rangeSlider.second.pressed && !rangePan.dragging) {
             sliderMinimum = Math.min(scalarState.minimum, lower);
             sliderMaximum = Math.max(scalarState.maximum, upper);
             // 常量属性也需要可用的滑条跨度，但原始值域和重置数值保持不变。
@@ -561,6 +561,63 @@ Item {
                             root.flushPendingRange();
                             root.refreshScalarState();
                         }
+                    }
+
+                    // 区间内部在按下时接管鼠标，避免控件把最近端点跳到点击位置。
+                    MouseArea {
+                        id: rangePan
+                        anchors.fill: parent
+                        acceptedButtons: Qt.LeftButton
+                        preventStealing: true
+                        cursorShape: Qt.SizeHorCursor
+                        // 保存按下位置与原区间，以统一偏移量移动两端，避免累计误差。
+                        property bool dragging: false
+                        property real pressX: 0
+                        property real lower: 0
+                        property real upper: 0
+
+                        // 结束平移后立即提交最后位置，再恢复滑条坐标范围的自动更新。
+                        function finishDrag() {
+                            if (!dragging)
+                                return;
+                            root.flushPendingRange();
+                            dragging = false;
+                            root.refreshScalarState();
+                        }
+
+                        onPressed: function (mouse) {
+                            let first = rangeSlider.first.handle;
+                            let second = rangeSlider.second.handle;
+                            let left = Math.min(first.x + first.width, second.x + second.width);
+                            let right = Math.max(first.x, second.x);
+                            if (mouse.x <= left || mouse.x >= right) {
+                                mouse.accepted = false;
+                                return;
+                            }
+                            if (!root.commitRangeFields())
+                                return;
+                            root.refreshScalarState();
+                            pressX = mouse.x;
+                            lower = rangeSlider.first.value;
+                            upper = rangeSlider.second.value;
+                            dragging = true;
+                        }
+                        onPositionChanged: function (mouse) {
+                            if (!dragging)
+                                return;
+                            let width = rangeSlider.availableWidth - Math.max(rangeSlider.first.handle.width, rangeSlider.second.handle.width);
+                            if (width <= 0)
+                                return;
+                            let offset = (mouse.x - pressX) / width * (rangeSlider.to - rangeSlider.from) * (rangeSlider.mirrored ? -1 : 1);
+                            // 两端一起夹到轨道边界，保持原区间宽度。
+                            offset = Math.max(rangeSlider.from - lower, Math.min(rangeSlider.to - upper, offset));
+                            if (rangeSlider.first.value === lower + offset && rangeSlider.second.value === upper + offset)
+                                return;
+                            rangeSlider.setValues(lower + offset, upper + offset);
+                            root.queueRange(rangeSlider.first.value, rangeSlider.second.value);
+                        }
+                        onReleased: finishDrag()
+                        onCanceled: finishDrag()
                     }
                 }
 
