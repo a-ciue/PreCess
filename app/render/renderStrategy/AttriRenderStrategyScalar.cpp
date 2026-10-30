@@ -7,6 +7,7 @@
 #include <vtkScalarBarActor.h>
 #include <vtkScalarsToColors.h>
 #include <spdlog/spdlog.h>
+#include <cmath>
 
 namespace {
 // 移除属性类型前缀和分量后缀，只用于颜色表标题显示。
@@ -79,18 +80,24 @@ void AttriRenderStrategyScalar::render(
     }
 
     auto resolveRange = [&scalar_range](vtkDataArray* array, double range[2]) {
+        // 不可用结果以 NaN 保留单元位置；全不可用时只着 NaN 色，不生成虚假色标。
+        array->GetFiniteRange(range);
+        if (!std::isfinite(range[0]) || !std::isfinite(range[1]) || range[0] > range[1]) {
+            range[0] = 0.0;
+            range[1] = 1.0;
+            return false;
+        }
         if (scalar_range.size() == 2) {
             range[0] = scalar_range[0];
             range[1] = scalar_range[1];
-        } else {
-            array->GetRange(range);
         }
+        return true;
     };
     // 显式实体域优先，防止不同域的同名属性读取到另一份数组。
     vtkDataArray* array = element_type < 0 || element_type == 0 ? op.getFacePointData()->GetArray(attr_name.c_str()) : nullptr;
     if (array) {
         double range[2];
-        resolveRange(array, range);
+        const bool has_range = resolveRange(array, range);
 
         op.getFacePointData()->SetActiveScalars(attr_name.c_str());
         op.getSolidPointData()->SetActiveScalars(attr_name.c_str());
@@ -106,7 +113,8 @@ void AttriRenderStrategyScalar::render(
         solid_mapper->SetScalarVisibility(1);
         solid_mapper->SetScalarRange(range[0], range[1]);
         solid_mapper->SetColorModeToMapScalars();
-        showScalarBar(face_mapper, attr_name, range);
+        if (has_range)
+            showScalarBar(face_mapper, attr_name, range);
         solid_mapper->SetLookupTable(face_mapper->GetLookupTable());
         return;
     }
@@ -114,7 +122,7 @@ void AttriRenderStrategyScalar::render(
     array = element_type < 0 || element_type == 1 ? op.getEdgeCellData()->GetArray(attr_name.c_str()) : nullptr;
     if (array) {
         double range[2];
-        resolveRange(array, range);
+        const bool has_range = resolveRange(array, range);
 
         op.getEdgeCellData()->SetActiveScalars(attr_name.c_str());
         vtkPolyDataMapper* edge_mapper = op.getEdgeMapper();
@@ -122,7 +130,8 @@ void AttriRenderStrategyScalar::render(
         edge_mapper->SetScalarModeToUseCellData();
         edge_mapper->SetScalarVisibility(1);
         edge_mapper->SetColorModeToMapScalars();
-        showScalarBar(edge_mapper, attr_name, range);
+        if (has_range)
+            showScalarBar(edge_mapper, attr_name, range);
         return;
     }
     // 判断是否是面属性
@@ -130,7 +139,7 @@ void AttriRenderStrategyScalar::render(
     if (array) {
         op.enableFaceAttributeOffset();
         double range[2];
-        resolveRange(array, range);
+        const bool has_range = resolveRange(array, range);
 
         op.getFaceCellData()->SetActiveScalars(attr_name.c_str());
         vtkPolyDataMapper* face_mapper = op.getFaceMapper();
@@ -138,7 +147,8 @@ void AttriRenderStrategyScalar::render(
         face_mapper->SetScalarModeToUseCellData();
         face_mapper->SetScalarVisibility(1);
         face_mapper->SetColorModeToMapScalars(); // 使用 colormap
-        showScalarBar(face_mapper, attr_name, range);
+        if (has_range)
+            showScalarBar(face_mapper, attr_name, range);
         return;
     }
     // 判断是否是体属性
@@ -146,7 +156,7 @@ void AttriRenderStrategyScalar::render(
     if (array) {
         op.disableFaceAttributeOffset();
         double range[2];
-        resolveRange(array, range);
+        const bool has_range = resolveRange(array, range);
 
         op.getSolidCellData()->SetActiveScalars(attr_name.c_str());
         vtkPolyDataMapper* solid_mapper = op.getSolidMapper();
@@ -154,7 +164,8 @@ void AttriRenderStrategyScalar::render(
         solid_mapper->SetScalarModeToUseCellData();
         solid_mapper->SetScalarVisibility(1);
         solid_mapper->SetColorModeToMapScalars();
-        showScalarBar(solid_mapper, attr_name, range);
+        if (has_range)
+            showScalarBar(solid_mapper, attr_name, range);
         return;
     }
 

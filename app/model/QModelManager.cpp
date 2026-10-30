@@ -99,14 +99,23 @@ QModelManager::QModelManager(std::string_view argv0, QObject* parent)
 
 QModelManager::~QModelManager()
 {
-    // 0) 先停全局单槽执行器：等待在飞任务自然结束、拒收新任务——此后任何回调不再触发，
-    //    适配器/会话随后析构均无并发回调悬垂问题
+    // QML 引擎可能正在清理单例；停任务、退出功能和回滚预览仍需完成，
+    // 但不能再向界面发信号，否则会重入已在销毁的 QML 单例。
+    const QObjectList publishers {
+        this, observer_.get(), undo_adaptor_.get(), task_status_.get(), feature_adaptor_.get()
+    };
+    for (auto* publisher : publishers)
+        publisher->blockSignals(true);
+    param_bridge_sub_.reset();
+    scalar_attribute_display_bridge_sub_.reset();
+
+    // 先停全局单槽执行器，等待工作线程结束，再拆解回调依赖的适配器与会话。
     session_->stopJobs();
     // 先关 Python 运行时（丢弃 precess.current 活会话引用并终结解释器）：
     // Python 侧以引用策略持有活会话，会话先析构会在终结前留下悬垂
     python_runtime_.reset();
-    // 显式再拆会话（停功能系统、断 undo 钩子）：此刻 Qt 适配器均存活，
-    // 层清理路径经 on_changed_ 回调 undo_adaptor_ 发信号安全；其余成员按声明逆序析构
+    // 显式再拆会话（停功能系统、断 undo 钩子）：适配器保持存活以接收内部清理回调，
+    // 对外信号已屏蔽；其余成员按声明逆序析构。
     session_.reset();
 }
 
