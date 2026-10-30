@@ -558,40 +558,31 @@ namespace {
         }
     }
 
-    /** @brief 写入可复用的自有属性，已有同名属性使用新名字避让且不纳入退出清理。 */
-    std::string writeQualityAttribute(std::map<std::string, std::vector<double>>& attributes,
-        std::vector<std::string>& generated_names, const std::string& base_name, const std::vector<double>& values)
+    /** @brief 有有效值时写入自有质量属性，否则只清理该指标的旧自有结果；用户同名属性继续避让。 */
+    std::string updateQualityAttribute(std::map<std::string, std::vector<double>>& attributes,
+        std::vector<std::string>& generated_names, const std::string& base_name, const std::optional<QualityResult>& result)
     {
+        if (!result || result->valid_count == 0) {
+            // 只遍历本次生成的名称；其他指标和用户同名属性不参与清理。
+            const std::string prefix = base_name + "_";
+            generated_names.erase(std::remove_if(generated_names.begin(), generated_names.end(), [&](const auto& name) {
+                if (name.rfind(prefix, 0) != 0)
+                    return false;
+                attributes.erase(name);
+                return true;
+            }),
+                generated_names.end());
+            return { };
+        }
         std::string name = base_name + "_1";
         std::size_t suffix = 2;
         while (attributes.contains(name)
             && std::find(generated_names.begin(), generated_names.end(), name) == generated_names.end())
             name = base_name + "_" + std::to_string(suffix++) + "_1";
-        attributes[name] = values;
+        attributes[name] = result->values;
         if (std::find(generated_names.begin(), generated_names.end(), name) == generated_names.end())
             generated_names.push_back(name);
         return name;
-    }
-
-    /** @brief 将识别记录作为与原单元一一对应的属性保存，使用相同的名称避让及退出清理规则。 */
-    void writeRecognitionAttributes(MeshData& mesh, std::vector<std::string>& generated_names,
-        std::span<const SolidCellRecord> records)
-    {
-        std::vector<double> source_ids, source_types, evaluated_types, states;
-        source_ids.reserve(records.size());
-        source_types.reserve(records.size());
-        evaluated_types.reserve(records.size());
-        states.reserve(records.size());
-        for (const auto& record : records) {
-            source_ids.push_back(record.source_cell_id);
-            source_types.push_back(record.source_type);
-            evaluated_types.push_back(record.evaluated_type);
-            states.push_back(static_cast<int>(record.recognition));
-        }
-        writeQualityAttribute(mesh.solid_attributes_, generated_names, "s_mesh_quality_recognition_source_id", source_ids);
-        writeQualityAttribute(mesh.solid_attributes_, generated_names, "s_mesh_quality_recognition_source_type", source_types);
-        writeQualityAttribute(mesh.solid_attributes_, generated_names, "s_mesh_quality_recognition_evaluated_type", evaluated_types);
-        writeQualityAttribute(mesh.solid_attributes_, generated_names, "s_mesh_quality_recognition_status", states);
     }
 
 }
@@ -608,7 +599,7 @@ void MeshQualityHandler::setup(FeatureRegistrar& reg, FeatureContext&)
         ArgTypeEnum::Combo,
         "质量指标",
         "Scaled Jacobian,Equiangle Skew,Edge Ratio,最小角,最大角,Warpage,Tet Collapse|0",
-        "自动识别折叠单元，保留原编号和识别记录。不可用值记为 NaN，不参与统计。Warpage 平面为 1；Tet Collapse 为有向高/对面最长边（正四面体为 sqrt(2/3)）",
+        "自动识别折叠单元并保留原编号。仅生成含有效值的质量属性，不可用单元以 NaN 占位且不参与统计。Warpage 平面为 1；Tet Collapse 仅支持四面体，为有向高/对面最长边（正四面体为 sqrt(2/3)）",
     });
     reg.navigation().addEntry({ "MeshQuality", "网格质量", "qrc:/images/toolbar/Function/grid_quality.svg", 0, "功能/网格" });
 }
@@ -672,6 +663,33 @@ std::any MeshQualityHandler::execute(FeatureContext& ctx)
         }
     }
 
+    const bool has_valid_result = (face_result && face_result->valid_count > 0)
+        || (solid_result && solid_result->valid_count > 0);
+    const std::string attribute_key = metricKey(metric);
+    const std::string face_base = "f_" + attribute_key;
+    const std::string solid_base = "s_" + attribute_key;
+    const auto generated_it = generated_attributes_.find(component_id);
+    // 全不可用时不创建可写入口；仅在确有本指标旧自有结果时进入清理。
+    const bool has_previous_result = generated_it != generated_attributes_.end()
+        && (std::any_of(generated_it->second.face_names.begin(), generated_it->second.face_names.end(),
+                [&](const auto& name) { return name.rfind(face_base + "_", 0) == 0; })
+            || std::any_of(generated_it->second.solid_names.begin(), generated_it->second.solid_names.end(),
+                [&](const auto& name) { return name.rfind(solid_base + "_", 0) == 0; }));
+    if (has_valid_result || has_previous_result) {
+        MeshData& editable_mesh = component->editableMesh(MeshEditKind::NonTopology);
+        GeneratedAttributes& generated = generated_attributes_[component_id];
+        const auto face_attribute = updateQualityAttribute(editable_mesh.face_attributes_, generated.face_names,
+            face_base, face_result);
+        const auto solid_attribute = updateQualityAttribute(editable_mesh.solid_attributes_, generated.solid_names,
+            solid_base, solid_result);
+        // 面、体分别判断有效性；只有实际写入结果时才请求着色，同时有效仍优先显示体。
+        const auto& display_attribute = solid_attribute.empty() ? face_attribute : solid_attribute;
+        if (!display_attribute.empty())
+            ctx.events.bus().publish(ScalarAttributeDisplayRequestedEvent { display_attribute, component_id });
+        if (generated.face_names.empty() && generated.solid_names.empty())
+            generated_attributes_.erase(component_id);
+    }
+
     if (!face_result && !solid_result) {
         std::ostringstream error;
         error << metricDisplayName(metric) << " 没有可计算的单元";
@@ -684,27 +702,10 @@ std::any MeshQualityHandler::execute(FeatureContext& ctx)
         return error.str();
     }
 
-    const std::string attribute_key = metricKey(metric);
-    // 只写属性不动拓扑：NonTopology 标脏（邻接懒表不失效），通知由操作边界 flush 统一发出。
-    MeshData& editable_mesh = component->editableMesh(MeshEditKind::NonTopology);
-    std::string display_attribute;
-    GeneratedAttributes& generated = generated_attributes_[component_id];
-    if (face_result) {
-        display_attribute = writeQualityAttribute(editable_mesh.face_attributes_, generated.face_names,
-            "f_" + attribute_key, face_result->values);
-    }
-    // 面、体质量同时生成时默认显示体属性，面属性仍保留供用户手动选择。
-    if (solid_result) {
-        writeRecognitionAttributes(editable_mesh, generated.solid_names, solid_records);
-        display_attribute = writeQualityAttribute(editable_mesh.solid_attributes_, generated.solid_names,
-            "s_" + attribute_key, solid_result->values);
-    }
-
-    // Qt 桥接延迟发送显示信号，保证操作边界 flush 后再应用标量渲染。
-    ctx.events.bus().publish(ScalarAttributeDisplayRequestedEvent { display_attribute, component_id });
-
     std::ostringstream output;
     output << std::setprecision(6) << metricDisplayName(metric) << '\n';
+    if (!has_valid_result)
+        output << "没有可计算的单元，未生成质量属性\n";
     if (face_result) {
         appendStatistics(output, "面单元", *face_result);
     } else if (!face_error.empty()) {

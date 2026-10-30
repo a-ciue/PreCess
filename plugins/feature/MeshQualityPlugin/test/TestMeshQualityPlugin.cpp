@@ -7,6 +7,7 @@
 #include "MeshQualityHandler.h"
 #include "ModelLayer.h"
 #include "Selection.h"
+#include "SessionQuery.h"
 #include "SolidCellRecognition.h"
 
 #include <catch2/catch_approx.hpp>
@@ -18,6 +19,7 @@
 #include <vtkMeshQuality.h>
 #include <vtkNew.h>
 
+#include <algorithm>
 #include <any>
 #include <array>
 #include <cmath>
@@ -312,8 +314,6 @@ TEST_CASE("MeshQuality isolates unavailable values and preserves cell indices", 
         CHECK(output.find("e+30") == std::string::npos);
     }
     for (const auto& [name, values] : fixture.mesh().solid_attributes_) {
-        if (name.find("recognition_") != std::string::npos)
-            continue;
         INFO(name);
         REQUIRE(values.size() == 2);
         CHECK(std::isfinite(values[0]));
@@ -339,8 +339,7 @@ TEST_CASE("MeshQuality reports entirely unavailable cells without normal statist
     CHECK(output.find("有效 0") != std::string::npos);
     CHECK(output.find("不可用 1") != std::string::npos);
     CHECK(output.find("平均值") == std::string::npos);
-    REQUIRE(fixture.mesh().solid_attributes_.at("s_mesh_quality_scaled_jacobian_1").size() == 1);
-    CHECK(std::isnan(fixture.mesh().solid_attributes_.at("s_mesh_quality_scaled_jacobian_1")[0]));
+    CHECK(fixture.mesh().solid_attributes_.empty());
 }
 
 TEST_CASE("MeshQuality preserves double precision under large coordinate translations", "[MeshQualityPlugin]")
@@ -366,7 +365,7 @@ TEST_CASE("MeshQuality excludes finite Verdict sentinels without repeated vertic
     QualityFixture fixture(std::move(mesh));
     const auto output = fixture.execute(kScaledJacobian);
     CHECK(output.find("不可用 1") != std::string::npos);
-    CHECK(std::isnan(fixture.mesh().solid_attributes_.at("s_mesh_quality_scaled_jacobian_1")[0]));
+    CHECK(fixture.mesh().solid_attributes_.empty());
 }
 
 TEST_CASE("MeshQuality collapse ratio uses each opposite face longest edge", "[MeshQualityPlugin]")
@@ -398,7 +397,7 @@ TEST_CASE("MeshQuality preserves preexisting attributes and reuses its own names
     CHECK(fixture.mesh().face_attributes_.at("f_mesh_quality_scaled_jacobian_1")[0] == 42.0);
     CHECK(fixture.mesh().solid_attributes_.at("s_mesh_quality_scaled_jacobian_1")[0] == 43.0);
     CHECK(fixture.mesh().face_attributes_.size() == 2);
-    CHECK(fixture.mesh().solid_attributes_.size() == 6);
+    CHECK(fixture.mesh().solid_attributes_.size() == 2);
     REQUIRE(fixture.feature_system.setFeatureActive(""));
     CHECK(fixture.mesh().face_attributes_.size() == 1);
     CHECK(fixture.mesh().solid_attributes_.size() == 1);
@@ -475,19 +474,14 @@ TEST_CASE("MeshQuality covers supported linear cell and metric combinations", "[
         : metric <= kEdgeRatio     ? metric != kEdgeRatio || cell_type != VTK_PYRAMID
                                    : metric == kTetCollapse && cell_type == VTK_TETRA;
     const auto& attributes = is_face ? fixture.mesh().face_attributes_ : fixture.mesh().solid_attributes_;
-    if (!supported && (is_face || metric == kMinAngle || metric == kMaxAngle || metric == kWarpage)) {
+    if (!supported) {
         CHECK(output.find("没有可计算的单元") != std::string::npos);
         CHECK(attributes.empty());
         return;
     }
-    REQUIRE(attributes.size() == (is_face ? 1 : 5));
+    REQUIRE(attributes.size() == 1);
     const auto& values = attributes.at(std::string(is_face ? "f_" : "s_") + "mesh_quality_" + std::string(kMetricKeys[metric]) + "_1");
     REQUIRE(values.size() == 1);
-    if (!supported) {
-        CHECK(std::isnan(values[0]));
-        CHECK(output.find("指标不支持 1") != std::string::npos);
-        return;
-    }
     double expected = 1.0;
     if (metric == kEquiangleSkew)
         expected = 0.0;
@@ -599,17 +593,14 @@ TEST_CASE("MeshQuality evaluates folded cells as their actual standard types", "
     const auto output = folded.execute(metric);
     native.execute(metric);
     const std::string key = "s_mesh_quality_" + std::string(kMetricKeys[metric]) + "_1";
-    const double expected = native.mesh().solid_attributes_.at(key)[0];
-    const double actual = folded.mesh().solid_attributes_.at(key)[0];
-    if (std::isfinite(expected))
-        CHECK(actual == Catch::Approx(expected).margin(1e-12));
-    else
-        CHECK(std::isnan(actual));
+    if (native.mesh().solid_attributes_.empty()) {
+        CHECK(folded.mesh().solid_attributes_.empty());
+    } else {
+        REQUIRE(folded.mesh().solid_attributes_.size() == 1);
+        CHECK(folded.mesh().solid_attributes_.at(key)[0]
+            == Catch::Approx(native.mesh().solid_attributes_.at(key)[0]).margin(1e-12));
+    }
     CHECK(output.find("折叠转换 1") != std::string::npos);
-    CHECK(folded.mesh().solid_attributes_.at("s_mesh_quality_recognition_source_id_1") == std::vector<double> { 0 });
-    CHECK(folded.mesh().solid_attributes_.at("s_mesh_quality_recognition_source_type_1") == std::vector<double> { VTK_HEXAHEDRON });
-    CHECK(folded.mesh().solid_attributes_.at("s_mesh_quality_recognition_evaluated_type_1") == std::vector<double> { static_cast<double>(type) });
-    CHECK(folded.mesh().solid_attributes_.at("s_mesh_quality_recognition_status_1") == std::vector<double> { 1 });
     CHECK(folded.mesh().solid_vertices_ == original_vertices);
     CHECK(folded.mesh().solid_types_ == original_types);
     CHECK(folded.mesh().solid_vertices_offset_ == original_offsets);
@@ -625,6 +616,9 @@ TEST_CASE("MeshQuality preserves original IDs across recognized and unavailable 
     mesh->solid_vertices_.insert(mesh->solid_vertices_.end(), { 0, 1, 0, 1, 2, 3, 2, 3 });
     mesh->solid_vertices_.insert(mesh->solid_vertices_.end(), tetra->solid_vertices_.begin(), tetra->solid_vertices_.end());
     mesh->solid_vertices_offset_ = { 0, 8, 16, 24 };
+    const auto original_ids = mesh->solid_vertices_;
+    const auto original_types = mesh->solid_types_;
+    const auto original_offsets = mesh->solid_vertices_offset_;
     QualityFixture fixture(std::move(mesh));
     const auto output = fixture.execute(kEdgeRatio);
     const auto& values = fixture.mesh().solid_attributes_.at("s_mesh_quality_edge_ratio_1");
@@ -634,9 +628,10 @@ TEST_CASE("MeshQuality preserves original IDs across recognized and unavailable 
     CHECK(std::isfinite(values[2]));
     CHECK(output.find("类型未识别 1") != std::string::npos);
     CHECK(output.find("指标不支持 1") != std::string::npos);
-    CHECK(fixture.mesh().solid_attributes_.at("s_mesh_quality_recognition_source_id_1") == std::vector<double> { 0, 1, 2 });
-    CHECK(fixture.mesh().solid_attributes_.at("s_mesh_quality_recognition_evaluated_type_1") == std::vector<double> { VTK_PYRAMID, 0, VTK_TETRA });
-    CHECK(fixture.mesh().solid_attributes_.at("s_mesh_quality_recognition_status_1") == std::vector<double> { 1, 2, 1 });
+    CHECK(fixture.mesh().solid_attributes_.size() == 1);
+    CHECK(fixture.mesh().solid_vertices_ == original_ids);
+    CHECK(fixture.mesh().solid_types_ == original_types);
+    CHECK(fixture.mesh().solid_vertices_offset_ == original_offsets);
 }
 
 TEST_CASE("MeshQuality keeps inverted and flat folded tetrahedra signed", "[MeshQualityPlugin]")
@@ -659,7 +654,7 @@ TEST_CASE("MeshQuality keeps inverted and flat folded tetrahedra signed", "[Mesh
     }
 }
 
-TEST_CASE("MeshQuality recognition records reuse names and preserve imported records on cleanup", "[MeshQualityPlugin]")
+TEST_CASE("MeshQuality preserves imported diagnostic attributes without creating new ones", "[MeshQualityPlugin]")
 {
     auto mesh = makeCollapsedMesh(VTK_WEDGE, true);
     mesh->solid_attributes_["s_mesh_quality_recognition_status_1"] = { 99 };
@@ -667,9 +662,9 @@ TEST_CASE("MeshQuality recognition records reuse names and preserve imported rec
     REQUIRE(fixture.feature_system.setFeatureActive("MeshQuality"));
     fixture.execute(kScaledJacobian);
     fixture.execute(kEquiangleSkew);
-    CHECK(fixture.mesh().solid_attributes_.size() == 7);
+    CHECK(fixture.mesh().solid_attributes_.size() == 3);
     CHECK(fixture.mesh().solid_attributes_.at("s_mesh_quality_recognition_status_1")[0] == 99);
-    CHECK(fixture.mesh().solid_attributes_.at("s_mesh_quality_recognition_status_2_1")[0] == 1);
+    CHECK_FALSE(fixture.mesh().solid_attributes_.contains("s_mesh_quality_recognition_status_2_1"));
     REQUIRE(fixture.feature_system.setFeatureActive(""));
     REQUIRE(fixture.mesh().solid_attributes_.size() == 1);
     CHECK(fixture.mesh().solid_attributes_.at("s_mesh_quality_recognition_status_1")[0] == 99);
@@ -707,7 +702,10 @@ TEST_CASE("MeshQuality reuses folded patterns without sharing node IDs or geomet
         mesh->solid_vertices_offset_.push_back(static_cast<Index>(mesh->solid_vertices_.size()));
         QualityFixture reference(std::move(native));
         reference.execute(metric);
-        expected_values.push_back(reference.mesh().solid_attributes_.at(key)[0]);
+        const auto value = reference.mesh().solid_attributes_.find(key);
+        expected_values.push_back(value == reference.mesh().solid_attributes_.end()
+                ? std::numeric_limits<double>::quiet_NaN()
+                : value->second[0]);
     }
     // 未识别模式也复用识别结论，但不能影响后续结果槽位和诊断编号。
     for (Index copy = 0; copy < 2; ++copy) {
@@ -720,23 +718,125 @@ TEST_CASE("MeshQuality reuses folded patterns without sharing node IDs or geomet
     const auto original_positions = mesh->vertex_positions_;
     QualityFixture fixture(std::move(mesh));
     const auto output = fixture.execute(metric);
-    const auto& values = fixture.mesh().solid_attributes_.at(key);
-    REQUIRE(values.size() == expected_values.size());
-    const auto& source_ids = fixture.mesh().solid_attributes_.at("s_mesh_quality_recognition_source_id_1");
-    const auto& evaluated_types = fixture.mesh().solid_attributes_.at("s_mesh_quality_recognition_evaluated_type_1");
-    const auto& states = fixture.mesh().solid_attributes_.at("s_mesh_quality_recognition_status_1");
-    for (std::size_t i = 0; i < values.size(); ++i) {
-        INFO("cell=" << i);
-        if (std::isfinite(expected_values[i]))
-            CHECK(values[i] == Catch::Approx(expected_values[i]).margin(1e-12));
-        else
-            CHECK(std::isnan(values[i]));
-        CHECK(source_ids[i] == i);
-        CHECK(evaluated_types[i] == (i < copy_count ? type : VTK_EMPTY_CELL));
-        CHECK(states[i] == (i < copy_count ? 1 : 2));
+    if (std::any_of(expected_values.begin(), expected_values.end(), [](double value) { return std::isfinite(value); })) {
+        REQUIRE(fixture.mesh().solid_attributes_.size() == 1);
+        const auto& values = fixture.mesh().solid_attributes_.at(key);
+        REQUIRE(values.size() == expected_values.size());
+        for (std::size_t i = 0; i < values.size(); ++i) {
+            INFO("cell=" << i);
+            if (std::isfinite(expected_values[i]))
+                CHECK(values[i] == Catch::Approx(expected_values[i]).margin(1e-12));
+            else
+                CHECK(std::isnan(values[i]));
+        }
+    } else {
+        CHECK(fixture.mesh().solid_attributes_.empty());
     }
     CHECK(output.find("折叠转换 24") != std::string::npos);
     CHECK(output.find("类型未识别 2") != std::string::npos);
     CHECK(fixture.mesh().solid_vertices_ == original_ids);
     CHECK(fixture.mesh().vertex_positions_ == original_positions);
+}
+
+TEST_CASE("MeshQuality exposes only a usable selected metric", "[MeshQualityPlugin][QualityOutput]")
+{
+    auto mesh = makeCollapsedMesh(VTK_TETRA, false);
+    bool usable = false;
+    SECTION("supported tetrahedron") { usable = true; }
+    SECTION("all numerical results unavailable") { mesh->vertex_positions_[0][0] = std::numeric_limits<double>::infinity(); }
+    SECTION("unsupported hexahedra") { mesh = makeHexMesh(); }
+    SECTION("unrecognized folded cell")
+    {
+        mesh = makeHexMesh();
+        mesh->solid_vertices_[2] = 1;
+    }
+    QualityFixture fixture(std::move(mesh));
+    std::vector<std::string> requests;
+    auto subscription = fixture.bus.subscribe<ScalarAttributeDisplayRequestedEvent>(
+        [&](const auto& event) { requests.push_back(event.attribute_name); });
+    const auto output = fixture.execute(kTetCollapse);
+    const auto infos = session::SessionQuery(fixture.model_layer).componentAttributeInfos(fixture.component_id);
+    if (usable) {
+        REQUIRE(fixture.mesh().solid_attributes_.size() == 1);
+        REQUIRE(infos.size() == 1);
+        CHECK(infos.front().name == "s_mesh_quality_tet_collapse_1");
+        CHECK(requests == std::vector<std::string> { "s_mesh_quality_tet_collapse_1" });
+    } else {
+        CHECK(fixture.mesh().solid_attributes_.empty());
+        CHECK(infos.empty());
+        CHECK(requests.empty());
+        CHECK(output.find("有效 0") != std::string::npos);
+        CHECK(output.find("未生成质量属性") != std::string::npos);
+    }
+}
+
+TEST_CASE("MeshQuality removes only stale owned results of the selected metric", "[MeshQualityPlugin][QualityOutput]")
+{
+    auto mesh = makeCollapsedMesh(VTK_TETRA, false);
+    mesh->solid_attributes_["s_mesh_quality_tet_collapse_1"] = { 99.0 };
+    QualityFixture fixture(std::move(mesh));
+    REQUIRE(fixture.feature_system.setFeatureActive("MeshQuality"));
+    fixture.execute(kScaledJacobian);
+    fixture.execute(kTetCollapse);
+    REQUIRE(fixture.mesh().solid_attributes_.contains("s_mesh_quality_tet_collapse_2_1"));
+    auto op = fixture.model_layer.getComponentOperator(fixture.component_id);
+    REQUIRE(op);
+    auto& editable = op->editableMesh(MeshEditKind::Topology);
+    SECTION("invalid coordinates") { editable.vertex_positions_[0][0] = std::numeric_limits<double>::infinity(); }
+    SECTION("unsupported cell type") { editable.solid_types_[0] = VTK_VOXEL; }
+    SECTION("invalid connectivity")
+    {
+        editable.solid_vertices_.pop_back();
+        editable.solid_vertices_offset_.back() = 3;
+    }
+    fixture.model_layer.flushNotifications();
+    std::vector<std::string> requests;
+    auto subscription = fixture.bus.subscribe<ScalarAttributeDisplayRequestedEvent>(
+        [&](const auto& event) { requests.push_back(event.attribute_name); });
+    fixture.execute(kTetCollapse);
+    CHECK_FALSE(fixture.mesh().solid_attributes_.contains("s_mesh_quality_tet_collapse_2_1"));
+    CHECK(fixture.mesh().solid_attributes_.at("s_mesh_quality_tet_collapse_1") == std::vector<double> { 99.0 });
+    CHECK(fixture.mesh().solid_attributes_.contains("s_mesh_quality_scaled_jacobian_1"));
+    CHECK(requests.empty());
+    REQUIRE(fixture.feature_system.setFeatureActive(""));
+    REQUIRE(fixture.mesh().solid_attributes_.size() == 1);
+    CHECK(fixture.mesh().solid_attributes_.at("s_mesh_quality_tet_collapse_1") == std::vector<double> { 99.0 });
+}
+
+TEST_CASE("MeshQuality displays usable faces when the solid metric is unavailable", "[MeshQualityPlugin][QualityOutput]")
+{
+    auto mesh = makeCollapsedMesh(VTK_PYRAMID, false);
+    mesh->face_vertices_ = { 0, 1, 2, 3 };
+    mesh->face_vertices_offset_ = { 0, 4 };
+    QualityFixture fixture(std::move(mesh));
+    std::vector<std::string> requests;
+    auto subscription = fixture.bus.subscribe<ScalarAttributeDisplayRequestedEvent>(
+        [&](const auto& event) { requests.push_back(event.attribute_name); });
+    const auto output = fixture.execute(kEdgeRatio);
+    REQUIRE(fixture.mesh().face_attributes_.size() == 1);
+    CHECK(fixture.mesh().solid_attributes_.empty());
+    CHECK(requests == std::vector<std::string> { "f_mesh_quality_edge_ratio_1" });
+    const auto infos = session::SessionQuery(fixture.model_layer).componentAttributeInfos(fixture.component_id);
+    REQUIRE(infos.size() == 1);
+    CHECK(infos.front().name == "f_mesh_quality_edge_ratio_1");
+    CHECK(output.find("指标不支持 1") != std::string::npos);
+}
+
+TEST_CASE("MeshQuality retains partial Tet Collapse slots including zero and negative values", "[MeshQualityPlugin][QualityOutput]")
+{
+    auto mesh = makeHexMesh();
+    mesh->solid_types_ = { VTK_TETRA, VTK_HEXAHEDRON, VTK_TETRA, VTK_TETRA };
+    mesh->solid_vertices_ = { 0, 1, 3, 4, 0, 1, 2, 3, 4, 5, 6, 7, 0, 1, 2, 3, 0, 3, 1, 4 };
+    mesh->solid_vertices_offset_ = { 0, 4, 12, 16, 20 };
+    QualityFixture fixture(std::move(mesh));
+    const auto output = fixture.execute(kTetCollapse);
+    REQUIRE(fixture.mesh().solid_attributes_.size() == 1);
+    const auto& values = fixture.mesh().solid_attributes_.at("s_mesh_quality_tet_collapse_1");
+    REQUIRE(values.size() == 4);
+    CHECK(values[0] > 0.0);
+    CHECK(std::isnan(values[1]));
+    CHECK(values[2] == 0.0);
+    CHECK(values[3] < 0.0);
+    CHECK(output.find("有效 3") != std::string::npos);
+    CHECK(output.find("不可用 1") != std::string::npos);
 }

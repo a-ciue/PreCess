@@ -23,10 +23,8 @@ enum class SolidCellRecognition {
  * @brief 一条原始体单元的识别记录；point_ids 为计算类型要求的组件局部节点顺序。
  *
  * source_cell_id 为原始零基体单元下标；识别不改变 MeshData 的类型、连通性或编号。
- * 功能执行后将 source_cell_id、source_type、evaluated_type、recognition 分别保存为
- * s_mesh_quality_recognition_source_id_1、s_mesh_quality_recognition_source_type_1、
- * s_mesh_quality_recognition_evaluated_type_1、s_mesh_quality_recognition_status_1 属性，
- * 生命周期与本次功能生成的质量属性相同。evaluated_type 为 0 表示没有可计算类型。
+ * 记录仅用于本次计算的临时网格构造与识别统计，不写入普通网格属性。
+ * evaluated_type 为 0 表示没有可计算类型。
  */
 struct SolidCellRecord {
     Index source_cell_id { -1 };
