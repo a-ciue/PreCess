@@ -991,6 +991,25 @@ void QRenderWindow::setAttriMode(
         *domain = static_cast<int>(value);
     }
     if (mode == static_cast<int>(Mode::SCALAR)) {
+        // 范围校验先于状态变更，单值与多分量旧接口共用规范化后的端点。
+        std::optional<std::array<double, 2>> mapping_limits;
+        if (auto argument = args.find("scalar_range"); argument != args.end()) {
+            const auto limits = argument->toList();
+            if (limits.size() != 2) {
+                spdlog::warn("标量映射范围必须包含两个端点");
+                return;
+            }
+            bool lower_ok = false;
+            bool upper_ok = false;
+            const double lower = limits[0].toDouble(&lower_ok);
+            const double upper = limits[1].toDouble(&upper_ok);
+            if (!lower_ok || !upper_ok || !std::isfinite(lower) || !std::isfinite(upper) || lower > upper) {
+                spdlog::warn("标量映射范围无效");
+                return;
+            }
+            mapping_limits = std::array<double, 2> { lower, upper };
+            *argument = QVariantList { lower, upper };
+        }
         // 面板传递明确实体域；保留控制台旧接口按实际数组查找的能力。
         int element_type = args.value("element_type", -1).toInt();
         ScalarRenderRange* range = nullptr;
@@ -1004,11 +1023,8 @@ void QRenderWindow::setAttriMode(
             }
         }
         if (range) {
-            const auto limits = args.value("scalar_range").toList();
-            if (!limits.empty() && (limits.size() != 2 || !range->setRange(false, limits[0].toDouble(), limits[1].toDouble()))) {
-                spdlog::warn("标量映射范围无效");
-                return;
-            }
+            if (mapping_limits)
+                range->setRange(false, (*mapping_limits)[0], (*mapping_limits)[1]);
             active_scalar_attributes_.insert_or_assign(component_id, ScalarKey { component_id, attr_name.toStdString(), element_type });
             applyScalarRange(component_id, attr_name, element_type, *range);
             emit scalarRangeChanged();

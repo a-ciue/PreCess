@@ -100,6 +100,13 @@ precess_test_link_libraries(TestMeshFaceHiding vtkPart TestDeps
 )
 vtk_module_autoinit(TARGETS TestMeshFaceHiding MODULES VTK::RenderingOpenGL2 VTK::InteractionStyle VTK::CommonColor VTK::RenderingCore VTK::RenderingUI VTK::FiltersGeometry VTK::FiltersExtraction)
 
+# 范围参数与管线回归不创建窗口，纳入常规 CTest。
+precess_add_test(TestScalarRenderRange TestScalarRenderRange.cpp)
+precess_test_link_libraries(TestScalarRenderRange vtkPart TestDeps
+    VTK::FiltersGeometry VTK::FiltersExtraction
+)
+vtk_module_autoinit(TARGETS TestScalarRenderRange MODULES VTK::FiltersGeometry VTK::FiltersExtraction)
+
 # TestSelectorHighlightDeselect（回归：取消最后一个选中后，partition 高亮必须清空而不是残留）
 precess_add_test(TestSelectorHighlightDeselect TestSelectorHighlightDeselect.cpp)
 precess_test_link_libraries(TestSelectorHighlightDeselect vtkPart TestDeps spdlog::spdlog
@@ -109,7 +116,7 @@ vtk_module_autoinit(TARGETS TestSelectorHighlightDeselect MODULES VTK::Interacti
 
 # QQuickVTKItem 场景图重建时先释放依赖旧 renderer 的交互服务。
 precess_add_test(TestRenderWindowLifecycle TestRenderWindowLifecycle.cpp)
-precess_test_link_libraries(TestRenderWindowLifecycle renderQml vtkPart modelQml
+precess_test_link_libraries(TestRenderWindowLifecycle renderQml vtkPart modelQml TestDeps
     VTK::GUISupportQtQuick VTK::RenderingOpenGL2 VTK::InteractionStyle
 )
 vtk_module_autoinit(TARGETS TestRenderWindowLifecycle MODULES

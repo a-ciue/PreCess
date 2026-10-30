@@ -2,6 +2,8 @@
  * @file TestRenderWindowLifecycle.cpp
  * @brief 视口场景图销毁与重建的资源生命周期回归测试
  */
+#include "MakeMeshData.h"
+#include "MakeMeshDataVtk.h"
 #include "QRenderWindow.h"
 #include "QRenderWindowStyle.h"
 #include "ViewportOrientationRepresentation.h"
@@ -24,6 +26,7 @@
 #include <vtkWeakPointer.h>
 
 #include <cmath>
+#include <limits>
 
 namespace {
 class CountingTexture : public vtkOpenGLTexture {
@@ -50,6 +53,54 @@ QGuiApplication& testApplication()
     static QGuiApplication app(argc, argv);
     return app;
 }
+}
+
+TEST_CASE("Scalar range arguments reject invalid input without changing active state", "[scalar-range]")
+{
+    testApplication();
+    // 仅调用 GUI 参数入口，不创建 QQuickWindow，也不初始化或执行 VTK 渲染。
+    QRenderWindow item;
+    auto mesh = MakeMeshDataWithAtri();
+    item.loadMeshData(7, MakeMeshDataVtk(mesh));
+    item.setAttriMode(7, "f_scalar_1", static_cast<int>(Mode::SCALAR),
+        { { "element_type", 2 }, { "scalar_range", QVariantList { 0.25, 0.75 } } });
+    REQUIRE(item.setScalarRangesLinked(7, "f_scalar_1", 2, false, true));
+    const auto saved = item.scalarRangeState(7, "f_scalar_1", 2);
+    REQUIRE(saved.value("active").toBool());
+    REQUIRE(saved.value("linked").toBool());
+    int notifications = 0;
+    QObject::connect(&item, &QRenderWindow::scalarRangeChanged, &item, [&] { ++notifications; });
+    const QVariantList invalid_ranges {
+        QVariant(), 3.0, QString("invalid"), QVariantMap { }, QVariantList { },
+        QVariantList { 0.0 }, QVariantList { 0.0, 1.0, 2.0 },
+        QVariantList { QString("invalid"), QString("invalid") },
+        QVariantList { QVariant(), 1.0 }, QVariantList { 0.0, QVariantMap { } },
+        QVariantList { std::numeric_limits<double>::quiet_NaN(), 1.0 },
+        QVariantList { 0.0, std::numeric_limits<double>::infinity() },
+        QVariantList { 2.0, 1.0 }
+    };
+    // 单值状态路径与多分量旧接口都必须在任何渲染状态变更前拒绝非法范围。
+    for (const auto& attribute : { "f_scalar_1", "f_normal_3" }) {
+        for (const auto& invalid : invalid_ranges) {
+            INFO("attribute=" << attribute << ", range=" << invalid.toString().toStdString());
+            item.setAttriMode(7, attribute, static_cast<int>(Mode::SCALAR),
+                { { "element_type", 2 }, { "scalar_range", invalid } });
+            CHECK(item.scalarRangeState(7, "f_scalar_1", 2) == saved);
+            CHECK(notifications == 0);
+        }
+    }
+    // 省略范围沿用已存参数；可转换数字、相等端点和超出原始值域仍合法。
+    item.setAttriMode(7, "f_scalar_1", static_cast<int>(Mode::SCALAR), { { "element_type", 2 } });
+    CHECK(item.scalarRangeState(7, "f_scalar_1", 2) == saved);
+    for (const auto& limits : { QVariantList { QString("-2.5"), QString("3.5") }, QVariantList { 0.0, 0.0 } }) {
+        item.setAttriMode(7, "f_scalar_1", static_cast<int>(Mode::SCALAR),
+            { { "element_type", 2 }, { "scalar_range", limits } });
+        const auto state = item.scalarRangeState(7, "f_scalar_1", 2);
+        CHECK(state.value("mappingLower").toDouble() == limits[0].toDouble());
+        CHECK(state.value("mappingUpper").toDouble() == limits[1].toDouble());
+        CHECK(state.value("displayLower") == state.value("mappingLower"));
+        CHECK(state.value("displayUpper") == state.value("mappingUpper"));
+    }
 }
 
 TEST_CASE("QRenderWindow keeps overlay logical sizes across DPR and VTK DPI changes")
