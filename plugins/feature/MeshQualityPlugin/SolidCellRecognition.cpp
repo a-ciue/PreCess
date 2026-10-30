@@ -5,6 +5,7 @@
 #include <vtkIdList.h>
 #include <vtkNew.h>
 #include <vtkPoints.h>
+#include <vtkVersionMacros.h>
 
 #include <algorithm>
 #include <utility>
@@ -32,6 +33,11 @@ namespace {
             std::vector<Index> ring;
             for (vtkIdType j = 0; j < face->GetNumberOfPoints(); ++j)
                 ring.push_back(static_cast<Index>(face->GetPointId(j)));
+#if VTK_VERSION_NUMBER < VTK_VERSION_CHECK(9, 7, 0)
+            // 旧版 VTK 的三棱柱面环与形函数正方向相反；统一后才能保留折叠前的朝向。
+            if (cell_type == VTK_WEDGE)
+                std::reverse(ring.begin(), ring.end());
+#endif
             faces.push_back(std::move(ring));
         }
         return faces;

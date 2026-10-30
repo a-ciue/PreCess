@@ -163,13 +163,13 @@ std::unique_ptr<MeshData> makeCollapsedMesh(int type, bool folded)
         const double height = std::sqrt(3.0) / 2.0;
         mesh->vertex_positions_ = {
             { 0, 0, 0 },
-            { 0.5, height, 0 },
             { 1, 0, 0 },
+            { 0.5, height, 0 },
             { 0, 0, 1 },
-            { 0.5, height, 1 },
             { 1, 0, 1 },
+            { 0.5, height, 1 },
         };
-        ids = { 0, 2, 2, 1, 3, 5, 5, 4 };
+        ids = { 0, 1, 1, 2, 3, 4, 4, 5 };
     } else if (type == VTK_PYRAMID) {
         mesh->vertex_positions_.resize(5);
         mesh->vertex_positions_[4] = { 0.5, 0.5, std::sqrt(0.5) };
@@ -441,14 +441,14 @@ TEST_CASE("MeshQuality covers supported linear cell and metric combinations", "[
         mesh->vertex_positions_[4] = { 0.5, 0.5, std::sqrt(0.5) };
         break;
     case VTK_WEDGE:
-        // VTK 的底面 0/1/2 法向朝外，背离 3/4/5 面。
+        // 与三棱柱形函数的参数坐标保持同一正方向。
         mesh->vertex_positions_ = {
             { 0, 0, 0 },
-            { 0.5, height, 0 },
             { 1, 0, 0 },
+            { 0.5, height, 0 },
             { 0, 0, 1 },
-            { 0.5, height, 1 },
             { 1, 0, 1 },
+            { 0.5, height, 1 },
         };
         break;
     }
@@ -576,6 +576,67 @@ TEST_CASE("MeshQuality marks coincident or nonfinite vertices unavailable for ev
         CHECK(std::isfinite(values[0]));
         CHECK(std::isnan(values[1]));
     }
+}
+
+TEST_CASE("MeshQuality computes signed wedge scaled Jacobians in shape function order", "[MeshQualityPlugin][WedgeJacobian]")
+{
+    const bool folded = GENERATE(false, true);
+    const bool inverted = GENERATE(false, true);
+    const bool right_triangle = GENERATE(false, true);
+    INFO("folded=" << folded << ", inverted=" << inverted << ", right_triangle=" << right_triangle);
+    auto mesh = makeCollapsedMesh(VTK_WEDGE, folded);
+    if (right_triangle) {
+        mesh->vertex_positions_ = {
+            { 0, 0, 0 },
+            { 2, 0, 0 },
+            { 0, 1, 0 },
+            { 0, 0, 1 },
+            { 2, 0, 1 },
+            { 0, 1, 1 },
+        };
+    }
+    // 交换对应的两对角点，反转映射方向；折叠编码仍描述同一个三棱柱。
+    if (inverted) {
+        std::swap(mesh->vertex_positions_[1], mesh->vertex_positions_[2]);
+        std::swap(mesh->vertex_positions_[4], mesh->vertex_positions_[5]);
+    }
+    const auto original_ids = mesh->solid_vertices_;
+    const auto original_types = mesh->solid_types_;
+    const auto original_offsets = mesh->solid_vertices_offset_;
+    const auto original_positions = mesh->vertex_positions_;
+    QualityFixture fixture(std::move(mesh));
+    const auto output = fixture.execute(kScaledJacobian);
+    const auto& values = fixture.mesh().solid_attributes_.at("s_mesh_quality_scaled_jacobian_1");
+    REQUIRE(values.size() == 1);
+    // 直棱柱的六角点质量为底角正弦乘 2/sqrt(3)，取有符号最小值。
+    // 直角三角形底的最小正值与倒置后的最小负值不互为相反数，防止以取绝对值或反号修补。
+    const double expected = right_triangle ? (inverted ? -2.0 / std::sqrt(3.0) : 2.0 / std::sqrt(15.0))
+                                           : (inverted ? -1.0 : 1.0);
+    CHECK(values[0] == Catch::Approx(expected).margin(1e-12));
+    CHECK(output.find(folded ? "折叠转换 1" : "折叠转换 0") != std::string::npos);
+    CHECK(output.find("三棱柱 1") != std::string::npos);
+    CHECK(fixture.mesh().solid_attributes_.size() == 1);
+    CHECK(fixture.mesh().solid_vertices_ == original_ids);
+    CHECK(fixture.mesh().solid_types_ == original_types);
+    CHECK(fixture.mesh().solid_vertices_offset_ == original_offsets);
+    CHECK(fixture.mesh().vertex_positions_ == original_positions);
+}
+
+TEST_CASE("MeshQuality preserves orientation when a wedge collapses to a tetrahedron", "[MeshQualityPlugin][WedgeJacobian]")
+{
+    const bool inverted = GENERATE(false, true);
+    auto mesh = makeCollapsedMesh(VTK_TETRA, false);
+    mesh->solid_types_ = { VTK_WEDGE };
+    mesh->solid_vertices_ = { 0, 1, 2, 3, 3, 3 };
+    mesh->solid_vertices_offset_ = { 0, 6 };
+    if (inverted)
+        std::swap(mesh->vertex_positions_[1], mesh->vertex_positions_[2]);
+    QualityFixture fixture(std::move(mesh));
+    const auto output = fixture.execute(kScaledJacobian);
+    CHECK(fixture.mesh().solid_attributes_.at("s_mesh_quality_scaled_jacobian_1")[0]
+        == Catch::Approx(inverted ? -1.0 : 1.0).margin(1e-12));
+    CHECK(output.find("折叠转换 1") != std::string::npos);
+    CHECK(output.find("四面体 1") != std::string::npos);
 }
 
 TEST_CASE("MeshQuality evaluates folded cells as their actual standard types", "[MeshQualityPlugin]")

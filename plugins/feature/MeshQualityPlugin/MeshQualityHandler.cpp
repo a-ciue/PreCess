@@ -418,6 +418,15 @@ namespace {
         return minimum;
     }
 
+    /** @brief 按形函数节点顺序计算三棱柱质量，绕过 VTK 9.6.2 包装中的反向换序。 */
+    double calculateWedgeScaledJacobian(vtkCell& cell)
+    {
+        double points[6][3];
+        for (vtkIdType i = 0; i < 6; ++i)
+            cell.GetPoints()->GetPoint(i, points[i]);
+        return verdict::wedge_scaled_jacobian(6, points);
+    }
+
     /**
      * @brief 为 VTK 质量过滤器配置面、体单元的指标
      */
@@ -487,8 +496,14 @@ namespace {
         for (vtkIdType cell_id = 0; cell_id < grid.GetNumberOfCells(); ++cell_id) {
             grid.GetCell(cell_id, cell);
             double value = std::numeric_limits<double>::quiet_NaN();
-            if (isCellGeometryAvailable(*cell))
-                value = metric == QualityMetric::TetCollapse ? calculateTetCollapse(*cell) : array->GetComponent(cell_id, 0);
+            if (isCellGeometryAvailable(*cell)) {
+                if (metric == QualityMetric::TetCollapse)
+                    value = calculateTetCollapse(*cell);
+                else if (metric == QualityMetric::ScaledJacobian && cell->GetCellType() == VTK_WEDGE)
+                    value = calculateWedgeScaledJacobian(*cell);
+                else
+                    value = array->GetComponent(cell_id, 0);
+            }
             // Verdict 的正负有限哨兵同样不可用；NaN 占位保持属性与原单元一一对应。
             if (!std::isfinite(value) || std::abs(value) >= verdict::VERDICT_DBL_MAX) {
                 result.values.push_back(std::numeric_limits<double>::quiet_NaN());
