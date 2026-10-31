@@ -124,3 +124,106 @@ TEST_CASE("Scalar range full values survive empty results missing values and cli
     CHECK((*constant)[0] == 0.5);
     CHECK((*constant)[1] == 0.5);
 }
+
+TEST_CASE("Scalar filter changes compare output identities independently of ordering and source reload", "[scalar-range]")
+{
+    auto mesh = scalarMesh();
+    MeshPipelineData pipeline;
+    pipeline.loadModelData(MakeMeshDataVtk(mesh));
+    const auto original = pipeline.createSnapshot();
+    CHECK_FALSE(pipeline.setScalarDisplayRange("value", ElementType::FACE, false, { }));
+    REQUIRE(pipeline.setScalarDisplayRange("value", ElementType::FACE, true, { 1.0, 3.0 }));
+    const auto filtered = pipeline.createSnapshot();
+    CHECK_FALSE(original->hasSameScalarCells(*filtered));
+    CHECK_FALSE(pipeline.setScalarDisplayRange("value", ElementType::FACE, true, { 1.0, 3.0 }));
+    // 条件变化但选中单元相同，不能因此使已有选择失效。
+    REQUIRE(pipeline.setScalarDisplayRange("value", ElementType::FACE, true, { 0.9, 3.1 }));
+    CHECK(filtered->hasSameScalarCells(*pipeline.createSnapshot()));
+
+    auto reordered = *filtered;
+    vtkNew<vtkPolyData> faces;
+    faces->ShallowCopy(filtered->visible_faces);
+    auto* ids = vtkIdTypeArray::SafeDownCast(faces->GetCellData()->GetArray("PrecessFaceIds"));
+    REQUIRE(ids);
+    REQUIRE(ids->GetNumberOfValues() > 1);
+    vtkNew<vtkIdTypeArray> reversed_ids;
+    reversed_ids->SetName("PrecessFaceIds");
+    for (vtkIdType id = ids->GetNumberOfValues(); id > 0; --id)
+        reversed_ids->InsertNextValue(ids->GetValue(id - 1));
+    faces->GetCellData()->AddArray(reversed_ids);
+    reordered.visible_faces = faces.GetPointer();
+    CHECK(filtered->hasSameScalarCells(reordered));
+    reversed_ids->SetValue(0, 0);
+    CHECK_FALSE(filtered->hasSameScalarCells(reordered));
+
+    REQUIRE(pipeline.clearScalarDisplayRange());
+    CHECK(original->hasSameScalarCells(*pipeline.createSnapshot()));
+    CHECK_FALSE(pipeline.clearScalarDisplayRange());
+    pipeline.loadModelData(MakeMeshDataVtk(mesh));
+    CHECK_FALSE(original->hasSameScalarCells(*pipeline.createSnapshot()));
+}
+
+TEST_CASE("Scalar config updates share geometry and retain the latest completed configuration", "[scalar-range]")
+{
+    auto mesh = scalarMesh();
+    MeshPipelineData pipeline;
+    pipeline.loadModelData(MakeMeshDataVtk(mesh));
+    const auto original = pipeline.createScalarUpdate();
+    REQUIRE(original.geometry_changed);
+    ScalarDisplayConfig config { "value", ElementType::FACE, std::array { -1.0, 4.0 }, std::array { 1.0, 3.0 } };
+    pipeline.setScalarConfig(config);
+    const auto filtered = pipeline.createScalarUpdate();
+    REQUIRE(filtered.geometry_changed);
+    config.mapping = std::array { -2.0, 6.0 };
+    pipeline.setScalarConfig(config);
+    const auto mapped = pipeline.createScalarUpdate();
+    CHECK_FALSE(mapped.geometry_changed);
+    CHECK(mapped.snapshot->visible_faces == filtered.snapshot->visible_faces);
+    REQUIRE(mapped.snapshot->scalar_config);
+    CHECK(mapped.snapshot->scalar_config->mapping == config.mapping);
+    CHECK(filtered.snapshot->scalar_config->mapping != config.mapping);
+    // 非法请求不改变执行配置；条件改变而结果相同时也不清理选择。
+    config.display = std::array { std::numeric_limits<double>::quiet_NaN(), 3.0 };
+    CHECK_THROWS_AS(pipeline.setScalarConfig(config), std::invalid_argument);
+    CHECK(pipeline.createScalarUpdate().snapshot->scalar_config->display == filtered.snapshot->scalar_config->display);
+    config.display = std::array { 0.9, 3.1 };
+    pipeline.setScalarConfig(config);
+    CHECK_FALSE(pipeline.createScalarUpdate().geometry_changed);
+    config.display = pipeline.scalarRange("value", ElementType::FACE);
+    pipeline.setScalarConfig(config);
+    REQUIRE(pipeline.createScalarUpdate().geometry_changed);
+    pipeline.setScalarConfig(std::nullopt);
+    const auto canceled = pipeline.createScalarUpdate();
+    CHECK_FALSE(canceled.geometry_changed);
+    CHECK_FALSE(canceled.snapshot->scalar_config);
+    CHECK(pipeline.createSnapshot()->scalar_config == std::nullopt);
+}
+
+TEST_CASE("Source reload retains applicable scalar configuration and removes only invalid parts", "[scalar-range]")
+{
+    auto mesh = scalarMesh();
+    MeshPipelineData pipeline;
+    pipeline.loadModelData(MakeMeshDataVtk(mesh));
+    pipeline.setScalarConfig(ScalarDisplayConfig { "value", ElementType::FACE, { }, std::array { 1.0, 3.0 } });
+    const auto before = pipeline.createScalarUpdate();
+    pipeline.setVisibility(false);
+    pipeline.hideFaces({ 1 });
+    pipeline.loadModelData(MakeMeshDataVtk(mesh));
+    const auto reloaded = pipeline.createScalarUpdate();
+    CHECK(reloaded.geometry_changed);
+    REQUIRE(reloaded.snapshot->scalar_config);
+    CHECK(reloaded.snapshot->scalar_config->mapping == before.snapshot->scalar_config->mapping);
+    CHECK(reloaded.snapshot->visible_faces->GetNumberOfCells() == 3);
+    CHECK_FALSE(reloaded.snapshot->visible);
+    // 全缺失值只能解除筛选，属性仍可按原有 NaN 规则着色。
+    mesh.face_attributes_["value"].assign(mesh.face_attributes_["value"].size(), std::numeric_limits<double>::quiet_NaN());
+    pipeline.loadModelData(MakeMeshDataVtk(mesh));
+    const auto missing = pipeline.createScalarUpdate();
+    REQUIRE(missing.snapshot->scalar_config);
+    CHECK_FALSE(missing.snapshot->scalar_config->display);
+    CHECK(missing.snapshot->scalar_config->mapping == before.snapshot->scalar_config->mapping);
+    // 同名边属性仍在，不能替代已消失的面属性。
+    mesh.face_attributes_.erase("value");
+    pipeline.loadModelData(MakeMeshDataVtk(mesh));
+    CHECK_FALSE(pipeline.createScalarUpdate().snapshot->scalar_config);
+}

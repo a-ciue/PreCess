@@ -31,6 +31,14 @@ struct MeshClipPlane {
     std::array<double, 3> normal { 1.0, 0.0, 0.0 };
 };
 
+/** @brief 当前组件采用的标量显示配置，不包含界面联动和历史偏好。 */
+struct ScalarDisplayConfig {
+    std::string attribute;
+    ElementType type { ElementType::FACE };
+    std::optional<std::array<double, 2>> mapping;
+    std::optional<std::array<double, 2>> display;
+};
+
 /**
  * @brief 已完成计算的网格快照；发布后不再改写，数组由源数据或 VTK 自持。
  *
@@ -41,6 +49,7 @@ struct MeshDataSnapshot {
     std::uint64_t revision { };
     bool visible { true };
     MeshClipPlane clip;
+    std::optional<ScalarDisplayConfig> scalar_config;
     std::shared_ptr<const MeshData> source;
     std::shared_ptr<const MeshDataVtk> model_data;
     vtkSmartPointer<vtkPolyData> original_faces;
@@ -52,6 +61,14 @@ struct MeshDataSnapshot {
     /** @brief 裁剪后体单元的原始身份；在提取表面前保留，避免表面面序影响结果比较。 */
     vtkSmartPointer<vtkIdTypeArray> visible_solid_ids;
     vtkSmartPointer<vtkPolyData> solid_internal_edges;
+    /** @brief 同源标量筛选按原始单元身份比较结果，忽略输出顺序，不比较映射参数。 */
+    bool hasSameScalarCells(const MeshDataSnapshot& other) const;
+};
+
+/** @brief 本次完成的显示结果；几何变化只随本次更新传递，不保存额外版本状态。 */
+struct MeshSnapshotUpdate {
+    std::shared_ptr<const MeshDataSnapshot> snapshot;
+    bool geometry_changed { false };
 };
 
 /** @brief 在创建线程串行修改网格数据，主动计算后向渲染端发布轻量快照。 */
@@ -87,8 +104,12 @@ public:
     std::optional<std::array<double, 2>> scalarRange(const std::string& attribute, ElementType type);
     /** @brief 查询指定实体域属性的分量数；不存在时返回零，用于提交前验证属性身份。 */
     int scalarAttributeComponents(const std::string& attribute, ElementType type) const;
-    /** @brief 设置单元显示闭区间；节点不支持筛选，重复参数不重建数据。 */
-    void setScalarDisplayRange(const std::string& attribute, ElementType type,
+    /** @brief 校验并保存完整显示配置，空值取消着色和筛选；无效参数不改变当前结果。 */
+    void setScalarConfig(std::optional<ScalarDisplayConfig> config);
+    /** @brief 生成最新配置快照；仅重建几何时比较原始单元身份，映射修改共享既有输出。 */
+    MeshSnapshotUpdate createScalarUpdate();
+    /** @brief 设置单元显示闭区间，返回筛选条件是否变化；重复参数不重建数据。 */
+    bool setScalarDisplayRange(const std::string& attribute, ElementType type,
         bool enabled, const std::array<double, 2>& range);
     /** @brief 仅清除标量筛选，返回是否解除已启用的筛选；保留人工隐藏、整体显隐和裁剪。 */
     bool clearScalarDisplayRange();
@@ -116,10 +137,7 @@ private:
     MeshClipPlane clip_;
     // 值域缓存属于本次源数据；筛选仅保存条件，不修改原始属性和连通性。
     std::map<std::pair<std::string, ElementType>, std::optional<std::array<double, 2>>> scalar_ranges_;
-    std::string scalar_attribute_;
-    ElementType scalar_type_ { ElementType::FACE };
-    std::array<double, 2> scalar_display_range_ { };
-    bool scalar_filtered_ { false };
+    std::optional<ScalarDisplayConfig> scalar_config_;
     bool visible_ { true };
     bool dirty_ { true };
     std::uint64_t generation_ { };

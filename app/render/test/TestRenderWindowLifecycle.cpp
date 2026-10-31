@@ -4,15 +4,21 @@
  */
 #include "MakeMeshData.h"
 #include "MakeMeshDataVtk.h"
+#include "MeshActorManager.h"
 #include "QRenderWindow.h"
 #include "QRenderWindowStyle.h"
 #include "ViewportOrientationRepresentation.h"
+#include "renderStrategy/AttributeOperator.h"
 #include <vtkActor2D.h>
 #include <vtkCallbackCommand.h>
 #include <vtkCamera.h>
+#include <vtkCellData.h>
+#include <vtkGenericOpenGLRenderWindow.h>
 #include <vtkImageData.h>
+#include <vtkIdTypeArray.h>
 #include <vtkObjectFactory.h>
 #include <vtkOpenGLTexture.h>
+#include <vtkPolyData.h>
 #include <vtkPropCollection.h>
 #include <vtkTexturedActor2D.h>
 #include <vtkTransform.h>
@@ -22,11 +28,13 @@
 #include <vtkActor.h>
 #include <vtkActorCollection.h>
 #include <vtkRenderWindowInteractor.h>
+#include <vtkScalarBarActor.h>
 #include <vtkTextProperty.h>
 #include <vtkWeakPointer.h>
 
 #include <cmath>
 #include <limits>
+#include <vector>
 
 namespace {
 class CountingTexture : public vtkOpenGLTexture {
@@ -62,15 +70,10 @@ TEST_CASE("Scalar range arguments reject invalid input without changing active s
     QRenderWindow item;
     auto mesh = MakeMeshDataWithAtri();
     item.loadMeshData(7, MakeMeshDataVtk(mesh));
-    QString active_attribute;
-    int notifications = 0;
-    QObject::connect(&item, &QRenderWindow::scalarRenderingChanged, &item,
-        [&](Index, const QString& attribute, int) { active_attribute = attribute; ++notifications; });
     REQUIRE(item.applyScalarConfig(7, "f_scalar_1", 2,
         { { "mapping", QVariantList { 0.25, 0.75 } }, { "display", QVariantList { 0.25, 0.75 } } }));
     const auto original = item.scalarRangeInfo(7, "f_scalar_1", 2);
-    REQUIRE(original.value("valid").toBool());
-    notifications = 0;
+    REQUIRE(original.size() == 2);
     const QVariantList invalid_ranges {
         3.0, QString("invalid"), QVariantMap { }, QVariantList { },
         QVariantList { 0.0 }, QVariantList { 0.0, 1.0, 2.0 },
@@ -87,24 +90,113 @@ TEST_CASE("Scalar range arguments reject invalid input without changing active s
             CHECK_FALSE(item.applyScalarConfig(7, attribute, 2, { { "mapping", invalid } }));
             item.setAttriMode(7, attribute, static_cast<int>(Mode::SCALAR),
                 { { "element_type", 2 }, { "scalar_range", invalid } });
-            CHECK(active_attribute == "f_scalar_1");
-            CHECK(notifications == 0);
         }
     }
     CHECK_FALSE(item.applyScalarConfig(7, "missing", 2, { }));
     CHECK_FALSE(item.applyScalarConfig(7, "f_normal_3", 2, { { "display", QVariantList { 0.0, 1.0 } } }));
     CHECK_FALSE(item.applyScalarConfig(7, "f_scalar_1", 2, { { "display", QVariantList { 2.0, 1.0 } } }));
     item.setAttriMode(7, "f_scalar_1", static_cast<int>(Mode::SCALAR), { { "scalar_range", QVariant() } });
-    CHECK(notifications == 0);
     CHECK(item.scalarRangeInfo(7, "f_scalar_1", 2) == original);
     // 可选默认映射、多分量属性、相等端点及超出原始值域仍然合法。
     REQUIRE(item.applyScalarConfig(7, "f_normal_3", 2, { { "mapping", QVariant() }, { "display", QVariant() } }));
-    CHECK(active_attribute == "f_normal_3");
     REQUIRE(item.applyScalarConfig(7, "f_scalar_1", 2, { { "mapping", QVariantList { QString("-2.5"), QString("3.5") } } }));
     REQUIRE(item.applyScalarConfig(7, "f_scalar_1", 2, { { "mapping", QVariantList { 0.0, 0.0 } } }));
+    // 旧入口仅适配身份和参数；省略实体域、默认值域及手动多分量映射继续可用。
+    item.setAttriMode(7, "f_scalar_1", static_cast<int>(Mode::SCALAR), { });
+    item.setAttriMode(7, "f_normal_3", static_cast<int>(Mode::SCALAR),
+        { { "element_type", 2.0 }, { "scalar_range", QVariantList { -2.0, 2.0 } } });
     item.cancelComponentAttri(7);
-    CHECK(active_attribute.isEmpty());
     CHECK(item.scalarRangeInfo(7, "f_scalar_1", 2) == original);
+}
+
+TEST_CASE("Scalar configs restore across source reload without stealing the shared bar", "[scalar-range][no-window]")
+{
+    testApplication();
+    auto mesh = MakeMeshDataWithAtri();
+    auto& values = mesh.face_attributes_["f_scalar_1"];
+    REQUIRE(values.size() > 3);
+    for (size_t id = 0; id < values.size(); ++id)
+        values[id] = static_cast<double>(id);
+    QRenderWindow item;
+    item.loadMeshData(7, MakeMeshDataVtk(mesh));
+    item.loadMeshData(8, MakeMeshDataVtk(mesh));
+    REQUIRE(item.applyScalarConfig(7, "f_scalar_1", 2,
+        { { "mapping", QVariantList { -2.0, 2.0 } }, { "display", QVariantList { 1.0, 3.0 } } }));
+    item.setAttriMode(8, "f_normal_3", static_cast<int>(Mode::SCALAR),
+        { { "scalar_range", QVariantList { 100.0, 200.0 } } });
+    REQUIRE(item.applyScalarConfig(7, "f_scalar_1", 2,
+        { { "mapping", QVariantList { -4.0, 4.0 } }, { "display", QVariantList { 1.0, 3.0 } } }));
+    // 非法旧入口请求不能替换最新有效配置和色柱目标。
+    item.setAttriMode(7, "f_normal_3", static_cast<int>(Mode::SCALAR),
+        { { "scalar_range", QVariantList { 3.0, 1.0 } } });
+    std::uint64_t previous_generation = 0;
+    for (int cycle = 0; cycle < 3; ++cycle) {
+        // 通用窗口不创建原生窗口或 OpenGL 上下文，关闭交互器自动渲染以避免控件触发绘制。
+        vtkNew<vtkGenericOpenGLRenderWindow> window;
+        window->SetReadyForRendering(false);
+        window->SetSize(800, 600);
+        vtkNew<vtkRenderWindowInteractor> interactor;
+        interactor->EnableRenderOff();
+        interactor->SetRenderWindow(window);
+        auto user_data = item.initializeVTK(window);
+        auto* data = QRenderWindow::Data::SafeDownCast(user_data);
+        REQUIRE(data);
+        auto owner = data->mesh_actor_manager_->getComponentActor(7);
+        auto other = data->mesh_actor_manager_->getComponentActor(8);
+        REQUIRE(owner);
+        REQUIRE(other);
+        AttributeOperator owner_attributes(owner.get());
+        AttributeOperator other_attributes(other.get());
+        auto* mapper = owner_attributes.getFaceMapper();
+        mapper->Update();
+        auto* ids = vtkIdTypeArray::SafeDownCast(mapper->GetInput()->GetCellData()->GetArray("PrecessFaceIds"));
+        REQUIRE(ids);
+        std::vector<vtkIdType> actual_ids;
+        for (vtkIdType id = 0; id < ids->GetNumberOfValues(); ++id)
+            actual_ids.push_back(ids->GetValue(id));
+        std::vector<vtkIdType> expected_ids { 1, 2, 3 };
+        if (cycle == 1)
+            expected_ids = { 0, 1, 2 };
+        else if (cycle == 2) {
+            expected_ids.clear();
+            for (size_t id = 0; id < values.size(); ++id)
+                expected_ids.push_back(static_cast<vtkIdType>(id));
+        }
+        CHECK(actual_ids == expected_ids);
+        CHECK(static_cast<bool>(owner_attributes.getFaceMapper()->GetScalarVisibility()) == (cycle < 2));
+        if (cycle < 2) {
+            CHECK(owner_attributes.getFaceMapper()->GetScalarRange()[0] == -4.0);
+            CHECK(owner_attributes.getFaceMapper()->GetScalarRange()[1] == 4.0);
+        }
+        CHECK(other_attributes.getFaceMapper()->GetScalarRange()[0] == 100.0);
+        CHECK(other_attributes.getFaceMapper()->GetScalarRange()[1] == 200.0);
+        vtkScalarBarActor* scalar_bar = nullptr;
+        auto* props = data->renderer_->GetViewProps();
+        props->InitTraversal();
+        while (auto* prop = props->GetNextProp()) {
+            if (auto* bar = vtkScalarBarActor::SafeDownCast(prop))
+                scalar_bar = bar;
+        }
+        REQUIRE(scalar_bar);
+        CHECK(static_cast<bool>(scalar_bar->GetVisibility()) == (cycle < 2));
+        if (cycle < 2)
+            CHECK(scalar_bar->GetLookupTable() == owner_attributes.getFaceMapper()->GetLookupTable());
+        CHECK((other->dataGeneration() != previous_generation) == (cycle < 2));
+        previous_generation = other->dataGeneration();
+        CHECK(window->GetGenericWindowId() == nullptr);
+        item.destroyingVTK(window, user_data);
+        window->RemoveRenderer(data->overlay_renderer_);
+        window->RemoveRenderer(data->renderer_);
+        // 自动恢复非色柱归属组件，原归属组件的配置必须仍可在下一次场景重建中恢复。
+        if (cycle == 0) {
+            // 改变筛选结果后重载归属组件和另一组件，验证配置恢复及色柱归属。
+            for (auto& value : values)
+                value += 1.0;
+            item.loadMeshData(7, MakeMeshDataVtk(mesh));
+            item.loadMeshData(8, MakeMeshDataVtk(mesh));
+        } else if (cycle == 1)
+            item.cancelComponentAttri(7);
+    }
 }
 
 TEST_CASE("QRenderWindow keeps overlay logical sizes across DPR and VTK DPI changes")

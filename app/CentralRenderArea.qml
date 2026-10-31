@@ -23,8 +23,12 @@ Page {
     function cancelFeatureAttributeRendering() {
         if (!featureAttributeRenderingActive)
             return
-        if (featureAttributeRenderingComponentId >= 0)
-            myItem.cancelComponentAttri(featureAttributeRenderingComponentId)
+        if (featureAttributeRenderingComponentId >= 0) {
+            if (App.registry.scalarRanges)
+                App.registry.scalarRanges.cancel(featureAttributeRenderingComponentId)
+            else
+                myItem.cancelComponentAttri(featureAttributeRenderingComponentId)
+        }
         featureAttributeRenderingActive = false
         featureAttributeRenderingComponentId = -1
     }

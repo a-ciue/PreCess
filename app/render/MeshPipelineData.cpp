@@ -171,6 +171,45 @@ void createSolidGrid(const MeshDataVtk& model_data, vtkPoints& points, vtkUnstru
 
 }
 
+bool MeshDataSnapshot::hasSameScalarCells(const MeshDataSnapshot& other) const
+{
+    if (generation != other.generation)
+        return false;
+    const auto same_ids = [](vtkIdTypeArray* left, vtkIdTypeArray* right, vtkIdType source_count) {
+        if (!left || !right || left->GetNumberOfValues() != right->GetNumberOfValues())
+            return false;
+        const auto count = left->GetNumberOfValues();
+        if (left == right || count == 0 || std::equal(left->GetPointer(0), left->GetPointer(0) + count, right->GetPointer(0)))
+            return true;
+        // 原始 ID 在每个结果中唯一；只有顺序不同时才用临时位图比较集合。
+        std::vector<bool> retained(source_count, false);
+        for (vtkIdType i = 0; i < count; ++i) {
+            const auto id = left->GetValue(i);
+            if (id < 0 || id >= source_count)
+                return false;
+            retained[id] = true;
+        }
+        for (vtkIdType i = 0; i < count; ++i) {
+            const auto id = right->GetValue(i);
+            if (id < 0 || id >= source_count || !retained[id])
+                return false;
+        }
+        return true;
+    };
+    const auto same_cells = [&same_ids](vtkPolyData* left, vtkPolyData* right, const char* name, vtkIdType source_count) {
+        if (left == right)
+            return true;
+        if (left->GetNumberOfCells() != right->GetNumberOfCells())
+            return false;
+        return left->GetNumberOfCells() == 0
+            || same_ids(vtkIdTypeArray::SafeDownCast(left->GetCellData()->GetArray(name)),
+                vtkIdTypeArray::SafeDownCast(right->GetCellData()->GetArray(name)), source_count);
+    };
+    return same_cells(visible_faces, other.visible_faces, "PrecessFaceIds", original_faces->GetNumberOfCells())
+        && same_cells(visible_edges, other.visible_edges, "vtkOriginalCellIds", original_edges->GetNumberOfCells())
+        && same_ids(visible_solid_ids, other.visible_solid_ids, original_solids->GetNumberOfCells());
+}
+
 MeshPipelineData::MeshPipelineData()
     : owner_thread_(std::this_thread::get_id())
 {
@@ -222,7 +261,6 @@ void MeshPipelineData::loadModelData(const MeshDataVtk& data)
     generation_ = ++next_mesh_generation;
     hidden_face_ids_.clear();
     scalar_ranges_.clear();
-    scalar_filtered_ = false;
     dirty_ = true;
     // 本方法所有 SetArray 均使用 save=1：VTK 借用 vector 缓冲，不负责释放。
     // source_ 与已发布快照共同保活这些缓冲，不能把 save 改为 0。
@@ -331,6 +369,13 @@ void MeshPipelineData::loadModelData(const MeshDataVtk& data)
     // 处理体属性
     addPointAttributes(*solid_ugird->GetPointData(), model_data_->vertex_attributes_, point_count);
     addCellAttributes(*solid_ugird->GetCellData(), model_data_->solid_attributes_, solid_cells_count, "solid");
+    // 源数据更新只校验当前配置；属性失效清空配置，单独失效的筛选不影响着色。
+    if (scalar_config_) {
+        if (scalarAttributeComponents(scalar_config_->attribute, scalar_config_->type) == 0)
+            scalar_config_.reset();
+        else if (scalar_config_->display && !scalarRange(scalar_config_->attribute, scalar_config_->type))
+            scalar_config_->display.reset();
+    }
 }
 
 void MeshPipelineData::setVisibility(bool visible)
@@ -495,32 +540,59 @@ std::optional<std::array<double, 2>> MeshPipelineData::scalarRange(const std::st
     return range;
 }
 
-void MeshPipelineData::setScalarDisplayRange(const std::string& attribute, ElementType type,
+void MeshPipelineData::setScalarConfig(std::optional<ScalarDisplayConfig> config)
+{
+    assertOwnerThread();
+    if (config) {
+        const auto valid_range = [](const auto& range) {
+            return !range || (std::isfinite((*range)[0]) && std::isfinite((*range)[1]) && (*range)[0] <= (*range)[1]);
+        };
+        if (static_cast<int>(config->type) < 0 || static_cast<int>(config->type) > 3
+            || scalarAttributeComponents(config->attribute, config->type) == 0
+            || !valid_range(config->mapping) || !valid_range(config->display)
+            || (config->display && (config->type == ElementType::VERTEX || !scalarRange(config->attribute, config->type))))
+            throw std::invalid_argument("标量显示配置或属性身份无效");
+        // 缺省映射在接受配置时解析，之后源数据更新仍保留本次采用的映射范围。
+        if (!config->mapping)
+            config->mapping = scalarRange(config->attribute, config->type);
+    }
+    const auto before = scalar_config_ ? scalar_config_->display : std::nullopt;
+    const auto after = config ? config->display : std::nullopt;
+    // 无筛选时切换属性或映射不改变几何；有筛选时身份和区间共同决定输出。
+    const bool filter_changed = before != after || (after && (!scalar_config_ || scalar_config_->attribute != config->attribute || scalar_config_->type != config->type));
+    scalar_config_ = std::move(config);
+    dirty_ = dirty_ || filter_changed;
+}
+
+MeshSnapshotUpdate MeshPipelineData::createScalarUpdate()
+{
+    const auto previous = prepared_;
+    const bool rebuilt = dirty_ || !prepared_;
+    auto snapshot = createSnapshot();
+    const bool geometry_changed = !previous || previous->generation != snapshot->generation
+        || (rebuilt && !previous->hasSameScalarCells(*snapshot));
+    return { std::move(snapshot), geometry_changed };
+}
+
+bool MeshPipelineData::setScalarDisplayRange(const std::string& attribute, ElementType type,
     bool enabled, const std::array<double, 2>& range)
 {
     assertOwnerThread();
-    if (!enabled) {
-        clearScalarDisplayRange();
-        return;
-    }
-    if (type == ElementType::VERTEX || !scalarRange(attribute, type)
-        || !std::isfinite(range[0]) || !std::isfinite(range[1]) || range[0] > range[1])
-        throw std::invalid_argument("标量显示范围或单元属性无效");
-    if (scalar_filtered_ && scalar_attribute_ == attribute && scalar_type_ == type && scalar_display_range_ == range)
-        return;
-    scalar_attribute_ = attribute;
-    scalar_type_ = type;
-    scalar_display_range_ = range;
-    scalar_filtered_ = true;
-    dirty_ = true;
+    if (!enabled)
+        return clearScalarDisplayRange();
+    const bool same = scalar_config_ && scalar_config_->attribute == attribute && scalar_config_->type == type;
+    if (same && scalar_config_->display == range)
+        return false;
+    setScalarConfig(ScalarDisplayConfig { attribute, type, same ? scalar_config_->mapping : std::nullopt, range });
+    return true;
 }
 
 bool MeshPipelineData::clearScalarDisplayRange()
 {
     assertOwnerThread();
-    if (!scalar_filtered_)
+    if (!scalar_config_ || !scalar_config_->display)
         return false;
-    scalar_filtered_ = false;
+    scalar_config_->display.reset();
     dirty_ = true;
     return true;
 }
@@ -531,16 +603,17 @@ void MeshPipelineData::rebuildOutputs()
     vtkSmartPointer<vtkPolyData> range_faces = face_data_;
     vtkSmartPointer<vtkPolyData> range_edges = edge_data_;
     vtkSmartPointer<vtkUnstructuredGrid> range_solids = solid_data_;
-    if (scalar_filtered_) {
-        auto* values = scalarValues(scalar_attribute_, scalar_type_);
-        vtkDataSet* input = scalar_type_ == ElementType::EDGE ? static_cast<vtkDataSet*>(edge_data_)
-            : scalar_type_ == ElementType::FACE               ? static_cast<vtkDataSet*>(face_data_)
-                                                              : static_cast<vtkDataSet*>(solid_data_);
+    if (scalar_config_ && scalar_config_->display) {
+        const auto& config = *scalar_config_;
+        auto* values = scalarValues(config.attribute, config.type);
+        vtkDataSet* input = config.type == ElementType::EDGE ? static_cast<vtkDataSet*>(edge_data_)
+            : config.type == ElementType::FACE               ? static_cast<vtkDataSet*>(face_data_)
+                                                             : static_cast<vtkDataSet*>(solid_data_);
         vtkNew<vtkIdList> ids;
         // 按原始单元顺序提取闭区间，原始 ID 和属性随提取结果透传。
         for (vtkIdType id = 0; id < values->GetNumberOfTuples(); ++id) {
             const double value = values->GetComponent(id, 0);
-            if (std::isfinite(value) && value >= scalar_display_range_[0] && value <= scalar_display_range_[1])
+            if (std::isfinite(value) && value >= (*config.display)[0] && value <= (*config.display)[1])
                 ids->InsertNextId(id);
         }
         vtkNew<vtkExtractCells> extract;
@@ -549,14 +622,14 @@ void MeshPipelineData::rebuildOutputs()
         extract->AssumeSortedAndUniqueIdsOn();
         extract->PassThroughCellIdsOff();
         extract->Update();
-        if (scalar_type_ == ElementType::SOLID) {
+        if (config.type == ElementType::SOLID) {
             range_solids = vtkSmartPointer<vtkUnstructuredGrid>::New();
             range_solids->ShallowCopy(extract->GetOutput());
         } else {
             vtkNew<vtkGeometryFilter> geometry;
             geometry->SetInputData(extract->GetOutput());
             geometry->Update();
-            if (scalar_type_ == ElementType::FACE)
+            if (config.type == ElementType::FACE)
                 range_faces = publishPolyData(geometry->GetOutput());
             else
                 range_edges = publishPolyData(geometry->GetOutput());
@@ -651,5 +724,8 @@ std::shared_ptr<const MeshDataSnapshot> MeshPipelineData::createSnapshot()
     snapshot->revision = ++revision_;
     snapshot->visible = visible_;
     snapshot->clip = clip_;
+    snapshot->scalar_config = scalar_config_;
+    // 现有输出缓存同时保存最新完成配置；旧快照只读保留，不原地回写。
+    prepared_ = snapshot;
     return snapshot;
 }

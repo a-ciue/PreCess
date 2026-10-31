@@ -26,7 +26,7 @@ ColumnLayout {
     property real sliderMaximum: 1
 
     signal rangeEdited(string targetKey, bool displayMode, var lower, var upper, bool applyImmediately)
-    signal linkRequested(string targetKey, bool displayMode, bool linked)
+    signal linkRequested(string targetKey, bool displayMode, bool linked, var edit)
     signal resetRequested(string targetKey, bool displayMode)
 
     // 普通值截断至三位小数，极值用四位有效数字，格式化不改写保存精度。
@@ -74,10 +74,19 @@ ColumnLayout {
 
     // 交付最后一次有效编辑；显式应用或取消可只保存参数，避免提前重复渲染。
     function finishEditing(applyImmediately) {
-        flushPendingRange(applyImmediately);
-        if (!draft)
-            return true;
-        let edit = draft;
+        let edit = takeRangeEdit();
+        if (edit === false)
+            return false;
+        if (edit)
+            rangeEdited(edit.key, edit.display, edit.lower, edit.upper, applyImmediately !== false);
+        return true;
+    }
+
+    // 取出本次有效编辑，不提前写入状态对象，供普通提交或联动操作一次性交付。
+    function takeRangeEdit() {
+        let edit = draft || pendingRange;
+        if (!edit)
+            return null;
         let lower = edit.lower;
         let upper = edit.upper;
         if (edit.hasRange && (!Number.isFinite(lower) || !Number.isFinite(upper))) {
@@ -90,13 +99,19 @@ ColumnLayout {
             upper = previous;
         }
         draft = null;
+        pendingRange = null;
+        rangeUpdateTimer.stop();
         rangeError = "";
         if (edit.key === attributeKey) {
             rangeMinField.text = formatRangeValue(lower);
             rangeMaxField.text = formatRangeValue(upper);
         }
-        rangeEdited(edit.key, edit.display, lower, upper, applyImmediately !== false);
-        return true;
+        return {
+            key: edit.key,
+            display: edit.display,
+            lower: lower,
+            upper: upper
+        };
     }
 
     // 同一属性的刷新不覆盖未提交草稿；拖动时固定轨道坐标。
@@ -425,8 +440,9 @@ ColumnLayout {
                     ToolTip.text: !root.parameters.rangeAvailable ? qsTr("此属性不支持范围绑定") : root.parameters.linked ? qsTr("已绑定：两种范围同步修改，点击解除绑定") : qsTr("以当前范围为准，绑定颜色映射与可见单元范围")
                     ToolTip.delay: 400
                     onClicked: {
-                        if (root.finishEditing(false))
-                            root.linkRequested(root.attributeKey, root.displayMode, !root.parameters.linked);
+                        let edit = root.takeRangeEdit();
+                        if (edit !== false)
+                            root.linkRequested(root.attributeKey, root.displayMode, !root.parameters.linked, edit);
                     }
                 }
                 RangeModeButton {

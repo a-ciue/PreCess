@@ -105,6 +105,8 @@ Item {
             refreshRangeMetadata();
             rangeState.apply(selectedKey);
         } else {
+            if (rangeState)
+                rangeState.setActive(App.selection.activeComponentId, "", -1);
             App.registry.renderWindow.setAttriMode(App.selection.activeComponentId, attr.name, modeCombo.currentIndex, renderArgs());
         }
     }
@@ -311,9 +313,9 @@ Item {
                     if (root.rangeState)
                         root.rangeState.editRange(key, displayMode, lower, upper, applyImmediately);
                 }
-                onLinkRequested: function (key, displayMode, linked) {
+                onLinkRequested: function (key, displayMode, linked, edit) {
                     if (root.rangeState)
-                        root.rangeState.setLinked(key, displayMode, linked);
+                        root.rangeState.setLinked(key, displayMode, linked, edit);
                 }
                 onResetRequested: function (key, displayMode) {
                     if (root.rangeState)
@@ -401,7 +403,10 @@ Item {
             ToolTip.delay: 400
             onClicked: {
                 rangeEditor.finishEditing(false);
-                App.registry.renderWindow.cancelComponentAttri(App.selection.activeComponentId);
+                if (root.rangeState)
+                    root.rangeState.cancel(App.selection.activeComponentId);
+                else
+                    App.registry.renderWindow.cancelComponentAttri(App.selection.activeComponentId);
             }
         }
 

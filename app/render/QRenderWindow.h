@@ -243,8 +243,8 @@ public:
      */
     Q_INVOKABLE void cancelComponentAttri(Index component_id);
 
-    /** @brief 查询完整原始值域和筛选能力，不读取或保存界面偏好。 */
-    Q_INVOKABLE QVariantMap scalarRangeInfo(Index component_id, const QString& attribute, int element_type);
+    /** @brief 查询完整原始值域的两个端点；没有有限单值值域时返回空列表。 */
+    Q_INVOKABLE QVariantList scalarRangeInfo(Index component_id, const QString& attribute, int element_type);
     /** @brief 一次应用最终配置；mapping 为空使用默认值域，display 为空关闭范围筛选。 */
     Q_INVOKABLE bool applyScalarConfig(Index component_id, const QString& attribute, int element_type, QVariantMap config);
 
@@ -259,8 +259,6 @@ signals:
     void rightClicked();
     /** @brief 原始属性数据变化，通知界面重新查询元信息。 */
     void scalarRangeChanged();
-    /** @brief 通知当前执行的属性身份；空属性名表示停用，不回写界面范围偏好。 */
-    void scalarRenderingChanged(Index component_id, QString attribute, int element_type);
     /** @brief 在 GUI 决定显隐后同步通知对象树，渲染线程只安装结果。 */
     void componentVisibilityChanged(Index component_id, bool mesh_visible, bool geometry_visible);
 
@@ -268,21 +266,13 @@ protected:
     void itemChange(ItemChange change, const ItemChangeData& value) override;
 
 private:
-    /** @brief 一个组件最后成功执行的配置，用于重建重放；不包含联动或历史属性偏好。 */
-    struct ScalarAppliedConfig {
-        std::string attribute;
-        int element_type { -1 };
-        std::optional<std::array<double, 2>> mapping;
-        std::optional<std::array<double, 2>> display;
-    };
     /**
-     * @brief GUI 生成筛选快照，渲染线程按已保存映射范围着色。
+     * @brief 缓存数据侧完成结果，按几何变化维护选择并投递安装和着色。
      * @param activate_scalar_bar 主动应用时切换色柱；自动恢复只刷新原归属色柱。
      */
-    void applyScalarRange(Index component_id, const ScalarAppliedConfig& config, bool activate_scalar_bar = true);
+    void publishScalarUpdate(Index component_id, MeshSnapshotUpdate update, bool activate_scalar_bar = false);
     /** @brief 解除当前标量配置和筛选，恢复非范围隐藏结果；界面自行保留偏好。 */
     void deactivateScalarRange(Index component_id);
-    std::map<Index, ScalarAppliedConfig> applied_scalar_configs_;
     // 只记录共享色柱的归属，用于场景图重建时恢复同一属性的现有色柱。
     Index scalar_bar_component_id_ { -1 };
 

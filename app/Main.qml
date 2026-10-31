@@ -45,12 +45,9 @@ ApplicationWindow {
             if (App.registry.renderWindow)
                 App.registry.renderWindow.applyScalarConfig(componentId, attribute, elementType, configuration)
         }
-    }
-
-    Connections {
-        target: App.registry.renderWindow
-        function onScalarRenderingChanged(componentId, attribute, elementType) {
-            root.scalarRanges.setActive(componentId, attribute, elementType)
+        onCancelRequested: function(componentId) {
+            if (App.registry.renderWindow)
+                App.registry.renderWindow.cancelComponentAttri(componentId)
         }
     }
 

@@ -51,7 +51,7 @@ TEST_CASE("Scalar UI ranges preserve independent preferences and linked reset ru
     application();
     RangeFixture fixture;
     CHECK(fixture.run(R"JS(
-        var key = ranges.ensure(7, 'value', 2, {valid:true, minimum:0.2, maximum:0.8, rangeAvailable:true});
+        var key = ranges.ensure(7, 'value', 2, [0.2, 0.8]);
         ranges.editRange(key, false, -1, 2);
         ranges.editRange(key, true, 0.3, 0.6);
         ranges.resetRange(key, true);
@@ -94,8 +94,8 @@ TEST_CASE("Scalar UI ranges keep property identity and publish only active confi
         ranges.applyRequested.connect(function(component, attribute, type, configuration) {
             requests.push({component:component, attribute:attribute, type:type, configuration:configuration});
         });
-        var a = ranges.ensure(7, 'value', 2, {valid:true, minimum:0.25, maximum:0.75, rangeAvailable:true});
-        var b = ranges.ensure(7, 'vector', 2, {valid:false});
+        var a = ranges.ensure(7, 'value', 2, [0.25, 0.75]);
+        var b = ranges.ensure(7, 'vector', 2, []);
         ranges.editRange(a, false, 0.3, 0.6);
         ranges.editRange(b, false, 100, 200);
         requests.length === 0 && ranges.configuration(b).mapping[0] === 100
@@ -104,7 +104,6 @@ TEST_CASE("Scalar UI ranges keep property identity and publish only active confi
             .toBool());
     CHECK(fixture.run(R"JS(
         ranges.apply(a);
-        ranges.setActive(7, 'value', 2);
         ranges.setLinked(a, false, true);
         var afterLink = requests.length;
         ranges.editRange(a, false, 0.35, 0.55);
@@ -123,11 +122,11 @@ TEST_CASE("Scalar UI ranges keep property identity and publish only active confi
     )JS")
             .toBool());
     CHECK(fixture.run(R"JS(
-        ranges.setActive(7, '', -1);
+        ranges.cancel(7);
         var beforeCancelEdit = requests.length;
         ranges.editRange(a, false, 0.4, 0.5);
-        ranges.ensure(7, 'value', 2, {valid:true, minimum:-5, maximum:5, rangeAvailable:true});
-        ranges.ensure(8, 'value', 2, {valid:true, minimum:10, maximum:20, rangeAvailable:true});
+        ranges.ensure(7, 'value', 2, [-5, 5]);
+        ranges.ensure(8, 'value', 2, [10, 20]);
         var state = ranges.parameters(a);
         requests.length === beforeCancelEdit && state.mappingLower === 0.4 && state.linked
             && state.minimum === -5 && ranges.entries[ranges.attributeKey(8, 'value', 2)].mappingLower === 10;
@@ -137,6 +136,47 @@ TEST_CASE("Scalar UI ranges keep property identity and publish only active confi
         ranges.removeComponent(7);
         !ranges.entries[a] && !ranges.entries[b]
             && !!ranges.entries[ranges.attributeKey(8, 'value', 2)] && !ranges.activeKeys['7'];
+    )JS")
+            .toBool());
+}
+
+TEST_CASE("Unlinking submits a pending edit once and cancellation clears UI intent", "[scalar-range][qml-state]")
+{
+    application();
+    RangeFixture fixture;
+    CHECK(fixture.run(R"JS(
+        var key = ranges.ensure(7, 'value', 2, [0.25, 0.75]);
+        var requests = [];
+        var cancellations = [];
+        ranges.applyRequested.connect(function(component, attribute, type, configuration) {
+            requests.push(configuration);
+        });
+        ranges.cancelRequested.connect(function(component) { cancellations.push(component); });
+        ranges.apply(key);
+        ranges.setLinked(key, false, true);
+        var before = requests.length;
+        ranges.setLinked(key, false, false, {key:key, display:false, lower:0.3, upper:0.6});
+        var state = ranges.parameters(key);
+        requests.length === before + 1 && !state.linked
+            && requests[before].mapping[0] === 0.3 && requests[before].display[1] === 0.6;
+    )JS")
+            .toBool());
+    CHECK(fixture.run(R"JS(
+        var before = requests.length;
+        ranges.setLinked(key, false, true);
+        ranges.setLinked(key, false, false);
+        var noRedundantApply = requests.length === before;
+        ranges.cancel(7);
+        ranges.editRange(key, false, 0.4, 0.5);
+        noRedundantApply && requests.length === before && !ranges.activeKeys['7']
+            && cancellations.length === 1 && ranges.parameters(key).mappingLower === 0.4;
+    )JS")
+            .toBool());
+    CHECK(fixture.run(R"JS(
+        ranges.apply(key);
+        var before = requests.length;
+        ranges.setLinked(key, true, true, {key:'another-property', display:true, lower:1, upper:2}) === false
+            && requests.length === before && ranges.activeKeys['7'] === key;
     )JS")
             .toBool());
 }

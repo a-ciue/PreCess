@@ -10,8 +10,9 @@ QtObject {
     property var entries: ({})
     property var activeKeys: ({})
 
-    // 执行端确认成功后通过 setActive 更新活动身份，参数偏好不由执行端回填。
+    // 应用身份表示界面希望显示的属性，不依赖执行端成功回填。
     signal applyRequested(int componentId, string attribute, int elementType, var configuration)
+    signal cancelRequested(int componentId)
 
     // 所有草稿、属性选择和延迟请求共用同一属性身份。
     function attributeKey(component, attribute, type) {
@@ -23,7 +24,7 @@ QtObject {
         if (component < 0 || !attribute || type < 0 || type > 3)
             return "";
         let key = attributeKey(component, attribute, type);
-        let valid = !!meta && !!meta.valid && Number.isFinite(meta.minimum) && Number.isFinite(meta.maximum) && meta.minimum <= meta.maximum;
+        let valid = !!meta && meta.length === 2 && Number.isFinite(meta[0]) && Number.isFinite(meta[1]) && meta[0] <= meta[1];
         let previous = entries[key];
         let entry = previous ? Object.assign({}, previous) : {
             key: key,
@@ -38,19 +39,19 @@ QtObject {
             linked: false
         };
         entry.valid = valid;
-        entry.minimum = valid ? meta.minimum : null;
-        entry.maximum = valid ? meta.maximum : null;
-        entry.rangeAvailable = valid && !!meta.rangeAvailable;
+        entry.minimum = valid ? meta[0] : null;
+        entry.maximum = valid ? meta[1] : null;
+        entry.rangeAvailable = valid && type !== 0;
         // 首次取得完整值域时填充缺省端点，保留多分量阶段已输入的映射值。
         if (valid) {
             if (entry.mappingLower === null)
-                entry.mappingLower = meta.minimum;
+                entry.mappingLower = meta[0];
             if (entry.mappingUpper === null)
-                entry.mappingUpper = meta.maximum;
+                entry.mappingUpper = meta[1];
             if (entry.displayLower === null)
-                entry.displayLower = meta.minimum;
+                entry.displayLower = meta[0];
             if (entry.displayUpper === null)
-                entry.displayUpper = meta.maximum;
+                entry.displayUpper = meta[1];
         }
         store(entry, false);
         return key;
@@ -77,7 +78,15 @@ QtObject {
 
     // 仅接受有序有限端点；无完整值域时保留原有可选映射参数能力。
     function editRange(key, displayMode, lower, upper, applyImmediately) {
-        let previous = entries[key];
+        let entry = editedEntry(entries[key], displayMode, lower, upper);
+        if (!entry)
+            return false;
+        store(entry, applyImmediately !== false);
+        return true;
+    }
+
+    // 在副本上计算端点变化，联动操作可合并草稿后再一次保存、比较和下发。
+    function editedEntry(previous, displayMode, lower, upper) {
         if (!previous || (displayMode && !previous.rangeAvailable))
             return false;
         let optional = !previous.valid && !displayMode;
@@ -93,18 +102,21 @@ QtObject {
             entry.mappingLower = lower;
             entry.mappingUpper = upper;
         }
-        store(entry, applyImmediately !== false);
-        return true;
+        return entry;
     }
 
     // 开启时以当前编辑范围覆盖另一份，解绑仅改变界面规则。
-    function setLinked(key, displayMode, linked) {
+    function setLinked(key, displayMode, linked, edit) {
         let previous = entries[key];
         if (!previous || !previous.rangeAvailable)
             return false;
-        if (previous.linked === linked)
+        if (!edit && previous.linked === linked)
             return true;
-        let entry = Object.assign({}, previous);
+        if (edit && edit.key !== key)
+            return false;
+        let entry = edit ? editedEntry(previous, edit.display, edit.lower, edit.upper) : Object.assign({}, previous);
+        if (!entry)
+            return false;
         entry.linked = linked;
         if (linked) {
             let lower = displayMode ? entry.displayLower : entry.mappingLower;
@@ -141,11 +153,12 @@ QtObject {
         let entry = entries[key];
         if (!entry)
             return false;
+        setActive(entry.component, entry.attribute, entry.type);
         applyRequested(entry.component, entry.attribute, entry.type, configuration(key));
         return true;
     }
 
-    // 只记录执行端成功应用或取消的身份，不接收和覆盖用户参数。
+    // 记录界面的应用意图；切换非标量模式时只清理身份，不改写历史参数。
     function setActive(component, attribute, type) {
         let next = Object.assign({}, activeKeys);
         if (attribute)
@@ -153,6 +166,12 @@ QtObject {
         else
             delete next[String(component)];
         activeKeys = next;
+    }
+
+    // 取消同时清理实时编辑目标并发出请求，渲染窗口不存在时也保留明确的界面意图。
+    function cancel(component) {
+        setActive(component, "", -1);
+        cancelRequested(component);
     }
 
     // 组件删除时释放偏好，避免组件身份复用后恢复旧参数。

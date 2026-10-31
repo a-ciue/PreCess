@@ -115,13 +115,13 @@ void MeshActorManager::setAttriMode(
     Index component_id,
     const std::string& attr_name,
     Mode mode,
-    std::map<std::string, std::any> args)
+    std::map<std::string, std::any> args, bool update_scalar_bar)
 {
     if (this->component_actors_.count(component_id)) {
         std::unique_ptr<IAttributeRenderStrategy> strategy;
         switch (mode) {
         case Mode::SCALAR:
-            strategy = std::make_unique<AttriRenderStrategyScalar>(scalar_bar_);
+            strategy = std::make_unique<AttriRenderStrategyScalar>(update_scalar_bar ? scalar_bar_.GetPointer() : nullptr);
             break;
         case Mode::VECTOR:
             strategy = std::make_unique<AttriRenderStrategyVector>();
@@ -138,12 +138,28 @@ void MeshActorManager::setAttriMode(
         }
 
         // 颜色表为窗口级共享对象，执行新策略前清理上一次标量渲染状态。
-        scalar_bar_->SetVisibility(false);
-        scalar_bar_component_id_ = -1;
+        if (update_scalar_bar) {
+            scalar_bar_->SetVisibility(false);
+            scalar_bar_component_id_ = -1;
+        }
         this->component_actors_[component_id]->setRenderStrategy(std::move(strategy));
         this->component_actors_[component_id]->renderAttribute(attr_name, args);
-        scalar_bar_component_id_ = scalar_bar_->GetVisibility() ? component_id : -1;
+        if (update_scalar_bar)
+            scalar_bar_component_id_ = scalar_bar_->GetVisibility() ? component_id : -1;
     }
+}
+
+void MeshActorManager::applyScalarConfig(Index component_id, const MeshDataSnapshot& snapshot, bool update_scalar_bar)
+{
+    if (!snapshot.scalar_config) {
+        cancelAttri(component_id);
+        return;
+    }
+    const auto& config = *snapshot.scalar_config;
+    std::map<std::string, std::any> args { { "element_type", static_cast<int>(config.type) } };
+    if (config.mapping)
+        args.emplace("scalar_range", std::vector<double> { (*config.mapping)[0], (*config.mapping)[1] });
+    setAttriMode(component_id, config.attribute, Mode::SCALAR, std::move(args), update_scalar_bar);
 }
 
 void MeshActorManager::cancelAttri(Index component_id)

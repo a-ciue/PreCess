@@ -22,6 +22,7 @@
 #include <QQmlEngine>
 #include <QQmlExtensionPlugin>
 #include <QQuickVTKItem.h>
+#include <QQuickItem>
 #include <QQuickWindow>
 #include <QScopeGuard>
 #include <QTemporaryDir>
@@ -136,6 +137,62 @@ bool waitForRefresh(TreeModel& tree_model)
     return refreshed;
 }
 
+}
+
+TEST_CASE("Actual scalar editor unlinks a text draft with one complete request", "[QML][scalar-range][no-window]")
+{
+    application();
+    QmlFixture f;
+    auto ranges = load(f.engine, "ScalarRangeState.qml");
+    auto panel = load(f.engine, "AttributeRenderPanel.qml", { { "rangeState", QVariant::fromValue(ranges.get()) } });
+    f.engine.globalObject().setProperty("ranges", f.engine.newQObject(ranges.get()));
+    f.engine.globalObject().setProperty("panel", f.engine.newQObject(panel.get()));
+    auto setup = f.engine.evaluate(R"JS(
+        var key = ranges.ensure(7, 'value', 2, [0.25, 0.751234567]);
+        panel.selectedKey = key;
+        ranges.apply(key);
+        ranges.setLinked(key, false, true);
+        var requests = [];
+        ranges.applyRequested.connect(function(component, attribute, type, configuration) {
+            requests.push({component:component, attribute:attribute, type:type, configuration:configuration});
+        });
+    )JS");
+    INFO(setup.toString().toStdString());
+    REQUIRE_FALSE(setup.isError());
+    auto* mode = panel->findChild<QObject*>("attributeRenderMode");
+    auto* lower = panel->findChild<QObject*>("scalarRangeLower");
+    auto* link = panel->findChild<QObject*>("scalarRangeLink");
+    REQUIRE(mode);
+    REQUIRE(lower);
+    REQUIRE(link);
+    REQUIRE(mode->setProperty("currentIndex", 1));
+    REQUIRE(link->property("enabled").toBool());
+    SECTION("color mapping draft") { }
+    SECTION("visible cells draft")
+    {
+        auto* display = panel->findChild<QObject*>("scalarDisplayMode");
+        REQUIRE(display);
+        REQUIRE(QMetaObject::invokeMethod(display, "clicked"));
+    }
+    // 触发生产输入框和按钮的处理链，不直接构造草稿，也不创建或显示窗口。
+    REQUIRE(lower->setProperty("text", "0.333333333333"));
+    REQUIRE(QMetaObject::invokeMethod(lower, "textEdited"));
+    REQUIRE(QMetaObject::invokeMethod(link, "clicked"));
+    QCoreApplication::processEvents();
+    auto result = f.engine.evaluate(R"JS(
+        var state = ranges.parameters(key);
+        var config = requests.length === 1 ? requests[0].configuration : null;
+        !state.linked && !panel.currentRange.linked && requests.length === 1
+            && requests[0].component === 7 && requests[0].attribute === 'value' && requests[0].type === 2
+            && config.mapping[0] === 0.333333333333 && config.display[0] === 0.333333333333
+            && config.mapping[1] === 0.751234567 && config.display[1] === 0.751234567;
+    )JS");
+    INFO(result.toString().toStdString());
+    REQUIRE_FALSE(result.isError());
+    CHECK(result.toBool());
+    auto* panel_item = qobject_cast<QQuickItem*>(panel.get());
+    REQUIRE(panel_item);
+    CHECK(panel_item->window() == nullptr);
 }
 
 TEST_CASE("Actual QML synchronizes reversed mesh and geometry visibility across tree refresh", "[QML][visibility]")

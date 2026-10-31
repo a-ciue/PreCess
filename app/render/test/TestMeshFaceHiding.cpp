@@ -404,6 +404,45 @@ TEST_CASE("MeshActorManager preserves scalar bar across same-generation snapshot
     CHECK(manager.getComponentActor(7)->dataGeneration() == reloaded_snapshot->generation);
 }
 
+TEST_CASE("Scalar restoration preserves another component's shared bar ownership and visibility", "[scalar-range]")
+{
+    auto mesh = makeAttributeMesh();
+    MeshPipelineData pipeline;
+    pipeline.loadModelData(MakeMeshDataVtk(mesh));
+    const auto snapshot = pipeline.createSnapshot();
+    vtkNew<vtkRenderer> renderer;
+    MeshActorManager manager;
+    manager.bindRender(renderer);
+    manager.loadMesh(7, snapshot, renderer);
+    manager.loadMesh(8, snapshot, renderer);
+    manager.setAttriMode(7, "f_isolation_scalar_1", Mode::SCALAR,
+        { { "scalar_range", std::vector<double> { 0.0, 1.0 } } });
+    vtkScalarBarActor* scalar_bar = nullptr;
+    auto* props = renderer->GetViewProps();
+    props->InitTraversal();
+    while (auto* prop = props->GetNextProp()) {
+        if (auto* bar = vtkScalarBarActor::SafeDownCast(prop))
+            scalar_bar = bar;
+    }
+    REQUIRE(scalar_bar);
+    auto* lookup_table = scalar_bar->GetLookupTable();
+    REQUIRE(scalar_bar->GetVisibility());
+    manager.setAttriMode(8, "f_isolation_scalar_1", Mode::SCALAR,
+        { { "scalar_range", std::vector<double> { 10.0, 20.0 } } }, false);
+    AttributeOperator other(manager.getComponentActor(8).get());
+    CHECK(other.getFaceMapper()->GetScalarRange()[0] == 10.0);
+    CHECK(other.getFaceMapper()->GetScalarRange()[1] == 20.0);
+    CHECK(scalar_bar->GetLookupTable() == lookup_table);
+    CHECK(scalar_bar->GetVisibility());
+    // 取消非归属组件不能关闭颜色条，取消归属组件后恢复也不能重新显示。
+    manager.cancelAttri(8);
+    CHECK(scalar_bar->GetVisibility());
+    manager.cancelAttri(7);
+    REQUIRE_FALSE(scalar_bar->GetVisibility());
+    manager.setAttriMode(8, "f_isolation_scalar_1", Mode::SCALAR, { }, false);
+    CHECK_FALSE(scalar_bar->GetVisibility());
+}
+
 TEST_CASE("hideFaces ignores duplicate and invalid IDs and showAllFaces restores them")
 {
     FaceHidingEnv env;
