@@ -783,10 +783,14 @@ Page {
                 property bool active: true
 
                 visible: shown
+                height: shown ? implicitHeight : 0
                 enabled: shown && active
             }
 
-            component StyledSeparator: MenuSeparator {}
+            component StyledSeparator: MenuSeparator {
+                visible: viewportMenu.hasPicks
+                height: viewportMenu.hasPicks ? implicitHeight : 0
+            }
 
             StyledMenuItem {
                 text: "隐藏"
@@ -825,9 +829,7 @@ Page {
                 }
             }
 
-            StyledSeparator {
-                visible: viewportMenu.hasPicks
-            }
+            StyledSeparator {}
 
             StyledMenuItem {
                 text: "全部隐藏"

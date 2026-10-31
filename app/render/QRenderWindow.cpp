@@ -400,12 +400,13 @@ bool QRenderWindow::event(QEvent* ev)
         if (!_click)
             return QQuickVTKItem::event(ev);
 
-        setClick();
         auto e = static_cast<QMouseEvent*>(ev);
         if (e->button() == Qt::RightButton) {
             emit rightClicked();
             return QQuickVTKItem::event(ev);
         }
+        if (e->button() == Qt::LeftButton)
+            setClick();
         emit clicked();
         return QQuickVTKItem::event(ev);
         break;
