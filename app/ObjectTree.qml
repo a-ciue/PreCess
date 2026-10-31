@@ -31,6 +31,32 @@ Pane {
     readonly property int _nodeTypeMesh: 2
     readonly property int _nodeTypeGeometry: 3
 
+    readonly property int _expansionComp: 1
+    readonly property int _expansionGeoAndEle: 2
+    readonly property int _expansionAll: 3
+
+    // 取当前可见行中已展开节点的最大层级，用于层级按钮的再次点击折叠。
+    function currentExpansionLevel() {
+        let level = 0
+        for (let row = 0; row < treeView.rows; ++row) {
+            if (treeView.isExpanded(row))
+                level = Math.max(level, treeView.depth(row) + 1)
+        }
+        return level
+    }
+
+    // 先统一折叠再展开到目标层级，确保深于目标的节点也被收起。
+    function applyExpansionLevel(level) {
+        treeView.collapseRecursively(-1)
+        if (level > 0)
+            treeView.expandRecursively(-1, level)
+        treeView.forceLayout()
+    }
+
+    function toggleExpansionLevel(level) {
+        applyExpansionLevel(currentExpansionLevel() >= level ? level - 1 : level)
+    }
+
     Connections {
         target: QModelManager.observer
 
@@ -89,6 +115,59 @@ Pane {
             }
             height: 1
             color: Theme.border
+        }
+
+        Row {
+            anchors { left: parent.left; leftMargin: 6; verticalCenter: parent.verticalCenter }
+            spacing: 2
+
+            ToolButton {
+                objectName: "objectTreeToggleComp"
+                text: "一级"
+                implicitHeight: 26
+                display: ToolButton.TextOnly
+                flat: true
+                font.pixelSize: Theme.fontSizeSmall
+                Accessible.name: qsTr("展开或折叠到一级（组件）")
+
+                ToolTip.visible: hovered
+                ToolTip.text: qsTr("展开或折叠到一级（组件）")
+                ToolTip.delay: 500
+
+                onClicked: objectTree.toggleExpansionLevel(objectTree._expansionComp)
+            }
+
+            ToolButton {
+                objectName: "objectTreeToggleGeo"
+                text: "二级"
+                implicitHeight: 26
+                display: ToolButton.TextOnly
+                flat: true
+                font.pixelSize: Theme.fontSizeSmall
+                Accessible.name: qsTr("展开或折叠到二级（几何与网格）")
+
+                ToolTip.visible: hovered
+                ToolTip.text: qsTr("展开或折叠到二级（几何与网格）")
+                ToolTip.delay: 500
+
+                onClicked: objectTree.toggleExpansionLevel(objectTree._expansionGeoAndEle)
+            }
+
+            ToolButton {
+                objectName: "objectTreeToggleAll"
+                text: "三级"
+                implicitHeight: 26
+                display: ToolButton.TextOnly
+                flat: true
+                font.pixelSize: Theme.fontSizeSmall
+                Accessible.name: qsTr("展开或折叠到三级（全部）")
+
+                ToolTip.visible: hovered
+                ToolTip.text: qsTr("展开或折叠到三级（全部）")
+                ToolTip.delay: 500
+
+                onClicked: objectTree.toggleExpansionLevel(objectTree._expansionAll)
+            }
         }
 
         Row {

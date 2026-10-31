@@ -615,6 +615,136 @@ TEST_CASE("Actual QML preserves expanded rows across incremental imports and del
     CHECK(is_expanded(row));
 }
 
+TEST_CASE("Actual QML applies object tree expansion levels", "[QML][tree]")
+{
+    application();
+    QmlFixture f;
+    auto& model = *f.manager->getModelManager();
+    model.setUndoRecorder(nullptr);
+    auto* tree_model = f.tree->findChild<TreeModel*>();
+    auto* tree_view = f.tree->findChild<QObject*>("objectTreeView");
+    REQUIRE(tree_model);
+    REQUIRE(tree_view);
+
+    auto make_component = [](bool with_solid, bool with_geometry) {
+        auto component = std::make_unique<ComponentData>();
+        component->mesh = std::make_unique<MeshData>();
+        component->mesh->vertex_positions_ = { { 0.0, 0.0, 0.0 }, { 1.0, 0.0, 0.0 }, { 0.0, 1.0, 0.0 } };
+        component->mesh->vertex_count_ = 3;
+        component->mesh->face_vertices_offset_.assign(2, 0);
+        if (with_solid)
+            component->mesh->solid_types_.assign(1, 0);
+        if (with_geometry)
+            component->geometry = std::make_unique<GeometryData>();
+        return component;
+    };
+
+    ComponentDatas components_a;
+    components_a.push_back(make_component(true, true));
+    const Index model_a = model.addModel("levels-a", std::move(components_a));
+    ComponentDatas components_b;
+    components_b.push_back(make_component(false, false));
+    const Index model_b = model.addModel("levels-b", std::move(components_b));
+    REQUIRE(tree_model->refresh());
+
+    const Index component_a = model.modelById(model_a)->componentIds().front();
+    const QModelIndex model_a_index = tree_model->findIndexByNodeId(model_a, 0);
+    const QModelIndex component_a_index = tree_model->findIndexByNodeId(component_a, 1);
+    REQUIRE(model_a_index.isValid());
+    REQUIRE(component_a_index.isValid());
+    const QModelIndex mesh_a_index = tree_model->index(0, 0, component_a_index);
+    REQUIRE(mesh_a_index.isValid());
+    const QModelIndex mesh_child_index = tree_model->index(0, 0, mesh_a_index);
+    REQUIRE(mesh_child_index.isValid());
+
+    auto settle = [&] {
+        REQUIRE(QMetaObject::invokeMethod(tree_view, "forceLayout"));
+        QCoreApplication::processEvents();
+    };
+    auto row_of = [&](const QModelIndex& index) {
+        int row = -1;
+        REQUIRE(QMetaObject::invokeMethod(tree_view, "rowAtIndex",
+            Q_RETURN_ARG(int, row), Q_ARG(QModelIndex, index)));
+        return row;
+    };
+    auto is_expanded = [&](int row) {
+        bool expanded = false;
+        REQUIRE(QMetaObject::invokeMethod(tree_view, "isExpanded",
+            Q_RETURN_ARG(bool, expanded), Q_ARG(int, row)));
+        return expanded;
+    };
+    auto rows = [&] { return tree_view->property("rows").toInt(); };
+    auto click = [&](const char* name) {
+        QObject* button = f.tree->findChild<QObject*>(name);
+        REQUIRE(button);
+        REQUIRE(QMetaObject::invokeMethod(button, "clicked"));
+        settle();
+    };
+
+    REQUIRE(QMetaObject::invokeMethod(tree_view, "collapseRecursively", Q_ARG(int, -1)));
+    settle();
+    CHECK(rows() == 2);
+
+    click("objectTreeToggleComp");
+    int model_row = row_of(model_a_index);
+    REQUIRE(model_row >= 0);
+    CHECK(is_expanded(model_row));
+    const int component_row = row_of(component_a_index);
+    REQUIRE(component_row >= 0);
+    CHECK_FALSE(is_expanded(component_row));
+    CHECK(row_of(mesh_a_index) == -1);
+    CHECK(rows() == 4);
+
+    click("objectTreeToggleComp");
+    model_row = row_of(model_a_index);
+    REQUIRE(model_row >= 0);
+    CHECK_FALSE(is_expanded(model_row));
+    CHECK(row_of(component_a_index) == -1);
+    CHECK(rows() == 2);
+
+    click("objectTreeToggleGeo");
+    model_row = row_of(model_a_index);
+    REQUIRE(model_row >= 0);
+    CHECK(is_expanded(model_row));
+    const int component_row_geo = row_of(component_a_index);
+    REQUIRE(component_row_geo >= 0);
+    CHECK(is_expanded(component_row_geo));
+    const int mesh_row = row_of(mesh_a_index);
+    REQUIRE(mesh_row >= 0);
+    CHECK_FALSE(is_expanded(mesh_row));
+    CHECK(rows() == 7);
+
+    click("objectTreeToggleGeo");
+    REQUIRE(row_of(component_a_index) >= 0);
+    CHECK_FALSE(is_expanded(row_of(component_a_index)));
+    CHECK(row_of(mesh_a_index) == -1);
+    CHECK(rows() == 4);
+
+    click("objectTreeToggleAll");
+    const int mesh_row_all = row_of(mesh_a_index);
+    REQUIRE(mesh_row_all >= 0);
+    CHECK(is_expanded(mesh_row_all));
+    const int mesh_child_row = row_of(mesh_child_index);
+    REQUIRE(mesh_child_row >= 0);
+    CHECK_FALSE(is_expanded(mesh_child_row));
+    CHECK(rows() == 10);
+
+    click("objectTreeToggleAll");
+    CHECK(row_of(mesh_a_index) >= 0);
+    CHECK_FALSE(is_expanded(row_of(mesh_a_index)));
+    CHECK(row_of(mesh_child_index) == -1);
+    CHECK(rows() == 7);
+
+    model.removeModel(model_a);
+    model.removeModel(model_b);
+    settle();
+    CHECK(rows() == 0);
+    click("objectTreeToggleComp");
+    click("objectTreeToggleGeo");
+    click("objectTreeToggleAll");
+    CHECK(rows() == 0);
+}
+
 TEST_CASE("Actual undo clears offscreen selectors only after successful restoration", "[QML][undo]")
 {
     application();
