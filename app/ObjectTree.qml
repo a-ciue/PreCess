@@ -77,10 +77,6 @@ Pane {
             treeModel.queueModelChanged(modelId)
         }
 
-        function onModelNameChanged(modelId, newName) {
-            treeModel.syncModelNameChanged(modelId, newName)
-        }
-
         function onComponentRemoved(componentId) {
             if (App.selection.activeComponentId === componentId) {
                 // 实际删除当前组件后保留所属模型，并选择剩余的第一个组件。
@@ -160,10 +156,10 @@ Pane {
                 display: ToolButton.TextOnly
                 flat: true
                 font.pixelSize: Theme.fontSizeSmall
-                Accessible.name: qsTr("展开或折叠到三级（全部）")
+                Accessible.name: qsTr("展开或折叠到三级（元素）")
 
                 ToolTip.visible: hovered
-                ToolTip.text: qsTr("展开或折叠到三级（全部）")
+                ToolTip.text: qsTr("展开或折叠到三级（元素）")
                 ToolTip.delay: 500
 
                 onClicked: objectTree.toggleExpansionLevel(objectTree._expansionAll)

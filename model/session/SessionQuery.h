@@ -104,8 +104,6 @@ public:
     // —— 摘要查询 ——
     std::vector<ModelSummary> listModels() const;
     std::vector<ComponentSummary> componentSummaries(Index model_id) const;
-    //! @brief 单组件摘要；组件不存在返回空
-    std::optional<ComponentSummary> componentSummary(Index component_id) const;
     MeshSummary meshSummary(Index component_id) const;
     GeometrySummary geometrySummary(Index component_id) const;
     //! @brief 组件网格的全部属性渲染条目（四张属性表顺序遍历；属性名/类型查询复用本条目）

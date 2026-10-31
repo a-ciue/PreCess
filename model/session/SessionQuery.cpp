@@ -245,25 +245,19 @@ std::vector<ComponentSummary> SessionQuery::componentSummaries(Index model_id) c
 {
     std::vector<ComponentSummary> out;
     for (Index cid : componentIds(model_id)) {
-        if (auto summary = componentSummary(cid))
-            out.push_back(std::move(*summary));
+        ComponentData* comp = model_.findComponent(cid);
+        if (!comp)
+            continue;
+
+        ComponentSummary summary;
+        summary.component_id = cid;
+        summary.name = comp->name;
+        summary.has_mesh = static_cast<bool>(comp->mesh);
+        summary.has_geometry = static_cast<bool>(comp->geometry);
+        summary.material_id = comp->material_id;
+        out.push_back(std::move(summary));
     }
     return out;
-}
-
-std::optional<ComponentSummary> SessionQuery::componentSummary(Index component_id) const
-{
-    ComponentData* comp = model_.findComponent(component_id);
-    if (!comp)
-        return std::nullopt;
-
-    ComponentSummary summary;
-    summary.component_id = component_id;
-    summary.name = comp->name;
-    summary.has_mesh = static_cast<bool>(comp->mesh);
-    summary.has_geometry = static_cast<bool>(comp->geometry);
-    summary.material_id = comp->material_id;
-    return summary;
 }
 
 MeshSummary SessionQuery::meshSummary(Index component_id) const

@@ -73,14 +73,6 @@ TEST_CASE("SessionQuery model and component summaries", "[session][query]")
         CHECK(summaries[0].has_mesh == false);
         CHECK(summaries[0].has_geometry == true);
 
-        const auto single = query.componentSummary(comp_id);
-        REQUIRE(single.has_value());
-        CHECK(single->component_id == comp_id);
-        CHECK(single->name == "Box");
-        CHECK(single->has_mesh == false);
-        CHECK(single->has_geometry == true);
-        CHECK_FALSE(query.componentSummary(-1).has_value());
-
         CHECK(query.findModelIdByComponent(comp_id) == model_a);
         CHECK(query.findModelIdByComponent(-1) == -1);
         CHECK(query.hasModel(model_a));

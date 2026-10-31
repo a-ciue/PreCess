@@ -79,22 +79,12 @@ public:
      * @note 模型层当前无内部发射点，保留给 ModelOperator::notifyChanged 的 SDK 调用方。
      */
     Q_INVOKABLE void syncModelChanged(Index model_id);
-    /**
-     * @brief 增量同步：模型名称变化（仅 dataChanged）
-     * @note 模型层当前无内部改名发射点，保留给后续模型层事件与 SDK 调用方。
-     */
-    Q_INVOKABLE void syncModelNameChanged(Index model_id, const QString& name);
-    //! @brief 增量同步：组件新增或内容变化（新增组件时立即插入，内容变化由调用方决定时机）
-    Q_INVOKABLE void syncComponentChanged(Index component_id);
     //! @brief 增量同步：组件移除（结构事件，立即执行）
     Q_INVOKABLE void syncComponentRemoved(Index component_id);
 
     //! @brief 数据事件合并入口：50ms 内同一模型只同步一次
     Q_INVOKABLE void queueModelChanged(Index model_id);
-    /**
-     * @brief 数据事件合并入口：组件已存在时 50ms 合并，尚未入树时立即插入
-     * @note componentChanged 同时承担“新增组件”通知，因此不能一律延迟。
-     */
+    //! @brief 组件变化入口：映射到所属模型后按 50ms 合并
     Q_INVOKABLE void queueComponentChanged(Index component_id);
 
     QObject* getModelQuery() const { return modelQuery_; }
@@ -140,7 +130,6 @@ private:
     void propagateUp(TreeNode* node);
 
     ModelNodeInfo queryModel(Index model_id) const;
-    ComponentNodeInfo queryComponent(Index component_id) const;
     void fillComponentData(ComponentNodeInfo& info) const;
 
     TreeNode* buildModelNode(const ModelNodeInfo& info);
@@ -190,7 +179,6 @@ private:
     bool initialized_ = false;
     QTimer* data_sync_timer_ = nullptr;
     std::unordered_set<Index> pending_model_ids_;
-    std::unordered_set<Index> pending_component_ids_;
     std::unordered_map<int, bool> components_visibility_;
     std::unordered_map<int, std::pair<bool, bool>> sub_visibility_; // first=mesh visible, second=geometry visible
 };

@@ -234,24 +234,6 @@ void TreeModel::fillComponentData(ComponentNodeInfo& info) const
     }
 }
 
-TreeModel::ComponentNodeInfo TreeModel::queryComponent(Index component_id) const
-{
-    ComponentNodeInfo info;
-    info.id = component_id;
-    if (!modelQuery_)
-        return info;
-
-    const QVariantMap component = modelQuery_->getComponentSummary(component_id);
-    if (component.isEmpty())
-        return info;
-
-    info.name = component["name"].toString();
-    info.has_mesh = component["has_mesh"].toBool();
-    info.has_geometry = component["has_geometry"].toBool();
-    fillComponentData(info);
-    return info;
-}
-
 TreeModel::ModelNodeInfo TreeModel::queryModel(Index model_id) const
 {
     ModelNodeInfo info;
@@ -426,7 +408,6 @@ void TreeModel::unregisterSubtree(TreeNode* node)
         pending_model_ids_.erase(node->nodeId);
     } else if (node->nodeType == TreeNode::NodeType::Component) {
         component_nodes_.erase(node->nodeId);
-        pending_component_ids_.erase(node->nodeId);
     }
 
     for (TreeNode* child : node->children)
@@ -565,7 +546,6 @@ void TreeModel::rebuildAllFromQuery()
     component_nodes_.clear();
     next_fake_id_ = -2;
     pending_model_ids_.clear();
-    pending_component_ids_.clear();
     if (data_sync_timer_)
         data_sync_timer_->stop();
 
@@ -853,76 +833,6 @@ void TreeModel::syncModelChanged(Index model_id)
         refresh();
 }
 
-void TreeModel::syncModelNameChanged(Index model_id, const QString& name)
-{
-    if (!initialized_) {
-        refresh();
-        return;
-    }
-
-    auto it = model_nodes_.find(model_id);
-    if (it == model_nodes_.end()) {
-        if (modelQuery_->hasModel(model_id))
-            syncModelAdded(model_id);
-        return;
-    }
-
-    if (it->second->name != name) {
-        it->second->name = name;
-        notifyNodeData(it->second, { NameRole });
-    }
-}
-
-void TreeModel::syncComponentChanged(Index component_id)
-{
-    if (!initialized_) {
-        refresh();
-        return;
-    }
-
-    auto it = component_nodes_.find(component_id);
-    if (it == component_nodes_.end()) {
-        const Index model_id = modelQuery_->findModelIdByComponent(component_id);
-        if (model_id < 0)
-            return;
-
-        auto model_it = model_nodes_.find(model_id);
-        if (model_it == model_nodes_.end()) {
-            syncModelAdded(model_id);
-            return;
-        }
-
-        const QVariantList components = modelQuery_->getComponentsSummary(model_id);
-        int row = -1;
-        for (int i = 0; i < components.size(); ++i) {
-            if (components[i].toMap()["component_id"].toInt() == component_id) {
-                row = i;
-                break;
-            }
-        }
-        if (row < 0)
-            return;
-
-        TreeNode* component = buildComponentNode(queryComponent(component_id));
-        insertChildNode(model_it->second, row, component);
-
-        const QString number = QString::number(model_it->second->children.size());
-        if (model_it->second->number != number) {
-            model_it->second->number = number;
-            notifyNodeData(model_it->second, { NumberRole });
-        }
-        updateAncestorVisibility(component);
-        return;
-    }
-
-    if (modelQuery_->findModelIdByComponent(component_id) < 0) {
-        syncComponentRemoved(component_id);
-        return;
-    }
-
-    syncComponentNode(it->second, queryComponent(component_id));
-}
-
 void TreeModel::syncComponentRemoved(Index component_id)
 {
     if (!initialized_) {
@@ -971,31 +881,24 @@ void TreeModel::queueComponentChanged(Index component_id)
         refresh();
         return;
     }
-    if (component_nodes_.find(component_id) == component_nodes_.end()) {
-        syncComponentChanged(component_id);
+
+    const Index model_id = modelQuery_->findModelIdByComponent(component_id);
+    if (model_id < 0)
         return;
-    }
-    pending_component_ids_.insert(component_id);
-    if (!data_sync_timer_->isActive())
-        data_sync_timer_->start();
+
+    queueModelChanged(model_id);
 }
 
 void TreeModel::flushPendingDataSync()
 {
-    const auto component_ids = std::exchange(pending_component_ids_, {});
     const auto model_ids = std::exchange(pending_model_ids_, {});
-
-    for (Index component_id : component_ids)
-        syncComponentChanged(component_id);
 
     for (Index model_id : model_ids)
         syncModelChanged(model_id);
 
     // 处理期间经信号回调新排队的 id 留到下一轮定时器消费，避免递归 flush。
-    if ((!pending_model_ids_.empty() || !pending_component_ids_.empty())
-        && data_sync_timer_ && !data_sync_timer_->isActive()) {
+    if (!pending_model_ids_.empty() && data_sync_timer_ && !data_sync_timer_->isActive())
         data_sync_timer_->start();
-    }
 
     emit dataSyncFinished();
 }
@@ -1138,7 +1041,6 @@ void TreeModel::setModelQuery(QObject* query)
     modelQuery_ = next;
     initialized_ = false;
     pending_model_ids_.clear();
-    pending_component_ids_.clear();
     if (data_sync_timer_)
         data_sync_timer_->stop();
     components_visibility_.clear();

@@ -60,7 +60,6 @@ TEST_CASE("TreeModel applies structural changes through row signals", "[TreeMode
     REQUIRE(tree.refresh());
     CHECK(resets == 1);
     CHECK(tree.rowCount() == 0);
-    CHECK(model_query.getComponentSummary(-1).isEmpty());
 
     ComponentDatas components;
     auto mesh_component = std::make_unique<ComponentData>();
@@ -113,6 +112,8 @@ TEST_CASE("TreeModel applies structural changes through row signals", "[TreeMode
     const Index created_id = model_operator->addGeometryComponent(std::move(created_component));
 
     tree.queueComponentChanged(created_id);
+    CHECK_FALSE(tree.findIndexByNodeId(created_id, 1).isValid());
+    REQUIRE(waitForDataSync(tree));
     CHECK(resets == 1);
     REQUIRE(tree.rowCount(model_index) == 3);
     CHECK(tree.findIndexByNodeId(created_id, 1).isValid());
@@ -161,7 +162,7 @@ TEST_CASE("TreeModel emits data changes for mutated component names", "[TreeMode
     auto component_operator = model.getComponentOperator(component_id);
     REQUIRE(component_operator);
     component_operator->setName("renamed");
-    tree.syncComponentChanged(component_id);
+    tree.syncModelChanged(model_id);
     CHECK(data_changed > 0);
     CHECK(tree.data(component_index, TreeModel::NameRole).toString() == "renamed");
 }
@@ -249,7 +250,7 @@ TEST_CASE("TreeModel removes mesh and geometry nodes incrementally", "[TreeModel
     REQUIRE(component_operator);
     component_operator->removeMesh();
     model.flushNotifications();
-    tree.syncComponentChanged(component_id);
+    tree.syncModelChanged(model_id);
     CHECK(resets == 1);
     CHECK(removed == 1);
     REQUIRE(tree.rowCount(component_index) == 1);
@@ -258,7 +259,7 @@ TEST_CASE("TreeModel removes mesh and geometry nodes incrementally", "[TreeModel
 
     component_operator->removeGeometry();
     model.flushNotifications();
-    tree.syncComponentChanged(component_id);
+    tree.syncModelChanged(model_id);
     CHECK(resets == 1);
     CHECK(removed == 2);
     CHECK(tree.rowCount(component_index) == 0);
@@ -292,7 +293,7 @@ TEST_CASE("TreeModel shows a newly added subtype as visible", "[TreeModel]")
     REQUIRE(component_operator);
     component_operator->replaceMesh(std::make_unique<MeshData>());
     model.flushNotifications();
-    tree.syncComponentChanged(component_id);
+    tree.syncModelChanged(model_id);
 
     component_index = tree.findIndexByNodeId(component_id, 1);
     REQUIRE(component_index.isValid());
@@ -387,7 +388,7 @@ TEST_CASE("TreeModel keeps count child order and numbers", "[TreeModel]")
     REQUIRE(component_operator);
     component_operator->replaceMesh(makeCountMesh(1, 0));
     model.flushNotifications();
-    tree.syncComponentChanged(mesh_component_id);
+    tree.syncModelChanged(model_id);
 
     mesh_index = child_of_type(mesh_component_index, TreeNode::NodeType::Mesh);
     REQUIRE(mesh_index.isValid());
@@ -399,7 +400,7 @@ TEST_CASE("TreeModel keeps count child order and numbers", "[TreeModel]")
 
     component_operator->replaceMesh(makeCountMesh(0, 0));
     model.flushNotifications();
-    tree.syncComponentChanged(mesh_component_id);
+    tree.syncModelChanged(model_id);
 
     mesh_index = child_of_type(mesh_component_index, TreeNode::NodeType::Mesh);
     REQUIRE(mesh_index.isValid());
@@ -537,7 +538,7 @@ TEST_CASE("TreeModel consumes changes queued during a flush on the next timer", 
         == "second-updated");
 }
 
-TEST_CASE("TreeModel coalesces data changes and keeps structural inserts immediate", "[TreeModel]")
+TEST_CASE("TreeModel coalesces data changes and inserts components on flush", "[TreeModel]")
 {
     application();
     ModelLayer model;
@@ -600,5 +601,9 @@ TEST_CASE("TreeModel coalesces data changes and keeps structural inserts immedia
     const Index created_id = model_operator->addGeometryComponent(std::move(created));
     CHECK_FALSE(tree.findIndexByNodeId(created_id, 1).isValid());
     tree.queueComponentChanged(created_id);
+    CHECK_FALSE(tree.findIndexByNodeId(created_id, 1).isValid());
+    REQUIRE(waitForDataSync(tree));
     CHECK(tree.findIndexByNodeId(created_id, 1).isValid());
+    CHECK(inserted == 1);
+    CHECK(resets == 0);
 }
