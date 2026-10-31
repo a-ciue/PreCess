@@ -33,7 +33,7 @@
 <area shape="rect" id="Node000016" href="$FeatureSystemRegister_8cpp.html" title=" " alt="" coords="3019,181,3223,221"/>
 <area shape="poly" id="edge15_Node000002_Node000016" title=" " alt="" coords="2421,120,2686,143,3006,179,3019,180,3018,186,3006,184,2685,148,2421,125"/>
 <area shape="poly" id="edge16_Node000002_Node000017" title=" " alt="" coords="2421,114,3181,136,3615,155,3796,166,3933,179,3944,180,3943,185,3932,184,3795,172,3615,161,3180,142,2421,120"/>
-<area shape="rect" id="Node000018" href="$TestFeatureNavigation_8cpp.html" title="Feature 的通用分类聚合及持久参数回归测试。" alt="" coords="3247,181,3475,221"/>
+<area shape="rect" id="Node000018" href="$TestFeatureNavigation_8cpp.html" title="导航父节点注册、入口聚合及参数保持的回归测试。" alt="" coords="3247,181,3475,221"/>
 <area shape="poly" id="edge17_Node000002_Node000018" title=" " alt="" coords="2422,117,2781,139,3008,156,3236,179,3247,180,3246,185,3235,184,3007,162,2781,144,2422,122"/>
 <area shape="rect" id="Node000019" href="$TestFeatureSystem_8cpp.html" title=" " alt="" coords="3499,181,3705,221"/>
 <area shape="poly" id="edge18_Node000002_Node000019" title=" " alt="" coords="2421,114,2883,132,3184,151,3488,179,3499,180,3498,185,3487,184,3183,156,2883,138,2421,120"/>

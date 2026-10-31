@@ -89,7 +89,7 @@
 <area shape="poly" id="edge58_Node000005_Node000052" title=" " alt="" coords="3185,97,2185,116,1598,133,1353,143,1167,155,979,173,791,197,484,243,484,237,790,191,978,168,1166,149,1352,138,1597,128,2185,111,3185,92"/>
 <area shape="rect" id="Node000053" href="$TestEditSystem_8cpp.html" title=" " alt="" coords="1755,152,1938,192"/>
 <area shape="poly" id="edge62_Node000005_Node000053" title=" " alt="" coords="3185,100,2475,129,1950,155,1939,156,1938,151,1949,149,2475,124,3185,94"/>
-<area shape="rect" id="Node000034" href="$TestFeatureNavigation_8cpp.html" title="Feature 的通用分类聚合及持久参数回归测试。" alt="" coords="1962,152,2190,192"/>
+<area shape="rect" id="Node000034" href="$TestFeatureNavigation_8cpp.html" title="导航父节点注册、入口聚合及参数保持的回归测试。" alt="" coords="1962,152,2190,192"/>
 <area shape="poly" id="edge67_Node000005_Node000034" title=" " alt="" coords="3185,100,2676,124,2403,140,2203,155,2190,156,2190,151,2202,149,2402,134,2676,119,3185,95"/>
 <area shape="rect" id="Node000054" href="$JobRunner_8cpp.html" title="计算结果先发布，再投递一次所属线程收尾；stop 复用收尾。" alt="" coords="2215,159,2457,185"/>
 <area shape="poly" id="edge71_Node000005_Node000054" title=" " alt="" coords="3185,101,2867,121,2476,155,2415,162,2414,157,2476,149,2866,116,3184,96"/>

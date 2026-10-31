@@ -1,0 +1,7 @@
+<map id="systems::feature::FeatureNavigationMenu" name="systems::feature::FeatureNavigationMenu">
+<area shape="rect" id="Node000001" title="独立注册的导航菜单；标题仅用于展示，首次成功注册后保留至会话结束。" alt="" coords="5,211,195,251"/>
+<area shape="rect" id="Node000002" title=" " alt="" coords="57,95,143,120"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="103,134,103,211,97,211,97,134"/>
+<area shape="rect" id="Node000003" title=" " alt="" coords="31,5,169,45"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="103,59,103,94,97,94,97,59"/>
+</map>

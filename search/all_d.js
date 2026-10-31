@@ -55,7 +55,7 @@ var searchData=
   ['maxmessages_52',['MaxMessages',['../classQLogManager.html#a81331b0bca3f294201bd199499c258a8',1,'QLogManager']]],
   ['maxposition_53',['maxPosition',['../classdock_1_1Divider.html#a311358fc1a0e4e144af1edacb90f2363',1,'dock::Divider']]],
   ['measurecurvedeviation_54',['measureCurveDeviation',['../namespacegeometry_1_1repair.html#ac9fe2ea4c3d14aa876ba3a07baf43dea',1,'geometry::repair']]],
-  ['menu_5fpath_55',['menu_path',['../structsystems_1_1feature_1_1FeatureNavigationEntry.html#acd833640a4535c239081bb47e38cb701',1,'systems::feature::FeatureNavigationEntry']]],
+  ['menu_5fid_55',['menu_id',['../structsystems_1_1feature_1_1FeatureNavigationGroup.html#ae8bb72bb53bb6bc63dc63f0b85f4ae1e',1,'systems::feature::FeatureNavigationGroup::menu_id'],['../structsystems_1_1feature_1_1FeatureNavigationEntry.html#a47c6275796fc9c5711aae7ba889bcf3f',1,'systems::feature::FeatureNavigationEntry::menu_id']]],
   ['merge_56',['Merge',['../namespacedock.html#a3ebdb589812160d63d8811311bf4ed63a68be4837f6c739877233e527a996dd00',1,'dock']]],
   ['mergeedges_57',['mergeEdges',['../classGeometryTopologyEditor.html#a5fcfd97ec17fc53e18f1d60a5d10ebb6',1,'GeometryTopologyEditor']]],
   ['mergefaces_58',['mergeFaces',['../classGeometryTopologyEditor.html#a1f75168e1b9f2f8879d7c5c1100c94b2',1,'GeometryTopologyEditor']]],

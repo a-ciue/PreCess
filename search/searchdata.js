@@ -1,6 +1,6 @@
 var indexSectionsWithContent =
 {
-  0: "_abcdefghijklmnopqrstuvwxyz~弃旧",
+  0: "_abcdefghijklmnopqrstuvwxyz~宿导弃插旧迁",
   1: "abcdefghijklmnopqrstuvwz",
   2: "acdghpst",
   3: "abcdefghijlmnopqrstuvwz",
@@ -12,7 +12,7 @@ var indexSectionsWithContent =
   9: "acdefghilmnopqrstuvw",
   10: "efijmsuw",
   11: "ptw",
-  12: "弃旧"
+  12: "宿导弃插旧迁"
 };
 
 var indexSectionNames =

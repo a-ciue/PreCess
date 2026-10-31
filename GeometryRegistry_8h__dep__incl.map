@@ -79,7 +79,7 @@
 <area shape="poly" id="edge55_Node000006_Node000057" title=" " alt="" coords="2861,96,3138,97,3531,105,3986,126,4219,142,4448,164,4460,166,4459,171,4447,169,4219,148,3985,131,3531,111,3138,103,2861,102"/>
 <area shape="rect" id="Node000030" href="$FeatureContext_8cpp.html" title="固定功能服务：查询宿主，任务与预览按构造身份交给框架。" alt="" coords="4667,167,4841,207"/>
 <area shape="poly" id="edge56_Node000006_Node000030" title=" " alt="" coords="2861,99,3756,119,4275,138,4490,150,4654,164,4667,166,4667,171,4654,169,4490,156,4274,144,3756,124,2861,104"/>
-<area shape="rect" id="Node000038" href="$TestFeatureNavigation_8cpp.html" title="Feature 的通用分类聚合及持久参数回归测试。" alt="" coords="4865,167,5093,207"/>
+<area shape="rect" id="Node000038" href="$TestFeatureNavigation_8cpp.html" title="导航父节点注册、入口聚合及参数保持的回归测试。" alt="" coords="4865,167,5093,207"/>
 <area shape="poly" id="edge60_Node000006_Node000038" title=" " alt="" coords="2861,96,3196,97,3688,104,4264,125,4562,142,4853,164,4865,165,4865,171,4852,169,4561,147,4264,130,3688,109,3196,102,2861,102"/>
 <area shape="rect" id="Node000039" href="$TestFeatureSystem_8cpp.html" title=" " alt="" coords="5117,167,5324,207"/>
 <area shape="poly" id="edge61_Node000006_Node000039" title=" " alt="" coords="2862,99,3319,105,3967,117,4623,137,4897,149,5105,164,5117,165,5117,171,5104,169,4897,155,4623,142,3967,123,3318,110,2862,104"/>

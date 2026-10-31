@@ -1,0 +1,128 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="zh">
+<head>
+<meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=11"/>
+<meta name="generator" content="Doxygen 1.14.0"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>PreCess: 导航注册与排序</title>
+<link href="tabs.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="jquery.js"></script>
+<script type="text/javascript" src="dynsections.js"></script>
+<script type="text/javascript" src="clipboard.js"></script>
+<script type="text/javascript" src="cookie.js"></script>
+<link href="search/search.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="search/searchdata.js"></script>
+<script type="text/javascript" src="search/search.js"></script>
+<link href="doxygen.css" rel="stylesheet" type="text/css" />
+</head>
+<body>
+<div id="top"><!-- do not remove this div, it is closed by doxygen! -->
+<div id="titlearea">
+<table cellspacing="0" cellpadding="0">
+ <tbody>
+ <tr id="projectrow">
+  <td id="projectlogo"><img alt="Logo" src="ZenithGrid.ico"/></td>
+  <td id="projectalign">
+   <div id="projectname">PreCess
+   </div>
+  </td>
+ </tr>
+ </tbody>
+</table>
+</div>
+<!-- end header part -->
+<!-- 制作者 Doxygen 1.14.0 -->
+<script type="text/javascript">
+var searchBox = new SearchBox("searchBox", "search/",'.html');
+</script>
+<script type="text/javascript">
+$(function() { codefold.init(); });
+</script>
+<script type="text/javascript" src="menudata.js"></script>
+<script type="text/javascript" src="menu.js"></script>
+<script type="text/javascript">
+$(function() {
+  initMenu('',true,false,'search.php','搜索',false);
+  $(function() { init_search(); });
+});
+</script>
+<div id="main-nav"></div>
+<!-- window showing the filter options -->
+<div id="MSearchSelectWindow"
+     onmouseover="return searchBox.OnSearchSelectShow()"
+     onmouseout="return searchBox.OnSearchSelectHide()"
+     onkeydown="return searchBox.OnSearchSelectKey(event)">
+</div>
+
+<!-- iframe showing the search results (closed by default) -->
+<div id="MSearchResultsWindow">
+<div id="MSearchResults">
+<div class="SRPage">
+<div id="SRIndex">
+<div id="SRResults"></div>
+<div class="SRStatus" id="Loading">载入中...</div>
+<div class="SRStatus" id="Searching">搜索中...</div>
+<div class="SRStatus" id="NoMatches">未找到</div>
+</div>
+</div>
+</div>
+</div>
+
+</div><!-- top -->
+<div id="doc-content">
+<div><div class="header">
+  <div class="headertitle"><div class="title">导航注册与排序 </div></div>
+</div><!--header-->
+<div class="contents">
+<div class="textblock"><p><a class="anchor" id="autotoc_md2"></a></p>
+<p>四层导航按有限 <span class="tt">double order</span> 升序排列，同值按稳定 ID 排序；标题只用于显示。</p>
+<h1 class="doxsection"><a class="anchor" id="autotoc_md3"></a>
+插件声明</h1>
+<table class="markdownTable">
+<tr class="markdownTableHead">
+<th class="markdownTableHeadNone">类型  </th><th class="markdownTableHeadNone">字段顺序  </th><th class="markdownTableHeadNone">默认 order  </th></tr>
+<tr class="markdownTableRowOdd">
+<td class="markdownTableBodyNone">菜单  </td><td class="markdownTableBodyNone"><span class="tt">id, title, order</span>  </td><td class="markdownTableBodyNone"><span class="tt">1000</span>  </td></tr>
+<tr class="markdownTableRowEven">
+<td class="markdownTableBodyNone">分组  </td><td class="markdownTableBodyNone"><span class="tt">menu_id, id, title, order</span>  </td><td class="markdownTableBodyNone"><span class="tt">0</span>  </td></tr>
+<tr class="markdownTableRowOdd">
+<td class="markdownTableBodyNone">入口  </td><td class="markdownTableBodyNone"><span class="tt">id, title, icon, order, menu_id, group_id</span>  </td><td class="markdownTableBodyNone"><span class="tt">0</span>  </td></tr>
+</table>
+<p>菜单、分组 ID 不含 <span class="tt">/</span>；<span class="tt">default</span> 是未分组区域的保留 ID，其布局用空分组 ID/标题声明。入口须引用有效菜单和分组，空 <span class="tt">group_id</span> 表示未分组。</p>
+<div class="fragment"><div class="line">registrar.addNavigationMenu({ <span class="stringliteral">&quot;mesh-generation&quot;</span>, <span class="stringliteral">&quot;网格生成算法&quot;</span>, 30 });</div>
+<div class="line">registrar.addNavigationGroup({ <span class="stringliteral">&quot;mesh-generation&quot;</span>, <span class="stringliteral">&quot;surface&quot;</span>, <span class="stringliteral">&quot;曲面&quot;</span>, 10 });</div>
+<div class="line"><span class="keyword">auto</span>&amp; navigation = registrar.navigation();</div>
+<div class="line">navigation.addEntry({ <span class="stringliteral">&quot;quadrilateral&quot;</span>, <span class="stringliteral">&quot;四边形网格生成&quot;</span>, <span class="stringliteral">&quot;&quot;</span>, 20.5,</div>
+<div class="line">    <span class="stringliteral">&quot;mesh-generation&quot;</span>, <span class="stringliteral">&quot;surface&quot;</span> });</div>
+<div class="line">navigation.setLabel(<span class="stringliteral">&quot;四边形方法&quot;</span>);</div>
+<div class="line">navigation.setOrder(10.5);</div>
+</div><!-- fragment --><p><span class="tt">setLabel/setIcon/setOrder</span> 配置子功能；同一功能在各入口内使用相同默认顺序。<span class="tt">setEntryDefault(entry, parameter, value)</span> 设置入口参数预设，Combo 值为索引字符串。</p>
+<p>相同入口 ID 自动聚合子功能，同一功能的多个入口共用参数和状态。单个子功能直接显示参数，多个显示选择器；未声明入口的功能归入“功能”菜单。</p>
+<p>父节点首次成功注册的定义保留至会话结束；注册失败不留下声明，卸载后的空菜单和分组隐藏。插件加载器捕获注册异常并记录日志，继续加载其余插件。</p>
+<h1 class="doxsection"><a class="anchor" id="autotoc_md4"></a>
+宿主布局</h1>
+<p>宿主在加载插件前调用 <span class="tt">tryRegisterNavigationMenu/Group</span> 预注册布局。</p>
+<p><span class="tt">setNavigationEntries</span> 保留常驻入口，零子功能时禁用执行。产品布局见 <a href="../../../app/model/QModelManager.cpp">QModelManager.cpp</a>。注册和布局变更须在所属线程、模型操作空闲时调用。</p>
+<p>宿主可用 <span class="tt">setNavigationOrder</span> 覆盖入口或子功能顺序：</p>
+<table class="markdownTable">
+<tr class="markdownTableHead">
+<th class="markdownTableHeadNone">目标  </th><th class="markdownTableHeadNone">parent  </th><th class="markdownTableHeadNone">id  </th></tr>
+<tr class="markdownTableRowOdd">
+<td class="markdownTableBodyNone">分组内入口  </td><td class="markdownTableBodyNone"><span class="tt">group:&lt;菜单ID&gt;/&lt;分组ID&gt;</span>  </td><td class="markdownTableBodyNone"><span class="tt">category:&lt;入口ID&gt;</span> 或 <span class="tt">feature:&lt;功能名&gt;</span>  </td></tr>
+<tr class="markdownTableRowEven">
+<td class="markdownTableBodyNone">入口内子功能  </td><td class="markdownTableBodyNone"><span class="tt">entry:&lt;入口ID&gt;</span>  </td><td class="markdownTableBodyNone">功能内部名称  </td></tr>
+</table>
+<p>未分组使用 <span class="tt">default</span>。重复目标保留首项，空 ID 忽略，<span class="tt">0</span> 有效；未知目标出现时生效，无效列表整批拒绝。菜单、分组顺序来自注册定义。</p>
+<h1 class="doxsection"><a class="anchor" id="autotoc_md5"></a>
+迁移</h1>
+<p>移除 <span class="tt">menu_path</span> 和插件 <span class="tt">addOrder</span>，改用父节点 ID 与默认 <span class="tt">order</span>。公共头变更后全量重编主程序和插件；独立构建与加载验证见 SDK 构建说明。 </p>
+</div></div><!-- contents -->
+</div><!-- PageDoc -->
+<!-- start footer part -->
+<hr class="footer"/><address class="footer"><small>
+制作者&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.14.0
+</small></address>
+</div><!-- doc-content -->
+</body>
+</html>

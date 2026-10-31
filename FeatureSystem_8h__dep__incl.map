@@ -30,7 +30,7 @@
 <area shape="poly" id="edge14_Node000001_Node000015" title=" " alt="" coords="2320,30,2627,53,2816,70,3006,91,3019,92,3018,98,3006,96,2816,75,2627,58,2320,35"/>
 <area shape="rect" id="Node000016" href="$InteractionContext_8cpp.html" title="视口交互上下文实现" alt="" coords="3247,93,3421,133"/>
 <area shape="poly" id="edge15_Node000001_Node000016" title=" " alt="" coords="2320,27,2721,45,2978,64,3236,91,3247,92,3246,97,3235,96,2977,69,2721,50,2320,32"/>
-<area shape="rect" id="Node000017" href="$TestFeatureNavigation_8cpp.html" title="Feature 的通用分类聚合及持久参数回归测试。" alt="" coords="3445,93,3673,133"/>
+<area shape="rect" id="Node000017" href="$TestFeatureNavigation_8cpp.html" title="导航父节点注册、入口聚合及参数保持的回归测试。" alt="" coords="3445,93,3673,133"/>
 <area shape="poly" id="edge16_Node000001_Node000017" title=" " alt="" coords="2320,26,2801,45,3116,64,3434,91,3446,92,3445,97,3434,96,3115,69,2800,50,2320,32"/>
 <area shape="rect" id="Node000018" href="$TestFeatureSystem_8cpp.html" title=" " alt="" coords="3697,93,3904,133"/>
 <area shape="poly" id="edge17_Node000001_Node000018" title=" " alt="" coords="2320,25,2562,28,2900,39,3290,58,3490,73,3686,91,3697,92,3697,97,3686,96,3490,78,3290,64,2900,44,2562,34,2320,30"/>

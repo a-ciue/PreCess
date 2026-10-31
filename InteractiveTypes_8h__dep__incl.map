@@ -50,7 +50,7 @@
 <area shape="poly" id="edge24_Node000008_Node000021" title=" " alt="" coords="1802,307,1426,360,1416,362,1415,356,1426,355,1801,301"/>
 <area shape="rect" id="Node000022" href="$InteractionContext_8cpp.html" title="视口交互上下文实现" alt="" coords="236,357,411,397"/>
 <area shape="poly" id="edge25_Node000008_Node000022" title=" " alt="" coords="1802,296,1105,319,710,338,547,349,422,360,411,361,411,356,422,355,546,343,710,333,1104,314,1801,291"/>
-<area shape="rect" id="Node000023" href="$TestFeatureNavigation_8cpp.html" title="Feature 的通用分类聚合及持久参数回归测试。" alt="" coords="1439,357,1667,397"/>
+<area shape="rect" id="Node000023" href="$TestFeatureNavigation_8cpp.html" title="导航父节点注册、入口聚合及参数保持的回归测试。" alt="" coords="1439,357,1667,397"/>
 <area shape="poly" id="edge26_Node000008_Node000023" title=" " alt="" coords="1813,315,1630,360,1629,355,1811,310"/>
 <area shape="poly" id="edge27_Node000008_Node000024" title=" " alt="" coords="1802,296,1011,319,556,338,224,360,213,361,212,356,223,355,556,333,1011,314,1802,290"/>
 <area shape="rect" id="Node000025" href="$TestFeatureUndo_8cpp.html" title="FeatureSystem undo 集成测试：边界自动记录 / 插件层会话 / 网关包装" alt="" coords="1691,357,1881,397"/>

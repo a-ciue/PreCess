@@ -35,6 +35,7 @@ var searchData=
   ['group_32',['group',['../structdock_1_1DropTarget.html#a77cc0f2b1b1ceed6a51c2930c5758416',1,'dock::DropTarget']]],
   ['group_5f_33',['group_',['../classdock_1_1DockPanel.html#ac0d7cabb3a034ce39a1a3bc0df0037ba',1,'dock::DockPanel::group_'],['../classdock_1_1DockWindow.html#a4679e2c53a42e3458e68546f601759a7',1,'dock::DockWindow::group_'],['../classdock_1_1DragHandle.html#a979d3ac2ee22bf77763bf5adf59ad0a8',1,'dock::DragHandle::group_'],['../classdock_1_1ui_1_1PanelGroupItem.html#a69f83b89d765bf482fa10b59a180903b',1,'dock::ui::PanelGroupItem::group_']]],
   ['group_5fcb_34',['group_cb',['../structtinyobj_1_1callback__t.html#acfd64aafe46d7f7601f652838426d219',1,'tinyobj::callback_t']]],
-  ['group_5fitems_5f_35',['group_items_',['../classdock_1_1ui_1_1DockRuntime.html#ac709ed0a23e2dcb8e514d858c090b5e6',1,'dock::ui::DockRuntime']]],
-  ['group_5fwatches_5f_36',['group_watches_',['../classdock_1_1ui_1_1DockAreaItem.html#a731d4fc9a4bb9faca0ef05e33164ed6b',1,'dock::ui::DockAreaItem']]]
+  ['group_5fid_35',['group_id',['../structsystems_1_1feature_1_1FeatureNavigationEntry.html#ae914d56b71d8135c3725cb72d35191c8',1,'systems::feature::FeatureNavigationEntry']]],
+  ['group_5fitems_5f_36',['group_items_',['../classdock_1_1ui_1_1DockRuntime.html#ac709ed0a23e2dcb8e514d858c090b5e6',1,'dock::ui::DockRuntime']]],
+  ['group_5fwatches_5f_37',['group_watches_',['../classdock_1_1ui_1_1DockAreaItem.html#a731d4fc9a4bb9faca0ef05e33164ed6b',1,'dock::ui::DockAreaItem']]]
 ];

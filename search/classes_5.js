@@ -13,9 +13,12 @@ var searchData=
   ['featureinfo_10',['FeatureInfo',['../structsystems_1_1feature_1_1FeatureInfo.html',1,'systems::feature']]],
   ['featurenavigation_11',['FeatureNavigation',['../classsystems_1_1feature_1_1FeatureNavigation.html',1,'systems::feature']]],
   ['featurenavigationentry_12',['FeatureNavigationEntry',['../structsystems_1_1feature_1_1FeatureNavigationEntry.html',1,'systems::feature']]],
-  ['featureparams_13',['FeatureParams',['../classsystems_1_1feature_1_1FeatureParams.html',1,'systems::feature']]],
-  ['featureregistrar_14',['FeatureRegistrar',['../classsystems_1_1feature_1_1FeatureRegistrar.html',1,'systems::feature']]],
-  ['featuresystem_15',['FeatureSystem',['../classsystems_1_1feature_1_1FeatureSystem.html',1,'systems::feature']]],
-  ['featuresystemregister_16',['FeatureSystemRegister',['../classsystems_1_1feature_1_1FeatureSystemRegister.html',1,'systems::feature']]],
-  ['floatorigin_17',['FloatOrigin',['../structdock_1_1DragSession_1_1FloatOrigin.html',1,'dock::DragSession']]]
+  ['featurenavigationgroup_13',['FeatureNavigationGroup',['../structsystems_1_1feature_1_1FeatureNavigationGroup.html',1,'systems::feature']]],
+  ['featurenavigationmenu_14',['FeatureNavigationMenu',['../structsystems_1_1feature_1_1FeatureNavigationMenu.html',1,'systems::feature']]],
+  ['featurenavigationorder_15',['FeatureNavigationOrder',['../structsystems_1_1feature_1_1FeatureNavigationOrder.html',1,'systems::feature']]],
+  ['featureparams_16',['FeatureParams',['../classsystems_1_1feature_1_1FeatureParams.html',1,'systems::feature']]],
+  ['featureregistrar_17',['FeatureRegistrar',['../classsystems_1_1feature_1_1FeatureRegistrar.html',1,'systems::feature']]],
+  ['featuresystem_18',['FeatureSystem',['../classsystems_1_1feature_1_1FeatureSystem.html',1,'systems::feature']]],
+  ['featuresystemregister_19',['FeatureSystemRegister',['../classsystems_1_1feature_1_1FeatureSystemRegister.html',1,'systems::feature']]],
+  ['floatorigin_20',['FloatOrigin',['../structdock_1_1DragSession_1_1FloatOrigin.html',1,'dock::DragSession']]]
 ];
