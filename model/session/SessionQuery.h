@@ -27,15 +27,15 @@ namespace session {
 struct ModelSummary {
     Index model_id { -1 };
     std::string name; //> 模型名称（UTF-8）
-    int component_count { 0 };
+    int component_count { 0 }; //!< 底层组件总数
 };
 
 /** @brief 组件摘要（componentSummaries 条目） */
 struct ComponentSummary {
     Index component_id { -1 };
     std::string name;
-    bool has_mesh { false };
-    bool has_geometry { false };
+    bool has_mesh { false }; //!< 是否持有 MeshData 对象，不校验网格内容
+    bool has_geometry { false }; //!< 是否持有 GeometryData 对象，不要求 rootShape 非空
     Index material_id { -1 };
 };
 
@@ -104,6 +104,8 @@ public:
     // —— 摘要查询 ——
     std::vector<ModelSummary> listModels() const;
     std::vector<ComponentSummary> componentSummaries(Index model_id) const;
+    //! @brief 单组件摘要；组件不存在返回空
+    std::optional<ComponentSummary> componentSummary(Index component_id) const;
     MeshSummary meshSummary(Index component_id) const;
     GeometrySummary geometrySummary(Index component_id) const;
     //! @brief 组件网格的全部属性渲染条目（四张属性表顺序遍历；属性名/类型查询复用本条目）

@@ -11,6 +11,19 @@
 #include <string>
 #include <vector>
 
+namespace {
+QVariantMap componentSummaryToMap(const session::ComponentSummary& summary)
+{
+    QVariantMap out;
+    out["component_id"] = summary.component_id;
+    out["name"] = QString::fromStdString(summary.name);
+    out["has_mesh"] = summary.has_mesh;
+    out["has_geometry"] = summary.has_geometry;
+    out["material_id"] = summary.material_id;
+    return out;
+}
+}
+
 QModelQuery::QModelQuery(session::SessionQuery* query, QObject* parent)
     : QObject(parent)
     , m_query(query)
@@ -102,16 +115,15 @@ QVariantList QModelQuery::listModels() const
 QVariantList QModelQuery::getComponentsSummary(Index model_id) const
 {
     QVariantList out;
-    for (const auto& summary : m_query->componentSummaries(model_id)) {
-        QVariantMap m;
-        m["component_id"] = summary.component_id;
-        m["name"] = QString::fromStdString(summary.name);
-        m["has_mesh"] = summary.has_mesh;
-        m["has_geometry"] = summary.has_geometry;
-        m["material_id"] = summary.material_id;
-        out.push_back(m);
-    }
+    for (const auto& summary : m_query->componentSummaries(model_id))
+        out.push_back(componentSummaryToMap(summary));
     return out;
+}
+
+QVariantMap QModelQuery::getComponentSummary(Index component_id) const
+{
+    const auto summary = m_query->componentSummary(component_id);
+    return summary ? componentSummaryToMap(*summary) : QVariantMap { };
 }
 
 QVariantMap QModelQuery::getMeshSummary(Index component_id) const

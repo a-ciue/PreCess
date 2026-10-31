@@ -139,10 +139,9 @@ struct QmlFixture {
 };
 
 // 结构事件即时同步；这里只泵一次事件循环，让实际 QML 链路完成收尾。
-bool waitForRefresh(TreeModel&)
+void pumpEvents()
 {
     QCoreApplication::processEvents();
-    return true;
 }
 
 }
@@ -515,20 +514,20 @@ TEST_CASE("Actual QML follows successful deletion notifications and preserves se
     model.removeComponent(cid);
     CHECK(selection_state->property("activeModelId").toInt() == mid);
     CHECK(selection_state->property("activeComponentId").toInt() == remaining_cid);
-    REQUIRE(waitForRefresh(*tree_model));
+    pumpEvents();
     CHECK(selection_state->property("activeModelId").toInt() == mid);
     CHECK(selection_state->property("activeComponentId").toInt() == remaining_cid);
     // 删除最后一个组件仍保留模型选择。
     model.removeComponent(remaining_cid);
     CHECK(selection_state->property("activeModelId").toInt() == mid);
     CHECK(selection_state->property("activeComponentId").toInt() == -1);
-    REQUIRE(waitForRefresh(*tree_model));
+    pumpEvents();
     CHECK(selection_state->property("activeModelId").toInt() == mid);
     CHECK(selection_state->property("activeComponentId").toInt() == -1);
     model.removeModel(mid);
     CHECK(selection_state->property("activeModelId").toInt() == -1);
     CHECK(selection_state->property("activeComponentId").toInt() == -1);
-    REQUIRE(waitForRefresh(*tree_model));
+    pumpEvents();
     CHECK(selection_state->property("activeModelId").toInt() == -1);
     CHECK(selection_state->property("activeComponentId").toInt() == -1);
     // 整体删除带组件的当前模型同样清空选择。
@@ -541,7 +540,7 @@ TEST_CASE("Actual QML follows successful deletion notifications and preserves se
     model.removeModel(selected_mid);
     CHECK(selection_state->property("activeModelId").toInt() == -1);
     CHECK(selection_state->property("activeComponentId").toInt() == -1);
-    REQUIRE(waitForRefresh(*tree_model));
+    pumpEvents();
     CHECK(selection_state->property("activeModelId").toInt() == -1);
     CHECK(selection_state->property("activeComponentId").toInt() == -1);
 }
