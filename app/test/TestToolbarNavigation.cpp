@@ -1,23 +1,22 @@
 /** @file TestToolbarNavigation.cpp
  * @brief 通用功能导航、旧算法列表兼容及实际工具栏加载测试
  */
-#include "ComponentData.h"
 #include "FeatureContext.h"
 #include "FeatureEvents.h"
 #include "FeatureHandler.h"
 #include "FeatureParams.h"
 #include "FeatureRegistrar.h"
 #include "FeatureSystem.h"
-#include "GeometryData.h"
 #include "QAlgorithmInfo.h"
 #include "QFeatureInfo.h"
 #include "QModelManager.h"
 #include "QSelection.h"
 #include "QTaskStatus.h"
-#include "SessionQuery.h"
+#include "SystemPluginManager.h"
 
 #include <QEventLoop>
 #include <QFile>
+#include <QFileInfo>
 #include <QFontDatabase>
 #include <QGuiApplication>
 #include <QImage>
@@ -36,13 +35,17 @@
 #include <QQuickItem>
 #include <QQuickWindow>
 #include <QRectF>
+#include <QScopeGuard>
 #include <QSvgRenderer>
 #include <QTemporaryDir>
 #include <QTimer>
-#include <TopoDS_Shape.hxx>
+#include <algorithm>
 #include <catch2/catch_test_macros.hpp>
 #include <catch2/generators/catch_generators.hpp>
 #include <memory>
+#include <stdexcept>
+#include <string>
+#include <utility>
 
 Q_IMPORT_QML_PLUGIN(app_corePlugin)
 Q_IMPORT_QML_PLUGIN(app_modelPlugin)
@@ -59,7 +62,7 @@ class NavigationTestInfo : public QFeatureInfo {
 public:
     NavigationTestInfo(QString name, QString display_name, QString description, QList<QArgType*> args,
         QObject* parent = nullptr, QStringList categories = {}, QString icon = {},
-        int order = 0, QString label = {}, QVariantMap defaults = {})
+        double order = 0, QString label = {}, QVariantMap defaults = {})
         : QFeatureInfo(std::move(name), std::move(display_name), std::move(description), std::move(icon),
               std::move(args), false, parent, std::move(categories), order, std::move(label), std::move(defaults))
     {
@@ -264,11 +267,11 @@ TEST_CASE("Feature navigation aggregates generic entries and shares executable c
     REQUIRE_FALSE(engine.evaluate(QString::fromUtf8(source.readAll()).remove(".pragma library")).isError());
     const auto result = engine.evaluate(R"JS(
         const categories = [
-            {id: "construction", title: "几何构造", icon: "qrc:/construct.svg", order: 10, menu_path: "几何工具/构造"},
-            {id: "repair", title: "曲面修复", order: 20, menu_path: "几何工具/修复"},
-            {id: "empty", title: "后处理", order: 30, menu_path: "分析工具/结果"},
-            {id: "plain-basic", title: "普通功能", menu_path: "修复工具/基本"},
-            {id: "plain-shortcut", title: "普通功能", menu_path: "几何工具/快捷"}
+            {id: "construction", title: "几何构造", icon: "qrc:/construct.svg", order: 10, menu_id: "geometry", menu_title: "几何工具", group_id: "construction", group_title: "构造"},
+            {id: "repair", title: "曲面修复", order: 20, menu_id: "geometry", menu_title: "几何工具", group_id: "repair", group_title: "修复"},
+            {id: "empty", title: "后处理", order: 30, menu_id: "analysis", menu_title: "分析工具", group_id: "result", group_title: "结果"},
+            {id: "plain-basic", title: "普通功能", menu_id: "repair", menu_title: "修复工具", group_id: "basic", group_title: "基本"},
+            {id: "plain-shortcut", title: "普通功能", menu_id: "geometry", menu_title: "几何工具", group_id: "shortcut", group_title: "快捷"}
         ];
         const shared = {name: "shared", entry_ids: ["construction", "repair"], order: -1};
         const entries = buildEntries([
@@ -284,10 +287,10 @@ TEST_CASE("Feature navigation aggregates generic entries and shares executable c
             construction: find("category:construction").items.map(info => info.name),
             repair: find("category:repair").items.map(info => info.name),
             empty: find("category:empty").items.length,
-            menu: find("category:construction").menu_path,
+            menu: find("category:construction").menu_id + "/" + find("category:construction").group_id,
             icon: find("category:construction").icon,
             plain: find("category:plain-basic").items.map(info => info.name),
-            plainMenu: find("category:plain-basic").menu_path,
+            plainMenu: find("category:plain-basic").menu_title + "/" + find("category:plain-basic").group_title,
             plainEntries: entries.filter(entry => entry.items.length && entry.items[0].name === "plain").length,
             unlisted: find("feature:unlisted").items.map(info => info.name),
             sameChild: find("category:construction").items[0] === find("category:repair").items[0],
@@ -296,12 +299,12 @@ TEST_CASE("Feature navigation aggregates generic entries and shares executable c
     )JS");
     INFO(result.toString().toStdString());
     REQUIRE_FALSE(result.isError());
-    CHECK(result.toString() == R"({"construction":["shared","a","z"],"repair":["shared"],"empty":0,"menu":"几何工具/构造","icon":"qrc:/construct.svg","plain":["plain"],"plainMenu":"修复工具/基本","plainEntries":2,"unlisted":["unlisted"],"sameChild":true,"zero":[0,0,0,0,0]})");
+    CHECK(result.toString() == R"({"construction":["shared","a","z"],"repair":["shared"],"empty":0,"menu":"geometry/construction","icon":"qrc:/construct.svg","plain":["plain"],"plainMenu":"修复工具/基本","plainEntries":2,"unlisted":["unlisted"],"sameChild":true,"zero":[0,0,0,0,0]})");
     const auto menus = engine.evaluate(R"JS(
         const declarations = [
-            {id: "advanced", title: "高级", menu_path: "修复工具/高级"},
-            {id: "construct", title: "构造", menu_path: "几何工具/构造"},
-            {id: "basic", title: "基本", menu_path: "修复工具/基本"}
+            {id: "advanced", title: "高级", menu_id: "repair", menu_title: "修复工具", group_id: "advanced", group_title: "高级"},
+            {id: "construct", title: "构造", menu_id: "geometry", menu_title: "几何工具", group_id: "construct", group_title: "构造"},
+            {id: "basic", title: "基本", menu_id: "repair", menu_title: "修复工具", group_id: "basic", group_title: "基本"}
         ];
         const declaredInfos = [
             {name: "z", display_name: "Z", entry_ids: ["advanced"], order: 5},
@@ -324,8 +327,8 @@ TEST_CASE("Feature navigation aggregates generic entries and shares executable c
     CHECK(menu_result.value("forward").toArray().size() == 2);
     const auto single_menu = engine.evaluate(R"JS(
         JSON.stringify(buildMenus(buildEntries([], [
-            {id: "triangle", title: "三角形网格生成", menu_path: "网格生成算法"},
-            {id: "tetrahedron", title: "四面体网格生成", menu_path: "网格生成算法"}
+            {id: "triangle", title: "三角形网格生成", menu_id: "mesh", menu_title: "网格生成算法", group_id: "", group_title: ""},
+            {id: "tetrahedron", title: "四面体网格生成", menu_id: "mesh", menu_title: "网格生成算法", group_id: "", group_title: ""}
         ])).map(menu => ({name: menu.name, groups: menu.groups.map(group => ({
             name: group.name, ids: group.items.map(entry => entry.id)
         }))})))
@@ -337,7 +340,10 @@ TEST_CASE("Feature navigation aggregates generic entries and shares executable c
         { "construction", "repair" });
     engine.globalObject().setProperty("qtInfo", engine.newQObject(&info));
     const auto qt_entries = engine.evaluate(R"JS(
-        buildEntries([qtInfo], [{id: "construction", title: "几何构造"}, {id: "repair", title: "曲面修复"}])
+        buildEntries([qtInfo], [
+            {id: "construction", title: "几何构造", menu_id: "geometry", menu_title: "几何", group_id: "", group_title: ""},
+            {id: "repair", title: "曲面修复", menu_id: "geometry", menu_title: "几何", group_id: "repair", group_title: "修复"}
+        ])
             .filter(entry => entry.items.length > 0)
             .map(entry => entry.id + ":" + entry.items[0].name).join(",")
     )JS");
@@ -359,9 +365,12 @@ TEST_CASE("Unified entries keep parent presentation independent of child present
         void setup(systems::feature::FeatureRegistrar& reg, systems::feature::FeatureContext&) override
         {
             auto& navigation = reg.navigation();
-            navigation.addEntry({ "first", "First title", "qrc:/first.svg", 0, "Tools/First" });
+            reg.addNavigationMenu({ "tools", "Tools", 60 });
+            reg.addNavigationGroup({ "tools", "first", "First" });
+            reg.addNavigationGroup({ "tools", "second", "Second" });
+            navigation.addEntry({ "first", "First title", "qrc:/first.svg", 0, "tools", "first" });
             navigation.addEntry({ "first", "Ignored duplicate", "", 0, "Other" });
-            navigation.addEntry({ "second", "Second title", "qrc:/second.svg", 0, "Tools/Second" });
+            navigation.addEntry({ "second", "Second title", "qrc:/second.svg", 0, "tools", "second" });
             if (override_display) {
                 navigation.setLabel("Child title");
                 navigation.setIcon("qrc:/child.svg");
@@ -383,22 +392,78 @@ TEST_CASE("Unified entries keep parent presentation independent of child present
     REQUIRE(entries.size() == 2);
     CHECK(entries[0].toMap().value("title").toString() == "First title");
     CHECK(entries[0].toMap().value("icon").toString() == "qrc:/first.svg");
-    CHECK(entries[0].toMap().value("menu_path").toString() == "Tools/First");
+    CHECK_FALSE(entries[0].toMap().contains("menu_path"));
+    CHECK(entries[0].toMap().value("menu_title").toString() == "Tools");
+    CHECK(entries[0].toMap().value("group_title").toString() == "First");
     CHECK(entries[1].toMap().value("title").toString() == "Second title");
-    CHECK(entries[1].toMap().value("menu_path").toString() == "Tools/Second");
+    CHECK_FALSE(entries[1].toMap().contains("menu_path"));
+    CHECK(entries[1].toMap().value("menu_title").toString() == "Tools");
+    CHECK(entries[1].toMap().value("group_title").toString() == "Second");
     QJSEngine engine;
     QFile source(":/navigation-ui/FeatureNavigation.js");
     REQUIRE(source.open(QIODevice::ReadOnly));
     REQUIRE_FALSE(engine.evaluate(QString::fromUtf8(source.readAll()).remove(".pragma library")).isError());
     engine.globalObject().setProperty("feature", engine.newQObject(infos[0]));
     engine.globalObject().setProperty("declarations", engine.toScriptValue(entries));
-    const auto paths = engine.evaluate("buildEntries([feature], declarations).map(entry => entry.menu_path).join('|')");
-    REQUIRE_FALSE(paths.isError());
-    CHECK(paths.toString() == "Tools/First|Tools/Second");
+    const auto parents = engine.evaluate("buildEntries([feature], declarations).map(entry => entry.menu_id + '/' + entry.group_id).join('|')");
+    REQUIRE_FALSE(parents.isError());
+    CHECK(parents.toString() == "tools/first|tools/second");
     qDeleteAll(infos);
 }
 
-TEST_CASE("Feature menus use entry paths and give unlisted features one default entry", "[navigation][Qt]")
+TEST_CASE("Registered parents generate the existing QML layout without empty feature menus", "[navigation][Qt][registry]")
+{
+    application();
+    ModelLayer model;
+    core::EventBus events;
+    systems::feature::FeatureSystem system(model, events);
+    systems::feature::QFeatureSystemAdaptor adaptor(system);
+    REQUIRE(system.tryRegisterNavigationMenu({ "geometry", "几何", 50 }));
+    REQUIRE(system.tryRegisterNavigationMenu({ "empty", "空菜单", 1 }));
+    REQUIRE(system.tryRegisterNavigationMenu({ "file", "文件", 10 }));
+    REQUIRE(system.tryRegisterNavigationMenu({ "edit", "编辑", 20 }));
+    REQUIRE(system.tryRegisterNavigationMenu({ "view", "视图", 10000 }));
+    REQUIRE(system.tryRegisterNavigationGroup({ "geometry", "", "", 10 }));
+    REQUIRE(system.tryRegisterNavigationGroup({ "geometry", "topology", "拓扑", 20 }));
+    REQUIRE(system.tryRegisterNavigationGroup({ "geometry", "repair", "修复", 30 }));
+    REQUIRE(system.tryRegisterNavigationGroup({ "geometry", "empty", "空分组", -1 }));
+    system.setNavigationEntries({ { "repair", "修复入口", "", 0, "geometry", "repair" },
+        { "plain", "未分组入口", "", 0, "geometry" },
+        { "split", "拓扑入口", "", 0, "geometry", "topology" } });
+    const auto definitions = adaptor.getNavigationEntries();
+    CHECK_FALSE(definitions[0].toMap().contains("menu_path"));
+    CHECK(definitions[0].toMap().value("menu_title").toString() == "几何");
+    CHECK(definitions[0].toMap().value("group_id").toString().isEmpty());
+    CHECK_FALSE(system.tryRegisterNavigationMenu({ "geometry", "插件标题", -100 }));
+    CHECK_FALSE(system.tryRegisterNavigationGroup({ "geometry", "repair", "插件分组", -100 }));
+
+    QJSEngine engine;
+    QFile source(":/navigation-ui/FeatureNavigation.js");
+    REQUIRE(source.open(QIODevice::ReadOnly));
+    REQUIRE_FALSE(engine.evaluate(QString::fromUtf8(source.readAll()).remove(".pragma library")).isError());
+    engine.globalObject().setProperty("definitions", engine.toScriptValue(adaptor.getNavigationEntries()));
+    engine.globalObject().setProperty("rules", engine.toScriptValue(adaptor.getNavigationOrder()));
+    const auto result = engine.evaluate(R"JS(
+        const entries = buildEntries([], definitions, rules);
+        const menus = buildMenus(entries, rules);
+        const tabs = buildTabs(menus, [
+            {id: "file", pageIndex: 0},
+            {id: "edit", pageIndex: 1},
+            {id: "view", pageIndex: -1, popup: true}
+        ], 3, rules);
+        ({ menus: menus.map(menu => menu.id).join(","),
+           groups: menus[0].groups.map(group => group.id).join(","),
+           titles: definitions.map(entry => entry.menu_title + "/" + entry.group_title).join("|"),
+           tabs: tabs.map(tab => tab.id).join(",") })
+    )JS");
+    REQUIRE_FALSE(result.isError());
+    CHECK(result.property("menus").toString() == "geometry");
+    CHECK(result.property("groups").toString() == "default,topology,repair");
+    CHECK(result.property("titles").toString() == "几何/|几何/修复|几何/拓扑");
+    CHECK(result.property("tabs").toString() == "file,edit,geometry,view");
+}
+
+TEST_CASE("Feature menus use declared parents and give unlisted features one default entry", "[navigation][Qt]")
 {
     application();
     QJSEngine engine;
@@ -409,19 +474,108 @@ TEST_CASE("Feature menus use entry paths and give unlisted features one default 
     engine.globalObject().setProperty("unlisted", engine.newQObject(&unlisted));
     const auto result = engine.evaluate(R"JS(
         const entries = buildEntries([
-            {name: "bound", entry_ids: ["configured", "default"], menu_path: "Ignored/Child"},
+            {name: "bound", entry_ids: ["configured", "default"]},
             unlisted, unlisted
         ], [
-            {id: "configured", title: "指定菜单", menu_path: "Tools/Configured"},
-            {id: "default", title: "默认菜单"}
+            {id: "configured", title: "指定菜单", menu_id: "tools", menu_title: "Tools", group_id: "configured", group_title: "Configured"},
+            {id: "default", title: "默认菜单", menu_id: "features", menu_title: "功能", group_id: "", group_title: ""}
         ]);
         JSON.stringify(entries.map(entry => ({
-            id: entry.id, path: entry.menu_path, names: entry.items.map(info => info.name)
+            id: entry.id, menu: entry.menu_id, title: entry.menu_title,
+            group: entry.group_id, groupTitle: entry.group_title, names: entry.items.map(info => info.name)
         })))
     )JS");
     INFO(result.toString().toStdString());
     REQUIRE_FALSE(result.isError());
-    CHECK(result.toString() == R"([{"id":"category:configured","path":"Tools/Configured","names":["bound"]},{"id":"category:default","path":"功能","names":["bound"]},{"id":"feature:unlisted","path":"功能","names":["unlisted"]}])");
+    CHECK(result.toString() == R"([{"id":"category:configured","menu":"tools","title":"Tools","group":"configured","groupTitle":"Configured","names":["bound"]},{"id":"category:default","menu":"features","title":"功能","group":"","groupTitle":"","names":["bound"]},{"id":"feature:unlisted","menu":"features","title":"功能","group":"","groupTitle":"","names":["unlisted"]}])");
+    const auto default_menus = engine.evaluate(R"JS(
+        JSON.stringify([[], [{id: "declared", title: "已声明", menu_id: "features", menu_title: "注册功能", group_id: "", group_title: ""}]]
+            .map(categories => buildMenus(buildEntries([unlisted], categories))
+                .map(menu => ({id: menu.id, name: menu.name, group: menu.groups[0].id,
+                    items: menu.groups[0].items.map(entry => entry.id)}))))
+    )JS");
+    REQUIRE_FALSE(default_menus.isError());
+    CHECK(default_menus.toString() == R"([[{"id":"features","name":"功能","group":"default","items":["feature:unlisted"]}],[{"id":"features","name":"注册功能","group":"default","items":["category:declared","feature:unlisted"]}]])");
+}
+
+TEST_CASE("Legacy algorithm tab availability preserves feature page identity", "[navigation][QML][legacy]")
+{
+    application();
+    QTemporaryDir directory;
+    REQUIRE(directory.isValid());
+    const auto executable = (directory.path() + "/isolated/Test.exe").toStdString();
+    QModelManager::argv0 = executable;
+    QQmlEngine engine;
+    static const int theme_type = qmlRegisterSingletonType(QUrl("qrc:/navigation-ui/Theme.qml"), "LegacyNavigationUi", 1, 0, "Theme");
+    engine.rootContext()->setContextProperty("Theme", engine.singletonInstance<QObject*>(theme_type));
+
+    // 仅控制已有算法的可用性，不依赖已删除插件或执行旧算法。
+    QAlgorithmInfo info("legacy-regression", "旧算法", "", {});
+    auto algorithms = engine.newArray(1);
+    algorithms.setProperty(0, engine.newQObject(&info));
+    auto populated_provider = engine.newObject();
+    populated_provider.setProperty("algorithmsInfo", algorithms);
+    auto empty_provider = engine.newObject();
+    empty_provider.setProperty("algorithmsInfo", engine.newArray());
+    QQmlComponent component(&engine, QUrl("qrc:/navigation-ui/AppToolbar.qml"));
+    INFO(component.errorString().toStdString());
+    REQUIRE(component.isReady());
+    std::unique_ptr<QObject> toolbar(component.createWithInitialProperties({ { "algorithmSystem", QVariant::fromValue(empty_provider) } }));
+    REQUIRE(toolbar);
+    auto* item = qobject_cast<QQuickItem*>(toolbar.get());
+    REQUIRE(item);
+    QQuickWindow window;
+    window.resize(900, 180);
+    item->setParentItem(window.contentItem());
+    item->setSize(QSizeF(900, 180));
+    window.show();
+    const auto settle = [] {
+        QEventLoop loop;
+        QTimer::singleShot(60, &loop, &QEventLoop::quit);
+        loop.exec();
+    };
+    settle();
+    CHECK_FALSE(findItem(item, "otherAlgorithmTab"));
+    auto* feature_tab = findItem(item, "featureTab_mesh-generation");
+    REQUIRE(feature_tab);
+    clickItem(window, feature_tab);
+    settle();
+    const auto feature_page = toolbar->property("activeCategory").toInt();
+    CHECK(feature_page == 3);
+
+    REQUIRE(toolbar->setProperty("algorithmSystem", QVariant::fromValue(populated_provider)));
+    settle();
+    CHECK(toolbar->property("activeCategory").toInt() == feature_page);
+    auto* legacy_tab = findItem(item, "otherAlgorithmTab");
+    REQUIRE(legacy_tab);
+    feature_tab = findItem(item, "featureTab_mesh-generation");
+    REQUIRE(feature_tab);
+    CHECK(feature_tab->mapToItem(item, QPointF()).x() + feature_tab->width() <= legacy_tab->mapToItem(item, QPointF()).x());
+    clickItem(window, legacy_tab);
+    settle();
+    CHECK(toolbar->property("activeCategory").toInt() == 2);
+    auto* legacy_page = findItem(item, "algorithmPage_other");
+    REQUIRE(legacy_page);
+    CHECK(legacy_page->isVisible());
+
+    REQUIRE(toolbar->setProperty("algorithmSystem", QVariant::fromValue(empty_provider)));
+    settle();
+    CHECK_FALSE(findItem(item, "otherAlgorithmTab"));
+    CHECK(toolbar->property("activeCategory").toInt() == -1);
+    CHECK_FALSE(legacy_page->isVisible());
+    feature_tab = findItem(item, "featureTab_mesh-generation");
+    REQUIRE(feature_tab);
+    clickItem(window, feature_tab);
+    settle();
+    CHECK(toolbar->property("activeCategory").toInt() == feature_page);
+    REQUIRE(toolbar->setProperty("algorithmSystem", QVariant::fromValue(populated_provider)));
+    REQUIRE(toolbar->setProperty("algorithmSystem", QVariant::fromValue(empty_provider)));
+    settle();
+    CHECK(toolbar->property("activeCategory").toInt() == feature_page);
+    auto* page = findItem(item, "featureMenuPage_mesh-generation");
+    REQUIRE(page);
+    CHECK(page->isVisible());
+    QModelManager::argv0 = {};
 }
 
 TEST_CASE("Actual toolbar renders declared feature entries and preserves active operation", "[navigation][QML]")
@@ -443,7 +597,6 @@ TEST_CASE("Actual toolbar renders declared feature entries and preserves active 
     auto provider = engine.newQObject(feature_adaptor);
     std::unique_ptr<QObject> toolbar(component.createWithInitialProperties({
         { "featureSystem", QVariant::fromValue(provider) },
-        { "leadingFeatureMenus", QStringList { "网格生成算法" } },
     }));
     INFO(component.errorString().toStdString());
     REQUIRE(toolbar);
@@ -466,20 +619,20 @@ TEST_CASE("Actual toolbar renders declared feature entries and preserves active 
     auto operation = engine.newObject();
     operation.setProperty("marker", 42);
     REQUIRE(app->setProperty("activeOperation", QVariant::fromValue(operation)));
-    auto* tab = findItem(item, "featureTab_网格生成算法");
+    auto* tab = findItem(item, "featureTab_mesh-generation");
     REQUIRE(tab);
     REQUIRE(tab->setProperty("checked", true));
     REQUIRE(QMetaObject::invokeMethod(tab, "clicked"));
     QCoreApplication::processEvents();
     CHECK(toolbar->property("activeCategory").toInt() == 3);
-    REQUIRE(findItem(item, "featureMenuPage_网格生成算法"));
-    CHECK(findItem(item, "featureMenuPage_网格生成算法")->isVisible());
+    REQUIRE(findItem(item, "featureMenuPage_mesh-generation"));
+    CHECK(findItem(item, "featureMenuPage_mesh-generation")->isVisible());
     CHECK(app->property("activeOperation").value<QJSValue>().strictlyEquals(operation));
 
     // 窄窗口保留四类入口，通过横向滚动访问完整文字。
     item->setWidth(300);
     QCoreApplication::processEvents();
-    auto* categories = findItem(item, "featureMenuPage_网格生成算法");
+    auto* categories = findItem(item, "featureMenuPage_mesh-generation");
     REQUIRE(categories);
     CHECK(categories->property("contentWidth").toReal() > categories->width());
     item->setWidth(800);
@@ -701,270 +854,6 @@ TEST_CASE("Actual toolbar renders declared feature entries and preserves active 
     QModelManager::argv0 = {};
 }
 
-TEST_CASE("Installed external algorithms appear in the actual toolbar and open their parameters", "[navigation][external]")
-{
-    application();
-    const auto host_override = qEnvironmentVariable("PRECESS_EXTERNAL_PLUGIN_HOST");
-    // 测试程序与宿主共用运行目录；普通 ctest 也应验证已部署的外部插件。
-    const auto host = (host_override.isEmpty() ? QCoreApplication::applicationFilePath() : host_override).toStdString();
-    QModelManager::argv0 = host;
-    QQmlEngine engine;
-    static const int theme_type = qmlRegisterSingletonType(QUrl("qrc:/navigation-ui/Theme.qml"), "ExternalNavigationUi", 1, 0, "Theme");
-    engine.rootContext()->setContextProperty("Theme", engine.singletonInstance<QObject*>(theme_type));
-    QQmlComponent component(&engine, QUrl("qrc:/navigation-ui/AppToolbar.qml"));
-    INFO(component.errorString().toStdString());
-    REQUIRE(component.isReady());
-    std::unique_ptr<QObject> toolbar(component.create());
-    INFO(component.errorString().toStdString());
-    REQUIRE(toolbar);
-    const auto infos = engine.newQObject(engine.singletonInstance<QModelManager*>("app.model", "QModelManager")->getFeatureSystemAdaptor()).property("featuresInfo");
-    const auto has_algorithm = [&](const QString& name) {
-        for (int i = 0; i < infos.property("length").toInt(); ++i) {
-            if (infos.property(i).property("name").toString() == name)
-                return true;
-        }
-        return false;
-    };
-    const bool has_addons = has_algorithm("TetGenLibPlugin") && has_algorithm("GmshPlugin");
-    if (!has_addons && host_override.isEmpty()) {
-        QModelManager::argv0 = {};
-        SKIP("Optional TetGenLib and Gmsh addon binaries are not installed beside the test executable");
-    }
-    REQUIRE(has_addons);
-    auto* item = qobject_cast<QQuickItem*>(toolbar.get());
-    REQUIRE(item);
-    auto session = createSession(engine);
-    QQmlComponent sidebar_component(&engine, QUrl("qrc:/navigation-ui/SideBar.qml"));
-    INFO(sidebar_component.errorString().toStdString());
-    REQUIRE(sidebar_component.isReady());
-    std::unique_ptr<QObject> sidebar(sidebar_component.createWithInitialProperties({ { "session", QVariant::fromValue(session.get()) } }));
-    REQUIRE(sidebar);
-    auto* sidebar_item = qobject_cast<QQuickItem*>(sidebar.get());
-    REQUIRE(sidebar_item);
-    QQuickWindow window;
-    window.resize(1000, 700);
-    item->setParentItem(window.contentItem());
-    // 与下方 sidebar 的 Y=180 一致，展开 ribbon 后不能沿用折叠时的 implicitHeight。
-    item->setSize(QSizeF(1000, 180));
-    sidebar_item->setParentItem(window.contentItem());
-    sidebar_item->setY(180);
-    sidebar_item->setWidth(360);
-    sidebar_item->setHeight(500);
-    window.show();
-    const auto settle = [] {
-        QEventLoop loop;
-        QTimer::singleShot(80, &loop, &QEventLoop::quit);
-        loop.exec();
-    };
-    const auto click_visible = [&](QQuickItem* target) {
-        REQUIRE(target);
-        REQUIRE(target->isVisible());
-        REQUIRE(target->isEnabled());
-        REQUIRE(target->width() > 0);
-        REQUIRE(target->height() > 0);
-        const auto scene_bounds = target->mapRectToScene(QRectF(0, 0, target->width(), target->height()));
-        REQUIRE(QRectF(QPointF(0, 0), QSizeF(window.size())).contains(scene_bounds));
-        clickItem(window, target);
-        settle();
-    };
-    const auto show_feature_menu = [&](const QString& name) {
-        auto* tab = findItem(item, "featureTab_" + name);
-        REQUIRE(tab);
-        if (!tab->property("checked").toBool())
-            click_visible(tab);
-        auto* page = findItem(item, "featureMenuPage_" + name);
-        REQUIRE(page);
-        REQUIRE(page->isVisible());
-        REQUIRE(page->width() > 0);
-        REQUIRE(page->height() > 0);
-    };
-    settle();
-    const auto check_entry_icon = [&](const QString& id, const QString& url) {
-        INFO(id.toStdString());
-        auto* entry = findItem(item, "featureEntry_category:" + id);
-        REQUIRE(entry);
-        CHECK(engine.newQObject(entry).property("icon").property("source").toString() == url);
-    };
-    show_feature_menu("几何");
-    check_entry_icon("SplitEdge", "qrc:/images/toolbar/Geometry/split-edge.svg");
-    check_entry_icon("MergeEdge", "qrc:/images/toolbar/Geometry/merge-edge.svg");
-    check_entry_icon("SplitFace", "qrc:/images/toolbar/Geometry/split-face.svg");
-    check_entry_icon("MergeFace", "qrc:/images/toolbar/Geometry/merge-face.svg");
-    check_entry_icon("MergePoints", "qrc:/images/toolbar/Geometry/merge-points.svg");
-    check_entry_icon("CollapseEdge", "qrc:/images/toolbar/Geometry/collapse-edge.svg");
-    check_entry_icon("PatchFace", "qrc:/images/toolbar/Geometry/patch-face.svg");
-    check_entry_icon("FillGap", "qrc:/images/toolbar/Geometry/fill-gap.svg");
-    check_entry_icon("AutoGeometryRepair", "qrc:/images/toolbar/Geometry/auto-geometry-repair.svg");
-    if (const auto capture = qEnvironmentVariable("PRECESS_NAVIGATION_CAPTURE"); !capture.isEmpty())
-        REQUIRE(window.grabWindow().save(capture + "-geometry-icons.png"));
-    show_feature_menu("功能");
-    check_entry_icon("MeshBoolean", "qrc:/zenithgrid-addons/MeshBooleanPlugin/icons/mesh-boolean.svg");
-    for (const int size : { 16, 24, 32 })
-        checkSvgResource(":/zenithgrid-addons/MeshBooleanPlugin/icons/mesh-boolean.svg", size);
-    CHECK_FALSE(QFile::exists(":/images/toolbar/Mesh/mesh-boolean.svg"));
-    check_entry_icon("MeshRepair", "qrc:/zenithgrid-addons/MeshRepairPlugin/icons/mesh-repair.svg");
-    for (const int size : { 16, 24, 32 })
-        checkSvgResource(":/zenithgrid-addons/MeshRepairPlugin/icons/mesh-repair.svg", size);
-    CHECK_FALSE(QFile::exists(":/images/toolbar/Mesh/mesh-repair.svg"));
-    if (const auto capture = qEnvironmentVariable("PRECESS_NAVIGATION_CAPTURE"); !capture.isEmpty())
-        REQUIRE(window.grabWindow().save(capture + "-mesh-icons.png"));
-    show_feature_menu("网格生成算法");
-    auto* tetrahedron = findItem(item, "featureEntry_category:tetrahedron");
-    click_visible(tetrahedron);
-    auto* selector = findItem(sidebar_item, "subFeatureSelector");
-    REQUIRE(selector);
-    // 本地 Addons 可增加同类提供者；按功能身份选取真实下拉项，不固定数量或加载顺序。
-    const auto select_feature = [&](const QString& name) {
-        const auto features = sidebar->property("subFeatures").value<QJSValue>();
-        const int count = features.property("length").toInt();
-        int index = -1;
-        for (int i = 0; i < count; ++i) {
-            if (features.property(i).property("name").toString() == name)
-                index = i;
-        }
-        REQUIRE(index >= 0);
-        CHECK(selector->property("count").toInt() == count);
-        CHECK(selector->property("visible").toBool() == (count > 1));
-        if (count > 1) {
-            click_visible(selector);
-            const auto popup = engine.newQObject(selector).property("popup");
-            REQUIRE(popup.property("visible").toBool());
-            const auto list = popup.property("contentItem");
-            auto* candidate = qobject_cast<QQuickItem*>(list.property("itemAtIndex")
-                    .callWithInstance(list, { QJSValue(index) })
-                    .toQObject());
-            click_visible(candidate);
-        }
-    };
-    select_feature("TetGenLibPlugin");
-    auto* app = engine.singletonInstance<QObject*>("app.core", "App");
-    REQUIRE(app);
-    const auto operation = app->property("activeOperation").value<QJSValue>();
-    CHECK(operation.property("info").property("name").toString() == "TetGenLibPlugin");
-    CHECK(operation.property("info").property("arg_types").property("length").toInt() > 0);
-    CHECK(operation.property("execute").isCallable());
-    auto* box = findAction(item, "创建长方体");
-    REQUIRE(box);
-    auto* buttons = findItem(sidebar_item, "operationButtons");
-    auto* parameters = findItem(sidebar_item, "operationParameters");
-    REQUIRE(buttons);
-    REQUIRE(parameters);
-    REQUIRE(selector);
-    for (int cycle = 0; cycle < 3; ++cycle) {
-        INFO(cycle);
-        show_feature_menu("几何");
-        click_visible(box);
-        CHECK(buttons->height() <= 40);
-        checkOperationButtonsAtBottom(sidebar_item);
-        CHECK(sidebar->property("panelTitle").toString() == "操作面板 - 创建长方体");
-        CHECK(parameters->height() > 300);
-        CHECK(parameters->property("count").toInt() == 7);
-        CHECK_FALSE(selector->property("visible").toBool());
-        if (const auto capture = qEnvironmentVariable("PRECESS_NAVIGATION_CAPTURE"); !capture.isEmpty())
-            REQUIRE(window.grabWindow().save(capture + "-box.png"));
-        if (cycle == 0) {
-            auto* write_target = findItem(sidebar_item, "parameterControl_6");
-            REQUIRE(write_target);
-            clickItem(window, write_target);
-            settle();
-            auto target_popup = engine.newQObject(write_target).property("popup");
-            REQUIRE(target_popup.property("visible").toBool());
-            const auto target_list = target_popup.property("contentItem");
-            auto* new_model = qobject_cast<QQuickItem*>(target_list.property("itemAtIndex")
-                    .callWithInstance(target_list, { QJSValue(2) })
-                    .toQObject());
-            REQUIRE(new_model);
-            clickItem(window, new_model);
-            settle();
-            CHECK(write_target->property("currentIndex").toInt() == 2);
-            CHECK(sidebar->property("parameters").value<QJSValue>().property(6).toInt() == 2);
-            CHECK(sidebar->property("parameters").value<QJSValue>().property(2).toNumber() == 0);
-            auto* manager = engine.singletonInstance<QModelManager*>("app.model", "QModelManager");
-            const auto* params = manager->getFeatureSystemAdaptor()->featureSystem()->params("CreateBox");
-            REQUIRE(params);
-            REQUIRE(params->value(6).get<ArgTypeEnum::Combo>());
-            REQUIRE(*params->value(6).get<ArgTypeEnum::Combo>() == 2);
-            // 执行返回状态文案；通过模型查询验证新建结果，避免把文案当作组件身份。
-            const session::SessionQuery query(*manager->getModelManager());
-            REQUIRE(query.listModels().empty());
-            const auto result = app->property("activeOperation").value<QJSValue>().property("execute").call();
-            INFO(result.toString().toStdString());
-            REQUIRE(result.isString());
-            CHECK(result.toString().startsWith(QStringLiteral("创建长方体成功")));
-            const auto models = query.listModels();
-            REQUIRE(models.size() == 1);
-            const auto component_ids = query.componentIds(models.front().model_id);
-            REQUIRE(component_ids.size() == 1);
-            const auto* component = manager->getModelManager()->findComponent(component_ids.front());
-            REQUIRE(component);
-            REQUIRE(component->geometry);
-            REQUIRE(component->geometry->rootShape);
-            CHECK_FALSE(component->geometry->rootShape->IsNull());
-        }
-        show_feature_menu("网格生成算法");
-        click_visible(tetrahedron);
-        CHECK(buttons->height() <= 40);
-        checkOperationButtonsAtBottom(sidebar_item);
-    }
-    auto* triangle = findItem(item, "featureEntry_category:triangle");
-    click_visible(triangle);
-    select_feature("GmshPlugin");
-    CHECK(parameters->property("count").toInt() > 0);
-    show_feature_menu("网格生成算法");
-    if (const auto capture = qEnvironmentVariable("PRECESS_NAVIGATION_CAPTURE"); !capture.isEmpty())
-        REQUIRE(window.grabWindow().save(capture + "-single.png"));
-    auto* quadrilateral = findItem(item, "featureEntry_category:quadrilateral");
-    click_visible(quadrilateral);
-    select_feature("GmshPlugin");
-    CHECK(selector->property("currentText").toString() == "曲面网格生成");
-    CHECK(sidebar->property("parameters").value<QJSValue>().property(6).toInt() == 1);
-    if (const auto capture = qEnvironmentVariable("PRECESS_NAVIGATION_CAPTURE"); !capture.isEmpty())
-        REQUIRE(window.grabWindow().save(capture + "-quad.png"));
-    // 使用窗口鼠标/键盘事件验证实际参数交互，不能只调用 activated 信号。
-    auto* mode = findItem(sidebar_item, "parameterControl_1");
-    auto* size = findItem(sidebar_item, "parameterControl_2");
-    auto* geometry = findItem(sidebar_item, "parameterControl_0");
-    REQUIRE(mode);
-    REQUIRE(size);
-    REQUIRE(geometry);
-
-    QPointer<QQuickItem> watched_mode(mode);
-    const auto before = app->property("activeOperation").value<QJSValue>();
-    clickItem(window, mode);
-    settle();
-
-    CHECK(app->property("activeOperation").value<QJSValue>().strictlyEquals(before));
-    REQUIRE(watched_mode);
-    auto* popup = engine.newQObject(mode).property("popup").toQObject();
-    REQUIRE(popup);
-    CHECK(popup->property("visible").toBool());
-    const auto popup_list = engine.newQObject(popup).property("contentItem");
-    auto* option = qobject_cast<QQuickItem*>(popup_list.property("itemAtIndex").callWithInstance(popup_list, { QJSValue(1) }).toQObject());
-    REQUIRE(option);
-    clickItem(window, option);
-    settle();
-    CHECK(mode->property("currentIndex").toInt() == 1);
-    CHECK(sidebar->property("parameters").value<QJSValue>().property(1).toInt() == 1);
-    clickItem(window, size);
-    pressKey(window, Qt::Key_A, Qt::ControlModifier);
-    pressKey(window, Qt::Key_2, Qt::NoModifier, "2");
-    pressKey(window, Qt::Key_5, Qt::NoModifier, "5");
-    pressKey(window, Qt::Key_Tab);
-    settle();
-    CHECK(size->property("text").toString() == "25");
-    CHECK(sidebar->property("parameters").value<QJSValue>().property(2).toString() == "25");
-    clickItem(window, geometry);
-    settle();
-    auto* selection = app->property("selection").value<QObject*>();
-    REQUIRE(selection);
-    CHECK(selection->property("listeningSelectorIndex").toInt() == 0);
-    clickItem(window, geometry);
-    settle();
-    CHECK(selection->property("listeningSelectorIndex").toInt() == -1);
-    app->setProperty("activeOperation", QVariant::fromValue(QJSValue(QJSValue::NullValue)));
-    QModelManager::argv0 = {};
-}
-
 TEST_CASE("Actual parameter controls preserve edits through scrolling and accept external updates", "[navigation][parameters]")
 {
     application();
@@ -1128,7 +1017,7 @@ TEST_CASE("Non-mesh feature entries handle zero one and multiple children across
     QModelManager::argv0 = executable;
     class CategoryHandler : public systems::feature::FeatureHandler {
     public:
-        CategoryHandler(systems::feature::FeatureNavigationEntry category, int order, int& activations, int& deactivations)
+        CategoryHandler(systems::feature::FeatureNavigationEntry category, double order, int& activations, int& deactivations)
             : category_(std::move(category))
             , order_(order)
             , activations_(activations)
@@ -1137,11 +1026,16 @@ TEST_CASE("Non-mesh feature entries handle zero one and multiple children across
         }
         void setup(systems::feature::FeatureRegistrar& reg, systems::feature::FeatureContext&) override
         {
+            reg.addNavigationMenu({ "geometry", "几何工具", 30 });
+            reg.addNavigationGroup({ "geometry", "construction", "构造" });
+            reg.addNavigationGroup({ "geometry", "repair", "修复" });
+            reg.addNavigationGroup({ "geometry", "shortcut", "快捷" });
+            reg.addNavigationMenu({ "features", "功能", 80 });
             if (!category_.id.empty())
                 reg.navigation().addEntry(category_);
             else {
-                reg.navigation().addEntry({ "ordinary", "普通功能", "", 0, "功能" });
-                reg.navigation().addEntry({ "ordinary-shortcut", "普通功能", "", 0, "几何工具/快捷" });
+                reg.navigation().addEntry({ "ordinary", "普通功能", "", 0, "features" });
+                reg.navigation().addEntry({ "ordinary-shortcut", "普通功能", "", 0, "geometry", "shortcut" });
             }
             reg.navigation().setOrder(order_);
             reg.addParameter({ ArgTypeEnum::Float, "目标尺寸", "1", "" });
@@ -1152,7 +1046,7 @@ TEST_CASE("Non-mesh feature entries handle zero one and multiple children across
 
     private:
         systems::feature::FeatureNavigationEntry category_;
-        int order_;
+        double order_;
         int& activations_;
         int& deactivations_;
     };
@@ -1161,8 +1055,14 @@ TEST_CASE("Non-mesh feature entries handle zero one and multiple children across
     systems::feature::FeatureSystem system(model, events);
     // 通用系统没有网格内置项；宿主显式声明需要长期保留的空父入口。
     CHECK(system.getNavigationEntries().empty());
+    REQUIRE(system.tryRegisterNavigationMenu({ "file", "文件", 10 }));
+    REQUIRE(system.tryRegisterNavigationMenu({ "edit", "编辑", 20 }));
+    REQUIRE(system.tryRegisterNavigationMenu({ "other-algorithms", "其他算法", 40 }));
+    REQUIRE(system.tryRegisterNavigationMenu({ "view", "视图", 10000 }));
+    REQUIRE(system.tryRegisterNavigationMenu({ "geometry", "几何工具", 30 }));
+    REQUIRE(system.tryRegisterNavigationGroup({ "geometry", "construction", "构造" }));
     const systems::feature::FeatureNavigationEntry construction {
-        "construction", "几何构造", "qrc:/images/toolbar/Mesh/hexa-meshing.svg", 40, "几何工具/构造"
+        "construction", "几何构造", "qrc:/images/toolbar/Mesh/hexa-meshing.svg", 40, "geometry", "construction"
     };
     system.setNavigationEntries({ construction });
     QTaskStatus status;
@@ -1181,7 +1081,6 @@ TEST_CASE("Non-mesh feature entries handle zero one and multiple children across
     auto session = createSession(engine, provider);
     std::unique_ptr<QObject> toolbar(component.createWithInitialProperties({
         { "featureSystem", QVariant::fromValue(provider) },
-        { "leadingFeatureMenus", QStringList { "几何工具", "不存在的菜单" } },
     }));
     auto* item = qobject_cast<QQuickItem*>(toolbar.get());
     REQUIRE(item);
@@ -1206,12 +1105,47 @@ TEST_CASE("Non-mesh feature entries handle zero one and multiple children across
     auto* app = engine.singletonInstance<QObject*>("app.core", "App");
     REQUIRE(app);
     settle();
-    CHECK_FALSE(findItem(item, "featureTab_网格生成算法"));
-    auto* construction_tab = findItem(item, "featureTab_几何工具");
+    CHECK_FALSE(findItem(item, "featureTab_mesh-generation"));
+    auto* construction_tab = findItem(item, "featureTab_geometry");
     REQUIRE(construction_tab);
     // 切换 StackLayout 页后先完成布局，否则隐藏页的旧几何位置会丢失首个鼠标点击。
     clickItem(window, construction_tab);
     settle();
+    // 复用当前窗口验证顶部重排、页面身份和视图弹出行为。
+    const int construction_page = toolbar->property("activeCategory").toInt();
+    REQUIRE(system.tryRegisterNavigationMenu({ "analysis", "分析工具", 20 }));
+    system.setNavigationEntries({ construction, { "analysis", "分析", "", 0, "analysis" } });
+    settle();
+    CHECK(toolbar->property("activeCategory").toInt() == construction_page + 1);
+    auto* construction_view = findItem(item, "featureMenuPage_geometry");
+    REQUIRE(construction_view);
+    CHECK(construction_view->isVisible());
+    const auto tabs = engine.newQObject(toolbar.get()).property("navigationTabs");
+    CHECK(tabs.property(0).property("id").toString() == "file");
+    CHECK(tabs.property(tabs.property("length").toInt() - 1).property("id").toString() == "view");
+    auto* view_tab = findItem(item, "viewCategory");
+    REQUIRE(view_tab);
+    clickItem(window, view_tab);
+    settle();
+    auto* view_menu = toolbar->findChild<QObject*>("viewMenu");
+    REQUIRE(view_menu);
+    CHECK(view_menu->property("visible").toBool());
+    CHECK(toolbar->property("activeCategory").toInt() == construction_page + 1);
+    pressKey(window, Qt::Key_Escape);
+    settle();
+    CHECK_FALSE(view_menu->property("visible").toBool());
+    clickItem(window, view_tab);
+    settle();
+    CHECK(view_menu->property("visible").toBool());
+    // 点击侧栏空白处只关闭弹窗；当前页签本身另有折叠页面的既有行为。
+    clickItem(window, sidebar_item);
+    settle();
+    CHECK_FALSE(view_menu->property("visible").toBool());
+    CHECK(toolbar->property("activeCategory").toInt() == construction_page + 1);
+    system.setNavigationEntries({ construction });
+    system.setNavigationOrder({});
+    settle();
+    CHECK(toolbar->property("activeCategory").toInt() == construction_page);
     CHECK(adaptor.getNavigationEntries().size() == 1);
     auto* construction_button = findItem(item, "featureEntry_category:construction");
     REQUIRE(construction_button);
@@ -1243,7 +1177,7 @@ TEST_CASE("Non-mesh feature entries handle zero one and multiple children across
     CHECK_FALSE(selector->isVisible());
     int activations = 0;
     int deactivations = 0;
-    const auto install = [&](const auto& metadata, const auto& declaration, int order) {
+    const auto install = [&](const auto& metadata, const auto& declaration, double order) {
         return system.registerHandler(metadata, systems::feature::FeatureSystem::SystemHandlerPtr { std::make_unique<CategoryHandler>(declaration, order, activations, deactivations).release() });
     };
     // 后装单个子功能直接进入参数；最后提供者卸载后保留显式声明的入口。
@@ -1262,11 +1196,11 @@ TEST_CASE("Non-mesh feature entries handle zero one and multiple children across
     CHECK(session->property("parameterModel").value<QObject*>()->property("values").value<QJSValue>().property("length").toInt() == 0);
     checkOperationButtonsAtBottom(sidebar_item);
     const systems::feature::FeatureNavigationEntry category {
-        "repair", "曲面修复", "qrc:/images/toolbar/Mesh/hexa-meshing.svg", 5, "几何工具/修复"
+        "repair", "曲面修复", "qrc:/images/toolbar/Mesh/hexa-meshing.svg", 5.5, "geometry", "repair"
     };
     const systems::feature::HandlerMetaData first { .name = "first", .display_name = "first" };
     const systems::feature::HandlerMetaData second { .name = "second", .display_name = "second" };
-    REQUIRE(install(first, category, 10));
+    REQUIRE(install(first, category, 10.25));
     settle();
     auto* button = findItem(item, "featureEntry_category:repair");
     REQUIRE(button);
@@ -1284,9 +1218,10 @@ TEST_CASE("Non-mesh feature entries handle zero one and multiple children across
     REQUIRE(selection);
     selection->setProperty("listeningSelectorIndex", 0);
     const int single_activations = activations;
-    REQUIRE(install(second, category, 20));
+    REQUIRE(install(second, category, 10.75));
     settle();
     CHECK(adaptor.getNavigationEntries().size() == 2);
+    CHECK(adaptor.getNavigationEntries().front().toMap().value("order").toDouble() == 5.5);
     CHECK(session->property("subFeatures").value<QJSValue>().property("length").toInt() == 2);
     CHECK(session->property("panelTitle").toString() == "操作面板 - 曲面修复");
     CHECK(selector->isVisible());
@@ -1294,6 +1229,19 @@ TEST_CASE("Non-mesh feature entries handle zero one and multiple children across
     CHECK(activations == single_activations);
     CHECK(parameters->property("values").value<QJSValue>().property(0).toNumber() == 9.0);
     CHECK(selection->property("listeningSelectorIndex").toInt() == 0);
+    CHECK(app->property("activeOperation").value<QJSValue>().property("info").property("order").toNumber() == 10.25);
+    // 下拉列表重排后按功能名保留选择，不重进功能、不清空参数或选择监听。
+    system.setNavigationOrder({ { "entry:repair", "second", 10.125 } });
+    settle();
+    CHECK(session->property("subFeatures").value<QJSValue>().property(0).property("name").toString() == "second");
+    CHECK(app->property("activeOperation").value<QJSValue>().property("info").property("name").toString() == "first");
+    CHECK(selector->property("currentIndex").toInt() == 1);
+    CHECK(activations == single_activations);
+    CHECK(parameters->property("values").value<QJSValue>().property(0).toNumber() == 9.0);
+    CHECK(selection->property("listeningSelectorIndex").toInt() == 0);
+    system.setNavigationOrder({});
+    settle();
+    CHECK(selector->property("currentIndex").toInt() == 0);
     auto operation = app->property("activeOperation").value<QJSValue>();
     auto execute = operation.property("execute");
     REQUIRE(execute.isCallable());
@@ -1341,7 +1289,7 @@ TEST_CASE("Non-mesh feature entries handle zero one and multiple children across
     CHECK(parameters->property("values").value<QJSValue>().property(0).toNumber() == 9.0);
     CHECK(selection->property("listeningSelectorIndex").toInt() == 0);
     CHECK(activations == before_refresh + 1);
-    REQUIRE(install(second, category, 20));
+    REQUIRE(install(second, category, 10.75));
     settle();
     // 当前子功能退出后改选仍在的提供者；最后一个退出后清理整个临时入口。
     system.unregisterHandler(first);
@@ -1362,7 +1310,7 @@ TEST_CASE("Non-mesh feature entries handle zero one and multiple children across
     CHECK(adaptor.getFeaturesInfo().size() == 1);
     CHECK_FALSE(buttons->isVisible());
     // 无分类普通功能也经统一入口直达，不显示子功能选择器。
-    auto* normal_tab = findItem(item, "featureTab_功能");
+    auto* normal_tab = findItem(item, "featureTab_features");
     REQUIRE(normal_tab);
     clickItem(window, normal_tab);
     settle();
@@ -1385,7 +1333,7 @@ TEST_CASE("Non-mesh feature entries handle zero one and multiple children across
     REQUIRE(QMetaObject::invokeMethod(sidebar.get(), "setParam", Q_ARG(QVariant, 0), Q_ARG(QVariant, 7.0)));
     const int before_menu_switch_activations = activations;
     const int before_menu_switch_deactivations = deactivations;
-    auto* shortcut_tab = findItem(item, "featureTab_几何工具");
+    auto* shortcut_tab = findItem(item, "featureTab_geometry");
     REQUIRE(shortcut_tab);
     clickItem(window, shortcut_tab);
     settle();
@@ -1404,4 +1352,325 @@ TEST_CASE("Non-mesh feature entries handle zero one and multiple children across
     CHECK(app->property("activeOperation").isNull());
     CHECK_FALSE(buttons->isVisible());
     QModelManager::argv0 = {};
+}
+
+TEST_CASE("Navigation sorts every sibling level with stable ids and host overrides", "[navigation][feature]")
+{
+    application();
+    QJSEngine engine;
+    QFile source(":/navigation-ui/FeatureNavigation.js");
+    REQUIRE(source.open(QIODevice::ReadOnly));
+    REQUIRE_FALSE(engine.evaluate(QString::fromUtf8(source.readAll()).remove(".pragma library")).isError());
+    const auto result = engine.evaluate(R"JS(
+        var rules = [
+            {parent: "", id: "file", order: 10},
+            {parent: "", id: "mesh", order: 30},
+            {parent: "", id: "other-algorithms", order: 40},
+            {parent: "", id: "view", order: 10000},
+            {parent: "menu:mesh", id: "basic", order: -1},
+            {parent: "group:mesh/basic", id: "category:quad", order: -10},
+            {parent: "entry:quad", id: "z", order: -1}
+        ];
+        var declarations = [
+            {id: "advanced", title: "Advanced", menu_id: "mesh", menu_title: "Renamed", group_id: "advanced", group_title: "Advanced"},
+            {id: "tri", title: "Tri", order: 0, menu_id: "mesh", menu_title: "Renamed", group_id: "basic", group_title: "Basic"},
+            {id: "quad", title: "Quad", order: 100, menu_id: "mesh", menu_title: "Renamed", group_id: "basic", group_title: "Basic"},
+            {id: "other", title: "Other", menu_id: "other", menu_title: "Other", group_id: "", group_title: ""},
+            {id: "extra", title: "Extra", order: 200, menu_id: "mesh", menu_title: "Renamed", group_id: "basic", group_title: "Basic"}
+        ];
+        var children = [
+            {name: "a", entry_ids: ["quad", "tri"], order: 0},
+            {name: "z", entry_ids: ["quad", "tri"], order: 0}
+        ];
+        var entries = buildEntries(children, declarations, rules);
+        var menus = buildMenus(entries, rules);
+        var tabs = buildTabs(menus, [
+            {id: "file", pageIndex: 0},
+            {id: "view", pageIndex: -1, popup: true},
+            {id: "other-algorithms", pageIndex: 2}
+        ], 3, rules);
+        const renamed = declarations.map(entry => Object.assign({}, entry, {
+            menu_title: entry.menu_title.replace("Renamed", "Translated"),
+            group_title: entry.group_title.replace("Basic", "Localized")
+        }));
+        const renamedMenus = buildMenus(buildEntries(children, renamed, rules), rules);
+        const ids = items => items.map(item => item.id || item.name).join(",");
+        ({
+            renamedTab: buildTabs(renamedMenus, [], 3, rules)[0].objectName,
+            renamedGroup: renamedMenus[0].groups[0].id,
+            sameTitle: ids(buildMenus(buildEntries([], [
+                {id: "a", title: "A", menu_id: "a", menu_title: "Same", group_id: "", group_title: ""},
+                {id: "b", title: "B", menu_id: "b", menu_title: "Same", group_id: "", group_title: ""}
+            ]), [])),
+            sameGroupTitle: ids(buildMenus(buildEntries([], [
+                {id: "a", title: "A", menu_id: "m", menu_title: "Menu", group_id: "a", group_title: "Same"},
+                {id: "b", title: "B", menu_id: "m", menu_title: "Menu", group_id: "b", group_title: "Same"}
+            ]), [])[0].groups),
+            tabs: ids(tabs), groups: ids(menus[0].groups),
+            icons: ids(menus[0].groups[0].items),
+            quad: ids(entries.find(entry => entry.categoryId === "quad").items),
+            tri: ids(entries.find(entry => entry.categoryId === "tri").items),
+            stable: JSON.stringify(buildMenus(buildEntries(children.slice().reverse(), declarations.slice().reverse(), rules), rules)) === JSON.stringify(menus)
+        })
+    )JS");
+    REQUIRE_FALSE(result.isError());
+    CHECK(result.property("tabs").toString() == "file,mesh,other-algorithms,other,view");
+    CHECK(result.property("groups").toString() == "basic,advanced");
+    CHECK(result.property("icons").toString() == "category:quad,category:tri,category:extra");
+    CHECK(result.property("renamedTab").toString() == "featureTab_mesh");
+    CHECK(result.property("renamedGroup").toString() == "basic");
+    CHECK(result.property("sameTitle").toString() == "a,b");
+    CHECK(result.property("sameGroupTitle").toString() == "a,b");
+    CHECK(result.property("quad").toString() == "z,a");
+    CHECK(result.property("tri").toString() == "a,z");
+    CHECK(result.property("stable").toBool());
+    // 显式零值覆盖和同序 ID 兜底，不依赖标题或输入顺序。
+    CHECK(engine.evaluate(R"JS(orderFor([{parent:"",id:"x",order:0}], "", "x", 20))JS").toInt() == 0);
+    CHECK(engine.evaluate(R"JS(buildTabs([], [{id:"b"},{id:"a"}], 3, []).map(t=>t.id).join(","))JS").toString() == "a,b");
+    // 无产品定义时使用统一后备值，显式小数顺序仍有效。
+    const auto fallback = engine.evaluate(R"JS(
+        JSON.stringify(buildTabs([{id: "middle", name: "M", order: 999.5}], [
+            {id: "z", pageIndex: 0}, {id: "a", pageIndex: 1}, {id: "file", pageIndex: 2}
+        ], 3, [{parent: "", id: "file", order: 0.25}]).map(tab => [tab.id, tab.order]))
+    )JS");
+    REQUIRE_FALSE(fallback.isError());
+    CHECK(fallback.toString() == R"([["file",0.25],["middle",999.5],["a",1000],["z",1000]])");
+}
+
+TEST_CASE("Product mesh entries retain their order against conflicting plugin declarations", "[navigation][Qt][registry]")
+{
+    application();
+    QTemporaryDir directory;
+    REQUIRE(directory.isValid());
+    const auto executable = (directory.path() + "/isolated/Test.exe").toStdString();
+    QModelManager manager(executable);
+    auto* adaptor = manager.getFeatureSystemAdaptor();
+    auto& system = *adaptor->featureSystem();
+    const std::vector<std::pair<QString, double>> expected_menus {
+        { "file", 10 }, { "edit", 20 }, { "mesh-generation", 30 },
+        { "other-algorithms", 40 }, { "geometry", 50 }, { "tools", 60 },
+        { "examples", 70 }, { "features", 80 }, { "view", 10000 }
+    };
+    std::vector<std::pair<QString, double>> menu_orders;
+    for (const auto& value : adaptor->getNavigationOrder()) {
+        const auto rule = value.toMap();
+        if (rule.value("parent").toString().isEmpty())
+            menu_orders.emplace_back(rule.value("id").toString(), rule.value("order").toDouble());
+    }
+    CHECK(menu_orders.size() == expected_menus.size());
+    for (const auto& expected : expected_menus)
+        CHECK(std::find(menu_orders.begin(), menu_orders.end(), expected) != menu_orders.end());
+    QJSEngine engine;
+    QFile source(":/navigation-ui/FeatureNavigation.js");
+    REQUIRE(source.open(QIODevice::ReadOnly));
+    REQUIRE_FALSE(engine.evaluate(QString::fromUtf8(source.readAll()).remove(".pragma library")).isError());
+    const auto read_order = [&] {
+        engine.globalObject().setProperty("definitions", engine.toScriptValue(adaptor->getNavigationEntries()));
+        engine.globalObject().setProperty("rules", engine.toScriptValue(adaptor->getNavigationOrder()));
+        return engine.evaluate(R"JS(
+            buildMenus(buildEntries([], definitions, rules), rules)[0].groups[0].items
+                .map(entry => entry.categoryId).join(",")
+        )JS");
+    };
+    // 四个产品入口无实现时仍存在，且没有附带子功能。
+    REQUIRE(system.getFeatureInfos().empty());
+    REQUIRE(adaptor->getNavigationEntries().size() == 4);
+    auto result = read_order();
+    REQUIRE_FALSE(result.isError());
+    CHECK(result.toString() == "triangle,quadrilateral,tetrahedron,hexahedron");
+    auto counts = engine.evaluate("buildEntries([], definitions, rules).map(entry => entry.items.length).join(',')");
+    REQUIRE_FALSE(counts.isError());
+    CHECK(counts.toString() == "0,0,0,0");
+
+    class ConflictingMeshEntries : public systems::feature::FeatureHandler {
+    public:
+        void setup(systems::feature::FeatureRegistrar& reg, systems::feature::FeatureContext&) override
+        {
+            reg.addNavigationMenu({ "mesh-generation", "插件菜单", -50 });
+            for (const auto& [id, order] : std::vector<std::pair<std::string, double>> {
+                     { "triangle", 400.5 }, { "quadrilateral", 300.5 },
+                     { "tetrahedron", 200.5 }, { "hexahedron", 100.5 } }) {
+                reg.navigation().addEntry({ id, id, "", order, "mesh-generation" });
+            }
+        }
+    };
+    const systems::feature::HandlerMetaData meta { .name = "conflicting-mesh-orders" };
+    REQUIRE(system.registerHandler(meta, systems::feature::FeatureSystem::SystemHandlerPtr { std::make_unique<ConflictingMeshEntries>().release() }));
+    const auto declarations = system.getNavigationEntries();
+    const auto triangle = std::find_if(declarations.begin(), declarations.end(), [](const auto& entry) {
+        return entry.id == "triangle";
+    });
+    REQUIRE(triangle != declarations.end());
+    CHECK(triangle->order == 400.5); // 插件声明已参与聚合；宿主覆盖仍决定展示顺序。
+    result = read_order();
+    REQUIRE_FALSE(result.isError());
+    CHECK(result.toString() == "triangle,quadrilateral,tetrahedron,hexahedron");
+    system.unregisterHandler(meta);
+}
+
+TEST_CASE("Registered navigation titles preserve slash characters without inventing groups", "[navigation][Qt][registry]")
+{
+    application();
+    ModelLayer model;
+    core::EventBus events;
+    systems::feature::FeatureSystem system(model, events);
+    systems::feature::QFeatureSystemAdaptor adaptor(system);
+    REQUIRE(system.tryRegisterNavigationMenu({ "cad", "CAD/几何", 50 }));
+    REQUIRE(system.tryRegisterNavigationGroup({ "cad", "", "", 10 }));
+    REQUIRE(system.tryRegisterNavigationGroup({ "cad", "repair", "拓扑/修复", 20 }));
+    system.setNavigationEntries({ { "plain", "未分组入口", "", 10, "cad" },
+        { "grouped", "分组入口", "", 20, "cad", "repair" } });
+    const auto definitions = adaptor.getNavigationEntries();
+    REQUIRE(definitions.size() == 2);
+    CHECK(definitions[0].toMap().value("menu_title").toString() == "CAD/几何");
+    CHECK(definitions[0].toMap().value("group_title").toString().isEmpty());
+    CHECK(definitions[1].toMap().value("group_title").toString() == "拓扑/修复");
+
+    QJSEngine engine;
+    QFile source(":/navigation-ui/FeatureNavigation.js");
+    REQUIRE(source.open(QIODevice::ReadOnly));
+    REQUIRE_FALSE(engine.evaluate(QString::fromUtf8(source.readAll()).remove(".pragma library")).isError());
+    engine.globalObject().setProperty("definitions", engine.toScriptValue(definitions));
+    engine.globalObject().setProperty("rules", engine.toScriptValue(adaptor.getNavigationOrder()));
+    const auto result = engine.evaluate(R"JS(
+        const menus = buildMenus(buildEntries([], definitions, rules), rules);
+        ({
+            menuCount: menus.length,
+            menuId: menus[0].id,
+            menuName: menus[0].name,
+            groupIds: menus[0].groups.map(group => group.id).join(","),
+            plainGroupName: menus[0].groups[0].name,
+            plainEntry: menus[0].groups[0].items[0].categoryId,
+            namedGroupName: menus[0].groups[1].name,
+            namedEntry: menus[0].groups[1].items[0].categoryId,
+            tabName: buildTabs(menus, [], 3, rules)[0].name
+        })
+    )JS");
+    REQUIRE_FALSE(result.isError());
+    CHECK(result.property("menuCount").toInt() == 1);
+    CHECK(result.property("menuId").toString() == "cad");
+    CHECK(result.property("menuName").toString() == "CAD/几何");
+    CHECK(result.property("groupIds").toString() == "default,repair");
+    CHECK(result.property("plainGroupName").toString().isEmpty());
+    CHECK(result.property("plainEntry").toString() == "plain");
+    CHECK(result.property("namedGroupName").toString() == "拓扑/修复");
+    CHECK(result.property("namedEntry").toString() == "grouped");
+    CHECK(result.property("tabName").toString() == "CAD/几何");
+}
+
+TEST_CASE("Qt feature entry points contain callback exceptions and allow retry", "[feature][failure][Qt]")
+{
+    application();
+    struct CallbackFeature : systems::feature::FeatureHandler {
+        enum class Failure { None,
+            Execute,
+            Parameter,
+            Key,
+            Activate,
+            Deactivate };
+        Failure failure { Failure::None };
+        bool unknown = false;
+        core::EventBus::Subscription subscription;
+        void failAt(Failure current)
+        {
+            if (failure != current)
+                return;
+            if (unknown)
+                throw 42;
+            throw std::runtime_error("expected feature callback failure");
+        }
+        void setup(systems::feature::FeatureRegistrar& reg, systems::feature::FeatureContext& ctx) override
+        {
+            reg.addParameter({ ArgTypeEnum::Float, "value", "1" });
+            reg.addKeyBinding({ Qt::Key_A, 0 });
+            subscription = ctx.events.subscribe<systems::feature::ParameterChangedEvent>([this](const auto&) { failAt(Failure::Parameter); });
+        }
+        std::any execute(systems::feature::FeatureContext&) override
+        {
+            failAt(Failure::Execute);
+            return std::string("ok");
+        }
+        bool onKeyEvent(const systems::feature::KeyEvent&) override
+        {
+            failAt(Failure::Key);
+            return true;
+        }
+        void activate(systems::feature::FeatureContext&) override { failAt(Failure::Activate); }
+        void deactivate(systems::feature::FeatureContext&) override { failAt(Failure::Deactivate); }
+    };
+    ModelLayer model;
+    core::EventBus events;
+    systems::feature::FeatureSystem system(model, events);
+    systems::feature::QFeatureSystemAdaptor adaptor(system);
+    auto handler = std::make_unique<CallbackFeature>();
+    auto* probe = handler.get();
+    REQUIRE(system.registerHandler({ .name = "callback-probe", .interactive = true }, systems::feature::FeatureSystem::SystemHandlerPtr { handler.release() }));
+    QJSEngine engine;
+    QQmlEngine::setObjectOwnership(&adaptor, QQmlEngine::CppOwnership);
+    engine.globalObject().setProperty("bridge", engine.newQObject(&adaptor));
+    const auto call = [&](const QString& expression) {
+        auto result = engine.evaluate(expression);
+        CHECK_FALSE(result.isError());
+        return result;
+    };
+    for (const bool unknown : { false, true }) {
+        probe->unknown = unknown;
+        probe->failure = CallbackFeature::Failure::Execute;
+        const auto result = call("bridge.invoke('callback-probe')");
+        CHECK((result.isNull() || result.isUndefined()));
+        probe->failure = CallbackFeature::Failure::Parameter;
+        CHECK_FALSE(call("bridge.setParameter('callback-probe', 0, 2)").toBool());
+        probe->failure = CallbackFeature::Failure::Key;
+        CHECK_FALSE(call("bridge.postKeyEvent(65, 0, true)").toBool());
+        probe->failure = CallbackFeature::Failure::Activate;
+        CHECK_FALSE(call("bridge.setFeatureActive('callback-probe')").toBool());
+        probe->failure = CallbackFeature::Failure::None;
+        REQUIRE(call("bridge.setFeatureActive('callback-probe')").toBool());
+        probe->failure = CallbackFeature::Failure::Deactivate;
+        CHECK_FALSE(call("bridge.setFeatureActive('')").toBool());
+        CHECK(system.activeInteraction() == nullptr);
+        probe->failure = CallbackFeature::Failure::None;
+        CHECK(call("bridge.invoke('callback-probe')").toString() == "ok");
+        CHECK(call("bridge.setParameter('callback-probe', 0, 3)").toBool());
+        CHECK(call("bridge.postKeyEvent(65, 0, true)").toBool());
+        CHECK(call("bridge.setFeatureActive('callback-probe')").toBool());
+        CHECK(call("bridge.setFeatureActive('')").toBool());
+        CHECK_FALSE(model.writesPending());
+    }
+}
+
+TEST_CASE("Qt plugin unload contains teardown exceptions and keeps registration for retry", "[plugins][failure][Qt]")
+{
+    application();
+    QTemporaryDir directory;
+    REQUIRE(directory.isValid());
+    const auto executable = (directory.path() + "/isolated/Test.exe").toStdString();
+    const auto plugin_path = directory.path() + "/" + QFileInfo(QString::fromUtf8(PRECESS_SETUP_TEST_PLUGIN)).fileName();
+    REQUIRE(QFile::copy(QString::fromUtf8(PRECESS_SETUP_TEST_PLUGIN), plugin_path));
+    QModelManager manager(executable);
+    auto* bridge = manager.getSystemPluginManager();
+    REQUIRE(bridge->registerPlugin(QUrl::fromLocalFile(plugin_path)));
+    const auto names = bridge->getPluginNames();
+    QJSEngine engine;
+    QQmlEngine::setObjectOwnership(bridge, QQmlEngine::CppOwnership);
+    engine.globalObject().setProperty("plugins", engine.newQObject(bridge));
+    engine.globalObject().setProperty("pluginPath", plugin_path);
+    const auto previous = qgetenv("PRECESS_TEST_SETUP_TEARDOWN");
+    const auto restore = qScopeGuard([previous] {
+        if (previous.isNull())
+            qunsetenv("PRECESS_TEST_SETUP_TEARDOWN");
+        else
+            qputenv("PRECESS_TEST_SETUP_TEARDOWN", previous);
+    });
+    for (const auto& failure : { QByteArray("standard"), QByteArray("unknown") }) {
+        qputenv("PRECESS_TEST_SETUP_TEARDOWN", failure);
+        const auto result = engine.evaluate("plugins.unregisterPlugin(pluginPath)");
+        CHECK_FALSE(result.isError());
+        CHECK(bridge->getPluginNames() == names);
+        CHECK(manager.getFeatureSystemAdaptor()->featureSystem()->getFeatureInfos().size() == 1);
+    }
+    qunsetenv("PRECESS_TEST_SETUP_TEARDOWN");
+    CHECK_FALSE(engine.evaluate("plugins.unregisterPlugin(pluginPath)").isError());
+    CHECK(bridge->getPluginNames().empty());
+    CHECK(manager.getFeatureSystemAdaptor()->featureSystem()->getFeatureInfos().empty());
 }

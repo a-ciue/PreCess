@@ -15,15 +15,17 @@
 
 ```cpp
 registrar.addParameter({ ArgTypeEnum::Int, "迭代数", "100" });
-registrar.navigation().addEntry({ "analysis", "分析", "", 20, "功能/求解" });
+registrar.addNavigationMenu({ "features", "功能", 80 });
+registrar.addNavigationGroup({ "features", "solve", "求解" });
+registrar.navigation().addEntry({ "analysis", "分析", "", 20, "features", "solve" });
 registrar.navigation().setLabel("稳态求解器");
 ```
 
-`FeatureNavigationEntry` 依次为稳定 `id`、入口标题、入口图标、入口排序、`menu_path`。不同功能注册相同 id 即属于同一个入口；一个子功能直接显示参数，多个子功能显示选择器。同一功能可声明多个入口，共享一份参数和执行状态。id 不从标题或图标推断；同一功能内重复 id 保留首个有效声明，空 id 或标题被忽略。
-
-`menu_path` 使用“菜单”或“菜单/分组”，留空时继承宿主同 id 的路径，最终回退“功能”。分组只由该路径表达。`setLabel/setIcon/setOrder` 配置子功能的显示名称、图标与排序，不覆盖入口描述；`setEntryDefault(id, parameter, value)` 声明入口参数预设（Combo 为选项索引字符串）。宿主可通过 `FeatureSystem::setNavigationEntries` 保留常驻入口；零子功能显示空态并禁用执行。未声明入口的功能自动归入默认“功能”菜单。
-
-导航在 `setup` 声明，JSON 保留身份与能力。
+- 菜单为 `{id, title, order=1000}`，分组为 `{menu_id, id, title, order=0}`，入口为 `{id, title, icon, order=0, menu_id, group_id}`。父节点引用须有效；空 `group_id` 表示未分组。菜单、分组 ID 不含 `/`，`default` 为保留 ID。
+- 父节点在功能注册成功后统一接纳，首次定义保留至会话结束；卸载后空菜单和分组隐藏。
+- 相同入口 ID 聚合子功能，同一功能的多个入口共用参数和状态。单个子功能直接显示参数，多个显示选择器；空常驻入口禁用执行，无入口的功能归入“功能”菜单。
+- 顺序值为有限 `double`，同值按稳定 ID 排序。入口顺序写在描述中，`setLabel/setIcon/setOrder` 配置子功能；同一功能在各入口使用相同默认顺序，宿主可覆盖。`setEntryDefault(id, parameter, value)` 设置入口参数预设，Combo 值为索引字符串。
+- 导航在 setup 声明；JSON 只保留身份和能力，不使用 `menu_path` 或插件 `addOrder`。
 
 ## 模型写与 undo
 

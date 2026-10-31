@@ -25,6 +25,7 @@ class QFeatureSystemAdaptor : public QObject {
     QML_UNCREATABLE("QFeatureSystemAdaptor is provided by C++")
     Q_PROPERTY(QList<QFeatureInfo*> featuresInfo READ getFeaturesInfo NOTIFY featuresInfoChanged)
     Q_PROPERTY(QVariantList navigationDefinitions READ getNavigationEntries NOTIFY featuresInfoChanged)
+    Q_PROPERTY(QVariantList navigationOrder READ getNavigationOrder NOTIFY featuresInfoChanged)
 public:
     QFeatureSystemAdaptor(FeatureSystem& feature_system);
     ~QFeatureSystemAdaptor() override;
@@ -69,6 +70,7 @@ public:
      */
     QList<QFeatureInfo*> getFeaturesInfo() const;
     QVariantList getNavigationEntries() const;
+    QVariantList getNavigationOrder() const;
 
     /**
      * @brief 获取底层功能系统指针（interaction 交互状态等系统级接口用）
@@ -93,6 +95,8 @@ public:
     void notifyScalarAttributeDisplayRequested(Index component_id, const std::string& attribute_name);
 
 signals:
+    //! @brief 同步功能调用失败，由宿主统一显示；失败返回无效 QVariant。
+    void invocationFailed(const QString& error);
     void featuresInfoChanged();
     //! @brief 功能请求在指定 Component 上渲染标量属性
     void scalarAttributeDisplayRequested(int component_id, QString attribute_name);

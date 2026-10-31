@@ -96,6 +96,9 @@ qt_add_resources(TestThemeWindowPalette theme_window
 # 加载实际工具栏，覆盖通用父入口和旧算法列表入口。
 precess_add_test(TestToolbarNavigation TestToolbarNavigation.cpp)
 precess_test_link_libraries(TestToolbarNavigation modelQml modelQmlplugin SystemQmlplugin renderQmlplugin renderQml Qt6::QuickControls2 Qt6::Svg)
+target_compile_definitions(TestToolbarNavigation PRIVATE
+    PRECESS_SETUP_TEST_PLUGIN="$<TARGET_FILE:SetupNavigationTestPlugin>")
+add_dependencies(TestToolbarNavigation SetupNavigationTestPlugin)
 qt_add_resources(TestToolbarNavigation navigation_ui
     PREFIX "/navigation-ui"
     BASE "${CMAKE_CURRENT_SOURCE_DIR}/.."

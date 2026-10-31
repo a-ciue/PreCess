@@ -616,7 +616,9 @@ void MeshQualityHandler::setup(FeatureRegistrar& reg, FeatureContext&)
         "Scaled Jacobian,Equiangle Skew,Edge Ratio,最小角,最大角,Warpage,Tet Collapse|0",
         "自动识别折叠单元并保留原编号。仅生成含有效值的质量属性，不可用单元以 NaN 占位且不参与统计。Warpage 平面为 1；Tet Collapse 仅支持四面体，为有向高/对面最长边（正四面体为 sqrt(2/3)）",
     });
-    reg.navigation().addEntry({ "MeshQuality", "网格质量", "qrc:/images/toolbar/Function/grid_quality.svg", 0, "功能/网格" });
+    reg.addNavigationMenu({ "features", "功能", 80 });
+    reg.addNavigationGroup({ "features", "mesh", "网格", 0 });
+    reg.navigation().addEntry({ "MeshQuality", "网格质量", "qrc:/images/toolbar/Function/grid_quality.svg", 0, "features", "mesh" });
 }
 
 void MeshQualityHandler::deactivate(FeatureContext& ctx)

@@ -17,13 +17,33 @@
 
 #include <QCoreApplication>
 #include <QFile>
+#include <QLibrary>
+#include <QPluginLoader>
+#include <QScopeGuard>
 #include <QTemporaryDir>
 #include <catch2/catch_test_macros.hpp>
 
 #include <filesystem>
+#include <memory>
+#include <stdexcept>
 #include <string>
 
 using namespace session;
+
+namespace {
+int static_standard_attempts = 0;
+int static_unknown_attempts = 0;
+QObject* failStaticStandardConstruction()
+{
+    ++static_standard_attempts;
+    throw std::runtime_error("expected static plugin construction failure");
+}
+QObject* failStaticUnknownConstruction()
+{
+    ++static_unknown_attempts;
+    throw 42;
+}
+}
 
 TEST_CASE("Session loads plugins and registers feature infos", "[session][plugins]")
 {
@@ -53,7 +73,7 @@ TEST_CASE("Session loads plugins and registers feature infos", "[session][plugin
         bool has_geometry_menu = false;
         for (const systems::feature::FeatureInfo* info : infos) {
             for (const auto& menu : info->navigation.entries()) {
-                if (menu.menu_path == "几何")
+                if (menu.menu_id == "geometry")
                     has_geometry_menu = true;
             }
         }
@@ -146,9 +166,121 @@ TEST_CASE("Binary feature setup supplies navigation and survives reload", "[sess
         REQUIRE(categories.size() == 1);
         CHECK(categories.front().title == "Setup custom category");
         CHECK(categories.front().order == 5);
-        CHECK(categories.front().menu_path == "Tools/Custom");
+        CHECK(categories.front().menu_id == "setup-tools");
+        CHECK(categories.front().group_id == "custom");
+        const auto menus = session.featureSystem().getNavigationMenus();
+        REQUIRE(menus.size() == 1);
+        CHECK(menus.front().id == "setup-tools");
+        CHECK(menus.front().title == "Tools");
+        const auto groups = session.featureSystem().getNavigationGroups();
+        REQUIRE(groups.size() == 1);
+        CHECK(groups.front().menu_id == "setup-tools");
+        CHECK(groups.front().id == "custom");
+        CHECK(groups.front().title == "Custom");
         session.pluginManager().unregisterPlugin(target);
         CHECK(session.featureSystem().getFeatureInfos().empty());
         CHECK(session.featureSystem().getNavigationEntries().empty());
+        CHECK(session.featureSystem().getNavigationMenus() == menus);
+        CHECK(session.featureSystem().getNavigationGroups() == groups);
     }
+}
+
+TEST_CASE("Directory plugin loading continues after registration exceptions and permits retry", "[session][plugins][failure]")
+{
+    int argc = 0;
+    QCoreApplication app(argc, nullptr);
+    const std::filesystem::path source(PRECESS_SETUP_TEST_PLUGIN);
+    REQUIRE(std::filesystem::exists(source));
+    QTemporaryDir directory;
+    REQUIRE(directory.isValid());
+    const auto plugin_dir = std::filesystem::path(directory.path().toStdString());
+    const auto first = plugin_dir / ("first" + source.extension().string());
+    const auto second = plugin_dir / ("second" + source.extension().string());
+    for (const auto& target : { first, second })
+        REQUIRE(QFile::copy(QString::fromStdString(source.string()), QString::fromStdString(target.string())));
+
+    class FailingOnceRegister : public systems::SystemRegisterBase {
+    public:
+        bool unknown_exception = false;
+        int attempts = 0;
+        bool registerPlugin(const QJsonObject&, systems::PluginBase&) override
+        {
+            if (++attempts == 1) {
+                if (unknown_exception)
+                    throw 42;
+                throw std::runtime_error("expected registration failure");
+            }
+            return true;
+        }
+        void unregisterPlugin(const QJsonObject&) override { }
+    };
+    auto registrar = std::make_unique<FailingOnceRegister>();
+    auto* probe = registrar.get();
+    SECTION("standard exception") { }
+    SECTION("unknown exception") { probe->unknown_exception = true; }
+    Session session;
+    auto& manager = session.pluginManager();
+    manager.removeSystemRegister(systems::feature::FeatureSystem::name);
+    REQUIRE(manager.addSystemRegister(systems::feature::FeatureSystem::name, std::move(registrar)));
+    REQUIRE_NOTHROW(session.loadPluginsFromDirectory(plugin_dir));
+    CHECK(probe->attempts == 2);
+    const auto names = manager.getPluginNames();
+    REQUIRE(names.size() == 1);
+    const auto& rejected = names.front() == first.stem().string() ? second : first;
+    REQUIRE(manager.registerPlugin(rejected));
+    CHECK(probe->attempts == 3);
+    CHECK(manager.getPluginNames().size() == 2);
+}
+
+TEST_CASE("Dynamic plugin construction exceptions return false and permit retry", "[session][plugins][failure]")
+{
+    int argc = 0;
+    QCoreApplication app(argc, nullptr);
+    const std::filesystem::path source(PRECESS_SETUP_TEST_PLUGIN);
+    for (const auto& failure : { QByteArray("standard"), QByteArray("unknown") }) {
+        QTemporaryDir directory;
+        REQUIRE(directory.isValid());
+        const auto target = std::filesystem::path(directory.path().toStdString()) / source.filename();
+        REQUIRE(QFile::copy(QString::fromStdString(source.string()), QString::fromStdString(target.string())));
+        const auto previous = qgetenv("PRECESS_TEST_SETUP_CONSTRUCTION");
+        const auto restore = qScopeGuard([previous] {
+            if (previous.isNull())
+                qunsetenv("PRECESS_TEST_SETUP_CONSTRUCTION");
+            else
+                qputenv("PRECESS_TEST_SETUP_CONSTRUCTION", previous);
+        });
+        Session session;
+        qputenv("PRECESS_TEST_SETUP_CONSTRUCTION", failure);
+        REQUIRE_FALSE(session.pluginManager().registerPlugin(target));
+        CHECK(session.pluginManager().getPluginNames().empty());
+        CHECK(session.featureSystem().getFeatureInfos().empty());
+        qunsetenv("PRECESS_TEST_SETUP_CONSTRUCTION");
+        REQUIRE(session.pluginManager().registerPlugin(target));
+        CHECK(session.featureSystem().getFeatureInfos().size() == 1);
+    }
+}
+
+TEST_CASE("Static plugin construction exceptions do not stop later plugins", "[session][plugins][failure]")
+{
+    int argc = 0;
+    QCoreApplication app(argc, nullptr);
+    QLibrary library(QString::fromUtf8(PRECESS_SETUP_TEST_PLUGIN));
+    library.setLoadHints(QLibrary::PreventUnloadHint);
+    REQUIRE(library.load());
+    const auto metadata = reinterpret_cast<QtPluginMetaDataFunction>(library.resolve("qt_plugin_query_metadata_v2"));
+    const auto instance = reinterpret_cast<QtPluginInstanceFunction>(library.resolve("qt_plugin_instance"));
+    REQUIRE(metadata);
+    REQUIRE(instance);
+    static_standard_attempts = 0;
+    static_unknown_attempts = 0;
+    // 工厂与元数据来自同一测试 DLL，PreventUnload 保证全局静态注册表中的指针有效。
+    qRegisterStaticPluginFunction(QStaticPlugin(failStaticStandardConstruction, metadata));
+    qRegisterStaticPluginFunction(QStaticPlugin(failStaticUnknownConstruction, metadata));
+    qRegisterStaticPluginFunction(QStaticPlugin(instance, metadata));
+    Session session;
+    REQUIRE_NOTHROW(session.loadStaticPlugins());
+    CHECK(static_standard_attempts == 1);
+    CHECK(static_unknown_attempts == 1);
+    CHECK(session.pluginManager().getPluginNames().size() == 1);
+    CHECK(session.featureSystem().getFeatureInfos().size() == 1);
 }
