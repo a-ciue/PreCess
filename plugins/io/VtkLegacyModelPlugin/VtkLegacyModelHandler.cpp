@@ -9,6 +9,7 @@
 #include "UGridModel.h"
 #include "ModelLayer.h"
 
+#include <limits>
 #include <spdlog/spdlog.h>
 #include <vtkAppendFilter.h>
 #include <vtkCell.h>
@@ -268,6 +269,8 @@ void VtkLegacyModelHandler::write_components(const ModelLayer& mgr,
     // 1) 构建一个 ugrid：把所有组件的点/单元拼到一起
     vtkNew<vtkUnstructuredGrid> ugrid;
     vtkNew<vtkPoints> points;
+    // vtkPoints 默认使用 float；必须在插入坐标之前设置 double。
+    points->SetDataTypeToDouble();
 
     vtkIdType file_point_offset = 0;
 
@@ -309,6 +312,7 @@ void VtkLegacyModelHandler::write_components(const ModelLayer& mgr,
     writer->SetFileName(real_out.string().c_str());
     writer->SetInputData(ugrid);
     writer->SetFileTypeToASCII();
+    writer->SetPrecision(std::numeric_limits<double>::max_digits10);
 
     const int ok = writer->Write();
     if (!ok) {
