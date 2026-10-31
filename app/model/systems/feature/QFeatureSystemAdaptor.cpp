@@ -10,7 +10,10 @@
 #include <spdlog/spdlog.h>
 
 #include <any>
+#include <exception>
+#include <map>
 #include <string>
+#include <utility>
 #include <vector>
 
 namespace {
@@ -95,7 +98,17 @@ FeatureSystem* QFeatureSystemAdaptor::featureSystem() const
 
 QVariant QFeatureSystemAdaptor::invoke(const QString& unique_name)
 {
-    return anyToQVariant(feature_system_->invoke(unique_name.toStdString()));
+    // 插件的同步校验发生在任务启动前，C++ 异常不能穿过 Qt 元调用边界。
+    try {
+        return anyToQVariant(feature_system_->invoke(unique_name.toStdString()));
+    } catch (const std::exception& error) {
+        spdlog::error("FeatureSystemAdaptor::invoke {}: {}", unique_name.toStdString(), error.what());
+        emit invocationFailed(QString::fromUtf8(error.what()));
+    } catch (...) {
+        spdlog::error("FeatureSystemAdaptor::invoke {}: unknown exception", unique_name.toStdString());
+        emit invocationFailed(tr("功能执行发生未知异常"));
+    }
+    return {};
 }
 
 void QFeatureSystemAdaptor::notifyParameterChanged(const std::string& feature, std::size_t index, const core::ArgObject& value)
@@ -130,30 +143,51 @@ void QFeatureSystemAdaptor::notifyScalarAttributeDisplayRequested(
 
 bool QFeatureSystemAdaptor::setParameter(const QString& unique_name, int index, const QVariant& value)
 {
-    const FeatureParams* params = feature_system_->params(unique_name.toStdString());
-    if (!params || index < 0 || static_cast<std::size_t>(index) >= params->count()) {
-        spdlog::error("QFeatureSystemAdaptor::setParameter: param {} of feature {} not found", index, unique_name.toStdString());
+    try {
+        const FeatureParams* params = feature_system_->params(unique_name.toStdString());
+        if (!params || index < 0 || static_cast<std::size_t>(index) >= params->count()) {
+            spdlog::error("QFeatureSystemAdaptor::setParameter: param {} of feature {} not found", index, unique_name.toStdString());
+            return false;
+        }
+        // 按声明的参数类型把QVariant转换为ArgObject
+        QArgType q_type(params->types()[index]);
+        QArgObject q_object(q_type);
+        q_object.setValue(value);
+        if (std::optional arg = q_object.getValue()) {
+            return feature_system_->setParameter(unique_name.toStdString(), static_cast<std::size_t>(index), std::move(*arg));
+        }
+        spdlog::error("QFeatureSystemAdaptor::setParameter: param {} of feature {} not valid", index, unique_name.toStdString());
         return false;
+    } catch (const std::exception& error) {
+        spdlog::error("QFeatureSystemAdaptor::setParameter {}: {}", unique_name.toStdString(), error.what());
+    } catch (...) {
+        spdlog::error("QFeatureSystemAdaptor::setParameter {}: unknown exception", unique_name.toStdString());
     }
-    // 按声明的参数类型把QVariant转换为ArgObject
-    QArgType q_type(params->types()[index]);
-    QArgObject q_object(q_type);
-    q_object.setValue(value);
-    if (std::optional arg = q_object.getValue()) {
-        return feature_system_->setParameter(unique_name.toStdString(), static_cast<std::size_t>(index), std::move(*arg));
-    }
-    spdlog::error("QFeatureSystemAdaptor::setParameter: param {} of feature {} not valid", index, unique_name.toStdString());
     return false;
 }
 
 bool QFeatureSystemAdaptor::postKeyEvent(int key, int modifiers, bool pressed)
 {
-    return feature_system_->dispatchKeyEvent(KeyEvent { key, modifiers, pressed });
+    try {
+        return feature_system_->dispatchKeyEvent(KeyEvent { key, modifiers, pressed });
+    } catch (const std::exception& error) {
+        spdlog::error("QFeatureSystemAdaptor::postKeyEvent: {}", error.what());
+    } catch (...) {
+        spdlog::error("QFeatureSystemAdaptor::postKeyEvent: unknown exception");
+    }
+    return false;
 }
 
 bool QFeatureSystemAdaptor::setFeatureActive(const QString& unique_name)
 {
-    return feature_system_->setFeatureActive(unique_name.toStdString());
+    try {
+        return feature_system_->setFeatureActive(unique_name.toStdString());
+    } catch (const std::exception& error) {
+        spdlog::error("QFeatureSystemAdaptor::setFeatureActive {}: {}", unique_name.toStdString(), error.what());
+    } catch (...) {
+        spdlog::error("QFeatureSystemAdaptor::setFeatureActive {}: unknown exception", unique_name.toStdString());
+    }
+    return false;
 }
 
 void QFeatureSystemAdaptor::setActiveModel(int id)
@@ -168,12 +202,42 @@ void QFeatureSystemAdaptor::setActiveComponent(int id)
 
 QVariantList QFeatureSystemAdaptor::getNavigationEntries() const
 {
+    // 父节点身份与标题统一取自系统注册表。
+    std::map<std::string, std::string> menu_titles;
+    for (const auto& menu : feature_system_->getNavigationMenus())
+        menu_titles.emplace(menu.id, menu.title);
+    std::map<std::pair<std::string, std::string>, std::string> group_titles;
+    for (const auto& group : feature_system_->getNavigationGroups())
+        group_titles.emplace(std::make_pair(group.menu_id, group.id), group.title);
     QVariantList result;
     for (const auto& category : feature_system_->getNavigationEntries()) {
+        const auto& menu_title = menu_titles.at(category.menu_id);
+        const auto group_title = category.group_id.empty() ? std::string {} : group_titles.at({ category.menu_id, category.group_id });
         result.append(QVariantMap { { "id", QString::fromStdString(category.id) },
             { "title", QString::fromStdString(category.title) },
             { "icon", QString::fromStdString(category.icon) }, { "order", category.order },
-            { "menu_path", QString::fromStdString(category.menu_path) } });
+            { "menu_title", QString::fromStdString(menu_title) },
+            { "group_title", QString::fromStdString(group_title) },
+            { "menu_id", QString::fromStdString(category.menu_id) },
+            { "group_id", QString::fromStdString(category.group_id) } });
+    }
+    return result;
+}
+
+QVariantList QFeatureSystemAdaptor::getNavigationOrder() const
+{
+    QVariantList result;
+    for (const auto& menu : feature_system_->getNavigationMenus()) {
+        result.append(QVariantMap { { "parent", QString() },
+            { "id", QString::fromStdString(menu.id) }, { "order", menu.order } });
+    }
+    for (const auto& group : feature_system_->getNavigationGroups()) {
+        result.append(QVariantMap { { "parent", QString::fromStdString("menu:" + group.menu_id) },
+            { "id", QString::fromStdString(group.id.empty() ? "default" : group.id) }, { "order", group.order } });
+    }
+    for (const auto& order : feature_system_->getNavigationOrder()) {
+        result.append(QVariantMap { { "parent", QString::fromStdString(order.parent) },
+            { "id", QString::fromStdString(order.id) }, { "order", order.order } });
     }
     return result;
 }

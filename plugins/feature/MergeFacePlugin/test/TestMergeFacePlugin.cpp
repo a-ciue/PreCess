@@ -189,7 +189,8 @@ TEST_CASE("MergeFace feature merges selected faces and records one undo operatio
     CHECK(navigation_entries.front().id == "MergeFace");
     CHECK(navigation_entries.front().icon == "qrc:/images/toolbar/Geometry/merge-face.svg");
     CHECK(navigation_entries.front().title == "合并面");
-    CHECK(navigation_entries.front().menu_path == "几何/拓扑");
+    CHECK(navigation_entries.front().menu_id == "geometry");
+    CHECK(navigation_entries.front().group_id == "topology");
 
     const std::any hint = feature_system.invoke("MergeFace");
     REQUIRE(std::any_cast<std::string>(hint)

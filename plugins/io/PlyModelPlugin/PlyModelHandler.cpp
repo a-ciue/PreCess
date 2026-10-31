@@ -14,6 +14,8 @@
 #include <spdlog/spdlog.h>
 
 #include <fstream>
+#include <iomanip>
+#include <limits>
 #include <vector>
 #include <memory>
 
@@ -271,7 +273,7 @@ void PlyModelHandler::write_components(const ModelLayer& mgr,
             return;
         }
 
-        std::vector<float> all_vertices;
+        std::vector<double> all_vertices;
         std::vector<int32_t> all_face_indices;
         size_t total_vertex_count = 0;
 
@@ -296,9 +298,9 @@ void PlyModelHandler::write_components(const ModelLayer& mgr,
             // MeshData 自包含，vertex_positions_ 常驻坐标，直接拷贝
             for (Index i = 0; i < cnt; ++i) {
                 const auto& p = m.vertex_positions_[static_cast<size_t>(i)];
-                all_vertices.push_back(static_cast<float>(p[0]));
-                all_vertices.push_back(static_cast<float>(p[1]));
-                all_vertices.push_back(static_cast<float>(p[2]));
+                all_vertices.push_back(p[0]);
+                all_vertices.push_back(p[1]);
+                all_vertices.push_back(p[2]);
             }
 
             if (m.face_vertices_offset_.size() >= 2) {
@@ -325,7 +327,7 @@ void PlyModelHandler::write_components(const ModelLayer& mgr,
         tinyply::PlyFile file;
 
         file.add_properties_to_element("vertex", { "x", "y", "z" },
-            tinyply::Type::FLOAT32, total_vertex_count,
+            tinyply::Type::FLOAT64, total_vertex_count,
             reinterpret_cast<uint8_t*>(all_vertices.data()),
             tinyply::Type::INVALID, 0);
 
@@ -348,6 +350,8 @@ void PlyModelHandler::write_components(const ModelLayer& mgr,
             return;
         }
 
+        // 坐标数组与文本有效位都必须保留 double，否则重新导入仍会丢失细节。
+        ofs << std::setprecision(std::numeric_limits<double>::max_digits10);
         file.write(ofs, false);
 
         ofs.flush();

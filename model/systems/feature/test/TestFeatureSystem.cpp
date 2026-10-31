@@ -91,7 +91,8 @@ public:
         ++setup_count;
         reg.addParameter({ ArgTypeEnum::Float, "尺寸", "1.5", "网格尺寸" });
         reg.addParameter({ ArgTypeEnum::Int, "次数", "3", "" });
-        reg.navigation().addEntry({ "TestFeatureSystem_1", "假功能", "", 0, "工具" });
+        reg.addNavigationMenu({ "tools", "工具", 60 });
+        reg.navigation().addEntry({ "TestFeatureSystem_1", "假功能", "", 0, "tools" });
         reg.addKeyBinding({ 'A', 0 });
         context = &ctx;
         // 订阅本功能的参数变更事件
@@ -182,7 +183,7 @@ TEST_CASE("FeatureSystem::registerHandler collects declarations and sets up", "[
     REQUIRE(infos[0]->display_name == "假功能");
     REQUIRE(infos[0]->arg_types.size() == 2);
     REQUIRE(infos[0]->navigation.entries().size() == 1);
-    REQUIRE(infos[0]->navigation.entries()[0].menu_path == "工具");
+    REQUIRE(infos[0]->navigation.entries()[0].menu_id == "tools");
     REQUIRE(infos[0]->key_bindings.size() == 1);
     REQUIRE(infos[0]->key_bindings[0].key == 'A');
 
@@ -885,7 +886,8 @@ public:
             ++command_ran;
             context->model.getComponentOperator(target)->appendPoint({ 9, 9, 9 });
         });
-        reg.navigation().addEntry({ "TestFeatureSystem_2", "闸功能", "", 0, "测试" });
+        reg.addNavigationMenu({ "tests", "测试" });
+        reg.navigation().addEntry({ "TestFeatureSystem_2", "闸功能", "", 0, "tests" });
         reg.addKeyBinding({ 'A', 0 }); // 无绑定则 dispatchKeyEvent 恒 false，按键断言为空测
     }
     std::any execute(FeatureContext& ctx) override
@@ -1002,7 +1004,8 @@ public:
                     report(1.0, "done");
                 });
         });
-        reg.navigation().addEntry({ "TestFeatureSystem_3", "事件发任务", "", 0, "测试" });
+        reg.addNavigationMenu({ "tests", "测试" });
+        reg.navigation().addEntry({ "TestFeatureSystem_3", "事件发任务", "", 0, "tests" });
     }
 
     FeatureContext* context { nullptr };

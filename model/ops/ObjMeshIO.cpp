@@ -1,17 +1,18 @@
 #include "ObjMeshIO.h"
 
-#ifdef __EMSCRIPTEN__
-// 静态链接下使用 gmsh 自带的 tinyobj 实现
-// 注意：gmsh 的 GModelIO_OBJ.cpp 定义了 TINYOBJLOADER_USE_DOUBLE
+// MeshData 使用 double；解析阶段若先落到 float，后续算法导出无法恢复丢失的坐标精度。
+// WASM 与 gmsh 自带的 tinyobj 实现也必须保持相同的 real_t 类型。
 #define TINYOBJLOADER_USE_DOUBLE
-#else
-// 动态链接下使用本项目提供的 tinyobj 实现
+#ifndef __EMSCRIPTEN__
 #define TINYOBJLOADER_IMPLEMENTATION
 #endif
 #include "tiny_obj_loader.h"
 
 #include <spdlog/spdlog.h>
+#include <type_traits>
 #include <unordered_map>
+
+static_assert(std::is_same_v<tinyobj::real_t, double>);
 
 std::optional<ComponentDatas> ObjMeshIO::loadFromFile(const std::filesystem::path& filename)
 {

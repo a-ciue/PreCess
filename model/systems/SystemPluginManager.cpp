@@ -7,6 +7,7 @@
 #include "PluginBase.h"
 
 #include <QPluginLoader>
+#include <exception>
 #include <spdlog/spdlog.h>
 
 Q_DECLARE_INTERFACE(systems::PluginBase, "com.PreCess.systems.PluginBase/1.0")
@@ -16,42 +17,54 @@ void SystemPluginManager::registerStaticPlugins()
 {
     const auto static_plugins = QPluginLoader::staticPlugins();
     for (const QStaticPlugin& static_plugin : static_plugins) {
-        QObject* plugin_instance = static_plugin.instance();
-        if (!qobject_cast<PluginBase*>(plugin_instance)) {
-            continue;
+        std::string plugin_name;
+        try {
+            QJsonObject meta_data = static_plugin.metaData();
+            QString iid = meta_data.value("IID").toString();
+            qsizetype slash_pos = iid.indexOf(u'/');
+            QString iid_body = slash_pos >= 0 ? iid.left(slash_pos) : iid;
+            qsizetype dot_pos = iid_body.lastIndexOf(u'.');
+            plugin_name = (dot_pos >= 0 ? iid_body.mid(dot_pos + 1) : iid_body).toStdString();
+            QObject* plugin_instance = static_plugin.instance();
+            if (!qobject_cast<PluginBase*>(plugin_instance))
+                continue;
+            QJsonObject system_meta_data = meta_data.value("MetaData").toObject();
+            this->loadPlugin(system_meta_data, *plugin_instance, plugin_name);
+        } catch (const std::exception& error) {
+            spdlog::error("Failed to load static plugin '{}': {}", plugin_name, error.what());
+        } catch (...) {
+            spdlog::error("Failed to load static plugin '{}': unknown exception", plugin_name);
         }
-
-        QJsonObject meta_data = static_plugin.metaData();
-        QString iid = meta_data.value("IID").toString();
-        qsizetype slash_pos = iid.indexOf(u'/');
-        QString iid_body = slash_pos >= 0 ? iid.left(slash_pos) : iid;
-        qsizetype dot_pos = iid_body.lastIndexOf(u'.');
-        std::string plugin_name = (dot_pos >= 0 ? iid_body.mid(dot_pos + 1) : iid_body).toStdString();
-
-        QJsonObject system_meta_data = meta_data.value("MetaData").toObject();
-        this->loadPlugin(system_meta_data, *plugin_instance, plugin_name);
     }
 }
 
 bool SystemPluginManager::registerPlugin(const std::filesystem::path& plugin_path)
 {
-    std::string plugin_name = plugin_path.stem().string();
-    if (this->plugin_names_.count(plugin_name)) {
-        spdlog::warn("Plugin already registered, no need to register again");
-        return false;
-    }
+    std::string plugin_name;
+    try {
+        plugin_name = plugin_path.stem().string();
+        if (this->plugin_names_.count(plugin_name)) {
+            spdlog::warn("Plugin already registered, no need to register again");
+            return false;
+        }
 
-    // 读取插件元数据，找对应的系统注册器注册
-    QString plugin_path_q = QString::fromLocal8Bit(plugin_path.string());
-    QPluginLoader plugin_loader(plugin_path_q);
-    QObject* plugin_instance = plugin_loader.instance();
-    if (!plugin_instance) {
-        spdlog::error("Failed to load plugin: {}", plugin_loader.errorString().toStdString());
-        return false;
-    }
+        // 读取插件元数据，找对应的系统注册器注册
+        QString plugin_path_q = QString::fromLocal8Bit(plugin_path.string());
+        QPluginLoader plugin_loader(plugin_path_q);
+        QObject* plugin_instance = plugin_loader.instance();
+        if (!plugin_instance) {
+            spdlog::error("Failed to load plugin: {}", plugin_loader.errorString().toStdString());
+            return false;
+        }
 
-    QJsonObject system_meta_data = plugin_loader.metaData().value("MetaData").toObject();
-    return this->loadPlugin(system_meta_data, *plugin_instance, plugin_name);
+        QJsonObject system_meta_data = plugin_loader.metaData().value("MetaData").toObject();
+        return this->loadPlugin(system_meta_data, *plugin_instance, plugin_name);
+    } catch (const std::exception& error) {
+        spdlog::error("Failed to load plugin '{}': {}", plugin_name, error.what());
+    } catch (...) {
+        spdlog::error("Failed to load plugin '{}': unknown exception", plugin_name);
+    }
+    return false;
 }
 
 bool SystemPluginManager::loadPlugin(const QJsonObject& system_meta_data, QObject& plugin_instance, const std::string& plugin_name)
@@ -76,12 +89,19 @@ bool SystemPluginManager::loadPlugin(const QJsonObject& system_meta_data, QObjec
 
     SystemRegisterBase* cur_system = this->system_registers_[system_name].get();
     QJsonObject handler_data = system_meta_data.value("handler").toObject();
-    if (cur_system->registerPlugin(handler_data, *plugin)) {
-        this->plugin_names_.insert(plugin_name);
-        return true;
+    // 静态与动态插件共用注册边界；单个处理器失败不打断其余插件加载。
+    try {
+        if (!cur_system->registerPlugin(handler_data, *plugin))
+            return false;
+    } catch (const std::exception& error) {
+        spdlog::error("Failed to register plugin '{}' for system '{}': {}", plugin_name, system_name, error.what());
+        return false;
+    } catch (...) {
+        spdlog::error("Failed to register plugin '{}' for system '{}': unknown exception", plugin_name, system_name);
+        return false;
     }
-
-    return false;
+    this->plugin_names_.insert(plugin_name);
+    return true;
 }
 
 void SystemPluginManager::unregisterPlugin(const std::filesystem::path& plugin_path)

@@ -35,7 +35,9 @@ void AutoGeometryRepairHandler::setup(FeatureRegistrar& reg, FeatureContext& /*c
     reg.addParameter({ ArgTypeEnum::Selector, "目标组件", "Component", "请选择一个几何组件，将检测或修复该组件内的全部自由边" });
     reg.addParameter({ ArgTypeEnum::Float, "全局清理容差", "0.01", "用于所选组件内的间隙检测和自动缝合，使用模型长度单位" });
     reg.addParameter({ ArgTypeEnum::Combo, "执行模式", "仅检测,检测并修复|0", "仅检测不会修改几何" });
-    reg.navigation().addEntry({ "AutoGeometryRepair", "自动修复间隙", "qrc:/images/toolbar/Geometry/auto-geometry-repair.svg", 0, "几何/修复" });
+    reg.addNavigationMenu({ "geometry", "几何", 50 });
+    reg.addNavigationGroup({ "geometry", "repair", "修复", 30 });
+    reg.navigation().addEntry({ "AutoGeometryRepair", "自动修复间隙", "qrc:/images/toolbar/Geometry/auto-geometry-repair.svg", 0, "geometry", "repair" });
 }
 
 std::any AutoGeometryRepairHandler::execute(FeatureContext& ctx)
