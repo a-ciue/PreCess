@@ -14,6 +14,7 @@
 #include "QRenderWindow.h"
 #include "QSelection.h"
 #include "TreeModel.h"
+#include "TreeModelTestHelpers.h"
 #include <QEventLoop>
 #include <QFile>
 #include <QGuiApplication>
@@ -165,6 +166,95 @@ TEST_CASE("Actual QML synchronizes reversed mesh and geometry visibility across 
             REQUIRE(tree->refresh());
         }
     }
+}
+
+TEST_CASE("Actual QML keeps reported visibility when a subtype re-enters the tree", "[QML][visibility]")
+{
+    application();
+    QmlFixture f;
+    auto& model = *f.manager->getModelManager();
+    model.setUndoRecorder(nullptr);
+    ComponentDatas components;
+    auto component = std::make_unique<ComponentData>();
+    component->mesh = std::make_unique<MeshData>();
+    component->geometry = std::make_unique<GeometryData>();
+    components.push_back(std::move(component));
+    const Index model_id = model.addModel("visibility restore", std::move(components));
+    const Index component_id = model.modelById(model_id)->componentIds()[0];
+    auto* tree = f.tree->findChild<TreeModel*>();
+    auto* viewport = f.viewport->findChild<QQuickVTKItem*>();
+    REQUIRE(tree);
+    REQUIRE(viewport);
+    REQUIRE(tree->refresh());
+
+    const auto report = [&](bool mesh_visible, bool geometry_visible) {
+        REQUIRE(QMetaObject::invokeMethod(viewport, "componentVisibilityChanged",
+            Q_ARG(Index, component_id), Q_ARG(bool, mesh_visible), Q_ARG(bool, geometry_visible)));
+    };
+    const auto subtype_visible = [&](TreeNode::NodeType type) {
+        const QModelIndex component_index = tree->findIndexByNodeId(component_id, 1);
+        REQUIRE(component_index.isValid());
+        for (int i = 0; i < tree->rowCount(component_index); ++i) {
+            const QModelIndex child = tree->index(i, 0, component_index);
+            if (tree->data(child, TreeModel::NodeTypeRole).toInt() == static_cast<int>(type))
+                return tree->data(child, TreeModel::IsVisibleRole).toBool();
+        }
+        return false;
+    };
+
+    // 隐藏几何：完整二元结果一次应用。
+    report(true, false);
+    CHECK(subtype_visible(TreeNode::NodeType::Mesh));
+    CHECK_FALSE(subtype_visible(TreeNode::NodeType::Geometry));
+
+    // 删除网格并等待结构同步完成，树中只剩隐藏的几何。
+    auto component_operator = model.getComponentOperator(component_id);
+    REQUIRE(component_operator);
+    component_operator->removeMesh();
+    model.flushNotifications();
+    REQUIRE(waitForDataSync(*tree));
+    CHECK_FALSE(tree->data(tree->findIndexByNodeId(component_id, 1), TreeModel::IsVisibleRole).toBool());
+
+    // 撤销恢复：结构同步尚未执行时回传"网格可见、几何隐藏"，创建后不得被默认值覆盖。
+    component_operator->replaceMesh(std::make_unique<MeshData>());
+    model.flushNotifications();
+    report(true, false);
+    REQUIRE(waitForDataSync(*tree));
+
+    CHECK(subtype_visible(TreeNode::NodeType::Mesh));
+    CHECK_FALSE(subtype_visible(TreeNode::NodeType::Geometry));
+    CHECK(tree->data(tree->findIndexByNodeId(component_id, 1), TreeModel::IsVisibleRole).toBool());
+}
+
+TEST_CASE("Actual QML applies hidden state reported before a component enters the tree", "[QML][visibility]")
+{
+    application();
+    QmlFixture f;
+    auto& model = *f.manager->getModelManager();
+    model.setUndoRecorder(nullptr);
+    ComponentDatas components;
+    components.push_back(std::make_unique<ComponentData>());
+    const Index model_id = model.addModel("pending component", std::move(components));
+    auto* tree = f.tree->findChild<TreeModel*>();
+    REQUIRE(tree);
+    REQUIRE(tree->refresh());
+
+    // 组件已存在于模型与视口，但合并刷新尚未把它加入对象树。
+    auto model_operator = model.getModelOperator(model_id);
+    REQUIRE(model_operator);
+    auto created = std::make_unique<ComponentData>();
+    created->geometry = std::make_unique<GeometryData>();
+    const Index component_id = model_operator->addGeometryComponent(std::move(created));
+    REQUIRE_FALSE(tree->findIndexByNodeId(component_id, 1).isValid());
+
+    REQUIRE(QMetaObject::invokeMethod(f.tree.get(), "hideAllNodes"));
+    REQUIRE(waitForDataSync(*tree));
+
+    const QModelIndex component_index = tree->findIndexByNodeId(component_id, 1);
+    REQUIRE(component_index.isValid());
+    CHECK_FALSE(tree->data(component_index, TreeModel::IsVisibleRole).toBool());
+    REQUIRE(tree->rowCount(component_index) == 1);
+    CHECK_FALSE(tree->data(tree->index(0, 0, component_index), TreeModel::IsVisibleRole).toBool());
 }
 
 //! @brief QML 只验证真实入口的目标范围；隐藏面恢复由视口及数据管线测试覆盖。

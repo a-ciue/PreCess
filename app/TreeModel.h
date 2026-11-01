@@ -4,6 +4,7 @@
 #include <QVariant>
 #include <QVector>
 #include <QtQml/qqmlregistration.h>
+#include <optional>
 #include <span>
 #include <unordered_map>
 #include <unordered_set>
@@ -68,6 +69,16 @@ public:
     Q_INVOKABLE void setAllVisibility(bool visible);
 
     /**
+     * @brief 接收渲染层的完整组件显隐结果（命令回传，不是用户显隐命令）
+     * @param component_id 组件 id；组件已不在模型时忽略
+     * @param mesh_visible 网格显隐结果
+     * @param geometry_visible 几何显隐结果
+     * @note 不以树节点是否存在为接收条件：节点尚未入树时只保存，结构同步创建后应用；
+     *       节点存在时一次应用完整结果并通知，不再复用带副作用的用户显隐命令。
+     */
+    Q_INVOKABLE void applyComponentVisibility(Index component_id, bool mesh_visible, bool geometry_visible);
+
+    /**
      * @brief 增量同步：模型新增（结构事件，立即执行）
      * @note 模型层已先完成数据写入；本方法只读取查询结果并插入对应行。
      */
@@ -126,8 +137,6 @@ private:
     TreeNode* getNode(const QModelIndex& index) const;
     void emitDescendantDataChanged(const QModelIndex& parentIndex);
     void setComponentVisibility(TreeNode* node, bool visible);
-    void syncSubNodes(TreeNode* node);
-    void propagateUp(TreeNode* node);
 
     ModelNodeInfo queryModel(Index model_id) const;
     void fillComponentData(ComponentNodeInfo& info) const;
@@ -158,10 +167,13 @@ private:
 
     void registerSubtree(TreeNode* node);
     void unregisterSubtree(TreeNode* node);
-    void applyStoredVisibility(TreeNode* component_node);
-    void ensureSubVisibilityEntry(TreeNode* component_node, const ComponentNodeInfo& info);
     void eraseComponentVisibility(Index component_id);
     void pruneStaleVisibility();
+    //! @brief 组件级显隐开关，缺省为可见。
+    bool isComponentEnabled(Index component_id) const;
+    //! @brief 按已保存的设置应用一个组件的显隐：设置是输入，节点 isVisible 只作派生结果。
+    void applyComponentVisibilityState(TreeNode* component_node, bool notify);
+    void setSubtreeVisibility(TreeNode* node, bool visible, bool notify);
     void recomputeVisibility(TreeNode* node, bool notify);
     void updateAncestorVisibility(TreeNode* node);
     void rebuildAllFromQuery();
@@ -179,6 +191,13 @@ private:
     bool initialized_ = false;
     QTimer* data_sync_timer_ = nullptr;
     std::unordered_set<Index> pending_model_ids_;
-    std::unordered_map<int, bool> components_visibility_;
-    std::unordered_map<int, std::pair<bool, bool>> sub_visibility_; // first=mesh visible, second=geometry visible
+    //! @brief 组件级显隐设置（空组件据此显示；非空组件作为子节点总开关）。
+    std::unordered_map<Index, bool> components_visibility_;
+    //! @brief 子类型显隐设置；空值表示尚未收到设置，子类型出现时默认可见。
+    //! @note 与节点 isVisible 分离：结构同步不得用派生结果覆盖这里的设置。
+    struct SubVisibility {
+        std::optional<bool> mesh;
+        std::optional<bool> geometry;
+    };
+    std::unordered_map<Index, SubVisibility> sub_visibility_;
 };

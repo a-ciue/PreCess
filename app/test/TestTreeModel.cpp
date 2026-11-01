@@ -39,6 +39,16 @@ std::unique_ptr<MeshData> makeCountMesh(int face_count, int solid_count)
         mesh->solid_types_.assign(static_cast<size_t>(solid_count), 0);
     return mesh;
 }
+
+bool childVisible(const TreeModel& tree, const QModelIndex& parent, TreeNode::NodeType type)
+{
+    for (int i = 0; i < tree.rowCount(parent); ++i) {
+        const QModelIndex child = tree.index(i, 0, parent);
+        if (tree.data(child, TreeModel::NodeTypeRole).toInt() == static_cast<int>(type))
+            return tree.data(child, TreeModel::IsVisibleRole).toBool();
+    }
+    return false;
+}
 }
 
 TEST_CASE("TreeModel applies structural changes through row signals", "[TreeModel]")
@@ -309,6 +319,130 @@ TEST_CASE("TreeModel shows a newly added subtype as visible", "[TreeModel]")
     }
     REQUIRE(mesh_index.isValid());
     CHECK(tree.data(mesh_index, TreeModel::IsVisibleRole).toBool());
+    CHECK(tree.data(component_index, TreeModel::IsVisibleRole).toBool());
+}
+
+TEST_CASE("TreeModel keeps reported visibility when a subtype re-enters the tree", "[TreeModel]")
+{
+    application();
+    ModelLayer model;
+    session::SessionQuery query(model);
+    QModelQuery model_query(&query);
+    TreeModel tree;
+    tree.setModelQuery(&model_query);
+
+    REQUIRE(tree.refresh());
+    ComponentDatas components;
+    auto component = std::make_unique<ComponentData>();
+    component->mesh = std::make_unique<MeshData>();
+    component->geometry = std::make_unique<GeometryData>();
+    components.push_back(std::move(component));
+    const Index model_id = model.addModel("visibility restore", std::move(components));
+    const Index component_id = model.modelById(model_id)->componentIds().front();
+    tree.syncModelAdded(model_id);
+
+    const auto component_visible = [&] {
+        return tree.data(tree.findIndexByNodeId(component_id, 1), TreeModel::IsVisibleRole).toBool();
+    };
+    const auto subtype_visible = [&](TreeNode::NodeType type) {
+        return childVisible(tree, tree.findIndexByNodeId(component_id, 1), type);
+    };
+
+    // 完整二元结果一次应用：网格可见、几何隐藏。
+    tree.applyComponentVisibility(component_id, true, false);
+    CHECK(subtype_visible(TreeNode::NodeType::Mesh));
+    CHECK_FALSE(subtype_visible(TreeNode::NodeType::Geometry));
+    CHECK(component_visible());
+
+    // 真实删除网格后组件只剩隐藏的几何，渲染回传随之变为 (false, false)。
+    auto component_operator = model.getComponentOperator(component_id);
+    REQUIRE(component_operator);
+    component_operator->removeMesh();
+    model.flushNotifications();
+    tree.applyComponentVisibility(component_id, false, false);
+    tree.syncModelChanged(model_id);
+    CHECK_FALSE(subtype_visible(TreeNode::NodeType::Mesh));
+    CHECK_FALSE(component_visible());
+
+    // 撤销恢复：结构同步尚未执行时回传"网格可见、几何隐藏"，创建后不得被默认值覆盖。
+    tree.applyComponentVisibility(component_id, true, false);
+    component_operator->replaceMesh(std::make_unique<MeshData>());
+    model.flushNotifications();
+    tree.syncModelChanged(model_id);
+
+    CHECK(subtype_visible(TreeNode::NodeType::Mesh));
+    CHECK_FALSE(subtype_visible(TreeNode::NodeType::Geometry));
+    CHECK(component_visible());
+}
+
+TEST_CASE("TreeModel applies reported visibility to components waiting to enter the tree", "[TreeModel]")
+{
+    application();
+    ModelLayer model;
+    session::SessionQuery query(model);
+    QModelQuery model_query(&query);
+    TreeModel tree;
+    tree.setModelQuery(&model_query);
+
+    REQUIRE(tree.refresh());
+    ComponentDatas components;
+    components.push_back(std::make_unique<ComponentData>());
+    const Index model_id = model.addModel("pending component", std::move(components));
+    tree.syncModelAdded(model_id);
+
+    auto model_operator = model.getModelOperator(model_id);
+    REQUIRE(model_operator);
+    auto created = std::make_unique<ComponentData>();
+    created->geometry = std::make_unique<GeometryData>();
+    const Index component_id = model_operator->addGeometryComponent(std::move(created));
+    tree.queueComponentChanged(component_id);
+    CHECK_FALSE(tree.findIndexByNodeId(component_id, 1).isValid());
+
+    // 合并刷新前收到"全部隐藏"的回传：组件尚未入树，结果必须保留。
+    tree.applyComponentVisibility(component_id, false, false);
+    REQUIRE(waitForDataSync(tree));
+
+    const QModelIndex component_index = tree.findIndexByNodeId(component_id, 1);
+    REQUIRE(component_index.isValid());
+    CHECK_FALSE(tree.data(component_index, TreeModel::IsVisibleRole).toBool());
+    REQUIRE(tree.rowCount(component_index) == 1);
+    CHECK_FALSE(tree.data(tree.index(0, 0, component_index), TreeModel::IsVisibleRole).toBool());
+}
+
+TEST_CASE("TreeModel hides element nodes with their reported subtype", "[TreeModel]")
+{
+    application();
+    ModelLayer model;
+    session::SessionQuery query(model);
+    QModelQuery model_query(&query);
+    TreeModel tree;
+    tree.setModelQuery(&model_query);
+
+    REQUIRE(tree.refresh());
+    ComponentDatas components;
+    auto component = std::make_unique<ComponentData>();
+    component->mesh = makeCountMesh(1, 1);
+    component->geometry = std::make_unique<GeometryData>();
+    components.push_back(std::move(component));
+    const Index model_id = model.addModel("element visibility", std::move(components));
+    const Index component_id = model.modelById(model_id)->componentIds().front();
+    tree.syncModelAdded(model_id);
+
+    tree.applyComponentVisibility(component_id, false, true);
+    const QModelIndex component_index = tree.findIndexByNodeId(component_id, 1);
+    REQUIRE(component_index.isValid());
+    const QModelIndex mesh_index = tree.index(0, 0, component_index);
+    REQUIRE(tree.data(mesh_index, TreeModel::NodeTypeRole).toInt()
+        == static_cast<int>(TreeNode::NodeType::Mesh));
+    CHECK_FALSE(tree.data(mesh_index, TreeModel::IsVisibleRole).toBool());
+    REQUIRE(tree.rowCount(mesh_index) == 2);
+    for (int i = 0; i < tree.rowCount(mesh_index); ++i)
+        CHECK_FALSE(tree.data(tree.index(i, 0, mesh_index), TreeModel::IsVisibleRole).toBool());
+
+    tree.applyComponentVisibility(component_id, true, true);
+    CHECK(tree.data(mesh_index, TreeModel::IsVisibleRole).toBool());
+    for (int i = 0; i < tree.rowCount(mesh_index); ++i)
+        CHECK(tree.data(tree.index(i, 0, mesh_index), TreeModel::IsVisibleRole).toBool());
     CHECK(tree.data(component_index, TreeModel::IsVisibleRole).toBool());
 }
 

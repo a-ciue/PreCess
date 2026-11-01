@@ -637,19 +637,9 @@ Pane {
         }
     }
 
-    // 同步渲染层显隐结果，分别保存网格和几何状态，避免再次发送显隐命令。
+    // 同步渲染层显隐结果；组件尚未入树时由 TreeModel 暂存，结构同步后再应用。
     function syncComponentVisibility(componentId, meshVisible, geometryVisible) {
-        let compIdx = treeModel.findIndexByNodeId(componentId, 1)
-        if (!compIdx || !compIdx.valid) return
-        treeModel.setVisibility(compIdx, meshVisible || geometryVisible)
-        for (let i = 0; i < treeModel.rowCount(compIdx); i++) {
-            let childIdx = treeModel.index(i, 0, compIdx)
-            let cType = treeModel.data(childIdx, TreeModel.NodeTypeRole)
-            if (cType === objectTree._nodeTypeMesh)
-                treeModel.setVisibility(childIdx, meshVisible)
-            else if (cType === objectTree._nodeTypeGeometry)
-                treeModel.setVisibility(childIdx, geometryVisible)
-        }
+        treeModel.applyComponentVisibility(componentId, meshVisible, geometryVisible)
     }
 
     function reverseDisplayed() {
