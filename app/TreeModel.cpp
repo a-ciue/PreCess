@@ -514,10 +514,11 @@ void TreeModel::removeChildNode(TreeNode* node)
 
     beginRemoveRows(parent_index, row, row);
     unregisterSubtree(node);
-    parent->children.removeAt(row);
-    node->parent = nullptr;
-    delete node;
+    TreeNode* removed = parent->children.takeAt(row);
+    removed->parent = nullptr;
+    // 先让视图完成索引失效，再释放节点，避免悬垂 internalPointer。
     endRemoveRows();
+    delete removed;
 }
 
 void TreeModel::moveChildNode(TreeNode* parent, int from, int to)
