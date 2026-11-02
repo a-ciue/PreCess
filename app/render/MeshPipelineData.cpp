@@ -171,45 +171,6 @@ void createSolidGrid(const MeshDataVtk& model_data, vtkPoints& points, vtkUnstru
 
 }
 
-bool MeshDataSnapshot::hasSameScalarCells(const MeshDataSnapshot& other) const
-{
-    if (generation != other.generation)
-        return false;
-    const auto same_ids = [](vtkIdTypeArray* left, vtkIdTypeArray* right, vtkIdType source_count) {
-        if (!left || !right || left->GetNumberOfValues() != right->GetNumberOfValues())
-            return false;
-        const auto count = left->GetNumberOfValues();
-        if (left == right || count == 0 || std::equal(left->GetPointer(0), left->GetPointer(0) + count, right->GetPointer(0)))
-            return true;
-        // 原始 ID 在每个结果中唯一；只有顺序不同时才用临时位图比较集合。
-        std::vector<bool> retained(source_count, false);
-        for (vtkIdType i = 0; i < count; ++i) {
-            const auto id = left->GetValue(i);
-            if (id < 0 || id >= source_count)
-                return false;
-            retained[id] = true;
-        }
-        for (vtkIdType i = 0; i < count; ++i) {
-            const auto id = right->GetValue(i);
-            if (id < 0 || id >= source_count || !retained[id])
-                return false;
-        }
-        return true;
-    };
-    const auto same_cells = [&same_ids](vtkPolyData* left, vtkPolyData* right, const char* name, vtkIdType source_count) {
-        if (left == right)
-            return true;
-        if (left->GetNumberOfCells() != right->GetNumberOfCells())
-            return false;
-        return left->GetNumberOfCells() == 0
-            || same_ids(vtkIdTypeArray::SafeDownCast(left->GetCellData()->GetArray(name)),
-                vtkIdTypeArray::SafeDownCast(right->GetCellData()->GetArray(name)), source_count);
-    };
-    return same_cells(visible_faces, other.visible_faces, "PrecessFaceIds", original_faces->GetNumberOfCells())
-        && same_cells(visible_edges, other.visible_edges, "vtkOriginalCellIds", original_edges->GetNumberOfCells())
-        && same_ids(visible_solid_ids, other.visible_solid_ids, original_solids->GetNumberOfCells());
-}
-
 MeshPipelineData::MeshPipelineData()
     : owner_thread_(std::this_thread::get_id())
 {
@@ -566,12 +527,10 @@ void MeshPipelineData::setScalarConfig(std::optional<ScalarDisplayConfig> config
 
 MeshSnapshotUpdate MeshPipelineData::createScalarUpdate()
 {
-    const auto previous = prepared_;
+    // 与 createSnapshot 的重建条件一致；实际重建后即使单元集合相同，也使旧选择失效。
     const bool rebuilt = dirty_ || !prepared_;
     auto snapshot = createSnapshot();
-    const bool geometry_changed = !previous || previous->generation != snapshot->generation
-        || (rebuilt && !previous->hasSameScalarCells(*snapshot));
-    return { std::move(snapshot), geometry_changed };
+    return { std::move(snapshot), rebuilt };
 }
 
 void MeshPipelineData::rebuildOutputs()
@@ -681,10 +640,6 @@ void MeshPipelineData::rebuildOutputs()
     prepared_->visible_faces = publishPolyData(faces);
     prepared_->visible_edges = publishPolyData(edges);
     prepared_->solid_surface = publishPolyData(surface->GetOutput());
-    prepared_->visible_solid_ids = vtkIdTypeArray::SafeDownCast(solids->GetCellData()->GetArray("vtkOriginalCellIds"));
-    // VTK 的空输出可能省略数组，空身份数组仍明确表示零个保留单元。
-    if (!prepared_->visible_solid_ids && solids->GetNumberOfCells() == 0)
-        prepared_->visible_solid_ids = vtkSmartPointer<vtkIdTypeArray>::New();
     prepared_->solid_internal_edges = internal_edges;
     dirty_ = false;
 }

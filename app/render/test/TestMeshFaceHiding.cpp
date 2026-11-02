@@ -254,8 +254,6 @@ TEST_CASE("MeshPipelineData preserves original typed IDs and published snapshots
     const auto original_snapshot = data.createSnapshot();
     REQUIRE(original_snapshot->visible_faces != nullptr);
     REQUIRE(original_snapshot->original_solids != nullptr);
-    REQUIRE(original_snapshot->visible_solid_ids != nullptr);
-    CHECK(original_snapshot->visible_solid_ids->GetNumberOfValues() == original_snapshot->original_solids->GetNumberOfCells());
     const auto original_ids = faceIdValues(original_snapshot->visible_faces);
     REQUIRE(original_ids.size() > 2);
 
@@ -263,6 +261,7 @@ TEST_CASE("MeshPipelineData preserves original typed IDs and published snapshots
     auto* solid_ids = vtkIdTypeArray::SafeDownCast(
         original_snapshot->original_solids->GetCellData()->GetArray("vtkOriginalCellIds"));
     REQUIRE(solid_ids != nullptr);
+    REQUIRE(solid_ids->GetNumberOfTuples() == original_snapshot->original_solids->GetNumberOfCells());
     REQUIRE(solid_ids->GetNumberOfTuples() > 0);
     for (vtkIdType i = 0; i < solid_ids->GetNumberOfTuples(); ++i)
         CHECK(solid_ids->GetValue(i) == i);

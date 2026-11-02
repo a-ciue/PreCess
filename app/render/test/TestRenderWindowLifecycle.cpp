@@ -85,35 +85,13 @@ TEST_CASE("Scalar range arguments reject invalid input without changing active s
         CHECK_FALSE(item.applyScalarConfig(7, "f_scalar_1", 2, limits, { }));
         CHECK_FALSE(item.applyScalarConfig(7, "f_scalar_1", 2, { }, limits));
     }
-    const QVariantList invalid_ranges {
-        3.0, QString("invalid"), QVariantMap { }, QVariantList { },
-        QVariantList { 0.0 }, QVariantList { 0.0, 1.0, 2.0 },
-        QVariantList { QString("invalid"), QString("invalid") },
-        QVariantList { QVariant(), 1.0 }, QVariantList { 0.0, QVariantMap { } },
-        QVariantList { std::numeric_limits<double>::quiet_NaN(), 1.0 },
-        QVariantList { 0.0, std::numeric_limits<double>::infinity() },
-        QVariantList { 2.0, 1.0 }
-    };
-    // 旧入口继续拒绝非法动态参数，不能在适配时静默变成默认范围。
-    for (const auto& attribute : { "f_scalar_1", "f_normal_3" }) {
-        for (const auto& invalid : invalid_ranges) {
-            INFO("attribute=" << attribute << ", range=" << invalid.toString().toStdString());
-            item.setAttriMode(7, attribute, static_cast<int>(Mode::SCALAR),
-                { { "element_type", 2 }, { "scalar_range", invalid } });
-        }
-    }
     CHECK_FALSE(item.applyScalarConfig(7, "missing", 2, { }, { }));
     CHECK_FALSE(item.applyScalarConfig(7, "f_normal_3", 2, { }, { 0.0, 1.0 }));
-    item.setAttriMode(7, "f_scalar_1", static_cast<int>(Mode::SCALAR), { { "scalar_range", QVariant() } });
     CHECK(item.scalarRangeInfo(7, "f_scalar_1", 2) == original);
     // 可选默认映射、多分量属性、相等端点及超出原始值域仍然合法。
     REQUIRE(item.applyScalarConfig(7, "f_normal_3", 2, { }, { }));
     REQUIRE(item.applyScalarConfig(7, "f_scalar_1", 2, { -2.5, 3.5 }, { }));
     REQUIRE(item.applyScalarConfig(7, "f_scalar_1", 2, { 0.0, 0.0 }, { }));
-    // 旧入口仅适配身份和参数；省略实体域、默认值域及手动多分量映射继续可用。
-    item.setAttriMode(7, "f_scalar_1", static_cast<int>(Mode::SCALAR), { });
-    item.setAttriMode(7, "f_normal_3", static_cast<int>(Mode::SCALAR),
-        { { "element_type", 2.0 }, { "scalar_range", QVariantList { QString("-2.5"), QString("3.5") } } });
     // 验证真实 QML 调用可将空数组转换为强类型列表，无须传递 null 或配置字典。
     QQmlEngine engine;
     engine.rootContext()->setContextProperty("viewport", &item);
@@ -138,8 +116,7 @@ TEST_CASE("Scalar configs restore across source reload without stealing the shar
     item.loadMeshData(7, MakeMeshDataVtk(mesh));
     item.loadMeshData(8, MakeMeshDataVtk(mesh));
     REQUIRE(item.applyScalarConfig(7, "f_scalar_1", 2, { -2.0, 2.0 }, { 1.0, 3.0 }));
-    item.setAttriMode(8, "f_normal_3", static_cast<int>(Mode::SCALAR),
-        { { "scalar_range", QVariantList { 100.0, 200.0 } } });
+    REQUIRE(item.applyScalarConfig(8, "f_normal_3", 2, { 100.0, 200.0 }, { }));
     // 通过 QML 传递两个数值数组，后续直接检查实际映射范围和筛选单元。
     QQmlEngine engine;
     engine.rootContext()->setContextProperty("viewport", &item);
@@ -148,9 +125,20 @@ TEST_CASE("Scalar configs restore across source reload without stealing the shar
     INFO(request.error().toString().toStdString());
     REQUIRE_FALSE(request.hasError());
     REQUIRE(accepted.toBool());
-    // 非法旧入口请求不能替换最新有效配置和色柱目标。
-    item.setAttriMode(7, "f_normal_3", static_cast<int>(Mode::SCALAR),
-        { { "scalar_range", QVariantList { 3.0, 1.0 } } });
+    // 分别重放空参数、合法映射和非法映射，后续检查实际快照恢复结果。
+    QVariantMap rejected_arguments;
+    SECTION("legacy scalar request with empty arguments") { }
+    SECTION("legacy scalar request with a valid mapping")
+    {
+        rejected_arguments = { { "element_type", 2 }, { "scalar_range", QVariantList { 100.0, 200.0 } } };
+    }
+    SECTION("legacy scalar request with an invalid mapping")
+    {
+        rejected_arguments = { { "scalar_range", QVariantList { 3.0, 1.0 } } };
+    }
+    // 旧标量入口无条件拒绝，不能清除筛选、替换任一组件映射或抢走共享色柱。
+    item.setAttriMode(7, "f_normal_3", static_cast<int>(Mode::SCALAR), rejected_arguments);
+    item.setAttriMode(8, "f_scalar_1", static_cast<int>(Mode::SCALAR), rejected_arguments);
     std::uint64_t previous_generation = 0;
     for (int cycle = 0; cycle < 3; ++cycle) {
         // 通用窗口不创建原生窗口或 OpenGL 上下文，关闭交互器自动渲染以避免控件触发绘制。

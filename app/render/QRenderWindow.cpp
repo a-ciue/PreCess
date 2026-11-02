@@ -901,49 +901,9 @@ void QRenderWindow::setAttriMode(
 {
     if (component_id < 0)
         return;
-    // 实体域进入 std::any 后必须为 int；在 GUI 拒绝错误类型、非整数和越界值。
-    if (auto domain = args.find("element_type"); domain != args.end()) {
-        const int type = domain->metaType().id();
-        const bool numeric = type == QMetaType::Int || type == QMetaType::UInt
-            || type == QMetaType::LongLong || type == QMetaType::ULongLong
-            || type == QMetaType::Float || type == QMetaType::Double;
-        bool converted = false;
-        const double value = domain->toDouble(&converted);
-        if (!numeric || !converted || !std::isfinite(value) || std::trunc(value) != value || value < -1 || value > 3) {
-            spdlog::warn("属性实体类型必须为 -1 到 3 的整数");
-            return;
-        }
-        *domain = static_cast<int>(value);
-    }
+    // 标量统一走完整配置入口；拒绝必须先于参数解析和旧显示状态清理。
     if (mode == static_cast<int>(Mode::SCALAR)) {
-        // 兼容控制台入口：显式提供的 scalar_range 必须有效，省略则使用数据默认值域。
-        QList<double> mapping;
-        if (const auto argument = args.constFind("scalar_range"); argument != args.cend()) {
-            const auto limits = argument->toList();
-            if (limits.size() != 2) {
-                spdlog::warn("标量映射范围必须包含两个端点");
-                return;
-            }
-            bool lower_ok = false;
-            bool upper_ok = false;
-            const double lower = limits[0].toDouble(&lower_ok);
-            const double upper = limits[1].toDouble(&upper_ok);
-            if (!lower_ok || !upper_ok) {
-                spdlog::warn("标量映射范围端点必须为有效数值");
-                return;
-            }
-            mapping = { lower, upper };
-        }
-        int element_type = args.value("element_type", -1).toInt();
-        const auto pipeline = mesh_pipeline_data_.find(component_id);
-        if (element_type < 0 && pipeline != mesh_pipeline_data_.end()) {
-            // 旧入口未指定实体域时按实际数组查找，不把身份推断带入新配置接口。
-            for (element_type = 0; element_type < 4; ++element_type) {
-                if (pipeline->second->scalarAttributeComponents(attr_name.toStdString(), static_cast<ElementType>(element_type)) > 0)
-                    break;
-            }
-        }
-        applyScalarConfig(component_id, attr_name, element_type, mapping, { });
+        spdlog::warn("标量渲染请使用 ScalarRangeState 或 applyScalarConfig");
         return;
     }
     if (const auto snapshot = mesh_snapshots_.find(component_id);
@@ -1038,9 +998,9 @@ bool QRenderWindow::applyScalarConfig(Index component_id, const QString& attribu
 void QRenderWindow::publishScalarUpdate(Index component_id, MeshSnapshotUpdate update, bool activate_scalar_bar)
 {
     auto snapshot = std::move(update.snapshot);
-    const bool geometry_changed = update.geometry_changed;
+    const bool geometry_rebuilt = update.geometry_rebuilt;
     mesh_snapshots_[component_id] = snapshot;
-    if (geometry_changed) {
+    if (geometry_rebuilt) {
         selected_faces_.clear();
         selected_face_generations_.clear();
     }
@@ -1051,9 +1011,9 @@ void QRenderWindow::publishScalarUpdate(Index component_id, MeshSnapshotUpdate u
         scalar_bar_component_id_ = component_id;
     // 几何安装、着色和选择发布保持在同一次渲染回调，保留选择版本校验。
     dispatch_async([this, component_id, snapshot = std::move(snapshot),
-                       geometry_changed, show_scalar_bar, revision = selection_revision_](vtkRenderWindow*, vtkUserData user_data) {
+                       geometry_rebuilt, show_scalar_bar, revision = selection_revision_](vtkRenderWindow*, vtkUserData user_data) {
         auto* vtk = Data::SafeDownCast(user_data);
-        if (geometry_changed) {
+        if (geometry_rebuilt) {
             render_selection_revision_ = revision;
             select_manager_->clearSelection();
             vtk->mesh_actor_manager_->loadMesh(component_id, snapshot, vtk->renderer_);
@@ -1062,7 +1022,7 @@ void QRenderWindow::publishScalarUpdate(Index component_id, MeshSnapshotUpdate u
             vtk->mesh_actor_manager_->applyScalarConfig(component_id, *snapshot, show_scalar_bar);
         else
             vtk->mesh_actor_manager_->cancelAttri(component_id);
-        if (geometry_changed)
+        if (geometry_rebuilt)
             publishSelection();
     });
 }

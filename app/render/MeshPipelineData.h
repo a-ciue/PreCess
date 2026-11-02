@@ -22,7 +22,6 @@ class vtkPlane;
 class vtkPolyData;
 class vtkUnstructuredGrid;
 class vtkDataArray;
-class vtkIdTypeArray;
 
 /** @brief 跨线程传递的裁剪参数，不共享可变 vtkPlane。 */
 struct MeshClipPlane {
@@ -58,17 +57,14 @@ struct MeshDataSnapshot {
     vtkSmartPointer<vtkPolyData> visible_faces;
     vtkSmartPointer<vtkPolyData> visible_edges;
     vtkSmartPointer<vtkPolyData> solid_surface;
-    /** @brief 裁剪后体单元的原始身份；在提取表面前保留，避免表面面序影响结果比较。 */
-    vtkSmartPointer<vtkIdTypeArray> visible_solid_ids;
     vtkSmartPointer<vtkPolyData> solid_internal_edges;
-    /** @brief 同源标量筛选按原始单元身份比较结果，忽略输出顺序，不比较映射参数。 */
-    bool hasSameScalarCells(const MeshDataSnapshot& other) const;
 };
 
-/** @brief 本次完成的显示结果；几何变化只随本次更新传递，不保存额外版本状态。 */
+/** @brief 本次完成的显示结果；重建标记仅随本次更新传递，不保存额外版本状态。 */
 struct MeshSnapshotUpdate {
     std::shared_ptr<const MeshDataSnapshot> snapshot;
-    bool geometry_changed { false };
+    /** @brief 本次是否实际重建可见几何，不表示输出单元集合必然不同。 */
+    bool geometry_rebuilt { false };
 };
 
 /** @brief 在创建线程串行修改网格数据，主动计算后向渲染端发布轻量快照。 */
@@ -106,7 +102,7 @@ public:
     int scalarAttributeComponents(const std::string& attribute, ElementType type) const;
     /** @brief 校验并保存完整显示配置，空值取消着色和筛选；无效参数不改变当前结果。 */
     void setScalarConfig(std::optional<ScalarDisplayConfig> config);
-    /** @brief 生成最新配置快照；仅重建几何时比较原始单元身份，映射修改共享既有输出。 */
+    /** @brief 生成最新配置快照并报告本次是否重建几何；映射修改共享既有输出。 */
     MeshSnapshotUpdate createScalarUpdate();
     /** @brief 主动计算需要更新的数据；每次发布递增版本，绝不重新执行旧输出管线。 */
     std::shared_ptr<const MeshDataSnapshot> createSnapshot();

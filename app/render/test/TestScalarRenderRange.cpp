@@ -85,9 +85,11 @@ TEST_CASE("Scalar range filters edge and solid cells but rejects points", "[scal
     const auto filtered = pipeline.createSnapshot();
     CHECK(filtered->solid_surface->GetNumberOfCells() > 0);
     CHECK(filtered->solid_surface->GetNumberOfCells() < original->solid_surface->GetNumberOfCells());
-    REQUIRE(filtered->visible_solid_ids);
-    REQUIRE(filtered->visible_solid_ids->GetNumberOfValues() == 1);
-    CHECK(filtered->visible_solid_ids->GetValue(0) == 0);
+    auto* solid_ids = vtkIdTypeArray::SafeDownCast(filtered->solid_surface->GetCellData()->GetArray("vtkOriginalCellIds"));
+    REQUIRE(solid_ids);
+    REQUIRE(solid_ids->GetNumberOfValues() == filtered->solid_surface->GetNumberOfCells());
+    for (vtkIdType id = 0; id < solid_ids->GetNumberOfValues(); ++id)
+        CHECK(solid_ids->GetValue(id) == 0);
     auto* values = filtered->solid_surface->GetCellData()->GetArray("value");
     REQUIRE(values);
     for (vtkIdType id = 0; id < values->GetNumberOfTuples(); ++id)
@@ -129,82 +131,78 @@ TEST_CASE("Scalar range full values survive empty results missing values and cli
     CHECK((*constant)[1] == 0.5);
 }
 
-TEST_CASE("Scalar filter changes compare output identities independently of ordering and source reload", "[scalar-range]")
-{
-    auto mesh = scalarMesh();
-    MeshPipelineData pipeline;
-    pipeline.loadModelData(MakeMeshDataVtk(mesh));
-    const auto original = pipeline.createSnapshot();
-    pipeline.setScalarConfig(std::nullopt);
-    CHECK_FALSE(pipeline.createScalarUpdate().geometry_changed);
-    pipeline.setScalarConfig(ScalarDisplayConfig { "value", ElementType::FACE, { }, std::array { 1.0, 3.0 } });
-    const auto filtered = pipeline.createSnapshot();
-    CHECK_FALSE(original->hasSameScalarCells(*filtered));
-    pipeline.setScalarConfig(ScalarDisplayConfig { "value", ElementType::FACE, { }, std::array { 1.0, 3.0 } });
-    CHECK_FALSE(pipeline.createScalarUpdate().geometry_changed);
-    // 条件变化但选中单元相同，不能因此使已有选择失效。
-    pipeline.setScalarConfig(ScalarDisplayConfig { "value", ElementType::FACE, { }, std::array { 0.9, 3.1 } });
-    CHECK(filtered->hasSameScalarCells(*pipeline.createSnapshot()));
-
-    auto reordered = *filtered;
-    vtkNew<vtkPolyData> faces;
-    faces->ShallowCopy(filtered->visible_faces);
-    auto* ids = vtkIdTypeArray::SafeDownCast(faces->GetCellData()->GetArray("PrecessFaceIds"));
-    REQUIRE(ids);
-    REQUIRE(ids->GetNumberOfValues() > 1);
-    vtkNew<vtkIdTypeArray> reversed_ids;
-    reversed_ids->SetName("PrecessFaceIds");
-    for (vtkIdType id = ids->GetNumberOfValues(); id > 0; --id)
-        reversed_ids->InsertNextValue(ids->GetValue(id - 1));
-    faces->GetCellData()->AddArray(reversed_ids);
-    reordered.visible_faces = faces.GetPointer();
-    CHECK(filtered->hasSameScalarCells(reordered));
-    reversed_ids->SetValue(0, 0);
-    CHECK_FALSE(filtered->hasSameScalarCells(reordered));
-
-    auto config = *filtered->scalar_config;
-    config.display.reset();
-    pipeline.setScalarConfig(config);
-    CHECK(original->hasSameScalarCells(*pipeline.createSnapshot()));
-    pipeline.setScalarConfig(config);
-    CHECK_FALSE(pipeline.createScalarUpdate().geometry_changed);
-    pipeline.loadModelData(MakeMeshDataVtk(mesh));
-    CHECK_FALSE(original->hasSameScalarCells(*pipeline.createSnapshot()));
-}
-
-TEST_CASE("Scalar config updates share geometry and retain the latest completed configuration", "[scalar-range]")
+TEST_CASE("Scalar config updates report geometry rebuilds and retain the latest completed configuration", "[scalar-range]")
 {
     auto mesh = scalarMesh();
     MeshPipelineData pipeline;
     pipeline.loadModelData(MakeMeshDataVtk(mesh));
     const auto original = pipeline.createScalarUpdate();
-    REQUIRE(original.geometry_changed);
+    REQUIRE(original.geometry_rebuilt);
     ScalarDisplayConfig config { "value", ElementType::FACE, std::array { -1.0, 4.0 }, std::array { 1.0, 3.0 } };
     pipeline.setScalarConfig(config);
     const auto filtered = pipeline.createScalarUpdate();
-    REQUIRE(filtered.geometry_changed);
+    REQUIRE(filtered.geometry_rebuilt);
+
+    // 仅修改映射或重复提交相同筛选时，共享已完成的几何，不使选择失效。
     config.mapping = std::array { -2.0, 6.0 };
     pipeline.setScalarConfig(config);
     const auto mapped = pipeline.createScalarUpdate();
-    CHECK_FALSE(mapped.geometry_changed);
+    CHECK_FALSE(mapped.geometry_rebuilt);
     CHECK(mapped.snapshot->visible_faces == filtered.snapshot->visible_faces);
+    CHECK(mapped.snapshot->visible_edges == filtered.snapshot->visible_edges);
+    CHECK(mapped.snapshot->solid_surface == filtered.snapshot->solid_surface);
     REQUIRE(mapped.snapshot->scalar_config);
     CHECK(mapped.snapshot->scalar_config->mapping == config.mapping);
     CHECK(filtered.snapshot->scalar_config->mapping != config.mapping);
-    // 非法请求不改变执行配置；条件改变而结果相同时也不清理选择。
+    pipeline.setScalarConfig(config);
+    const auto repeated = pipeline.createScalarUpdate();
+    CHECK_FALSE(repeated.geometry_rebuilt);
+    CHECK(repeated.snapshot->visible_faces == mapped.snapshot->visible_faces);
+
+    // 非法请求不改变已接受的配置，也不触发几何重建。
     config.display = std::array { std::numeric_limits<double>::quiet_NaN(), 3.0 };
     CHECK_THROWS_AS(pipeline.setScalarConfig(config), std::invalid_argument);
-    CHECK(pipeline.createScalarUpdate().snapshot->scalar_config->display == filtered.snapshot->scalar_config->display);
+    const auto rejected = pipeline.createScalarUpdate();
+    CHECK_FALSE(rejected.geometry_rebuilt);
+    REQUIRE(rejected.snapshot->scalar_config);
+    CHECK(rejected.snapshot->scalar_config->display == filtered.snapshot->scalar_config->display);
+
+    // 区间改变会实际重建；即使仍保留原来的三个单元，也不再比较集合来保留选择。
     config.display = std::array { 0.9, 3.1 };
     pipeline.setScalarConfig(config);
-    CHECK_FALSE(pipeline.createScalarUpdate().geometry_changed);
+    const auto same_cells = pipeline.createScalarUpdate();
+    CHECK(same_cells.geometry_rebuilt);
+    CHECK(same_cells.snapshot->visible_faces != filtered.snapshot->visible_faces);
+    auto* face_ids = vtkIdTypeArray::SafeDownCast(same_cells.snapshot->visible_faces->GetCellData()->GetArray("PrecessFaceIds"));
+    REQUIRE(face_ids);
+    REQUIRE(face_ids->GetNumberOfValues() == 3);
+    for (vtkIdType id = 0; id < face_ids->GetNumberOfValues(); ++id)
+        CHECK(face_ids->GetValue(id) == id + 1);
+
+    // 取消全范围筛选仍重建几何，恢复前后单元数相同也应使旧选择失效。
     config.display = pipeline.scalarRange("value", ElementType::FACE);
     pipeline.setScalarConfig(config);
-    REQUIRE(pipeline.createScalarUpdate().geometry_changed);
+    const auto full_range = pipeline.createScalarUpdate();
+    REQUIRE(full_range.geometry_rebuilt);
+    CHECK(full_range.snapshot->visible_faces->GetNumberOfCells() == original.snapshot->visible_faces->GetNumberOfCells());
     pipeline.setScalarConfig(std::nullopt);
     const auto canceled = pipeline.createScalarUpdate();
-    CHECK_FALSE(canceled.geometry_changed);
+    CHECK(canceled.geometry_rebuilt);
+    CHECK(canceled.snapshot->visible_faces->GetNumberOfCells() == full_range.snapshot->visible_faces->GetNumberOfCells());
     CHECK_FALSE(canceled.snapshot->scalar_config);
+
+    // 无筛选的着色与取消只更新完成配置，继续共享几何。
+    config.display.reset();
+    pipeline.setScalarConfig(config);
+    const auto unfiltered = pipeline.createScalarUpdate();
+    CHECK_FALSE(unfiltered.geometry_rebuilt);
+    REQUIRE(unfiltered.snapshot->scalar_config);
+    CHECK(unfiltered.snapshot->visible_faces == canceled.snapshot->visible_faces);
+    pipeline.setScalarConfig(std::nullopt);
+    const auto unfiltered_canceled = pipeline.createScalarUpdate();
+    CHECK_FALSE(unfiltered_canceled.geometry_rebuilt);
+    CHECK(unfiltered_canceled.snapshot->visible_faces == unfiltered.snapshot->visible_faces);
+    CHECK_FALSE(unfiltered_canceled.snapshot->scalar_config);
     CHECK(pipeline.createSnapshot()->scalar_config == std::nullopt);
 }
 
@@ -219,7 +217,8 @@ TEST_CASE("Source reload retains applicable scalar configuration and removes onl
     pipeline.hideFaces({ 1 });
     pipeline.loadModelData(MakeMeshDataVtk(mesh));
     const auto reloaded = pipeline.createScalarUpdate();
-    CHECK(reloaded.geometry_changed);
+    CHECK(reloaded.geometry_rebuilt);
+    CHECK(reloaded.snapshot->generation != before.snapshot->generation);
     REQUIRE(reloaded.snapshot->scalar_config);
     CHECK(reloaded.snapshot->scalar_config->mapping == before.snapshot->scalar_config->mapping);
     CHECK(reloaded.snapshot->visible_faces->GetNumberOfCells() == 3);

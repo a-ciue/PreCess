@@ -206,30 +206,35 @@ public:
     Q_SLOT void setClick();
 
     /**
-     * @brief 设置属性渲染方式
+     * @brief 设置 RGB、UV 或向量属性渲染，不接受标量请求。
      *
      * 在控制台中调用示例：
      * QModelManager.query.getComponentAttriInfo(0)
-     * App.registry.renderWindow.setAttriMode(0, "f_pressure_1", 1, {})
      * App.registry.renderWindow.setAttriMode(0, "f_color_3", 0, {})
      * App.registry.renderWindow.setAttriMode(0, "f_vectors_3", 3, {})
      * App.registry.renderWindow.setAttriMode(0, "v_vector_3", 3, { "glyph_scale": 0.5 })
      * App.registry.renderWindow.setAttriMode(0, "v_uv_2", 2, { "texture_path": "E:/MeshProjects/Project_Harmonic/data/texture_checker.bmp" })
-     * App.registry.renderWindow.setAttriMode(0, "v_scalars_1", 1, {})
-     * App.registry.renderWindow.setAttriMode(0, "v_scalars_1", 1, { "scalar_range": [2, 6] })
+     * // 标量与属性面板共用范围偏好和显示意图，实体域 0/1/2/3 表示点/边/面/体：
+     * App.registry.scalarRanges.showAttribute(0, "f_pressure_1", 2)
+     * App.registry.scalarRanges.showAttribute(0, "v_scalars_1", 0)
+     * // 单条命令复制完整参数后手动设置映射，解除联动并关闭显示筛选：
+     * (function () { const ranges = App.registry.scalarRanges; const key = ranges.ensure(0, "v_scalars_1", 0); return ranges.apply(key, Object.assign({}, ranges.parameters(key), { mappingLower: 2, mappingUpper: 6, filtered: false, linked: false })); })()
      * // blow.vtk 示例：
      * App.registry.renderWindow.setAttriMode(0, "v_displacement9_3", 3, {})
      * App.registry.renderWindow.setAttriMode(0, "v_displacement9_3", 3, { "glyph_scale": 0.5 })
-     * App.registry.renderWindow.setAttriMode(0, "v_thickness9_1", 1, {})
-     * App.registry.renderWindow.setAttriMode(0, "v_thickness9_1", 1, { "scalar_range": [0, 2] })
+     * App.registry.scalarRanges.showAttribute(0, "v_thickness9_1", 0)
+     * (function () { const ranges = App.registry.scalarRanges; const key = ranges.ensure(0, "v_thickness9_1", 0); return ranges.apply(key, Object.assign({}, ranges.parameters(key), { mappingLower: 0, mappingUpper: 2, filtered: false, linked: false })); })()
+     * 显示筛选仅支持非点单分量属性；需要独立筛选时，在完整参数中同时设置
+     * filtered: true、displayLower、displayUpper，并保持 linked: false。
+     * save 只保存参数，update 仅对当前活动属性实时应用，apply 显式应用完整参数。
+     * ScalarRangeState 返回 true 仅表示偏好或显示意图已处理，不代表渲染完成或底层接口已接受。
      *
      * @param component_id 目标 Component ID
      * @param attr_name 属性名，前缀 v_/e_/f_/s_ 表示点/边/面/体，后缀 _3 表示属性分量为 3
-     * @param mode 渲染方式 0:RGB 1:SCALAR 2:UV 3:VECTOR
+     * @param mode 渲染方式 0:RGB 2:UV 3:VECTOR；1:SCALAR 明确拒绝且不改变已有显示。
      * @param args 其他参数（可选），如：
      *   "texture_path": 贴图路径（string）
      *   "glyph_scale": 箭头缩放比例（double）
-     *   "scalar_range": 标量范围（长度为2的数组）
      */
     Q_INVOKABLE void setAttriMode(
         Index component_id,
@@ -239,7 +244,7 @@ public:
     /**
      * @brief 取消指定 Component 的属性渲染
      * 在控制台中调用示例：
-     * myItem.cancelComponentAttri(App.selection.activeComponentId)
+     * App.registry.scalarRanges.cancel(App.selection.activeComponentId)
      * @param component_id 目标 Component ID
      */
     Q_INVOKABLE void cancelComponentAttri(Index component_id);
@@ -269,7 +274,7 @@ protected:
 
 private:
     /**
-     * @brief 缓存数据侧完成结果，按几何变化维护选择并投递安装和着色。
+     * @brief 缓存数据侧完成结果，按实际几何重建标记清理选择并投递安装和着色。
      * @param activate_scalar_bar 主动应用时切换色柱；自动恢复只刷新原归属色柱。
      */
     void publishScalarUpdate(Index component_id, MeshSnapshotUpdate update, bool activate_scalar_bar = false);
