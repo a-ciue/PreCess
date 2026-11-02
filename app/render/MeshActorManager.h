@@ -29,13 +29,13 @@ public:
 
     bool getCount(Index component_id);
 
-    /** @brief 设置属性着色；恢复非归属组件时可保留共享色柱，不改变其归属和显隐。 */
+    /** @brief 通过既有参数入口设置属性着色，并更新共享色柱。 */
     void setAttriMode(
         Index component_id,
         const std::string& attr_name,
         Mode mode,
-        std::map<std::string, std::any> args, bool update_scalar_bar = true);
-    /** @brief 按完成快照恢复或取消标量着色；非归属组件恢复时保留共享色柱。 */
+        std::map<std::string, std::any> args);
+    /** @brief 按含配置的完成快照恢复标量着色；非归属组件恢复时保留共享色柱。 */
     void applyScalarConfig(Index component_id, const MeshDataSnapshot& snapshot, bool update_scalar_bar = true);
     void cancelAttri(Index component_id);
 

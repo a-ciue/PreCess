@@ -19,6 +19,7 @@ Item {
     property string selectedKey: ""
     property int confirmedMode: 1
     property var rememberedAttributes: ({})
+    property var rangeMetadata: ({ valid: false, rangeAvailable: false })
     readonly property var currentRange: rangeState ? rangeState.parameters(selectedKey) : ({
             valid: false
         })
@@ -26,8 +27,8 @@ Item {
     // 面板仅查询原始元信息，用户范围统一保存在界面参数对象中。
     function refreshRangeMetadata() {
         let attr = selectedAttribute();
-        let window = App.registry.renderWindow;
-        selectedKey = attr && window && rangeState ? rangeState.ensure(App.selection.activeComponentId, attr.name, attr.attrType, window.scalarRangeInfo(App.selection.activeComponentId, attr.name, attr.attrType)) : "";
+        rangeMetadata = attr && rangeState ? rangeState.rangeInfo(App.selection.activeComponentId, attr.name, attr.attrType) : { valid: false, rangeAvailable: false };
+        selectedKey = attr && rangeState ? rangeState.ensure(App.selection.activeComponentId, attr.name, attr.attrType, rangeMetadata) : "";
     }
 
     // 普通目录刷新恢复操作位置，同一属性的输入草稿由编辑器继续保留。
@@ -98,15 +99,21 @@ Item {
 
     // 属性点击和应用共用入口，先完成草稿，再提交该属性的最终配置。
     function applySelectedAttribute() {
-        if (!canApply() || !rangeEditor.finishEditing(false))
+        if (!canApply())
+            return;
+        let edit = rangeEditor.takeParameters();
+        if (edit === false)
             return;
         let attr = selectedAttribute();
         if (modeCombo.currentIndex === 1) {
             refreshRangeMetadata();
-            rangeState.apply(selectedKey);
+            rangeState.apply(selectedKey, edit ? edit.parameters : undefined);
         } else {
-            if (rangeState)
+            if (rangeState) {
                 rangeState.setActive(App.selection.activeComponentId, "", -1);
+                if (edit)
+                    rangeState.save(edit.key, edit.parameters);
+            }
             App.registry.renderWindow.setAttriMode(App.selection.activeComponentId, attr.name, modeCombo.currentIndex, renderArgs());
         }
     }
@@ -309,17 +316,10 @@ Item {
                 visible: modeCombo.currentIndex === 1
                 attributeKey: root.selectedKey
                 parameters: root.currentRange
-                onRangeEdited: function (key, displayMode, lower, upper, applyImmediately) {
+                metadata: root.rangeMetadata
+                onParametersEdited: function (key, parameters) {
                     if (root.rangeState)
-                        root.rangeState.editRange(key, displayMode, lower, upper, applyImmediately);
-                }
-                onLinkRequested: function (key, displayMode, linked, edit) {
-                    if (root.rangeState)
-                        root.rangeState.setLinked(key, displayMode, linked, edit);
-                }
-                onResetRequested: function (key, displayMode) {
-                    if (root.rangeState)
-                        root.rangeState.resetRange(key, displayMode);
+                        root.rangeState.update(key, parameters);
                 }
             }
 
@@ -402,11 +402,9 @@ Item {
             ToolTip.text: qsTr("关闭属性着色和范围筛选，保留参数")
             ToolTip.delay: 400
             onClicked: {
-                rangeEditor.finishEditing(false);
+                let edit = rangeEditor.takeParameters();
                 if (root.rangeState)
-                    root.rangeState.cancel(App.selection.activeComponentId);
-                else
-                    App.registry.renderWindow.cancelComponentAttri(App.selection.activeComponentId);
+                    root.rangeState.cancel(App.selection.activeComponentId, edit ? edit.key : "", edit ? edit.parameters : undefined);
             }
         }
 

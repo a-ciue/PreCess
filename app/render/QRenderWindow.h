@@ -11,6 +11,7 @@
 #include "MeshPipelineData.h"
 #include "QModelQuery.h"
 #include "QSelection.h"
+#include <QList>
 #include <QQuickVTKItem.h>
 #include <QVTKRenderWindowAdapter.h>
 #include <unordered_map>
@@ -245,8 +246,9 @@ public:
 
     /** @brief 查询完整原始值域的两个端点；没有有限单值值域时返回空列表。 */
     Q_INVOKABLE QVariantList scalarRangeInfo(Index component_id, const QString& attribute, int element_type);
-    /** @brief 一次应用最终配置；mapping 为空使用默认值域，display 为空关闭范围筛选。 */
-    Q_INVOKABLE bool applyScalarConfig(Index component_id, const QString& attribute, int element_type, QVariantMap config);
+    /** @brief 一次应用两个范围；空映射列表采用默认值域，空显示列表关闭筛选，非空列表须有两个端点。 */
+    Q_INVOKABLE bool applyScalarConfig(Index component_id, const QString& attribute, int element_type,
+        const QList<double>& mapping, const QList<double>& display);
 
     bool event(QEvent* ev) override;
 

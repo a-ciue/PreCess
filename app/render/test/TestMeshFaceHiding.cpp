@@ -427,19 +427,25 @@ TEST_CASE("Scalar restoration preserves another component's shared bar ownership
     REQUIRE(scalar_bar);
     auto* lookup_table = scalar_bar->GetLookupTable();
     REQUIRE(scalar_bar->GetVisibility());
-    manager.setAttriMode(8, "f_isolation_scalar_1", Mode::SCALAR,
-        { { "scalar_range", std::vector<double> { 10.0, 20.0 } } }, false);
+    auto restored = *snapshot;
+    restored.scalar_config = ScalarDisplayConfig { "f_isolation_scalar_1", ElementType::FACE, std::array { 10.0, 20.0 }, { } };
+    manager.applyScalarConfig(8, restored, false);
     AttributeOperator other(manager.getComponentActor(8).get());
     CHECK(other.getFaceMapper()->GetScalarRange()[0] == 10.0);
     CHECK(other.getFaceMapper()->GetScalarRange()[1] == 20.0);
     CHECK(scalar_bar->GetLookupTable() == lookup_table);
+    CHECK(scalar_bar->GetVisibility());
+    // 无标量描述的快照不承担通用取消职责，已有着色应保持。
+    manager.applyScalarConfig(8, *snapshot, false);
+    CHECK(other.getFaceMapper()->GetScalarVisibility());
     CHECK(scalar_bar->GetVisibility());
     // 取消非归属组件不能关闭颜色条，取消归属组件后恢复也不能重新显示。
     manager.cancelAttri(8);
     CHECK(scalar_bar->GetVisibility());
     manager.cancelAttri(7);
     REQUIRE_FALSE(scalar_bar->GetVisibility());
-    manager.setAttriMode(8, "f_isolation_scalar_1", Mode::SCALAR, { }, false);
+    restored.scalar_config->mapping.reset();
+    manager.applyScalarConfig(8, restored, false);
     CHECK_FALSE(scalar_bar->GetVisibility());
 }
 

@@ -23,12 +23,8 @@ Page {
     function cancelFeatureAttributeRendering() {
         if (!featureAttributeRenderingActive)
             return
-        if (featureAttributeRenderingComponentId >= 0) {
-            if (App.registry.scalarRanges)
-                App.registry.scalarRanges.cancel(featureAttributeRenderingComponentId)
-            else
-                myItem.cancelComponentAttri(featureAttributeRenderingComponentId)
-        }
+        if (featureAttributeRenderingComponentId >= 0 && App.registry.scalarRanges)
+            App.registry.scalarRanges.cancel(featureAttributeRenderingComponentId)
         featureAttributeRenderingActive = false
         featureAttributeRenderingComponentId = -1
     }
@@ -47,15 +43,8 @@ Page {
             root.featureAttributeRenderingComponentId = componentId
             // 自动显示与面板共用参数偏好；窗口仅接收最终配置。
             let ranges = App.registry.scalarRanges
-            let attributes = QModelManager.query.getComponentAttriInfo(componentId)
-            let attribute = attributes.find(function(item) { return item.name === attributeName })
-            if (ranges && attribute) {
-                let key = ranges.ensure(componentId, attributeName, attribute.attrType,
-                    myItem.scalarRangeInfo(componentId, attributeName, attribute.attrType))
-                ranges.apply(key)
-            } else {
-                myItem.setAttriMode(componentId, attributeName, 1, {})
-            }
+            if (ranges)
+                ranges.showAttribute(componentId, attributeName)
         }
     }
 

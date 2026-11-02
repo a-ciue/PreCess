@@ -139,23 +139,30 @@ bool waitForRefresh(TreeModel& tree_model)
 
 }
 
-TEST_CASE("Actual scalar editor unlinks a text draft with one complete request", "[QML][scalar-range][no-window]")
+TEST_CASE("Actual scalar editor completes range actions without intermediate requests", "[QML][scalar-range][no-window]")
 {
     application();
     QmlFixture f;
     auto ranges = load(f.engine, "ScalarRangeState.qml");
+    REQUIRE(f.selection_state->setProperty("activeComponentId", 7));
     auto panel = load(f.engine, "AttributeRenderPanel.qml", { { "rangeState", QVariant::fromValue(ranges.get()) } });
     f.engine.globalObject().setProperty("ranges", f.engine.newQObject(ranges.get()));
     f.engine.globalObject().setProperty("panel", f.engine.newQObject(panel.get()));
     auto setup = f.engine.evaluate(R"JS(
-        var key = ranges.ensure(7, 'value', 2, [0.25, 0.751234567]);
+        var requests = [], cancellations = [];
+        ranges.renderWindow = {
+            scalarRangeInfo: function(component) {return component === 8 ? [10, 20] : [0.25, 0.751234567];},
+            applyScalarConfig: function(component, attribute, type, mapping, display) {
+                requests.push({component:component, attribute:attribute, type:type, configuration:{mapping:mapping, display:display}});
+            },
+            cancelComponentAttri: function(component) {cancellations.push(component);}
+        };
+        var key = ranges.ensure(7, 'value', 2);
+        panel.attributes = [{name:'value', displayName:'value', typeName:'面', attrType:2, componentCount:1}];
+        panel.selectedIndex = 0;
+        panel.rangeMetadata = ranges.rangeInfo(7, 'value', 2);
         panel.selectedKey = key;
         ranges.apply(key);
-        ranges.setLinked(key, false, true);
-        var requests = [];
-        ranges.applyRequested.connect(function(component, attribute, type, configuration) {
-            requests.push({component:component, attribute:attribute, type:type, configuration:configuration});
-        });
     )JS");
     INFO(setup.toString().toStdString());
     REQUIRE_FALSE(setup.isError());
@@ -167,29 +174,153 @@ TEST_CASE("Actual scalar editor unlinks a text draft with one complete request",
     REQUIRE(link);
     REQUIRE(mode->setProperty("currentIndex", 1));
     REQUIRE(link->property("enabled").toBool());
-    SECTION("color mapping draft") { }
-    SECTION("visible cells draft")
-    {
-        auto* display = panel->findChild<QObject*>("scalarDisplayMode");
-        REQUIRE(display);
-        REQUIRE(QMetaObject::invokeMethod(display, "clicked"));
-    }
-    // 触发生产输入框和按钮的处理链，不直接构造草稿，也不创建或显示窗口。
-    REQUIRE(lower->setProperty("text", "0.333333333333"));
-    REQUIRE(QMetaObject::invokeMethod(lower, "textEdited"));
     REQUIRE(QMetaObject::invokeMethod(link, "clicked"));
-    QCoreApplication::processEvents();
-    auto result = f.engine.evaluate(R"JS(
-        var state = ranges.parameters(key);
-        var config = requests.length === 1 ? requests[0].configuration : null;
-        !state.linked && !panel.currentRange.linked && requests.length === 1
-            && requests[0].component === 7 && requests[0].attribute === 'value' && requests[0].type === 2
-            && config.mapping[0] === 0.333333333333 && config.display[0] === 0.333333333333
-            && config.mapping[1] === 0.751234567 && config.display[1] === 0.751234567;
-    )JS");
-    INFO(result.toString().toStdString());
-    REQUIRE_FALSE(result.isError());
-    CHECK(result.toBool());
+    f.engine.evaluate("requests = []");
+    auto* editor = panel->findChild<QObject*>("scalarRangeEditor");
+    auto* reset = panel->findChild<QObject*>("scalarRangeReset");
+    auto* display = panel->findChild<QObject*>("scalarDisplayMode");
+    REQUIRE(editor);
+    REQUIRE(reset);
+    REQUIRE(display);
+    f.engine.globalObject().setProperty("editor", f.engine.newQObject(editor));
+    // 使用生产输入信号，不直接构造输入草稿。
+    auto edit_lower = [&](const char* text) {
+        REQUIRE(lower->setProperty("text", text));
+        REQUIRE(QMetaObject::invokeMethod(lower, "textEdited"));
+    };
+    auto check = [&](const char* script) {
+        auto value = f.engine.evaluate(QString::fromUtf8(script));
+        INFO(value.toString().toStdString());
+        REQUIRE_FALSE(value.isError());
+        CHECK(value.toBool());
+    };
+    SECTION("linked reset discards draft and restores both ranges")
+    {
+        edit_lower("0.3");
+        REQUIRE(QMetaObject::invokeMethod(editor, "finishEditing"));
+        f.engine.evaluate("requests = []");
+        edit_lower("0.4");
+        REQUIRE(QMetaObject::invokeMethod(reset, "clicked"));
+        QCoreApplication::processEvents();
+        check("requests.length === 1 && ranges.parameters(key).linked && !ranges.parameters(key).filtered"
+              " && ranges.parameters(key).mappingLower === 0.25 && ranges.parameters(key).displayLower === 0.25");
+    }
+    SECTION("independent reset keeps the other range")
+    {
+        REQUIRE(QMetaObject::invokeMethod(link, "clicked"));
+        edit_lower("0.3");
+        REQUIRE(QMetaObject::invokeMethod(editor, "finishEditing"));
+        REQUIRE(QMetaObject::invokeMethod(display, "clicked"));
+        edit_lower("0.4");
+        REQUIRE(QMetaObject::invokeMethod(editor, "finishEditing"));
+        f.engine.evaluate("requests = []");
+        REQUIRE(QMetaObject::invokeMethod(reset, "clicked"));
+        check("requests.length === 1 && !ranges.parameters(key).linked && !ranges.parameters(key).filtered"
+              " && ranges.parameters(key).mappingLower === 0.3 && ranges.parameters(key).displayLower === 0.25");
+    }
+    SECTION("explicit apply publishes only the final linked parameters")
+    {
+        edit_lower("0.333333333333");
+        auto* apply = panel->findChild<QObject*>("attributeRenderApply");
+        REQUIRE(apply);
+        REQUIRE(QMetaObject::invokeMethod(apply, "clicked"));
+        QCoreApplication::processEvents();
+        check("requests.length === 1 && requests[0].configuration.mapping[0] === 0.333333333333"
+              " && requests[0].configuration.display[0] === 0.333333333333");
+    }
+    SECTION("cancel saves parameters without applying and reapply restores them")
+    {
+        edit_lower("0.333333333333");
+        auto* cancel = panel->findChild<QObject*>("attributeRenderCancel");
+        REQUIRE(cancel);
+        REQUIRE(QMetaObject::invokeMethod(cancel, "clicked"));
+        QCoreApplication::processEvents();
+        check("requests.length === 0 && cancellations.length === 1 && cancellations[0] === 7"
+              " && !ranges.activeKeys['7'] && ranges.parameters(key).mappingLower === 0.333333333333");
+        REQUIRE(QMetaObject::invokeMethod(panel.get(), "applySelectedAttribute"));
+        check("requests.length === 1 && requests[0].configuration.display[0] === 0.333333333333");
+    }
+    SECTION("pending drag and late old gesture retain their captured property")
+    {
+        auto result = f.engine.evaluate(R"JS(
+            editor.handleEditTarget = {key:key, display:false};
+            editor.queueRange(0.3, 0.6);
+            var other = ranges.ensure(8, 'value', 2);
+            panel.rangeMetadata = ranges.rangeInfo(8, 'value', 2);
+            panel.selectedKey = other;
+            editor.queueRange(0.4, 0.5);
+        )JS");
+        REQUIRE_FALSE(result.isError());
+        QCoreApplication::processEvents();
+        check("requests.length === 1 && requests[0].component === 7 && ranges.parameters(key).mappingLower === 0.3"
+              " && ranges.parameters(other).mappingLower === 10 && ranges.parameters(other).mappingUpper === 20");
+    }
+    SECTION("multicomponent optional mapping retains precise endpoints")
+    {
+        auto value = f.engine.evaluate(R"JS(
+            ranges.renderWindow.scalarRangeInfo = function() {return [];};
+            var vector = ranges.ensure(7, 'vector', 2);
+            panel.rangeMetadata = ranges.rangeInfo(7, 'vector', 2);
+            panel.selectedKey = vector;
+        )JS");
+        REQUIRE_FALSE(value.isError());
+        edit_lower("100.123456789");
+        REQUIRE(QMetaObject::invokeMethod(editor, "finishEditing"));
+        check("ranges.parameters(vector).mappingLower === 100.123456789 && ranges.parameters(vector).mappingUpper === null"
+              " && requests.length === 0");
+        auto* upper = panel->findChild<QObject*>("scalarRangeUpper");
+        REQUIRE(upper);
+        REQUIRE(upper->setProperty("text", "200.987654321"));
+        REQUIRE(QMetaObject::invokeMethod(upper, "textEdited"));
+        REQUIRE(QMetaObject::invokeMethod(editor, "finishEditing"));
+        check("ranges.apply(vector) && requests.length === 1 && requests[0].configuration.mapping[0] === 100.123456789"
+              " && requests[0].configuration.mapping[1] === 200.987654321 && requests[0].configuration.display.length === 0");
+        CHECK_FALSE(link->property("enabled").toBool());
+    }
+    SECTION("metadata refresh preserves draft and reset uses the latest original range")
+    {
+        edit_lower("0.333333333333");
+        auto value = f.engine.evaluate(R"JS(
+            ranges.renderWindow.scalarRangeInfo = function() {return [-5, 5];};
+            panel.rangeMetadata = ranges.rangeInfo(7, 'value', 2);
+            ranges.ensure(7, 'value', 2, panel.rangeMetadata);
+        )JS");
+        REQUIRE_FALSE(value.isError());
+        CHECK(lower->property("text").toString() == "0.333333333333");
+        REQUIRE(QMetaObject::invokeMethod(editor, "finishEditing"));
+        check("requests.length === 1 && ranges.parameters(key).mappingLower === 0.333333333333"
+              " && ranges.parameters(key).mappingUpper === 0.751234567");
+        f.engine.evaluate("requests = []");
+        REQUIRE(QMetaObject::invokeMethod(reset, "clicked"));
+        check("requests.length === 1 && ranges.parameters(key).mappingLower === -5 && ranges.parameters(key).mappingUpper === 5"
+              " && ranges.parameters(key).displayLower === -5 && !ranges.parameters(key).filtered");
+    }
+    SECTION("unlink merges the final draft once")
+    {
+        SECTION("color mapping draft") { }
+        SECTION("visible cells draft")
+        {
+            auto* display = panel->findChild<QObject*>("scalarDisplayMode");
+            REQUIRE(display);
+            REQUIRE(QMetaObject::invokeMethod(display, "clicked"));
+        }
+        // 触发生产输入框和按钮的处理链，不直接构造草稿，也不创建或显示窗口。
+        REQUIRE(lower->setProperty("text", "0.333333333333"));
+        REQUIRE(QMetaObject::invokeMethod(lower, "textEdited"));
+        REQUIRE(QMetaObject::invokeMethod(link, "clicked"));
+        QCoreApplication::processEvents();
+        auto result = f.engine.evaluate(R"JS(
+            var state = ranges.parameters(key);
+            var config = requests.length === 1 ? requests[0].configuration : null;
+            !state.linked && !panel.currentRange.linked && requests.length === 1
+                && requests[0].component === 7 && requests[0].attribute === 'value' && requests[0].type === 2
+                && config.mapping[0] === 0.333333333333 && config.display[0] === 0.333333333333
+                && config.mapping[1] === 0.751234567 && config.display[1] === 0.751234567;
+        )JS");
+        INFO(result.toString().toStdString());
+        REQUIRE_FALSE(result.isError());
+        CHECK(result.toBool());
+    }
     auto* panel_item = qobject_cast<QQuickItem*>(panel.get());
     REQUIRE(panel_item);
     CHECK(panel_item->window() == nullptr);

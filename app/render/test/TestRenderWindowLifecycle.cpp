@@ -24,6 +24,8 @@
 #include <vtkTransform.h>
 
 #include <QGuiApplication>
+#include <QQmlEngine>
+#include <QQmlExpression>
 #include <catch2/catch_test_macros.hpp>
 #include <vtkActor.h>
 #include <vtkActorCollection.h>
@@ -70,10 +72,19 @@ TEST_CASE("Scalar range arguments reject invalid input without changing active s
     QRenderWindow item;
     auto mesh = MakeMeshDataWithAtri();
     item.loadMeshData(7, MakeMeshDataVtk(mesh));
-    REQUIRE(item.applyScalarConfig(7, "f_scalar_1", 2,
-        { { "mapping", QVariantList { 0.25, 0.75 } }, { "display", QVariantList { 0.25, 0.75 } } }));
+    REQUIRE(item.applyScalarConfig(7, "f_scalar_1", 2, { 0.25, 0.75 }, { 0.25, 0.75 }));
     const auto original = item.scalarRangeInfo(7, "f_scalar_1", 2);
     REQUIRE(original.size() == 2);
+    const QList<QList<double>> invalid_limits {
+        { 0.0 }, { 0.0, 1.0, 2.0 },
+        { std::numeric_limits<double>::quiet_NaN(), 1.0 },
+        { 0.0, std::numeric_limits<double>::infinity() }, { 2.0, 1.0 }
+    };
+    // 强类型入口仍拒绝错误长度、非有限数及逆序端点，两种范围均须校验。
+    for (const auto& limits : invalid_limits) {
+        CHECK_FALSE(item.applyScalarConfig(7, "f_scalar_1", 2, limits, { }));
+        CHECK_FALSE(item.applyScalarConfig(7, "f_scalar_1", 2, { }, limits));
+    }
     const QVariantList invalid_ranges {
         3.0, QString("invalid"), QVariantMap { }, QVariantList { },
         QVariantList { 0.0 }, QVariantList { 0.0, 1.0, 2.0 },
@@ -83,28 +94,34 @@ TEST_CASE("Scalar range arguments reject invalid input without changing active s
         QVariantList { 0.0, std::numeric_limits<double>::infinity() },
         QVariantList { 2.0, 1.0 }
     };
-    // 完整配置及旧入口都必须在任何活动身份变更前拒绝非法范围。
+    // 旧入口继续拒绝非法动态参数，不能在适配时静默变成默认范围。
     for (const auto& attribute : { "f_scalar_1", "f_normal_3" }) {
         for (const auto& invalid : invalid_ranges) {
             INFO("attribute=" << attribute << ", range=" << invalid.toString().toStdString());
-            CHECK_FALSE(item.applyScalarConfig(7, attribute, 2, { { "mapping", invalid } }));
             item.setAttriMode(7, attribute, static_cast<int>(Mode::SCALAR),
                 { { "element_type", 2 }, { "scalar_range", invalid } });
         }
     }
-    CHECK_FALSE(item.applyScalarConfig(7, "missing", 2, { }));
-    CHECK_FALSE(item.applyScalarConfig(7, "f_normal_3", 2, { { "display", QVariantList { 0.0, 1.0 } } }));
-    CHECK_FALSE(item.applyScalarConfig(7, "f_scalar_1", 2, { { "display", QVariantList { 2.0, 1.0 } } }));
+    CHECK_FALSE(item.applyScalarConfig(7, "missing", 2, { }, { }));
+    CHECK_FALSE(item.applyScalarConfig(7, "f_normal_3", 2, { }, { 0.0, 1.0 }));
     item.setAttriMode(7, "f_scalar_1", static_cast<int>(Mode::SCALAR), { { "scalar_range", QVariant() } });
     CHECK(item.scalarRangeInfo(7, "f_scalar_1", 2) == original);
     // 可选默认映射、多分量属性、相等端点及超出原始值域仍然合法。
-    REQUIRE(item.applyScalarConfig(7, "f_normal_3", 2, { { "mapping", QVariant() }, { "display", QVariant() } }));
-    REQUIRE(item.applyScalarConfig(7, "f_scalar_1", 2, { { "mapping", QVariantList { QString("-2.5"), QString("3.5") } } }));
-    REQUIRE(item.applyScalarConfig(7, "f_scalar_1", 2, { { "mapping", QVariantList { 0.0, 0.0 } } }));
+    REQUIRE(item.applyScalarConfig(7, "f_normal_3", 2, { }, { }));
+    REQUIRE(item.applyScalarConfig(7, "f_scalar_1", 2, { -2.5, 3.5 }, { }));
+    REQUIRE(item.applyScalarConfig(7, "f_scalar_1", 2, { 0.0, 0.0 }, { }));
     // 旧入口仅适配身份和参数；省略实体域、默认值域及手动多分量映射继续可用。
     item.setAttriMode(7, "f_scalar_1", static_cast<int>(Mode::SCALAR), { });
     item.setAttriMode(7, "f_normal_3", static_cast<int>(Mode::SCALAR),
-        { { "element_type", 2.0 }, { "scalar_range", QVariantList { -2.0, 2.0 } } });
+        { { "element_type", 2.0 }, { "scalar_range", QVariantList { QString("-2.5"), QString("3.5") } } });
+    // 验证真实 QML 调用可将空数组转换为强类型列表，无须传递 null 或配置字典。
+    QQmlEngine engine;
+    engine.rootContext()->setContextProperty("viewport", &item);
+    QQmlExpression defaults(engine.rootContext(), nullptr, "viewport.applyScalarConfig(7, 'f_normal_3', 2, [], [])");
+    const auto accepted = defaults.evaluate();
+    INFO(defaults.error().toString().toStdString());
+    REQUIRE_FALSE(defaults.hasError());
+    REQUIRE(accepted.toBool());
     item.cancelComponentAttri(7);
     CHECK(item.scalarRangeInfo(7, "f_scalar_1", 2) == original);
 }
@@ -120,12 +137,17 @@ TEST_CASE("Scalar configs restore across source reload without stealing the shar
     QRenderWindow item;
     item.loadMeshData(7, MakeMeshDataVtk(mesh));
     item.loadMeshData(8, MakeMeshDataVtk(mesh));
-    REQUIRE(item.applyScalarConfig(7, "f_scalar_1", 2,
-        { { "mapping", QVariantList { -2.0, 2.0 } }, { "display", QVariantList { 1.0, 3.0 } } }));
+    REQUIRE(item.applyScalarConfig(7, "f_scalar_1", 2, { -2.0, 2.0 }, { 1.0, 3.0 }));
     item.setAttriMode(8, "f_normal_3", static_cast<int>(Mode::SCALAR),
         { { "scalar_range", QVariantList { 100.0, 200.0 } } });
-    REQUIRE(item.applyScalarConfig(7, "f_scalar_1", 2,
-        { { "mapping", QVariantList { -4.0, 4.0 } }, { "display", QVariantList { 1.0, 3.0 } } }));
+    // 通过 QML 传递两个数值数组，后续直接检查实际映射范围和筛选单元。
+    QQmlEngine engine;
+    engine.rootContext()->setContextProperty("viewport", &item);
+    QQmlExpression request(engine.rootContext(), nullptr, "viewport.applyScalarConfig(7, 'f_scalar_1', 2, [-4, 4], [1, 3])");
+    const auto accepted = request.evaluate();
+    INFO(request.error().toString().toStdString());
+    REQUIRE_FALSE(request.hasError());
+    REQUIRE(accepted.toBool());
     // 非法旧入口请求不能替换最新有效配置和色柱目标。
     item.setAttriMode(7, "f_normal_3", static_cast<int>(Mode::SCALAR),
         { { "scalar_range", QVariantList { 3.0, 1.0 } } });

@@ -1,4 +1,7 @@
 #include "AttriRenderStrategyScalar.h"
+#include "MeshPipelineData.h"
+#include <cmath>
+#include <spdlog/spdlog.h>
 #include <vtkCellData.h>
 #include <vtkDataArray.h>
 #include <vtkPointData.h>
@@ -6,8 +9,6 @@
 #include <vtkPolyDataMapper.h>
 #include <vtkScalarBarActor.h>
 #include <vtkScalarsToColors.h>
-#include <spdlog/spdlog.h>
-#include <cmath>
 
 namespace {
 // 移除属性类型前缀和分量后缀，只用于颜色表标题显示。
@@ -67,19 +68,24 @@ void AttriRenderStrategyScalar::render(
         spdlog::warn("属性实体类型必须为 -1 到 3 的 int");
         return;
     }
-    const int element_type = typed_domain ? *typed_domain : -1;
-    this->cancelActiveAttribute(op);
-    // 提取scalar_range参数
-    std::vector<double> scalar_range;
-    auto it = args.find("scalar_range");
-    if (it != args.end() ) {
-        const auto& vec = std::any_cast<const std::vector<double>&>(it->second);
-        if (vec.size() == 2) {
-            scalar_range = vec;
+    ScalarDisplayConfig config { attr_name, static_cast<ElementType>(typed_domain ? *typed_domain : -1), { }, { } };
+    if (const auto it = args.find("scalar_range"); it != args.end()) {
+        const auto* values = std::any_cast<std::vector<double>>(&it->second);
+        if (!values || values->size() != 2 || !std::isfinite((*values)[0]) || !std::isfinite((*values)[1]) || (*values)[0] > (*values)[1]) {
+            spdlog::warn("标量映射范围必须为两个有序有限数值");
+            return;
         }
+        config.mapping = std::array { (*values)[0], (*values)[1] };
     }
+    render(op, config);
+}
 
-    auto resolveRange = [&scalar_range](vtkDataArray* array, double range[2]) {
+void AttriRenderStrategyScalar::render(AttributeOperator op, const ScalarDisplayConfig& config)
+{
+    const auto& attr_name = config.attribute;
+    const int element_type = static_cast<int>(config.type);
+    this->cancelActiveAttribute(op);
+    auto resolveRange = [&config](vtkDataArray* array, double range[2]) {
         // 不可用结果以 NaN 保留单元位置；全不可用时只着 NaN 色，不生成虚假色标。
         array->GetFiniteRange(range);
         if (!std::isfinite(range[0]) || !std::isfinite(range[1]) || range[0] > range[1]) {
@@ -87,9 +93,9 @@ void AttriRenderStrategyScalar::render(
             range[1] = 1.0;
             return false;
         }
-        if (scalar_range.size() == 2) {
-            range[0] = scalar_range[0];
-            range[1] = scalar_range[1];
+        if (config.mapping) {
+            range[0] = (*config.mapping)[0];
+            range[1] = (*config.mapping)[1];
         }
         return true;
     };

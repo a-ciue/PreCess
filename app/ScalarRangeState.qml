@@ -1,31 +1,43 @@
 /**
  * @file ScalarRangeState.qml
- * @brief 按属性保存范围偏好并计算完整配置，不依赖输入控件或渲染服务。
+ * @brief 保存属性范围偏好和显示意图，通过注入服务应用完整参数。
  */
 import QtQml
 
 QtObject {
     id: root
 
+    property var query: null
+    property var renderWindow: null
     property var entries: ({})
     property var activeKeys: ({})
 
-    // 应用身份表示界面希望显示的属性，不依赖执行端成功回填。
-    signal applyRequested(int componentId, string attribute, int elementType, var configuration)
-    signal cancelRequested(int componentId)
-
-    // 所有草稿、属性选择和延迟请求共用同一属性身份。
+    // 所有编辑和延迟请求共用稳定属性身份，不依赖面板索引。
     function attributeKey(component, attribute, type) {
         return JSON.stringify([component, type, attribute]);
     }
 
-    // 原始值域只更新元信息；已保存的用户端点不随数据刷新被覆盖。
-    function ensure(component, attribute, type, meta) {
+    // 元信息按当前数据查询，不写入历史偏好；窗口尚未建立时返回不可用值域。
+    function rangeInfo(component, attribute, type) {
+        let values = renderWindow ? renderWindow.scalarRangeInfo(component, attribute, type) : [];
+        let valid = values.length === 2 && Number.isFinite(values[0]) && Number.isFinite(values[1]) && values[0] <= values[1];
+        return {
+            valid: valid,
+            minimum: valid ? values[0] : null,
+            maximum: valid ? values[1] : null,
+            rangeAvailable: valid && type !== 0
+        };
+    }
+
+    // 首次建立缺省范围；后来取得完整值域时只补空端点，保留已有用户参数。
+    function ensure(component, attribute, type, metadata) {
         if (component < 0 || !attribute || type < 0 || type > 3)
             return "";
         let key = attributeKey(component, attribute, type);
-        let valid = !!meta && meta.length === 2 && Number.isFinite(meta[0]) && Number.isFinite(meta[1]) && meta[0] <= meta[1];
+        let info = metadata || rangeInfo(component, attribute, type);
         let previous = entries[key];
+        if (previous && (!info.valid || [previous.mappingLower, previous.mappingUpper, previous.displayLower, previous.displayUpper].every(value => value !== null)))
+            return key;
         let entry = previous ? Object.assign({}, previous) : {
             key: key,
             component: component,
@@ -38,127 +50,96 @@ QtObject {
             filtered: false,
             linked: false
         };
-        entry.valid = valid;
-        entry.minimum = valid ? meta[0] : null;
-        entry.maximum = valid ? meta[1] : null;
-        entry.rangeAvailable = valid && type !== 0;
-        // 首次取得完整值域时填充缺省端点，保留多分量阶段已输入的映射值。
-        if (valid) {
+        if (info.valid) {
             if (entry.mappingLower === null)
-                entry.mappingLower = meta[0];
+                entry.mappingLower = info.minimum;
             if (entry.mappingUpper === null)
-                entry.mappingUpper = meta[1];
+                entry.mappingUpper = info.maximum;
             if (entry.displayLower === null)
-                entry.displayLower = meta[0];
+                entry.displayLower = info.minimum;
             if (entry.displayUpper === null)
-                entry.displayUpper = meta[1];
+                entry.displayUpper = info.maximum;
         }
-        store(entry, false);
+        entries = Object.assign({}, entries, {
+            [key]: entry
+        });
         return key;
     }
 
-    // 返回当前条目供界面绑定；无选择时不建立参数状态。
+    // 只读投影历史条目；输入草稿和元信息由编辑器独立持有。
     function parameters(key) {
-        return entries[key] || {
-            valid: false,
-            rangeAvailable: false
-        };
+        return entries[key] || {};
     }
 
-    // 生成执行端需要的最终参数，null 显示范围明确表示不筛选。
+    // 完整渲染配置由偏好和当前能力投影，失效筛选不删除用户历史设置。
     function configuration(key) {
         let entry = entries[key];
         if (!entry)
             return null;
         return {
-            mapping: entry.mappingLower !== null && entry.mappingUpper !== null ? [entry.mappingLower, entry.mappingUpper] : null,
-            display: entry.filtered && entry.rangeAvailable ? [entry.displayLower, entry.displayUpper] : null
+            mapping: entry.mappingLower !== null && entry.mappingUpper !== null ? [entry.mappingLower, entry.mappingUpper] : [],
+            display: entry.filtered && rangeInfo(entry.component, entry.attribute, entry.type).rangeAvailable ? [entry.displayLower, entry.displayUpper] : []
         };
     }
 
-    // 仅接受有序有限端点；无完整值域时保留原有可选映射参数能力。
-    function editRange(key, displayMode, lower, upper, applyImmediately) {
-        let entry = editedEntry(entries[key], displayMode, lower, upper);
-        if (!entry)
-            return false;
-        store(entry, applyImmediately !== false);
-        return true;
-    }
-
-    // 在副本上计算端点变化，联动操作可合并草稿后再一次保存、比较和下发。
-    function editedEntry(previous, displayMode, lower, upper) {
-        if (!previous || (displayMode && !previous.rangeAvailable))
-            return false;
-        let optional = !previous.valid && !displayMode;
-        if ((lower === null ? !optional : !Number.isFinite(lower)) || (upper === null ? !optional : !Number.isFinite(upper)) || (lower !== null && upper !== null && lower > upper))
-            return false;
-        let entry = Object.assign({}, previous);
-        if (displayMode || (entry.linked && entry.rangeAvailable)) {
-            entry.filtered = entry.filtered || displayMode || entry.displayLower !== lower || entry.displayUpper !== upper;
-            entry.displayLower = lower;
-            entry.displayUpper = upper;
-        }
-        if (!displayMode || entry.linked) {
-            entry.mappingLower = lower;
-            entry.mappingUpper = upper;
-        }
-        return entry;
-    }
-
-    // 开启时以当前编辑范围覆盖另一份，解绑仅改变界面规则。
-    function setLinked(key, displayMode, linked, edit) {
+    // 保存编辑器交付的完整参数，身份沿用既有条目，不理解草稿、联动或重置过程。
+    function save(key, parameters) {
         let previous = entries[key];
-        if (!previous || !previous.rangeAvailable)
+        if (!previous || !parameters || parameters.key !== key)
             return false;
-        if (!edit && previous.linked === linked)
-            return true;
-        if (edit && edit.key !== key)
-            return false;
-        let entry = edit ? editedEntry(previous, edit.display, edit.lower, edit.upper) : Object.assign({}, previous);
-        if (!entry)
-            return false;
-        entry.linked = linked;
-        if (linked) {
-            let lower = displayMode ? entry.displayLower : entry.mappingLower;
-            let upper = displayMode ? entry.displayUpper : entry.mappingUpper;
-            entry.filtered = entry.filtered || entry.displayLower !== lower || entry.displayUpper !== upper;
-            entry.mappingLower = entry.displayLower = lower;
-            entry.mappingUpper = entry.displayUpper = upper;
-        }
-        store(entry, true);
+        let entry = Object.assign({}, previous, {
+            mappingLower: parameters.mappingLower,
+            mappingUpper: parameters.mappingUpper,
+            displayLower: parameters.displayLower,
+            displayUpper: parameters.displayUpper,
+            filtered: parameters.filtered,
+            linked: parameters.linked
+        });
+        entries = Object.assign({}, entries, {
+            [key]: entry
+        });
         return true;
     }
 
-    // 重置当前范围；联动时两份一起恢复，解除筛选也恢复缺失值单元。
-    function resetRange(key, displayMode) {
-        let previous = entries[key];
-        if (!previous || !previous.valid || (displayMode && !previous.rangeAvailable))
+    // 普通编辑仅在当前显示意图匹配且执行配置变化时应用一次。
+    function update(key, parameters) {
+        let before = JSON.stringify(configuration(key));
+        if (!save(key, parameters))
             return false;
-        let entry = Object.assign({}, previous);
-        if (displayMode || entry.linked) {
-            entry.displayLower = entry.minimum;
-            entry.displayUpper = entry.maximum;
-            entry.filtered = false;
-        }
-        if (!displayMode || entry.linked) {
-            entry.mappingLower = entry.minimum;
-            entry.mappingUpper = entry.maximum;
-        }
-        store(entry, true);
+        let entry = entries[key];
+        if (activeKeys[String(entry.component)] === key && before !== JSON.stringify(configuration(key)))
+            apply(key);
         return true;
     }
 
-    // 显式应用允许切换活动属性；普通参数编辑只实时更新已应用条目。
-    function apply(key) {
+    // 显式应用将保存、显示意图和执行合为一次操作，不经实时编辑通道。
+    function apply(key, parameters) {
+        if (parameters && !save(key, parameters))
+            return false;
         let entry = entries[key];
         if (!entry)
             return false;
         setActive(entry.component, entry.attribute, entry.type);
-        applyRequested(entry.component, entry.attribute, entry.type, configuration(key));
+        let config = configuration(key);
+        if (renderWindow)
+            renderWindow.applyScalarConfig(entry.component, entry.attribute, entry.type, config.mapping, config.display);
         return true;
     }
 
-    // 记录界面的应用意图；切换非标量模式时只清理身份，不改写历史参数。
+    // 面板和功能自动显示共用准备与应用入口；未给实体域时沿用目录解析。
+    function showAttribute(component, attribute, type) {
+        if (!renderWindow)
+            return false;
+        if (type === undefined) {
+            let info = query ? query.getComponentAttriInfo(component).find(item => item.name === attribute) : null;
+            if (!info)
+                return false;
+            type = info.attrType;
+        }
+        return apply(ensure(component, attribute, type));
+    }
+
+    // 记录界面希望显示的属性，切换非标量模式只清理意图，不删除偏好。
     function setActive(component, attribute, type) {
         let next = Object.assign({}, activeKeys);
         if (attribute)
@@ -168,13 +149,16 @@ QtObject {
         activeKeys = next;
     }
 
-    // 取消同时清理实时编辑目标并发出请求，渲染窗口不存在时也保留明确的界面意图。
-    function cancel(component) {
+    // 取消先解除实时应用意图，再保存有效最终参数，避免取消前额外应用一次。
+    function cancel(component, key, parameters) {
         setActive(component, "", -1);
-        cancelRequested(component);
+        if (parameters)
+            save(key, parameters);
+        if (renderWindow)
+            renderWindow.cancelComponentAttri(component);
     }
 
-    // 组件删除时释放偏好，避免组件身份复用后恢复旧参数。
+    // 组件删除时释放偏好，避免身份复用后恢复旧参数。
     function removeComponent(component) {
         let next = {};
         Object.keys(entries).forEach(function (key) {
@@ -183,15 +167,5 @@ QtObject {
         });
         entries = next;
         setActive(component, "", -1);
-    }
-
-    // 条目以替换方式通知绑定，仅在活动配置实际变化时请求一次完整应用。
-    function store(entry, updateActive) {
-        let before = JSON.stringify(configuration(entry.key));
-        let next = Object.assign({}, entries);
-        next[entry.key] = entry;
-        entries = next;
-        if (updateActive && activeKeys[String(entry.component)] === entry.key && before !== JSON.stringify(configuration(entry.key)))
-            apply(entry.key);
     }
 }

@@ -574,29 +574,6 @@ MeshSnapshotUpdate MeshPipelineData::createScalarUpdate()
     return { std::move(snapshot), geometry_changed };
 }
 
-bool MeshPipelineData::setScalarDisplayRange(const std::string& attribute, ElementType type,
-    bool enabled, const std::array<double, 2>& range)
-{
-    assertOwnerThread();
-    if (!enabled)
-        return clearScalarDisplayRange();
-    const bool same = scalar_config_ && scalar_config_->attribute == attribute && scalar_config_->type == type;
-    if (same && scalar_config_->display == range)
-        return false;
-    setScalarConfig(ScalarDisplayConfig { attribute, type, same ? scalar_config_->mapping : std::nullopt, range });
-    return true;
-}
-
-bool MeshPipelineData::clearScalarDisplayRange()
-{
-    assertOwnerThread();
-    if (!scalar_config_ || !scalar_config_->display)
-        return false;
-    scalar_config_->display.reset();
-    dirty_ = true;
-    return true;
-}
-
 void MeshPipelineData::rebuildOutputs()
 {
     // 每次重建使用新的 Filter，下一次 Update 不会改写已发布快照引用的输出数组。

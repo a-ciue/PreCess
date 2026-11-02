@@ -8,11 +8,14 @@ import QtQuick.Layouts
 
 ColumnLayout {
     id: root
+    objectName: "scalarRangeEditor"
     spacing: 4
 
     property string attributeKey: ""
-    property var parameters: ({
-            valid: false
+    property var parameters: ({})
+    property var metadata: ({
+            valid: false,
+            rangeAvailable: false
         })
     property bool displayMode: false
     // 草稿与有效待发送请求各自携带目标身份，属性切换不会把旧值写入新属性。
@@ -25,9 +28,7 @@ ColumnLayout {
     property real sliderMinimum: 0
     property real sliderMaximum: 1
 
-    signal rangeEdited(string targetKey, bool displayMode, var lower, var upper, bool applyImmediately)
-    signal linkRequested(string targetKey, bool displayMode, bool linked, var edit)
-    signal resetRequested(string targetKey, bool displayMode)
+    signal parametersEdited(string targetKey, var parameters)
 
     // 普通值截断至三位小数，极值用四位有效数字，格式化不改写保存精度。
     function formatRangeValue(value) {
@@ -61,7 +62,9 @@ ColumnLayout {
             display: displayMode,
             lower: displayMode ? parameters.displayLower : parameters.mappingLower,
             upper: displayMode ? parameters.displayUpper : parameters.mappingUpper,
-            hasRange: !!parameters.valid
+            hasRange: !!metadata.valid,
+            rangeAvailable: !!metadata.rangeAvailable,
+            parameters: Object.assign({}, parameters)
         };
         let updated = Object.assign({}, edit);
         if (lowerField)
@@ -72,21 +75,26 @@ ColumnLayout {
         rangeError = "";
     }
 
-    // 交付最后一次有效编辑；显式应用或取消可只保存参数，避免提前重复渲染。
-    function finishEditing(applyImmediately) {
-        let edit = takeRangeEdit();
-        if (edit === false)
+    // 普通失焦或拖动交付一次完整参数；显式应用和取消直接取值，不发送中间编辑。
+    function finishEditing() {
+        if (!draft && !pendingRange)
+            return true;
+        let result = takeParameters();
+        if (result === false)
             return false;
-        if (edit)
-            rangeEdited(edit.key, edit.display, edit.lower, edit.upper, applyImmediately !== false);
+        if (result)
+            parametersEdited(result.key, result.parameters);
         return true;
     }
 
-    // 取出本次有效编辑，不提前写入状态对象，供普通提交或联动操作一次性交付。
-    function takeRangeEdit() {
+    // 从手势开始时的参数计算完整结果，未编辑端保持原始精度和目标身份。
+    function takeParameters() {
         let edit = draft || pendingRange;
         if (!edit)
-            return null;
+            return attributeKey ? {
+                key: attributeKey,
+                parameters: Object.assign({}, parameters)
+            } : null;
         let lower = edit.lower;
         let upper = edit.upper;
         if (edit.hasRange && (!Number.isFinite(lower) || !Number.isFinite(upper))) {
@@ -98,6 +106,16 @@ ColumnLayout {
             lower = upper;
             upper = previous;
         }
+        let next = Object.assign({}, edit.parameters);
+        if (edit.display || (next.linked && edit.rangeAvailable)) {
+            next.filtered = next.filtered || edit.display || next.displayLower !== lower || next.displayUpper !== upper;
+            next.displayLower = lower;
+            next.displayUpper = upper;
+        }
+        if (!edit.display || next.linked) {
+            next.mappingLower = lower;
+            next.mappingUpper = upper;
+        }
         draft = null;
         pendingRange = null;
         rangeUpdateTimer.stop();
@@ -108,15 +126,54 @@ ColumnLayout {
         }
         return {
             key: edit.key,
-            display: edit.display,
-            lower: lower,
-            upper: upper
+            parameters: next
         };
+    }
+
+    // 草稿与联动变化合成同一份最终参数；解绑不会漏掉仍按原联动规则产生的编辑。
+    function toggleLinked() {
+        let result = takeParameters();
+        if (!result || result.key !== attributeKey || !metadata.rangeAvailable)
+            return;
+        let next = result.parameters;
+        next.linked = !next.linked;
+        if (next.linked) {
+            let lower = displayMode ? next.displayLower : next.mappingLower;
+            let upper = displayMode ? next.displayUpper : next.mappingUpper;
+            next.filtered = next.filtered || next.displayLower !== lower || next.displayUpper !== upper;
+            next.mappingLower = next.displayLower = lower;
+            next.mappingUpper = next.displayUpper = upper;
+        }
+        parametersEdited(result.key, next);
+    }
+
+    // 重置丢弃未完成输入，按当前元信息恢复选定范围，联动时同时恢复两种范围。
+    function resetParameters() {
+        if (!attributeKey || !metadata.valid)
+            return;
+        pendingRange = null;
+        rangeUpdateTimer.stop();
+        draft = null;
+        rangeError = "";
+        rangeMinField.focus = false;
+        rangeMaxField.focus = false;
+        let next = Object.assign({}, parameters);
+        if (displayMode || next.linked) {
+            next.displayLower = metadata.minimum;
+            next.displayUpper = metadata.maximum;
+            next.filtered = false;
+        }
+        if (!displayMode || next.linked) {
+            next.mappingLower = metadata.minimum;
+            next.mappingUpper = metadata.maximum;
+        }
+        parametersEdited(attributeKey, next);
+        refreshValues();
     }
 
     // 同一属性的刷新不覆盖未提交草稿；拖动时固定轨道坐标。
     function refreshValues() {
-        if (!parameters.rangeAvailable)
+        if (!metadata.rangeAvailable)
             displayMode = false;
         let lower = displayMode ? parameters.displayLower : parameters.mappingLower;
         let upper = displayMode ? parameters.displayUpper : parameters.mappingUpper;
@@ -126,10 +183,10 @@ ColumnLayout {
             if (!rangeMaxField.activeFocus)
                 rangeMaxField.text = formatRangeValue(upper);
         }
-        if (!parameters.valid || rangeSlider.first.pressed || rangeSlider.second.pressed || dragStart)
+        if (!metadata.valid || rangeSlider.first.pressed || rangeSlider.second.pressed || dragStart)
             return;
-        sliderMinimum = Math.min(parameters.minimum, lower);
-        sliderMaximum = Math.max(parameters.maximum, upper);
+        sliderMinimum = Math.min(metadata.minimum, lower);
+        sliderMaximum = Math.max(metadata.maximum, upper);
         if (sliderMinimum === sliderMaximum) {
             let padding = Math.max(0.01, Math.abs(sliderMinimum) * 0.01);
             sliderMinimum -= padding;
@@ -155,7 +212,7 @@ ColumnLayout {
 
     // 切换目标后忽略旧端点手势，仅合并属于当前目标的有效请求。
     function queueRange(lower, upper) {
-        if (!attributeKey || !parameters.valid)
+        if (!attributeKey || !metadata.valid)
             return;
         let target = handleEditTarget;
         if (target && (target.key !== attributeKey || target.display !== displayMode))
@@ -166,7 +223,10 @@ ColumnLayout {
             key: target ? target.key : attributeKey,
             display: target ? target.display : displayMode,
             lower: lower,
-            upper: upper
+            upper: upper,
+            hasRange: true,
+            rangeAvailable: !!metadata.rangeAvailable,
+            parameters: Object.assign({}, parameters)
         };
         rangeMinField.text = formatRangeValue(lower);
         rangeMaxField.text = formatRangeValue(upper);
@@ -174,13 +234,11 @@ ColumnLayout {
             rangeUpdateTimer.start();
     }
 
-    // 请求保留捕获时的身份，并沿用调用方是否立即应用的选择。
-    function flushPendingRange(applyImmediately) {
+    // 延迟请求保留捕获时的完整参数和身份，不再向外传播应用策略标志。
+    function flushPendingRange() {
         rangeUpdateTimer.stop();
-        let request = pendingRange;
-        pendingRange = null;
-        if (request)
-            rangeEdited(request.key, request.display, request.lower, request.upper, applyImmediately !== false);
+        if (pendingRange)
+            finishEditing();
     }
 
     // 模式只改变编辑对象，不能隐式启用或停用另一份范围。
@@ -206,6 +264,7 @@ ColumnLayout {
         refreshValues();
     }
     onParametersChanged: refreshValues()
+    onMetadataChanged: refreshValues()
     Component.onCompleted: refreshValues()
 
     Timer {
@@ -256,7 +315,7 @@ ColumnLayout {
     RowLayout {
         objectName: "scalarOriginalRange"
         Layout.fillWidth: true
-        visible: !!root.parameters.valid
+        visible: !!root.metadata.valid
         spacing: Theme.spacingSm
 
         Label {
@@ -264,7 +323,7 @@ ColumnLayout {
             Layout.fillWidth: true
             Layout.minimumWidth: 0
             color: Theme.textSecondary
-            text: root.parameters.valid ? root.formatRangeValue(root.parameters.minimum) : ""
+            text: root.metadata.valid ? root.formatRangeValue(root.metadata.minimum) : ""
             Accessible.name: qsTr("原始范围下限：%1").arg(text)
         }
         Label {
@@ -273,7 +332,7 @@ ColumnLayout {
             Layout.minimumWidth: 0
             horizontalAlignment: Text.AlignRight
             color: Theme.textSecondary
-            text: root.parameters.valid ? root.formatRangeValue(root.parameters.maximum) : ""
+            text: root.metadata.valid ? root.formatRangeValue(root.metadata.maximum) : ""
             Accessible.name: qsTr("原始范围上限：%1").arg(text)
         }
     }
@@ -283,7 +342,7 @@ ColumnLayout {
         objectName: "scalarRangeSlider"
         Layout.fillWidth: true
         Layout.minimumWidth: 0
-        enabled: !!root.parameters.valid
+        enabled: !!root.metadata.valid
         from: root.sliderMinimum
         to: root.sliderMaximum
         first.onMoved: root.queueRange(first.value, second.value)
@@ -407,7 +466,7 @@ ColumnLayout {
                     text: qsTr("颜色映射")
                     // 联动时共同高亮，解绑后仍由当前编辑模式决定单选。
                     selected: !!root.parameters.linked || !root.displayMode
-                    enabled: !!root.parameters.valid
+                    enabled: !!root.metadata.valid
                     onClicked: root.changeRangeMode(false)
                     Keys.onRightPressed: {
                         if (displayModeButton.enabled) {
@@ -431,19 +490,15 @@ ColumnLayout {
                     icon.height: 20
                     icon.source: root.parameters.linked ? "qrc:/images/toolbar/Panels/range-linked.svg" : "qrc:/images/toolbar/Panels/range-unlinked.svg"
                     icon.color: !enabled ? Theme.textDisabled : root.parameters.linked ? Theme.primary : Theme.textSecondary
-                    enabled: !!root.parameters.valid && !!root.parameters.rangeAvailable
+                    enabled: !!root.metadata.valid && !!root.metadata.rangeAvailable
                     Accessible.role: Accessible.CheckBox
                     Accessible.checkable: true
                     Accessible.checked: !!root.parameters.linked
                     Accessible.name: root.parameters.linked ? qsTr("解除范围绑定") : qsTr("绑定颜色映射与可见单元范围")
                     ToolTip.visible: hovered || visualFocus
-                    ToolTip.text: !root.parameters.rangeAvailable ? qsTr("此属性不支持范围绑定") : root.parameters.linked ? qsTr("已绑定：两种范围同步修改，点击解除绑定") : qsTr("以当前范围为准，绑定颜色映射与可见单元范围")
+                    ToolTip.text: !root.metadata.rangeAvailable ? qsTr("此属性不支持范围绑定") : root.parameters.linked ? qsTr("已绑定：两种范围同步修改，点击解除绑定") : qsTr("以当前范围为准，绑定颜色映射与可见单元范围")
                     ToolTip.delay: 400
-                    onClicked: {
-                        let edit = root.takeRangeEdit();
-                        if (edit !== false)
-                            root.linkRequested(root.attributeKey, root.displayMode, !root.parameters.linked, edit);
-                    }
+                    onClicked: root.toggleLinked()
                 }
                 RangeModeButton {
                     id: displayModeButton
@@ -453,7 +508,7 @@ ColumnLayout {
                     Layout.preferredWidth: 1
                     text: qsTr("可见单元")
                     selected: !!root.parameters.linked || root.displayMode
-                    enabled: !!root.parameters.rangeAvailable
+                    enabled: !!root.metadata.rangeAvailable
                     onClicked: root.changeRangeMode(true)
                     Keys.onLeftPressed: {
                         mappingModeButton.forceActiveFocus();
@@ -485,27 +540,18 @@ ColumnLayout {
             palette.light: Theme.surface
             palette.dark: Theme.borderStrong
             palette.highlight: Theme.primary
-            enabled: !!root.parameters.valid
+            enabled: !!root.metadata.valid
             Accessible.name: root.parameters.linked ? qsTr("重置两种范围") : root.displayMode ? qsTr("重置可见单元范围") : qsTr("重置颜色映射范围")
             ToolTip.visible: hovered || visualFocus
             ToolTip.text: root.parameters.linked ? qsTr("将已绑定的两种范围一起恢复为原始值域") : root.displayMode ? qsTr("将可见单元范围恢复为原始值域，保留颜色映射") : qsTr("将颜色映射范围恢复为原始值域，保留可见单元范围")
             ToolTip.delay: 400
-            onClicked: {
-                root.pendingRange = null;
-                rangeUpdateTimer.stop();
-                root.draft = null;
-                rangeMinField.focus = false;
-                rangeMaxField.focus = false;
-                root.rangeError = "";
-                root.resetRequested(root.attributeKey, root.displayMode);
-                root.refreshValues();
-            }
+            onClicked: root.resetParameters()
         }
     }
 
     Label {
         Layout.fillWidth: true
-        visible: root.rangeError.length > 0 || !root.parameters.valid
+        visible: root.rangeError.length > 0 || !root.metadata.valid
         wrapMode: Text.Wrap
         color: Theme.textSecondary
         text: root.rangeError || qsTr("请选择有效的标量属性")

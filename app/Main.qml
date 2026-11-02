@@ -36,18 +36,12 @@ ApplicationWindow {
 
     // 范围偏好由窗口会话持有，编辑器和停靠面板重建不影响参数。
     readonly property ScalarRangeState scalarRanges: ScalarRangeState {
+        query: QModelManager.query
+        renderWindow: App.registry.renderWindow
         Component.onCompleted: App.registry.scalarRanges = this
         Component.onDestruction: {
             if (App.registry.scalarRanges === this)
                 App.registry.scalarRanges = null
-        }
-        onApplyRequested: function(componentId, attribute, elementType, configuration) {
-            if (App.registry.renderWindow)
-                App.registry.renderWindow.applyScalarConfig(componentId, attribute, elementType, configuration)
-        }
-        onCancelRequested: function(componentId) {
-            if (App.registry.renderWindow)
-                App.registry.renderWindow.cancelComponentAttri(componentId)
         }
     }
 

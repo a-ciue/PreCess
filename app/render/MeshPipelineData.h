@@ -108,11 +108,6 @@ public:
     void setScalarConfig(std::optional<ScalarDisplayConfig> config);
     /** @brief 生成最新配置快照；仅重建几何时比较原始单元身份，映射修改共享既有输出。 */
     MeshSnapshotUpdate createScalarUpdate();
-    /** @brief 设置单元显示闭区间，返回筛选条件是否变化；重复参数不重建数据。 */
-    bool setScalarDisplayRange(const std::string& attribute, ElementType type,
-        bool enabled, const std::array<double, 2>& range);
-    /** @brief 仅清除标量筛选，返回是否解除已启用的筛选；保留人工隐藏、整体显隐和裁剪。 */
-    bool clearScalarDisplayRange();
     /** @brief 主动计算需要更新的数据；每次发布递增版本，绝不重新执行旧输出管线。 */
     std::shared_ptr<const MeshDataSnapshot> createSnapshot();
     /** @brief 返回原始网格代次，用于丢弃旧选择消息。 */

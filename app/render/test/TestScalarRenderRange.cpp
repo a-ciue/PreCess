@@ -45,13 +45,13 @@ TEST_CASE("Scalar range filtering preserves original IDs and manual hiding", "[s
     auto* manual_ids = vtkIdTypeArray::SafeDownCast(manual->visible_faces->GetCellData()->GetArray("PrecessFaceIds"));
     REQUIRE(manual_ids);
     CHECK(manual_ids->LookupValue(2) == -1);
-    pipeline.setScalarDisplayRange("value", ElementType::EDGE, true, { 1.0, 1.0 });
+    pipeline.setScalarConfig(ScalarDisplayConfig { "value", ElementType::EDGE, { }, std::array { 1.0, 1.0 } });
     const auto edge_filtered = pipeline.createSnapshot();
     CHECK(edge_filtered->visible_faces->GetNumberOfCells() == original->visible_faces->GetNumberOfCells() - 1);
     auto* edge_face_ids = vtkIdTypeArray::SafeDownCast(edge_filtered->visible_faces->GetCellData()->GetArray("PrecessFaceIds"));
     REQUIRE(edge_face_ids);
     CHECK(edge_face_ids->LookupValue(2) == -1);
-    pipeline.setScalarDisplayRange("value", ElementType::FACE, true, { 1.0, 3.0 });
+    pipeline.setScalarConfig(ScalarDisplayConfig { "value", ElementType::FACE, { }, std::array { 1.0, 3.0 } });
     const auto filtered = pipeline.createSnapshot();
     auto* ids = vtkIdTypeArray::SafeDownCast(filtered->visible_faces->GetCellData()->GetArray("PrecessFaceIds"));
     REQUIRE(ids);
@@ -61,8 +61,10 @@ TEST_CASE("Scalar range filtering preserves original IDs and manual hiding", "[s
     CHECK(filtered->visible_edges->GetNumberOfCells() == original->visible_edges->GetNumberOfCells());
     CHECK(filtered->solid_surface->GetNumberOfCells() == original->solid_surface->GetNumberOfCells());
     CHECK(pipeline.scalarRange("value", ElementType::FACE) == domain);
-    CHECK(pipeline.clearScalarDisplayRange());
-    CHECK_FALSE(pipeline.clearScalarDisplayRange());
+    auto config = *filtered->scalar_config;
+    config.display.reset();
+    pipeline.setScalarConfig(config);
+    CHECK(pipeline.createSnapshot()->scalar_config->mapping == filtered->scalar_config->mapping);
     CHECK(pipeline.createSnapshot()->visible_faces->GetNumberOfCells() == original->visible_faces->GetNumberOfCells() - 1);
     CHECK(filtered->visible_faces->GetNumberOfCells() == 2);
 }
@@ -73,13 +75,13 @@ TEST_CASE("Scalar range filters edge and solid cells but rejects points", "[scal
     MeshPipelineData pipeline;
     pipeline.loadModelData(MakeMeshDataVtk(mesh));
     const auto original = pipeline.createSnapshot();
-    pipeline.setScalarDisplayRange("value", ElementType::EDGE, true, { 1.0, 1.0 });
+    pipeline.setScalarConfig(ScalarDisplayConfig { "value", ElementType::EDGE, { }, std::array { 1.0, 1.0 } });
     const auto edge_filtered = pipeline.createSnapshot();
     REQUIRE(edge_filtered->visible_edges->GetNumberOfCells() == 1);
     auto* edge_ids = vtkIdTypeArray::SafeDownCast(edge_filtered->visible_edges->GetCellData()->GetArray("vtkOriginalCellIds"));
     REQUIRE(edge_ids);
     CHECK(edge_ids->GetValue(0) == 1);
-    pipeline.setScalarDisplayRange("value", ElementType::SOLID, true, { 0.0, 0.0 });
+    pipeline.setScalarConfig(ScalarDisplayConfig { "value", ElementType::SOLID, { }, std::array { 0.0, 0.0 } });
     const auto filtered = pipeline.createSnapshot();
     CHECK(filtered->solid_surface->GetNumberOfCells() > 0);
     CHECK(filtered->solid_surface->GetNumberOfCells() < original->solid_surface->GetNumberOfCells());
@@ -94,7 +96,7 @@ TEST_CASE("Scalar range filters edge and solid cells but rejects points", "[scal
     CHECK(filtered->solid_internal_edges == original->solid_internal_edges);
     REQUIRE(filtered->solid_internal_edges->GetCellData()->GetArray("value"));
     CHECK(filtered->visible_faces->GetNumberOfCells() == original->visible_faces->GetNumberOfCells());
-    CHECK_THROWS_AS(pipeline.setScalarDisplayRange("value", ElementType::VERTEX, true, { 0.0, 1.0 }), std::invalid_argument);
+    CHECK_THROWS_AS(pipeline.setScalarConfig(ScalarDisplayConfig { "value", ElementType::VERTEX, { }, std::array { 0.0, 1.0 } }), std::invalid_argument);
 }
 
 TEST_CASE("Scalar range full values survive empty results missing values and clipping", "[scalar-range]")
@@ -107,14 +109,16 @@ TEST_CASE("Scalar range full values survive empty results missing values and cli
     const auto range = pipeline.scalarRange("value", ElementType::FACE);
     REQUIRE(range);
     CHECK((*range)[0] == 1.0);
-    pipeline.setScalarDisplayRange("value", ElementType::FACE, true, { 100.0, 200.0 });
+    pipeline.setScalarConfig(ScalarDisplayConfig { "value", ElementType::FACE, { }, std::array { 100.0, 200.0 } });
     CHECK(pipeline.createSnapshot()->visible_faces->GetNumberOfCells() == 0);
     vtkNew<vtkPlane> plane;
     plane->SetOrigin(100.0, 0.0, 0.0);
     plane->SetNormal(1.0, 0.0, 0.0);
     pipeline.setClipPlane(plane);
     CHECK(pipeline.scalarRange("value", ElementType::FACE) == range);
-    pipeline.clearScalarDisplayRange();
+    auto config = *pipeline.createSnapshot()->scalar_config;
+    config.display.reset();
+    pipeline.setScalarConfig(config);
     pipeline.setClipPlane(nullptr);
     CHECK(pipeline.createSnapshot()->visible_faces->GetNumberOfCells() == original->visible_faces->GetNumberOfCells());
     mesh.face_attributes_["constant"].assign(mesh.face_vertices_offset_.size() - 1, 0.5);
@@ -131,13 +135,15 @@ TEST_CASE("Scalar filter changes compare output identities independently of orde
     MeshPipelineData pipeline;
     pipeline.loadModelData(MakeMeshDataVtk(mesh));
     const auto original = pipeline.createSnapshot();
-    CHECK_FALSE(pipeline.setScalarDisplayRange("value", ElementType::FACE, false, { }));
-    REQUIRE(pipeline.setScalarDisplayRange("value", ElementType::FACE, true, { 1.0, 3.0 }));
+    pipeline.setScalarConfig(std::nullopt);
+    CHECK_FALSE(pipeline.createScalarUpdate().geometry_changed);
+    pipeline.setScalarConfig(ScalarDisplayConfig { "value", ElementType::FACE, { }, std::array { 1.0, 3.0 } });
     const auto filtered = pipeline.createSnapshot();
     CHECK_FALSE(original->hasSameScalarCells(*filtered));
-    CHECK_FALSE(pipeline.setScalarDisplayRange("value", ElementType::FACE, true, { 1.0, 3.0 }));
+    pipeline.setScalarConfig(ScalarDisplayConfig { "value", ElementType::FACE, { }, std::array { 1.0, 3.0 } });
+    CHECK_FALSE(pipeline.createScalarUpdate().geometry_changed);
     // 条件变化但选中单元相同，不能因此使已有选择失效。
-    REQUIRE(pipeline.setScalarDisplayRange("value", ElementType::FACE, true, { 0.9, 3.1 }));
+    pipeline.setScalarConfig(ScalarDisplayConfig { "value", ElementType::FACE, { }, std::array { 0.9, 3.1 } });
     CHECK(filtered->hasSameScalarCells(*pipeline.createSnapshot()));
 
     auto reordered = *filtered;
@@ -156,9 +162,12 @@ TEST_CASE("Scalar filter changes compare output identities independently of orde
     reversed_ids->SetValue(0, 0);
     CHECK_FALSE(filtered->hasSameScalarCells(reordered));
 
-    REQUIRE(pipeline.clearScalarDisplayRange());
+    auto config = *filtered->scalar_config;
+    config.display.reset();
+    pipeline.setScalarConfig(config);
     CHECK(original->hasSameScalarCells(*pipeline.createSnapshot()));
-    CHECK_FALSE(pipeline.clearScalarDisplayRange());
+    pipeline.setScalarConfig(config);
+    CHECK_FALSE(pipeline.createScalarUpdate().geometry_changed);
     pipeline.loadModelData(MakeMeshDataVtk(mesh));
     CHECK_FALSE(original->hasSameScalarCells(*pipeline.createSnapshot()));
 }

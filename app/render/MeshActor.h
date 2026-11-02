@@ -24,6 +24,7 @@ class vtkRenderer;
 class MeshActorSelectOp;
 class AttributeOperator;
 class TopologyDiagnosticActor;
+class AttriRenderStrategyScalar;
 
 // 保存面属性渲染临时修改 face_mapper_ 前的相对偏移参数
 struct FaceAttributeOffsetState {
@@ -73,6 +74,9 @@ public:
     void renderAttribute(
         const std::string& attr_name,
         std::map<std::string, std::any> args);
+
+    /** @brief 安装标量策略并直接执行类型化配置，随后同步可见数据的属性。 */
+    void renderScalar(std::unique_ptr<AttriRenderStrategyScalar> strategy, const ScalarDisplayConfig& config);
 
     /** @brief 获取本组件独立的拓扑诊断渲染对象 */
     TopologyDiagnosticActor& topologyDiagnostics();
