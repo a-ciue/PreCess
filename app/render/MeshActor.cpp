@@ -1,7 +1,6 @@
 #include "MeshActor.h"
 #include "Core.h"
 #include "TopologyDiagnosticActor.h"
-#include "renderStrategy/AttriRenderStrategyScalar.h"
 #include "renderStrategy/AttributeOperator.h"
 #include <algorithm>
 #include <spdlog/spdlog.h>
@@ -297,11 +296,4 @@ void MeshActor::renderAttribute(
         render_strategy_->render(op, attr_name, args);
         syncDisplayAttributes();
     }
-}
-
-void MeshActor::renderScalar(std::unique_ptr<AttriRenderStrategyScalar> strategy, const ScalarDisplayConfig& config)
-{
-    strategy->render(AttributeOperator(this), config);
-    render_strategy_ = std::move(strategy);
-    syncDisplayAttributes();
 }

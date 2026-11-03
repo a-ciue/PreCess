@@ -41,14 +41,35 @@
 #include <vector>
 
 namespace {
-/** @brief 将空列表或双端点列表转换为可选区间，拒绝其他长度，数值有效性由管线统一校验。 */
-std::optional<std::array<double, 2>> readScalarRange(const QList<double>& limits)
+/** @brief 在 Qt 边界读取可选双端点区间，拒绝会被 QVariant 静默转换的非数值输入。 */
+std::optional<std::array<double, 2>> readScalarRange(const QVariant& value)
 {
+    if (!value.isValid())
+        return std::nullopt;
+    if (value.typeId() != QMetaType::QVariantList)
+        throw std::invalid_argument("标量范围必须为数值列表");
+    const auto limits = value.toList();
     if (limits.isEmpty())
         return std::nullopt;
     if (limits.size() != 2)
         throw std::invalid_argument("标量范围必须为空或包含两个端点");
-    return std::array<double, 2> { limits[0], limits[1] };
+    std::array<double, 2> range;
+    // QML 数值为 double；同时接受原生调用常用数值类型，不接受字符串、布尔值或空端点。
+    for (qsizetype i = 0; i < 2; ++i) {
+        switch (limits[i].typeId()) {
+        case QMetaType::Int:
+        case QMetaType::UInt:
+        case QMetaType::LongLong:
+        case QMetaType::ULongLong:
+        case QMetaType::Float:
+        case QMetaType::Double:
+            range[i] = limits[i].toDouble();
+            break;
+        default:
+            throw std::invalid_argument("标量范围端点必须为数值");
+        }
+    }
+    return range;
 }
 
 constexpr double kOrientationSize = 120.0;
@@ -893,18 +914,30 @@ void QRenderWindow::setClick()
     });
 }
 
-void QRenderWindow::setAttriMode(
+bool QRenderWindow::setAttriMode(
     Index component_id,
     QString attr_name,
     int mode,
     QVariantMap args)
 {
     if (component_id < 0)
-        return;
-    // 标量统一走完整配置入口；拒绝必须先于参数解析和旧显示状态清理。
+        return false;
     if (mode == static_cast<int>(Mode::SCALAR)) {
-        spdlog::warn("标量渲染请使用 ScalarRangeState 或 applyScalarConfig");
-        return;
+        const auto pipeline = mesh_pipeline_data_.find(component_id);
+        if (pipeline == mesh_pipeline_data_.end()) {
+            spdlog::warn("标量渲染组件不存在");
+            return false;
+        }
+        try {
+            // 只在边界解析一次；数据侧先校验完整配置，再替换当前结果。
+            pipeline->second->setScalarConfig(ScalarDisplayConfig { attr_name.toStdString(),
+                readScalarRange(args.value("scalar_range")), readScalarRange(args.value("display_range")) });
+        } catch (const std::invalid_argument& error) {
+            spdlog::warn("{}", error.what());
+            return false;
+        }
+        publishScalarUpdate(component_id, pipeline->second->createScalarUpdate(), true);
+        return true;
     }
     if (const auto snapshot = mesh_snapshots_.find(component_id);
         snapshot != mesh_snapshots_.end() && snapshot->second->scalar_config)
@@ -945,6 +978,7 @@ void QRenderWindow::setAttriMode(
         }
         spdlog::info("-----setAttriMode:" + attr_name.toStdString());
     });
+    return true;
 }
 
 void QRenderWindow::cancelComponentAttri(Index component_id)
@@ -963,36 +997,15 @@ void QRenderWindow::cancelComponentAttri(Index component_id)
     });
 }
 
-QVariantList QRenderWindow::scalarRangeInfo(Index component_id, const QString& attribute, int element_type)
+QVariantList QRenderWindow::scalarRangeInfo(Index component_id, const QString& attribute)
 {
     const auto pipeline = mesh_pipeline_data_.find(component_id);
-    if (pipeline == mesh_pipeline_data_.end() || element_type < 0 || element_type > 3)
+    if (pipeline == mesh_pipeline_data_.end())
         return { };
-    const auto original = pipeline->second->scalarRange(attribute.toStdString(), static_cast<ElementType>(element_type));
+    const auto original = pipeline->second->scalarRange(attribute.toStdString());
     if (!original)
         return { };
     return { (*original)[0], (*original)[1] };
-}
-
-bool QRenderWindow::applyScalarConfig(Index component_id, const QString& attribute, int element_type,
-    const QList<double>& mapping, const QList<double>& display)
-{
-    const auto pipeline = mesh_pipeline_data_.find(component_id);
-    if (pipeline == mesh_pipeline_data_.end()) {
-        spdlog::warn("标量渲染组件不存在");
-        return false;
-    }
-    try {
-        // Qt 边界只转换列表形状，数值、属性与筛选合法性统一由数据侧校验。
-        ScalarDisplayConfig applied { attribute.toStdString(), static_cast<ElementType>(element_type),
-            readScalarRange(mapping), readScalarRange(display) };
-        pipeline->second->setScalarConfig(std::move(applied));
-    } catch (const std::invalid_argument& error) {
-        spdlog::warn("{}", error.what());
-        return false;
-    }
-    publishScalarUpdate(component_id, pipeline->second->createScalarUpdate(), true);
-    return true;
 }
 
 void QRenderWindow::publishScalarUpdate(Index component_id, MeshSnapshotUpdate update, bool activate_scalar_bar)
@@ -1011,17 +1024,26 @@ void QRenderWindow::publishScalarUpdate(Index component_id, MeshSnapshotUpdate u
         scalar_bar_component_id_ = component_id;
     // 几何安装、着色和选择发布保持在同一次渲染回调，保留选择版本校验。
     dispatch_async([this, component_id, snapshot = std::move(snapshot),
-                       geometry_rebuilt, show_scalar_bar, revision = selection_revision_](vtkRenderWindow*, vtkUserData user_data) {
+                       geometry_rebuilt, show_scalar_bar, activate_scalar_bar, revision = selection_revision_](vtkRenderWindow*, vtkUserData user_data) {
         auto* vtk = Data::SafeDownCast(user_data);
         if (geometry_rebuilt) {
             render_selection_revision_ = revision;
             select_manager_->clearSelection();
             vtk->mesh_actor_manager_->loadMesh(component_id, snapshot, vtk->renderer_);
         }
-        if (snapshot->scalar_config)
-            vtk->mesh_actor_manager_->applyScalarConfig(component_id, *snapshot, show_scalar_bar);
-        else
+        if (snapshot->scalar_config) {
+            if (activate_scalar_bar) {
+                const auto& config = *snapshot->scalar_config;
+                std::map<std::string, std::any> args;
+                if (config.mapping)
+                    args["scalar_range"] = std::vector<double> { (*config.mapping)[0], (*config.mapping)[1] };
+                vtk->mesh_actor_manager_->setAttriMode(component_id, config.attribute, Mode::SCALAR, std::move(args));
+            } else {
+                vtk->mesh_actor_manager_->applyScalarConfig(component_id, *snapshot, show_scalar_bar);
+            }
+        } else {
             vtk->mesh_actor_manager_->cancelAttri(component_id);
+        }
         if (geometry_rebuilt)
             publishSelection();
     });

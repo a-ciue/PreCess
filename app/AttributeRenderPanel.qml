@@ -27,8 +27,8 @@ Item {
     // 面板仅查询原始元信息，用户范围统一保存在界面参数对象中。
     function refreshRangeMetadata() {
         let attr = selectedAttribute();
-        rangeMetadata = attr && rangeState ? rangeState.rangeInfo(App.selection.activeComponentId, attr.name, attr.attrType) : { valid: false, rangeAvailable: false };
-        selectedKey = attr && rangeState ? rangeState.ensure(App.selection.activeComponentId, attr.name, attr.attrType, rangeMetadata) : "";
+        rangeMetadata = attr && rangeState ? rangeState.rangeInfo(App.selection.activeComponentId, attr.name) : { valid: false, rangeAvailable: false };
+        selectedKey = attr && rangeState ? rangeState.ensure(App.selection.activeComponentId, attr.name, rangeMetadata) : "";
     }
 
     // 普通目录刷新恢复操作位置，同一属性的输入草稿由编辑器继续保留。
@@ -110,7 +110,7 @@ Item {
             rangeState.apply(selectedKey, edit ? edit.parameters : undefined);
         } else {
             if (rangeState) {
-                rangeState.setActive(App.selection.activeComponentId, "", -1);
+                rangeState.setActive(App.selection.activeComponentId, "");
                 if (edit)
                     rangeState.save(edit.key, edit.parameters);
             }

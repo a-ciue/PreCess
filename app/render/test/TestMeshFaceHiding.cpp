@@ -37,6 +37,7 @@
 #include <vtkWindowToImageFilter.h>
 
 #include <algorithm>
+#include <limits>
 #include <memory>
 #include <set>
 #include <string>
@@ -113,17 +114,56 @@ MeshData makeAttributeMesh()
 
 } // namespace
 
-TEST_CASE("Scalar range rejects invalid strategy domains without clearing active coloring", "[scalar-range]")
+TEST_CASE("Scalar coloring uses the first point edge face or solid attribute by name", "[scalar-range]")
+{
+    auto mesh = makeAttributeMesh();
+    mesh.vertex_attributes_["shared"].assign(mesh.vertex_positions_.size(), 10.0);
+    mesh.edge_attributes_["shared"].assign(mesh.edge_vertices_.size() / 2, 20.0);
+    mesh.face_attributes_["shared"].assign(mesh.face_vertices_offset_.size() - 1, 30.0);
+    mesh.solid_attributes_["shared"].assign(mesh.solid_types_.size(), 40.0);
+    int first = 0;
+    SECTION("Point takes precedence") { }
+    SECTION("Edge takes precedence after point is absent") { first = 1; }
+    SECTION("Face takes precedence after point and edge are absent") { first = 2; }
+    SECTION("Solid remains after other domains are absent") { first = 3; }
+    if (first > 0)
+        mesh.vertex_attributes_.erase("shared");
+    if (first > 1)
+        mesh.edge_attributes_.erase("shared");
+    if (first > 2)
+        mesh.face_attributes_.erase("shared");
+
+    FaceHidingEnv env(std::move(mesh));
+    AttributeOperator op(env.actor.get());
+    AttriRenderStrategyScalar strategy;
+    strategy.render(op, "shared", { });
+    auto* mapper = first == 1 ? op.getEdgeMapper() : first == 3 ? op.getSolidMapper()
+                                                                : op.getFaceMapper();
+    CHECK(mapper->GetScalarVisibility());
+    CHECK(mapper->GetScalarRange()[0] == 10.0 * (first + 1));
+    CHECK(mapper->GetScalarRange()[1] == 10.0 * (first + 1));
+    auto* values = first == 0 ? op.getFacePointData()->GetScalars() : first == 1 ? op.getEdgeCellData()->GetScalars()
+        : first == 2                                                             ? op.getFaceCellData()->GetScalars()
+                                                                                 : op.getSolidCellData()->GetScalars();
+    REQUIRE(values);
+    CHECK(std::string(values->GetName()) == "shared");
+}
+
+TEST_CASE("Scalar range rejects invalid strategy mapping without clearing active coloring", "[scalar-range]")
 {
     FaceHidingEnv env(makeAttributeMesh());
     AttributeOperator op(env.actor.get());
     AttriRenderStrategyScalar strategy;
-    strategy.render(op, "f_isolation_scalar_1", { { "element_type", 2 } });
+    strategy.render(op, "f_isolation_scalar_1", { { "scalar_range", std::vector<double> { -2.0, 2.0 } } });
     REQUIRE(op.getFaceCellData()->GetScalars());
-    for (const auto& invalid : { std::any(2.0), std::any(2LL), std::any(std::string("2")), std::any(4) }) {
-        CHECK_NOTHROW(strategy.render(op, "f_isolation_scalar_1", { { "element_type", invalid } }));
+    for (const auto& invalid : { std::any(2.0), std::any(std::vector<double> { 1.0 }),
+             std::any(std::vector<double> { 2.0, 1.0 }),
+             std::any(std::vector<double> { 0.0, std::numeric_limits<double>::infinity() }) }) {
+        CHECK_NOTHROW(strategy.render(op, "f_isolation_scalar_1", { { "scalar_range", invalid } }));
         CHECK(op.getFaceCellData()->GetScalars());
         CHECK(op.getFaceMapper()->GetScalarVisibility());
+        CHECK(op.getFaceMapper()->GetScalarRange()[0] == -2.0);
+        CHECK(op.getFaceMapper()->GetScalarRange()[1] == 2.0);
     }
 }
 
@@ -427,7 +467,7 @@ TEST_CASE("Scalar restoration preserves another component's shared bar ownership
     auto* lookup_table = scalar_bar->GetLookupTable();
     REQUIRE(scalar_bar->GetVisibility());
     auto restored = *snapshot;
-    restored.scalar_config = ScalarDisplayConfig { "f_isolation_scalar_1", ElementType::FACE, std::array { 10.0, 20.0 }, { } };
+    restored.scalar_config = ScalarDisplayConfig { "f_isolation_scalar_1", std::array { 10.0, 20.0 }, { } };
     manager.applyScalarConfig(8, restored, false);
     AttributeOperator other(manager.getComponentActor(8).get());
     CHECK(other.getFaceMapper()->GetScalarRange()[0] == 10.0);

@@ -150,17 +150,18 @@ TEST_CASE("Actual scalar editor completes range actions without intermediate req
     f.engine.globalObject().setProperty("panel", f.engine.newQObject(panel.get()));
     auto setup = f.engine.evaluate(R"JS(
         var requests = [], cancellations = [];
+        ranges.query = {getComponentAttriInfo: function() {return [{name:'value', attrType:2}, {name:'vector', attrType:2}];}};
         ranges.renderWindow = {
             scalarRangeInfo: function(component) {return component === 8 ? [10, 20] : [0.25, 0.751234567];},
-            applyScalarConfig: function(component, attribute, type, mapping, display) {
-                requests.push({component:component, attribute:attribute, type:type, configuration:{mapping:mapping, display:display}});
+            setAttriMode: function(component, attribute, mode, args) {
+                requests.push({component:component, attribute:attribute, mode:mode, configuration:args});
             },
             cancelComponentAttri: function(component) {cancellations.push(component);}
         };
-        var key = ranges.ensure(7, 'value', 2);
+        var key = ranges.ensure(7, 'value');
         panel.attributes = [{name:'value', displayName:'value', typeName:'面', attrType:2, componentCount:1}];
         panel.selectedIndex = 0;
-        panel.rangeMetadata = ranges.rangeInfo(7, 'value', 2);
+        panel.rangeMetadata = ranges.rangeInfo(7, 'value');
         panel.selectedKey = key;
         ranges.apply(key);
     )JS");
@@ -225,8 +226,8 @@ TEST_CASE("Actual scalar editor completes range actions without intermediate req
         REQUIRE(apply);
         REQUIRE(QMetaObject::invokeMethod(apply, "clicked"));
         QCoreApplication::processEvents();
-        check("requests.length === 1 && requests[0].configuration.mapping[0] === 0.333333333333"
-              " && requests[0].configuration.display[0] === 0.333333333333");
+        check("requests.length === 1 && requests[0].configuration.scalar_range[0] === 0.333333333333"
+              " && requests[0].configuration.display_range[0] === 0.333333333333");
     }
     SECTION("cancel saves parameters without applying and reapply restores them")
     {
@@ -238,15 +239,15 @@ TEST_CASE("Actual scalar editor completes range actions without intermediate req
         check("requests.length === 0 && cancellations.length === 1 && cancellations[0] === 7"
               " && !ranges.activeKeys['7'] && ranges.parameters(key).mappingLower === 0.333333333333");
         REQUIRE(QMetaObject::invokeMethod(panel.get(), "applySelectedAttribute"));
-        check("requests.length === 1 && requests[0].configuration.display[0] === 0.333333333333");
+        check("requests.length === 1 && requests[0].configuration.display_range[0] === 0.333333333333");
     }
     SECTION("pending drag and late old gesture retain their captured property")
     {
         auto result = f.engine.evaluate(R"JS(
             editor.handleEditTarget = {key:key, display:false};
             editor.queueRange(0.3, 0.6);
-            var other = ranges.ensure(8, 'value', 2);
-            panel.rangeMetadata = ranges.rangeInfo(8, 'value', 2);
+            var other = ranges.ensure(8, 'value');
+            panel.rangeMetadata = ranges.rangeInfo(8, 'value');
             panel.selectedKey = other;
             editor.queueRange(0.4, 0.5);
         )JS");
@@ -259,8 +260,8 @@ TEST_CASE("Actual scalar editor completes range actions without intermediate req
     {
         auto value = f.engine.evaluate(R"JS(
             ranges.renderWindow.scalarRangeInfo = function() {return [];};
-            var vector = ranges.ensure(7, 'vector', 2);
-            panel.rangeMetadata = ranges.rangeInfo(7, 'vector', 2);
+            var vector = ranges.ensure(7, 'vector');
+            panel.rangeMetadata = ranges.rangeInfo(7, 'vector');
             panel.selectedKey = vector;
         )JS");
         REQUIRE_FALSE(value.isError());
@@ -273,8 +274,8 @@ TEST_CASE("Actual scalar editor completes range actions without intermediate req
         REQUIRE(upper->setProperty("text", "200.987654321"));
         REQUIRE(QMetaObject::invokeMethod(upper, "textEdited"));
         REQUIRE(QMetaObject::invokeMethod(editor, "finishEditing"));
-        check("ranges.apply(vector) && requests.length === 1 && requests[0].configuration.mapping[0] === 100.123456789"
-              " && requests[0].configuration.mapping[1] === 200.987654321 && requests[0].configuration.display.length === 0");
+        check("ranges.apply(vector) && requests.length === 1 && requests[0].configuration.scalar_range[0] === 100.123456789"
+              " && requests[0].configuration.scalar_range[1] === 200.987654321 && !('display_range' in requests[0].configuration)");
         CHECK_FALSE(link->property("enabled").toBool());
     }
     SECTION("metadata refresh preserves draft and reset uses the latest original range")
@@ -282,8 +283,8 @@ TEST_CASE("Actual scalar editor completes range actions without intermediate req
         edit_lower("0.333333333333");
         auto value = f.engine.evaluate(R"JS(
             ranges.renderWindow.scalarRangeInfo = function() {return [-5, 5];};
-            panel.rangeMetadata = ranges.rangeInfo(7, 'value', 2);
-            ranges.ensure(7, 'value', 2, panel.rangeMetadata);
+            panel.rangeMetadata = ranges.rangeInfo(7, 'value');
+            ranges.ensure(7, 'value', panel.rangeMetadata);
         )JS");
         REQUIRE_FALSE(value.isError());
         CHECK(lower->property("text").toString() == "0.333333333333");
@@ -313,9 +314,9 @@ TEST_CASE("Actual scalar editor completes range actions without intermediate req
             var state = ranges.parameters(key);
             var config = requests.length === 1 ? requests[0].configuration : null;
             !state.linked && !panel.currentRange.linked && requests.length === 1
-                && requests[0].component === 7 && requests[0].attribute === 'value' && requests[0].type === 2
-                && config.mapping[0] === 0.333333333333 && config.display[0] === 0.333333333333
-                && config.mapping[1] === 0.751234567 && config.display[1] === 0.751234567;
+                && requests[0].component === 7 && requests[0].attribute === 'value' && requests[0].mode === 1
+                && config.scalar_range[0] === 0.333333333333 && config.display_range[0] === 0.333333333333
+                && config.scalar_range[1] === 0.751234567 && config.display_range[1] === 0.751234567;
         )JS");
         INFO(result.toString().toStdString());
         REQUIRE_FALSE(result.isError());

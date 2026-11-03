@@ -4,7 +4,6 @@
 
 class vtkPolyDataMapper;
 class vtkScalarBarActor;
-struct ScalarDisplayConfig;
 
 class AttriRenderStrategyScalar : public IAttributeRenderStrategy {
 public:
@@ -15,9 +14,6 @@ public:
         AttributeOperator op,
         const std::string& attr_name,
         std::map<std::string, std::any> args) override;
-
-    /** @brief 直接使用类型化配置执行标量着色，与旧参数适配入口共用同一实现。 */
-    void render(AttributeOperator op, const ScalarDisplayConfig& config);
 
 private:
     // 使用 mapper 的颜色映射和值域更新颜色表。

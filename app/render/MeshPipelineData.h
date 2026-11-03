@@ -21,7 +21,6 @@ struct MeshData;
 class vtkPlane;
 class vtkPolyData;
 class vtkUnstructuredGrid;
-class vtkDataArray;
 
 /** @brief 跨线程传递的裁剪参数，不共享可变 vtkPlane。 */
 struct MeshClipPlane {
@@ -33,7 +32,6 @@ struct MeshClipPlane {
 /** @brief 当前组件采用的标量显示配置，不包含界面联动和历史偏好。 */
 struct ScalarDisplayConfig {
     std::string attribute;
-    ElementType type { ElementType::FACE };
     std::optional<std::array<double, 2>> mapping;
     std::optional<std::array<double, 2>> display;
 };
@@ -97,9 +95,7 @@ public:
     /** @brief 应用来自渲染控件的裁剪值快照。 */
     void setClipPlane(const MeshClipPlane& plane);
     /** @brief 查询完整单值属性的有限值域，缓存不受隐藏和裁剪影响。 */
-    std::optional<std::array<double, 2>> scalarRange(const std::string& attribute, ElementType type);
-    /** @brief 查询指定实体域属性的分量数；不存在时返回零，用于提交前验证属性身份。 */
-    int scalarAttributeComponents(const std::string& attribute, ElementType type) const;
+    std::optional<std::array<double, 2>> scalarRange(const std::string& attribute);
     /** @brief 校验并保存完整显示配置，空值取消着色和筛选；无效参数不改变当前结果。 */
     void setScalarConfig(std::optional<ScalarDisplayConfig> config);
     /** @brief 生成最新配置快照并报告本次是否重建几何；映射修改共享既有输出。 */
@@ -114,8 +110,8 @@ private:
     void assertOwnerThread() const;
     /** @brief 重建独立的计算实例，旧快照所引用的输出不再被修改。 */
     void rebuildOutputs();
-    /** @brief 按显式实体域读取原始属性，避免同名属性混用。 */
-    vtkDataArray* scalarValues(const std::string& attribute, ElementType type) const;
+    /** @brief 按共用优先级读取首先命中的原始数组及实体域。 */
+    ScalarAttribute scalarValues(const std::string& attribute) const;
 
     std::thread::id owner_thread_;
     std::shared_ptr<const MeshData> source_;
@@ -127,7 +123,7 @@ private:
     std::vector<vtkIdType> hidden_face_ids_;
     MeshClipPlane clip_;
     // 值域缓存属于本次源数据；筛选仅保存条件，不修改原始属性和连通性。
-    std::map<std::pair<std::string, ElementType>, std::optional<std::array<double, 2>>> scalar_ranges_;
+    std::map<std::string, std::optional<std::array<double, 2>>> scalar_ranges_;
     std::optional<ScalarDisplayConfig> scalar_config_;
     bool visible_ { true };
     bool dirty_ { true };

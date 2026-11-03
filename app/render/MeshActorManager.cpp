@@ -151,14 +151,17 @@ void MeshActorManager::applyScalarConfig(Index component_id, const MeshDataSnaps
     const auto actor = getComponentActor(component_id);
     if (!snapshot.scalar_config || !actor)
         return;
+    const auto& config = *snapshot.scalar_config;
+    std::map<std::string, std::any> args;
+    if (config.mapping)
+        args["scalar_range"] = std::vector<double> { (*config.mapping)[0], (*config.mapping)[1] };
     if (update_scalar_bar) {
-        scalar_bar_->SetVisibility(false);
-        scalar_bar_component_id_ = -1;
+        setAttriMode(component_id, config.attribute, Mode::SCALAR, std::move(args));
+        return;
     }
-    actor->renderScalar(std::make_unique<AttriRenderStrategyScalar>(update_scalar_bar ? scalar_bar_.GetPointer() : nullptr),
-        *snapshot.scalar_config);
-    if (update_scalar_bar)
-        scalar_bar_component_id_ = scalar_bar_->GetVisibility() ? component_id : -1;
+    // 非归属组件恢复只配置自己的着色，不能修改共享色柱的内容或显隐。
+    actor->setRenderStrategy(std::make_unique<AttriRenderStrategyScalar>());
+    actor->renderAttribute(config.attribute, std::move(args));
 }
 
 void MeshActorManager::cancelAttri(Index component_id)

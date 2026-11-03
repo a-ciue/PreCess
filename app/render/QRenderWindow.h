@@ -11,7 +11,6 @@
 #include "MeshPipelineData.h"
 #include "QModelQuery.h"
 #include "QSelection.h"
-#include <QList>
 #include <QQuickVTKItem.h>
 #include <QVTKRenderWindowAdapter.h>
 #include <unordered_map>
@@ -206,37 +205,24 @@ public:
     Q_SLOT void setClick();
 
     /**
-     * @brief 设置 RGB、UV 或向量属性渲染，不接受标量请求。
+     * @brief 设置属性渲染；标量按点、边、面、体顺序使用首个同名数组。
      *
-     * 在控制台中调用示例：
-     * QModelManager.query.getComponentAttriInfo(0)
+     * 控制台可直接调用同一入口：
+     * App.registry.renderWindow.setAttriMode(0, "f_pressure_1", 1, { scalar_range: [0, 2], display_range: [0.5, 1.5] })
+     * 省略 scalar_range 使用默认映射，省略 display_range 关闭筛选；空列表同样表示省略。
      * App.registry.renderWindow.setAttriMode(0, "f_color_3", 0, {})
-     * App.registry.renderWindow.setAttriMode(0, "f_vectors_3", 3, {})
-     * App.registry.renderWindow.setAttriMode(0, "v_vector_3", 3, { "glyph_scale": 0.5 })
-     * App.registry.renderWindow.setAttriMode(0, "v_uv_2", 2, { "texture_path": "E:/MeshProjects/Project_Harmonic/data/texture_checker.bmp" })
-     * // 标量与属性面板共用范围偏好和显示意图，实体域 0/1/2/3 表示点/边/面/体：
-     * App.registry.scalarRanges.showAttribute(0, "f_pressure_1", 2)
-     * App.registry.scalarRanges.showAttribute(0, "v_scalars_1", 0)
-     * // 单条命令复制完整参数后手动设置映射，解除联动并关闭显示筛选：
-     * (function () { const ranges = App.registry.scalarRanges; const key = ranges.ensure(0, "v_scalars_1", 0); return ranges.apply(key, Object.assign({}, ranges.parameters(key), { mappingLower: 2, mappingUpper: 6, filtered: false, linked: false })); })()
-     * // blow.vtk 示例：
-     * App.registry.renderWindow.setAttriMode(0, "v_displacement9_3", 3, {})
-     * App.registry.renderWindow.setAttriMode(0, "v_displacement9_3", 3, { "glyph_scale": 0.5 })
-     * App.registry.scalarRanges.showAttribute(0, "v_thickness9_1", 0)
-     * (function () { const ranges = App.registry.scalarRanges; const key = ranges.ensure(0, "v_thickness9_1", 0); return ranges.apply(key, Object.assign({}, ranges.parameters(key), { mappingLower: 0, mappingUpper: 2, filtered: false, linked: false })); })()
-     * 显示筛选仅支持非点单分量属性；需要独立筛选时，在完整参数中同时设置
-     * filtered: true、displayLower、displayUpper，并保持 linked: false。
-     * save 只保存参数，update 仅对当前活动属性实时应用，apply 显式应用完整参数。
-     * ScalarRangeState 返回 true 仅表示偏好或显示意图已处理，不代表渲染完成或底层接口已接受。
+     * App.registry.renderWindow.setAttriMode(0, "v_vector_3", 3, { glyph_scale: 0.5 })
+     * App.registry.renderWindow.setAttriMode(0, "v_uv_2", 2, { texture_path: "E:/data/texture_checker.bmp" })
+     * 与面板共享标量偏好和显示意图时，使用 App.registry.scalarRanges.showAttribute(0, "f_pressure_1")。
+     * 直接调用窗口只更新当前显示，不改写界面历史偏好。
      *
-     * @param component_id 目标 Component ID
-     * @param attr_name 属性名，前缀 v_/e_/f_/s_ 表示点/边/面/体，后缀 _3 表示属性分量为 3
-     * @param mode 渲染方式 0:RGB 2:UV 3:VECTOR；1:SCALAR 明确拒绝且不改变已有显示。
-     * @param args 其他参数（可选），如：
-     *   "texture_path": 贴图路径（string）
-     *   "glyph_scale": 箭头缩放比例（double）
+     * @param component_id 目标组件 ID
+     * @param attr_name 属性名称；前缀只用于显示，不参与实体域选择
+     * @param mode 渲染方式 0:RGB 1:SCALAR 2:UV 3:VECTOR
+     * @param args 策略参数；标量范围必须是两个有序有限数值，其他参数沿用原策略
+     * @return 标量配置已接受或其他策略请求已排队，不表示渲染已经完成
      */
-    Q_INVOKABLE void setAttriMode(
+    Q_INVOKABLE bool setAttriMode(
         Index component_id,
         QString attr_name,
         int mode,
@@ -250,10 +236,7 @@ public:
     Q_INVOKABLE void cancelComponentAttri(Index component_id);
 
     /** @brief 查询完整原始值域的两个端点；没有有限单值值域时返回空列表。 */
-    Q_INVOKABLE QVariantList scalarRangeInfo(Index component_id, const QString& attribute, int element_type);
-    /** @brief 一次应用两个范围；空映射列表采用默认值域，空显示列表关闭筛选，非空列表须有两个端点。 */
-    Q_INVOKABLE bool applyScalarConfig(Index component_id, const QString& attribute, int element_type,
-        const QList<double>& mapping, const QList<double>& display);
+    Q_INVOKABLE QVariantList scalarRangeInfo(Index component_id, const QString& attribute);
 
     bool event(QEvent* ev) override;
 
