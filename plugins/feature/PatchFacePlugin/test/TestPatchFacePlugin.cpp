@@ -135,7 +135,8 @@ TEST_CASE("PatchFace feature fills a boundary loop with undo and redo", "[PatchF
         CHECK(navigation_entries.front().id == "PatchFace");
         CHECK(navigation_entries.front().icon == "qrc:/images/toolbar/Geometry/patch-face.svg");
         CHECK(navigation_entries.front().title == "补面");
-        CHECK(navigation_entries.front().menu_path == "几何/修复");
+        CHECK(navigation_entries.front().menu_id == "geometry");
+        CHECK(navigation_entries.front().group_id == "repair");
         REQUIRE(feature_system.setParameter("PatchFace", 0,
             core::ArgObject::create<ArgTypeEnum::Selector>(makeEdgeSelection(fixture))));
         const auto result = feature_system.invoke("PatchFace");

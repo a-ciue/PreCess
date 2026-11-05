@@ -405,12 +405,13 @@ bool QRenderWindow::event(QEvent* ev)
         if (!_click)
             return QQuickVTKItem::event(ev);
 
-        setClick();
         auto e = static_cast<QMouseEvent*>(ev);
         if (e->button() == Qt::RightButton) {
             emit rightClicked();
             return QQuickVTKItem::event(ev);
         }
+        if (e->button() == Qt::LeftButton)
+            setClick();
         emit clicked();
         return QQuickVTKItem::event(ev);
         break;
@@ -481,7 +482,8 @@ void QRenderWindow::applyClipPlane(const MeshClipPlane& plane)
     std::vector<std::pair<Index, std::shared_ptr<const MeshDataSnapshot>>> snapshots;
     for (auto& [component_id, pipeline] : mesh_pipeline_data_) {
         pipeline->setClipPlane(plane);
-        if (pipeline->generation() != 0)
+        // 隐藏网格只记录最新平面并保留待更新标记，恢复显示时由现有快照入口补算。
+        if (pipeline->generation() != 0 && pipeline->isVisibilityEnabled())
             snapshots.emplace_back(component_id, prepareMeshSnapshot(component_id));
     }
     dispatch_async([this, revision = selection_revision_, snapshots = std::move(snapshots)](vtkRenderWindow*, vtkUserData user_data) {

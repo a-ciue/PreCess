@@ -103,7 +103,8 @@ TEST_CASE("AutoGeometryRepair feature detects then repairs free edge gaps", "[Au
     CHECK(navigation_entries.front().id == "AutoGeometryRepair");
     CHECK(navigation_entries.front().icon == "qrc:/images/toolbar/Geometry/auto-geometry-repair.svg");
     CHECK(navigation_entries.front().title == "自动修复间隙");
-    CHECK(navigation_entries.front().menu_path == "几何/修复");
+    CHECK(navigation_entries.front().menu_id == "geometry");
+    CHECK(navigation_entries.front().group_id == "repair");
     auto selection = std::make_shared<Selection>();
     selection->type = ElementEnum::Component;
     // component_id 是其他选择类型的归属提示；组件选择必须使用 ids 中的明确目标。

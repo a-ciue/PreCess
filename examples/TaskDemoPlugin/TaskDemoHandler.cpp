@@ -26,7 +26,9 @@ void TaskDemoHandler::setup(FeatureRegistrar& reg, FeatureContext&)
 {
     reg.addParameter({ ArgTypeEnum::Int, "模式", "0",
         "0=自由任务（不写模型）；1=冻结任务（影子加点，可撤销）；2=自由任务+终态回写（进 undo）" });
-    reg.navigation().addEntry({ "TaskDemo", "任务演示", "qrc:/images/toolbar/precess_extra_plugin.svg", 0, "功能/演示" });
+    reg.addNavigationMenu({ "features", "功能", 80 });
+    reg.addNavigationGroup({ "features", "demo", "演示", 0 });
+    reg.navigation().addEntry({ "TaskDemo", "任务演示", "qrc:/images/toolbar/precess_extra_plugin.svg", 0, "features", "demo" });
 }
 
 std::any TaskDemoHandler::execute(FeatureContext& ctx)

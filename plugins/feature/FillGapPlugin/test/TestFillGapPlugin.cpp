@@ -172,7 +172,8 @@ TEST_CASE("FillGap feature stitches the gap boundary from one seed edge", "[Fill
     CHECK(navigation_entries.front().id == "FillGap");
     CHECK(navigation_entries.front().icon == "qrc:/images/toolbar/Geometry/fill-gap.svg");
     CHECK(navigation_entries.front().title == "局部缝合");
-    CHECK(navigation_entries.front().menu_path == "几何/修复");
+    CHECK(navigation_entries.front().menu_id == "geometry");
+    CHECK(navigation_entries.front().group_id == "repair");
 
     REQUIRE(feature_system.setParameter("FillGap", 0,
         core::ArgObject::create<ArgTypeEnum::Selector>(makeEdgeSelection(fixture))));

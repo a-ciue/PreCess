@@ -17,7 +17,7 @@ Rectangle {
     //! @brief 关联的 PanelGroupItem（C++）
     property var groupView: null
 
-    // 面板外框配色：取自 Docking.Theme.colors（与 app/Theme.qml 对应令牌同步）
+    // 面板外框配色：取自 app 侧推送的 Docking.Theme.colors
     readonly property color panelBorder: Docking.Theme.colors.border
     readonly property color titleBarSurface: Docking.Theme.colors.panelHeaderSurface
     readonly property color titleText: Docking.Theme.colors.textPrimary
@@ -368,7 +368,9 @@ Rectangle {
     }
 
     // 内容宿主：C++ 侧把当前面板的 client item 重挂到此处
-    Item {
+    // 统一半透明面底板（与渲染窗口底边栏同款 surfaceAlt），使面板透出背景又不干扰文字；
+    // 中央分组保持透明，避免在渲染窗口边缘露出色底。
+    Rectangle {
         id: contentArea
         objectName: "contentArea"
         anchors {
@@ -378,6 +380,8 @@ Rectangle {
             bottom: parent.bottom
             margins: 1
         }
+        color: (root.groupView && root.groupView.central)
+               ? "transparent" : Docking.Theme.colors.surfaceAlt
         clip: true
     }
 

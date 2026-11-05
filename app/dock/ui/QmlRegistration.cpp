@@ -29,7 +29,7 @@ void registerTypes()
 {
     qmlRegisterType<DockHostItem>("PreCess.Docking", 1, 0, "DockHost");
     qmlRegisterType<DockPanelItem>("PreCess.Docking", 1, 0, "DockPanel");
-    // 主题承载单例：app 侧把 Theme.dark 推入，dock QML 据此选择局部配色
+    // 主题承载单例：app 侧把已解析的配色表推入，dock QML 只读取结果
     qmlRegisterSingletonType<DockTheme>("PreCess.Docking", 1, 0, "Theme",
         [](QQmlEngine*, QJSEngine*) -> QObject* { return new DockTheme; });
     qmlRegisterUncreatableMetaObject(dock::staticMetaObject, "PreCess.Docking", 1, 0, "Tokens",

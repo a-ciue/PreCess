@@ -8,6 +8,7 @@
 
 #include <catch2/catch_test_macros.hpp>
 #include <filesystem>
+#include <fstream>
 #include <memory>
 #include <optional>
 
@@ -68,4 +69,35 @@ TEST_CASE("VtkLegacyModelHandler::write_components()/read_model() over MakeMeshD
     REQUIRE(read_mesh->solid_faces_vertices_offset_.size() == rhs.solid_faces_vertices_offset_.size());
     REQUIRE(read_mesh->solid_faces_.size() == rhs.solid_faces_.size());
     REQUIRE(read_mesh->solid_faces_offset_.size() == rhs.solid_faces_offset_.size());
+}
+
+TEST_CASE("VTK legacy export preserves double coordinates and text precision", "[vtk][precision]")
+{
+    const std::vector<std::array<double, 3>> expected {
+        { 1.00000001, 0, 0 }, { 1.00000002, 0, 0 }, { 170.6367188, 1, -0.12345678901234567 }
+    };
+    auto mesh = std::make_unique<MeshData>();
+    mesh->init();
+    mesh->vertex_positions_ = expected;
+    mesh->face_vertices_ = { 0, 1, 2 };
+    mesh->face_vertices_offset_ = { 0, 3 };
+    auto component = std::make_unique<ComponentData>();
+    component->mesh = std::move(mesh);
+    ComponentDatas components;
+    components.push_back(std::move(component));
+    ModelLayer layer;
+    const auto model_id = layer.addModel("precision", std::move(components));
+    const std::filesystem::path path = core::TempFile::instance().path().string() + "_double.vtk";
+    systems::io::VtkLegacyModelHandler handler;
+    handler.write_components(layer, layer.modelById(model_id)->componentIds(), path, {});
+    std::ifstream file(path);
+    const std::string text((std::istreambuf_iterator<char>(file)), {});
+    CHECK(text.find("POINTS 3 double") != std::string::npos);
+    const auto payload = handler.read_model(path, {});
+    REQUIRE(payload.has_value());
+    REQUIRE(payload->components.size() == 1);
+    const auto& result = *payload->components.front()->mesh;
+    CHECK(result.vertex_positions_ == expected);
+    CHECK(result.face_vertices_ == std::vector<Index> { 0, 1, 2 });
+    CHECK(result.face_vertices_offset_ == std::vector<Index> { 0, 3 });
 }

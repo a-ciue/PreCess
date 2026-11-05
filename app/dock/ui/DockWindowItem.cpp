@@ -21,7 +21,8 @@ DockWindowItem::DockWindowItem(DockWindow* window)
     , window_(window)
 {
     setFlags(Qt::Tool | Qt::FramelessWindowHint);
-    setColor(QColor(0xf4, 0xf4, 0xf4));
+    // 透明底色：由根项 DockWindow.qml 绘制背景与壁纸，避免首帧露出灰色底
+    setColor(Qt::transparent);
 
     root_item_ = DockRuntime::instance().createItemFromUrl(
         QUrl(QStringLiteral("qrc:/precess/dock/DockWindow.qml")));

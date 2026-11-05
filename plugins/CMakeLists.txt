@@ -15,7 +15,6 @@ endif()
 include(PreCessPlugin)
 
 add_subdirectory(io)
-add_subdirectory(algo)
 add_subdirectory(edit)
 add_subdirectory(feature)
 

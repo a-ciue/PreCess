@@ -13,21 +13,120 @@
 #include <spdlog/spdlog.h>
 
 #include <algorithm>
+#include <cmath>
+#include <exception>
 #include <map>
 #include <optional>
+#include <stdexcept>
 #include <utility>
 
 namespace systems::feature {
+namespace {
+    void validateNavigationMenu(const FeatureNavigationMenu& menu)
+    {
+        if (menu.id.empty() || menu.id.find('/') != std::string::npos || menu.title.empty() || !std::isfinite(menu.order))
+            throw std::invalid_argument("FeatureSystem: navigation menu requires an id without '/', title and finite order");
+    }
+
+    bool hasNavigationMenu(const std::vector<FeatureNavigationMenu>& menus, const std::string& id)
+    {
+        return std::any_of(menus.begin(), menus.end(), [&](const auto& menu) { return menu.id == id; });
+    }
+
+    void validateNavigationGroup(const FeatureNavigationGroup& group, const std::vector<FeatureNavigationMenu>& menus)
+    {
+        if (!hasNavigationMenu(menus, group.menu_id))
+            throw std::invalid_argument("FeatureSystem: navigation group references an unregistered menu: " + group.menu_id);
+        if (group.id.empty() != group.title.empty() || group.id.find('/') != std::string::npos || group.id == "default" || !std::isfinite(group.order))
+            throw std::invalid_argument("FeatureSystem: navigation group requires an id without '/' and title; default is reserved for the ungrouped region");
+    }
+
+    void validateNavigationEntries(const std::vector<FeatureNavigationEntry>& entries,
+        const std::vector<FeatureNavigationMenu>& menus, const std::vector<FeatureNavigationGroup>& groups)
+    {
+        for (const auto& entry : entries) {
+            if (!hasNavigationMenu(menus, entry.menu_id))
+                throw std::invalid_argument("FeatureSystem: navigation entry references an unregistered menu: " + entry.menu_id);
+            if (!entry.group_id.empty() && !std::any_of(groups.begin(), groups.end(), [&](const auto& group) {
+                    return group.menu_id == entry.menu_id && group.id == entry.group_id;
+                }))
+                throw std::invalid_argument("FeatureSystem: navigation entry references an unregistered group: " + entry.group_id);
+            if (!std::isfinite(entry.order))
+                throw std::invalid_argument("FeatureSystem: navigation entry order must be finite");
+        }
+    }
+}
+
+bool FeatureSystem::tryRegisterNavigationMenu(FeatureNavigationMenu menu)
+{
+    model_layer_->assertOperationIdle();
+    validateNavigationMenu(menu);
+    if (hasNavigationMenu(navigation_menus_, menu.id))
+        return false;
+    navigation_menus_.push_back(std::move(menu));
+    on_feature_infos_changed_();
+    return true;
+}
+
+bool FeatureSystem::tryRegisterNavigationGroup(FeatureNavigationGroup group)
+{
+    model_layer_->assertOperationIdle();
+    validateNavigationGroup(group, navigation_menus_);
+    if (std::any_of(navigation_groups_.begin(), navigation_groups_.end(), [&](const auto& existing) {
+            return existing.menu_id == group.menu_id && existing.id == group.id;
+        }))
+        return false;
+    navigation_groups_.push_back(std::move(group));
+    on_feature_infos_changed_();
+    return true;
+}
+
+std::vector<FeatureNavigationMenu> FeatureSystem::getNavigationMenus() const
+{
+    return navigation_menus_;
+}
+
+std::vector<FeatureNavigationGroup> FeatureSystem::getNavigationGroups() const
+{
+    return navigation_groups_;
+}
+
 void FeatureSystem::setNavigationEntries(std::vector<FeatureNavigationEntry> categories)
 {
     model_layer_->assertOperationIdle();
     FeatureNavigation navigation;
     for (auto& category : categories)
         navigation.addEntry(std::move(category));
+    validateNavigationEntries(navigation.entries(), navigation_menus_, navigation_groups_);
     if (navigation_entries_ == navigation.entries())
         return;
     navigation_entries_ = navigation.entries();
     on_feature_infos_changed_();
+}
+
+void FeatureSystem::setNavigationOrder(std::vector<FeatureNavigationOrder> orders)
+{
+    model_layer_->assertOperationIdle();
+    std::vector<FeatureNavigationOrder> accepted;
+    for (auto& order : orders) {
+        if (order.id.empty())
+            continue;
+        if (!order.parent.starts_with("group:") && !order.parent.starts_with("entry:"))
+            throw std::invalid_argument("FeatureSystem::setNavigationOrder: menu and group order must be declared at registration");
+        if (!std::isfinite(order.order))
+            throw std::invalid_argument("FeatureSystem::setNavigationOrder: order must be finite");
+        if (!std::any_of(accepted.begin(), accepted.end(), [&](const auto& existing) { return existing.parent == order.parent && existing.id == order.id; }))
+            accepted.push_back(std::move(order));
+    }
+    if (navigation_order_ == accepted)
+        return;
+    navigation_order_ = std::move(accepted);
+    on_feature_infos_changed_();
+}
+
+std::vector<FeatureNavigationOrder> FeatureSystem::getNavigationOrder() const
+{
+    return navigation_order_;
 }
 
 std::vector<FeatureNavigationEntry> FeatureSystem::getNavigationEntries() const
@@ -45,13 +144,7 @@ std::vector<FeatureNavigationEntry> FeatureSystem::getNavigationEntries() const
             auto found = candidates.find(category.id);
             // 插件描述优先；同类按功能身份选来源，不依赖加载顺序。
             if (found == candidates.end() || found->second.provider.empty() || name < found->second.provider) {
-                auto resolved_category = category;
-                if (resolved_category.menu_path.empty()) {
-                    const auto host = std::find_if(navigation_entries_.begin(), navigation_entries_.end(), [&](const auto& declared) { return declared.id == category.id; });
-                    if (host != navigation_entries_.end())
-                        resolved_category.menu_path = host->menu_path;
-                }
-                candidates.insert_or_assign(category.id, Candidate { std::move(resolved_category), name });
+                candidates.insert_or_assign(category.id, Candidate { category, name });
             }
         }
     }
@@ -98,17 +191,25 @@ FeatureSystem::~FeatureSystem()
             job_runner_->stop();
         }
     }
-    // 系统析构前先退出当前功能、再停用所有功能，让其清理状态（teardown 清理可能写模型，统一 flush）
-    exitCurrentFeature();
+    // 析构逐项兜住回调异常，继续其余功能和模型收尾。
+    const auto cleanup = [](const char* step, const auto& callback) {
+        try {
+            callback();
+        } catch (const std::exception& error) {
+            spdlog::error("FeatureSystem shutdown '{}': {}", step, error.what());
+        } catch (...) {
+            spdlog::error("FeatureSystem shutdown '{}': unknown exception", step);
+        }
+    };
+    cleanup("deactivate", [&] { exitCurrentFeature(); });
     for (auto&& [feature_name, entry] : entries_) {
         if (entry.handler) {
-            flushAfterCallback([&] { entry.handler->teardown(entry.context); });
+            cleanup(feature_name.c_str(), [&] { flushAfterCallback([&] { entry.handler->teardown(entry.context); }); });
         }
     }
     // 层兜底：系统拆解前关闭残留层（teardown 后、flush 前——恢复 before₀ 自带 flush）
-    if (undo_stack_)
-        undo_stack_->cancelScope();
-    model_layer_->flushNotifications();
+    cleanup("preview", [&] { if (undo_stack_) undo_stack_->cancelScope(); });
+    cleanup("notifications", [&] { model_layer_->flushNotifications(); });
 }
 
 void FeatureSystem::cancelPendingJobs(const std::string& owner)
@@ -137,24 +238,43 @@ bool FeatureSystem::registerHandler(const HandlerMetaData& meta_data, SystemHand
     // 节点内就地构造全部服务；只保留引用，不跨 setup 持有可能因扩容失效的迭代器。
     FeatureEntry& entry = entries_.try_emplace(meta_data.name, *this, meta_data).first->second;
 
-    // setup 收集声明并订阅事件；失败则撤掉整个条目，不留下半注册状态
+    // setup、参数准备与父节点校验全部成功后才接纳共享定义，失败不抢占首次注册。
     FeatureRegistrar registrar;
     try {
         handler->setup(registrar, entry.context);
+
+        // 参数对象地址不变，context 内部引用继续有效。
+        entry.params = FeatureParams(registrar.argTypes());
+        if (previous_params && std::equal(previous_params->types().begin(), previous_params->types().end(), registrar.argTypes().begin(), registrar.argTypes().end(), [](const auto& a, const auto& b) {
+                return a.name == b.name && a.type == b.type && a.content == b.content;
+            }))
+            entry.params = std::move(*previous_params);
+        entry.info.arg_types = registrar.argTypes();
+        entry.info.navigation = registrar.navigation();
+        entry.info.key_bindings = registrar.keyBindings();
+
+        auto menus = navigation_menus_;
+        auto groups = navigation_groups_;
+        for (const auto& menu : registrar.navigationMenus()) {
+            validateNavigationMenu(menu);
+            if (!hasNavigationMenu(menus, menu.id))
+                menus.push_back(menu);
+        }
+        for (const auto& group : registrar.navigationGroups()) {
+            validateNavigationGroup(group, menus);
+            if (!std::any_of(groups.begin(), groups.end(), [&](const auto& existing) {
+                    return existing.menu_id == group.menu_id && existing.id == group.id;
+                }))
+                groups.push_back(group);
+        }
+        validateNavigationEntries(entry.info.navigation.entries(), menus, groups);
+        entry.handler = std::move(handler);
+        navigation_menus_.swap(menus);
+        navigation_groups_.swap(groups);
     } catch (...) {
         entries_.erase(meta_data.name);
         throw;
     }
-    // setup 返回后载入默认值；参数对象地址不变，context 内部引用继续有效。
-    entry.params = FeatureParams(registrar.argTypes());
-    if (previous_params && std::equal(previous_params->types().begin(), previous_params->types().end(), registrar.argTypes().begin(), registrar.argTypes().end(), [](const auto& a, const auto& b) {
-            return a.name == b.name && a.type == b.type && a.content == b.content;
-        }))
-        entry.params = std::move(*previous_params);
-    entry.info.arg_types = registrar.argTypes();
-    entry.info.navigation = registrar.navigation();
-    entry.info.key_bindings = registrar.keyBindings();
-    entry.handler = std::move(handler);
 
     spdlog::info("FeatureSystem::registerHandler: Registered feature '{}'", meta_data.name);
     on_feature_infos_changed_();
@@ -296,9 +416,15 @@ void FeatureSystem::exitCurrentFeature()
     if (current_feature_.empty())
         return;
     auto cur = entries_.find(current_feature_);
+    // 回调失败仍完成预览、会话和交互清理，再把错误交给调用边界。
+    std::exception_ptr failure;
     if (cur != entries_.end() && cur->second.handler) {
         // deactivate 的渲染清理先挂上，再回滚预览、折叠会话并下线交互。
-        flushAfterCallback([&] { cur->second.handler->deactivate(cur->second.context); });
+        try {
+            flushAfterCallback([&] { cur->second.handler->deactivate(cur->second.context); });
+        } catch (...) {
+            failure = std::current_exception();
+        }
         if (undo_stack_) {
             undo_stack_->cancelScope();
             undo_stack_->endSession(current_feature_);
@@ -307,6 +433,8 @@ void FeatureSystem::exitCurrentFeature()
             cur->second.interaction_context.setActive(false);
     }
     current_feature_.clear();
+    if (failure)
+        std::rethrow_exception(failure);
 }
 
 void FeatureSystem::applyFeatureActive(const std::string& unique_name)

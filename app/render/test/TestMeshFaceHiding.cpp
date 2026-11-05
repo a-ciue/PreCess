@@ -21,6 +21,7 @@
 #include <vtkImageData.h>
 #include <vtkNew.h>
 #include <vtkPlane.h>
+#include <vtkPointData.h>
 #include <vtkPoints.h>
 #include <vtkPolyData.h>
 #include <vtkPolyDataMapper.h>
@@ -37,6 +38,7 @@
 
 #include <algorithm>
 #include <memory>
+#include <set>
 #include <string>
 #include <utility>
 #include <vector>
@@ -653,4 +655,108 @@ TEST_CASE("showAllFaces restores triangular surface wireframe after extensive hi
         CAPTURE(round, original_edges);
         REQUIRE(countInteriorEdgePixels(*window) == original_edges);
     }
+}
+
+TEST_CASE("MeshPipelineData internal edges retain source point identities and attributes")
+{
+    MeshData mesh;
+    mesh.init();
+    // 0 号点未被体使用；共享面上的边必须去重，但不能压缩或重排原点编号。
+    mesh.vertex_positions_ = { { 9, 9, 9 }, { 0, 0, 0 }, { 1, 0, 0 },
+        { 0, 1, 0 }, { 0, 0, 1 }, { 0, 0, -1 } };
+    mesh.solid_types_ = { VTK_TETRA, VTK_TETRA };
+    mesh.solid_vertices_ = { 1, 2, 3, 4, 1, 3, 2, 5 };
+    mesh.solid_vertices_offset_ = { 0, 4, 8 };
+    mesh.solid_faces_offset_ = { 0, 0, 0 };
+    mesh.vertex_attributes_["v_tag"] = { 100, 101, 102, 103, 104, 105 };
+    mesh.solid_attributes_["s_tag"] = { 10, 20 };
+
+    MeshPipelineData data;
+    data.loadModelData(MakeMeshDataVtk(mesh));
+    const auto snapshot = data.createSnapshot();
+    auto* edges = snapshot->solid_internal_edges.GetPointer();
+    REQUIRE(edges->GetNumberOfPoints() == 6);
+    REQUIRE(edges->GetNumberOfCells() == 9);
+    auto* point_ids = vtkIdTypeArray::SafeDownCast(edges->GetPointData()->GetArray("vtkOriginalPointIds"));
+    auto* cell_ids = vtkIdTypeArray::SafeDownCast(edges->GetCellData()->GetArray("vtkOriginalCellIds"));
+    auto* point_tags = edges->GetPointData()->GetArray("v_tag");
+    auto* cell_tags = edges->GetCellData()->GetArray("s_tag");
+    REQUIRE(point_ids);
+    REQUIRE(cell_ids);
+    REQUIRE(point_tags);
+    REQUIRE(cell_tags);
+    for (vtkIdType id = 0; id < 6; ++id) {
+        double position[3];
+        edges->GetPoint(id, position);
+        CHECK(std::array<double, 3> { position[0], position[1], position[2] } == mesh.vertex_positions_[id]);
+        CHECK(point_ids->GetValue(id) == id);
+        CHECK(point_tags->GetComponent(id, 0) == 100 + id);
+    }
+
+    const std::set<std::pair<vtkIdType, vtkIdType>> expected {
+        { 1, 2 }, { 1, 3 }, { 1, 4 }, { 2, 3 }, { 2, 4 }, { 3, 4 },
+        { 1, 5 }, { 2, 5 }, { 3, 5 }
+    };
+    std::set<std::pair<vtkIdType, vtkIdType>> actual;
+    for (vtkIdType id = 0; id < edges->GetNumberOfCells(); ++id) {
+        vtkIdType count;
+        const vtkIdType* ids;
+        edges->GetLines()->GetCellAtId(id, count, ids);
+        REQUIRE(count == 2);
+        const auto [low, high] = std::minmax(ids[0], ids[1]);
+        actual.emplace(low, high);
+        // 共享边沿用最小源体单元的属性，其余边继承所属体单元。
+        const vtkIdType source_id = high == 5 ? 1 : 0;
+        CHECK(cell_ids->GetValue(id) == source_id);
+        CHECK(cell_tags->GetComponent(id, 0) == (source_id == 0 ? 10 : 20));
+    }
+    CHECK(actual == expected);
+    CHECK(snapshot->solid_surface->GetNumberOfCells() == 6);
+    CHECK(snapshot->source->vertex_positions_ == mesh.vertex_positions_);
+    CHECK(snapshot->source->solid_vertices_ == mesh.solid_vertices_);
+}
+
+TEST_CASE("MeshPipelineData reuses immutable internal edges until source reload")
+{
+    MeshData mesh;
+    MeshPipelineData data;
+    data.loadModelData(MakeMeshDataVtk(mesh));
+    const auto original = data.createSnapshot();
+    auto* edges = original->solid_internal_edges.GetPointer();
+    REQUIRE(edges->GetNumberOfCells() > 0);
+    double first_point[3];
+    edges->GetPoint(0, first_point);
+    const auto original_edge_count = edges->GetNumberOfCells();
+
+    // 裁剪掉全部体单元后，内部线框仍保持既有的完整原始体语义。
+    MeshClipPlane plane;
+    plane.enabled = true;
+    plane.origin = { -1.0e6, 0.0, 0.0 };
+    data.setClipPlane(plane);
+    const auto clipped = data.createSnapshot();
+    REQUIRE(clipped->solid_surface->GetNumberOfCells() == 0);
+    CHECK(clipped->solid_internal_edges == edges);
+    CHECK(edges->GetNumberOfCells() == original_edge_count);
+
+    data.setClipPlane(plane);
+    const auto repeated = data.createSnapshot();
+    CHECK(repeated->solid_surface == clipped->solid_surface);
+    data.hideFaces({ 0 });
+    CHECK(data.createSnapshot()->solid_internal_edges == edges);
+    data.setClipPlane(nullptr);
+    CHECK(data.createSnapshot()->solid_internal_edges == edges);
+
+    // 同一组件重新加载坐标后必须失效，旧快照仍能独立使用。
+    for (auto& position : mesh.vertex_positions_)
+        position[0] += 10.0;
+    data.loadModelData(MakeMeshDataVtk(mesh));
+    const auto reloaded = data.createSnapshot();
+    CHECK(reloaded->solid_internal_edges != edges);
+    double updated_point[3];
+    reloaded->solid_internal_edges->GetPoint(0, updated_point);
+    CHECK(updated_point[0] == first_point[0] + 10.0);
+    double retained_point[3];
+    edges->GetPoint(0, retained_point);
+    CHECK(retained_point[0] == first_point[0]);
+    CHECK(edges->GetNumberOfCells() == original_edge_count);
 }

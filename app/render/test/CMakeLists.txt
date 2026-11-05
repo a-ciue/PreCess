@@ -125,12 +125,3 @@ precess_test_link_libraries(TestGeometrySurfacePrecision vtkPart spdlog::spdlog
 vtk_module_autoinit(TARGETS TestGeometrySurfacePrecision MODULES
     VTK::RenderingCore VTK::RenderingOpenGL2 VTK::FiltersGeometry
 )
-
-# 面隐藏与恢复必须同步 GUI 选择快照，并丢弃过滤管线的旧渲染索引。
-precess_add_test(TestRenderWindowFaceHiding TestRenderWindowFaceHiding.cpp)
-precess_test_link_libraries(TestRenderWindowFaceHiding renderQml vtkPart modelQml TestDeps
-    VTK::GUISupportQtQuick VTK::RenderingOpenGL2 VTK::InteractionStyle
-)
-vtk_module_autoinit(TARGETS TestRenderWindowFaceHiding MODULES
-    VTK::GUISupportQtQuick VTK::RenderingOpenGL2 VTK::InteractionStyle
-)
