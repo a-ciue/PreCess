@@ -297,6 +297,8 @@ QQuickVTKItem::vtkUserData QRenderWindow::initializeVTK(vtkRenderWindow* renderW
     vtk->orientationWidget->On();
 
     vtkNew<vtkDisplaySizedImplicitPlaneRepresentation> rep;
+    // 裁剪手柄随屏幕尺寸缩放，不参与模型取景，避免相机重置时反复扩大范围。
+    rep->UseBoundsOff();
     // 连接回调函数到平面控件，更新裁剪平面
     struct PlaneCallback : public vtkCommand {
         static PlaneCallback* New() { return new PlaneCallback; }
