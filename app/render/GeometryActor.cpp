@@ -5,10 +5,11 @@
 #include <IVtkTools_ShapeDataSource.hxx>
 #include <IVtkTools_SubPolyDataFilter.hxx>
 #include <IVtkVTK_ShapeData.hxx>
+#include <NCollection_IndexedMap.hxx>
 #include <Prs3d_Drawer.hxx>
 #include <TopExp.hxx>
 #include <TopExp_Explorer.hxx>
-#include <TopTools_IndexedMapOfShape.hxx>
+#include <TopTools_ShapeMapHasher.hxx>
 #include <TopoDS_Shape.hxx>
 #include <unordered_map>
 #include <vtkCellData.h>
@@ -110,7 +111,7 @@ GeometryActor::DisplayData GeometryActor::prepareDisplay(int precision, bool inc
     vtkPolyData* src = source->GetOutput();
 
     // 显示副本的遍历顺序不是身份契约：通过 Copy 历史显式映射到固定拾取 ID。
-    TopTools_IndexedMapOfShape subshapes;
+    NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher> subshapes;
     TopExp::MapShapes(occ_shape_->GetShape(), subshapes);
     std::unordered_map<IVtk_IdType, IVtk_IdType> display_to_picking;
     for (int i = 1; i <= subshapes.Extent(); ++i) {
