@@ -29,8 +29,6 @@ public:
     void selectArea(int xmin, int ymin, int xmax, int ymax, SelectOp op = SelectOp::Toggle);
     void setSelectMode(SelectMode select_mode);
     void clearSelection();
-    /** @brief 显示数据变更后刷新现有过滤器，保留选择身份及组件显隐状态。 */
-    void refreshHighlight();
     std::unique_ptr<Selection> getSelection();
     void setHighlightVisible(bool visible);
     void setHighlightVisible(Index component_id, bool visible);

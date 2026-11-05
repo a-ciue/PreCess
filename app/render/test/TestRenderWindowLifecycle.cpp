@@ -4,9 +4,16 @@
  */
 #include "GeometryActor.h"
 #include "GeometryActorManager.h"
+#include "GeometryActorSelectOp.h"
+#include "GeometryData.h"
 #include "GeometryDataVtk.h"
+#include "ModelLayer.h"
+#include "QModelQuery.h"
 #include "QRenderWindow.h"
 #include "QRenderWindowStyle.h"
+#include "QTaskStatus.h"
+#include "SessionQuery.h"
+#include "SurfacePrecisionFailure.h"
 #include "ViewportOrientationRepresentation.h"
 #include <vtkActor2D.h>
 #include <vtkCallbackCommand.h>
@@ -14,20 +21,29 @@
 #include <vtkImageData.h>
 #include <vtkObjectFactory.h>
 #include <vtkOpenGLTexture.h>
+#include <vtkPolyData.h>
+#include <vtkPolyDataMapper.h>
 #include <vtkPropCollection.h>
 #include <vtkTexturedActor2D.h>
 #include <vtkTransform.h>
 
 #include <BRepPrimAPI_MakeSphere.hxx>
+#include <QElapsedTimer>
+#include <QEventLoop>
 #include <QGuiApplication>
+#include <QQuickWindow>
 #include <catch2/catch_test_macros.hpp>
+#include <catch2/generators/catch_generators.hpp>
 #include <vtkActor.h>
 #include <vtkActorCollection.h>
 #include <vtkRenderWindowInteractor.h>
 #include <vtkTextProperty.h>
 #include <vtkWeakPointer.h>
 
+#include <atomic>
 #include <cmath>
+#include <functional>
+#include <memory>
 
 namespace {
 class CountingTexture : public vtkOpenGLTexture {
@@ -46,13 +62,30 @@ vtkStandardNewMacro(CountingTexture);
 
 QGuiApplication& testApplication()
 {
-    qputenv("QT_QPA_PLATFORM", "offscreen");
+    if (qEnvironmentVariableIsEmpty("QT_QPA_PLATFORM")) {
+#ifdef Q_OS_WIN
+        qputenv("QT_QPA_PLATFORM", "windows");
+#else
+        qputenv("QT_QPA_PLATFORM", "offscreen");
+#endif
+    }
     QQuickVTKItem::setGraphicsApi();
     static int argc = 1;
     static char app_name[] = "TestRenderWindowLifecycle";
     static char* argv[] = { app_name, nullptr };
     static QGuiApplication app(argc, argv);
     return app;
+}
+
+bool renderUntil(QQuickWindow& window, const std::function<bool()>& ready)
+{
+    QElapsedTimer timer;
+    timer.start();
+    while (!ready() && timer.elapsed() < 10000) {
+        window.requestUpdate();
+        QCoreApplication::processEvents(QEventLoop::AllEvents, 20);
+    }
+    return ready();
 }
 }
 
@@ -406,7 +439,7 @@ TEST_CASE("QRenderWindow applies requested surface precision across scene rebuil
     item.setSurfacePrecision(3);
     CHECK(item.getSurfacePrecision() == 3);
     CHECK(updates == 1);
-    item.setSurfacePrecision(3); // 同档重复请求不再通知。
+    item.setSurfacePrecision(3); // 同档仍投递重试；目标未变化时无需属性通知。
     item.setSurfacePrecision(-1);
     item.setSurfacePrecision(4);
     CHECK(item.getSurfacePrecision() == 3);
@@ -421,12 +454,21 @@ TEST_CASE("QRenderWindow applies requested surface precision across scene rebuil
     auto* data = QRenderWindow::Data::SafeDownCast(user_data);
     data->geometry_actor_manager_->loadGeometry({ sphere, 123, nullptr });
     CHECK(data->geometry_actor_manager_->getSurfacePrecision() == 3);
-    CHECK(data->geometry_actor_manager_->hasComponent(123));
+    auto actor = data->geometry_actor_manager_->getComponentActor(123);
+    REQUIRE(actor != nullptr);
+    CHECK(actor->getSurfacePrecision() == 3);
+    auto* mapper = vtkPolyDataMapper::SafeDownCast(GeometryActorSelectOp(actor).getPolyActor().GetMapper());
+    REQUIRE(mapper != nullptr);
+    auto* polygons = mapper->GetInput();
+    REQUIRE(polygons != nullptr);
+    const auto triangle_count = polygons->GetNumberOfCells();
+    CHECK(triangle_count > 0);
+    actor.reset();
     item.destroyingVTK(window, user_data);
     window->RemoveRenderer(data->overlay_renderer_);
     window->RemoveRenderer(data->renderer_);
 
-    // 场景重建沿用当前请求档位，GUI 与渲染层保持一致。
+    // 场景重建沿用目标档位，并为真实几何恢复相同精度的显示数据。
     vtkNew<vtkRenderWindow> rebuilt_window;
     vtkNew<vtkRenderWindowInteractor> rebuilt_interactor;
     rebuilt_interactor->SetRenderWindow(rebuilt_window);
@@ -436,7 +478,165 @@ TEST_CASE("QRenderWindow applies requested surface precision across scene rebuil
     QCoreApplication::processEvents();
     CHECK(item.getSurfacePrecision() == rebuilt->geometry_actor_manager_->getSurfacePrecision());
     CHECK(item.getSurfacePrecision() == 3);
+    auto rebuilt_actor = rebuilt->geometry_actor_manager_->getComponentActor(123);
+    REQUIRE(rebuilt_actor != nullptr);
+    CHECK(rebuilt_actor->getSurfacePrecision() == 3);
+    auto* rebuilt_mapper = vtkPolyDataMapper::SafeDownCast(GeometryActorSelectOp(rebuilt_actor).getPolyActor().GetMapper());
+    REQUIRE(rebuilt_mapper != nullptr);
+    auto* rebuilt_polygons = rebuilt_mapper->GetInput();
+    REQUIRE(rebuilt_polygons != nullptr);
+    CHECK(rebuilt_polygons->GetNumberOfCells() == triangle_count);
+    rebuilt_actor.reset();
     item.destroyingVTK(rebuilt_window, user_data);
     rebuilt_window->RemoveRenderer(rebuilt->overlay_renderer_);
     rebuilt_window->RemoveRenderer(rebuilt->renderer_);
+}
+
+TEST_CASE("QRenderWindow clears selection and reports precision failures before same-level retry", "[precision][render]")
+{
+    testApplication();
+    const auto failure_kind = GENERATE(SurfacePrecisionFailure::Kind::Standard,
+        SurfacePrecisionFailure::Kind::Occ, SurfacePrecisionFailure::Kind::Unknown);
+    ModelLayer layer;
+    const auto model_id = layer.addModel("precision test", {});
+    auto component = std::make_unique<ComponentData>();
+    component->geometry = std::make_unique<GeometryData>();
+    component->geometry->setRootShape(BRepPrimAPI_MakeSphere(10.0).Shape());
+    const auto component_id = layer.getModelOperator(model_id)->addGeometryComponent(std::move(component));
+    session::SessionQuery query(layer);
+    QModelQuery model_query(&query);
+    std::atomic_bool completed {};
+    std::atomic_bool scene_invalidated {};
+    int applied_precision = -1;
+    int manager_precision = -1;
+    int failure_rebuilds = 0;
+    int target_updates = 0;
+    int failure_reports = 0;
+    QString reported_failure;
+    std::unique_ptr<SurfacePrecisionFailure> failure;
+    QTaskStatus status;
+    QQuickWindow quick_window;
+    quick_window.setFlags(Qt::Tool | Qt::FramelessWindowHint);
+    quick_window.resize(400, 400);
+    quick_window.setPosition(0, 0);
+    quick_window.setOpacity(0.01);
+    quick_window.setPersistentSceneGraph(false);
+    quick_window.setPersistentGraphics(false);
+    // 由窗口在场景图退出后销毁子项，保证 destroyingVTK 仍可访问派生类服务。
+    auto& item = *new QRenderWindow;
+    item.setParent(quick_window.contentItem());
+    item.setModelQuery(&model_query);
+    item.onComponentChanged(component_id);
+    item.setParentItem(quick_window.contentItem());
+    item.setSize(QSizeF(400, 400));
+    auto has_selection_size = [&](std::size_t expected) {
+        const std::unique_ptr<QSelection> selection(item.selectedIDs());
+        return selection ? selection->size() == expected : expected == 0;
+    };
+    QObject::connect(&item, &QRenderWindow::surfacePrecisionChanged, &item, [&] { ++target_updates; });
+    QObject::connect(&item, &QRenderWindow::surfacePrecisionFailed, &status, &QTaskStatus::reportFailure);
+    QObject::connect(&status, &QTaskStatus::taskFailed, &status, [&](const QString& error) {
+        ++failure_reports;
+        reported_failure = error;
+    });
+    item.dispatch_async([&](vtkRenderWindow*, QQuickVTKItem::vtkUserData user_data) {
+        auto* data = QRenderWindow::Data::SafeDownCast(user_data);
+        auto* camera = data->renderer_->GetActiveCamera();
+        camera->SetPosition(0.0, 0.0, 100.0);
+        camera->SetFocalPoint(0.0, 0.0, 0.0);
+        camera->SetViewUp(0.0, 1.0, 0.0);
+        data->renderer_->ResetCamera();
+        completed = true;
+    });
+    item.setSelectMode("GeometryFace");
+    quick_window.show();
+    REQUIRE(renderUntil(quick_window, [&] { return completed.load(); }));
+
+    auto select_sphere = [&] {
+        completed = false;
+        item.setSelectMode("GeometryFace");
+        item.dispatch_async([&](vtkRenderWindow* window, QQuickVTKItem::vtkUserData user_data) {
+            auto* data = QRenderWindow::Data::SafeDownCast(user_data);
+            auto* camera = data->renderer_->GetActiveCamera();
+            camera->SetPosition(0.0, 0.0, 100.0);
+            camera->SetFocalPoint(0.0, 0.0, 0.0);
+            camera->SetViewUp(0.0, 1.0, 0.0);
+            data->renderer_->ResetCamera();
+            window->Render();
+            data->renderer_->SetWorldPoint(3.0, 2.0, std::sqrt(87.0), 1.0);
+            data->renderer_->WorldToDisplay();
+            const auto* position = data->renderer_->GetDisplayPoint();
+            window->GetInteractor()->SetEventPosition(static_cast<int>(position[0]), static_cast<int>(position[1]));
+            data->style_->SetClick();
+            data->style_->OnLeftButtonUp();
+            completed = true;
+        });
+        return renderUntil(quick_window, [&] { return completed.load() && has_selection_size(1); });
+    };
+    REQUIRE(select_sphere());
+
+    // 正常入口切档在重建前发布空选择，目标属性随请求即时更新。
+    item.setSurfacePrecision(3);
+    CHECK(item.getSurfacePrecision() == 3);
+    REQUIRE(renderUntil(quick_window, [&] { return has_selection_size(0); }));
+    CHECK(failure_reports == 0);
+    REQUIRE(select_sphere());
+
+    // 失败注入与恢复均在渲染队列内完成，测试不直接访问渲染线程持有的数据。
+    completed = false;
+    item.dispatch_async([&](vtkRenderWindow*, QQuickVTKItem::vtkUserData) {
+        failure = std::make_unique<SurfacePrecisionFailure>(1, failure_kind);
+    });
+    item.setSurfacePrecision(0);
+    item.dispatch_async([&](vtkRenderWindow*, QQuickVTKItem::vtkUserData user_data) {
+        auto* data = QRenderWindow::Data::SafeDownCast(user_data);
+        applied_precision = data->geometry_actor_manager_->getComponentActor(component_id)->getSurfacePrecision();
+        manager_precision = data->geometry_actor_manager_->getSurfacePrecision();
+        failure_rebuilds = failure->rebuilds();
+        failure.reset();
+        completed = true;
+    });
+    REQUIRE(renderUntil(quick_window, [&] { return completed.load() && failure_reports == 1; }));
+    CHECK(failure_rebuilds == 1);
+    CHECK(applied_precision == -1);
+    CHECK(manager_precision == 0);
+    CHECK(item.getSurfacePrecision() == 0);
+    CHECK(has_selection_size(0));
+    CHECK_FALSE(reported_failure.isEmpty());
+    CHECK(status.getMessage().contains(reported_failure));
+
+    const int updates_before_retry = target_updates;
+    completed = false;
+    item.setSurfacePrecision(0);
+    item.dispatch_async([&](vtkRenderWindow*, QQuickVTKItem::vtkUserData user_data) {
+        auto* data = QRenderWindow::Data::SafeDownCast(user_data);
+        applied_precision = data->geometry_actor_manager_->getComponentActor(component_id)->getSurfacePrecision();
+        completed = true;
+    });
+    REQUIRE(renderUntil(quick_window, [&] { return completed.load(); }));
+    CHECK(applied_precision == 0);
+    CHECK(item.getSurfacePrecision() == 0);
+    CHECK(target_updates == updates_before_retry);
+    CHECK(failure_reports == 1);
+    REQUIRE(select_sphere());
+
+    // 释放真实场景图后，通过模型查询恢复几何、目标档位及选择注册。
+    const auto invalidated_connection = QObject::connect(&quick_window, &QQuickWindow::sceneGraphInvalidated, &quick_window, [&] { scene_invalidated = true; }, Qt::DirectConnection);
+    quick_window.hide();
+    quick_window.releaseResources();
+    REQUIRE(renderUntil(quick_window, [&] { return scene_invalidated.load(); }));
+    QObject::disconnect(invalidated_connection);
+    quick_window.show();
+    REQUIRE(select_sphere());
+    completed = false;
+    item.dispatch_async([&](vtkRenderWindow*, QQuickVTKItem::vtkUserData user_data) {
+        auto* data = QRenderWindow::Data::SafeDownCast(user_data);
+        applied_precision = data->geometry_actor_manager_->getComponentActor(component_id)->getSurfacePrecision();
+        manager_precision = data->geometry_actor_manager_->getSurfacePrecision();
+        completed = true;
+    });
+    REQUIRE(renderUntil(quick_window, [&] { return completed.load(); }));
+    CHECK(applied_precision == 0);
+    CHECK(manager_precision == 0);
+    CHECK(item.getSurfacePrecision() == 0);
 }

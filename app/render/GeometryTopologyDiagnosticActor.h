@@ -31,8 +31,6 @@ typedef Handle(IVtkOCC_Shape) GeometryDiagnosticOccShapeHandle;
  * @brief 计算并显示一个 GeometryActor 对应的 OCC 几何拓扑诊断结果。
  */
 class GeometryTopologyDiagnosticActor {
-    friend class GeometryActor;
-
 public:
     explicit GeometryTopologyDiagnosticActor(vtkRenderer* renderer);
     ~GeometryTopologyDiagnosticActor();
@@ -42,6 +40,9 @@ public:
         const GeometryDiagnosticOccShapeHandle& occ_shape,
         vtkPolyData* line_data,
         vtkPolyData* face_data);
+
+    /** @brief 复用当前 Shape 的诊断缓存，仅刷新已启用类别的线、面叠加。 */
+    void refreshDisplay(vtkPolyData* lines, vtkPolyData* polygons);
 
     /** @brief 启用或停用一种几何拓扑诊断类别。 */
     void setCategoryEnabled(GeometryTopologyDiagnosticCategory category, bool enabled);
@@ -58,14 +59,6 @@ public:
     void setComponentLabel(std::string label) { component_label_ = std::move(label); }
 
 private:
-    struct DisplayData {
-        std::array<vtkSmartPointer<vtkPolyData>, kGeometryTopologyDiagnosticCategoryCount> categories;
-        vtkSmartPointer<vtkPolyData> invalid_edges;
-    };
-    /** @brief 仅从缓存诊断提取新叠加数据，不重新分析几何或生成尺寸标记。 */
-    DisplayData prepareDisplay(vtkPolyData* lines, vtkPolyData* faces) const;
-    DisplayData captureDisplay() const;
-    void commitDisplay(const DisplayData& display, vtkPolyData* lines, vtkPolyData* faces);
     void extractCategory(GeometryTopologyDiagnosticCategory category,
         vtkPolyData* lines, vtkPolyData* faces, vtkPolyData& output, vtkPolyData& invalid_edges) const;
     /** @brief 保存一种诊断类别的独立静态数据、映射器和 Actor。 */

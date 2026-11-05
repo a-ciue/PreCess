@@ -727,6 +727,10 @@ Page {
                 App.registry.objectTree.syncComponentVisibility(componentId, meshVisible, geometryVisible)
             }
 
+            onSurfacePrecisionFailed: function(error) {
+                QModelManager.taskStatus.reportFailure(error)
+            }
+
             Component.onCompleted: {
                 myItem.setFaceSelectionByAngle(root.faceSelectByAngle, root.faceSelectAngle)
             }

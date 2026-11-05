@@ -214,8 +214,6 @@ void QRenderWindow::updateOverlayScale(qreal ratio)
 
 QQuickVTKItem::vtkUserData QRenderWindow::initializeVTK(vtkRenderWindow* renderWindow)
 {
-    // 生命周期边界由 QQuickVTKItem 阻塞 GUI，旧场景回执不能修正新场景档位。
-    ++surface_precision_scene_generation_;
     vtkNew<Data> vtk;
 
     // 渲染窗口统一使用平行投影：高放大倍数下避免透视投影的视锥非线性误差，
@@ -354,7 +352,6 @@ QQuickVTKItem::vtkUserData QRenderWindow::initializeVTK(vtkRenderWindow* renderW
 
 void QRenderWindow::destroyingVTK(vtkRenderWindow* renderWindow, vtkUserData userData)
 {
-    ++surface_precision_scene_generation_;
     auto* vtk = Data::SafeDownCast(userData);
     // 场景图重建会先释放旧 Data，再调用 initializeVTK；服务持有旧 renderer 的
     // 裸指针，必须在此渲染线程边界销毁，不能拖到下一次 unique_ptr 赋值或 GUI 析构。
@@ -970,43 +967,35 @@ int QRenderWindow::getGeometryStyle()
 
 void QRenderWindow::setSurfacePrecision(int precision)
 {
-    if (!surface_precision::isValid(precision) || precision == surface_precision_)
+    if (!surface_precision::isValid(precision))
         return;
+    const bool changed = surface_precision_ != precision;
     surface_precision_ = precision;
-    const quint64 revision = ++surface_precision_revision_;
-    dispatch_async([precision, revision, this](vtkRenderWindow*, vtkUserData user_data) {
-        applySurfacePrecision(user_data, precision, revision);
-    });
-    emit surfacePrecisionChanged();
-}
-
-void QRenderWindow::applySurfacePrecision(vtkUserData user_data, int precision, quint64 revision)
-{
-    auto* vtk = Data::SafeDownCast(user_data);
-    if (!vtk || !vtk->geometry_actor_manager_)
-        return;
-    const quint64 scene_generation = surface_precision_scene_generation_;
-    try {
-        // 仅原位更新显示数据；拾取身份和 GUI 选择快照保持有效。
-        vtk->geometry_actor_manager_->setSurfacePrecision(precision);
-        if (select_manager_)
-            select_manager_->refreshGeometryHighlight();
+    dispatch_async([this, precision, revision = selection_revision_](vtkRenderWindow*, vtkUserData user_data) {
+        auto* vtk = Data::SafeDownCast(user_data);
+        // 切档会重建拾取数据，先在同一次渲染回调中清空选择并发布当前参数版本的空快照。
+        render_selection_revision_ = revision;
+        select_manager_->clearSelection();
+        publishSelection();
+        std::optional<QString> failure { std::nullopt };
+        try {
+            vtk->geometry_actor_manager_->setSurfacePrecision(precision);
+        } catch (const Standard_Failure& error) {
+            failure = QString::fromUtf8(error.GetMessageString());
+        } catch (const std::exception& error) {
+            failure = QString::fromUtf8(error.what());
+        } catch (...) {
+            failure = tr("未知异常");
+        }
+        if (failure) {
+            const auto message = tr("曲面显示精细度切换失败：%1").arg(*failure);
+            spdlog::error("{}", message.toStdString());
+            QMetaObject::invokeMethod(&selection_dispatcher_, [this, message] { emit surfacePrecisionFailed(message); }, Qt::QueuedConnection);
+        }
         scheduleRender();
-    } catch (const Standard_Failure& error) {
-        spdlog::error("曲面显示精细度切换失败: {}", error.GetMessageString());
-    } catch (const std::exception& error) {
-        spdlog::error("曲面显示精细度切换失败: {}", error.what());
-    } catch (...) {
-        spdlog::error("曲面显示精细度切换失败: 未知异常");
-    }
-    const int actual_precision = vtk->geometry_actor_manager_->getSurfacePrecision();
-    // QQuickVTKItem 接管事件分发，借独立 QObject 在 GUI 线程修正档位并开放重试。
-    QMetaObject::invokeMethod(&selection_dispatcher_, [this, revision, scene_generation, actual_precision] {
-        if (scene_generation != surface_precision_scene_generation_
-            || revision != surface_precision_revision_ || surface_precision_ == actual_precision)
-            return;
-        surface_precision_ = actual_precision;
-        emit surfacePrecisionChanged(); }, Qt::QueuedConnection);
+    });
+    if (changed)
+        emit surfacePrecisionChanged();
 }
 
 int QRenderWindow::getSurfacePrecision() const

@@ -109,33 +109,30 @@ GeometryRenderStyle GeometryActorManager::getCurrentRenderStyle() const
 
 void GeometryActorManager::setSurfacePrecision(int precision)
 {
-    if (!surface_precision::isValid(precision) || precision == surface_precision_)
+    if (!surface_precision::isValid(precision))
         return;
-    struct PreparedComponent {
-        std::shared_ptr<GeometryActor> actor;
-        GeometryActor::DisplayData display;
-        GeometryActor::DisplayData previous;
-    };
-    std::vector<PreparedComponent> prepared;
-    prepared.reserve(component_actors_.size());
-    for (const auto& [id, actor] : component_actors_)
-        prepared.push_back({ actor, actor->prepareDisplay(precision), actor->captureDisplay() });
-
-    size_t committed = 0;
-    try {
-        for (auto& component : prepared) {
-            // 数据原位写入可能触发 VTK 观察者；当前组件必须在第一次写之前纳入回滚。
-            ++committed;
-            component.actor->commitDisplay(component.display);
-        }
-    } catch (...) {
-        while (committed > 0) {
-            auto& component = prepared[--committed];
-            component.actor->commitDisplay(component.previous);
-        }
-        throw;
-    }
+    // 窗口保存目标档位；失败后同档请求继续更新尚未完成的组件。
     surface_precision_ = precision;
+    for (const auto& [id, actor] : component_actors_) {
+        const GeometryActorSelectOp select_op(actor);
+        if (actor->getSurfacePrecision() == precision
+            && op_.getComponentIdByShapeId(select_op.getShapeId()) == id)
+            continue;
+        op_.unregisterProps(actor);
+        try {
+            actor->setSurfacePrecision(precision);
+            op_.registerProps(id, actor);
+        } catch (...) {
+            spdlog::error("组件 {} 曲面显示精细度切换失败", id);
+            // 注册自身会清理部分结果；尽量恢复失败组件的拾取，原异常继续向上传播。
+            try {
+                op_.registerProps(id, actor);
+            } catch (...) {
+                spdlog::error("组件 {} 拾取注册失败，下次切档时重试", id);
+            }
+            throw;
+        }
+    }
 }
 
 void GeometryActorManager::setTopologyDiagnosticCategoryEnabled(int category, bool enabled)

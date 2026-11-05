@@ -14,7 +14,6 @@
 #include "SurfacePrecision.h"
 #include <QQuickVTKItem.h>
 #include <QVTKRenderWindowAdapter.h>
-#include <atomic>
 #include <unordered_map>
 
 #include <QtQml/QQmlApplicationEngine>
@@ -254,6 +253,8 @@ signals:
     void selectionRevisionChanged();
     void geometryStyleChanged();
     void surfacePrecisionChanged();
+    /** @brief 曲面切档失败后在 GUI 线程报告，交给统一状态栏展示。 */
+    void surfacePrecisionFailed(const QString& error);
     void meshStyleChanged();
     void clicked();
     void rightClicked();
@@ -264,8 +265,6 @@ protected:
     void itemChange(ItemChange change, const ItemChangeData& value) override;
 
 private:
-    /** @brief 渲染线程应用切档并将实际档位排队返回 GUI；任何异常均在此收口。 */
-    void applySurfacePrecision(vtkUserData user_data, int precision, quint64 revision);
     //! @brief GUI 线程保存 DPR，并将叠加层像素尺寸更新排入渲染队列。
     void updateOverlayScale(qreal ratio);
     qreal overlay_device_pixel_ratio_ { 1.0 };
@@ -308,9 +307,7 @@ private:
     MeshGenerations selected_face_generations_; //> 各选中组件的源网格代次，仅 GUI 访问
 
     GeometryRenderStyle geometry_style_ { GeometryRenderStyle::SurfaceWithEdges };
-    int surface_precision_ { surface_precision::kDefault }; //> GUI 侧当前请求档位
-    quint64 surface_precision_revision_ {}; //> 防止旧切档结果覆盖新的 GUI 请求
-    std::atomic<quint64> surface_precision_scene_generation_ {}; //> 渲染线程更新，GUI 回执跨线程校验
+    int surface_precision_ { surface_precision::kDefault }; //> GUI 侧目标档位，失败后允许同档重试
     MeshRenderStyle mesh_style_ { MeshRenderStyle::FaceWithEdges };
 
     std::unique_ptr<SelectManager> select_manager_;

@@ -201,40 +201,16 @@ GeometryTopologyDiagnosticActor::~GeometryTopologyDiagnosticActor()
     renderer_->RemoveActor(small_face_marker_.actor);
 }
 
-GeometryTopologyDiagnosticActor::DisplayData GeometryTopologyDiagnosticActor::prepareDisplay(
-    vtkPolyData* lines, vtkPolyData* faces) const
-{
-    DisplayData display;
-    display.invalid_edges = vtkSmartPointer<vtkPolyData>::New();
-    for (size_t i = 0; i < pipelines_.size(); ++i) {
-        display.categories[i] = vtkSmartPointer<vtkPolyData>::New();
-        if (category_computed_[i])
-            extractCategory(static_cast<GeometryTopologyDiagnosticCategory>(i), lines, faces,
-                *display.categories[i], *display.invalid_edges);
-    }
-    return display;
-}
-
-GeometryTopologyDiagnosticActor::DisplayData GeometryTopologyDiagnosticActor::captureDisplay() const
-{
-    DisplayData display;
-    display.invalid_edges = vtkSmartPointer<vtkPolyData>::New();
-    display.invalid_edges->ShallowCopy(invalid_edge_pipeline_.data);
-    for (size_t i = 0; i < pipelines_.size(); ++i) {
-        display.categories[i] = vtkSmartPointer<vtkPolyData>::New();
-        display.categories[i]->ShallowCopy(pipelines_[i].data);
-    }
-    return display;
-}
-
-void GeometryTopologyDiagnosticActor::commitDisplay(const DisplayData& display,
-    vtkPolyData* lines, vtkPolyData* faces)
+void GeometryTopologyDiagnosticActor::refreshDisplay(vtkPolyData* lines, vtkPolyData* polygons)
 {
     line_data_ = lines;
-    face_data_ = faces;
-    for (size_t i = 0; i < pipelines_.size(); ++i)
-        pipelines_[i].data->ShallowCopy(display.categories[i]);
-    invalid_edge_pipeline_.data->ShallowCopy(display.invalid_edges);
+    face_data_ = polygons;
+    // 精细度只改变三角化，分析结果和尺寸标记仍对应同一份几何拓扑。
+    for (size_t index = 0; index < pipelines_.size(); ++index) {
+        if (category_enabled_[index] && category_computed_[index])
+            extractCategory(static_cast<GeometryTopologyDiagnosticCategory>(index),
+                line_data_, face_data_, *pipelines_[index].data, *invalid_edge_pipeline_.data);
+    }
     applyVisibility();
 }
 

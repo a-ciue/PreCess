@@ -136,7 +136,7 @@ void GeometryActorSelectOp::removeFromPickers(
         shape->SetSelectableObject(selectable);
         picker->RemoveSelectableObject(shape);
     }
-    // 即使没有观察者，删除或真正替换几何也必须解除旧缓存引用。
+    // 缓存重建或替换几何前解除旧敏感实体引用。
     shape->SetSelectableObject(nullptr);
 }
 
@@ -320,7 +320,7 @@ vtkSmartPointer<IVtkTools_SubPolyDataFilter> GeometryActorSelectOp::buildHighlig
     filter = vtkSmartPointer<IVtkTools_SubPolyDataFilter>::New();
     filter->SetInputData(source);
     filter->SetDoFiltering(true);
-    // 过滤器跨切档复用；名称必须独立于被替换的数组存储。
+    // OCCT 保存数组名裸指针，名称必须独立于输入数组的存储。
     filter->SetIdsArrayName(IVtkVTK_ShapeData::ARRNAME_SUBSHAPE_IDS());
 
     return filter;

@@ -2,17 +2,13 @@
 #include "Core.h"
 #include "GeometryTopologyDiagnosticActor.h"
 #include <BRepBuilderAPI_Copy.hxx>
+#include <BRepTools.hxx>
 #include <IVtkTools_ShapeDataSource.hxx>
 #include <IVtkTools_SubPolyDataFilter.hxx>
 #include <IVtkVTK_ShapeData.hxx>
-#include <NCollection_IndexedMap.hxx>
 #include <Prs3d_Drawer.hxx>
-#include <TopExp.hxx>
 #include <TopExp_Explorer.hxx>
-#include <TopTools_ShapeMapHasher.hxx>
 #include <TopoDS_Shape.hxx>
-#include <unordered_map>
-#include <vtkCellData.h>
 #include <vtkExtractSelection.h>
 #include <vtkGeometryFilter.h>
 #include <vtkIdTypeArray.h>
@@ -22,24 +18,10 @@
 #include <vtkSelection.h>
 #include <vtkSelectionNode.h>
 
-#include <array>
 #include <chrono>
 #include <cmath>
 #include <spdlog/spdlog.h>
 #include <stdexcept>
-
-// 按 OCCT 约定的正式名称获取单元对应的子形状 ID 数组。
-static vtkSmartPointer<vtkDataArray> findSubIdArray(vtkPolyData* poly_data)
-{
-    if (!poly_data)
-        return nullptr;
-
-    vtkCellData* cell_data = poly_data->GetCellData();
-    if (!cell_data)
-        return nullptr;
-
-    return cell_data->GetArray(IVtkVTK_ShapeData::ARRNAME_SUBSHAPE_IDS());
-}
 
 GeometryActor::GeometryActor(vtkRenderer* renderer)
 {
@@ -57,10 +39,10 @@ void GeometryActor::loadShape(const GeometryDataVtk& geometry_data, int precisio
 {
     if (!surface_precision::isValid(precision))
         throw std::invalid_argument("无效的曲面显示精细度");
-    // 拾取使用独立且固定的标准精度副本，模型与撤销前像的三角缓存不可写。
+    // 只复制一次拓扑供显示和拾取共用，隔离模型及撤销前像的三角缓存。
     BRepBuilderAPI_Copy copy(geometry_data.shape, false, false);
     if (!copy.IsDone())
-        throw std::runtime_error("无法创建几何拾取副本");
+        throw std::runtime_error("无法创建几何渲染副本");
     occ_shape_ = new IVtkOCC_Shape(copy.Shape());
     occ_shape_->SetId(static_cast<IVtk_IdType>(geometry_data.component_id));
     picking_geometry_index_.reset();
@@ -80,56 +62,39 @@ void GeometryActor::loadShape(const GeometryDataVtk& geometry_data, int precisio
         }
         picking.built = original.built;
     }
-    vtkNew<IVtkTools_ShapeDataSource> picking_source;
-    picking_source->SetShape(occ_shape_);
-    picking_source->Update();
-    auto display = prepareDisplay(precision, false);
-    if (!line_only_)
-        line_only_ = vtkSmartPointer<vtkPolyData>::New();
-    if (!poly_only_)
-        poly_only_ = vtkSmartPointer<vtkPolyData>::New();
-    line_only_->ShallowCopy(display.lines);
-    poly_only_->ShallowCopy(display.polygons);
+    surface_precision_ = -1;
+    rebuildMesh(precision);
     topology_diagnostics_->loadShape(occ_shape_->GetShape(), occ_shape_,
         line_only_, poly_only_);
     createActors();
+    surface_precision_ = precision;
 }
 
-GeometryActor::DisplayData GeometryActor::prepareDisplay(int precision, bool include_diagnostics) const
+void GeometryActor::setSurfacePrecision(int precision)
+{
+    if (!surface_precision::isValid(precision))
+        throw std::invalid_argument("无效的曲面显示精细度");
+    if (precision == surface_precision_)
+        return;
+    // 更新中可能部分写入，失效档位使再次选择旧档位也能重新构建。
+    surface_precision_ = -1;
+    rebuildMesh(precision);
+    topology_diagnostics_->refreshDisplay(line_only_, poly_only_);
+    surface_precision_ = precision;
+}
+
+void GeometryActor::rebuildMesh(int precision)
 {
     const auto started = std::chrono::steady_clock::now();
-    BRepBuilderAPI_Copy copy(occ_shape_->GetShape(), false, false);
-    if (!copy.IsDone())
-        throw std::runtime_error("无法创建曲面显示副本");
-    const OccShapeHandle display_shape = new IVtkOCC_Shape(copy.Shape());
+    // OCCT 通常复用已有的更细三角化；先清缓存保证细到粗切档也生效。
+    BRepTools::Clean(occ_shape_->GetShape());
     const auto& settings = surface_precision::kLevels[static_cast<size_t>(precision)];
-    display_shape->Attributes()->SetDeviationCoefficient(settings.deviation_coefficient);
-    display_shape->Attributes()->SetDeviationAngle(settings.angle_degrees * std::acos(-1.0) / 180.0);
+    occ_shape_->Attributes()->SetDeviationCoefficient(settings.deviation_coefficient);
+    occ_shape_->Attributes()->SetDeviationAngle(settings.angle_degrees * std::acos(-1.0) / 180.0);
     vtkNew<IVtkTools_ShapeDataSource> source;
-    source->SetShape(display_shape);
+    source->SetShape(occ_shape_);
     source->Update();
     vtkPolyData* src = source->GetOutput();
-
-    // 显示副本的遍历顺序不是身份契约：通过 Copy 历史显式映射到固定拾取 ID。
-    NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher> subshapes;
-    TopExp::MapShapes(occ_shape_->GetShape(), subshapes);
-    std::unordered_map<IVtk_IdType, IVtk_IdType> display_to_picking;
-    for (int i = 1; i <= subshapes.Extent(); ++i) {
-        const auto& original = subshapes.FindKey(i);
-        const auto copied = copy.ModifiedShape(original);
-        if (!copied.IsNull())
-            display_to_picking.emplace(display_shape->GetSubShapeId(copied), occ_shape_->GetSubShapeId(original));
-    }
-    if (auto ids = findSubIdArray(src)) {
-        for (vtkIdType i = 0; i < ids->GetNumberOfTuples(); ++i) {
-            const auto found = display_to_picking.find(static_cast<IVtk_IdType>(ids->GetTuple1(i)));
-            if (found == display_to_picking.end() || found->second < 0)
-                throw std::runtime_error("曲面显示子形状无法映射到拾取身份");
-            ids->SetTuple1(i, found->second);
-        }
-    } else if (src->GetNumberOfCells() != 0) {
-        throw std::runtime_error("曲面显示缺少子形状身份数组");
-    }
     const vtkIdType nV = src->GetNumberOfVerts();
     const vtkIdType nL = src->GetNumberOfLines();
     const vtkIdType nP = src->GetNumberOfPolys();
@@ -169,32 +134,17 @@ GeometryActor::DisplayData GeometryActor::prepareDisplay(int precision, bool inc
     if (!poly_only)
         poly_only = vtkSmartPointer<vtkPolyData>::New();
 
-    DisplayData display { line_only, poly_only, {} };
-    // 新几何（含替换加载）的诊断在 loadShape 计算；切档仅重新提取已有叠加。
-    if (include_diagnostics)
-        display.diagnostics = topology_diagnostics_->prepareDisplay(line_only, poly_only);
     const double elapsed_ms = std::chrono::duration<double, std::milli>(
         std::chrono::steady_clock::now() - started)
                                   .count();
     spdlog::debug("[SurfacePrecision] component={} level={} triangles={} rebuild_ms={:.1f}",
         occ_shape_->GetId(), precision, nP, elapsed_ms);
-    return display;
-}
-
-GeometryActor::DisplayData GeometryActor::captureDisplay() const
-{
-    DisplayData display { vtkSmartPointer<vtkPolyData>::New(), vtkSmartPointer<vtkPolyData>::New(),
-        topology_diagnostics_->captureDisplay() };
-    display.lines->ShallowCopy(line_only_);
-    display.polygons->ShallowCopy(poly_only_);
-    return display;
-}
-
-void GeometryActor::commitDisplay(const DisplayData& display)
-{
-    line_only_->ShallowCopy(display.lines);
-    poly_only_->ShallowCopy(display.polygons);
-    topology_diagnostics_->commitDisplay(display.diagnostics, line_only_, poly_only_);
+    if (!line_only_)
+        line_only_ = vtkSmartPointer<vtkPolyData>::New();
+    if (!poly_only_)
+        poly_only_ = vtkSmartPointer<vtkPolyData>::New();
+    line_only_->ShallowCopy(line_only);
+    poly_only_->ShallowCopy(poly_only);
 }
 
 void GeometryActor::createActors()

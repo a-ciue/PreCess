@@ -6,7 +6,6 @@
 #include "GeometryTopologyDiagnosticActor.h"
 #include "SurfacePrecision.h"
 #include <vtkActor.h>
-#include <vtkDataArray.h>
 #include <vtkNew.h>
 #include <vtkSmartPointer.h>
 
@@ -18,16 +17,19 @@ typedef Handle(IVtkOCC_Shape) OccShapeHandle;
 class GeometryActorSelectOp;
 class GeometryTopologyDiagnosticActor;
 class vtkPolyData;
+class vtkRenderer;
 
 class GeometryActor {
     friend GeometryActorSelectOp;
-    friend class GeometryActorManager;
 
 public:
     GeometryActor(vtkRenderer* renderer);
     ~GeometryActor();
 
     void loadShape(const GeometryDataVtk& geometry_data, int precision = surface_precision::kDefault);
+    /** @brief 重建私有拓扑的显示网格；调用侧负责清空选择及更新 Picker 注册。 */
+    void setSurfacePrecision(int precision);
+    int getSurfacePrecision() const { return surface_precision_; }
 
     void setVisibility(bool visibility);
     bool isVisible() const;
@@ -40,27 +42,20 @@ public:
 private:
     void deleteGeometryActor();
     void applyStyle();
-    /** @brief 仅含显示数据；候选与回滚快照均不创建场景、拾取或诊断对象。 */
-    struct DisplayData {
-        vtkSmartPointer<vtkPolyData> lines;
-        vtkSmartPointer<vtkPolyData> polygons;
-        GeometryTopologyDiagnosticActor::DisplayData diagnostics;
-    };
-    DisplayData prepareDisplay(int precision, bool include_diagnostics = true) const;
-    DisplayData captureDisplay() const;
-    /** @brief 原位更新数据对象，保留 Mapper、高亮过滤器及 Picker 的身份。 */
-    void commitDisplay(const DisplayData& display);
+    void rebuildMesh(int precision);
     void createActors();
 
     GeometryRenderStyle style_ { GeometryRenderStyle::SurfaceWithEdges };
     bool visibility_;
     OccShapeHandle occ_shape_;
-    // 固定标准精度的拾取副本，与模型/撤销快照及可变显示三角化隔离。
+    // 显示和拾取共用私有拓扑；业务身份通过复制历史映射。
     std::unique_ptr<GeometrySubshapeIndex> picking_geometry_index_;
 
-    vtkSmartPointer<vtkActor> poly_actor_ = vtkSmartPointer<vtkActor>::New();
-    vtkSmartPointer<vtkActor> line_actor_ = vtkSmartPointer<vtkActor>::New();
-    vtkSmartPointer<vtkRenderer> renderer_;
+    vtkNew<vtkActor> poly_actor_;
+    vtkNew<vtkActor> line_actor_;
+    // 场景先销毁几何管理器，再释放 renderer。
+    vtkRenderer* renderer_;
+    int surface_precision_ { -1 }; //> 仅完整更新成功后记录档位，失败组件可重试。
 
     vtkSmartPointer<vtkPolyData> poly_only_;
     vtkSmartPointer<vtkPolyData> line_only_;
