@@ -79,10 +79,12 @@ FeatureSystem::FeatureEntry::FeatureEntry(FeatureSystem& system, const HandlerMe
 {
 }
 
-FeatureSystem::FeatureSystem(ModelLayer& model_layer, core::EventBus& event_bus, UndoStack* undo_stack)
+FeatureSystem::FeatureSystem(ModelLayer& model_layer, core::EventBus& event_bus, UndoStack* undo_stack,
+    io::ModelIOSystem* io_system)
     : model_layer_(&model_layer)
     , event_bus_(&event_bus)
     , undo_stack_(undo_stack)
+    , io_system_(io_system)
 {
     on_feature_infos_changed_ = []() { };
 }

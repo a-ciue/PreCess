@@ -95,7 +95,7 @@ Session::Session(ModelObserver* observer, std::function<void(std::function<void(
     , io_system_(std::make_unique<systems::io::ModelIOSystem>(model_, undo_stack_.get()))
     , algo_system_(std::make_unique<systems::algo::AlgorithmSystem>(*io_system_, model_, undo_stack_.get()))
     , edit_system_(std::make_unique<systems::edit::EditSystem>(model_, undo_stack_.get()))
-    , feature_system_(std::make_unique<systems::feature::FeatureSystem>(model_, event_bus_, undo_stack_.get()))
+    , feature_system_(std::make_unique<systems::feature::FeatureSystem>(model_, event_bus_, undo_stack_.get(), io_system_.get()))
     , plugin_manager_(std::make_unique<systems::SystemPluginManager>())
 {
     // undo 栈挂接模型层记录钩子（写前/结构操作时机回调）
