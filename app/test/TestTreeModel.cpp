@@ -68,7 +68,7 @@ TEST_CASE("TreeModel applies structural changes through row signals", "[TreeMode
     QObject::connect(&tree, &QAbstractItemModel::rowsRemoved, [&] { ++removed; });
 
     REQUIRE(tree.refresh());
-    CHECK(resets == 1);
+    CHECK(resets == 0);
     CHECK(tree.rowCount() == 0);
 
     ComponentDatas components;
@@ -80,8 +80,8 @@ TEST_CASE("TreeModel applies structural changes through row signals", "[TreeMode
     components.push_back(std::move(geometry_component));
 
     const Index model_id = model.addModel("incremental", std::move(components));
-    tree.syncModelAdded(model_id);
-    CHECK(resets == 1);
+    tree.refresh();
+    CHECK(resets == 0);
     CHECK(inserted == 1);
     CHECK(removed == 0);
     REQUIRE(tree.rowCount() == 1);
@@ -107,8 +107,8 @@ TEST_CASE("TreeModel applies structural changes through row signals", "[TreeMode
     other_component->mesh = std::make_unique<MeshData>();
     other_components.push_back(std::move(other_component));
     const Index other_model_id = model.addModel("appended", std::move(other_components));
-    tree.syncModelAdded(other_model_id);
-    CHECK(resets == 1);
+    tree.refresh();
+    CHECK(resets == 0);
     CHECK(inserted == 2);
     REQUIRE(tree.rowCount() == 2);
     CHECK(persistent_geometry.isValid());
@@ -121,23 +121,23 @@ TEST_CASE("TreeModel applies structural changes through row signals", "[TreeMode
     created_component->geometry = std::make_unique<GeometryData>();
     const Index created_id = model_operator->addGeometryComponent(std::move(created_component));
 
-    tree.queueComponentChanged(created_id);
+    tree.requestRefresh();
     CHECK_FALSE(tree.findIndexByNodeId(created_id, 1).isValid());
     REQUIRE(waitForDataSync(tree));
-    CHECK(resets == 1);
+    CHECK(resets == 0);
     REQUIRE(tree.rowCount(model_index) == 3);
     CHECK(tree.findIndexByNodeId(created_id, 1).isValid());
 
     model.removeComponent(created_id);
-    tree.syncComponentRemoved(created_id);
-    CHECK(resets == 1);
+    tree.refresh();
+    CHECK(resets == 0);
     CHECK(removed == 1);
     REQUIRE(tree.rowCount(model_index) == 2);
     CHECK_FALSE(tree.findIndexByNodeId(created_id, 1).isValid());
 
     model.removeModel(model_id);
-    tree.syncModelRemoved(model_id);
-    CHECK(resets == 1);
+    tree.refresh();
+    CHECK(resets == 0);
     CHECK(removed == 2);
     REQUIRE(tree.rowCount() == 1);
     REQUIRE(tree.index(0, 0).isValid());
@@ -163,7 +163,7 @@ TEST_CASE("TreeModel emits data changes for mutated component names", "[TreeMode
     component->mesh = std::make_unique<MeshData>();
     components.push_back(std::move(component));
     const Index model_id = model.addModel("names", std::move(components));
-    tree.syncModelAdded(model_id);
+    tree.refresh();
 
     const Index component_id = model.modelById(model_id)->componentIds().front();
     const QModelIndex component_index = tree.findIndexByNodeId(component_id, 1);
@@ -172,7 +172,7 @@ TEST_CASE("TreeModel emits data changes for mutated component names", "[TreeMode
     auto component_operator = model.getComponentOperator(component_id);
     REQUIRE(component_operator);
     component_operator->setName("renamed");
-    tree.syncModelChanged(model_id);
+    tree.refresh();
     CHECK(data_changed > 0);
     CHECK(tree.data(component_index, TreeModel::NameRole).toString() == "renamed");
 }
@@ -195,14 +195,14 @@ TEST_CASE("TreeModel reconciles changed models without rebuilding the tree", "[T
     QObject::connect(&tree, &QAbstractItemModel::rowsRemoved, [&] { ++removed; });
 
     REQUIRE(tree.refresh());
-    CHECK(resets == 1);
+    CHECK(resets == 0);
 
     ComponentDatas components;
     auto component = std::make_unique<ComponentData>();
     component->mesh = std::make_unique<MeshData>();
     components.push_back(std::move(component));
     const Index model_id = model.addModel("reconcile", std::move(components));
-    tree.syncModelAdded(model_id);
+    tree.refresh();
     const QModelIndex model_index = tree.index(0, 0);
     REQUIRE(tree.rowCount(model_index) == 1);
 
@@ -212,16 +212,16 @@ TEST_CASE("TreeModel reconciles changed models without rebuilding the tree", "[T
     appended->geometry = std::make_unique<GeometryData>();
     const Index appended_id = model_operator->addGeometryComponent(std::move(appended));
 
-    tree.syncModelChanged(model_id);
-    CHECK(resets == 1);
+    tree.refresh();
+    CHECK(resets == 0);
     CHECK(inserted == 2);
     REQUIRE(tree.rowCount(model_index) == 2);
     CHECK(tree.findIndexByNodeId(appended_id, 1).isValid());
 
     const Index removed_id = model.modelById(model_id)->componentIds().front();
     model.removeComponent(removed_id);
-    tree.syncModelChanged(model_id);
-    CHECK(resets == 1);
+    tree.refresh();
+    CHECK(resets == 0);
     CHECK(removed == 1);
     REQUIRE(tree.rowCount(model_index) == 1);
     CHECK_FALSE(tree.findIndexByNodeId(removed_id, 1).isValid());
@@ -249,7 +249,7 @@ TEST_CASE("TreeModel removes mesh and geometry nodes incrementally", "[TreeModel
     component->geometry = std::make_unique<GeometryData>();
     components.push_back(std::move(component));
     const Index model_id = model.addModel("subnodes", std::move(components));
-    tree.syncModelAdded(model_id);
+    tree.refresh();
 
     const Index component_id = model.modelById(model_id)->componentIds().front();
     const QModelIndex component_index = tree.findIndexByNodeId(component_id, 1);
@@ -260,8 +260,8 @@ TEST_CASE("TreeModel removes mesh and geometry nodes incrementally", "[TreeModel
     REQUIRE(component_operator);
     component_operator->removeMesh();
     model.flushNotifications();
-    tree.syncModelChanged(model_id);
-    CHECK(resets == 1);
+    tree.refresh();
+    CHECK(resets == 0);
     CHECK(removed == 1);
     REQUIRE(tree.rowCount(component_index) == 1);
     CHECK(tree.data(tree.index(0, 0, component_index), TreeModel::NodeTypeRole).toInt()
@@ -269,8 +269,8 @@ TEST_CASE("TreeModel removes mesh and geometry nodes incrementally", "[TreeModel
 
     component_operator->removeGeometry();
     model.flushNotifications();
-    tree.syncModelChanged(model_id);
-    CHECK(resets == 1);
+    tree.refresh();
+    CHECK(resets == 0);
     CHECK(removed == 2);
     CHECK(tree.rowCount(component_index) == 0);
     CHECK(tree.findIndexByNodeId(component_id, 1).isValid());
@@ -293,7 +293,7 @@ TEST_CASE("TreeModel shows a newly added subtype as visible", "[TreeModel]")
     components.push_back(std::move(component));
     const Index model_id = model.addModel("new subtype", std::move(components));
     const Index component_id = model.modelById(model_id)->componentIds().front();
-    tree.syncModelAdded(model_id);
+    tree.refresh();
 
     QModelIndex component_index = tree.findIndexByNodeId(component_id, 1);
     REQUIRE(component_index.isValid());
@@ -303,7 +303,7 @@ TEST_CASE("TreeModel shows a newly added subtype as visible", "[TreeModel]")
     REQUIRE(component_operator);
     component_operator->replaceMesh(std::make_unique<MeshData>());
     model.flushNotifications();
-    tree.syncModelChanged(model_id);
+    tree.refresh();
 
     component_index = tree.findIndexByNodeId(component_id, 1);
     REQUIRE(component_index.isValid());
@@ -339,7 +339,7 @@ TEST_CASE("TreeModel keeps reported visibility when a subtype re-enters the tree
     components.push_back(std::move(component));
     const Index model_id = model.addModel("visibility restore", std::move(components));
     const Index component_id = model.modelById(model_id)->componentIds().front();
-    tree.syncModelAdded(model_id);
+    tree.refresh();
 
     const auto component_visible = [&] {
         return tree.data(tree.findIndexByNodeId(component_id, 1), TreeModel::IsVisibleRole).toBool();
@@ -360,7 +360,7 @@ TEST_CASE("TreeModel keeps reported visibility when a subtype re-enters the tree
     component_operator->removeMesh();
     model.flushNotifications();
     tree.syncComponentVisibility(component_id, false, false);
-    tree.syncModelChanged(model_id);
+    tree.refresh();
     CHECK_FALSE(subtype_visible(TreeNode::NodeType::Mesh));
     CHECK_FALSE(component_visible());
 
@@ -368,7 +368,7 @@ TEST_CASE("TreeModel keeps reported visibility when a subtype re-enters the tree
     tree.syncComponentVisibility(component_id, true, false);
     component_operator->replaceMesh(std::make_unique<MeshData>());
     model.flushNotifications();
-    tree.syncModelChanged(model_id);
+    tree.refresh();
 
     CHECK(subtype_visible(TreeNode::NodeType::Mesh));
     CHECK_FALSE(subtype_visible(TreeNode::NodeType::Geometry));
@@ -388,14 +388,14 @@ TEST_CASE("TreeModel applies reported visibility to components waiting to enter 
     ComponentDatas components;
     components.push_back(std::make_unique<ComponentData>());
     const Index model_id = model.addModel("pending component", std::move(components));
-    tree.syncModelAdded(model_id);
+    tree.refresh();
 
     auto model_operator = model.getModelOperator(model_id);
     REQUIRE(model_operator);
     auto created = std::make_unique<ComponentData>();
     created->geometry = std::make_unique<GeometryData>();
     const Index component_id = model_operator->addGeometryComponent(std::move(created));
-    tree.queueComponentChanged(component_id);
+    tree.requestRefresh();
     CHECK_FALSE(tree.findIndexByNodeId(component_id, 1).isValid());
 
     // 鍚堝苟鍒锋柊鍓嶆敹鍒?鍏ㄩ儴闅愯棌"鐨勫洖浼狅細缁勪欢灏氭湭鍏ユ爲锛岀粨鏋滃繀椤讳繚鐣欍€?
@@ -426,7 +426,7 @@ TEST_CASE("TreeModel requests visibility without mutating the display copy", "[T
     components.push_back(std::move(component));
     const Index model_id = model.addModel("request only", std::move(components));
     const Index component_id = model.modelById(model_id)->componentIds().front();
-    tree.syncModelAdded(model_id);
+    tree.refresh();
 
     int requests = 0;
     int requested_type = -1;
@@ -483,7 +483,7 @@ TEST_CASE("TreeModel hides element nodes with their reported subtype", "[TreeMod
     components.push_back(std::move(component));
     const Index model_id = model.addModel("element visibility", std::move(components));
     const Index component_id = model.modelById(model_id)->componentIds().front();
-    tree.syncModelAdded(model_id);
+    tree.refresh();
 
     tree.syncComponentVisibility(component_id, false, true);
     const QModelIndex component_index = tree.findIndexByNodeId(component_id, 1);
@@ -527,7 +527,7 @@ TEST_CASE("TreeModel keeps count child order and numbers", "[TreeModel]")
     const auto component_ids = model.modelById(model_id)->componentIds();
     const Index mesh_component_id = component_ids[0];
     const Index geometry_component_id = component_ids[1];
-    tree.syncModelAdded(model_id);
+    tree.refresh();
 
     auto child_of_type = [&tree](const QModelIndex& parent, TreeNode::NodeType type) {
         for (int i = 0; i < tree.rowCount(parent); ++i) {
@@ -579,7 +579,7 @@ TEST_CASE("TreeModel keeps count child order and numbers", "[TreeModel]")
     REQUIRE(component_operator);
     component_operator->replaceMesh(makeCountMesh(1, 0));
     model.flushNotifications();
-    tree.syncModelChanged(model_id);
+    tree.refresh();
 
     mesh_index = child_of_type(mesh_component_index, TreeNode::NodeType::Mesh);
     REQUIRE(mesh_index.isValid());
@@ -591,7 +591,7 @@ TEST_CASE("TreeModel keeps count child order and numbers", "[TreeModel]")
 
     component_operator->replaceMesh(makeCountMesh(0, 0));
     model.flushNotifications();
-    tree.syncModelChanged(model_id);
+    tree.refresh();
 
     mesh_index = child_of_type(mesh_component_index, TreeNode::NodeType::Mesh);
     REQUIRE(mesh_index.isValid());
@@ -615,7 +615,7 @@ TEST_CASE("TreeModel resets state when the model query changes", "[TreeModel]")
     component->mesh = std::make_unique<MeshData>();
     components.push_back(std::move(component));
     const Index model_id = model.addModel("query lifecycle", std::move(components));
-    tree.syncModelAdded(model_id);
+    tree.refresh();
     REQUIRE(tree.rowCount() == 1);
 
     ModelLayer other_model;
@@ -633,7 +633,7 @@ TEST_CASE("TreeModel resets state when the model query changes", "[TreeModel]")
 
     REQUIRE_NOTHROW(tree.setModelQuery(nullptr));
     CHECK(tree.rowCount() == 0);
-    REQUIRE_NOTHROW(tree.syncModelAdded(model_id));
+    REQUIRE_NOTHROW(tree.refresh());
 
     tree.setModelQuery(&model_query);
     REQUIRE(tree.refresh());
@@ -657,7 +657,7 @@ TEST_CASE("TreeModel resets fake node ids on full rebuild", "[TreeModel]")
     components.push_back(std::move(component));
     const Index model_id = model.addModel("fake ids", std::move(components));
     const Index component_id = model.modelById(model_id)->componentIds().front();
-    tree.syncModelAdded(model_id);
+    tree.refresh();
 
     auto mesh_node_id = [&]() {
         const QModelIndex component_index = tree.findIndexByNodeId(component_id, 1);
@@ -698,7 +698,7 @@ TEST_CASE("TreeModel consumes changes queued during a flush on the next timer", 
     const auto component_ids = model.modelById(model_id)->componentIds();
     const Index first_id = component_ids[0];
     const Index second_id = component_ids[1];
-    tree.syncModelAdded(model_id);
+    tree.refresh();
 
     auto first_operator = model.getComponentOperator(first_id);
     auto second_operator = model.getComponentOperator(second_id);
@@ -714,11 +714,11 @@ TEST_CASE("TreeModel consumes changes queued during a flush on the next timer", 
     QObject::connect(&tree, &QAbstractItemModel::dataChanged, [&] {
         if (!queued_second) {
             queued_second = true;
-            tree.queueComponentChanged(second_id);
+            tree.requestRefresh();
         }
     });
 
-    tree.queueComponentChanged(first_id);
+    tree.requestRefresh();
     REQUIRE(waitForDataSync(tree));
     CHECK(sync_finished == 1);
     REQUIRE(waitForDataSync(tree));
@@ -746,7 +746,7 @@ TEST_CASE("TreeModel coalesces data changes and inserts components on flush", "[
         components.push_back(std::move(component));
     }
     const Index model_id = model.addModel("coalesce", std::move(components));
-    tree.syncModelAdded(model_id);
+    tree.refresh();
 
     const auto component_ids = model.modelById(model_id)->componentIds();
     const Index component_id = component_ids[0];
@@ -771,10 +771,10 @@ TEST_CASE("TreeModel coalesces data changes and inserts components on flush", "[
     REQUIRE(second_component_operator);
     component_operator->setName("renamed");
     second_component_operator->setName("renamed-second");
-    tree.queueComponentChanged(component_id);
-    tree.queueComponentChanged(component_id);
-    tree.queueComponentChanged(second_component_id);
-    tree.queueModelChanged(model_id);
+    tree.requestRefresh();
+    tree.requestRefresh();
+    tree.requestRefresh();
+    tree.requestRefresh();
     CHECK(data_changed == 0);
 
     REQUIRE(waitForDataSync(tree));
@@ -791,7 +791,7 @@ TEST_CASE("TreeModel coalesces data changes and inserts components on flush", "[
     created->geometry = std::make_unique<GeometryData>();
     const Index created_id = model_operator->addGeometryComponent(std::move(created));
     CHECK_FALSE(tree.findIndexByNodeId(created_id, 1).isValid());
-    tree.queueComponentChanged(created_id);
+    tree.requestRefresh();
     CHECK_FALSE(tree.findIndexByNodeId(created_id, 1).isValid());
     REQUIRE(waitForDataSync(tree));
     CHECK(tree.findIndexByNodeId(created_id, 1).isValid());

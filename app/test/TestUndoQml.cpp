@@ -806,6 +806,7 @@ TEST_CASE("Actual QML applies object tree expansion levels", "[QML][tree]")
 
     model.removeModel(model_a);
     model.removeModel(model_b);
+    REQUIRE(waitForDataSync(*tree_model));
     settle();
     CHECK(rows() == 0);
     click("objectTreeToggleComp");

@@ -2,13 +2,12 @@
 #include "QModelQuery.h"
 
 #include <QTimer>
-#include <spdlog/spdlog.h>
 #include <QVariantList>
 #include <QVariantMap>
 #include <algorithm>
 #include <array>
 #include <functional>
-#include <iterator>
+#include <unordered_set>
 #include <utility>
 #include <vector>
 
@@ -48,10 +47,10 @@ TreeModel::TreeModel(QObject* parent)
     rootNode = new TreeNode("root");
     rootNode->nodeId = -1;
 
-    data_sync_timer_ = new QTimer(this);
-    data_sync_timer_->setSingleShot(true);
-    data_sync_timer_->setInterval(50);
-    connect(data_sync_timer_, &QTimer::timeout, this, &TreeModel::flushPendingDataSync);
+    refresh_timer_ = new QTimer(this);
+    refresh_timer_->setSingleShot(true);
+    refresh_timer_->setInterval(50);
+    connect(refresh_timer_, &QTimer::timeout, this, &TreeModel::flushPendingRefresh);
 }
 
 TreeModel::~TreeModel()
@@ -171,23 +170,28 @@ bool TreeModel::refresh()
     if (!modelQuery_)
         return false;
 
-    if (!initialized_) {
-        beginResetModel();
-        rebuildAllFromQuery();
-        initialized_ = true;
-        endResetModel();
-        return true;
-    }
+    if (refresh_timer_ && refresh_timer_->isActive())
+        refresh_timer_->stop();
+    refresh_pending_ = false;
 
-    if (reconcileAllFromQuery())
-        return true;
+    refreshing_ = true;
+    reconcileAllFromQuery();
+    refreshing_ = false;
 
-    spdlog::warn("TreeModel: incremental reconcile failed, fallback to full reset");
-    beginResetModel();
-    rebuildAllFromQuery();
-    initialized_ = true;
-    endResetModel();
+    // 对账期间收到的新通知留到下一轮定时器消费。
+    if (refresh_pending_ && refresh_timer_ && !refresh_timer_->isActive())
+        refresh_timer_->start();
     return true;
+}
+
+void TreeModel::requestRefresh()
+{
+    if (!modelQuery_)
+        return;
+
+    refresh_pending_ = true;
+    if (!refreshing_ && refresh_timer_ && !refresh_timer_->isActive())
+        refresh_timer_->start();
 }
 
 int TreeModel::meshChildCount(const MeshNodeInfo& info, TreeNode::NodeType type)
@@ -419,11 +423,6 @@ void TreeModel::notifyAncestors(TreeNode* node)
     }
 }
 
-void TreeModel::eraseComponentVisibility(Index component_id)
-{
-    sub_visibility_.erase(component_id);
-}
-
 void TreeModel::pruneStaleVisibility()
 {
     if (!modelQuery_)
@@ -437,34 +436,15 @@ void TreeModel::pruneStaleVisibility()
     }
 }
 
-void TreeModel::registerSubtree(TreeNode* node)
+void TreeModel::rebuildComponentLookup()
 {
-    if (!node)
-        return;
-
-    if (node->nodeType == TreeNode::NodeType::Model)
-        model_nodes_[node->nodeId] = node;
-    else if (node->nodeType == TreeNode::NodeType::Component)
-        component_nodes_[node->nodeId] = node;
-
-    for (TreeNode* child : node->children)
-        registerSubtree(child);
-}
-
-void TreeModel::unregisterSubtree(TreeNode* node)
-{
-    if (!node)
-        return;
-
-    if (node->nodeType == TreeNode::NodeType::Model) {
-        model_nodes_.erase(node->nodeId);
-        pending_model_ids_.erase(node->nodeId);
-    } else if (node->nodeType == TreeNode::NodeType::Component) {
-        component_nodes_.erase(node->nodeId);
+    component_lookup_.clear();
+    for (TreeNode* model : rootNode->children) {
+        for (TreeNode* component : model->children) {
+            if (component->nodeType == TreeNode::NodeType::Component)
+                component_lookup_[component->nodeId] = component;
+        }
     }
-
-    for (TreeNode* child : node->children)
-        unregisterSubtree(child);
 }
 
 QModelIndex TreeModel::indexOfNode(TreeNode* node) const
@@ -485,28 +465,6 @@ void TreeModel::notifyNodeData(TreeNode* node, const QVector<int>& roles)
         emit dataChanged(index, index, roles);
 }
 
-void TreeModel::insertModelNode(Index model_id, const ModelNodeInfo& info)
-{
-    const QVariantList models = modelQuery_->listModels();
-    int row = 0;
-    bool found = false;
-    for (const QVariant& value : models) {
-        const Index current_id = value.toMap()["model_id"].toInt();
-        if (current_id == model_id) {
-            found = true;
-            break;
-        }
-        if (model_nodes_.find(current_id) != model_nodes_.end())
-            ++row;
-    }
-    if (!found) {
-        spdlog::warn("TreeModel: model {} missing from model list", model_id);
-        return;
-    }
-
-    insertChildNode(rootNode, row, buildModelNode(info));
-}
-
 void TreeModel::insertChildNode(TreeNode* parent, int row, TreeNode* node)
 {
     if (!parent || !node)
@@ -519,7 +477,6 @@ void TreeModel::insertChildNode(TreeNode* parent, int row, TreeNode* node)
     beginInsertRows(parent_index, row, row);
     node->parent = parent;
     parent->children.insert(row, node);
-    registerSubtree(node);
     endInsertRows();
 }
 
@@ -536,7 +493,6 @@ void TreeModel::removeChildNode(TreeNode* node)
     const QModelIndex parent_index = indexOfNode(parent);
 
     beginRemoveRows(parent_index, row, row);
-    unregisterSubtree(node);
     TreeNode* removed = parent->children.takeAt(row);
     removed->parent = nullptr;
     // 先让视图完成索引失效，再释放节点，避免悬垂 internalPointer。
@@ -565,34 +521,15 @@ void TreeModel::moveChildNode(TreeNode* parent, int from, int to)
     endMoveRows();
 }
 
-void TreeModel::rebuildAllFromQuery()
+void TreeModel::reconcileAllFromQuery()
 {
-    delete rootNode;
-    rootNode = new TreeNode("root");
-    rootNode->nodeId = -1;
-
-    model_nodes_.clear();
-    component_nodes_.clear();
-    next_fake_id_ = -2;
-    pending_model_ids_.clear();
-    if (data_sync_timer_)
-        data_sync_timer_->stop();
-
     const QVariantList models = modelQuery_->listModels();
-    for (const QVariant& value : models) {
-        const QVariantMap model = value.toMap();
-        TreeNode* node = buildModelNode(queryModel(model["model_id"].toInt()));
-        node->parent = rootNode;
-        rootNode->children.push_back(node);
-        registerSubtree(node);
+
+    std::unordered_map<Index, TreeNode*> existing_models;
+    for (TreeNode* child : rootNode->children) {
+        if (child->nodeType == TreeNode::NodeType::Model)
+            existing_models[child->nodeId] = child;
     }
-
-    pruneStaleVisibility();
-}
-
-bool TreeModel::reconcileAllFromQuery()
-{
-    const QVariantList models = modelQuery_->listModels();
 
     std::vector<std::pair<Index, ModelNodeInfo>> model_infos;
     model_infos.reserve(static_cast<size_t>(models.size()));
@@ -603,15 +540,15 @@ bool TreeModel::reconcileAllFromQuery()
         model_infos.emplace_back(model_id, queryModel(model_id));
     }
 
-    const QVector<TreeNode*> existing_models = rootNode->children;
-    for (TreeNode* node : existing_models) {
+    const QVector<TreeNode*> existing = rootNode->children;
+    for (TreeNode* node : existing) {
         if (node->nodeType == TreeNode::NodeType::Model && desired_model_ids.count(node->nodeId) == 0)
             removeChildNode(node);
     }
 
     for (int i = 0; i < static_cast<int>(model_infos.size()); ++i) {
-        auto it = model_nodes_.find(model_infos[i].first);
-        if (it == model_nodes_.end()) {
+        auto it = existing_models.find(model_infos[i].first);
+        if (it == existing_models.end()) {
             insertChildNode(rootNode, i, buildModelNode(model_infos[i].second));
             continue;
         }
@@ -620,15 +557,14 @@ bool TreeModel::reconcileAllFromQuery()
         const int row = rootNode->children.indexOf(node);
         if (row != i)
             moveChildNode(rootNode, row, i);
-        if (!syncModelNode(node, model_infos[i].second))
-            return false;
+        syncModelNode(node, model_infos[i].second);
     }
 
     pruneStaleVisibility();
-    return true;
+    rebuildComponentLookup();
 }
 
-bool TreeModel::syncModelNode(TreeNode* node, const ModelNodeInfo& info)
+void TreeModel::syncModelNode(TreeNode* node, const ModelNodeInfo& info)
 {
     const int old_visibility = visibilityState(node);
     if (node->name != info.name) {
@@ -636,28 +572,31 @@ bool TreeModel::syncModelNode(TreeNode* node, const ModelNodeInfo& info)
         notifyNodeData(node, { NameRole });
     }
 
+    std::unordered_map<Index, TreeNode*> existing_components;
+    for (TreeNode* child : node->children) {
+        if (child->nodeType == TreeNode::NodeType::Component)
+            existing_components[child->nodeId] = child;
+    }
+
     std::unordered_set<Index> desired_component_ids;
     for (const ComponentNodeInfo& component : info.components)
         desired_component_ids.insert(component.id);
 
-    const QVector<TreeNode*> existing_components = node->children;
-    for (TreeNode* child : existing_components) {
+    const QVector<TreeNode*> existing = node->children;
+    for (TreeNode* child : existing) {
         if (child->nodeType == TreeNode::NodeType::Component && desired_component_ids.count(child->nodeId) == 0)
             removeChildNode(child);
     }
 
     for (int i = 0; i < info.components.size(); ++i) {
         const ComponentNodeInfo& component_info = info.components[i];
-        auto it = component_nodes_.find(component_info.id);
-        if (it == component_nodes_.end()) {
+        auto it = existing_components.find(component_info.id);
+        if (it == existing_components.end()) {
             insertChildNode(node, i, buildComponentNode(component_info));
             continue;
         }
 
         TreeNode* component = it->second;
-        if (component->parent != node)
-            return false;
-
         const int row = node->children.indexOf(component);
         if (row != i)
             moveChildNode(node, row, i);
@@ -669,10 +608,11 @@ bool TreeModel::syncModelNode(TreeNode* node, const ModelNodeInfo& info)
         node->number = number;
         notifyNodeData(node, { NumberRole });
     }
+    // 空模型沿用始终可见的约定。
+    if (node->children.isEmpty())
+        node->isVisible = true;
     if (visibilityState(node) != old_visibility)
         notifyNodeData(node, { IsVisibleRole, VisibilityStateRole });
-    notifyAncestors(node);
-    return true;
 }
 
 void TreeModel::syncComponentNode(TreeNode* node, const ComponentNodeInfo& info)
@@ -795,132 +735,9 @@ void TreeModel::syncGeometryNode(TreeNode* node, const GeometryNodeInfo& info)
     syncSubNodes(node, true);
 }
 
-void TreeModel::syncModelAdded(Index model_id)
+void TreeModel::flushPendingRefresh()
 {
-    if (!initialized_) {
-        refresh();
-        return;
-    }
-    if (!modelQuery_->hasModel(model_id))
-        return;
-
-    ModelNodeInfo info = queryModel(model_id);
-    auto existing = model_nodes_.find(model_id);
-    if (existing != model_nodes_.end()) {
-        if (!syncModelNode(existing->second, info))
-            refresh();
-        return;
-    }
-
-    insertModelNode(model_id, info);
-}
-
-void TreeModel::syncModelRemoved(Index model_id)
-{
-    if (!initialized_) {
-        refresh();
-        return;
-    }
-
-    auto it = model_nodes_.find(model_id);
-    if (it != model_nodes_.end())
-        removeChildNode(it->second);
-    pruneStaleVisibility();
-}
-
-void TreeModel::syncModelChanged(Index model_id)
-{
-    if (!initialized_) {
-        refresh();
-        return;
-    }
-
-    if (!modelQuery_->hasModel(model_id)) {
-        syncModelRemoved(model_id);
-        return;
-    }
-
-    ModelNodeInfo info = queryModel(model_id);
-    auto it = model_nodes_.find(model_id);
-    if (it == model_nodes_.end()) {
-        insertModelNode(model_id, info);
-        return;
-    }
-
-    if (!syncModelNode(it->second, info))
-        refresh();
-}
-
-void TreeModel::syncComponentRemoved(Index component_id)
-{
-    if (!initialized_) {
-        refresh();
-        return;
-    }
-
-    auto it = component_nodes_.find(component_id);
-    if (it == component_nodes_.end()) {
-        if (!modelQuery_->hasComponent(component_id))
-            eraseComponentVisibility(component_id);
-        return;
-    }
-
-    const bool component_exists = modelQuery_->hasComponent(component_id);
-    TreeNode* component = it->second;
-    TreeNode* model = component->parent;
-    removeChildNode(component);
-    if (!component_exists)
-        eraseComponentVisibility(component_id);
-
-    if (model && model->nodeType == TreeNode::NodeType::Model) {
-        const QString number = QString::number(model->children.size());
-        if (model->number != number) {
-            model->number = number;
-            notifyNodeData(model, { NumberRole });
-        }
-        // 空模型沿用始终可见的约定；非空模型的三态由子节点动态聚合。
-        if (model->children.isEmpty())
-            model->isVisible = true;
-        notifyNodeData(model, { IsVisibleRole, VisibilityStateRole });
-    }
-}
-
-void TreeModel::queueModelChanged(Index model_id)
-{
-    if (!initialized_) {
-        refresh();
-        return;
-    }
-    pending_model_ids_.insert(model_id);
-    if (!data_sync_timer_->isActive())
-        data_sync_timer_->start();
-}
-
-void TreeModel::queueComponentChanged(Index component_id)
-{
-    if (!initialized_) {
-        refresh();
-        return;
-    }
-
-    const Index model_id = modelQuery_->findModelIdByComponent(component_id);
-    if (model_id < 0)
-        return;
-
-    queueModelChanged(model_id);
-}
-
-void TreeModel::flushPendingDataSync()
-{
-    const auto model_ids = std::exchange(pending_model_ids_, {});
-
-    for (Index model_id : model_ids)
-        syncModelChanged(model_id);
-
-    // 处理期间经信号回调新排队的 id 留到下一轮定时器消费，避免递归 flush。
-    if (!pending_model_ids_.empty() && data_sync_timer_ && !data_sync_timer_->isActive())
-        data_sync_timer_->start();
-
+    refresh();
     emit dataSyncFinished();
 }
 
@@ -947,22 +764,12 @@ void TreeModel::syncComponentVisibility(Index component_id, bool mesh_visible, b
         return;
 
     sub_visibility_[component_id] = { mesh_visible, geometry_visible };
-    const auto it = component_nodes_.find(component_id);
-    if (it == component_nodes_.end())
+    const auto it = component_lookup_.find(component_id);
+    if (it == component_lookup_.end())
         return; // 节点尚未入树：保留管线回传，结构同步创建后再应用。
 
     if (syncSubNodes(it->second, true))
         notifyAncestors(it->second);
-}
-
-void TreeModel::emitDescendantDataChanged(const QModelIndex& parentIndex)
-{
-    int count = rowCount(parentIndex);
-    for (int i = 0; i < count; ++i) {
-        QModelIndex child = index(i, 0, parentIndex);
-        emit dataChanged(child, child, { IsVisibleRole, VisibilityStateRole });
-        emitDescendantDataChanged(child);
-    }
 }
 
 QModelIndex TreeModel::findIndexByNodeId(int nodeId, int depth) const
@@ -989,27 +796,20 @@ void TreeModel::setModelQuery(QObject* query)
     if (next == modelQuery_)
         return;
 
-    const bool was_initialized = initialized_;
-    modelQuery_ = next;
-    initialized_ = false;
-    pending_model_ids_.clear();
-    if (data_sync_timer_)
-        data_sync_timer_->stop();
+    if (refresh_timer_)
+        refresh_timer_->stop();
+    refresh_pending_ = false;
     sub_visibility_.clear();
-
-    if (!was_initialized)
-        return;
-
-    if (next) {
-        refresh();
-        return;
-    }
+    component_lookup_.clear();
 
     beginResetModel();
     delete rootNode;
     rootNode = new TreeNode("root");
     rootNode->nodeId = -1;
-    model_nodes_.clear();
-    component_nodes_.clear();
+    next_fake_id_ = -2;
     endResetModel();
+
+    modelQuery_ = next;
+    if (next)
+        refresh();
 }

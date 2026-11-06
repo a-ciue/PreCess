@@ -6,7 +6,6 @@
 #include <QtQml/qqmlregistration.h>
 #include <span>
 #include <unordered_map>
-#include <unordered_set>
 
 #include "QModelQuery.h"
 
@@ -64,7 +63,10 @@ public:
     QVariant data(const QModelIndex& index, int role = Qt::DisplayRole) const override;
     QHash<int, QByteArray> roleNames() const override;
 
+    //! @brief 统一对账入口；普通刷新不 reset，只有查询替换/清空才 reset。
     Q_INVOKABLE bool refresh();
+    //! @brief 所有数据/结构通知的唯一入口，经 50ms 定时器合并后统一对账。
+    Q_INVOKABLE void requestRefresh();
     //! @brief 只发送节点显隐意图；展示状态由管线回传后更新。
     Q_INVOKABLE bool requestVisibility(const QModelIndex& idx, bool visible);
     Q_INVOKABLE QModelIndex findIndexByNodeId(int nodeId, int depth) const;
@@ -80,31 +82,11 @@ public:
      */
     Q_INVOKABLE void syncComponentVisibility(Index component_id, bool mesh_visible, bool geometry_visible);
 
-    /**
-     * @brief 增量同步：模型新增（结构事件，立即执行）
-     * @note 模型层已先完成数据写入；本方法只读取查询结果并插入对应行。
-     */
-    Q_INVOKABLE void syncModelAdded(Index model_id);
-    //! @brief 增量同步：模型移除（结构事件，立即执行）
-    Q_INVOKABLE void syncModelRemoved(Index model_id);
-    /**
-     * @brief 增量同步：模型数据变化（数据事件；QML 侧经 queueModelChanged 合并）
-     * @note 模型层当前无内部发射点，保留给 ModelOperator::notifyChanged 的 SDK 调用方。
-     */
-    Q_INVOKABLE void syncModelChanged(Index model_id);
-    //! @brief 增量同步：组件移除（结构事件，立即执行）
-    Q_INVOKABLE void syncComponentRemoved(Index component_id);
-
-    //! @brief 数据事件合并入口：50ms 内同一模型只同步一次
-    Q_INVOKABLE void queueModelChanged(Index model_id);
-    //! @brief 组件变化入口：映射到所属模型后按 50ms 合并
-    Q_INVOKABLE void queueComponentChanged(Index component_id);
-
     QObject* getModelQuery() const { return modelQuery_; }
     void setModelQuery(QObject* query);
 
 signals:
-    //! @brief 数据事件合并同步完成
+    //! @brief 批量对账完成（数据/结构事件合并后）
     void dataSyncFinished();
     /** @brief 请求模型、组件、Mesh 或 Geometry 显隐；object_id 为真实模型或组件身份。 */
     void visibilityRequested(int node_type, int object_id, bool visible);
@@ -144,7 +126,6 @@ private:
     static int geometryChildCount(const GeometryNodeInfo& info, TreeNode::NodeType type);
 
     TreeNode* getNode(const QModelIndex& index) const;
-    void emitDescendantDataChanged(const QModelIndex& parentIndex);
     /** @brief 按组件保存的管线开关递归同步子节点展示状态，返回是否发生变化。 */
     bool syncSubNodes(TreeNode* node, bool notify);
     /** @brief 聚合节点的全显、部分显示和全隐状态。 */
@@ -161,7 +142,7 @@ private:
     TreeNode* buildMeshNode(const MeshNodeInfo& info);
     TreeNode* buildGeometryNode(const GeometryNodeInfo& info);
 
-    bool syncModelNode(TreeNode* node, const ModelNodeInfo& info);
+    void syncModelNode(TreeNode* node, const ModelNodeInfo& info);
     void syncComponentNode(TreeNode* node, const ComponentNodeInfo& info);
     void syncMeshNode(TreeNode* node, const MeshNodeInfo& info);
     void syncGeometryNode(TreeNode* node, const GeometryNodeInfo& info);
@@ -173,32 +154,26 @@ private:
     };
     void syncCountChildren(TreeNode* node, std::span<const CountChildSpec> specs);
 
-    void insertModelNode(Index model_id, const ModelNodeInfo& info);
     void insertChildNode(TreeNode* parent, int row, TreeNode* node);
     void removeChildNode(TreeNode* node);
     void moveChildNode(TreeNode* parent, int from, int to);
     QModelIndex indexOfNode(TreeNode* node) const;
     void notifyNodeData(TreeNode* node, const QVector<int>& roles);
 
-    void registerSubtree(TreeNode* node);
-    void unregisterSubtree(TreeNode* node);
-    void eraseComponentVisibility(Index component_id);
     void pruneStaleVisibility();
-    void rebuildAllFromQuery();
-    bool reconcileAllFromQuery();
-    void flushPendingDataSync();
+    void reconcileAllFromQuery();
+    //! @brief 重建渲染回传使用的组件查找缓存；结构对账不依赖该索引。
+    void rebuildComponentLookup();
+    void flushPendingRefresh();
 
     TreeNode* rootNode = nullptr;
     QModelQuery* modelQuery_ = nullptr;
-    std::unordered_map<Index, TreeNode*> model_nodes_;
-    std::unordered_map<Index, TreeNode*> component_nodes_;
     int next_fake_id_ = -2;
-    //! @brief 是否已完成首次构建。
-    //! @note 不变式：initialized_ == true 蕴含 modelQuery_ != nullptr。
-    //!       true 仅由 refresh() 在非空查询下置位；setModelQuery() 变更或置空时清除。
-    bool initialized_ = false;
-    QTimer* data_sync_timer_ = nullptr;
-    std::unordered_set<Index> pending_model_ids_;
+    QTimer* refresh_timer_ = nullptr;
+    bool refresh_pending_ = false;
+    bool refreshing_ = false;
     //! @brief GUI 管线回传的子类型总开关；缺省为可见，对象树不写用户设置。
     std::unordered_map<Index, SubVisibility> sub_visibility_;
+    //! @brief 渲染回传的组件节点查找缓存；仅用于显隐同步，不参与结构权威。
+    std::unordered_map<Index, TreeNode*> component_lookup_;
 };

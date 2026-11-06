@@ -74,7 +74,7 @@ Pane {
         target: QModelManager.observer
 
         function onModelAdded(modelId) {
-            treeModel.syncModelAdded(modelId)
+            treeModel.requestRefresh()
         }
 
         function onModelRemoved(modelId) {
@@ -83,11 +83,11 @@ Pane {
                 App.selection.activeComponentId = -1
                 App.selection.activeModelId = -1
             }
-            treeModel.syncModelRemoved(modelId)
+            treeModel.requestRefresh()
         }
 
         function onModelChanged(modelId) {
-            treeModel.queueModelChanged(modelId)
+            treeModel.requestRefresh()
         }
 
         function onComponentRemoved(componentId) {
@@ -96,16 +96,16 @@ Pane {
                 const ownerModelId = App.selection.activeModelId
                 treeView.selectionModel.clear()
                 App.selection.activeComponentId = -1
-                treeModel.syncComponentRemoved(componentId)
+                treeModel.requestRefresh()
                 App.selection.activeComponentId = QModelManager.query.hasModel(ownerModelId)
                         ? objectTree.firstComponentId(ownerModelId) : -1
             } else {
-                treeModel.syncComponentRemoved(componentId)
+                treeModel.requestRefresh()
             }
         }
 
         function onComponentChanged(componentId) {
-            treeModel.queueComponentChanged(componentId)
+            treeModel.requestRefresh()
         }
     }
 
@@ -592,7 +592,6 @@ Pane {
     }
 
     Component.onCompleted: {
-        treeModel.refresh()
         App.registry.treeModel = treeModel
         App.registry.objectTree = objectTree
     }
