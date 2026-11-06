@@ -798,3 +798,35 @@ TEST_CASE("TreeModel coalesces data changes and inserts components on flush", "[
     CHECK(inserted == 1);
     CHECK(resets == 0);
 }
+
+TEST_CASE("TreeModel batches structural refresh requests", "[TreeModel]")
+{
+    application();
+    ModelLayer model;
+    session::SessionQuery query(model);
+    QModelQuery model_query(&query);
+    TreeModel tree;
+    tree.setModelQuery(&model_query);
+
+    int resets = 0;
+    QObject::connect(&tree, &QAbstractItemModel::modelReset, [&] { ++resets; });
+
+    ComponentDatas components;
+    auto component = std::make_unique<ComponentData>();
+    component->mesh = std::make_unique<MeshData>();
+    components.push_back(std::move(component));
+    const Index model_id = model.addModel("batched structure", std::move(components));
+
+    tree.requestRefresh();
+    CHECK(tree.rowCount() == 0);
+    REQUIRE(waitForDataSync(tree));
+    CHECK(tree.rowCount() == 1);
+    CHECK(resets == 0);
+
+    model.removeModel(model_id);
+    tree.requestRefresh();
+    CHECK(tree.rowCount() == 1);
+    REQUIRE(waitForDataSync(tree));
+    CHECK(tree.rowCount() == 0);
+    CHECK(resets == 0);
+}
