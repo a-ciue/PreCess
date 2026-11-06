@@ -409,6 +409,63 @@ TEST_CASE("TreeModel applies reported visibility to components waiting to enter 
     CHECK_FALSE(tree.data(tree.index(0, 0, component_index), TreeModel::IsVisibleRole).toBool());
 }
 
+TEST_CASE("TreeModel requests visibility without mutating the display copy", "[TreeModel]")
+{
+    application();
+    ModelLayer model;
+    session::SessionQuery query(model);
+    QModelQuery model_query(&query);
+    TreeModel tree;
+    tree.setModelQuery(&model_query);
+    REQUIRE(tree.refresh());
+
+    ComponentDatas components;
+    auto component = std::make_unique<ComponentData>();
+    component->mesh = makeCountMesh(1, 1);
+    component->geometry = std::make_unique<GeometryData>();
+    components.push_back(std::move(component));
+    const Index model_id = model.addModel("request only", std::move(components));
+    const Index component_id = model.modelById(model_id)->componentIds().front();
+    tree.syncModelAdded(model_id);
+
+    int requests = 0;
+    int requested_type = -1;
+    int requested_object = -1;
+    bool requested_visible = false;
+    QObject::connect(&tree, &TreeModel::visibilityRequested, &tree,
+        [&](int node_type, int object_id, bool visible) {
+            ++requests;
+            requested_type = node_type;
+            requested_object = object_id;
+            requested_visible = visible;
+        });
+
+    const QModelIndex component_index = tree.findIndexByNodeId(component_id, 1);
+    REQUIRE(component_index.isValid());
+    const QModelIndex mesh_index = tree.index(0, 0, component_index);
+    REQUIRE(mesh_index.isValid());
+
+    REQUIRE(tree.requestVisibility(mesh_index, false));
+    CHECK(requests == 1);
+    CHECK(requested_type == static_cast<int>(TreeNode::NodeType::Mesh));
+    CHECK(requested_object == component_id);
+    CHECK_FALSE(requested_visible);
+    // 请求阶段不修改展示副本，必须等待 GUI 管线回传。
+    CHECK(tree.data(component_index, TreeModel::VisibilityStateRole).toInt() == Qt::Checked);
+    CHECK(tree.data(mesh_index, TreeModel::VisibilityStateRole).toInt() == Qt::Checked);
+
+    tree.syncComponentVisibility(component_id, true, false);
+    CHECK(tree.data(mesh_index, TreeModel::IsVisibleRole).toBool());
+    CHECK(tree.data(component_index, TreeModel::VisibilityStateRole).toInt() == Qt::PartiallyChecked);
+
+    tree.syncComponentVisibility(component_id, false, false);
+    CHECK_FALSE(tree.data(component_index, TreeModel::IsVisibleRole).toBool());
+    requests = 0;
+    tree.requestAllVisibility(true);
+    CHECK(requests == 1); // 只对模型行发请求，由管线恢复整棵子树。
+    CHECK_FALSE(tree.data(component_index, TreeModel::IsVisibleRole).toBool());
+}
+
 TEST_CASE("TreeModel hides element nodes with their reported subtype", "[TreeModel]")
 {
     application();
