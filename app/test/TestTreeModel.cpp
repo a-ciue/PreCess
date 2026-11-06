@@ -1,5 +1,5 @@
 /** @file TestTreeModel.cpp
- * @brief 对象树增量行信号与展开状态身份回归测试
+ * @brief 瀵硅薄鏍戝閲忚淇″彿涓庡睍寮€鐘舵€佽韩浠藉洖褰掓祴璇?
  */
 #include "ComponentData.h"
 #include "ComponentOperator.h"
@@ -348,24 +348,24 @@ TEST_CASE("TreeModel keeps reported visibility when a subtype re-enters the tree
         return childVisible(tree, tree.findIndexByNodeId(component_id, 1), type);
     };
 
-    // 完整二元结果一次应用：网格可见、几何隐藏。
-    tree.applyComponentVisibility(component_id, true, false);
+    // 瀹屾暣浜屽厓缁撴灉涓€娆″簲鐢細缃戞牸鍙銆佸嚑浣曢殣钘忋€?
+    tree.syncComponentVisibility(component_id, true, false);
     CHECK(subtype_visible(TreeNode::NodeType::Mesh));
     CHECK_FALSE(subtype_visible(TreeNode::NodeType::Geometry));
     CHECK(component_visible());
 
-    // 真实删除网格后组件只剩隐藏的几何，渲染回传随之变为 (false, false)。
+    // 鐪熷疄鍒犻櫎缃戞牸鍚庣粍浠跺彧鍓╅殣钘忕殑鍑犱綍锛屾覆鏌撳洖浼犻殢涔嬪彉涓?(false, false)銆?
     auto component_operator = model.getComponentOperator(component_id);
     REQUIRE(component_operator);
     component_operator->removeMesh();
     model.flushNotifications();
-    tree.applyComponentVisibility(component_id, false, false);
+    tree.syncComponentVisibility(component_id, false, false);
     tree.syncModelChanged(model_id);
     CHECK_FALSE(subtype_visible(TreeNode::NodeType::Mesh));
     CHECK_FALSE(component_visible());
 
-    // 撤销恢复：结构同步尚未执行时回传"网格可见、几何隐藏"，创建后不得被默认值覆盖。
-    tree.applyComponentVisibility(component_id, true, false);
+    // 鎾ら攢鎭㈠锛氱粨鏋勫悓姝ュ皻鏈墽琛屾椂鍥炰紶"缃戞牸鍙銆佸嚑浣曢殣钘?锛屽垱寤哄悗涓嶅緱琚粯璁ゅ€艰鐩栥€?
+    tree.syncComponentVisibility(component_id, true, false);
     component_operator->replaceMesh(std::make_unique<MeshData>());
     model.flushNotifications();
     tree.syncModelChanged(model_id);
@@ -398,8 +398,8 @@ TEST_CASE("TreeModel applies reported visibility to components waiting to enter 
     tree.queueComponentChanged(component_id);
     CHECK_FALSE(tree.findIndexByNodeId(component_id, 1).isValid());
 
-    // 合并刷新前收到"全部隐藏"的回传：组件尚未入树，结果必须保留。
-    tree.applyComponentVisibility(component_id, false, false);
+    // 鍚堝苟鍒锋柊鍓嶆敹鍒?鍏ㄩ儴闅愯棌"鐨勫洖浼狅細缁勪欢灏氭湭鍏ユ爲锛岀粨鏋滃繀椤讳繚鐣欍€?
+    tree.syncComponentVisibility(component_id, false, false);
     REQUIRE(waitForDataSync(tree));
 
     const QModelIndex component_index = tree.findIndexByNodeId(component_id, 1);
@@ -428,7 +428,7 @@ TEST_CASE("TreeModel hides element nodes with their reported subtype", "[TreeMod
     const Index component_id = model.modelById(model_id)->componentIds().front();
     tree.syncModelAdded(model_id);
 
-    tree.applyComponentVisibility(component_id, false, true);
+    tree.syncComponentVisibility(component_id, false, true);
     const QModelIndex component_index = tree.findIndexByNodeId(component_id, 1);
     REQUIRE(component_index.isValid());
     const QModelIndex mesh_index = tree.index(0, 0, component_index);
@@ -439,7 +439,7 @@ TEST_CASE("TreeModel hides element nodes with their reported subtype", "[TreeMod
     for (int i = 0; i < tree.rowCount(mesh_index); ++i)
         CHECK_FALSE(tree.data(tree.index(i, 0, mesh_index), TreeModel::IsVisibleRole).toBool());
 
-    tree.applyComponentVisibility(component_id, true, true);
+    tree.syncComponentVisibility(component_id, true, true);
     CHECK(tree.data(mesh_index, TreeModel::IsVisibleRole).toBool());
     for (int i = 0; i < tree.rowCount(mesh_index); ++i)
         CHECK(tree.data(tree.index(i, 0, mesh_index), TreeModel::IsVisibleRole).toBool());

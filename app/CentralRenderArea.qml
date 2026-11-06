@@ -675,7 +675,7 @@ Page {
             }
 
             onComponentVisibilityChanged: function(componentId, meshVisible, geometryVisible) {
-                App.registry.objectTree.syncComponentVisibility(componentId, meshVisible, geometryVisible)
+                App.registry.treeModel.syncComponentVisibility(componentId, meshVisible, geometryVisible)
             }
 
             Component.onCompleted: {
@@ -714,15 +714,6 @@ Page {
                 function onSelectModeChanged() { myItem.setSelectMode(App.selection.selectMode) }
                 function onSelectionInvalidated() {
                     myItem.clearSelection()
-                }
-            }
-
-            Connections {
-                target: App
-                function onModelVisibilityUpdated(modelId, visible) { myItem.setVisibility(modelId, visible) }
-                function onComponentVisibilityUpdated(componentId, meshVisible, geometryVisible) {
-                    myItem.setMeshVisibility(componentId, meshVisible)
-                    myItem.setGeometryVisibility(componentId, geometryVisible)
                 }
             }
 

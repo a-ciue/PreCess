@@ -117,15 +117,15 @@ QVariant TreeModel::data(const QModelIndex& index, int role) const
     case NodeIdRole:
         return node->nodeId;
 
-    case IsVisibleRole: {
-        if (node == rootNode) return true;
-        for (TreeNode* child : node->children) {
-            if (child->isVisible) return true;
-        }
-        if (!node->children.isEmpty())
-            return false;
-        return node->isVisible;
-    }
+    case IsVisibleRole:
+        return visibilityState(node) != Qt::Unchecked;
+    case VisibilityStateRole:
+        return visibilityState(node);
+    case CanToggleVisibilityRole:
+        return node->nodeType == TreeNode::NodeType::Model
+            || node->nodeType == TreeNode::NodeType::Component
+            || node->nodeType == TreeNode::NodeType::Mesh
+            || node->nodeType == TreeNode::NodeType::Geometry;
 
     case ComponentIdRole: {
         TreeNode* cur = node;
@@ -154,6 +154,8 @@ QHash<int, QByteArray> TreeModel::roleNames() const
     roles[IsVisibleRole] = "isVisible";
     roles[ComponentIdRole] = "componentId";
     roles[NodeTypeRole] = "nodeType";
+    roles[VisibilityStateRole] = "visibilityState";
+    roles[CanToggleVisibilityRole] = "canToggleVisibility";
     return roles;
 }
 
@@ -310,7 +312,7 @@ TreeNode* TreeModel::buildComponentNode(const ComponentNodeInfo& info)
         node->children.push_back(geometry);
     }
 
-    applyComponentVisibilityState(node, false);
+    syncSubNodes(node, false);
     return node;
 }
 
@@ -337,61 +339,86 @@ TreeNode* TreeModel::buildModelNode(const ModelNodeInfo& info)
     return node;
 }
 
-bool TreeModel::isComponentEnabled(Index component_id) const
+TreeModel::SubVisibility TreeModel::subVisibility(Index component_id) const
 {
-    const auto it = components_visibility_.find(component_id);
-    return it == components_visibility_.end() || it->second;
+    const auto it = sub_visibility_.find(component_id);
+    return it == sub_visibility_.end() ? SubVisibility { } : it->second;
 }
 
-void TreeModel::setSubtreeVisibility(TreeNode* node, bool visible, bool notify)
+bool TreeModel::syncSubNodes(TreeNode* node, bool notify)
 {
     if (!node)
-        return;
+        return false;
 
-    if (node->isVisible != visible) {
-        node->isVisible = visible;
-        if (notify)
-            notifyNodeData(node, { IsVisibleRole });
+    Index component_id = -1;
+    for (TreeNode* current = node; current && current != rootNode; current = current->parent) {
+        if (current->nodeType == TreeNode::NodeType::Component) {
+            component_id = current->nodeId;
+            break;
+        }
     }
-    for (TreeNode* child : node->children)
-        setSubtreeVisibility(child, visible, notify);
+    const SubVisibility sub = subVisibility(component_id);
+    bool changed = false;
+    for (TreeNode* child : node->children) {
+        bool visible = node->isVisible;
+        if (child->nodeType == TreeNode::NodeType::Mesh)
+            visible = sub.mesh;
+        else if (child->nodeType == TreeNode::NodeType::Geometry)
+            visible = sub.geometry;
+        if (child->isVisible != visible) {
+            child->isVisible = visible;
+            if (notify)
+                notifyNodeData(child, { IsVisibleRole, VisibilityStateRole });
+            changed = true;
+        }
+        changed = syncSubNodes(child, notify) || changed;
+    }
+
+    // 空组件直接使用管线回传的总开关；有内容时由子节点派生。
+    if (node->nodeType == TreeNode::NodeType::Component) {
+        bool any_visible = false;
+        for (TreeNode* child : node->children)
+            any_visible = any_visible || child->isVisible;
+        const bool visible = node->children.isEmpty() ? (sub.mesh || sub.geometry) : any_visible;
+        if (node->isVisible != visible) {
+            node->isVisible = visible;
+            if (notify)
+                notifyNodeData(node, { IsVisibleRole, VisibilityStateRole });
+            changed = true;
+        }
+    }
+    return changed;
 }
 
-void TreeModel::applyComponentVisibilityState(TreeNode* component_node, bool notify)
+int TreeModel::visibilityState(const TreeNode* node) const
 {
-    if (!component_node || component_node->nodeType != TreeNode::NodeType::Component)
-        return;
-
-    const bool enabled = isComponentEnabled(component_node->nodeId);
-    const auto sub = sub_visibility_.find(component_node->nodeId);
-    const bool mesh_visible = enabled && (sub == sub_visibility_.end() || sub->second.mesh.value_or(true));
-    const bool geometry_visible = enabled && (sub == sub_visibility_.end() || sub->second.geometry.value_or(true));
+    if (!node)
+        return Qt::Unchecked;
+    if (node->children.isEmpty())
+        return node->isVisible ? Qt::Checked : Qt::Unchecked;
 
     bool any_visible = false;
-    for (TreeNode* child : component_node->children) {
-        bool visible = enabled;
-        if (child->nodeType == TreeNode::NodeType::Mesh)
-            visible = mesh_visible;
-        else if (child->nodeType == TreeNode::NodeType::Geometry)
-            visible = geometry_visible;
-        setSubtreeVisibility(child, visible, notify);
-        any_visible = any_visible || visible;
+    bool all_visible = true;
+    for (const TreeNode* child : node->children) {
+        const int state = visibilityState(child);
+        any_visible = any_visible || state != Qt::Unchecked;
+        all_visible = all_visible && state == Qt::Checked;
     }
+    return all_visible ? Qt::Checked : any_visible ? Qt::PartiallyChecked
+                                                   : Qt::Unchecked;
+}
 
-    // 空组件直接使用组件级设置；有内容的组件由子节点汇总，避免再用派生结果反推设置。
-    const bool visible = component_node->children.isEmpty() ? enabled : any_visible;
-    if (component_node->isVisible != visible) {
-        component_node->isVisible = visible;
-        if (notify)
-            notifyNodeData(component_node, { IsVisibleRole });
+void TreeModel::notifyAncestors(TreeNode* node)
+{
+    for (TreeNode* current = node ? node->parent : nullptr; current && current != rootNode; current = current->parent) {
+        const QModelIndex index = indexOfNode(current);
+        if (index.isValid())
+            emit dataChanged(index, index, { IsVisibleRole, VisibilityStateRole });
     }
-
-    recomputeVisibility(component_node->parent, notify);
 }
 
 void TreeModel::eraseComponentVisibility(Index component_id)
 {
-    components_visibility_.erase(component_id);
     sub_visibility_.erase(component_id);
 }
 
@@ -400,12 +427,6 @@ void TreeModel::pruneStaleVisibility()
     if (!modelQuery_)
         return;
 
-    for (auto it = components_visibility_.begin(); it != components_visibility_.end();) {
-        if (!modelQuery_->hasComponent(it->first))
-            it = components_visibility_.erase(it);
-        else
-            ++it;
-    }
     for (auto it = sub_visibility_.begin(); it != sub_visibility_.end();) {
         if (!modelQuery_->hasComponent(it->first))
             it = sub_visibility_.erase(it);
@@ -542,40 +563,6 @@ void TreeModel::moveChildNode(TreeNode* parent, int from, int to)
     endMoveRows();
 }
 
-void TreeModel::recomputeVisibility(TreeNode* node, bool notify)
-{
-    for (TreeNode* current = node; current && current != rootNode; current = current->parent) {
-        // 叶子节点的显隐来自已保存的设置，不能被汇总规则改写；空模型沿用始终可见的约定。
-        if (current->children.isEmpty()) {
-            if (current->nodeType == TreeNode::NodeType::Model && !current->isVisible) {
-                current->isVisible = true;
-                if (notify)
-                    notifyNodeData(current, { IsVisibleRole });
-            }
-            continue;
-        }
-
-        bool any_visible = false;
-        for (TreeNode* child : current->children) {
-            if (child->isVisible) {
-                any_visible = true;
-                break;
-            }
-        }
-
-        if (current->isVisible != any_visible) {
-            current->isVisible = any_visible;
-            if (notify)
-                notifyNodeData(current, { IsVisibleRole });
-        }
-    }
-}
-
-void TreeModel::updateAncestorVisibility(TreeNode* node)
-{
-    recomputeVisibility(node, true);
-}
-
 void TreeModel::rebuildAllFromQuery()
 {
     delete rootNode;
@@ -641,6 +628,7 @@ bool TreeModel::reconcileAllFromQuery()
 
 bool TreeModel::syncModelNode(TreeNode* node, const ModelNodeInfo& info)
 {
+    const int old_visibility = visibilityState(node);
     if (node->name != info.name) {
         node->name = info.name;
         notifyNodeData(node, { NameRole });
@@ -679,7 +667,9 @@ bool TreeModel::syncModelNode(TreeNode* node, const ModelNodeInfo& info)
         node->number = number;
         notifyNodeData(node, { NumberRole });
     }
-    updateAncestorVisibility(node);
+    if (visibilityState(node) != old_visibility)
+        notifyNodeData(node, { IsVisibleRole, VisibilityStateRole });
+    notifyAncestors(node);
     return true;
 }
 
@@ -697,13 +687,6 @@ void TreeModel::syncComponentNode(TreeNode* node, const ComponentNodeInfo& info)
         removeChildNode(mesh);
     if (!info.has_geometry && geometry)
         removeChildNode(geometry);
-
-    // 真实删除子类型时清空对应设置（与"尚未入树"区分）：重建后默认可见。
-    auto& sub = sub_visibility_[node->nodeId];
-    if (!info.has_mesh)
-        sub.mesh.reset();
-    if (!info.has_geometry)
-        sub.geometry.reset();
 
     mesh = findChildOfType(node, TreeNode::NodeType::Mesh);
     if (info.has_mesh) {
@@ -730,7 +713,8 @@ void TreeModel::syncComponentNode(TreeNode* node, const ComponentNodeInfo& info)
         }
     }
 
-    applyComponentVisibilityState(node, true);
+    if (syncSubNodes(node, true))
+        notifyAncestors(node);
 }
 
 void TreeModel::syncCountChildren(TreeNode* node, std::span<const CountChildSpec> specs)
@@ -789,6 +773,7 @@ void TreeModel::syncMeshNode(TreeNode* node, const MeshNodeInfo& info)
             meshChildCount(info, kMeshChildren[i].type) };
     }
     syncCountChildren(node, specs);
+    syncSubNodes(node, true);
 }
 
 void TreeModel::syncGeometryNode(TreeNode* node, const GeometryNodeInfo& info)
@@ -805,6 +790,7 @@ void TreeModel::syncGeometryNode(TreeNode* node, const GeometryNodeInfo& info)
             geometryChildCount(info, kGeometryChildren[i].type) };
     }
     syncCountChildren(node, specs);
+    syncSubNodes(node, true);
 }
 
 void TreeModel::syncModelAdded(Index model_id)
@@ -890,7 +876,10 @@ void TreeModel::syncComponentRemoved(Index component_id)
             model->number = number;
             notifyNodeData(model, { NumberRole });
         }
-        updateAncestorVisibility(model);
+        // 空模型沿用始终可见的约定；非空模型的三态由子节点动态聚合。
+        if (model->children.isEmpty())
+            model->isVisible = true;
+        notifyNodeData(model, { IsVisibleRole, VisibilityStateRole });
     }
 }
 
@@ -933,86 +922,35 @@ void TreeModel::flushPendingDataSync()
     emit dataSyncFinished();
 }
 
-void TreeModel::setComponentVisibility(TreeNode* comp, bool visible)
+bool TreeModel::requestVisibility(const QModelIndex& idx, bool visible)
 {
-    if (!comp || comp->nodeId < 0)
-        return;
-
-    components_visibility_[comp->nodeId] = visible;
-    if (visible) {
-        // 显示组件沿用既有语义：同时恢复其全部子类型。
-        auto& sub = sub_visibility_[comp->nodeId];
-        sub.mesh = true;
-        sub.geometry = true;
-    }
-    applyComponentVisibilityState(comp, true);
-}
-
-bool TreeModel::setVisibility(const QModelIndex& idx, bool visible)
-{
-    if (!idx.isValid())
+    if (!idx.isValid() || !data(idx, CanToggleVisibilityRole).toBool())
         return false;
-    TreeNode* target = getNode(idx);
-
-    if (target->parent == rootNode) {
-        for (TreeNode* comp : target->children)
-            setComponentVisibility(comp, visible);
-        updateAncestorVisibility(target);
-    } else if ((target->nodeType == TreeNode::NodeType::Mesh
-                   || target->nodeType == TreeNode::NodeType::Geometry)
-        && target->parent && target->parent->nodeType == TreeNode::NodeType::Component) {
-        TreeNode* comp = target->parent;
-        auto& sub = sub_visibility_[comp->nodeId];
-        if (target->nodeType == TreeNode::NodeType::Mesh)
-            sub.mesh = visible;
-        else
-            sub.geometry = visible;
-        if (visible)
-            components_visibility_[comp->nodeId] = true;
-        applyComponentVisibilityState(comp, true);
-    } else {
-        setComponentVisibility(target, visible);
-    }
-
+    const auto* target = getNode(idx);
+    const int component_id = data(idx, ComponentIdRole).toInt();
+    const int object_id = target->nodeType == TreeNode::NodeType::Model ? target->nodeId : component_id;
+    emit visibilityRequested(static_cast<int>(target->nodeType), object_id, visible);
     return true;
 }
 
-void TreeModel::applyComponentVisibility(Index component_id, bool mesh_visible, bool geometry_visible)
+void TreeModel::requestAllVisibility(bool visible)
 {
-    if (!modelQuery_ || !modelQuery_->hasComponent(component_id))
-        return;
-
-    components_visibility_[component_id] = mesh_visible || geometry_visible;
-    auto& sub = sub_visibility_[component_id];
-    sub.mesh = mesh_visible;
-    sub.geometry = geometry_visible;
-
-    const auto it = component_nodes_.find(component_id);
-    if (it == component_nodes_.end())
-        return; // 节点尚未入树：保留结果，结构同步创建后再应用。
-
-    applyComponentVisibilityState(it->second, true);
+    for (int row = 0; row < rowCount(); ++row)
+        requestVisibility(index(row, 0), visible);
 }
 
-void TreeModel::setAllVisibility(bool visible)
+void TreeModel::syncComponentVisibility(Index component_id, bool mesh_visible, bool geometry_visible)
 {
-    for (TreeNode* mNode : rootNode->children) {
-        for (TreeNode* cNode : mNode->children) {
-            if (cNode->nodeType != TreeNode::NodeType::Component)
-                continue;
-            components_visibility_[cNode->nodeId] = visible;
-            auto& sub = sub_visibility_[cNode->nodeId];
-            sub.mesh = visible;
-            sub.geometry = visible;
-            applyComponentVisibilityState(cNode, false);
-        }
-        recomputeVisibility(mNode, false);
-    }
-    QModelIndex topLeft  = index(0, 0);
-    QModelIndex botRight = index(rowCount() - 1, 0);
-    emit dataChanged(topLeft, botRight, { IsVisibleRole });
-    for (int r = 0; r < rowCount(); ++r)
-        emitDescendantDataChanged(index(r, 0, QModelIndex()));
+    if (component_id < 0 || (modelQuery_ && !modelQuery_->hasComponent(component_id)))
+        return;
+
+    sub_visibility_[component_id] = { mesh_visible, geometry_visible };
+    const auto it = component_nodes_.find(component_id);
+    if (it == component_nodes_.end())
+        return; // 节点尚未入树：保留管线回传，结构同步创建后再应用。
+
+    if (syncSubNodes(it->second, true))
+        notifyAncestors(it->second);
 }
 
 void TreeModel::emitDescendantDataChanged(const QModelIndex& parentIndex)
@@ -1020,7 +958,7 @@ void TreeModel::emitDescendantDataChanged(const QModelIndex& parentIndex)
     int count = rowCount(parentIndex);
     for (int i = 0; i < count; ++i) {
         QModelIndex child = index(i, 0, parentIndex);
-        emit dataChanged(child, child, { IsVisibleRole });
+        emit dataChanged(child, child, { IsVisibleRole, VisibilityStateRole });
         emitDescendantDataChanged(child);
     }
 }
@@ -1055,7 +993,6 @@ void TreeModel::setModelQuery(QObject* query)
     pending_model_ids_.clear();
     if (data_sync_timer_)
         data_sync_timer_->stop();
-    components_visibility_.clear();
     sub_visibility_.clear();
 
     if (!was_initialized)

@@ -4,7 +4,6 @@
 #include <QVariant>
 #include <QVector>
 #include <QtQml/qqmlregistration.h>
-#include <optional>
 #include <span>
 #include <unordered_map>
 #include <unordered_set>
@@ -45,12 +44,14 @@ class TreeModel : public QAbstractItemModel {
 
 public:
     enum TreeRole {
-        NameRole    = Qt::UserRole + 1,
+        NameRole = Qt::UserRole + 1,
         NumberRole,
         NodeIdRole,
         IsVisibleRole,
         ComponentIdRole,
-        NodeTypeRole
+        NodeTypeRole,
+        VisibilityStateRole,
+        CanToggleVisibilityRole
     };
     Q_ENUM(TreeRole)
     explicit TreeModel(QObject* parent = nullptr);
@@ -64,19 +65,20 @@ public:
     QHash<int, QByteArray> roleNames() const override;
 
     Q_INVOKABLE bool refresh();
-    Q_INVOKABLE bool setVisibility(const QModelIndex& idx, bool visible);
+    //! @brief 只发送节点显隐意图；展示状态由管线回传后更新。
+    Q_INVOKABLE bool requestVisibility(const QModelIndex& idx, bool visible);
     Q_INVOKABLE QModelIndex findIndexByNodeId(int nodeId, int depth) const;
-    Q_INVOKABLE void setAllVisibility(bool visible);
+    //! @brief 按模型发送全部节点的显隐请求，不提前修改展示副本。
+    Q_INVOKABLE void requestAllVisibility(bool visible);
 
     /**
-     * @brief 接收渲染层的完整组件显隐结果（命令回传，不是用户显隐命令）
-     * @param component_id 组件 id；组件已不在模型时忽略
-     * @param mesh_visible 网格显隐结果
-     * @param geometry_visible 几何显隐结果
-     * @note 不以树节点是否存在为接收条件：节点尚未入树时只保存，结构同步创建后应用；
-     *       节点存在时一次应用完整结果并通知，不再复用带副作用的用户显隐命令。
+     * @brief 接收 GUI 管线回传的完整组件显隐结果（不是用户显隐命令）
+     * @param component_id 组件 id；组件尚未入树时只保存，结构同步创建后应用
+     * @param mesh_visible 网格总开关
+     * @param geometry_visible 几何总开关
+     * @note 这是显隐状态唯一写入点；对象树的用户入口只发请求。
      */
-    Q_INVOKABLE void applyComponentVisibility(Index component_id, bool mesh_visible, bool geometry_visible);
+    Q_INVOKABLE void syncComponentVisibility(Index component_id, bool mesh_visible, bool geometry_visible);
 
     /**
      * @brief 增量同步：模型新增（结构事件，立即执行）
@@ -104,6 +106,8 @@ public:
 signals:
     //! @brief 数据事件合并同步完成
     void dataSyncFinished();
+    /** @brief 请求模型、组件、Mesh 或 Geometry 显隐；object_id 为真实模型或组件身份。 */
+    void visibilityRequested(int node_type, int object_id, bool visible);
 
 private:
     struct MeshNodeInfo {
@@ -130,13 +134,24 @@ private:
         int component_count = 0;
         QVector<ComponentNodeInfo> components;
     };
+    //! @brief GUI 管线回传的组件子类型总开关。
+    struct SubVisibility {
+        bool mesh = true;
+        bool geometry = true;
+    };
 
     static int meshChildCount(const MeshNodeInfo& info, TreeNode::NodeType type);
     static int geometryChildCount(const GeometryNodeInfo& info, TreeNode::NodeType type);
 
     TreeNode* getNode(const QModelIndex& index) const;
     void emitDescendantDataChanged(const QModelIndex& parentIndex);
-    void setComponentVisibility(TreeNode* node, bool visible);
+    /** @brief 按组件保存的管线开关递归同步子节点展示状态，返回是否发生变化。 */
+    bool syncSubNodes(TreeNode* node, bool notify);
+    /** @brief 聚合节点的全显、部分显示和全隐状态。 */
+    int visibilityState(const TreeNode* node) const;
+    /** @brief 只通知祖先节点，不重复发送已单独处理的子树。 */
+    void notifyAncestors(TreeNode* node);
+    SubVisibility subVisibility(Index component_id) const;
 
     ModelNodeInfo queryModel(Index model_id) const;
     void fillComponentData(ComponentNodeInfo& info) const;
@@ -169,13 +184,6 @@ private:
     void unregisterSubtree(TreeNode* node);
     void eraseComponentVisibility(Index component_id);
     void pruneStaleVisibility();
-    //! @brief 组件级显隐开关，缺省为可见。
-    bool isComponentEnabled(Index component_id) const;
-    //! @brief 按已保存的设置应用一个组件的显隐：设置是输入，节点 isVisible 只作派生结果。
-    void applyComponentVisibilityState(TreeNode* component_node, bool notify);
-    void setSubtreeVisibility(TreeNode* node, bool visible, bool notify);
-    void recomputeVisibility(TreeNode* node, bool notify);
-    void updateAncestorVisibility(TreeNode* node);
     void rebuildAllFromQuery();
     bool reconcileAllFromQuery();
     void flushPendingDataSync();
@@ -191,13 +199,6 @@ private:
     bool initialized_ = false;
     QTimer* data_sync_timer_ = nullptr;
     std::unordered_set<Index> pending_model_ids_;
-    //! @brief 组件级显隐设置（空组件据此显示；非空组件作为子节点总开关）。
-    std::unordered_map<Index, bool> components_visibility_;
-    //! @brief 子类型显隐设置；空值表示尚未收到设置，子类型出现时默认可见。
-    //! @note 与节点 isVisible 分离：结构同步不得用派生结果覆盖这里的设置。
-    struct SubVisibility {
-        std::optional<bool> mesh;
-        std::optional<bool> geometry;
-    };
+    //! @brief GUI 管线回传的子类型总开关；缺省为可见，对象树不写用户设置。
     std::unordered_map<Index, SubVisibility> sub_visibility_;
 };
