@@ -350,6 +350,7 @@ bool TreeModel::syncSubNodes(TreeNode* node, bool notify)
     if (!node)
         return false;
 
+    const int old_state = visibilityState(node);
     Index component_id = -1;
     for (TreeNode* current = node; current && current != rootNode; current = current->parent) {
         if (current->nodeType == TreeNode::NodeType::Component) {
@@ -379,13 +380,14 @@ bool TreeModel::syncSubNodes(TreeNode* node, bool notify)
         bool any_visible = false;
         for (TreeNode* child : node->children)
             any_visible = any_visible || child->isVisible;
-        const bool visible = node->children.isEmpty() ? (sub.mesh || sub.geometry) : any_visible;
-        if (node->isVisible != visible) {
-            node->isVisible = visible;
-            if (notify)
-                notifyNodeData(node, { IsVisibleRole, VisibilityStateRole });
-            changed = true;
-        }
+        node->isVisible = node->children.isEmpty() ? (sub.mesh || sub.geometry) : any_visible;
+    }
+
+    // 布尔显隐可能不变而三态变化（例如只剩部分子类型可见），父行也必须刷新。
+    if (visibilityState(node) != old_state) {
+        if (notify)
+            notifyNodeData(node, { IsVisibleRole, VisibilityStateRole });
+        changed = true;
     }
     return changed;
 }

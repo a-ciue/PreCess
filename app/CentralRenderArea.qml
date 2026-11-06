@@ -831,7 +831,7 @@ Page {
             StyledMenuItem {
                 text: "全部显示"
                 shown: !viewportMenu.hasPicks
-                onTriggered: myItem.showAll()
+                onTriggered: App.registry.objectTree.showAllNodes()
             }
 
             StyledMenuItem {

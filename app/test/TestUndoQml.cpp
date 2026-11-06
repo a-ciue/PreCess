@@ -6,6 +6,7 @@
 #include "FeatureHandler.h"
 #include "FeatureRegistrar.h"
 #include "FeatureSystem.h"
+#include "GeometryBuilder.h"
 #include "GeometryData.h"
 #include "MeshData.h"
 #include "ModelLayer.h"
@@ -255,6 +256,116 @@ TEST_CASE("Actual QML applies hidden state reported before a component enters th
     CHECK_FALSE(tree->data(component_index, TreeModel::IsVisibleRole).toBool());
     REQUIRE(tree->rowCount(component_index) == 1);
     CHECK_FALSE(tree->data(tree->index(0, 0, component_index), TreeModel::IsVisibleRole).toBool());
+}
+
+TEST_CASE("Actual QML refreshes component tri-state when one subtype changes", "[QML][visibility]")
+{
+    application();
+    QmlFixture f;
+    auto& model = *f.manager->getModelManager();
+    model.setUndoRecorder(nullptr);
+    ComponentDatas components;
+    auto component = std::make_unique<ComponentData>();
+    component->mesh = std::make_unique<MeshData>();
+    component->geometry = std::make_unique<GeometryData>();
+    component->geometry->setRootShape(GeometryBuilder::makeBox(0.0, 0.0, 0.0, 1.0, 1.0, 1.0));
+    components.push_back(std::move(component));
+    const Index model_id = model.addModel("tri-state fixture", std::move(components));
+    const Index component_id = model.modelById(model_id)->componentIds().front();
+
+    auto* tree = f.tree->findChild<TreeModel*>();
+    auto* viewport = f.viewport->findChild<QRenderWindow*>();
+    REQUIRE(tree);
+    REQUIRE(viewport);
+    REQUIRE(tree->refresh());
+    viewport->onComponentChanged(component_id);
+
+    const QModelIndex component_index = tree->findIndexByNodeId(component_id, 1);
+    REQUIRE(component_index.isValid());
+    int visibility_updates = 0;
+    QObject::connect(tree, &QAbstractItemModel::dataChanged, tree,
+        [&](const QModelIndex& first, const QModelIndex&, const QList<int>& roles) {
+            if (first == component_index && roles.contains(TreeModel::VisibilityStateRole))
+                ++visibility_updates;
+        });
+
+    // 只隐藏几何：组件布尔显隐仍为可见，但三态必须变为部分显示并通知组件行。
+    viewport->setGeometryVisibility(component_id, false);
+    CHECK(tree->data(component_index, TreeModel::IsVisibleRole).toBool());
+    CHECK(tree->data(component_index, TreeModel::VisibilityStateRole).toInt() == Qt::PartiallyChecked);
+    CHECK(visibility_updates >= 1);
+}
+
+TEST_CASE("Actual QML keeps all show/hide state consistent across repeated toggles", "[QML][visibility]")
+{
+    application();
+    QmlFixture f;
+    auto& model = *f.manager->getModelManager();
+    model.setUndoRecorder(nullptr);
+
+    ComponentDatas components;
+    auto mesh_geometry = std::make_unique<ComponentData>();
+    mesh_geometry->mesh = std::make_unique<MeshData>();
+    mesh_geometry->geometry = std::make_unique<GeometryData>();
+    mesh_geometry->geometry->setRootShape(GeometryBuilder::makeBox(0.0, 0.0, 0.0, 1.0, 1.0, 1.0));
+    components.push_back(std::move(mesh_geometry));
+
+    auto geometry_only = std::make_unique<ComponentData>();
+    geometry_only->geometry = std::make_unique<GeometryData>();
+    geometry_only->geometry->setRootShape(GeometryBuilder::makeBox(2.0, 0.0, 0.0, 1.0, 1.0, 1.0));
+    components.push_back(std::move(geometry_only));
+
+    auto mesh_only = std::make_unique<ComponentData>();
+    mesh_only->mesh = std::make_unique<MeshData>();
+    components.push_back(std::move(mesh_only));
+
+    const Index model_id = model.addModel("toggle fixture", std::move(components));
+    const auto component_ids = model.modelById(model_id)->componentIds();
+    REQUIRE(component_ids.size() == 3);
+
+    auto* tree = f.tree->findChild<TreeModel*>();
+    auto* viewport = f.viewport->findChild<QRenderWindow*>();
+    REQUIRE(tree);
+    REQUIRE(viewport);
+    REQUIRE(tree->refresh());
+    for (Index component_id : component_ids)
+        viewport->onComponentChanged(component_id);
+
+    std::map<Index, std::pair<bool, bool>> last;
+    QObject::connect(viewport, &QRenderWindow::componentVisibilityChanged, viewport,
+        [&last](Index component_id, bool mesh_visible, bool geometry_visible) {
+            last[component_id] = { mesh_visible, geometry_visible };
+        });
+
+    const auto check_state = [&](bool visible) {
+        const QModelIndex model_index = tree->findIndexByNodeId(model_id, 0);
+        REQUIRE(model_index.isValid());
+        CHECK(tree->data(model_index, TreeModel::IsVisibleRole).toBool() == visible);
+        CHECK(tree->data(model_index, TreeModel::VisibilityStateRole).toInt()
+            == (visible ? Qt::Checked : Qt::Unchecked));
+        for (Index component_id : component_ids) {
+            const QModelIndex component_index = tree->findIndexByNodeId(component_id, 1);
+            REQUIRE(component_index.isValid());
+            CHECK(tree->data(component_index, TreeModel::IsVisibleRole).toBool() == visible);
+            CHECK(tree->data(component_index, TreeModel::VisibilityStateRole).toInt()
+                == (visible ? Qt::Checked : Qt::Unchecked));
+            const ComponentData* component = model.findComponent(component_id);
+            REQUIRE(component);
+            REQUIRE(last.contains(component_id));
+            CHECK(last.at(component_id)
+                == std::make_pair(static_cast<bool>(component->mesh) && visible,
+                                  static_cast<bool>(component->geometry) && visible));
+        }
+    };
+
+    for (int cycle = 0; cycle < 4; ++cycle) {
+        REQUIRE(QMetaObject::invokeMethod(f.tree.get(), "hideAllNodes"));
+        pumpEvents();
+        check_state(false);
+        REQUIRE(QMetaObject::invokeMethod(f.tree.get(), "showAllNodes"));
+        pumpEvents();
+        check_state(true);
+    }
 }
 
 //! @brief QML 只验证真实入口的目标范围；隐藏面恢复由视口及数据管线测试覆盖。

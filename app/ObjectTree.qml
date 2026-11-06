@@ -530,8 +530,8 @@ Pane {
     }
 
     function showAllNodes() {
-        // 由渲染窗口统一恢复组件、隐藏面和隔离状态，再同步对象树。
-        App.registry.renderWindow.showAll()
+        // 与全部隐藏共用请求-回传路径，由管线逐组件恢复并回传最终状态。
+        treeModel.requestAllVisibility(true)
     }
 
     function isolateNode(nodeId) {
