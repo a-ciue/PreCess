@@ -969,9 +969,8 @@ int QRenderWindow::getGeometryStyle()
 
 void QRenderWindow::setSurfacePrecision(int precision)
 {
-    if (!surface_precision::isValid(precision))
+    if (!surface_precision::isValid(precision) || surface_precision_ == precision)
         return;
-    const bool changed = surface_precision_ != precision;
     surface_precision_ = precision;
     dispatch_async([this, precision, revision = selection_revision_](vtkRenderWindow*, vtkUserData user_data) {
         auto* vtk = Data::SafeDownCast(user_data);
@@ -996,8 +995,7 @@ void QRenderWindow::setSurfacePrecision(int precision)
         }
         scheduleRender();
     });
-    if (changed)
-        emit surfacePrecisionChanged();
+    emit surfacePrecisionChanged();
 }
 
 int QRenderWindow::getSurfacePrecision() const

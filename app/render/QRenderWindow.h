@@ -307,7 +307,7 @@ private:
     MeshGenerations selected_face_generations_; //> 各选中组件的源网格代次，仅 GUI 访问
 
     GeometryRenderStyle geometry_style_ { GeometryRenderStyle::SurfaceWithEdges };
-    int surface_precision_ { surface_precision::kDefault }; //> GUI 侧目标档位，失败后允许同档重试
+    int surface_precision_ { surface_precision::kDefault }; //> GUI 侧请求档位，场景重建时恢复
     MeshRenderStyle mesh_style_ { MeshRenderStyle::FaceWithEdges };
 
     std::unique_ptr<SelectManager> select_manager_;

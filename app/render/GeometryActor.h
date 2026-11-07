@@ -29,7 +29,6 @@ public:
     void loadShape(const GeometryDataVtk& geometry_data, int precision = surface_precision::kDefault);
     /** @brief 重建私有拓扑的显示网格；调用侧负责清空选择及更新 Picker 注册。 */
     void setSurfacePrecision(int precision);
-    int getSurfacePrecision() const { return surface_precision_; }
 
     void setVisibility(bool visibility);
     bool isVisible() const;
@@ -55,7 +54,6 @@ private:
     vtkNew<vtkActor> line_actor_;
     // 场景先销毁几何管理器，再释放 renderer。
     vtkRenderer* renderer_;
-    int surface_precision_ { -1 }; //> 仅完整更新成功后记录档位，失败组件可重试。
 
     vtkSmartPointer<vtkPolyData> poly_only_;
     vtkSmartPointer<vtkPolyData> line_only_;

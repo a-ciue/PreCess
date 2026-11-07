@@ -96,20 +96,14 @@ void GeometryActorManagerSelectOp::setShapePickerMode(SelectMode mode)
 void GeometryActorManagerSelectOp::registerProps(Index component_id, std::shared_ptr<GeometryActor> actor)
 {
     GeometryActorSelectOp op(actor);
-    try {
-        addToAllLists(&op.getPolyActor());
-        for (auto picker : shape_pickers_) {
-            if (current_mode_ != SelectMode::None && actor->isVisible())
-                op.enableSelectionMode(picker, current_mode_);
-        }
-        // 全部 Picker 就绪后才发布注册身份，切档失败后同档重试可补齐注册。
-        shape_id_to_component_[op.getShapeId()] = component_id;
-        prop_to_component_[&op.getPolyActor()] = component_id;
-        registered_component_ids_.insert(component_id);
-    } catch (...) {
-        unregisterProps(actor);
-        throw;
+    addToAllLists(&op.getPolyActor());
+    for (auto picker : shape_pickers_) {
+        if (current_mode_ != SelectMode::None && actor->isVisible())
+            op.enableSelectionMode(picker, current_mode_);
     }
+    shape_id_to_component_[op.getShapeId()] = component_id;
+    prop_to_component_[&op.getPolyActor()] = component_id;
+    registered_component_ids_.insert(component_id);
 }
 
 void GeometryActorManagerSelectOp::unregisterProps(std::shared_ptr<GeometryActor> actor)

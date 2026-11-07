@@ -7,7 +7,6 @@
 #include <algorithm>
 #include <cmath>
 #include <iostream>
-#include <spdlog/spdlog.h>
 
 namespace {
 /** @brief 生成日志使用的“id (名称)”标签，名称为空时只保留 id。 */
@@ -109,29 +108,14 @@ GeometryRenderStyle GeometryActorManager::getCurrentRenderStyle() const
 
 void GeometryActorManager::setSurfacePrecision(int precision)
 {
-    if (!surface_precision::isValid(precision))
+    if (surface_precision_ == precision)
         return;
-    // 窗口保存目标档位；失败后同档请求继续更新尚未完成的组件。
+    // 先记录窗口档位，后续导入和替换的几何沿用该设置。
     surface_precision_ = precision;
     for (const auto& [id, actor] : component_actors_) {
-        const GeometryActorSelectOp select_op(actor);
-        if (actor->getSurfacePrecision() == precision
-            && op_.getComponentIdByShapeId(select_op.getShapeId()) == id)
-            continue;
         op_.unregisterProps(actor);
-        try {
-            actor->setSurfacePrecision(precision);
-            op_.registerProps(id, actor);
-        } catch (...) {
-            spdlog::error("组件 {} 曲面显示精细度切换失败", id);
-            // 注册自身会清理部分结果；尽量恢复失败组件的拾取，原异常继续向上传播。
-            try {
-                op_.registerProps(id, actor);
-            } catch (...) {
-                spdlog::error("组件 {} 拾取注册失败，下次切档时重试", id);
-            }
-            throw;
-        }
+        actor->setSurfacePrecision(precision);
+        op_.registerProps(id, actor);
     }
 }
 
