@@ -21,7 +21,6 @@
 class GeometryTopologyDiagnosticResult;
 struct GeometryTopologyDiagnosticOptions;
 class TopoDS_Shape;
-class vtkDataArray;
 class vtkPolyData;
 class vtkRenderer;
 
@@ -42,7 +41,7 @@ public:
         vtkPolyData* face_data);
 
     /** @brief 复用当前 Shape 的诊断缓存，仅刷新已启用类别的线、面叠加。 */
-    void refreshDisplay(vtkPolyData* lines, vtkPolyData* polygons);
+    void refreshDisplay();
 
     /** @brief 启用或停用一种几何拓扑诊断类别。 */
     void setCategoryEnabled(GeometryTopologyDiagnosticCategory category, bool enabled);
@@ -59,8 +58,7 @@ public:
     void setComponentLabel(std::string label) { component_label_ = std::move(label); }
 
 private:
-    void extractCategory(GeometryTopologyDiagnosticCategory category,
-        vtkPolyData* lines, vtkPolyData* faces, vtkPolyData& output, vtkPolyData& invalid_edges) const;
+    void extractCategory(GeometryTopologyDiagnosticCategory category);
     /** @brief 保存一种诊断类别的独立静态数据、映射器和 Actor。 */
     struct DiagnosticPipeline {
         vtkNew<vtkPolyData> data;

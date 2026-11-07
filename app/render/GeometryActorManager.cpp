@@ -77,9 +77,11 @@ void GeometryActorManager::loadGeometry(
     // 已启用的诊断会在 loadShape 中立即执行，因此必须先设置日志标签。
     actor_ptr->topologyDiagnostics().setComponentLabel(
         componentLabel(component_id, component_name));
-    actor_ptr->loadShape(geometry_data, surface_precision_);
+    actor_ptr->loadShape(geometry_data);
     actor_ptr->setRenderStyle(current_style_);
     op_.registerProps(component_id, actor_ptr);
+    if (surface_precision_ != surface_precision::kDefault)
+        actor_ptr->setSurfacePrecision(surface_precision_);
 }
 
 void GeometryActorManager::setVisibility(Index component_id, bool visibility)
@@ -96,8 +98,6 @@ void GeometryActorManager::setCurrentRenderStyle(GeometryRenderStyle style)
     current_style_ = style;
     for (auto& [id, actor] : component_actors_) {
         actor->setRenderStyle(style);
-        // 显示样式恢复时，同步启用之前因 Hidden 禁用的拾取模式。
-        op_.setShapePickingEnabled(actor, actor->isVisible());
     }
 }
 
@@ -112,11 +112,8 @@ void GeometryActorManager::setSurfacePrecision(int precision)
         return;
     // 先记录窗口档位，后续导入和替换的几何沿用该设置。
     surface_precision_ = precision;
-    for (const auto& [id, actor] : component_actors_) {
-        op_.unregisterProps(actor);
+    for (const auto& [id, actor] : component_actors_)
         actor->setSurfacePrecision(precision);
-        op_.registerProps(id, actor);
-    }
 }
 
 void GeometryActorManager::setTopologyDiagnosticCategoryEnabled(int category, bool enabled)

@@ -9,7 +9,6 @@
 #include <IVtkTools_ShapePicker.hxx>
 #include <IVtkTools_SubPolyDataFilter.hxx>
 #include <IVtk_Types.hxx>
-#include <IVtkVTK_ShapeData.hxx>
 #include <NCollection_List.hxx>
 #include <TopAbs_ShapeEnum.hxx>
 #include <TopExp_Explorer.hxx>
@@ -119,30 +118,12 @@ GeometryActorSelectOp::GeometryActorSelectOp(std::shared_ptr<GeometryActor> geom
 
 IVtk_IdType GeometryActorSelectOp::getShapeId() const
 {
-    return geometry_actor_->occ_shape_.IsNull() ? -1 : geometry_actor_->occ_shape_->GetId();
-}
-
-void GeometryActorSelectOp::removeFromPickers(
-    const std::vector<vtkSmartPointer<IVtkTools_ShapePicker>>& pickers) const
-{
-    const auto& shape = geometry_actor_->occ_shape_;
-    if (shape.IsNull())
-        return;
-    const auto selectable = shape->GetSelectableObject();
-    if (selectable.IsNull())
-        return;
-    for (auto picker : pickers) {
-        // OCCT 移除时会清空 Shape 句柄；恢复引用使每个 Picker 都能移除同一敏感实体。
-        shape->SetSelectableObject(selectable);
-        picker->RemoveSelectableObject(shape);
-    }
-    // 缓存重建或替换几何前解除旧敏感实体引用。
-    shape->SetSelectableObject(nullptr);
+    return geometry_actor_->occ_shape_->GetId();
 }
 
 void GeometryActorSelectOp::disableSelectionModes(IVtkTools_ShapePicker* picker) const
 {
-    if (!picker || geometry_actor_->occ_shape_.IsNull())
+    if (!picker)
         return;
 
     const OccShapeHandle& occ = geometry_actor_->occ_shape_;
@@ -154,7 +135,7 @@ void GeometryActorSelectOp::disableSelectionModes(IVtkTools_ShapePicker* picker)
 
 void GeometryActorSelectOp::enableSelectionMode(IVtkTools_ShapePicker* picker, SelectMode mode) const
 {
-    if (!picker || geometry_actor_->occ_shape_.IsNull())
+    if (!picker)
         return;
 
     const OccShapeHandle& occ = geometry_actor_->occ_shape_;
@@ -193,7 +174,7 @@ std::optional<Index> GeometryActorSelectOp::resolvePickedSubshape(IVtkTools_Shap
     if (!firstId(picker->GetPickedSubShapesIds(shapeId, false), out_sub_id))
         return std::nullopt;
 
-    const GeometrySubshapeIndex* geomIndex = geometry_actor_->picking_geometry_index_.get();
+    const GeometrySubshapeIndex* geomIndex = geometry_actor_->geometry_index_;
     if (!geomIndex)
         return std::nullopt;
 
@@ -218,7 +199,7 @@ std::vector<std::pair<IVtk_IdType, Index>> GeometryActorSelectOp::resolvePickedS
     else
         return out;
 
-    const GeometrySubshapeIndex* geomIndex = geometry_actor_->picking_geometry_index_.get();
+    const GeometrySubshapeIndex* geomIndex = geometry_actor_->geometry_index_;
     if (!geomIndex)
         return out;
 
@@ -263,7 +244,7 @@ bool GeometryActorSelectOp::resolvePickedSolid(IVtkTools_ShapePicker* picker, IV
     if (pickedSub.IsNull())
         return false;
 
-    const GeometrySubshapeIndex* geomIndex = geometry_actor_->picking_geometry_index_.get();
+    const GeometrySubshapeIndex* geomIndex = geometry_actor_->geometry_index_;
     if (!geomIndex)
         return false;
 
@@ -320,8 +301,6 @@ vtkSmartPointer<IVtkTools_SubPolyDataFilter> GeometryActorSelectOp::buildHighlig
     filter = vtkSmartPointer<IVtkTools_SubPolyDataFilter>::New();
     filter->SetInputData(source);
     filter->SetDoFiltering(true);
-    // OCCT 保存数组名裸指针，名称必须独立于输入数组的存储。
-    filter->SetIdsArrayName(IVtkVTK_ShapeData::ARRNAME_SUBSHAPE_IDS());
 
     return filter;
 }

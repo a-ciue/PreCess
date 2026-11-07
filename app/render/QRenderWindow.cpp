@@ -16,7 +16,6 @@
 #include "renderStrategy/AttributeCommon.h"
 
 #include <QQuickWindow>
-#include <Standard_Failure.hxx>
 #include <spdlog/spdlog.h>
 #include <vtkCallbackCommand.h>
 #include <vtkCamera.h>
@@ -32,6 +31,7 @@
 
 #include <algorithm>
 #include <cmath>
+#include <exception>
 #include <functional>
 #include <memory>
 #include <optional>
@@ -972,28 +972,14 @@ void QRenderWindow::setSurfacePrecision(int precision)
     if (!surface_precision::isValid(precision) || surface_precision_ == precision)
         return;
     surface_precision_ = precision;
-    dispatch_async([this, precision, revision = selection_revision_](vtkRenderWindow*, vtkUserData user_data) {
+    clearSelection();
+    dispatch_async([precision](vtkRenderWindow*, vtkUserData user_data) {
         auto* vtk = Data::SafeDownCast(user_data);
-        // 切档会重建拾取数据，先在同一次渲染回调中清空选择并发布当前参数版本的空快照。
-        render_selection_revision_ = revision;
-        select_manager_->clearSelection();
-        publishSelection();
-        std::optional<QString> failure { std::nullopt };
         try {
             vtk->geometry_actor_manager_->setSurfacePrecision(precision);
-        } catch (const Standard_Failure& error) {
-            failure = QString::fromUtf8(error.GetMessageString());
         } catch (const std::exception& error) {
-            failure = QString::fromUtf8(error.what());
-        } catch (...) {
-            failure = tr("未知异常");
+            spdlog::error("曲面显示精细度切换失败：{}", error.what());
         }
-        if (failure) {
-            const auto message = tr("曲面显示精细度切换失败：%1").arg(*failure);
-            spdlog::error("{}", message.toStdString());
-            QMetaObject::invokeMethod(&selection_dispatcher_, [this, message] { emit surfacePrecisionFailed(message); }, Qt::QueuedConnection);
-        }
-        scheduleRender();
     });
     emit surfacePrecisionChanged();
 }

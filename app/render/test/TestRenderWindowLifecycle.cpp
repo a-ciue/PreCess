@@ -8,12 +8,13 @@
 #include "GeometryData.h"
 #include "GeometryDataVtk.h"
 #include "ModelLayer.h"
+#include "ModelObserver.h"
+#include "ModelScope.h"
 #include "QModelQuery.h"
 #include "QRenderWindow.h"
 #include "QRenderWindowStyle.h"
-#include "QTaskStatus.h"
 #include "SessionQuery.h"
-#include "SurfacePrecisionFailure.h"
+#include "UndoStack.h"
 #include "ViewportOrientationRepresentation.h"
 #include <vtkActor2D.h>
 #include <vtkCallbackCommand.h>
@@ -24,6 +25,7 @@
 #include <vtkImageData.h>
 #include <vtkObjectFactory.h>
 #include <vtkOpenGLTexture.h>
+#include <vtkPartitionedDataSet.h>
 #include <vtkPolyData.h>
 #include <vtkPolyDataMapper.h>
 #include <vtkPropCollection.h>
@@ -37,17 +39,20 @@
 #include <QQuickWindow>
 #include <catch2/catch_approx.hpp>
 #include <catch2/catch_test_macros.hpp>
-#include <catch2/generators/catch_generators.hpp>
+#include <gp_Pnt.hxx>
 #include <vtkActor.h>
 #include <vtkActorCollection.h>
 #include <vtkRenderWindowInteractor.h>
 #include <vtkTextProperty.h>
 #include <vtkWeakPointer.h>
 
+#include <array>
 #include <atomic>
 #include <cmath>
 #include <functional>
 #include <memory>
+#include <string>
+#include <vector>
 
 namespace {
 class CountingTexture : public vtkOpenGLTexture {
@@ -530,7 +535,6 @@ TEST_CASE("QRenderWindow applies requested surface precision across scene rebuil
     auto user_data = item.initializeVTK(window);
     auto* data = QRenderWindow::Data::SafeDownCast(user_data);
     data->geometry_actor_manager_->loadGeometry({ sphere, 123, nullptr });
-    CHECK(data->geometry_actor_manager_->getSurfacePrecision() == 3);
     auto actor = data->geometry_actor_manager_->getComponentActor(123);
     REQUIRE(actor != nullptr);
     auto* mapper = vtkPolyDataMapper::SafeDownCast(GeometryActorSelectOp(actor).getPolyActor().GetMapper());
@@ -552,7 +556,6 @@ TEST_CASE("QRenderWindow applies requested surface precision across scene rebuil
     auto* rebuilt = QRenderWindow::Data::SafeDownCast(user_data);
     rebuilt->geometry_actor_manager_->loadGeometry({ sphere, 123, nullptr });
     QCoreApplication::processEvents();
-    CHECK(item.getSurfacePrecision() == rebuilt->geometry_actor_manager_->getSurfacePrecision());
     CHECK(item.getSurfacePrecision() == 3);
     auto rebuilt_actor = rebuilt->geometry_actor_manager_->getComponentActor(123);
     REQUIRE(rebuilt_actor != nullptr);
@@ -567,30 +570,43 @@ TEST_CASE("QRenderWindow applies requested surface precision across scene rebuil
     rebuilt_window->RemoveRenderer(rebuilt->renderer_);
 }
 
-TEST_CASE("QRenderWindow clears selection and reports precision update errors", "[precision][render]")
+TEST_CASE("QRenderWindow precision survives geometry undo redo and scene recreation", "[precision][render][undo]")
 {
     testApplication();
-    const auto failure_kind = GENERATE(SurfacePrecisionFailure::Kind::Standard,
-        SurfacePrecisionFailure::Kind::Occ, SurfacePrecisionFailure::Kind::Unknown);
-    ModelLayer layer;
-    const auto model_id = layer.addModel("precision test", {});
+    struct WindowObserver : ModelObserver {
+        QRenderWindow* item {};
+        void notifyModelChanged(Index) override { }
+        void notifyModelAdded(Index) override { }
+        void notifyModelRemoved(Index model_id) override
+        {
+            if (item)
+                item->deleteModel(model_id);
+        }
+        void notifyComponentRemoved(Index component_id) override
+        {
+            if (item)
+                item->deleteComponent(component_id);
+        }
+        void notifyComponentChanged(Index component_id) override
+        {
+            if (item)
+                item->onComponentChanged(component_id);
+        }
+        void notifyModelNameChanged(Index, const std::string&) override { }
+        void notifyGeometryLoadFailed(const std::string&) override { }
+    } observer;
+    ModelLayer layer(&observer);
+    const auto model_id = layer.addModel("precision undo test", {});
     auto component = std::make_unique<ComponentData>();
     component->geometry = std::make_unique<GeometryData>();
     component->geometry->setRootShape(BRepPrimAPI_MakeSphere(10.0).Shape());
     const auto component_id = layer.getModelOperator(model_id)->addGeometryComponent(std::move(component));
+    const auto original_face_id = layer.findComponent(component_id)->geometry->index.faceGlobalId(1);
+    const auto original_solid_id = layer.findComponent(component_id)->geometry->index.solidGlobalId(1);
+    UndoStack undo(layer);
+    layer.setUndoRecorder(&undo);
     session::SessionQuery query(layer);
     QModelQuery model_query(&query);
-    std::atomic_bool completed {};
-    std::atomic_bool scene_invalidated {};
-    vtkIdType triangle_count = 0;
-    vtkIdType rebuilt_triangle_count = 0;
-    int manager_precision = -1;
-    int failure_rebuilds = 0;
-    int target_updates = 0;
-    int failure_reports = 0;
-    QString reported_failure;
-    std::unique_ptr<SurfacePrecisionFailure> failure;
-    QTaskStatus status;
     QQuickWindow quick_window;
     quick_window.setFlags(Qt::Tool | Qt::FramelessWindowHint);
     quick_window.resize(400, 400);
@@ -602,44 +618,68 @@ TEST_CASE("QRenderWindow clears selection and reports precision update errors", 
     auto& item = *new QRenderWindow;
     item.setParent(quick_window.contentItem());
     item.setModelQuery(&model_query);
+    observer.item = &item;
     item.onComponentChanged(component_id);
     item.setParentItem(quick_window.contentItem());
     item.setSize(QSizeF(400, 400));
-    auto has_selection_size = [&](std::size_t expected) {
-        const std::unique_ptr<QSelection> selection(item.selectedIDs());
-        return selection ? selection->size() == expected : expected == 0;
-    };
+    item.setSelectComponent(component_id);
+    item.setSurfacePrecision(3);
+    int target_updates = 0;
+    int selection_updates = 0;
     QObject::connect(&item, &QRenderWindow::surfacePrecisionChanged, &item, [&] { ++target_updates; });
-    QObject::connect(&item, &QRenderWindow::surfacePrecisionFailed, &status, &QTaskStatus::reportFailure);
-    QObject::connect(&status, &QTaskStatus::taskFailed, &status, [&](const QString& error) {
-        ++failure_reports;
-        reported_failure = error;
-    });
-    item.dispatch_async([&](vtkRenderWindow*, QQuickVTKItem::vtkUserData user_data) {
-        auto* data = QRenderWindow::Data::SafeDownCast(user_data);
-        auto* camera = data->renderer_->GetActiveCamera();
-        camera->SetPosition(0.0, 0.0, 100.0);
-        camera->SetFocalPoint(0.0, 0.0, 0.0);
-        camera->SetViewUp(0.0, 1.0, 0.0);
-        data->renderer_->ResetCamera();
-        completed = true;
-    });
-    item.setSelectMode("GeometryFace");
-    quick_window.show();
-    REQUIRE(renderUntil(quick_window, [&] { return completed.load(); }));
-
-    auto select_sphere = [&] {
+    QObject::connect(&item, &QRenderWindow::selectedChanged, &item, [&] { ++selection_updates; });
+    struct RenderState {
+        bool exists {};
+        bool visible {};
+        vtkIdType triangles {};
+        vtkIdType highlight_cells {};
+        std::array<double, 6> bounds {};
+    } state;
+    std::atomic_bool completed {};
+    auto read_scene = [&] {
         completed = false;
-        item.setSelectMode("GeometryFace");
+        item.dispatch_async([&](vtkRenderWindow*, QQuickVTKItem::vtkUserData user_data) {
+            auto* data = QRenderWindow::Data::SafeDownCast(user_data);
+            state = {};
+            if (auto actor = data->geometry_actor_manager_->getComponentActor(component_id)) {
+                auto& poly_actor = GeometryActorSelectOp(actor).getPolyActor();
+                auto* polygons = vtkPolyDataMapper::SafeDownCast(poly_actor.GetMapper())->GetInput();
+                state.exists = true;
+                state.visible = actor->isVisible();
+                state.triangles = polygons->GetNumberOfPolys();
+                polygons->GetBounds(state.bounds.data());
+            }
+            auto* actors = data->renderer_->GetActors();
+            actors->InitTraversal();
+            while (auto* actor = actors->GetNextActor()) {
+                if (actor->GetMapper()) {
+                    if (auto* highlight = vtkPartitionedDataSet::SafeDownCast(actor->GetMapper()->GetInputDataObject(0, 0)))
+                        state.highlight_cells += highlight->GetNumberOfCells();
+                }
+            }
+            completed = true;
+        });
+        return renderUntil(quick_window, [&] { return completed.load(); });
+    };
+    auto selection_ids = [&] {
+        const std::unique_ptr<QSelection> selected(item.selectedIDs());
+        return selected && selected->get() ? selected->get()->ids : std::vector<Index> {};
+    };
+    auto pick_sphere = [&](const QString& mode, double center_x, double radius, Index expected_id) {
+        item.clearSelection();
+        item.setSelectMode(mode);
+        completed = false;
         item.dispatch_async([&](vtkRenderWindow* window, QQuickVTKItem::vtkUserData user_data) {
             auto* data = QRenderWindow::Data::SafeDownCast(user_data);
             auto* camera = data->renderer_->GetActiveCamera();
-            camera->SetPosition(0.0, 0.0, 100.0);
-            camera->SetFocalPoint(0.0, 0.0, 0.0);
+            camera->SetPosition(center_x, 0.0, 100.0);
+            camera->SetFocalPoint(center_x, 0.0, 0.0);
             camera->SetViewUp(0.0, 1.0, 0.0);
+            camera->ParallelProjectionOn();
             data->renderer_->ResetCamera();
             window->Render();
-            data->renderer_->SetWorldPoint(3.0, 2.0, std::sqrt(87.0), 1.0);
+            data->renderer_->SetWorldPoint(center_x + radius * 0.3, radius * 0.2,
+                radius * std::sqrt(0.87), 1.0);
             data->renderer_->WorldToDisplay();
             const auto* position = data->renderer_->GetDisplayPoint();
             window->GetInteractor()->SetEventPosition(static_cast<int>(position[0]), static_cast<int>(position[1]));
@@ -647,83 +687,119 @@ TEST_CASE("QRenderWindow clears selection and reports precision update errors", 
             data->style_->OnLeftButtonUp();
             completed = true;
         });
-        return renderUntil(quick_window, [&] { return completed.load() && has_selection_size(1); });
+        return renderUntil(quick_window, [&] {
+            return completed.load() && selection_ids() == std::vector<Index> { expected_id };
+        });
     };
-    REQUIRE(select_sphere());
-
-    // 正常入口切档在重建前发布空选择，目标属性随请求即时更新。
-    item.setSurfacePrecision(3);
-    CHECK(item.getSurfacePrecision() == 3);
-    REQUIRE(renderUntil(quick_window, [&] { return has_selection_size(0); }));
-    CHECK(failure_reports == 0);
-    REQUIRE(select_sphere());
-
-    // 外层负责报告三类异常；请求档位保留，不要求失败组件回滚或补偿。
-    completed = false;
-    item.dispatch_async([&](vtkRenderWindow*, QQuickVTKItem::vtkUserData) {
-        failure = std::make_unique<SurfacePrecisionFailure>(1, failure_kind);
-    });
-    item.setSurfacePrecision(0);
-    item.dispatch_async([&](vtkRenderWindow*, QQuickVTKItem::vtkUserData user_data) {
-        auto* data = QRenderWindow::Data::SafeDownCast(user_data);
-        manager_precision = data->geometry_actor_manager_->getSurfacePrecision();
-        failure_rebuilds = failure->rebuilds();
-        failure.reset();
-        completed = true;
-    });
-    REQUIRE(renderUntil(quick_window, [&] { return completed.load() && failure_reports == 1; }));
-    CHECK(failure_rebuilds == 1);
-    CHECK(manager_precision == 0);
-    CHECK(item.getSurfacePrecision() == 0);
-    CHECK(has_selection_size(0));
-    CHECK_FALSE(reported_failure.isEmpty());
-    CHECK(status.getMessage().contains(reported_failure));
-
-    // 切换到其他档位会重新遍历全部组件，之后可以再次拾取。
-    completed = false;
-    item.setSurfacePrecision(1);
-    item.dispatch_async([&](vtkRenderWindow*, QQuickVTKItem::vtkUserData user_data) {
-        auto* data = QRenderWindow::Data::SafeDownCast(user_data);
-        auto actor = data->geometry_actor_manager_->getComponentActor(component_id);
-        auto* mapper = vtkPolyDataMapper::SafeDownCast(GeometryActorSelectOp(actor).getPolyActor().GetMapper());
-        triangle_count = mapper->GetInput()->GetNumberOfCells();
-        manager_precision = data->geometry_actor_manager_->getSurfacePrecision();
-        completed = true;
-    });
-    REQUIRE(renderUntil(quick_window, [&] { return completed.load(); }));
-    CHECK(triangle_count > 0);
-    CHECK(manager_precision == 1);
-    CHECK(item.getSurfacePrecision() == 1);
-    CHECK(failure_reports == 1);
-    REQUIRE(select_sphere());
+    quick_window.show();
+    REQUIRE(read_scene());
+    REQUIRE(state.exists);
+    CHECK(state.bounds[0] == Catch::Approx(-10.0).margin(0.1));
+    CHECK(state.bounds[1] == Catch::Approx(10.0).margin(0.1));
+    const auto fine_triangles = state.triangles;
+    REQUIRE(fine_triangles > 0);
+    REQUIRE(pick_sphere("GeometryFace", 0.0, 10.0, original_face_id));
+    REQUIRE(read_scene());
+    REQUIRE(state.highlight_cells > 0);
 
     const int updates_before_same_level = target_updates;
-    completed = false;
-    item.setSurfacePrecision(1);
-    item.dispatch_async([&](vtkRenderWindow*, QQuickVTKItem::vtkUserData) { completed = true; });
-    REQUIRE(renderUntil(quick_window, [&] { return completed.load(); }));
+    item.setSurfacePrecision(3);
+    REQUIRE(read_scene());
     CHECK(target_updates == updates_before_same_level);
-    CHECK(has_selection_size(1));
+    CHECK(selection_ids() == std::vector<Index> { original_face_id });
 
-    // 释放真实场景图后，通过模型查询恢复几何、目标档位及选择注册。
+    // 正常清理入口发布空结果并清高亮；改变显示精度不生成模型历史。
+    const int selections_before_switch = selection_updates;
+    item.setSurfacePrecision(0);
+    REQUIRE(renderUntil(quick_window, [&] {
+        return selection_updates > selections_before_switch && selection_ids().empty();
+    }));
+    REQUIRE(read_scene());
+    CHECK(state.highlight_cells == 0);
+    REQUIRE(state.triangles < fine_triangles);
+    const auto coarse_triangles = state.triangles;
+    const auto coarse_bounds = state.bounds;
+    CHECK_FALSE(undo.canUndo());
+    REQUIRE(pick_sphere("GeometrySolid", 0.0, 10.0, original_solid_id));
+    item.setSurfacePrecision(3);
+    REQUIRE(read_scene());
+    CHECK(state.triangles == fine_triangles);
+    REQUIRE(pick_sphere("GeometryFace", 0.0, 10.0, original_face_id));
+
+    {
+        ModelScope operation(layer, &undo, "替换几何");
+        layer.getComponentOperator(component_id)->replaceGeometryRoot(BRepPrimAPI_MakeSphere(gp_Pnt(25.0, 0.0, 0.0), 6.0).Shape());
+    }
+    const auto replaced_face_id = layer.findComponent(component_id)->geometry->index.faceGlobalId(1);
+    const auto replaced_solid_id = layer.findComponent(component_id)->geometry->index.solidGlobalId(1);
+    REQUIRE(replaced_face_id != original_face_id);
+    REQUIRE(read_scene());
+    CHECK(state.bounds[0] == Catch::Approx(19.0).margin(0.1));
+    CHECK(state.bounds[1] == Catch::Approx(31.0).margin(0.1));
+    REQUIRE(pick_sphere("GeometryFace", 25.0, 6.0, replaced_face_id));
+
+    // 对真实历史执行 undo/redo：几何、gid 恢复，显示使用恢复时的窗口档位。
+    item.setSurfacePrecision(0);
+    REQUIRE(read_scene());
+    const auto replaced_coarse_triangles = state.triangles;
+    const auto replaced_coarse_bounds = state.bounds;
+    REQUIRE(undo.undoLabel() == "替换几何");
+    REQUIRE(undo.undo());
+    REQUIRE(read_scene());
+    // 显示边界由当前离散网格决定，与恢复前同几何、同档位的实际输出比较。
+    for (std::size_t axis = 0; axis < coarse_bounds.size(); ++axis)
+        CHECK(state.bounds[axis] == Catch::Approx(coarse_bounds[axis]).margin(1.0e-6));
+    CHECK(state.triangles == coarse_triangles);
+    CHECK(layer.findComponent(component_id)->geometry->index.faceGlobalId(1) == original_face_id);
+    CHECK(layer.findComponent(component_id)->geometry->index.solidGlobalId(1) == original_solid_id);
+    REQUIRE(pick_sphere("GeometryFace", 0.0, 10.0, original_face_id));
+    REQUIRE(undo.redo());
+    REQUIRE(read_scene());
+    for (std::size_t axis = 0; axis < replaced_coarse_bounds.size(); ++axis)
+        CHECK(state.bounds[axis] == Catch::Approx(replaced_coarse_bounds[axis]).margin(1.0e-6));
+    CHECK(state.triangles == replaced_coarse_triangles);
+    CHECK(layer.findComponent(component_id)->geometry->index.faceGlobalId(1) == replaced_face_id);
+    REQUIRE(pick_sphere("GeometrySolid", 25.0, 6.0, replaced_solid_id));
+    item.setSurfacePrecision(3);
+    REQUIRE(read_scene());
+    REQUIRE(undo.undo());
+    REQUIRE(read_scene());
+    CHECK(state.triangles == fine_triangles);
+    REQUIRE(pick_sphere("GeometryFace", 0.0, 10.0, original_face_id));
+
+    {
+        ModelScope operation(layer, &undo, "删除组件");
+        layer.removeComponent(component_id);
+    }
+    REQUIRE(read_scene());
+    CHECK_FALSE(state.exists);
+    REQUIRE(undo.undo());
+    REQUIRE(read_scene());
+    CHECK(state.exists);
+    CHECK(state.triangles == fine_triangles);
+    CHECK(layer.findComponent(component_id)->geometry->index.faceGlobalId(1) == original_face_id);
+    REQUIRE(pick_sphere("GeometryFace", 0.0, 10.0, original_face_id));
+
+    item.setComponentVisibility(component_id, false);
+    REQUIRE(read_scene());
+    CHECK_FALSE(state.visible);
+    item.setComponentVisibility(component_id, true);
+    REQUIRE(read_scene());
+    CHECK(state.visible);
+    REQUIRE(pick_sphere("GeometryFace", 0.0, 10.0, original_face_id));
+
+    std::atomic_bool scene_invalidated {};
     const auto invalidated_connection = QObject::connect(&quick_window, &QQuickWindow::sceneGraphInvalidated, &quick_window, [&] { scene_invalidated = true; }, Qt::DirectConnection);
     quick_window.hide();
     quick_window.releaseResources();
     REQUIRE(renderUntil(quick_window, [&] { return scene_invalidated.load(); }));
     QObject::disconnect(invalidated_connection);
     quick_window.show();
-    REQUIRE(select_sphere());
-    completed = false;
-    item.dispatch_async([&](vtkRenderWindow*, QQuickVTKItem::vtkUserData user_data) {
-        auto* data = QRenderWindow::Data::SafeDownCast(user_data);
-        auto actor = data->geometry_actor_manager_->getComponentActor(component_id);
-        auto* mapper = vtkPolyDataMapper::SafeDownCast(GeometryActorSelectOp(actor).getPolyActor().GetMapper());
-        rebuilt_triangle_count = mapper->GetInput()->GetNumberOfCells();
-        manager_precision = data->geometry_actor_manager_->getSurfacePrecision();
-        completed = true;
-    });
-    REQUIRE(renderUntil(quick_window, [&] { return completed.load(); }));
-    CHECK(rebuilt_triangle_count == triangle_count);
-    CHECK(manager_precision == 1);
-    CHECK(item.getSurfacePrecision() == 1);
+    REQUIRE(read_scene());
+    CHECK(state.exists);
+    CHECK(state.triangles == fine_triangles);
+    CHECK(item.getSurfacePrecision() == 3);
+    REQUIRE(pick_sphere("GeometryFace", 0.0, 10.0, original_face_id));
+    observer.item = nullptr;
+    layer.setUndoRecorder(nullptr);
 }

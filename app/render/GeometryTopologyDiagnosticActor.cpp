@@ -201,15 +201,12 @@ GeometryTopologyDiagnosticActor::~GeometryTopologyDiagnosticActor()
     renderer_->RemoveActor(small_face_marker_.actor);
 }
 
-void GeometryTopologyDiagnosticActor::refreshDisplay(vtkPolyData* lines, vtkPolyData* polygons)
+void GeometryTopologyDiagnosticActor::refreshDisplay()
 {
-    line_data_ = lines;
-    face_data_ = polygons;
     // 精细度只改变三角化，分析结果和尺寸标记仍对应同一份几何拓扑。
     for (size_t index = 0; index < pipelines_.size(); ++index) {
         if (category_enabled_[index] && category_computed_[index])
-            extractCategory(static_cast<GeometryTopologyDiagnosticCategory>(index),
-                line_data_, face_data_, *pipelines_[index].data, *invalid_edge_pipeline_.data);
+            extractCategory(static_cast<GeometryTopologyDiagnosticCategory>(index));
     }
     applyVisibility();
 }
@@ -485,14 +482,12 @@ void GeometryTopologyDiagnosticActor::logDiagnosticDetails(
 void GeometryTopologyDiagnosticActor::rebuildCategory(GeometryTopologyDiagnosticCategory category)
 {
     ensureDiagnostics(category);
-    extractCategory(category, line_data_, face_data_,
-        *pipelines_[categoryIndex(category)].data, *invalid_edge_pipeline_.data);
+    extractCategory(category);
     if (diagnostics_)
         rebuildSizeMarker(category);
 }
 
-void GeometryTopologyDiagnosticActor::extractCategory(GeometryTopologyDiagnosticCategory category,
-    vtkPolyData* lines, vtkPolyData* faces, vtkPolyData& output, vtkPolyData& invalid_edges) const
+void GeometryTopologyDiagnosticActor::extractCategory(GeometryTopologyDiagnosticCategory category)
 {
     if (!diagnostics_)
         return;
@@ -554,9 +549,10 @@ void GeometryTopologyDiagnosticActor::extractCategory(GeometryTopologyDiagnostic
         break;
     }
     const bool edge_category = isEdgeCategory(category);
-    extractDiagnosticCells(edge_category ? lines : faces, ids, output);
+    extractDiagnosticCells(edge_category ? line_data_ : face_data_, ids,
+        *pipelines_[categoryIndex(category)].data);
     if (category == GeometryTopologyDiagnosticCategory::InvalidTopology)
-        extractDiagnosticCells(lines, invalid_edge_ids, invalid_edges);
+        extractDiagnosticCells(line_data_, invalid_edge_ids, *invalid_edge_pipeline_.data);
 }
 
 void GeometryTopologyDiagnosticActor::rebuildSizeMarker(

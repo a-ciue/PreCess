@@ -3,8 +3,6 @@
 #include "Core.h"
 #include "GeometryDataVtk.h"
 #include "GeometrySubshapeIndex.h"
-#include "GeometryTopologyDiagnosticActor.h"
-#include "SurfacePrecision.h"
 #include <vtkActor.h>
 #include <vtkNew.h>
 #include <vtkSmartPointer.h>
@@ -26,8 +24,8 @@ public:
     GeometryActor(vtkRenderer* renderer);
     ~GeometryActor();
 
-    void loadShape(const GeometryDataVtk& geometry_data, int precision = surface_precision::kDefault);
-    /** @brief 重建私有拓扑的显示网格；调用侧负责清空选择及更新 Picker 注册。 */
+    void loadShape(const GeometryDataVtk& geometry_data);
+    /** @brief 按有效档位重建显示网格并刷新诊断覆盖层。 */
     void setSurfacePrecision(int precision);
 
     void setVisibility(bool visibility);
@@ -47,8 +45,7 @@ private:
     GeometryRenderStyle style_ { GeometryRenderStyle::SurfaceWithEdges };
     bool visibility_;
     OccShapeHandle occ_shape_;
-    // 显示和拾取共用私有拓扑；业务身份通过复制历史映射。
-    std::unique_ptr<GeometrySubshapeIndex> picking_geometry_index_;
+    const GeometrySubshapeIndex* geometry_index_;
 
     vtkNew<vtkActor> poly_actor_;
     vtkNew<vtkActor> line_actor_;

@@ -34,7 +34,6 @@ public:
 
     /** @brief 设置窗口精细度；调用侧保证档位有效，逐组件更新，失败时向外抛出。 */
     void setSurfacePrecision(int precision);
-    int getSurfacePrecision() const { return surface_precision_; }
 
     /** @brief 设置窗口级几何拓扑诊断类别是否启用。 */
     void setTopologyDiagnosticCategoryEnabled(int category, bool enabled);

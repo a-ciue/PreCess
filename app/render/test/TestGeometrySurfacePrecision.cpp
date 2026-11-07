@@ -5,23 +5,23 @@
 #include "GeometryDataVtk.h"
 #include "GeometryRegistry.h"
 #include "GeometrySelectManager.h"
-#include "SurfacePrecisionFailure.h"
 
 #include <BRepAdaptor_Curve.hxx>
 #include <BRepBuilderAPI_Copy.hxx>
 #include <BRepBuilderAPI_MakeEdge.hxx>
 #include <BRepBuilderAPI_MakeFace.hxx>
 #include <BRepBuilderAPI_MakeVertex.hxx>
-#include <BRepMesh_IncrementalMesh.hxx>
 #include <BRepPrimAPI_MakeBox.hxx>
 #include <BRepPrimAPI_MakeSphere.hxx>
 #include <BRep_Builder.hxx>
 #include <BRep_Tool.hxx>
+#include <Geom_BSplineSurface.hxx>
 #include <IVtkOCC_Shape.hxx>
 #include <IVtkTools_ShapeDataSource.hxx>
 #include <IVtkTools_SubPolyDataFilter.hxx>
 #include <IVtkVTK_ShapeData.hxx>
-#include <Poly_Triangulation.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_Array2.hxx>
 #include <Prs3d_Drawer.hxx>
 #include <TopExp_Explorer.hxx>
 #include <TopoDS.hxx>
@@ -127,40 +127,6 @@ void checkRepick(GeometrySelectManager& selection, const std::array<double, 2>& 
     CHECK(selection.getSelection()->ids == expected);
 }
 
-struct TriangulationSnapshot {
-    TopoDS_Face face;
-    Handle(Poly_Triangulation) triangulation;
-    int triangle_count;
-    double deflection;
-};
-
-std::vector<TriangulationSnapshot> captureTriangulations(const TopoDS_Shape& shape)
-{
-    std::vector<TriangulationSnapshot> result;
-    for (TopExp_Explorer faces(shape, TopAbs_FACE); faces.More(); faces.Next()) {
-        TopoDS_Face face = TopoDS::Face(faces.Current());
-        TopLoc_Location location;
-        auto triangulation = BRep_Tool::Triangulation(face, location);
-        result.push_back({ face, triangulation,
-            triangulation.IsNull() ? 0 : triangulation->NbTriangles(),
-            triangulation.IsNull() ? 0.0 : triangulation->Deflection() });
-    }
-    return result;
-}
-
-void checkTriangulationsUnchanged(const std::vector<TriangulationSnapshot>& snapshots)
-{
-    for (const auto& snapshot : snapshots) {
-        TopLoc_Location location;
-        const auto triangulation = BRep_Tool::Triangulation(snapshot.face, location);
-        REQUIRE(triangulation == snapshot.triangulation);
-        if (!triangulation.IsNull()) {
-            CHECK(triangulation->NbTriangles() == snapshot.triangle_count);
-            CHECK(triangulation->Deflection() == snapshot.deflection);
-        }
-    }
-}
-
 std::vector<vtkIdType> topologyCells(vtkPolyData& data, const OccShapeHandle& shape, bool faces)
 {
     auto* ids = data.GetCellData()->GetArray(IVtkVTK_ShapeData::ARRNAME_SUBSHAPE_IDS());
@@ -228,26 +194,17 @@ void checkTopologyCells(vtkPolyData& actual, vtkPolyData& source,
 
 TEST_CASE("CAD surface precision rebuilds in both directions and applies to later imports", "[geometry][precision]")
 {
-    // 独立基准形状避免旧显示链路的三角缓存影响被测业务形状。
+    // 独立形状核对基线标准参数生成的默认输出。
     const OccShapeHandle reference_occ = new IVtkOCC_Shape(BRepPrimAPI_MakeSphere(10.0).Shape());
     vtkNew<IVtkTools_ShapeDataSource> reference_source;
     reference_source->SetShape(reference_occ);
     reference_source->Update();
 
     GeometryScene scene(BRepPrimAPI_MakeSphere(10.0).Shape());
-    BRepMesh_IncrementalMesh source_mesh(*scene.geometry.rootShape, 0.7, false, 0.4, true);
-    REQUIRE(source_mesh.IsDone());
-    const auto original_caches = captureTriangulations(*scene.geometry.rootShape);
-    REQUIRE_FALSE(original_caches.empty());
-    REQUIRE_FALSE(original_caches.front().triangulation.IsNull());
-    const auto snapshot = scene.geometry.clone();
-    const auto snapshot_caches = captureTriangulations(*snapshot->rootShape);
     scene.load();
-    CHECK(scene.manager.getSurfacePrecision() == 1);
     CHECK(scene.polygons()->GetNumberOfPolys() == reference_source->GetOutput()->GetNumberOfPolys());
     CHECK(scene.lines()->GetNumberOfCells()
         == static_cast<vtkIdType>(topologyCells(*reference_source->GetOutput(), reference_occ, false).size()));
-    checkTriangulationsUnchanged(original_caches);
     auto* original_polygons = scene.polygons();
     auto* original_actor = &GeometryActorSelectOp(scene.actor()).getPolyActor();
     std::array<vtkIdType, 4> counts {};
@@ -256,8 +213,6 @@ TEST_CASE("CAD surface precision rebuilds in both directions and applies to late
         counts[precision] = scene.polygons()->GetNumberOfPolys();
         CHECK(scene.polygons() == original_polygons);
         CHECK(&GeometryActorSelectOp(scene.actor()).getPolyActor() == original_actor);
-        checkTriangulationsUnchanged(original_caches);
-        checkTriangulationsUnchanged(snapshot_caches);
     }
     INFO("sphere triangle counts: " << counts[0] << ", " << counts[1] << ", " << counts[2] << ", " << counts[3]);
     REQUIRE(counts[0] > 0);
@@ -298,7 +253,7 @@ TEST_CASE("CAD mesh classification preserves topology cells identities and norma
     auto* original_mapper = GeometryActorSelectOp(scene.actor()).getPolyActor().GetMapper();
     for (int precision : { 1, 0, 3, 0 }) {
         CAPTURE(precision);
-        // 独立 OCCT 输出作参照，不复用被测分类器或私有拓扑。
+        // 独立 OCCT 输出作参照，不复用被测分类器。
         BRepBuilderAPI_Copy reference_copy(compound, false, false);
         REQUIRE(reference_copy.IsDone());
         const OccShapeHandle reference = new IVtkOCC_Shape(reference_copy.Shape());
@@ -402,11 +357,6 @@ TEST_CASE("CAD nonstandard initial precision supports registered picking before 
         SelectMode::GeometryFace, SelectMode::GeometrySolid);
     BRepPrimAPI_MakeBox box(10.0, 10.0, 10.0);
     GeometryScene scene(box.Shape());
-    BRepMesh_IncrementalMesh source_mesh(*scene.geometry.rootShape, 0.7, false, 0.4, true);
-    REQUIRE(source_mesh.IsDone());
-    const auto original_caches = captureTriangulations(*scene.geometry.rootShape);
-    const auto snapshot = scene.geometry.clone();
-    const auto snapshot_caches = captureTriangulations(*snapshot->rootShape);
     scene.manager.setSurfacePrecision(initial_precision);
 
     vtkNew<vtkActor> highlight;
@@ -454,10 +404,8 @@ TEST_CASE("CAD nonstandard initial precision supports registered picking before 
     const auto display = scene.project(point);
     selection.select(display[0], display[1]);
     REQUIRE(selection.getSelection()->ids == expected);
-    checkTriangulationsUnchanged(original_caches);
-    checkTriangulationsUnchanged(snapshot_caches);
 
-    // 宿主在切档前清空选择；重新建立的 Picker 必须仍能解析点、边、面和体。
+    // 宿主在切档前清空选择；既有 Picker 缓存继续解析点、边、面和体。
     selection.clearSelection();
     auto* highlight_data = vtkPartitionedDataSet::SafeDownCast(
         highlight->GetMapper()->GetInputDataObject(0, 0));
@@ -470,19 +418,99 @@ TEST_CASE("CAD nonstandard initial precision supports registered picking before 
     REQUIRE(selection.getSelection()->ids == expected);
     checkRepick(selection, display, expected);
     CHECK(highlight_data->GetNumberOfCells() > 0);
-    checkTriangulationsUnchanged(original_caches);
-    checkTriangulationsUnchanged(snapshot_caches);
+}
+
+TEST_CASE("CAD spline face and curved edge picking stay stable across display precision and mode changes", "[geometry][precision][render]")
+{
+    const int initial_precision = GENERATE(0, 3);
+    NCollection_Array2<gp_Pnt> poles(1, 4, 1, 4);
+    for (int u = 0; u < 4; ++u) {
+        for (int v = 0; v < 4; ++v) {
+            const double z = (u == 1 || u == 2 ? 5.0 : 0.0)
+                + (v == 1 || v == 2 ? 3.0 : 0.0);
+            poles.SetValue(u + 1, v + 1, gp_Pnt(10.0 * u / 3.0, 10.0 * v / 3.0, z));
+        }
+    }
+    NCollection_Array1<double> knots(1, 2);
+    knots.SetValue(1, 0.0);
+    knots.SetValue(2, 1.0);
+    NCollection_Array1<int> multiplicities(1, 2);
+    multiplicities.Init(4);
+    const Handle(Geom_BSplineSurface) surface = new Geom_BSplineSurface(
+        poles, knots, knots, multiplicities, multiplicities, 3, 3);
+    GeometryScene scene(BRepBuilderAPI_MakeFace(surface, 1.0e-7).Shape());
+    scene.manager.setSurfacePrecision(initial_precision);
+    vtkNew<vtkActor> highlight;
+    highlight->PickableOff();
+    scene.renderer->AddActor(highlight);
+    // 使用窗口的真实顺序：先创建 Picker，再按标准网格初始化全部模式，最后显示请求档位。
+    GeometrySelectManager selection(*scene.renderer, *highlight, scene.manager.op());
+    scene.load();
+    scene.lookDownZ(gp_Pnt(5.0, 5.0, 0.0));
+
+    const std::array<SelectMode, 3> modes {
+        SelectMode::GeometryFace, SelectMode::GeometryEdge, SelectMode::GeometryVertex
+    };
+    const std::array<gp_Pnt, 3> points {
+        surface->Value(0.5, 0.5), surface->Value(0.5, 0.0), surface->Value(0.0, 0.0)
+    };
+    std::array<Index, 3> expected_ids { scene.geometry.index.faceGlobalId(1), -1, -1 };
+    const auto& edges = scene.geometry.index.type_maps[GeometrySubshapeIndex::typeIndex(TopAbs_EDGE)];
+    for (int local = 1; local <= edges.Extent(); ++local) {
+        BRepAdaptor_Curve curve(TopoDS::Edge(edges.FindKey(local)));
+        if (curve.Value((curve.FirstParameter() + curve.LastParameter()) * 0.5).Distance(points[1]) < 1.0e-7)
+            expected_ids[1] = scene.geometry.index.edgeGlobalId(local);
+    }
+    const auto& vertices = scene.geometry.index.type_maps[GeometrySubshapeIndex::typeIndex(TopAbs_VERTEX)];
+    for (int local = 1; local <= vertices.Extent(); ++local) {
+        if (BRep_Tool::Pnt(TopoDS::Vertex(vertices.FindKey(local))).Distance(points[2]) < 1.0e-7)
+            expected_ids[2] = scene.geometry.index.vertexGlobalId(local);
+    }
+    for (const auto id : expected_ids)
+        REQUIRE(id >= 0);
+
+    auto pick_samples = [&](size_t mode_index) {
+        selection.setSelectMode(modes[mode_index]);
+        const auto display = scene.project(points[mode_index]);
+        selection.select(display[0], display[1]);
+        REQUIRE(selection.getSelection()->ids == std::vector<Index> { expected_ids[mode_index] });
+        std::vector<std::vector<Index>> samples;
+        for (const int dx : { -2, 0, 2 }) {
+            for (const int dy : { -2, 0, 2 }) {
+                selection.clearSelection();
+                selection.select(display[0] + dx, display[1] + dy);
+                samples.push_back(selection.getSelection()->ids);
+            }
+        }
+        selection.clearSelection();
+        return samples;
+    };
+    std::array<std::vector<std::vector<Index>>, 3> initial_hits;
+    for (size_t mode = 0; mode < modes.size(); ++mode)
+        initial_hits[mode] = pick_samples(mode);
+
+    for (const int precision : { 3, 0, 2, 1, 0 }) {
+        CAPTURE(initial_precision, precision);
+        selection.clearSelection();
+        scene.manager.setSurfacePrecision(precision);
+        scene.window->Render();
+        // 反复切换模式，命中仍来自加载阶段建立的标准精度缓存。
+        for (size_t mode = 0; mode < modes.size(); ++mode) {
+            CAPTURE(mode);
+            CHECK(pick_samples(mode) == initial_hits[mode]);
+        }
+    }
 }
 
 TEST_CASE("CAD hidden geometry restores picking after precision rebuild", "[geometry][precision][render]")
 {
     const bool component_hidden = GENERATE(false, true);
     GeometryScene scene(BRepPrimAPI_MakeSphere(10.0).Shape());
-    scene.load();
     vtkNew<vtkActor> highlight;
     highlight->PickableOff();
     scene.renderer->AddActor(highlight);
     GeometrySelectManager selection(*scene.renderer, *highlight, scene.manager.op());
+    scene.load();
     selection.setSelectMode(SelectMode::GeometryFace);
     scene.lookDownZ(gp_Pnt(0.0, 0.0, 0.0));
     const auto display = scene.project(gp_Pnt(3.0, 2.0, std::sqrt(87.0)));
@@ -505,7 +533,8 @@ TEST_CASE("CAD hidden geometry restores picking after precision rebuild", "[geom
         CHECK_FALSE(scene.actor()->isVisible());
         CHECK(selection.getSelection()->ids.empty());
 
-        scene.manager.setVisibility(kComponentId, true);
+        if (component_hidden)
+            scene.manager.setVisibility(kComponentId, true);
         scene.manager.setCurrentRenderStyle(style);
         scene.window->Render();
         REQUIRE(scene.actor()->isVisible());
@@ -611,7 +640,6 @@ TEST_CASE("CAD precision refresh reuses diagnostic results and updates overlays 
     const int actor_count = actors->GetNumberOfItems();
     auto* overlay_data = vtkPolyDataMapper::SafeDownCast(overlay->GetMapper())->GetInput();
     std::array<vtkIdType, 4> connectivity_counts {};
-    SurfacePrecisionFailure observations(1000);
     for (int precision : { 0, 3, 1, 2 }) {
         scene.manager.setSurfacePrecision(precision);
         wireframe_mapper->Update();
@@ -627,7 +655,6 @@ TEST_CASE("CAD precision refresh reuses diagnostic results and updates overlays 
         CHECK(marker_data->GetNumberOfPoints() == marker_count);
         CHECK(marker_data->GetPoints() == marker_points);
         CHECK(actors->GetNumberOfItems() == actor_count);
-        CHECK(observations.diagnosticLogs() == 0);
     }
     // 曲边的折线顶点数与曲面的三角化均随精度变化，叠加必须使用新网格。
     CHECK(connectivity_counts[3] > connectivity_counts[0]);

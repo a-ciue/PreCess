@@ -253,8 +253,6 @@ signals:
     void selectionRevisionChanged();
     void geometryStyleChanged();
     void surfacePrecisionChanged();
-    /** @brief 曲面切档失败后在 GUI 线程报告，交给统一状态栏展示。 */
-    void surfacePrecisionFailed(const QString& error);
     void meshStyleChanged();
     void clicked();
     void rightClicked();

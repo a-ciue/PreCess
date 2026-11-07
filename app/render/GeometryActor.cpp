@@ -1,11 +1,10 @@
 #include "GeometryActor.h"
 #include "Core.h"
 #include "GeometryTopologyDiagnosticActor.h"
-#include <BRepBuilderAPI_Copy.hxx>
+#include "SurfacePrecision.h"
 #include <BRepTools.hxx>
 #include <IVtkTools_ShapeDataSource.hxx>
 #include <IVtkVTK_ShapeData.hxx>
-#include <IVtk_Types.hxx>
 #include <Prs3d_Drawer.hxx>
 #include <TopoDS_Shape.hxx>
 #include <vtkCellArray.h>
@@ -18,10 +17,7 @@
 #include <vtkProperty.h>
 #include <vtkRenderer.h>
 
-#include <chrono>
 #include <cmath>
-#include <spdlog/spdlog.h>
-#include <stdexcept>
 #include <utility>
 
 GeometryActor::GeometryActor(vtkRenderer* renderer)
@@ -38,32 +34,13 @@ GeometryActor::~GeometryActor()
     deleteGeometryActor();
 }
 
-void GeometryActor::loadShape(const GeometryDataVtk& geometry_data, int precision)
+void GeometryActor::loadShape(const GeometryDataVtk& geometry_data)
 {
-    // 只复制一次拓扑供显示和拾取共用，隔离模型及撤销前像的三角缓存。
-    BRepBuilderAPI_Copy copy(geometry_data.shape, false, false);
-    if (!copy.IsDone())
-        throw std::runtime_error("无法创建几何渲染副本");
-    occ_shape_ = new IVtkOCC_Shape(copy.Shape());
+    // 直接沿用模型形状及索引，显示重建只更新可再生的离散缓存。
+    occ_shape_ = new IVtkOCC_Shape(geometry_data.shape);
     occ_shape_->SetId(static_cast<IVtk_IdType>(geometry_data.component_id));
-    picking_geometry_index_.reset();
-    if (geometry_data.geometry_index) {
-        const auto& original = *geometry_data.geometry_index;
-        picking_geometry_index_ = std::make_unique<GeometrySubshapeIndex>();
-        auto& picking = *picking_geometry_index_;
-        // 身份向量直接沿用；拓扑映射只构造一次，不先复制再清空。
-        picking.vertex_local_to_global = original.vertex_local_to_global;
-        picking.edge_local_to_global = original.edge_local_to_global;
-        picking.face_local_to_global = original.face_local_to_global;
-        picking.solid_local_to_global = original.solid_local_to_global;
-        for (int type = 0; type < GeometrySubshapeIndex::kTypeCount; ++type) {
-            const auto& original_map = original.type_maps[type];
-            for (int local = 1; local <= original_map.Extent(); ++local)
-                picking.type_maps[type].Add(copy.ModifiedShape(original_map.FindKey(local)));
-        }
-        picking.built = original.built;
-    }
-    rebuildMesh(precision);
+    geometry_index_ = geometry_data.geometry_index;
+    rebuildMesh(surface_precision::kDefault);
     topology_diagnostics_->loadShape(occ_shape_->GetShape(), occ_shape_,
         line_only_, poly_only_);
     createActors();
@@ -72,12 +49,11 @@ void GeometryActor::loadShape(const GeometryDataVtk& geometry_data, int precisio
 void GeometryActor::setSurfacePrecision(int precision)
 {
     rebuildMesh(precision);
-    topology_diagnostics_->refreshDisplay(line_only_, poly_only_);
+    topology_diagnostics_->refreshDisplay();
 }
 
 void GeometryActor::rebuildMesh(int precision)
 {
-    const auto started = std::chrono::steady_clock::now();
     // OCCT 通常复用已有的更细三角化；先清缓存保证细到粗切档也生效。
     BRepTools::Clean(occ_shape_->GetShape());
     const auto& settings = surface_precision::kLevels[static_cast<size_t>(precision)];
@@ -91,34 +67,21 @@ void GeometryActor::rebuildMesh(int precision)
     const vtkIdType nL = src->GetNumberOfLines();
     const vtkIdType nP = src->GetNumberOfPolys();
 
-    auto* mesh_types = vtkIdTypeArray::SafeDownCast(
-        src->GetCellData()->GetArray(IVtkVTK_ShapeData::ARRNAME_MESH_TYPES()));
-    auto* subshape_ids = vtkIdTypeArray::SafeDownCast(
+    auto* subshape_ids = static_cast<vtkIdTypeArray*>(
         src->GetCellData()->GetArray(IVtkVTK_ShapeData::ARRNAME_SUBSHAPE_IDS()));
-    if (!mesh_types || !subshape_ids)
-        throw std::runtime_error("OCCT 显示网格缺少类型或子形状身份数组");
 
-    // OCCT 面边和拓扑边使用相同类型，结合归属身份单轮分类，避免两轮过滤。
+    // 沿用 OCCT 的点、线、面区段；点线区段只保留真正归属拓扑点、边的单元。
     vtkNew<vtkIdList> line_cells;
     vtkNew<vtkIdList> face_cells;
     line_cells->Allocate(nV + nL);
     face_cells->Allocate(nP);
-    for (vtkIdType cell_id = 0; cell_id < src->GetNumberOfCells(); ++cell_id) {
-        const auto mesh_type = static_cast<IVtk_MeshType>(mesh_types->GetValue(cell_id));
-        vtkIdList* output = nullptr;
-        if (mesh_type == MT_ShadedFace) {
-            output = face_cells;
-        } else if (mesh_type == MT_FreeVertex || mesh_type == MT_SharedVertex
-            || mesh_type == MT_FreeEdge || mesh_type == MT_BoundaryEdge
-            || mesh_type == MT_SharedEdge || mesh_type == MT_SeamEdge) {
-            // OCCT 还会用面 ID 重复输出同类型的边；只显示真正归属点、边的单元。
-            const auto owner_type = occ_shape_->GetSubShape(subshape_ids->GetValue(cell_id)).ShapeType();
-            if (owner_type == TopAbs_VERTEX || owner_type == TopAbs_EDGE)
-                output = line_cells;
-        }
-        if (output)
-            output->InsertNextId(cell_id);
+    for (vtkIdType cell_id = 0; cell_id < nV + nL; ++cell_id) {
+        const auto owner_type = occ_shape_->GetSubShape(subshape_ids->GetValue(cell_id)).ShapeType();
+        if (owner_type == TopAbs_VERTEX || owner_type == TopAbs_EDGE)
+            line_cells->InsertNextId(cell_id);
     }
+    for (vtkIdType cell_id = nV + nL; cell_id < nV + nL + nP; ++cell_id)
+        face_cells->InsertNextId(cell_id);
     line_only_->Initialize();
     poly_only_->Initialize();
     line_only_->AllocateExact(nV, nV, nL, src->GetLines()->GetNumberOfConnectivityIds(),
@@ -133,12 +96,6 @@ void GeometryActor::rebuildMesh(int precision)
         data->GetCellData()->CopyAllocate(src->GetCellData(), cells->GetNumberOfIds());
         data->CopyCells(src, cells);
     }
-
-    const double elapsed_ms = std::chrono::duration<double, std::milli>(
-        std::chrono::steady_clock::now() - started)
-                                  .count();
-    spdlog::debug("[SurfacePrecision] component={} level={} triangles={} rebuild_ms={:.1f}",
-        occ_shape_->GetId(), precision, nP, elapsed_ms);
 }
 
 void GeometryActor::createActors()
@@ -149,8 +106,6 @@ void GeometryActor::createActors()
 
     poly_actor_->SetMapper(poly_mapper);
     poly_actor_->GetProperty()->SetColor(200.0 / 255.0, 200.0 / 255.0, 200.0 / 255.0);
-    poly_actor_->GetProperty()->SetRepresentationToSurface();
-    poly_actor_->GetProperty()->SetLineWidth(1);
     renderer_->AddActor(poly_actor_);
 
     vtkNew<vtkPolyDataMapper> line_mapper;
@@ -208,34 +163,64 @@ GeometryTopologyDiagnosticActor& GeometryActor::topologyDiagnostics()
 
 void GeometryActor::applyStyle()
 {
-    double opacity = 1.0;
-    bool show_topology_edges = true;
-    bool show_mesh_edges = false;
+    if (style_ == GeometryRenderStyle::Hidden || !visibility_) {
+        poly_actor_->SetVisibility(false);
+        line_actor_->SetVisibility(false);
+        return;
+    }
+
     switch (style_) {
+    case GeometryRenderStyle::SurfaceWithEdges:
+        poly_actor_->SetVisibility(true);
+        poly_actor_->GetProperty()->SetRepresentationToSurface();
+        poly_actor_->GetProperty()->SetEdgeVisibility(false);
+        poly_actor_->GetProperty()->SetOpacity(1.0);
+        line_actor_->SetVisibility(true);
+        break;
     case GeometryRenderStyle::Surface:
-        show_topology_edges = false;
+        poly_actor_->SetVisibility(true);
+        poly_actor_->GetProperty()->SetRepresentationToSurface();
+        poly_actor_->GetProperty()->SetEdgeVisibility(false);
+        poly_actor_->GetProperty()->SetOpacity(1.0);
+        line_actor_->SetVisibility(false);
         break;
     case GeometryRenderStyle::Transparent75:
-        opacity = 0.75;
+        poly_actor_->SetVisibility(true);
+        poly_actor_->GetProperty()->SetRepresentationToSurface();
+        poly_actor_->GetProperty()->SetEdgeVisibility(false);
+        poly_actor_->GetProperty()->SetOpacity(0.75);
+        line_actor_->SetVisibility(true);
         break;
     case GeometryRenderStyle::Transparent50:
-        opacity = 0.50;
+        poly_actor_->SetVisibility(true);
+        poly_actor_->GetProperty()->SetRepresentationToSurface();
+        poly_actor_->GetProperty()->SetEdgeVisibility(false);
+        poly_actor_->GetProperty()->SetOpacity(0.50);
+        line_actor_->SetVisibility(true);
         break;
     case GeometryRenderStyle::Transparent25:
-        opacity = 0.25;
+        poly_actor_->SetVisibility(true);
+        poly_actor_->GetProperty()->SetRepresentationToSurface();
+        poly_actor_->GetProperty()->SetEdgeVisibility(false);
+        poly_actor_->GetProperty()->SetOpacity(0.25);
+        line_actor_->SetVisibility(true);
         break;
     case GeometryRenderStyle::WireframeWithLines:
-        opacity = 0.1;
-        show_mesh_edges = true;
+        poly_actor_->SetVisibility(true);
+        poly_actor_->GetProperty()->SetRepresentationToSurface();
+        poly_actor_->GetProperty()->SetEdgeVisibility(true);
+        poly_actor_->GetProperty()->SetLineWidth(1);
+        poly_actor_->GetProperty()->SetOpacity(0.1);
+        line_actor_->SetVisibility(true);
         break;
     case GeometryRenderStyle::Wireframe:
-        opacity = 0.001;
+        poly_actor_->SetVisibility(true);
+        poly_actor_->GetProperty()->SetRepresentationToSurface();
+        poly_actor_->GetProperty()->SetEdgeVisibility(false);
+        poly_actor_->GetProperty()->SetOpacity(0.001);
+        line_actor_->SetVisibility(true);
         break;
     default:
         break;
     }
-    poly_actor_->SetVisibility(isVisible());
-    line_actor_->SetVisibility(isVisible() && show_topology_edges);
-    poly_actor_->GetProperty()->SetEdgeVisibility(show_mesh_edges);
-    poly_actor_->GetProperty()->SetOpacity(opacity);
 }
