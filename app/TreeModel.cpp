@@ -4,7 +4,6 @@
 #include <QTimer>
 #include <QVariantList>
 #include <QVariantMap>
-#include <algorithm>
 #include <array>
 #include <functional>
 #include <unordered_set>
@@ -170,7 +169,7 @@ bool TreeModel::refresh()
     if (!modelQuery_)
         return false;
 
-    if (refresh_timer_ && refresh_timer_->isActive())
+    if (refresh_timer_->isActive())
         refresh_timer_->stop();
     refresh_pending_ = false;
 
@@ -179,7 +178,7 @@ bool TreeModel::refresh()
     refreshing_ = false;
 
     // 对账期间收到的新通知留到下一轮定时器消费。
-    if (refresh_pending_ && refresh_timer_ && !refresh_timer_->isActive())
+    if (refresh_pending_ && !refresh_timer_->isActive())
         refresh_timer_->start();
     return true;
 }
@@ -190,7 +189,7 @@ void TreeModel::requestRefresh()
         return;
 
     refresh_pending_ = true;
-    if (!refreshing_ && refresh_timer_ && !refresh_timer_->isActive())
+    if (!refreshing_ && !refresh_timer_->isActive())
         refresh_timer_->start();
 }
 
@@ -244,9 +243,6 @@ TreeModel::ModelNodeInfo TreeModel::queryModel(Index model_id) const
 {
     ModelNodeInfo info;
     info.id = model_id;
-    if (!modelQuery_)
-        return info;
-
     info.name = modelQuery_->getModelName(model_id);
     const QVariantList components = modelQuery_->getComponentsSummary(model_id);
     info.component_count = components.size();
@@ -425,9 +421,6 @@ void TreeModel::notifyAncestors(TreeNode* node)
 
 void TreeModel::pruneStaleVisibility()
 {
-    if (!modelQuery_)
-        return;
-
     for (auto it = sub_visibility_.begin(); it != sub_visibility_.end();) {
         if (!modelQuery_->hasComponent(it->first))
             it = sub_visibility_.erase(it);
@@ -467,11 +460,10 @@ void TreeModel::notifyNodeData(TreeNode* node, const QVector<int>& roles)
 
 void TreeModel::insertChildNode(TreeNode* parent, int row, TreeNode* node)
 {
-    if (!parent || !node)
-        return;
+    Q_ASSERT(parent);
+    Q_ASSERT(node);
+    Q_ASSERT(row >= 0 && row <= parent->children.size());
 
-    const int max_row = static_cast<int>(parent->children.size());
-    row = std::clamp(row, 0, max_row);
     const QModelIndex parent_index = indexOfNode(parent);
 
     beginInsertRows(parent_index, row, row);
@@ -482,13 +474,12 @@ void TreeModel::insertChildNode(TreeNode* parent, int row, TreeNode* node)
 
 void TreeModel::removeChildNode(TreeNode* node)
 {
-    if (!node || !node->parent)
-        return;
+    Q_ASSERT(node);
+    Q_ASSERT(node->parent);
 
     TreeNode* parent = node->parent;
     const int row = parent->children.indexOf(node);
-    if (row < 0)
-        return;
+    Q_ASSERT(row >= 0);
 
     const QModelIndex parent_index = indexOfNode(parent);
 
@@ -502,11 +493,9 @@ void TreeModel::removeChildNode(TreeNode* node)
 
 void TreeModel::moveChildNode(TreeNode* parent, int from, int to)
 {
-    if (!parent || from < 0 || from >= parent->children.size())
-        return;
-
-    const int max_row = static_cast<int>(parent->children.size()) - 1;
-    to = std::clamp(to, 0, max_row);
+    Q_ASSERT(parent);
+    Q_ASSERT(from >= 0 && from < parent->children.size());
+    Q_ASSERT(to >= 0 && to < parent->children.size());
     if (from == to)
         return;
 
@@ -523,6 +512,7 @@ void TreeModel::moveChildNode(TreeNode* parent, int from, int to)
 
 void TreeModel::reconcileAllFromQuery()
 {
+    Q_ASSERT(modelQuery_);
     const QVariantList models = modelQuery_->listModels();
 
     std::unordered_map<Index, TreeNode*> existing_models;
@@ -738,7 +728,6 @@ void TreeModel::syncGeometryNode(TreeNode* node, const GeometryNodeInfo& info)
 void TreeModel::flushPendingRefresh()
 {
     refresh();
-    emit dataSyncFinished();
 }
 
 bool TreeModel::requestVisibility(const QModelIndex& idx, bool visible)
@@ -796,8 +785,7 @@ void TreeModel::setModelQuery(QObject* query)
     if (next == modelQuery_)
         return;
 
-    if (refresh_timer_)
-        refresh_timer_->stop();
+    refresh_timer_->stop();
     refresh_pending_ = false;
     sub_visibility_.clear();
     component_lookup_.clear();

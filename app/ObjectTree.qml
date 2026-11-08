@@ -59,17 +59,6 @@ Pane {
         treeView.forceLayout()
     }
 
-    // 全部展开/折叠整个对象树的所有模型。
-    function expandAll() {
-        treeView.expandRecursively(-1, -1)
-        treeView.forceLayout()
-    }
-
-    function collapseAll() {
-        treeView.collapseRecursively(-1)
-        treeView.forceLayout()
-    }
-
     Connections {
         target: QModelManager.observer
 
@@ -466,7 +455,7 @@ Pane {
         anchors.left: treeView.left
         anchors.right: treeView.right
         y: treeView.y + objectTree._blankTop
-        height: Math.max(0, treeView.height - objectTree._blankTop)
+        height: treeView.height - objectTree._blankTop
         acceptedButtons: Qt.RightButton
 
         onClicked: blankContextMenu.popup()
@@ -477,12 +466,12 @@ Pane {
 
         MenuItem {
             text: "全部展开"
-            onTriggered: objectTree.expandAll()
+            onTriggered: objectTree.expandSubtree(-1)
         }
 
         MenuItem {
             text: "全部折叠"
-            onTriggered: objectTree.collapseAll()
+            onTriggered: objectTree.collapseSubtree(-1)
         }
     }
 

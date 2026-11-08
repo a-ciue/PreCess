@@ -123,7 +123,7 @@ TEST_CASE("TreeModel applies structural changes through row signals", "[TreeMode
 
     tree.requestRefresh();
     CHECK_FALSE(tree.findIndexByNodeId(created_id, 1).isValid());
-    REQUIRE(waitForDataSync(tree));
+    REQUIRE(waitForCondition([&] { return tree.findIndexByNodeId(created_id, 1).isValid(); }));
     CHECK(resets == 0);
     REQUIRE(tree.rowCount(model_index) == 3);
     CHECK(tree.findIndexByNodeId(created_id, 1).isValid());
@@ -400,7 +400,10 @@ TEST_CASE("TreeModel applies reported visibility to components waiting to enter 
 
     // 鍚堝苟鍒锋柊鍓嶆敹鍒?鍏ㄩ儴闅愯棌"鐨勫洖浼狅細缁勪欢灏氭湭鍏ユ爲锛岀粨鏋滃繀椤讳繚鐣欍€?
     tree.syncComponentVisibility(component_id, false, false);
-    REQUIRE(waitForDataSync(tree));
+    REQUIRE(waitForCondition([&] {
+        const auto idx = tree.findIndexByNodeId(component_id, 1);
+        return idx.isValid() && !tree.data(idx, TreeModel::IsVisibleRole).toBool();
+    }));
 
     const QModelIndex component_index = tree.findIndexByNodeId(component_id, 1);
     REQUIRE(component_index.isValid());
@@ -689,7 +692,7 @@ TEST_CASE("TreeModel consumes changes queued during a flush on the next timer", 
 
     REQUIRE(tree.refresh());
     ComponentDatas components;
-    for (int i = 0; i < 2; ++i) {
+    for (int i = 0; i < 3; ++i) {
         auto component = std::make_unique<ComponentData>();
         component->mesh = std::make_unique<MeshData>();
         components.push_back(std::move(component));
@@ -698,35 +701,35 @@ TEST_CASE("TreeModel consumes changes queued during a flush on the next timer", 
     const auto component_ids = model.modelById(model_id)->componentIds();
     const Index first_id = component_ids[0];
     const Index second_id = component_ids[1];
+    const Index third_id = component_ids[2];
     tree.refresh();
 
     auto first_operator = model.getComponentOperator(first_id);
     auto second_operator = model.getComponentOperator(second_id);
+    auto third_operator = model.getComponentOperator(third_id);
     REQUIRE(first_operator);
     REQUIRE(second_operator);
+    REQUIRE(third_operator);
     first_operator->setName("first-updated");
     second_operator->setName("second-updated");
     model.flushNotifications();
 
-    int sync_finished = 0;
     bool queued_second = false;
-    QObject::connect(&tree, &TreeModel::dataSyncFinished, [&] { ++sync_finished; });
     QObject::connect(&tree, &QAbstractItemModel::dataChanged, [&] {
         if (!queued_second) {
             queued_second = true;
+            third_operator->setName("third-updated");
             tree.requestRefresh();
         }
     });
 
     tree.requestRefresh();
-    REQUIRE(waitForDataSync(tree));
-    CHECK(sync_finished == 1);
-    REQUIRE(waitForDataSync(tree));
-    CHECK(sync_finished == 2);
-    CHECK(tree.data(tree.findIndexByNodeId(first_id, 1), TreeModel::NameRole).toString()
-        == "first-updated");
-    CHECK(tree.data(tree.findIndexByNodeId(second_id, 1), TreeModel::NameRole).toString()
-        == "second-updated");
+    REQUIRE(waitForCondition([&] {
+        return tree.data(tree.findIndexByNodeId(first_id, 1), TreeModel::NameRole).toString() == "first-updated"
+            && tree.data(tree.findIndexByNodeId(second_id, 1), TreeModel::NameRole).toString() == "second-updated"
+            && tree.data(tree.findIndexByNodeId(third_id, 1), TreeModel::NameRole).toString() == "third-updated";
+    }));
+    CHECK(queued_second);
 }
 
 TEST_CASE("TreeModel coalesces data changes and inserts components on flush", "[TreeModel]")
@@ -777,13 +780,14 @@ TEST_CASE("TreeModel coalesces data changes and inserts components on flush", "[
     tree.requestRefresh();
     CHECK(data_changed == 0);
 
-    REQUIRE(waitForDataSync(tree));
+    REQUIRE(waitForCondition([&] {
+        return tree.data(component_index, TreeModel::NameRole).toString() == "renamed"
+            && tree.data(second_component_index, TreeModel::NameRole).toString() == "renamed-second";
+    }));
     CHECK(data_changed == 2);
     CHECK(inserted == 0);
     CHECK(removed == 0);
     CHECK(resets == 0);
-    CHECK(tree.data(component_index, TreeModel::NameRole).toString() == "renamed");
-    CHECK(tree.data(second_component_index, TreeModel::NameRole).toString() == "renamed-second");
 
     auto model_operator = model.getModelOperator(model_id);
     REQUIRE(model_operator);
@@ -793,8 +797,7 @@ TEST_CASE("TreeModel coalesces data changes and inserts components on flush", "[
     CHECK_FALSE(tree.findIndexByNodeId(created_id, 1).isValid());
     tree.requestRefresh();
     CHECK_FALSE(tree.findIndexByNodeId(created_id, 1).isValid());
-    REQUIRE(waitForDataSync(tree));
-    CHECK(tree.findIndexByNodeId(created_id, 1).isValid());
+    REQUIRE(waitForCondition([&] { return tree.findIndexByNodeId(created_id, 1).isValid(); }));
     CHECK(inserted == 1);
     CHECK(resets == 0);
 }
@@ -819,14 +822,12 @@ TEST_CASE("TreeModel batches structural refresh requests", "[TreeModel]")
 
     tree.requestRefresh();
     CHECK(tree.rowCount() == 0);
-    REQUIRE(waitForDataSync(tree));
-    CHECK(tree.rowCount() == 1);
+    REQUIRE(waitForCondition([&] { return tree.rowCount() == 1; }));
     CHECK(resets == 0);
 
     model.removeModel(model_id);
     tree.requestRefresh();
     CHECK(tree.rowCount() == 1);
-    REQUIRE(waitForDataSync(tree));
-    CHECK(tree.rowCount() == 0);
+    REQUIRE(waitForCondition([&] { return tree.rowCount() == 0; }));
     CHECK(resets == 0);
 }

@@ -213,14 +213,27 @@ TEST_CASE("Actual QML keeps reported visibility when a subtype re-enters the tre
     REQUIRE(component_operator);
     component_operator->removeMesh();
     model.flushNotifications();
-    REQUIRE(waitForDataSync(*tree));
+    REQUIRE(waitForCondition([&] {
+        const QModelIndex idx = tree->findIndexByNodeId(component_id, 1);
+        return idx.isValid() && !tree->data(idx, TreeModel::IsVisibleRole).toBool();
+    }));
     CHECK_FALSE(tree->data(tree->findIndexByNodeId(component_id, 1), TreeModel::IsVisibleRole).toBool());
 
     // 撤销恢复：结构同步尚未执行时回传"网格可见、几何隐藏"，创建后不得被默认值覆盖。
     component_operator->replaceMesh(std::make_unique<MeshData>());
     model.flushNotifications();
     report(true, false);
-    REQUIRE(waitForDataSync(*tree));
+    REQUIRE(waitForCondition([&] {
+        const QModelIndex idx = tree->findIndexByNodeId(component_id, 1);
+        if (!idx.isValid())
+            return false;
+        for (int i = 0; i < tree->rowCount(idx); ++i) {
+            const QModelIndex child = tree->index(i, 0, idx);
+            if (tree->data(child, TreeModel::NodeTypeRole).toInt() == static_cast<int>(TreeNode::NodeType::Mesh))
+                return tree->data(child, TreeModel::IsVisibleRole).toBool();
+        }
+        return false;
+    }));
 
     CHECK(subtype_visible(TreeNode::NodeType::Mesh));
     CHECK_FALSE(subtype_visible(TreeNode::NodeType::Geometry));
@@ -249,7 +262,10 @@ TEST_CASE("Actual QML applies hidden state reported before a component enters th
     REQUIRE_FALSE(tree->findIndexByNodeId(component_id, 1).isValid());
 
     REQUIRE(QMetaObject::invokeMethod(f.tree.get(), "hideAllNodes"));
-    REQUIRE(waitForDataSync(*tree));
+    REQUIRE(waitForCondition([&] {
+        const QModelIndex idx = tree->findIndexByNodeId(component_id, 1);
+        return idx.isValid() && !tree->data(idx, TreeModel::IsVisibleRole).toBool();
+    }));
 
     const QModelIndex component_index = tree->findIndexByNodeId(component_id, 1);
     REQUIRE(component_index.isValid());
@@ -763,11 +779,11 @@ TEST_CASE("Actual QML expands and collapses object tree subtrees", "[QML][tree]"
         settle();
     };
     auto expand_all = [&] {
-        REQUIRE(QMetaObject::invokeMethod(f.tree.get(), "expandAll"));
+        REQUIRE(QMetaObject::invokeMethod(f.tree.get(), "expandSubtree", Q_ARG(QVariant, -1)));
         settle();
     };
     auto collapse_all = [&] {
-        REQUIRE(QMetaObject::invokeMethod(f.tree.get(), "collapseAll"));
+        REQUIRE(QMetaObject::invokeMethod(f.tree.get(), "collapseSubtree", Q_ARG(QVariant, -1)));
         settle();
     };
 
@@ -838,7 +854,7 @@ TEST_CASE("Actual QML expands and collapses object tree subtrees", "[QML][tree]"
 
     model.removeModel(model_a);
     model.removeModel(model_b);
-    REQUIRE(waitForDataSync(*tree_model));
+    REQUIRE(waitForCondition([&] { return tree_model->rowCount() == 0; }));
     settle();
     CHECK(rows() == 0);
 }

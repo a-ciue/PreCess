@@ -86,8 +86,6 @@ public:
     void setModelQuery(QObject* query);
 
 signals:
-    //! @brief 批量对账完成（数据/结构事件合并后）
-    void dataSyncFinished();
     /** @brief 请求模型、组件、Mesh 或 Geometry 显隐；object_id 为真实模型或组件身份。 */
     void visibilityRequested(int node_type, int object_id, bool visible);
 
