@@ -684,7 +684,7 @@ TEST_CASE("Actual QML preserves expanded rows across incremental imports and del
     CHECK(is_expanded(row));
 }
 
-TEST_CASE("Actual QML applies object tree expansion levels", "[QML][tree]")
+TEST_CASE("Actual QML expands and collapses object tree subtrees", "[QML][tree]")
 {
     application();
     QmlFixture f;
@@ -717,12 +717,19 @@ TEST_CASE("Actual QML applies object tree expansion levels", "[QML][tree]")
     REQUIRE(tree_model->refresh());
 
     const Index component_a = model.modelById(model_a)->componentIds().front();
+    const Index component_b = model.modelById(model_b)->componentIds().front();
     const QModelIndex model_a_index = tree_model->findIndexByNodeId(model_a, 0);
+    const QModelIndex model_b_index = tree_model->findIndexByNodeId(model_b, 0);
     const QModelIndex component_a_index = tree_model->findIndexByNodeId(component_a, 1);
+    const QModelIndex component_b_index = tree_model->findIndexByNodeId(component_b, 1);
     REQUIRE(model_a_index.isValid());
+    REQUIRE(model_b_index.isValid());
     REQUIRE(component_a_index.isValid());
+    REQUIRE(component_b_index.isValid());
     const QModelIndex mesh_a_index = tree_model->index(0, 0, component_a_index);
+    const QModelIndex mesh_b_index = tree_model->index(0, 0, component_b_index);
     REQUIRE(mesh_a_index.isValid());
+    REQUIRE(mesh_b_index.isValid());
     const QModelIndex mesh_child_index = tree_model->index(0, 0, mesh_a_index);
     REQUIRE(mesh_child_index.isValid());
 
@@ -743,10 +750,24 @@ TEST_CASE("Actual QML applies object tree expansion levels", "[QML][tree]")
         return expanded;
     };
     auto rows = [&] { return tree_view->property("rows").toInt(); };
-    auto click = [&](const char* name) {
-        QObject* button = f.tree->findChild<QObject*>(name);
-        REQUIRE(button);
-        REQUIRE(QMetaObject::invokeMethod(button, "clicked"));
+    auto expand_subtree = [&](const QModelIndex& index) {
+        const int row = row_of(index);
+        REQUIRE(row >= 0);
+        REQUIRE(QMetaObject::invokeMethod(f.tree.get(), "expandSubtree", Q_ARG(QVariant, row)));
+        settle();
+    };
+    auto collapse_subtree = [&](const QModelIndex& index) {
+        const int row = row_of(index);
+        REQUIRE(row >= 0);
+        REQUIRE(QMetaObject::invokeMethod(f.tree.get(), "collapseSubtree", Q_ARG(QVariant, row)));
+        settle();
+    };
+    auto expand_all = [&] {
+        REQUIRE(QMetaObject::invokeMethod(f.tree.get(), "expandAll"));
+        settle();
+    };
+    auto collapse_all = [&] {
+        REQUIRE(QMetaObject::invokeMethod(f.tree.get(), "collapseAll"));
         settle();
     };
 
@@ -754,64 +775,71 @@ TEST_CASE("Actual QML applies object tree expansion levels", "[QML][tree]")
     settle();
     CHECK(rows() == 2);
 
-    click("objectTreeToggleComp");
-    int model_row = row_of(model_a_index);
-    REQUIRE(model_row >= 0);
-    CHECK(is_expanded(model_row));
-    const int component_row = row_of(component_a_index);
-    REQUIRE(component_row >= 0);
-    CHECK_FALSE(is_expanded(component_row));
-    CHECK(row_of(mesh_a_index) == -1);
-    CHECK(rows() == 4);
-
-    click("objectTreeToggleComp");
-    model_row = row_of(model_a_index);
-    REQUIRE(model_row >= 0);
-    CHECK_FALSE(is_expanded(model_row));
-    CHECK(row_of(component_a_index) == -1);
-    CHECK(rows() == 2);
-
-    click("objectTreeToggleGeo");
-    model_row = row_of(model_a_index);
-    REQUIRE(model_row >= 0);
-    CHECK(is_expanded(model_row));
-    const int component_row_geo = row_of(component_a_index);
-    REQUIRE(component_row_geo >= 0);
-    CHECK(is_expanded(component_row_geo));
-    const int mesh_row = row_of(mesh_a_index);
-    REQUIRE(mesh_row >= 0);
-    CHECK_FALSE(is_expanded(mesh_row));
+    // 全部展开模型子树：递归到所有叶子，但不影响其他模型。
+    expand_subtree(model_a_index);
+    REQUIRE(row_of(model_a_index) >= 0);
+    CHECK(is_expanded(row_of(model_a_index)));
+    REQUIRE(row_of(component_a_index) >= 0);
+    CHECK(is_expanded(row_of(component_a_index)));
+    REQUIRE(row_of(mesh_a_index) >= 0);
+    CHECK(is_expanded(row_of(mesh_a_index)));
+    REQUIRE(row_of(mesh_child_index) >= 0);
+    CHECK_FALSE(is_expanded(row_of(mesh_child_index)));
+    REQUIRE(row_of(model_b_index) >= 0);
+    CHECK_FALSE(is_expanded(row_of(model_b_index)));
     CHECK(rows() == 7);
 
-    click("objectTreeToggleGeo");
+    // 折叠组件子树只收起该组件及其后代。
+    collapse_subtree(component_a_index);
     REQUIRE(row_of(component_a_index) >= 0);
     CHECK_FALSE(is_expanded(row_of(component_a_index)));
     CHECK(row_of(mesh_a_index) == -1);
-    CHECK(rows() == 4);
+    CHECK(rows() == 3);
 
-    click("objectTreeToggleAll");
-    const int mesh_row_all = row_of(mesh_a_index);
-    REQUIRE(mesh_row_all >= 0);
-    CHECK(is_expanded(mesh_row_all));
-    const int mesh_child_row = row_of(mesh_child_index);
-    REQUIRE(mesh_child_row >= 0);
-    CHECK_FALSE(is_expanded(mesh_child_row));
-    CHECK(rows() == 10);
+    expand_subtree(component_a_index);
+    REQUIRE(row_of(mesh_a_index) >= 0);
+    CHECK(is_expanded(row_of(mesh_a_index)));
+    CHECK(rows() == 7);
 
-    click("objectTreeToggleAll");
-    CHECK(row_of(mesh_a_index) >= 0);
+    collapse_subtree(mesh_a_index);
+    REQUIRE(row_of(mesh_a_index) >= 0);
     CHECK_FALSE(is_expanded(row_of(mesh_a_index)));
     CHECK(row_of(mesh_child_index) == -1);
+    CHECK(rows() == 5);
+
+    expand_subtree(mesh_a_index);
+    REQUIRE(row_of(mesh_child_index) >= 0);
     CHECK(rows() == 7);
+
+    collapse_subtree(model_a_index);
+    CHECK(row_of(component_a_index) == -1);
+    CHECK(rows() == 2);
+
+    expand_subtree(model_b_index);
+    REQUIRE(row_of(model_b_index) >= 0);
+    CHECK(is_expanded(row_of(model_b_index)));
+    REQUIRE(row_of(component_b_index) >= 0);
+    CHECK(is_expanded(row_of(component_b_index)));
+    REQUIRE(row_of(mesh_b_index) >= 0);
+    CHECK(is_expanded(row_of(mesh_b_index)));
+    CHECK(rows() == 5);
+
+    collapse_subtree(model_b_index);
+    CHECK(rows() == 2);
+
+    // 空白区全局展开/折叠作用于所有模型。
+    expand_all();
+    CHECK(rows() == 10);
+    CHECK(is_expanded(row_of(model_a_index)));
+    CHECK(is_expanded(row_of(model_b_index)));
+
+    collapse_all();
+    CHECK(rows() == 2);
 
     model.removeModel(model_a);
     model.removeModel(model_b);
     REQUIRE(waitForDataSync(*tree_model));
     settle();
-    CHECK(rows() == 0);
-    click("objectTreeToggleComp");
-    click("objectTreeToggleGeo");
-    click("objectTreeToggleAll");
     CHECK(rows() == 0);
 }
 
