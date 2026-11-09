@@ -22,8 +22,10 @@
 #include <IVtkVTK_ShapeData.hxx>
 #include <NCollection_Array1.hxx>
 #include <NCollection_Array2.hxx>
+#include <Poly_Triangulation.hxx>
 #include <Prs3d_Drawer.hxx>
 #include <TopExp_Explorer.hxx>
+#include <TopLoc_Location.hxx>
 #include <TopoDS.hxx>
 #include <TopoDS_Compound.hxx>
 #include <TopoDS_Edge.hxx>
@@ -234,6 +236,63 @@ TEST_CASE("CAD surface precision rebuilds in both directions and applies to late
     // 已有组件替换几何时也沿用窗口目标档位。
     scene.manager.loadGeometry({ *later.rootShape, kComponentId, &later.index });
     CHECK(scene.polygons()->GetNumberOfPolys() == counts[3]);
+}
+
+TEST_CASE("CAD loading finer input mesh restores standard precision before picking", "[geometry][precision][render]")
+{
+    const OccShapeHandle reference_occ = new IVtkOCC_Shape(BRepPrimAPI_MakeSphere(10.0).Shape());
+    vtkNew<IVtkTools_ShapeDataSource> reference_source;
+    reference_source->SetShape(reference_occ);
+    reference_source->Update();
+    const auto standard_count = reference_source->GetOutput()->GetNumberOfPolys();
+    REQUIRE(standard_count > 0);
+
+    // 模拟导入前已有更细三角缓存，加载时不能直接沿用它初始化标准拾取。
+    const OccShapeHandle incoming_occ = new IVtkOCC_Shape(BRepPrimAPI_MakeSphere(10.0).Shape());
+    const auto& fine_settings = surface_precision::kLevels.back();
+    incoming_occ->Attributes()->SetDeviationCoefficient(fine_settings.deviation_coefficient);
+    incoming_occ->Attributes()->SetDeviationAngle(fine_settings.angle_degrees * std::acos(-1.0) / 180.0);
+    vtkNew<IVtkTools_ShapeDataSource> incoming_source;
+    incoming_source->SetShape(incoming_occ);
+    incoming_source->Update();
+    const auto fine_count = incoming_source->GetOutput()->GetNumberOfPolys();
+    REQUIRE(fine_count > standard_count * 2);
+
+    GeometryScene scene(incoming_occ->GetShape());
+    TopExp_Explorer input_face(*scene.geometry.rootShape, TopAbs_FACE);
+    REQUIRE(input_face.More());
+    TopLoc_Location location;
+    const auto input_mesh = BRep_Tool::Triangulation(TopoDS::Face(input_face.Current()), location);
+    REQUIRE_FALSE(input_mesh.IsNull());
+    REQUIRE(input_mesh->NbTriangles() == fine_count);
+    vtkNew<vtkActor> highlight;
+    highlight->PickableOff();
+    scene.renderer->AddActor(highlight);
+    GeometrySelectManager selection(*scene.renderer, *highlight, scene.manager.op());
+    selection.setSelectMode(SelectMode::GeometryFace);
+    scene.load();
+    REQUIRE(scene.polygons()->GetNumberOfPolys() == standard_count);
+    scene.lookDownZ(gp_Pnt(0.0, 0.0, 0.0));
+    const auto display = scene.project(gp_Pnt(3.0, 2.0, std::sqrt(87.0)));
+    const std::vector<Index> expected { scene.geometry.index.faceGlobalId(1) };
+    selection.select(display[0], display[1]);
+    REQUIRE(selection.getSelection()->ids == expected);
+
+    for (const int precision : { 3, 0, surface_precision::kDefault }) {
+        CAPTURE(precision);
+        selection.clearSelection();
+        scene.manager.setSurfacePrecision(precision);
+        const auto count = scene.polygons()->GetNumberOfPolys();
+        if (precision == 3)
+            CHECK(count == fine_count);
+        else if (precision == 0)
+            CHECK(count < standard_count);
+        else
+            CHECK(count == standard_count);
+        scene.window->Render();
+        selection.select(display[0], display[1]);
+        CHECK(selection.getSelection()->ids == expected);
+    }
 }
 
 TEST_CASE("CAD mesh classification preserves topology cells identities and normals", "[geometry][precision]")
