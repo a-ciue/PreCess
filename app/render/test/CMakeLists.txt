@@ -122,3 +122,12 @@ precess_test_link_libraries(TestRenderWindowLifecycle renderQml vtkPart modelQml
 vtk_module_autoinit(TARGETS TestRenderWindowLifecycle MODULES
     VTK::GUISupportQtQuick VTK::RenderingOpenGL2 VTK::InteractionStyle
 )
+
+# 通过离屏渲染控制器验证真实调度队列，不显示原生窗口。
+precess_add_test(TestRenderWindowMeshUpdates TestRenderWindowMeshUpdates.cpp)
+precess_test_link_libraries(TestRenderWindowMeshUpdates renderQml vtkPart modelQml TestDeps
+    Qt6::Quick VTK::GUISupportQtQuick VTK::RenderingOpenGL2 VTK::InteractionStyle
+)
+vtk_module_autoinit(TARGETS TestRenderWindowMeshUpdates MODULES
+    VTK::GUISupportQtQuick VTK::RenderingOpenGL2 VTK::InteractionStyle
+)

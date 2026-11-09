@@ -511,10 +511,10 @@ void MeshPipelineData::setScalarConfig(std::optional<ScalarDisplayConfig> config
 
 MeshSnapshotUpdate MeshPipelineData::createScalarUpdate()
 {
-    // 与 createSnapshot 的重建条件一致；实际重建后即使单元集合相同，也使旧选择失效。
-    const bool rebuilt = dirty_ || !prepared_;
+    // 与 createSnapshot 的重建条件一致；重新生成输出后即使单元集合相同，也使旧选择失效。
+    const bool mesh_outputs_rebuilt = dirty_ || !prepared_;
     auto snapshot = createSnapshot();
-    return { std::move(snapshot), rebuilt };
+    return { std::move(snapshot), mesh_outputs_rebuilt };
 }
 
 void MeshPipelineData::rebuildOutputs()

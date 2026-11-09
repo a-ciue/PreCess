@@ -546,7 +546,7 @@ void QRenderWindow::loadMeshData(Index component_id, const MeshDataVtk& data)
     pipeline->loadModelData(data);
     pipeline->setClipPlane(mesh_clip_);
     // 管线自行恢复仍适用的配置，只发布最终结果。
-    publishScalarUpdate(component_id, pipeline->createScalarUpdate());
+    publishMeshUpdate(component_id, pipeline->createScalarUpdate());
     publishComponentVisibility(component_id);
     emit scalarRangeChanged();
 }
@@ -922,12 +922,17 @@ bool QRenderWindow::setAttriMode(
 {
     if (component_id < 0)
         return false;
+    // 模式和目标网格均有效后，才允许解除旧筛选或修改共享色柱归属。
+    if (mode < static_cast<int>(Mode::RGB) || mode > static_cast<int>(Mode::VECTOR)) {
+        spdlog::warn("无效的属性渲染模式: {}", mode);
+        return false;
+    }
+    const auto pipeline = mesh_pipeline_data_.find(component_id);
+    if (pipeline == mesh_pipeline_data_.end()) {
+        spdlog::warn("属性渲染组件不存在");
+        return false;
+    }
     if (mode == static_cast<int>(Mode::SCALAR)) {
-        const auto pipeline = mesh_pipeline_data_.find(component_id);
-        if (pipeline == mesh_pipeline_data_.end()) {
-            spdlog::warn("标量渲染组件不存在");
-            return false;
-        }
         try {
             // 只在边界解析一次；数据侧先校验完整配置，再替换当前结果。
             pipeline->second->setScalarConfig(ScalarDisplayConfig { attr_name.toStdString(),
@@ -936,7 +941,7 @@ bool QRenderWindow::setAttriMode(
             spdlog::warn("{}", error.what());
             return false;
         }
-        publishScalarUpdate(component_id, pipeline->second->createScalarUpdate(), true);
+        publishMeshUpdate(component_id, pipeline->second->createScalarUpdate(), true);
         return true;
     }
     if (const auto snapshot = mesh_snapshots_.find(component_id);
@@ -1008,12 +1013,16 @@ QVariantList QRenderWindow::scalarRangeInfo(Index component_id, const QString& a
     return { (*original)[0], (*original)[1] };
 }
 
-void QRenderWindow::publishScalarUpdate(Index component_id, MeshSnapshotUpdate update, bool activate_scalar_bar)
+void QRenderWindow::publishMeshUpdate(Index component_id, MeshSnapshotUpdate update, bool activate_scalar_bar)
 {
     auto snapshot = std::move(update.snapshot);
-    const bool geometry_rebuilt = update.geometry_rebuilt;
+    const bool mesh_outputs_rebuilt = update.mesh_outputs_rebuilt;
+    const auto previous = mesh_snapshots_.find(component_id);
+    // 只有原有标量配置被解除时才取消着色，普通加载保留非标量策略。
+    const bool scalar_deactivated = previous != mesh_snapshots_.end()
+        && previous->second->scalar_config && !snapshot->scalar_config;
     mesh_snapshots_[component_id] = snapshot;
-    if (geometry_rebuilt) {
+    if (mesh_outputs_rebuilt) {
         selected_faces_.clear();
         selected_face_generations_.clear();
     }
@@ -1022,11 +1031,11 @@ void QRenderWindow::publishScalarUpdate(Index component_id, MeshSnapshotUpdate u
     const bool show_scalar_bar = snapshot->scalar_config && (activate_scalar_bar || scalar_bar_component_id_ == component_id);
     if (snapshot->scalar_config && activate_scalar_bar)
         scalar_bar_component_id_ = component_id;
-    // 几何安装、着色和选择发布保持在同一次渲染回调，保留选择版本校验。
+    // 网格安装、着色和选择发布保持在同一次渲染回调，保留选择版本校验。
     dispatch_async([this, component_id, snapshot = std::move(snapshot),
-                       geometry_rebuilt, show_scalar_bar, activate_scalar_bar, revision = selection_revision_](vtkRenderWindow*, vtkUserData user_data) {
+                       mesh_outputs_rebuilt, scalar_deactivated, show_scalar_bar, activate_scalar_bar, revision = selection_revision_](vtkRenderWindow*, vtkUserData user_data) {
         auto* vtk = Data::SafeDownCast(user_data);
-        if (geometry_rebuilt) {
+        if (mesh_outputs_rebuilt) {
             render_selection_revision_ = revision;
             select_manager_->clearSelection();
             vtk->mesh_actor_manager_->loadMesh(component_id, snapshot, vtk->renderer_);
@@ -1041,10 +1050,10 @@ void QRenderWindow::publishScalarUpdate(Index component_id, MeshSnapshotUpdate u
             } else {
                 vtk->mesh_actor_manager_->applyScalarConfig(component_id, *snapshot, show_scalar_bar);
             }
-        } else {
+        } else if (scalar_deactivated) {
             vtk->mesh_actor_manager_->cancelAttri(component_id);
         }
-        if (geometry_rebuilt)
+        if (mesh_outputs_rebuilt)
             publishSelection();
     });
 }
@@ -1053,7 +1062,7 @@ void QRenderWindow::deactivateScalarRange(Index component_id)
 {
     if (const auto pipeline = mesh_pipeline_data_.find(component_id); pipeline != mesh_pipeline_data_.end()) {
         pipeline->second->setScalarConfig(std::nullopt);
-        publishScalarUpdate(component_id, pipeline->second->createScalarUpdate());
+        publishMeshUpdate(component_id, pipeline->second->createScalarUpdate());
     }
 }
 

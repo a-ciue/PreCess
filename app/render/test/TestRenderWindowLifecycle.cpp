@@ -131,6 +131,16 @@ TEST_CASE("Scalar configs restore across source reload without stealing the shar
     // 无效请求不能替换任一组件配置，也不能改变场景重建后的共享色柱归属。
     CHECK_FALSE(item.setAttriMode(7, "f_normal_3", static_cast<int>(Mode::SCALAR), { { "scalar_range", QVariantList { 3.0, 1.0 } } }));
     CHECK_FALSE(item.setAttriMode(8, "f_scalar_1", static_cast<int>(Mode::SCALAR), { { "display_range", QVariantList { "bad", 1.0 } } }));
+    // 无效请求必须先被拒绝，不能清除当前筛选或破坏共享色柱的恢复依据。
+    SECTION("Invalid render modes retain the active scalar display")
+    {
+        for (const int invalid_mode : { -1, 4, 999 })
+            CHECK_FALSE(item.setAttriMode(7, "f_scalar_1", invalid_mode, { }));
+    }
+    SECTION("Unknown components retain another component's scalar bar")
+    {
+        CHECK_FALSE(item.setAttriMode(9999, "f_normal_3", static_cast<int>(Mode::RGB), { }));
+    }
     std::uint64_t previous_generation = 0;
     for (int cycle = 0; cycle < 3; ++cycle) {
         // 通用窗口不创建原生窗口或 OpenGL 上下文，关闭交互器自动渲染以避免控件触发绘制。

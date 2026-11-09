@@ -131,23 +131,23 @@ TEST_CASE("Scalar range full values survive empty results missing values and cli
     CHECK((*constant)[1] == 0.5);
 }
 
-TEST_CASE("Scalar config updates report geometry rebuilds and retain the latest completed configuration", "[scalar-range]")
+TEST_CASE("Scalar config updates report mesh output rebuilds and retain the latest completed configuration", "[scalar-range]")
 {
     auto mesh = scalarMesh();
     MeshPipelineData pipeline;
     pipeline.loadModelData(MakeMeshDataVtk(mesh));
     const auto original = pipeline.createScalarUpdate();
-    REQUIRE(original.geometry_rebuilt);
+    REQUIRE(original.mesh_outputs_rebuilt);
     ScalarDisplayConfig config { "value", std::array { -1.0, 4.0 }, std::array { 1.0, 3.0 } };
     pipeline.setScalarConfig(config);
     const auto filtered = pipeline.createScalarUpdate();
-    REQUIRE(filtered.geometry_rebuilt);
+    REQUIRE(filtered.mesh_outputs_rebuilt);
 
-    // 仅修改映射或重复提交相同筛选时，共享已完成的几何，不使选择失效。
+    // 仅修改映射或重复提交相同筛选时，共享已完成的网格输出，不使选择失效。
     config.mapping = std::array { -2.0, 6.0 };
     pipeline.setScalarConfig(config);
     const auto mapped = pipeline.createScalarUpdate();
-    CHECK_FALSE(mapped.geometry_rebuilt);
+    CHECK_FALSE(mapped.mesh_outputs_rebuilt);
     CHECK(mapped.snapshot->visible_faces == filtered.snapshot->visible_faces);
     CHECK(mapped.snapshot->visible_edges == filtered.snapshot->visible_edges);
     CHECK(mapped.snapshot->solid_surface == filtered.snapshot->solid_surface);
@@ -156,22 +156,22 @@ TEST_CASE("Scalar config updates report geometry rebuilds and retain the latest 
     CHECK(filtered.snapshot->scalar_config->mapping != config.mapping);
     pipeline.setScalarConfig(config);
     const auto repeated = pipeline.createScalarUpdate();
-    CHECK_FALSE(repeated.geometry_rebuilt);
+    CHECK_FALSE(repeated.mesh_outputs_rebuilt);
     CHECK(repeated.snapshot->visible_faces == mapped.snapshot->visible_faces);
 
-    // 非法请求不改变已接受的配置，也不触发几何重建。
+    // 非法请求不改变已接受的配置，也不触发网格输出重建。
     config.display = std::array { std::numeric_limits<double>::quiet_NaN(), 3.0 };
     CHECK_THROWS_AS(pipeline.setScalarConfig(config), std::invalid_argument);
     const auto rejected = pipeline.createScalarUpdate();
-    CHECK_FALSE(rejected.geometry_rebuilt);
+    CHECK_FALSE(rejected.mesh_outputs_rebuilt);
     REQUIRE(rejected.snapshot->scalar_config);
     CHECK(rejected.snapshot->scalar_config->display == filtered.snapshot->scalar_config->display);
 
-    // 区间改变会实际重建；即使仍保留原来的三个单元，也不再比较集合来保留选择。
+    // 区间改变会重新生成网格输出；即使仍保留原来的三个单元，也不再比较集合来保留选择。
     config.display = std::array { 0.9, 3.1 };
     pipeline.setScalarConfig(config);
     const auto same_cells = pipeline.createScalarUpdate();
-    CHECK(same_cells.geometry_rebuilt);
+    CHECK(same_cells.mesh_outputs_rebuilt);
     CHECK(same_cells.snapshot->visible_faces != filtered.snapshot->visible_faces);
     auto* face_ids = vtkIdTypeArray::SafeDownCast(same_cells.snapshot->visible_faces->GetCellData()->GetArray("PrecessFaceIds"));
     REQUIRE(face_ids);
@@ -179,28 +179,28 @@ TEST_CASE("Scalar config updates report geometry rebuilds and retain the latest 
     for (vtkIdType id = 0; id < face_ids->GetNumberOfValues(); ++id)
         CHECK(face_ids->GetValue(id) == id + 1);
 
-    // 取消全范围筛选仍重建几何，恢复前后单元数相同也应使旧选择失效。
+    // 取消全范围筛选仍重新生成网格输出，恢复前后单元数相同也应使旧选择失效。
     config.display = pipeline.scalarRange("value");
     pipeline.setScalarConfig(config);
     const auto full_range = pipeline.createScalarUpdate();
-    REQUIRE(full_range.geometry_rebuilt);
+    REQUIRE(full_range.mesh_outputs_rebuilt);
     CHECK(full_range.snapshot->visible_faces->GetNumberOfCells() == original.snapshot->visible_faces->GetNumberOfCells());
     pipeline.setScalarConfig(std::nullopt);
     const auto canceled = pipeline.createScalarUpdate();
-    CHECK(canceled.geometry_rebuilt);
+    CHECK(canceled.mesh_outputs_rebuilt);
     CHECK(canceled.snapshot->visible_faces->GetNumberOfCells() == full_range.snapshot->visible_faces->GetNumberOfCells());
     CHECK_FALSE(canceled.snapshot->scalar_config);
 
-    // 无筛选的着色与取消只更新完成配置，继续共享几何。
+    // 无筛选的着色与取消只更新完成配置，继续共享网格输出。
     config.display.reset();
     pipeline.setScalarConfig(config);
     const auto unfiltered = pipeline.createScalarUpdate();
-    CHECK_FALSE(unfiltered.geometry_rebuilt);
+    CHECK_FALSE(unfiltered.mesh_outputs_rebuilt);
     REQUIRE(unfiltered.snapshot->scalar_config);
     CHECK(unfiltered.snapshot->visible_faces == canceled.snapshot->visible_faces);
     pipeline.setScalarConfig(std::nullopt);
     const auto unfiltered_canceled = pipeline.createScalarUpdate();
-    CHECK_FALSE(unfiltered_canceled.geometry_rebuilt);
+    CHECK_FALSE(unfiltered_canceled.mesh_outputs_rebuilt);
     CHECK(unfiltered_canceled.snapshot->visible_faces == unfiltered.snapshot->visible_faces);
     CHECK_FALSE(unfiltered_canceled.snapshot->scalar_config);
     CHECK(pipeline.createSnapshot()->scalar_config == std::nullopt);
@@ -217,7 +217,7 @@ TEST_CASE("Source reload retains applicable scalar configuration and removes onl
     pipeline.hideFaces({ 1 });
     pipeline.loadModelData(MakeMeshDataVtk(mesh));
     const auto reloaded = pipeline.createScalarUpdate();
-    CHECK(reloaded.geometry_rebuilt);
+    CHECK(reloaded.mesh_outputs_rebuilt);
     CHECK(reloaded.snapshot->generation != before.snapshot->generation);
     REQUIRE(reloaded.snapshot->scalar_config);
     CHECK(reloaded.snapshot->scalar_config->mapping == before.snapshot->scalar_config->mapping);
