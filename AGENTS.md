@@ -15,6 +15,7 @@
 - **根因优先**：从根本原因修复，避免表层补丁。
 - **不臆造**：不确定的 API、路径、依赖必须先在仓库中检索确认；找不到就说明，不要编造。
 - **尊重许可证边界**：本仓库自有代码统一采用 **LGPLv3**，第三方组件遵循各自许可证。不得引入会要求本仓库本体按 GPL / AGPL 分发的代码或依赖；引入第三方组件前须核对许可并保留原声明（见第 7 节）。
+- **默认不新建 worktree**：默认在用户指定的现有工作区完成修改、构建和测试，不自动创建或切换到 Git worktree；只有用户明确要求时才新建 worktree。隔离提交时优先筛选文件或差异，不以此为由自动新建 worktree。
 - **不擅自提交**：除非用户明确要求，不执行 `git commit` / `git push` / 建分支。
 - **沟通语言**：与中文贡献者沟通、注释、commit message 默认使用中文（术语保留英文）。
 - **改完即说明**：交付时简述改了什么、为什么、影响哪些模块、如何验证。
@@ -161,10 +162,11 @@
   - 旧编辑系统兼容实现：`EditHandler::execute` 接收 `ModelLayer&` 与 `fallback_component_id`（对象树当前组件，仅提示、可为 -1）；目标组件由选择器参数解析，fallback 仅在选择未携带组件身份时兜底；示例见 `plugins/edit/CreateFacePlugin/`、`plugins/edit/DeleteFacePlugin/`。
   - 旧算法系统兼容实现：覆盖 `AlgorithmHandler::resolveComponentId` 按参数解析目标组件，不依赖对象树传入的 `fallback_component_id`；`HandlerContext::cur_component` 同样只视作提示。
   - 功能系统：`FeatureContext::activeModel` / `activeComponent` 是对象树选中态的动态查询，只作提示；优先注册 `Selector` 类型参数（`FeatureParams`）让用户显式选择目标。
-- **统一 Feature 功能入口**：单功能图标和多子功能图标使用同一入口注册接口。
-  - setup 用 `registrar.addParameter` 声明参数，用 `registrar.navigation().addEntry({id, title, icon, order, menu_path})` 注册入口；不同功能声明相同稳定 id 后自动聚合。同一功能可进入多个入口，参数与执行状态只有一份。入口 id 不按名称、图标、JSON 或旁置文件推断；空 id/标题与重复 id 由导航对象过滤。
-  - 入口关联一个功能时直接显示参数，多个功能时显示子功能选择器；产品层通过 `FeatureSystem::setNavigationEntries` 注入常驻入口，零子功能时显示空态并禁用执行。`menu_path` 声明“菜单/分组”，插件留空时继承宿主同 id 路径，最终回退“功能”。分组只由路径表达；子功能显示用 `setLabel/setIcon/setOrder`，入口参数预设用 `setEntryDefault`。
-  - 未声明入口时归入默认“功能”菜单。执行读取 `ctx.params`，通过 `FeatureContext` 完成模型操作与共享任务。公共接口变化后全量重建主程序及所有插件 DLL，确保主程序、SDK 与插件的 ABI 一致。
+- **统一 Feature 功能入口**：
+  - setup 用 `registrar.addNavigationMenu/addNavigationGroup` 声明父节点，`registrar.navigation().addEntry` 引用稳定 ID；相同入口自动聚合，同一功能的多个入口共享参数和状态。
+  - 宿主先注册布局；父节点首次成功定义保留至会话结束，失败不留声明，卸载后空菜单和分组隐藏。
+  - 插件声明默认顺序，宿主控制排序覆盖；接口见 `model/systems/feature/Navigation.md`。单个子功能显示参数，多个显示选择器，空入口禁用执行，无入口时归入“功能”菜单。
+  - 执行使用 `ctx.params` 和 `FeatureContext`；公共头变更后全量重建主程序及全部插件 DLL，保持 ABI 一致。
 - 每个插件目录含 `*.json` 描述文件（见 `plugins/*/.../*.json`）与 `CMakeLists.txt`；新增插件参照同目录既有示例结构。
 - **SDK 示例与开发引导**：`examples/` 中的 ExternalPlugin、FeatureDemoPlugin、TaskDemoPlugin、ScalePreviewPlugin 只默认分发源码及测试，随 Development 组件安装；框架开发可用 `PRECESS_BUILD_EXAMPLES=ON` 构建。`sdk/skills/zenithgrid-external-plugin-development/` 随 SDK 安装为 `skills/zenithgrid-external-plugin-development/`，独立插件开发先读取该 skill 和任务相关 references。
 - 功能插件（`plugins/feature/`，json 的 `system` 字段为 `FeatureSystem`）实现 `FeatureHandler` 接口：注册时 `setup(FeatureRegistrar&, FeatureContext&)` 一次（声明参数/菜单/按键绑定 + 经 `ctx.events` 订阅事件 `KeyEvent`、`ParameterChangedEvent`、`ModelEvent`），注销时 `teardown()` 一次；功能随活动操作切换被反复 进入 `activate(FeatureContext&)` / 退出 `deactivate()`（GUI 线程，所有功能可感知，由 `FeatureSystem::setFeatureActive` 驱动）；菜单触发 `execute()`。功能可修改的范围限模型层对象（经 `FeatureContext` 的 `ModelLayer` / `ComponentOperator`）与自身视口交互状态（经 `ctx.interaction`）；示例见 `examples/FeatureDemoPlugin/`，交互功能示例见 `plugins/feature/MeasurePlugin/`，插件层预览范式（`ctx.undo` 层接口）示例见 `examples/ScalePreviewPlugin/`。

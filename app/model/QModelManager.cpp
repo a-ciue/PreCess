@@ -14,6 +14,9 @@
 #include <QUrl>
 #include <filesystem>
 #include <spdlog/spdlog.h>
+#include <string>
+#include <utility>
+#include <vector>
 
 QModelManager::QModelManager(std::string_view argv0, QObject* parent)
     : QObject(parent)
@@ -25,11 +28,31 @@ QModelManager::QModelManager(std::string_view argv0, QObject* parent)
         QMetaObject::invokeMethod(this, std::move(fn));
     });
 
-    // 产品默认入口由应用声明；无实现时仍显示空态，通用功能系统不内置网格类别。
-    session_->featureSystem().setNavigationEntries({ { "triangle", "三角形网格生成", "qrc:/images/toolbar/Mesh/triangle-meshing.svg", 10, "网格生成算法" },
-        { "quadrilateral", "四边形网格生成", "qrc:/images/toolbar/Mesh/quad-meshing.svg", 20, "网格生成算法" },
-        { "tetrahedron", "四面体网格生成", "qrc:/images/toolbar/Algorithm/tetgen.svg", 30, "网格生成算法" },
-        { "hexahedron", "六面体网格生成", "qrc:/images/toolbar/Mesh/hexa-meshing.svg", 40, "网格生成算法" } });
+    // 产品布局在任何插件 setup 前注册；首次接纳的父节点定义决定标题和顺序。
+    auto& features = session_->featureSystem();
+    for (const auto& menu : std::vector<systems::feature::FeatureNavigationMenu> {
+             { "file", "文件", 10 }, { "edit", "编辑", 20 }, { "mesh-generation", "网格生成算法", 30 },
+             { "other-algorithms", "其他算法", 40 }, { "geometry", "几何", 50 }, { "tools", "工具", 60 },
+             { "examples", "示例", 70 }, { "features", "功能", 80 }, { "view", "视图", 10000 } })
+        features.tryRegisterNavigationMenu(menu);
+    features.tryRegisterNavigationGroup({ "geometry", "", "", 10 });
+    features.tryRegisterNavigationGroup({ "geometry", "topology", "拓扑", 20 });
+    features.tryRegisterNavigationGroup({ "geometry", "repair", "修复", 30 });
+
+    // 无实现时仍显示空态；排序覆盖取自宿主原始定义，避免插件提供者改变产品顺序。
+    const std::vector<systems::feature::FeatureNavigationEntry> builtin_entries {
+        { "triangle", "三角形网格生成", "qrc:/images/toolbar/Mesh/triangle-meshing.svg", 10, "mesh-generation" },
+        { "quadrilateral", "四边形网格生成", "qrc:/images/toolbar/Mesh/quad-meshing.svg", 20, "mesh-generation" },
+        { "tetrahedron", "四面体网格生成", "qrc:/images/toolbar/Algorithm/tetgen.svg", 30, "mesh-generation" },
+        { "hexahedron", "六面体网格生成", "qrc:/images/toolbar/Mesh/hexa-meshing.svg", 40, "mesh-generation" }
+    };
+    features.setNavigationEntries(builtin_entries);
+    std::vector<systems::feature::FeatureNavigationOrder> builtin_orders;
+    for (const auto& entry : builtin_entries) {
+        const auto group_id = entry.group_id.empty() ? std::string { "default" } : entry.group_id;
+        builtin_orders.push_back({ "group:" + entry.menu_id + "/" + group_id, "category:" + entry.id, entry.order });
+    }
+    features.setNavigationOrder(std::move(builtin_orders));
 
     query_ = std::make_unique<QModelQuery>(&session_->query(), this);
 
@@ -41,6 +64,8 @@ QModelManager::QModelManager(std::string_view argv0, QObject* parent)
     io_adaptor_ = std::make_unique<systems::io::QModelIOSystemAdaptor>(session_->ioSystem());
     edit_adaptor_ = std::make_unique<systems::edit::QEditSystemAdaptor>(session_->editSystem());
     feature_adaptor_ = std::make_unique<systems::feature::QFeatureSystemAdaptor>(session_->featureSystem());
+    connect(feature_adaptor_.get(), &systems::feature::QFeatureSystemAdaptor::invocationFailed,
+        task_status_.get(), &QTaskStatus::reportFailure);
     undo_adaptor_ = std::make_unique<QUndoStackAdaptor>(session_->undoStack());
     task_status_->bindSession(*session_);
 

@@ -12,6 +12,9 @@
 #include <vtkActor2D.h>
 #include <vtkCallbackCommand.h>
 #include <vtkCamera.h>
+#include <vtkCubeSource.h>
+#include <vtkDisplaySizedImplicitPlaneRepresentation.h>
+#include <vtkDisplaySizedImplicitPlaneWidget.h>
 #include <vtkCellData.h>
 #include <vtkGenericOpenGLRenderWindow.h>
 #include <vtkImageData.h>
@@ -24,6 +27,7 @@
 #include <vtkTransform.h>
 
 #include <QGuiApplication>
+#include <catch2/catch_approx.hpp>
 #include <QQmlEngine>
 #include <QQmlExpression>
 #include <catch2/catch_test_macros.hpp>
@@ -447,6 +451,79 @@ TEST_CASE("Viewport orientation switches camera before and after dragging at a f
         CHECK(orientation->GetInteractionStateAsEnum() != vtkCameraOrientationRepresentation::InteractionStateType::Rotating);
     }
     CHECK(selections == 0);
+    item.destroyingVTK(window, user_data);
+}
+
+TEST_CASE("Clipping widget does not enlarge camera framing on reset or orientation clicks")
+{
+    testApplication();
+    QRenderWindow item;
+    vtkNew<vtkRenderWindow> window;
+    window->SetSize(600, 400);
+    vtkNew<vtkRenderWindowInteractor> interactor;
+    interactor->SetRenderWindow(window);
+    interactor->EnableRenderOff();
+    auto user_data = item.initializeVTK(window);
+    auto* data = QRenderWindow::Data::SafeDownCast(user_data);
+    REQUIRE(data != nullptr);
+
+    vtkNew<vtkCubeSource> source;
+    source->SetBounds(-0.05, 0.05, -0.05, 0.05, -0.05, 0.05);
+    vtkNew<vtkPolyDataMapper> mapper;
+    mapper->SetInputConnection(source->GetOutputPort());
+    vtkNew<vtkActor> actor;
+    actor->SetMapper(mapper);
+    data->renderer_->AddActor(actor);
+    data->renderer_->ResetCamera();
+    auto* camera = data->renderer_->GetActiveCamera();
+    const double expected_scale = camera->GetParallelScale();
+    double expected_bounds[6];
+    data->renderer_->ComputeVisiblePropBounds(expected_bounds);
+
+    // 使用实际视口初始化的控件；其屏幕尺寸自适应几何不应参与模型取景。
+    auto* plane = data->plane_widget_->GetDisplaySizedImplicitPlaneRepresentation();
+    plane->SetOrigin(0, 0, 0);
+    data->plane_widget_->On();
+    data->orientationWidget->SquareResize();
+    auto* orientation = ViewportOrientationRepresentation::SafeDownCast(data->orientationWidget->GetRepresentation());
+    REQUIRE(orientation != nullptr);
+
+    SECTION("repeated reset restores the model scale after zooming")
+    {
+        camera->SetParallelScale(expected_scale * 3);
+        for (int cycle = 0; cycle < 5; ++cycle) {
+            INFO("reset cycle=" << cycle);
+            plane->BuildRepresentation();
+            data->renderer_->ResetCamera();
+            CHECK(camera->GetParallelScale() == Catch::Approx(expected_scale));
+        }
+    }
+    SECTION("orientation clicks reset framing without including the clipping widget")
+    {
+        camera->SetParallelScale(expected_scale * 3);
+        for (int cycle = 0; cycle < 5; ++cycle) {
+            INFO("orientation cycle=" << cycle);
+            camera->SetPosition(0, 0, camera->GetDistance());
+            camera->SetViewUp(0, 1, 0);
+            orientation->GetTransform()->Identity();
+            orientation->BuildRepresentation();
+            const int* origin = orientation->GetRenderer()->GetOrigin();
+            interactor->SetEventPosition(origin[0] + 98, origin[1] + 60);
+            interactor->InvokeEvent(vtkCommand::MouseMoveEvent);
+            interactor->InvokeEvent(vtkCommand::LeftButtonPressEvent);
+            interactor->InvokeEvent(vtkCommand::LeftButtonReleaseEvent);
+            CHECK(std::abs(camera->GetDirectionOfProjection()[0]) == 1.0);
+            CHECK(camera->GetDirectionOfProjection()[1] == 0.0);
+            CHECK(camera->GetDirectionOfProjection()[2] == 0.0);
+            CHECK(camera->GetParallelScale() == Catch::Approx(expected_scale));
+        }
+    }
+
+    double bounds[6];
+    data->renderer_->ComputeVisiblePropBounds(bounds);
+    for (int i = 0; i < 6; ++i)
+        CHECK(bounds[i] == Catch::Approx(expected_bounds[i]));
+    CHECK(data->plane_widget_->GetEnabled());
     item.destroyingVTK(window, user_data);
 }
 
