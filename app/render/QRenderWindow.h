@@ -27,10 +27,7 @@
 #include <vtkRenderWindowInteractor.h>
 #include <vtkRenderer.h>
 
-#include <array>
-#include <map>
 #include <memory>
-#include <optional>
 
 class MeshActor;
 class SelectManager;

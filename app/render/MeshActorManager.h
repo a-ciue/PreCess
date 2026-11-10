@@ -35,7 +35,7 @@ public:
         const std::string& attr_name,
         Mode mode,
         std::map<std::string, std::any> args);
-    /** @brief 按含配置的完成快照恢复标量着色；非归属组件恢复时保留共享色柱。 */
+    /** @brief 按完成快照应用或恢复标量着色；非归属组件保留共享色柱。 */
     void applyScalarConfig(Index component_id, const MeshDataSnapshot& snapshot, bool update_scalar_bar = true);
     void cancelAttri(Index component_id);
 

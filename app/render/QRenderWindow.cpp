@@ -31,8 +31,10 @@
 
 #include <algorithm>
 #include <any>
+#include <array>
 #include <cmath>
 #include <functional>
+#include <map>
 #include <memory>
 #include <optional>
 #include <stdexcept>
@@ -1036,7 +1038,7 @@ void QRenderWindow::publishMeshUpdate(Index component_id, MeshSnapshotUpdate upd
         scalar_bar_component_id_ = component_id;
     // 网格安装、着色和选择发布保持在同一次渲染回调，保留选择版本校验。
     dispatch_async([this, component_id, snapshot = std::move(snapshot),
-                       mesh_outputs_rebuilt, scalar_deactivated, show_scalar_bar, activate_scalar_bar, revision = selection_revision_](vtkRenderWindow*, vtkUserData user_data) {
+                       mesh_outputs_rebuilt, scalar_deactivated, show_scalar_bar, revision = selection_revision_](vtkRenderWindow*, vtkUserData user_data) {
         auto* vtk = Data::SafeDownCast(user_data);
         if (mesh_outputs_rebuilt) {
             render_selection_revision_ = revision;
@@ -1044,15 +1046,7 @@ void QRenderWindow::publishMeshUpdate(Index component_id, MeshSnapshotUpdate upd
             vtk->mesh_actor_manager_->loadMesh(component_id, snapshot, vtk->renderer_);
         }
         if (snapshot->scalar_config) {
-            if (activate_scalar_bar) {
-                const auto& config = *snapshot->scalar_config;
-                std::map<std::string, std::any> args;
-                if (config.mapping)
-                    args["scalar_range"] = std::vector<double> { (*config.mapping)[0], (*config.mapping)[1] };
-                vtk->mesh_actor_manager_->setAttriMode(component_id, config.attribute, Mode::SCALAR, std::move(args));
-            } else {
-                vtk->mesh_actor_manager_->applyScalarConfig(component_id, *snapshot, show_scalar_bar);
-            }
+            vtk->mesh_actor_manager_->applyScalarConfig(component_id, *snapshot, show_scalar_bar);
         } else if (scalar_deactivated) {
             vtk->mesh_actor_manager_->cancelAttri(component_id);
         }

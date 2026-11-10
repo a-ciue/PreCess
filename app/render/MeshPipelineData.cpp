@@ -642,7 +642,5 @@ std::shared_ptr<const MeshDataSnapshot> MeshPipelineData::createSnapshot()
     snapshot->visible = visible_;
     snapshot->clip = clip_;
     snapshot->scalar_config = scalar_config_;
-    // 现有输出缓存同时保存最新完成配置；旧快照只读保留，不原地回写。
-    prepared_ = snapshot;
     return snapshot;
 }
