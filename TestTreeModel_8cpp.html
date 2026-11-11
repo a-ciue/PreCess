@@ -1,0 +1,617 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="zh">
+<head>
+<meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=11"/>
+<meta name="generator" content="Doxygen 1.14.0"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>PreCess: app/test/TestTreeModel.cpp 文件参考</title>
+<link href="tabs.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="jquery.js"></script>
+<script type="text/javascript" src="dynsections.js"></script>
+<script type="text/javascript" src="clipboard.js"></script>
+<script type="text/javascript" src="cookie.js"></script>
+<link href="search/search.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="search/searchdata.js"></script>
+<script type="text/javascript" src="search/search.js"></script>
+<link href="doxygen.css" rel="stylesheet" type="text/css" />
+</head>
+<body>
+<div id="top"><!-- do not remove this div, it is closed by doxygen! -->
+<div id="titlearea">
+<table cellspacing="0" cellpadding="0">
+ <tbody>
+ <tr id="projectrow">
+  <td id="projectlogo"><img alt="Logo" src="ZenithGrid.ico"/></td>
+  <td id="projectalign">
+   <div id="projectname">PreCess
+   </div>
+  </td>
+ </tr>
+ </tbody>
+</table>
+</div>
+<!-- end header part -->
+<!-- 制作者 Doxygen 1.14.0 -->
+<script type="text/javascript">
+var searchBox = new SearchBox("searchBox", "search/",'.html');
+</script>
+<script type="text/javascript">
+$(function() { codefold.init(); });
+</script>
+<script type="text/javascript" src="menudata.js"></script>
+<script type="text/javascript" src="menu.js"></script>
+<script type="text/javascript">
+$(function() {
+  initMenu('',true,false,'search.php','搜索',false);
+  $(function() { init_search(); });
+});
+</script>
+<div id="main-nav"></div>
+<!-- window showing the filter options -->
+<div id="MSearchSelectWindow"
+     onmouseover="return searchBox.OnSearchSelectShow()"
+     onmouseout="return searchBox.OnSearchSelectHide()"
+     onkeydown="return searchBox.OnSearchSelectKey(event)">
+</div>
+
+<!-- iframe showing the search results (closed by default) -->
+<div id="MSearchResultsWindow">
+<div id="MSearchResults">
+<div class="SRPage">
+<div id="SRIndex">
+<div id="SRResults"></div>
+<div class="SRStatus" id="Loading">载入中...</div>
+<div class="SRStatus" id="Searching">搜索中...</div>
+<div class="SRStatus" id="NoMatches">未找到</div>
+</div>
+</div>
+</div>
+</div>
+
+<div id="nav-path" class="navpath">
+  <ul>
+<li class="navelem"><a href="dir_d422163b96683743ed3963d4aac17747.html">app</a></li><li class="navelem"><a href="dir_effe5c348e70d16252aa6de5fa9356c9.html">test</a></li>  </ul>
+</div>
+</div><!-- top -->
+<div id="doc-content">
+<div class="header">
+  <div class="summary">
+<a href="#func-members">函数</a>  </div>
+  <div class="headertitle"><div class="title">TestTreeModel.cpp 文件参考</div></div>
+</div><!--header-->
+<div class="contents">
+
+<p>瀵硅薄鏍戝閲忚淇″彿涓庡睍寮€鐘舵€佽韩浠藉洖褰掓祴璇?  
+<a href="#details">更多...</a></p>
+<div class="textblock"><code>#include &quot;<a class="el" href="ComponentData_8h_source.html">ComponentData.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="ComponentOperator_8h_source.html">ComponentOperator.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="GeometryBuilder_8h_source.html">GeometryBuilder.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="GeometryData_8h_source.html">GeometryData.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="MeshData_8h_source.html">MeshData.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="ModelLayer_8h_source.html">ModelLayer.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="ModelOperator_8h_source.html">ModelOperator.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="QModelQuery_8h_source.html">QModelQuery.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="SessionQuery_8h_source.html">SessionQuery.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="TreeModel_8h_source.html">TreeModel.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="TreeModelTestHelpers_8h_source.html">TreeModelTestHelpers.h</a>&quot;</code><br />
+<code>#include &lt;QCoreApplication&gt;</code><br />
+<code>#include &lt;QPersistentModelIndex&gt;</code><br />
+<code>#include &lt;catch2/catch_test_macros.hpp&gt;</code><br />
+<code>#include &lt;memory&gt;</code><br />
+</div><div class="textblock"><div class="dynheader">
+TestTreeModel.cpp 的引用(Include)关系图:</div>
+<div class="dyncontent">
+<div class="center"><img src="TestTreeModel_8cpp__incl.png" border="0" usemap="#aapp_2test_2TestTreeModel_8cpp" loading="lazy" alt=""/></div>
+<map name="aapp_2test_2TestTreeModel_8cpp" id="aapp_2test_2TestTreeModel_8cpp">
+<area shape="rect" title="瀵硅薄鏍戝閲忚淇″彿涓庡睍寮€鐘舵€佽韩浠藉洖褰掓祴璇?" alt="" coords="1853,5,2051,33"/>
+<area shape="rect" href="ComponentData_8h.html" title=" " alt="" coords="1826,384,1966,411"/>
+<area shape="poly" title=" " alt="" coords="1954,32,1955,169,1955,248,1951,282,1941,316,1914,373,1911,368,1936,314,1945,281,1949,247,1949,169,1950,36"/>
+<area shape="rect" title=" " alt="" coords="768,611,845,638"/>
+<area shape="poly" title=" " alt="" coords="1850,22,1467,29,947,40,462,57,285,69,182,84,118,94,62,103,40,111,23,123,12,142,8,169,8,474,12,505,24,526,43,544,70,560,110,572,179,582,374,600,755,619,752,623,374,605,178,588,109,577,68,565,40,548,19,529,7,506,3,475,3,169,7,140,19,120,37,106,61,98,118,89,181,78,285,64,461,52,946,34,1467,24,1855,21"/>
+<area shape="rect" href="MeshData_8h.html" title=" " alt="" coords="1646,459,1746,487"/>
+<area shape="poly" title=" " alt="" coords="1878,34,1801,59,1757,76,1713,98,1670,123,1633,155,1601,191,1577,233,1570,264,1571,295,1580,325,1595,355,1633,408,1672,450,1667,448,1629,411,1590,357,1575,327,1566,295,1564,263,1572,231,1596,188,1629,151,1667,119,1710,93,1755,71,1799,54,1883,33"/>
+<area shape="rect" href="ComponentOperator_8h.html" title=" " alt="" coords="847,459,1012,487"/>
+<area shape="poly" title=" " alt="" coords="1850,24,1442,44,1227,61,1138,72,1071,84,1013,94,965,101,944,108,925,119,906,135,888,158,870,194,862,233,862,273,868,313,891,388,917,447,912,445,886,390,863,314,857,273,857,232,865,192,883,155,902,131,922,114,942,103,963,96,1012,88,1070,78,1138,66,1226,56,1442,39,1855,23"/>
+<area shape="rect" href="GeometryBuilder_8h.html" title=" " alt="" coords="204,459,348,487"/>
+<area shape="poly" title=" " alt="" coords="1850,25,1454,44,929,75,680,95,472,117,391,130,330,143,291,157,282,164,279,170,279,323,279,444,273,443,273,323,273,169,277,160,289,152,328,138,390,125,471,112,679,89,929,69,1454,39,1855,23"/>
+<area shape="rect" href="GeometryData_8h.html" title=" " alt="" coords="58,384,187,411"/>
+<area shape="poly" title=" " alt="" coords="1850,21,1480,25,983,32,738,40,522,51,355,65,297,74,258,84,217,98,183,112,170,122,160,134,154,149,152,169,152,248,146,313,133,369,128,368,140,312,147,247,147,169,149,148,156,131,166,118,180,108,215,93,257,78,296,68,354,60,521,45,737,35,983,27,1480,19,1855,20"/>
+<area shape="rect" href="ModelLayer_8h.html" title="负责管理多个模型实例的类" alt="" coords="1083,81,1192,109"/>
+<area shape="poly" title=" " alt="" coords="1850,30,1207,90,1207,85,1855,28"/>
+<area shape="rect" href="ModelOperator_8h.html" title=" " alt="" coords="1662,157,1791,184"/>
+<area shape="poly" title=" " alt="" coords="1935,32,1760,150,1757,146,1930,34"/>
+<area shape="rect" href="QModelQuery_8h.html" title="模型层查询的 QML 适配器" alt="" coords="2500,232,2620,260"/>
+<area shape="poly" title=" " alt="" coords="2025,31,2110,49,2213,76,2324,111,2432,154,2488,187,2535,223,2530,222,2485,191,2429,159,2322,116,2212,81,2109,54,2025,36"/>
+<area shape="rect" href="SessionQuery_8h.html" title="会话层查询接口：模型层只读查询的原生（非 Qt）视图" alt="" coords="2566,384,2687,411"/>
+<area shape="poly" title=" " alt="" coords="2052,31,2165,50,2286,78,2416,128,2592,204,2815,306,2823,324,2820,340,2810,353,2795,364,2752,380,2703,391,2702,385,2750,375,2792,360,2807,349,2816,338,2817,325,2811,310,2590,209,2414,132,2285,84,2164,55,2052,36"/>
+<area shape="rect" href="TreeModel_8h.html" title=" " alt="" coords="2658,157,2758,184"/>
+<area shape="poly" title=" " alt="" coords="2051,17,2199,19,2370,28,2453,36,2529,46,2593,60,2640,79,2658,91,2674,108,2697,144,2692,142,2670,111,2655,96,2637,83,2591,66,2528,52,2453,41,2370,33,2199,25,2052,22"/>
+<area shape="rect" href="TreeModelTestHelpers_8h.html" title=" " alt="" coords="2708,81,2884,109"/>
+<area shape="poly" title=" " alt="" coords="2052,25,2338,47,2690,78,2695,81,2690,81,2689,84,2338,52,2052,30"/>
+<area shape="rect" title=" " alt="" coords="2909,81,3043,109"/>
+<area shape="poly" title=" " alt="" coords="2052,21,2418,39,2653,56,2896,81,2891,81,2652,61,2418,45,2052,27"/>
+<area shape="rect" title=" " alt="" coords="3067,81,3240,109"/>
+<area shape="poly" title=" " alt="" coords="2052,21,2482,39,2763,56,3054,81,3049,81,2763,61,2482,45,2052,26"/>
+<area shape="rect" title=" " alt="" coords="3264,81,3482,109"/>
+<area shape="poly" title=" " alt="" coords="2051,21,2560,39,2900,56,3251,81,3246,81,2899,61,2560,44,2052,26"/>
+<area shape="rect" href="Core_8h.html" title=" " alt="" coords="1742,535,1805,563"/>
+<area shape="poly" title=" " alt="" coords="1888,410,1795,525,1793,520,1883,413"/>
+<area shape="poly" title=" " alt="" coords="1823,401,1258,422,973,440,879,450,850,456,836,462,824,475,815,491,805,526,803,563,804,597,800,593,797,563,800,526,811,489,820,472,833,457,849,451,878,445,972,434,1257,417,1829,400"/>
+<area shape="rect" title=" " alt="" coords="2162,611,2220,638"/>
+<area shape="poly" title=" " alt="" coords="1966,395,2063,398,2172,406,2224,414,2269,425,2306,439,2331,458,2348,484,2353,510,2347,536,2332,564,2312,586,2288,601,2235,619,2234,614,2285,597,2309,581,2327,561,2342,534,2347,510,2343,486,2327,461,2304,444,2268,430,2223,419,2171,411,2063,403,1966,401"/>
+<area shape="rect" title=" " alt="" coords="1548,611,1610,638"/>
+<area shape="poly" title=" " alt="" coords="1966,400,2045,406,2130,417,2207,434,2237,444,2259,457,2284,482,2300,508,2302,536,2297,551,2287,565,2200,578,2010,595,1626,623,1625,617,2010,589,2199,573,2284,560,2293,548,2297,536,2295,510,2280,485,2256,461,2235,449,2206,439,2130,422,2044,411,1966,405"/>
+<area shape="poly" title=" " alt="" coords="1863,411,1746,456,1745,451,1858,412"/>
+<area shape="rect" title=" " alt="" coords="2060,535,2183,563"/>
+<area shape="poly" title=" " alt="" coords="1966,398,2041,404,2122,414,2192,431,2219,443,2237,458,2243,469,2244,481,2232,501,2208,517,2178,531,2177,526,2205,513,2228,497,2239,479,2238,471,2233,461,2216,448,2190,437,2121,420,2041,409,1966,404"/>
+<area shape="rect" href="MeshAdjacency_8h.html" title="网格邻接查询索引——统一边表 + 稳定边 id" alt="" coords="2089,459,2223,487"/>
+<area shape="poly" title=" " alt="" coords="1943,409,2098,455,2092,455,1942,415"/>
+<area shape="rect" title=" " alt="" coords="1262,611,1317,638"/>
+<area shape="poly" title=" " alt="" coords="1744,557,1712,565,1500,598,1333,620,1332,615,1499,593,1712,560,1739,557"/>
+<area shape="rect" title=" " alt="" coords="1807,611,1857,638"/>
+<area shape="poly" title=" " alt="" coords="1785,561,1815,599,1810,597,1783,566"/>
+<area shape="poly" title=" " alt="" coords="1744,554,1659,565,1197,601,861,623,860,617,1197,596,1658,560,1739,554"/>
+<area shape="poly" title=" " alt="" coords="1806,553,2149,615,2144,615,1805,558"/>
+<area shape="poly" title=" " alt="" coords="1744,562,1625,609,1624,603,1739,563"/>
+<area shape="poly" title=" " alt="" coords="1711,485,1751,525,1746,523,1709,490"/>
+<area shape="poly" title=" " alt="" coords="1696,486,1687,526,1676,547,1660,565,1635,579,1599,590,1509,608,1413,618,1332,624,1332,619,1412,613,1508,602,1598,585,1633,574,1657,561,1672,544,1682,525,1692,489"/>
+<area shape="poly" title=" " alt="" coords="1690,486,1659,528,1636,549,1610,565,1565,577,1488,587,1273,604,861,624,860,619,1273,599,1487,582,1564,571,1608,560,1633,545,1655,525,1685,489"/>
+<area shape="poly" title=" " alt="" coords="1740,485,2149,610,2144,610,1739,490"/>
+<area shape="poly" title=" " alt="" coords="1746,480,2047,534,2041,534,1746,486"/>
+<area shape="rect" title=" " alt="" coords="1384,535,1498,563"/>
+<area shape="poly" title=" " alt="" coords="1653,487,1502,533,1501,528,1648,488"/>
+<area shape="rect" title=" " alt="" coords="1523,535,1597,563"/>
+<area shape="poly" title=" " alt="" coords="1674,487,1598,530,1597,525,1669,488"/>
+<area shape="poly" title=" " alt="" coords="2092,487,1839,538,1821,541,1820,536,1838,532,2086,488"/>
+<area shape="poly" title=" " alt="" coords="2092,484,1988,507,1877,537,1848,552,1818,565,1719,584,1582,601,1333,623,1333,617,1582,595,1718,579,1817,560,1846,547,1875,533,1987,502,2087,485"/>
+<area shape="poly" title=" " alt="" coords="2119,487,2004,526,1865,565,1735,595,1625,617,1625,612,1734,590,1863,560,2003,521,2114,488"/>
+<area shape="poly" title=" " alt="" coords="2152,486,2136,523,2132,519,2148,489"/>
+<area shape="poly" title=" " alt="" coords="2091,483,1613,544,1612,538,2086,483"/>
+<area shape="rect" title=" " alt="" coords="2207,535,2273,563"/>
+<area shape="poly" title=" " alt="" coords="2172,485,2216,525,2211,524,2170,490"/>
+<area shape="poly" title=" " alt="" coords="1012,479,1729,543,1724,544,1012,484"/>
+<area shape="poly" title=" " alt="" coords="961,485,1250,606,1245,606,960,490"/>
+<area shape="poly" title=" " alt="" coords="955,485,979,500,1000,519,1012,541,1012,553,1006,564,976,593,938,611,898,621,861,626,860,620,897,616,936,606,973,588,1002,561,1006,552,1006,542,996,523,976,505,954,490"/>
+<area shape="poly" title=" " alt="" coords="984,485,1157,523,1372,560,1600,586,1823,603,2149,622,2143,622,1823,608,1599,591,1372,565,1156,528,984,490"/>
+<area shape="poly" title=" " alt="" coords="972,485,1222,560,1393,594,1535,617,1529,617,1392,599,1221,565,972,490"/>
+<area shape="rect" title=" " alt="" coords="869,535,992,563"/>
+<area shape="poly" title=" " alt="" coords="931,486,932,521,928,518,928,490"/>
+<area shape="poly" title=" " alt="" coords="287,484,328,524,356,545,386,560,1533,618,1532,623,385,565,353,549,325,528,286,490"/>
+<area shape="rect" title=" " alt="" coords="397,535,542,563"/>
+<area shape="poly" title=" " alt="" coords="311,485,424,529,418,530,310,490"/>
+<area shape="poly" title=" " alt="" coords="112,414,98,443,81,483,76,504,75,525,79,544,90,561,102,569,124,577,189,590,276,600,377,608,588,617,755,623,750,623,588,622,377,613,276,605,188,595,122,582,100,574,86,565,74,546,70,525,70,504,76,482,93,441,115,409"/>
+<area shape="poly" title=" " alt="" coords="188,398,545,415,783,432,1024,457,1101,470,1176,484,1341,506,1414,516,1510,535,1505,534,1413,521,1340,512,1176,490,1100,475,1024,462,783,437,545,420,188,403"/>
+<area shape="rect" href="GeometrySubshapeIndex_8h.html" title=" " alt="" coords="372,459,569,487"/>
+<area shape="poly" title=" " alt="" coords="185,409,395,454,391,457,185,415"/>
+<area shape="poly" title=" " alt="" coords="570,476,1020,498,1610,532,1729,544,1724,544,1609,538,1019,504,570,482"/>
+<area shape="poly" title=" " alt="" coords="500,485,594,523,652,543,713,560,865,588,1016,606,1149,615,1249,622,1243,622,1149,621,1016,611,864,593,711,565,651,549,592,528,499,490"/>
+<area shape="poly" title=" " alt="" coords="518,485,669,523,858,560,999,576,1192,593,1535,620,1529,620,1192,598,998,582,857,565,668,528,518,490"/>
+<area shape="poly" title=" " alt="" coords="472,486,472,521,468,518,469,490"/>
+<area shape="rect" title=" " alt="" coords="144,535,323,563"/>
+<area shape="poly" title=" " alt="" coords="426,488,291,533,289,527,431,487"/>
+<area shape="poly" title=" " alt="" coords="1080,99,958,107,801,118,650,135,588,146,542,159,477,187,423,215,379,245,341,278,269,357,185,461,134,514,126,525,123,537,125,548,133,560,177,568,285,577,619,595,1248,620,1245,624,619,600,285,582,177,573,131,565,120,550,118,536,122,523,130,510,181,458,265,353,337,274,376,241,421,211,474,182,540,154,587,141,649,130,800,112,958,101,1085,97"/>
+<area shape="poly" title=" " alt="" coords="1080,101,951,116,873,127,794,142,722,161,663,185,641,198,624,213,613,228,609,245,609,399,614,433,626,465,645,495,668,522,720,568,771,603,766,602,717,572,664,526,640,498,621,468,609,434,604,399,604,245,608,226,620,209,637,194,661,180,721,156,793,137,872,122,951,111,1085,99"/>
+<area shape="poly" title=" " alt="" coords="1125,107,1103,134,1079,166,1060,204,1054,224,1052,245,1052,399,1055,420,1063,435,1075,445,1092,453,1132,465,1177,485,1246,527,1320,560,1376,579,1433,594,1535,616,1530,616,1432,599,1374,584,1318,565,1244,532,1175,489,1131,470,1090,458,1073,450,1059,438,1050,422,1047,399,1047,245,1049,223,1055,202,1075,163,1099,131,1121,111"/>
+<area shape="poly" title=" " alt="" coords="1191,95,1330,101,1507,112,1680,130,1751,141,1805,154,1857,175,1920,206,2060,287,2126,332,2185,378,2231,420,2260,458,2264,471,2263,484,2250,504,2226,520,2195,532,2194,527,2223,515,2246,500,2258,482,2259,472,2255,461,2227,424,2182,382,2123,337,2057,291,1918,211,1855,180,1803,159,1750,146,1680,135,1507,118,1330,106,1192,101"/>
+<area shape="poly" title=" " alt="" coords="1141,107,1161,179,1178,229,1201,285,1230,342,1266,396,1310,445,1361,485,1419,505,1510,533,1505,533,1417,510,1359,489,1306,449,1262,400,1226,344,1196,287,1173,231,1156,180,1139,111"/>
+<area shape="poly" title=" " alt="" coords="1192,95,1532,114,1720,131,1798,142,1857,154,1973,192,2018,213,2059,236,2097,264,2135,296,2223,382,2258,416,2271,434,2281,459,2284,476,2280,494,2263,525,2260,521,2275,492,2278,476,2276,460,2266,436,2254,419,2219,386,2132,300,2094,268,2056,241,2016,218,1971,197,1855,159,1797,147,1720,136,1531,119,1192,101"/>
+<area shape="poly" title=" " alt="" coords="1103,108,1066,131,1033,159,1017,179,1007,198,1003,218,1001,245,1001,323,996,359,984,393,951,449,948,445,979,391,991,358,996,323,996,245,997,218,1002,196,1012,177,1029,155,1063,126,1098,110"/>
+<area shape="poly" title=" " alt="" coords="1080,103,970,125,919,140,900,149,887,159,853,198,827,237,808,276,798,314,795,354,801,395,815,439,837,486,856,509,883,528,877,527,853,513,832,488,810,441,795,396,790,354,792,313,803,274,822,234,849,195,884,155,897,144,917,135,969,119,1085,101"/>
+<area shape="poly" title=" " alt="" coords="1080,100,824,119,686,136,631,147,589,159,519,207,387,305,257,405,194,461,191,476,194,492,213,524,207,524,189,494,186,476,190,458,254,401,383,300,515,203,587,154,629,142,686,131,823,114,1085,97"/>
+<area shape="rect" href="ModelData_8h.html" title="负责管理和操作网格模型数据的核心类" alt="" coords="1737,308,1842,336"/>
+<area shape="poly" title=" " alt="" coords="1192,101,1290,121,1346,136,1400,154,1451,180,1489,205,1525,231,1576,258,1651,284,1725,306,1720,306,1649,289,1574,262,1522,236,1485,210,1449,184,1398,159,1344,141,1289,126,1192,106"/>
+<area shape="rect" href="GeometryRegistry_8h.html" title=" " alt="" coords="1372,459,1522,487"/>
+<area shape="poly" title=" " alt="" coords="1161,107,1194,129,1228,160,1255,199,1264,221,1267,245,1267,323,1270,346,1279,367,1292,386,1309,403,1350,431,1394,454,1388,453,1347,435,1306,407,1288,389,1274,370,1265,348,1261,323,1261,245,1258,222,1251,201,1224,164,1190,133,1160,112"/>
+<area shape="rect" href="MeshIDMap_8h.html" title=" " alt="" coords="1188,459,1298,487"/>
+<area shape="poly" title=" " alt="" coords="1135,107,1123,168,1115,245,1115,323,1117,343,1124,363,1146,397,1177,426,1208,452,1203,450,1173,431,1142,401,1119,365,1112,345,1109,323,1109,245,1118,167,1132,111"/>
+<area shape="poly" title=" " alt="" coords="1192,100,1649,159,1644,160,1192,106"/>
+<area shape="rect" title=" " alt="" coords="1301,157,1387,184"/>
+<area shape="poly" title=" " alt="" coords="1174,107,1295,151,1290,151,1174,112"/>
+<area shape="rect" title=" " alt="" coords="898,157,961,184"/>
+<area shape="poly" title=" " alt="" coords="1098,110,977,155,975,150,1103,108"/>
+<area shape="poly" title=" " alt="" coords="1809,334,1867,375,1862,374,1808,339"/>
+<area shape="poly" title=" " alt="" coords="1734,323,1533,327,1397,333,1254,343,1112,360,984,384,929,400,880,418,841,438,811,461,801,475,794,491,789,528,792,564,799,598,795,595,787,565,783,527,788,490,796,473,807,457,838,434,878,413,927,395,983,379,1111,355,1253,338,1397,327,1533,322,1740,322"/>
+<area shape="poly" title=" " alt="" coords="1841,321,2024,325,2272,334,2520,352,2623,365,2699,381,2744,393,2780,404,2811,423,2838,458,2853,486,2860,513,2856,539,2839,565,2827,573,2806,580,2746,593,2574,611,2383,621,2236,625,2236,620,2383,615,2574,605,2746,588,2805,575,2824,568,2835,561,2851,537,2854,513,2848,488,2834,461,2807,427,2778,409,2743,398,2698,386,2622,370,2520,357,2272,339,2024,330,1842,326"/>
+<area shape="poly" title=" " alt="" coords="1763,335,1725,358,1681,386,1636,420,1597,461,1580,490,1568,522,1565,518,1575,488,1593,458,1632,416,1678,381,1722,354,1758,337"/>
+<area shape="rect" href="Selection_8h.html" title=" " alt="" coords="1921,459,2015,487"/>
+<area shape="poly" title=" " alt="" coords="1791,334,1798,372,1805,392,1817,410,1836,427,1859,440,1909,461,1904,461,1856,445,1833,431,1813,413,1800,395,1793,374,1788,338"/>
+<area shape="poly" title=" " alt="" coords="1936,487,1820,533,1819,528,1931,488"/>
+<area shape="poly" title=" " alt="" coords="1952,487,1894,527,1818,565,1768,583,1716,598,1626,618,1625,613,1715,593,1766,578,1816,560,1891,522,1947,488"/>
+<area shape="poly" title=" " alt="" coords="1506,485,1729,537,1724,537,1505,490"/>
+<area shape="poly" title=" " alt="" coords="1522,480,2047,539,2041,539,1522,485"/>
+<area shape="poly" title=" " alt="" coords="1368,482,1310,490,557,544,557,539,1309,484,1374,481"/>
+<area shape="poly" title=" " alt="" coords="1299,480,1729,541,1723,541,1298,485"/>
+<area shape="poly" title=" " alt="" coords="1259,485,1309,522,1373,560,1457,592,1535,614,1530,614,1455,597,1371,565,1306,526,1257,490"/>
+<area shape="poly" title=" " alt="" coords="1279,485,1394,529,1389,529,1278,490"/>
+<area shape="poly" title=" " alt="" coords="1659,180,1518,203,1322,242,1214,269,1103,302,994,341,889,386,831,414,810,432,790,461,779,487,776,509,784,562,795,598,791,595,779,563,770,509,774,485,786,458,806,429,828,410,887,381,992,336,1102,297,1213,264,1321,237,1517,198,1664,179"/>
+<area shape="poly" title=" " alt="" coords="1736,182,1764,231,1785,294,1780,292,1759,233,1734,187"/>
+<area shape="rect" href="ModelOperatorBase_8h.html" title=" " alt="" coords="1587,232,1749,260"/>
+<area shape="poly" title=" " alt="" coords="1718,183,1689,222,1686,218,1714,186"/>
+<area shape="rect" title=" " alt="" coords="1825,232,1914,260"/>
+<area shape="poly" title=" " alt="" coords="1753,182,1833,225,1828,225,1752,188"/>
+<area shape="poly" title=" " alt="" coords="1676,258,1716,342,1739,399,1760,459,1772,521,1768,518,1755,460,1734,401,1711,344,1673,263"/>
+<area shape="poly" title=" " alt="" coords="1690,258,1758,300,1752,299,1689,263"/>
+<area shape="poly" title=" " alt="" coords="2506,260,2392,292,2242,336,2075,393,1991,426,1911,462,1853,494,1803,528,1801,523,1850,490,1908,457,1989,421,2073,388,2241,330,2391,287,2501,261"/>
+<area shape="rect" title=" " alt="" coords="2602,308,2675,336"/>
+<area shape="poly" title=" " alt="" coords="2575,258,2616,298,2611,296,2573,263"/>
+<area shape="rect" title=" " alt="" coords="2700,308,2802,336"/>
+<area shape="poly" title=" " alt="" coords="2594,258,2705,302,2700,302,2594,263"/>
+<area shape="rect" title=" " alt="" coords="2876,308,2953,336"/>
+<area shape="poly" title=" " alt="" coords="2621,257,2864,310,2858,309,2620,263"/>
+<area shape="rect" title=" " alt="" coords="2500,308,2578,336"/>
+<area shape="poly" title=" " alt="" coords="2558,259,2548,295,2545,291,2554,262"/>
+<area shape="poly" title=" " alt="" coords="2564,398,2471,403,2348,411,2212,430,2144,444,2078,462,2053,475,2028,489,1933,516,1821,541,1820,535,1932,510,2026,485,2051,470,2076,457,2143,439,2211,424,2347,406,2470,397,2569,398"/>
+<area shape="poly" title=" " alt="" coords="2679,409,2717,423,2749,440,2761,450,2767,462,2768,475,2761,489,2742,502,2712,515,2621,538,2499,559,2359,578,2076,607,1873,623,1873,618,2075,602,2358,573,2498,554,2620,533,2710,510,2740,498,2757,485,2763,474,2762,464,2756,454,2746,444,2715,427,2679,415"/>
+<area shape="poly" title=" " alt="" coords="2563,401,1796,427,1384,444,1244,453,1177,462,1132,484,1101,510,1071,538,1026,565,940,597,860,616,859,611,939,592,1024,560,1067,534,1098,506,1129,479,1175,457,1244,448,1384,439,1796,422,2569,400"/>
+<area shape="poly" title=" " alt="" coords="2688,399,2721,405,2755,416,2786,433,2811,458,2827,485,2834,512,2829,538,2811,565,2799,573,2780,580,2723,592,2559,610,2377,620,2236,625,2236,620,2377,615,2559,604,2722,587,2778,575,2797,568,2807,561,2824,536,2828,512,2823,487,2807,461,2783,437,2753,420,2720,410,2687,404"/>
+<area shape="poly" title=" " alt="" coords="2657,409,2685,424,2709,443,2723,465,2723,477,2717,489,2696,504,2667,515,2592,527,2514,532,2454,538,2383,553,2311,565,2167,581,1971,597,1626,623,1625,617,1970,592,2167,575,2310,560,2382,547,2453,532,2513,527,2591,521,2665,510,2694,499,2713,485,2718,476,2718,466,2705,447,2682,429,2656,414"/>
+<area shape="poly" title=" " alt="" coords="2563,400,2347,407,2056,418,1787,436,1691,448,1636,462,1617,474,1601,489,1575,524,1573,519,1597,486,1614,470,1634,457,1690,442,1786,430,2055,413,2346,402,2569,400"/>
+<area shape="poly" title=" " alt="" coords="2564,403,2332,426,2034,462,2030,462,2030,457,2033,457,2332,421,2569,403"/>
+<area shape="rect" href="GeometryDataVtk_8h.html" title=" " alt="" coords="2551,459,2702,487"/>
+<area shape="poly" title=" " alt="" coords="2628,410,2629,445,2625,442,2625,414"/>
+<area shape="poly" title=" " alt="" coords="2655,173,2617,179,2572,189,2528,207,2490,234,2474,254,2467,272,2465,321,2465,399,2465,427,2461,449,2451,469,2432,489,2345,510,2199,537,2198,532,2344,505,2429,485,2447,466,2456,448,2459,426,2460,399,2460,320,2462,271,2469,251,2486,230,2525,202,2570,184,2616,174,2660,172"/>
+<area shape="poly" title=" " alt="" coords="2684,184,2601,228,2599,223,2679,186"/>
+<area shape="poly" title=" " alt="" coords="2710,182,2716,221,2723,241,2735,258,2756,271,2787,284,2864,309,2859,308,2786,289,2753,276,2731,262,2719,243,2711,222,2706,187"/>
+<area shape="rect" title=" " alt="" coords="2745,232,2900,260"/>
+<area shape="poly" title=" " alt="" coords="2729,182,2792,224,2787,223,2728,187"/>
+<area shape="rect" title=" " alt="" coords="2924,232,2996,260"/>
+<area shape="poly" title=" " alt="" coords="2753,182,2912,230,2906,230,2753,188"/>
+<area shape="rect" title=" " alt="" coords="3020,232,3207,260"/>
+<area shape="poly" title=" " alt="" coords="2759,179,2771,182,3024,229,3019,229,2770,187,2759,185"/>
+<area shape="rect" title=" " alt="" coords="3231,232,3284,260"/>
+<area shape="poly" title=" " alt="" coords="2759,180,2771,182,2894,196,2992,202,3091,209,3219,232,3213,232,3091,215,2992,207,2894,201,2770,187,2759,185"/>
+<area shape="poly" title=" " alt="" coords="2783,108,2736,149,2734,144,2778,110"/>
+<area shape="rect" title=" " alt="" coords="2782,157,2882,184"/>
+<area shape="poly" title=" " alt="" coords="2804,107,2821,144,2816,141,2801,112"/>
+<area shape="rect" title=" " alt="" coords="2905,157,2975,184"/>
+<area shape="poly" title=" " alt="" coords="2822,107,2904,150,2898,149,2821,112"/>
+<area shape="rect" title=" " alt="" coords="2998,157,3084,184"/>
+<area shape="poly" title=" " alt="" coords="2840,107,2986,152,2981,152,2840,112"/>
+</map>
+</div>
+</div><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 id="header-func-members" class="groupheader"><a id="func-members" name="func-members"></a>
+函数</h2></td></tr>
+<tr class="memitem:a7f0c4cfce0d9063f6ccd352f44233bc3" id="r_a7f0c4cfce0d9063f6ccd352f44233bc3"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a7f0c4cfce0d9063f6ccd352f44233bc3">TEST_CASE</a> (&quot;TreeModel applies structural changes through row signals&quot;, &quot;[TreeModel]&quot;)</td></tr>
+<tr class="memitem:a800a1456b84c313fccb595904535654e" id="r_a800a1456b84c313fccb595904535654e"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a800a1456b84c313fccb595904535654e">TEST_CASE</a> (&quot;TreeModel emits data changes <a class="el" href="TestComponentModel_8cpp.html#ae97f1c44740297fab404285a4388b17b">for</a> mutated component names&quot;, &quot;[TreeModel]&quot;)</td></tr>
+<tr class="memitem:a536fa1ab331a850021ab12a75524388a" id="r_a536fa1ab331a850021ab12a75524388a"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a536fa1ab331a850021ab12a75524388a">TEST_CASE</a> (&quot;TreeModel reconciles changed models without rebuilding the tree&quot;, &quot;[TreeModel]&quot;)</td></tr>
+<tr class="memitem:ab25c1e88ee5ea4221b260264a0b7a12f" id="r_ab25c1e88ee5ea4221b260264a0b7a12f"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ab25c1e88ee5ea4221b260264a0b7a12f">TEST_CASE</a> (&quot;TreeModel removes mesh and geometry nodes incrementally&quot;, &quot;[TreeModel]&quot;)</td></tr>
+<tr class="memitem:a69da43d6903a1df83bbecab90ba407d5" id="r_a69da43d6903a1df83bbecab90ba407d5"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a69da43d6903a1df83bbecab90ba407d5">TEST_CASE</a> (&quot;TreeModel shows a newly added subtype as visible&quot;, &quot;[TreeModel]&quot;)</td></tr>
+<tr class="memitem:aab7c5e824d6fea934a0862204891940d" id="r_aab7c5e824d6fea934a0862204891940d"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#aab7c5e824d6fea934a0862204891940d">TEST_CASE</a> (&quot;TreeModel keeps reported visibility when a subtype re-enters the tree&quot;, &quot;[TreeModel]&quot;)</td></tr>
+<tr class="memitem:aae2fd295b7f9b6d2543bf8ea40eb93da" id="r_aae2fd295b7f9b6d2543bf8ea40eb93da"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#aae2fd295b7f9b6d2543bf8ea40eb93da">TEST_CASE</a> (&quot;TreeModel applies reported visibility to components waiting to enter the tree&quot;, &quot;[TreeModel]&quot;)</td></tr>
+<tr class="memitem:a3fac10821ca7bf818502b5a997357272" id="r_a3fac10821ca7bf818502b5a997357272"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a3fac10821ca7bf818502b5a997357272">TEST_CASE</a> (&quot;TreeModel requests visibility without mutating the display copy&quot;, &quot;[TreeModel]&quot;)</td></tr>
+<tr class="memitem:ac0a34c470d748d583b7a5daeecb5f912" id="r_ac0a34c470d748d583b7a5daeecb5f912"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ac0a34c470d748d583b7a5daeecb5f912">TEST_CASE</a> (&quot;TreeModel hides element nodes with their reported subtype&quot;, &quot;[TreeModel]&quot;)</td></tr>
+<tr class="memitem:a29d677c8e5b93900d7b4f5f0ff685611" id="r_a29d677c8e5b93900d7b4f5f0ff685611"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a29d677c8e5b93900d7b4f5f0ff685611">TEST_CASE</a> (&quot;TreeModel keeps count child order and numbers&quot;, &quot;[TreeModel]&quot;)</td></tr>
+<tr class="memitem:a9afc45b52d34d7f979e11f17b1be348f" id="r_a9afc45b52d34d7f979e11f17b1be348f"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a9afc45b52d34d7f979e11f17b1be348f">TEST_CASE</a> (&quot;TreeModel resets state when the model query changes&quot;, &quot;[TreeModel]&quot;)</td></tr>
+<tr class="memitem:ad4c328e9122c047a0c40b807ed82e56c" id="r_ad4c328e9122c047a0c40b807ed82e56c"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ad4c328e9122c047a0c40b807ed82e56c">TEST_CASE</a> (&quot;TreeModel resets fake node <a class="el" href="TestComponentModel_8cpp.html#a5b425756f8f086f69cb81301d88866ca">ids</a> on full rebuild&quot;, &quot;[TreeModel]&quot;)</td></tr>
+<tr class="memitem:ac2023b7f239ac8ae5a37dff43d8cfa47" id="r_ac2023b7f239ac8ae5a37dff43d8cfa47"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ac2023b7f239ac8ae5a37dff43d8cfa47">TEST_CASE</a> (&quot;TreeModel consumes changes queued during a flush on the next timer&quot;, &quot;[TreeModel]&quot;)</td></tr>
+<tr class="memitem:ace4bd17866a21b1f3cbfe9573288bbf7" id="r_ace4bd17866a21b1f3cbfe9573288bbf7"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ace4bd17866a21b1f3cbfe9573288bbf7">TEST_CASE</a> (&quot;TreeModel coalesces data changes and inserts components on flush&quot;, &quot;[TreeModel]&quot;)</td></tr>
+<tr class="memitem:a90f37022d798f2d7c110ead5129bdcc1" id="r_a90f37022d798f2d7c110ead5129bdcc1"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a90f37022d798f2d7c110ead5129bdcc1">TEST_CASE</a> (&quot;TreeModel batches structural refresh requests&quot;, &quot;[TreeModel]&quot;)</td></tr>
+</table>
+<a name="details" id="details"></a><h2 id="header-details" class="groupheader">详细描述</h2>
+<div class="textblock"><p>瀵硅薄鏍戝閲忚淇″彿涓庡睍寮€鐘舵€佽韩浠藉洖褰掓祴璇? </p>
+</div><a name="doc-func-members" id="doc-func-members"></a><h2 id="header-doc-func-members" class="groupheader">函数说明</h2>
+<a id="aae2fd295b7f9b6d2543bf8ea40eb93da" name="aae2fd295b7f9b6d2543bf8ea40eb93da"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aae2fd295b7f9b6d2543bf8ea40eb93da">&#9670;&#160;</a></span>TEST_CASE() <span class="overload">[1/15]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">TEST_CASE </td>
+          <td>(</td>
+          <td class="paramtype">&quot;TreeModel applies reported visibility to components waiting to enter the tree&quot;</td>          <td class="paramname"><span class="paramname"><em></em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">&quot;&quot;</td>          <td class="paramname"><span class="paramname"><em></em></span>[TreeModel]&#160;)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a7f0c4cfce0d9063f6ccd352f44233bc3" name="a7f0c4cfce0d9063f6ccd352f44233bc3"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a7f0c4cfce0d9063f6ccd352f44233bc3">&#9670;&#160;</a></span>TEST_CASE() <span class="overload">[2/15]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">TEST_CASE </td>
+          <td>(</td>
+          <td class="paramtype">&quot;TreeModel applies structural changes through row signals&quot;</td>          <td class="paramname"><span class="paramname"><em></em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">&quot;&quot;</td>          <td class="paramname"><span class="paramname"><em></em></span>[TreeModel]&#160;)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a90f37022d798f2d7c110ead5129bdcc1" name="a90f37022d798f2d7c110ead5129bdcc1"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a90f37022d798f2d7c110ead5129bdcc1">&#9670;&#160;</a></span>TEST_CASE() <span class="overload">[3/15]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">TEST_CASE </td>
+          <td>(</td>
+          <td class="paramtype">&quot;TreeModel batches structural refresh requests&quot;</td>          <td class="paramname"><span class="paramname"><em></em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">&quot;&quot;</td>          <td class="paramname"><span class="paramname"><em></em></span>[TreeModel]&#160;)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="ace4bd17866a21b1f3cbfe9573288bbf7" name="ace4bd17866a21b1f3cbfe9573288bbf7"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ace4bd17866a21b1f3cbfe9573288bbf7">&#9670;&#160;</a></span>TEST_CASE() <span class="overload">[4/15]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">TEST_CASE </td>
+          <td>(</td>
+          <td class="paramtype">&quot;TreeModel coalesces data changes and inserts components on flush&quot;</td>          <td class="paramname"><span class="paramname"><em></em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">&quot;&quot;</td>          <td class="paramname"><span class="paramname"><em></em></span>[TreeModel]&#160;)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="ac2023b7f239ac8ae5a37dff43d8cfa47" name="ac2023b7f239ac8ae5a37dff43d8cfa47"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ac2023b7f239ac8ae5a37dff43d8cfa47">&#9670;&#160;</a></span>TEST_CASE() <span class="overload">[5/15]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">TEST_CASE </td>
+          <td>(</td>
+          <td class="paramtype">&quot;TreeModel consumes changes queued during a flush on the next timer&quot;</td>          <td class="paramname"><span class="paramname"><em></em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">&quot;&quot;</td>          <td class="paramname"><span class="paramname"><em></em></span>[TreeModel]&#160;)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a800a1456b84c313fccb595904535654e" name="a800a1456b84c313fccb595904535654e"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a800a1456b84c313fccb595904535654e">&#9670;&#160;</a></span>TEST_CASE() <span class="overload">[6/15]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">TEST_CASE </td>
+          <td>(</td>
+          <td class="paramtype">&quot;TreeModel emits data changes <a class="el" href="TestComponentModel_8cpp.html#ae97f1c44740297fab404285a4388b17b">for</a> mutated component names&quot;</td>          <td class="paramname"><span class="paramname"><em></em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">&quot;&quot;</td>          <td class="paramname"><span class="paramname"><em></em></span>[TreeModel]&#160;)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="ac0a34c470d748d583b7a5daeecb5f912" name="ac0a34c470d748d583b7a5daeecb5f912"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ac0a34c470d748d583b7a5daeecb5f912">&#9670;&#160;</a></span>TEST_CASE() <span class="overload">[7/15]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">TEST_CASE </td>
+          <td>(</td>
+          <td class="paramtype">&quot;TreeModel hides element nodes with their reported subtype&quot;</td>          <td class="paramname"><span class="paramname"><em></em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">&quot;&quot;</td>          <td class="paramname"><span class="paramname"><em></em></span>[TreeModel]&#160;)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a29d677c8e5b93900d7b4f5f0ff685611" name="a29d677c8e5b93900d7b4f5f0ff685611"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a29d677c8e5b93900d7b4f5f0ff685611">&#9670;&#160;</a></span>TEST_CASE() <span class="overload">[8/15]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">TEST_CASE </td>
+          <td>(</td>
+          <td class="paramtype">&quot;TreeModel keeps count child order and numbers&quot;</td>          <td class="paramname"><span class="paramname"><em></em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">&quot;&quot;</td>          <td class="paramname"><span class="paramname"><em></em></span>[TreeModel]&#160;)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="aab7c5e824d6fea934a0862204891940d" name="aab7c5e824d6fea934a0862204891940d"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aab7c5e824d6fea934a0862204891940d">&#9670;&#160;</a></span>TEST_CASE() <span class="overload">[9/15]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">TEST_CASE </td>
+          <td>(</td>
+          <td class="paramtype">&quot;TreeModel keeps reported visibility when a subtype re-enters the tree&quot;</td>          <td class="paramname"><span class="paramname"><em></em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">&quot;&quot;</td>          <td class="paramname"><span class="paramname"><em></em></span>[TreeModel]&#160;)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a536fa1ab331a850021ab12a75524388a" name="a536fa1ab331a850021ab12a75524388a"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a536fa1ab331a850021ab12a75524388a">&#9670;&#160;</a></span>TEST_CASE() <span class="overload">[10/15]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">TEST_CASE </td>
+          <td>(</td>
+          <td class="paramtype">&quot;TreeModel reconciles changed models without rebuilding the tree&quot;</td>          <td class="paramname"><span class="paramname"><em></em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">&quot;&quot;</td>          <td class="paramname"><span class="paramname"><em></em></span>[TreeModel]&#160;)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="ab25c1e88ee5ea4221b260264a0b7a12f" name="ab25c1e88ee5ea4221b260264a0b7a12f"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ab25c1e88ee5ea4221b260264a0b7a12f">&#9670;&#160;</a></span>TEST_CASE() <span class="overload">[11/15]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">TEST_CASE </td>
+          <td>(</td>
+          <td class="paramtype">&quot;TreeModel removes mesh and geometry nodes incrementally&quot;</td>          <td class="paramname"><span class="paramname"><em></em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">&quot;&quot;</td>          <td class="paramname"><span class="paramname"><em></em></span>[TreeModel]&#160;)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a3fac10821ca7bf818502b5a997357272" name="a3fac10821ca7bf818502b5a997357272"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a3fac10821ca7bf818502b5a997357272">&#9670;&#160;</a></span>TEST_CASE() <span class="overload">[12/15]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">TEST_CASE </td>
+          <td>(</td>
+          <td class="paramtype">&quot;TreeModel requests visibility without mutating the display copy&quot;</td>          <td class="paramname"><span class="paramname"><em></em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">&quot;&quot;</td>          <td class="paramname"><span class="paramname"><em></em></span>[TreeModel]&#160;)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="ad4c328e9122c047a0c40b807ed82e56c" name="ad4c328e9122c047a0c40b807ed82e56c"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ad4c328e9122c047a0c40b807ed82e56c">&#9670;&#160;</a></span>TEST_CASE() <span class="overload">[13/15]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">TEST_CASE </td>
+          <td>(</td>
+          <td class="paramtype">&quot;TreeModel resets fake node <a class="el" href="TestComponentModel_8cpp.html#a5b425756f8f086f69cb81301d88866ca">ids</a> on full rebuild&quot;</td>          <td class="paramname"><span class="paramname"><em></em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">&quot;&quot;</td>          <td class="paramname"><span class="paramname"><em></em></span>[TreeModel]&#160;)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a9afc45b52d34d7f979e11f17b1be348f" name="a9afc45b52d34d7f979e11f17b1be348f"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a9afc45b52d34d7f979e11f17b1be348f">&#9670;&#160;</a></span>TEST_CASE() <span class="overload">[14/15]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">TEST_CASE </td>
+          <td>(</td>
+          <td class="paramtype">&quot;TreeModel resets state when the model query changes&quot;</td>          <td class="paramname"><span class="paramname"><em></em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">&quot;&quot;</td>          <td class="paramname"><span class="paramname"><em></em></span>[TreeModel]&#160;)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a69da43d6903a1df83bbecab90ba407d5" name="a69da43d6903a1df83bbecab90ba407d5"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a69da43d6903a1df83bbecab90ba407d5">&#9670;&#160;</a></span>TEST_CASE() <span class="overload">[15/15]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">TEST_CASE </td>
+          <td>(</td>
+          <td class="paramtype">&quot;TreeModel shows a newly added subtype as visible&quot;</td>          <td class="paramname"><span class="paramname"><em></em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">&quot;&quot;</td>          <td class="paramname"><span class="paramname"><em></em></span>[TreeModel]&#160;)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+</div><!-- contents -->
+<!-- start footer part -->
+<hr class="footer"/><address class="footer"><small>
+制作者&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.14.0
+</small></address>
+</div><!-- doc-content -->
+</body>
+</html>

@@ -19,6 +19,7 @@ var searchData=
   ['qsystempluginmanager_16',['QSystemPluginManager',['../classsystems_1_1QSystemPluginManager.html#abedb39985f7bd1fe6c8d02a131596d86',1,'systems::QSystemPluginManager']]],
   ['qtaskstatus_17',['QTaskStatus',['../classQTaskStatus.html#afb8a77c350ca5d52dab1474e140747e4',1,'QTaskStatus']]],
   ['query_18',['query',['../classsession_1_1Session.html#a4f59a80d06e76a55e96783b1c96570fa',1,'session::Session']]],
-  ['qundostackadaptor_19',['QUndoStackAdaptor',['../classQUndoStackAdaptor.html#a06067baaa5944d16d6bf80439f59a03b',1,'QUndoStackAdaptor']]],
-  ['qwasmbridge_20',['QWasmBridge',['../classQWasmBridge.html#a777a95b186baf4db42e8f295edaa83de',1,'QWasmBridge']]]
+  ['querymodel_19',['queryModel',['../classTreeModel.html#a16f618138ee9de1c745ffa9747672ab7',1,'TreeModel']]],
+  ['qundostackadaptor_20',['QUndoStackAdaptor',['../classQUndoStackAdaptor.html#a06067baaa5944d16d6bf80439f59a03b',1,'QUndoStackAdaptor']]],
+  ['qwasmbridge_21',['QWasmBridge',['../classQWasmBridge.html#a777a95b186baf4db42e8f295edaa83de',1,'QWasmBridge']]]
 ];

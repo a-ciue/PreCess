@@ -1,5 +1,3 @@
 <map id="类继承关系图" name="类继承关系图">
-<area shape="rect" id="Node000000" title=" " alt="" coords="5,5,271,33"/>
-<area shape="rect" id="Node000001" href="$classViewportOrientationRepresentation.html" title=" " alt="" coords="319,5,570,33"/>
-<area shape="poly" id="edge89_Node000000_Node000001" title=" " alt="" coords="286,17,321,19,316,19,286,22"/>
+<area shape="rect" id="Node000000" href="$structUndoStack_1_1Capture.html" title="正式与预览使用同一种捕获数据，各自只保留一个实例。" alt="" coords="5,5,156,33"/>
 </map>

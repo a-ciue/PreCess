@@ -21,7 +21,8 @@ var searchData=
   ['structuralentry_18',['StructuralEntry',['../structStructuralEntry.html',1,'']]],
   ['stubview_19',['StubView',['../classdocktest_1_1StubView.html',1,'docktest']]],
   ['subscription_20',['Subscription',['../classcore_1_1EventBus_1_1Subscription.html',1,'core::EventBus::Subscription'],['../classEventBus_1_1Subscription.html',1,'EventBus::Subscription']]],
-  ['systemhandlerdestroyer_21',['SystemHandlerDestroyer',['../structsystems_1_1SystemHandlerDestroyer.html',1,'systems']]],
-  ['systempluginmanager_22',['SystemPluginManager',['../classsystems_1_1SystemPluginManager.html',1,'systems']]],
-  ['systemregisterbase_23',['SystemRegisterBase',['../classsystems_1_1SystemRegisterBase.html',1,'systems']]]
+  ['subvisibility_21',['SubVisibility',['../structTreeModel_1_1SubVisibility.html',1,'TreeModel']]],
+  ['systemhandlerdestroyer_22',['SystemHandlerDestroyer',['../structsystems_1_1SystemHandlerDestroyer.html',1,'systems']]],
+  ['systempluginmanager_23',['SystemPluginManager',['../classsystems_1_1SystemPluginManager.html',1,'systems']]],
+  ['systemregisterbase_24',['SystemRegisterBase',['../classsystems_1_1SystemRegisterBase.html',1,'systems']]]
 ];

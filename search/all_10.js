@@ -133,7 +133,7 @@ var searchData=
   ['progresschanged_130',['progressChanged',['../classQTaskStatus.html#a54f342931db9752d9d62b101f7eac626',1,'QTaskStatus']]],
   ['progressfn_131',['ProgressFn',['../namespacesystems_1_1algo.html#a47898515a2091e48ff5c46388254233d',1,'systems::algo::ProgressFn'],['../namespacesystems_1_1job.html#a68d9b6556b0d0b4d3b1dd89c36e872cd',1,'systems::job::ProgressFn']]],
   ['prop_5fto_5fcomponent_5f_132',['prop_to_component_',['../classGeometryActorManagerSelectOp.html#a0d4f19ac52577626453dcd49d6fc429c',1,'GeometryActorManagerSelectOp::prop_to_component_'],['../classMeshActorManagerSelectOp.html#a0fa04bfae25699ca73ae3c0069ef6641',1,'MeshActorManagerSelectOp::prop_to_component_']]],
-  ['propagateup_133',['propagateUp',['../classTreeModel.html#aa7574a1e9fa97b69cd67139902fc806b',1,'TreeModel']]],
+  ['prunestalevisibility_133',['pruneStaleVisibility',['../classTreeModel.html#a528f95c7249dfff3308d623e7e4ddc0a',1,'TreeModel']]],
   ['publish_134',['publish',['../classcore_1_1EventBus.html#a54bb00c50513174ae5a3fe4b54c54edb',1,'core::EventBus::publish()'],['../classEventBus.html#a54bb00c50513174ae5a3fe4b54c54edb',1,'EventBus::publish()'],['../TestEventBus_8cpp.html#a2a08d1277353978a21df5a225ab873c7',1,'publish():&#160;TestEventBus.cpp']]],
   ['publishclipplane_135',['publishClipPlane',['../structQRenderWindow.html#aed10360c7e5aa45b273a9803eb4c7b13',1,'QRenderWindow']]],
   ['publishcomponentvisibility_136',['publishComponentVisibility',['../structQRenderWindow.html#ac699b387ebe167c17fe360a81df3be45',1,'QRenderWindow']]],

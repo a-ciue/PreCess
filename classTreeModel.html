@@ -73,10 +73,13 @@ $(function() {
 <div id="doc-content">
 <div class="header">
   <div class="summary">
+<a href="#nested-classes">类</a> &#124;
 <a href="#pub-types">Public 类型</a> &#124;
+<a href="#signals">信号</a> &#124;
 <a href="#pub-methods">Public 成员函数</a> &#124;
 <a href="#properties">属性</a> &#124;
 <a href="#pri-methods">Private 成员函数</a> &#124;
+<a href="#pri-static-methods">静态 Private 成员函数</a> &#124;
 <a href="#pri-attribs">Private 属性</a> &#124;
 <a href="classTreeModel-members.html">所有成员列表</a>  </div>
   <div class="headertitle"><div class="title">TreeModel类 参考</div></div>
@@ -99,48 +102,50 @@ TreeModel 的协作图:</div>
 <div class="dyncontent">
 <div class="center"><img src="classTreeModel__coll__graph.png" border="0" usemap="#aTreeModel_coll__map" loading="lazy" alt="Collaboration graph"/></div>
 <map name="aTreeModel_coll__map" id="aTreeModel_coll__map">
-<area shape="rect" title=" " alt="" coords="3757,1246,3845,1274"/>
-<area shape="rect" title=" " alt="" coords="3392,1089,3548,1117"/>
-<area shape="poly" title=" " alt="" coords="3563,1113,3649,1136,3693,1154,3734,1177,3753,1192,3770,1211,3794,1247,3789,1245,3766,1214,3750,1196,3731,1181,3691,1159,3648,1141,3563,1118"/>
-<area shape="rect" href="structTreeNode.html" title=" " alt="" coords="3429,1190,3511,1218"/>
-<area shape="poly" title=" " alt="" coords="3527,1204,3624,1212,3733,1231,3771,1246,3766,1246,3732,1236,3623,1217,3527,1209"/>
-<area shape="poly" title=" " alt="" coords="3445,1172,3453,1166,3470,1164,3486,1166,3496,1172,3499,1182,3494,1192,3491,1188,3493,1181,3491,1176,3484,1171,3470,1169,3455,1171,3447,1177"/>
-<area shape="rect" href="classQModelQuery.html" title="ModelQuery 类封装所有网格数据的查询操作（CQRS 查询部分的 QML 适配器）" alt="" coords="3415,1242,3525,1270"/>
-<area shape="poly" title=" " alt="" coords="3541,1255,3575,1256,3759,1260,3754,1260,3575,1261,3541,1261"/>
-<area shape="rect" title=" " alt="" coords="3152,1218,3225,1246"/>
-<area shape="poly" title=" " alt="" coords="3240,1234,3417,1252,3412,1252,3240,1239"/>
-<area shape="rect" href="classsession_1_1SessionQuery.html" title="模型层只读查询（CQRS 查询端，读写分离中的读视图）" alt="" coords="3104,1270,3272,1298"/>
-<area shape="poly" title=" " alt="" coords="3287,1281,3365,1275,3412,1269,3417,1269,3366,1280,3288,1286"/>
+<area shape="rect" title=" " alt="" coords="3752,1196,3840,1223"/>
+<area shape="rect" title=" " alt="" coords="3404,1062,3560,1090"/>
+<area shape="poly" title=" " alt="" coords="3575,1074,3653,1087,3692,1100,3729,1118,3750,1135,3767,1155,3790,1196,3786,1194,3763,1159,3746,1139,3726,1123,3690,1105,3652,1092,3575,1080"/>
+<area shape="rect" href="structTreeNode.html" title=" " alt="" coords="3152,1148,3234,1175"/>
+<area shape="poly" title=" " alt="" coords="3249,1157,3305,1155,3519,1147,3612,1153,3728,1176,3772,1196,3767,1195,3727,1182,3611,1159,3519,1153,3305,1160,3249,1162"/>
+<area shape="poly" title=" " alt="" coords="3167,1130,3176,1124,3193,1121,3209,1123,3219,1130,3222,1139,3217,1149,3214,1145,3216,1139,3214,1133,3207,1128,3193,1126,3178,1129,3169,1135"/>
+<area shape="rect" title=" " alt="" coords="3398,1187,3566,1232"/>
+<area shape="poly" title=" " alt="" coords="3249,1170,3306,1180,3401,1198,3395,1197,3305,1185,3249,1175"/>
+<area shape="rect" href="classQModelQuery.html" title="ModelQuery 类封装所有网格数据的查询操作（CQRS 查询部分的 QML 适配器）" alt="" coords="3427,1256,3537,1283"/>
+<area shape="poly" title=" " alt="" coords="3552,1264,3637,1256,3727,1237,3765,1225,3770,1223,3728,1243,3637,1261,3553,1270"/>
+<area shape="rect" title=" " alt="" coords="3156,1218,3229,1246"/>
+<area shape="poly" title=" " alt="" coords="3245,1234,3375,1248,3429,1259,3424,1259,3374,1254,3245,1239"/>
+<area shape="rect" href="classsession_1_1SessionQuery.html" title="模型层只读查询（CQRS 查询端，读写分离中的读视图）" alt="" coords="3109,1270,3276,1298"/>
+<area shape="poly" title=" " alt="" coords="3291,1277,3374,1273,3429,1273,3424,1273,3374,1279,3292,1283"/>
 <area shape="rect" href="classModelLayer.html" title="负责管理多个 ModelData 实例的类" alt="" coords="2903,1270,3000,1298"/>
-<area shape="poly" title=" " alt="" coords="3016,1282,3107,1284,3101,1284,3016,1287"/>
-<area shape="rect" href="classGeometryRegistry.html" title=" " alt="" coords="2524,306,2664,334"/>
-<area shape="poly" title=" " alt="" coords="2676,336,2730,355,2786,382,2838,418,2861,441,2881,466,2890,485,2898,517,2912,607,2933,856,2946,1111,2952,1272,2947,1268,2941,1111,2928,856,2906,608,2892,518,2885,487,2876,468,2857,444,2835,423,2783,387,2728,360,2676,342"/>
-<area shape="rect" title=" " alt="" coords="2101,119,2286,180"/>
-<area shape="poly" title=" " alt="" coords="2301,170,2384,194,2467,227,2530,266,2579,306,2574,306,2527,271,2464,232,2382,199,2302,175"/>
-<area shape="rect" title=" " alt="" coords="2106,204,2281,266"/>
-<area shape="poly" title=" " alt="" coords="2296,252,2466,287,2537,305,2532,306,2465,292,2297,257"/>
-<area shape="rect" title=" " alt="" coords="2108,289,2280,351"/>
-<area shape="poly" title=" " alt="" coords="2295,318,2526,320,2521,321,2296,323"/>
-<area shape="rect" title=" " alt="" coords="2106,375,2281,436"/>
-<area shape="poly" title=" " alt="" coords="2295,383,2465,348,2536,334,2531,336,2466,353,2297,388"/>
+<area shape="poly" title=" " alt="" coords="3015,1282,3111,1284,3106,1284,3016,1287"/>
+<area shape="rect" href="classGeometryRegistry.html" title=" " alt="" coords="2524,290,2664,318"/>
+<area shape="poly" title=" " alt="" coords="2676,320,2730,339,2786,366,2838,402,2861,425,2881,450,2890,470,2898,502,2912,594,2933,847,2947,1107,2952,1271,2947,1268,2941,1108,2928,848,2907,594,2893,503,2885,472,2876,452,2857,428,2835,406,2783,371,2728,344,2676,326"/>
+<area shape="rect" title=" " alt="" coords="2101,103,2286,164"/>
+<area shape="poly" title=" " alt="" coords="2301,154,2384,178,2467,211,2530,250,2579,290,2574,290,2527,255,2464,216,2382,183,2302,159"/>
+<area shape="rect" title=" " alt="" coords="2106,188,2281,250"/>
+<area shape="poly" title=" " alt="" coords="2296,236,2466,271,2537,289,2532,290,2465,276,2297,241"/>
+<area shape="rect" title=" " alt="" coords="2108,273,2280,335"/>
+<area shape="poly" title=" " alt="" coords="2295,302,2526,304,2521,305,2296,307"/>
+<area shape="rect" title=" " alt="" coords="2106,359,2281,420"/>
+<area shape="poly" title=" " alt="" coords="2295,367,2465,332,2536,318,2531,320,2466,337,2297,372"/>
 <area shape="rect" title=" " alt="" coords="1602,7,1765,68"/>
-<area shape="poly" title=" " alt="" coords="1770,76,1798,107,1819,138,1848,204,1866,272,1880,337,1896,395,1907,420,1922,441,1940,459,1963,472,1992,480,2028,483,2595,483,2628,485,2659,491,2715,513,2763,547,2804,592,2839,645,2868,705,2892,769,2910,837,2936,974,2949,1102,2953,1206,2952,1272,2948,1268,2948,1206,2944,1103,2931,975,2905,838,2886,771,2863,707,2834,647,2800,595,2759,551,2712,517,2658,496,2628,490,2595,488,2028,488,1991,485,1961,477,1937,463,1918,445,1903,423,1891,397,1875,339,1861,274,1843,206,1814,141,1794,110,1770,82"/>
+<area shape="poly" title=" " alt="" coords="1770,77,1798,106,1818,136,1848,200,1866,265,1881,327,1898,383,1910,407,1924,427,1942,444,1965,456,1993,464,2028,467,2595,467,2629,469,2660,475,2716,497,2765,532,2807,578,2842,632,2871,693,2894,759,2913,828,2938,968,2950,1099,2954,1204,2953,1272,2949,1268,2948,1204,2945,1099,2933,969,2908,829,2889,761,2866,695,2837,635,2803,581,2762,536,2714,502,2659,480,2628,474,2595,472,2028,472,1992,469,1963,461,1939,448,1920,431,1905,409,1893,385,1876,329,1861,266,1843,202,1814,138,1794,109,1770,82"/>
 <area shape="rect" title=" " alt="" coords="929,14,1148,42"/>
 <area shape="poly" title=" " alt="" coords="1163,28,1604,35,1599,38,1164,33"/>
 <area shape="rect" href="classModelData.html" title="Model主要负责处理模型数据，先更新模型数据，再更新ModelActor调函数" alt="" coords="563,26,656,54"/>
 <area shape="poly" title=" " alt="" coords="670,36,930,30,926,33,672,41"/>
 <area shape="rect" title=" " alt="" coords="228,77,314,105"/>
 <area shape="poly" title=" " alt="" coords="328,79,373,71,565,44,561,48,374,76,331,83"/>
-<area shape="rect" href="structComponentData.html" title="模型的组成单元：一个 ComponentData 表示模型中的一个物体部件" alt="" coords="1816,522,1944,550"/>
-<area shape="poly" title=" " alt="" coords="329,89,608,88,1473,88,1524,90,1569,96,1609,106,1645,122,1677,143,1707,171,1737,206,1767,248,1782,280,1788,309,1786,338,1780,365,1775,392,1773,419,1777,448,1791,479,1814,503,1843,522,1838,522,1810,507,1786,482,1772,450,1767,420,1770,391,1775,364,1780,337,1782,310,1777,281,1762,251,1733,209,1703,175,1673,148,1642,127,1607,111,1568,101,1524,95,1472,94,608,94,331,93"/>
-<area shape="rect" title=" " alt="" coords="518,259,701,304"/>
-<area shape="poly" title=" " alt="" coords="288,116,326,164,349,188,375,208,409,228,445,243,520,266,515,268,444,248,406,232,372,213,345,192,322,167,289,121"/>
+<area shape="rect" href="structComponentData.html" title="模型的组成单元：一个 ComponentData 表示模型中的一个物体部件" alt="" coords="1816,506,1944,534"/>
+<area shape="poly" title=" " alt="" coords="329,89,608,88,1473,88,1524,90,1569,96,1609,106,1644,122,1677,143,1707,171,1737,206,1767,248,1782,278,1786,305,1785,331,1780,357,1775,382,1774,408,1778,434,1791,463,1814,487,1843,506,1838,506,1810,491,1786,466,1773,436,1768,408,1770,381,1775,356,1780,331,1781,306,1776,279,1762,251,1732,209,1703,175,1673,148,1642,127,1607,111,1568,101,1524,95,1472,94,608,94,331,93"/>
+<area shape="rect" title=" " alt="" coords="518,266,701,311"/>
+<area shape="poly" title=" " alt="" coords="287,116,325,166,348,192,375,214,409,233,445,249,520,272,515,275,443,254,406,238,372,218,345,196,321,170,288,121"/>
 <area shape="rect" title=" " alt="" coords="5,69,144,113"/>
 <area shape="poly" title=" " alt="" coords="158,89,229,89,225,93,161,93"/>
 <area shape="rect" title=" " alt="" coords="193,477,349,505"/>
 <area shape="poly" title=" " alt="" coords="275,518,290,637,311,800,340,963,357,1029,376,1076,419,1149,442,1176,467,1198,495,1215,527,1227,564,1234,608,1236,2595,1236,2738,1236,2800,1241,2879,1255,2920,1270,2915,1270,2878,1260,2800,1246,2738,1241,2595,1242,608,1242,564,1239,526,1232,493,1220,464,1203,438,1180,415,1152,371,1079,352,1030,335,964,306,801,285,638,275,523"/>
-<area shape="poly" title=" " alt="" coords="273,461,282,405,299,333,328,255,348,218,371,184,408,152,465,115,582,53,578,57,468,119,412,156,375,187,352,221,333,258,304,335,287,406,278,462"/>
-<area shape="poly" title=" " alt="" coords="350,471,472,451,540,444,608,442,1473,442,1525,444,1579,450,1683,471,1774,496,1844,522,1838,522,1772,501,1682,476,1578,455,1525,449,1472,447,608,447,541,450,473,457,353,476"/>
+<area shape="poly" title=" " alt="" coords="273,461,282,407,300,336,329,260,348,223,371,189,409,156,466,118,583,53,580,57,469,122,412,160,375,193,353,226,334,262,305,337,288,408,278,462"/>
+<area shape="poly" title=" " alt="" coords="350,471,472,451,540,444,608,442,1473,442,1574,448,1674,464,1764,484,1835,505,1830,506,1762,490,1673,469,1574,453,1472,447,608,447,541,450,473,457,353,476"/>
 <area shape="rect" href="structMeshData.html" title=" " alt="" coords="995,754,1082,782"/>
 <area shape="poly" title=" " alt="" coords="274,518,287,634,300,711,321,794,351,879,392,961,417,999,445,1034,477,1066,513,1094,551,1114,590,1123,630,1123,670,1114,710,1098,749,1076,788,1049,825,1019,894,951,952,883,1026,784,1030,781,956,886,897,955,828,1023,791,1054,752,1081,712,1103,672,1119,631,1128,590,1128,549,1119,510,1098,474,1070,441,1038,413,1002,387,964,346,882,316,796,295,712,282,635,273,523"/>
 <area shape="rect" title=" " alt="" coords="511,345,708,407"/>
@@ -149,12 +154,12 @@ TreeModel 的协作图:</div>
 <area shape="poly" title=" " alt="" coords="364,494,441,501,528,514,619,533,709,561,721,568,733,575,790,586,863,593,1034,596,1207,595,1281,596,1340,600,1413,615,1407,616,1340,606,1281,601,1207,600,1034,601,862,598,789,592,731,580,718,573,707,565,618,539,527,519,440,507,366,499"/>
 <area shape="rect" title=" " alt="" coords="2495,1009,2693,1071"/>
 <area shape="poly" title=" " alt="" coords="2664,1077,2768,1141,2880,1218,2938,1271,2933,1269,2877,1222,2765,1145,2663,1082"/>
-<area shape="rect" title=" " alt="" coords="2090,794,2298,839"/>
-<area shape="poly" title=" " alt="" coords="2250,844,2539,1009,2534,1009,2249,849"/>
-<area shape="poly" title=" " alt="" coords="1909,558,2170,794,2164,793,1907,563"/>
-<area shape="rect" title=" " alt="" coords="1364,772,1578,799"/>
-<area shape="poly" title=" " alt="" coords="1516,763,1631,705,1698,668,1763,627,1818,586,1861,552,1865,549,1822,590,1766,632,1700,672,1633,710,1519,767"/>
-<area shape="poly" title=" " alt="" coords="1082,786,1126,803,1173,816,1219,823,1256,825,1340,816,1427,799,1422,801,1340,821,1256,830,1219,828,1171,821,1124,808,1082,792"/>
+<area shape="rect" title=" " alt="" coords="2090,778,2298,823"/>
+<area shape="poly" title=" " alt="" coords="2246,828,2544,1009,2538,1009,2245,834"/>
+<area shape="poly" title=" " alt="" coords="1909,542,2170,778,2164,777,1907,547"/>
+<area shape="rect" title=" " alt="" coords="1364,754,1578,782"/>
+<area shape="poly" title=" " alt="" coords="1523,746,1636,695,1701,660,1763,622,1821,575,1863,536,1867,533,1824,579,1766,626,1704,665,1638,699,1525,751"/>
+<area shape="poly" title=" " alt="" coords="1082,786,1126,803,1173,816,1219,824,1256,826,1293,824,1339,816,1394,800,1444,781,1439,784,1396,805,1341,821,1293,829,1256,832,1219,829,1171,821,1124,808,1082,792"/>
 <area shape="poly" title=" " alt="" coords="1097,770,1150,771,1212,767,1277,757,1339,738,1376,717,1409,691,1456,646,1460,642,1413,695,1379,721,1341,742,1278,762,1213,773,1151,776,1098,775"/>
 <area shape="rect" title=" " alt="" coords="526,746,693,791"/>
 <area shape="poly" title=" " alt="" coords="708,766,996,767,992,770,709,771"/>
@@ -164,21 +169,21 @@ TreeModel 的协作图:</div>
 <area shape="poly" title=" " alt="" coords="700,624,906,677,917,694,919,711,921,726,930,741,961,758,997,767,992,768,959,763,927,745,916,728,914,711,912,696,903,681,701,630"/>
 <area shape="rect" title=" " alt="" coords="533,660,686,722"/>
 <area shape="poly" title=" " alt="" coords="701,701,905,735,997,757,992,759,904,740,702,706"/>
-<area shape="poly" title=" " alt="" coords="716,301,840,328,885,340,906,349,916,365,922,384,927,431,925,487,919,547,914,607,912,663,916,709,922,727,931,741,944,753,960,760,997,769,992,770,958,765,941,757,927,745,917,729,911,710,906,663,908,607,914,547,919,487,922,431,917,385,911,367,903,353,883,345,838,334,718,306"/>
-<area shape="rect" title=" " alt="" coords="1372,263,1570,308"/>
-<area shape="poly" title=" " alt="" coords="1585,276,1634,280,1682,291,1728,311,1767,341,1781,362,1786,382,1781,423,1775,463,1779,483,1791,503,1803,514,1819,524,1813,524,1800,518,1787,506,1774,484,1770,463,1776,422,1780,383,1776,364,1763,345,1725,316,1681,296,1633,286,1587,281"/>
+<area shape="poly" title=" " alt="" coords="716,302,836,325,882,337,906,349,916,364,922,384,927,431,925,487,920,547,914,607,912,663,916,709,922,727,931,741,944,753,960,760,997,769,992,770,958,765,941,757,927,745,917,729,911,710,907,663,909,607,914,547,920,486,922,431,917,385,911,367,903,353,880,342,835,330,717,307"/>
+<area shape="rect" title=" " alt="" coords="1372,262,1570,307"/>
+<area shape="poly" title=" " alt="" coords="1586,276,1634,281,1682,292,1728,312,1767,342,1779,361,1784,379,1781,415,1776,451,1780,469,1791,487,1803,497,1818,508,1813,508,1799,502,1787,490,1775,471,1771,452,1775,415,1779,380,1774,363,1763,346,1725,317,1680,298,1633,286,1587,281"/>
 <area shape="rect" href="structGeometryData.html" title=" " alt="" coords="980,185,1097,213"/>
-<area shape="poly" title=" " alt="" coords="1112,211,1374,265,1369,267,1113,216"/>
+<area shape="poly" title=" " alt="" coords="1112,211,1374,264,1369,266,1113,216"/>
 <area shape="rect" title=" " alt="" coords="519,129,700,173"/>
 <area shape="poly" title=" " alt="" coords="714,153,808,159,905,170,982,185,977,187,904,175,808,164,717,158"/>
 <area shape="rect" href="structGeometrySubshapeIndex.html" title=" " alt="" coords="517,197,702,225"/>
 <area shape="poly" title=" " alt="" coords="717,206,981,199,977,202,719,210"/>
-<area shape="rect" title=" " alt="" coords="1372,362,1570,407"/>
-<area shape="poly" title=" " alt="" coords="1585,370,1633,373,1680,381,1726,398,1767,424,1779,443,1780,464,1781,484,1791,503,1818,523,1813,522,1787,506,1776,485,1775,464,1774,445,1763,428,1723,402,1679,386,1632,378,1587,376"/>
+<area shape="rect" title=" " alt="" coords="1372,361,1570,405"/>
+<area shape="poly" title=" " alt="" coords="1585,371,1632,374,1680,383,1725,399,1766,424,1778,439,1780,456,1782,472,1791,486,1819,506,1813,506,1787,490,1777,473,1775,456,1773,441,1763,428,1723,403,1678,388,1631,379,1587,376"/>
 <area shape="rect" href="structGeometryMeshMap.html" title="Geometry 子形状与 MeshData 局部拓扑之间的通用映射" alt="" coords="964,368,1113,395"/>
-<area shape="poly" title=" " alt="" coords="1128,380,1374,383,1369,385,1130,385"/>
+<area shape="poly" title=" " alt="" coords="1128,379,1374,381,1369,384,1130,384"/>
 <area shape="poly" title=" " alt="" coords="722,395,732,396,818,400,904,396,966,391,961,394,905,401,818,405,731,401,725,400"/>
-<area shape="poly" title=" " alt="" coords="1547,610,1818,550,1813,552,1549,615"/>
+<area shape="poly" title=" " alt="" coords="1540,609,1827,534,1822,536,1542,614"/>
 <area shape="rect" title=" " alt="" coords="935,617,1142,661"/>
 <area shape="poly" title=" " alt="" coords="1156,634,1412,630,1407,632,1158,639"/>
 <area shape="rect" title=" " alt="" coords="950,686,1126,731"/>
@@ -187,12 +192,12 @@ TreeModel 的协作图:</div>
 <area shape="poly" title=" " alt="" coords="2685,1293,2905,1286,2900,1286,2686,1298"/>
 <area shape="rect" href="classMeshIDMap.html" title=" " alt="" coords="2545,1349,2643,1377"/>
 <area shape="poly" title=" " alt="" coords="2659,1368,2708,1370,2764,1368,2822,1360,2878,1344,2912,1322,2936,1300,2941,1298,2915,1326,2880,1349,2823,1366,2764,1374,2708,1375,2659,1373"/>
-<area shape="rect" title=" " alt="" coords="2088,1302,2299,1347"/>
-<area shape="poly" title=" " alt="" coords="2315,1333,2547,1358,2542,1358,2315,1339"/>
-<area shape="rect" title=" " alt="" coords="1789,1302,1971,1347"/>
-<area shape="poly" title=" " alt="" coords="1987,1322,2090,1324,2085,1324,1987,1327"/>
-<area shape="rect" title=" " alt="" coords="2122,1371,2265,1416"/>
-<area shape="poly" title=" " alt="" coords="2280,1391,2370,1389,2465,1383,2542,1373,2547,1373,2466,1388,2370,1395,2281,1397"/>
+<area shape="rect" title=" " alt="" coords="2088,1305,2299,1349"/>
+<area shape="poly" title=" " alt="" coords="2315,1335,2547,1359,2542,1359,2315,1340"/>
+<area shape="rect" title=" " alt="" coords="1789,1305,1971,1349"/>
+<area shape="poly" title=" " alt="" coords="1987,1324,2090,1327,2085,1327,1987,1330"/>
+<area shape="rect" title=" " alt="" coords="2122,1374,2265,1419"/>
+<area shape="poly" title=" " alt="" coords="2280,1395,2370,1392,2465,1385,2542,1375,2547,1374,2466,1391,2370,1398,2281,1400"/>
 <area shape="rect" href="classModelObserver.html" title=" " alt="" coords="2534,1405,2654,1433"/>
 <area shape="poly" title=" " alt="" coords="2670,1430,2719,1434,2773,1432,2827,1422,2877,1400,2903,1378,2922,1350,2944,1300,2948,1297,2927,1353,2907,1382,2880,1405,2829,1427,2774,1437,2719,1439,2670,1435"/>
 <area shape="rect" href="classUndoRecorder.html" title="undo 记录钩子（ModelLayer 回调，UndoStack 实现）" alt="" coords="2537,1461,2651,1489"/>
@@ -201,15 +206,24 @@ TreeModel 的协作图:</div>
 <area shape="poly" title=" " alt="" coords="2691,1558,2738,1563,2787,1563,2835,1552,2857,1543,2877,1530,2890,1514,2902,1489,2923,1422,2937,1351,2946,1301,2950,1297,2942,1352,2928,1423,2907,1491,2895,1517,2880,1534,2859,1548,2836,1557,2788,1568,2738,1569,2690,1563"/>
 <area shape="rect" href="structModelLayer_1_1WriteAuthority.html" title="写权限状态（堆上共享）：含线程亲和、冻结窗口与框架特权深度" alt="" coords="2094,1521,2294,1549"/>
 <area shape="poly" title=" " alt="" coords="2310,1532,2491,1535,2486,1535,2310,1538"/>
-<area shape="rect" title=" " alt="" coords="3394,1294,3546,1339"/>
-<area shape="poly" title=" " alt="" coords="3561,1312,3645,1305,3732,1288,3770,1275,3776,1274,3733,1293,3645,1310,3561,1317"/>
-<area shape="rect" title=" " alt="" coords="3389,1363,3551,1424"/>
-<area shape="poly" title=" " alt="" coords="3566,1389,3649,1375,3692,1361,3731,1342,3751,1327,3767,1309,3790,1276,3795,1273,3771,1312,3754,1331,3734,1346,3694,1366,3651,1380,3566,1394"/>
-<area shape="rect" title=" " alt="" coords="3104,1380,3272,1407"/>
-<area shape="poly" title=" " alt="" coords="3288,1391,3392,1394,3386,1394,3288,1396"/>
+<area shape="rect" title=" " alt="" coords="3404,1308,3560,1370"/>
+<area shape="poly" title=" " alt="" coords="3575,1335,3652,1322,3690,1310,3726,1292,3746,1277,3762,1258,3785,1225,3790,1222,3767,1262,3750,1281,3729,1297,3692,1315,3653,1327,3575,1340"/>
+<area shape="rect" href="structTreeModel_1_1SubVisibility.html" title="GUI 管线回传的组件子类型总开关。" alt="" coords="3104,1325,3281,1353"/>
+<area shape="poly" title=" " alt="" coords="3297,1336,3407,1339,3401,1339,3297,1342"/>
+<area shape="poly" title=" " alt="" coords="3582,1207,3754,1210,3748,1210,3582,1212"/>
 </map>
 <center><span class="legend">[<a href="graph_legend.html">图例</a>]</span></center></div>
 <table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 id="header-nested-classes" class="groupheader"><a id="nested-classes" name="nested-classes"></a>
+类</h2></td></tr>
+<tr class="memitem:ComponentNodeInfo" id="r_ComponentNodeInfo"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structTreeModel_1_1ComponentNodeInfo.html">ComponentNodeInfo</a></td></tr>
+<tr class="memitem:CountChildSpec" id="r_CountChildSpec"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structTreeModel_1_1CountChildSpec.html">CountChildSpec</a></td></tr>
+<tr class="memitem:GeometryNodeInfo" id="r_GeometryNodeInfo"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structTreeModel_1_1GeometryNodeInfo.html">GeometryNodeInfo</a></td></tr>
+<tr class="memitem:MeshNodeInfo" id="r_MeshNodeInfo"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structTreeModel_1_1MeshNodeInfo.html">MeshNodeInfo</a></td></tr>
+<tr class="memitem:ModelNodeInfo" id="r_ModelNodeInfo"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structTreeModel_1_1ModelNodeInfo.html">ModelNodeInfo</a></td></tr>
+<tr class="memitem:SubVisibility" id="r_SubVisibility"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structTreeModel_1_1SubVisibility.html">SubVisibility</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">GUI 管线回传的组件子类型总开关。  <a href="structTreeModel_1_1SubVisibility.html#details">更多...</a><br /></td></tr>
+</table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 id="header-pub-types" class="groupheader"><a id="pub-types" name="pub-types"></a>
 Public 类型</h2></td></tr>
 <tr class="memitem:aab6367624db733c58760195c14f7c4b5" id="r_aab6367624db733c58760195c14f7c4b5"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#aab6367624db733c58760195c14f7c4b5">TreeRole</a> { <br />
@@ -220,8 +234,15 @@ Public 类型</h2></td></tr>
 , <br />
 &#160;&#160;<a class="el" href="#aab6367624db733c58760195c14f7c4b5a4e340a7f798650084f2b87a073fb6e27">ComponentIdRole</a>
 , <a class="el" href="#aab6367624db733c58760195c14f7c4b5a53c23c7ccec2260a74ea335708b8a7aa">NodeTypeRole</a>
+, <a class="el" href="#aab6367624db733c58760195c14f7c4b5aa5fa903ee5d7436503d5d72b0895479c">VisibilityStateRole</a>
+, <a class="el" href="#aab6367624db733c58760195c14f7c4b5acdafc669785697a535da9db1271120f3">CanToggleVisibilityRole</a>
 <br />
  }</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 id="header-signals" class="groupheader"><a id="signals" name="signals"></a>
+信号</h2></td></tr>
+<tr class="memitem:aa48ac53f26e47a255eccd58e7ea84113" id="r_aa48ac53f26e47a255eccd58e7ea84113"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#aa48ac53f26e47a255eccd58e7ea84113">visibilityRequested</a> (int node_type, int object_id, bool visible)</td></tr>
+<tr class="memdesc:aa48ac53f26e47a255eccd58e7ea84113"><td class="mdescLeft">&#160;</td><td class="mdescRight">请求模型、组件、Mesh 或 Geometry 显隐；object_id 为真实模型或组件身份。  <br /></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 id="header-pub-methods" class="groupheader"><a id="pub-methods" name="pub-methods"></a>
 Public 成员函数</h2></td></tr>
@@ -234,9 +255,16 @@ Public 成员函数</h2></td></tr>
 <tr class="memitem:aa78ce00412e354f39e946bc25738d028" id="r_aa78ce00412e354f39e946bc25738d028"><td class="memItemLeft" align="right" valign="top">QVariant&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#aa78ce00412e354f39e946bc25738d028">data</a> (const QModelIndex &amp;<a class="el" href="#a708ec451d6a9dfda530e36284eae78c4">index</a>, int role=Qt::DisplayRole) const override</td></tr>
 <tr class="memitem:a99c348b9c26c29b438e19af1aab3f63a" id="r_a99c348b9c26c29b438e19af1aab3f63a"><td class="memItemLeft" align="right" valign="top">QHash&lt; int, QByteArray &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a99c348b9c26c29b438e19af1aab3f63a">roleNames</a> () const override</td></tr>
 <tr class="memitem:ae48786145852f8e1052a75450ab27e44" id="r_ae48786145852f8e1052a75450ab27e44"><td class="memItemLeft" align="right" valign="top">Q_INVOKABLE bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ae48786145852f8e1052a75450ab27e44">refresh</a> ()</td></tr>
-<tr class="memitem:a73844970c5827a1429c341ad58b9c849" id="r_a73844970c5827a1429c341ad58b9c849"><td class="memItemLeft" align="right" valign="top">Q_INVOKABLE bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a73844970c5827a1429c341ad58b9c849">setVisibility</a> (const QModelIndex &amp;idx, bool visible)</td></tr>
+<tr class="memdesc:ae48786145852f8e1052a75450ab27e44"><td class="mdescLeft">&#160;</td><td class="mdescRight">统一对账入口；普通刷新不 reset，只有查询替换/清空才 reset。  <br /></td></tr>
+<tr class="memitem:aa1cca2122a581bec46838fa7348441c0" id="r_aa1cca2122a581bec46838fa7348441c0"><td class="memItemLeft" align="right" valign="top">Q_INVOKABLE void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#aa1cca2122a581bec46838fa7348441c0">requestRefresh</a> ()</td></tr>
+<tr class="memdesc:aa1cca2122a581bec46838fa7348441c0"><td class="mdescLeft">&#160;</td><td class="mdescRight">所有数据/结构通知的唯一入口，经 50ms 定时器合并后统一对账。  <br /></td></tr>
+<tr class="memitem:a40b5d4de0d714fc26e512163f8ba9239" id="r_a40b5d4de0d714fc26e512163f8ba9239"><td class="memItemLeft" align="right" valign="top">Q_INVOKABLE bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a40b5d4de0d714fc26e512163f8ba9239">requestVisibility</a> (const QModelIndex &amp;idx, bool visible)</td></tr>
+<tr class="memdesc:a40b5d4de0d714fc26e512163f8ba9239"><td class="mdescLeft">&#160;</td><td class="mdescRight">只发送节点显隐意图；展示状态由管线回传后更新。  <br /></td></tr>
 <tr class="memitem:a856e0a0770784805a92c4c2ec1ead38a" id="r_a856e0a0770784805a92c4c2ec1ead38a"><td class="memItemLeft" align="right" valign="top">Q_INVOKABLE QModelIndex&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a856e0a0770784805a92c4c2ec1ead38a">findIndexByNodeId</a> (int nodeId, int depth) const</td></tr>
-<tr class="memitem:a936fc094472c4670f1e3be25c274afd4" id="r_a936fc094472c4670f1e3be25c274afd4"><td class="memItemLeft" align="right" valign="top">Q_INVOKABLE void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a936fc094472c4670f1e3be25c274afd4">setAllVisibility</a> (bool visible)</td></tr>
+<tr class="memitem:a2c9782f149c519f64c6159f549b9ecfe" id="r_a2c9782f149c519f64c6159f549b9ecfe"><td class="memItemLeft" align="right" valign="top">Q_INVOKABLE void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a2c9782f149c519f64c6159f549b9ecfe">requestAllVisibility</a> (bool visible)</td></tr>
+<tr class="memdesc:a2c9782f149c519f64c6159f549b9ecfe"><td class="mdescLeft">&#160;</td><td class="mdescRight">按模型发送全部节点的显隐请求，不提前修改展示副本。  <br /></td></tr>
+<tr class="memitem:a7d63cd3a61a12034b079e50d38b583db" id="r_a7d63cd3a61a12034b079e50d38b583db"><td class="memItemLeft" align="right" valign="top">Q_INVOKABLE void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a7d63cd3a61a12034b079e50d38b583db">syncComponentVisibility</a> (<a class="el" href="Core_8h.html#a1673229bf7fec9388ac2a829a52d69b3">Index</a> component_id, bool mesh_visible, bool geometry_visible)</td></tr>
+<tr class="memdesc:a7d63cd3a61a12034b079e50d38b583db"><td class="mdescLeft">&#160;</td><td class="mdescRight">接收 GUI 管线回传的完整组件显隐结果（不是用户显隐命令）  <br /></td></tr>
 <tr class="memitem:aff64ec5c6c13a3976e9c33d21f75f441" id="r_aff64ec5c6c13a3976e9c33d21f75f441"><td class="memItemLeft" align="right" valign="top">QObject *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#aff64ec5c6c13a3976e9c33d21f75f441">getModelQuery</a> () const</td></tr>
 <tr class="memitem:ae8c22a64a5792e32c247cac76b8f486d" id="r_ae8c22a64a5792e32c247cac76b8f486d"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ae8c22a64a5792e32c247cac76b8f486d">setModelQuery</a> (QObject *query)</td></tr>
 </table><table class="memberdecls">
@@ -247,17 +275,52 @@ Public 成员函数</h2></td></tr>
 <tr class="heading"><td colspan="2"><h2 id="header-pri-methods" class="groupheader"><a id="pri-methods" name="pri-methods"></a>
 Private 成员函数</h2></td></tr>
 <tr class="memitem:a068068c71d4a20b98e2a48724fce5b2c" id="r_a068068c71d4a20b98e2a48724fce5b2c"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structTreeNode.html">TreeNode</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a068068c71d4a20b98e2a48724fce5b2c">getNode</a> (const QModelIndex &amp;<a class="el" href="#a708ec451d6a9dfda530e36284eae78c4">index</a>) const</td></tr>
-<tr class="memitem:a62bec23ec113129c36f4728814460db0" id="r_a62bec23ec113129c36f4728814460db0"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a62bec23ec113129c36f4728814460db0">emitDescendantDataChanged</a> (const QModelIndex &amp;parentIndex)</td></tr>
-<tr class="memitem:a7fe84c9ef47b8d65942ac260e236577c" id="r_a7fe84c9ef47b8d65942ac260e236577c"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a7fe84c9ef47b8d65942ac260e236577c">setComponentVisibility</a> (<a class="el" href="structTreeNode.html">TreeNode</a> *node, bool visible)</td></tr>
-<tr class="memitem:a2c43f8c1318d19eca36208c562cb9204" id="r_a2c43f8c1318d19eca36208c562cb9204"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a2c43f8c1318d19eca36208c562cb9204">syncSubNodes</a> (<a class="el" href="structTreeNode.html">TreeNode</a> *node)</td></tr>
-<tr class="memitem:aa7574a1e9fa97b69cd67139902fc806b" id="r_aa7574a1e9fa97b69cd67139902fc806b"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#aa7574a1e9fa97b69cd67139902fc806b">propagateUp</a> (<a class="el" href="structTreeNode.html">TreeNode</a> *node)</td></tr>
+<tr class="memitem:acb6afaa57aaaef4fa9eba455603bb108" id="r_acb6afaa57aaaef4fa9eba455603bb108"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#acb6afaa57aaaef4fa9eba455603bb108">syncSubNodes</a> (<a class="el" href="structTreeNode.html">TreeNode</a> *node, bool notify)</td></tr>
+<tr class="memdesc:acb6afaa57aaaef4fa9eba455603bb108"><td class="mdescLeft">&#160;</td><td class="mdescRight">按组件保存的管线开关递归同步子节点展示状态，返回是否发生变化。  <br /></td></tr>
+<tr class="memitem:a203a2352c14b365e873411e229c3f98a" id="r_a203a2352c14b365e873411e229c3f98a"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a203a2352c14b365e873411e229c3f98a">visibilityState</a> (const <a class="el" href="structTreeNode.html">TreeNode</a> *node) const</td></tr>
+<tr class="memdesc:a203a2352c14b365e873411e229c3f98a"><td class="mdescLeft">&#160;</td><td class="mdescRight">聚合节点的全显、部分显示和全隐状态。  <br /></td></tr>
+<tr class="memitem:a02b36565bc3583c6ed228ee4043f4f36" id="r_a02b36565bc3583c6ed228ee4043f4f36"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a02b36565bc3583c6ed228ee4043f4f36">notifyAncestors</a> (<a class="el" href="structTreeNode.html">TreeNode</a> *node)</td></tr>
+<tr class="memdesc:a02b36565bc3583c6ed228ee4043f4f36"><td class="mdescLeft">&#160;</td><td class="mdescRight">只通知祖先节点，不重复发送已单独处理的子树。  <br /></td></tr>
+<tr class="memitem:acc97371848313ee712906a2684449778" id="r_acc97371848313ee712906a2684449778"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structTreeModel_1_1SubVisibility.html">SubVisibility</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#acc97371848313ee712906a2684449778">subVisibility</a> (<a class="el" href="Core_8h.html#a1673229bf7fec9388ac2a829a52d69b3">Index</a> component_id) const</td></tr>
+<tr class="memitem:a16f618138ee9de1c745ffa9747672ab7" id="r_a16f618138ee9de1c745ffa9747672ab7"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structTreeModel_1_1ModelNodeInfo.html">ModelNodeInfo</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a16f618138ee9de1c745ffa9747672ab7">queryModel</a> (<a class="el" href="Core_8h.html#a1673229bf7fec9388ac2a829a52d69b3">Index</a> model_id) const</td></tr>
+<tr class="memitem:a6651d44010b7cbaaef899f8b3c0dcf40" id="r_a6651d44010b7cbaaef899f8b3c0dcf40"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a6651d44010b7cbaaef899f8b3c0dcf40">fillComponentData</a> (<a class="el" href="structTreeModel_1_1ComponentNodeInfo.html">ComponentNodeInfo</a> &amp;info) const</td></tr>
+<tr class="memitem:ab8a370e49ca5a5c35606c0a8b1e61f58" id="r_ab8a370e49ca5a5c35606c0a8b1e61f58"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structTreeNode.html">TreeNode</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ab8a370e49ca5a5c35606c0a8b1e61f58">buildModelNode</a> (const <a class="el" href="structTreeModel_1_1ModelNodeInfo.html">ModelNodeInfo</a> &amp;info)</td></tr>
+<tr class="memitem:a92e53910e72607ce2e5942ec53f65a5f" id="r_a92e53910e72607ce2e5942ec53f65a5f"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structTreeNode.html">TreeNode</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a92e53910e72607ce2e5942ec53f65a5f">buildComponentNode</a> (const <a class="el" href="structTreeModel_1_1ComponentNodeInfo.html">ComponentNodeInfo</a> &amp;info)</td></tr>
+<tr class="memitem:ac51ba3b6f22d0a506fe5af1db7045c69" id="r_ac51ba3b6f22d0a506fe5af1db7045c69"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structTreeNode.html">TreeNode</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ac51ba3b6f22d0a506fe5af1db7045c69">buildMeshNode</a> (const <a class="el" href="structTreeModel_1_1MeshNodeInfo.html">MeshNodeInfo</a> &amp;info)</td></tr>
+<tr class="memitem:a56b889829c9b137e89587d84dde657c3" id="r_a56b889829c9b137e89587d84dde657c3"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structTreeNode.html">TreeNode</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a56b889829c9b137e89587d84dde657c3">buildGeometryNode</a> (const <a class="el" href="structTreeModel_1_1GeometryNodeInfo.html">GeometryNodeInfo</a> &amp;info)</td></tr>
+<tr class="memitem:aab88b001a1cb58a82830cc00b08b6dfc" id="r_aab88b001a1cb58a82830cc00b08b6dfc"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#aab88b001a1cb58a82830cc00b08b6dfc">syncModelNode</a> (<a class="el" href="structTreeNode.html">TreeNode</a> *node, const <a class="el" href="structTreeModel_1_1ModelNodeInfo.html">ModelNodeInfo</a> &amp;info)</td></tr>
+<tr class="memitem:a1e91d9fc69f52793daea9f6decfe075e" id="r_a1e91d9fc69f52793daea9f6decfe075e"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a1e91d9fc69f52793daea9f6decfe075e">syncComponentNode</a> (<a class="el" href="structTreeNode.html">TreeNode</a> *node, const <a class="el" href="structTreeModel_1_1ComponentNodeInfo.html">ComponentNodeInfo</a> &amp;info)</td></tr>
+<tr class="memitem:ae5d61bd355e1ebb8bb5acfec2c24ad00" id="r_ae5d61bd355e1ebb8bb5acfec2c24ad00"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ae5d61bd355e1ebb8bb5acfec2c24ad00">syncMeshNode</a> (<a class="el" href="structTreeNode.html">TreeNode</a> *node, const <a class="el" href="structTreeModel_1_1MeshNodeInfo.html">MeshNodeInfo</a> &amp;info)</td></tr>
+<tr class="memitem:a27fa4b8848a4b514ba749ffca92b86ce" id="r_a27fa4b8848a4b514ba749ffca92b86ce"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a27fa4b8848a4b514ba749ffca92b86ce">syncGeometryNode</a> (<a class="el" href="structTreeNode.html">TreeNode</a> *node, const <a class="el" href="structTreeModel_1_1GeometryNodeInfo.html">GeometryNodeInfo</a> &amp;info)</td></tr>
+<tr class="memitem:ae2ea61e9bcacd7c5ffa1499597df49f8" id="r_ae2ea61e9bcacd7c5ffa1499597df49f8"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ae2ea61e9bcacd7c5ffa1499597df49f8">syncCountChildren</a> (<a class="el" href="structTreeNode.html">TreeNode</a> *node, std::span&lt; const <a class="el" href="structTreeModel_1_1CountChildSpec.html">CountChildSpec</a> &gt; specs)</td></tr>
+<tr class="memitem:ae16c339b250d1b6a87ba7202a1d2b597" id="r_ae16c339b250d1b6a87ba7202a1d2b597"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ae16c339b250d1b6a87ba7202a1d2b597">insertChildNode</a> (<a class="el" href="structTreeNode.html">TreeNode</a> *<a class="el" href="#a7af800974f07f2246e8677c9c0a16394">parent</a>, int row, <a class="el" href="structTreeNode.html">TreeNode</a> *node)</td></tr>
+<tr class="memitem:aeb21ba3505152c1f4a12d3b8305a7c65" id="r_aeb21ba3505152c1f4a12d3b8305a7c65"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#aeb21ba3505152c1f4a12d3b8305a7c65">removeChildNode</a> (<a class="el" href="structTreeNode.html">TreeNode</a> *node)</td></tr>
+<tr class="memitem:ae52d539baa0a1f090302c03756941ea6" id="r_ae52d539baa0a1f090302c03756941ea6"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ae52d539baa0a1f090302c03756941ea6">moveChildNode</a> (<a class="el" href="structTreeNode.html">TreeNode</a> *<a class="el" href="#a7af800974f07f2246e8677c9c0a16394">parent</a>, int from, int to)</td></tr>
+<tr class="memitem:a6d756134268263a624f8bcfe416a79b5" id="r_a6d756134268263a624f8bcfe416a79b5"><td class="memItemLeft" align="right" valign="top">QModelIndex&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a6d756134268263a624f8bcfe416a79b5">indexOfNode</a> (<a class="el" href="structTreeNode.html">TreeNode</a> *node) const</td></tr>
+<tr class="memitem:a8f77e10ea80305575dc1b2e4a1e6c57f" id="r_a8f77e10ea80305575dc1b2e4a1e6c57f"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a8f77e10ea80305575dc1b2e4a1e6c57f">notifyNodeData</a> (<a class="el" href="structTreeNode.html">TreeNode</a> *node, const QVector&lt; int &gt; &amp;roles)</td></tr>
+<tr class="memitem:a528f95c7249dfff3308d623e7e4ddc0a" id="r_a528f95c7249dfff3308d623e7e4ddc0a"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a528f95c7249dfff3308d623e7e4ddc0a">pruneStaleVisibility</a> ()</td></tr>
+<tr class="memitem:ae15ff1abc73c6ec8fd12e72e67831f07" id="r_ae15ff1abc73c6ec8fd12e72e67831f07"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ae15ff1abc73c6ec8fd12e72e67831f07">reconcileAllFromQuery</a> ()</td></tr>
+<tr class="memitem:ad0cada101c1b0becaccd2b554bbe6cda" id="r_ad0cada101c1b0becaccd2b554bbe6cda"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ad0cada101c1b0becaccd2b554bbe6cda">rebuildComponentLookup</a> ()</td></tr>
+<tr class="memdesc:ad0cada101c1b0becaccd2b554bbe6cda"><td class="mdescLeft">&#160;</td><td class="mdescRight">重建渲染回传使用的组件查找缓存；结构对账不依赖该索引。  <br /></td></tr>
+<tr class="memitem:a1106f280a075b2671ce96e580747ed0e" id="r_a1106f280a075b2671ce96e580747ed0e"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a1106f280a075b2671ce96e580747ed0e">flushPendingRefresh</a> ()</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 id="header-pri-static-methods" class="groupheader"><a id="pri-static-methods" name="pri-static-methods"></a>
+静态 Private 成员函数</h2></td></tr>
+<tr class="memitem:a3cc57f45a707d6b40c4f3b6cb7a88e37" id="r_a3cc57f45a707d6b40c4f3b6cb7a88e37"><td class="memItemLeft" align="right" valign="top">static int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a3cc57f45a707d6b40c4f3b6cb7a88e37">meshChildCount</a> (const <a class="el" href="structTreeModel_1_1MeshNodeInfo.html">MeshNodeInfo</a> &amp;info, <a class="el" href="structTreeNode.html#a62f65fbb26a3d18a773f8e7f201303b3">TreeNode::NodeType</a> type)</td></tr>
+<tr class="memitem:a011efc36589b7a8c9dcbcac03fcfaf92" id="r_a011efc36589b7a8c9dcbcac03fcfaf92"><td class="memItemLeft" align="right" valign="top">static int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a011efc36589b7a8c9dcbcac03fcfaf92">geometryChildCount</a> (const <a class="el" href="structTreeModel_1_1GeometryNodeInfo.html">GeometryNodeInfo</a> &amp;info, <a class="el" href="structTreeNode.html#a62f65fbb26a3d18a773f8e7f201303b3">TreeNode::NodeType</a> type)</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 id="header-pri-attribs" class="groupheader"><a id="pri-attribs" name="pri-attribs"></a>
 Private 属性</h2></td></tr>
 <tr class="memitem:aac53582cfe69fe0c2e15f7c2217e295d" id="r_aac53582cfe69fe0c2e15f7c2217e295d"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structTreeNode.html">TreeNode</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#aac53582cfe69fe0c2e15f7c2217e295d">rootNode</a> = nullptr</td></tr>
 <tr class="memitem:a8e19857d7cd8b9b52d4f64cb3dc582fe" id="r_a8e19857d7cd8b9b52d4f64cb3dc582fe"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classQModelQuery.html">QModelQuery</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a8e19857d7cd8b9b52d4f64cb3dc582fe">modelQuery_</a> = nullptr</td></tr>
-<tr class="memitem:a12106fcc009752bf64722ca427f55e03" id="r_a12106fcc009752bf64722ca427f55e03"><td class="memItemLeft" align="right" valign="top">std::unordered_map&lt; int, bool &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a12106fcc009752bf64722ca427f55e03">components_visibility_</a></td></tr>
-<tr class="memitem:af05a328f23108e526967c3502f9ecf16" id="r_af05a328f23108e526967c3502f9ecf16"><td class="memItemLeft" align="right" valign="top">std::unordered_map&lt; int, std::pair&lt; bool, bool &gt; &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#af05a328f23108e526967c3502f9ecf16">sub_visibility_</a></td></tr>
+<tr class="memitem:a70bf34bcd358f5b384f60386763231f0" id="r_a70bf34bcd358f5b384f60386763231f0"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a70bf34bcd358f5b384f60386763231f0">next_fake_id_</a> = -2</td></tr>
+<tr class="memitem:a0f4e937149b316a4a8f3f113d67bfdd8" id="r_a0f4e937149b316a4a8f3f113d67bfdd8"><td class="memItemLeft" align="right" valign="top">QTimer *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a0f4e937149b316a4a8f3f113d67bfdd8">refresh_timer_</a> = nullptr</td></tr>
+<tr class="memitem:ad48c668091fa72be57339bacf97af78c" id="r_ad48c668091fa72be57339bacf97af78c"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ad48c668091fa72be57339bacf97af78c">refresh_pending_</a> = false</td></tr>
+<tr class="memitem:adcf824a63ec5ce183e69ec57c35cda4d" id="r_adcf824a63ec5ce183e69ec57c35cda4d"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#adcf824a63ec5ce183e69ec57c35cda4d">refreshing_</a> = false</td></tr>
+<tr class="memitem:a5f65bb6c338196a76c411655c12cb001" id="r_a5f65bb6c338196a76c411655c12cb001"><td class="memItemLeft" align="right" valign="top">std::unordered_map&lt; <a class="el" href="Core_8h.html#a1673229bf7fec9388ac2a829a52d69b3">Index</a>, <a class="el" href="structTreeModel_1_1SubVisibility.html">SubVisibility</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a5f65bb6c338196a76c411655c12cb001">sub_visibility_</a></td></tr>
+<tr class="memdesc:a5f65bb6c338196a76c411655c12cb001"><td class="mdescLeft">&#160;</td><td class="mdescRight">GUI 管线回传的子类型总开关；缺省为可见，对象树不写用户设置。  <br /></td></tr>
+<tr class="memitem:a853bdcedcf628146bfbe8ad80ba48683" id="r_a853bdcedcf628146bfbe8ad80ba48683"><td class="memItemLeft" align="right" valign="top">std::unordered_map&lt; <a class="el" href="Core_8h.html#a1673229bf7fec9388ac2a829a52d69b3">Index</a>, <a class="el" href="structTreeNode.html">TreeNode</a> * &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a853bdcedcf628146bfbe8ad80ba48683">component_lookup_</a></td></tr>
+<tr class="memdesc:a853bdcedcf628146bfbe8ad80ba48683"><td class="mdescLeft">&#160;</td><td class="mdescRight">渲染回传的组件节点查找缓存；仅用于显隐同步，不参与结构权威。  <br /></td></tr>
 </table>
 <a name="doc-enum-members" id="doc-enum-members"></a><h2 id="header-doc-enum-members" class="groupheader">成员枚举类型说明</h2>
 <a id="aab6367624db733c58760195c14f7c4b5" name="aab6367624db733c58760195c14f7c4b5"></a>
@@ -278,6 +341,8 @@ Private 属性</h2></td></tr>
 <tr><td class="fieldname"><a id="aab6367624db733c58760195c14f7c4b5ab4e63735c06dd91a665960b96af3ba0f" name="aab6367624db733c58760195c14f7c4b5ab4e63735c06dd91a665960b96af3ba0f"></a>IsVisibleRole&#160;</td><td class="fielddoc"></td></tr>
 <tr><td class="fieldname"><a id="aab6367624db733c58760195c14f7c4b5a4e340a7f798650084f2b87a073fb6e27" name="aab6367624db733c58760195c14f7c4b5a4e340a7f798650084f2b87a073fb6e27"></a>ComponentIdRole&#160;</td><td class="fielddoc"></td></tr>
 <tr><td class="fieldname"><a id="aab6367624db733c58760195c14f7c4b5a53c23c7ccec2260a74ea335708b8a7aa" name="aab6367624db733c58760195c14f7c4b5a53c23c7ccec2260a74ea335708b8a7aa"></a>NodeTypeRole&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="aab6367624db733c58760195c14f7c4b5aa5fa903ee5d7436503d5d72b0895479c" name="aab6367624db733c58760195c14f7c4b5aa5fa903ee5d7436503d5d72b0895479c"></a>VisibilityStateRole&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="aab6367624db733c58760195c14f7c4b5acdafc669785697a535da9db1271120f3" name="aab6367624db733c58760195c14f7c4b5acdafc669785697a535da9db1271120f3"></a>CanToggleVisibilityRole&#160;</td><td class="fielddoc"></td></tr>
 </table>
 
 </div>
@@ -326,6 +391,106 @@ Private 属性</h2></td></tr>
 </div>
 </div>
 <a name="doc-func-members" id="doc-func-members"></a><h2 id="header-doc-func-members" class="groupheader">成员函数说明</h2>
+<a id="a92e53910e72607ce2e5942ec53f65a5f" name="a92e53910e72607ce2e5942ec53f65a5f"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a92e53910e72607ce2e5942ec53f65a5f">&#9670;&#160;</a></span>buildComponentNode()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="structTreeNode.html">TreeNode</a> * TreeModel::buildComponentNode </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="structTreeModel_1_1ComponentNodeInfo.html">ComponentNodeInfo</a> &amp;</td>          <td class="paramname"><span class="paramname"><em>info</em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel private">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a56b889829c9b137e89587d84dde657c3" name="a56b889829c9b137e89587d84dde657c3"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a56b889829c9b137e89587d84dde657c3">&#9670;&#160;</a></span>buildGeometryNode()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="structTreeNode.html">TreeNode</a> * TreeModel::buildGeometryNode </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="structTreeModel_1_1GeometryNodeInfo.html">GeometryNodeInfo</a> &amp;</td>          <td class="paramname"><span class="paramname"><em>info</em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel private">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="ac51ba3b6f22d0a506fe5af1db7045c69" name="ac51ba3b6f22d0a506fe5af1db7045c69"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ac51ba3b6f22d0a506fe5af1db7045c69">&#9670;&#160;</a></span>buildMeshNode()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="structTreeNode.html">TreeNode</a> * TreeModel::buildMeshNode </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="structTreeModel_1_1MeshNodeInfo.html">MeshNodeInfo</a> &amp;</td>          <td class="paramname"><span class="paramname"><em>info</em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel private">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="ab8a370e49ca5a5c35606c0a8b1e61f58" name="ab8a370e49ca5a5c35606c0a8b1e61f58"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ab8a370e49ca5a5c35606c0a8b1e61f58">&#9670;&#160;</a></span>buildModelNode()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="structTreeNode.html">TreeNode</a> * TreeModel::buildModelNode </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="structTreeModel_1_1ModelNodeInfo.html">ModelNodeInfo</a> &amp;</td>          <td class="paramname"><span class="paramname"><em>info</em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel private">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
 <a id="ac83e24d07fb82d8d14dbcc9d3beaa0ec" name="ac83e24d07fb82d8d14dbcc9d3beaa0ec"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#ac83e24d07fb82d8d14dbcc9d3beaa0ec">&#9670;&#160;</a></span>columnCount()</h2>
 
@@ -380,8 +545,8 @@ Private 属性</h2></td></tr>
 
 </div>
 </div>
-<a id="a62bec23ec113129c36f4728814460db0" name="a62bec23ec113129c36f4728814460db0"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a62bec23ec113129c36f4728814460db0">&#9670;&#160;</a></span>emitDescendantDataChanged()</h2>
+<a id="a6651d44010b7cbaaef899f8b3c0dcf40" name="a6651d44010b7cbaaef899f8b3c0dcf40"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a6651d44010b7cbaaef899f8b3c0dcf40">&#9670;&#160;</a></span>fillComponentData()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -390,10 +555,10 @@ Private 属性</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">void TreeModel::emitDescendantDataChanged </td>
+          <td class="memname">void TreeModel::fillComponentData </td>
           <td>(</td>
-          <td class="paramtype">const QModelIndex &amp;</td>          <td class="paramname"><span class="paramname"><em>parentIndex</em></span></td><td>)</td>
-          <td></td>
+          <td class="paramtype"><a class="el" href="structTreeModel_1_1ComponentNodeInfo.html">ComponentNodeInfo</a> &amp;</td>          <td class="paramname"><span class="paramname"><em>info</em></span></td><td>)</td>
+          <td> const</td>
         </tr>
       </table>
   </td>
@@ -422,6 +587,60 @@ Private 属性</h2></td></tr>
           <td class="paramtype">int</td>          <td class="paramname"><span class="paramname"><em>depth</em></span>&#160;) const</td>
         </tr>
       </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a1106f280a075b2671ce96e580747ed0e" name="a1106f280a075b2671ce96e580747ed0e"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a1106f280a075b2671ce96e580747ed0e">&#9670;&#160;</a></span>flushPendingRefresh()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void TreeModel::flushPendingRefresh </td>
+          <td>(</td>
+          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel private">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a011efc36589b7a8c9dcbcac03fcfaf92" name="a011efc36589b7a8c9dcbcac03fcfaf92"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a011efc36589b7a8c9dcbcac03fcfaf92">&#9670;&#160;</a></span>geometryChildCount()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">int TreeModel::geometryChildCount </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="structTreeModel_1_1GeometryNodeInfo.html">GeometryNodeInfo</a> &amp;</td>          <td class="paramname"><span class="paramname"><em>info</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="structTreeNode.html#a62f65fbb26a3d18a773f8e7f201303b3">TreeNode::NodeType</a></td>          <td class="paramname"><span class="paramname"><em>type</em></span>&#160;)</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel static">static</span><span class="mlabel private">private</span></span>  </td>
+  </tr>
+</table>
 </div><div class="memdoc">
 
 </div>
@@ -510,6 +729,184 @@ Private 属性</h2></td></tr>
 
 </div>
 </div>
+<a id="a6d756134268263a624f8bcfe416a79b5" name="a6d756134268263a624f8bcfe416a79b5"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a6d756134268263a624f8bcfe416a79b5">&#9670;&#160;</a></span>indexOfNode()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">QModelIndex TreeModel::indexOfNode </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="structTreeNode.html">TreeNode</a> *</td>          <td class="paramname"><span class="paramname"><em>node</em></span></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel private">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="ae16c339b250d1b6a87ba7202a1d2b597" name="ae16c339b250d1b6a87ba7202a1d2b597"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ae16c339b250d1b6a87ba7202a1d2b597">&#9670;&#160;</a></span>insertChildNode()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void TreeModel::insertChildNode </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="structTreeNode.html">TreeNode</a> *</td>          <td class="paramname"><span class="paramname"><em>parent</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int</td>          <td class="paramname"><span class="paramname"><em>row</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="structTreeNode.html">TreeNode</a> *</td>          <td class="paramname"><span class="paramname"><em>node</em></span>&#160;)</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel private">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a3cc57f45a707d6b40c4f3b6cb7a88e37" name="a3cc57f45a707d6b40c4f3b6cb7a88e37"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a3cc57f45a707d6b40c4f3b6cb7a88e37">&#9670;&#160;</a></span>meshChildCount()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">int TreeModel::meshChildCount </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="structTreeModel_1_1MeshNodeInfo.html">MeshNodeInfo</a> &amp;</td>          <td class="paramname"><span class="paramname"><em>info</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="structTreeNode.html#a62f65fbb26a3d18a773f8e7f201303b3">TreeNode::NodeType</a></td>          <td class="paramname"><span class="paramname"><em>type</em></span>&#160;)</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel static">static</span><span class="mlabel private">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="ae52d539baa0a1f090302c03756941ea6" name="ae52d539baa0a1f090302c03756941ea6"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ae52d539baa0a1f090302c03756941ea6">&#9670;&#160;</a></span>moveChildNode()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void TreeModel::moveChildNode </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="structTreeNode.html">TreeNode</a> *</td>          <td class="paramname"><span class="paramname"><em>parent</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int</td>          <td class="paramname"><span class="paramname"><em>from</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int</td>          <td class="paramname"><span class="paramname"><em>to</em></span>&#160;)</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel private">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a02b36565bc3583c6ed228ee4043f4f36" name="a02b36565bc3583c6ed228ee4043f4f36"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a02b36565bc3583c6ed228ee4043f4f36">&#9670;&#160;</a></span>notifyAncestors()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void TreeModel::notifyAncestors </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="structTreeNode.html">TreeNode</a> *</td>          <td class="paramname"><span class="paramname"><em>node</em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel private">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>只通知祖先节点，不重复发送已单独处理的子树。 </p>
+
+</div>
+</div>
+<a id="a8f77e10ea80305575dc1b2e4a1e6c57f" name="a8f77e10ea80305575dc1b2e4a1e6c57f"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a8f77e10ea80305575dc1b2e4a1e6c57f">&#9670;&#160;</a></span>notifyNodeData()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void TreeModel::notifyNodeData </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="structTreeNode.html">TreeNode</a> *</td>          <td class="paramname"><span class="paramname"><em>node</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const QVector&lt; int &gt; &amp;</td>          <td class="paramname"><span class="paramname"><em>roles</em></span>&#160;)</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel private">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
 <a id="a7af800974f07f2246e8677c9c0a16394" name="a7af800974f07f2246e8677c9c0a16394"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a7af800974f07f2246e8677c9c0a16394">&#9670;&#160;</a></span>parent()</h2>
 
@@ -535,8 +932,8 @@ Private 属性</h2></td></tr>
 
 </div>
 </div>
-<a id="aa7574a1e9fa97b69cd67139902fc806b" name="aa7574a1e9fa97b69cd67139902fc806b"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#aa7574a1e9fa97b69cd67139902fc806b">&#9670;&#160;</a></span>propagateUp()</h2>
+<a id="a528f95c7249dfff3308d623e7e4ddc0a" name="a528f95c7249dfff3308d623e7e4ddc0a"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a528f95c7249dfff3308d623e7e4ddc0a">&#9670;&#160;</a></span>pruneStaleVisibility()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -545,9 +942,86 @@ Private 属性</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">void TreeModel::propagateUp </td>
+          <td class="memname">void TreeModel::pruneStaleVisibility </td>
           <td>(</td>
-          <td class="paramtype"><a class="el" href="structTreeNode.html">TreeNode</a> *</td>          <td class="paramname"><span class="paramname"><em>node</em></span></td><td>)</td>
+          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel private">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a16f618138ee9de1c745ffa9747672ab7" name="a16f618138ee9de1c745ffa9747672ab7"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a16f618138ee9de1c745ffa9747672ab7">&#9670;&#160;</a></span>queryModel()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="structTreeModel_1_1ModelNodeInfo.html">TreeModel::ModelNodeInfo</a> TreeModel::queryModel </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="Core_8h.html#a1673229bf7fec9388ac2a829a52d69b3">Index</a></td>          <td class="paramname"><span class="paramname"><em>model_id</em></span></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel private">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="ad0cada101c1b0becaccd2b554bbe6cda" name="ad0cada101c1b0becaccd2b554bbe6cda"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ad0cada101c1b0becaccd2b554bbe6cda">&#9670;&#160;</a></span>rebuildComponentLookup()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void TreeModel::rebuildComponentLookup </td>
+          <td>(</td>
+          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel private">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>重建渲染回传使用的组件查找缓存；结构对账不依赖该索引。 </p>
+
+</div>
+</div>
+<a id="ae15ff1abc73c6ec8fd12e72e67831f07" name="ae15ff1abc73c6ec8fd12e72e67831f07"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ae15ff1abc73c6ec8fd12e72e67831f07">&#9670;&#160;</a></span>reconcileAllFromQuery()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void TreeModel::reconcileAllFromQuery </td>
+          <td>(</td>
+          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
           <td></td>
         </tr>
       </table>
@@ -574,6 +1048,94 @@ Private 属性</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>统一对账入口；普通刷新不 reset，只有查询替换/清空才 reset。 </p>
+
+</div>
+</div>
+<a id="aeb21ba3505152c1f4a12d3b8305a7c65" name="aeb21ba3505152c1f4a12d3b8305a7c65"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aeb21ba3505152c1f4a12d3b8305a7c65">&#9670;&#160;</a></span>removeChildNode()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void TreeModel::removeChildNode </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="structTreeNode.html">TreeNode</a> *</td>          <td class="paramname"><span class="paramname"><em>node</em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel private">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a2c9782f149c519f64c6159f549b9ecfe" name="a2c9782f149c519f64c6159f549b9ecfe"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a2c9782f149c519f64c6159f549b9ecfe">&#9670;&#160;</a></span>requestAllVisibility()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void TreeModel::requestAllVisibility </td>
+          <td>(</td>
+          <td class="paramtype">bool</td>          <td class="paramname"><span class="paramname"><em>visible</em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>按模型发送全部节点的显隐请求，不提前修改展示副本。 </p>
+
+</div>
+</div>
+<a id="aa1cca2122a581bec46838fa7348441c0" name="aa1cca2122a581bec46838fa7348441c0"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aa1cca2122a581bec46838fa7348441c0">&#9670;&#160;</a></span>requestRefresh()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void TreeModel::requestRefresh </td>
+          <td>(</td>
+          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>所有数据/结构通知的唯一入口，经 50ms 定时器合并后统一对账。 </p>
+
+</div>
+</div>
+<a id="a40b5d4de0d714fc26e512163f8ba9239" name="a40b5d4de0d714fc26e512163f8ba9239"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a40b5d4de0d714fc26e512163f8ba9239">&#9670;&#160;</a></span>requestVisibility()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool TreeModel::requestVisibility </td>
+          <td>(</td>
+          <td class="paramtype">const QModelIndex &amp;</td>          <td class="paramname"><span class="paramname"><em>idx</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">bool</td>          <td class="paramname"><span class="paramname"><em>visible</em></span>&#160;)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>只发送节点显隐意图；展示状态由管线回传后更新。 </p>
 
 </div>
 </div>
@@ -627,52 +1189,6 @@ Private 属性</h2></td></tr>
 
 </div>
 </div>
-<a id="a936fc094472c4670f1e3be25c274afd4" name="a936fc094472c4670f1e3be25c274afd4"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a936fc094472c4670f1e3be25c274afd4">&#9670;&#160;</a></span>setAllVisibility()</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">void TreeModel::setAllVisibility </td>
-          <td>(</td>
-          <td class="paramtype">bool</td>          <td class="paramname"><span class="paramname"><em>visible</em></span></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a id="a7fe84c9ef47b8d65942ac260e236577c" name="a7fe84c9ef47b8d65942ac260e236577c"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a7fe84c9ef47b8d65942ac260e236577c">&#9670;&#160;</a></span>setComponentVisibility()</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">void TreeModel::setComponentVisibility </td>
-          <td>(</td>
-          <td class="paramtype"><a class="el" href="structTreeNode.html">TreeNode</a> *</td>          <td class="paramname"><span class="paramname"><em>node</em></span>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">bool</td>          <td class="paramname"><span class="paramname"><em>visible</em></span>&#160;)</td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel private">private</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-</div>
-</div>
 <a id="ae8c22a64a5792e32c247cac76b8f486d" name="ae8c22a64a5792e32c247cac76b8f486d"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#ae8c22a64a5792e32c247cac76b8f486d">&#9670;&#160;</a></span>setModelQuery()</h2>
 
@@ -690,16 +1206,262 @@ Private 属性</h2></td></tr>
 
 </div>
 </div>
-<a id="a73844970c5827a1429c341ad58b9c849" name="a73844970c5827a1429c341ad58b9c849"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a73844970c5827a1429c341ad58b9c849">&#9670;&#160;</a></span>setVisibility()</h2>
+<a id="acc97371848313ee712906a2684449778" name="acc97371848313ee712906a2684449778"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#acc97371848313ee712906a2684449778">&#9670;&#160;</a></span>subVisibility()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="structTreeModel_1_1SubVisibility.html">TreeModel::SubVisibility</a> TreeModel::subVisibility </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="Core_8h.html#a1673229bf7fec9388ac2a829a52d69b3">Index</a></td>          <td class="paramname"><span class="paramname"><em>component_id</em></span></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel private">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a1e91d9fc69f52793daea9f6decfe075e" name="a1e91d9fc69f52793daea9f6decfe075e"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a1e91d9fc69f52793daea9f6decfe075e">&#9670;&#160;</a></span>syncComponentNode()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void TreeModel::syncComponentNode </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="structTreeNode.html">TreeNode</a> *</td>          <td class="paramname"><span class="paramname"><em>node</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const <a class="el" href="structTreeModel_1_1ComponentNodeInfo.html">ComponentNodeInfo</a> &amp;</td>          <td class="paramname"><span class="paramname"><em>info</em></span>&#160;)</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel private">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a7d63cd3a61a12034b079e50d38b583db" name="a7d63cd3a61a12034b079e50d38b583db"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a7d63cd3a61a12034b079e50d38b583db">&#9670;&#160;</a></span>syncComponentVisibility()</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">bool TreeModel::setVisibility </td>
+          <td class="memname">void TreeModel::syncComponentVisibility </td>
           <td>(</td>
-          <td class="paramtype">const QModelIndex &amp;</td>          <td class="paramname"><span class="paramname"><em>idx</em></span>, </td>
+          <td class="paramtype"><a class="el" href="Core_8h.html#a1673229bf7fec9388ac2a829a52d69b3">Index</a></td>          <td class="paramname"><span class="paramname"><em>component_id</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">bool</td>          <td class="paramname"><span class="paramname"><em>mesh_visible</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">bool</td>          <td class="paramname"><span class="paramname"><em>geometry_visible</em></span>&#160;)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>接收 GUI 管线回传的完整组件显隐结果（不是用户显隐命令） </p>
+<dl class="params"><dt>参数</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">component_id</td><td>组件 id；组件尚未入树时只保存，结构同步创建后应用 </td></tr>
+    <tr><td class="paramname">mesh_visible</td><td>网格总开关 </td></tr>
+    <tr><td class="paramname">geometry_visible</td><td>几何总开关 </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section note"><dt>注解</dt><dd>这是显隐状态唯一写入点；对象树的用户入口只发请求。 </dd></dl>
+
+</div>
+</div>
+<a id="ae2ea61e9bcacd7c5ffa1499597df49f8" name="ae2ea61e9bcacd7c5ffa1499597df49f8"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ae2ea61e9bcacd7c5ffa1499597df49f8">&#9670;&#160;</a></span>syncCountChildren()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void TreeModel::syncCountChildren </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="structTreeNode.html">TreeNode</a> *</td>          <td class="paramname"><span class="paramname"><em>node</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">std::span&lt; const <a class="el" href="structTreeModel_1_1CountChildSpec.html">CountChildSpec</a> &gt;</td>          <td class="paramname"><span class="paramname"><em>specs</em></span>&#160;)</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel private">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a27fa4b8848a4b514ba749ffca92b86ce" name="a27fa4b8848a4b514ba749ffca92b86ce"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a27fa4b8848a4b514ba749ffca92b86ce">&#9670;&#160;</a></span>syncGeometryNode()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void TreeModel::syncGeometryNode </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="structTreeNode.html">TreeNode</a> *</td>          <td class="paramname"><span class="paramname"><em>node</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const <a class="el" href="structTreeModel_1_1GeometryNodeInfo.html">GeometryNodeInfo</a> &amp;</td>          <td class="paramname"><span class="paramname"><em>info</em></span>&#160;)</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel private">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="ae5d61bd355e1ebb8bb5acfec2c24ad00" name="ae5d61bd355e1ebb8bb5acfec2c24ad00"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ae5d61bd355e1ebb8bb5acfec2c24ad00">&#9670;&#160;</a></span>syncMeshNode()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void TreeModel::syncMeshNode </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="structTreeNode.html">TreeNode</a> *</td>          <td class="paramname"><span class="paramname"><em>node</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const <a class="el" href="structTreeModel_1_1MeshNodeInfo.html">MeshNodeInfo</a> &amp;</td>          <td class="paramname"><span class="paramname"><em>info</em></span>&#160;)</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel private">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="aab88b001a1cb58a82830cc00b08b6dfc" name="aab88b001a1cb58a82830cc00b08b6dfc"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aab88b001a1cb58a82830cc00b08b6dfc">&#9670;&#160;</a></span>syncModelNode()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void TreeModel::syncModelNode </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="structTreeNode.html">TreeNode</a> *</td>          <td class="paramname"><span class="paramname"><em>node</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const <a class="el" href="structTreeModel_1_1ModelNodeInfo.html">ModelNodeInfo</a> &amp;</td>          <td class="paramname"><span class="paramname"><em>info</em></span>&#160;)</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel private">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="acb6afaa57aaaef4fa9eba455603bb108" name="acb6afaa57aaaef4fa9eba455603bb108"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#acb6afaa57aaaef4fa9eba455603bb108">&#9670;&#160;</a></span>syncSubNodes()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool TreeModel::syncSubNodes </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="structTreeNode.html">TreeNode</a> *</td>          <td class="paramname"><span class="paramname"><em>node</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">bool</td>          <td class="paramname"><span class="paramname"><em>notify</em></span>&#160;)</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel private">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>按组件保存的管线开关递归同步子节点展示状态，返回是否发生变化。 </p>
+
+</div>
+</div>
+<a id="aa48ac53f26e47a255eccd58e7ea84113" name="aa48ac53f26e47a255eccd58e7ea84113"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aa48ac53f26e47a255eccd58e7ea84113">&#9670;&#160;</a></span>visibilityRequested</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void TreeModel::visibilityRequested </td>
+          <td>(</td>
+          <td class="paramtype">int</td>          <td class="paramname"><span class="paramname"><em>node_type</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int</td>          <td class="paramname"><span class="paramname"><em>object_id</em></span>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
@@ -707,12 +1469,19 @@ Private 属性</h2></td></tr>
           <td class="paramtype">bool</td>          <td class="paramname"><span class="paramname"><em>visible</em></span>&#160;)</td>
         </tr>
       </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel signal">signal</span></span>  </td>
+  </tr>
+</table>
 </div><div class="memdoc">
+
+<p>请求模型、组件、Mesh 或 Geometry 显隐；object_id 为真实模型或组件身份。 </p>
 
 </div>
 </div>
-<a id="a2c43f8c1318d19eca36208c562cb9204" name="a2c43f8c1318d19eca36208c562cb9204"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a2c43f8c1318d19eca36208c562cb9204">&#9670;&#160;</a></span>syncSubNodes()</h2>
+<a id="a203a2352c14b365e873411e229c3f98a" name="a203a2352c14b365e873411e229c3f98a"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a203a2352c14b365e873411e229c3f98a">&#9670;&#160;</a></span>visibilityState()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -721,10 +1490,10 @@ Private 属性</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">void TreeModel::syncSubNodes </td>
+          <td class="memname">int TreeModel::visibilityState </td>
           <td>(</td>
-          <td class="paramtype"><a class="el" href="structTreeNode.html">TreeNode</a> *</td>          <td class="paramname"><span class="paramname"><em>node</em></span></td><td>)</td>
-          <td></td>
+          <td class="paramtype">const <a class="el" href="structTreeNode.html">TreeNode</a> *</td>          <td class="paramname"><span class="paramname"><em>node</em></span></td><td>)</td>
+          <td> const</td>
         </tr>
       </table>
   </td>
@@ -733,12 +1502,14 @@ Private 属性</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+
+<p>聚合节点的全显、部分显示和全隐状态。 </p>
 
 </div>
 </div>
 <a name="doc-variable-members" id="doc-variable-members"></a><h2 id="header-doc-variable-members" class="groupheader">类成员变量说明</h2>
-<a id="a12106fcc009752bf64722ca427f55e03" name="a12106fcc009752bf64722ca427f55e03"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a12106fcc009752bf64722ca427f55e03">&#9670;&#160;</a></span>components_visibility_</h2>
+<a id="a853bdcedcf628146bfbe8ad80ba48683" name="a853bdcedcf628146bfbe8ad80ba48683"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a853bdcedcf628146bfbe8ad80ba48683">&#9670;&#160;</a></span>component_lookup_</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -747,7 +1518,7 @@ Private 属性</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">std::unordered_map&lt;int, bool&gt; TreeModel::components_visibility_</td>
+          <td class="memname">std::unordered_map&lt;<a class="el" href="Core_8h.html#a1673229bf7fec9388ac2a829a52d69b3">Index</a>, <a class="el" href="structTreeNode.html">TreeNode</a>*&gt; TreeModel::component_lookup_</td>
         </tr>
       </table>
   </td>
@@ -756,6 +1527,8 @@ Private 属性</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+
+<p>渲染回传的组件节点查找缓存；仅用于显隐同步，不参与结构权威。 </p>
 
 </div>
 </div>
@@ -770,6 +1543,94 @@ Private 属性</h2></td></tr>
       <table class="memname">
         <tr>
           <td class="memname"><a class="el" href="classQModelQuery.html">QModelQuery</a>* TreeModel::modelQuery_ = nullptr</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel private">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a70bf34bcd358f5b384f60386763231f0" name="a70bf34bcd358f5b384f60386763231f0"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a70bf34bcd358f5b384f60386763231f0">&#9670;&#160;</a></span>next_fake_id_</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">int TreeModel::next_fake_id_ = -2</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel private">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="ad48c668091fa72be57339bacf97af78c" name="ad48c668091fa72be57339bacf97af78c"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ad48c668091fa72be57339bacf97af78c">&#9670;&#160;</a></span>refresh_pending_</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool TreeModel::refresh_pending_ = false</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel private">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a0f4e937149b316a4a8f3f113d67bfdd8" name="a0f4e937149b316a4a8f3f113d67bfdd8"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a0f4e937149b316a4a8f3f113d67bfdd8">&#9670;&#160;</a></span>refresh_timer_</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">QTimer* TreeModel::refresh_timer_ = nullptr</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel private">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="adcf824a63ec5ce183e69ec57c35cda4d" name="adcf824a63ec5ce183e69ec57c35cda4d"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#adcf824a63ec5ce183e69ec57c35cda4d">&#9670;&#160;</a></span>refreshing_</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool TreeModel::refreshing_ = false</td>
         </tr>
       </table>
   </td>
@@ -803,8 +1664,8 @@ Private 属性</h2></td></tr>
 
 </div>
 </div>
-<a id="af05a328f23108e526967c3502f9ecf16" name="af05a328f23108e526967c3502f9ecf16"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#af05a328f23108e526967c3502f9ecf16">&#9670;&#160;</a></span>sub_visibility_</h2>
+<a id="a5f65bb6c338196a76c411655c12cb001" name="a5f65bb6c338196a76c411655c12cb001"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a5f65bb6c338196a76c411655c12cb001">&#9670;&#160;</a></span>sub_visibility_</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -813,7 +1674,7 @@ Private 属性</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">std::unordered_map&lt;int, std::pair&lt;bool, bool&gt; &gt; TreeModel::sub_visibility_</td>
+          <td class="memname">std::unordered_map&lt;<a class="el" href="Core_8h.html#a1673229bf7fec9388ac2a829a52d69b3">Index</a>, <a class="el" href="structTreeModel_1_1SubVisibility.html">SubVisibility</a>&gt; TreeModel::sub_visibility_</td>
         </tr>
       </table>
   </td>
@@ -822,6 +1683,8 @@ Private 属性</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+
+<p>GUI 管线回传的子类型总开关；缺省为可见，对象树不写用户设置。 </p>
 
 </div>
 </div>

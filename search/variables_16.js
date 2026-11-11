@@ -11,7 +11,7 @@ var searchData=
   ['vertex_5fcb_8',['vertex_cb',['../structtinyobj_1_1callback__t.html#a56770b4d8c2e91a1ebfacb19d78cd6b4',1,'tinyobj::callback_t']]],
   ['vertex_5fcolor_9',['vertex_color',['../structtinyobj_1_1ObjReaderConfig.html#af89582372bda5ec5d45d7a20e7daf127',1,'tinyobj::ObjReaderConfig']]],
   ['vertex_5fcolor_5fcb_10',['vertex_color_cb',['../structtinyobj_1_1callback__t.html#a21569f82a795d801531b657410ed9abb',1,'tinyobj::callback_t']]],
-  ['vertex_5fcount_11',['vertex_count',['../structsession_1_1MeshSummary.html#a41fb05868feb0d16251adcfb64bb601c',1,'session::MeshSummary::vertex_count'],['../structsession_1_1GeometrySummary.html#a4aa13994e48f69d35a7c67a381536c10',1,'session::GeometrySummary::vertex_count']]],
+  ['vertex_5fcount_11',['vertex_count',['../structTreeModel_1_1GeometryNodeInfo.html#ab4d05d942ff545253c195431ce558475',1,'TreeModel::GeometryNodeInfo::vertex_count'],['../structsession_1_1MeshSummary.html#a41fb05868feb0d16251adcfb64bb601c',1,'session::MeshSummary::vertex_count'],['../structsession_1_1GeometrySummary.html#a4aa13994e48f69d35a7c67a381536c10',1,'session::GeometrySummary::vertex_count']]],
   ['vertex_5fcount_5f_12',['vertex_count_',['../structMeshData.html#a02e025c430fa51c3832ffc680145e236',1,'MeshData']]],
   ['vertex_5fid_13',['vertex_id',['../structtinyobj_1_1skin__weight__t.html#acf810d18d620a63bb7e54e90077be589',1,'tinyobj::skin_weight_t']]],
   ['vertex_5fid_5fto_5fshape_5f_14',['vertex_id_to_shape_',['../classGeometryRegistry.html#aa57a5c7cb9fd9ef051ff844f2fbc7afb',1,'GeometryRegistry']]],

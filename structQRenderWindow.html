@@ -352,6 +352,9 @@ Private 成员函数</h2></td></tr>
 <tr class="memdesc:a6b9c3fe7d76e5f0e8b3cabda519b05ab"><td class="mdescLeft">&#160;</td><td class="mdescRight">在 GUI 线程更新所有主网格的隐藏/裁剪数据。  <br /></td></tr>
 <tr class="memitem:a29195f8fe8fd14f0298500819ae5e7b5" id="r_a29195f8fe8fd14f0298500819ae5e7b5"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a29195f8fe8fd14f0298500819ae5e7b5">publishSelection</a> ()</td></tr>
 <tr class="memdesc:a29195f8fe8fd14f0298500819ae5e7b5"><td class="mdescLeft">&#160;</td><td class="mdescRight">渲染线程制作选择快照，排队交付 GUI 线程，禁止 QML 直接读取拾取器。  <br /></td></tr>
+<tr class="memitem:a43d502c18348a3e20ca7fee1e9f4c88e" id="r_a43d502c18348a3e20ca7fee1e9f4c88e"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a43d502c18348a3e20ca7fee1e9f4c88e">applyMeshVisibility</a> (<a class="el" href="Core_8h.html#a1673229bf7fec9388ac2a829a52d69b3">Index</a> component_id, bool visibility)</td></tr>
+<tr class="memdesc:a43d502c18348a3e20ca7fee1e9f4c88e"><td class="mdescLeft">&#160;</td><td class="mdescRight">只应用网格/几何显隐，不触发回传；由组件级操作合并后统一通知。  <br /></td></tr>
+<tr class="memitem:a6cb09d3082ec5e2a9c6b66f58496a5d6" id="r_a6cb09d3082ec5e2a9c6b66f58496a5d6"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a6cb09d3082ec5e2a9c6b66f58496a5d6">applyGeometryVisibility</a> (<a class="el" href="Core_8h.html#a1673229bf7fec9388ac2a829a52d69b3">Index</a> component_id, bool visibility)</td></tr>
 <tr class="memitem:ac699b387ebe167c17fe360a81df3be45" id="r_ac699b387ebe167c17fe360a81df3be45"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ac699b387ebe167c17fe360a81df3be45">publishComponentVisibility</a> (<a class="el" href="Core_8h.html#a1673229bf7fec9388ac2a829a52d69b3">Index</a> component_id)</td></tr>
 <tr class="memdesc:ac699b387ebe167c17fe360a81df3be45"><td class="mdescLeft">&#160;</td><td class="mdescRight">在 GUI 线程发布当前显隐结果，对象树只接收最新状态。  <br /></td></tr>
 <tr class="memitem:a8e5655b1ac1ac24ee4497359a8aa1d2a" id="r_a8e5655b1ac1ac24ee4497359a8aa1d2a"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a8e5655b1ac1ac24ee4497359a8aa1d2a">injectRenderRefreshCallback</a> ()</td></tr>
@@ -590,6 +593,66 @@ Private 属性</h2></td></tr>
 </div><div class="memdoc">
 
 <p>直接使用 GUI 缓存的选择和网格代次计算显隐结果。 </p>
+
+</div>
+</div>
+<a id="a6cb09d3082ec5e2a9c6b66f58496a5d6" name="a6cb09d3082ec5e2a9c6b66f58496a5d6"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a6cb09d3082ec5e2a9c6b66f58496a5d6">&#9670;&#160;</a></span>applyGeometryVisibility()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void QRenderWindow::applyGeometryVisibility </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="Core_8h.html#a1673229bf7fec9388ac2a829a52d69b3">Index</a></td>          <td class="paramname"><span class="paramname"><em>component_id</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">bool</td>          <td class="paramname"><span class="paramname"><em>visibility</em></span>&#160;)</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel private">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a43d502c18348a3e20ca7fee1e9f4c88e" name="a43d502c18348a3e20ca7fee1e9f4c88e"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a43d502c18348a3e20ca7fee1e9f4c88e">&#9670;&#160;</a></span>applyMeshVisibility()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void QRenderWindow::applyMeshVisibility </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="Core_8h.html#a1673229bf7fec9388ac2a829a52d69b3">Index</a></td>          <td class="paramname"><span class="paramname"><em>component_id</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">bool</td>          <td class="paramname"><span class="paramname"><em>visibility</em></span>&#160;)</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel private">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>只应用网格/几何显隐，不触发回传；由组件级操作合并后统一通知。 </p>
 
 </div>
 </div>

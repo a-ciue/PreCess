@@ -18,9 +18,13 @@ var searchData=
   ['bringtofront_15',['bringToFront',['../classdock_1_1DockView.html#ada09ae5957fc2b31e376a450e96e5a73',1,'dock::DockView::bringToFront()'],['../classdocktest_1_1StubView.html#aacbc521c1d5d2f68d7c612185884d4dc',1,'docktest::StubView::bringToFront()'],['../classdock_1_1ui_1_1DockHostItem.html#a3e2b9fa40d752fef04ca897fdf93bdbb',1,'dock::ui::DockHostItem::bringToFront()'],['../classdock_1_1ui_1_1DockPanelItem.html#a9b8583defcbd2d4a1702e30d74453179',1,'dock::ui::DockPanelItem::bringToFront()'],['../classdock_1_1ui_1_1DockWindowItem.html#a4ffa6df353d379e737e14de1dbe8111f',1,'dock::ui::DockWindowItem::bringToFront()'],['../classdock_1_1ui_1_1PanelContentView.html#ab55bc8fecb6aeb54679a336379fed445',1,'dock::ui::PanelContentView::bringToFront()'],['../classdock_1_1ui_1_1PanelGroupItem.html#ac26bb32c10d9a1d318ca5523bb65d2ef',1,'dock::ui::PanelGroupItem::bringToFront()']]],
   ['build_16',['build',['../structGeometrySubshapeIndex.html#af30c3a3b0ced48046486c2a8aaf38906',1,'GeometrySubshapeIndex']]],
   ['buildatlas_17',['buildAtlas',['../classViewportOrientationRepresentation.html#af4b3eb2ff4d2d542e6baaa381706458d',1,'ViewportOrientationRepresentation']]],
-  ['buildhighlight_18',['buildHighlight',['../classGeometryActorSelectOp.html#a1b944073d9d1cb680389fa7b0a5d6645',1,'GeometryActorSelectOp']]],
-  ['buildrepresentation_19',['BuildRepresentation',['../classViewportOrientationRepresentation.html#ae10ea6264ef099178e9c2a30fdfbc571',1,'ViewportOrientationRepresentation']]],
-  ['buildthemepalette_20',['buildThemePalette',['../namespaceapp_1_1core.html#a1b700a11b9482c058f6ff03a57291e9f',1,'app::core']]],
-  ['bus_21',['bus',['../classsystems_1_1feature_1_1FeatureEventGateway.html#ad003b345cd3f6550e455993e2e476385',1,'systems::feature::FeatureEventGateway']]],
-  ['busychanged_22',['busyChanged',['../classQTaskStatus.html#a64372caa9076395bf5d88cbb826a0312',1,'QTaskStatus']]]
+  ['buildcomponentnode_18',['buildComponentNode',['../classTreeModel.html#a92e53910e72607ce2e5942ec53f65a5f',1,'TreeModel']]],
+  ['buildgeometrynode_19',['buildGeometryNode',['../classTreeModel.html#a56b889829c9b137e89587d84dde657c3',1,'TreeModel']]],
+  ['buildhighlight_20',['buildHighlight',['../classGeometryActorSelectOp.html#a1b944073d9d1cb680389fa7b0a5d6645',1,'GeometryActorSelectOp']]],
+  ['buildmeshnode_21',['buildMeshNode',['../classTreeModel.html#ac51ba3b6f22d0a506fe5af1db7045c69',1,'TreeModel']]],
+  ['buildmodelnode_22',['buildModelNode',['../classTreeModel.html#ab8a370e49ca5a5c35606c0a8b1e61f58',1,'TreeModel']]],
+  ['buildrepresentation_23',['BuildRepresentation',['../classViewportOrientationRepresentation.html#ae10ea6264ef099178e9c2a30fdfbc571',1,'ViewportOrientationRepresentation']]],
+  ['buildthemepalette_24',['buildThemePalette',['../namespaceapp_1_1core.html#a1b700a11b9482c058f6ff03a57291e9f',1,'app::core']]],
+  ['bus_25',['bus',['../classsystems_1_1feature_1_1FeatureEventGateway.html#ad003b345cd3f6550e455993e2e476385',1,'systems::feature::FeatureEventGateway']]],
+  ['busychanged_26',['busyChanged',['../classQTaskStatus.html#a64372caa9076395bf5d88cbb826a0312',1,'QTaskStatus']]]
 ];

@@ -3,7 +3,7 @@ var searchData=
   ['edge_5factor_5f_0',['edge_actor_',['../classMeshActor.html#ac1012183fbcf30628db40de715822957',1,'MeshActor']]],
   ['edge_5fattributes_5f_1',['edge_attributes_',['../structMeshDataVtk.html#a244b93b1f35f24743f5bdff0babb7dd1',1,'MeshDataVtk::edge_attributes_'],['../structMeshData.html#a74be6d96aaea1509ca703fa8ca1e868d',1,'MeshData::edge_attributes_']]],
   ['edge_5fcell_5fcenters_5f_2',['edge_cell_centers_',['../classMeshActor.html#aa99c9e902bf9b79b5c27d869712152d8',1,'MeshActor']]],
-  ['edge_5fcount_3',['edge_count',['../structsession_1_1MeshSummary.html#ae952757e29341c56d8220e56a4f96a9d',1,'session::MeshSummary::edge_count'],['../structsession_1_1GeometrySummary.html#a9924deb09c59e2ee8ef6447c2110c44d',1,'session::GeometrySummary::edge_count']]],
+  ['edge_5fcount_3',['edge_count',['../structTreeModel_1_1GeometryNodeInfo.html#a2c801ac8ce8f8f72c992e9b094434955',1,'TreeModel::GeometryNodeInfo::edge_count'],['../structsession_1_1MeshSummary.html#ae952757e29341c56d8220e56a4f96a9d',1,'session::MeshSummary::edge_count'],['../structsession_1_1GeometrySummary.html#a9924deb09c59e2ee8ef6447c2110c44d',1,'session::GeometrySummary::edge_count']]],
   ['edge_5fdata_5f_4',['edge_data_',['../classMeshActor.html#aeea019c4c105bbd7e7b37f2e1043c6a3',1,'MeshActor::edge_data_'],['../classMeshPipelineData.html#a04605fd66d822836071549e959994135',1,'MeshPipelineData::edge_data_']]],
   ['edge_5fid_5',['edge_id',['../structEdgeSelectorHighlight_1_1SelectedEdge.html#a353495a4ae7cd551ea4b150173087265',1,'EdgeSelectorHighlight::SelectedEdge']]],
   ['edge_5fid_5fmap_5f_6',['edge_id_map_',['../classModelLayer.html#a0605e65304599d1928580910bc4f1977',1,'ModelLayer']]],

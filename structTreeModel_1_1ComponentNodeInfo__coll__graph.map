@@ -1,0 +1,7 @@
+<map id="TreeModel::ComponentNodeInfo" name="TreeModel::ComponentNodeInfo">
+<area shape="rect" id="Node000001" title=" " alt="" coords="100,106,330,134"/>
+<area shape="rect" id="Node000002" href="$structTreeModel_1_1MeshNodeInfo.html" title=" " alt="" coords="5,5,196,33"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="128,41,202,105,197,106,126,46"/>
+<area shape="rect" id="Node000003" href="$structTreeModel_1_1GeometryNodeInfo.html" title=" " alt="" coords="220,5,440,33"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="306,42,232,108,229,103,301,44"/>
+</map>
