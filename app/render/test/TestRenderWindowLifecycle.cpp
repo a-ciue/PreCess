@@ -2,11 +2,22 @@
  * @file TestRenderWindowLifecycle.cpp
  * @brief 视口场景图销毁与重建的资源生命周期回归测试
  */
+#include "GeometryActor.h"
+#include "GeometryActorManager.h"
+#include "GeometryActorSelectOp.h"
+#include "GeometryData.h"
+#include "GeometryDataVtk.h"
 #include "MakeMeshData.h"
 #include "MakeMeshDataVtk.h"
 #include "MeshActorManager.h"
+#include "ModelLayer.h"
+#include "ModelObserver.h"
+#include "ModelScope.h"
+#include "QModelQuery.h"
 #include "QRenderWindow.h"
 #include "QRenderWindowStyle.h"
+#include "SessionQuery.h"
+#include "UndoStack.h"
 #include "ViewportOrientationRepresentation.h"
 #include "renderStrategy/AttributeOperator.h"
 #include <vtkActor2D.h>
@@ -21,16 +32,23 @@
 #include <vtkIdTypeArray.h>
 #include <vtkObjectFactory.h>
 #include <vtkOpenGLTexture.h>
+#include <vtkPartitionedDataSet.h>
 #include <vtkPolyData.h>
+#include <vtkPolyDataMapper.h>
 #include <vtkPropCollection.h>
 #include <vtkTexturedActor2D.h>
 #include <vtkTransform.h>
 
+#include <BRepPrimAPI_MakeSphere.hxx>
+#include <QElapsedTimer>
+#include <QEventLoop>
 #include <QGuiApplication>
+#include <QQuickWindow>
 #include <catch2/catch_approx.hpp>
 #include <QQmlEngine>
 #include <QQmlExpression>
 #include <catch2/catch_test_macros.hpp>
+#include <gp_Pnt.hxx>
 #include <vtkActor.h>
 #include <vtkActorCollection.h>
 #include <vtkRenderWindowInteractor.h>
@@ -38,8 +56,13 @@
 #include <vtkTextProperty.h>
 #include <vtkWeakPointer.h>
 
+#include <array>
+#include <atomic>
 #include <cmath>
+#include <functional>
 #include <limits>
+#include <memory>
+#include <string>
 #include <vector>
 
 namespace {
@@ -59,13 +82,30 @@ vtkStandardNewMacro(CountingTexture);
 
 QGuiApplication& testApplication()
 {
-    qputenv("QT_QPA_PLATFORM", "offscreen");
+    if (qEnvironmentVariableIsEmpty("QT_QPA_PLATFORM")) {
+#ifdef Q_OS_WIN
+        qputenv("QT_QPA_PLATFORM", "windows");
+#else
+        qputenv("QT_QPA_PLATFORM", "offscreen");
+#endif
+    }
     QQuickVTKItem::setGraphicsApi();
     static int argc = 1;
     static char app_name[] = "TestRenderWindowLifecycle";
     static char* argv[] = { app_name, nullptr };
     static QGuiApplication app(argc, argv);
     return app;
+}
+
+bool renderUntil(QQuickWindow& window, const std::function<bool()>& ready)
+{
+    QElapsedTimer timer;
+    timer.start();
+    while (!ready() && timer.elapsed() < 10000) {
+        window.requestUpdate();
+        QCoreApplication::processEvents(QEventLoop::AllEvents, 20);
+    }
+    return ready();
 }
 }
 
@@ -627,4 +667,296 @@ TEST_CASE("Viewport orientation uploads its persistent texture only when pixels 
     orientation->ReleaseGraphicsResources(window);
     window->Render();
     CHECK(texture->uploads == 5);
+}
+
+TEST_CASE("QRenderWindow applies requested surface precision across scene rebuilds", "[precision]")
+{
+    testApplication();
+    QRenderWindow item;
+    int updates = 0;
+    QObject::connect(&item, &QRenderWindow::surfacePrecisionChanged, &item, [&updates] { ++updates; });
+    item.setSurfacePrecision(3);
+    CHECK(item.getSurfacePrecision() == 3);
+    CHECK(updates == 1);
+    item.setSurfacePrecision(3); // 同档设置无变化，不重复更新。
+    item.setSurfacePrecision(-1);
+    item.setSurfacePrecision(4);
+    CHECK(item.getSurfacePrecision() == 3);
+    CHECK(updates == 1);
+    const auto sphere = BRepPrimAPI_MakeSphere(10.0).Shape();
+
+    // 请求先于场景存在：初始化即把当前档位应用到新 manager 与后续加载的组件。
+    vtkNew<vtkRenderWindow> window;
+    vtkNew<vtkRenderWindowInteractor> interactor;
+    interactor->SetRenderWindow(window);
+    auto user_data = item.initializeVTK(window);
+    auto* data = QRenderWindow::Data::SafeDownCast(user_data);
+    data->geometry_actor_manager_->loadGeometry({ sphere, 123, nullptr });
+    auto actor = data->geometry_actor_manager_->getComponentActor(123);
+    REQUIRE(actor != nullptr);
+    auto* mapper = vtkPolyDataMapper::SafeDownCast(GeometryActorSelectOp(actor).getPolyActor().GetMapper());
+    REQUIRE(mapper != nullptr);
+    auto* polygons = mapper->GetInput();
+    REQUIRE(polygons != nullptr);
+    const auto triangle_count = polygons->GetNumberOfCells();
+    CHECK(triangle_count > 0);
+    actor.reset();
+    item.destroyingVTK(window, user_data);
+    window->RemoveRenderer(data->overlay_renderer_);
+    window->RemoveRenderer(data->renderer_);
+
+    // 场景重建沿用目标档位，并为真实几何恢复相同精度的显示数据。
+    vtkNew<vtkRenderWindow> rebuilt_window;
+    vtkNew<vtkRenderWindowInteractor> rebuilt_interactor;
+    rebuilt_interactor->SetRenderWindow(rebuilt_window);
+    user_data = item.initializeVTK(rebuilt_window);
+    auto* rebuilt = QRenderWindow::Data::SafeDownCast(user_data);
+    rebuilt->geometry_actor_manager_->loadGeometry({ sphere, 123, nullptr });
+    QCoreApplication::processEvents();
+    CHECK(item.getSurfacePrecision() == 3);
+    auto rebuilt_actor = rebuilt->geometry_actor_manager_->getComponentActor(123);
+    REQUIRE(rebuilt_actor != nullptr);
+    auto* rebuilt_mapper = vtkPolyDataMapper::SafeDownCast(GeometryActorSelectOp(rebuilt_actor).getPolyActor().GetMapper());
+    REQUIRE(rebuilt_mapper != nullptr);
+    auto* rebuilt_polygons = rebuilt_mapper->GetInput();
+    REQUIRE(rebuilt_polygons != nullptr);
+    CHECK(rebuilt_polygons->GetNumberOfCells() == triangle_count);
+    rebuilt_actor.reset();
+    item.destroyingVTK(rebuilt_window, user_data);
+    rebuilt_window->RemoveRenderer(rebuilt->overlay_renderer_);
+    rebuilt_window->RemoveRenderer(rebuilt->renderer_);
+}
+
+TEST_CASE("QRenderWindow precision survives geometry undo redo and scene recreation", "[precision][render][undo]")
+{
+    testApplication();
+    struct WindowObserver : ModelObserver {
+        QRenderWindow* item {};
+        void notifyModelChanged(Index) override { }
+        void notifyModelAdded(Index) override { }
+        void notifyModelRemoved(Index model_id) override
+        {
+            if (item)
+                item->deleteModel(model_id);
+        }
+        void notifyComponentRemoved(Index component_id) override
+        {
+            if (item)
+                item->deleteComponent(component_id);
+        }
+        void notifyComponentChanged(Index component_id) override
+        {
+            if (item)
+                item->onComponentChanged(component_id);
+        }
+        void notifyModelNameChanged(Index, const std::string&) override { }
+        void notifyGeometryLoadFailed(const std::string&) override { }
+    } observer;
+    ModelLayer layer(&observer);
+    const auto model_id = layer.addModel("precision undo test", {});
+    auto component = std::make_unique<ComponentData>();
+    component->geometry = std::make_unique<GeometryData>();
+    component->geometry->setRootShape(BRepPrimAPI_MakeSphere(10.0).Shape());
+    const auto component_id = layer.getModelOperator(model_id)->addGeometryComponent(std::move(component));
+    const auto original_face_id = layer.findComponent(component_id)->geometry->index.faceGlobalId(1);
+    const auto original_solid_id = layer.findComponent(component_id)->geometry->index.solidGlobalId(1);
+    UndoStack undo(layer);
+    layer.setUndoRecorder(&undo);
+    session::SessionQuery query(layer);
+    QModelQuery model_query(&query);
+    QQuickWindow quick_window;
+    quick_window.setFlags(Qt::Tool | Qt::FramelessWindowHint);
+    quick_window.resize(400, 400);
+    quick_window.setPosition(0, 0);
+    quick_window.setOpacity(0.01);
+    quick_window.setPersistentSceneGraph(false);
+    quick_window.setPersistentGraphics(false);
+    // 由窗口在场景图退出后销毁子项，保证 destroyingVTK 仍可访问派生类服务。
+    auto& item = *new QRenderWindow;
+    item.setParent(quick_window.contentItem());
+    item.setModelQuery(&model_query);
+    observer.item = &item;
+    item.onComponentChanged(component_id);
+    item.setParentItem(quick_window.contentItem());
+    item.setSize(QSizeF(400, 400));
+    item.setSelectComponent(component_id);
+    item.setSurfacePrecision(3);
+    int target_updates = 0;
+    int selection_updates = 0;
+    QObject::connect(&item, &QRenderWindow::surfacePrecisionChanged, &item, [&] { ++target_updates; });
+    QObject::connect(&item, &QRenderWindow::selectedChanged, &item, [&] { ++selection_updates; });
+    struct RenderState {
+        bool exists {};
+        bool visible {};
+        vtkIdType triangles {};
+        vtkIdType highlight_cells {};
+        std::array<double, 6> bounds {};
+    } state;
+    std::atomic_bool completed {};
+    auto read_scene = [&] {
+        completed = false;
+        item.dispatch_async([&](vtkRenderWindow*, QQuickVTKItem::vtkUserData user_data) {
+            auto* data = QRenderWindow::Data::SafeDownCast(user_data);
+            state = {};
+            if (auto actor = data->geometry_actor_manager_->getComponentActor(component_id)) {
+                auto& poly_actor = GeometryActorSelectOp(actor).getPolyActor();
+                auto* polygons = vtkPolyDataMapper::SafeDownCast(poly_actor.GetMapper())->GetInput();
+                state.exists = true;
+                state.visible = actor->isVisible();
+                state.triangles = polygons->GetNumberOfPolys();
+                polygons->GetBounds(state.bounds.data());
+            }
+            auto* actors = data->renderer_->GetActors();
+            actors->InitTraversal();
+            while (auto* actor = actors->GetNextActor()) {
+                if (actor->GetMapper()) {
+                    if (auto* highlight = vtkPartitionedDataSet::SafeDownCast(actor->GetMapper()->GetInputDataObject(0, 0)))
+                        state.highlight_cells += highlight->GetNumberOfCells();
+                }
+            }
+            completed = true;
+        });
+        return renderUntil(quick_window, [&] { return completed.load(); });
+    };
+    auto selection_ids = [&] {
+        const std::unique_ptr<QSelection> selected(item.selectedIDs());
+        return selected && selected->get() ? selected->get()->ids : std::vector<Index> {};
+    };
+    auto pick_sphere = [&](const QString& mode, double center_x, double radius, Index expected_id) {
+        item.clearSelection();
+        item.setSelectMode(mode);
+        completed = false;
+        item.dispatch_async([&](vtkRenderWindow* window, QQuickVTKItem::vtkUserData user_data) {
+            auto* data = QRenderWindow::Data::SafeDownCast(user_data);
+            auto* camera = data->renderer_->GetActiveCamera();
+            camera->SetPosition(center_x, 0.0, 100.0);
+            camera->SetFocalPoint(center_x, 0.0, 0.0);
+            camera->SetViewUp(0.0, 1.0, 0.0);
+            camera->ParallelProjectionOn();
+            data->renderer_->ResetCamera();
+            window->Render();
+            data->renderer_->SetWorldPoint(center_x + radius * 0.3, radius * 0.2,
+                radius * std::sqrt(0.87), 1.0);
+            data->renderer_->WorldToDisplay();
+            const auto* position = data->renderer_->GetDisplayPoint();
+            window->GetInteractor()->SetEventPosition(static_cast<int>(position[0]), static_cast<int>(position[1]));
+            data->style_->SetClick();
+            data->style_->OnLeftButtonUp();
+            completed = true;
+        });
+        return renderUntil(quick_window, [&] {
+            return completed.load() && selection_ids() == std::vector<Index> { expected_id };
+        });
+    };
+    quick_window.show();
+    REQUIRE(read_scene());
+    REQUIRE(state.exists);
+    CHECK(state.bounds[0] == Catch::Approx(-10.0).margin(0.1));
+    CHECK(state.bounds[1] == Catch::Approx(10.0).margin(0.1));
+    const auto fine_triangles = state.triangles;
+    REQUIRE(fine_triangles > 0);
+    REQUIRE(pick_sphere("GeometryFace", 0.0, 10.0, original_face_id));
+    REQUIRE(read_scene());
+    REQUIRE(state.highlight_cells > 0);
+
+    const int updates_before_same_level = target_updates;
+    item.setSurfacePrecision(3);
+    REQUIRE(read_scene());
+    CHECK(target_updates == updates_before_same_level);
+    CHECK(selection_ids() == std::vector<Index> { original_face_id });
+
+    // 正常清理入口发布空结果并清高亮；改变显示精度不生成模型历史。
+    const int selections_before_switch = selection_updates;
+    item.setSurfacePrecision(0);
+    REQUIRE(renderUntil(quick_window, [&] {
+        return selection_updates > selections_before_switch && selection_ids().empty();
+    }));
+    REQUIRE(read_scene());
+    CHECK(state.highlight_cells == 0);
+    REQUIRE(state.triangles < fine_triangles);
+    const auto coarse_triangles = state.triangles;
+    const auto coarse_bounds = state.bounds;
+    CHECK_FALSE(undo.canUndo());
+    REQUIRE(pick_sphere("GeometrySolid", 0.0, 10.0, original_solid_id));
+    item.setSurfacePrecision(3);
+    REQUIRE(read_scene());
+    CHECK(state.triangles == fine_triangles);
+    REQUIRE(pick_sphere("GeometryFace", 0.0, 10.0, original_face_id));
+
+    {
+        ModelScope operation(layer, &undo, "替换几何");
+        layer.getComponentOperator(component_id)->replaceGeometryRoot(BRepPrimAPI_MakeSphere(gp_Pnt(25.0, 0.0, 0.0), 6.0).Shape());
+    }
+    const auto replaced_face_id = layer.findComponent(component_id)->geometry->index.faceGlobalId(1);
+    const auto replaced_solid_id = layer.findComponent(component_id)->geometry->index.solidGlobalId(1);
+    REQUIRE(replaced_face_id != original_face_id);
+    REQUIRE(read_scene());
+    CHECK(state.bounds[0] == Catch::Approx(19.0).margin(0.1));
+    CHECK(state.bounds[1] == Catch::Approx(31.0).margin(0.1));
+    REQUIRE(pick_sphere("GeometryFace", 25.0, 6.0, replaced_face_id));
+
+    // 对真实历史执行 undo/redo：几何、gid 恢复，显示使用恢复时的窗口档位。
+    item.setSurfacePrecision(0);
+    REQUIRE(read_scene());
+    const auto replaced_coarse_triangles = state.triangles;
+    const auto replaced_coarse_bounds = state.bounds;
+    REQUIRE(undo.undoLabel() == "替换几何");
+    REQUIRE(undo.undo());
+    REQUIRE(read_scene());
+    // 显示边界由当前离散网格决定，与恢复前同几何、同档位的实际输出比较。
+    for (std::size_t axis = 0; axis < coarse_bounds.size(); ++axis)
+        CHECK(state.bounds[axis] == Catch::Approx(coarse_bounds[axis]).margin(1.0e-6));
+    CHECK(state.triangles == coarse_triangles);
+    CHECK(layer.findComponent(component_id)->geometry->index.faceGlobalId(1) == original_face_id);
+    CHECK(layer.findComponent(component_id)->geometry->index.solidGlobalId(1) == original_solid_id);
+    REQUIRE(pick_sphere("GeometryFace", 0.0, 10.0, original_face_id));
+    REQUIRE(undo.redo());
+    REQUIRE(read_scene());
+    for (std::size_t axis = 0; axis < replaced_coarse_bounds.size(); ++axis)
+        CHECK(state.bounds[axis] == Catch::Approx(replaced_coarse_bounds[axis]).margin(1.0e-6));
+    CHECK(state.triangles == replaced_coarse_triangles);
+    CHECK(layer.findComponent(component_id)->geometry->index.faceGlobalId(1) == replaced_face_id);
+    REQUIRE(pick_sphere("GeometrySolid", 25.0, 6.0, replaced_solid_id));
+    item.setSurfacePrecision(3);
+    REQUIRE(read_scene());
+    REQUIRE(undo.undo());
+    REQUIRE(read_scene());
+    CHECK(state.triangles == fine_triangles);
+    REQUIRE(pick_sphere("GeometryFace", 0.0, 10.0, original_face_id));
+
+    {
+        ModelScope operation(layer, &undo, "删除组件");
+        layer.removeComponent(component_id);
+    }
+    REQUIRE(read_scene());
+    CHECK_FALSE(state.exists);
+    REQUIRE(undo.undo());
+    REQUIRE(read_scene());
+    CHECK(state.exists);
+    CHECK(state.triangles == fine_triangles);
+    CHECK(layer.findComponent(component_id)->geometry->index.faceGlobalId(1) == original_face_id);
+    REQUIRE(pick_sphere("GeometryFace", 0.0, 10.0, original_face_id));
+
+    item.setComponentVisibility(component_id, false);
+    REQUIRE(read_scene());
+    CHECK_FALSE(state.visible);
+    item.setComponentVisibility(component_id, true);
+    REQUIRE(read_scene());
+    CHECK(state.visible);
+    REQUIRE(pick_sphere("GeometryFace", 0.0, 10.0, original_face_id));
+
+    std::atomic_bool scene_invalidated {};
+    const auto invalidated_connection = QObject::connect(&quick_window, &QQuickWindow::sceneGraphInvalidated, &quick_window, [&] { scene_invalidated = true; }, Qt::DirectConnection);
+    quick_window.hide();
+    quick_window.releaseResources();
+    REQUIRE(renderUntil(quick_window, [&] { return scene_invalidated.load(); }));
+    QObject::disconnect(invalidated_connection);
+    quick_window.show();
+    REQUIRE(read_scene());
+    CHECK(state.exists);
+    CHECK(state.triangles == fine_triangles);
+    CHECK(item.getSurfacePrecision() == 3);
+    REQUIRE(pick_sphere("GeometryFace", 0.0, 10.0, original_face_id));
+    observer.item = nullptr;
+    layer.setUndoRecorder(nullptr);
 }

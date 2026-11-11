@@ -104,6 +104,7 @@ Page {
                         geoFaceMenu.close()
                         geoTransMenu.close()
                         geoWireMenu.close()
+                        geoPrecisionMenu.close()
                     }
 
                     MenuItem {
@@ -114,6 +115,7 @@ Page {
                                 geoSubCloseTimer.stop()
                                 geoTransMenu.close()
                                 geoWireMenu.close()
+                                geoPrecisionMenu.close()
                                 geoFaceMenu.popup(geoBtn, geoMenu.width, geoMenu.y + geoMenu.topPadding)
                             } else {
                                 geoSubCloseTimer.restart()
@@ -129,6 +131,7 @@ Page {
                                 geoSubCloseTimer.stop()
                                 geoFaceMenu.close()
                                 geoWireMenu.close()
+                                geoPrecisionMenu.close()
                                 geoTransMenu.popup(geoBtn, geoMenu.width, geoMenu.y + geoMenu.topPadding + geoBtn.menuItemHeight)
                             } else {
                                 geoSubCloseTimer.restart()
@@ -144,6 +147,7 @@ Page {
                                 geoSubCloseTimer.stop()
                                 geoFaceMenu.close()
                                 geoTransMenu.close()
+                                geoPrecisionMenu.close()
                                 geoWireMenu.popup(geoBtn, geoMenu.width, geoMenu.y + geoMenu.topPadding + 2 * geoBtn.menuItemHeight)
                             } else {
                                 geoSubCloseTimer.restart()
@@ -157,6 +161,51 @@ Page {
                         checked: myItem.geometryStyle === 7
                         onTriggered: myItem.setGeometryStyle(myItem.geometryStyle === 7 ? 0 : 7)
                     }
+                    MenuSeparator {}
+                    Menu {
+                        id: geoPrecisionMenu
+                        objectName: "surfacePrecisionMenu"
+                        title: qsTr("曲面显示精细度")
+                        onAboutToShow: {
+                            geoSubCloseTimer.stop()
+                            geoFaceMenu.close()
+                            geoTransMenu.close()
+                            geoWireMenu.close()
+                        }
+                        MenuItem {
+                            text: qsTr("粗糙")
+                            checkable: true
+                            ButtonGroup.group: geoPrecisionGroup
+                            checked: myItem.surfacePrecision === 0
+                            onTriggered: myItem.setSurfacePrecision(0)
+                        }
+                        MenuItem {
+                            text: qsTr("标准（默认）")
+                            checkable: true
+                            ButtonGroup.group: geoPrecisionGroup
+                            checked: myItem.surfacePrecision === 1
+                            onTriggered: myItem.setSurfacePrecision(1)
+                        }
+                        MenuItem {
+                            text: qsTr("精细")
+                            checkable: true
+                            ButtonGroup.group: geoPrecisionGroup
+                            checked: myItem.surfacePrecision === 2
+                            onTriggered: myItem.setSurfacePrecision(2)
+                        }
+                        MenuItem {
+                            text: qsTr("非常精细")
+                            checkable: true
+                            ButtonGroup.group: geoPrecisionGroup
+                            checked: myItem.surfacePrecision === 3
+                            onTriggered: myItem.setSurfacePrecision(3)
+                        }
+                    }
+                }
+
+                ButtonGroup {
+                    id: geoPrecisionGroup
+                    exclusive: true
                 }
 
                 AppMenu {
