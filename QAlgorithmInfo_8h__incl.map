@@ -1,9 +1,9 @@
 <map id="app/model/systems/algo/QAlgorithmInfo.h" name="app/model/systems/algo/QAlgorithmInfo.h">
-<area shape="rect" id="Node000001" title=" " alt="" coords="71,5,254,45"/>
-<area shape="rect" id="Node000002" title=" " alt="" coords="5,93,101,119"/>
-<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="138,48,82,87,79,83,135,43"/>
-<area shape="rect" id="Node000003" title=" " alt="" coords="125,93,200,119"/>
-<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="165,46,165,79,160,79,160,46"/>
-<area shape="rect" id="Node000004" title=" " alt="" coords="224,93,363,119"/>
-<area shape="poly" id="edge3_Node000001_Node000004" title=" " alt="" coords="196,43,264,84,261,88,193,48"/>
+<area shape="rect" id="Node000001" title=" " alt="" coords="70,5,252,50"/>
+<area shape="rect" id="Node000002" title=" " alt="" coords="5,98,101,126"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="135,50,84,90,81,86,130,51"/>
+<area shape="rect" id="Node000003" title=" " alt="" coords="124,98,198,126"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="163,48,163,84,159,81,159,52"/>
+<area shape="rect" id="Node000004" title=" " alt="" coords="222,98,359,126"/>
+<area shape="poly" id="edge3_Node000001_Node000004" title=" " alt="" coords="196,48,259,89,254,90,195,53"/>
 </map>

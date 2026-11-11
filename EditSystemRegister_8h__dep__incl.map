@@ -1,7 +1,7 @@
 <map id="model/systems/edit/EditSystemRegister.h" name="model/systems/edit/EditSystemRegister.h">
-<area shape="rect" id="Node000001" title=" " alt="" coords="128,5,293,45"/>
-<area shape="rect" id="Node000002" href="$Session_8cpp.html" title="会话组合根实现：子系统装配、观察者转发桥与有序拆解" alt="" coords="5,101,203,126"/>
-<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="178,56,120,102,117,98,174,52"/>
-<area shape="rect" id="Node000003" href="$EditSystemRegister_8cpp.html" title=" " alt="" coords="227,93,407,133"/>
-<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="247,52,295,91,292,95,243,56"/>
+<area shape="rect" id="Node000001" title=" " alt="" coords="127,5,291,50"/>
+<area shape="rect" id="Node000002" href="$Session_8cpp.html" title="会话组合根实现：子系统装配、观察者转发桥与有序拆解" alt="" coords="5,106,202,134"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="175,59,120,108,117,104,170,61"/>
+<area shape="rect" id="Node000003" href="$EditSystemRegister_8cpp.html" title=" " alt="" coords="226,98,405,143"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="247,58,293,98,287,97,245,63"/>
 </map>

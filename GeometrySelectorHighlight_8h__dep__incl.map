@@ -1,14 +1,16 @@
 <map id="app/render/GeometrySelectorHighlight.h" name="app/render/GeometrySelectorHighlight.h">
-<area shape="rect" id="Node000001" title=" " alt="" coords="209,5,424,45"/>
-<area shape="rect" id="Node000002" href="$GeometrySelectManager_8cpp.html" title=" " alt="" coords="5,181,207,221"/>
-<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="268,54,205,95,158,141,122,183,118,179,154,137,202,91,265,49"/>
-<area shape="rect" id="Node000003" href="$GeometrySelectManager_8h.html" title=" " alt="" coords="216,93,417,133"/>
-<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="319,59,319,93,314,93,314,59"/>
-<area shape="rect" id="Node000006" href="$GeometrySelectorHighlight_8cpp.html" title=" " alt="" coords="441,93,656,133"/>
-<area shape="poly" id="edge6_Node000001_Node000006" title=" " alt="" coords="381,48,499,91,497,96,379,53"/>
-<area shape="poly" id="edge3_Node000003_Node000002" title=" " alt="" coords="259,141,153,184,151,179,257,136"/>
-<area shape="rect" id="Node000004" href="$SelectManager_8cpp.html" title=" " alt="" coords="231,189,450,214"/>
-<area shape="poly" id="edge4_Node000003_Node000004" title=" " alt="" coords="328,146,340,187,335,189,323,147"/>
-<area shape="rect" id="Node000005" href="$TestGeometryShapePicker_8cpp.html" title=" " alt="" coords="474,181,690,221"/>
-<area shape="poly" id="edge5_Node000003_Node000005" title=" " alt="" coords="389,135,525,179,523,184,387,140"/>
+<area shape="rect" id="Node000001" title=" " alt="" coords="232,5,446,50"/>
+<area shape="rect" id="Node000002" href="$GeometrySelectManager_8cpp.html" title=" " alt="" coords="5,191,206,235"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="289,57,228,100,173,148,127,192,124,188,169,144,225,96,285,60"/>
+<area shape="rect" id="Node000003" href="$GeometrySelectManager_8h.html" title=" " alt="" coords="239,98,439,143"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="340,63,341,99,337,97,337,68"/>
+<area shape="rect" id="Node000007" href="$GeometrySelectorHighlight_8cpp.html" title=" " alt="" coords="463,98,676,143"/>
+<area shape="poly" id="edge7_Node000001_Node000007" title=" " alt="" coords="408,53,517,97,512,98,408,59"/>
+<area shape="poly" id="edge3_Node000003_Node000002" title=" " alt="" coords="271,148,162,193,160,188,266,149"/>
+<area shape="rect" id="Node000004" href="$SelectManager_8cpp.html" title=" " alt="" coords="230,199,448,227"/>
+<area shape="poly" id="edge4_Node000003_Node000004" title=" " alt="" coords="341,156,341,200,337,197,337,160"/>
+<area shape="rect" id="Node000005" href="$TestGeometryShapePicker_8cpp.html" title=" " alt="" coords="472,191,688,235"/>
+<area shape="poly" id="edge5_Node000003_Node000005" title=" " alt="" coords="411,146,525,190,520,190,410,151"/>
+<area shape="rect" id="Node000006" href="$TestGeometrySurfacePrecision_8cpp.html" title=" " alt="" coords="712,191,928,235"/>
+<area shape="poly" id="edge6_Node000003_Node000006" title=" " alt="" coords="454,141,714,191,709,192,454,146"/>
 </map>

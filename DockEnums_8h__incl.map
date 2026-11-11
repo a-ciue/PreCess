@@ -1,11 +1,11 @@
 <map id="app/dock/docking/DockEnums.h" name="app/dock/docking/DockEnums.h">
-<area shape="rect" id="Node000001" title="停靠组件的公共枚举与判定辅助" alt="" coords="25,5,254,31"/>
-<area shape="rect" id="Node000002" href="$DockMetrics_8h.html" title="停靠组件的默认行为常量" alt="" coords="23,79,138,104"/>
-<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="132,33,101,70,97,67,128,29"/>
-<area shape="rect" id="Node000005" title=" " alt="" coords="162,79,237,104"/>
-<area shape="poly" id="edge4_Node000001_Node000005" title=" " alt="" coords="151,29,183,66,179,70,147,33"/>
-<area shape="rect" id="Node000003" title=" " alt="" coords="5,152,71,177"/>
-<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="76,106,54,142,50,139,71,103"/>
-<area shape="rect" id="Node000004" title=" " alt="" coords="95,152,154,177"/>
-<area shape="poly" id="edge3_Node000002_Node000004" title=" " alt="" coords="90,103,113,139,108,142,86,106"/>
+<area shape="rect" id="Node000001" title="停靠组件的公共枚举与判定辅助" alt="" coords="25,5,253,33"/>
+<area shape="rect" id="Node000002" href="$DockMetrics_8h.html" title="停靠组件的默认行为常量" alt="" coords="23,81,137,109"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="130,31,102,70,98,67,127,36"/>
+<area shape="rect" id="Node000005" title=" " alt="" coords="161,81,234,109"/>
+<area shape="poly" id="edge4_Node000001_Node000005" title=" " alt="" coords="150,31,180,69,175,69,149,36"/>
+<area shape="rect" id="Node000003" title=" " alt="" coords="5,157,70,184"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="75,108,55,145,50,142,70,111"/>
+<area shape="rect" id="Node000004" title=" " alt="" coords="94,157,152,184"/>
+<area shape="poly" id="edge3_Node000002_Node000004" title=" " alt="" coords="89,107,110,143,105,143,87,112"/>
 </map>

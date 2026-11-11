@@ -1,9 +1,9 @@
 <map id="model/ops/GeometryTopologyEditor.h" name="model/ops/GeometryTopologyEditor.h">
-<area shape="rect" id="Node000001" title=" " alt="" coords="249,5,466,45"/>
-<area shape="rect" id="Node000002" href="$GeometryTopologyDiagnosticActor_8cpp.html" title=" " alt="" coords="5,93,224,133"/>
-<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="292,52,169,96,167,91,290,47"/>
-<area shape="rect" id="Node000003" href="$GeometryTopologyEditor_8cpp.html" title=" " alt="" coords="249,93,466,133"/>
-<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="360,59,360,93,355,93,355,59"/>
-<area shape="rect" id="Node000004" href="$TestGeometryTopologyEditor_8cpp.html" title=" " alt="" coords="490,93,705,133"/>
-<area shape="poly" id="edge3_Node000001_Node000004" title=" " alt="" coords="424,47,546,91,544,96,422,52"/>
+<area shape="rect" id="Node000001" title=" " alt="" coords="248,5,464,50"/>
+<area shape="rect" id="Node000002" href="$GeometryTopologyDiagnosticActor_8cpp.html" title=" " alt="" coords="5,98,224,143"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="286,55,173,100,171,95,281,56"/>
+<area shape="rect" id="Node000003" href="$GeometryTopologyEditor_8cpp.html" title=" " alt="" coords="248,98,464,143"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="358,64,358,99,354,96,354,68"/>
+<area shape="rect" id="Node000004" href="$TestGeometryTopologyEditor_8cpp.html" title=" " alt="" coords="488,98,701,143"/>
+<area shape="poly" id="edge3_Node000001_Node000004" title=" " alt="" coords="428,53,540,97,535,98,427,59"/>
 </map>

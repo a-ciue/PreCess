@@ -1,15 +1,15 @@
 <map id="model/systems/SystemPluginManager.h" name="model/systems/SystemPluginManager.h">
-<area shape="rect" id="Node000001" title=" " alt="" coords="637,5,852,45"/>
-<area shape="rect" id="Node000002" href="$QModelManager_8cpp.html" title=" " alt="" coords="5,101,233,126"/>
-<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="624,45,246,96,196,103,195,98,246,91,623,40"/>
-<area shape="rect" id="Node000003" href="$QSystemPluginManager_8cpp.html" title=" " alt="" coords="258,93,471,133"/>
-<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="649,51,448,96,447,91,647,46"/>
-<area shape="rect" id="Node000004" href="$TestToolbarNavigation_8cpp.html" title="通用功能导航、旧算法列表兼容及实际工具栏加载测试" alt="" coords="495,101,746,126"/>
-<area shape="poly" id="edge3_Node000001_Node000004" title=" " alt="" coords="707,56,639,103,636,98,704,51"/>
-<area shape="rect" id="Node000005" href="$Session_8cpp.html" title="会话组合根实现：子系统装配、观察者转发桥与有序拆解" alt="" coords="770,101,967,126"/>
-<area shape="poly" id="edge4_Node000001_Node000005" title=" " alt="" coords="785,51,853,98,850,103,782,56"/>
-<area shape="rect" id="Node000006" href="$TestSessionPlugins_8cpp.html" title="Session 插件装载冒烟测试：动态插件注册与功能信息（Qt 插件机制，需 QCoreApplication）" alt="" coords="991,93,1167,133"/>
-<area shape="poly" id="edge5_Node000001_Node000006" title=" " alt="" coords="832,46,1007,91,1005,96,831,51"/>
-<area shape="rect" id="Node000007" href="$SystemPluginManager_8cpp.html" title=" " alt="" coords="1192,93,1407,133"/>
-<area shape="poly" id="edge6_Node000001_Node000007" title=" " alt="" coords="866,43,1180,91,1192,93,1191,98,1179,96,866,48"/>
+<area shape="rect" id="Node000001" title=" " alt="" coords="633,5,848,50"/>
+<area shape="rect" id="Node000002" href="$QModelManager_8cpp.html" title=" " alt="" coords="5,106,233,134"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="618,48,245,101,196,109,195,103,244,95,617,42"/>
+<area shape="rect" id="Node000003" href="$QSystemPluginManager_8cpp.html" title=" " alt="" coords="257,98,469,143"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="638,54,454,100,453,95,633,54"/>
+<area shape="rect" id="Node000004" href="$TestToolbarNavigation_8cpp.html" title="通用功能导航、旧算法列表兼容及实际工具栏加载测试" alt="" coords="493,106,742,134"/>
+<area shape="poly" id="edge3_Node000001_Node000004" title=" " alt="" coords="702,58,637,108,634,103,697,60"/>
+<area shape="rect" id="Node000005" href="$Session_8cpp.html" title="会话组合根实现：子系统装配、观察者转发桥与有序拆解" alt="" coords="766,106,962,134"/>
+<area shape="poly" id="edge4_Node000001_Node000005" title=" " alt="" coords="783,57,849,106,844,105,781,62"/>
+<area shape="rect" id="Node000006" href="$TestSessionPlugins_8cpp.html" title="Session 插件装载冒烟测试：动态插件注册与功能信息（Qt 插件机制，需 QCoreApplication）" alt="" coords="986,98,1161,143"/>
+<area shape="poly" id="edge5_Node000001_Node000006" title=" " alt="" coords="835,52,997,98,991,97,834,57"/>
+<area shape="rect" id="Node000007" href="$SystemPluginManager_8cpp.html" title=" " alt="" coords="1185,98,1400,143"/>
+<area shape="poly" id="edge6_Node000001_Node000007" title=" " alt="" coords="863,45,1174,95,1188,100,1182,100,1173,101,863,51"/>
 </map>

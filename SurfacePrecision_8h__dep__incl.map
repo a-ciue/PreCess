@@ -1,0 +1,27 @@
+<map id="app/render/SurfacePrecision.h" name="app/render/SurfacePrecision.h">
+<area shape="rect" id="Node000001" title="曲面显示精细度的统一配置与校验。" alt="" coords="347,5,562,33"/>
+<area shape="rect" id="Node000002" href="$GeometryActor_8cpp.html" title=" " alt="" coords="103,90,324,117"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="400,40,253,91,251,86,404,37"/>
+<area shape="rect" id="Node000003" href="$GeometryActorManager_8h.html" title=" " alt="" coords="824,81,1019,126"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="545,34,827,84,821,86,545,39"/>
+<area shape="rect" id="Node000011" href="$QRenderWindow_8h.html" title=" " alt="" coords="348,90,562,117"/>
+<area shape="poly" id="edge10_Node000001_Node000011" title=" " alt="" coords="457,47,457,91,453,88,453,51"/>
+<area shape="rect" id="Node000004" href="$GeometryActorManager_8cpp.html" title=" " alt="" coords="940,174,1135,218"/>
+<area shape="poly" id="edge3_Node000003_Node000004" title=" " alt="" coords="962,133,1012,174,1007,172,960,138"/>
+<area shape="rect" id="Node000005" href="$GeometryActorManagerSelectOp_8cpp.html" title=" " alt="" coords="1159,174,1353,218"/>
+<area shape="poly" id="edge4_Node000003_Node000005" title=" " alt="" coords="1017,128,1179,173,1173,173,1016,133"/>
+<area shape="rect" id="Node000006" href="$QRenderWindow_8cpp.html" title=" " alt="" coords="222,182,451,210"/>
+<area shape="poly" id="edge5_Node000003_Node000006" title=" " alt="" coords="811,121,463,176,415,184,414,179,462,171,806,121"/>
+<area shape="rect" id="Node000007" href="$TestGeometryShapePicker_8cpp.html" title=" " alt="" coords="1378,174,1593,218"/>
+<area shape="poly" id="edge6_Node000003_Node000007" title=" " alt="" coords="1034,119,1366,171,1380,176,1375,176,1365,176,1033,124"/>
+<area shape="rect" id="Node000008" href="$TestGeometrySurfacePrecision_8cpp.html" title=" " alt="" coords="1618,174,1833,218"/>
+<area shape="poly" id="edge7_Node000003_Node000008" title=" " alt="" coords="1035,111,1296,135,1606,171,1620,176,1615,175,1605,176,1295,140,1034,116"/>
+<area shape="rect" id="Node000009" href="$TestInteractionService_8cpp.html" title="通用视口交互服务的独立测试：拾取转发、标注拉取、结果回调与生命周期" alt="" coords="695,174,916,218"/>
+<area shape="poly" id="edge8_Node000003_Node000009" title=" " alt="" coords="885,134,834,176,832,171,880,136"/>
+<area shape="rect" id="Node000010" href="$TestRenderWindowLifecycle_8cpp.html" title="视口场景图销毁与重建的资源生命周期回归测试" alt="" coords="475,174,672,218"/>
+<area shape="poly" id="edge9_Node000003_Node000010" title=" " alt="" coords="826,130,657,176,656,171,821,130"/>
+<area shape="poly" id="edge11_Node000011_Node000006" title=" " alt="" coords="429,126,355,184,352,179,424,127"/>
+<area shape="poly" id="edge12_Node000011_Node000010" title=" " alt="" coords="485,124,548,174,542,173,483,129"/>
+<area shape="rect" id="Node000012" href="$TestUndoQml_8cpp.html" title="实际 QML 删除与选择器失效路径回归测试" alt="" coords="5,182,198,210"/>
+<area shape="poly" id="edge13_Node000011_Node000012" title=" " alt="" coords="389,124,154,184,152,179,388,119"/>
+</map>

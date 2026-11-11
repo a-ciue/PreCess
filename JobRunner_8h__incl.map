@@ -1,29 +1,29 @@
 <map id="model/systems/job/JobRunner.h" name="model/systems/job/JobRunner.h">
-<area shape="rect" id="Node000001" title="单槽执行器：worker 只计算，所属线程一次完成提交、清理和释放。" alt="" coords="572,5,799,31"/>
-<area shape="rect" id="Node000002" href="$Job_8h.html" title="任务单元：状态、错误、取消令牌与执行闭包（线程模型的任务载体）" alt="" coords="317,79,371,104"/>
-<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="631,33,385,84,384,79,630,28"/>
-<area shape="rect" id="Node000004" title=" " alt="" coords="449,225,535,251"/>
-<area shape="poly" id="edge12_Node000001_Node000004" title=" " alt="" coords="682,32,607,179,575,204,540,222,537,218,572,200,603,176,677,30"/>
-<area shape="rect" id="Node000007" title=" " alt="" coords="529,152,593,177"/>
-<area shape="poly" id="edge14_Node000001_Node000007" title=" " alt="" coords="669,33,642,54,614,80,592,111,575,141,570,138,587,108,610,77,638,50,666,29"/>
-<area shape="rect" id="Node000010" title=" " alt="" coords="669,79,811,104"/>
-<area shape="poly" id="edge11_Node000001_Node000010" title=" " alt="" coords="696,29,725,66,721,69,692,33"/>
-<area shape="rect" id="Node000011" title=" " alt="" coords="836,79,913,104"/>
-<area shape="poly" id="edge13_Node000001_Node000011" title=" " alt="" coords="717,28,832,71,830,76,715,33"/>
-<area shape="rect" id="Node000012" title=" " alt="" coords="937,79,1001,104"/>
-<area shape="poly" id="edge15_Node000001_Node000012" title=" " alt="" coords="732,28,925,76,923,81,731,33"/>
-<area shape="rect" id="Node000003" href="$JobProgress_8h.html" title="进度上报回调类型：model 层（任务系统）与上层 UI 适配层的公共契约" alt="" coords="343,152,454,177"/>
-<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="355,103,383,140,379,143,351,106"/>
-<area shape="poly" id="edge6_Node000002_Node000004" title=" " alt="" coords="372,97,421,116,446,131,467,150,484,180,492,211,487,212,479,182,463,154,442,135,418,120,370,102"/>
-<area shape="rect" id="Node000005" title=" " alt="" coords="163,225,221,251"/>
-<area shape="poly" id="edge9_Node000002_Node000005" title=" " alt="" coords="317,96,245,100,153,109,69,126,37,139,17,154,9,169,12,182,24,194,43,204,96,220,150,229,149,235,95,225,41,209,21,198,7,185,3,169,12,150,34,134,67,121,153,104,244,94,316,91"/>
-<area shape="rect" id="Node000006" title=" " alt="" coords="27,152,114,177"/>
-<area shape="poly" id="edge5_Node000002_Node000006" title=" " alt="" coords="317,102,128,151,126,146,315,97"/>
-<area shape="poly" id="edge7_Node000002_Node000007" title=" " alt="" coords="372,99,517,146,515,151,371,104"/>
-<area shape="rect" id="Node000008" title=" " alt="" coords="139,152,232,177"/>
-<area shape="poly" id="edge8_Node000002_Node000008" title=" " alt="" coords="319,106,225,149,222,144,317,102"/>
-<area shape="rect" id="Node000009" title=" " alt="" coords="257,152,319,177"/>
-<area shape="poly" id="edge10_Node000002_Node000009" title=" " alt="" coords="337,106,308,143,303,140,333,103"/>
-<area shape="poly" id="edge3_Node000003_Node000004" title=" " alt="" coords="415,175,467,215,464,219,412,179"/>
-<area shape="poly" id="edge4_Node000003_Node000005" title=" " alt="" coords="366,180,235,225,234,220,364,175"/>
+<area shape="rect" id="Node000001" title="单槽执行器：worker 只计算，所属线程一次完成提交、清理和释放。" alt="" coords="564,5,790,33"/>
+<area shape="rect" id="Node000002" href="$Job_8h.html" title="任务单元：状态、错误、取消令牌与执行闭包（线程模型的任务载体）" alt="" coords="312,81,365,109"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="614,35,381,87,380,82,619,32"/>
+<area shape="rect" id="Node000004" title=" " alt="" coords="442,232,528,260"/>
+<area shape="poly" id="edge12_Node000001_Node000004" title=" " alt="" coords="673,32,601,186,570,210,537,228,535,223,567,206,596,183,669,35"/>
+<area shape="rect" id="Node000007" title=" " alt="" coords="523,157,586,184"/>
+<area shape="poly" id="edge14_Node000001_Node000007" title=" " alt="" coords="661,32,634,56,607,83,586,113,568,145,565,140,581,111,603,79,630,52,656,35"/>
+<area shape="rect" id="Node000010" title=" " alt="" coords="661,81,803,109"/>
+<area shape="poly" id="edge11_Node000001_Node000010" title=" " alt="" coords="688,31,716,69,710,68,686,36"/>
+<area shape="rect" id="Node000011" title=" " alt="" coords="827,81,903,109"/>
+<area shape="poly" id="edge13_Node000001_Node000011" title=" " alt="" coords="711,31,820,75,815,75,711,36"/>
+<area shape="rect" id="Node000012" title=" " alt="" coords="927,81,990,109"/>
+<area shape="poly" id="edge15_Node000001_Node000012" title=" " alt="" coords="732,31,914,80,909,80,731,36"/>
+<area shape="rect" id="Node000003" href="$JobProgress_8h.html" title="进度上报回调类型：model 层（任务系统）与上层 UI 适配层的公共契约" alt="" coords="339,157,448,184"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="349,107,377,145,372,144,347,112"/>
+<area shape="poly" id="edge6_Node000002_Node000004" title=" " alt="" coords="366,100,415,119,440,135,462,155,478,185,485,219,481,216,473,187,458,158,437,139,413,124,366,105"/>
+<area shape="rect" id="Node000005" title=" " alt="" coords="160,232,218,260"/>
+<area shape="poly" id="edge9_Node000002_Node000005" title=" " alt="" coords="309,98,241,104,151,113,68,131,37,143,17,158,9,174,12,187,23,199,42,210,93,226,147,238,142,240,91,231,40,214,20,203,7,190,3,173,12,155,34,139,66,126,150,108,240,98,314,96"/>
+<area shape="rect" id="Node000006" title=" " alt="" coords="27,157,112,184"/>
+<area shape="poly" id="edge5_Node000002_Node000006" title=" " alt="" coords="311,106,128,156,126,151,312,101"/>
+<area shape="poly" id="edge7_Node000002_Node000007" title=" " alt="" coords="366,103,510,153,505,154,365,108"/>
+<area shape="rect" id="Node000008" title=" " alt="" coords="136,157,229,184"/>
+<area shape="poly" id="edge8_Node000002_Node000008" title=" " alt="" coords="309,110,225,152,223,147,314,108"/>
+<area shape="rect" id="Node000009" title=" " alt="" coords="253,157,315,184"/>
+<area shape="poly" id="edge10_Node000002_Node000009" title=" " alt="" coords="331,108,304,146,301,142,327,111"/>
+<area shape="poly" id="edge3_Node000003_Node000004" title=" " alt="" coords="411,182,460,223,455,222,409,187"/>
+<area shape="poly" id="edge4_Node000003_Node000005" title=" " alt="" coords="359,185,234,232,232,227,354,185"/>
 </map>

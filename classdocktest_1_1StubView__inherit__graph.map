@@ -1,5 +1,5 @@
 <map id="docktest::StubView" name="docktest::StubView">
-<area shape="rect" id="Node000001" title="记录几何与可见性的桩视图" alt="" coords="5,79,152,104"/>
-<area shape="rect" id="Node000002" href="$classdock_1_1DockView.html" title="视图抽象接口" alt="" coords="15,5,142,31"/>
-<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="81,44,81,79,76,79,76,44"/>
+<area shape="rect" id="Node000001" title="记录几何与可见性的桩视图" alt="" coords="5,81,152,109"/>
+<area shape="rect" id="Node000002" href="$classdock_1_1DockView.html" title="视图抽象接口" alt="" coords="16,5,141,33"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="80,47,81,81,76,80,77,51"/>
 </map>

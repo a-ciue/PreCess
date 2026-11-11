@@ -109,10 +109,11 @@ var searchData=
   ['extensions_106',['extensions',['../classsystems_1_1io_1_1QModelIOInfo.html#a31c88fdff85a631dcf830a74555024cd',1,'systems::io::QModelIOInfo::extensions'],['../structsystems_1_1io_1_1ModelIOInfo.html#a9198045d34c816f47f49f5aff452e36b',1,'systems::io::ModelIOInfo::extensions'],['../structsystems_1_1io_1_1HandlerMetaData.html#ac554766178cbfdc5d5d45ffc807bf144',1,'systems::io::HandlerMetaData::extensions'],['../classsystems_1_1io_1_1QModelIOInfo.html#aef3d661de2a8e8915c3c946d22dce897',1,'systems::io::QModelIOInfo::extensions() const']]],
   ['extensions_5f_107',['extensions_',['../classsystems_1_1io_1_1QModelIOInfo.html#aca9c15b0baeaaafb2cc65094340fde5d',1,'systems::io::QModelIOInfo']]],
   ['extract_5ffilter_5f_108',['extract_filter_',['../classSolidSelectorHighlight.html#a01649527e51122f2925ace2e03532701',1,'SolidSelectorHighlight::extract_filter_'],['../classVertexSelectorHighlight.html#a66021a8e9dd4edc9770e6e7866034ca7',1,'VertexSelectorHighlight::extract_filter_']]],
-  ['extractedge_109',['extractEdge',['../classMeshActorSelectOp.html#af15d24f715cf60f38b96450bab9660fd',1,'MeshActorSelectOp']]],
-  ['extractgroupforwindow_110',['extractGroupForWindow',['../classdock_1_1DockRegion.html#a674ef04477d5841e8cdea35e5859af4a',1,'dock::DockRegion']]],
-  ['extractgroupnode_111',['extractGroupNode',['../classdock_1_1DockRegion.html#a42372976bcdc7b06b84bab1f871dd957',1,'dock::DockRegion']]],
-  ['extractsolid_112',['extractSolid',['../classMeshActorSelectOp.html#a12c411069e01248f62cf937c1da798cf',1,'MeshActorSelectOp']]],
-  ['extractvertex_113',['extractVertex',['../classMeshActorSelectOp.html#a171ada9720997d163510dcb2c2028534',1,'MeshActorSelectOp']]],
-  ['extrudeface_114',['extrudeFace',['../classGeometryBuilder.html#a6f9b41899204abc39c8a2fa5297900de',1,'GeometryBuilder']]]
+  ['extractcategory_109',['extractCategory',['../classGeometryTopologyDiagnosticActor.html#ad46d677080edc8fcc141ae4cb373a698',1,'GeometryTopologyDiagnosticActor']]],
+  ['extractedge_110',['extractEdge',['../classMeshActorSelectOp.html#af15d24f715cf60f38b96450bab9660fd',1,'MeshActorSelectOp']]],
+  ['extractgroupforwindow_111',['extractGroupForWindow',['../classdock_1_1DockRegion.html#a674ef04477d5841e8cdea35e5859af4a',1,'dock::DockRegion']]],
+  ['extractgroupnode_112',['extractGroupNode',['../classdock_1_1DockRegion.html#a42372976bcdc7b06b84bab1f871dd957',1,'dock::DockRegion']]],
+  ['extractsolid_113',['extractSolid',['../classMeshActorSelectOp.html#a12c411069e01248f62cf937c1da798cf',1,'MeshActorSelectOp']]],
+  ['extractvertex_114',['extractVertex',['../classMeshActorSelectOp.html#a171ada9720997d163510dcb2c2028534',1,'MeshActorSelectOp']]],
+  ['extrudeface_115',['extrudeFace',['../classGeometryBuilder.html#a6f9b41899204abc39c8a2fa5297900de',1,'GeometryBuilder']]]
 ];

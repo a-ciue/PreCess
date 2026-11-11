@@ -84,8 +84,19 @@ $(function() {
 
 <p>视口场景图销毁与重建的资源生命周期回归测试  
 <a href="#details">更多...</a></p>
-<div class="textblock"><code>#include &quot;<a class="el" href="QRenderWindow_8h_source.html">QRenderWindow.h</a>&quot;</code><br />
+<div class="textblock"><code>#include &quot;<a class="el" href="GeometryActor_8h_source.html">GeometryActor.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="GeometryActorManager_8h_source.html">GeometryActorManager.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="GeometryActorSelectOp_8h_source.html">GeometryActorSelectOp.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="GeometryData_8h_source.html">GeometryData.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="GeometryDataVtk_8h_source.html">GeometryDataVtk.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="ModelLayer_8h_source.html">ModelLayer.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="ModelObserver_8h_source.html">ModelObserver.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="ModelScope_8h_source.html">ModelScope.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="QModelQuery_8h_source.html">QModelQuery.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="QRenderWindow_8h_source.html">QRenderWindow.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="QRenderWindowStyle_8h_source.html">QRenderWindowStyle.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="SessionQuery_8h_source.html">SessionQuery.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="UndoStack_8h_source.html">UndoStack.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="ViewportOrientationRepresentation_8h_source.html">ViewportOrientationRepresentation.h</a>&quot;</code><br />
 <code>#include &lt;vtkActor2D.h&gt;</code><br />
 <code>#include &lt;vtkCallbackCommand.h&gt;</code><br />
@@ -96,135 +107,172 @@ $(function() {
 <code>#include &lt;vtkImageData.h&gt;</code><br />
 <code>#include &lt;vtkObjectFactory.h&gt;</code><br />
 <code>#include &lt;vtkOpenGLTexture.h&gt;</code><br />
+<code>#include &lt;vtkPartitionedDataSet.h&gt;</code><br />
+<code>#include &lt;vtkPolyData.h&gt;</code><br />
+<code>#include &lt;vtkPolyDataMapper.h&gt;</code><br />
 <code>#include &lt;vtkPropCollection.h&gt;</code><br />
 <code>#include &lt;vtkTexturedActor2D.h&gt;</code><br />
 <code>#include &lt;vtkTransform.h&gt;</code><br />
+<code>#include &lt;BRepPrimAPI_MakeSphere.hxx&gt;</code><br />
+<code>#include &lt;QElapsedTimer&gt;</code><br />
+<code>#include &lt;QEventLoop&gt;</code><br />
 <code>#include &lt;QGuiApplication&gt;</code><br />
+<code>#include &lt;QQuickWindow&gt;</code><br />
 <code>#include &lt;catch2/catch_approx.hpp&gt;</code><br />
 <code>#include &lt;catch2/catch_test_macros.hpp&gt;</code><br />
+<code>#include &lt;gp_Pnt.hxx&gt;</code><br />
 <code>#include &lt;vtkActor.h&gt;</code><br />
 <code>#include &lt;vtkActorCollection.h&gt;</code><br />
 <code>#include &lt;vtkRenderWindowInteractor.h&gt;</code><br />
 <code>#include &lt;vtkTextProperty.h&gt;</code><br />
 <code>#include &lt;vtkWeakPointer.h&gt;</code><br />
+<code>#include &lt;array&gt;</code><br />
+<code>#include &lt;atomic&gt;</code><br />
 <code>#include &lt;cmath&gt;</code><br />
+<code>#include &lt;functional&gt;</code><br />
+<code>#include &lt;memory&gt;</code><br />
+<code>#include &lt;string&gt;</code><br />
+<code>#include &lt;vector&gt;</code><br />
 </div><div class="textblock"><div class="dynheader">
 TestRenderWindowLifecycle.cpp 的引用(Include)关系图:</div>
 <div class="dyncontent">
 <div class="center"><img src="TestRenderWindowLifecycle_8cpp__incl.png" border="0" usemap="#aapp_2render_2test_2TestRenderWindowLifecycle_8cpp" loading="lazy" alt=""/></div>
 <map name="aapp_2render_2test_2TestRenderWindowLifecycle_8cpp" id="aapp_2render_2test_2TestRenderWindowLifecycle_8cpp">
-<area shape="rect" title="视口场景图销毁与重建的资源生命周期回归测试" alt="" coords="4558,5,4755,45"/>
-<area shape="rect" href="QRenderWindow_8h.html" title=" " alt="" coords="1787,101,1928,126"/>
-<area shape="poly" title=" " alt="" coords="4558,32,1942,112,1942,107,4557,27"/>
-<area shape="rect" title=" " alt="" coords="2670,189,2758,214"/>
-<area shape="poly" title=" " alt="" coords="4557,30,4325,33,4003,43,3632,62,3441,77,3255,96,3117,113,3011,129,2905,151,2770,184,2759,187,2757,182,2769,179,2904,146,3010,124,3117,107,3255,91,3441,72,3631,57,4002,37,4325,27,4557,24"/>
-<area shape="rect" title=" " alt="" coords="3078,189,3293,214"/>
-<area shape="poly" title=" " alt="" coords="4558,31,4260,37,3877,50,3527,69,3401,81,3328,96,3292,113,3259,135,3207,181,3204,177,3255,131,3289,108,3326,91,3400,76,3527,64,3877,44,4260,32,4558,26"/>
-<area shape="rect" href="QRenderWindowStyle_8h.html" title=" " alt="" coords="3353,101,3528,126"/>
-<area shape="poly" title=" " alt="" coords="4557,31,4369,37,4116,48,3830,67,3541,96,3508,101,3508,96,3540,91,3829,62,4116,43,4369,31,4557,26"/>
-<area shape="rect" title=" " alt="" coords="3455,189,3562,214"/>
-<area shape="poly" title=" " alt="" coords="4557,31,4247,37,3853,49,3507,68,3394,81,3360,88,3343,95,3337,104,3336,112,3344,132,3358,141,3388,154,3462,182,3460,187,3386,159,3355,146,3340,135,3331,113,3333,102,3340,91,3358,83,3393,75,3507,63,3853,43,4247,31,4557,25"/>
-<area shape="rect" href="ViewportOrientationRepresentation_8h.html" title="圆点轴标：保留 VTK 视角切换与旋转交互，使用屏幕空间绘制。" alt="" coords="34,101,298,126"/>
-<area shape="poly" title=" " alt="" coords="4557,31,311,112,311,107,4557,26"/>
-<area shape="rect" title=" " alt="" coords="3552,101,3731,126"/>
-<area shape="poly" title=" " alt="" coords="4558,33,4198,53,3971,71,3743,96,3711,101,3710,96,3743,91,3971,66,4198,48,4557,28"/>
-<area shape="rect" title=" " alt="" coords="3755,101,3862,126"/>
-<area shape="poly" title=" " alt="" coords="4558,32,4422,38,4252,49,4063,68,3875,96,3858,100,3857,94,3874,91,4063,63,4251,44,4422,32,4557,26"/>
-<area shape="rect" title=" " alt="" coords="3886,101,4018,126"/>
-<area shape="poly" title=" " alt="" coords="4557,36,4317,58,4174,75,4031,96,4009,100,4008,95,4030,91,4173,69,4317,52,4557,31"/>
-<area shape="rect" title=" " alt="" coords="4042,93,4254,133"/>
-<area shape="poly" title=" " alt="" coords="4558,46,4268,95,4267,89,4557,41"/>
-<area shape="rect" title=" " alt="" coords="4278,93,4490,133"/>
-<area shape="poly" title=" " alt="" coords="4597,48,4458,92,4456,87,4596,43"/>
-<area shape="rect" title=" " alt="" coords="4514,101,4641,126"/>
-<area shape="poly" title=" " alt="" coords="4641,47,4600,92,4596,88,4637,44"/>
-<area shape="rect" title=" " alt="" coords="4665,101,4808,126"/>
-<area shape="poly" title=" " alt="" coords="4676,44,4718,88,4714,92,4672,47"/>
-<area shape="rect" title=" " alt="" coords="4832,101,4985,126"/>
-<area shape="poly" title=" " alt="" coords="4712,43,4863,94,4861,99,4711,48"/>
-<area shape="rect" title=" " alt="" coords="5010,101,5159,126"/>
-<area shape="poly" title=" " alt="" coords="4755,43,4998,91,5019,95,5018,100,4997,96,4754,48"/>
-<area shape="rect" title=" " alt="" coords="5183,101,5346,126"/>
-<area shape="poly" title=" " alt="" coords="4756,35,4948,58,5171,91,5197,95,5197,101,5170,96,4948,64,4755,40"/>
-<area shape="rect" title=" " alt="" coords="5370,101,5490,126"/>
-<area shape="poly" title=" " alt="" coords="4755,28,5028,48,5193,66,5358,91,5378,95,5377,100,5357,96,5192,71,5027,54,4755,34"/>
-<area shape="rect" title=" " alt="" coords="5514,101,5641,126"/>
-<area shape="poly" title=" " alt="" coords="4755,27,4901,33,5088,44,5295,63,5502,91,5523,95,5522,100,5501,96,5294,69,5087,50,4901,38,4755,32"/>
-<area shape="rect" title=" " alt="" coords="5666,101,5850,126"/>
-<area shape="poly" title=" " alt="" coords="4755,27,5149,46,5400,65,5654,91,5687,96,5687,101,5653,96,5400,70,5149,51,4755,32"/>
-<area shape="rect" title=" " alt="" coords="5874,101,6092,126"/>
-<area shape="poly" title=" " alt="" coords="4755,26,5232,44,5545,63,5862,91,5904,96,5903,101,5861,96,5545,69,5232,50,4755,32"/>
-<area shape="rect" title=" " alt="" coords="6116,101,6271,126"/>
-<area shape="poly" title=" " alt="" coords="4755,23,4994,24,5329,33,5714,53,5911,69,6105,91,6133,95,6132,101,6104,96,5911,75,5714,58,5329,38,4994,30,4755,28"/>
-<area shape="rect" title=" " alt="" coords="6296,101,6430,126"/>
-<area shape="poly" title=" " alt="" coords="4755,26,5081,32,5522,45,5962,64,6145,76,6283,91,6308,95,6307,100,6283,96,6144,82,5962,70,5522,50,5081,38,4755,31"/>
-<area shape="rect" title=" " alt="" coords="6455,101,6591,126"/>
-<area shape="poly" title=" " alt="" coords="4755,25,5110,31,5597,43,6086,62,6289,75,6443,91,6468,95,6467,100,6443,96,6289,81,6086,68,5597,48,5110,36,4755,31"/>
-<area shape="rect" title=" " alt="" coords="6616,101,6678,126"/>
-<area shape="poly" title=" " alt="" coords="4755,25,5175,32,5750,45,6290,64,6487,77,6603,91,6612,93,6611,98,6602,96,6487,82,6290,70,5750,50,5175,37,4755,31"/>
-<area shape="rect" href="Core_8h.html" title=" " alt="" coords="502,269,566,295"/>
-<area shape="poly" title=" " alt="" coords="1787,119,1492,126,1096,139,740,159,622,171,585,177,567,184,554,198,545,217,537,256,531,255,540,215,549,196,564,179,584,172,621,165,740,153,1095,134,1491,121,1787,113"/>
-<area shape="rect" title=" " alt="" coords="415,343,492,368"/>
-<area shape="poly" title=" " alt="" coords="1787,118,1450,122,988,132,763,141,570,152,432,166,390,175,370,183,359,200,357,219,361,239,370,260,399,299,431,331,427,335,395,303,366,262,356,241,351,219,354,199,367,179,388,170,431,161,570,147,763,136,988,127,1450,117,1787,112"/>
-<area shape="rect" href="MeshPipelineData_8h.html" title="GUI 线程持有的网格基础数据、面隐藏及裁剪管线。" alt="" coords="578,189,730,214"/>
-<area shape="poly" title=" " alt="" coords="1787,118,1604,122,1345,132,1046,152,892,166,742,184,715,189,714,183,741,179,892,161,1045,146,1345,127,1604,116,1787,113"/>
-<area shape="rect" href="QModelQuery_8h.html" title="模型层查询的 QML 适配器" alt="" coords="381,189,502,214"/>
-<area shape="poly" title=" " alt="" coords="1787,116,1572,117,1259,124,894,145,706,162,522,184,498,188,497,183,521,179,705,156,894,139,1259,119,1572,111,1787,111"/>
-<area shape="rect" href="QSelection_8h.html" title=" " alt="" coords="754,189,858,214"/>
-<area shape="poly" title=" " alt="" coords="1787,117,1623,119,1395,128,1134,148,1000,164,870,184,853,188,852,182,869,179,1000,159,1133,143,1394,123,1622,114,1787,112"/>
-<area shape="rect" title=" " alt="" coords="882,189,1020,214"/>
-<area shape="poly" title=" " alt="" coords="1787,120,1460,138,1247,157,1033,184,1009,188,1008,183,1032,179,1247,151,1459,132,1786,114"/>
-<area shape="rect" title=" " alt="" coords="1044,189,1263,214"/>
-<area shape="poly" title=" " alt="" coords="1787,125,1559,149,1275,184,1238,189,1238,184,1275,179,1558,144,1786,119"/>
-<area shape="rect" title=" " alt="" coords="1288,189,1412,214"/>
-<area shape="poly" title=" " alt="" coords="1787,126,1621,149,1423,184,1405,188,1404,183,1422,179,1620,144,1786,121"/>
-<area shape="rect" title=" " alt="" coords="1436,189,1658,214"/>
-<area shape="poly" title=" " alt="" coords="1816,129,1603,187,1601,182,1815,124"/>
-<area shape="rect" title=" " alt="" coords="1682,189,1838,214"/>
-<area shape="poly" title=" " alt="" coords="1846,128,1786,181,1782,177,1843,124"/>
-<area shape="rect" title=" " alt="" coords="1862,189,2050,214"/>
-<area shape="poly" title=" " alt="" coords="1873,124,1934,177,1930,181,1869,128"/>
-<area shape="poly" title=" " alt="" coords="1929,112,2065,116,2246,126,2452,146,2556,160,2658,179,2671,182,2670,187,2657,184,2555,166,2451,151,2246,131,2064,121,1928,118"/>
-<area shape="rect" title=" " alt="" coords="2074,189,2209,214"/>
-<area shape="poly" title=" " alt="" coords="1897,124,2091,182,2090,187,1895,129"/>
-<area shape="rect" title=" " alt="" coords="2233,189,2458,214"/>
-<area shape="poly" title=" " alt="" coords="1923,123,2268,184,2267,189,1922,129"/>
-<area shape="rect" title=" " alt="" coords="2782,189,2877,214"/>
-<area shape="poly" title=" " alt="" coords="1929,112,2082,114,2291,123,2530,144,2651,159,2770,179,2785,182,2784,187,2769,184,2651,164,2529,149,2291,129,2082,119,1929,117"/>
-<area shape="rect" title=" " alt="" coords="2483,189,2646,214"/>
-<area shape="poly" title=" " alt="" coords="1929,118,2169,141,2470,179,2498,183,2497,189,2469,184,2169,146,1928,123"/>
-<area shape="rect" title=" " alt="" coords="2902,189,3054,214"/>
-<area shape="poly" title=" " alt="" coords="1929,113,2099,118,2337,129,2611,148,2889,179,2916,183,2915,189,2888,184,2610,154,2337,134,2099,123,1928,118"/>
-<area shape="poly" title=" " alt="" coords="1929,113,2406,131,2733,150,3066,179,3107,184,3106,189,3065,184,2732,155,2406,136,1928,119"/>
-<area shape="rect" title=" " alt="" coords="3317,189,3430,214"/>
-<area shape="poly" title=" " alt="" coords="1929,113,2212,119,2611,132,3012,151,3180,164,3306,179,3325,183,3324,188,3305,184,3179,169,3012,156,2610,137,2212,125,1928,119"/>
-<area shape="rect" title=" " alt="" coords="566,343,622,368"/>
-<area shape="poly" title=" " alt="" coords="546,293,577,330,573,334,541,297"/>
-<area shape="poly" title=" " alt="" coords="522,297,479,336,475,332,519,293"/>
-<area shape="poly" title=" " alt="" coords="637,216,565,264,562,259,634,212"/>
-<area shape="poly" title=" " alt="" coords="653,215,624,296,608,331,603,329,619,294,648,213"/>
-<area shape="poly" title=" " alt="" coords="649,216,621,254,579,297,540,322,501,340,498,335,538,317,576,293,617,251,644,213"/>
-<area shape="poly" title=" " alt="" coords="457,212,511,258,508,262,453,216"/>
-<area shape="poly" title=" " alt="" coords="3353,123,3141,144,3015,161,2890,184,2876,187,2875,182,2889,179,3014,156,3140,138,3352,118"/>
-<area shape="poly" title=" " alt="" coords="3373,129,3066,184,3044,188,3043,183,3065,179,3372,123"/>
-<area shape="poly" title=" " alt="" coords="3407,129,3233,187,3232,182,3405,124"/>
-<area shape="poly" title=" " alt="" coords="3433,128,3393,179,3389,176,3429,125"/>
-<area shape="poly" title=" " alt="" coords="3452,125,3492,176,3488,179,3447,128"/>
-<area shape="rect" title=" " alt="" coords="3586,189,3700,214"/>
-<area shape="poly" title=" " alt="" coords="3469,124,3604,181,3602,185,3467,129"/>
-<area shape="rect" title=" " alt="" coords="3724,181,3922,221"/>
-<area shape="poly" title=" " alt="" coords="3492,123,3726,176,3725,181,3491,129"/>
-<area shape="rect" title=" " alt="" coords="3946,189,4028,214"/>
-<area shape="poly" title=" " alt="" coords="3498,123,3541,131,3651,144,3738,150,3825,158,3934,179,3946,182,3944,187,3933,184,3824,163,3738,155,3651,149,3540,136,3497,129"/>
-<area shape="rect" title=" " alt="" coords="4052,189,4167,214"/>
-<area shape="poly" title=" " alt="" coords="3497,123,3541,131,3681,146,3791,151,3901,159,4041,179,4059,183,4058,188,4040,184,3900,164,3791,157,3681,151,3540,136,3496,129"/>
-<area shape="rect" title=" " alt="" coords="4191,189,4372,214"/>
-<area shape="poly" title=" " alt="" coords="3496,123,3541,131,3720,149,3860,155,4000,161,4179,179,4212,184,4212,189,4179,184,4000,166,3859,160,3719,154,3540,136,3495,129"/>
-<area shape="rect" title=" " alt="" coords="4396,189,4524,214"/>
-<area shape="poly" title=" " alt="" coords="3494,123,3541,131,3669,143,3777,149,3963,151,4148,154,4257,162,4385,179,4407,183,4406,188,4384,184,4256,168,4148,159,3963,156,3777,155,3668,149,3540,136,3494,129"/>
-<area shape="poly" title=" " alt="" coords="121,129,76,144,35,165,20,177,11,190,9,204,16,220,41,242,80,263,130,281,186,298,303,326,402,343,401,349,302,331,184,303,128,286,78,267,38,246,11,223,4,205,6,189,16,174,32,161,74,139,120,124"/>
-<area shape="rect" title=" " alt="" coords="26,189,305,214"/>
-<area shape="poly" title=" " alt="" coords="168,126,168,174,163,174,163,126"/>
+<area shape="rect" title="视口场景图销毁与重建的资源生命周期回归测试" alt="" coords="2444,5,2640,50"/>
+<area shape="rect" href="GeometryActor_8h.html" title=" " alt="" coords="137,191,268,218"/>
+<area shape="poly" title=" " alt="" coords="2441,30,1942,38,1243,49,901,58,605,70,390,84,322,92,287,100,265,116,245,136,217,179,213,175,241,132,261,112,285,96,322,87,390,79,605,65,900,53,1243,44,1942,32,2446,29"/>
+<area shape="rect" href="GeometryDataVtk_8h.html" title=" " alt="" coords="127,266,278,294"/>
+<area shape="poly" title=" " alt="" coords="2441,30,1933,40,1217,53,562,74,341,86,271,93,234,101,196,116,168,133,147,157,128,192,125,210,132,227,147,242,166,258,161,258,143,246,128,230,120,210,122,190,143,154,165,129,194,112,232,95,270,88,340,81,562,68,1217,48,1932,35,2446,30"/>
+<area shape="rect" title=" " alt="" coords="5,266,93,294"/>
+<area shape="poly" title=" " alt="" coords="2441,30,1914,36,1170,46,804,55,489,67,259,82,187,91,150,100,130,114,113,131,86,172,68,215,57,252,52,250,63,213,82,169,109,128,127,110,148,96,186,85,259,77,489,61,804,50,1170,41,1914,30,2446,29"/>
+<area shape="rect" title=" " alt="" coords="1010,266,1086,294"/>
+<area shape="poly" title=" " alt="" coords="2441,31,2215,39,1925,52,1643,71,1527,85,1439,101,1377,119,1331,139,1229,193,1178,221,1091,262,1090,257,1176,216,1226,188,1329,134,1375,114,1438,95,1526,79,1642,66,1924,46,2215,34,2447,31"/>
+<area shape="rect" href="GeometryActorManager_8h.html" title=" " alt="" coords="627,191,815,218"/>
+<area shape="poly" title=" " alt="" coords="2441,30,2135,36,1720,47,1309,67,1138,82,1010,101,940,118,873,141,763,186,761,181,871,136,939,113,1008,95,1138,77,1308,62,1720,41,2135,31,2447,29"/>
+<area shape="rect" title=" " alt="" coords="383,266,438,294"/>
+<area shape="poly" title=" " alt="" coords="2441,30,1940,40,1242,54,617,75,415,87,356,94,332,100,321,117,318,137,321,157,329,178,357,220,388,256,382,255,352,223,325,181,316,159,312,136,316,115,329,96,355,88,414,82,616,69,1242,49,1940,35,2446,30"/>
+<area shape="rect" title=" " alt="" coords="1692,266,1750,294"/>
+<area shape="poly" title=" " alt="" coords="2441,29,2350,37,2240,48,2123,68,2010,100,1968,123,1898,167,1754,260,1752,255,1895,162,1966,118,2008,96,2122,63,2239,43,2350,31,2446,29"/>
+<area shape="rect" title=" " alt="" coords="603,266,666,294"/>
+<area shape="poly" title=" " alt="" coords="2441,31,2045,41,1502,55,994,75,809,87,700,101,649,114,584,135,523,162,500,177,485,192,479,207,481,219,490,231,505,241,545,257,591,271,585,271,543,262,502,245,487,234,476,221,474,206,480,189,496,173,520,157,582,130,647,109,699,95,809,82,994,70,1501,50,2044,36,2446,30"/>
+<area shape="rect" href="GeometryActorSelectOp_8h.html" title=" " alt="" coords="342,106,532,134"/>
+<area shape="poly" title=" " alt="" coords="2441,31,2053,40,1506,54,955,74,725,86,551,101,514,106,513,101,550,95,724,81,955,68,1506,48,2053,35,2446,30"/>
+<area shape="rect" href="GeometryData_8h.html" title=" " alt="" coords="1035,191,1164,218"/>
+<area shape="poly" title=" " alt="" coords="2441,30,2138,35,1745,46,1554,54,1386,66,1258,81,1214,90,1185,100,1162,116,1143,136,1114,179,1111,174,1139,133,1159,112,1182,96,1212,85,1257,76,1386,61,1553,49,1745,40,2138,30,2446,29"/>
+<area shape="rect" href="ModelLayer_8h.html" title="负责管理多个模型实例的类" alt="" coords="495,191,603,218"/>
+<area shape="poly" title=" " alt="" coords="2441,30,2108,35,1650,46,1414,54,1193,66,1003,81,860,101,785,118,712,141,593,187,591,182,710,136,784,113,859,95,1003,76,1193,61,1413,49,1650,40,2108,30,2447,29"/>
+<area shape="rect" href="ModelObserver_8h.html" title=" " alt="" coords="2643,191,2775,218"/>
+<area shape="poly" title=" " alt="" coords="2460,50,2425,72,2399,99,2391,121,2393,131,2399,140,2480,159,2631,189,2625,189,2479,164,2395,145,2388,133,2386,121,2395,97,2422,68,2455,51"/>
+<area shape="rect" href="ModelScope_8h.html" title="模型操作作用域（RAII）：模型写段的记账与通知收尾" alt="" coords="1549,106,1661,134"/>
+<area shape="poly" title=" " alt="" coords="2441,31,2295,39,2104,50,1892,70,1680,101,1661,105,1660,99,1679,95,1892,65,2104,45,2295,33,2447,30"/>
+<area shape="rect" href="UndoStack_8h.html" title="一个正式历史栈与临时预览捕获：事件不入栈，execute 收尾吸收预览。" alt="" coords="1528,191,1631,218"/>
+<area shape="poly" title=" " alt="" coords="2441,29,2209,32,1923,41,1787,50,1671,62,1584,79,1556,89,1539,100,1531,117,1534,138,1545,159,1559,180,1554,178,1540,161,1529,139,1526,117,1535,96,1553,84,1583,74,1670,57,1787,44,1923,36,2209,27,2446,28"/>
+<area shape="rect" title=" " alt="" coords="2342,266,2428,294"/>
+<area shape="poly" title=" " alt="" coords="2495,49,2466,73,2445,99,2437,122,2438,131,2444,141,2466,159,2492,172,2522,181,2554,185,2623,185,2691,178,2749,171,2791,170,2803,175,2808,186,2803,200,2788,220,2765,238,2729,251,2686,262,2637,270,2534,279,2444,282,2444,276,2534,273,2636,264,2685,257,2728,246,2762,233,2784,216,2798,198,2802,186,2799,179,2790,176,2750,176,2691,183,2623,190,2554,190,2520,186,2490,177,2463,164,2440,144,2433,133,2431,121,2440,97,2463,69,2490,51"/>
+<area shape="rect" href="QModelQuery_8h.html" title="模型层查询的 QML 适配器" alt="" coords="1656,191,1776,218"/>
+<area shape="poly" title=" " alt="" coords="2441,30,2251,38,2025,49,1919,58,1829,69,1761,83,1739,91,1726,100,1715,116,1710,135,1711,177,1707,173,1705,135,1710,114,1722,96,1737,87,1760,78,1828,64,1919,53,2025,44,2251,33,2446,30"/>
+<area shape="rect" href="QRenderWindow_8h.html" title=" " alt="" coords="1736,106,1876,134"/>
+<area shape="poly" title=" " alt="" coords="2441,36,2195,61,2045,78,1896,101,1872,105,1871,100,1895,95,2044,73,2194,55,2446,35"/>
+<area shape="rect" title=" " alt="" coords="1952,191,2114,218"/>
+<area shape="poly" title=" " alt="" coords="2441,36,2322,48,2192,61,2084,79,2047,89,2028,100,2019,117,2017,136,2024,178,2020,175,2012,136,2014,115,2024,96,2045,84,2082,74,2191,56,2322,42,2446,35"/>
+<area shape="rect" title=" " alt="" coords="2138,191,2352,218"/>
+<area shape="poly" title=" " alt="" coords="2441,28,2333,34,2214,44,2158,53,2109,65,2070,81,2044,100,2035,115,2035,128,2043,140,2056,151,2098,170,2151,187,2146,187,2096,175,2053,155,2038,143,2030,129,2030,113,2040,96,2068,76,2107,60,2157,48,2213,39,2333,28,2447,28"/>
+<area shape="rect" href="QRenderWindowStyle_8h.html" title=" " alt="" coords="2103,106,2278,134"/>
+<area shape="poly" title=" " alt="" coords="2461,50,2257,105,2256,99,2455,51"/>
+<area shape="rect" title=" " alt="" coords="2376,191,2482,218"/>
+<area shape="poly" title=" " alt="" coords="2441,30,2345,37,2240,48,2192,57,2150,68,2116,83,2093,100,2048,146,2015,169,2001,174,2006,170,2041,164,2109,161,2214,167,2363,190,2358,190,2213,172,2109,167,2042,170,2007,175,1996,176,2012,165,2044,141,2090,96,2113,78,2148,63,2191,52,2240,43,2345,32,2447,29"/>
+<area shape="rect" title=" " alt="" coords="2506,191,2619,218"/>
+<area shape="poly" title=" " alt="" coords="2446,49,2397,67,2359,88,2347,99,2341,112,2341,126,2348,141,2365,150,2400,162,2493,188,2488,187,2399,167,2363,155,2344,145,2335,127,2335,111,2343,96,2356,83,2395,62,2441,50"/>
+<area shape="rect" href="SessionQuery_8h.html" title="会话层查询接口：模型层只读查询的原生（非 Qt）视图" alt="" coords="840,191,960,218"/>
+<area shape="poly" title=" " alt="" coords="2441,29,2156,34,1777,44,1582,52,1402,64,1247,80,1131,101,1076,118,1022,140,935,185,933,180,1020,135,1074,113,1130,95,1247,75,1402,59,1582,47,1776,38,2156,29,2446,29"/>
+<area shape="rect" href="ViewportOrientationRepresentation_8h.html" title="圆点轴标：保留 VTK 视角切换与旋转交互，使用屏幕空间绘制。" alt="" coords="1240,191,1503,218"/>
+<area shape="poly" title=" " alt="" coords="2441,29,2230,35,1963,44,1830,53,1706,65,1602,81,1523,101,1487,117,1452,138,1397,182,1395,178,1449,134,1484,112,1521,95,1601,75,1706,60,1829,48,1963,39,2230,29,2446,29"/>
+<area shape="rect" title=" " alt="" coords="2454,106,2631,134"/>
+<area shape="poly" title=" " alt="" coords="2544,48,2544,93,2540,89,2541,52"/>
+<area shape="rect" title=" " alt="" coords="2655,106,2760,134"/>
+<area shape="poly" title=" " alt="" coords="2583,48,2673,99,2668,98,2581,53"/>
+<area shape="rect" title=" " alt="" coords="2785,106,2916,134"/>
+<area shape="poly" title=" " alt="" coords="2616,48,2794,102,2789,102,2616,53"/>
+<area shape="rect" title=" " alt="" coords="2941,98,3152,143"/>
+<area shape="poly" title=" " alt="" coords="2641,44,2928,98,2923,97,2641,49"/>
+<area shape="rect" title=" " alt="" coords="3177,98,3388,143"/>
+<area shape="poly" title=" " alt="" coords="2641,35,2874,59,3164,98,3159,98,2874,65,2641,41"/>
+<area shape="rect" title=" " alt="" coords="3412,106,3539,134"/>
+<area shape="poly" title=" " alt="" coords="2641,28,2789,34,2979,45,3189,65,3400,95,3422,102,3416,102,3399,101,3189,70,2978,51,2789,39,2641,34"/>
+<area shape="rect" title=" " alt="" coords="3562,106,3704,134"/>
+<area shape="poly" title=" " alt="" coords="2641,27,2813,32,3040,43,3295,63,3424,77,3551,95,3576,103,3570,102,3550,101,3423,83,3294,68,3040,48,2813,37,2641,33"/>
+<area shape="rect" title=" " alt="" coords="3728,106,3880,134"/>
+<area shape="poly" title=" " alt="" coords="2641,26,2839,29,3106,39,3410,60,3565,76,3716,95,3743,103,3738,102,3715,101,3564,81,3409,65,3106,45,2839,35,2641,32"/>
+<area shape="rect" title=" " alt="" coords="3904,106,4080,134"/>
+<area shape="poly" title=" " alt="" coords="2641,26,2865,29,3176,38,3532,59,3714,75,3892,95,3925,103,3920,103,3891,101,3713,80,3531,64,3176,44,2865,34,2641,31"/>
+<area shape="rect" title=" " alt="" coords="4104,106,4252,134"/>
+<area shape="poly" title=" " alt="" coords="2641,28,2953,36,3371,49,3788,69,3961,81,4092,95,4119,103,4114,102,4091,101,3960,87,3787,74,3371,54,2952,41,2641,34"/>
+<area shape="rect" title=" " alt="" coords="4277,106,4440,134"/>
+<area shape="poly" title=" " alt="" coords="2641,28,2984,35,3453,48,3922,68,4117,81,4265,95,4296,103,4290,103,4265,101,4117,86,3922,73,3453,53,2984,40,2641,33"/>
+<area shape="rect" title=" " alt="" coords="4464,106,4583,134"/>
+<area shape="poly" title=" " alt="" coords="2641,27,3017,30,3541,40,3813,49,4067,61,4286,76,4452,95,4473,102,4468,102,4451,101,4286,81,4067,66,3813,54,3541,46,3017,35,2641,32"/>
+<area shape="rect" title=" " alt="" coords="4608,106,4829,134"/>
+<area shape="poly" title=" " alt="" coords="2641,28,3607,49,4177,69,4416,81,4596,95,4639,104,4634,103,4595,101,4415,87,4177,74,3607,54,2641,33"/>
+<area shape="rect" title=" " alt="" coords="4853,106,4973,134"/>
+<area shape="poly" title=" " alt="" coords="2641,26,3085,27,3722,35,4055,43,4368,55,4638,73,4841,95,4863,102,4858,102,4841,101,4637,78,4368,61,4055,48,3722,40,3085,32,2641,31"/>
+<area shape="rect" title=" " alt="" coords="4997,106,5096,134"/>
+<area shape="poly" title=" " alt="" coords="2641,27,3155,34,3886,47,4581,68,4835,81,4985,95,5002,102,4997,101,4985,101,4835,86,4581,73,3886,53,3155,39,2641,33"/>
+<area shape="rect" title=" " alt="" coords="5120,106,5247,134"/>
+<area shape="poly" title=" " alt="" coords="2641,26,3130,26,3845,33,4220,41,4574,53,4878,71,5004,83,5108,95,5132,102,5126,102,5107,101,5004,88,4878,77,4573,59,4220,46,3844,38,3130,31,2641,31"/>
+<area shape="rect" title=" " alt="" coords="5272,106,5392,134"/>
+<area shape="poly" title=" " alt="" coords="2641,27,3206,34,4023,48,4803,68,5090,81,5259,95,5281,102,5276,102,5258,101,5089,86,4803,74,4023,53,3206,40,2641,33"/>
+<area shape="rect" title=" " alt="" coords="5416,106,5599,134"/>
+<area shape="poly" title=" " alt="" coords="2641,26,3180,29,3979,38,4402,46,4801,59,5144,75,5404,95,5440,103,5434,103,5403,101,5144,80,4800,64,4402,52,3979,43,3180,34,2641,32"/>
+<area shape="rect" title=" " alt="" coords="5624,106,5842,134"/>
+<area shape="poly" title=" " alt="" coords="2641,27,3214,30,4074,40,4530,48,4960,60,5332,76,5612,95,5655,103,5650,103,5611,101,5331,81,4960,66,4530,54,4074,45,3214,35,2641,32"/>
+<area shape="rect" title=" " alt="" coords="5866,106,5960,134"/>
+<area shape="poly" title=" " alt="" coords="2641,26,3315,29,4320,39,4832,48,5289,60,5645,75,5771,85,5855,95,5871,102,5865,101,5854,101,5771,90,5645,81,5289,65,4832,53,4320,44,3315,35,2641,32"/>
+<area shape="rect" title=" " alt="" coords="5984,106,6138,134"/>
+<area shape="poly" title=" " alt="" coords="2641,27,3336,33,4377,47,5383,67,5753,80,5972,95,6001,103,5996,102,5971,101,5753,86,5383,73,4377,52,3336,39,2641,32"/>
+<area shape="rect" title=" " alt="" coords="6162,106,6296,134"/>
+<area shape="poly" title=" " alt="" coords="2641,27,3369,32,4466,43,5027,52,5528,64,5920,78,6059,86,6151,95,6175,102,6170,102,6150,101,6058,92,5920,83,5528,69,5027,58,4466,49,3368,37,2641,32"/>
+<area shape="rect" title=" " alt="" coords="6320,106,6455,134"/>
+<area shape="poly" title=" " alt="" coords="2641,27,3396,31,4543,43,5131,52,5656,63,6066,78,6211,86,6308,95,6333,102,6328,102,6307,101,6211,91,6066,83,5656,69,5131,57,4543,48,3396,37,2641,32"/>
+<area shape="rect" title=" " alt="" coords="6480,106,6546,134"/>
+<area shape="poly" title=" " alt="" coords="2641,27,3461,33,4704,46,5872,67,6272,80,6400,87,6468,95,6478,101,6473,100,6467,101,6399,93,6272,85,5872,72,4703,51,3461,38,2641,32"/>
+<area shape="rect" title=" " alt="" coords="6570,106,6632,134"/>
+<area shape="poly" title=" " alt="" coords="2641,27,3477,32,4750,44,5390,54,5948,65,6358,79,6489,87,6559,95,6568,101,6563,100,6558,101,6488,92,6358,84,5947,70,5390,59,4750,50,3477,37,2641,32"/>
+<area shape="poly" title=" " alt="" coords="204,217,205,252,200,249,201,221"/>
+<area shape="poly" title=" " alt="" coords="177,220,91,262,89,257,173,217"/>
+<area shape="poly" title=" " alt="" coords="269,209,994,272,993,277,269,214"/>
+<area shape="poly" title=" " alt="" coords="780,216,997,267,992,267,779,222"/>
+<area shape="poly" title=" " alt="" coords="668,219,454,271,453,266,662,219"/>
+<area shape="poly" title=" " alt="" coords="816,215,828,216,1325,254,1679,277,1674,277,1325,259,827,221,816,220"/>
+<area shape="poly" title=" " alt="" coords="708,218,662,259,660,254,703,220"/>
+<area shape="poly" title=" " alt="" coords="397,136,255,188,253,183,402,134"/>
+<area shape="poly" title=" " alt="" coords="532,123,647,131,775,143,891,162,938,174,973,188,992,201,1009,218,1035,254,1030,252,1005,221,989,206,970,193,936,179,890,167,774,149,646,136,533,128"/>
+<area shape="poly" title=" " alt="" coords="426,133,406,161,390,192,388,207,389,222,398,254,393,251,384,223,382,206,385,190,402,158,422,136"/>
+<area shape="poly" title=" " alt="" coords="435,133,429,175,431,197,441,217,454,232,471,244,509,262,550,272,590,279,585,279,549,277,507,267,468,249,451,236,436,220,426,198,424,175,431,137"/>
+<area shape="poly" title=" " alt="" coords="1093,218,1067,256,1064,251,1088,220"/>
+<area shape="poly" title=" " alt="" coords="604,214,615,216,825,247,997,272,992,272,825,253,614,221,603,219"/>
+<area shape="poly" title=" " alt="" coords="527,218,449,261,447,256,522,220"/>
+<area shape="poly" title=" " alt="" coords="565,216,610,257,605,255,563,221"/>
+<area shape="poly" title=" " alt="" coords="2645,217,2632,221,2375,245,2124,263,1766,280,1766,275,2124,258,2375,240,2631,216,2640,217"/>
+<area shape="poly" title=" " alt="" coords="1662,124,1696,131,1731,143,1764,162,1790,189,1795,209,1789,228,1774,245,1756,260,1754,255,1771,241,1784,225,1790,208,1785,192,1760,167,1729,148,1695,136,1661,129"/>
+<area shape="poly" title=" " alt="" coords="1546,124,1163,144,895,164,619,193,618,188,895,158,1163,139,1551,123"/>
+<area shape="poly" title=" " alt="" coords="1603,133,1590,178,1586,174,1599,136"/>
+<area shape="poly" title=" " alt="" coords="1530,216,1516,221,1285,254,1101,276,1101,270,1285,249,1515,216,1525,217"/>
+<area shape="poly" title=" " alt="" coords="1606,216,1685,259,1680,258,1604,221"/>
+<area shape="poly" title=" " alt="" coords="1530,216,1516,221,1270,247,1029,265,681,280,681,275,1029,260,1270,242,1515,216,1525,217"/>
+<area shape="poly" title=" " alt="" coords="1632,214,1644,216,1840,239,2033,255,2329,276,2324,276,2032,261,1839,244,1643,221,1632,219"/>
+<area shape="poly" title=" " alt="" coords="1738,134,1673,145,1564,149,1381,149,893,148,638,150,408,157,229,171,167,181,126,193,107,205,90,221,65,255,61,251,87,217,104,201,124,188,165,175,229,165,408,152,638,144,893,142,1381,144,1564,144,1673,140,1733,135"/>
+<area shape="poly" title=" " alt="" coords="1810,133,1810,177,1804,200,1789,220,1774,229,1751,236,1682,249,1486,267,1270,277,1101,281,1101,275,1270,271,1486,262,1681,244,1750,231,1772,224,1786,216,1799,198,1805,176,1806,137"/>
+<area shape="poly" title=" " alt="" coords="1794,134,1742,183,1740,178,1789,136"/>
+<area shape="poly" title=" " alt="" coords="1843,132,1985,185,1980,185,1842,137"/>
+<area shape="poly" title=" " alt="" coords="1877,132,2162,187,2157,187,1877,137"/>
+<area shape="poly" title=" " alt="" coords="2200,132,2230,179,2226,177,2198,137"/>
+<area shape="poly" title=" " alt="" coords="2229,132,2379,185,2374,185,2228,137"/>
+<area shape="poly" title=" " alt="" coords="2250,132,2493,188,2488,187,2250,137"/>
+<area shape="poly" title=" " alt="" coords="842,216,828,221,536,254,294,275,293,270,535,249,827,216,837,217"/>
+<area shape="poly" title=" " alt="" coords="927,216,1011,260,1005,259,926,221"/>
+<area shape="poly" title=" " alt="" coords="960,209,1024,216,1679,275,1674,276,1023,221,960,215"/>
+<area shape="poly" title=" " alt="" coords="855,219,681,269,680,263,850,219"/>
+<area shape="poly" title=" " alt="" coords="1316,219,1101,269,1101,264,1311,219"/>
 </map>
 </div>
 </div><table class="memberdecls">
@@ -238,12 +286,14 @@ TestRenderWindowLifecycle.cpp 的引用(Include)关系图:</div>
 <tr class="memitem:aeceaf17b0c7b1ba001ce1b0a292742f2" id="r_aeceaf17b0c7b1ba001ce1b0a292742f2"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#aeceaf17b0c7b1ba001ce1b0a292742f2">TEST_CASE</a> (&quot;Clipping widget does not enlarge camera framing on reset or orientation clicks&quot;)</td></tr>
 <tr class="memitem:adc03e703730ec9e5e995f5be42c56719" id="r_adc03e703730ec9e5e995f5be42c56719"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#adc03e703730ec9e5e995f5be42c56719">TEST_CASE</a> (&quot;Viewport orientation reuses its image <a class="el" href="TestComponentModel_8cpp.html#ae97f1c44740297fab404285a4388b17b">for</a> unchanged rotation and hover&quot;)</td></tr>
 <tr class="memitem:aa8c8399e23b28ac5ac3008454928e3db" id="r_aa8c8399e23b28ac5ac3008454928e3db"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#aa8c8399e23b28ac5ac3008454928e3db">TEST_CASE</a> (&quot;Viewport orientation uploads its persistent texture only when pixels change&quot;)</td></tr>
+<tr class="memitem:adefc30502b41eebbe586028cf16cbbd2" id="r_adefc30502b41eebbe586028cf16cbbd2"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#adefc30502b41eebbe586028cf16cbbd2">TEST_CASE</a> (&quot;QRenderWindow applies requested surface precision across scene rebuilds&quot;, &quot;[precision]&quot;)</td></tr>
+<tr class="memitem:ac1da30af33f8fa78594d9ce70aa88d04" id="r_ac1da30af33f8fa78594d9ce70aa88d04"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ac1da30af33f8fa78594d9ce70aa88d04">TEST_CASE</a> (&quot;QRenderWindow precision survives geometry undo redo and scene recreation&quot;, &quot;[precision][render][undo]&quot;)</td></tr>
 </table>
 <a name="details" id="details"></a><h2 id="header-details" class="groupheader">详细描述</h2>
 <div class="textblock"><p>视口场景图销毁与重建的资源生命周期回归测试 </p>
 </div><a name="doc-func-members" id="doc-func-members"></a><h2 id="header-doc-func-members" class="groupheader">函数说明</h2>
 <a id="aeceaf17b0c7b1ba001ce1b0a292742f2" name="aeceaf17b0c7b1ba001ce1b0a292742f2"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#aeceaf17b0c7b1ba001ce1b0a292742f2">&#9670;&#160;</a></span>TEST_CASE() <span class="overload">[1/8]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#aeceaf17b0c7b1ba001ce1b0a292742f2">&#9670;&#160;</a></span>TEST_CASE() <span class="overload">[1/10]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -259,8 +309,29 @@ TestRenderWindowLifecycle.cpp 的引用(Include)关系图:</div>
 
 </div>
 </div>
+<a id="adefc30502b41eebbe586028cf16cbbd2" name="adefc30502b41eebbe586028cf16cbbd2"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#adefc30502b41eebbe586028cf16cbbd2">&#9670;&#160;</a></span>TEST_CASE() <span class="overload">[2/10]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">TEST_CASE </td>
+          <td>(</td>
+          <td class="paramtype">&quot;QRenderWindow applies requested surface precision across scene rebuilds&quot;</td>          <td class="paramname"><span class="paramname"><em></em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">&quot;&quot;</td>          <td class="paramname"><span class="paramname"><em></em></span>[precision]&#160;)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
 <a id="af0c99b6f28e54a711f68aa7af43dbaa5" name="af0c99b6f28e54a711f68aa7af43dbaa5"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#af0c99b6f28e54a711f68aa7af43dbaa5">&#9670;&#160;</a></span>TEST_CASE() <span class="overload">[2/8]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#af0c99b6f28e54a711f68aa7af43dbaa5">&#9670;&#160;</a></span>TEST_CASE() <span class="overload">[3/10]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -276,8 +347,29 @@ TestRenderWindowLifecycle.cpp 的引用(Include)关系图:</div>
 
 </div>
 </div>
+<a id="ac1da30af33f8fa78594d9ce70aa88d04" name="ac1da30af33f8fa78594d9ce70aa88d04"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ac1da30af33f8fa78594d9ce70aa88d04">&#9670;&#160;</a></span>TEST_CASE() <span class="overload">[4/10]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">TEST_CASE </td>
+          <td>(</td>
+          <td class="paramtype">&quot;QRenderWindow precision survives geometry undo redo and scene recreation&quot;</td>          <td class="paramname"><span class="paramname"><em></em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">&quot;&quot;</td>          <td class="paramname"><span class="paramname"><em></em></span>[precision][render][undo]&#160;)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
 <a id="a7ebc60db88c532b590624c49d1e9677c" name="a7ebc60db88c532b590624c49d1e9677c"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a7ebc60db88c532b590624c49d1e9677c">&#9670;&#160;</a></span>TEST_CASE() <span class="overload">[3/8]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#a7ebc60db88c532b590624c49d1e9677c">&#9670;&#160;</a></span>TEST_CASE() <span class="overload">[5/10]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -294,7 +386,7 @@ TestRenderWindowLifecycle.cpp 的引用(Include)关系图:</div>
 </div>
 </div>
 <a id="aa6c7b17805e76f19b58ce01ab70bcb0b" name="aa6c7b17805e76f19b58ce01ab70bcb0b"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#aa6c7b17805e76f19b58ce01ab70bcb0b">&#9670;&#160;</a></span>TEST_CASE() <span class="overload">[4/8]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#aa6c7b17805e76f19b58ce01ab70bcb0b">&#9670;&#160;</a></span>TEST_CASE() <span class="overload">[6/10]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -311,7 +403,7 @@ TestRenderWindowLifecycle.cpp 的引用(Include)关系图:</div>
 </div>
 </div>
 <a id="ac96a67dbb0081cf9938edc271fbeaf6b" name="ac96a67dbb0081cf9938edc271fbeaf6b"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ac96a67dbb0081cf9938edc271fbeaf6b">&#9670;&#160;</a></span>TEST_CASE() <span class="overload">[5/8]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#ac96a67dbb0081cf9938edc271fbeaf6b">&#9670;&#160;</a></span>TEST_CASE() <span class="overload">[7/10]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -328,7 +420,7 @@ TestRenderWindowLifecycle.cpp 的引用(Include)关系图:</div>
 </div>
 </div>
 <a id="adc03e703730ec9e5e995f5be42c56719" name="adc03e703730ec9e5e995f5be42c56719"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#adc03e703730ec9e5e995f5be42c56719">&#9670;&#160;</a></span>TEST_CASE() <span class="overload">[6/8]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#adc03e703730ec9e5e995f5be42c56719">&#9670;&#160;</a></span>TEST_CASE() <span class="overload">[8/10]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -345,7 +437,7 @@ TestRenderWindowLifecycle.cpp 的引用(Include)关系图:</div>
 </div>
 </div>
 <a id="aecb09a13e0fd57cc2358ba1364a0f752" name="aecb09a13e0fd57cc2358ba1364a0f752"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#aecb09a13e0fd57cc2358ba1364a0f752">&#9670;&#160;</a></span>TEST_CASE() <span class="overload">[7/8]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#aecb09a13e0fd57cc2358ba1364a0f752">&#9670;&#160;</a></span>TEST_CASE() <span class="overload">[9/10]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -362,7 +454,7 @@ TestRenderWindowLifecycle.cpp 的引用(Include)关系图:</div>
 </div>
 </div>
 <a id="aa8c8399e23b28ac5ac3008454928e3db" name="aa8c8399e23b28ac5ac3008454928e3db"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#aa8c8399e23b28ac5ac3008454928e3db">&#9670;&#160;</a></span>TEST_CASE() <span class="overload">[8/8]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#aa8c8399e23b28ac5ac3008454928e3db">&#9670;&#160;</a></span>TEST_CASE() <span class="overload">[10/10]</span></h2>
 
 <div class="memitem">
 <div class="memproto">

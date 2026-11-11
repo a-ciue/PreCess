@@ -1,18 +1,18 @@
 <map id="model/systems/core/InteractiveTypes.h" name="model/systems/core/InteractiveTypes.h">
-<area shape="rect" id="Node000001" title="视口交互的纯数据类型：拾取结果与标注图元（无 VTK 依赖，供渲染层与插件两侧共用）" alt="" coords="172,5,327,45"/>
-<area shape="rect" id="Node000002" href="$Core_8h.html" title=" " alt="" coords="183,93,247,119"/>
-<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="243,47,228,82,223,79,239,44"/>
-<area shape="rect" id="Node000003" title=" " alt="" coords="5,167,61,192"/>
-<area shape="poly" id="edge7_Node000001_Node000003" title=" " alt="" coords="224,48,63,161,60,156,221,43"/>
-<area shape="rect" id="Node000006" title=" " alt="" coords="261,167,320,192"/>
-<area shape="poly" id="edge8_Node000001_Node000006" title=" " alt="" coords="257,45,287,153,281,154,252,47"/>
-<area shape="rect" id="Node000007" title=" " alt="" coords="345,167,407,192"/>
-<area shape="poly" id="edge9_Node000001_Node000007" title=" " alt="" coords="267,44,359,154,355,158,263,48"/>
-<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="187,121,75,164,74,159,185,116"/>
-<area shape="rect" id="Node000004" title=" " alt="" coords="187,167,237,192"/>
-<area shape="poly" id="edge3_Node000002_Node000004" title=" " alt="" coords="217,119,216,153,210,153,212,119"/>
-<area shape="rect" id="Node000005" title=" " alt="" coords="85,167,163,192"/>
-<area shape="poly" id="edge4_Node000002_Node000005" title=" " alt="" coords="202,121,151,160,148,156,198,117"/>
-<area shape="poly" id="edge5_Node000002_Node000006" title=" " alt="" coords="229,117,270,155,266,159,225,121"/>
-<area shape="poly" id="edge6_Node000002_Node000007" title=" " alt="" coords="242,116,338,159,336,163,240,121"/>
+<area shape="rect" id="Node000001" title="视口交互的纯数据类型：拾取结果与标注图元（无 VTK 依赖，供渲染层与插件两侧共用）" alt="" coords="171,5,324,50"/>
+<area shape="rect" id="Node000002" href="$Core_8h.html" title=" " alt="" coords="181,98,245,126"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="240,49,227,85,222,82,237,52"/>
+<area shape="rect" id="Node000003" title=" " alt="" coords="5,174,61,201"/>
+<area shape="poly" id="edge7_Node000001_Node000003" title=" " alt="" coords="220,53,64,166,61,162,217,48"/>
+<area shape="rect" id="Node000006" title=" " alt="" coords="260,174,318,201"/>
+<area shape="poly" id="edge8_Node000001_Node000006" title=" " alt="" coords="255,48,284,159,279,158,251,52"/>
+<area shape="rect" id="Node000007" title=" " alt="" coords="342,174,404,201"/>
+<area shape="poly" id="edge9_Node000001_Node000007" title=" " alt="" coords="266,48,356,161,351,161,263,52"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="182,129,76,172,74,167,180,124"/>
+<area shape="rect" id="Node000004" title=" " alt="" coords="185,174,236,201"/>
+<area shape="poly" id="edge3_Node000002_Node000004" title=" " alt="" coords="214,124,214,159,209,157,211,128"/>
+<area shape="rect" id="Node000005" title=" " alt="" coords="84,174,160,201"/>
+<area shape="poly" id="edge4_Node000002_Node000005" title=" " alt="" coords="199,125,152,166,149,161,194,127"/>
+<area shape="poly" id="edge5_Node000002_Node000006" title=" " alt="" coords="228,124,267,163,262,163,226,129"/>
+<area shape="poly" id="edge6_Node000002_Node000007" title=" " alt="" coords="242,124,333,167,328,167,241,129"/>
 </map>

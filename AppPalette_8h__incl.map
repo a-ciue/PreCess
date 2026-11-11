@@ -1,22 +1,22 @@
 <map id="app/core/AppPalette.h" name="app/core/AppPalette.h">
-<area shape="rect" id="Node000001" title="应用级调色板单例：把 Theme 已解析的角色表应用到 QGuiApplication" alt="" coords="187,5,351,31"/>
-<area shape="rect" id="Node000002" title=" " alt="" coords="5,79,132,104"/>
-<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="237,33,115,76,114,71,236,28"/>
-<area shape="rect" id="Node000003" title=" " alt="" coords="157,79,231,104"/>
-<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="259,33,218,71,214,67,255,29"/>
-<area shape="rect" id="Node000004" title=" " alt="" coords="243,152,350,177"/>
-<area shape="poly" id="edge3_Node000001_Node000004" title=" " alt="" coords="274,31,294,138,289,139,268,32"/>
-<area shape="rect" id="Node000005" title=" " alt="" coords="306,79,445,104"/>
-<area shape="poly" id="edge4_Node000001_Node000005" title=" " alt="" coords="287,28,348,69,345,73,284,33"/>
-<area shape="rect" id="Node000006" href="$ThemePalette_8h.html" title="主题应用调色板构造：把 Theme 已解析的角色颜色表转成 QPalette" alt="" coords="469,79,593,104"/>
-<area shape="poly" id="edge5_Node000001_Node000006" title=" " alt="" coords="312,28,476,72,475,78,310,33"/>
-<area shape="poly" id="edge10_Node000006_Node000004" title=" " alt="" coords="494,107,348,151,347,145,493,101"/>
-<area shape="rect" id="Node000007" title=" " alt="" coords="387,152,454,177"/>
-<area shape="poly" id="edge6_Node000006_Node000007" title=" " alt="" coords="515,106,452,147,449,142,512,102"/>
-<area shape="rect" id="Node000008" title=" " alt="" coords="478,152,555,177"/>
-<area shape="poly" id="edge7_Node000006_Node000008" title=" " alt="" coords="532,105,524,139,519,138,526,104"/>
-<area shape="rect" id="Node000009" title=" " alt="" coords="579,152,673,177"/>
-<area shape="poly" id="edge8_Node000006_Node000009" title=" " alt="" coords="548,102,601,141,598,146,545,106"/>
-<area shape="rect" id="Node000010" title=" " alt="" coords="697,152,776,177"/>
-<area shape="poly" id="edge9_Node000006_Node000010" title=" " alt="" coords="565,101,691,145,690,150,563,107"/>
+<area shape="rect" id="Node000001" title="应用级调色板单例：把 Theme 已解析的角色表应用到 QGuiApplication" alt="" coords="186,5,349,33"/>
+<area shape="rect" id="Node000002" title=" " alt="" coords="5,81,132,109"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="230,36,120,78,117,73,233,31"/>
+<area shape="rect" id="Node000003" title=" " alt="" coords="156,81,229,109"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="256,32,218,72,215,68,252,35"/>
+<area shape="rect" id="Node000004" title=" " alt="" coords="242,157,348,184"/>
+<area shape="poly" id="edge3_Node000001_Node000004" title=" " alt="" coords="271,31,292,142,287,140,268,35"/>
+<area shape="rect" id="Node000005" title=" " alt="" coords="305,81,442,109"/>
+<area shape="poly" id="edge4_Node000001_Node000005" title=" " alt="" coords="287,31,345,72,340,72,286,36"/>
+<area shape="rect" id="Node000006" href="$ThemePalette_8h.html" title="主题应用调色板构造：把 Theme 已解析的角色颜色表转成 QPalette" alt="" coords="467,81,590,109"/>
+<area shape="poly" id="edge5_Node000001_Node000006" title=" " alt="" coords="314,31,470,76,465,77,314,36"/>
+<area shape="poly" id="edge10_Node000006_Node000004" title=" " alt="" coords="489,109,352,154,350,149,484,110"/>
+<area shape="rect" id="Node000007" title=" " alt="" coords="386,157,452,184"/>
+<area shape="poly" id="edge6_Node000006_Node000007" title=" " alt="" coords="512,108,452,150,450,145,506,110"/>
+<area shape="rect" id="Node000008" title=" " alt="" coords="476,157,552,184"/>
+<area shape="poly" id="edge7_Node000006_Node000008" title=" " alt="" coords="528,108,521,143,518,139,524,111"/>
+<area shape="rect" id="Node000009" title=" " alt="" coords="576,157,668,184"/>
+<area shape="poly" id="edge8_Node000006_Node000009" title=" " alt="" coords="546,107,596,148,591,146,544,112"/>
+<area shape="rect" id="Node000010" title=" " alt="" coords="692,157,770,184"/>
+<area shape="poly" id="edge9_Node000006_Node000010" title=" " alt="" coords="565,107,683,151,678,151,564,112"/>
 </map>

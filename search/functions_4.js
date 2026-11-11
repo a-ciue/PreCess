@@ -51,10 +51,11 @@ var searchData=
   ['exitcurrentfeature_48',['exitCurrentFeature',['../classsystems_1_1feature_1_1FeatureSystem.html#a77f0c4f443a7f692e9cf5fa534927d42',1,'systems::feature::FeatureSystem']]],
   ['expandstitchablefreechain_49',['expandStitchableFreeChain',['../classGeometryTopologyEditor.html#a11fdc838069eef76e9b624f89cefe400',1,'GeometryTopologyEditor']]],
   ['extensions_50',['extensions',['../classsystems_1_1io_1_1QModelIOInfo.html#aef3d661de2a8e8915c3c946d22dce897',1,'systems::io::QModelIOInfo']]],
-  ['extractedge_51',['extractEdge',['../classMeshActorSelectOp.html#af15d24f715cf60f38b96450bab9660fd',1,'MeshActorSelectOp']]],
-  ['extractgroupforwindow_52',['extractGroupForWindow',['../classdock_1_1DockRegion.html#a674ef04477d5841e8cdea35e5859af4a',1,'dock::DockRegion']]],
-  ['extractgroupnode_53',['extractGroupNode',['../classdock_1_1DockRegion.html#a42372976bcdc7b06b84bab1f871dd957',1,'dock::DockRegion']]],
-  ['extractsolid_54',['extractSolid',['../classMeshActorSelectOp.html#a12c411069e01248f62cf937c1da798cf',1,'MeshActorSelectOp']]],
-  ['extractvertex_55',['extractVertex',['../classMeshActorSelectOp.html#a171ada9720997d163510dcb2c2028534',1,'MeshActorSelectOp']]],
-  ['extrudeface_56',['extrudeFace',['../classGeometryBuilder.html#a6f9b41899204abc39c8a2fa5297900de',1,'GeometryBuilder']]]
+  ['extractcategory_51',['extractCategory',['../classGeometryTopologyDiagnosticActor.html#ad46d677080edc8fcc141ae4cb373a698',1,'GeometryTopologyDiagnosticActor']]],
+  ['extractedge_52',['extractEdge',['../classMeshActorSelectOp.html#af15d24f715cf60f38b96450bab9660fd',1,'MeshActorSelectOp']]],
+  ['extractgroupforwindow_53',['extractGroupForWindow',['../classdock_1_1DockRegion.html#a674ef04477d5841e8cdea35e5859af4a',1,'dock::DockRegion']]],
+  ['extractgroupnode_54',['extractGroupNode',['../classdock_1_1DockRegion.html#a42372976bcdc7b06b84bab1f871dd957',1,'dock::DockRegion']]],
+  ['extractsolid_55',['extractSolid',['../classMeshActorSelectOp.html#a12c411069e01248f62cf937c1da798cf',1,'MeshActorSelectOp']]],
+  ['extractvertex_56',['extractVertex',['../classMeshActorSelectOp.html#a171ada9720997d163510dcb2c2028534',1,'MeshActorSelectOp']]],
+  ['extrudeface_57',['extrudeFace',['../classGeometryBuilder.html#a6f9b41899204abc39c8a2fa5297900de',1,'GeometryBuilder']]]
 ];

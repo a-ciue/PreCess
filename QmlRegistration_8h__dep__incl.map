@@ -1,13 +1,13 @@
 <map id="app/dock/ui/QmlRegistration.h" name="app/dock/ui/QmlRegistration.h">
-<area shape="rect" id="Node000001" title="停靠组件对外入口：QML 类型注册与环境初始化" alt="" coords="284,5,503,31"/>
-<area shape="rect" id="Node000002" href="$Docking_8h.html" title="停靠组件公共入口头文件" alt="" coords="210,79,361,104"/>
-<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="366,40,304,81,302,76,363,36"/>
-<area shape="rect" id="Node000006" href="$QmlRegistration_8cpp.html" title="QML 类型注册与组件初始化" alt="" coords="385,79,620,104"/>
-<area shape="poly" id="edge5_Node000001_Node000006" title=" " alt="" coords="424,36,486,76,483,81,421,40"/>
-<area shape="rect" id="Node000003" href="$TestDockQmlSmoke_8cpp.html" title="QML 集成冒烟测试：类型注册、中央持久部件、重开面板、拖拽浮窗回归" alt="" coords="5,152,205,192"/>
-<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="248,112,150,154,148,149,246,107"/>
-<area shape="rect" id="Node000004" href="$main_8cpp.html" title=" " alt="" coords="230,159,341,185"/>
-<area shape="poly" id="edge3_Node000002_Node000004" title=" " alt="" coords="288,118,288,159,283,159,283,118"/>
-<area shape="rect" id="Node000005" href="$TestDockWindowPalette_8cpp.html" title="浮窗公共祖先调色板回归测试：后创建的控件继承宿主推送的主题" alt="" coords="365,159,627,185"/>
-<area shape="poly" id="edge4_Node000002_Node000005" title=" " alt="" coords="330,106,466,157,464,162,328,111"/>
+<area shape="rect" id="Node000001" title="停靠组件对外入口：QML 类型注册与环境初始化" alt="" coords="282,5,501,33"/>
+<area shape="rect" id="Node000002" href="$Docking_8h.html" title="停靠组件公共入口头文件" alt="" coords="209,81,358,109"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="362,41,304,83,301,78,357,43"/>
+<area shape="rect" id="Node000006" href="$QmlRegistration_8cpp.html" title="QML 类型注册与组件初始化" alt="" coords="383,81,616,109"/>
+<area shape="poly" id="edge5_Node000001_Node000006" title=" " alt="" coords="424,39,483,81,478,80,423,45"/>
+<area shape="rect" id="Node000003" href="$TestDockQmlSmoke_8cpp.html" title="QML 集成冒烟测试：类型注册、中央持久部件、重开面板、拖拽浮窗回归" alt="" coords="5,157,205,201"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="244,115,153,158,151,154,238,116"/>
+<area shape="rect" id="Node000004" href="$main_8cpp.html" title=" " alt="" coords="229,165,338,193"/>
+<area shape="poly" id="edge3_Node000002_Node000004" title=" " alt="" coords="286,123,286,166,281,163,282,126"/>
+<area shape="rect" id="Node000005" href="$TestDockWindowPalette_8cpp.html" title="浮窗公共祖先调色板回归测试：后创建的控件继承宿主推送的主题" alt="" coords="362,165,624,193"/>
+<area shape="poly" id="edge4_Node000002_Node000005" title=" " alt="" coords="332,112,462,164,457,165,331,117"/>
 </map>

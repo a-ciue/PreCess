@@ -1,9 +1,9 @@
 <map id="app/dock/ui/DockTheme.h" name="app/dock/ui/DockTheme.h">
-<area shape="rect" id="Node000001" title="停靠组件主题承载对象：保存 app 侧推送的已解析配色并通知 dock QML" alt="" coords="45,5,235,31"/>
-<area shape="rect" id="Node000002" title=" " alt="" coords="5,79,80,104"/>
-<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="126,33,71,72,68,68,123,29"/>
-<area shape="rect" id="Node000003" title=" " alt="" coords="105,79,175,104"/>
-<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="143,31,143,65,137,65,137,31"/>
-<area shape="rect" id="Node000004" title=" " alt="" coords="200,79,307,104"/>
-<area shape="poly" id="edge3_Node000001_Node000004" title=" " alt="" coords="160,28,225,69,222,74,157,33"/>
+<area shape="rect" id="Node000001" title="停靠组件主题承载对象：保存 app 侧推送的已解析配色并通知 dock QML" alt="" coords="43,5,233,33"/>
+<area shape="rect" id="Node000002" title=" " alt="" coords="5,81,79,109"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="123,33,73,74,70,69,118,34"/>
+<area shape="rect" id="Node000003" title=" " alt="" coords="103,81,173,109"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="140,32,140,66,136,64,136,36"/>
+<area shape="rect" id="Node000004" title=" " alt="" coords="197,81,303,109"/>
+<area shape="poly" id="edge3_Node000001_Node000004" title=" " alt="" coords="159,31,220,72,215,73,157,36"/>
 </map>

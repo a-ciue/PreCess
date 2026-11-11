@@ -86,58 +86,55 @@ $(function() {
 <code>#include &quot;<a class="el" href="GeometryDataVtk_8h_source.html">GeometryDataVtk.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="GeometrySubshapeIndex_8h_source.html">GeometrySubshapeIndex.h</a>&quot;</code><br />
 <code>#include &lt;vtkActor.h&gt;</code><br />
-<code>#include &lt;vtkDataArray.h&gt;</code><br />
 <code>#include &lt;vtkNew.h&gt;</code><br />
 <code>#include &lt;vtkSmartPointer.h&gt;</code><br />
-<code>#include &lt;Standard_Handle.hxx&gt;</code><br />
 <code>#include &lt;IVtkOCC_Shape.hxx&gt;</code><br />
+<code>#include &lt;Standard_Handle.hxx&gt;</code><br />
 <code>#include &lt;memory&gt;</code><br />
 </div><div class="textblock"><div class="dynheader">
 GeometryActor.h 的引用(Include)关系图:</div>
 <div class="dyncontent">
 <div class="center"><img src="GeometryActor_8h__incl.png" border="0" usemap="#aapp_2render_2GeometryActor_8h" loading="lazy" alt=""/></div>
 <map name="aapp_2render_2GeometryActor_8h" id="aapp_2render_2GeometryActor_8h">
-<area shape="rect" title=" " alt="" coords="598,5,805,31"/>
-<area shape="rect" href="Core_8h.html" title=" " alt="" coords="183,152,247,177"/>
-<area shape="poly" title=" " alt="" coords="598,27,477,34,347,45,239,61,203,70,185,80,179,94,180,109,197,140,193,142,175,110,173,93,181,77,201,65,238,56,346,40,476,29,598,21"/>
-<area shape="rect" title=" " alt="" coords="5,225,83,251"/>
-<area shape="poly" title=" " alt="" coords="598,24,485,30,361,40,249,56,205,68,172,81,133,110,101,146,76,182,58,214,53,212,71,180,97,142,130,106,169,76,203,63,248,51,360,35,484,24,597,19"/>
-<area shape="rect" href="GeometryDataVtk_8h.html" title=" " alt="" coords="195,79,347,104"/>
-<area shape="poly" title=" " alt="" coords="633,33,354,79,353,74,632,28"/>
-<area shape="rect" href="GeometrySubshapeIndex_8h.html" title=" " alt="" coords="371,79,570,104"/>
-<area shape="poly" title=" " alt="" coords="665,33,522,77,520,72,663,28"/>
-<area shape="rect" title=" " alt="" coords="593,79,681,104"/>
-<area shape="poly" title=" " alt="" coords="693,33,659,70,655,67,689,29"/>
-<area shape="rect" title=" " alt="" coords="706,79,825,104"/>
-<area shape="poly" title=" " alt="" coords="714,29,748,67,744,70,710,33"/>
-<area shape="rect" title=" " alt="" coords="848,79,931,104"/>
-<area shape="poly" title=" " alt="" coords="732,28,847,71,845,76,731,33"/>
-<area shape="rect" title=" " alt="" coords="955,79,1093,104"/>
-<area shape="poly" title=" " alt="" coords="754,28,959,73,958,78,753,33"/>
-<area shape="rect" title=" " alt="" coords="1118,79,1279,104"/>
-<area shape="poly" title=" " alt="" coords="782,28,1106,74,1105,79,781,33"/>
-<area shape="rect" title=" " alt="" coords="1303,79,1454,104"/>
-<area shape="poly" title=" " alt="" coords="805,26,1290,76,1289,81,805,31"/>
-<area shape="rect" title=" " alt="" coords="264,225,320,251"/>
-<area shape="poly" title=" " alt="" coords="229,175,271,214,267,218,225,179"/>
-<area shape="rect" title=" " alt="" coords="189,225,240,251"/>
-<area shape="poly" title=" " alt="" coords="217,178,217,212,212,212,212,178"/>
-<area shape="poly" title=" " alt="" coords="188,180,85,222,83,218,186,175"/>
-<area shape="rect" title=" " alt="" coords="107,225,165,251"/>
-<area shape="poly" title=" " alt="" coords="204,179,161,218,157,214,200,175"/>
-<area shape="rect" title=" " alt="" coords="345,225,407,251"/>
-<area shape="poly" title=" " alt="" coords="242,175,338,217,336,222,240,180"/>
-<area shape="poly" title=" " alt="" coords="430,107,261,153,259,148,429,101"/>
-<area shape="poly" title=" " alt="" coords="441,106,400,126,358,154,329,184,308,215,303,212,325,181,354,150,397,121,439,102"/>
-<area shape="poly" title=" " alt="" coords="434,106,399,125,384,138,372,153,366,167,365,182,370,212,364,212,360,182,361,166,367,151,380,134,396,120,432,102"/>
-<area shape="rect" title=" " alt="" coords="381,152,561,177"/>
-<area shape="poly" title=" " alt="" coords="473,104,473,138,468,138,468,104"/>
-<area shape="rect" title=" " alt="" coords="585,152,796,177"/>
-<area shape="poly" title=" " alt="" coords="507,101,643,145,642,150,505,107"/>
-<area shape="rect" title=" " alt="" coords="819,152,1045,177"/>
-<area shape="poly" title=" " alt="" coords="545,101,845,147,844,153,544,107"/>
-<area shape="rect" title=" " alt="" coords="1069,152,1214,177"/>
-<area shape="poly" title=" " alt="" coords="570,100,582,101,817,124,1055,149,1055,154,816,129,581,107,570,106"/>
+<area shape="rect" title=" " alt="" coords="533,5,738,33"/>
+<area shape="rect" href="Core_8h.html" title=" " alt="" coords="182,157,246,184"/>
+<area shape="poly" title=" " alt="" coords="530,29,319,50,229,66,200,74,184,83,178,96,179,111,196,145,190,144,174,113,173,95,180,79,197,69,228,60,318,45,534,26"/>
+<area shape="rect" title=" " alt="" coords="5,232,82,260"/>
+<area shape="poly" title=" " alt="" coords="530,26,435,34,330,45,236,61,199,71,172,83,133,113,101,149,76,187,58,220,54,217,71,184,97,146,130,109,169,79,197,66,235,56,329,40,434,29,535,24"/>
+<area shape="rect" href="GeometryDataVtk_8h.html" title=" " alt="" coords="194,81,346,109"/>
+<area shape="poly" title=" " alt="" coords="567,35,352,80,350,75,572,32"/>
+<area shape="rect" href="GeometrySubshapeIndex_8h.html" title=" " alt="" coords="370,81,568,109"/>
+<area shape="poly" title=" " alt="" coords="608,33,513,77,511,72,603,35"/>
+<area shape="rect" title=" " alt="" coords="592,81,679,109"/>
+<area shape="poly" title=" " alt="" coords="637,31,638,67,633,64,634,36"/>
+<area shape="rect" title=" " alt="" coords="704,81,786,109"/>
+<area shape="poly" title=" " alt="" coords="656,31,715,72,710,72,655,36"/>
+<area shape="rect" title=" " alt="" coords="810,81,949,109"/>
+<area shape="poly" title=" " alt="" coords="679,31,824,76,819,76,679,36"/>
+<area shape="rect" title=" " alt="" coords="972,81,1123,109"/>
+<area shape="poly" title=" " alt="" coords="710,31,961,77,956,78,710,36"/>
+<area shape="rect" title=" " alt="" coords="1147,81,1308,109"/>
+<area shape="poly" title=" " alt="" coords="739,30,1135,80,1130,81,739,35"/>
+<area shape="rect" title=" " alt="" coords="264,232,319,260"/>
+<area shape="poly" title=" " alt="" coords="229,182,270,222,264,221,227,187"/>
+<area shape="rect" title=" " alt="" coords="189,232,239,260"/>
+<area shape="poly" title=" " alt="" coords="216,183,216,218,212,215,212,187"/>
+<area shape="poly" title=" " alt="" coords="185,187,89,228,87,223,183,182"/>
+<area shape="rect" title=" " alt="" coords="106,232,165,260"/>
+<area shape="poly" title=" " alt="" coords="203,184,162,224,159,219,198,186"/>
+<area shape="rect" title=" " alt="" coords="343,232,405,260"/>
+<area shape="poly" title=" " alt="" coords="243,182,335,225,329,226,242,187"/>
+<area shape="poly" title=" " alt="" coords="421,110,262,158,260,153,426,108"/>
+<area shape="poly" title=" " alt="" coords="438,108,397,131,357,159,329,189,307,221,304,217,325,186,354,155,394,127,433,110"/>
+<area shape="poly" title=" " alt="" coords="430,108,396,130,381,143,370,158,365,172,363,187,367,219,362,216,358,187,359,171,365,155,377,139,393,126,425,110"/>
+<area shape="rect" title=" " alt="" coords="379,157,558,184"/>
+<area shape="poly" title=" " alt="" coords="471,107,471,142,467,139,467,111"/>
+<area shape="rect" title=" " alt="" coords="582,157,793,184"/>
+<area shape="poly" title=" " alt="" coords="508,107,637,151,631,152,508,112"/>
+<area shape="rect" title=" " alt="" coords="817,157,1041,184"/>
+<area shape="poly" title=" " alt="" coords="552,107,833,153,828,154,551,112"/>
+<area shape="rect" title=" " alt="" coords="1065,157,1209,184"/>
+<area shape="poly" title=" " alt="" coords="568,105,580,106,813,128,1052,156,1047,157,813,134,579,111,568,110"/>
 </map>
 </div>
 </div><div class="textblock"><div class="dynheader">
@@ -145,53 +142,62 @@ GeometryActor.h 的引用(Include)关系图:</div>
 <div class="dyncontent">
 <div class="center"><img src="GeometryActor_8h__dep__incl.png" border="0" usemap="#aapp_2render_2GeometryActor_8hdep" loading="lazy" alt=""/></div>
 <map name="aapp_2render_2GeometryActor_8hdep" id="aapp_2render_2GeometryActor_8hdep">
-<area shape="rect" title=" " alt="" coords="299,5,506,31"/>
-<area shape="rect" href="GeometryActor_8cpp.html" title=" " alt="" coords="5,86,227,111"/>
-<area shape="poly" title=" " alt="" coords="349,37,158,89,157,83,347,32"/>
-<area shape="rect" href="GeometryActorManager_8cpp.html" title=" " alt="" coords="28,343,223,383"/>
-<area shape="poly" title=" " alt="" coords="387,43,143,344,139,341,383,40"/>
-<area shape="rect" href="GeometryActorManagerSelectOp_8cpp.html" title=" " alt="" coords="247,343,441,383"/>
-<area shape="poly" title=" " alt="" coords="396,45,368,136,353,195,343,255,343,295,345,342,340,342,337,295,337,254,348,194,363,135,391,43"/>
-<area shape="rect" href="GeometryActorSelectOp_8cpp.html" title=" " alt="" coords="393,167,588,207"/>
-<area shape="poly" title=" " alt="" coords="417,42,483,165,478,168,413,44"/>
-<area shape="rect" href="GeometryActorSelectOp_8h.html" title=" " alt="" coords="856,79,1051,119"/>
-<area shape="poly" title=" " alt="" coords="497,30,856,81,856,86,496,35"/>
-<area shape="rect" href="TestGeometryShapePicker_8cpp.html" title=" " alt="" coords="1209,343,1425,383"/>
-<area shape="poly" title=" " alt="" coords="519,19,634,25,771,35,918,52,1063,76,1143,93,1204,109,1264,131,1338,164,1398,189,1452,216,1472,231,1484,250,1486,271,1476,296,1462,312,1446,326,1409,345,1407,340,1443,321,1458,309,1471,293,1481,270,1479,251,1468,235,1449,220,1396,194,1336,169,1262,136,1203,114,1142,98,1062,81,917,57,770,41,634,30,519,25"/>
-<area shape="poly" title=" " alt="" coords="843,123,589,170,588,165,842,118"/>
-<area shape="rect" href="ComponentSelectorHighlight_8cpp.html" title=" " alt="" coords="352,255,576,295"/>
-<area shape="poly" title=" " alt="" coords="889,126,518,257,516,252,887,121"/>
-<area shape="rect" href="GeometryActorManagerSelectOp_8h.html" title=" " alt="" coords="785,167,980,207"/>
-<area shape="poly" title=" " alt="" coords="931,131,900,168,896,165,927,128"/>
-<area shape="rect" href="GeometrySelectManager_8cpp.html" title=" " alt="" coords="1450,343,1651,383"/>
-<area shape="poly" title=" " alt="" coords="1065,108,1197,128,1269,144,1338,164,1435,194,1474,215,1514,253,1529,275,1540,299,1551,342,1546,343,1535,300,1524,277,1510,256,1470,219,1433,199,1337,169,1267,149,1196,134,1064,113"/>
-<area shape="rect" href="GeometrySelectManager_8h.html" title=" " alt="" coords="1261,255,1462,295"/>
-<area shape="poly" title=" " alt="" coords="1065,108,1202,130,1262,146,1303,164,1324,184,1340,208,1359,254,1354,256,1335,211,1320,188,1300,169,1260,151,1201,135,1064,114"/>
-<area shape="rect" href="GeometrySelectorHighlight_8cpp.html" title=" " alt="" coords="1022,255,1237,295"/>
-<area shape="poly" title=" " alt="" coords="984,127,1112,253,1108,256,981,131"/>
-<area shape="rect" href="GeometrySelectorHighlight_8h.html" title=" " alt="" coords="1075,167,1290,207"/>
-<area shape="poly" title=" " alt="" coords="1017,121,1133,164,1132,169,1015,126"/>
-<area shape="poly" title=" " alt="" coords="773,211,706,230,640,257,625,267,615,277,605,287,589,297,516,327,442,347,441,341,514,322,587,292,601,283,611,273,622,262,637,252,704,225,771,206"/>
-<area shape="poly" title=" " alt="" coords="778,212,556,257,555,252,777,207"/>
-<area shape="rect" href="GeometryActorManager_8h.html" title=" " alt="" coords="651,255,845,295"/>
-<area shape="poly" title=" " alt="" coords="843,217,779,257,776,252,840,212"/>
-<area shape="poly" title=" " alt="" coords="901,217,928,257,946,277,966,292,1054,312,1210,340,1209,345,1053,317,964,297,942,281,924,261,896,220"/>
-<area shape="poly" title=" " alt="" coords="918,213,964,253,986,275,996,284,1010,292,1071,315,1124,328,1172,334,1218,335,1315,332,1372,334,1438,340,1450,342,1450,347,1437,345,1372,339,1315,338,1218,340,1172,339,1123,333,1070,320,1008,297,993,288,983,279,961,257,914,218"/>
-<area shape="rect" href="SelectManager_8cpp.html" title=" " alt="" coords="967,350,1185,375"/>
-<area shape="poly" title=" " alt="" coords="888,220,897,258,905,276,917,293,938,312,964,327,1017,347,1015,352,961,332,935,316,913,296,900,279,892,259,882,221"/>
-<area shape="poly" title=" " alt="" coords="637,292,235,345,223,347,223,342,234,340,636,287"/>
-<area shape="poly" title=" " alt="" coords="647,300,433,345,432,340,645,295"/>
-<area shape="rect" href="QRenderWindow_8cpp.html" title=" " alt="" coords="711,350,942,375"/>
-<area shape="poly" title=" " alt="" coords="777,303,818,348,814,351,773,307"/>
-<area shape="poly" title=" " alt="" coords="860,290,1198,340,1209,342,1208,347,1197,345,859,295"/>
-<area shape="rect" href="TestInteractionService_8cpp.html" title="通用视口交互服务的独立测试：拾取转发、标注拉取、结果回调与生命周期" alt="" coords="465,343,687,383"/>
-<area shape="poly" title=" " alt="" coords="699,303,615,345,612,340,697,298"/>
-<area shape="poly" title=" " alt="" coords="1348,308,1329,344,1325,341,1343,306"/>
-<area shape="poly" title=" " alt="" coords="1416,298,1510,340,1508,345,1414,303"/>
-<area shape="poly" title=" " alt="" coords="1287,301,1115,353,1113,347,1285,296"/>
-<area shape="poly" title=" " alt="" coords="1304,194,1391,214,1435,230,1475,252,1498,272,1518,296,1544,341,1540,344,1514,299,1495,276,1472,257,1432,235,1390,219,1303,199"/>
-<area shape="poly" title=" " alt="" coords="1235,210,1323,252,1321,257,1233,215"/>
-<area shape="poly" title=" " alt="" coords="1166,220,1143,256,1139,253,1161,217"/>
+<area shape="rect" title=" " alt="" coords="416,5,621,33"/>
+<area shape="rect" href="GeometryActor_8cpp.html" title=" " alt="" coords="134,90,354,117"/>
+<area shape="poly" title=" " alt="" coords="458,40,289,91,287,87,462,36"/>
+<area shape="rect" href="GeometryActorManager_8cpp.html" title=" " alt="" coords="5,359,200,404"/>
+<area shape="poly" title=" " alt="" coords="494,45,129,361,126,356,491,41"/>
+<area shape="rect" href="GeometryActorManagerSelectOp_8cpp.html" title=" " alt="" coords="1181,359,1376,404"/>
+<area shape="poly" title=" " alt="" coords="523,46,541,143,554,188,571,216,588,228,610,237,664,249,730,254,801,255,942,253,1003,256,1050,264,1129,300,1240,359,1234,358,1126,305,1048,269,1002,261,942,259,801,260,729,259,664,254,608,242,586,232,567,220,549,190,536,144,520,51"/>
+<area shape="rect" href="GeometryActorSelectOp_8cpp.html" title=" " alt="" coords="581,174,776,218"/>
+<area shape="poly" title=" " alt="" coords="542,42,662,173,656,174,540,47"/>
+<area shape="rect" href="GeometryActorSelectOp_8h.html" title=" " alt="" coords="1200,81,1394,126"/>
+<area shape="poly" title=" " alt="" coords="636,30,1201,90,1197,93,637,36"/>
+<area shape="rect" href="TestGeometryShapePicker_8cpp.html" title=" " alt="" coords="1643,359,1858,404"/>
+<area shape="poly" title=" " alt="" coords="637,17,863,24,1007,32,1164,45,1330,65,1501,92,1671,127,1835,171,1906,186,1965,195,1992,203,2017,216,2041,236,2065,265,2074,289,2072,301,2064,313,2041,322,1991,334,1859,362,1858,357,1990,329,2039,317,2061,309,2067,299,2069,289,2060,268,2038,239,2014,220,1990,208,1964,201,1905,192,1834,176,1670,132,1500,97,1330,70,1163,51,1006,37,863,29,638,23"/>
+<area shape="rect" href="TestGeometrySurfacePrecision_8cpp.html" title=" " alt="" coords="444,359,660,404"/>
+<area shape="poly" title=" " alt="" coords="520,47,522,125,528,218,538,296,550,360,545,357,533,296,523,219,517,125,517,51"/>
+<area shape="rect" href="TestRenderWindowLifecycle_8cpp.html" title="视口场景图销毁与重建的资源生命周期回归测试" alt="" coords="224,359,421,404"/>
+<area shape="poly" title=" " alt="" coords="515,46,504,101,484,169,453,243,413,313,388,339,360,361,357,356,384,335,408,309,449,241,478,168,499,100,512,50"/>
+<area shape="poly" title=" " alt="" coords="1182,119,795,176,777,179,775,174,794,171,1188,118"/>
+<area shape="rect" href="ComponentSelectorHighlight_8cpp.html" title=" " alt="" coords="1264,266,1488,311"/>
+<area shape="poly" title=" " alt="" coords="1319,137,1338,173,1372,267,1367,265,1333,175,1317,141"/>
+<area shape="rect" href="GeometryActorManagerSelectOp_8h.html" title=" " alt="" coords="1129,174,1324,218"/>
+<area shape="poly" title=" " alt="" coords="1273,136,1245,176,1242,171,1269,139"/>
+<area shape="poly" title=" " alt="" coords="1196,130,1113,156,1020,187,924,224,832,269,815,280,804,291,792,302,774,313,711,341,647,361,646,356,709,336,772,309,789,298,800,287,812,276,829,264,922,219,1018,182,1111,151,1190,131"/>
+<area shape="poly" title=" " alt="" coords="1182,122,1062,146,930,176,691,255,385,361,384,356,689,250,928,171,1061,141,1187,121"/>
+<area shape="rect" href="GeometrySelectManager_8cpp.html" title=" " alt="" coords="1882,359,2083,404"/>
+<area shape="poly" title=" " alt="" coords="1410,107,1584,122,1683,134,1783,150,1876,171,1959,196,2023,227,2047,245,2065,265,2072,288,2065,312,2046,340,2020,361,2018,356,2042,336,2060,310,2067,288,2060,268,2044,249,2020,232,1957,201,1875,176,1782,155,1683,139,1584,127,1410,113"/>
+<area shape="rect" href="GeometrySelectManager_8h.html" title=" " alt="" coords="1512,266,1712,311"/>
+<area shape="poly" title=" " alt="" coords="1348,131,1578,266,1572,266,1346,136"/>
+<area shape="rect" href="GeometrySelectorHighlight_8cpp.html" title=" " alt="" coords="1837,266,2050,311"/>
+<area shape="poly" title=" " alt="" coords="1409,104,1492,110,1586,122,1684,142,1778,171,1820,191,1860,216,1922,266,1917,265,1857,220,1818,196,1776,176,1682,147,1585,127,1492,115,1410,109"/>
+<area shape="rect" href="GeometrySelectorHighlight_8h.html" title=" " alt="" coords="1552,174,1765,218"/>
+<area shape="poly" title=" " alt="" coords="1399,127,1575,173,1569,173,1398,133"/>
+<area shape="poly" title=" " alt="" coords="1187,228,1171,248,1160,267,1153,289,1159,310,1184,337,1216,359,1211,358,1180,341,1155,312,1148,289,1155,265,1167,245,1182,230"/>
+<area shape="poly" title=" " alt="" coords="1276,224,1343,266,1338,265,1274,229"/>
+<area shape="rect" href="GeometryActorManager_8h.html" title=" " alt="" coords="843,266,1037,311"/>
+<area shape="poly" title=" " alt="" coords="1146,223,1009,268,1008,263,1141,224"/>
+<area shape="poly" title=" " alt="" coords="1226,232,1233,274,1241,293,1254,309,1284,326,1326,338,1377,345,1433,349,1545,352,1631,356,1645,361,1640,361,1630,362,1545,357,1433,354,1377,351,1325,343,1282,331,1250,313,1236,296,1228,276,1223,236"/>
+<area shape="poly" title=" " alt="" coords="1339,202,1443,211,1554,224,1654,242,1694,252,1725,264,1740,275,1748,286,1756,298,1769,309,1825,336,1885,359,1879,358,1823,341,1766,313,1752,301,1744,289,1736,278,1723,269,1693,257,1653,247,1553,229,1442,216,1339,207"/>
+<area shape="rect" href="SelectManager_8cpp.html" title=" " alt="" coords="1400,368,1618,395"/>
+<area shape="poly" title=" " alt="" coords="1210,231,1200,273,1202,292,1210,309,1236,319,1296,333,1445,367,1440,367,1295,339,1235,324,1206,313,1196,294,1195,272,1206,234"/>
+<area shape="poly" title=" " alt="" coords="824,298,547,323,380,340,212,362,201,363,200,358,211,356,379,335,547,318,830,297"/>
+<area shape="poly" title=" " alt="" coords="1036,313,1200,359,1195,358,1035,318"/>
+<area shape="rect" href="QRenderWindow_8cpp.html" title=" " alt="" coords="928,368,1157,395"/>
+<area shape="poly" title=" " alt="" coords="976,319,1030,368,1025,366,974,324"/>
+<area shape="poly" title=" " alt="" coords="1052,296,1317,320,1631,356,1645,361,1640,361,1630,362,1316,325,1052,301"/>
+<area shape="poly" title=" " alt="" coords="835,315,645,361,645,356,830,315"/>
+<area shape="rect" href="TestInteractionService_8cpp.html" title="通用视口交互服务的独立测试：拾取转发、标注拉取、结果回调与生命周期" alt="" coords="683,359,903,404"/>
+<area shape="poly" title=" " alt="" coords="895,319,829,361,827,356,890,320"/>
+<area shape="poly" title=" " alt="" coords="830,305,432,362,421,363,420,358,431,356,825,304"/>
+<area shape="poly" title=" " alt="" coords="1658,317,1720,359,1715,358,1657,322"/>
+<area shape="poly" title=" " alt="" coords="1499,311,1371,327,1264,334,1082,338,901,342,795,349,671,362,660,363,660,358,670,356,795,344,901,337,1082,333,1264,328,1371,321,1494,311"/>
+<area shape="poly" title=" " alt="" coords="1716,312,1896,359,1891,358,1715,318"/>
+<area shape="poly" title=" " alt="" coords="1579,320,1525,369,1523,364,1574,322"/>
+<area shape="poly" title=" " alt="" coords="1708,224,1769,264,1798,287,1827,309,1876,335,1927,359,1921,358,1874,340,1824,313,1794,292,1766,268,1707,229"/>
+<area shape="poly" title=" " alt="" coords="1643,231,1624,268,1621,264,1638,233"/>
+<area shape="poly" title=" " alt="" coords="1741,221,1878,266,1873,266,1741,226"/>
 </map>
 </div>
 </div>

@@ -1,0 +1,349 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="zh">
+<head>
+<meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=11"/>
+<meta name="generator" content="Doxygen 1.14.0"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>PreCess: app/render/test/TestGeometrySurfacePrecision.cpp 文件参考</title>
+<link href="tabs.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="jquery.js"></script>
+<script type="text/javascript" src="dynsections.js"></script>
+<script type="text/javascript" src="clipboard.js"></script>
+<script type="text/javascript" src="cookie.js"></script>
+<link href="search/search.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="search/searchdata.js"></script>
+<script type="text/javascript" src="search/search.js"></script>
+<link href="doxygen.css" rel="stylesheet" type="text/css" />
+</head>
+<body>
+<div id="top"><!-- do not remove this div, it is closed by doxygen! -->
+<div id="titlearea">
+<table cellspacing="0" cellpadding="0">
+ <tbody>
+ <tr id="projectrow">
+  <td id="projectlogo"><img alt="Logo" src="ZenithGrid.ico"/></td>
+  <td id="projectalign">
+   <div id="projectname">PreCess
+   </div>
+  </td>
+ </tr>
+ </tbody>
+</table>
+</div>
+<!-- end header part -->
+<!-- 制作者 Doxygen 1.14.0 -->
+<script type="text/javascript">
+var searchBox = new SearchBox("searchBox", "search/",'.html');
+</script>
+<script type="text/javascript">
+$(function() { codefold.init(); });
+</script>
+<script type="text/javascript" src="menudata.js"></script>
+<script type="text/javascript" src="menu.js"></script>
+<script type="text/javascript">
+$(function() {
+  initMenu('',true,false,'search.php','搜索',false);
+  $(function() { init_search(); });
+});
+</script>
+<div id="main-nav"></div>
+<!-- window showing the filter options -->
+<div id="MSearchSelectWindow"
+     onmouseover="return searchBox.OnSearchSelectShow()"
+     onmouseout="return searchBox.OnSearchSelectHide()"
+     onkeydown="return searchBox.OnSearchSelectKey(event)">
+</div>
+
+<!-- iframe showing the search results (closed by default) -->
+<div id="MSearchResultsWindow">
+<div id="MSearchResults">
+<div class="SRPage">
+<div id="SRIndex">
+<div id="SRResults"></div>
+<div class="SRStatus" id="Loading">载入中...</div>
+<div class="SRStatus" id="Searching">搜索中...</div>
+<div class="SRStatus" id="NoMatches">未找到</div>
+</div>
+</div>
+</div>
+</div>
+
+<div id="nav-path" class="navpath">
+  <ul>
+<li class="navelem"><a href="dir_d422163b96683743ed3963d4aac17747.html">app</a></li><li class="navelem"><a href="dir_364370753f3c0e27b80c476caf69e0e2.html">render</a></li><li class="navelem"><a href="dir_ea7bf32d4afef5a01f2beaa3de806056.html">test</a></li>  </ul>
+</div>
+</div><!-- top -->
+<div id="doc-content">
+<div class="header">
+  <div class="summary">
+<a href="#func-members">函数</a>  </div>
+  <div class="headertitle"><div class="title">TestGeometrySurfacePrecision.cpp 文件参考</div></div>
+</div><!--header-->
+<div class="contents">
+<div class="textblock"><code>#include &quot;<a class="el" href="GeometryActor_8h_source.html">GeometryActor.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="GeometryActorManager_8h_source.html">GeometryActorManager.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="GeometryActorSelectOp_8h_source.html">GeometryActorSelectOp.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="GeometryData_8h_source.html">GeometryData.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="GeometryDataVtk_8h_source.html">GeometryDataVtk.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="GeometryRegistry_8h_source.html">GeometryRegistry.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="GeometrySelectManager_8h_source.html">GeometrySelectManager.h</a>&quot;</code><br />
+<code>#include &lt;BRepAdaptor_Curve.hxx&gt;</code><br />
+<code>#include &lt;BRepBuilderAPI_Copy.hxx&gt;</code><br />
+<code>#include &lt;BRepBuilderAPI_MakeEdge.hxx&gt;</code><br />
+<code>#include &lt;BRepBuilderAPI_MakeFace.hxx&gt;</code><br />
+<code>#include &lt;BRepBuilderAPI_MakeVertex.hxx&gt;</code><br />
+<code>#include &lt;BRepPrimAPI_MakeBox.hxx&gt;</code><br />
+<code>#include &lt;BRepPrimAPI_MakeSphere.hxx&gt;</code><br />
+<code>#include &lt;BRep_Builder.hxx&gt;</code><br />
+<code>#include &lt;BRep_Tool.hxx&gt;</code><br />
+<code>#include &lt;Geom_BSplineSurface.hxx&gt;</code><br />
+<code>#include &lt;IVtkOCC_Shape.hxx&gt;</code><br />
+<code>#include &lt;IVtkTools_ShapeDataSource.hxx&gt;</code><br />
+<code>#include &lt;IVtkTools_SubPolyDataFilter.hxx&gt;</code><br />
+<code>#include &lt;IVtkVTK_ShapeData.hxx&gt;</code><br />
+<code>#include &lt;NCollection_Array1.hxx&gt;</code><br />
+<code>#include &lt;NCollection_Array2.hxx&gt;</code><br />
+<code>#include &lt;Poly_Triangulation.hxx&gt;</code><br />
+<code>#include &lt;Prs3d_Drawer.hxx&gt;</code><br />
+<code>#include &lt;TopExp_Explorer.hxx&gt;</code><br />
+<code>#include &lt;TopLoc_Location.hxx&gt;</code><br />
+<code>#include &lt;TopoDS.hxx&gt;</code><br />
+<code>#include &lt;TopoDS_Compound.hxx&gt;</code><br />
+<code>#include &lt;TopoDS_Edge.hxx&gt;</code><br />
+<code>#include &lt;TopoDS_Face.hxx&gt;</code><br />
+<code>#include &lt;TopoDS_Vertex.hxx&gt;</code><br />
+<code>#include &lt;catch2/catch_approx.hpp&gt;</code><br />
+<code>#include &lt;catch2/catch_test_macros.hpp&gt;</code><br />
+<code>#include &lt;catch2/generators/catch_generators.hpp&gt;</code><br />
+<code>#include &lt;gp_Pln.hxx&gt;</code><br />
+<code>#include &lt;vtkActor.h&gt;</code><br />
+<code>#include &lt;vtkActorCollection.h&gt;</code><br />
+<code>#include &lt;vtkCamera.h&gt;</code><br />
+<code>#include &lt;vtkCellArray.h&gt;</code><br />
+<code>#include &lt;vtkCellData.h&gt;</code><br />
+<code>#include &lt;vtkCompositePolyDataMapper.h&gt;</code><br />
+<code>#include &lt;vtkDataArray.h&gt;</code><br />
+<code>#include &lt;vtkIdList.h&gt;</code><br />
+<code>#include &lt;vtkPartitionedDataSet.h&gt;</code><br />
+<code>#include &lt;vtkPointData.h&gt;</code><br />
+<code>#include &lt;vtkPolyData.h&gt;</code><br />
+<code>#include &lt;vtkPolyDataMapper.h&gt;</code><br />
+<code>#include &lt;vtkProperty.h&gt;</code><br />
+<code>#include &lt;vtkRenderWindow.h&gt;</code><br />
+<code>#include &lt;vtkRenderer.h&gt;</code><br />
+<code>#include &lt;array&gt;</code><br />
+<code>#include &lt;cmath&gt;</code><br />
+<code>#include &lt;memory&gt;</code><br />
+<code>#include &lt;vector&gt;</code><br />
+</div><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 id="header-func-members" class="groupheader"><a id="func-members" name="func-members"></a>
+函数</h2></td></tr>
+<tr class="memitem:ac8c15f67b8cba64168e94e8775e592c0" id="r_ac8c15f67b8cba64168e94e8775e592c0"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ac8c15f67b8cba64168e94e8775e592c0">TEST_CASE</a> (&quot;CAD surface precision rebuilds in both directions and applies to later imports&quot;, &quot;[geometry][precision]&quot;)</td></tr>
+<tr class="memitem:addb9b6c3e3e88ae9423fbf3a41d40560" id="r_addb9b6c3e3e88ae9423fbf3a41d40560"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#addb9b6c3e3e88ae9423fbf3a41d40560">TEST_CASE</a> (&quot;CAD loading finer input mesh restores standard precision before picking&quot;, &quot;[geometry][precision][render]&quot;)</td></tr>
+<tr class="memitem:a792bb8f17be3ec72cbf75230a7c7f789" id="r_a792bb8f17be3ec72cbf75230a7c7f789"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a792bb8f17be3ec72cbf75230a7c7f789">TEST_CASE</a> (&quot;CAD mesh classification preserves topology cells identities and normals&quot;, &quot;[geometry][precision]&quot;)</td></tr>
+<tr class="memitem:a04edb91ef0f8b286844502d74bdecbcb" id="r_a04edb91ef0f8b286844502d74bdecbcb"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a04edb91ef0f8b286844502d74bdecbcb">TEST_CASE</a> (&quot;CAD empty and faceless geometry retain compact bounds across precision levels&quot;, &quot;[geometry][precision]&quot;)</td></tr>
+<tr class="memitem:a00b580e11f4b3a280499d0df476c193c" id="r_a00b580e11f4b3a280499d0df476c193c"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a00b580e11f4b3a280499d0df476c193c">TEST_CASE</a> (&quot;CAD nonstandard initial precision supports registered picking before and after loading&quot;, &quot;[geometry][precision][render]&quot;)</td></tr>
+<tr class="memitem:a5842cfabb4ddd6f603ab0fcc02019b60" id="r_a5842cfabb4ddd6f603ab0fcc02019b60"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a5842cfabb4ddd6f603ab0fcc02019b60">TEST_CASE</a> (&quot;CAD spline face and curved edge picking stay stable across display precision and mode changes&quot;, &quot;[geometry][precision][render]&quot;)</td></tr>
+<tr class="memitem:a0e5c117fabcb30d690e473be963b3415" id="r_a0e5c117fabcb30d690e473be963b3415"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a0e5c117fabcb30d690e473be963b3415">TEST_CASE</a> (&quot;CAD hidden geometry restores picking after precision rebuild&quot;, &quot;[geometry][precision][render]&quot;)</td></tr>
+<tr class="memitem:a0b9c16d8f10f54ef7cd5162ff0712aeb" id="r_a0b9c16d8f10f54ef7cd5162ff0712aeb"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a0b9c16d8f10f54ef7cd5162ff0712aeb">TEST_CASE</a> (&quot;CAD display styles remain unchanged across precision updates&quot;, &quot;[geometry][precision]&quot;)</td></tr>
+<tr class="memitem:a84eec0a9e80742018cd7f1020becae60" id="r_a84eec0a9e80742018cd7f1020becae60"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a84eec0a9e80742018cd7f1020becae60">TEST_CASE</a> (&quot;CAD precision refresh reuses diagnostic results and updates overlays from the current mesh&quot;, &quot;[geometry][precision][diagnostics]&quot;)</td></tr>
+</table>
+<a name="doc-func-members" id="doc-func-members"></a><h2 id="header-doc-func-members" class="groupheader">函数说明</h2>
+<a id="a0b9c16d8f10f54ef7cd5162ff0712aeb" name="a0b9c16d8f10f54ef7cd5162ff0712aeb"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a0b9c16d8f10f54ef7cd5162ff0712aeb">&#9670;&#160;</a></span>TEST_CASE() <span class="overload">[1/9]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">TEST_CASE </td>
+          <td>(</td>
+          <td class="paramtype">&quot;CAD display styles remain unchanged across precision updates&quot;</td>          <td class="paramname"><span class="paramname"><em></em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">&quot;&quot;</td>          <td class="paramname"><span class="paramname"><em></em></span>[geometry][precision]&#160;)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a04edb91ef0f8b286844502d74bdecbcb" name="a04edb91ef0f8b286844502d74bdecbcb"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a04edb91ef0f8b286844502d74bdecbcb">&#9670;&#160;</a></span>TEST_CASE() <span class="overload">[2/9]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">TEST_CASE </td>
+          <td>(</td>
+          <td class="paramtype">&quot;CAD empty and faceless geometry retain compact bounds across precision levels&quot;</td>          <td class="paramname"><span class="paramname"><em></em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">&quot;&quot;</td>          <td class="paramname"><span class="paramname"><em></em></span>[geometry][precision]&#160;)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a0e5c117fabcb30d690e473be963b3415" name="a0e5c117fabcb30d690e473be963b3415"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a0e5c117fabcb30d690e473be963b3415">&#9670;&#160;</a></span>TEST_CASE() <span class="overload">[3/9]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">TEST_CASE </td>
+          <td>(</td>
+          <td class="paramtype">&quot;CAD hidden geometry restores picking after precision rebuild&quot;</td>          <td class="paramname"><span class="paramname"><em></em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">&quot;&quot;</td>          <td class="paramname"><span class="paramname"><em></em></span>[geometry][precision][render]&#160;)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="addb9b6c3e3e88ae9423fbf3a41d40560" name="addb9b6c3e3e88ae9423fbf3a41d40560"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#addb9b6c3e3e88ae9423fbf3a41d40560">&#9670;&#160;</a></span>TEST_CASE() <span class="overload">[4/9]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">TEST_CASE </td>
+          <td>(</td>
+          <td class="paramtype">&quot;CAD loading finer input mesh restores standard precision before picking&quot;</td>          <td class="paramname"><span class="paramname"><em></em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">&quot;&quot;</td>          <td class="paramname"><span class="paramname"><em></em></span>[geometry][precision][render]&#160;)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a792bb8f17be3ec72cbf75230a7c7f789" name="a792bb8f17be3ec72cbf75230a7c7f789"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a792bb8f17be3ec72cbf75230a7c7f789">&#9670;&#160;</a></span>TEST_CASE() <span class="overload">[5/9]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">TEST_CASE </td>
+          <td>(</td>
+          <td class="paramtype">&quot;CAD mesh classification preserves topology cells identities and normals&quot;</td>          <td class="paramname"><span class="paramname"><em></em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">&quot;&quot;</td>          <td class="paramname"><span class="paramname"><em></em></span>[geometry][precision]&#160;)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a00b580e11f4b3a280499d0df476c193c" name="a00b580e11f4b3a280499d0df476c193c"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a00b580e11f4b3a280499d0df476c193c">&#9670;&#160;</a></span>TEST_CASE() <span class="overload">[6/9]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">TEST_CASE </td>
+          <td>(</td>
+          <td class="paramtype">&quot;CAD nonstandard initial precision supports registered picking before and after loading&quot;</td>          <td class="paramname"><span class="paramname"><em></em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">&quot;&quot;</td>          <td class="paramname"><span class="paramname"><em></em></span>[geometry][precision][render]&#160;)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a84eec0a9e80742018cd7f1020becae60" name="a84eec0a9e80742018cd7f1020becae60"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a84eec0a9e80742018cd7f1020becae60">&#9670;&#160;</a></span>TEST_CASE() <span class="overload">[7/9]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">TEST_CASE </td>
+          <td>(</td>
+          <td class="paramtype">&quot;CAD precision refresh reuses diagnostic results and updates overlays from the current mesh&quot;</td>          <td class="paramname"><span class="paramname"><em></em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">&quot;&quot;</td>          <td class="paramname"><span class="paramname"><em></em></span>[geometry][precision][diagnostics]&#160;)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a5842cfabb4ddd6f603ab0fcc02019b60" name="a5842cfabb4ddd6f603ab0fcc02019b60"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a5842cfabb4ddd6f603ab0fcc02019b60">&#9670;&#160;</a></span>TEST_CASE() <span class="overload">[8/9]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">TEST_CASE </td>
+          <td>(</td>
+          <td class="paramtype">&quot;CAD spline face and curved edge picking stay stable across display precision and mode changes&quot;</td>          <td class="paramname"><span class="paramname"><em></em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">&quot;&quot;</td>          <td class="paramname"><span class="paramname"><em></em></span>[geometry][precision][render]&#160;)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="ac8c15f67b8cba64168e94e8775e592c0" name="ac8c15f67b8cba64168e94e8775e592c0"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ac8c15f67b8cba64168e94e8775e592c0">&#9670;&#160;</a></span>TEST_CASE() <span class="overload">[9/9]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">TEST_CASE </td>
+          <td>(</td>
+          <td class="paramtype">&quot;CAD surface precision rebuilds in both directions and applies to later imports&quot;</td>          <td class="paramname"><span class="paramname"><em></em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">&quot;&quot;</td>          <td class="paramname"><span class="paramname"><em></em></span>[geometry][precision]&#160;)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+</div><!-- contents -->
+<!-- start footer part -->
+<hr class="footer"/><address class="footer"><small>
+制作者&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.14.0
+</small></address>
+</div><!-- doc-content -->
+</body>
+</html>

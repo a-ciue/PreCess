@@ -1,9 +1,9 @@
 <map id="app/QLogManager.h" name="app/QLogManager.h">
-<area shape="rect" id="Node000001" title=" " alt="" coords="75,5,226,31"/>
-<area shape="rect" id="Node000002" title=" " alt="" coords="5,79,80,104"/>
-<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="135,33,73,73,70,69,132,28"/>
-<area shape="rect" id="Node000003" title=" " alt="" coords="104,79,197,104"/>
-<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="153,31,153,65,148,65,148,31"/>
-<area shape="rect" id="Node000004" title=" " alt="" coords="221,79,299,104"/>
-<area shape="poly" id="edge3_Node000001_Node000004" title=" " alt="" coords="170,28,232,69,229,73,167,33"/>
+<area shape="rect" id="Node000001" title=" " alt="" coords="74,5,224,33"/>
+<area shape="rect" id="Node000002" title=" " alt="" coords="5,81,79,109"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="132,33,75,74,72,70,127,34"/>
+<area shape="rect" id="Node000003" title=" " alt="" coords="102,81,195,109"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="150,32,151,67,146,64,147,36"/>
+<area shape="rect" id="Node000004" title=" " alt="" coords="218,81,295,109"/>
+<area shape="poly" id="edge3_Node000001_Node000004" title=" " alt="" coords="169,31,228,72,222,72,167,36"/>
 </map>

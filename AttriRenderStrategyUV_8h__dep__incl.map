@@ -1,9 +1,9 @@
 <map id="app/render/renderStrategy/AttriRenderStrategyUV.h" name="app/render/renderStrategy/AttriRenderStrategyUV.h">
-<area shape="rect" id="Node000001" title=" " alt="" coords="279,5,473,45"/>
-<area shape="rect" id="Node000002" href="$MeshActorManager_8cpp.html" title=" " alt="" coords="5,101,253,126"/>
-<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="310,52,163,103,161,98,308,47"/>
-<area shape="rect" id="Node000003" href="$AttriRenderStrategyUV_8cpp.html" title=" " alt="" coords="277,93,475,133"/>
-<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="379,59,379,93,373,93,373,59"/>
-<area shape="rect" id="Node000004" href="$TestMeshData_8cpp.html" title=" " alt="" coords="500,93,687,133"/>
-<area shape="poly" id="edge3_Node000001_Node000004" title=" " alt="" coords="437,48,547,91,545,96,436,53"/>
+<area shape="rect" id="Node000001" title=" " alt="" coords="280,5,472,50"/>
+<area shape="rect" id="Node000002" href="$MeshActorManager_8cpp.html" title=" " alt="" coords="5,106,253,134"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="305,56,166,108,164,103,300,56"/>
+<area shape="rect" id="Node000003" href="$AttriRenderStrategyUV_8cpp.html" title=" " alt="" coords="276,98,475,143"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="378,64,378,99,374,96,374,67"/>
+<area shape="rect" id="Node000004" href="$TestMeshData_8cpp.html" title=" " alt="" coords="499,98,684,143"/>
+<area shape="poly" id="edge3_Node000001_Node000004" title=" " alt="" coords="442,54,543,98,537,97,441,59"/>
 </map>

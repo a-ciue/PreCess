@@ -14,8 +14,9 @@ var searchData=
   ['shadowcomponent_2eh_11',['ShadowComponent.h',['../ShadowComponent_8h.html',1,'']]],
   ['sidebar_2eqml_12',['SideBar.qml',['../SideBar_8qml.html',1,'']]],
   ['solidselectorhighlight_2ecpp_13',['SolidSelectorHighlight.cpp',['../SolidSelectorHighlight_8cpp.html',1,'']]],
-  ['systemhandlerptr_2eh_14',['SystemHandlerPtr.h',['../SystemHandlerPtr_8h.html',1,'']]],
-  ['systempluginmanager_2ecpp_15',['SystemPluginManager.cpp',['../SystemPluginManager_8cpp.html',1,'']]],
-  ['systempluginmanager_2eh_16',['SystemPluginManager.h',['../SystemPluginManager_8h.html',1,'']]],
-  ['systemregisterbase_2eh_17',['SystemRegisterBase.h',['../SystemRegisterBase_8h.html',1,'']]]
+  ['surfaceprecision_2eh_14',['SurfacePrecision.h',['../SurfacePrecision_8h.html',1,'']]],
+  ['systemhandlerptr_2eh_15',['SystemHandlerPtr.h',['../SystemHandlerPtr_8h.html',1,'']]],
+  ['systempluginmanager_2ecpp_16',['SystemPluginManager.cpp',['../SystemPluginManager_8cpp.html',1,'']]],
+  ['systempluginmanager_2eh_17',['SystemPluginManager.h',['../SystemPluginManager_8h.html',1,'']]],
+  ['systemregisterbase_2eh_18',['SystemRegisterBase.h',['../SystemRegisterBase_8h.html',1,'']]]
 ];

@@ -1,34 +1,34 @@
 <map id="app/render/GeometryTopologyDiagnosticActor.h" name="app/render/GeometryTopologyDiagnosticActor.h">
-<area shape="rect" id="Node000001" title="定义 OCC 几何拓扑诊断结果的独立叠加渲染对象。" alt="" coords="572,5,791,45"/>
-<area shape="rect" id="Node000002" href="$Core_8h.html" title=" " alt="" coords="168,101,232,126"/>
-<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="572,42,424,64,261,96,246,100,244,95,259,91,423,59,571,37"/>
-<area shape="rect" id="Node000003" title=" " alt="" coords="5,181,61,207"/>
-<area shape="poly" id="edge15_Node000001_Node000003" title=" " alt="" coords="572,36,342,58,234,75,190,85,157,96,127,112,99,132,55,173,51,169,96,128,124,107,155,91,189,80,233,70,341,53,571,31"/>
-<area shape="rect" id="Node000005" title=" " alt="" coords="248,181,325,207"/>
-<area shape="poly" id="edge17_Node000001_Node000005" title=" " alt="" coords="572,41,439,62,382,78,343,96,326,111,313,130,296,169,291,167,309,128,322,108,340,91,380,73,438,57,571,35"/>
-<area shape="rect" id="Node000006" title=" " alt="" coords="349,181,408,207"/>
-<area shape="poly" id="edge16_Node000001_Node000006" title=" " alt="" coords="572,37,507,45,443,57,390,74,371,84,358,95,351,112,351,131,366,168,361,170,346,132,345,111,354,92,368,79,388,69,442,52,506,40,571,32"/>
-<area shape="rect" id="Node000008" href="$GeometryTopologyDiagnosticCategory_8h.html" title="定义几何拓扑诊断的可视化类别。" alt="" coords="367,93,582,133"/>
-<area shape="poly" id="edge7_Node000001_Node000008" title=" " alt="" coords="637,48,534,91,531,86,635,43"/>
-<area shape="rect" id="Node000010" title=" " alt="" coords="606,101,757,126"/>
-<area shape="poly" id="edge9_Node000001_Node000010" title=" " alt="" coords="684,46,684,87,679,87,679,46"/>
-<area shape="rect" id="Node000011" title=" " alt="" coords="781,101,942,126"/>
-<area shape="poly" id="edge10_Node000001_Node000011" title=" " alt="" coords="722,43,826,93,824,97,720,48"/>
-<area shape="rect" id="Node000012" title=" " alt="" coords="967,101,1055,126"/>
-<area shape="poly" id="edge11_Node000001_Node000012" title=" " alt="" coords="767,43,955,91,965,94,964,99,954,96,765,48"/>
-<area shape="rect" id="Node000013" title=" " alt="" coords="1079,101,1161,126"/>
-<area shape="poly" id="edge12_Node000001_Node000013" title=" " alt="" coords="791,38,924,60,1067,91,1078,94,1077,99,1066,96,923,65,790,43"/>
-<area shape="rect" id="Node000014" title=" " alt="" coords="1185,101,1300,126"/>
-<area shape="poly" id="edge13_Node000001_Node000014" title=" " alt="" coords="791,35,971,57,1174,91,1191,95,1190,100,1173,96,970,62,791,40"/>
-<area shape="rect" id="Node000015" title=" " alt="" coords="1324,101,1487,126"/>
-<area shape="poly" id="edge14_Node000001_Node000015" title=" " alt="" coords="791,33,1031,55,1312,91,1340,95,1339,101,1312,96,1030,60,791,38"/>
-<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="177,128,71,178,69,173,175,124"/>
-<area shape="rect" id="Node000004" title=" " alt="" coords="85,181,136,207"/>
-<area shape="poly" id="edge3_Node000002_Node000004" title=" " alt="" coords="189,128,136,174,132,170,185,124"/>
-<area shape="poly" id="edge4_Node000002_Node000005" title=" " alt="" coords="215,124,265,170,262,174,211,128"/>
-<area shape="poly" id="edge5_Node000002_Node000006" title=" " alt="" coords="227,124,341,173,339,178,225,128"/>
-<area shape="rect" id="Node000007" title=" " alt="" coords="161,181,223,207"/>
-<area shape="poly" id="edge6_Node000002_Node000007" title=" " alt="" coords="201,126,197,168,192,167,196,126"/>
-<area shape="rect" id="Node000009" title=" " alt="" coords="439,181,510,207"/>
-<area shape="poly" id="edge8_Node000008_Node000009" title=" " alt="" coords="477,134,477,167,472,167,472,134"/>
+<area shape="rect" id="Node000001" title="定义 OCC 几何拓扑诊断结果的独立叠加渲染对象。" alt="" coords="566,5,785,50"/>
+<area shape="rect" id="Node000002" href="$Core_8h.html" title=" " alt="" coords="167,106,230,134"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="564,42,419,67,258,101,246,104,244,99,256,95,418,61,569,41"/>
+<area shape="rect" id="Node000003" title=" " alt="" coords="5,191,61,218"/>
+<area shape="poly" id="edge15_Node000001_Node000003" title=" " alt="" coords="564,37,338,61,231,79,188,89,155,100,126,117,98,138,55,181,51,177,95,134,123,113,153,96,186,84,230,74,338,56,568,35"/>
+<area shape="rect" id="Node000005" title=" " alt="" coords="246,191,322,218"/>
+<area shape="poly" id="edge16_Node000001_Node000005" title=" " alt="" coords="563,42,434,66,377,82,339,100,322,116,309,136,292,178,288,174,305,134,318,113,335,96,375,77,432,61,568,40"/>
+<area shape="rect" id="Node000006" title=" " alt="" coords="346,191,405,218"/>
+<area shape="poly" id="edge17_Node000001_Node000006" title=" " alt="" coords="563,38,502,49,438,61,386,78,367,88,354,100,346,117,346,137,352,157,361,179,356,176,347,159,341,138,341,116,350,96,364,84,384,73,437,56,501,44,569,37"/>
+<area shape="rect" id="Node000008" href="$GeometryTopologyDiagnosticCategory_8h.html" title="定义几何拓扑诊断的可视化类别。" alt="" coords="364,98,577,143"/>
+<area shape="poly" id="edge7_Node000001_Node000008" title=" " alt="" coords="629,50,534,94,532,89,624,51"/>
+<area shape="rect" id="Node000010" title=" " alt="" coords="600,106,751,134"/>
+<area shape="poly" id="edge9_Node000001_Node000010" title=" " alt="" coords="677,48,678,92,674,89,674,52"/>
+<area shape="rect" id="Node000011" title=" " alt="" coords="776,106,936,134"/>
+<area shape="poly" id="edge10_Node000001_Node000011" title=" " alt="" coords="719,48,819,99,813,99,718,53"/>
+<area shape="rect" id="Node000012" title=" " alt="" coords="960,106,1047,134"/>
+<area shape="poly" id="edge11_Node000001_Node000012" title=" " alt="" coords="772,48,948,95,959,101,954,101,947,101,771,53"/>
+<area shape="rect" id="Node000013" title=" " alt="" coords="1072,106,1154,134"/>
+<area shape="poly" id="edge12_Node000001_Node000013" title=" " alt="" coords="785,40,918,62,1060,95,1071,101,1066,101,1059,101,917,68,785,46"/>
+<area shape="rect" id="Node000014" title=" " alt="" coords="1178,106,1291,134"/>
+<area shape="poly" id="edge13_Node000001_Node000014" title=" " alt="" coords="785,37,965,59,1067,76,1167,95,1184,102,1178,101,1166,101,1066,81,964,64,785,42"/>
+<area shape="rect" id="Node000015" title=" " alt="" coords="1315,106,1476,134"/>
+<area shape="poly" id="edge14_Node000001_Node000015" title=" " alt="" coords="785,35,1024,57,1164,74,1304,95,1331,103,1326,103,1303,101,1164,80,1024,63,785,40"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="173,137,74,186,72,181,171,132"/>
+<area shape="rect" id="Node000004" title=" " alt="" coords="85,191,136,218"/>
+<area shape="poly" id="edge3_Node000002_Node000004" title=" " alt="" coords="187,134,137,182,134,178,182,136"/>
+<area shape="poly" id="edge4_Node000002_Node000005" title=" " alt="" coords="213,132,262,180,257,180,211,137"/>
+<area shape="poly" id="edge5_Node000002_Node000006" title=" " alt="" coords="227,132,336,183,331,184,226,137"/>
+<area shape="rect" id="Node000007" title=" " alt="" coords="159,191,222,218"/>
+<area shape="poly" id="edge6_Node000002_Node000007" title=" " alt="" coords="199,133,195,177,191,174,195,137"/>
+<area shape="rect" id="Node000009" title=" " alt="" coords="436,191,505,218"/>
+<area shape="poly" id="edge8_Node000008_Node000009" title=" " alt="" coords="472,141,472,177,468,173,468,145"/>
 </map>

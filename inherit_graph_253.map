@@ -1,5 +1,5 @@
 <map id="类继承关系图" name="类继承关系图">
-<area shape="rect" id="Node000000" title=" " alt="" coords="5,5,172,31"/>
-<area shape="rect" id="Node000001" href="$classFaceHideFilter.html" title=" " alt="" coords="220,5,335,31"/>
-<area shape="poly" id="edge96_Node000000_Node000001" title=" " alt="" coords="186,15,220,15,220,21,186,21"/>
+<area shape="rect" id="Node000000" title=" " alt="" coords="5,5,90,33"/>
+<area shape="rect" id="Node000001" href="$structQRenderWindow_1_1Data.html" title=" " alt="" coords="138,5,305,33"/>
+<area shape="poly" id="edge95_Node000000_Node000001" title=" " alt="" coords="105,17,140,19,134,19,106,22"/>
 </map>

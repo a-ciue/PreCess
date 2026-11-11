@@ -1,22 +1,22 @@
 <map id="app/model/QPythonRuntime.h" name="app/model/QPythonRuntime.h">
-<area shape="rect" id="Node000001" title=" " alt="" coords="549,5,767,31"/>
-<area shape="rect" id="Node000002" href="$QModelManager_8cpp.html" title=" " alt="" coords="5,167,233,192"/>
-<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="536,31,417,49,354,63,294,81,247,101,202,125,136,169,133,164,200,121,244,96,292,76,353,58,416,43,536,25"/>
-<area shape="rect" id="Node000003" href="$QModelManager_8h.html" title=" " alt="" coords="305,86,518,111"/>
-<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="610,37,448,89,446,83,609,32"/>
-<area shape="rect" id="Node000008" href="$QPythonRuntime_8cpp.html" title="QPythonRuntime 实现：python::Runtime 之上的 QObject/QML 薄壳" alt="" coords="542,86,774,111"/>
-<area shape="poly" id="edge8_Node000001_Node000008" title=" " alt="" coords="661,44,661,86,655,86,655,44"/>
-<area shape="rect" id="Node000009" href="$QPythonRuntimeQml_8h.html" title=" " alt="" coords="798,79,1003,119"/>
-<area shape="poly" id="edge9_Node000001_Node000009" title=" " alt="" coords="707,32,843,76,842,81,706,37"/>
-<area shape="rect" id="Node000010" href="$TestQPythonRuntime_8cpp.html" title="QPythonRuntime 主线程投递测试：precess.app.call_later 的延时回调经 QTimer 回到 GUI 线程执行" alt="" coords="1027,86,1270,111"/>
-<area shape="poly" id="edge10_Node000001_Node000010" title=" " alt="" coords="743,30,1078,83,1077,89,742,35"/>
-<area shape="poly" id="edge4_Node000003_Node000002" title=" " alt="" coords="357,117,163,169,161,164,355,112"/>
-<area shape="rect" id="Node000004" href="$main_8cpp.html" title=" " alt="" coords="257,167,368,192"/>
-<area shape="poly" id="edge3_Node000003_Node000004" title=" " alt="" coords="388,122,329,169,326,164,384,118"/>
-<area shape="rect" id="Node000005" href="$TestQModelDeletion_8cpp.html" title="Qt 删除入口的忙时拒绝与撤销状态通知回归测试" alt="" coords="393,167,630,192"/>
-<area shape="poly" id="edge5_Node000003_Node000005" title=" " alt="" coords="439,118,498,164,495,169,435,122"/>
-<area shape="rect" id="Node000006" href="$TestToolbarNavigation_8cpp.html" title="通用功能导航、旧算法列表兼容及实际工具栏加载测试" alt="" coords="654,167,905,192"/>
-<area shape="poly" id="edge6_Node000003_Node000006" title=" " alt="" coords="479,112,726,164,725,169,478,117"/>
-<area shape="rect" id="Node000007" href="$TestUndoQml_8cpp.html" title="实际 QML 删除与选择器失效路径回归测试" alt="" coords="929,167,1123,192"/>
-<area shape="poly" id="edge7_Node000003_Node000007" title=" " alt="" coords="495,111,530,116,929,165,929,170,530,121,494,116"/>
+<area shape="rect" id="Node000001" title=" " alt="" coords="547,5,763,33"/>
+<area shape="rect" id="Node000002" href="$QModelManager_8cpp.html" title=" " alt="" coords="5,174,233,201"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="529,30,414,50,352,64,292,83,246,104,202,129,137,175,134,171,200,125,243,100,290,79,350,59,413,45,534,28"/>
+<area shape="rect" id="Node000003" href="$QModelManager_8h.html" title=" " alt="" coords="304,90,516,117"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="604,38,450,91,448,86,599,39"/>
+<area shape="rect" id="Node000008" href="$QPythonRuntime_8cpp.html" title="QPythonRuntime 实现：python::Runtime 之上的 QObject/QML 薄壳" alt="" coords="539,90,771,117"/>
+<area shape="poly" id="edge8_Node000001_Node000008" title=" " alt="" coords="657,47,657,91,653,88,653,51"/>
+<area shape="rect" id="Node000009" href="$QPythonRuntimeQml_8h.html" title=" " alt="" coords="794,81,998,126"/>
+<area shape="poly" id="edge9_Node000001_Node000009" title=" " alt="" coords="708,36,835,80,830,80,708,41"/>
+<area shape="rect" id="Node000010" href="$TestQPythonRuntime_8cpp.html" title="QPythonRuntime 主线程投递测试：precess.app.call_later 的延时回调经 QTimer 回到 GUI 线程执行" alt="" coords="1022,90,1264,117"/>
+<area shape="poly" id="edge10_Node000001_Node000010" title=" " alt="" coords="748,33,1067,88,1062,89,748,39"/>
+<area shape="poly" id="edge4_Node000003_Node000002" title=" " alt="" coords="350,124,166,176,165,171,347,120"/>
+<area shape="rect" id="Node000004" href="$main_8cpp.html" title=" " alt="" coords="256,174,366,201"/>
+<area shape="poly" id="edge3_Node000003_Node000004" title=" " alt="" coords="385,126,328,176,325,171,380,128"/>
+<area shape="rect" id="Node000005" href="$TestQModelDeletion_8cpp.html" title="Qt 删除入口的忙时拒绝与撤销状态通知回归测试" alt="" coords="390,174,626,201"/>
+<area shape="poly" id="edge5_Node000003_Node000005" title=" " alt="" coords="438,125,495,174,490,173,436,130"/>
+<area shape="rect" id="Node000006" href="$TestToolbarNavigation_8cpp.html" title="通用功能导航、旧算法列表兼容及实际工具栏加载测试" alt="" coords="650,174,900,201"/>
+<area shape="poly" id="edge6_Node000003_Node000006" title=" " alt="" coords="483,118,719,173,714,173,483,124"/>
+<area shape="rect" id="Node000007" href="$TestUndoQml_8cpp.html" title="实际 QML 删除与选择器失效路径回归测试" alt="" coords="924,174,1116,201"/>
+<area shape="poly" id="edge7_Node000003_Node000007" title=" " alt="" coords="494,118,527,123,926,174,921,176,527,128,494,123"/>
 </map>

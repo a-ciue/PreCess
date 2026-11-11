@@ -1,31 +1,31 @@
 <map id="app/model/QPythonAppModule.cpp" name="app/model/QPythonAppModule.cpp">
-<area shape="rect" id="Node000001" title="app 侧 Python 子模块注册（precess.app）：pybind11 任意签名 def + QTimer 定时器表" alt="" coords="797,5,1048,31"/>
-<area shape="rect" id="Node000002" href="$QPythonAppModule_8h.html" title=" " alt="" coords="5,79,168,104"/>
-<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="797,30,519,51,182,81,181,76,519,46,797,25"/>
-<area shape="rect" id="Node000003" title=" " alt="" coords="192,79,267,104"/>
-<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="797,29,561,47,422,62,281,81,280,76,422,56,561,42,797,23"/>
-<area shape="rect" id="Node000004" title=" " alt="" coords="291,79,368,104"/>
-<area shape="poly" id="edge3_Node000001_Node000004" title=" " alt="" coords="797,32,606,51,382,81,382,76,605,45,797,26"/>
-<area shape="rect" id="Node000005" title=" " alt="" coords="393,79,463,104"/>
-<area shape="poly" id="edge4_Node000001_Node000005" title=" " alt="" coords="812,33,657,53,477,81,476,76,656,47,811,28"/>
-<area shape="rect" id="Node000006" title=" " alt="" coords="487,79,611,104"/>
-<area shape="poly" id="edge5_Node000001_Node000006" title=" " alt="" coords="863,33,623,79,622,73,862,28"/>
-<area shape="rect" id="Node000007" title=" " alt="" coords="636,79,751,104"/>
-<area shape="poly" id="edge6_Node000001_Node000007" title=" " alt="" coords="887,33,745,77,743,72,885,28"/>
-<area shape="rect" id="Node000008" title=" " alt="" coords="775,79,934,104"/>
-<area shape="poly" id="edge7_Node000001_Node000008" title=" " alt="" coords="913,33,877,70,873,67,910,29"/>
-<area shape="rect" id="Node000009" title=" " alt="" coords="959,79,1025,104"/>
-<area shape="poly" id="edge8_Node000001_Node000009" title=" " alt="" coords="936,29,973,67,969,71,932,33"/>
-<area shape="rect" id="Node000010" title=" " alt="" coords="1049,79,1116,104"/>
-<area shape="poly" id="edge9_Node000001_Node000010" title=" " alt="" coords="949,28,1045,71,1043,75,947,33"/>
-<area shape="rect" id="Node000011" title=" " alt="" coords="1140,79,1191,104"/>
-<area shape="poly" id="edge10_Node000001_Node000011" title=" " alt="" coords="964,28,1127,76,1126,81,962,33"/>
-<area shape="rect" id="Node000012" title=" " alt="" coords="1215,79,1292,104"/>
-<area shape="poly" id="edge11_Node000001_Node000012" title=" " alt="" coords="978,28,1202,76,1201,81,977,33"/>
-<area shape="rect" id="Node000013" title=" " alt="" coords="1317,79,1403,104"/>
-<area shape="poly" id="edge12_Node000001_Node000013" title=" " alt="" coords="1003,28,1304,76,1303,81,1002,33"/>
-<area shape="rect" id="Node000014" title=" " alt="" coords="1428,79,1487,104"/>
-<area shape="poly" id="edge13_Node000001_Node000014" title=" " alt="" coords="1048,27,1219,45,1415,76,1414,81,1218,50,1048,32"/>
-<area shape="rect" id="Node000015" title=" " alt="" coords="1511,79,1571,104"/>
-<area shape="poly" id="edge14_Node000001_Node000015" title=" " alt="" coords="1048,24,1255,42,1376,57,1498,76,1498,82,1375,62,1255,47,1048,29"/>
+<area shape="rect" id="Node000001" title="app 侧 Python 子模块注册（precess.app）：pybind11 任意签名 def + QTimer 定时器表" alt="" coords="789,5,1039,33"/>
+<area shape="rect" id="Node000002" href="$QPythonAppModule_8h.html" title=" " alt="" coords="5,81,167,109"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="786,29,515,52,183,83,182,78,514,47,791,28"/>
+<area shape="rect" id="Node000003" title=" " alt="" coords="191,81,264,109"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="786,27,556,47,419,62,280,83,279,78,418,57,556,42,792,26"/>
+<area shape="rect" id="Node000004" title=" " alt="" coords="288,81,364,109"/>
+<area shape="poly" id="edge3_Node000001_Node000004" title=" " alt="" coords="792,30,600,52,380,83,379,78,600,46,786,30"/>
+<area shape="rect" id="Node000005" title=" " alt="" coords="389,81,458,109"/>
+<area shape="poly" id="edge4_Node000001_Node000005" title=" " alt="" coords="792,33,642,55,474,83,473,78,641,50,786,34"/>
+<area shape="rect" id="Node000006" title=" " alt="" coords="482,81,605,109"/>
+<area shape="poly" id="edge5_Node000001_Node000006" title=" " alt="" coords="850,33,620,81,619,76,845,34"/>
+<area shape="rect" id="Node000007" title=" " alt="" coords="629,81,743,109"/>
+<area shape="poly" id="edge6_Node000001_Node000007" title=" " alt="" coords="876,33,742,78,741,73,871,34"/>
+<area shape="rect" id="Node000008" title=" " alt="" coords="767,81,925,109"/>
+<area shape="poly" id="edge7_Node000001_Node000008" title=" " alt="" coords="904,32,870,72,867,67,899,35"/>
+<area shape="rect" id="Node000009" title=" " alt="" coords="949,81,1015,109"/>
+<area shape="poly" id="edge8_Node000001_Node000009" title=" " alt="" coords="927,31,962,70,957,69,925,36"/>
+<area shape="rect" id="Node000010" title=" " alt="" coords="1039,81,1104,109"/>
+<area shape="poly" id="edge9_Node000001_Node000010" title=" " alt="" coords="943,31,1032,75,1027,74,942,36"/>
+<area shape="rect" id="Node000011" title=" " alt="" coords="1128,81,1178,109"/>
+<area shape="poly" id="edge10_Node000001_Node000011" title=" " alt="" coords="960,31,1115,80,1110,80,960,36"/>
+<area shape="rect" id="Node000012" title=" " alt="" coords="1202,81,1279,109"/>
+<area shape="poly" id="edge11_Node000001_Node000012" title=" " alt="" coords="976,31,1190,81,1185,80,976,36"/>
+<area shape="rect" id="Node000013" title=" " alt="" coords="1303,81,1389,109"/>
+<area shape="poly" id="edge12_Node000001_Node000013" title=" " alt="" coords="1007,31,1291,81,1286,81,1007,36"/>
+<area shape="rect" id="Node000014" title=" " alt="" coords="1413,81,1471,109"/>
+<area shape="poly" id="edge13_Node000001_Node000014" title=" " alt="" coords="1039,27,1206,46,1400,81,1395,81,1205,51,1039,33"/>
+<area shape="rect" id="Node000015" title=" " alt="" coords="1495,81,1554,109"/>
+<area shape="poly" id="edge14_Node000001_Node000015" title=" " alt="" coords="1039,24,1242,42,1360,58,1482,81,1477,81,1360,63,1242,48,1039,30"/>
 </map>
