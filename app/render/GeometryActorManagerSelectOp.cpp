@@ -104,6 +104,10 @@ void GeometryActorManagerSelectOp::registerProps(Index component_id, std::shared
     shape_id_to_component_[op.getShapeId()] = component_id;
 
     for (auto picker : shape_pickers_) {
+        // 在标准离散数据上固定三种拾取缓存，后续切档只重建显示网格。
+        for (const auto mode : { SelectMode::GeometryVertex, SelectMode::GeometryEdge, SelectMode::GeometryFace })
+            op.enableSelectionMode(picker, mode);
+        op.disableSelectionModes(picker);
         if (current_mode_ != SelectMode::None && actor->isVisible())
             op.enableSelectionMode(picker, current_mode_);
     }

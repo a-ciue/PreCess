@@ -1,38 +1,28 @@
 #include "GeometryActor.h"
 #include "Core.h"
 #include "GeometryTopologyDiagnosticActor.h"
+#include "SurfacePrecision.h"
+#include <BRepTools.hxx>
 #include <IVtkTools_ShapeDataSource.hxx>
 #include <IVtkTools_SubPolyDataFilter.hxx>
 #include <IVtkVTK_ShapeData.hxx>
-#include <TopoDS_Shape.hxx>
+#include <NCollection_Map.hxx>
+#include <Prs3d_Drawer.hxx>
 #include <TopExp_Explorer.hxx>
+#include <TopoDS_Shape.hxx>
+#include <vtkPolyData.h>
 #include <vtkPolyDataMapper.h>
 #include <vtkProperty.h>
 #include <vtkRenderer.h>
-#include <vtkExtractSelection.h>
-#include <vtkGeometryFilter.h>
-#include <vtkIdTypeArray.h>
-#include <vtkSelection.h>
-#include <vtkSelectionNode.h>
-#include <vtkCellData.h>
 
-// 按 OCCT 约定的正式名称获取单元对应的子形状 ID 数组。
-static vtkSmartPointer<vtkDataArray> findSubIdArray(vtkPolyData* poly_data)
-{
-    if (!poly_data)
-        return nullptr;
-
-    vtkCellData* cell_data = poly_data->GetCellData();
-    if (!cell_data)
-        return nullptr;
-
-    return cell_data->GetArray(IVtkVTK_ShapeData::ARRNAME_SUBSHAPE_IDS());
-}
+#include <cmath>
 
 GeometryActor::GeometryActor(vtkRenderer* renderer)
 {
     this->renderer_ = renderer;
     this->visibility_ = true;
+    line_only_ = vtkSmartPointer<vtkPolyData>::New();
+    poly_only_ = vtkSmartPointer<vtkPolyData>::New();
     topology_diagnostics_ = std::make_unique<GeometryTopologyDiagnosticActor>(renderer_);
 }
 
@@ -43,83 +33,59 @@ GeometryActor::~GeometryActor()
 
 void GeometryActor::loadShape(const GeometryDataVtk& geometry_data)
 {
-    // GeometryData 保证根形状已经是严格一层扁平的 Compound。
-    OccShapeHandle aShapeImpl = new IVtkOCC_Shape(geometry_data.shape);
-    aShapeImpl->SetId(static_cast<IVtk_IdType>(geometry_data.component_id));
-    this->occ_shape_ = aShapeImpl;
-    this->geometry_index_ = geometry_data.geometry_index;
-    vtkSmartPointer<IVtkTools_ShapeDataSource> DS = vtkSmartPointer<IVtkTools_ShapeDataSource>::New();
-    DS->SetShape(aShapeImpl);
-    DS->Update();
-    vtkPolyData* src = DS->GetOutput();
+    // 直接沿用模型形状及索引，显示重建只更新可再生的离散缓存。
+    occ_shape_ = new IVtkOCC_Shape(geometry_data.shape);
+    occ_shape_->SetId(static_cast<IVtk_IdType>(geometry_data.component_id));
+    geometry_index_ = geometry_data.geometry_index;
+    // 输入可能附带更细的网格，先清理以便在标准网格上初始化拾取缓存。
+    BRepTools::Clean(occ_shape_->GetShape());
+    rebuildMesh(surface_precision::kDefault);
+    topology_diagnostics_->loadShape(occ_shape_->GetShape(), occ_shape_,
+        line_only_, poly_only_);
+    createActors();
+}
 
-    const vtkIdType nV = src->GetNumberOfVerts();
-    const vtkIdType nL = src->GetNumberOfLines();
-    const vtkIdType nP = src->GetNumberOfPolys();
+void GeometryActor::setSurfacePrecision(int precision)
+{
+    rebuildMesh(precision);
+    topology_diagnostics_->refreshDisplay();
+}
 
-    auto ExtractCellRangeToPolyData = [](vtkPolyData* in, vtkIdType start, vtkIdType count) -> vtkSmartPointer<vtkPolyData> {
-        vtkNew<vtkIdTypeArray> ids;
-        ids->SetNumberOfComponents(1);
-        ids->SetNumberOfValues(count);
-        for (vtkIdType i = 0; i < count; ++i)
-            ids->SetValue(i, start + i);
-
-        vtkNew<vtkSelectionNode> node;
-        node->SetFieldType(vtkSelectionNode::CELL);
-        node->SetContentType(vtkSelectionNode::INDICES);
-        node->SetSelectionList(ids);
-
-        vtkNew<vtkSelection> sel;
-        sel->AddNode(node);
-
-        vtkNew<vtkExtractSelection> extract;
-        extract->SetInputData(0, in);
-        extract->SetInputData(1, sel);
-        extract->Update();
-
-        vtkNew<vtkGeometryFilter> geom;
-        geom->SetInputConnection(extract->GetOutputPort());
-        geom->Update();
-
-        return vtkPolyData::SafeDownCast(geom->GetOutput());
-    };
-
-    vtkSmartPointer<vtkPolyData> line_only = ExtractCellRangeToPolyData(src, 0, nV + nL);
-    vtkSmartPointer<vtkPolyData> poly_only = ExtractCellRangeToPolyData(src, nV + nL, nP);
-
-    if (!line_only)
-        line_only = vtkSmartPointer<vtkPolyData>::New();
-    if (!poly_only)
-        poly_only = vtkSmartPointer<vtkPolyData>::New();
-
-    this->line_only_ = line_only;
-    this->poly_only_ = poly_only;
-
-    line_sub_id_array_ = findSubIdArray(line_only);
-    poly_sub_id_array_ = findSubIdArray(poly_only);
-
-    topology_diagnostics_->loadShape(geometry_data.shape, occ_shape_,
-        line_only_, line_sub_id_array_, poly_only_, poly_sub_id_array_);
-
-    NCollection_Map<IVtk_IdType> edgeVertexIds;
-    for (TopExp_Explorer exp(geometry_data.shape, TopAbs_EDGE); exp.More(); exp.Next()) {
-        IVtk_IdType id = aShapeImpl->GetSubShapeId(exp.Current());
-        if (id >= 0) edgeVertexIds.Add(id);
+void GeometryActor::rebuildMesh(int precision)
+{
+    // IVtk 按 Drawer 偏差变化自动清理并重新划分，切档无需再次显式清理。
+    const auto& settings = surface_precision::kLevels[static_cast<size_t>(precision)];
+    occ_shape_->Attributes()->SetDeviationCoefficient(settings.deviation_coefficient);
+    occ_shape_->Attributes()->SetDeviationAngle(settings.angle_degrees * std::acos(-1.0) / 180.0);
+    vtkNew<IVtkTools_ShapeDataSource> source;
+    source->SetShape(occ_shape_);
+    source->Update();
+    // 只保留真实拓扑点和边，排除归属于面的重复边与等参线。
+    NCollection_Map<IVtk_IdType> line_ids;
+    for (const auto type : { TopAbs_VERTEX, TopAbs_EDGE }) {
+        for (TopExp_Explorer exp(occ_shape_->GetShape(), type); exp.More(); exp.Next())
+            line_ids.Add(occ_shape_->GetSubShapeId(exp.Current()));
     }
-    for (TopExp_Explorer exp(geometry_data.shape, TopAbs_VERTEX); exp.More(); exp.Next()) {
-        IVtk_IdType id = aShapeImpl->GetSubShapeId(exp.Current());
-        if (id >= 0) edgeVertexIds.Add(id);
-    }
+    vtkNew<IVtkTools_SubPolyDataFilter> line_filter;
+    line_filter->SetInputConnection(source->GetOutputPort());
+    line_filter->SetData(line_ids);
+    line_filter->Update();
+    line_only_->ShallowCopy(line_filter->GetOutput());
 
-    auto lineEdgeFilter = vtkSmartPointer<IVtkTools_SubPolyDataFilter>::New();
-    lineEdgeFilter->SetInputData(line_only);
-    lineEdgeFilter->SetDoFiltering(true);
-    if (line_sub_id_array_ && line_sub_id_array_->GetName())
-        lineEdgeFilter->SetIdsArrayName(line_sub_id_array_->GetName());
-    lineEdgeFilter->SetData(edgeVertexIds);
+    NCollection_Map<IVtk_IdType> face_types;
+    face_types.Add(MT_ShadedFace);
+    vtkNew<IVtkTools_SubPolyDataFilter> face_filter;
+    face_filter->SetInputConnection(source->GetOutputPort());
+    face_filter->SetIdsArrayName(IVtkVTK_ShapeData::ARRNAME_MESH_TYPES());
+    face_filter->SetData(face_types);
+    face_filter->Update();
+    poly_only_->ShallowCopy(face_filter->GetOutput());
+}
 
+void GeometryActor::createActors()
+{
     vtkNew<vtkPolyDataMapper> poly_mapper;
-    poly_mapper->SetInputData(poly_only);
+    poly_mapper->SetInputData(poly_only_);
     poly_mapper->SetRelativeCoincidentTopologyPolygonOffsetParameters(0.0, 1.0);
 
     poly_actor_->SetMapper(poly_mapper);
@@ -127,7 +93,7 @@ void GeometryActor::loadShape(const GeometryDataVtk& geometry_data)
     renderer_->AddActor(poly_actor_);
 
     vtkNew<vtkPolyDataMapper> line_mapper;
-    line_mapper->SetInputConnection(lineEdgeFilter->GetOutputPort());
+    line_mapper->SetInputData(line_only_);
     line_mapper->SetRelativeCoincidentTopologyLineOffsetParameters(0, 4);
     line_mapper->SetRelativeCoincidentTopologyPointOffsetParameter(8);
 

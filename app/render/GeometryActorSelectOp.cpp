@@ -105,7 +105,7 @@ std::optional<GeometryActorSelectOp> GeometryActorSelectOpFactory::lock()
     if (auto geometry_actor = geometry_actor_.lock()) {
         return { geometry_actor };
     }
-    return { };
+    return {};
 }
 
 GeometryActorSelectOp::GeometryActorSelectOp(std::shared_ptr<GeometryActor> geometry_actor)
@@ -295,16 +295,12 @@ vtkSmartPointer<IVtkTools_SubPolyDataFilter> GeometryActorSelectOp::buildHighlig
     const bool useLine = (mode == SelectMode::GeometryEdge || mode == SelectMode::GeometryVertex);
     vtkPolyData* source = useLine ? geometry_actor_->line_only_.GetPointer()
                                   : geometry_actor_->poly_only_.GetPointer();
-    vtkDataArray* idArray = useLine ? geometry_actor_->line_sub_id_array_.GetPointer()
-                                    : geometry_actor_->poly_sub_id_array_.GetPointer();
     if (!source)
-        return { };
+        return {};
 
     filter = vtkSmartPointer<IVtkTools_SubPolyDataFilter>::New();
     filter->SetInputData(source);
     filter->SetDoFiltering(true);
-    if (idArray && idArray->GetName())
-        filter->SetIdsArrayName(idArray->GetName());
 
     return filter;
 }
