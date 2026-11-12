@@ -2612,6 +2612,7 @@ bool LoadObj(attrib_t *attrib, std::vector<shape_t> *shapes,
   std::vector<tag_t> tags;
   PrimGroup prim_group;
   std::string name;
+  bool name_is_group = false;
 
   // material
   std::set<std::string> material_filenames;
@@ -2953,20 +2954,6 @@ bool LoadObj(attrib_t *attrib, std::vector<shape_t> *shapes,
 
     // group name
     if (token[0] == 'g' && IS_SPACE((token[1]))) {
-      // flush previous face group.
-      bool ret = exportGroupsToShape(&shape, prim_group, tags, material, name,
-                                     triangulate, v, warn);
-      (void)ret;  // return value not used.
-
-      if (shape.mesh.indices.size() > 0) {
-        shapes->push_back(shape);
-      }
-
-      shape = shape_t();
-
-      // material = -1;
-      prim_group.clear();
-
       std::vector<std::string> names;
 
       while (!IS_NEW_LINE(token[0]) && token[0] != '#') {
@@ -2977,15 +2964,8 @@ bool LoadObj(attrib_t *attrib, std::vector<shape_t> *shapes,
 
       // names[0] must be 'g'
 
-      if (names.size() < 2) {
-        // 'g' with empty names
-        if (warn) {
-          std::stringstream ss;
-          ss << "Empty group name. line: " << line_num << "\n";
-          (*warn) += ss.str();
-          name = "";
-        }
-      } else {
+      std::string group_name;
+      if (names.size() >= 2) {
         std::stringstream ss;
         ss << names[1];
 
@@ -2997,7 +2977,32 @@ bool LoadObj(attrib_t *attrib, std::vector<shape_t> *shapes,
           ss << " " << names[i];
         }
 
-        name = ss.str();
+        group_name = ss.str();
+
+        // PreCess: Repeating the active group does not start a new shape.
+        if (name_is_group && group_name == name) {
+          continue;
+        }
+      }
+
+      // flush previous face group.
+      exportGroupsToShape(&shape, prim_group, tags, material, name,
+                          triangulate, v, warn);
+      if (shape.mesh.indices.size() > 0) {
+        shapes->push_back(shape);
+      }
+
+      shape = shape_t();
+      prim_group.clear();
+
+      name_is_group = names.size() >= 2;
+      if (name_is_group) {
+        name.swap(group_name);
+      } else if (warn) {
+        std::stringstream ss;
+        ss << "Empty group name. line: " << line_num << "\n";
+        (*warn) += ss.str();
+        name.clear();
       }
 
       continue;
@@ -3024,6 +3029,7 @@ bool LoadObj(attrib_t *attrib, std::vector<shape_t> *shapes,
       std::stringstream ss;
       ss << token;
       name = ss.str();
+      name_is_group = false;
 
       continue;
     }

@@ -1,26 +1,26 @@
 #include "ObjMeshIO.h"
 
 // MeshData 使用 double；解析阶段若先落到 float，后续算法导出无法恢复丢失的坐标精度。
-// WASM 与 gmsh 自带的 tinyobj 实现也必须保持相同的 real_t 类型。
+// WASM 也使用本地解析器的修复；独立命名空间避免与静态依赖中的 tinyobj 实现冲突。
 #define TINYOBJLOADER_USE_DOUBLE
-#ifndef __EMSCRIPTEN__
 #define TINYOBJLOADER_IMPLEMENTATION
-#endif
+#define tinyobj precess_tinyobj
 #include "tiny_obj_loader.h"
+#undef tinyobj
 
 #include <spdlog/spdlog.h>
 #include <type_traits>
 #include <unordered_map>
 
-static_assert(std::is_same_v<tinyobj::real_t, double>);
+static_assert(std::is_same_v<precess_tinyobj::real_t, double>);
 
 std::optional<ComponentDatas> ObjMeshIO::loadFromFile(const std::filesystem::path& filename)
 {
-    tinyobj::ObjReaderConfig reader_config;
+    precess_tinyobj::ObjReaderConfig reader_config;
     reader_config.mtl_search_path = "."; // Path to material files
     reader_config.triangulate = false; // Do not triangulate faces
 
-    tinyobj::ObjReader reader;
+    precess_tinyobj::ObjReader reader;
     if (!reader.ParseFromFile(filename.string(), reader_config)) {
         if (!reader.Error().empty()) {
             spdlog::error("TinyObjReader: " + reader.Error());

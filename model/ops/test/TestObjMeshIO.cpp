@@ -149,3 +149,49 @@ TEST_CASE("ObjMeshIO preserves double coordinates and nearby distinct vertices",
         CHECK((*restored)[i]->mesh->face_vertices_ == (*loaded)[i]->mesh->face_vertices_);
     }
 }
+
+TEST_CASE("ObjMeshIO keeps repeated declarations of the active group in one component")
+{
+    const auto path = core::TempFile::instance().path().string() + "_repeated_group.obj";
+    {
+        std::ofstream output(path);
+        output << "v 0 0 0\nv 1 0 0\nv 1 1 0\nv 0 1 0\nv 2 0 0\n"
+               << "g patch_1 wall\nf 1 2 3 4\n"
+               << "g\tpatch_1  wall  # same group names\nf 2 5 3\n";
+    }
+
+    const auto loaded = ObjMeshIO::loadFromFile(path);
+    REQUIRE(loaded.has_value());
+    REQUIRE(loaded->size() == 1);
+    const auto& component = *loaded->front();
+    CHECK(component.name == "patch_1 wall");
+
+    const auto& mesh = *component.mesh;
+    CHECK(mesh.vertex_count_ == 5);
+    CHECK(mesh.face_vertices_offset_ == std::vector<Index> { 0, 4, 7 });
+    CHECK(mesh.face_vertices_ == std::vector<Index> { 0, 1, 2, 3, 1, 4, 2 });
+}
+
+TEST_CASE("ObjMeshIO preserves boundaries when group names recur")
+{
+    const auto path = core::TempFile::instance().path().string() + "_group_boundaries.obj";
+    {
+        std::ofstream output(path);
+        output << "v 0 0 0\nv 1 0 0\nv 0 1 0\n"
+               << "g patch_1\nf 1 2 3\n"
+               << "g patch_2\nf 1 2 3\n"
+               << "g patch_1\nf 1 2 3\n"
+               << "o patch_1\nf 1 2 3\n"
+               << "g patch_1\nf 1 2 3\n"
+               << "o patch_1\nf 1 2 3\n";
+    }
+
+    const auto loaded = ObjMeshIO::loadFromFile(path);
+    REQUIRE(loaded.has_value());
+    const std::vector<std::string> names { "patch_1", "patch_2", "patch_1", "patch_1", "patch_1", "patch_1" };
+    REQUIRE(loaded->size() == names.size());
+    for (size_t i = 0; i < names.size(); ++i) {
+        CHECK((*loaded)[i]->name == names[i]);
+        CHECK((*loaded)[i]->mesh->face_vertices_offset_ == std::vector<Index> { 0, 3 });
+    }
+}
