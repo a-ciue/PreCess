@@ -15,6 +15,18 @@
 #include <vector>
 
 namespace {
+QVariantList fileFeaturesToQVariant(const std::vector<systems::feature::FileFeatureInfo>& infos, const QString& direction)
+{
+    QVariantList result;
+    for (const auto& info : infos) {
+        QStringList extensions;
+        for (const auto& extension : info.extensions)
+            extensions.append(QString::fromStdString(extension));
+        result.append(QVariantMap { { "direction", direction }, { "display_name", QString::fromStdString(info.display_name) },
+            { "extensions", extensions }, { "feature", QString::fromStdString(info.feature) } });
+    }
+    return result;
+}
 //! @brief 快照和事件共用类型转换，避免两条展示路径解释出不同的参数值。
 QVariant parameterToQVariant(const core::ArgObject& value)
 {
@@ -104,7 +116,15 @@ QVariant QFeatureSystemAdaptor::invoke(const QString& unique_name)
     return anyToQVariant(feature_system_->invoke(unique_name.toStdString()));
 }
 
+QVariantList QFeatureSystemAdaptor::getImportFileTypes() const
+{
+    return fileFeaturesToQVariant(feature_system_->getFileTypes(FileDirection::Import), "import");
+}
 
+QVariantList QFeatureSystemAdaptor::getExportFileTypes() const
+{
+    return fileFeaturesToQVariant(feature_system_->getFileTypes(FileDirection::Export), "export");
+}
 
 void QFeatureSystemAdaptor::notifyParameterChanged(const std::string& feature, std::size_t index, const core::ArgObject& value)
 {
@@ -210,7 +230,7 @@ QList<QFeatureInfo*> QFeatureSystemAdaptor::getFeaturesInfo() const
             QString::fromStdString(feature_info->description),
             QString::fromStdString(feature_info->navigation.icon()), std::move(args),
             feature_info->interactive, nullptr, categories, feature_info->navigation.order(),
-            QString::fromStdString(feature_info->navigation.label()), category_defaults));
+            QString::fromStdString(feature_info->navigation.label()), category_defaults, feature_info->file_type.has_value()));
     }
     return infos;
 }

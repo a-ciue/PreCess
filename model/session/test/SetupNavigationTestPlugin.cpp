@@ -14,6 +14,8 @@ class SetupNavigationTestHandler : public FeatureHandler {
 public:
     void setup(FeatureRegistrar& registrar, FeatureContext&) override
     {
+        registrar.setFileType({ FileDirection::Import, { "dat" } });
+        registrar.addParameter({ ArgTypeEnum::Paths, "Files", "", "" });
         registrar.addParameter({ ArgTypeEnum::Float, "Size", "1", "" });
         auto& navigation = registrar.navigation();
         navigation.addEntry({ "setup-custom", "Setup custom category", "", 5, "Tools/Custom" });

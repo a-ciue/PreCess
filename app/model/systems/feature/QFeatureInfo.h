@@ -23,10 +23,11 @@ class QFeatureInfo : public QObject {
     Q_PROPERTY(QString label READ label CONSTANT)
     Q_PROPERTY(QVariantMap category_defaults READ entryDefaults CONSTANT)
     Q_PROPERTY(bool interactive READ interactive CONSTANT)
+    Q_PROPERTY(bool file_operation READ isFileOperation CONSTANT)
 public:
     QFeatureInfo(QString name, QString display_name, QString description, QString icon, QList<QArgType*> arg_types,
         bool interactive = false, QObject* parent = nullptr,
-        QStringList entry_ids = {}, int order = 0, QString label = {}, QVariantMap category_defaults = {})
+        QStringList entry_ids = { }, int order = 0, QString label = { }, QVariantMap category_defaults = { }, bool file_operation = false)
         : QObject(parent)
         , name_(std::move(name))
         , display_name_(std::move(display_name))
@@ -38,6 +39,7 @@ public:
         , order_(order)
         , label_(std::move(label))
         , category_defaults_(std::move(category_defaults))
+        , file_operation_(file_operation)
     {
     }
     QString name() const { return name_; }
@@ -46,6 +48,7 @@ public:
     QString icon() const { return icon_; }
     QList<QArgType*> argTypes() const { return arg_types_; }
     bool interactive() const { return interactive_; }
+    bool isFileOperation() const { return file_operation_; }
     QStringList entryIds() const { return entry_ids_; }
     int order() const { return order_; }
     QString label() const { return label_.isEmpty() ? display_name_ : label_; }
@@ -62,5 +65,6 @@ private:
     QString label_;
     QVariantMap category_defaults_;
     bool interactive_ = false; //> 是否声明视口交互能力
+    bool file_operation_ { false }; //> 文件入口不重复生成普通菜单按钮
 };
 #endif // !Q_FEATURE_INFO_H

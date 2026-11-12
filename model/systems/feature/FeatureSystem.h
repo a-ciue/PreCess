@@ -105,6 +105,8 @@ public:
      * @brief 获取已注册功能信息列表
      */
     std::vector<FeatureInfo*> getFeatureInfos();
+    /** @brief 从已注册 Feature 的声明枚举文件入口。 */
+    std::vector<FileFeatureInfo> getFileTypes(FileDirection direction) const;
     /** @brief 设置宿主始终保留的父入口；仅在模型操作空闲时允许变更。 */
     void setNavigationEntries(std::vector<FeatureNavigationEntry> entries);
     /** @brief 聚合宿主与功能声明的入口；相同 id 按提供者身份确定来源。 */
@@ -159,6 +161,7 @@ public:
     void flushDeferredEvents();
 
 private:
+    friend class FeatureIOSystemRegister;
     friend struct FeatureContext;
     friend class UndoContext;
     friend class InteractionContext;

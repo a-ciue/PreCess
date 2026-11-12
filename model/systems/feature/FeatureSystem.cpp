@@ -154,6 +154,7 @@ bool FeatureSystem::registerHandler(const HandlerMetaData& meta_data, SystemHand
         }))
         entry.params = std::move(*previous_params);
     entry.info.arg_types = registrar.argTypes();
+    entry.info.file_type = registrar.fileType();
     entry.info.navigation = registrar.navigation();
     entry.info.key_bindings = registrar.keyBindings();
     entry.handler = std::move(handler);
@@ -161,6 +162,20 @@ bool FeatureSystem::registerHandler(const HandlerMetaData& meta_data, SystemHand
     spdlog::info("FeatureSystem::registerHandler: Registered feature '{}'", meta_data.name);
     on_feature_infos_changed_();
     return true;
+}
+
+std::vector<FileFeatureInfo> FeatureSystem::getFileTypes(FileDirection direction) const
+{
+    std::vector<FileFeatureInfo> result;
+    for (const auto& [name, entry] : entries_) {
+        const auto& declared = entry.info.file_type;
+        if (entry.handler && declared && declared->direction == direction)
+            result.push_back({ name, entry.info.display_name, declared->extensions });
+    }
+    std::sort(result.begin(), result.end(), [](const auto& left, const auto& right) {
+        return left.display_name != right.display_name ? left.display_name < right.display_name : left.feature < right.feature;
+    });
+    return result;
 }
 
 void FeatureSystem::unregisterHandler(const HandlerMetaData& meta_data)
