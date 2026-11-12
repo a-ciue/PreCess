@@ -33,7 +33,9 @@ void FillGapHandler::setup(FeatureRegistrar& reg, FeatureContext& /*ctx*/)
         "请选择一条间隙边界上的自由边" });
     reg.addParameter({ ArgTypeEnum::Float, "最大间隙", "0.01",
         "允许识别和缝合的最大间隙；优先移动选中侧，双向失败后自动尝试局部容差缝合；使用模型长度单位" });
-    reg.navigation().addEntry({ "FillGap", "局部缝合", "qrc:/images/toolbar/Geometry/fill-gap.svg", 0, "几何/修复" });
+    reg.addNavigationMenu({ "geometry", "几何", 50 });
+    reg.addNavigationGroup({ "geometry", "repair", "修复", 30 });
+    reg.navigation().addEntry({ "FillGap", "局部缝合", "qrc:/images/toolbar/Geometry/fill-gap.svg", 0, "geometry", "repair" });
 }
 
 std::any FillGapHandler::execute(FeatureContext& ctx)

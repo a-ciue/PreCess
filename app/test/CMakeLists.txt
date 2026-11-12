@@ -46,6 +46,12 @@ precess_test_link_libraries(TestSelectionParameter modelQml QArgType FeatureSyst
 precess_add_test(TestQModelDeletion TestQModelDeletion.cpp)
 precess_test_link_libraries(TestQModelDeletion modelQml Qt6::Qml)
 
+# 对象树增量更新：行信号、持久索引身份与数据事件合并
+precess_add_test(TestTreeModel TestTreeModel.cpp ../TreeModel.cpp ../TreeModel.h)
+set_target_properties(TestTreeModel PROPERTIES AUTOMOC ON)
+target_include_directories(TestTreeModel PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}/..")
+precess_test_link_libraries(TestTreeModel modelQml Session Qt6::Core Qt6::Qml)
+
 # 加载实际界面文件验证删除拒绝和 undo 后的选择器失效，不启动渲染窗口。
 precess_add_test(TestUndoQml TestUndoQml.cpp ../TreeModel.cpp ../TreeModel.h)
 set_target_properties(TestUndoQml PROPERTIES AUTOMOC ON)
@@ -96,6 +102,9 @@ qt_add_resources(TestThemeWindowPalette theme_window
 # 加载实际工具栏，覆盖通用父入口和旧算法列表入口。
 precess_add_test(TestToolbarNavigation TestToolbarNavigation.cpp)
 precess_test_link_libraries(TestToolbarNavigation modelQml modelQmlplugin SystemQmlplugin renderQmlplugin renderQml Qt6::QuickControls2 Qt6::Svg)
+target_compile_definitions(TestToolbarNavigation PRIVATE
+    PRECESS_SETUP_TEST_PLUGIN="$<TARGET_FILE:SetupNavigationTestPlugin>")
+add_dependencies(TestToolbarNavigation SetupNavigationTestPlugin)
 qt_add_resources(TestToolbarNavigation navigation_ui
     PREFIX "/navigation-ui"
     BASE "${CMAKE_CURRENT_SOURCE_DIR}/.."

@@ -27,7 +27,4 @@ QtObject {
             return "//" + path
         return /^\/[A-Za-z]:\//.test(path) ? path.slice(1) : path
     }
-
-    signal modelVisibilityUpdated(int modelId, bool visible)
-    signal componentVisibilityUpdated(int componentId, bool meshVisible, bool geometryVisible)
 }

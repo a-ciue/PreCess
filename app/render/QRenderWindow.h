@@ -11,6 +11,7 @@
 #include "MeshPipelineData.h"
 #include "QModelQuery.h"
 #include "QSelection.h"
+#include "SurfacePrecision.h"
 #include <QQuickVTKItem.h>
 #include <QVTKRenderWindowAdapter.h>
 #include <unordered_map>
@@ -47,6 +48,7 @@ struct QRenderWindow : QQuickVTKItem { // 结构体继承QQuickVTKItem
     Q_PROPERTY(int selectionRevision READ selectionRevision WRITE setSelectionRevision NOTIFY selectionRevisionChanged)
     Q_PROPERTY(QModelQuery* query MEMBER model_query_ WRITE setModelQuery REQUIRED)
     Q_PROPERTY(int geometryStyle READ getGeometryStyle WRITE setGeometryStyle NOTIFY geometryStyleChanged)
+    Q_PROPERTY(int surfacePrecision READ getSurfacePrecision WRITE setSurfacePrecision NOTIFY surfacePrecisionChanged)
     Q_PROPERTY(int meshStyle READ getMeshStyle WRITE setMeshStyle NOTIFY meshStyleChanged)
     QML_ELEMENT
 public:
@@ -133,6 +135,10 @@ public:
 
     Q_INVOKABLE void setGeometryStyle(int style);
     int getGeometryStyle();
+
+    /** @brief 设置曲面显示精细度：0 粗糙、1 标准（当前默认）、2 精细、3 非常精细。 */
+    Q_INVOKABLE void setSurfacePrecision(int precision);
+    int getSurfacePrecision() const;
 
     Q_INVOKABLE void setMeshStyle(int style);
     int getMeshStyle();
@@ -246,6 +252,7 @@ signals:
     void selectedChanged();
     void selectionRevisionChanged();
     void geometryStyleChanged();
+    void surfacePrecisionChanged();
     void meshStyleChanged();
     void clicked();
     void rightClicked();
@@ -287,6 +294,9 @@ private:
 
     //! @brief 渲染线程制作选择快照，排队交付 GUI 线程，禁止 QML 直接读取拾取器。
     void publishSelection();
+    //! @brief 只应用网格/几何显隐，不触发回传；由组件级操作合并后统一通知。
+    void applyMeshVisibility(Index component_id, bool visibility);
+    void applyGeometryVisibility(Index component_id, bool visibility);
     /** @brief 在 GUI 线程发布当前显隐结果，对象树只接收最新状态。 */
     void publishComponentVisibility(Index component_id);
     // QQuickVTKItem 会接管事件分发，GUI 排队通知交给独立 QObject。
@@ -298,6 +308,7 @@ private:
     MeshGenerations selected_face_generations_; //> 各选中组件的源网格代次，仅 GUI 访问
 
     GeometryRenderStyle geometry_style_ { GeometryRenderStyle::SurfaceWithEdges };
+    int surface_precision_ { surface_precision::kDefault }; //> GUI 侧请求档位，场景重建时恢复
     MeshRenderStyle mesh_style_ { MeshRenderStyle::FaceWithEdges };
 
     std::unique_ptr<SelectManager> select_manager_;

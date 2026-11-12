@@ -31,6 +31,7 @@
 
 #include <algorithm>
 #include <cmath>
+#include <exception>
 #include <functional>
 #include <memory>
 #include <optional>
@@ -267,6 +268,7 @@ QQuickVTKItem::vtkUserData QRenderWindow::initializeVTK(vtkRenderWindow* renderW
     vtk->mesh_actor_manager_->bindRender(vtk->renderer_);
     vtk->geometry_actor_manager_ = std::make_unique<GeometryActorManager>();
     vtk->geometry_actor_manager_->bindRender(vtk->renderer_);
+    vtk->geometry_actor_manager_->setSurfacePrecision(surface_precision_);
 
     select_manager_ = std::make_unique<SelectManager>(*vtk->renderer_,
         vtk->mesh_actor_manager_->op(), vtk->geometry_actor_manager_->op());
@@ -297,6 +299,8 @@ QQuickVTKItem::vtkUserData QRenderWindow::initializeVTK(vtkRenderWindow* renderW
     vtk->orientationWidget->On();
 
     vtkNew<vtkDisplaySizedImplicitPlaneRepresentation> rep;
+    // 裁剪手柄随屏幕尺寸缩放，不参与模型取景，避免相机重置时反复扩大范围。
+    rep->UseBoundsOff();
     // 连接回调函数到平面控件，更新裁剪平面
     struct PlaneCallback : public vtkCommand {
         static PlaneCallback* New() { return new PlaneCallback; }
@@ -400,12 +404,13 @@ bool QRenderWindow::event(QEvent* ev)
         if (!_click)
             return QQuickVTKItem::event(ev);
 
-        setClick();
         auto e = static_cast<QMouseEvent*>(ev);
         if (e->button() == Qt::RightButton) {
             emit rightClicked();
             return QQuickVTKItem::event(ev);
         }
+        if (e->button() == Qt::LeftButton)
+            setClick();
         emit clicked();
         return QQuickVTKItem::event(ev);
         break;
@@ -704,11 +709,19 @@ void QRenderWindow::setVisibility(Index model_id, bool visibility)
 
 void QRenderWindow::setComponentVisibility(Index component_id, bool visibility)
 {
-    setMeshVisibility(component_id, visibility);
-    setGeometryVisibility(component_id, visibility);
+    // 组件级操作一次提交网格和几何最终状态，避免先回传中间态再回传最终态。
+    applyMeshVisibility(component_id, visibility);
+    applyGeometryVisibility(component_id, visibility);
+    publishComponentVisibility(component_id);
 }
 
 void QRenderWindow::setMeshVisibility(Index component_id, bool visibility)
+{
+    applyMeshVisibility(component_id, visibility);
+    publishComponentVisibility(component_id);
+}
+
+void QRenderWindow::applyMeshVisibility(Index component_id, bool visibility)
 {
     auto& pipeline = mesh_pipeline_data_[component_id];
     if (!pipeline)
@@ -736,10 +749,15 @@ void QRenderWindow::setMeshVisibility(Index component_id, bool visibility)
                 publishSelection();
         });
     }
-    publishComponentVisibility(component_id);
 }
 
 void QRenderWindow::setGeometryVisibility(Index component_id, bool visibility)
+{
+    applyGeometryVisibility(component_id, visibility);
+    publishComponentVisibility(component_id);
+}
+
+void QRenderWindow::applyGeometryVisibility(Index component_id, bool visibility)
 {
     if (geometry_visibility_.contains(component_id)
         || (model_query_ && model_query_->getGeometryVtkDataByComponent(component_id)))
@@ -750,7 +768,6 @@ void QRenderWindow::setGeometryVisibility(Index component_id, bool visibility)
         select_manager_->setGeometryHighlightVisible(component_id, visibility);
         select_manager_->refreshComponentHighlight();
     });
-    publishComponentVisibility(component_id);
 }
 
 QSelection* QRenderWindow::selectedIDs()
@@ -960,6 +977,28 @@ void QRenderWindow::setGeometryStyle(int style)
 int QRenderWindow::getGeometryStyle()
 {
     return static_cast<int>(geometry_style_);
+}
+
+void QRenderWindow::setSurfacePrecision(int precision)
+{
+    if (!surface_precision::isValid(precision) || surface_precision_ == precision)
+        return;
+    surface_precision_ = precision;
+    clearSelection();
+    dispatch_async([precision](vtkRenderWindow*, vtkUserData user_data) {
+        auto* vtk = Data::SafeDownCast(user_data);
+        try {
+            vtk->geometry_actor_manager_->setSurfacePrecision(precision);
+        } catch (const std::exception& error) {
+            spdlog::error("曲面显示精细度切换失败：{}", error.what());
+        }
+    });
+    emit surfacePrecisionChanged();
+}
+
+int QRenderWindow::getSurfacePrecision() const
+{
+    return surface_precision_;
 }
 
 void QRenderWindow::setMeshStyle(int style)

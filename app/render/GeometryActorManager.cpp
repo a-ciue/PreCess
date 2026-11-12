@@ -7,7 +7,6 @@
 #include <algorithm>
 #include <cmath>
 #include <iostream>
-#include <spdlog/spdlog.h>
 
 namespace {
 /** @brief 生成日志使用的“id (名称)”标签，名称为空时只保留 id。 */
@@ -51,7 +50,7 @@ void GeometryActorManager::deleteComponent(Index component_id)
 
 void GeometryActorManager::loadGeometry(const GeometryDataVtk& geometry_data)
 {
-    loadGeometry(geometry_data, { });
+    loadGeometry(geometry_data, {});
 }
 
 void GeometryActorManager::loadGeometry(
@@ -81,6 +80,8 @@ void GeometryActorManager::loadGeometry(
     actor_ptr->loadShape(geometry_data);
     actor_ptr->setRenderStyle(current_style_);
     op_.registerProps(component_id, actor_ptr);
+    if (surface_precision_ != surface_precision::kDefault)
+        actor_ptr->setSurfacePrecision(surface_precision_);
 }
 
 void GeometryActorManager::setVisibility(Index component_id, bool visibility)
@@ -103,6 +104,16 @@ void GeometryActorManager::setCurrentRenderStyle(GeometryRenderStyle style)
 GeometryRenderStyle GeometryActorManager::getCurrentRenderStyle() const
 {
     return current_style_;
+}
+
+void GeometryActorManager::setSurfacePrecision(int precision)
+{
+    if (surface_precision_ == precision)
+        return;
+    // 先记录窗口档位，后续导入和替换的几何沿用该设置。
+    surface_precision_ = precision;
+    for (const auto& [id, actor] : component_actors_)
+        actor->setSurfacePrecision(precision);
 }
 
 void GeometryActorManager::setTopologyDiagnosticCategoryEnabled(int category, bool enabled)

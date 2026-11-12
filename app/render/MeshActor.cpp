@@ -128,6 +128,8 @@ void MeshActor::applyDataSnapshot(std::shared_ptr<const MeshDataSnapshot> snapsh
     syncDisplayAttributes();
     // 发布新的连通性后刷新绘制缓存，不能因连接未改变而复用旧线框着色器。
     face_mapper_->Modified();
+    // 裁剪可能让体表面从全三角面变为包含四边形，同步更新内部对角线的屏蔽逻辑。
+    solid_mapper_->Modified();
     if (reloaded || display_changed)
         applyStyle();
 }

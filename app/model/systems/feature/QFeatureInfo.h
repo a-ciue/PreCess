@@ -19,7 +19,7 @@ class QFeatureInfo : public QObject {
     Q_PROPERTY(QString icon READ icon CONSTANT)
     Q_PROPERTY(QList<QArgType*> arg_types READ argTypes CONSTANT)
     Q_PROPERTY(QStringList entry_ids READ entryIds CONSTANT)
-    Q_PROPERTY(int order READ order CONSTANT)
+    Q_PROPERTY(double order READ order CONSTANT)
     Q_PROPERTY(QString label READ label CONSTANT)
     Q_PROPERTY(QVariantMap category_defaults READ entryDefaults CONSTANT)
     Q_PROPERTY(bool interactive READ interactive CONSTANT)
@@ -27,7 +27,7 @@ class QFeatureInfo : public QObject {
 public:
     QFeatureInfo(QString name, QString display_name, QString description, QString icon, QList<QArgType*> arg_types,
         bool interactive = false, QObject* parent = nullptr,
-        QStringList entry_ids = { }, int order = 0, QString label = { }, QVariantMap category_defaults = { }, bool file_operation = false)
+        QStringList entry_ids = {}, double order = 0, QString label = {}, QVariantMap category_defaults = {}, bool file_operation = false)
         : QObject(parent)
         , name_(std::move(name))
         , display_name_(std::move(display_name))
@@ -50,7 +50,7 @@ public:
     bool interactive() const { return interactive_; }
     bool isFileOperation() const { return file_operation_; }
     QStringList entryIds() const { return entry_ids_; }
-    int order() const { return order_; }
+    double order() const { return order_; }
     QString label() const { return label_.isEmpty() ? display_name_ : label_; }
     QVariantMap entryDefaults() const { return category_defaults_; }
 
@@ -61,7 +61,7 @@ private:
     QString icon_; //> 自定义图标的 qrc 资源路径，为空时使用通用插件图标
     QList<QArgType*> arg_types_; //> 功能参数类型列表
     QStringList entry_ids_;
-    int order_ = 0;
+    double order_ = 0;
     QString label_;
     QVariantMap category_defaults_;
     bool interactive_ = false; //> 是否声明视口交互能力

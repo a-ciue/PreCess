@@ -24,7 +24,9 @@ namespace systems::feature {
 void MergeFaceHandler::setup(FeatureRegistrar& reg, FeatureContext& /*ctx*/)
 {
     reg.addParameter({ ArgTypeEnum::Selector, "待合并面", "GeometryFace", "请选择两个或多个连通且同域的几何面" });
-    reg.navigation().addEntry({ "MergeFace", "合并面", "qrc:/images/toolbar/Geometry/merge-face.svg", 0, "几何/拓扑" });
+    reg.addNavigationMenu({ "geometry", "几何", 50 });
+    reg.addNavigationGroup({ "geometry", "topology", "拓扑", 20 });
+    reg.navigation().addEntry({ "MergeFace", "合并面", "qrc:/images/toolbar/Geometry/merge-face.svg", 0, "geometry", "topology" });
 }
 
 std::any MergeFaceHandler::execute(FeatureContext& ctx)
