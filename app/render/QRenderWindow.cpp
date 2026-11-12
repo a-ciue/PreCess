@@ -743,11 +743,19 @@ void QRenderWindow::setVisibility(Index model_id, bool visibility)
 
 void QRenderWindow::setComponentVisibility(Index component_id, bool visibility)
 {
-    setMeshVisibility(component_id, visibility);
-    setGeometryVisibility(component_id, visibility);
+    // 组件级操作一次提交网格和几何最终状态，避免先回传中间态再回传最终态。
+    applyMeshVisibility(component_id, visibility);
+    applyGeometryVisibility(component_id, visibility);
+    publishComponentVisibility(component_id);
 }
 
 void QRenderWindow::setMeshVisibility(Index component_id, bool visibility)
+{
+    applyMeshVisibility(component_id, visibility);
+    publishComponentVisibility(component_id);
+}
+
+void QRenderWindow::applyMeshVisibility(Index component_id, bool visibility)
 {
     auto& pipeline = mesh_pipeline_data_[component_id];
     if (!pipeline)
@@ -775,10 +783,15 @@ void QRenderWindow::setMeshVisibility(Index component_id, bool visibility)
                 publishSelection();
         });
     }
-    publishComponentVisibility(component_id);
 }
 
 void QRenderWindow::setGeometryVisibility(Index component_id, bool visibility)
+{
+    applyGeometryVisibility(component_id, visibility);
+    publishComponentVisibility(component_id);
+}
+
+void QRenderWindow::applyGeometryVisibility(Index component_id, bool visibility)
 {
     if (geometry_visibility_.contains(component_id)
         || (model_query_ && model_query_->getGeometryVtkDataByComponent(component_id)))
@@ -789,7 +802,6 @@ void QRenderWindow::setGeometryVisibility(Index component_id, bool visibility)
         select_manager_->setGeometryHighlightVisible(component_id, visibility);
         select_manager_->refreshComponentHighlight();
     });
-    publishComponentVisibility(component_id);
 }
 
 QSelection* QRenderWindow::selectedIDs()

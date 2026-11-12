@@ -23,7 +23,4 @@ QtObject {
         property var objectTree: null
         property var scalarRanges: null
     }
-
-    signal modelVisibilityUpdated(int modelId, bool visible)
-    signal componentVisibilityUpdated(int componentId, bool meshVisible, bool geometryVisible)
 }
