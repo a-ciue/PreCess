@@ -192,7 +192,7 @@ Item{
                         required property int index
                         property bool initialized: status === Loader.Ready
                         sourceComponent:{
-                            if(model.type === QArgType.Path){           //文件
+                            if(model.type === QArgType.Path || model.type === QArgType.Paths){ //文件
                                 return fileComponent
                             }
                             if(model.type === QArgType.Combo){           //多选一
@@ -302,6 +302,8 @@ Item{
     Component{
         id:fileComponent
         RowLayout{
+            id: fileRow
+            readonly property bool multiple: model.type === QArgType.Paths
             spacing: Theme.spacingSm
             width: parameterList.contentWidth
             Text{
@@ -330,11 +332,12 @@ Item{
                 wrapMode: TextEdit.Wrap
                 Layout.fillWidth: true
 
-                readonly property string sourceText: String(root.parameters[index] ?? "")
+                readOnly: fileRow.multiple
+                readonly property string sourceText: fileRow.multiple ? Array.from(root.parameters[index] || []).join("\n") : String(root.parameters[index] ?? "")
                 onSourceTextChanged: text = sourceText
                 Component.onCompleted: text = sourceText
                 onTextChanged: {
-                    if (parent.parent.initialized)
+                    if (!fileRow.multiple && parent.parent.initialized)
                         root.setParam(index, text)
                 }
             }
@@ -361,21 +364,10 @@ Item{
             }
             FileDialog{
                 id:parameterFileDialog
+                fileMode: fileRow.multiple ? FileDialog.OpenFiles : FileDialog.OpenFile
                 onAccepted:{
-                    fileText.text = urlToPath(selectedFile)
-                    root.setParam(index, fileText.text)
-                }
-
-                function urlToPath(url) {
-                    var urlString = new String(url)
-                    var s
-                    if (urlString.startsWith("file:///")) {
-                        var k = urlString.charAt(9) === ':' ? 8 : 7
-                        s = urlString.substring(k)
-                    } else {
-                        s = urlString
-                    }
-                    return decodeURIComponent(s);
+                    const value = fileRow.multiple ? Array.from(selectedFiles).map(url => App.localFilePath(url)) : App.localFilePath(selectedFile)
+                    root.setParam(index, value)
                 }
             }
         }

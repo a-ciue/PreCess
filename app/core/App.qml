@@ -18,6 +18,16 @@ QtObject {
     property bool importDragActive: false
     property var registry: ({})
 
+    function localFilePath(url) {
+        const text = String(url)
+        if (!text.startsWith("file://"))
+            return text
+        let path = decodeURIComponent(text.slice(7))
+        if (!path.startsWith("/"))
+            return "//" + path
+        return /^\/[A-Za-z]:\//.test(path) ? path.slice(1) : path
+    }
+
     signal modelVisibilityUpdated(int modelId, bool visible)
     signal componentVisibilityUpdated(int componentId, bool meshVisible, bool geometryVisible)
 }

@@ -10,7 +10,8 @@
 #include "QFeatureSystemAdaptor.h"
 #include "QSelection.h"
 
-#include <QJSValue>
+#include <QCoreApplication>
+#include <QJSEngine>
 #include <catch2/catch_test_macros.hpp>
 
 namespace {
@@ -32,6 +33,7 @@ public:
         reg.addParameter({ ArgTypeEnum::Path, "路径", "input.obj", "" });
         reg.addParameter({ ArgTypeEnum::Combo, "模式", "甲,乙|1", "" });
         reg.addParameter({ ArgTypeEnum::Button, "执行", "", "" });
+        reg.addParameter({ ArgTypeEnum::Paths, "输入文件", "", "" });
     }
 };
 }
@@ -92,6 +94,9 @@ TEST_CASE("Selection parameter requires typed selections and preserves values on
 
 TEST_CASE("Feature parameter snapshots preserve typed values without emitting events", "[parameters][Qt]")
 {
+    int argc = 0;
+    QCoreApplication app(argc, nullptr);
+    QJSEngine engine;
     core::EventBus bus;
     ModelLayer model_layer;
     systems::feature::FeatureSystem system(model_layer, bus);
@@ -102,7 +107,7 @@ TEST_CASE("Feature parameter snapshots preserve typed values without emitting ev
     int notifications = 0;
     auto subscription = bus.subscribe<systems::feature::ParameterChangedEvent>([&](const auto&) { ++notifications; });
     auto values = adaptor.getParameterValues("SnapshotTest");
-    REQUIRE(values.size() == 7);
+    REQUIRE(values.size() == 8);
     CHECK(values[0].toLongLong() == 4);
     CHECK(values[1].toDouble() == 1.5);
     CHECK(values[2].toString() == QStringLiteral("初始值"));
@@ -110,17 +115,26 @@ TEST_CASE("Feature parameter snapshots preserve typed values without emitting ev
     CHECK(values[4].toString() == QStringLiteral("input.obj"));
     CHECK(values[5].toInt() == 1);
     CHECK(values[6].toInt() == 0);
+    CHECK(values[7].toStringList().isEmpty());
     CHECK(notifications == 0);
     REQUIRE(adaptor.setParameter("SnapshotTest", 0, 42));
     REQUIRE(adaptor.setParameter("SnapshotTest", 3, false));
     REQUIRE(adaptor.setParameter("SnapshotTest", 4, QStringLiteral("模型.obj")));
     REQUIRE(adaptor.setParameter("SnapshotTest", 5, 0));
+    const QStringList paths { QStringLiteral("模型 a%20#.obj"), QStringLiteral("other.obj") };
+    REQUIRE(adaptor.setParameter("SnapshotTest", 7, paths));
+    REQUIRE(adaptor.setParameter("SnapshotTest", 7, QVariant::fromValue(engine.toScriptValue(paths))));
+    CHECK_FALSE(adaptor.setParameter("SnapshotTest", 7, "single.obj"));
+    CHECK_FALSE(adaptor.setParameter("SnapshotTest", 7, QVariantList { "valid.obj", 42 }));
     values = adaptor.getParameterValues("SnapshotTest");
     CHECK(values[0].toLongLong() == 42);
     CHECK_FALSE(values[3].toBool());
     CHECK(values[4].toString() == QStringLiteral("模型.obj"));
     CHECK(values[5].toInt() == 0);
-    CHECK(notifications == 4);
+    CHECK(values[7].toStringList() == paths);
+    REQUIRE(adaptor.setParameter("SnapshotTest", 7, QStringList { }));
+    CHECK(adaptor.getParameterValues("SnapshotTest")[7].toStringList().isEmpty());
+    CHECK(notifications == 7);
     CHECK(adaptor.getParameterValues("missing").isEmpty());
     system.unregisterHandler(meta);
 }

@@ -6,6 +6,7 @@
 #include "QSelection.h"
 #include <QQmlEngine>
 
+#include <QFileInfo>
 #include <QMetaObject>
 #include <spdlog/spdlog.h>
 
@@ -33,6 +34,11 @@ QVariant parameterToQVariant(const core::ArgObject& value)
     } else if (const auto* v = value.get<ArgTypeEnum::Path>()) {
         const auto path = v->u8string();
         q_value = QString::fromUtf8(reinterpret_cast<const char*>(path.data()), static_cast<qsizetype>(path.size()));
+    } else if (const auto* v = value.get<ArgTypeEnum::Paths>()) {
+        QStringList paths;
+        for (const auto& path : *v)
+            paths.append(QFileInfo(path).filePath());
+        q_value = paths;
     } else if (const auto* v = value.get<ArgTypeEnum::Selector>()) {
         auto* selection = new QSelection;
         selection->set(*v);
@@ -97,6 +103,8 @@ QVariant QFeatureSystemAdaptor::invoke(const QString& unique_name)
 {
     return anyToQVariant(feature_system_->invoke(unique_name.toStdString()));
 }
+
+
 
 void QFeatureSystemAdaptor::notifyParameterChanged(const std::string& feature, std::size_t index, const core::ArgObject& value)
 {

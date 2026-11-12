@@ -7,6 +7,7 @@
 #define ARG_TYPE_H
 #include <filesystem>
 #include <string>
+#include <vector>
 
 // 参数类型枚举
 #include "private_ArgTypeEnum.h"
@@ -63,6 +64,10 @@ struct ArgType::TypeMap<ArgTypeEnum::Bool> {
 template <>
 struct ArgType::TypeMap<ArgTypeEnum::Path> {
     using type = std::filesystem::path;
+};
+template <>
+struct ArgType::TypeMap<ArgTypeEnum::Paths> {
+    using type = std::vector<std::filesystem::path>;
 };
 /**
  * @brief 下拉框选择类型，内容为选项索引

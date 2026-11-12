@@ -61,6 +61,8 @@ QtObject {
                 return parseFloat(content);
             case QArgType.Bool:
                 return content === "true";
+            case QArgType.Paths:
+                return [];
             case QArgType.Selector:
                 return root._emptySelection;
             case QArgType.Button:

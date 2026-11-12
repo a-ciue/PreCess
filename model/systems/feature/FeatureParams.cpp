@@ -56,6 +56,8 @@ namespace {
             return core::ArgObject::create<ArgTypeEnum::Bool>(type.content == "true");
         case ArgTypeEnum::Path:
             return core::ArgObject::create<ArgTypeEnum::Path>(std::filesystem::path(type.content));
+        case ArgTypeEnum::Paths:
+            return core::ArgObject::create<ArgTypeEnum::Paths>({ });
         case ArgTypeEnum::Combo:
             return core::ArgObject::create<ArgTypeEnum::Combo>(parseComboIndex(type.content));
         case ArgTypeEnum::Selector:
