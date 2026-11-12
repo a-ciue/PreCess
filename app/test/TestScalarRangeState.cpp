@@ -52,7 +52,8 @@ TEST_CASE("Scalar UI preferences retain identity without storing data metadata",
     RangeFixture fixture;
     CHECK(fixture.run(R"JS(
         var original = [0.25, 0.75], requests = [], cancellations = [];
-        var catalog = [{name:'point', attrType:0}, {name:'value', attrType:2}, {name:'vector', attrType:2}, {name:'point', attrType:2}];
+        var catalog = [{name:'point', attrType:0, componentCount:1}, {name:'value', attrType:2, componentCount:1},
+            {name:'vector', attrType:2, componentCount:3}, {name:'point', attrType:2, componentCount:1}];
         ranges.query = {getComponentAttriInfo: function() {return catalog;}};
         ranges.renderWindow = {
             scalarRangeInfo: function(component, attribute) { return attribute === 'vector' ? [] : original; },
@@ -107,7 +108,7 @@ TEST_CASE("Scalar UI display service shares preparation and keeps explicit actio
     RangeFixture fixture;
     CHECK(fixture.run(R"JS(
         var requests = [], cancellations = [];
-        ranges.query = {getComponentAttriInfo: function(component) {return [{name:'value', attrType:2}];}};
+        ranges.query = {getComponentAttriInfo: function(component) {return [{name:'value', attrType:2, componentCount:1}];}};
         ranges.renderWindow = {
             scalarRangeInfo: function() {return [0.25, 0.75];},
             setAttriMode: function(component, attribute, mode, args) {
@@ -134,6 +135,38 @@ TEST_CASE("Scalar UI display service shares preparation and keeps explicit actio
         ranges.renderWindow = null;
         ranges.apply(key) && ranges.activeKeys['7'] === key && !ranges.showAttribute(7, 'value')
             && requests.length === 2;
+    )JS")
+            .toBool());
+}
+
+TEST_CASE("Scalar UI lookup skips unavailable arrays without bypassing valid attributes", "[scalar-range][qml-state]")
+{
+    application();
+    RangeFixture fixture;
+    // 空数组和长度不合法的目录项都为零分量，不能遮挡后面的有效同名数组。
+    CHECK(fixture.run(R"JS(
+        var catalog = [{name:'value', attrType:0, componentCount:0}, {name:'value', attrType:2, componentCount:1}];
+        var original = [1, 3];
+        ranges.query = {getComponentAttriInfo: function() {return catalog;}};
+        ranges.renderWindow = {scalarRangeInfo: function() {return original;}};
+        var key = ranges.ensure(7, 'value');
+        ranges.save(key, Object.assign({}, ranges.parameters(key), {filtered:true}));
+        ranges.attributeInfo(7, 'value').attrType === 2 && ranges.rangeInfo(7, 'value').rangeAvailable
+            && ranges.configuration(key).display_range[0] === 1;
+    )JS")
+            .toBool());
+    // 有效多分量点属性仍优先命中，不能为了支持筛选跳到同名面属性。
+    CHECK(fixture.run(R"JS(
+        catalog[0].componentCount = 3;
+        original = [];
+        ranges.attributeInfo(7, 'value').attrType === 0 && !ranges.rangeInfo(7, 'value').rangeAvailable
+            && !('display_range' in ranges.configuration(key));
+    )JS")
+            .toBool());
+    // 全 NaN 的单分量数组仍有效；空值域不改变同名属性优先级。
+    CHECK(fixture.run(R"JS(
+        catalog[0].componentCount = 1;
+        ranges.attributeInfo(7, 'value').attrType === 0 && !ranges.rangeInfo(7, 'value').valid;
     )JS")
             .toBool());
 }

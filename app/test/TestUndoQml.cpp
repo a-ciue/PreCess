@@ -11,8 +11,10 @@
 #include "ModelLayer.h"
 #include "QFeatureInfo.h"
 #include "QModelManager.h"
+#include "QModelQuery.h"
 #include "QRenderWindow.h"
 #include "QSelection.h"
+#include "SessionQuery.h"
 #include "TreeModel.h"
 #include <QEventLoop>
 #include <QFile>
@@ -150,7 +152,7 @@ TEST_CASE("Actual scalar editor completes range actions without intermediate req
     f.engine.globalObject().setProperty("panel", f.engine.newQObject(panel.get()));
     auto setup = f.engine.evaluate(R"JS(
         var requests = [], cancellations = [];
-        ranges.query = {getComponentAttriInfo: function() {return [{name:'value', attrType:2}, {name:'vector', attrType:2}];}};
+        ranges.query = {getComponentAttriInfo: function() {return [{name:'value', attrType:2, componentCount:1}, {name:'vector', attrType:2, componentCount:3}];}};
         ranges.renderWindow = {
             scalarRangeInfo: function(component) {return component === 8 ? [10, 20] : [0.25, 0.751234567];},
             setAttriMode: function(component, attribute, mode, args) {
@@ -325,6 +327,62 @@ TEST_CASE("Actual scalar editor completes range actions without intermediate req
     auto* panel_item = qobject_cast<QQuickItem*>(panel.get());
     REQUIRE(panel_item);
     CHECK(panel_item->window() == nullptr);
+}
+
+TEST_CASE("Scalar UI skips unrenderable named attributes and applies the matching face range", "[QML][scalar-range][no-window]")
+{
+    application();
+    ModelLayer model;
+    auto component = std::make_unique<ComponentData>();
+    component->mesh = std::make_unique<MeshData>();
+    auto& mesh = *component->mesh;
+    mesh.vertex_positions_ = { { 0, 0, 0 }, { 1, 0, 0 }, { 1, 1, 0 }, { 0, 1, 0 } };
+    mesh.vertex_count_ = 4;
+    mesh.face_vertices_ = { 0, 1, 2, 0, 2, 3 };
+    mesh.face_vertices_offset_ = { 0, 3, 6 };
+    mesh.face_attributes_["value"] = { 0.25, 0.75 };
+    mesh.vertex_attributes_["value"] = { };
+    SECTION("empty point attribute") { }
+    SECTION("point attribute length does not match the point count")
+    {
+        mesh.vertex_attributes_["value"] = { 1.0 };
+    }
+    ComponentDatas components;
+    components.push_back(std::move(component));
+    const auto model_id = model.addModel("scalar lookup", std::move(components));
+    const auto component_id = model.modelById(model_id)->componentIds().front();
+    session::SessionQuery source_query(model);
+    QModelQuery query(&source_query);
+    const auto catalog = query.getComponentAttriInfo(component_id);
+    REQUIRE(catalog.size() == 2);
+    CHECK(catalog[0].toMap().value("componentCount").toInt() == 0);
+    CHECK(catalog[1].toMap().value("componentCount").toInt() == 1);
+    QRenderWindow viewport;
+    const auto data = query.getMeshDataByComponent(component_id);
+    REQUIRE(data);
+    viewport.loadMeshData(component_id, *data);
+    QQmlEngine engine;
+    auto ranges = load(engine, "ScalarRangeState.qml", { { "query", QVariant::fromValue(&query) }, { "renderWindow", QVariant::fromValue(&viewport) } });
+    engine.globalObject().setProperty("ranges", engine.newQObject(ranges.get()));
+    engine.globalObject().setProperty("componentId", component_id);
+    // 真实目录、界面能力和参数入口保持一致；只验证接受配置，不创建渲染场景。
+    auto applied = engine.evaluate(R"JS(
+        var metadata = ranges.rangeInfo(componentId, 'value');
+        var key = ranges.ensure(componentId, 'value');
+        ranges.save(key, Object.assign({}, ranges.parameters(key), {
+            displayLower:0.5, displayUpper:1, filtered:true
+        }));
+        var config = ranges.configuration(key);
+        metadata.rangeAvailable && metadata.minimum === 0.25 && metadata.maximum === 0.75
+            && ranges.attributeInfo(componentId, 'value').attrType === 2
+            && JSON.stringify(config.display_range) === '[0.5,1]'
+            && ranges.renderWindow.setAttriMode(componentId, 'value', 1, config);
+    )JS");
+    INFO(applied.toString().toStdString());
+    REQUIRE_FALSE(applied.isError());
+    REQUIRE(applied.toBool());
+
+    CHECK(viewport.window() == nullptr);
 }
 
 TEST_CASE("Actual QML synchronizes reversed mesh and geometry visibility across tree refresh", "[QML][visibility]")

@@ -17,9 +17,9 @@ QtObject {
         return JSON.stringify([component, attribute]);
     }
 
-    // 属性目录沿用点、边、面、体的基线顺序，首个同名项决定界面能力。
+    // 跳过未生成渲染数组的目录项，再沿用点、边、面、体的同名查找顺序。
     function attributeInfo(component, attribute) {
-        return query ? query.getComponentAttriInfo(component).find(item => item.name === attribute) : null;
+        return query ? query.getComponentAttriInfo(component).find(item => item.name === attribute && item.componentCount > 0) : null;
     }
 
     // 元信息按当前数据查询，不写入历史偏好；窗口尚未建立时返回不可用值域。
