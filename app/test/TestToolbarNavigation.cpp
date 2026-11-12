@@ -253,6 +253,13 @@ TEST_CASE("Qt feature information exposes navigation as JavaScript arrays", "[na
     REQUIRE_FALSE(result.isError());
     CHECK(info.label() == "Mesh generator");
     CHECK(result.toString() == R"({"names":["Mesher"],"icon":"qrc:/plugin/mesher.svg","order":-10,"other":0})");
+    result = engine.evaluate(R"JS(
+        JSON.stringify(buildEntries([
+            {name: "Import", file_operation: true}, {name: "Ordinary", file_operation: false}
+        ], []).map(entry => entry.id))
+    )JS");
+    REQUIRE_FALSE(result.isError());
+    CHECK(result.toString() == "[\"feature:Ordinary\"]");
 }
 
 TEST_CASE("Feature navigation aggregates generic entries and shares executable children", "[navigation][feature]")
