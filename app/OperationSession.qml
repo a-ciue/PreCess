@@ -51,7 +51,7 @@ QtObject {
 
     function applyOperation(operation) {
         const identity = operation && operation.isFeature && operation.info ? JSON.stringify([operation.entryId || "", operation.info.name]) : "";
-        const schema = identity ? JSON.stringify([operation.info.arg_types.map(arg => [arg.name, arg.type, arg.content]), operation.categoryId && operation.info.category_defaults ? operation.info.category_defaults[operation.categoryId] : null, operation.defaultParameters]) : "";
+        const schema = identity ? JSON.stringify([operation.info.arg_types.map(arg => [arg.name, arg.type, arg.content]), operation.categoryId && operation.info.category_defaults ? operation.info.category_defaults[operation.categoryId] : null]) : "";
         const preserveParameters = identity !== "" && identity === root._parameterIdentity && schema === root._parameterSchema;
         // 切换模型时控件可能同步更新文本；此期间只同步快照，不接受控件反向写入。
         root._switchingOperation = true;
