@@ -18,11 +18,10 @@ Item {
     readonly property var importTypes: featureSystem.importFileTypes || []
     readonly property var exportTypes: featureSystem.exportFileTypes || []
     readonly property bool choosingType: typePopup.visible
-    readonly property bool choosingExportPath: isWasm && _candidates.length > 0 && _candidates[0].direction === "export"
+    readonly property bool choosingExportPath: isWasm && _types.length > 0 && _types[0].direction === "export"
     property var currentPaths: []
     property var _operation: null
-    property var _candidates: []
-    property var _dialogTypes: []
+    property var _types: []
     property var _afterTask: null
     signal parametersRequested
 
@@ -43,8 +42,8 @@ Item {
             QWasmBridge.pickFile(accept, true);
             return;
         }
-        _dialogTypes = Array.from(importTypes);
-        importDialog.nameFilters = [qsTr("所有文件 (*)")].concat(filters(_dialogTypes));
+        _types = Array.from(importTypes);
+        importDialog.nameFilters = [qsTr("所有文件 (*)")].concat(filters(_types));
         importDialog.selectedNameFilter.index = 0;
         importDialog.open();
     }
@@ -57,67 +56,44 @@ Item {
             taskStatus.reportFailure(qsTr("没有可用的导出功能。"));
             return;
         }
-        _dialogTypes = Array.from(exportTypes);
+        _types = Array.from(exportTypes);
         if (isWasm) {
-            _candidates = _dialogTypes;
             typeCombo.currentIndex = 0;
             if (suggestedName)
                 nameField.text = suggestedName;
             typePopup.open();
             return;
         }
-        exportDialog.nameFilters = filters(_dialogTypes);
+        exportDialog.nameFilters = filters(_types);
         if (suggestedName)
             exportDialog.selectedFile = exportDialog.currentFolder + "/" + suggestedName;
         exportDialog.open();
     }
 
     // 同一批文件共用一个 Feature 及其参数，扩展名仅缩小候选。
-    function importFiles(urls, featureName) {
+    function importFiles(urls, selectedType) {
+        const paths = Array.from(urls).map(url => App.localFilePath(url));
         if (taskStatus.writePending) {
-            releaseFiles(Array.from(urls).map(url => App.localFilePath(url)));
+            releaseFiles(paths);
             return;
         }
         cancel();
-        chooseFile("import", Array.from(urls).map(url => App.localFilePath(url)), featureName);
-    }
-
-    function chooseFile(direction, files, featureName) {
-        const paths = Array.isArray(files) ? files : [files];
-        if (taskStatus.writePending) {
-            if (direction === "import")
-                releaseFiles(paths);
-            cancel();
-            return;
-        }
-        if (direction === "export")
-            cancel();
         currentPaths = paths;
-        const types = Array.from(direction === "import" ? importTypes : exportTypes);
-        const explicitType = featureName ? types.find(type => type.feature === featureName) : null;
-        if (featureName && !explicitType) {
-            taskStatus.reportFailure(qsTr("文件功能已注销，请重新选择。"));
-            if (direction === "import")
-                releaseFiles(paths);
-            cancel();
-            return;
-        }
-        if (explicitType) {
-            prepare(explicitType, paths);
+        if (selectedType) {
+            prepare(selectedType, paths);
             return;
         }
         const suffixes = paths.map(path => path.split(/[\\/]/).pop().split(".").pop().toLowerCase());
-        const matching = types.filter(type => suffixes.every(suffix => type.extensions.some(ext => ext.toLowerCase() === suffix)));
-        _candidates = matching.length ? matching : types;
-        if (_candidates.length === 1) {
-            prepare(_candidates[0], paths);
-        } else if (_candidates.length) {
+        const matching = importTypes.filter(type => suffixes.every(suffix => type.extensions.some(ext => ext.toLowerCase() === suffix)));
+        _types = matching.length ? matching : Array.from(importTypes);
+        if (_types.length === 1) {
+            prepare(_types[0], paths);
+        } else if (_types.length) {
             typeCombo.currentIndex = 0;
             typePopup.open();
         } else {
             taskStatus.reportFailure(qsTr("没有可用的文件功能。"));
-            if (direction === "import")
-                releaseFiles(paths);
+            releaseFiles(paths);
             cancel();
         }
     }
@@ -130,7 +106,8 @@ Item {
             return;
         }
         const name = type.feature;
-        const info = featureSystem.featuresInfo.find(item => item.name === name);
+        const types = type.direction === "import" ? importTypes : exportTypes;
+        const info = types.some(item => item.feature === name) ? featureSystem.featuresInfo.find(item => item.name === name) : null;
         if (!info) {
             taskStatus.reportFailure(qsTr("文件功能已注销，请重新选择。"));
             if (type.direction === "import")
@@ -191,7 +168,7 @@ Item {
     }
 
     function cancel() {
-        if (choosingType && _candidates[0].direction === "import")
+        if (choosingType && _types[0].direction === "import")
             releaseFiles(currentPaths);
         typePopup.close();
     }
@@ -259,17 +236,17 @@ Item {
         id: importDialog
         fileMode: FileDialog.OpenFiles
         onAccepted: {
-            const type = root._dialogTypes[selectedNameFilter.index - 1];
-            root.importFiles(selectedFiles, type ? type.feature : "");
+            const type = root._types[selectedNameFilter.index - 1];
+            root.importFiles(selectedFiles, type);
         }
     }
     FileDialog {
         id: exportDialog
         fileMode: FileDialog.SaveFile
         onAccepted: {
-            const type = root._dialogTypes[selectedNameFilter.index];
+            const type = root._types[selectedNameFilter.index];
             if (type)
-                root.chooseFile("export", App.localFilePath(selectedFile), type.feature);
+                root.prepare(type, [App.localFilePath(selectedFile)]);
         }
     }
     Popup {
@@ -303,13 +280,13 @@ Item {
             ComboBox {
                 id: typeCombo
                 objectName: "fileTypeCombo"
-                model: root._candidates
+                model: root._types
                 textRole: "display_name"
                 Layout.fillWidth: true
                 onCurrentIndexChanged: {
                     if (!root.choosingExportPath)
                         return;
-                    const type = root._candidates[currentIndex];
+                    const type = root._types[currentIndex];
                     if (!type)
                         return;
                     const ext = type.extensions.length ? "." + type.extensions[0] : "";
@@ -328,7 +305,7 @@ Item {
                 Button {
                     text: qsTr("下一步")
                     onClicked: {
-                        const type = root._candidates[typeCombo.currentIndex];
+                        const type = root._types[typeCombo.currentIndex];
                         let paths = root.currentPaths;
                         if (root.choosingExportPath) {
                             let file_name = nameField.text.trim();

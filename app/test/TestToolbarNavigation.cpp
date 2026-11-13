@@ -315,6 +315,7 @@ TEST_CASE("File completion follows accepted submission without creating windows"
             }
             Component.onCompleted: App.registry.renderWindow = viewport
             function selectFile() { importFiles(["file:///C:/input%20one.dat", "file:///C:/input%20two.dat"]) }
+            function selectExplicitFile() { importFiles(["explicit.dat"], importTypes.find(type => type.feature === "Completion")) }
             function rejectBusyDrop() { taskStatus.writePending = true; importFiles(["file:///C:/busy.dat"]); taskStatus.writePending = false }
             function executeFile() { return App.activeOperation.execute() }
             function finishFile() { taskStatus.taskFinished() }
@@ -359,6 +360,11 @@ TEST_CASE("File completion follows accepted submission without creating windows"
     invoke("executeFile");
     invoke("cancelFile");
     CHECK(resets() == 2);
+    auto other_handler = std::make_unique<FileCompletionFeature>();
+    REQUIRE(system.registerHandler({ "Other" }, systems::feature::FeatureSystem::SystemHandlerPtr { other_handler.release() }));
+    invoke("selectExplicitFile");
+    CHECK(adaptor.getParameterValues("Completion").front().toStringList() == QStringList { "explicit.dat" });
+    CHECK(adaptor.getParameterValues("Other").front().toStringList().isEmpty());
     invoke("clearFile");
     CHECK(QGuiApplication::allWindows().size() == windows);
 }
