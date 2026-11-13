@@ -12,3 +12,5 @@ precess_plugin_link_libraries(StepModelPlugin
     TKCAF
     TKLCAF
 )
+
+add_subdirectory(test)

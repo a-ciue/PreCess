@@ -12,6 +12,7 @@
 #include "ModelLayer.h"
 
 #include <BRep_Builder.hxx>
+#include <BRepBuilderAPI_Copy.hxx>
 #include <IGESCAFControl_Reader.hxx>
 #include <IGESControl_Writer.hxx>
 #include <TDocStd_Document.hxx>
@@ -76,7 +77,8 @@ void IgesModelHandler::write_components(const ModelLayer& mgr,
             spdlog::warn("IgesModelHandler: component {} has no geometry(rootShape), skip", cid);
             continue;
         }
-        shapes.push_back(*comp->geometry->rootShape);
+        // 重建拓扑并复用只读曲线曲面；几何 BRep 不携带原离散缓存。
+        shapes.push_back(BRepBuilderAPI_Copy(*comp->geometry->rootShape, false, false).Shape());
     }
 
     if (shapes.empty()) {
