@@ -226,7 +226,7 @@ $(function() {
 <div class="line"><a id="l00144" name="l00144"></a><span class="lineno">  144</span> </div>
 <div class="line"><a id="l00145" name="l00145"></a><span class="lineno">  145</span><span class="preprocessor">#ifdef TINYOBJLOADER_USE_DOUBLE</span></div>
 <div class="line"><a id="l00146" name="l00146"></a><span class="lineno">  146</span><span class="comment">//#pragma message &quot;using double&quot;</span></div>
-<div class="line"><a id="l00147" name="l00147"></a><span class="lineno">  147</span><span class="keyword">typedef</span> <span class="keywordtype">double</span> <a class="code hl_typedef" href="namespacetinyobj.html#ad5ca7469ff56bf0d8423120cfd99adce">real_t</a>;</div>
+<div class="line"><a id="l00147" name="l00147"></a><span class="lineno">  147</span><span class="keyword">typedef</span> <span class="keywordtype">double</span> real_t;</div>
 <div class="line"><a id="l00148" name="l00148"></a><span class="lineno">  148</span><span class="preprocessor">#else</span></div>
 <div class="line"><a id="l00149" name="l00149"></a><span class="lineno">  149</span><span class="comment">//#pragma message &quot;using float&quot;</span></div>
 <div class="line"><a id="l00150" name="l00150"></a><span class="lineno"><a class="line" href="namespacetinyobj.html#ad5ca7469ff56bf0d8423120cfd99adce">  150</a></span><span class="keyword">typedef</span> <span class="keywordtype">float</span> <a class="code hl_typedef" href="namespacetinyobj.html#ad5ca7469ff56bf0d8423120cfd99adce">real_t</a>;</div>
@@ -242,7 +242,7 @@ $(function() {
 <div class="line"><a id="l00159" name="l00159"></a><span class="lineno"><a class="line" href="namespacetinyobj.html#a5c9f207e1f880a48bac0a3b69f16d7f8af2cb2d4e7551e713593382c4690aa665">  159</a></span>  <a class="code hl_enumvalue" href="namespacetinyobj.html#a5c9f207e1f880a48bac0a3b69f16d7f8af2cb2d4e7551e713593382c4690aa665">TEXTURE_TYPE_CUBE_BACK</a>,</div>
 <div class="line"><a id="l00160" name="l00160"></a><span class="lineno"><a class="line" href="namespacetinyobj.html#a5c9f207e1f880a48bac0a3b69f16d7f8a01f908bcfb745ad0d97d84b8cacc6d30">  160</a></span>  <a class="code hl_enumvalue" href="namespacetinyobj.html#a5c9f207e1f880a48bac0a3b69f16d7f8a01f908bcfb745ad0d97d84b8cacc6d30">TEXTURE_TYPE_CUBE_LEFT</a>,</div>
 <div class="line"><a id="l00161" name="l00161"></a><span class="lineno"><a class="line" href="namespacetinyobj.html#a5c9f207e1f880a48bac0a3b69f16d7f8a7709b5986f04e87ffbdc9bd7280d261c">  161</a></span>  <a class="code hl_enumvalue" href="namespacetinyobj.html#a5c9f207e1f880a48bac0a3b69f16d7f8a7709b5986f04e87ffbdc9bd7280d261c">TEXTURE_TYPE_CUBE_RIGHT</a></div>
-<div class="line"><a id="l00162" name="l00162"></a><span class="lineno">  162</span>} <a class="code hl_enumeration" href="namespacetinyobj.html#a5c9f207e1f880a48bac0a3b69f16d7f8">texture_type_t</a>;</div>
+<div class="line"><a id="l00162" name="l00162"></a><span class="lineno">  162</span>} texture_type_t;</div>
 </div>
 <div class="line"><a id="l00163" name="l00163"></a><span class="lineno">  163</span> </div>
 <div class="foldopen" id="foldopen00164" data-start="{" data-end="};">
@@ -342,69 +342,69 @@ $(function() {
 <div class="line"><a id="l00255" name="l00255"></a><span class="lineno">  255</span> </div>
 <div class="line"><a id="l00256" name="l00256"></a><span class="lineno">  256</span>  std::array&lt;double, 3&gt; GetSpecular() {</div>
 <div class="line"><a id="l00257" name="l00257"></a><span class="lineno">  257</span>    std::array&lt;double, 3&gt; values;</div>
-<div class="line"><a id="l00258" name="l00258"></a><span class="lineno">  258</span>    values[0] = double(<a class="code hl_variable" href="structtinyobj_1_1material__t.html#ac03664c37a93e4da3441036abd0ad153">specular</a>[0]);</div>
-<div class="line"><a id="l00259" name="l00259"></a><span class="lineno">  259</span>    values[1] = double(<a class="code hl_variable" href="structtinyobj_1_1material__t.html#ac03664c37a93e4da3441036abd0ad153">specular</a>[1]);</div>
-<div class="line"><a id="l00260" name="l00260"></a><span class="lineno">  260</span>    values[2] = double(<a class="code hl_variable" href="structtinyobj_1_1material__t.html#ac03664c37a93e4da3441036abd0ad153">specular</a>[2]);</div>
+<div class="line"><a id="l00258" name="l00258"></a><span class="lineno">  258</span>    values[0] = double(specular[0]);</div>
+<div class="line"><a id="l00259" name="l00259"></a><span class="lineno">  259</span>    values[1] = double(specular[1]);</div>
+<div class="line"><a id="l00260" name="l00260"></a><span class="lineno">  260</span>    values[2] = double(specular[2]);</div>
 <div class="line"><a id="l00261" name="l00261"></a><span class="lineno">  261</span> </div>
 <div class="line"><a id="l00262" name="l00262"></a><span class="lineno">  262</span>    <span class="keywordflow">return</span> values;</div>
 <div class="line"><a id="l00263" name="l00263"></a><span class="lineno">  263</span>  }</div>
 <div class="line"><a id="l00264" name="l00264"></a><span class="lineno">  264</span> </div>
 <div class="line"><a id="l00265" name="l00265"></a><span class="lineno">  265</span>  std::array&lt;double, 3&gt; GetTransmittance() {</div>
 <div class="line"><a id="l00266" name="l00266"></a><span class="lineno">  266</span>    std::array&lt;double, 3&gt; values;</div>
-<div class="line"><a id="l00267" name="l00267"></a><span class="lineno">  267</span>    values[0] = double(<a class="code hl_variable" href="structtinyobj_1_1material__t.html#ab6d488962642d79b409bb831d9f2b1f3">transmittance</a>[0]);</div>
-<div class="line"><a id="l00268" name="l00268"></a><span class="lineno">  268</span>    values[1] = double(<a class="code hl_variable" href="structtinyobj_1_1material__t.html#ab6d488962642d79b409bb831d9f2b1f3">transmittance</a>[1]);</div>
-<div class="line"><a id="l00269" name="l00269"></a><span class="lineno">  269</span>    values[2] = double(<a class="code hl_variable" href="structtinyobj_1_1material__t.html#ab6d488962642d79b409bb831d9f2b1f3">transmittance</a>[2]);</div>
+<div class="line"><a id="l00267" name="l00267"></a><span class="lineno">  267</span>    values[0] = double(transmittance[0]);</div>
+<div class="line"><a id="l00268" name="l00268"></a><span class="lineno">  268</span>    values[1] = double(transmittance[1]);</div>
+<div class="line"><a id="l00269" name="l00269"></a><span class="lineno">  269</span>    values[2] = double(transmittance[2]);</div>
 <div class="line"><a id="l00270" name="l00270"></a><span class="lineno">  270</span> </div>
 <div class="line"><a id="l00271" name="l00271"></a><span class="lineno">  271</span>    <span class="keywordflow">return</span> values;</div>
 <div class="line"><a id="l00272" name="l00272"></a><span class="lineno">  272</span>  }</div>
 <div class="line"><a id="l00273" name="l00273"></a><span class="lineno">  273</span> </div>
 <div class="line"><a id="l00274" name="l00274"></a><span class="lineno">  274</span>  std::array&lt;double, 3&gt; GetEmission() {</div>
 <div class="line"><a id="l00275" name="l00275"></a><span class="lineno">  275</span>    std::array&lt;double, 3&gt; values;</div>
-<div class="line"><a id="l00276" name="l00276"></a><span class="lineno">  276</span>    values[0] = double(<a class="code hl_variable" href="structtinyobj_1_1material__t.html#a6ceb4407ddc81f6750eee96d12d784e8">emission</a>[0]);</div>
-<div class="line"><a id="l00277" name="l00277"></a><span class="lineno">  277</span>    values[1] = double(<a class="code hl_variable" href="structtinyobj_1_1material__t.html#a6ceb4407ddc81f6750eee96d12d784e8">emission</a>[1]);</div>
-<div class="line"><a id="l00278" name="l00278"></a><span class="lineno">  278</span>    values[2] = double(<a class="code hl_variable" href="structtinyobj_1_1material__t.html#a6ceb4407ddc81f6750eee96d12d784e8">emission</a>[2]);</div>
+<div class="line"><a id="l00276" name="l00276"></a><span class="lineno">  276</span>    values[0] = double(emission[0]);</div>
+<div class="line"><a id="l00277" name="l00277"></a><span class="lineno">  277</span>    values[1] = double(emission[1]);</div>
+<div class="line"><a id="l00278" name="l00278"></a><span class="lineno">  278</span>    values[2] = double(emission[2]);</div>
 <div class="line"><a id="l00279" name="l00279"></a><span class="lineno">  279</span> </div>
 <div class="line"><a id="l00280" name="l00280"></a><span class="lineno">  280</span>    <span class="keywordflow">return</span> values;</div>
 <div class="line"><a id="l00281" name="l00281"></a><span class="lineno">  281</span>  }</div>
 <div class="line"><a id="l00282" name="l00282"></a><span class="lineno">  282</span> </div>
 <div class="line"><a id="l00283" name="l00283"></a><span class="lineno">  283</span>  std::array&lt;double, 3&gt; GetAmbient() {</div>
 <div class="line"><a id="l00284" name="l00284"></a><span class="lineno">  284</span>    std::array&lt;double, 3&gt; values;</div>
-<div class="line"><a id="l00285" name="l00285"></a><span class="lineno">  285</span>    values[0] = double(<a class="code hl_variable" href="structtinyobj_1_1material__t.html#ac69088b2904edf45631e3e56329f4549">ambient</a>[0]);</div>
-<div class="line"><a id="l00286" name="l00286"></a><span class="lineno">  286</span>    values[1] = double(<a class="code hl_variable" href="structtinyobj_1_1material__t.html#ac69088b2904edf45631e3e56329f4549">ambient</a>[1]);</div>
-<div class="line"><a id="l00287" name="l00287"></a><span class="lineno">  287</span>    values[2] = double(<a class="code hl_variable" href="structtinyobj_1_1material__t.html#ac69088b2904edf45631e3e56329f4549">ambient</a>[2]);</div>
+<div class="line"><a id="l00285" name="l00285"></a><span class="lineno">  285</span>    values[0] = double(ambient[0]);</div>
+<div class="line"><a id="l00286" name="l00286"></a><span class="lineno">  286</span>    values[1] = double(ambient[1]);</div>
+<div class="line"><a id="l00287" name="l00287"></a><span class="lineno">  287</span>    values[2] = double(ambient[2]);</div>
 <div class="line"><a id="l00288" name="l00288"></a><span class="lineno">  288</span> </div>
 <div class="line"><a id="l00289" name="l00289"></a><span class="lineno">  289</span>    <span class="keywordflow">return</span> values;</div>
 <div class="line"><a id="l00290" name="l00290"></a><span class="lineno">  290</span>  }</div>
 <div class="line"><a id="l00291" name="l00291"></a><span class="lineno">  291</span> </div>
 <div class="line"><a id="l00292" name="l00292"></a><span class="lineno">  292</span>  <span class="keywordtype">void</span> SetDiffuse(std::array&lt;double, 3&gt; &amp;a) {</div>
-<div class="line"><a id="l00293" name="l00293"></a><span class="lineno">  293</span>    <a class="code hl_variable" href="structtinyobj_1_1material__t.html#a783cdfe69d52d4011bdcad54869ac453">diffuse</a>[0] = <a class="code hl_typedef" href="namespacetinyobj.html#ad5ca7469ff56bf0d8423120cfd99adce">real_t</a>(a[0]);</div>
-<div class="line"><a id="l00294" name="l00294"></a><span class="lineno">  294</span>    <a class="code hl_variable" href="structtinyobj_1_1material__t.html#a783cdfe69d52d4011bdcad54869ac453">diffuse</a>[1] = <a class="code hl_typedef" href="namespacetinyobj.html#ad5ca7469ff56bf0d8423120cfd99adce">real_t</a>(a[1]);</div>
-<div class="line"><a id="l00295" name="l00295"></a><span class="lineno">  295</span>    <a class="code hl_variable" href="structtinyobj_1_1material__t.html#a783cdfe69d52d4011bdcad54869ac453">diffuse</a>[2] = <a class="code hl_typedef" href="namespacetinyobj.html#ad5ca7469ff56bf0d8423120cfd99adce">real_t</a>(a[2]);</div>
+<div class="line"><a id="l00293" name="l00293"></a><span class="lineno">  293</span>    diffuse[0] = <a class="code hl_typedef" href="namespacetinyobj.html#ad5ca7469ff56bf0d8423120cfd99adce">real_t</a>(a[0]);</div>
+<div class="line"><a id="l00294" name="l00294"></a><span class="lineno">  294</span>    diffuse[1] = <a class="code hl_typedef" href="namespacetinyobj.html#ad5ca7469ff56bf0d8423120cfd99adce">real_t</a>(a[1]);</div>
+<div class="line"><a id="l00295" name="l00295"></a><span class="lineno">  295</span>    diffuse[2] = <a class="code hl_typedef" href="namespacetinyobj.html#ad5ca7469ff56bf0d8423120cfd99adce">real_t</a>(a[2]);</div>
 <div class="line"><a id="l00296" name="l00296"></a><span class="lineno">  296</span>  }</div>
 <div class="line"><a id="l00297" name="l00297"></a><span class="lineno">  297</span> </div>
 <div class="line"><a id="l00298" name="l00298"></a><span class="lineno">  298</span>  <span class="keywordtype">void</span> SetAmbient(std::array&lt;double, 3&gt; &amp;a) {</div>
-<div class="line"><a id="l00299" name="l00299"></a><span class="lineno">  299</span>    <a class="code hl_variable" href="structtinyobj_1_1material__t.html#ac69088b2904edf45631e3e56329f4549">ambient</a>[0] = <a class="code hl_typedef" href="namespacetinyobj.html#ad5ca7469ff56bf0d8423120cfd99adce">real_t</a>(a[0]);</div>
-<div class="line"><a id="l00300" name="l00300"></a><span class="lineno">  300</span>    <a class="code hl_variable" href="structtinyobj_1_1material__t.html#ac69088b2904edf45631e3e56329f4549">ambient</a>[1] = <a class="code hl_typedef" href="namespacetinyobj.html#ad5ca7469ff56bf0d8423120cfd99adce">real_t</a>(a[1]);</div>
-<div class="line"><a id="l00301" name="l00301"></a><span class="lineno">  301</span>    <a class="code hl_variable" href="structtinyobj_1_1material__t.html#ac69088b2904edf45631e3e56329f4549">ambient</a>[2] = <a class="code hl_typedef" href="namespacetinyobj.html#ad5ca7469ff56bf0d8423120cfd99adce">real_t</a>(a[2]);</div>
+<div class="line"><a id="l00299" name="l00299"></a><span class="lineno">  299</span>    ambient[0] = <a class="code hl_typedef" href="namespacetinyobj.html#ad5ca7469ff56bf0d8423120cfd99adce">real_t</a>(a[0]);</div>
+<div class="line"><a id="l00300" name="l00300"></a><span class="lineno">  300</span>    ambient[1] = <a class="code hl_typedef" href="namespacetinyobj.html#ad5ca7469ff56bf0d8423120cfd99adce">real_t</a>(a[1]);</div>
+<div class="line"><a id="l00301" name="l00301"></a><span class="lineno">  301</span>    ambient[2] = <a class="code hl_typedef" href="namespacetinyobj.html#ad5ca7469ff56bf0d8423120cfd99adce">real_t</a>(a[2]);</div>
 <div class="line"><a id="l00302" name="l00302"></a><span class="lineno">  302</span>  }</div>
 <div class="line"><a id="l00303" name="l00303"></a><span class="lineno">  303</span> </div>
 <div class="line"><a id="l00304" name="l00304"></a><span class="lineno">  304</span>  <span class="keywordtype">void</span> SetSpecular(std::array&lt;double, 3&gt; &amp;a) {</div>
-<div class="line"><a id="l00305" name="l00305"></a><span class="lineno">  305</span>    <a class="code hl_variable" href="structtinyobj_1_1material__t.html#ac03664c37a93e4da3441036abd0ad153">specular</a>[0] = <a class="code hl_typedef" href="namespacetinyobj.html#ad5ca7469ff56bf0d8423120cfd99adce">real_t</a>(a[0]);</div>
-<div class="line"><a id="l00306" name="l00306"></a><span class="lineno">  306</span>    <a class="code hl_variable" href="structtinyobj_1_1material__t.html#ac03664c37a93e4da3441036abd0ad153">specular</a>[1] = <a class="code hl_typedef" href="namespacetinyobj.html#ad5ca7469ff56bf0d8423120cfd99adce">real_t</a>(a[1]);</div>
-<div class="line"><a id="l00307" name="l00307"></a><span class="lineno">  307</span>    <a class="code hl_variable" href="structtinyobj_1_1material__t.html#ac03664c37a93e4da3441036abd0ad153">specular</a>[2] = <a class="code hl_typedef" href="namespacetinyobj.html#ad5ca7469ff56bf0d8423120cfd99adce">real_t</a>(a[2]);</div>
+<div class="line"><a id="l00305" name="l00305"></a><span class="lineno">  305</span>    specular[0] = <a class="code hl_typedef" href="namespacetinyobj.html#ad5ca7469ff56bf0d8423120cfd99adce">real_t</a>(a[0]);</div>
+<div class="line"><a id="l00306" name="l00306"></a><span class="lineno">  306</span>    specular[1] = <a class="code hl_typedef" href="namespacetinyobj.html#ad5ca7469ff56bf0d8423120cfd99adce">real_t</a>(a[1]);</div>
+<div class="line"><a id="l00307" name="l00307"></a><span class="lineno">  307</span>    specular[2] = <a class="code hl_typedef" href="namespacetinyobj.html#ad5ca7469ff56bf0d8423120cfd99adce">real_t</a>(a[2]);</div>
 <div class="line"><a id="l00308" name="l00308"></a><span class="lineno">  308</span>  }</div>
 <div class="line"><a id="l00309" name="l00309"></a><span class="lineno">  309</span> </div>
 <div class="line"><a id="l00310" name="l00310"></a><span class="lineno">  310</span>  <span class="keywordtype">void</span> SetTransmittance(std::array&lt;double, 3&gt; &amp;a) {</div>
-<div class="line"><a id="l00311" name="l00311"></a><span class="lineno">  311</span>    <a class="code hl_variable" href="structtinyobj_1_1material__t.html#ab6d488962642d79b409bb831d9f2b1f3">transmittance</a>[0] = <a class="code hl_typedef" href="namespacetinyobj.html#ad5ca7469ff56bf0d8423120cfd99adce">real_t</a>(a[0]);</div>
-<div class="line"><a id="l00312" name="l00312"></a><span class="lineno">  312</span>    <a class="code hl_variable" href="structtinyobj_1_1material__t.html#ab6d488962642d79b409bb831d9f2b1f3">transmittance</a>[1] = <a class="code hl_typedef" href="namespacetinyobj.html#ad5ca7469ff56bf0d8423120cfd99adce">real_t</a>(a[1]);</div>
-<div class="line"><a id="l00313" name="l00313"></a><span class="lineno">  313</span>    <a class="code hl_variable" href="structtinyobj_1_1material__t.html#ab6d488962642d79b409bb831d9f2b1f3">transmittance</a>[2] = <a class="code hl_typedef" href="namespacetinyobj.html#ad5ca7469ff56bf0d8423120cfd99adce">real_t</a>(a[2]);</div>
+<div class="line"><a id="l00311" name="l00311"></a><span class="lineno">  311</span>    transmittance[0] = <a class="code hl_typedef" href="namespacetinyobj.html#ad5ca7469ff56bf0d8423120cfd99adce">real_t</a>(a[0]);</div>
+<div class="line"><a id="l00312" name="l00312"></a><span class="lineno">  312</span>    transmittance[1] = <a class="code hl_typedef" href="namespacetinyobj.html#ad5ca7469ff56bf0d8423120cfd99adce">real_t</a>(a[1]);</div>
+<div class="line"><a id="l00313" name="l00313"></a><span class="lineno">  313</span>    transmittance[2] = <a class="code hl_typedef" href="namespacetinyobj.html#ad5ca7469ff56bf0d8423120cfd99adce">real_t</a>(a[2]);</div>
 <div class="line"><a id="l00314" name="l00314"></a><span class="lineno">  314</span>  }</div>
 <div class="line"><a id="l00315" name="l00315"></a><span class="lineno">  315</span> </div>
 <div class="line"><a id="l00316" name="l00316"></a><span class="lineno">  316</span>  std::string GetCustomParameter(<span class="keyword">const</span> std::string &amp;key) {</div>
 <div class="line"><a id="l00317" name="l00317"></a><span class="lineno">  317</span>    std::map&lt;std::string, std::string&gt;::const_iterator it =</div>
-<div class="line"><a id="l00318" name="l00318"></a><span class="lineno">  318</span>        <a class="code hl_variable" href="structtinyobj_1_1material__t.html#a18b700227c94d410ed1aa550c7fa9226">unknown_parameter</a>.find(key);</div>
+<div class="line"><a id="l00318" name="l00318"></a><span class="lineno">  318</span>        unknown_parameter.find(key);</div>
 <div class="line"><a id="l00319" name="l00319"></a><span class="lineno">  319</span> </div>
-<div class="line"><a id="l00320" name="l00320"></a><span class="lineno">  320</span>    <span class="keywordflow">if</span> (it != <a class="code hl_variable" href="structtinyobj_1_1material__t.html#a18b700227c94d410ed1aa550c7fa9226">unknown_parameter</a>.end()) {</div>
+<div class="line"><a id="l00320" name="l00320"></a><span class="lineno">  320</span>    <span class="keywordflow">if</span> (it != unknown_parameter.end()) {</div>
 <div class="line"><a id="l00321" name="l00321"></a><span class="lineno">  321</span>      <span class="keywordflow">return</span> it-&gt;second;</div>
 <div class="line"><a id="l00322" name="l00322"></a><span class="lineno">  322</span>    }</div>
 <div class="line"><a id="l00323" name="l00323"></a><span class="lineno">  323</span>    <span class="keywordflow">return</span> std::string();</div>
@@ -744,7 +744,7 @@ $(function() {
 <div class="line"><a id="l00692" name="l00692"></a><span class="lineno">  692</span> </div>
 <div class="line"><a id="l00693" name="l00693"></a><span class="lineno">  693</span><span class="keyword">namespace </span><a class="code hl_namespace" href="namespacetinyobj.html">tinyobj</a> {</div>
 <div class="line"><a id="l00694" name="l00694"></a><span class="lineno">  694</span> </div>
-<div class="line"><a id="l00695" name="l00695"></a><span class="lineno">  695</span><a class="code hl_function" href="classtinyobj_1_1MaterialReader.html#afd62ceccd9b373801226e037ea1a5f9f">MaterialReader::~MaterialReader</a>() {}</div>
+<div class="line"><a id="l00695" name="l00695"></a><span class="lineno">  695</span>MaterialReader::~MaterialReader() {}</div>
 <div class="line"><a id="l00696" name="l00696"></a><span class="lineno">  696</span> </div>
 <div class="line"><a id="l00697" name="l00697"></a><span class="lineno">  697</span><span class="keyword">struct </span>vertex_index_t {</div>
 <div class="line"><a id="l00698" name="l00698"></a><span class="lineno">  698</span>  <span class="keywordtype">int</span> v_idx, vt_idx, vn_idx;</div>
@@ -1100,7 +1100,7 @@ $(function() {
 <div class="line"><a id="l01048" name="l01048"></a><span class="lineno"> 1048</span>  <span class="keywordflow">return</span> f;</div>
 <div class="line"><a id="l01049" name="l01049"></a><span class="lineno"> 1049</span>}</div>
 <div class="line"><a id="l01050" name="l01050"></a><span class="lineno"> 1050</span> </div>
-<div class="line"><a id="l01051" name="l01051"></a><span class="lineno"> 1051</span><span class="keyword">static</span> <span class="keyword">inline</span> <span class="keywordtype">bool</span> parseReal(<span class="keyword">const</span> <span class="keywordtype">char</span> **token, <a class="code hl_typedef" href="namespacetinyobj.html#ad5ca7469ff56bf0d8423120cfd99adce">real_t</a> *out) {</div>
+<div class="line"><a id="l01051" name="l01051"></a><span class="lineno"> 1051</span><span class="keyword">static</span> <span class="keyword">inline</span> <span class="keywordtype">bool</span> parseReal(<span class="keyword">const</span> <span class="keywordtype">char</span> **token, real_t *out) {</div>
 <div class="line"><a id="l01052" name="l01052"></a><span class="lineno"> 1052</span>  (*token) += strspn((*token), <span class="stringliteral">&quot; \t&quot;</span>);</div>
 <div class="line"><a id="l01053" name="l01053"></a><span class="lineno"> 1053</span>  <span class="keyword">const</span> <span class="keywordtype">char</span> *end = (*token) + strcspn((*token), <span class="stringliteral">&quot; \t\r&quot;</span>);</div>
 <div class="line"><a id="l01054" name="l01054"></a><span class="lineno"> 1054</span>  <span class="keywordtype">double</span> val;</div>
@@ -1113,14 +1113,14 @@ $(function() {
 <div class="line"><a id="l01061" name="l01061"></a><span class="lineno"> 1061</span>  <span class="keywordflow">return</span> ret;</div>
 <div class="line"><a id="l01062" name="l01062"></a><span class="lineno"> 1062</span>}</div>
 <div class="line"><a id="l01063" name="l01063"></a><span class="lineno"> 1063</span> </div>
-<div class="line"><a id="l01064" name="l01064"></a><span class="lineno"> 1064</span><span class="keyword">static</span> <span class="keyword">inline</span> <span class="keywordtype">void</span> parseReal2(<a class="code hl_typedef" href="namespacetinyobj.html#ad5ca7469ff56bf0d8423120cfd99adce">real_t</a> *x, <a class="code hl_typedef" href="namespacetinyobj.html#ad5ca7469ff56bf0d8423120cfd99adce">real_t</a> *y, <span class="keyword">const</span> <span class="keywordtype">char</span> **token,</div>
+<div class="line"><a id="l01064" name="l01064"></a><span class="lineno"> 1064</span><span class="keyword">static</span> <span class="keyword">inline</span> <span class="keywordtype">void</span> parseReal2(real_t *x, real_t *y, <span class="keyword">const</span> <span class="keywordtype">char</span> **token,</div>
 <div class="line"><a id="l01065" name="l01065"></a><span class="lineno"> 1065</span>                              <span class="keyword">const</span> <span class="keywordtype">double</span> default_x = 0.0,</div>
 <div class="line"><a id="l01066" name="l01066"></a><span class="lineno"> 1066</span>                              <span class="keyword">const</span> <span class="keywordtype">double</span> default_y = 0.0) {</div>
 <div class="line"><a id="l01067" name="l01067"></a><span class="lineno"> 1067</span>  (*x) = parseReal(token, default_x);</div>
 <div class="line"><a id="l01068" name="l01068"></a><span class="lineno"> 1068</span>  (*y) = parseReal(token, default_y);</div>
 <div class="line"><a id="l01069" name="l01069"></a><span class="lineno"> 1069</span>}</div>
 <div class="line"><a id="l01070" name="l01070"></a><span class="lineno"> 1070</span> </div>
-<div class="line"><a id="l01071" name="l01071"></a><span class="lineno"> 1071</span><span class="keyword">static</span> <span class="keyword">inline</span> <span class="keywordtype">void</span> parseReal3(<a class="code hl_typedef" href="namespacetinyobj.html#ad5ca7469ff56bf0d8423120cfd99adce">real_t</a> *x, <a class="code hl_typedef" href="namespacetinyobj.html#ad5ca7469ff56bf0d8423120cfd99adce">real_t</a> *y, <a class="code hl_typedef" href="namespacetinyobj.html#ad5ca7469ff56bf0d8423120cfd99adce">real_t</a> *z,</div>
+<div class="line"><a id="l01071" name="l01071"></a><span class="lineno"> 1071</span><span class="keyword">static</span> <span class="keyword">inline</span> <span class="keywordtype">void</span> parseReal3(real_t *x, real_t *y, real_t *z,</div>
 <div class="line"><a id="l01072" name="l01072"></a><span class="lineno"> 1072</span>                              <span class="keyword">const</span> <span class="keywordtype">char</span> **token, <span class="keyword">const</span> <span class="keywordtype">double</span> default_x = 0.0,</div>
 <div class="line"><a id="l01073" name="l01073"></a><span class="lineno"> 1073</span>                              <span class="keyword">const</span> <span class="keywordtype">double</span> default_y = 0.0,</div>
 <div class="line"><a id="l01074" name="l01074"></a><span class="lineno"> 1074</span>                              <span class="keyword">const</span> <span class="keywordtype">double</span> default_z = 0.0) {</div>
@@ -1130,7 +1130,7 @@ $(function() {
 <div class="line"><a id="l01078" name="l01078"></a><span class="lineno"> 1078</span>}</div>
 <div class="line"><a id="l01079" name="l01079"></a><span class="lineno"> 1079</span> </div>
 <div class="line"><a id="l01080" name="l01080"></a><span class="lineno"> 1080</span><span class="preprocessor">#if 0  </span><span class="comment">// not used</span></div>
-<div class="line"><a id="l01081" name="l01081"></a><span class="lineno"> 1081</span><span class="keyword">static</span> <span class="keyword">inline</span> <span class="keywordtype">void</span> parseV(<a class="code hl_typedef" href="namespacetinyobj.html#ad5ca7469ff56bf0d8423120cfd99adce">real_t</a> *x, <a class="code hl_typedef" href="namespacetinyobj.html#ad5ca7469ff56bf0d8423120cfd99adce">real_t</a> *y, <a class="code hl_typedef" href="namespacetinyobj.html#ad5ca7469ff56bf0d8423120cfd99adce">real_t</a> *z, <a class="code hl_typedef" href="namespacetinyobj.html#ad5ca7469ff56bf0d8423120cfd99adce">real_t</a> *w,</div>
+<div class="line"><a id="l01081" name="l01081"></a><span class="lineno"> 1081</span><span class="keyword">static</span> <span class="keyword">inline</span> <span class="keywordtype">void</span> parseV(real_t *x, real_t *y, real_t *z, real_t *w,</div>
 <div class="line"><a id="l01082" name="l01082"></a><span class="lineno"> 1082</span>                          <span class="keyword">const</span> <span class="keywordtype">char</span> **token, <span class="keyword">const</span> <span class="keywordtype">double</span> default_x = 0.0,</div>
 <div class="line"><a id="l01083" name="l01083"></a><span class="lineno"> 1083</span>                          <span class="keyword">const</span> <span class="keywordtype">double</span> default_y = 0.0,</div>
 <div class="line"><a id="l01084" name="l01084"></a><span class="lineno"> 1084</span>                          <span class="keyword">const</span> <span class="keywordtype">double</span> default_z = 0.0,</div>
@@ -1145,8 +1145,8 @@ $(function() {
 <div class="line"><a id="l01093" name="l01093"></a><span class="lineno"> 1093</span><span class="comment">// Extension: parse vertex with colors(6 items)</span></div>
 <div class="line"><a id="l01094" name="l01094"></a><span class="lineno"> 1094</span><span class="comment">// Return 3: xyz, 4: xyzw, 6: xyzrgb</span></div>
 <div class="line"><a id="l01095" name="l01095"></a><span class="lineno"> 1095</span><span class="comment">// `r`: red(case 6) or [w](case 4)</span></div>
-<div class="line"><a id="l01096" name="l01096"></a><span class="lineno"> 1096</span><span class="keyword">static</span> <span class="keyword">inline</span> <span class="keywordtype">int</span> parseVertexWithColor(<a class="code hl_typedef" href="namespacetinyobj.html#ad5ca7469ff56bf0d8423120cfd99adce">real_t</a> *x, <a class="code hl_typedef" href="namespacetinyobj.html#ad5ca7469ff56bf0d8423120cfd99adce">real_t</a> *y, <a class="code hl_typedef" href="namespacetinyobj.html#ad5ca7469ff56bf0d8423120cfd99adce">real_t</a> *z,</div>
-<div class="line"><a id="l01097" name="l01097"></a><span class="lineno"> 1097</span>                                       <a class="code hl_typedef" href="namespacetinyobj.html#ad5ca7469ff56bf0d8423120cfd99adce">real_t</a> *r, <a class="code hl_typedef" href="namespacetinyobj.html#ad5ca7469ff56bf0d8423120cfd99adce">real_t</a> *g, <a class="code hl_typedef" href="namespacetinyobj.html#ad5ca7469ff56bf0d8423120cfd99adce">real_t</a> *b,</div>
+<div class="line"><a id="l01096" name="l01096"></a><span class="lineno"> 1096</span><span class="keyword">static</span> <span class="keyword">inline</span> <span class="keywordtype">int</span> parseVertexWithColor(real_t *x, real_t *y, real_t *z,</div>
+<div class="line"><a id="l01097" name="l01097"></a><span class="lineno"> 1097</span>                                       real_t *r, real_t *g, real_t *b,</div>
 <div class="line"><a id="l01098" name="l01098"></a><span class="lineno"> 1098</span>                                       <span class="keyword">const</span> <span class="keywordtype">char</span> **token,</div>
 <div class="line"><a id="l01099" name="l01099"></a><span class="lineno"> 1099</span>                                       <span class="keyword">const</span> <span class="keywordtype">double</span> default_x = 0.0,</div>
 <div class="line"><a id="l01100" name="l01100"></a><span class="lineno"> 1100</span>                                       <span class="keyword">const</span> <span class="keywordtype">double</span> default_y = 0.0,</div>
@@ -1197,7 +1197,7 @@ $(function() {
 <div class="line"><a id="l01145" name="l01145"></a><span class="lineno"> 1145</span>}</div>
 <div class="line"><a id="l01146" name="l01146"></a><span class="lineno"> 1146</span> </div>
 <div class="line"><a id="l01147" name="l01147"></a><span class="lineno"> 1147</span><span class="keyword">static</span> <span class="keyword">inline</span> <a class="code hl_enumeration" href="namespacetinyobj.html#a5c9f207e1f880a48bac0a3b69f16d7f8">texture_type_t</a> parseTextureType(</div>
-<div class="line"><a id="l01148" name="l01148"></a><span class="lineno"> 1148</span>    <span class="keyword">const</span> <span class="keywordtype">char</span> **token, <a class="code hl_enumeration" href="namespacetinyobj.html#a5c9f207e1f880a48bac0a3b69f16d7f8">texture_type_t</a> default_value = <a class="code hl_enumvalue" href="namespacetinyobj.html#a5c9f207e1f880a48bac0a3b69f16d7f8a259804f2e7bf9c39626abe6ebce6edc1">TEXTURE_TYPE_NONE</a>) {</div>
+<div class="line"><a id="l01148" name="l01148"></a><span class="lineno"> 1148</span>    <span class="keyword">const</span> <span class="keywordtype">char</span> **token, texture_type_t default_value = TEXTURE_TYPE_NONE) {</div>
 <div class="line"><a id="l01149" name="l01149"></a><span class="lineno"> 1149</span>  (*token) += strspn((*token), <span class="stringliteral">&quot; \t&quot;</span>);</div>
 <div class="line"><a id="l01150" name="l01150"></a><span class="lineno"> 1150</span>  <span class="keyword">const</span> <span class="keywordtype">char</span> *end = (*token) + strcspn((*token), <span class="stringliteral">&quot; \t\r&quot;</span>);</div>
 <div class="line"><a id="l01151" name="l01151"></a><span class="lineno"> 1151</span>  <a class="code hl_enumeration" href="namespacetinyobj.html#a5c9f207e1f880a48bac0a3b69f16d7f8">texture_type_t</a> ty = default_value;</div>
@@ -1334,7 +1334,7 @@ $(function() {
 <div class="line"><a id="l01282" name="l01282"></a><span class="lineno"> 1282</span>  <span class="keywordflow">return</span> vi;</div>
 <div class="line"><a id="l01283" name="l01283"></a><span class="lineno"> 1283</span>}</div>
 <div class="line"><a id="l01284" name="l01284"></a><span class="lineno"> 1284</span> </div>
-<div class="line"><a id="l01285" name="l01285"></a><span class="lineno"> 1285</span><span class="keywordtype">bool</span> <a class="code hl_function" href="namespacetinyobj.html#adf1a3ce4c9e43036c62ff81e031a9dab">ParseTextureNameAndOption</a>(std::string *texname, <a class="code hl_struct" href="structtinyobj_1_1texture__option__t.html">texture_option_t</a> *texopt,</div>
+<div class="line"><a id="l01285" name="l01285"></a><span class="lineno"> 1285</span><span class="keywordtype">bool</span> <a class="code hl_function" href="namespacetinyobj.html#adf1a3ce4c9e43036c62ff81e031a9dab">ParseTextureNameAndOption</a>(std::string *texname, texture_option_t *texopt,</div>
 <div class="line"><a id="l01286" name="l01286"></a><span class="lineno"> 1286</span>                               <span class="keyword">const</span> <span class="keywordtype">char</span> *linebuf) {</div>
 <div class="line"><a id="l01287" name="l01287"></a><span class="lineno"> 1287</span>  <span class="comment">// @todo { write more robust lexer and parser. }</span></div>
 <div class="line"><a id="l01288" name="l01288"></a><span class="lineno"> 1288</span>  <span class="keywordtype">bool</span> found_texname = <span class="keyword">false</span>;</div>
@@ -1373,7 +1373,7 @@ $(function() {
 <div class="line"><a id="l01321" name="l01321"></a><span class="lineno"> 1321</span>                 &amp;(texopt-&gt;turbulence[2]), &amp;token);</div>
 <div class="line"><a id="l01322" name="l01322"></a><span class="lineno"> 1322</span>    } <span class="keywordflow">else</span> <span class="keywordflow">if</span> ((0 == strncmp(token, <span class="stringliteral">&quot;-type&quot;</span>, 5)) &amp;&amp; IS_SPACE((token[5]))) {</div>
 <div class="line"><a id="l01323" name="l01323"></a><span class="lineno"> 1323</span>      token += 5;</div>
-<div class="line"><a id="l01324" name="l01324"></a><span class="lineno"> 1324</span>      texopt-&gt;type = parseTextureType((&amp;token), <a class="code hl_enumvalue" href="namespacetinyobj.html#a5c9f207e1f880a48bac0a3b69f16d7f8a259804f2e7bf9c39626abe6ebce6edc1">TEXTURE_TYPE_NONE</a>);</div>
+<div class="line"><a id="l01324" name="l01324"></a><span class="lineno"> 1324</span>      texopt-&gt;type = parseTextureType((&amp;token), TEXTURE_TYPE_NONE);</div>
 <div class="line"><a id="l01325" name="l01325"></a><span class="lineno"> 1325</span>    } <span class="keywordflow">else</span> <span class="keywordflow">if</span> ((0 == strncmp(token, <span class="stringliteral">&quot;-texres&quot;</span>, 7)) &amp;&amp; IS_SPACE((token[7]))) {</div>
 <div class="line"><a id="l01326" name="l01326"></a><span class="lineno"> 1326</span>      token += 7;</div>
 <div class="line"><a id="l01327" name="l01327"></a><span class="lineno"> 1327</span>      <span class="comment">// TODO(syoyo): Check if arg is int type.</span></div>
@@ -1420,7 +1420,7 @@ $(function() {
 <div class="line"><a id="l01368" name="l01368"></a><span class="lineno"> 1368</span>  }</div>
 <div class="line"><a id="l01369" name="l01369"></a><span class="lineno"> 1369</span>}</div>
 <div class="line"><a id="l01370" name="l01370"></a><span class="lineno"> 1370</span> </div>
-<div class="line"><a id="l01371" name="l01371"></a><span class="lineno"> 1371</span><span class="keyword">static</span> <span class="keywordtype">void</span> InitTexOpt(<a class="code hl_struct" href="structtinyobj_1_1texture__option__t.html">texture_option_t</a> *texopt, <span class="keyword">const</span> <span class="keywordtype">bool</span> is_bump) {</div>
+<div class="line"><a id="l01371" name="l01371"></a><span class="lineno"> 1371</span><span class="keyword">static</span> <span class="keywordtype">void</span> InitTexOpt(texture_option_t *texopt, <span class="keyword">const</span> <span class="keywordtype">bool</span> is_bump) {</div>
 <div class="line"><a id="l01372" name="l01372"></a><span class="lineno"> 1372</span>  <span class="keywordflow">if</span> (is_bump) {</div>
 <div class="line"><a id="l01373" name="l01373"></a><span class="lineno"> 1373</span>    texopt-&gt;imfchan = <span class="charliteral">&#39;l&#39;</span>;</div>
 <div class="line"><a id="l01374" name="l01374"></a><span class="lineno"> 1374</span>  } <span class="keywordflow">else</span> {</div>
@@ -1446,7 +1446,7 @@ $(function() {
 <div class="line"><a id="l01394" name="l01394"></a><span class="lineno"> 1394</span>  texopt-&gt;type = <a class="code hl_enumvalue" href="namespacetinyobj.html#a5c9f207e1f880a48bac0a3b69f16d7f8a259804f2e7bf9c39626abe6ebce6edc1">TEXTURE_TYPE_NONE</a>;</div>
 <div class="line"><a id="l01395" name="l01395"></a><span class="lineno"> 1395</span>}</div>
 <div class="line"><a id="l01396" name="l01396"></a><span class="lineno"> 1396</span> </div>
-<div class="line"><a id="l01397" name="l01397"></a><span class="lineno"> 1397</span><span class="keyword">static</span> <span class="keywordtype">void</span> InitMaterial(<a class="code hl_struct" href="structtinyobj_1_1material__t.html">material_t</a> *material) {</div>
+<div class="line"><a id="l01397" name="l01397"></a><span class="lineno"> 1397</span><span class="keyword">static</span> <span class="keywordtype">void</span> InitMaterial(material_t *material) {</div>
 <div class="line"><a id="l01398" name="l01398"></a><span class="lineno"> 1398</span>  InitTexOpt(&amp;material-&gt;ambient_texopt, <span class="comment">/* is_bump */</span> <span class="keyword">false</span>);</div>
 <div class="line"><a id="l01399" name="l01399"></a><span class="lineno"> 1399</span>  InitTexOpt(&amp;material-&gt;diffuse_texopt, <span class="comment">/* is_bump */</span> <span class="keyword">false</span>);</div>
 <div class="line"><a id="l01400" name="l01400"></a><span class="lineno"> 1400</span>  InitTexOpt(&amp;material-&gt;specular_texopt, <span class="comment">/* is_bump */</span> <span class="keyword">false</span>);</div>
@@ -1542,7 +1542,7 @@ $(function() {
 <div class="line"><a id="l01490" name="l01490"></a><span class="lineno"> 1490</span>}</div>
 <div class="line"><a id="l01491" name="l01491"></a><span class="lineno"> 1491</span> </div>
 <div class="line"><a id="l01492" name="l01492"></a><span class="lineno"> 1492</span><span class="comment">// TODO(syoyo): refactor function.</span></div>
-<div class="line"><a id="l01493" name="l01493"></a><span class="lineno"> 1493</span><span class="keyword">static</span> <span class="keywordtype">bool</span> exportGroupsToShape(<a class="code hl_struct" href="structtinyobj_1_1shape__t.html">shape_t</a> *shape, <span class="keyword">const</span> PrimGroup &amp;prim_group,</div>
+<div class="line"><a id="l01493" name="l01493"></a><span class="lineno"> 1493</span><span class="keyword">static</span> <span class="keywordtype">bool</span> exportGroupsToShape(shape_t *shape, <span class="keyword">const</span> PrimGroup &amp;prim_group,</div>
 <div class="line"><a id="l01494" name="l01494"></a><span class="lineno"> 1494</span>                                <span class="keyword">const</span> std::vector&lt;tag_t&gt; &amp;tags,</div>
 <div class="line"><a id="l01495" name="l01495"></a><span class="lineno"> 1495</span>                                <span class="keyword">const</span> <span class="keywordtype">int</span> material_id, <span class="keyword">const</span> std::string &amp;<a class="code hl_variable" href="TestComponentModel_8cpp.html#a4f5452c5c19395231dec92c40e3d10e1">name</a>,</div>
 <div class="line"><a id="l01496" name="l01496"></a><span class="lineno"> 1496</span>                                <span class="keywordtype">bool</span> triangulate, <span class="keyword">const</span> std::vector&lt;real_t&gt; &amp;v,</div>
@@ -1632,9 +1632,9 @@ $(function() {
 <div class="line"><a id="l01580" name="l01580"></a><span class="lineno"> 1580</span>          <a class="code hl_typedef" href="namespacetinyobj.html#ad5ca7469ff56bf0d8423120cfd99adce">real_t</a> sqr02 = e02x * e02x + e02y * e02y + e02z * e02z;</div>
 <div class="line"><a id="l01581" name="l01581"></a><span class="lineno"> 1581</span>          <a class="code hl_typedef" href="namespacetinyobj.html#ad5ca7469ff56bf0d8423120cfd99adce">real_t</a> sqr13 = e13x * e13x + e13y * e13y + e13z * e13z;</div>
 <div class="line"><a id="l01582" name="l01582"></a><span class="lineno"> 1582</span> </div>
-<div class="line"><a id="l01583" name="l01583"></a><span class="lineno"> 1583</span>          <a class="code hl_struct" href="structtinyobj_1_1index__t.html">index_t</a> idx0, idx1, idx2, idx3;</div>
+<div class="line"><a id="l01583" name="l01583"></a><span class="lineno"> 1583</span>          index_t idx0, idx1, idx2, idx3;</div>
 <div class="line"><a id="l01584" name="l01584"></a><span class="lineno"> 1584</span> </div>
-<div class="line"><a id="l01585" name="l01585"></a><span class="lineno"> 1585</span>          idx0.<a class="code hl_variable" href="structtinyobj_1_1index__t.html#a7eeb7de9f1fad091081b2b1d037c4beb">vertex_index</a> = i0.v_idx;</div>
+<div class="line"><a id="l01585" name="l01585"></a><span class="lineno"> 1585</span>          idx0.vertex_index = i0.v_idx;</div>
 <div class="line"><a id="l01586" name="l01586"></a><span class="lineno"> 1586</span>          idx0.normal_index = i0.vn_idx;</div>
 <div class="line"><a id="l01587" name="l01587"></a><span class="lineno"> 1587</span>          idx0.texcoord_index = i0.vt_idx;</div>
 <div class="line"><a id="l01588" name="l01588"></a><span class="lineno"> 1588</span>          idx1.vertex_index = i1.v_idx;</div>
@@ -1772,8 +1772,8 @@ $(function() {
 <div class="line"><a id="l01720" name="l01720"></a><span class="lineno"> 1720</span>          <span class="comment">// Reconstruct vertex_index_t</span></div>
 <div class="line"><a id="l01721" name="l01721"></a><span class="lineno"> 1721</span>          <span class="keywordflow">for</span> (<span class="keywordtype">size_t</span> k = 0; k &lt; indices.size() / 3; k++) {</div>
 <div class="line"><a id="l01722" name="l01722"></a><span class="lineno"> 1722</span>            {</div>
-<div class="line"><a id="l01723" name="l01723"></a><span class="lineno"> 1723</span>              <a class="code hl_struct" href="structtinyobj_1_1index__t.html">index_t</a> idx0, idx1, idx2;</div>
-<div class="line"><a id="l01724" name="l01724"></a><span class="lineno"> 1724</span>              idx0.<a class="code hl_variable" href="structtinyobj_1_1index__t.html#a7eeb7de9f1fad091081b2b1d037c4beb">vertex_index</a> = face.vertex_indices[indices[3 * k + 0]].v_idx;</div>
+<div class="line"><a id="l01723" name="l01723"></a><span class="lineno"> 1723</span>              index_t idx0, idx1, idx2;</div>
+<div class="line"><a id="l01724" name="l01724"></a><span class="lineno"> 1724</span>              idx0.vertex_index = face.vertex_indices[indices[3 * k + 0]].v_idx;</div>
 <div class="line"><a id="l01725" name="l01725"></a><span class="lineno"> 1725</span>              idx0.normal_index =</div>
 <div class="line"><a id="l01726" name="l01726"></a><span class="lineno"> 1726</span>                  face.vertex_indices[indices[3 * k + 0]].vn_idx;</div>
 <div class="line"><a id="l01727" name="l01727"></a><span class="lineno"> 1727</span>              idx0.texcoord_index =</div>
@@ -1964,8 +1964,8 @@ $(function() {
 <div class="line"><a id="l01912" name="l01912"></a><span class="lineno"> 1912</span> </div>
 <div class="line"><a id="l01913" name="l01913"></a><span class="lineno"> 1913</span>            <span class="comment">// this triangle is an ear</span></div>
 <div class="line"><a id="l01914" name="l01914"></a><span class="lineno"> 1914</span>            {</div>
-<div class="line"><a id="l01915" name="l01915"></a><span class="lineno"> 1915</span>              <a class="code hl_struct" href="structtinyobj_1_1index__t.html">index_t</a> idx0, idx1, idx2;</div>
-<div class="line"><a id="l01916" name="l01916"></a><span class="lineno"> 1916</span>              idx0.<a class="code hl_variable" href="structtinyobj_1_1index__t.html#a7eeb7de9f1fad091081b2b1d037c4beb">vertex_index</a> = ind[0].v_idx;</div>
+<div class="line"><a id="l01915" name="l01915"></a><span class="lineno"> 1915</span>              index_t idx0, idx1, idx2;</div>
+<div class="line"><a id="l01916" name="l01916"></a><span class="lineno"> 1916</span>              idx0.vertex_index = ind[0].v_idx;</div>
 <div class="line"><a id="l01917" name="l01917"></a><span class="lineno"> 1917</span>              idx0.normal_index = ind[0].vn_idx;</div>
 <div class="line"><a id="l01918" name="l01918"></a><span class="lineno"> 1918</span>              idx0.texcoord_index = ind[0].vt_idx;</div>
 <div class="line"><a id="l01919" name="l01919"></a><span class="lineno"> 1919</span>              idx1.vertex_index = ind[1].v_idx;</div>
@@ -2002,8 +2002,8 @@ $(function() {
 <div class="line"><a id="l01950" name="l01950"></a><span class="lineno"> 1950</span>            i1 = remainingFace.vertex_indices[1];</div>
 <div class="line"><a id="l01951" name="l01951"></a><span class="lineno"> 1951</span>            i2 = remainingFace.vertex_indices[2];</div>
 <div class="line"><a id="l01952" name="l01952"></a><span class="lineno"> 1952</span>            {</div>
-<div class="line"><a id="l01953" name="l01953"></a><span class="lineno"> 1953</span>              <a class="code hl_struct" href="structtinyobj_1_1index__t.html">index_t</a> idx0, idx1, idx2;</div>
-<div class="line"><a id="l01954" name="l01954"></a><span class="lineno"> 1954</span>              idx0.<a class="code hl_variable" href="structtinyobj_1_1index__t.html#a7eeb7de9f1fad091081b2b1d037c4beb">vertex_index</a> = i0.v_idx;</div>
+<div class="line"><a id="l01953" name="l01953"></a><span class="lineno"> 1953</span>              index_t idx0, idx1, idx2;</div>
+<div class="line"><a id="l01954" name="l01954"></a><span class="lineno"> 1954</span>              idx0.vertex_index = i0.v_idx;</div>
 <div class="line"><a id="l01955" name="l01955"></a><span class="lineno"> 1955</span>              idx0.normal_index = i0.vn_idx;</div>
 <div class="line"><a id="l01956" name="l01956"></a><span class="lineno"> 1956</span>              idx0.texcoord_index = i0.vt_idx;</div>
 <div class="line"><a id="l01957" name="l01957"></a><span class="lineno"> 1957</span>              idx1.vertex_index = i1.v_idx;</div>
@@ -2027,8 +2027,8 @@ $(function() {
 <div class="line"><a id="l01975" name="l01975"></a><span class="lineno"> 1975</span>        }  <span class="comment">// npolys</span></div>
 <div class="line"><a id="l01976" name="l01976"></a><span class="lineno"> 1976</span>      } <span class="keywordflow">else</span> {</div>
 <div class="line"><a id="l01977" name="l01977"></a><span class="lineno"> 1977</span>        <span class="keywordflow">for</span> (<span class="keywordtype">size_t</span> k = 0; k &lt; npolys; k++) {</div>
-<div class="line"><a id="l01978" name="l01978"></a><span class="lineno"> 1978</span>          <a class="code hl_struct" href="structtinyobj_1_1index__t.html">index_t</a> idx;</div>
-<div class="line"><a id="l01979" name="l01979"></a><span class="lineno"> 1979</span>          idx.<a class="code hl_variable" href="structtinyobj_1_1index__t.html#a7eeb7de9f1fad091081b2b1d037c4beb">vertex_index</a> = face.vertex_indices[k].v_idx;</div>
+<div class="line"><a id="l01978" name="l01978"></a><span class="lineno"> 1978</span>          index_t idx;</div>
+<div class="line"><a id="l01979" name="l01979"></a><span class="lineno"> 1979</span>          idx.vertex_index = face.vertex_indices[k].v_idx;</div>
 <div class="line"><a id="l01980" name="l01980"></a><span class="lineno"> 1980</span>          idx.normal_index = face.vertex_indices[k].vn_idx;</div>
 <div class="line"><a id="l01981" name="l01981"></a><span class="lineno"> 1981</span>          idx.texcoord_index = face.vertex_indices[k].vt_idx;</div>
 <div class="line"><a id="l01982" name="l01982"></a><span class="lineno"> 1982</span>          shape-&gt;mesh.indices.push_back(idx);</div>
@@ -2053,8 +2053,8 @@ $(function() {
 <div class="line"><a id="l02001" name="l02001"></a><span class="lineno"> 2001</span>           j++) {</div>
 <div class="line"><a id="l02002" name="l02002"></a><span class="lineno"> 2002</span>        <span class="keyword">const</span> vertex_index_t &amp;vi = prim_group.lineGroup[i].vertex_indices[j];</div>
 <div class="line"><a id="l02003" name="l02003"></a><span class="lineno"> 2003</span> </div>
-<div class="line"><a id="l02004" name="l02004"></a><span class="lineno"> 2004</span>        <a class="code hl_struct" href="structtinyobj_1_1index__t.html">index_t</a> idx;</div>
-<div class="line"><a id="l02005" name="l02005"></a><span class="lineno"> 2005</span>        idx.<a class="code hl_variable" href="structtinyobj_1_1index__t.html#a7eeb7de9f1fad091081b2b1d037c4beb">vertex_index</a> = vi.v_idx;</div>
+<div class="line"><a id="l02004" name="l02004"></a><span class="lineno"> 2004</span>        index_t idx;</div>
+<div class="line"><a id="l02005" name="l02005"></a><span class="lineno"> 2005</span>        idx.vertex_index = vi.v_idx;</div>
 <div class="line"><a id="l02006" name="l02006"></a><span class="lineno"> 2006</span>        idx.normal_index = vi.vn_idx;</div>
 <div class="line"><a id="l02007" name="l02007"></a><span class="lineno"> 2007</span>        idx.texcoord_index = vi.vt_idx;</div>
 <div class="line"><a id="l02008" name="l02008"></a><span class="lineno"> 2008</span> </div>
@@ -2074,8 +2074,8 @@ $(function() {
 <div class="line"><a id="l02022" name="l02022"></a><span class="lineno"> 2022</span>           j++) {</div>
 <div class="line"><a id="l02023" name="l02023"></a><span class="lineno"> 2023</span>        <span class="keyword">const</span> vertex_index_t &amp;vi = prim_group.pointsGroup[i].vertex_indices[j];</div>
 <div class="line"><a id="l02024" name="l02024"></a><span class="lineno"> 2024</span> </div>
-<div class="line"><a id="l02025" name="l02025"></a><span class="lineno"> 2025</span>        <a class="code hl_struct" href="structtinyobj_1_1index__t.html">index_t</a> idx;</div>
-<div class="line"><a id="l02026" name="l02026"></a><span class="lineno"> 2026</span>        idx.<a class="code hl_variable" href="structtinyobj_1_1index__t.html#a7eeb7de9f1fad091081b2b1d037c4beb">vertex_index</a> = vi.v_idx;</div>
+<div class="line"><a id="l02025" name="l02025"></a><span class="lineno"> 2025</span>        index_t idx;</div>
+<div class="line"><a id="l02026" name="l02026"></a><span class="lineno"> 2026</span>        idx.vertex_index = vi.v_idx;</div>
 <div class="line"><a id="l02027" name="l02027"></a><span class="lineno"> 2027</span>        idx.normal_index = vi.vn_idx;</div>
 <div class="line"><a id="l02028" name="l02028"></a><span class="lineno"> 2028</span>        idx.texcoord_index = vi.vt_idx;</div>
 <div class="line"><a id="l02029" name="l02029"></a><span class="lineno"> 2029</span> </div>
@@ -2135,7 +2135,7 @@ $(function() {
 <div class="line"><a id="l02083" name="l02083"></a><span class="lineno"> 2083</span>  (void)err;</div>
 <div class="line"><a id="l02084" name="l02084"></a><span class="lineno"> 2084</span> </div>
 <div class="line"><a id="l02085" name="l02085"></a><span class="lineno"> 2085</span>  <span class="comment">// Create a default material anyway.</span></div>
-<div class="line"><a id="l02086" name="l02086"></a><span class="lineno"> 2086</span>  <a class="code hl_struct" href="structtinyobj_1_1material__t.html">material_t</a> material;</div>
+<div class="line"><a id="l02086" name="l02086"></a><span class="lineno"> 2086</span>  material_t material;</div>
 <div class="line"><a id="l02087" name="l02087"></a><span class="lineno"> 2087</span>  InitMaterial(&amp;material);</div>
 <div class="line"><a id="l02088" name="l02088"></a><span class="lineno"> 2088</span> </div>
 <div class="line"><a id="l02089" name="l02089"></a><span class="lineno"> 2089</span>  <span class="comment">// Issue 43. `d` wins against `Tr` since `Tr` is not in the MTL specification.</span></div>
@@ -2533,7 +2533,7 @@ $(function() {
 <div class="line"><a id="l02481" name="l02481"></a><span class="lineno"> 2481</span>  }</div>
 <div class="line"><a id="l02482" name="l02482"></a><span class="lineno"> 2482</span>}</div>
 <div class="line"><a id="l02483" name="l02483"></a><span class="lineno"> 2483</span> </div>
-<div class="line"><a id="l02484" name="l02484"></a><span class="lineno"> 2484</span><span class="keywordtype">bool</span> <a class="code hl_function" href="classtinyobj_1_1MaterialFileReader.html#a83814ef91e8b9ed56cc6aad5f4874d0a">MaterialFileReader::operator()</a>(<span class="keyword">const</span> std::string &amp;matId,</div>
+<div class="line"><a id="l02484" name="l02484"></a><span class="lineno"> 2484</span><span class="keywordtype">bool</span> MaterialFileReader::operator()(<span class="keyword">const</span> std::string &amp;matId,</div>
 <div class="line"><a id="l02485" name="l02485"></a><span class="lineno"> 2485</span>                                    std::vector&lt;material_t&gt; *materials,</div>
 <div class="line"><a id="l02486" name="l02486"></a><span class="lineno"> 2486</span>                                    std::map&lt;std::string, int&gt; *matMap,</div>
 <div class="line"><a id="l02487" name="l02487"></a><span class="lineno"> 2487</span>                                    std::string *warn, std::string *err) {</div>
@@ -2546,7 +2546,7 @@ $(function() {
 <div class="line"><a id="l02494" name="l02494"></a><span class="lineno"> 2494</span> </div>
 <div class="line"><a id="l02495" name="l02495"></a><span class="lineno"> 2495</span>    <span class="comment">// https://stackoverflow.com/questions/5167625/splitting-a-c-stdstring-using-tokens-e-g</span></div>
 <div class="line"><a id="l02496" name="l02496"></a><span class="lineno"> 2496</span>    std::vector&lt;std::string&gt; paths;</div>
-<div class="line"><a id="l02497" name="l02497"></a><span class="lineno"> 2497</span>    std::istringstream f(<a class="code hl_variable" href="classtinyobj_1_1MaterialFileReader.html#aeb0081a32915ccf6c5c0612335eef560">m_mtlBaseDir</a>);</div>
+<div class="line"><a id="l02497" name="l02497"></a><span class="lineno"> 2497</span>    std::istringstream f(m_mtlBaseDir);</div>
 <div class="line"><a id="l02498" name="l02498"></a><span class="lineno"> 2498</span> </div>
 <div class="line"><a id="l02499" name="l02499"></a><span class="lineno"> 2499</span>    std::string s;</div>
 <div class="line"><a id="l02500" name="l02500"></a><span class="lineno"> 2500</span>    <span class="keywordflow">while</span> (getline(f, s, sep)) {</div>
@@ -2583,7 +2583,7 @@ $(function() {
 <div class="line"><a id="l02531" name="l02531"></a><span class="lineno"> 2531</span> </div>
 <div class="line"><a id="l02532" name="l02532"></a><span class="lineno"> 2532</span>    std::stringstream ss;</div>
 <div class="line"><a id="l02533" name="l02533"></a><span class="lineno"> 2533</span>    ss &lt;&lt; <span class="stringliteral">&quot;Material file [ &quot;</span> &lt;&lt; filepath</div>
-<div class="line"><a id="l02534" name="l02534"></a><span class="lineno"> 2534</span>       &lt;&lt; <span class="stringliteral">&quot; ] not found in a path : &quot;</span> &lt;&lt; <a class="code hl_variable" href="classtinyobj_1_1MaterialFileReader.html#aeb0081a32915ccf6c5c0612335eef560">m_mtlBaseDir</a> &lt;&lt; <span class="stringliteral">&quot;\n&quot;</span>;</div>
+<div class="line"><a id="l02534" name="l02534"></a><span class="lineno"> 2534</span>       &lt;&lt; <span class="stringliteral">&quot; ] not found in a path : &quot;</span> &lt;&lt; m_mtlBaseDir &lt;&lt; <span class="stringliteral">&quot;\n&quot;</span>;</div>
 <div class="line"><a id="l02535" name="l02535"></a><span class="lineno"> 2535</span>    <span class="keywordflow">if</span> (warn) {</div>
 <div class="line"><a id="l02536" name="l02536"></a><span class="lineno"> 2536</span>      (*warn) += ss.str();</div>
 <div class="line"><a id="l02537" name="l02537"></a><span class="lineno"> 2537</span>    }</div>
@@ -2592,13 +2592,13 @@ $(function() {
 <div class="line"><a id="l02540" name="l02540"></a><span class="lineno"> 2540</span>  }</div>
 <div class="line"><a id="l02541" name="l02541"></a><span class="lineno"> 2541</span>}</div>
 <div class="line"><a id="l02542" name="l02542"></a><span class="lineno"> 2542</span> </div>
-<div class="line"><a id="l02543" name="l02543"></a><span class="lineno"> 2543</span><span class="keywordtype">bool</span> <a class="code hl_function" href="classtinyobj_1_1MaterialStreamReader.html#acab817088be0e68c0e481b05c8810f72">MaterialStreamReader::operator()</a>(<span class="keyword">const</span> std::string &amp;matId,</div>
+<div class="line"><a id="l02543" name="l02543"></a><span class="lineno"> 2543</span><span class="keywordtype">bool</span> MaterialStreamReader::operator()(<span class="keyword">const</span> std::string &amp;matId,</div>
 <div class="line"><a id="l02544" name="l02544"></a><span class="lineno"> 2544</span>                                      std::vector&lt;material_t&gt; *materials,</div>
 <div class="line"><a id="l02545" name="l02545"></a><span class="lineno"> 2545</span>                                      std::map&lt;std::string, int&gt; *matMap,</div>
 <div class="line"><a id="l02546" name="l02546"></a><span class="lineno"> 2546</span>                                      std::string *warn, std::string *err) {</div>
 <div class="line"><a id="l02547" name="l02547"></a><span class="lineno"> 2547</span>  (void)err;</div>
 <div class="line"><a id="l02548" name="l02548"></a><span class="lineno"> 2548</span>  (void)matId;</div>
-<div class="line"><a id="l02549" name="l02549"></a><span class="lineno"> 2549</span>  <span class="keywordflow">if</span> (!<a class="code hl_variable" href="classtinyobj_1_1MaterialStreamReader.html#a8de39704770b77d36d6cebe09d941435">m_inStream</a>) {</div>
+<div class="line"><a id="l02549" name="l02549"></a><span class="lineno"> 2549</span>  <span class="keywordflow">if</span> (!m_inStream) {</div>
 <div class="line"><a id="l02550" name="l02550"></a><span class="lineno"> 2550</span>    std::stringstream ss;</div>
 <div class="line"><a id="l02551" name="l02551"></a><span class="lineno"> 2551</span>    ss &lt;&lt; <span class="stringliteral">&quot;Material stream in error state. \n&quot;</span>;</div>
 <div class="line"><a id="l02552" name="l02552"></a><span class="lineno"> 2552</span>    <span class="keywordflow">if</span> (warn) {</div>
@@ -2607,12 +2607,12 @@ $(function() {
 <div class="line"><a id="l02555" name="l02555"></a><span class="lineno"> 2555</span>    <span class="keywordflow">return</span> <span class="keyword">false</span>;</div>
 <div class="line"><a id="l02556" name="l02556"></a><span class="lineno"> 2556</span>  }</div>
 <div class="line"><a id="l02557" name="l02557"></a><span class="lineno"> 2557</span> </div>
-<div class="line"><a id="l02558" name="l02558"></a><span class="lineno"> 2558</span>  <a class="code hl_function" href="namespacetinyobj.html#a861cd417f27a4cb95f005a3e1a178f87">LoadMtl</a>(matMap, materials, &amp;<a class="code hl_variable" href="classtinyobj_1_1MaterialStreamReader.html#a8de39704770b77d36d6cebe09d941435">m_inStream</a>, warn, err);</div>
+<div class="line"><a id="l02558" name="l02558"></a><span class="lineno"> 2558</span>  <a class="code hl_function" href="namespacetinyobj.html#a861cd417f27a4cb95f005a3e1a178f87">LoadMtl</a>(matMap, materials, &amp;m_inStream, warn, err);</div>
 <div class="line"><a id="l02559" name="l02559"></a><span class="lineno"> 2559</span> </div>
 <div class="line"><a id="l02560" name="l02560"></a><span class="lineno"> 2560</span>  <span class="keywordflow">return</span> <span class="keyword">true</span>;</div>
 <div class="line"><a id="l02561" name="l02561"></a><span class="lineno"> 2561</span>}</div>
 <div class="line"><a id="l02562" name="l02562"></a><span class="lineno"> 2562</span> </div>
-<div class="line"><a id="l02563" name="l02563"></a><span class="lineno"> 2563</span><span class="keywordtype">bool</span> <a class="code hl_function" href="namespacetinyobj.html#a9333d068b046d2510a9a1b0a0f918ea3">LoadObj</a>(<a class="code hl_struct" href="structtinyobj_1_1attrib__t.html">attrib_t</a> *attrib, std::vector&lt;shape_t&gt; *shapes,</div>
+<div class="line"><a id="l02563" name="l02563"></a><span class="lineno"> 2563</span><span class="keywordtype">bool</span> <a class="code hl_function" href="namespacetinyobj.html#a9333d068b046d2510a9a1b0a0f918ea3">LoadObj</a>(attrib_t *attrib, std::vector&lt;shape_t&gt; *shapes,</div>
 <div class="line"><a id="l02564" name="l02564"></a><span class="lineno"> 2564</span>             std::vector&lt;material_t&gt; *materials, std::string *warn,</div>
 <div class="line"><a id="l02565" name="l02565"></a><span class="lineno"> 2565</span>             std::string *err, <span class="keyword">const</span> <span class="keywordtype">char</span> *filename, <span class="keyword">const</span> <span class="keywordtype">char</span> *mtl_basedir,</div>
 <div class="line"><a id="l02566" name="l02566"></a><span class="lineno"> 2566</span>             <span class="keywordtype">bool</span> triangulate, <span class="keywordtype">bool</span> default_vcols_fallback) {</div>
@@ -2642,16 +2642,16 @@ $(function() {
 <div class="line"><a id="l02590" name="l02590"></a><span class="lineno"> 2590</span><span class="preprocessor">#endif</span></div>
 <div class="line"><a id="l02591" name="l02591"></a><span class="lineno"> 2591</span>    <span class="keywordflow">if</span> (baseDir[baseDir.length() - 1] != dirsep) baseDir += dirsep;</div>
 <div class="line"><a id="l02592" name="l02592"></a><span class="lineno"> 2592</span>  }</div>
-<div class="line"><a id="l02593" name="l02593"></a><span class="lineno"> 2593</span>  <a class="code hl_class" href="classtinyobj_1_1MaterialFileReader.html">MaterialFileReader</a> matFileReader(baseDir);</div>
+<div class="line"><a id="l02593" name="l02593"></a><span class="lineno"> 2593</span>  MaterialFileReader matFileReader(baseDir);</div>
 <div class="line"><a id="l02594" name="l02594"></a><span class="lineno"> 2594</span> </div>
 <div class="line"><a id="l02595" name="l02595"></a><span class="lineno"> 2595</span>  <span class="keywordflow">return</span> <a class="code hl_function" href="namespacetinyobj.html#a9333d068b046d2510a9a1b0a0f918ea3">LoadObj</a>(attrib, shapes, materials, warn, err, &amp;ifs, &amp;matFileReader,</div>
 <div class="line"><a id="l02596" name="l02596"></a><span class="lineno"> 2596</span>                 triangulate, default_vcols_fallback);</div>
 <div class="line"><a id="l02597" name="l02597"></a><span class="lineno"> 2597</span>}</div>
 <div class="line"><a id="l02598" name="l02598"></a><span class="lineno"> 2598</span> </div>
-<div class="line"><a id="l02599" name="l02599"></a><span class="lineno"> 2599</span><span class="keywordtype">bool</span> <a class="code hl_function" href="namespacetinyobj.html#a9333d068b046d2510a9a1b0a0f918ea3">LoadObj</a>(<a class="code hl_struct" href="structtinyobj_1_1attrib__t.html">attrib_t</a> *attrib, std::vector&lt;shape_t&gt; *shapes,</div>
+<div class="line"><a id="l02599" name="l02599"></a><span class="lineno"> 2599</span><span class="keywordtype">bool</span> <a class="code hl_function" href="namespacetinyobj.html#a9333d068b046d2510a9a1b0a0f918ea3">LoadObj</a>(attrib_t *attrib, std::vector&lt;shape_t&gt; *shapes,</div>
 <div class="line"><a id="l02600" name="l02600"></a><span class="lineno"> 2600</span>             std::vector&lt;material_t&gt; *materials, std::string *warn,</div>
 <div class="line"><a id="l02601" name="l02601"></a><span class="lineno"> 2601</span>             std::string *err, std::istream *inStream,</div>
-<div class="line"><a id="l02602" name="l02602"></a><span class="lineno"> 2602</span>             <a class="code hl_class" href="classtinyobj_1_1MaterialReader.html">MaterialReader</a> *readMatFn <span class="comment">/*= NULL*/</span>, <span class="keywordtype">bool</span> triangulate,</div>
+<div class="line"><a id="l02602" name="l02602"></a><span class="lineno"> 2602</span>             MaterialReader *readMatFn <span class="comment">/*= NULL*/</span>, <span class="keywordtype">bool</span> triangulate,</div>
 <div class="line"><a id="l02603" name="l02603"></a><span class="lineno"> 2603</span>             <span class="keywordtype">bool</span> default_vcols_fallback) {</div>
 <div class="line"><a id="l02604" name="l02604"></a><span class="lineno"> 2604</span>  std::stringstream errss;</div>
 <div class="line"><a id="l02605" name="l02605"></a><span class="lineno"> 2605</span> </div>
@@ -2678,7 +2678,7 @@ $(function() {
 <div class="line"><a id="l02626" name="l02626"></a><span class="lineno"> 2626</span>  <span class="keywordtype">int</span> greatest_vn_idx = -1;</div>
 <div class="line"><a id="l02627" name="l02627"></a><span class="lineno"> 2627</span>  <span class="keywordtype">int</span> greatest_vt_idx = -1;</div>
 <div class="line"><a id="l02628" name="l02628"></a><span class="lineno"> 2628</span> </div>
-<div class="line"><a id="l02629" name="l02629"></a><span class="lineno"> 2629</span>  <a class="code hl_struct" href="structtinyobj_1_1shape__t.html">shape_t</a> shape;</div>
+<div class="line"><a id="l02629" name="l02629"></a><span class="lineno"> 2629</span>  shape_t shape;</div>
 <div class="line"><a id="l02630" name="l02630"></a><span class="lineno"> 2630</span> </div>
 <div class="line"><a id="l02631" name="l02631"></a><span class="lineno"> 2631</span>  <span class="keywordtype">bool</span> found_all_colors = <span class="keyword">true</span>;  <span class="comment">// check if all &#39;v&#39; line has color info</span></div>
 <div class="line"><a id="l02632" name="l02632"></a><span class="lineno"> 2632</span> </div>
@@ -2774,9 +2774,9 @@ $(function() {
 <div class="line"><a id="l02722" name="l02722"></a><span class="lineno"> 2722</span>      <span class="keywordtype">int</span> vid = 0;</div>
 <div class="line"><a id="l02723" name="l02723"></a><span class="lineno"> 2723</span>      vid = parseInt(&amp;token);</div>
 <div class="line"><a id="l02724" name="l02724"></a><span class="lineno"> 2724</span> </div>
-<div class="line"><a id="l02725" name="l02725"></a><span class="lineno"> 2725</span>      <a class="code hl_struct" href="structtinyobj_1_1skin__weight__t.html">skin_weight_t</a> sw;</div>
+<div class="line"><a id="l02725" name="l02725"></a><span class="lineno"> 2725</span>      skin_weight_t sw;</div>
 <div class="line"><a id="l02726" name="l02726"></a><span class="lineno"> 2726</span> </div>
-<div class="line"><a id="l02727" name="l02727"></a><span class="lineno"> 2727</span>      sw.<a class="code hl_variable" href="structtinyobj_1_1skin__weight__t.html#acf810d18d620a63bb7e54e90077be589">vertex_id</a> = vid;</div>
+<div class="line"><a id="l02727" name="l02727"></a><span class="lineno"> 2727</span>      sw.vertex_id = vid;</div>
 <div class="line"><a id="l02728" name="l02728"></a><span class="lineno"> 2728</span> </div>
 <div class="line"><a id="l02729" name="l02729"></a><span class="lineno"> 2729</span>      <span class="keywordflow">while</span> (!IS_NEW_LINE(token[0]) &amp;&amp; token[0] != <span class="charliteral">&#39;#&#39;</span>) {</div>
 <div class="line"><a id="l02730" name="l02730"></a><span class="lineno"> 2730</span>        <a class="code hl_typedef" href="namespacetinyobj.html#ad5ca7469ff56bf0d8423120cfd99adce">real_t</a> j, w;</div>
@@ -2795,9 +2795,9 @@ $(function() {
 <div class="line"><a id="l02743" name="l02743"></a><span class="lineno"> 2743</span>          <span class="keywordflow">return</span> <span class="keyword">false</span>;</div>
 <div class="line"><a id="l02744" name="l02744"></a><span class="lineno"> 2744</span>        }</div>
 <div class="line"><a id="l02745" name="l02745"></a><span class="lineno"> 2745</span> </div>
-<div class="line"><a id="l02746" name="l02746"></a><span class="lineno"> 2746</span>        <a class="code hl_struct" href="structtinyobj_1_1joint__and__weight__t.html">joint_and_weight_t</a> jw;</div>
+<div class="line"><a id="l02746" name="l02746"></a><span class="lineno"> 2746</span>        joint_and_weight_t jw;</div>
 <div class="line"><a id="l02747" name="l02747"></a><span class="lineno"> 2747</span> </div>
-<div class="line"><a id="l02748" name="l02748"></a><span class="lineno"> 2748</span>        jw.<a class="code hl_variable" href="structtinyobj_1_1joint__and__weight__t.html#a17727aa846ad88914958883588822247">joint_id</a> = int(j);</div>
+<div class="line"><a id="l02748" name="l02748"></a><span class="lineno"> 2748</span>        jw.joint_id = int(j);</div>
 <div class="line"><a id="l02749" name="l02749"></a><span class="lineno"> 2749</span>        jw.weight = w;</div>
 <div class="line"><a id="l02750" name="l02750"></a><span class="lineno"> 2750</span> </div>
 <div class="line"><a id="l02751" name="l02751"></a><span class="lineno"> 2751</span>        sw.weightValues.push_back(jw);</div>
@@ -3014,7 +3014,7 @@ $(function() {
 <div class="line"><a id="l02962" name="l02962"></a><span class="lineno"> 2962</span>        shapes-&gt;push_back(shape);</div>
 <div class="line"><a id="l02963" name="l02963"></a><span class="lineno"> 2963</span>      }</div>
 <div class="line"><a id="l02964" name="l02964"></a><span class="lineno"> 2964</span> </div>
-<div class="line"><a id="l02965" name="l02965"></a><span class="lineno"> 2965</span>      shape = <a class="code hl_struct" href="structtinyobj_1_1shape__t.html">shape_t</a>();</div>
+<div class="line"><a id="l02965" name="l02965"></a><span class="lineno"> 2965</span>      shape = shape_t();</div>
 <div class="line"><a id="l02966" name="l02966"></a><span class="lineno"> 2966</span> </div>
 <div class="line"><a id="l02967" name="l02967"></a><span class="lineno"> 2967</span>      <span class="comment">// material = -1;</span></div>
 <div class="line"><a id="l02968" name="l02968"></a><span class="lineno"> 2968</span>      prim_group.clear();</div>
@@ -3069,7 +3069,7 @@ $(function() {
 <div class="line"><a id="l03017" name="l03017"></a><span class="lineno"> 3017</span> </div>
 <div class="line"><a id="l03018" name="l03018"></a><span class="lineno"> 3018</span>      <span class="comment">// material = -1;</span></div>
 <div class="line"><a id="l03019" name="l03019"></a><span class="lineno"> 3019</span>      prim_group.clear();</div>
-<div class="line"><a id="l03020" name="l03020"></a><span class="lineno"> 3020</span>      shape = <a class="code hl_struct" href="structtinyobj_1_1shape__t.html">shape_t</a>();</div>
+<div class="line"><a id="l03020" name="l03020"></a><span class="lineno"> 3020</span>      shape = shape_t();</div>
 <div class="line"><a id="l03021" name="l03021"></a><span class="lineno"> 3021</span> </div>
 <div class="line"><a id="l03022" name="l03022"></a><span class="lineno"> 3022</span>      <span class="comment">// @todo { multiple object name? }</span></div>
 <div class="line"><a id="l03023" name="l03023"></a><span class="lineno"> 3023</span>      token += 2;</div>
@@ -3082,11 +3082,11 @@ $(function() {
 <div class="line"><a id="l03030" name="l03030"></a><span class="lineno"> 3030</span> </div>
 <div class="line"><a id="l03031" name="l03031"></a><span class="lineno"> 3031</span>    <span class="keywordflow">if</span> (token[0] == <span class="charliteral">&#39;t&#39;</span> &amp;&amp; IS_SPACE(token[1])) {</div>
 <div class="line"><a id="l03032" name="l03032"></a><span class="lineno"> 3032</span>      <span class="keyword">const</span> <span class="keywordtype">int</span> max_tag_nums = 8192;  <span class="comment">// FIXME(syoyo): Parameterize.</span></div>
-<div class="line"><a id="l03033" name="l03033"></a><span class="lineno"> 3033</span>      <a class="code hl_struct" href="structtinyobj_1_1tag__t.html">tag_t</a> tag;</div>
+<div class="line"><a id="l03033" name="l03033"></a><span class="lineno"> 3033</span>      tag_t tag;</div>
 <div class="line"><a id="l03034" name="l03034"></a><span class="lineno"> 3034</span> </div>
 <div class="line"><a id="l03035" name="l03035"></a><span class="lineno"> 3035</span>      token += 2;</div>
 <div class="line"><a id="l03036" name="l03036"></a><span class="lineno"> 3036</span> </div>
-<div class="line"><a id="l03037" name="l03037"></a><span class="lineno"> 3037</span>      tag.<a class="code hl_variable" href="structtinyobj_1_1tag__t.html#a9b3650154d2fbd83dad945ebcf6bd448">name</a> = parseString(&amp;token);</div>
+<div class="line"><a id="l03037" name="l03037"></a><span class="lineno"> 3037</span>      tag.name = parseString(&amp;token);</div>
 <div class="line"><a id="l03038" name="l03038"></a><span class="lineno"> 3038</span> </div>
 <div class="line"><a id="l03039" name="l03039"></a><span class="lineno"> 3039</span>      tag_sizes ts = parseTagTriple(&amp;token);</div>
 <div class="line"><a id="l03040" name="l03040"></a><span class="lineno"> 3040</span> </div>
@@ -3224,9 +3224,9 @@ $(function() {
 <div class="line"><a id="l03172" name="l03172"></a><span class="lineno"> 3172</span>  <span class="keywordflow">return</span> <span class="keyword">true</span>;</div>
 <div class="line"><a id="l03173" name="l03173"></a><span class="lineno"> 3173</span>}</div>
 <div class="line"><a id="l03174" name="l03174"></a><span class="lineno"> 3174</span> </div>
-<div class="line"><a id="l03175" name="l03175"></a><span class="lineno"> 3175</span><span class="keywordtype">bool</span> LoadObjWithCallback(std::istream &amp;inStream, <span class="keyword">const</span> <a class="code hl_struct" href="structtinyobj_1_1callback__t.html">callback_t</a> &amp;callback,</div>
+<div class="line"><a id="l03175" name="l03175"></a><span class="lineno"> 3175</span><span class="keywordtype">bool</span> LoadObjWithCallback(std::istream &amp;inStream, <span class="keyword">const</span> callback_t &amp;callback,</div>
 <div class="line"><a id="l03176" name="l03176"></a><span class="lineno"> 3176</span>                         <span class="keywordtype">void</span> *user_data <span class="comment">/*= NULL*/</span>,</div>
-<div class="line"><a id="l03177" name="l03177"></a><span class="lineno"> 3177</span>                         <a class="code hl_class" href="classtinyobj_1_1MaterialReader.html">MaterialReader</a> *readMatFn <span class="comment">/*= NULL*/</span>,</div>
+<div class="line"><a id="l03177" name="l03177"></a><span class="lineno"> 3177</span>                         MaterialReader *readMatFn <span class="comment">/*= NULL*/</span>,</div>
 <div class="line"><a id="l03178" name="l03178"></a><span class="lineno"> 3178</span>                         std::string *warn, <span class="comment">/* = NULL*/</span></div>
 <div class="line"><a id="l03179" name="l03179"></a><span class="lineno"> 3179</span>                         std::string *err <span class="comment">/*= NULL*/</span>) {</div>
 <div class="line"><a id="l03180" name="l03180"></a><span class="lineno"> 3180</span>  std::stringstream errss;</div>
@@ -3318,8 +3318,8 @@ $(function() {
 <div class="line"><a id="l03266" name="l03266"></a><span class="lineno"> 3266</span>      <span class="keywordflow">while</span> (!IS_NEW_LINE(token[0]) &amp;&amp; token[0] != <span class="charliteral">&#39;#&#39;</span>) {</div>
 <div class="line"><a id="l03267" name="l03267"></a><span class="lineno"> 3267</span>        vertex_index_t vi = parseRawTriple(&amp;token);</div>
 <div class="line"><a id="l03268" name="l03268"></a><span class="lineno"> 3268</span> </div>
-<div class="line"><a id="l03269" name="l03269"></a><span class="lineno"> 3269</span>        <a class="code hl_struct" href="structtinyobj_1_1index__t.html">index_t</a> idx;</div>
-<div class="line"><a id="l03270" name="l03270"></a><span class="lineno"> 3270</span>        idx.<a class="code hl_variable" href="structtinyobj_1_1index__t.html#a7eeb7de9f1fad091081b2b1d037c4beb">vertex_index</a> = vi.v_idx;</div>
+<div class="line"><a id="l03269" name="l03269"></a><span class="lineno"> 3269</span>        index_t idx;</div>
+<div class="line"><a id="l03270" name="l03270"></a><span class="lineno"> 3270</span>        idx.vertex_index = vi.v_idx;</div>
 <div class="line"><a id="l03271" name="l03271"></a><span class="lineno"> 3271</span>        idx.normal_index = vi.vn_idx;</div>
 <div class="line"><a id="l03272" name="l03272"></a><span class="lineno"> 3272</span>        idx.texcoord_index = vi.vt_idx;</div>
 <div class="line"><a id="l03273" name="l03273"></a><span class="lineno"> 3273</span> </div>
@@ -3474,7 +3474,7 @@ $(function() {
 <div class="line"><a id="l03422" name="l03422"></a><span class="lineno"> 3422</span> </div>
 <div class="line"><a id="l03423" name="l03423"></a><span class="lineno"> 3423</span><span class="preprocessor">#if 0  </span><span class="comment">// @todo</span></div>
 <div class="line"><a id="l03424" name="l03424"></a><span class="lineno"> 3424</span>    <span class="keywordflow">if</span> (token[0] == <span class="charliteral">&#39;t&#39;</span> &amp;&amp; IS_SPACE(token[1])) {</div>
-<div class="line"><a id="l03425" name="l03425"></a><span class="lineno"> 3425</span>      <a class="code hl_struct" href="structtinyobj_1_1tag__t.html">tag_t</a> tag;</div>
+<div class="line"><a id="l03425" name="l03425"></a><span class="lineno"> 3425</span>      tag_t tag;</div>
 <div class="line"><a id="l03426" name="l03426"></a><span class="lineno"> 3426</span> </div>
 <div class="line"><a id="l03427" name="l03427"></a><span class="lineno"> 3427</span>      token += 2;</div>
 <div class="line"><a id="l03428" name="l03428"></a><span class="lineno"> 3428</span>      std::stringstream ss;</div>
@@ -3520,8 +3520,8 @@ $(function() {
 <div class="line"><a id="l03468" name="l03468"></a><span class="lineno"> 3468</span>  <span class="keywordflow">return</span> <span class="keyword">true</span>;</div>
 <div class="line"><a id="l03469" name="l03469"></a><span class="lineno"> 3469</span>}</div>
 <div class="line"><a id="l03470" name="l03470"></a><span class="lineno"> 3470</span> </div>
-<div class="line"><a id="l03471" name="l03471"></a><span class="lineno"> 3471</span><span class="keywordtype">bool</span> <a class="code hl_function" href="classtinyobj_1_1ObjReader.html#a2aff0b5142ad265dc9fa276064f69700">ObjReader::ParseFromFile</a>(<span class="keyword">const</span> std::string &amp;filename,</div>
-<div class="line"><a id="l03472" name="l03472"></a><span class="lineno"> 3472</span>                              <span class="keyword">const</span> <a class="code hl_struct" href="structtinyobj_1_1ObjReaderConfig.html">ObjReaderConfig</a> &amp;config) {</div>
+<div class="line"><a id="l03471" name="l03471"></a><span class="lineno"> 3471</span><span class="keywordtype">bool</span> ObjReader::ParseFromFile(<span class="keyword">const</span> std::string &amp;filename,</div>
+<div class="line"><a id="l03472" name="l03472"></a><span class="lineno"> 3472</span>                              <span class="keyword">const</span> ObjReaderConfig &amp;config) {</div>
 <div class="line"><a id="l03473" name="l03473"></a><span class="lineno"> 3473</span>  std::string mtl_search_path;</div>
 <div class="line"><a id="l03474" name="l03474"></a><span class="lineno"> 3474</span> </div>
 <div class="line"><a id="l03475" name="l03475"></a><span class="lineno"> 3475</span>  <span class="keywordflow">if</span> (config.mtl_search_path.empty()) {</div>
@@ -3537,16 +3537,16 @@ $(function() {
 <div class="line"><a id="l03485" name="l03485"></a><span class="lineno"> 3485</span>    mtl_search_path = config.mtl_search_path;</div>
 <div class="line"><a id="l03486" name="l03486"></a><span class="lineno"> 3486</span>  }</div>
 <div class="line"><a id="l03487" name="l03487"></a><span class="lineno"> 3487</span> </div>
-<div class="line"><a id="l03488" name="l03488"></a><span class="lineno"> 3488</span>  <a class="code hl_variable" href="classtinyobj_1_1ObjReader.html#abbc7c6fc84515d1ae0800d04e3c180f5">valid_</a> = <a class="code hl_function" href="namespacetinyobj.html#a9333d068b046d2510a9a1b0a0f918ea3">LoadObj</a>(&amp;<a class="code hl_variable" href="classtinyobj_1_1ObjReader.html#a62120e15de47a166de3de5f6f3e4cef1">attrib_</a>, &amp;<a class="code hl_variable" href="classtinyobj_1_1ObjReader.html#af95328a57a259e704826f76086c2b198">shapes_</a>, &amp;<a class="code hl_variable" href="classtinyobj_1_1ObjReader.html#a0f470783be5b4a70579b17dfafd46963">materials_</a>, &amp;<a class="code hl_variable" href="classtinyobj_1_1ObjReader.html#abf6c33414dcd8ce1f9e007fa1873fcf2">warning_</a>, &amp;<a class="code hl_variable" href="classtinyobj_1_1ObjReader.html#a801eaed7fd371b79f569bd40a728aaec">error_</a>,</div>
+<div class="line"><a id="l03488" name="l03488"></a><span class="lineno"> 3488</span>  <a class="code hl_variable" href="classtinyobj_1_1ObjReader.html#abbc7c6fc84515d1ae0800d04e3c180f5">valid_</a> = <a class="code hl_function" href="namespacetinyobj.html#a9333d068b046d2510a9a1b0a0f918ea3">LoadObj</a>(&amp;attrib_, &amp;shapes_, &amp;materials_, &amp;warning_, &amp;error_,</div>
 <div class="line"><a id="l03489" name="l03489"></a><span class="lineno"> 3489</span>                   filename.c_str(), mtl_search_path.c_str(),</div>
 <div class="line"><a id="l03490" name="l03490"></a><span class="lineno"> 3490</span>                   config.triangulate, config.vertex_color);</div>
 <div class="line"><a id="l03491" name="l03491"></a><span class="lineno"> 3491</span> </div>
 <div class="line"><a id="l03492" name="l03492"></a><span class="lineno"> 3492</span>  <span class="keywordflow">return</span> <a class="code hl_variable" href="classtinyobj_1_1ObjReader.html#abbc7c6fc84515d1ae0800d04e3c180f5">valid_</a>;</div>
 <div class="line"><a id="l03493" name="l03493"></a><span class="lineno"> 3493</span>}</div>
 <div class="line"><a id="l03494" name="l03494"></a><span class="lineno"> 3494</span> </div>
-<div class="line"><a id="l03495" name="l03495"></a><span class="lineno"> 3495</span><span class="keywordtype">bool</span> <a class="code hl_function" href="classtinyobj_1_1ObjReader.html#a89a253a20fdf22305b068143cc58dfce">ObjReader::ParseFromString</a>(<span class="keyword">const</span> std::string &amp;obj_text,</div>
+<div class="line"><a id="l03495" name="l03495"></a><span class="lineno"> 3495</span><span class="keywordtype">bool</span> ObjReader::ParseFromString(<span class="keyword">const</span> std::string &amp;obj_text,</div>
 <div class="line"><a id="l03496" name="l03496"></a><span class="lineno"> 3496</span>                                <span class="keyword">const</span> std::string &amp;mtl_text,</div>
-<div class="line"><a id="l03497" name="l03497"></a><span class="lineno"> 3497</span>                                <span class="keyword">const</span> <a class="code hl_struct" href="structtinyobj_1_1ObjReaderConfig.html">ObjReaderConfig</a> &amp;config) {</div>
+<div class="line"><a id="l03497" name="l03497"></a><span class="lineno"> 3497</span>                                <span class="keyword">const</span> ObjReaderConfig &amp;config) {</div>
 <div class="line"><a id="l03498" name="l03498"></a><span class="lineno"> 3498</span>  std::stringbuf obj_buf(obj_text);</div>
 <div class="line"><a id="l03499" name="l03499"></a><span class="lineno"> 3499</span>  std::stringbuf mtl_buf(mtl_text);</div>
 <div class="line"><a id="l03500" name="l03500"></a><span class="lineno"> 3500</span> </div>
@@ -3555,7 +3555,7 @@ $(function() {
 <div class="line"><a id="l03503" name="l03503"></a><span class="lineno"> 3503</span> </div>
 <div class="line"><a id="l03504" name="l03504"></a><span class="lineno"> 3504</span>  MaterialStreamReader mtl_ss(mtl_ifs);</div>
 <div class="line"><a id="l03505" name="l03505"></a><span class="lineno"> 3505</span> </div>
-<div class="line"><a id="l03506" name="l03506"></a><span class="lineno"> 3506</span>  <a class="code hl_variable" href="classtinyobj_1_1ObjReader.html#abbc7c6fc84515d1ae0800d04e3c180f5">valid_</a> = <a class="code hl_function" href="namespacetinyobj.html#a9333d068b046d2510a9a1b0a0f918ea3">LoadObj</a>(&amp;<a class="code hl_variable" href="classtinyobj_1_1ObjReader.html#a62120e15de47a166de3de5f6f3e4cef1">attrib_</a>, &amp;<a class="code hl_variable" href="classtinyobj_1_1ObjReader.html#af95328a57a259e704826f76086c2b198">shapes_</a>, &amp;<a class="code hl_variable" href="classtinyobj_1_1ObjReader.html#a0f470783be5b4a70579b17dfafd46963">materials_</a>, &amp;<a class="code hl_variable" href="classtinyobj_1_1ObjReader.html#abf6c33414dcd8ce1f9e007fa1873fcf2">warning_</a>, &amp;<a class="code hl_variable" href="classtinyobj_1_1ObjReader.html#a801eaed7fd371b79f569bd40a728aaec">error_</a>,</div>
+<div class="line"><a id="l03506" name="l03506"></a><span class="lineno"> 3506</span>  <a class="code hl_variable" href="classtinyobj_1_1ObjReader.html#abbc7c6fc84515d1ae0800d04e3c180f5">valid_</a> = <a class="code hl_function" href="namespacetinyobj.html#a9333d068b046d2510a9a1b0a0f918ea3">LoadObj</a>(&amp;attrib_, &amp;shapes_, &amp;materials_, &amp;warning_, &amp;error_,</div>
 <div class="line"><a id="l03507" name="l03507"></a><span class="lineno"> 3507</span>                   &amp;obj_ifs, &amp;mtl_ss, config.triangulate, config.vertex_color);</div>
 <div class="line"><a id="l03508" name="l03508"></a><span class="lineno"> 3508</span> </div>
 <div class="line"><a id="l03509" name="l03509"></a><span class="lineno"> 3509</span>  <span class="keywordflow">return</span> <a class="code hl_variable" href="classtinyobj_1_1ObjReader.html#abbc7c6fc84515d1ae0800d04e3c180f5">valid_</a>;</div>
@@ -3568,7 +3568,6 @@ $(function() {
 <div class="line"><a id="l03516" name="l03516"></a><span class="lineno"> 3516</span> </div>
 <div class="line"><a id="l03517" name="l03517"></a><span class="lineno"> 3517</span><span class="preprocessor">#endif</span></div>
 <div class="ttc" id="aTestComponentModel_8cpp_html_a4f5452c5c19395231dec92c40e3d10e1"><div class="ttname"><a href="TestComponentModel_8cpp.html#a4f5452c5c19395231dec92c40e3d10e1">name</a></div><div class="ttdeci">c1 name</div><div class="ttdef"><b>定义</b> TestComponentModel.cpp:80</div></div>
-<div class="ttc" id="aclasstinyobj_1_1MaterialFileReader_html"><div class="ttname"><a href="classtinyobj_1_1MaterialFileReader.html">tinyobj::MaterialFileReader</a></div><div class="ttdef"><b>定义</b> tiny_obj_loader.h:476</div></div>
 <div class="ttc" id="aclasstinyobj_1_1MaterialFileReader_html_a83814ef91e8b9ed56cc6aad5f4874d0a"><div class="ttname"><a href="classtinyobj_1_1MaterialFileReader.html#a83814ef91e8b9ed56cc6aad5f4874d0a">tinyobj::MaterialFileReader::operator()</a></div><div class="ttdeci">virtual bool operator()(const std::string &amp;matId, std::vector&lt; material_t &gt; *materials, std::map&lt; std::string, int &gt; *matMap, std::string *warn, std::string *err) TINYOBJ_OVERRIDE</div></div>
 <div class="ttc" id="aclasstinyobj_1_1MaterialFileReader_html_aeb0081a32915ccf6c5c0612335eef560"><div class="ttname"><a href="classtinyobj_1_1MaterialFileReader.html#aeb0081a32915ccf6c5c0612335eef560">tinyobj::MaterialFileReader::m_mtlBaseDir</a></div><div class="ttdeci">std::string m_mtlBaseDir</div><div class="ttdef"><b>定义</b> tiny_obj_loader.h:488</div></div>
 <div class="ttc" id="aclasstinyobj_1_1MaterialFileReader_html_aeb0c6d0e32d7876394e570a7b18adc8a"><div class="ttname"><a href="classtinyobj_1_1MaterialFileReader.html#aeb0c6d0e32d7876394e570a7b18adc8a">tinyobj::MaterialFileReader::MaterialFileReader</a></div><div class="ttdeci">MaterialFileReader(const std::string &amp;mtl_basedir)</div><div class="ttdef"><b>定义</b> tiny_obj_loader.h:479</div></div>

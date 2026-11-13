@@ -83,7 +83,10 @@ $(function() {
 <div class="contents">
 <div class="textblock"><code>#include &quot;<a class="el" href="ObjMeshIO_8h_source.html">ObjMeshIO.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="tiny__obj__loader_8h_source.html">tiny_obj_loader.h</a>&quot;</code><br />
+<code>#include &lt;fstream&gt;</code><br />
 <code>#include &lt;spdlog/spdlog.h&gt;</code><br />
+<code>#include &lt;streambuf&gt;</code><br />
+<code>#include &lt;string_view&gt;</code><br />
 <code>#include &lt;type_traits&gt;</code><br />
 <code>#include &lt;unordered_map&gt;</code><br />
 </div><div class="textblock"><div class="dynheader">
@@ -91,17 +94,23 @@ ObjMeshIO.cpp 的引用(Include)关系图:</div>
 <div class="dyncontent">
 <div class="center"><img src="ObjMeshIO_8cpp__incl.png" border="0" usemap="#amodel_2ops_2ObjMeshIO_8cpp" loading="lazy" alt=""/></div>
 <map name="amodel_2ops_2ObjMeshIO_8cpp" id="amodel_2ops_2ObjMeshIO_8cpp">
-<area shape="rect" title=" " alt="" coords="918,5,1110,33"/>
+<area shape="rect" title=" " alt="" coords="1052,5,1243,33"/>
 <area shape="rect" href="ObjMeshIO_8h.html" title=" " alt="" coords="461,81,565,109"/>
-<area shape="poly" title=" " alt="" coords="922,35,581,86,579,81,926,32"/>
+<area shape="poly" title=" " alt="" coords="1049,33,581,88,580,83,1054,30"/>
 <area shape="rect" title=" " alt="" coords="320,308,444,336"/>
-<area shape="poly" title=" " alt="" coords="915,20,819,26,701,35,574,54,450,84,367,106,337,124,310,158,305,178,307,205,314,234,323,259,337,279,355,299,350,298,333,282,318,261,308,236,302,206,300,177,305,155,334,120,365,101,448,78,573,48,700,30,819,20,920,19"/>
+<area shape="poly" title=" " alt="" coords="1049,25,730,45,567,62,500,72,449,84,367,106,337,124,310,158,305,178,307,205,314,234,323,259,337,279,355,299,350,298,333,282,318,261,308,236,302,206,300,177,305,155,334,120,365,101,448,78,499,67,566,57,730,40,1054,23"/>
 <area shape="rect" href="tiny__obj__loader_8h.html" title=" " alt="" coords="845,308,978,336"/>
-<area shape="poly" title=" " alt="" coords="1012,32,923,295,919,291,1007,35"/>
-<area shape="rect" title=" " alt="" coords="1051,81,1174,109"/>
-<area shape="poly" title=" " alt="" coords="1032,31,1086,72,1081,71,1031,36"/>
-<area shape="rect" title=" " alt="" coords="1199,81,1290,109"/>
-<area shape="poly" title=" " alt="" coords="1056,31,1192,76,1186,76,1055,36"/>
+<area shape="poly" title=" " alt="" coords="1116,32,1077,55,1041,83,999,136,965,194,940,250,922,295,919,291,935,248,960,192,995,133,1038,79,1074,51,1111,35"/>
+<area shape="rect" title=" " alt="" coords="1051,81,1124,109"/>
+<area shape="poly" title=" " alt="" coords="1139,32,1109,71,1106,67,1135,35"/>
+<area shape="rect" title=" " alt="" coords="1147,81,1270,109"/>
+<area shape="poly" title=" " alt="" coords="1159,31,1191,70,1186,68,1158,36"/>
+<area shape="rect" title=" " alt="" coords="1294,81,1382,109"/>
+<area shape="poly" title=" " alt="" coords="1182,31,1293,75,1287,75,1181,36"/>
+<area shape="rect" title=" " alt="" coords="1406,81,1502,109"/>
+<area shape="poly" title=" " alt="" coords="1203,31,1394,78,1388,79,1203,36"/>
+<area shape="rect" title=" " alt="" coords="1526,81,1617,109"/>
+<area shape="poly" title=" " alt="" coords="1235,31,1513,80,1508,81,1235,36"/>
 <area shape="rect" href="ComponentData_8h.html" title=" " alt="" coords="623,157,762,184"/>
 <area shape="poly" title=" " alt="" coords="545,107,650,150,644,151,545,112"/>
 <area shape="rect" href="MeshData_8h.html" title=" " alt="" coords="332,232,432,260"/>
@@ -156,8 +165,23 @@ ObjMeshIO.cpp 的引用(Include)关系图:</div>
 宏定义</h2></td></tr>
 <tr class="memitem:ad1ceae03a73fd42494508a2d57eaf1fe" id="r_ad1ceae03a73fd42494508a2d57eaf1fe"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ad1ceae03a73fd42494508a2d57eaf1fe">TINYOBJLOADER_USE_DOUBLE</a></td></tr>
 <tr class="memitem:af14fac7fbc250522a78849d58d5b0811" id="r_af14fac7fbc250522a78849d58d5b0811"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#af14fac7fbc250522a78849d58d5b0811">TINYOBJLOADER_IMPLEMENTATION</a></td></tr>
+<tr class="memitem:a95e0d459887c1de6ef427739e2682915" id="r_a95e0d459887c1de6ef427739e2682915"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a95e0d459887c1de6ef427739e2682915">tinyobj</a>&#160;&#160;&#160;precess_tinyobj</td></tr>
 </table>
 <a name="doc-define-members" id="doc-define-members"></a><h2 id="header-doc-define-members" class="groupheader">宏定义说明</h2>
+<a id="a95e0d459887c1de6ef427739e2682915" name="a95e0d459887c1de6ef427739e2682915"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a95e0d459887c1de6ef427739e2682915">&#9670;&#160;</a></span>tinyobj</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define tinyobj&#160;&#160;&#160;precess_tinyobj</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
 <a id="af14fac7fbc250522a78849d58d5b0811" name="af14fac7fbc250522a78849d58d5b0811"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#af14fac7fbc250522a78849d58d5b0811">&#9670;&#160;</a></span>TINYOBJLOADER_IMPLEMENTATION</h2>
 

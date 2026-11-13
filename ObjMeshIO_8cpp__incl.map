@@ -1,15 +1,21 @@
 <map id="model/ops/ObjMeshIO.cpp" name="model/ops/ObjMeshIO.cpp">
-<area shape="rect" id="Node000001" title=" " alt="" coords="918,5,1110,33"/>
+<area shape="rect" id="Node000001" title=" " alt="" coords="1052,5,1243,33"/>
 <area shape="rect" id="Node000002" href="$ObjMeshIO_8h.html" title=" " alt="" coords="461,81,565,109"/>
-<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="922,35,581,86,579,81,926,32"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="1049,33,581,88,580,83,1054,30"/>
 <area shape="rect" id="Node000011" title=" " alt="" coords="320,308,444,336"/>
-<area shape="poly" id="edge38_Node000001_Node000011" title=" " alt="" coords="915,20,819,26,701,35,574,54,450,84,367,106,337,124,310,158,305,178,307,205,314,234,323,259,337,279,355,299,350,298,333,282,318,261,308,236,302,206,300,177,305,155,334,120,365,101,448,78,573,48,700,30,819,20,920,19"/>
+<area shape="poly" id="edge41_Node000001_Node000011" title=" " alt="" coords="1049,25,730,45,567,62,500,72,449,84,367,106,337,124,310,158,305,178,307,205,314,234,323,259,337,279,355,299,350,298,333,282,318,261,308,236,302,206,300,177,305,155,334,120,365,101,448,78,499,67,566,57,730,40,1054,23"/>
 <area shape="rect" id="Node000018" href="$tiny__obj__loader_8h.html" title=" " alt="" coords="845,308,978,336"/>
-<area shape="poly" id="edge32_Node000001_Node000018" title=" " alt="" coords="1012,32,923,295,919,291,1007,35"/>
-<area shape="rect" id="Node000019" title=" " alt="" coords="1051,81,1174,109"/>
-<area shape="poly" id="edge36_Node000001_Node000019" title=" " alt="" coords="1032,31,1086,72,1081,71,1031,36"/>
-<area shape="rect" id="Node000020" title=" " alt="" coords="1199,81,1290,109"/>
-<area shape="poly" id="edge37_Node000001_Node000020" title=" " alt="" coords="1056,31,1192,76,1186,76,1055,36"/>
+<area shape="poly" id="edge32_Node000001_Node000018" title=" " alt="" coords="1116,32,1077,55,1041,83,999,136,965,194,940,250,922,295,919,291,935,248,960,192,995,133,1038,79,1074,51,1111,35"/>
+<area shape="rect" id="Node000019" title=" " alt="" coords="1051,81,1124,109"/>
+<area shape="poly" id="edge36_Node000001_Node000019" title=" " alt="" coords="1139,32,1109,71,1106,67,1135,35"/>
+<area shape="rect" id="Node000020" title=" " alt="" coords="1147,81,1270,109"/>
+<area shape="poly" id="edge37_Node000001_Node000020" title=" " alt="" coords="1159,31,1191,70,1186,68,1158,36"/>
+<area shape="rect" id="Node000021" title=" " alt="" coords="1294,81,1382,109"/>
+<area shape="poly" id="edge38_Node000001_Node000021" title=" " alt="" coords="1182,31,1293,75,1287,75,1181,36"/>
+<area shape="rect" id="Node000022" title=" " alt="" coords="1406,81,1502,109"/>
+<area shape="poly" id="edge39_Node000001_Node000022" title=" " alt="" coords="1203,31,1394,78,1388,79,1203,36"/>
+<area shape="rect" id="Node000023" title=" " alt="" coords="1526,81,1617,109"/>
+<area shape="poly" id="edge40_Node000001_Node000023" title=" " alt="" coords="1235,31,1513,80,1508,81,1235,36"/>
 <area shape="rect" id="Node000003" href="$ComponentData_8h.html" title=" " alt="" coords="623,157,762,184"/>
 <area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="545,107,650,150,644,151,545,112"/>
 <area shape="rect" id="Node000010" href="$MeshData_8h.html" title=" " alt="" coords="332,232,432,260"/>
