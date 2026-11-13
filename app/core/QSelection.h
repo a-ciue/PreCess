@@ -32,6 +32,14 @@ public:
      * @param data 待存入的数据
      */
     void set(std::shared_ptr<Selection> data) { data_ = std::move(data); }
+    /** @brief 从组件查询结果或对象树提示初始化显式组件选择。 */
+    Q_INVOKABLE void setComponentIds(const QList<Index>& ids)
+    {
+        auto data = std::make_shared<Selection>();
+        data->type = ElementEnum::Component;
+        data->ids.assign(ids.begin(), ids.end());
+        data_ = std::move(data);
+    }
     /**
      * 取出
      * @return 存储的Selection对象

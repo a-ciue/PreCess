@@ -2,6 +2,8 @@
 #include "ArgObject.h"
 #include "QSelection.h"
 #include <QFileInfo>
+#include <QJSValue>
+#include <QStringList>
 
 using namespace core;
 QArgObject::QArgObject(const QArgType& type, QObject* parent)
@@ -34,6 +36,23 @@ std::optional<ArgObject> QArgObject::getValue() const
     case ArgTypeEnum::Path:
         ret = ArgObject::create<ArgTypeEnum::Path>(QFileInfo(value_.toString()).filesystemFilePath());
         break;
+    case ArgTypeEnum::Paths: {
+        const auto values = value_.metaType() == QMetaType::fromType<QJSValue>() ? value_.value<QJSValue>().toVariant() : value_;
+        if (values.metaType() != QMetaType::fromType<QStringList>() && values.metaType() != QMetaType::fromType<QVariantList>()) {
+            canConvert = false;
+            break;
+        }
+        ArgTypeT<ArgTypeEnum::Paths> paths;
+        for (const auto& path : values.toList()) {
+            if (path.metaType() != QMetaType::fromType<QString>()) {
+                canConvert = false;
+                break;
+            }
+            paths.push_back(QFileInfo(path.toString()).filesystemFilePath());
+        }
+        ret = ArgObject::create<ArgTypeEnum::Paths>(std::move(paths));
+        break;
+    }
     case ArgTypeEnum::Combo:
         // -1 意味着用户未进行选择
         ret = ArgObject::create<ArgTypeEnum::Combo>(value_.toInt(&canConvert));

@@ -23,6 +23,8 @@ public:
     }
     void setup(FeatureRegistrar& registrar, FeatureContext&) override
     {
+        registrar.setFileType({ FileDirection::Import, { "dat" } });
+        registrar.addParameter({ ArgTypeEnum::Paths, "Files", "", "" });
         registrar.addParameter({ ArgTypeEnum::Float, "Size", "1", "" });
         registrar.addNavigationMenu({ "setup-tools", "Tools" });
         registrar.addNavigationGroup({ "setup-tools", "custom", "Custom" });

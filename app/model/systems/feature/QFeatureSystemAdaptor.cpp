@@ -1,22 +1,37 @@
 #include "QFeatureSystemAdaptor.h"
 #include "FeatureParams.h"
 #include "FeatureSystem.h"
+#include "Job.h"
 #include "QArgObject.h"
 #include "QFeatureInfo.h"
 #include "QSelection.h"
 #include <QQmlEngine>
 
+#include <QFileInfo>
 #include <QMetaObject>
 #include <spdlog/spdlog.h>
 
 #include <any>
 #include <exception>
 #include <map>
+#include <memory>
 #include <string>
 #include <utility>
 #include <vector>
 
 namespace {
+QVariantList fileFeaturesToQVariant(const std::vector<systems::feature::FileFeatureInfo>& infos, const QString& direction)
+{
+    QVariantList result;
+    for (const auto& info : infos) {
+        QStringList extensions;
+        for (const auto& extension : info.extensions)
+            extensions.append(QString::fromStdString(extension));
+        result.append(QVariantMap { { "direction", direction }, { "display_name", QString::fromStdString(info.display_name) },
+            { "extensions", extensions }, { "feature", QString::fromStdString(info.feature) } });
+    }
+    return result;
+}
 //! @brief 快照和事件共用类型转换，避免两条展示路径解释出不同的参数值。
 QVariant parameterToQVariant(const core::ArgObject& value)
 {
@@ -36,6 +51,11 @@ QVariant parameterToQVariant(const core::ArgObject& value)
     } else if (const auto* v = value.get<ArgTypeEnum::Path>()) {
         const auto path = v->u8string();
         q_value = QString::fromUtf8(reinterpret_cast<const char*>(path.data()), static_cast<qsizetype>(path.size()));
+    } else if (const auto* v = value.get<ArgTypeEnum::Paths>()) {
+        QStringList paths;
+        for (const auto& path : *v)
+            paths.append(QFileInfo(path).filePath());
+        q_value = paths;
     } else if (const auto* v = value.get<ArgTypeEnum::Selector>()) {
         auto* selection = new QSelection;
         selection->set(*v);
@@ -50,6 +70,9 @@ QVariant anyToQVariant(const std::any& value)
 {
     if (!value.has_value())
         return {};
+
+    if (value.type() == typeid(std::shared_ptr<systems::job::Job>))
+        return QVariantMap { { "submitted", static_cast<bool>(std::any_cast<const std::shared_ptr<systems::job::Job>&>(value)) } };
 
     if (value.type() == typeid(std::string))
         return QString::fromStdString(std::any_cast<std::string>(value));
@@ -109,6 +132,16 @@ QVariant QFeatureSystemAdaptor::invoke(const QString& unique_name)
         emit invocationFailed(tr("功能执行发生未知异常"));
     }
     return {};
+}
+
+QVariantList QFeatureSystemAdaptor::getImportFileTypes() const
+{
+    return fileFeaturesToQVariant(feature_system_->getFileTypes(FileDirection::Import), "import");
+}
+
+QVariantList QFeatureSystemAdaptor::getExportFileTypes() const
+{
+    return fileFeaturesToQVariant(feature_system_->getFileTypes(FileDirection::Export), "export");
 }
 
 void QFeatureSystemAdaptor::notifyParameterChanged(const std::string& feature, std::size_t index, const core::ArgObject& value)
@@ -266,7 +299,7 @@ QList<QFeatureInfo*> QFeatureSystemAdaptor::getFeaturesInfo() const
             QString::fromStdString(feature_info->description),
             QString::fromStdString(feature_info->navigation.icon()), std::move(args),
             feature_info->interactive, nullptr, categories, feature_info->navigation.order(),
-            QString::fromStdString(feature_info->navigation.label()), category_defaults));
+            QString::fromStdString(feature_info->navigation.label()), category_defaults, feature_info->file_type.has_value()));
     }
     return infos;
 }

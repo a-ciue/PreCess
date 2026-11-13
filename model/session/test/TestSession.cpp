@@ -8,17 +8,52 @@
 #include "ComponentData.h"
 #include "EventBus.h"
 #include "FeatureEvents.h"
+#include "FeatureSystem.h"
 #include "GeometryBuilder.h"
 #include "GeometryData.h"
+#include "ModelIOHandler.h"
+#include "ModelIOSystem.h"
 #include "ModelObserver.h"
 #include "ModelOperator.h"
 #include "UndoStack.h"
 
+#include <any>
 #include <catch2/catch_test_macros.hpp>
+#include <filesystem>
+#include <memory>
+#include <optional>
+#include <vector>
 
 using namespace session;
 
 namespace {
+//! @brief 通过外部计数验证借用 IO 系统不会提前销毁其处理器。
+class BorrowedIOHandler final : public systems::io::ModelIOHandler {
+public:
+    explicit BorrowedIOHandler(int& destroyed_count)
+        : destroyed_count_(destroyed_count)
+    {
+    }
+
+    ~BorrowedIOHandler() override { ++destroyed_count_; }
+
+    std::optional<ModelPayload> read_model(const std::filesystem::path&, const std::vector<std::any>&) override
+    {
+        return ModelPayload { u8"借用 IO 导入模型", { } };
+    }
+
+    void write_components(const ModelLayer&, const std::vector<Index>&,
+        const std::filesystem::path&, const std::vector<std::any>&) override
+    {
+    }
+
+    std::vector<core::ArgType> read_args_type() const override { return { }; }
+    std::vector<core::ArgType> write_args_type() const override { return { }; }
+
+private:
+    int& destroyed_count_;
+};
+
 // 记录各类模型层通知次数的观察者桩
 class RecordingObserver : public ModelObserver {
 public:
@@ -152,4 +187,34 @@ TEST_CASE("Session works without host observer", "[session]")
     CHECK(counter.added == 1);
     CHECK(s.query().listModels().size() == 1);
     CHECK(s.undoStack().canUndo());
+}
+
+TEST_CASE("FeatureSystem borrows the session IO system without taking ownership", "[session][feature][io]")
+{
+    int destroyed_count = 0;
+    {
+        Session session;
+        auto* io_system = session.featureSystem().ioSystem();
+        REQUIRE(io_system == &session.ioSystem());
+
+        auto handler = std::make_unique<BorrowedIOHandler>(destroyed_count);
+        REQUIRE(io_system->registerHandler({ "Session IO test", { "test" } },
+            systems::io::ModelIOSystem::SystemHandlerPtr { handler.release() }));
+        EventCounter counter;
+        counter.subscribe(session.events());
+
+        // 借用入口仍使用同一模型、undo 栈与通知链。
+        REQUIRE(io_system->read("model.test", "Session IO test", { }));
+        REQUIRE(session.query().listModels().size() == 1);
+        CHECK(counter.added == 1);
+        REQUIRE(session.undoStack().undo());
+        CHECK(session.query().listModels().empty());
+        CHECK(counter.removed == 1);
+
+        // teardown 先销毁 FeatureSystem，IO 系统仍由 Session 持有。
+        session.teardown();
+        CHECK(destroyed_count == 0);
+        CHECK(session.ioSystem().registeredFileTypeInfos().size() == 1);
+    }
+    CHECK(destroyed_count == 1);
 }
