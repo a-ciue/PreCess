@@ -52,7 +52,8 @@ var searchData=
   ['publishclipplane_49',['publishClipPlane',['../structQRenderWindow.html#aed10360c7e5aa45b273a9803eb4c7b13',1,'QRenderWindow']]],
   ['publishcomponentvisibility_50',['publishComponentVisibility',['../structQRenderWindow.html#ac699b387ebe167c17fe360a81df3be45',1,'QRenderWindow']]],
   ['publishdata_51',['publishData',['../classTestMeshActorWithData.html#a0081ecac0f72c7e4179ddd0d99763524',1,'TestMeshActorWithData']]],
-  ['publishselection_52',['publishSelection',['../structQRenderWindow.html#a29195f8fe8fd14f0298500819ae5e7b5',1,'QRenderWindow']]],
-  ['push_5fback_53',['push_back',['../TestComponentModel_8cpp.html#a02b2049c37f3f3d57a8fa52245b7ce89',1,'push_back(move(c1)):&#160;TestComponentModel.cpp'],['../TestComponentModel_8cpp.html#ae3baf43bf910299d6a2b2a735f484906',1,'push_back(move(c2)):&#160;TestComponentModel.cpp'],['../TestObjMeshIO_8cpp.html#a8f1b1ba539ca5a8cb9fa459d5d44d251',1,'push_back(std::make_unique&lt; ComponentData &gt;()):&#160;TestObjMeshIO.cpp'],['../TestObjMeshIO_8cpp.html#a904f95116f65be3d352319c8b4fe57d9',1,'push_back(makeComponent(&quot;alpha&quot;, { { 0.0, 0.0, 0.0 }, { 1.0, 0.0, 0.0 }, { 0.0, 1.0, 0.0 } }, { 0, 1, 2 }, { 0, 3 })):&#160;TestObjMeshIO.cpp']]],
-  ['pushrecord_54',['pushRecord',['../classUndoStack.html#a38d06c876d9255716754d327eab54a04',1,'UndoStack']]]
+  ['publishmeshupdate_52',['publishMeshUpdate',['../structQRenderWindow.html#acc442b414f28d52d87cc8d26980cf6e0',1,'QRenderWindow']]],
+  ['publishselection_53',['publishSelection',['../structQRenderWindow.html#a29195f8fe8fd14f0298500819ae5e7b5',1,'QRenderWindow']]],
+  ['push_5fback_54',['push_back',['../TestComponentModel_8cpp.html#a02b2049c37f3f3d57a8fa52245b7ce89',1,'push_back(move(c1)):&#160;TestComponentModel.cpp'],['../TestComponentModel_8cpp.html#ae3baf43bf910299d6a2b2a735f484906',1,'push_back(move(c2)):&#160;TestComponentModel.cpp'],['../TestObjMeshIO_8cpp.html#a8f1b1ba539ca5a8cb9fa459d5d44d251',1,'push_back(std::make_unique&lt; ComponentData &gt;()):&#160;TestObjMeshIO.cpp'],['../TestObjMeshIO_8cpp.html#a904f95116f65be3d352319c8b4fe57d9',1,'push_back(makeComponent(&quot;alpha&quot;, { { 0.0, 0.0, 0.0 }, { 1.0, 0.0, 0.0 }, { 0.0, 1.0, 0.0 } }, { 0, 1, 2 }, { 0, 3 })):&#160;TestObjMeshIO.cpp']]],
+  ['pushrecord_55',['pushRecord',['../classUndoStack.html#a38d06c876d9255716754d327eab54a04',1,'UndoStack']]]
 ];

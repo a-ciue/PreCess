@@ -34,8 +34,9 @@ var searchData=
   ['atlas_31',['atlas',['../structViewportOrientationRepresentation_1_1Impl.html#acfc153466f28962897f8ea6f3dec873e',1,'ViewportOrientationRepresentation::Impl']]],
   ['attr_5ftype_32',['attr_type',['../structsession_1_1AttributeInfo.html#a53970606258ba4d15d92dfa325bd570e',1,'session::AttributeInfo']]],
   ['attrib_5f_33',['attrib_',['../classtinyobj_1_1ObjReader.html#a62120e15de47a166de3de5f6f3e4cef1',1,'tinyobj::ObjReader']]],
-  ['attribute_5fname_34',['attribute_name',['../structsystems_1_1feature_1_1ScalarAttributeDisplayRequestedEvent.html#a1a8632e199b5c59da2f3c5dce23d8db5',1,'systems::feature::ScalarAttributeDisplayRequestedEvent']]],
-  ['attribute_5frender_35',['attribute_render',['../structdocktest_1_1PlacedDocks.html#a100289a9941cec999be081d99c71fd0a',1,'docktest::PlacedDocks']]],
-  ['attributeoperator_36',['AttributeOperator',['../classMeshActor.html#ad5804447e55239cf19a4d4713d4f18c1',1,'MeshActor']]],
-  ['authority_5f_37',['authority_',['../classModelLayer_1_1WriteOperation.html#a2f8bb3e7000dea61762db01e932a4a0d',1,'ModelLayer::WriteOperation']]]
+  ['attribute_34',['attribute',['../structScalarDisplayConfig.html#acff65b4ce586591804d1060f05f132b4',1,'ScalarDisplayConfig']]],
+  ['attribute_5fname_35',['attribute_name',['../structsystems_1_1feature_1_1ScalarAttributeDisplayRequestedEvent.html#a1a8632e199b5c59da2f3c5dce23d8db5',1,'systems::feature::ScalarAttributeDisplayRequestedEvent']]],
+  ['attribute_5frender_36',['attribute_render',['../structdocktest_1_1PlacedDocks.html#a100289a9941cec999be081d99c71fd0a',1,'docktest::PlacedDocks']]],
+  ['attributeoperator_37',['AttributeOperator',['../classMeshActor.html#ad5804447e55239cf19a4d4713d4f18c1',1,'MeshActor']]],
+  ['authority_5f_38',['authority_',['../classModelLayer_1_1WriteOperation.html#a2f8bb3e7000dea61762db01e932a4a0d',1,'ModelLayer::WriteOperation']]]
 ];

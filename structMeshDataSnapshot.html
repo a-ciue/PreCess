@@ -140,8 +140,11 @@ MeshDataSnapshot 的协作图:</div>
 Public 属性</h2></td></tr>
 <tr class="memitem:aca829a53e848847e717d178612b049b9" id="r_aca829a53e848847e717d178612b049b9"><td class="memItemLeft" align="right" valign="top">std::uint64_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#aca829a53e848847e717d178612b049b9">generation</a> { }</td></tr>
 <tr class="memitem:aa433e122e6a35d2cb91a2aea47c91ac4" id="r_aa433e122e6a35d2cb91a2aea47c91ac4"><td class="memItemLeft" align="right" valign="top">std::uint64_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#aa433e122e6a35d2cb91a2aea47c91ac4">revision</a> { }</td></tr>
+<tr class="memitem:ac182789ef2424ed47f7605e1795b22bb" id="r_ac182789ef2424ed47f7605e1795b22bb"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ac182789ef2424ed47f7605e1795b22bb">mesh_outputs_rebuilt</a> { false }</td></tr>
+<tr class="memdesc:ac182789ef2424ed47f7605e1795b22bb"><td class="mdescLeft">&#160;</td><td class="mdescRight">本次生成快照时是否重建可见网格输出；缓存重放不依据此标记。  <br /></td></tr>
 <tr class="memitem:a022869700f506a487a43a662b6b372a5" id="r_a022869700f506a487a43a662b6b372a5"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a022869700f506a487a43a662b6b372a5">visible</a> { true }</td></tr>
 <tr class="memitem:a8ee94f731e5fa5830cea231530faecd0" id="r_a8ee94f731e5fa5830cea231530faecd0"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structMeshClipPlane.html">MeshClipPlane</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a8ee94f731e5fa5830cea231530faecd0">clip</a></td></tr>
+<tr class="memitem:a73ec48fd5bd7e68eff11af41c8abb0f2" id="r_a73ec48fd5bd7e68eff11af41c8abb0f2"><td class="memItemLeft" align="right" valign="top">std::optional&lt; <a class="el" href="structScalarDisplayConfig.html">ScalarDisplayConfig</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a73ec48fd5bd7e68eff11af41c8abb0f2">scalar_config</a></td></tr>
 <tr class="memitem:a01b080d6678955afecd29203cf0326f0" id="r_a01b080d6678955afecd29203cf0326f0"><td class="memItemLeft" align="right" valign="top">std::shared_ptr&lt; const <a class="el" href="structMeshData.html">MeshData</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a01b080d6678955afecd29203cf0326f0">source</a></td></tr>
 <tr class="memitem:a3459c1a9c67753370afccc5725898fe6" id="r_a3459c1a9c67753370afccc5725898fe6"><td class="memItemLeft" align="right" valign="top">std::shared_ptr&lt; const <a class="el" href="structMeshDataVtk.html">MeshDataVtk</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a3459c1a9c67753370afccc5725898fe6">model_data</a></td></tr>
 <tr class="memitem:aaccd872055e3201a62e327aa6d948fa0" id="r_aaccd872055e3201a62e327aa6d948fa0"><td class="memItemLeft" align="right" valign="top">vtkSmartPointer&lt; vtkPolyData &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#aaccd872055e3201a62e327aa6d948fa0">original_faces</a></td></tr>
@@ -181,6 +184,22 @@ Public 属性</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+</div>
+</div>
+<a id="ac182789ef2424ed47f7605e1795b22bb" name="ac182789ef2424ed47f7605e1795b22bb"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ac182789ef2424ed47f7605e1795b22bb">&#9670;&#160;</a></span>mesh_outputs_rebuilt</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool MeshDataSnapshot::mesh_outputs_rebuilt { false }</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>本次生成快照时是否重建可见网格输出；缓存重放不依据此标记。 </p>
 
 </div>
 </div>
@@ -248,6 +267,20 @@ Public 属性</h2></td></tr>
       <table class="memname">
         <tr>
           <td class="memname">std::uint64_t MeshDataSnapshot::revision { }</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a73ec48fd5bd7e68eff11af41c8abb0f2" name="a73ec48fd5bd7e68eff11af41c8abb0f2"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a73ec48fd5bd7e68eff11af41c8abb0f2">&#9670;&#160;</a></span>scalar_config</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::optional&lt;<a class="el" href="structScalarDisplayConfig.html">ScalarDisplayConfig</a>&gt; MeshDataSnapshot::scalar_config</td>
         </tr>
       </table>
 </div><div class="memdoc">

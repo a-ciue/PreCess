@@ -1,3 +1,3 @@
 <map id="类继承关系图" name="类继承关系图">
-<area shape="rect" id="Node000000" href="$structsystems_1_1feature_1_1FileFeatureInfo.html" title="文件入口的 Feature ID、显示名称与扩展名，供界面查询。" alt="" coords="5,5,242,33"/>
+<area shape="rect" id="Node000000" href="$classsystems_1_1feature_1_1FeatureSystem.html" title="功能系统：管理功能插件的注册、注销、调用与事件路由" alt="" coords="5,5,194,50"/>
 </map>

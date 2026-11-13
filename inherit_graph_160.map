@@ -1,3 +1,5 @@
 <map id="类继承关系图" name="类继承关系图">
-<area shape="rect" id="Node000000" href="$classsystems_1_1edit_1_1EditSystem.html" title="已废弃的编辑分发系统，仅保留已有调用者的运行能力" alt="" coords="5,5,197,33"/>
+<area shape="rect" id="Node000000" href="$classsystems_1_1edit_1_1EditHandler.html" title="旧编辑系统的兼容接口，仅供已有插件维护" alt="" coords="5,14,199,42"/>
+<area shape="rect" id="Node000001" href="$classsystems_1_1edit_1_1TrivialEditHandler.html" title=" " alt="" coords="247,5,428,50"/>
+<area shape="poly" id="edge78_Node000000_Node000001" title=" " alt="" coords="214,25,249,27,244,28,214,30"/>
 </map>

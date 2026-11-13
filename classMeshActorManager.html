@@ -196,6 +196,9 @@ Public 成员函数</h2></td></tr>
 <tr class="memitem:a2d51b51fef0fbe05b3cb270d0c7ace17" id="r_a2d51b51fef0fbe05b3cb270d0c7ace17"><td class="memItemLeft" align="right" valign="top"><a class="el" href="Core_8h.html#a5162a7a03ccc48523246f10d0adb676d">MeshRenderStyle</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a2d51b51fef0fbe05b3cb270d0c7ace17">getCurrentRenderStyle</a> () const</td></tr>
 <tr class="memitem:a9fed068278fd6160ad25dabc05914224" id="r_a9fed068278fd6160ad25dabc05914224"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a9fed068278fd6160ad25dabc05914224">getCount</a> (<a class="el" href="Core_8h.html#a1673229bf7fec9388ac2a829a52d69b3">Index</a> component_id)</td></tr>
 <tr class="memitem:ab65cb8d5199659aeeba9dcaba6abc109" id="r_ab65cb8d5199659aeeba9dcaba6abc109"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ab65cb8d5199659aeeba9dcaba6abc109">setAttriMode</a> (<a class="el" href="Core_8h.html#a1673229bf7fec9388ac2a829a52d69b3">Index</a> component_id, const std::string &amp;attr_name, <a class="el" href="AttributeCommon_8h.html#a46c8a310cf4c094f8c80e1cb8dc1f911">Mode</a> mode, std::map&lt; std::string, std::any &gt; args)</td></tr>
+<tr class="memdesc:ab65cb8d5199659aeeba9dcaba6abc109"><td class="mdescLeft">&#160;</td><td class="mdescRight">通过既有参数入口设置属性着色，并更新共享色柱。  <br /></td></tr>
+<tr class="memitem:a7312f65a9cf934e8bc0dd0ec5f1f52c9" id="r_a7312f65a9cf934e8bc0dd0ec5f1f52c9"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a7312f65a9cf934e8bc0dd0ec5f1f52c9">applyScalarConfig</a> (<a class="el" href="Core_8h.html#a1673229bf7fec9388ac2a829a52d69b3">Index</a> component_id, const <a class="el" href="structMeshDataSnapshot.html">MeshDataSnapshot</a> &amp;snapshot, bool update_scalar_bar=true)</td></tr>
+<tr class="memdesc:a7312f65a9cf934e8bc0dd0ec5f1f52c9"><td class="mdescLeft">&#160;</td><td class="mdescRight">按完成快照应用或恢复标量着色；非归属组件保留共享色柱。  <br /></td></tr>
 <tr class="memitem:a7ba2baf88963bd2a0e8935d1ddf41b1e" id="r_a7ba2baf88963bd2a0e8935d1ddf41b1e"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a7ba2baf88963bd2a0e8935d1ddf41b1e">cancelAttri</a> (<a class="el" href="Core_8h.html#a1673229bf7fec9388ac2a829a52d69b3">Index</a> component_id)</td></tr>
 <tr class="memitem:a4fc614e62c8fb34ac11f64b9e004ac4b" id="r_a4fc614e62c8fb34ac11f64b9e004ac4b"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a4fc614e62c8fb34ac11f64b9e004ac4b">setTopologyDiagnosticCategoryEnabled</a> (int category, bool enabled)</td></tr>
 <tr class="memdesc:a4fc614e62c8fb34ac11f64b9e004ac4b"><td class="mdescLeft">&#160;</td><td class="mdescRight">设置窗口级拓扑诊断类别是否启用；Actor 最终显隐仍跟随所属 <a class="el" href="classMeshActor.html" title="负责管理Model的Actor">MeshActor</a>  <br /></td></tr>
@@ -235,6 +238,34 @@ Private 属性</h2></td></tr>
 </div>
 </div>
 <a name="doc-func-members" id="doc-func-members"></a><h2 id="header-doc-func-members" class="groupheader">成员函数说明</h2>
+<a id="a7312f65a9cf934e8bc0dd0ec5f1f52c9" name="a7312f65a9cf934e8bc0dd0ec5f1f52c9"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a7312f65a9cf934e8bc0dd0ec5f1f52c9">&#9670;&#160;</a></span>applyScalarConfig()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void MeshActorManager::applyScalarConfig </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="Core_8h.html#a1673229bf7fec9388ac2a829a52d69b3">Index</a></td>          <td class="paramname"><span class="paramname"><em>component_id</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const <a class="el" href="structMeshDataSnapshot.html">MeshDataSnapshot</a> &amp;</td>          <td class="paramname"><span class="paramname"><em>snapshot</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">bool</td>          <td class="paramname"><span class="paramname"><em>update_scalar_bar</em></span><span class="paramdefsep"> = </span><span class="paramdefval">true</span>&#160;)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>按完成快照应用或恢复标量着色；非归属组件保留共享色柱。 </p>
+
+</div>
+</div>
 <a id="a74d5c7dfb308f0bcbddf1b1edf09dfd2" name="a74d5c7dfb308f0bcbddf1b1edf09dfd2"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a74d5c7dfb308f0bcbddf1b1edf09dfd2">&#9670;&#160;</a></span>bindRender()</h2>
 
@@ -460,6 +491,8 @@ Private 属性</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>通过既有参数入口设置属性着色，并更新共享色柱。 </p>
 
 </div>
 </div>

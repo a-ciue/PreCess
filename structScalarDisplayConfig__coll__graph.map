@@ -1,0 +1,7 @@
+<map id="ScalarDisplayConfig" name="ScalarDisplayConfig">
+<area shape="rect" id="Node000001" title="当前组件采用的标量显示配置，不包含界面联动和历史偏好。" alt="" coords="5,200,157,228"/>
+<area shape="rect" id="Node000002" title=" " alt="" coords="38,99,124,127"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="83,141,84,200,78,199,79,144"/>
+<area shape="rect" id="Node000003" title=" " alt="" coords="12,5,150,50"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="82,63,84,99,78,98,80,68"/>
+</map>

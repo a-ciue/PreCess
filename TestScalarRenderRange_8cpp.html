@@ -1,0 +1,350 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="zh">
+<head>
+<meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=11"/>
+<meta name="generator" content="Doxygen 1.14.0"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>PreCess: app/render/test/TestScalarRenderRange.cpp 文件参考</title>
+<link href="tabs.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="jquery.js"></script>
+<script type="text/javascript" src="dynsections.js"></script>
+<script type="text/javascript" src="clipboard.js"></script>
+<script type="text/javascript" src="cookie.js"></script>
+<link href="search/search.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="search/searchdata.js"></script>
+<script type="text/javascript" src="search/search.js"></script>
+<link href="doxygen.css" rel="stylesheet" type="text/css" />
+</head>
+<body>
+<div id="top"><!-- do not remove this div, it is closed by doxygen! -->
+<div id="titlearea">
+<table cellspacing="0" cellpadding="0">
+ <tbody>
+ <tr id="projectrow">
+  <td id="projectlogo"><img alt="Logo" src="ZenithGrid.ico"/></td>
+  <td id="projectalign">
+   <div id="projectname">PreCess
+   </div>
+  </td>
+ </tr>
+ </tbody>
+</table>
+</div>
+<!-- end header part -->
+<!-- 制作者 Doxygen 1.14.0 -->
+<script type="text/javascript">
+var searchBox = new SearchBox("searchBox", "search/",'.html');
+</script>
+<script type="text/javascript">
+$(function() { codefold.init(); });
+</script>
+<script type="text/javascript" src="menudata.js"></script>
+<script type="text/javascript" src="menu.js"></script>
+<script type="text/javascript">
+$(function() {
+  initMenu('',true,false,'search.php','搜索',false);
+  $(function() { init_search(); });
+});
+</script>
+<div id="main-nav"></div>
+<!-- window showing the filter options -->
+<div id="MSearchSelectWindow"
+     onmouseover="return searchBox.OnSearchSelectShow()"
+     onmouseout="return searchBox.OnSearchSelectHide()"
+     onkeydown="return searchBox.OnSearchSelectKey(event)">
+</div>
+
+<!-- iframe showing the search results (closed by default) -->
+<div id="MSearchResultsWindow">
+<div id="MSearchResults">
+<div class="SRPage">
+<div id="SRIndex">
+<div id="SRResults"></div>
+<div class="SRStatus" id="Loading">载入中...</div>
+<div class="SRStatus" id="Searching">搜索中...</div>
+<div class="SRStatus" id="NoMatches">未找到</div>
+</div>
+</div>
+</div>
+</div>
+
+<div id="nav-path" class="navpath">
+  <ul>
+<li class="navelem"><a href="dir_d422163b96683743ed3963d4aac17747.html">app</a></li><li class="navelem"><a href="dir_364370753f3c0e27b80c476caf69e0e2.html">render</a></li><li class="navelem"><a href="dir_ea7bf32d4afef5a01f2beaa3de806056.html">test</a></li>  </ul>
+</div>
+</div><!-- top -->
+<div id="doc-content">
+<div class="header">
+  <div class="summary">
+<a href="#func-members">函数</a>  </div>
+  <div class="headertitle"><div class="title">TestScalarRenderRange.cpp 文件参考</div></div>
+</div><!--header-->
+<div class="contents">
+
+<p>验证独立范围、完整值域与单元筛选的组合行为。  
+<a href="#details">更多...</a></p>
+<div class="textblock"><code>#include &quot;<a class="el" href="MakeMeshData_8h_source.html">MakeMeshData.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="MakeMeshDataVtk_8h_source.html">MakeMeshDataVtk.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="MeshPipelineData_8h_source.html">MeshPipelineData.h</a>&quot;</code><br />
+<code>#include &lt;catch2/catch_test_macros.hpp&gt;</code><br />
+<code>#include &lt;limits&gt;</code><br />
+<code>#include &lt;stdexcept&gt;</code><br />
+<code>#include &lt;vtkCellData.h&gt;</code><br />
+<code>#include &lt;vtkDataArray.h&gt;</code><br />
+<code>#include &lt;vtkIdTypeArray.h&gt;</code><br />
+<code>#include &lt;vtkPlane.h&gt;</code><br />
+<code>#include &lt;vtkPolyData.h&gt;</code><br />
+<code>#include &lt;vtkUnstructuredGrid.h&gt;</code><br />
+</div><div class="textblock"><div class="dynheader">
+TestScalarRenderRange.cpp 的引用(Include)关系图:</div>
+<div class="dyncontent">
+<div class="center"><img src="TestScalarRenderRange_8cpp__incl.png" border="0" usemap="#aapp_2render_2test_2TestScalarRenderRange_8cpp" loading="lazy" alt=""/></div>
+<map name="aapp_2render_2test_2TestScalarRenderRange_8cpp" id="aapp_2render_2test_2TestScalarRenderRange_8cpp">
+<area shape="rect" title="验证独立范围、完整值域与单元筛选的组合行为。" alt="" coords="1641,5,1831,50"/>
+<area shape="rect" href="MakeMeshData_8h.html" title=" " alt="" coords="414,174,548,201"/>
+<area shape="poly" title=" " alt="" coords="1638,31,1484,39,1279,50,1051,70,822,101,666,135,537,171,535,166,665,129,821,95,1050,65,1279,45,1483,33,1643,30"/>
+<area shape="rect" href="MakeMeshDataVtk_8h.html" title=" " alt="" coords="1184,98,1341,126"/>
+<area shape="poly" title=" " alt="" coords="1637,46,1354,97,1353,92,1643,45"/>
+<area shape="rect" href="MeshPipelineData_8h.html" title="GUI 线程持有的网格基础数据、面隐藏及裁剪管线。" alt="" coords="615,258,766,286"/>
+<area shape="poly" title=" " alt="" coords="1638,35,1425,57,1298,76,1172,101,1045,136,922,178,734,254,733,249,920,173,1044,131,1171,95,1297,70,1424,52,1643,34"/>
+<area shape="rect" title=" " alt="" coords="2100,258,2230,286"/>
+<area shape="poly" title=" " alt="" coords="1637,36,1571,47,1501,59,1442,77,1420,88,1406,100,1401,112,1406,124,1428,144,1456,161,1491,175,1531,187,1622,205,1723,217,1926,230,2013,237,2082,247,2103,254,2098,254,2081,252,2013,242,1926,236,1723,222,1621,211,1529,193,1489,180,1454,166,1424,148,1402,127,1395,112,1402,96,1417,83,1440,72,1500,54,1570,41,1643,35"/>
+<area shape="rect" title=" " alt="" coords="1416,98,1634,126"/>
+<area shape="poly" title=" " alt="" coords="1682,50,1574,94,1572,89,1677,51"/>
+<area shape="rect" title=" " alt="" coords="1659,98,1717,126"/>
+<area shape="poly" title=" " alt="" coords="1725,49,1705,86,1702,82,1721,52"/>
+<area shape="rect" title=" " alt="" coords="1741,98,1826,126"/>
+<area shape="poly" title=" " alt="" coords="1750,48,1771,85,1766,83,1747,53"/>
+<area shape="rect" title=" " alt="" coords="1850,98,1960,126"/>
+<area shape="poly" title=" " alt="" coords="1781,48,1867,91,1862,91,1780,53"/>
+<area shape="rect" title=" " alt="" coords="1985,98,2103,126"/>
+<area shape="poly" title=" " alt="" coords="1818,48,1983,94,1977,94,1817,53"/>
+<area shape="rect" title=" " alt="" coords="2127,98,2217,126"/>
+<area shape="poly" title=" " alt="" coords="1831,43,2114,97,2109,98,1831,48"/>
+<area shape="rect" title=" " alt="" coords="2240,98,2354,126"/>
+<area shape="poly" title=" " alt="" coords="1832,38,2228,97,2223,98,1831,44"/>
+<area shape="rect" title=" " alt="" coords="2378,98,2544,126"/>
+<area shape="poly" title=" " alt="" coords="1832,36,2366,97,2361,98,1832,41"/>
+<area shape="rect" href="MeshData_8h.html" title=" " alt="" coords="308,258,407,286"/>
+<area shape="poly" title=" " alt="" coords="464,201,391,251,388,247,459,203"/>
+<area shape="rect" title=" " alt="" coords="496,435,573,462"/>
+<area shape="poly" title=" " alt="" coords="305,287,257,304,211,327,194,340,184,354,183,369,191,385,210,399,239,411,317,429,404,439,484,446,478,446,404,444,316,434,237,416,207,404,187,388,178,370,179,352,190,337,208,323,255,299,309,284"/>
+<area shape="rect" title=" " alt="" coords="296,350,419,378"/>
+<area shape="poly" title=" " alt="" coords="359,284,360,337,355,334,355,288"/>
+<area shape="rect" title=" " alt="" coords="5,350,120,378"/>
+<area shape="poly" title=" " alt="" coords="314,289,121,348,119,343,315,283"/>
+<area shape="rect" title=" " alt="" coords="596,435,652,462"/>
+<area shape="poly" title=" " alt="" coords="312,287,274,310,256,325,242,343,234,365,235,375,242,385,266,402,301,413,344,420,393,423,495,426,584,435,578,435,495,431,393,429,344,425,300,418,263,406,238,389,230,377,229,365,237,341,252,321,271,305,316,285"/>
+<area shape="rect" href="Core_8h.html" title=" " alt="" coords="694,350,757,378"/>
+<area shape="poly" title=" " alt="" coords="407,283,681,350,676,353,407,288"/>
+<area shape="rect" title=" " alt="" coords="696,435,754,462"/>
+<area shape="poly" title=" " alt="" coords="340,285,314,308,291,334,278,361,279,373,286,385,314,404,356,417,407,424,464,427,577,428,664,432,684,438,678,438,664,437,577,433,463,432,406,429,355,422,312,409,282,388,274,375,273,360,286,331,311,305,335,288"/>
+<area shape="rect" title=" " alt="" coords="443,350,517,378"/>
+<area shape="poly" title=" " alt="" coords="375,283,452,341,447,341,374,288"/>
+<area shape="poly" title=" " alt="" coords="697,378,580,431,578,426,692,379"/>
+<area shape="poly" title=" " alt="" coords="711,378,653,427,650,422,706,380"/>
+<area shape="rect" title=" " alt="" coords="965,435,1016,462"/>
+<area shape="poly" title=" " alt="" coords="751,376,770,384,867,415,953,439,948,438,865,420,768,389,750,381"/>
+<area shape="poly" title=" " alt="" coords="727,377,727,421,723,417,723,381"/>
+<area shape="rect" title=" " alt="" coords="1771,435,1834,462"/>
+<area shape="poly" title=" " alt="" coords="749,376,770,384,832,393,938,403,1228,420,1759,445,1753,446,1228,425,937,408,831,399,768,389,748,381"/>
+<area shape="poly" title=" " alt="" coords="1182,125,860,176,652,212,443,252,423,256,421,251,442,247,652,207,860,171,1187,123"/>
+<area shape="poly" title=" " alt="" coords="1341,119,1866,179,2122,216,2205,232,2231,240,2244,247,2261,272,2267,295,2263,317,2251,336,2232,353,2206,368,2141,394,2064,414,1985,429,1850,446,1849,441,1984,424,2063,409,2139,389,2204,364,2228,349,2247,332,2258,315,2262,296,2256,274,2241,251,2229,245,2204,238,2121,221,1866,184,1341,124"/>
+<area shape="rect" href="MeshActor_8h.html" title=" " alt="" coords="1120,174,1221,201"/>
+<area shape="poly" title=" " alt="" coords="1248,125,1200,166,1197,162,1244,127"/>
+<area shape="rect" title=" " alt="" coords="1245,174,1341,201"/>
+<area shape="poly" title=" " alt="" coords="1269,124,1284,160,1279,158,1267,129"/>
+<area shape="poly" title=" " alt="" coords="1118,196,535,252,492,271,451,295,385,343,382,338,448,290,490,266,534,247,1121,191"/>
+<area shape="poly" title=" " alt="" coords="1165,200,1128,250,1101,275,1070,296,1028,315,990,325,956,329,923,329,854,329,815,334,770,345,764,347,762,342,768,339,814,328,853,324,923,324,955,323,989,320,1026,310,1068,292,1098,271,1124,246,1160,203"/>
+<area shape="poly" title=" " alt="" coords="1222,197,1233,199,1388,202,1645,203,1779,206,1898,213,1989,226,2020,236,2039,247,2050,262,2056,277,2056,292,2052,306,2033,334,2003,359,1966,383,1925,403,1849,434,1847,429,1923,398,1963,378,2000,355,2030,330,2047,304,2051,291,2050,278,2045,265,2035,251,2018,241,1988,232,1898,219,1779,211,1645,208,1388,207,1233,204,1222,202"/>
+<area shape="poly" title=" " alt="" coords="1117,195,814,227,603,252,572,270,544,293,500,340,497,336,540,289,569,266,602,247,813,222,1122,193"/>
+<area shape="poly" title=" " alt="" coords="1117,196,967,220,779,252,758,256,756,251,778,247,966,214,1122,195"/>
+<area shape="rect" href="AttributeCommon_8h.html" title="属性渲染模式和统一的标量属性查找规则。" alt="" coords="1118,342,1298,387"/>
+<area shape="poly" title=" " alt="" coords="1172,200,1173,243,1180,293,1192,329,1187,326,1175,295,1168,243,1168,204"/>
+<area shape="rect" title=" " alt="" coords="1580,350,1718,378"/>
+<area shape="poly" title=" " alt="" coords="1220,199,1277,219,1335,247,1350,259,1360,270,1370,281,1385,292,1584,346,1579,346,1383,296,1367,285,1356,274,1346,263,1332,252,1275,224,1219,205"/>
+<area shape="rect" href="IAttributeRenderStrategy_8h.html" title=" " alt="" coords="1322,342,1505,387"/>
+<area shape="poly" title=" " alt="" coords="1175,199,1191,245,1205,270,1223,292,1263,319,1309,341,1304,341,1260,324,1219,296,1200,273,1186,248,1172,204"/>
+<area shape="rect" title=" " alt="" coords="1234,258,1321,286"/>
+<area shape="poly" title=" " alt="" coords="1188,199,1251,249,1246,248,1187,205"/>
+<area shape="rect" title=" " alt="" coords="1396,258,1628,286"/>
+<area shape="poly" title=" " alt="" coords="1222,198,1445,254,1440,254,1221,204"/>
+<area shape="poly" title=" " alt="" coords="1222,197,1233,199,1362,212,1471,218,1658,219,1844,222,1953,230,2082,247,2107,254,2102,254,2081,252,1953,236,1844,227,1658,225,1471,224,1362,217,1233,204,1222,202"/>
+<area shape="rect" title=" " alt="" coords="1652,249,1860,294"/>
+<area shape="poly" title=" " alt="" coords="1222,197,1234,199,1345,214,1434,223,1523,232,1639,249,1634,249,1522,237,1433,228,1345,219,1233,204,1222,202"/>
+<area shape="rect" title=" " alt="" coords="1883,258,2026,286"/>
+<area shape="poly" title=" " alt="" coords="1222,197,1234,199,1330,210,1413,216,1553,220,1693,225,1776,233,1872,247,1897,254,1892,254,1871,252,1775,238,1693,231,1553,225,1412,221,1330,215,1233,204,1222,202"/>
+<area shape="rect" title=" " alt="" coords="790,258,884,286"/>
+<area shape="poly" title=" " alt="" coords="1117,199,1016,222,897,252,886,255,885,250,895,247,1015,217,1122,197"/>
+<area shape="rect" title=" " alt="" coords="908,258,1057,286"/>
+<area shape="poly" title=" " alt="" coords="1143,201,1027,254,1025,249,1138,203"/>
+<area shape="poly" title=" " alt="" coords="681,285,558,425,555,421,676,287"/>
+<area shape="poly" title=" " alt="" coords="688,285,636,422,632,418,683,287"/>
+<area shape="poly" title=" " alt="" coords="697,284,717,337,712,335,694,288"/>
+<area shape="poly" title=" " alt="" coords="745,283,967,340,980,358,988,378,993,421,989,417,983,380,975,360,964,344,744,289"/>
+<area shape="poly" title=" " alt="" coords="688,284,680,332,679,359,684,386,692,404,705,424,700,422,688,407,679,387,674,359,674,331,684,288"/>
+<area shape="poly" title=" " alt="" coords="739,283,779,291,851,298,941,300,1152,301,1260,303,1361,309,1449,320,1518,340,1535,350,1545,362,1554,373,1569,384,1617,405,1667,421,1759,442,1753,441,1666,426,1615,410,1566,389,1551,377,1541,365,1531,354,1516,344,1448,325,1360,314,1259,308,1152,306,941,306,851,303,778,297,739,289"/>
+<area shape="poly" title=" " alt="" coords="662,285,526,346,524,341,657,287"/>
+<area shape="poly" title=" " alt="" coords="742,283,779,291,868,307,940,316,1106,341,1100,342,939,321,868,312,778,297,742,289"/>
+<area shape="rect" title=" " alt="" coords="1028,350,1094,378"/>
+<area shape="poly" title=" " alt="" coords="744,283,779,291,895,313,946,322,1010,339,1020,345,1014,344,1008,345,945,327,894,318,778,297,744,289"/>
+<area shape="rect" title=" " alt="" coords="782,350,845,378"/>
+<area shape="poly" title=" " alt="" coords="709,283,786,341,781,341,707,288"/>
+<area shape="poly" title=" " alt="" coords="739,283,779,291,897,306,998,313,1170,315,1342,317,1443,325,1562,339,1589,347,1584,346,1561,345,1442,330,1342,323,1170,321,998,319,897,311,778,297,739,289"/>
+<area shape="rect" title=" " alt="" coords="868,350,953,378"/>
+<area shape="poly" title=" " alt="" coords="723,283,867,344,862,344,722,289"/>
+<area shape="poly" title=" " alt="" coords="1120,384,1107,389,770,443,769,438,1106,384,1115,385"/>
+<area shape="poly" title=" " alt="" coords="1324,384,1310,389,1031,442,1031,437,1309,384,1319,385"/>
+<area shape="poly" title=" " alt="" coords="1324,384,1310,389,1154,410,1001,427,770,447,769,441,1001,421,1154,405,1309,384,1319,385"/>
+<area shape="rect" title=" " alt="" coords="1390,435,1436,462"/>
+<area shape="poly" title=" " alt="" coords="1415,385,1415,421,1411,417,1411,389"/>
+</map>
+</div>
+</div><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 id="header-func-members" class="groupheader"><a id="func-members" name="func-members"></a>
+函数</h2></td></tr>
+<tr class="memitem:a17b0b8abe2a1f2ea92f31725893bc995" id="r_a17b0b8abe2a1f2ea92f31725893bc995"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a17b0b8abe2a1f2ea92f31725893bc995">TEST_CASE</a> (&quot;Scalar range filtering preserves original IDs and manual hiding&quot;, &quot;[scalar-range]&quot;)</td></tr>
+<tr class="memitem:a4138ddcb8361d5ea5c82994e1b8d7dae" id="r_a4138ddcb8361d5ea5c82994e1b8d7dae"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a4138ddcb8361d5ea5c82994e1b8d7dae">TEST_CASE</a> (&quot;Scalar range filters edge and solid cells but rejects points&quot;, &quot;[scalar-range]&quot;)</td></tr>
+<tr class="memitem:a796cb64f50b0fe98fce322f990a8f4ea" id="r_a796cb64f50b0fe98fce322f990a8f4ea"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a796cb64f50b0fe98fce322f990a8f4ea">TEST_CASE</a> (&quot;Scalar range full values survive empty results missing values and clipping&quot;, &quot;[scalar-range]&quot;)</td></tr>
+<tr class="memitem:a69e5b0e3146b496ce031957d04e2f2d9" id="r_a69e5b0e3146b496ce031957d04e2f2d9"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a69e5b0e3146b496ce031957d04e2f2d9">TEST_CASE</a> (&quot;Scalar config updates report mesh output rebuilds and retain the latest completed configuration&quot;, &quot;[scalar-range]&quot;)</td></tr>
+<tr class="memitem:ace4682d5b106faf9f0e3de3bf5ab4245" id="r_ace4682d5b106faf9f0e3de3bf5ab4245"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ace4682d5b106faf9f0e3de3bf5ab4245">TEST_CASE</a> (&quot;Source reload retains applicable scalar configuration and removes only invalid parts&quot;, &quot;[scalar-range]&quot;)</td></tr>
+<tr class="memitem:a6854ebbc657a7e8f9473bd404395892f" id="r_a6854ebbc657a7e8f9473bd404395892f"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a6854ebbc657a7e8f9473bd404395892f">TEST_CASE</a> (&quot;Scalar lookup uses the first named array before checking filtering support&quot;, &quot;[scalar-range]&quot;)</td></tr>
+</table>
+<a name="details" id="details"></a><h2 id="header-details" class="groupheader">详细描述</h2>
+<div class="textblock"><p>验证独立范围、完整值域与单元筛选的组合行为。 </p>
+</div><a name="doc-func-members" id="doc-func-members"></a><h2 id="header-doc-func-members" class="groupheader">函数说明</h2>
+<a id="a69e5b0e3146b496ce031957d04e2f2d9" name="a69e5b0e3146b496ce031957d04e2f2d9"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a69e5b0e3146b496ce031957d04e2f2d9">&#9670;&#160;</a></span>TEST_CASE() <span class="overload">[1/6]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">TEST_CASE </td>
+          <td>(</td>
+          <td class="paramtype">&quot;Scalar config updates report mesh output rebuilds and retain the latest completed configuration&quot;</td>          <td class="paramname"><span class="paramname"><em></em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">&quot;&quot;</td>          <td class="paramname"><span class="paramname"><em></em></span>[scalar-range]&#160;)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a6854ebbc657a7e8f9473bd404395892f" name="a6854ebbc657a7e8f9473bd404395892f"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a6854ebbc657a7e8f9473bd404395892f">&#9670;&#160;</a></span>TEST_CASE() <span class="overload">[2/6]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">TEST_CASE </td>
+          <td>(</td>
+          <td class="paramtype">&quot;Scalar lookup uses the first named array before checking filtering support&quot;</td>          <td class="paramname"><span class="paramname"><em></em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">&quot;&quot;</td>          <td class="paramname"><span class="paramname"><em></em></span>[scalar-range]&#160;)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a17b0b8abe2a1f2ea92f31725893bc995" name="a17b0b8abe2a1f2ea92f31725893bc995"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a17b0b8abe2a1f2ea92f31725893bc995">&#9670;&#160;</a></span>TEST_CASE() <span class="overload">[3/6]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">TEST_CASE </td>
+          <td>(</td>
+          <td class="paramtype">&quot;Scalar range filtering preserves original IDs and manual hiding&quot;</td>          <td class="paramname"><span class="paramname"><em></em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">&quot;&quot;</td>          <td class="paramname"><span class="paramname"><em></em></span>[scalar-range]&#160;)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a4138ddcb8361d5ea5c82994e1b8d7dae" name="a4138ddcb8361d5ea5c82994e1b8d7dae"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a4138ddcb8361d5ea5c82994e1b8d7dae">&#9670;&#160;</a></span>TEST_CASE() <span class="overload">[4/6]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">TEST_CASE </td>
+          <td>(</td>
+          <td class="paramtype">&quot;Scalar range filters edge and solid cells but rejects points&quot;</td>          <td class="paramname"><span class="paramname"><em></em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">&quot;&quot;</td>          <td class="paramname"><span class="paramname"><em></em></span>[scalar-range]&#160;)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a796cb64f50b0fe98fce322f990a8f4ea" name="a796cb64f50b0fe98fce322f990a8f4ea"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a796cb64f50b0fe98fce322f990a8f4ea">&#9670;&#160;</a></span>TEST_CASE() <span class="overload">[5/6]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">TEST_CASE </td>
+          <td>(</td>
+          <td class="paramtype">&quot;Scalar range full values survive empty results missing values and clipping&quot;</td>          <td class="paramname"><span class="paramname"><em></em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">&quot;&quot;</td>          <td class="paramname"><span class="paramname"><em></em></span>[scalar-range]&#160;)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="ace4682d5b106faf9f0e3de3bf5ab4245" name="ace4682d5b106faf9f0e3de3bf5ab4245"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ace4682d5b106faf9f0e3de3bf5ab4245">&#9670;&#160;</a></span>TEST_CASE() <span class="overload">[6/6]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">TEST_CASE </td>
+          <td>(</td>
+          <td class="paramtype">&quot;Source reload retains applicable scalar configuration and removes only invalid parts&quot;</td>          <td class="paramname"><span class="paramname"><em></em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">&quot;&quot;</td>          <td class="paramname"><span class="paramname"><em></em></span>[scalar-range]&#160;)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+</div><!-- contents -->
+<!-- start footer part -->
+<hr class="footer"/><address class="footer"><small>
+制作者&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.14.0
+</small></address>
+</div><!-- doc-content -->
+</body>
+</html>

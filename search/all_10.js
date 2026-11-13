@@ -139,13 +139,14 @@ var searchData=
   ['publishclipplane_136',['publishClipPlane',['../structQRenderWindow.html#aed10360c7e5aa45b273a9803eb4c7b13',1,'QRenderWindow']]],
   ['publishcomponentvisibility_137',['publishComponentVisibility',['../structQRenderWindow.html#ac699b387ebe167c17fe360a81df3be45',1,'QRenderWindow']]],
   ['publishdata_138',['publishData',['../classTestMeshActorWithData.html#a0081ecac0f72c7e4179ddd0d99763524',1,'TestMeshActorWithData']]],
-  ['publishselection_139',['publishSelection',['../structQRenderWindow.html#a29195f8fe8fd14f0298500819ae5e7b5',1,'QRenderWindow']]],
-  ['push_5fback_140',['push_back',['../TestComponentModel_8cpp.html#a02b2049c37f3f3d57a8fa52245b7ce89',1,'push_back(move(c1)):&#160;TestComponentModel.cpp'],['../TestComponentModel_8cpp.html#ae3baf43bf910299d6a2b2a735f484906',1,'push_back(move(c2)):&#160;TestComponentModel.cpp'],['../TestObjMeshIO_8cpp.html#a8f1b1ba539ca5a8cb9fa459d5d44d251',1,'push_back(std::make_unique&lt; ComponentData &gt;()):&#160;TestObjMeshIO.cpp'],['../TestObjMeshIO_8cpp.html#a904f95116f65be3d352319c8b4fe57d9',1,'push_back(makeComponent(&quot;alpha&quot;, { { 0.0, 0.0, 0.0 }, { 1.0, 0.0, 0.0 }, { 0.0, 1.0, 0.0 } }, { 0, 1, 2 }, { 0, 3 })):&#160;TestObjMeshIO.cpp']]],
-  ['pushrecord_141',['pushRecord',['../classUndoStack.html#a38d06c876d9255716754d327eab54a04',1,'UndoStack']]],
-  ['python_142',['python',['../namespacepython.html',1,'']]],
-  ['python_3a_3aapp_143',['app',['../namespacepython_1_1app.html',1,'python']]],
-  ['python_5fconsole_144',['python_console',['../structdocktest_1_1PlacedDocks.html#a50d7694dc576067f5fc289f123e70cc9',1,'docktest::PlacedDocks']]],
-  ['python_5fruntime_5f_145',['python_runtime_',['../classQModelManager.html#a4bc6fbcfeff224978dd0bd7062c2db3d',1,'QModelManager']]],
-  ['pythonconsole_2eqml_146',['PythonConsole.qml',['../PythonConsole_8qml.html',1,'']]],
-  ['pythonruntime_147',['pythonRuntime',['../classQModelManager.html#ab755d5b8a295b86a915aa7be045de182',1,'QModelManager']]]
+  ['publishmeshupdate_139',['publishMeshUpdate',['../structQRenderWindow.html#acc442b414f28d52d87cc8d26980cf6e0',1,'QRenderWindow']]],
+  ['publishselection_140',['publishSelection',['../structQRenderWindow.html#a29195f8fe8fd14f0298500819ae5e7b5',1,'QRenderWindow']]],
+  ['push_5fback_141',['push_back',['../TestComponentModel_8cpp.html#a02b2049c37f3f3d57a8fa52245b7ce89',1,'push_back(move(c1)):&#160;TestComponentModel.cpp'],['../TestComponentModel_8cpp.html#ae3baf43bf910299d6a2b2a735f484906',1,'push_back(move(c2)):&#160;TestComponentModel.cpp'],['../TestObjMeshIO_8cpp.html#a8f1b1ba539ca5a8cb9fa459d5d44d251',1,'push_back(std::make_unique&lt; ComponentData &gt;()):&#160;TestObjMeshIO.cpp'],['../TestObjMeshIO_8cpp.html#a904f95116f65be3d352319c8b4fe57d9',1,'push_back(makeComponent(&quot;alpha&quot;, { { 0.0, 0.0, 0.0 }, { 1.0, 0.0, 0.0 }, { 0.0, 1.0, 0.0 } }, { 0, 1, 2 }, { 0, 3 })):&#160;TestObjMeshIO.cpp']]],
+  ['pushrecord_142',['pushRecord',['../classUndoStack.html#a38d06c876d9255716754d327eab54a04',1,'UndoStack']]],
+  ['python_143',['python',['../namespacepython.html',1,'']]],
+  ['python_3a_3aapp_144',['app',['../namespacepython_1_1app.html',1,'python']]],
+  ['python_5fconsole_145',['python_console',['../structdocktest_1_1PlacedDocks.html#a50d7694dc576067f5fc289f123e70cc9',1,'docktest::PlacedDocks']]],
+  ['python_5fruntime_5f_146',['python_runtime_',['../classQModelManager.html#a4bc6fbcfeff224978dd0bd7062c2db3d',1,'QModelManager']]],
+  ['pythonconsole_2eqml_147',['PythonConsole.qml',['../PythonConsole_8qml.html',1,'']]],
+  ['pythonruntime_148',['pythonRuntime',['../classQModelManager.html#ab755d5b8a295b86a915aa7be045de182',1,'QModelManager']]]
 ];

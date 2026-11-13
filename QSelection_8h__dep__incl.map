@@ -4,18 +4,20 @@
 <area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="519,36,213,84,170,91,168,86,212,78,520,31"/>
 <area shape="rect" id="Node000003" href="$QFeatureSystemAdaptor_8cpp.html" title=" " alt="" coords="224,81,435,126"/>
 <area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="553,39,407,83,405,78,558,37"/>
-<area shape="rect" id="Node000004" href="$QRenderWindow_8cpp.html" title=" " alt="" coords="264,182,494,210"/>
-<area shape="poly" id="edge3_Node000001_Node000004" title=" " alt="" coords="574,39,536,61,499,83,448,129,393,184,390,179,444,126,496,79,533,56,569,41"/>
+<area shape="rect" id="Node000004" href="$QRenderWindow_8cpp.html" title=" " alt="" coords="154,182,383,210"/>
+<area shape="poly" id="edge3_Node000001_Node000004" title=" " alt="" coords="575,39,499,83,474,106,448,128,380,161,316,184,315,179,378,156,446,123,471,102,496,79,570,41"/>
 <area shape="rect" id="Node000005" href="$QRenderWindow_8h.html" title=" " alt="" coords="509,90,724,117"/>
 <area shape="poly" id="edge4_Node000001_Node000005" title=" " alt="" coords="618,47,619,91,614,88,615,51"/>
-<area shape="rect" id="Node000007" href="$TestUndoQml_8cpp.html" title="实际 QML 删除与选择器失效路径回归测试" alt="" coords="739,182,931,210"/>
-<area shape="poly" id="edge10_Node000001_Node000007" title=" " alt="" coords="664,37,701,56,737,79,765,104,791,132,829,183,824,181,787,136,762,108,733,83,698,60,663,42"/>
-<area shape="rect" id="Node000008" href="$TestSelectionParameter_8cpp.html" title="选择器空值从 QML 适配层写入功能参数的回归测试" alt="" coords="798,90,1056,117"/>
-<area shape="poly" id="edge8_Node000001_Node000008" title=" " alt="" coords="681,35,880,89,875,89,681,40"/>
-<area shape="rect" id="Node000009" href="$TestToolbarNavigation_8cpp.html" title="通用功能导航、旧算法列表兼容及实际工具栏加载测试" alt="" coords="1080,90,1329,117"/>
-<area shape="poly" id="edge9_Node000001_Node000009" title=" " alt="" coords="713,30,1069,78,1124,89,1118,89,1068,84,713,36"/>
-<area shape="poly" id="edge5_Node000005_Node000004" title=" " alt="" coords="570,123,414,184,413,179,565,123"/>
-<area shape="rect" id="Node000006" href="$TestRenderWindowLifecycle_8cpp.html" title="视口场景图销毁与重建的资源生命周期回归测试" alt="" coords="518,174,714,218"/>
-<area shape="poly" id="edge6_Node000005_Node000006" title=" " alt="" coords="618,131,618,175,614,171,614,134"/>
-<area shape="poly" id="edge7_Node000005_Node000007" title=" " alt="" coords="663,121,806,182,801,181,662,126"/>
+<area shape="rect" id="Node000008" href="$TestUndoQml_8cpp.html" title="实际 QML 删除与选择器失效路径回归测试" alt="" coords="848,182,1040,210"/>
+<area shape="poly" id="edge11_Node000001_Node000008" title=" " alt="" coords="661,37,737,79,763,102,788,123,850,156,909,182,904,181,848,161,786,128,759,106,733,83,660,42"/>
+<area shape="rect" id="Node000009" href="$TestSelectionParameter_8cpp.html" title="选择器空值从 QML 适配层写入功能参数的回归测试" alt="" coords="798,90,1056,117"/>
+<area shape="poly" id="edge9_Node000001_Node000009" title=" " alt="" coords="681,35,880,89,875,89,681,40"/>
+<area shape="rect" id="Node000010" href="$TestToolbarNavigation_8cpp.html" title="通用功能导航、旧算法列表兼容及实际工具栏加载测试" alt="" coords="1080,90,1329,117"/>
+<area shape="poly" id="edge10_Node000001_Node000010" title=" " alt="" coords="713,30,1069,78,1124,89,1118,89,1068,84,713,36"/>
+<area shape="poly" id="edge5_Node000005_Node000004" title=" " alt="" coords="554,122,320,184,318,179,548,121"/>
+<area shape="rect" id="Node000006" href="$TestRenderWindowLifecycle_8cpp.html" title="视口场景图销毁与重建的资源生命周期回归测试" alt="" coords="408,174,604,218"/>
+<area shape="poly" id="edge6_Node000005_Node000006" title=" " alt="" coords="591,126,533,176,531,171,586,128"/>
+<area shape="rect" id="Node000007" href="$TestRenderWindowMeshUpdates_8cpp.html" title="不显示窗口地验证网格更新与属性渲染取消之间的边界。" alt="" coords="628,174,824,218"/>
+<area shape="poly" id="edge7_Node000005_Node000007" title=" " alt="" coords="644,124,702,174,697,173,643,130"/>
+<area shape="poly" id="edge8_Node000005_Node000008" title=" " alt="" coords="679,119,899,181,894,182,678,124"/>
 </map>
