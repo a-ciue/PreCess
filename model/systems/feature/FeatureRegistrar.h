@@ -27,6 +27,13 @@ public:
      */
     void addKeyBinding(KeyBinding binding) { key_bindings_.push_back(binding); }
 
+    /**
+     * @brief 声明文件操作能力，入口沿用 Feature ID，参数仍通过 addParameter 完整声明。
+     * @note 首个参数为 Path 或批量导入的 Paths；导出第二个参数为 Component Selector。
+     */
+    void setFileType(FileTypeDeclaration file_type) { file_type_ = std::move(file_type); }
+    const std::optional<FileTypeDeclaration>& fileType() const noexcept { return file_type_; }
+
     /** @brief 收集菜单定义，功能注册成功并通过父节点验证后统一接纳。 */
     void addNavigationMenu(FeatureNavigationMenu menu) { navigation_menus_.push_back(std::move(menu)); }
     /** @brief 收集分组定义，不立即修改共享导航注册表。 */
@@ -48,6 +55,7 @@ private:
     std::vector<FeatureNavigationGroup> navigation_groups_;
     std::vector<core::ArgType> arg_types_;
     std::vector<KeyBinding> key_bindings_;
+    std::optional<FileTypeDeclaration> file_type_;
 };
 }
 #endif // FEATURE_REGISTRAR_H

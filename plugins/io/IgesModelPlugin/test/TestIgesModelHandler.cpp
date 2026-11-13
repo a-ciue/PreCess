@@ -11,11 +11,18 @@
 #include "ModelPayload.h"
 #include "TempFile.h"
 
+#include <BRepGProp.hxx>
+#include <BRepMesh_IncrementalMesh.hxx>
 #include <BRepPrimAPI_MakeBox.hxx>
 #include <BRepPrimAPI_MakeSphere.hxx>
+#include <BRep_Tool.hxx>
+#include <GProp_GProps.hxx>
 #include <TopAbs_ShapeEnum.hxx>
+#include <TopExp_Explorer.hxx>
+#include <TopoDS.hxx>
 #include <TopoDS_Iterator.hxx>
 #include <TopoDS_Shape.hxx>
+#include <catch2/catch_approx.hpp>
 #include <catch2/catch_test_macros.hpp>
 
 #include <filesystem>
@@ -189,6 +196,13 @@ TEST_CASE("IgesModelHandler::write_components()/read_model() - Sphere test")
     // 步骤1: 使用 OpenCASCADE 创建球体
     TopoDS_Shape sphere = BRepPrimAPI_MakeSphere(50.0);
     REQUIRE(!sphere.IsNull());
+    GProp_GProps expected;
+    BRepGProp::VolumeProperties(sphere, expected);
+    BRepMesh_IncrementalMesh mesh(sphere, 0.5);
+    const auto face = TopoDS::Face(TopExp_Explorer(sphere, TopAbs_FACE).Current());
+    TopLoc_Location location;
+    const auto triangulation = BRep_Tool::Triangulation(face, location);
+    REQUIRE_FALSE(triangulation.IsNull());
 
     // 步骤2: 包装为组件化 GeometryData
     std::vector<Index> componentIds = addModelAndGetComponentIds(
@@ -198,6 +212,10 @@ TEST_CASE("IgesModelHandler::write_components()/read_model() - Sphere test")
     // 步骤3: 写入 IGES 文件
     REQUIRE_NOTHROW(io.write_components(layer, componentIds, out, {}));
     REQUIRE(fs::exists(out));
+    CHECK(BRep_Tool::Triangulation(face, location) == triangulation);
+    GProp_GProps source_after;
+    BRepGProp::VolumeProperties(sphere, source_after);
+    CHECK(source_after.Mass() == Catch::Approx(expected.Mass()).epsilon(1e-12));
 
     // 步骤4: 读取 IGES 文件
     std::optional<ModelPayload> payload;
@@ -206,6 +224,13 @@ TEST_CASE("IgesModelHandler::write_components()/read_model() - Sphere test")
 
     // 步骤5: 验证读取到有效的组件化 Geometry 几何
     requireReadableGeometryModel(*payload);
+    double volume = 0.0;
+    for (const auto& component : payload->components) {
+        GProp_GProps actual;
+        BRepGProp::VolumeProperties(*component->geometry->rootShape, actual);
+        volume += actual.Mass();
+    }
+    CHECK(volume == Catch::Approx(expected.Mass()).epsilon(1e-6));
 }
 
 /**

@@ -63,6 +63,8 @@ std::string argTypeName(ArgTypeEnum type)
         return "Bool";
     case ArgTypeEnum::Path:
         return "Path";
+    case ArgTypeEnum::Paths:
+        return "Paths";
     case ArgTypeEnum::Combo:
         return "Combo";
     case ArgTypeEnum::Selector:
@@ -109,6 +111,12 @@ core::ArgObject pythonToArgObject(const core::ArgType& type, py::handle value)
         return core::ArgObject::create<ArgTypeEnum::Bool>(value.cast<bool>());
     case ArgTypeEnum::Path:
         return core::ArgObject::create<ArgTypeEnum::Path>(std::filesystem::path(value.cast<std::string>()));
+    case ArgTypeEnum::Paths: {
+        core::ArgTypeT<ArgTypeEnum::Paths> paths;
+        for (const auto& path : value.cast<std::vector<std::string>>())
+            paths.push_back(std::filesystem::u8path(path));
+        return core::ArgObject::create<ArgTypeEnum::Paths>(std::move(paths));
+    }
     case ArgTypeEnum::Combo:
         // Combo 按选项下标设置（下标到选项文本的映射经 feature_params 自省查询）
         return core::ArgObject::create<ArgTypeEnum::Combo>(value.cast<int>());

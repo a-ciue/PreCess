@@ -46,6 +46,9 @@ if plugins_dir.is_dir():
 
     names = session.feature_names()
     assert "CreateBox" in names, names
+    importer = next(name for name in names if name.startswith("LegacyIO.Import/"))
+    assert session.feature_params(importer)[0]["type"] == "Paths"
+    assert "请选择" in session.call(importer, [])
 
     # 几何功能返回状态文字；创建的组件身份由会话查询取得。
     def created_component_id(operation):

@@ -1,7 +1,6 @@
 import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
-import QtQuick.Dialogs
 
 import "FeatureNavigation.js" as FeatureNavigation
 
@@ -17,8 +16,6 @@ ColumnLayout {
 
     // 冻结任务在飞（算法执行 ∨ 功能冻结任务）禁用工具栏：inline 执行中不得触发运行/编辑等模型操作
     enabled: !QModelManager.taskStatus.frozenBusy
-
-    readonly property bool isWasm: Qt.platform.os === "wasm"
 
     property int activeCategory: -1
     property var algorithmSystem: QModelManager.algorithmSystem
@@ -53,6 +50,10 @@ ColumnLayout {
     property bool pythonConsoleOpen: false
     property bool outputLogOpen: false
     property bool preferencesOpen: false
+
+    function importFiles(urls) {
+        fileFlow.importFiles(urls)
+    }
 
     // 算法与编辑系统尚无图标声明字段，暂保留其名称映射。
     readonly property var pluginIconMap: ({
@@ -132,139 +133,12 @@ ColumnLayout {
     onNavigationEntriesChanged: rebuildFeatureMenus()
     Component.onCompleted: rebuildFeatureMenus()
 
-    // 网页端导入模型
-    Connections {
-        target: root.isWasm ? QWasmBridge : null
-        function onFilesImported(paths) {
-            for (var i = 0; i < paths.length; ++i) {
-                QModelManager.ioSystem.read("All files", "file://" + paths[i], [])
-            }
-            App.registry.renderWindow.resetCamera()
-        }
-    }
-
-    // 导入模型对话框（支持多选，逐个导入所选文件）
-    FileDialog {
-        id: importModelDialog
-        nameFilters: QModelManager.ioSystem.dialogNameFilters
-        fileMode: FileDialog.OpenFiles
-        onAccepted: {
-            if (selectedNameFilter.index >= 0) {
-                for (const file of selectedFiles) {
-                    QModelManager.ioSystem.read(selectedNameFilter.name, file, [])
-                }
-                App.registry.renderWindow.resetCamera()
-            } else {
-                console.exception("No valid file type selected.")
-            }
-        }
-    }
-
-    // 导出模型对话框
-    FileDialog {
-        id: exportModelDialog
-        nameFilters: QModelManager.ioSystem.dialogNameFilters
-        fileMode: FileDialog.SaveFile
-
-        // 以活动模型名预填文件名，避免用户从空白输入框开始；扩展名由对话框按所选类型适配
-        function openExport() {
-            const name = root.suggestedExportFileName()
-            if (name !== "")
-                selectedFile = currentFolder + "/" + name
-            open()
-        }
-
-        onAccepted: {
-            if (selectedNameFilter.index >= 0) {
-                QModelManager.ioSystem.write(selectedNameFilter.name, App.selection.activeModelId, selectedFile, [])
-            } else {
-                console.exception("No valid file type selected.")
-            }
-        }
-    }
-
-    // 网页端导出模型
-    Popup {
-        id: wasmExportDialog
-        modal: true
-        anchors.centerIn: Overlay.overlay
-        width: 380
-        padding: Theme.spacingMd
-        background: Rectangle {
-            color: Theme.menuSurface
-            border.color: Theme.border
-            radius: Theme.radiusMenu
-        }
-
-        function openDialog() {
-            typeCombo.model = QModelManager.ioSystem.getModelIOInfo()
-            typeCombo.currentIndex = 0
-            // 按活动模型名预填（无活动模型时保留既有默认值）；扩展名由类型下拉的联动逻辑适配
-            const suggested = root.suggestedExportFileName()
-            if (suggested !== "")
-                nameField.text = suggested
-            open()
-        }
-
-        function confirmExport() {
-            var info = typeCombo.model[typeCombo.currentIndex]
-            if (!info) return
-            var file_name = nameField.text.trim()
-            if (file_name.length === 0) return
-            if (file_name.indexOf(".") < 0 && info.extensions.length > 0)
-                file_name += "." + info.extensions[0]
-            var path = "/tmp/" + file_name
-            QModelManager.ioSystem.write(info.name, App.selection.activeModelId, "file://" + path, [])
-            QWasmBridge.downloadFile(file_name, path)
-            close()
-        }
-
-        ColumnLayout {
-            width: parent.width
-            spacing: 8
-
-            Label { text: "导出模型" }
-
-            RowLayout {
-                Layout.fillWidth: true
-                Label { text: "类型:" }
-                ComboBox {
-                    id: typeCombo
-                    Layout.fillWidth: true
-                    textRole: "name"
-                    onCurrentIndexChanged: {
-                        var info = typeCombo.model ? typeCombo.model[typeCombo.currentIndex] : null
-                        if (!info || !nameField) return
-                        var ext = info.extensions.length > 0 ? "." + info.extensions[0] : ""
-                        var base = nameField.text.split(".")[0]
-                        if (base.length > 0) nameField.text = base + ext
-                    }
-                }
-            }
-
-            RowLayout {
-                Layout.fillWidth: true
-                Label { text: "文件名:" }
-                TextField {
-                    id: nameField
-                    Layout.fillWidth: true
-                    text: "model.obj"
-                }
-            }
-
-            RowLayout {
-                Layout.fillWidth: true
-                Item { Layout.fillWidth: true }
-                Button {
-                    text: "取消"
-                    onClicked: wasmExportDialog.close()
-                }
-                Button {
-                    text: "下载"
-                    highlighted: true
-                    onClicked: wasmExportDialog.confirmExport()
-                }
-            }
+    FileFeatureFlow {
+        id: fileFlow
+        featureSystem: root.featureSystem
+        onParametersRequested: {
+            if (!root.propertyListOpen)
+                root.propertyListToggled()
         }
     }
 
@@ -394,12 +268,7 @@ ColumnLayout {
                 icon.color: "transparent"
                 Layout.fillHeight: true
                 text: "导入"
-                onClicked: {
-                    if (root.isWasm)
-                        QWasmBridge.pickFile(QModelManager.ioSystem.getDialogExtFilters(), true)
-                    else
-                        importModelDialog.open()
-                }
+                onClicked: fileFlow.openImport()
             }
 
             RibbonActionButton {
@@ -409,12 +278,7 @@ ColumnLayout {
                 icon.color: "transparent"
                 Layout.fillHeight: true
                 text: "导出"
-                onClicked: {
-                    if (root.isWasm)
-                        wasmExportDialog.openDialog()
-                    else
-                        exportModelDialog.openExport()
-                }
+                onClicked: fileFlow.openExport(root.suggestedExportFileName())
             }
 
             RibbonActionButton {

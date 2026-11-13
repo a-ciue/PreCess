@@ -108,7 +108,7 @@ add_dependencies(TestToolbarNavigation SetupNavigationTestPlugin)
 qt_add_resources(TestToolbarNavigation navigation_ui
     PREFIX "/navigation-ui"
     BASE "${CMAKE_CURRENT_SOURCE_DIR}/.."
-    FILES ../SideBar.qml ../OperationSession.qml ../OperationParameterModel.qml ../AppToolbar.qml ../FeatureNavigation.js ../RibbonTabButton.qml ../RibbonActionButton.qml ../Theme.qml ../AppMenu.qml)
+    FILES ../SideBar.qml ../OperationSession.qml ../OperationParameterModel.qml ../AppToolbar.qml ../FileFeatureFlow.qml ../FeatureNavigation.js ../RibbonTabButton.qml ../RibbonActionButton.qml ../Theme.qml ../AppMenu.qml)
 # 实际工具栏读取产品与插件声明的图标；资源随真实 QML 一同加载。
 qt_add_resources(TestToolbarNavigation navigation_icons
     PREFIX "/images"

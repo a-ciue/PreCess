@@ -112,7 +112,7 @@ TEST_CASE("Busy plugin unload keeps feature or IO registration until a successfu
     const auto infos = session.featureSystem().getFeatureInfos();
     const auto io_infos = session.ioSystem().registeredFileTypeInfos();
     REQUIRE(names.size() == 1);
-    REQUIRE(infos.size() + io_infos.size() == 1);
+    REQUIRE(infos.size() + io_infos.size() == (plugin_fragment == "OffModelPlugin" ? 3 : 1));
     auto job = session.jobRunner()->run("pure", [] {
         return systems::job::JobWork { [](systems::job::ProgressFn) { } };
     });
@@ -160,8 +160,16 @@ TEST_CASE("Binary feature setup supplies navigation and survives reload", "[sess
         CHECK(infos.front()->navigation.entryIds() == std::vector<std::string> { "setup-custom" });
         CHECK(infos.front()->navigation.order() == 7);
         CHECK(infos.front()->navigation.entryDefaults().at("setup-custom").at("Size") == "3");
-        REQUIRE(infos.front()->arg_types.size() == 1);
-        CHECK(infos.front()->arg_types.front().name == "Size");
+        REQUIRE(infos.front()->arg_types.size() == 2);
+        CHECK(infos.front()->arg_types.front().type == ArgTypeEnum::Paths);
+        CHECK(infos.front()->arg_types[1].type == ArgTypeEnum::Float);
+        CHECK(infos.front()->arg_types[1].name == "Size");
+        CHECK(session.ioSystem().registeredFileTypeInfos().empty());
+        const auto files = session.featureSystem().getFileTypes(systems::feature::FileDirection::Import);
+        REQUIRE(files.size() == 1);
+        CHECK(files.front().feature == "setupNavigationTest");
+        CHECK(files.front().display_name == infos.front()->display_name);
+        CHECK(files.front().extensions == std::vector<std::string> { "dat" });
         const auto categories = session.featureSystem().getNavigationEntries();
         REQUIRE(categories.size() == 1);
         CHECK(categories.front().title == "Setup custom category");
@@ -180,6 +188,7 @@ TEST_CASE("Binary feature setup supplies navigation and survives reload", "[sess
         session.pluginManager().unregisterPlugin(target);
         CHECK(session.featureSystem().getFeatureInfos().empty());
         CHECK(session.featureSystem().getNavigationEntries().empty());
+        CHECK(session.featureSystem().getFileTypes(systems::feature::FileDirection::Import).empty());
         CHECK(session.featureSystem().getNavigationMenus() == menus);
         CHECK(session.featureSystem().getNavigationGroups() == groups);
     }

@@ -1,7 +1,8 @@
 # OBJECT 库：对象经 model/CMakeLists.txt 的 PreCessBase 聚合导出（依赖方向仍由此处强制）
-add_library(FeatureSystem OBJECT FeatureSystem.cpp FeatureContext.cpp FeatureSystemRegister.cpp FeatureParams.cpp InteractionContext.cpp)
+add_library(FeatureSystem OBJECT FeatureSystem.cpp FeatureContext.cpp FeatureSystemRegister.cpp FeatureParams.cpp InteractionContext.cpp FeatureIOSystemRegister.cpp)
 target_link_libraries(FeatureSystem PRIVATE
     Data
+    IOSystem
     Qt6::Core
     spdlog::spdlog $<$<BOOL:${MINGW}>:ws2_32>
 )

@@ -27,7 +27,7 @@ QtObject {
     function reset(operation) {
         root.argumentTypes = operation && operation.info ? operation.info.arg_types : [];
         root.featureName = operation && operation.isFeature && operation.info ? operation.info.name : "";
-        // 分类默认值只覆盖声明的参数，其他 Feature 参数保持其持久值。
+        // 分类默认值只覆盖声明的参数，其余 Feature 参数保持持久值。
         const presets = operation && operation.categoryId && operation.info && operation.info.category_defaults ? operation.info.category_defaults[operation.categoryId] : null;
         if (root.featureName && presets) {
             const defaults = root._createDefaultValues(operation);
@@ -36,7 +36,7 @@ QtObject {
                     root.featureSystem.setParameter(root.featureName, index, defaults[index]);
             });
         }
-        // 功能系统持有长期参数；进入面板只读取快照，不用默认值覆盖或派发初始化事件。
+        // 功能系统持有长期参数；分类预设应用后读取完整快照。
         root.values = root.featureName ? Array.from(root.featureSystem.getParameterValues(root.featureName)) : root._createDefaultValues(operation);
     }
 
@@ -44,10 +44,7 @@ QtObject {
         if (!operation || !operation.info)
             return [];
         const presets = operation.categoryId && operation.info.category_defaults ? operation.info.category_defaults[operation.categoryId] : null;
-        return root.argumentTypes.map((arg, index) => {
-            const defaults = operation.defaultParameters;
-            if (defaults && defaults[index] !== undefined)
-                return defaults[index];
+        return root.argumentTypes.map(arg => {
             const preset = presets ? presets[arg.name] : undefined;
             const content = preset !== undefined ? String(preset) : arg.content;
             switch (arg.type) {
@@ -64,6 +61,8 @@ QtObject {
                 return parseFloat(content);
             case QArgType.Bool:
                 return content === "true";
+            case QArgType.Paths:
+                return [];
             case QArgType.Selector:
                 return root._emptySelection;
             case QArgType.Button:

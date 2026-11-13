@@ -30,6 +30,7 @@ qt_add_qml_module(${MYNAME}
             AttributeRenderPanel.qml
             CentralRenderArea.qml
             SideBar.qml
+            FileFeatureFlow.qml
             OperationSession.qml
             OperationParameterModel.qml
             ObjectTree.qml

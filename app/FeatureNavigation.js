@@ -43,6 +43,9 @@ function buildEntries(infos, categories, orders) {
     }
     // 未声明入口的功能生成默认入口。
     for (const info of infos) {
+        // IO 适配功能由文件框进入，避免重复产生每种格式的普通菜单按钮。
+        if (info.file_operation)
+            continue
         if ((info.entry_ids || []).length > 0)
             continue
         const id = "feature:" + info.name
