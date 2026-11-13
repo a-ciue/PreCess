@@ -19,7 +19,10 @@ QtObject {
     readonly property var activeEntry: root.isGroupedOperation ? root.navigationEntries.find(entry => entry.id === root.activeOperation.entryId) || null : null
     readonly property var subFeatures: root.activeEntry ? root.activeEntry.items : (!root.isGroupedOperation && root.activeOperation && root.activeOperation.isFeature && root.activeOperation.info ? [root.activeOperation.info] : [])
     readonly property bool hasSubFeatureChoice: root.subFeatures.length > 1
-    readonly property string panelTitle: root.activeEntry ? qsTr("操作面板 - %1").arg(root.activeEntry.title) : qsTr("操作面板")
+    readonly property string panelTitle: {
+        const title = root.activeEntry ? root.activeEntry.title : root.activeOperation && root.activeOperation.info ? root.activeOperation.info.display_name || root.activeOperation.info.name : "";
+        return title ? qsTr("操作面板 - %1").arg(title) : qsTr("操作面板");
+    }
     readonly property OperationParameterModel parameterModel: OperationParameterModel {
         featureSystem: root.featureSystem
         _acceptingControlEdits: !root._switchingOperation

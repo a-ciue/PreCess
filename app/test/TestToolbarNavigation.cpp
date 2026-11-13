@@ -291,7 +291,7 @@ TEST_CASE("File completion follows accepted submission without creating windows"
     systems::feature::FeatureSystem system(model, bus);
     auto handler = std::make_unique<FileCompletionFeature>();
     auto& feature = *handler;
-    REQUIRE(system.registerHandler({ "Completion" }, systems::feature::FeatureSystem::SystemHandlerPtr { handler.release() }));
+    REQUIRE(system.registerHandler({ .name = "Completion", .display_name = "导入样例" }, systems::feature::FeatureSystem::SystemHandlerPtr { handler.release() }));
     systems::feature::QFeatureSystemAdaptor adaptor(system);
     QQmlEngine engine;
     engine.rootContext()->setContextProperty("backend", &adaptor);
@@ -303,6 +303,8 @@ TEST_CASE("File completion follows accepted submission without creating windows"
         FileFeatureFlow {
             id: flow
             featureSystem: backend
+            readonly property OperationSession operationSession: OperationSession { featureSystem: backend }
+            readonly property string panelTitle: operationSession.panelTitle
             property int resets: 0
             property QtObject viewport: QtObject {
                 function resetCamera() { ++flow.resets }
@@ -330,6 +332,7 @@ TEST_CASE("File completion follows accepted submission without creating windows"
     std::unique_ptr<QObject> flow(component.create());
     REQUIRE(flow);
     REQUIRE(QMetaObject::invokeMethod(flow.get(), "selectFile"));
+    CHECK(flow->property("panelTitle").toString() == "操作面板 - 导入样例");
     const auto paths = adaptor.getParameterValues("Completion").front().toStringList();
     CHECK(paths == QStringList { "C:/input one.dat", "C:/input two.dat" });
     CHECK(feature.calls == 0); // 拖入只准备参数，执行仍由侧栏触发。
@@ -366,6 +369,7 @@ TEST_CASE("File completion follows accepted submission without creating windows"
     CHECK(adaptor.getParameterValues("Completion").front().toStringList() == QStringList { "explicit.dat" });
     CHECK(adaptor.getParameterValues("Other").front().toStringList().isEmpty());
     invoke("clearFile");
+    CHECK(flow->property("panelTitle").toString() == "操作面板");
     CHECK(QGuiApplication::allWindows().size() == windows);
 }
 
@@ -950,7 +954,7 @@ TEST_CASE("Actual toolbar renders declared feature entries and preserves active 
         }
         CHECK(buttons->height() <= 40);
         checkOperationButtonsAtBottom(sidebar_item);
-        CHECK(sidebar->property("panelTitle").toString() == "操作面板");
+        CHECK(sidebar->property("panelTitle").toString() == QString("操作面板 - %1").arg(first.displayName()));
         CHECK(parameters->height() > 300);
         REQUIRE(QMetaObject::invokeMethod(triangle, "clicked"));
         {
