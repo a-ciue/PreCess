@@ -34,6 +34,24 @@ ApplicationWindow {
     color: Theme.windowBackground
     flags: Qt.platform.os === "wasm" ? (Qt.Window | Qt.FramelessWindowHint) : Qt.Window
 
+    // 范围偏好由窗口会话持有，编辑器和停靠面板重建不影响参数。
+    readonly property ScalarRangeState scalarRanges: ScalarRangeState {
+        query: QModelManager.query
+        renderWindow: App.registry.renderWindow
+        Component.onCompleted: App.registry.scalarRanges = this
+        Component.onDestruction: {
+            if (App.registry.scalarRanges === this)
+                App.registry.scalarRanges = null
+        }
+    }
+
+    Connections {
+        target: QModelManager.observer
+        function onComponentRemoved(componentId) {
+            root.scalarRanges.removeComponent(componentId)
+        }
+    }
+
     // Fusion 控件的默认调色板取自平台主题（Windows 系统色），不读取
     // QGuiApplication 应用调色板。窗口级绑定才能让启动后动态创建的控件
     // （功能参数面板、插件声明的参数控件、设置页下拉等）继承当前主题；

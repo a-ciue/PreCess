@@ -25,6 +25,7 @@ add_library(vtkPart STATIC
     InteractionService.cpp
     MeshTopologyDiagnostics.cpp
     TopologyDiagnosticActor.cpp
+    renderStrategy/AttributeCommon.cpp
     renderStrategy/AttributeOperator.cpp
     renderStrategy/AttriRenderStrategyScalar.cpp
     renderStrategy/AttriRenderStrategyVector.cpp

@@ -28,6 +28,8 @@ qt_add_qml_module(${MYNAME}
             AppToolbar.qml
             FeatureNavigation.js
             AttributeRenderPanel.qml
+            ScalarRangeState.qml
+            ScalarRangeEditor.qml
             CentralRenderArea.qml
             SideBar.qml
             FileFeatureFlow.qml

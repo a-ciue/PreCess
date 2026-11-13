@@ -121,7 +121,7 @@ void MeshActorManager::setAttriMode(
         std::unique_ptr<IAttributeRenderStrategy> strategy;
         switch (mode) {
         case Mode::SCALAR:
-            strategy = std::make_unique<AttriRenderStrategyScalar>(scalar_bar_);
+            strategy = std::make_unique<AttriRenderStrategyScalar>(scalar_bar_.GetPointer());
             break;
         case Mode::VECTOR:
             strategy = std::make_unique<AttriRenderStrategyVector>();
@@ -144,6 +144,24 @@ void MeshActorManager::setAttriMode(
         this->component_actors_[component_id]->renderAttribute(attr_name, args);
         scalar_bar_component_id_ = scalar_bar_->GetVisibility() ? component_id : -1;
     }
+}
+
+void MeshActorManager::applyScalarConfig(Index component_id, const MeshDataSnapshot& snapshot, bool update_scalar_bar)
+{
+    const auto actor = getComponentActor(component_id);
+    if (!snapshot.scalar_config || !actor)
+        return;
+    const auto& config = *snapshot.scalar_config;
+    std::map<std::string, std::any> args;
+    if (config.mapping)
+        args["scalar_range"] = std::vector<double> { (*config.mapping)[0], (*config.mapping)[1] };
+    if (update_scalar_bar) {
+        setAttriMode(component_id, config.attribute, Mode::SCALAR, std::move(args));
+        return;
+    }
+    // 非归属组件恢复只配置自己的着色，不能修改共享色柱的内容或显隐。
+    actor->setRenderStrategy(std::make_unique<AttriRenderStrategyScalar>());
+    actor->renderAttribute(config.attribute, std::move(args));
 }
 
 void MeshActorManager::cancelAttri(Index component_id)

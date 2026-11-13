@@ -208,32 +208,24 @@ public:
     Q_SLOT void setClick();
 
     /**
-     * @brief 设置属性渲染方式
+     * @brief 设置属性渲染；标量按点、边、面、体顺序使用首个同名数组。
      *
-     * 在控制台中调用示例：
-     * QModelManager.query.getComponentAttriInfo(0)
-     * App.registry.renderWindow.setAttriMode(0, "f_pressure_1", 1, {})
+     * 控制台可直接调用同一入口：
+     * App.registry.renderWindow.setAttriMode(0, "f_pressure_1", 1, { scalar_range: [0, 2], display_range: [0.5, 1.5] })
+     * 省略 scalar_range 使用默认映射，省略 display_range 关闭筛选；空列表同样表示省略。
      * App.registry.renderWindow.setAttriMode(0, "f_color_3", 0, {})
-     * App.registry.renderWindow.setAttriMode(0, "f_vectors_3", 3, {})
-     * App.registry.renderWindow.setAttriMode(0, "v_vector_3", 3, { "glyph_scale": 0.5 })
-     * App.registry.renderWindow.setAttriMode(0, "v_uv_2", 2, { "texture_path": "E:/MeshProjects/Project_Harmonic/data/texture_checker.bmp" })
-     * App.registry.renderWindow.setAttriMode(0, "v_scalars_1", 1, {})
-     * App.registry.renderWindow.setAttriMode(0, "v_scalars_1", 1, { "scalar_range": [2, 6] })
-     * // blow.vtk 示例：
-     * App.registry.renderWindow.setAttriMode(0, "v_displacement9_3", 3, {})
-     * App.registry.renderWindow.setAttriMode(0, "v_displacement9_3", 3, { "glyph_scale": 0.5 })
-     * App.registry.renderWindow.setAttriMode(0, "v_thickness9_1", 1, {})
-     * App.registry.renderWindow.setAttriMode(0, "v_thickness9_1", 1, { "scalar_range": [0, 2] })
+     * App.registry.renderWindow.setAttriMode(0, "v_vector_3", 3, { glyph_scale: 0.5 })
+     * App.registry.renderWindow.setAttriMode(0, "v_uv_2", 2, { texture_path: "E:/data/texture_checker.bmp" })
+     * 与面板共享标量偏好和显示意图时，使用 App.registry.scalarRanges.showAttribute(0, "f_pressure_1")。
+     * 直接调用窗口只更新当前显示，不改写界面历史偏好。
      *
-     * @param component_id 目标 Component ID
-     * @param attr_name 属性名，前缀 v_/e_/f_/s_ 表示点/边/面/体，后缀 _3 表示属性分量为 3
+     * @param component_id 目标组件 ID
+     * @param attr_name 属性名称；前缀只用于显示，不参与实体域选择
      * @param mode 渲染方式 0:RGB 1:SCALAR 2:UV 3:VECTOR
-     * @param args 其他参数（可选），如：
-     *   "texture_path": 贴图路径（string）
-     *   "glyph_scale": 箭头缩放比例（double）
-     *   "scalar_range": 标量范围（长度为2的数组）
+     * @param args 策略参数；标量范围必须是两个有序有限数值，其他参数沿用原策略
+     * @return 标量配置已接受或其他策略请求已排队，不表示渲染已经完成
      */
-    Q_INVOKABLE void setAttriMode(
+    Q_INVOKABLE bool setAttriMode(
         Index component_id,
         QString attr_name,
         int mode,
@@ -241,10 +233,13 @@ public:
     /**
      * @brief 取消指定 Component 的属性渲染
      * 在控制台中调用示例：
-     * myItem.cancelComponentAttri(App.selection.activeComponentId)
+     * App.registry.scalarRanges.cancel(App.selection.activeComponentId)
      * @param component_id 目标 Component ID
      */
     Q_INVOKABLE void cancelComponentAttri(Index component_id);
+
+    /** @brief 查询完整原始值域的两个端点；没有有限单值值域时返回空列表。 */
+    Q_INVOKABLE QVariantList scalarRangeInfo(Index component_id, const QString& attribute);
 
     bool event(QEvent* ev) override;
 
@@ -256,6 +251,8 @@ signals:
     void meshStyleChanged();
     void clicked();
     void rightClicked();
+    /** @brief 原始属性数据变化，通知界面重新查询元信息。 */
+    void scalarRangeChanged();
     /** @brief 在 GUI 决定显隐后同步通知对象树，渲染线程只安装结果。 */
     void componentVisibilityChanged(Index component_id, bool mesh_visible, bool geometry_visible);
 
@@ -263,6 +260,16 @@ protected:
     void itemChange(ItemChange change, const ItemChangeData& value) override;
 
 private:
+    /**
+     * @brief 发布完成的网格结果；输出重新生成时清理选择，标量配置解除时取消着色。
+     * @param activate_scalar_bar 主动应用时切换色柱；自动恢复只刷新原归属色柱。
+     */
+    void publishMeshUpdate(Index component_id, std::shared_ptr<const MeshDataSnapshot> snapshot, bool activate_scalar_bar = false);
+    /** @brief 解除当前标量配置和筛选，恢复非范围隐藏结果；界面自行保留偏好。 */
+    void deactivateScalarRange(Index component_id);
+    // 只记录共享色柱的归属，用于场景图重建时恢复同一属性的现有色柱。
+    Index scalar_bar_component_id_ { -1 };
+
     //! @brief GUI 线程保存 DPR，并将叠加层像素尺寸更新排入渲染队列。
     void updateOverlayScale(qreal ratio);
     qreal overlay_device_pixel_ratio_ { 1.0 };
