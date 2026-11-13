@@ -1,31 +1,32 @@
 <map id="model/systems/feature/FeatureEvents.h" name="model/systems/feature/FeatureEvents.h">
-<area shape="rect" id="Node000001" title="功能系统在事件总线上传递的事件类型" alt="" coords="381,5,554,50"/>
-<area shape="rect" id="Node000002" href="$ArgObject_8h.html" title=" " alt="" coords="216,98,313,126"/>
-<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="411,52,312,94,310,89,416,49"/>
-<area shape="rect" id="Node000005" title=" " alt="" coords="322,249,380,277"/>
-<area shape="poly" id="edge14_Node000001_Node000005" title=" " alt="" coords="455,49,426,99,391,173,364,237,360,233,386,170,421,97,451,52"/>
-<area shape="rect" id="Node000008" href="$Core_8h.html" title=" " alt="" coords="436,98,499,126"/>
-<area shape="poly" id="edge7_Node000001_Node000008" title=" " alt="" coords="469,48,470,84,465,81,466,53"/>
-<area shape="rect" id="Node000013" title=" " alt="" coords="523,98,593,126"/>
-<area shape="poly" id="edge13_Node000001_Node000013" title=" " alt="" coords="492,48,535,87,529,87,491,53"/>
-<area shape="rect" id="Node000014" title=" " alt="" coords="616,98,676,126"/>
-<area shape="poly" id="edge15_Node000001_Node000014" title=" " alt="" coords="515,48,606,91,601,91,514,53"/>
-<area shape="rect" id="Node000003" href="$ArgType_8h.html" title="用于模型层描述功能参数类型" alt="" coords="159,174,245,201"/>
-<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="256,125,225,164,221,160,251,128"/>
-<area shape="rect" id="Node000007" title=" " alt="" coords="269,174,314,201"/>
-<area shape="poly" id="edge6_Node000002_Node000007" title=" " alt="" coords="271,124,284,160,279,158,268,129"/>
-<area shape="rect" id="Node000004" title=" " alt="" coords="5,249,95,277"/>
-<area shape="poly" id="edge3_Node000003_Node000004" title=" " alt="" coords="177,203,92,245,89,240,172,201"/>
-<area shape="poly" id="edge4_Node000003_Node000005" title=" " alt="" coords="229,199,314,242,309,243,228,204"/>
-<area shape="rect" id="Node000006" href="$private__ArgTypeEnum_8h.html" title="参数类型枚举类定义，只被ArgType.h和QArgType.h.in使用。" alt="" coords="118,249,294,277"/>
-<area shape="poly" id="edge5_Node000003_Node000006" title=" " alt="" coords="204,200,207,235,202,232,201,204"/>
-<area shape="poly" id="edge11_Node000008_Node000005" title=" " alt="" coords="460,125,372,239,369,235,455,127"/>
-<area shape="rect" id="Node000009" title=" " alt="" coords="440,174,495,201"/>
-<area shape="poly" id="edge8_Node000008_Node000009" title=" " alt="" coords="469,124,470,159,465,156,466,128"/>
-<area shape="rect" id="Node000010" title=" " alt="" coords="520,174,570,201"/>
-<area shape="poly" id="edge9_Node000008_Node000010" title=" " alt="" coords="482,124,523,163,517,162,480,129"/>
-<area shape="rect" id="Node000011" title=" " alt="" coords="594,174,671,201"/>
-<area shape="poly" id="edge10_Node000008_Node000011" title=" " alt="" coords="497,124,592,167,587,167,496,129"/>
-<area shape="rect" id="Node000012" title=" " alt="" coords="695,174,757,201"/>
-<area shape="poly" id="edge12_Node000008_Node000012" title=" " alt="" coords="500,120,512,123,682,172,677,173,511,128,500,125"/>
+<area shape="rect" id="Node000001" title="功能系统在事件总线上传递的事件类型" alt="" coords="400,5,572,50"/>
+<area shape="rect" id="Node000002" href="$ArgObject_8h.html" title=" " alt="" coords="300,98,398,126"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="452,49,385,92,383,87,448,52"/>
+<area shape="rect" id="Node000005" title=" " alt="" coords="404,249,462,277"/>
+<area shape="poly" id="edge15_Node000001_Node000005" title=" " alt="" coords="484,49,442,236,437,233,479,52"/>
+<area shape="rect" id="Node000009" href="$Core_8h.html" title=" " alt="" coords="479,174,542,201"/>
+<area shape="poly" id="edge8_Node000001_Node000009" title=" " alt="" coords="491,48,508,159,504,157,488,52"/>
+<area shape="rect" id="Node000013" title=" " alt="" coords="524,98,593,126"/>
+<area shape="poly" id="edge14_Node000001_Node000013" title=" " alt="" coords="506,48,539,87,534,86,504,53"/>
+<area shape="rect" id="Node000014" title=" " alt="" coords="617,98,676,126"/>
+<area shape="poly" id="edge16_Node000001_Node000014" title=" " alt="" coords="529,48,610,90,605,91,528,53"/>
+<area shape="rect" id="Node000003" href="$ArgType_8h.html" title="用于模型层描述功能参数类型" alt="" coords="230,174,316,201"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="338,125,299,165,296,161,333,128"/>
+<area shape="rect" id="Node000008" title=" " alt="" coords="340,174,385,201"/>
+<area shape="poly" id="edge7_Node000002_Node000008" title=" " alt="" coords="353,124,360,160,355,157,350,128"/>
+<area shape="rect" id="Node000004" title=" " alt="" coords="204,249,294,277"/>
+<area shape="poly" id="edge3_Node000003_Node000004" title=" " alt="" coords="271,200,260,236,256,233,267,203"/>
+<area shape="poly" id="edge4_Node000003_Node000005" title=" " alt="" coords="302,199,393,242,388,243,301,204"/>
+<area shape="rect" id="Node000006" title=" " alt="" coords="318,249,380,277"/>
+<area shape="poly" id="edge5_Node000003_Node000006" title=" " alt="" coords="288,199,327,239,322,238,286,204"/>
+<area shape="rect" id="Node000007" href="$private__ArgTypeEnum_8h.html" title="参数类型枚举类定义，只被ArgType.h和QArgType.h.in使用。" alt="" coords="5,249,181,277"/>
+<area shape="poly" id="edge6_Node000003_Node000007" title=" " alt="" coords="243,202,140,246,138,241,238,202"/>
+<area shape="poly" id="edge12_Node000009_Node000005" title=" " alt="" coords="499,201,459,241,456,236,494,203"/>
+<area shape="poly" id="edge13_Node000009_Node000006" title=" " alt="" coords="484,201,392,245,390,240,479,202"/>
+<area shape="rect" id="Node000010" title=" " alt="" coords="487,249,542,277"/>
+<area shape="poly" id="edge9_Node000009_Node000010" title=" " alt="" coords="513,200,515,235,511,232,509,204"/>
+<area shape="rect" id="Node000011" title=" " alt="" coords="566,249,617,277"/>
+<area shape="poly" id="edge10_Node000009_Node000011" title=" " alt="" coords="526,199,569,240,564,238,524,204"/>
+<area shape="rect" id="Node000012" title=" " alt="" coords="642,249,718,277"/>
+<area shape="poly" id="edge11_Node000009_Node000012" title=" " alt="" coords="541,199,638,243,633,243,540,204"/>
 </map>

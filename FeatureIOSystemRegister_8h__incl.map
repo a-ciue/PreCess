@@ -1,0 +1,9 @@
+<map id="model/systems/feature/FeatureIOSystemRegister.h" name="model/systems/feature/FeatureIOSystemRegister.h">
+<area shape="rect" id="Node000001" title="将旧 IO 插件注册为文件功能条目，复用原有编解码处理器。" alt="" coords="5,5,208,50"/>
+<area shape="rect" id="Node000002" href="$SystemRegisterBase_8h.html" title=" " alt="" coords="22,98,191,126"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="108,48,109,83,104,82,105,53"/>
+<area shape="rect" id="Node000003" title=" " alt="" coords="8,174,109,201"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="100,125,77,162,73,159,96,128"/>
+<area shape="rect" id="Node000004" title=" " alt="" coords="133,174,178,201"/>
+<area shape="poly" id="edge3_Node000002_Node000004" title=" " alt="" coords="117,124,141,161,136,161,114,129"/>
+</map>

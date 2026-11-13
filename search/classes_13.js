@@ -18,6 +18,7 @@ var searchData=
   ['typemap_3c_20argtypeenum_3a_3aint_20_3e_15',['TypeMap&lt; ArgTypeEnum::Int &gt;',['../structcore_1_1ArgType_1_1TypeMap_3_01ArgTypeEnum_1_1Int_01_4.html',1,'core::ArgType']]],
   ['typemap_3c_20argtypeenum_3a_3anone_20_3e_16',['TypeMap&lt; ArgTypeEnum::None &gt;',['../structcore_1_1ArgType_1_1TypeMap_3_01ArgTypeEnum_1_1None_01_4.html',1,'core::ArgType']]],
   ['typemap_3c_20argtypeenum_3a_3apath_20_3e_17',['TypeMap&lt; ArgTypeEnum::Path &gt;',['../structcore_1_1ArgType_1_1TypeMap_3_01ArgTypeEnum_1_1Path_01_4.html',1,'core::ArgType']]],
-  ['typemap_3c_20argtypeenum_3a_3aselector_20_3e_18',['TypeMap&lt; ArgTypeEnum::Selector &gt;',['../structcore_1_1ArgType_1_1TypeMap_3_01ArgTypeEnum_1_1Selector_01_4.html',1,'core::ArgType']]],
-  ['typemap_3c_20argtypeenum_3a_3atext_20_3e_19',['TypeMap&lt; ArgTypeEnum::Text &gt;',['../structcore_1_1ArgType_1_1TypeMap_3_01ArgTypeEnum_1_1Text_01_4.html',1,'core::ArgType']]]
+  ['typemap_3c_20argtypeenum_3a_3apaths_20_3e_18',['TypeMap&lt; ArgTypeEnum::Paths &gt;',['../structcore_1_1ArgType_1_1TypeMap_3_01ArgTypeEnum_1_1Paths_01_4.html',1,'core::ArgType']]],
+  ['typemap_3c_20argtypeenum_3a_3aselector_20_3e_19',['TypeMap&lt; ArgTypeEnum::Selector &gt;',['../structcore_1_1ArgType_1_1TypeMap_3_01ArgTypeEnum_1_1Selector_01_4.html',1,'core::ArgType']]],
+  ['typemap_3c_20argtypeenum_3a_3atext_20_3e_20',['TypeMap&lt; ArgTypeEnum::Text &gt;',['../structcore_1_1ArgType_1_1TypeMap_3_01ArgTypeEnum_1_1Text_01_4.html',1,'core::ArgType']]]
 ];

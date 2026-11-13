@@ -136,6 +136,9 @@ Public 成员函数</h2></td></tr>
 <tr class="memdesc:a340c43d701a4416b6070087dbc132f0f"><td class="mdescLeft">&#160;</td><td class="mdescRight">注册一个功能参数，UI 依其类型生成参数控件  <br /></td></tr>
 <tr class="memitem:a0aba93c1f2ac3140c880ec4b872b8c70" id="r_a0aba93c1f2ac3140c880ec4b872b8c70"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a0aba93c1f2ac3140c880ec4b872b8c70">addKeyBinding</a> (<a class="el" href="structsystems_1_1feature_1_1KeyBinding.html">KeyBinding</a> binding)</td></tr>
 <tr class="memdesc:a0aba93c1f2ac3140c880ec4b872b8c70"><td class="mdescLeft">&#160;</td><td class="mdescRight">注册按键绑定：execute=true 走正式执行，否则为预览/非模型 onKeyEvent 回调  <br /></td></tr>
+<tr class="memitem:a1b9a0a994f9058eaf646247f21c100b3" id="r_a1b9a0a994f9058eaf646247f21c100b3"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a1b9a0a994f9058eaf646247f21c100b3">setFileType</a> (<a class="el" href="structsystems_1_1feature_1_1FileTypeDeclaration.html">FileTypeDeclaration</a> file_type)</td></tr>
+<tr class="memdesc:a1b9a0a994f9058eaf646247f21c100b3"><td class="mdescLeft">&#160;</td><td class="mdescRight">声明文件操作能力，入口沿用 Feature ID，参数仍通过 addParameter 完整声明。  <br /></td></tr>
+<tr class="memitem:a3bca1e86eb89cda4a99503ecebb65653" id="r_a3bca1e86eb89cda4a99503ecebb65653"><td class="memItemLeft" align="right" valign="top">const std::optional&lt; <a class="el" href="structsystems_1_1feature_1_1FileTypeDeclaration.html">FileTypeDeclaration</a> &gt; &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a3bca1e86eb89cda4a99503ecebb65653">fileType</a> () const noexcept</td></tr>
 <tr class="memitem:acae64884497494b290420bbcdf785936" id="r_acae64884497494b290420bbcdf785936"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#acae64884497494b290420bbcdf785936">addNavigationMenu</a> (<a class="el" href="structsystems_1_1feature_1_1FeatureNavigationMenu.html">FeatureNavigationMenu</a> menu)</td></tr>
 <tr class="memdesc:acae64884497494b290420bbcdf785936"><td class="mdescLeft">&#160;</td><td class="mdescRight">收集菜单定义，功能注册成功并通过父节点验证后统一接纳。  <br /></td></tr>
 <tr class="memitem:a9a630a0351db7ec8dc51fd50725fe793" id="r_a9a630a0351db7ec8dc51fd50725fe793"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a9a630a0351db7ec8dc51fd50725fe793">addNavigationGroup</a> (<a class="el" href="structsystems_1_1feature_1_1FeatureNavigationGroup.html">FeatureNavigationGroup</a> group)</td></tr>
@@ -155,6 +158,7 @@ Private 属性</h2></td></tr>
 <tr class="memitem:a58e638e65cdd9365a65495de091ec665" id="r_a58e638e65cdd9365a65495de091ec665"><td class="memItemLeft" align="right" valign="top">std::vector&lt; <a class="el" href="structsystems_1_1feature_1_1FeatureNavigationGroup.html">FeatureNavigationGroup</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a58e638e65cdd9365a65495de091ec665">navigation_groups_</a></td></tr>
 <tr class="memitem:a51be2044ac65e6f75e77303d7dbbfd92" id="r_a51be2044ac65e6f75e77303d7dbbfd92"><td class="memItemLeft" align="right" valign="top">std::vector&lt; <a class="el" href="structcore_1_1ArgType.html">core::ArgType</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a51be2044ac65e6f75e77303d7dbbfd92">arg_types_</a></td></tr>
 <tr class="memitem:a87493b591edf7ae2a91daa1e5bbaac7b" id="r_a87493b591edf7ae2a91daa1e5bbaac7b"><td class="memItemLeft" align="right" valign="top">std::vector&lt; <a class="el" href="structsystems_1_1feature_1_1KeyBinding.html">KeyBinding</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a87493b591edf7ae2a91daa1e5bbaac7b">key_bindings_</a></td></tr>
+<tr class="memitem:ab680e36e8f2ae91f4fc37459b4773a35" id="r_ab680e36e8f2ae91f4fc37459b4773a35"><td class="memItemLeft" align="right" valign="top">std::optional&lt; <a class="el" href="structsystems_1_1feature_1_1FileTypeDeclaration.html">FileTypeDeclaration</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ab680e36e8f2ae91f4fc37459b4773a35">file_type_</a></td></tr>
 </table>
 <a name="details" id="details"></a><h2 id="header-details" class="groupheader">详细描述</h2>
 <div class="textblock"><p>功能注册器：功能在 setup() 中通过它声明参数、菜单项与按键绑定 </p>
@@ -279,6 +283,31 @@ Private 属性</h2></td></tr>
       <table class="memname">
         <tr>
           <td class="memname">const std::vector&lt; <a class="el" href="structcore_1_1ArgType.html">core::ArgType</a> &gt; &amp; systems::feature::FeatureRegistrar::argTypes </td>
+          <td>(</td>
+          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel inline">inline</span><span class="mlabel noexcept">noexcept</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a3bca1e86eb89cda4a99503ecebb65653" name="a3bca1e86eb89cda4a99503ecebb65653"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a3bca1e86eb89cda4a99503ecebb65653">&#9670;&#160;</a></span>fileType()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">const std::optional&lt; <a class="el" href="structsystems_1_1feature_1_1FileTypeDeclaration.html">FileTypeDeclaration</a> &gt; &amp; systems::feature::FeatureRegistrar::fileType </td>
           <td>(</td>
           <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
           <td> const</td>
@@ -420,6 +449,34 @@ Private 属性</h2></td></tr>
 
 </div>
 </div>
+<a id="a1b9a0a994f9058eaf646247f21c100b3" name="a1b9a0a994f9058eaf646247f21c100b3"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a1b9a0a994f9058eaf646247f21c100b3">&#9670;&#160;</a></span>setFileType()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void systems::feature::FeatureRegistrar::setFileType </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="structsystems_1_1feature_1_1FileTypeDeclaration.html">FileTypeDeclaration</a></td>          <td class="paramname"><span class="paramname"><em>file_type</em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel inline">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>声明文件操作能力，入口沿用 Feature ID，参数仍通过 addParameter 完整声明。 </p>
+<dl class="section note"><dt>注解</dt><dd>首个参数为 Path 或批量导入的 Paths；导出第二个参数为 Component Selector。 </dd></dl>
+
+</div>
+</div>
 <a name="doc-variable-members" id="doc-variable-members"></a><h2 id="header-doc-variable-members" class="groupheader">类成员变量说明</h2>
 <a id="a51be2044ac65e6f75e77303d7dbbfd92" name="a51be2044ac65e6f75e77303d7dbbfd92"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a51be2044ac65e6f75e77303d7dbbfd92">&#9670;&#160;</a></span>arg_types_</h2>
@@ -432,6 +489,28 @@ Private 属性</h2></td></tr>
       <table class="memname">
         <tr>
           <td class="memname">std::vector&lt;<a class="el" href="structcore_1_1ArgType.html">core::ArgType</a>&gt; systems::feature::FeatureRegistrar::arg_types_</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel private">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="ab680e36e8f2ae91f4fc37459b4773a35" name="ab680e36e8f2ae91f4fc37459b4773a35"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ab680e36e8f2ae91f4fc37459b4773a35">&#9670;&#160;</a></span>file_type_</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::optional&lt;<a class="el" href="structsystems_1_1feature_1_1FileTypeDeclaration.html">FileTypeDeclaration</a>&gt; systems::feature::FeatureRegistrar::file_type_</td>
         </tr>
       </table>
   </td>

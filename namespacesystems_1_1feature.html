@@ -78,7 +78,8 @@ $(function() {
 <div class="header">
   <div class="summary">
 <a href="#nested-classes">类</a> &#124;
-<a href="#typedef-members">类型定义</a>  </div>
+<a href="#typedef-members">类型定义</a> &#124;
+<a href="#enum-members">枚举</a>  </div>
   <div class="headertitle"><div class="title">systems::feature 命名空间参考</div></div>
 </div><!--header-->
 <div class="contents">
@@ -93,6 +94,8 @@ $(function() {
 <tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">功能系统的功能接口，插件继承它实现具体功能  <a href="classsystems_1_1feature_1_1FeatureHandler.html#details">更多...</a><br /></td></tr>
 <tr class="memitem:FeatureInfo" id="r_FeatureInfo"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structsystems_1_1feature_1_1FeatureInfo.html">FeatureInfo</a></td></tr>
 <tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">功能信息：元数据与 setup() 声明的聚合，供 UI 查询  <a href="structsystems_1_1feature_1_1FeatureInfo.html#details">更多...</a><br /></td></tr>
+<tr class="memitem:FeatureIOSystemRegister" id="r_FeatureIOSystemRegister"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsystems_1_1feature_1_1FeatureIOSystemRegister.html">FeatureIOSystemRegister</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">旧 IO 插件的迁移注册器；功能系统及其借用的 IO 系统须覆盖本对象生命周期。  <a href="classsystems_1_1feature_1_1FeatureIOSystemRegister.html#details">更多...</a><br /></td></tr>
 <tr class="memitem:FeatureNavigation" id="r_FeatureNavigation"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsystems_1_1feature_1_1FeatureNavigation.html">FeatureNavigation</a></td></tr>
 <tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">统一声明入口与子功能显示属性，不区分普通菜单和分类。  <a href="classsystems_1_1feature_1_1FeatureNavigation.html#details">更多...</a><br /></td></tr>
 <tr class="memitem:FeatureNavigationEntry" id="r_FeatureNavigationEntry"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structsystems_1_1feature_1_1FeatureNavigationEntry.html">FeatureNavigationEntry</a></td></tr>
@@ -111,6 +114,10 @@ $(function() {
 <tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">功能系统：管理功能插件的注册、注销、调用与事件路由  <a href="classsystems_1_1feature_1_1FeatureSystem.html#details">更多...</a><br /></td></tr>
 <tr class="memitem:FeatureSystemRegister" id="r_FeatureSystemRegister"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsystems_1_1feature_1_1FeatureSystemRegister.html">FeatureSystemRegister</a></td></tr>
 <tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">功能系统的注册器，负责注册和注销功能插件  <a href="classsystems_1_1feature_1_1FeatureSystemRegister.html#details">更多...</a><br /></td></tr>
+<tr class="memitem:FileFeatureInfo" id="r_FileFeatureInfo"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structsystems_1_1feature_1_1FileFeatureInfo.html">FileFeatureInfo</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">文件入口的 Feature ID、显示名称与扩展名，供界面查询。  <a href="structsystems_1_1feature_1_1FileFeatureInfo.html#details">更多...</a><br /></td></tr>
+<tr class="memitem:FileTypeDeclaration" id="r_FileTypeDeclaration"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structsystems_1_1feature_1_1FileTypeDeclaration.html">FileTypeDeclaration</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">一个 Feature 的文件操作能力，扩展名仅用于文件框筛选。  <a href="structsystems_1_1feature_1_1FileTypeDeclaration.html#details">更多...</a><br /></td></tr>
 <tr class="memitem:HandlerMetaData" id="r_HandlerMetaData"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structsystems_1_1feature_1_1HandlerMetaData.html">HandlerMetaData</a></td></tr>
 <tr class="memitem:InteractionContext" id="r_InteractionContext"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsystems_1_1feature_1_1InteractionContext.html">InteractionContext</a></td></tr>
 <tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">视口交互上下文（FeatureContext 成员）：功能在 setup() 中经它订阅交互回调  <a href="classsystems_1_1feature_1_1InteractionContext.html#details">更多...</a><br /></td></tr>
@@ -141,6 +148,13 @@ $(function() {
 <tr class="memitem:a32b809d1d2350d1e43401f558ed1c3fc" id="r_a32b809d1d2350d1e43401f558ed1c3fc"><td class="memItemLeft" align="right" valign="top">using&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a32b809d1d2350d1e43401f558ed1c3fc">LayerCaptureJobFn</a> = std::function&lt;<a class="el" href="namespacesystems_1_1job.html#ae2006917203a4b569c4fe083d45939cc">systems::job::JobTaskFn</a>(const <a class="el" href="classModelLayer.html">ModelLayer</a>&amp;)&gt;</td></tr>
 <tr class="memdesc:a32b809d1d2350d1e43401f558ed1c3fc"><td class="mdescLeft">&#160;</td><td class="mdescRight">GUI 准备与提交覆盖整个模型层；worker 仍只拿自持输入和结果。  <br /></td></tr>
 <tr class="memitem:add387ae70a9ea20afcbc99ede083dd26" id="r_add387ae70a9ea20afcbc99ede083dd26"><td class="memItemLeft" align="right" valign="top">using&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#add387ae70a9ea20afcbc99ede083dd26">LayerWritebackFn</a> = std::function&lt;void(<a class="el" href="classModelLayer.html">ModelLayer</a>&amp;, <a class="el" href="namespacesystems_1_1job.html#a68d9b6556b0d0b4d3b1dd89c36e872cd">systems::job::ProgressFn</a>)&gt;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 id="header-enum-members" class="groupheader"><a id="enum-members" name="enum-members"></a>
+枚举</h2></td></tr>
+<tr class="memitem:aa694b03577b0a0b189ff31ee99f65264" id="r_aa694b03577b0a0b189ff31ee99f65264"><td class="memItemLeft" align="right" valign="top">enum class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#aa694b03577b0a0b189ff31ee99f65264">FileDirection</a> { <a class="el" href="#aa694b03577b0a0b189ff31ee99f65264a72d6d7a1885885bb55a565fd1070581a">Import</a>
+, <a class="el" href="#aa694b03577b0a0b189ff31ee99f65264a0095a9fa74d1713e43e370a7d7846224">Export</a>
+ }</td></tr>
+<tr class="memdesc:aa694b03577b0a0b189ff31ee99f65264"><td class="mdescLeft">&#160;</td><td class="mdescRight">文件操作方向；功能身份由 Feature ID 表达。  <a href="#aa694b03577b0a0b189ff31ee99f65264">更多...</a><br /></td></tr>
 </table>
 <a name="doc-typedef-members" id="doc-typedef-members"></a><h2 id="header-doc-typedef-members" class="groupheader">类型定义说明</h2>
 <a id="abfc90cdc6068ff4727fefe3468812b51" name="abfc90cdc6068ff4727fefe3468812b51"></a>
@@ -217,6 +231,35 @@ $(function() {
 </div><div class="memdoc">
 
 <p>GUI 回写段：框架在发布前校验目标，在持有操作占用的提交段交付就绪写面。 </p>
+
+</div>
+</div>
+<a name="doc-enum-members" id="doc-enum-members"></a><h2 id="header-doc-enum-members" class="groupheader">枚举类型说明</h2>
+<a id="aa694b03577b0a0b189ff31ee99f65264" name="aa694b03577b0a0b189ff31ee99f65264"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aa694b03577b0a0b189ff31ee99f65264">&#9670;&#160;</a></span>FileDirection</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">enum class <a class="el" href="#aa694b03577b0a0b189ff31ee99f65264">systems::feature::FileDirection</a></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel strong">strong</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>文件操作方向；功能身份由 Feature ID 表达。 </p>
+<table class="fieldtable">
+<tr><th colspan="2">枚举值</th></tr><tr><td class="fieldname"><a id="aa694b03577b0a0b189ff31ee99f65264a72d6d7a1885885bb55a565fd1070581a" name="aa694b03577b0a0b189ff31ee99f65264a72d6d7a1885885bb55a565fd1070581a"></a>Import&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="aa694b03577b0a0b189ff31ee99f65264a0095a9fa74d1713e43e370a7d7846224" name="aa694b03577b0a0b189ff31ee99f65264a0095a9fa74d1713e43e370a7d7846224"></a>Export&#160;</td><td class="fielddoc"></td></tr>
+</table>
 
 </div>
 </div>

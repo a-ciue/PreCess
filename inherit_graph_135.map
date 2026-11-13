@@ -1,11 +1,7 @@
 <map id="类继承关系图" name="类继承关系图">
-<area shape="rect" id="Node000000" title=" " alt="" coords="5,74,119,102"/>
-<area shape="rect" id="Node000001" href="$classGeometryTopologyDiagnosticCancelled.html" title="协作式取消信号。" alt="" coords="167,5,380,50"/>
-<area shape="poly" id="edge74_Node000000_Node000001" title=" " alt="" coords="127,67,194,49,190,52,129,72"/>
-<area shape="rect" id="Node000002" title=" " alt="" coords="204,74,342,102"/>
-<area shape="poly" id="edge75_Node000000_Node000002" title=" " alt="" coords="134,85,206,86,201,89,135,90"/>
-<area shape="rect" id="Node000004" href="$classsystems_1_1job_1_1JobCancelledException.html" title="心跳点取消异常：由包裹进度回调抛出" alt="" coords="175,125,372,170"/>
-<area shape="poly" id="edge77_Node000000_Node000004" title=" " alt="" coords="128,104,195,124,190,126,127,109"/>
-<area shape="rect" id="Node000003" href="$classModelOperationBusy.html" title="框架忙碌拒绝：桥接层统一处理，插件无需自行捕获。" alt="" coords="428,74,585,102"/>
-<area shape="poly" id="edge76_Node000002_Node000003" title=" " alt="" coords="357,85,430,87,425,88,358,90"/>
+<area shape="rect" id="Node000000" title=" " alt="" coords="5,32,185,60"/>
+<area shape="rect" id="Node000001" href="$classQtLogSink.html" title=" " alt="" coords="233,5,420,33"/>
+<area shape="poly" id="edge72_Node000000_Node000001" title=" " alt="" coords="199,31,235,29,230,31,200,36"/>
+<area shape="rect" id="Node000002" href="$classQtLogSink.html" title=" " alt="" coords="247,57,406,85"/>
+<area shape="poly" id="edge73_Node000000_Node000002" title=" " alt="" coords="200,55,249,62,244,63,200,60"/>
 </map>

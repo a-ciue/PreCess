@@ -1,0 +1,9 @@
+<map id="model/systems/feature/FeatureIOSystemRegister.h" name="model/systems/feature/FeatureIOSystemRegister.h">
+<area shape="rect" id="Node000001" title="将旧 IO 插件注册为文件功能条目，复用原有编解码处理器。" alt="" coords="233,5,435,50"/>
+<area shape="rect" id="Node000002" href="$Session_8cpp.html" title="会话组合根实现：子系统装配、观察者转发桥与有序拆解" alt="" coords="5,106,202,134"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="267,57,138,108,136,103,263,55"/>
+<area shape="rect" id="Node000003" href="$FeatureIOSystemRegister_8cpp.html" title="旧 IO 编解码与 Feature 参数、执行入口之间的桥接。" alt="" coords="226,98,443,143"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="336,64,336,99,332,96,332,68"/>
+<area shape="rect" id="Node000004" href="$TestFeatureIO_8cpp.html" title="IO 适配的路由、固定参数、导入记账、组件导出及注册清理回归。" alt="" coords="467,98,639,143"/>
+<area shape="poly" id="edge3_Node000001_Node000004" title=" " alt="" coords="401,54,503,97,498,97,400,59"/>
+</map>

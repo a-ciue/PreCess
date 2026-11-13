@@ -1,3 +1,27 @@
 <map id="类继承关系图" name="类继承关系图">
-<area shape="rect" id="Node000000" href="$classdock_1_1DragHandle.html" title="拖拽源描述" alt="" coords="5,5,143,33"/>
+<area shape="rect" id="Node000000" href="$classdock_1_1DockView.html" title="视图抽象接口" alt="" coords="5,240,131,268"/>
+<area shape="rect" id="Node000001" href="$classdock_1_1ui_1_1DockHostItem.html" title="主停靠区域视图" alt="" coords="191,109,364,137"/>
+<area shape="poly" id="edge1_Node000000_Node000001" title=" " alt="" coords="88,227,127,186,151,165,177,147,209,136,205,139,180,152,154,169,130,190,92,230"/>
+<area shape="rect" id="Node000005" href="$classdock_1_1ui_1_1DockPanelItem.html" title="QML 停靠面板" alt="" coords="189,161,367,189"/>
+<area shape="poly" id="edge2_Node000000_Node000005" title=" " alt="" coords="108,231,178,199,219,188,215,191,180,204,111,235"/>
+<area shape="rect" id="Node000007" href="$classdock_1_1ui_1_1DockWindowItem.html" title="浮动窗口视图" alt="" coords="180,369,376,397"/>
+<area shape="poly" id="edge3_Node000000_Node000007" title=" " alt="" coords="90,277,130,317,180,354,210,368,204,369,177,359,127,321,89,282"/>
+<area shape="rect" id="Node000010" href="$classdock_1_1ui_1_1PanelContentView.html" title="client 视图适配器" alt="" coords="179,317,377,345"/>
+<area shape="poly" id="edge4_Node000000_Node000010" title=" " alt="" coords="111,272,180,302,220,316,214,317,178,307,111,278"/>
+<area shape="rect" id="Node000006" href="$classdock_1_1ui_1_1PanelGroupItem.html" title="分组视图" alt="" coords="186,213,370,241"/>
+<area shape="poly" id="edge5_Node000000_Node000006" title=" " alt="" coords="145,242,187,237,183,240,147,246"/>
+<area shape="rect" id="Node000011" href="$classdocktest_1_1StubView.html" title="记录几何与可见性的桩视图" alt="" coords="205,265,351,293"/>
+<area shape="poly" id="edge6_Node000000_Node000011" title=" " alt="" coords="145,261,207,269,202,272,147,266"/>
+<area shape="rect" id="Node000002" title=" " alt="" coords="19,109,117,137"/>
+<area shape="poly" id="edge9_Node000002_Node000001" title=" " alt="" coords="131,121,193,121,188,125,133,126"/>
+<area shape="poly" id="edge10_Node000002_Node000005" title=" " alt="" coords="132,136,221,159,217,162,133,142"/>
+<area shape="poly" id="edge11_Node000002_Node000006" title=" " alt="" coords="96,144,136,173,180,198,214,212,209,214,178,203,133,177,97,149"/>
+<area shape="rect" id="Node000003" href="$classdock_1_1ui_1_1DividerItem.html" title=" " alt="" coords="199,57,356,85"/>
+<area shape="poly" id="edge7_Node000002_Node000003" title=" " alt="" coords="131,105,221,84,217,88,134,110"/>
+<area shape="rect" id="Node000004" href="$classdock_1_1ui_1_1DockAreaItem.html" title="布局区域视图" alt="" coords="191,5,364,33"/>
+<area shape="poly" id="edge8_Node000002_Node000004" title=" " alt="" coords="95,98,133,69,178,43,213,32,209,35,180,48,136,74,99,101"/>
+<area shape="rect" id="Node000008" title=" " alt="" coords="8,395,128,422"/>
+<area shape="poly" id="edge12_Node000008_Node000007" title=" " alt="" coords="143,397,182,394,177,396,144,402"/>
+<area shape="rect" id="Node000009" href="$classdock_1_1ui_1_1DropZoneOverlay.html" title="指示器浮层窗口" alt="" coords="180,421,376,449"/>
+<area shape="poly" id="edge13_Node000008_Node000009" title=" " alt="" coords="144,415,182,422,177,423,144,421"/>
 </map>

@@ -29,12 +29,13 @@ var searchData=
   ['arg_5ftypes_26',['arg_types',['../structsystems_1_1algo_1_1AlgorithmInfo.html#a8c05d4a869a62930788cc4b17f7e796b',1,'systems::algo::AlgorithmInfo::arg_types'],['../structsystems_1_1edit_1_1EditInfo.html#a46952091b7b5d951c78a005ed98c57ba',1,'systems::edit::EditInfo::arg_types'],['../structsystems_1_1feature_1_1FeatureInfo.html#ae2fd774abefa9270199c5dd9cd4ec6dc',1,'systems::feature::FeatureInfo::arg_types']]],
   ['arg_5ftypes_5f_27',['arg_types_',['../classQAlgorithmInfo.html#ae8522dde9690962c72b0041ce759d312',1,'QAlgorithmInfo::arg_types_'],['../classQEditInfo.html#a2e1b4c32db1231f9d7332a1a8dd8fb96',1,'QEditInfo::arg_types_'],['../classQFeatureInfo.html#a714730e875a7da9b95e569df1c3e5f04',1,'QFeatureInfo::arg_types_'],['../classsystems_1_1feature_1_1FeatureRegistrar.html#a51be2044ac65e6f75e77303d7dbbfd92',1,'systems::feature::FeatureRegistrar::arg_types_']]],
   ['args_28',['args',['../structsystems_1_1algo_1_1PreparedAlgorithm.html#a5933b34d1bdf8c0218d39efc462204d3',1,'systems::algo::PreparedAlgorithm']]],
-  ['argv0_29',['argv0',['../classQModelManager.html#a94d5dd6802ae5ec9f4c3dce2332933ec',1,'QModelManager']]],
-  ['atlas_30',['atlas',['../structViewportOrientationRepresentation_1_1Impl.html#acfc153466f28962897f8ea6f3dec873e',1,'ViewportOrientationRepresentation::Impl']]],
-  ['attr_5ftype_31',['attr_type',['../structsession_1_1AttributeInfo.html#a53970606258ba4d15d92dfa325bd570e',1,'session::AttributeInfo']]],
-  ['attrib_5f_32',['attrib_',['../classtinyobj_1_1ObjReader.html#a62120e15de47a166de3de5f6f3e4cef1',1,'tinyobj::ObjReader']]],
-  ['attribute_5fname_33',['attribute_name',['../structsystems_1_1feature_1_1ScalarAttributeDisplayRequestedEvent.html#a1a8632e199b5c59da2f3c5dce23d8db5',1,'systems::feature::ScalarAttributeDisplayRequestedEvent']]],
-  ['attribute_5frender_34',['attribute_render',['../structdocktest_1_1PlacedDocks.html#a100289a9941cec999be081d99c71fd0a',1,'docktest::PlacedDocks']]],
-  ['attributeoperator_35',['AttributeOperator',['../classMeshActor.html#ad5804447e55239cf19a4d4713d4f18c1',1,'MeshActor']]],
-  ['authority_5f_36',['authority_',['../classModelLayer_1_1WriteOperation.html#a2f8bb3e7000dea61762db01e932a4a0d',1,'ModelLayer::WriteOperation']]]
+  ['argument_5ftypes_5f_29',['argument_types_',['../classsystems_1_1feature_1_1FeatureIOSystemRegister_1_1FileFeature.html#a4273759ad6442454a8eb78403ff30a6f',1,'systems::feature::FeatureIOSystemRegister::FileFeature']]],
+  ['argv0_30',['argv0',['../classQModelManager.html#a94d5dd6802ae5ec9f4c3dce2332933ec',1,'QModelManager']]],
+  ['atlas_31',['atlas',['../structViewportOrientationRepresentation_1_1Impl.html#acfc153466f28962897f8ea6f3dec873e',1,'ViewportOrientationRepresentation::Impl']]],
+  ['attr_5ftype_32',['attr_type',['../structsession_1_1AttributeInfo.html#a53970606258ba4d15d92dfa325bd570e',1,'session::AttributeInfo']]],
+  ['attrib_5f_33',['attrib_',['../classtinyobj_1_1ObjReader.html#a62120e15de47a166de3de5f6f3e4cef1',1,'tinyobj::ObjReader']]],
+  ['attribute_5fname_34',['attribute_name',['../structsystems_1_1feature_1_1ScalarAttributeDisplayRequestedEvent.html#a1a8632e199b5c59da2f3c5dce23d8db5',1,'systems::feature::ScalarAttributeDisplayRequestedEvent']]],
+  ['attribute_5frender_35',['attribute_render',['../structdocktest_1_1PlacedDocks.html#a100289a9941cec999be081d99c71fd0a',1,'docktest::PlacedDocks']]],
+  ['attributeoperator_36',['AttributeOperator',['../classMeshActor.html#ad5804447e55239cf19a4d4713d4f18c1',1,'MeshActor']]],
+  ['authority_5f_37',['authority_',['../classModelLayer_1_1WriteOperation.html#a2f8bb3e7000dea61762db01e932a4a0d',1,'ModelLayer::WriteOperation']]]
 ];

@@ -1,21 +1,25 @@
 <map id="model/systems/feature/FeatureRegistrar.h" name="model/systems/feature/FeatureRegistrar.h">
-<area shape="rect" id="Node000001" title="功能声明的收集器" alt="" coords="1018,5,1191,50"/>
+<area shape="rect" id="Node000001" title="功能声明的收集器" alt="" coords="1229,5,1402,50"/>
 <area shape="rect" id="Node000002" href="$TestSelectionParameter_8cpp.html" title="选择器空值从 QML 适配层写入功能参数的回归测试" alt="" coords="5,106,263,134"/>
-<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="1001,36,678,62,274,101,216,109,215,103,274,95,678,56,1006,35"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="1211,33,803,57,540,76,274,101,214,109,213,103,274,95,539,71,802,52,1216,33"/>
 <area shape="rect" id="Node000003" href="$TestToolbarNavigation_8cpp.html" title="通用功能导航、旧算法列表兼容及实际工具栏加载测试" alt="" coords="287,106,536,134"/>
-<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="1006,41,549,101,495,109,494,103,548,95,1000,41"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="1211,36,916,63,549,101,492,108,492,103,548,95,915,58,1216,36"/>
 <area shape="rect" id="Node000004" href="$TestUndoQml_8cpp.html" title="实际 QML 删除与选择器失效路径回归测试" alt="" coords="560,106,753,134"/>
-<area shape="poly" id="edge3_Node000001_Node000004" title=" " alt="" coords="1006,49,722,108,722,103,1001,49"/>
+<area shape="poly" id="edge3_Node000001_Node000004" title=" " alt="" coords="1216,39,1006,67,765,101,721,108,720,103,764,95,1006,61,1211,40"/>
 <area shape="rect" id="Node000005" href="$SetupNavigationTestPlugin_8cpp.html" title="验证 Feature 导航声明经真实 DLL 边界注册，不安装到产品插件目录。" alt="" coords="777,98,1003,143"/>
-<area shape="poly" id="edge4_Node000001_Node000005" title=" " alt="" coords="1042,56,942,100,941,95,1037,57"/>
+<area shape="poly" id="edge4_Node000001_Node000005" title=" " alt="" coords="1217,50,993,100,992,95,1211,51"/>
 <area shape="rect" id="Node000006" href="$TestSessionJobs_8cpp.html" title="无 Qt 宿主的任务拥有关系、终态重放与拆解回归。" alt="" coords="1027,98,1182,143"/>
-<area shape="poly" id="edge5_Node000001_Node000006" title=" " alt="" coords="1107,64,1107,100,1103,96,1103,67"/>
-<area shape="rect" id="Node000007" href="$FeatureSystem_8cpp.html" title=" " alt="" coords="1206,98,1379,143"/>
-<area shape="poly" id="edge6_Node000001_Node000007" title=" " alt="" coords="1164,55,1251,98,1245,97,1163,60"/>
-<area shape="rect" id="Node000008" href="$TestFeatureNavigation_8cpp.html" title="导航父节点注册、入口聚合及参数保持的回归测试。" alt="" coords="1403,98,1630,143"/>
-<area shape="poly" id="edge7_Node000001_Node000008" title=" " alt="" coords="1206,48,1420,97,1415,97,1205,54"/>
-<area shape="rect" id="Node000009" href="$TestFeatureSystem_8cpp.html" title=" " alt="" coords="1654,98,1859,143"/>
-<area shape="poly" id="edge8_Node000001_Node000009" title=" " alt="" coords="1206,38,1408,62,1642,95,1656,100,1651,100,1642,101,1408,68,1206,43"/>
-<area shape="rect" id="Node000010" href="$TestFeatureUndo_8cpp.html" title="FeatureSystem undo 集成测试：边界自动记录 / 插件层会话 / 网关包装" alt="" coords="1883,98,2073,143"/>
-<area shape="poly" id="edge9_Node000001_Node000010" title=" " alt="" coords="1206,32,1505,54,1688,72,1872,95,1885,100,1880,100,1871,101,1688,78,1505,60,1206,37"/>
+<area shape="poly" id="edge5_Node000001_Node000006" title=" " alt="" coords="1254,56,1156,100,1154,95,1249,57"/>
+<area shape="rect" id="Node000007" href="$FeatureIOSystemRegister_8cpp.html" title="旧 IO 编解码与 Feature 参数、执行入口之间的桥接。" alt="" coords="1207,98,1424,143"/>
+<area shape="poly" id="edge6_Node000001_Node000007" title=" " alt="" coords="1317,64,1317,100,1313,96,1313,67"/>
+<area shape="rect" id="Node000008" href="$FeatureSystem_8cpp.html" title=" " alt="" coords="1448,98,1620,143"/>
+<area shape="poly" id="edge7_Node000001_Node000008" title=" " alt="" coords="1382,54,1484,98,1479,97,1381,59"/>
+<area shape="rect" id="Node000009" href="$TestFeatureIO_8cpp.html" title="IO 适配的路由、固定参数、导入记账、组件导出及注册清理回归。" alt="" coords="1644,98,1816,143"/>
+<area shape="poly" id="edge8_Node000001_Node000009" title=" " alt="" coords="1417,48,1646,100,1641,100,1416,54"/>
+<area shape="rect" id="Node000010" href="$TestFeatureNavigation_8cpp.html" title="导航父节点注册、入口聚合及参数保持的回归测试。" alt="" coords="1840,98,2068,143"/>
+<area shape="poly" id="edge9_Node000001_Node000010" title=" " alt="" coords="1417,39,1829,95,1843,100,1837,100,1828,101,1416,44"/>
+<area shape="rect" id="Node000011" href="$TestFeatureSystem_8cpp.html" title=" " alt="" coords="2091,98,2297,143"/>
+<area shape="poly" id="edge10_Node000001_Node000011" title=" " alt="" coords="1417,33,1715,56,1897,73,2080,95,2094,100,2088,100,2079,101,1897,79,1715,61,1417,38"/>
+<area shape="rect" id="Node000012" href="$TestFeatureUndo_8cpp.html" title="FeatureSystem undo 集成测试：边界自动记录 / 插件层会话 / 网关包装" alt="" coords="2320,98,2510,143"/>
+<area shape="poly" id="edge11_Node000001_Node000012" title=" " alt="" coords="1417,29,1809,48,2058,68,2309,95,2323,100,2317,99,2308,101,2058,73,1809,54,1417,35"/>
 </map>

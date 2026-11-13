@@ -1,0 +1,5 @@
+<map id="systems::feature::FeatureIOSystemRegister::FileFeature" name="systems::feature::FeatureIOSystemRegister::FileFeature">
+<area shape="rect" id="Node000001" title=" " alt="" coords="5,98,224,143"/>
+<area shape="rect" id="Node000002" href="$classsystems_1_1feature_1_1FeatureHandler.html" title="功能系统的功能接口，插件继承它实现具体功能" alt="" coords="20,5,209,50"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="116,64,117,99,112,97,113,68"/>
+</map>

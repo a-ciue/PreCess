@@ -1,11 +1,13 @@
 <map id="systems::SystemRegisterBase" name="systems::SystemRegisterBase">
-<area shape="rect" id="Node000001" title="系统功能插件的注册器，系统的交互接口，用于注册和注销系统的插件PluginBase。本身不储存状态" alt="" coords="5,118,225,146"/>
+<area shape="rect" id="Node000001" title="系统功能插件的注册器，系统的交互接口，用于注册和注销系统的插件PluginBase。本身不储存状态" alt="" coords="5,152,225,180"/>
 <area shape="rect" id="Node000002" href="$classsystems_1_1algo_1_1AlgorithmSystemRegister.html" title="算法系统的操作器，负责注册和注销算法插件" alt="" coords="284,5,468,50"/>
-<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="159,109,272,60,307,49,302,52,274,65,162,113"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="145,141,202,100,271,60,302,49,298,52,274,65,205,105,148,145"/>
 <area shape="rect" id="Node000003" href="$classsystems_1_1edit_1_1EditSystemRegister.html" title="模型编辑系统的操作器，负责注册和注销模型编辑插件" alt="" coords="281,75,472,119"/>
-<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="238,113,283,109,278,111,240,118"/>
-<area shape="rect" id="Node000004" href="$classsystems_1_1feature_1_1FeatureSystemRegister.html" title="功能系统的注册器，负责注册和注销功能插件" alt="" coords="282,144,470,189"/>
-<area shape="poly" id="edge3_Node000001_Node000004" title=" " alt="" coords="239,145,284,153,279,154,239,151"/>
-<area shape="rect" id="Node000005" href="$classsystems_1_1io_1_1ModelIOSystemRegister.html" title="ModelIOSystem的操作类，负责功能注册和管理" alt="" coords="273,213,480,258"/>
-<area shape="poly" id="edge4_Node000001_Node000005" title=" " alt="" coords="161,150,274,199,307,213,302,213,272,203,160,155"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="184,146,291,118,287,122,186,150"/>
+<area shape="rect" id="Node000004" href="$classsystems_1_1feature_1_1FeatureIOSystemRegister.html" title="旧 IO 插件的迁移注册器；功能系统及其借用的 IO 系统须覆盖本对象生命周期。" alt="" coords="282,144,470,189"/>
+<area shape="poly" id="edge3_Node000001_Node000004" title=" " alt="" coords="240,164,284,165,279,167,241,169"/>
+<area shape="rect" id="Node000005" href="$classsystems_1_1feature_1_1FeatureSystemRegister.html" title="功能系统的注册器，负责注册和注销功能插件" alt="" coords="282,213,470,258"/>
+<area shape="poly" id="edge4_Node000001_Node000005" title=" " alt="" coords="185,182,292,212,287,214,185,187"/>
+<area shape="rect" id="Node000006" href="$classsystems_1_1io_1_1ModelIOSystemRegister.html" title="ModelIOSystem的操作类，负责功能注册和管理" alt="" coords="273,283,480,327"/>
+<area shape="poly" id="edge5_Node000001_Node000006" title=" " alt="" coords="147,187,205,228,274,268,302,282,297,282,271,273,202,232,146,192"/>
 </map>

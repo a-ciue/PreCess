@@ -1,0 +1,5 @@
+<map id="systems::feature::FeatureIOSystemRegister" name="systems::feature::FeatureIOSystemRegister">
+<area shape="rect" id="Node000001" title="旧 IO 插件的迁移注册器；功能系统及其借用的 IO 系统须覆盖本对象生命周期。" alt="" coords="21,81,209,126"/>
+<area shape="rect" id="Node000002" href="$classsystems_1_1SystemRegisterBase.html" title="系统功能插件的注册器，系统的交互接口，用于注册和注销系统的插件PluginBase。本身不储存状态" alt="" coords="5,5,225,33"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="117,47,117,81,113,79,113,51"/>
+</map>

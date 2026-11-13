@@ -1,5 +1,7 @@
 <map id="app/QWasmBridge.h" name="app/QWasmBridge.h">
-<area shape="rect" id="Node000001" title=" " alt="" coords="5,5,159,33"/>
-<area shape="rect" id="Node000002" title=" " alt="" coords="45,81,119,109"/>
-<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="84,32,85,66,79,64,80,36"/>
+<area shape="rect" id="Node000001" title=" " alt="" coords="19,5,172,33"/>
+<area shape="rect" id="Node000002" title=" " alt="" coords="5,81,79,109"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="88,32,62,70,58,67,84,35"/>
+<area shape="rect" id="Node000003" title=" " alt="" coords="102,81,195,109"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="106,31,133,68,128,68,104,36"/>
 </map>

@@ -92,15 +92,17 @@ $(function() {
 <div class="dyncontent">
 <div class="center"><img src="classsystems_1_1SystemRegisterBase__inherit__graph.png" border="0" usemap="#asystems_1_1SystemRegisterBase_inherit__map" loading="lazy" alt="Inheritance graph"/></div>
 <map name="asystems_1_1SystemRegisterBase_inherit__map" id="asystems_1_1SystemRegisterBase_inherit__map">
-<area shape="rect" title="系统功能插件的注册器，系统的交互接口，用于注册和注销系统的插件PluginBase。本身不储存状态" alt="" coords="5,118,225,146"/>
+<area shape="rect" title="系统功能插件的注册器，系统的交互接口，用于注册和注销系统的插件PluginBase。本身不储存状态" alt="" coords="5,152,225,180"/>
 <area shape="rect" href="classsystems_1_1algo_1_1AlgorithmSystemRegister.html" title="算法系统的操作器，负责注册和注销算法插件" alt="" coords="284,5,468,50"/>
-<area shape="poly" title=" " alt="" coords="159,109,272,60,307,49,302,52,274,65,162,113"/>
+<area shape="poly" title=" " alt="" coords="145,141,202,100,271,60,302,49,298,52,274,65,205,105,148,145"/>
 <area shape="rect" href="classsystems_1_1edit_1_1EditSystemRegister.html" title="模型编辑系统的操作器，负责注册和注销模型编辑插件" alt="" coords="281,75,472,119"/>
-<area shape="poly" title=" " alt="" coords="238,113,283,109,278,111,240,118"/>
-<area shape="rect" href="classsystems_1_1feature_1_1FeatureSystemRegister.html" title="功能系统的注册器，负责注册和注销功能插件" alt="" coords="282,144,470,189"/>
-<area shape="poly" title=" " alt="" coords="239,145,284,153,279,154,239,151"/>
-<area shape="rect" href="classsystems_1_1io_1_1ModelIOSystemRegister.html" title="ModelIOSystem的操作类，负责功能注册和管理" alt="" coords="273,213,480,258"/>
-<area shape="poly" title=" " alt="" coords="161,150,274,199,307,213,302,213,272,203,160,155"/>
+<area shape="poly" title=" " alt="" coords="184,146,291,118,287,122,186,150"/>
+<area shape="rect" href="classsystems_1_1feature_1_1FeatureIOSystemRegister.html" title="旧 IO 插件的迁移注册器；功能系统及其借用的 IO 系统须覆盖本对象生命周期。" alt="" coords="282,144,470,189"/>
+<area shape="poly" title=" " alt="" coords="240,164,284,165,279,167,241,169"/>
+<area shape="rect" href="classsystems_1_1feature_1_1FeatureSystemRegister.html" title="功能系统的注册器，负责注册和注销功能插件" alt="" coords="282,213,470,258"/>
+<area shape="poly" title=" " alt="" coords="185,182,292,212,287,214,185,187"/>
+<area shape="rect" href="classsystems_1_1io_1_1ModelIOSystemRegister.html" title="ModelIOSystem的操作类，负责功能注册和管理" alt="" coords="273,283,480,327"/>
+<area shape="poly" title=" " alt="" coords="147,187,205,228,274,268,302,282,297,282,271,273,202,232,146,192"/>
 </map>
 <center><span class="legend">[<a href="graph_legend.html">图例</a>]</span></center></div>
 <table class="memberdecls">
@@ -178,7 +180,7 @@ Public 成员函数</h2></td></tr>
 </dl>
 <dl class="section return"><dt>返回</dt><dd>注册是否成功 </dd></dl>
 
-<p>在 <a class="el" href="classsystems_1_1algo_1_1AlgorithmSystemRegister.html#a420ab8d48a59f9b78f00f8900d8a8827">systems::algo::AlgorithmSystemRegister</a>, <a class="el" href="classsystems_1_1edit_1_1EditSystemRegister.html#ac66493259cf96e97107d529581d2b21e">systems::edit::EditSystemRegister</a>, <a class="el" href="classsystems_1_1feature_1_1FeatureSystemRegister.html#a25793eae674a0a941550857970156900">systems::feature::FeatureSystemRegister</a> , 以及 <a class="el" href="classsystems_1_1io_1_1ModelIOSystemRegister.html#ad34c3a88a762f93f0c68d57c253ebd0f">systems::io::ModelIOSystemRegister</a> 内被实现.</p>
+<p>在 <a class="el" href="classsystems_1_1algo_1_1AlgorithmSystemRegister.html#a420ab8d48a59f9b78f00f8900d8a8827">systems::algo::AlgorithmSystemRegister</a>, <a class="el" href="classsystems_1_1edit_1_1EditSystemRegister.html#ac66493259cf96e97107d529581d2b21e">systems::edit::EditSystemRegister</a>, <a class="el" href="classsystems_1_1feature_1_1FeatureIOSystemRegister.html#a5d936447ccf1e64bdef3baa956678fed">systems::feature::FeatureIOSystemRegister</a>, <a class="el" href="classsystems_1_1feature_1_1FeatureSystemRegister.html#a25793eae674a0a941550857970156900">systems::feature::FeatureSystemRegister</a> , 以及 <a class="el" href="classsystems_1_1io_1_1ModelIOSystemRegister.html#ad34c3a88a762f93f0c68d57c253ebd0f">systems::io::ModelIOSystemRegister</a> 内被实现.</p>
 
 </div>
 </div>
@@ -213,7 +215,7 @@ Public 成员函数</h2></td></tr>
   </dd>
 </dl>
 
-<p>在 <a class="el" href="classsystems_1_1algo_1_1AlgorithmSystemRegister.html#a271d7a7e420216523b8a2c1893bb2931">systems::algo::AlgorithmSystemRegister</a>, <a class="el" href="classsystems_1_1edit_1_1EditSystemRegister.html#ac96451ffd303ffc716c905b3ea4351e7">systems::edit::EditSystemRegister</a>, <a class="el" href="classsystems_1_1feature_1_1FeatureSystemRegister.html#a1f0e5c6b21897783179dd8dbccd45f16">systems::feature::FeatureSystemRegister</a> , 以及 <a class="el" href="classsystems_1_1io_1_1ModelIOSystemRegister.html#a518862e5955be0c2ebe66295e1e6e48c">systems::io::ModelIOSystemRegister</a> 内被实现.</p>
+<p>在 <a class="el" href="classsystems_1_1algo_1_1AlgorithmSystemRegister.html#a271d7a7e420216523b8a2c1893bb2931">systems::algo::AlgorithmSystemRegister</a>, <a class="el" href="classsystems_1_1edit_1_1EditSystemRegister.html#ac96451ffd303ffc716c905b3ea4351e7">systems::edit::EditSystemRegister</a>, <a class="el" href="classsystems_1_1feature_1_1FeatureIOSystemRegister.html#a0f0cb0ccc2cb697b3351db1a481a331e">systems::feature::FeatureIOSystemRegister</a>, <a class="el" href="classsystems_1_1feature_1_1FeatureSystemRegister.html#a1f0e5c6b21897783179dd8dbccd45f16">systems::feature::FeatureSystemRegister</a> , 以及 <a class="el" href="classsystems_1_1io_1_1ModelIOSystemRegister.html#a518862e5955be0c2ebe66295e1e6e48c">systems::io::ModelIOSystemRegister</a> 内被实现.</p>
 
 </div>
 </div>

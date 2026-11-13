@@ -1,55 +1,56 @@
 <map id="model/systems/algo/AlgorithmSystem.h" name="model/systems/algo/AlgorithmSystem.h">
-<area shape="rect" id="Node000001" title=" " alt="" coords="660,5,813,50"/>
-<area shape="rect" id="Node000002" href="$AlgorithmInfo_8h.html" title=" " alt="" coords="98,98,220,126"/>
-<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="659,42,240,101,237,101,235,96,239,95,660,37"/>
-<area shape="rect" id="Node000005" title=" " alt="" coords="420,249,478,277"/>
-<area shape="poly" id="edge30_Node000001_Node000005" title=" " alt="" coords="657,37,534,59,464,77,396,100,330,127,307,145,286,175,281,192,285,206,296,218,313,228,358,244,407,257,401,256,356,249,311,233,293,222,280,208,276,192,281,173,303,141,328,122,394,96,462,72,533,54,662,35"/>
-<area shape="rect" id="Node000007" title=" " alt="" coords="295,174,357,201"/>
-<area shape="poly" id="edge32_Node000001_Node000007" title=" " alt="" coords="657,39,557,63,501,79,447,100,395,131,352,165,350,161,392,127,445,96,499,74,555,57,662,38"/>
-<area shape="rect" id="Node000008" href="$Core_8h.html" title=" " alt="" coords="458,98,522,126"/>
-<area shape="poly" id="edge8_Node000001_Node000008" title=" " alt="" coords="669,51,537,98,535,93,674,50"/>
-<area shape="rect" id="Node000011" title=" " alt="" coords="586,174,663,201"/>
-<area shape="poly" id="edge28_Node000001_Node000011" title=" " alt="" coords="737,48,731,88,714,127,692,150,667,168,665,163,689,146,709,124,726,87,733,52"/>
-<area shape="rect" id="Node000012" href="$Job_8h.html" title="任务单元：状态、错误、取消令牌与执行闭包（线程模型的任务载体）" alt="" coords="835,98,889,126"/>
-<area shape="poly" id="edge14_Node000001_Node000012" title=" " alt="" coords="770,48,832,90,827,89,769,53"/>
-<area shape="rect" id="Node000014" title=" " alt="" coords="958,249,1044,277"/>
-<area shape="poly" id="edge27_Node000001_Node000014" title=" " alt="" coords="814,44,1059,106,1168,142,1205,158,1225,172,1235,194,1230,213,1214,228,1189,239,1126,254,1060,262,1060,256,1125,249,1187,234,1211,223,1226,210,1230,195,1221,175,1203,162,1166,147,1057,112,813,49"/>
-<area shape="rect" id="Node000018" href="$SystemHandlerPtr_8h.html" title=" " alt="" coords="550,98,700,126"/>
-<area shape="poly" id="edge24_Node000001_Node000018" title=" " alt="" coords="710,49,656,91,654,86,705,52"/>
-<area shape="rect" id="Node000019" title=" " alt="" coords="1147,98,1193,126"/>
-<area shape="poly" id="edge26_Node000001_Node000019" title=" " alt="" coords="814,37,961,61,1129,95,1135,99,1130,99,1128,101,960,66,814,42"/>
-<area shape="rect" id="Node000020" title=" " alt="" coords="1217,98,1291,126"/>
-<area shape="poly" id="edge29_Node000001_Node000020" title=" " alt="" coords="814,35,988,59,1204,97,1199,98,987,64,814,41"/>
-<area shape="rect" id="Node000021" title=" " alt="" coords="1315,98,1438,126"/>
-<area shape="poly" id="edge31_Node000001_Node000021" title=" " alt="" coords="814,35,1029,59,1303,97,1297,98,1028,65,814,40"/>
-<area shape="rect" id="Node000003" href="$ArgType_8h.html" title="用于模型层描述功能参数类型" alt="" coords="85,174,170,201"/>
-<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="155,124,141,161,137,158,152,128"/>
-<area shape="poly" id="edge6_Node000002_Node000005" title=" " alt="" coords="168,123,198,162,218,182,241,199,282,220,325,236,407,256,402,256,324,241,279,225,238,204,215,186,194,165,167,129"/>
-<area shape="poly" id="edge7_Node000002_Node000007" title=" " alt="" coords="189,124,285,166,280,168,189,129"/>
+<area shape="rect" id="Node000001" title=" " alt="" coords="781,5,935,50"/>
+<area shape="rect" id="Node000002" href="$AlgorithmInfo_8h.html" title=" " alt="" coords="325,98,447,126"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="779,43,463,100,462,95,784,41"/>
+<area shape="rect" id="Node000005" title=" " alt="" coords="716,249,774,277"/>
+<area shape="poly" id="edge31_Node000001_Node000005" title=" " alt="" coords="850,49,814,127,760,237,756,233,809,125,845,52"/>
+<area shape="rect" id="Node000006" title=" " alt="" coords="318,249,380,277"/>
+<area shape="poly" id="edge33_Node000001_Node000006" title=" " alt="" coords="778,34,652,45,505,59,379,77,337,88,314,100,305,115,301,131,303,168,317,204,334,237,329,236,312,207,298,169,295,131,300,113,311,96,335,83,378,72,504,53,651,39,783,33"/>
+<area shape="rect" id="Node000008" href="$Core_8h.html" title=" " alt="" coords="533,98,596,126"/>
+<area shape="poly" id="edge9_Node000001_Node000008" title=" " alt="" coords="778,51,612,100,611,95,784,49"/>
+<area shape="rect" id="Node000011" title=" " alt="" coords="681,174,758,201"/>
+<area shape="poly" id="edge29_Node000001_Node000011" title=" " alt="" coords="845,49,784,127,746,165,744,161,780,124,840,52"/>
+<area shape="rect" id="Node000012" href="$Job_8h.html" title="任务单元：状态、错误、取消令牌与执行闭包（线程模型的任务载体）" alt="" coords="1017,98,1070,126"/>
+<area shape="poly" id="edge15_Node000001_Node000012" title=" " alt="" coords="908,48,1005,93,1000,92,907,53"/>
+<area shape="rect" id="Node000014" title=" " alt="" coords="1352,249,1438,277"/>
+<area shape="poly" id="edge28_Node000001_Node000014" title=" " alt="" coords="935,36,1057,54,1196,83,1262,101,1321,122,1368,145,1399,172,1406,187,1409,203,1406,236,1402,232,1404,203,1401,188,1395,175,1365,150,1319,127,1261,106,1195,88,1056,59,935,41"/>
+<area shape="rect" id="Node000018" href="$SystemHandlerPtr_8h.html" title=" " alt="" coords="620,98,770,126"/>
+<area shape="poly" id="edge25_Node000001_Node000018" title=" " alt="" coords="817,50,736,93,734,88,812,52"/>
+<area shape="rect" id="Node000019" title=" " alt="" coords="1345,98,1390,126"/>
+<area shape="poly" id="edge27_Node000001_Node000019" title=" " alt="" coords="935,34,1115,57,1221,74,1327,95,1333,99,1327,99,1325,101,1220,80,1114,63,935,40"/>
+<area shape="rect" id="Node000020" title=" " alt="" coords="1414,98,1488,126"/>
+<area shape="poly" id="edge30_Node000001_Node000020" title=" " alt="" coords="935,33,1141,56,1268,73,1401,98,1396,98,1267,78,1140,61,935,38"/>
+<area shape="rect" id="Node000021" title=" " alt="" coords="1512,98,1636,126"/>
+<area shape="poly" id="edge32_Node000001_Node000021" title=" " alt="" coords="935,33,1181,57,1500,97,1494,98,1181,62,935,38"/>
+<area shape="rect" id="Node000003" href="$ArgType_8h.html" title="用于模型层描述功能参数类型" alt="" coords="163,174,249,201"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="351,127,253,170,251,165,356,125"/>
+<area shape="poly" id="edge7_Node000002_Node000005" title=" " alt="" coords="395,124,423,162,442,182,465,199,525,226,588,244,649,254,702,261,697,261,648,259,587,249,523,231,462,204,439,186,419,166,393,129"/>
+<area shape="poly" id="edge8_Node000002_Node000006" title=" " alt="" coords="384,124,371,174,357,236,352,233,366,173,380,128"/>
 <area shape="rect" id="Node000004" title=" " alt="" coords="5,249,95,277"/>
-<area shape="poly" id="edge3_Node000003_Node000004" title=" " alt="" coords="116,201,76,241,73,237,111,203"/>
-<area shape="poly" id="edge4_Node000003_Node000005" title=" " alt="" coords="170,196,406,250,403,254,170,201"/>
-<area shape="rect" id="Node000006" href="$private__ArgTypeEnum_8h.html" title="参数类型枚举类定义，只被ArgType.h和QArgType.h.in使用。" alt="" coords="118,249,294,277"/>
-<area shape="poly" id="edge5_Node000003_Node000006" title=" " alt="" coords="142,199,184,238,178,239,140,204"/>
-<area shape="poly" id="edge12_Node000008_Node000005" title=" " alt="" coords="502,124,525,159,530,181,526,202,510,225,488,243,486,238,506,222,521,200,524,181,520,161,500,128"/>
-<area shape="poly" id="edge13_Node000008_Node000007" title=" " alt="" coords="463,125,370,170,368,165,458,127"/>
-<area shape="rect" id="Node000009" title=" " alt="" coords="381,174,436,201"/>
-<area shape="poly" id="edge9_Node000008_Node000009" title=" " alt="" coords="478,125,436,166,433,161,473,127"/>
-<area shape="rect" id="Node000010" title=" " alt="" coords="461,174,511,201"/>
-<area shape="poly" id="edge10_Node000008_Node000010" title=" " alt="" coords="491,124,490,160,485,156,488,128"/>
-<area shape="poly" id="edge11_Node000008_Node000011" title=" " alt="" coords="515,124,590,166,585,166,514,129"/>
-<area shape="poly" id="edge22_Node000012_Node000005" title=" " alt="" coords="858,124,833,166,815,186,793,204,768,214,736,224,654,240,493,261,493,255,654,235,734,219,767,209,790,199,811,183,829,162,853,127"/>
-<area shape="poly" id="edge23_Node000012_Node000007" title=" " alt="" coords="832,116,614,143,480,159,373,176,372,171,480,154,614,137,838,115"/>
-<area shape="rect" id="Node000013" href="$JobProgress_8h.html" title="进度上报回调类型：model 层（任务系统）与上层 UI 适配层的公共契约" alt="" coords="854,174,963,201"/>
-<area shape="poly" id="edge15_Node000012_Node000013" title=" " alt="" coords="872,124,895,162,890,160,869,129"/>
-<area shape="poly" id="edge19_Node000012_Node000014" title=" " alt="" coords="889,118,935,138,958,153,977,172,994,202,1001,236,996,233,989,204,973,175,954,157,932,142,888,123"/>
-<area shape="rect" id="Node000015" title=" " alt="" coords="1038,174,1123,201"/>
-<area shape="poly" id="edge18_Node000012_Node000015" title=" " alt="" coords="890,120,1030,168,1025,168,889,125"/>
-<area shape="rect" id="Node000016" title=" " alt="" coords="1148,174,1211,201"/>
-<area shape="poly" id="edge20_Node000012_Node000016" title=" " alt="" coords="890,116,1135,173,1130,173,889,121"/>
-<area shape="rect" id="Node000017" title=" " alt="" coords="686,174,779,201"/>
-<area shape="poly" id="edge21_Node000012_Node000017" title=" " alt="" coords="841,125,770,168,768,163,836,127"/>
-<area shape="poly" id="edge17_Node000013_Node000005" title=" " alt="" coords="856,198,836,204,494,258,493,252,835,199,851,199"/>
-<area shape="poly" id="edge16_Node000013_Node000014" title=" " alt="" coords="926,199,975,240,970,239,924,204"/>
-<area shape="poly" id="edge25_Node000018_Node000011" title=" " alt="" coords="626,124,627,160,623,156,623,128"/>
+<area shape="poly" id="edge3_Node000003_Node000004" title=" " alt="" coords="180,203,93,245,90,240,176,200"/>
+<area shape="poly" id="edge4_Node000003_Node000005" title=" " alt="" coords="249,192,701,253,699,258,249,197"/>
+<area shape="poly" id="edge5_Node000003_Node000006" title=" " alt="" coords="232,199,313,242,307,242,231,204"/>
+<area shape="rect" id="Node000007" href="$private__ArgTypeEnum_8h.html" title="参数类型枚举类定义，只被ArgType.h和QArgType.h.in使用。" alt="" coords="118,249,294,277"/>
+<area shape="poly" id="edge6_Node000003_Node000007" title=" " alt="" coords="208,200,208,235,204,232,204,204"/>
+<area shape="poly" id="edge13_Node000008_Node000005" title=" " alt="" coords="581,124,670,199,719,240,714,239,667,203,579,129"/>
+<area shape="poly" id="edge14_Node000008_Node000006" title=" " alt="" coords="544,125,465,176,377,242,374,237,462,171,539,127"/>
+<area shape="rect" id="Node000009" title=" " alt="" coords="550,174,606,201"/>
+<area shape="poly" id="edge10_Node000008_Node000009" title=" " alt="" coords="569,124,575,160,571,157,566,128"/>
+<area shape="rect" id="Node000010" title=" " alt="" coords="476,174,526,201"/>
+<area shape="poly" id="edge11_Node000008_Node000010" title=" " alt="" coords="556,125,524,164,521,160,551,128"/>
+<area shape="poly" id="edge12_Node000008_Node000011" title=" " alt="" coords="593,124,681,167,675,167,592,129"/>
+<area shape="poly" id="edge23_Node000012_Node000005" title=" " alt="" coords="1020,126,785,245,783,240,1015,127"/>
+<area shape="poly" id="edge24_Node000012_Node000006" title=" " alt="" coords="1019,122,771,204,666,225,562,241,395,260,395,255,561,236,665,220,769,199,1014,123"/>
+<area shape="rect" id="Node000013" href="$JobProgress_8h.html" title="进度上报回调类型：model 层（任务系统）与上层 UI 适配层的公共契约" alt="" coords="1051,174,1161,201"/>
+<area shape="poly" id="edge16_Node000012_Node000013" title=" " alt="" coords="1056,124,1088,163,1083,161,1054,129"/>
+<area shape="poly" id="edge20_Node000012_Node000014" title=" " alt="" coords="1070,112,1141,117,1230,128,1315,146,1348,157,1372,172,1383,185,1390,201,1397,236,1393,232,1385,203,1378,188,1368,176,1346,162,1314,151,1229,133,1140,123,1070,117"/>
+<area shape="rect" id="Node000015" title=" " alt="" coords="1185,174,1270,201"/>
+<area shape="poly" id="edge19_Node000012_Node000015" title=" " alt="" coords="1071,121,1183,168,1178,167,1070,127"/>
+<area shape="rect" id="Node000016" title=" " alt="" coords="1294,174,1358,201"/>
+<area shape="poly" id="edge21_Node000012_Node000016" title=" " alt="" coords="1071,117,1282,173,1277,173,1070,122"/>
+<area shape="rect" id="Node000017" title=" " alt="" coords="934,174,1027,201"/>
+<area shape="poly" id="edge22_Node000012_Node000017" title=" " alt="" coords="1035,125,1003,164,1000,159,1030,127"/>
+<area shape="poly" id="edge18_Node000013_Node000005" title=" " alt="" coords="1053,200,790,255,789,250,1048,200"/>
+<area shape="poly" id="edge17_Node000013_Node000014" title=" " alt="" coords="1158,199,1340,247,1334,247,1158,205"/>
+<area shape="poly" id="edge26_Node000018_Node000011" title=" " alt="" coords="701,124,713,160,708,157,698,128"/>
 </map>
