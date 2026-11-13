@@ -509,14 +509,6 @@ void MeshPipelineData::setScalarConfig(std::optional<ScalarDisplayConfig> config
     dirty_ = dirty_ || filter_changed;
 }
 
-MeshSnapshotUpdate MeshPipelineData::createScalarUpdate()
-{
-    // 与 createSnapshot 的重建条件一致；重新生成输出后即使单元集合相同，也使旧选择失效。
-    const bool mesh_outputs_rebuilt = dirty_ || !prepared_;
-    auto snapshot = createSnapshot();
-    return { std::move(snapshot), mesh_outputs_rebuilt };
-}
-
 void MeshPipelineData::rebuildOutputs()
 {
     // 每次重建使用新的 Filter，下一次 Update 不会改写已发布快照引用的输出数组。
@@ -634,9 +626,12 @@ std::shared_ptr<const MeshDataSnapshot> MeshPipelineData::createSnapshot()
     assertOwnerThread();
     if (!source_)
         throw std::logic_error("MeshPipelineData has no source mesh");
-    if (dirty_ || !prepared_)
+    // 重建会清除 dirty_，先记录本次计算情况，再写入新发布的快照。
+    const bool mesh_outputs_rebuilt = dirty_ || !prepared_;
+    if (mesh_outputs_rebuilt)
         rebuildOutputs();
     auto snapshot = std::make_shared<MeshDataSnapshot>(*prepared_);
+    snapshot->mesh_outputs_rebuilt = mesh_outputs_rebuilt;
     snapshot->generation = generation_;
     snapshot->revision = ++revision_;
     snapshot->visible = visible_;

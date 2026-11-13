@@ -136,44 +136,46 @@ TEST_CASE("Scalar config updates report mesh output rebuilds and retain the late
     auto mesh = scalarMesh();
     MeshPipelineData pipeline;
     pipeline.loadModelData(MakeMeshDataVtk(mesh));
-    const auto original = pipeline.createScalarUpdate();
-    REQUIRE(original.mesh_outputs_rebuilt);
+    const auto original = pipeline.createSnapshot();
+    REQUIRE(original->mesh_outputs_rebuilt);
     ScalarDisplayConfig config { "value", std::array { -1.0, 4.0 }, std::array { 1.0, 3.0 } };
     pipeline.setScalarConfig(config);
-    const auto filtered = pipeline.createScalarUpdate();
-    REQUIRE(filtered.mesh_outputs_rebuilt);
+    const auto filtered = pipeline.createSnapshot();
+    REQUIRE(filtered->mesh_outputs_rebuilt);
 
     // 仅修改映射或重复提交相同筛选时，共享已完成的网格输出，不使选择失效。
     config.mapping = std::array { -2.0, 6.0 };
     pipeline.setScalarConfig(config);
-    const auto mapped = pipeline.createScalarUpdate();
-    CHECK_FALSE(mapped.mesh_outputs_rebuilt);
-    CHECK(mapped.snapshot->visible_faces == filtered.snapshot->visible_faces);
-    CHECK(mapped.snapshot->visible_edges == filtered.snapshot->visible_edges);
-    CHECK(mapped.snapshot->solid_surface == filtered.snapshot->solid_surface);
-    REQUIRE(mapped.snapshot->scalar_config);
-    CHECK(mapped.snapshot->scalar_config->mapping == config.mapping);
-    CHECK(filtered.snapshot->scalar_config->mapping != config.mapping);
+    const auto mapped = pipeline.createSnapshot();
+    CHECK_FALSE(mapped->mesh_outputs_rebuilt);
+    CHECK(filtered->mesh_outputs_rebuilt); // 新快照的标记不能改写已发布快照。
+    CHECK(mapped->visible_faces == filtered->visible_faces);
+    CHECK(mapped->visible_edges == filtered->visible_edges);
+    CHECK(mapped->solid_surface == filtered->solid_surface);
+    REQUIRE(mapped->scalar_config);
+    CHECK(mapped->scalar_config->mapping == config.mapping);
+    CHECK(filtered->scalar_config->mapping != config.mapping);
     pipeline.setScalarConfig(config);
-    const auto repeated = pipeline.createScalarUpdate();
-    CHECK_FALSE(repeated.mesh_outputs_rebuilt);
-    CHECK(repeated.snapshot->visible_faces == mapped.snapshot->visible_faces);
+    const auto repeated = pipeline.createSnapshot();
+    CHECK_FALSE(repeated->mesh_outputs_rebuilt);
+    CHECK(repeated->visible_faces == mapped->visible_faces);
 
     // 非法请求不改变已接受的配置，也不触发网格输出重建。
     config.display = std::array { std::numeric_limits<double>::quiet_NaN(), 3.0 };
     CHECK_THROWS_AS(pipeline.setScalarConfig(config), std::invalid_argument);
-    const auto rejected = pipeline.createScalarUpdate();
-    CHECK_FALSE(rejected.mesh_outputs_rebuilt);
-    REQUIRE(rejected.snapshot->scalar_config);
-    CHECK(rejected.snapshot->scalar_config->display == filtered.snapshot->scalar_config->display);
+    const auto rejected = pipeline.createSnapshot();
+    CHECK_FALSE(rejected->mesh_outputs_rebuilt);
+    REQUIRE(rejected->scalar_config);
+    CHECK(rejected->scalar_config->display == filtered->scalar_config->display);
 
     // 区间改变会重新生成网格输出；即使仍保留原来的三个单元，也不再比较集合来保留选择。
     config.display = std::array { 0.9, 3.1 };
     pipeline.setScalarConfig(config);
-    const auto same_cells = pipeline.createScalarUpdate();
-    CHECK(same_cells.mesh_outputs_rebuilt);
-    CHECK(same_cells.snapshot->visible_faces != filtered.snapshot->visible_faces);
-    auto* face_ids = vtkIdTypeArray::SafeDownCast(same_cells.snapshot->visible_faces->GetCellData()->GetArray("PrecessFaceIds"));
+    const auto same_cells = pipeline.createSnapshot();
+    CHECK(same_cells->mesh_outputs_rebuilt);
+    CHECK_FALSE(mapped->mesh_outputs_rebuilt);
+    CHECK(same_cells->visible_faces != filtered->visible_faces);
+    auto* face_ids = vtkIdTypeArray::SafeDownCast(same_cells->visible_faces->GetCellData()->GetArray("PrecessFaceIds"));
     REQUIRE(face_ids);
     REQUIRE(face_ids->GetNumberOfValues() == 3);
     for (vtkIdType id = 0; id < face_ids->GetNumberOfValues(); ++id)
@@ -182,27 +184,27 @@ TEST_CASE("Scalar config updates report mesh output rebuilds and retain the late
     // 取消全范围筛选仍重新生成网格输出，恢复前后单元数相同也应使旧选择失效。
     config.display = pipeline.scalarRange("value");
     pipeline.setScalarConfig(config);
-    const auto full_range = pipeline.createScalarUpdate();
-    REQUIRE(full_range.mesh_outputs_rebuilt);
-    CHECK(full_range.snapshot->visible_faces->GetNumberOfCells() == original.snapshot->visible_faces->GetNumberOfCells());
+    const auto full_range = pipeline.createSnapshot();
+    REQUIRE(full_range->mesh_outputs_rebuilt);
+    CHECK(full_range->visible_faces->GetNumberOfCells() == original->visible_faces->GetNumberOfCells());
     pipeline.setScalarConfig(std::nullopt);
-    const auto canceled = pipeline.createScalarUpdate();
-    CHECK(canceled.mesh_outputs_rebuilt);
-    CHECK(canceled.snapshot->visible_faces->GetNumberOfCells() == full_range.snapshot->visible_faces->GetNumberOfCells());
-    CHECK_FALSE(canceled.snapshot->scalar_config);
+    const auto canceled = pipeline.createSnapshot();
+    CHECK(canceled->mesh_outputs_rebuilt);
+    CHECK(canceled->visible_faces->GetNumberOfCells() == full_range->visible_faces->GetNumberOfCells());
+    CHECK_FALSE(canceled->scalar_config);
 
     // 无筛选的着色与取消只更新完成配置，继续共享网格输出。
     config.display.reset();
     pipeline.setScalarConfig(config);
-    const auto unfiltered = pipeline.createScalarUpdate();
-    CHECK_FALSE(unfiltered.mesh_outputs_rebuilt);
-    REQUIRE(unfiltered.snapshot->scalar_config);
-    CHECK(unfiltered.snapshot->visible_faces == canceled.snapshot->visible_faces);
+    const auto unfiltered = pipeline.createSnapshot();
+    CHECK_FALSE(unfiltered->mesh_outputs_rebuilt);
+    REQUIRE(unfiltered->scalar_config);
+    CHECK(unfiltered->visible_faces == canceled->visible_faces);
     pipeline.setScalarConfig(std::nullopt);
-    const auto unfiltered_canceled = pipeline.createScalarUpdate();
-    CHECK_FALSE(unfiltered_canceled.mesh_outputs_rebuilt);
-    CHECK(unfiltered_canceled.snapshot->visible_faces == unfiltered.snapshot->visible_faces);
-    CHECK_FALSE(unfiltered_canceled.snapshot->scalar_config);
+    const auto unfiltered_canceled = pipeline.createSnapshot();
+    CHECK_FALSE(unfiltered_canceled->mesh_outputs_rebuilt);
+    CHECK(unfiltered_canceled->visible_faces == unfiltered->visible_faces);
+    CHECK_FALSE(unfiltered_canceled->scalar_config);
     CHECK(pipeline.createSnapshot()->scalar_config == std::nullopt);
 }
 
@@ -212,40 +214,40 @@ TEST_CASE("Source reload retains applicable scalar configuration and removes onl
     MeshPipelineData pipeline;
     pipeline.loadModelData(MakeMeshDataVtk(mesh));
     pipeline.setScalarConfig(ScalarDisplayConfig { "value", { }, std::array { 1.0, 3.0 } });
-    const auto before = pipeline.createScalarUpdate();
+    const auto before = pipeline.createSnapshot();
     pipeline.setVisibility(false);
     pipeline.hideFaces({ 1 });
     pipeline.loadModelData(MakeMeshDataVtk(mesh));
-    const auto reloaded = pipeline.createScalarUpdate();
-    CHECK(reloaded.mesh_outputs_rebuilt);
-    CHECK(reloaded.snapshot->generation != before.snapshot->generation);
-    REQUIRE(reloaded.snapshot->scalar_config);
-    CHECK(reloaded.snapshot->scalar_config->mapping == before.snapshot->scalar_config->mapping);
-    CHECK(reloaded.snapshot->visible_faces->GetNumberOfCells() == 3);
-    CHECK_FALSE(reloaded.snapshot->visible);
+    const auto reloaded = pipeline.createSnapshot();
+    CHECK(reloaded->mesh_outputs_rebuilt);
+    CHECK(reloaded->generation != before->generation);
+    REQUIRE(reloaded->scalar_config);
+    CHECK(reloaded->scalar_config->mapping == before->scalar_config->mapping);
+    CHECK(reloaded->visible_faces->GetNumberOfCells() == 3);
+    CHECK_FALSE(reloaded->visible);
     // 全缺失值只能解除筛选，属性仍可按原有 NaN 规则着色。
     mesh.face_attributes_["value"].assign(mesh.face_attributes_["value"].size(), std::numeric_limits<double>::quiet_NaN());
     pipeline.loadModelData(MakeMeshDataVtk(mesh));
-    const auto missing = pipeline.createScalarUpdate();
-    REQUIRE(missing.snapshot->scalar_config);
-    CHECK_FALSE(missing.snapshot->scalar_config->display);
-    CHECK(missing.snapshot->scalar_config->mapping == before.snapshot->scalar_config->mapping);
+    const auto missing = pipeline.createSnapshot();
+    REQUIRE(missing->scalar_config);
+    CHECK_FALSE(missing->scalar_config->display);
+    CHECK(missing->scalar_config->mapping == before->scalar_config->mapping);
     // 更高优先级点属性出现后，保留映射但解除不适用的单元筛选。
     mesh.face_attributes_["value"].assign(mesh.face_attributes_["value"].size(), 2.0);
     pipeline.loadModelData(MakeMeshDataVtk(mesh));
     pipeline.setScalarConfig(ScalarDisplayConfig { "value", std::array { -4.0, 4.0 }, std::array { 1.0, 3.0 } });
     mesh.vertex_attributes_["value"].assign(mesh.vertex_positions_.size(), 10.0);
     pipeline.loadModelData(MakeMeshDataVtk(mesh));
-    const auto point_shadowed = pipeline.createScalarUpdate();
-    REQUIRE(point_shadowed.snapshot->scalar_config);
-    CHECK_FALSE(point_shadowed.snapshot->scalar_config->display);
-    CHECK(point_shadowed.snapshot->scalar_config->mapping == std::optional(std::array { -4.0, 4.0 }));
-    CHECK(point_shadowed.snapshot->visible_faces->GetNumberOfCells() == mesh.face_vertices_offset_.size() - 1);
+    const auto point_shadowed = pipeline.createSnapshot();
+    REQUIRE(point_shadowed->scalar_config);
+    CHECK_FALSE(point_shadowed->scalar_config->display);
+    CHECK(point_shadowed->scalar_config->mapping == std::optional(std::array { -4.0, 4.0 }));
+    CHECK(point_shadowed->visible_faces->GetNumberOfCells() == mesh.face_vertices_offset_.size() - 1);
     // 属性完全消失后清空显示描述，场景重建不能恢复旧着色。
     mesh.vertex_attributes_.erase("value");
     mesh.face_attributes_.erase("value");
     pipeline.loadModelData(MakeMeshDataVtk(mesh));
-    CHECK_FALSE(pipeline.createScalarUpdate().snapshot->scalar_config);
+    CHECK_FALSE(pipeline.createSnapshot()->scalar_config);
 }
 
 TEST_CASE("Scalar lookup uses the first named array before checking filtering support", "[scalar-range]")

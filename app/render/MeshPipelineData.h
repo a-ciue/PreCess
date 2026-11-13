@@ -44,6 +44,8 @@ struct ScalarDisplayConfig {
 struct MeshDataSnapshot {
     std::uint64_t generation { };
     std::uint64_t revision { };
+    /** @brief 本次生成快照时是否重建可见网格输出；缓存重放不依据此标记。 */
+    bool mesh_outputs_rebuilt { false };
     bool visible { true };
     MeshClipPlane clip;
     std::optional<ScalarDisplayConfig> scalar_config;
@@ -56,13 +58,6 @@ struct MeshDataSnapshot {
     vtkSmartPointer<vtkPolyData> visible_edges;
     vtkSmartPointer<vtkPolyData> solid_surface;
     vtkSmartPointer<vtkPolyData> solid_internal_edges;
-};
-
-/** @brief 本次完成的显示结果；网格输出重建标记仅随本次更新传递，不保存额外版本状态。 */
-struct MeshSnapshotUpdate {
-    std::shared_ptr<const MeshDataSnapshot> snapshot;
-    /** @brief 本次是否重新生成可见网格输出，不表示输出单元集合必然不同。 */
-    bool mesh_outputs_rebuilt { false };
 };
 
 /** @brief 在创建线程串行修改网格数据，主动计算后向渲染端发布轻量快照。 */
@@ -98,9 +93,7 @@ public:
     std::optional<std::array<double, 2>> scalarRange(const std::string& attribute);
     /** @brief 校验并保存完整显示配置，空值取消着色和筛选；无效参数不改变当前结果。 */
     void setScalarConfig(std::optional<ScalarDisplayConfig> config);
-    /** @brief 生成当前配置快照，并报告是否重新生成可见网格输出；仅修改颜色映射时复用已有输出。 */
-    MeshSnapshotUpdate createScalarUpdate();
-    /** @brief 主动计算需要更新的数据；每次发布递增版本，绝不重新执行旧输出管线。 */
+    /** @brief 按需生成可见网格输出，发布携带本次重建标记和递增版本的快照。 */
     std::shared_ptr<const MeshDataSnapshot> createSnapshot();
     /** @brief 返回原始网格代次，用于丢弃旧选择消息。 */
     std::uint64_t generation() const { return generation_; }

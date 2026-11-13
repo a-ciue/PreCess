@@ -264,7 +264,7 @@ private:
      * @brief 发布完成的网格结果；输出重新生成时清理选择，标量配置解除时取消着色。
      * @param activate_scalar_bar 主动应用时切换色柱；自动恢复只刷新原归属色柱。
      */
-    void publishMeshUpdate(Index component_id, MeshSnapshotUpdate update, bool activate_scalar_bar = false);
+    void publishMeshUpdate(Index component_id, std::shared_ptr<const MeshDataSnapshot> snapshot, bool activate_scalar_bar = false);
     /** @brief 解除当前标量配置和筛选，恢复非范围隐藏结果；界面自行保留偏好。 */
     void deactivateScalarRange(Index component_id);
     // 只记录共享色柱的归属，用于场景图重建时恢复同一属性的现有色柱。

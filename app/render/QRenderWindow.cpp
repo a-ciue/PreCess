@@ -553,7 +553,7 @@ void QRenderWindow::loadMeshData(Index component_id, const MeshDataVtk& data)
     pipeline->loadModelData(data);
     pipeline->setClipPlane(mesh_clip_);
     // 管线自行恢复仍适用的配置，只发布最终结果。
-    publishMeshUpdate(component_id, pipeline->createScalarUpdate());
+    publishMeshUpdate(component_id, pipeline->createSnapshot());
     publishComponentVisibility(component_id);
     emit scalarRangeChanged();
 }
@@ -960,7 +960,7 @@ bool QRenderWindow::setAttriMode(
             spdlog::warn("{}", error.what());
             return false;
         }
-        publishMeshUpdate(component_id, pipeline->second->createScalarUpdate(), true);
+        publishMeshUpdate(component_id, pipeline->second->createSnapshot(), true);
         return true;
     }
     if (const auto snapshot = mesh_snapshots_.find(component_id);
@@ -1032,10 +1032,9 @@ QVariantList QRenderWindow::scalarRangeInfo(Index component_id, const QString& a
     return { (*original)[0], (*original)[1] };
 }
 
-void QRenderWindow::publishMeshUpdate(Index component_id, MeshSnapshotUpdate update, bool activate_scalar_bar)
+void QRenderWindow::publishMeshUpdate(Index component_id, std::shared_ptr<const MeshDataSnapshot> snapshot, bool activate_scalar_bar)
 {
-    auto snapshot = std::move(update.snapshot);
-    const bool mesh_outputs_rebuilt = update.mesh_outputs_rebuilt;
+    const bool mesh_outputs_rebuilt = snapshot->mesh_outputs_rebuilt;
     const auto previous = mesh_snapshots_.find(component_id);
     // 只有原有标量配置被解除时才取消着色，普通加载保留非标量策略。
     const bool scalar_deactivated = previous != mesh_snapshots_.end()
@@ -1073,7 +1072,7 @@ void QRenderWindow::deactivateScalarRange(Index component_id)
 {
     if (const auto pipeline = mesh_pipeline_data_.find(component_id); pipeline != mesh_pipeline_data_.end()) {
         pipeline->second->setScalarConfig(std::nullopt);
-        publishMeshUpdate(component_id, pipeline->second->createScalarUpdate());
+        publishMeshUpdate(component_id, pipeline->second->createSnapshot());
     }
 }
 
