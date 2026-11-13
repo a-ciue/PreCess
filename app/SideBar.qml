@@ -304,6 +304,7 @@ Item{
         RowLayout{
             id: fileRow
             readonly property bool multiple: model.type === QArgType.Paths
+            readonly property bool fixedPath: index === 0 && !!(root.activeOp && root.activeOp.fileType)
             spacing: Theme.spacingSm
             width: parameterList.contentWidth
             Text{
@@ -332,17 +333,18 @@ Item{
                 wrapMode: TextEdit.Wrap
                 Layout.fillWidth: true
 
-                readOnly: fileRow.multiple
+                readOnly: fileRow.multiple || fileRow.fixedPath
                 readonly property string sourceText: fileRow.multiple ? Array.from(root.parameters[index] || []).join("\n") : String(root.parameters[index] ?? "")
                 onSourceTextChanged: text = sourceText
                 Component.onCompleted: text = sourceText
                 onTextChanged: {
-                    if (!fileRow.multiple && parent.parent.initialized)
+                    if (!fileText.readOnly && parent.parent.initialized)
                         root.setParam(index, text)
                 }
             }
             Button{
                 objectName: "browseParameter_" + index
+                visible: !fileRow.fixedPath
                 icon.source: "qrc:/images/toolbar/Panels/browse-file.svg"
                 icon.width: 18
                 icon.height: 18

@@ -51,6 +51,10 @@ ColumnLayout {
     property bool outputLogOpen: false
     property bool preferencesOpen: false
 
+    function importFiles(urls) {
+        fileFlow.importFiles(urls)
+    }
+
     // 算法与编辑系统尚无图标声明字段，暂保留其名称映射。
     readonly property var pluginIconMap: ({
         "CreateFacePlugin": "qrc:/images/toolbar/Edit/create-face.svg",

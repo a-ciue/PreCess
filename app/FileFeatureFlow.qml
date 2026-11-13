@@ -23,6 +23,7 @@ Item {
     property var _operation: null
     property var _candidates: []
     property var _dialogTypes: []
+    property var _afterTask: null
     signal parametersRequested
 
     function filters(types) {
@@ -149,13 +150,25 @@ Item {
             fileType: type,
             sourcePaths: paths,
             execute: function () {
+                if (root._afterTask || root.taskStatus.writePending)
+                    return;
                 const outputPath = root.isWasm && type.direction === "export" ? root.featureSystem.getParameterValues(name)[0] : "";
+                const finish = function () {
+                    if (type.direction === "import") {
+                        if (App.registry.renderWindow)
+                            App.registry.renderWindow.resetCamera();
+                    } else if (root.isWasm)
+                        QWasmBridge.downloadFile(outputPath.split(/[\\/]/).pop(), outputPath);
+                };
                 const result = root.featureSystem.invoke(name);
-                if (type.direction === "import") {
-                    if (App.registry.renderWindow)
-                        App.registry.renderWindow.resetCamera();
-                } else if (root.isWasm)
-                    QWasmBridge.downloadFile(outputPath.split(/[\\/]/).pop(), outputPath);
+                if (result && result.submitted !== undefined) {
+                    // 本次确实占用了单槽才等待；主线程此处不让出事件循环。
+                    if (result.submitted)
+                        root._afterTask = finish;
+                    return;
+                }
+                if (result === undefined || result === null)
+                    finish();
                 return result;
             }
         };
@@ -193,6 +206,21 @@ Item {
             QWasmBridge.releaseFiles(paths);
     }
 
+    Connections {
+        target: root.taskStatus
+        function onTaskFinished() {
+            const finish = root._afterTask;
+            root._afterTask = null;
+            if (finish)
+                finish();
+        }
+        function onTaskFailed(error) {
+            root._afterTask = null;
+        }
+        function onTaskCancelled() {
+            root._afterTask = null;
+        }
+    }
     Connections {
         target: root.isWasm ? QWasmBridge : null
         function onFilesImported(paths) {

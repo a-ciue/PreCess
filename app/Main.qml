@@ -140,6 +140,7 @@ ApplicationWindow {
     onClosing: dockSettings.json = dockHost.saveLayout()
 
     header: AppToolbar {
+        id: toolbar
         windowHeight: root.height
         onResetLayoutRequested: {
             if (root.defaultDockLayout.length > 0)
@@ -337,37 +338,20 @@ ApplicationWindow {
     }
 
 
-    // 拖拽导入：一次可拖入多个文件，逐个交给 read；能否导入由 C++ 判定并写日志
+    // 拖入文件与工具栏共用类型选择、参数编辑和执行流程。
     DropArea {
         id: importDropArea
         anchors.fill: parent
         z: 1
         onContainsDragChanged: App.importDragActive = containsDrag
 
-        // 不做前置过滤：是否可导入由 C++ read 判定（失败会记 error 日志）
         onEntered: {
-            drag.accepted = drag.urls.length > 0
+            drag.accepted = drag.urls.length > 0 && !QModelManager.taskStatus.writePending
         }
         onDropped: {
-            drop.accepted = drop.urls.length > 0
-            if (drop.urls.length === 0)
-                return
-            // 算法执行期间拒绝导入：模型须保持冻结
-            if (root.frozenBusy) {
-                drop.accepted = false
-                return
-            }
-
-            // 逐个导入并记录失败项，全部导入结束后统一重置视角
-            let failed = 0
-            for (const url of drop.urls) {
-                if (!QModelManager.ioSystem.read("All files", url, []))
-                    ++failed
-            }
-            if (failed < drop.urls.length && App.registry.renderWindow)
-                App.registry.renderWindow.resetCamera()
-            if (failed > 0)
-                outputLogDock.showPanel() // 失败原因由日志面板承载，直接打开便于查看
+            drop.accepted = drop.urls.length > 0 && !QModelManager.taskStatus.writePending
+            if (drop.accepted)
+                toolbar.importFiles(drop.urls)
         }
     }
 

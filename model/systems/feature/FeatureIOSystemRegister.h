@@ -16,6 +16,7 @@ public:
     void unregisterPlugin(const QJsonObject& meta_data) override;
 
 private:
+    class FileFeature;
     FeatureSystem* system_;
 };
 }

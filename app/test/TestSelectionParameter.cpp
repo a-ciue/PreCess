@@ -6,6 +6,7 @@
 #include "FeatureHandler.h"
 #include "FeatureRegistrar.h"
 #include "FeatureSystem.h"
+#include "Job.h"
 #include "ModelLayer.h"
 #include "QFeatureSystemAdaptor.h"
 #include "QSelection.h"
@@ -36,6 +37,34 @@ public:
         reg.addParameter({ ArgTypeEnum::Paths, "输入文件", "", "" });
     }
 };
+class SubmissionFeature : public systems::feature::FeatureHandler {
+public:
+    std::any result;
+    std::any execute(systems::feature::FeatureContext&) override { return result; }
+};
+}
+
+TEST_CASE("Feature invocation distinguishes job submission from ordinary feedback")
+{
+    core::EventBus bus;
+    ModelLayer model;
+    systems::feature::FeatureSystem system(model, bus);
+    auto handler = std::make_unique<SubmissionFeature>();
+    auto& feature = *handler;
+    REQUIRE(system.registerHandler({ "Submission" }, systems::feature::FeatureSystem::SystemHandlerPtr { handler.release() }));
+    systems::feature::QFeatureSystemAdaptor adaptor(system);
+    feature.result = std::make_shared<systems::job::Job>("IO");
+    CHECK(adaptor.invoke("Submission").toMap().value("submitted").toBool());
+    feature.result = std::shared_ptr<systems::job::Job> { };
+    const auto rejected = adaptor.invoke("Submission").toMap();
+    REQUIRE(rejected.contains("submitted"));
+    CHECK_FALSE(rejected.value("submitted").toBool());
+    feature.result = std::string("请选择文件路径。");
+    CHECK(adaptor.invoke("Submission").toString() == "请选择文件路径。");
+    feature.result = true;
+    CHECK(adaptor.invoke("Submission").toBool());
+    feature.result.reset();
+    CHECK_FALSE(adaptor.invoke("Submission").isValid());
 }
 
 TEST_CASE("Selection parameter requires typed selections and preserves values on invalid input")

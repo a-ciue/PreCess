@@ -1,6 +1,7 @@
 #include "QFeatureSystemAdaptor.h"
 #include "FeatureParams.h"
 #include "FeatureSystem.h"
+#include "Job.h"
 #include "QArgObject.h"
 #include "QFeatureInfo.h"
 #include "QSelection.h"
@@ -13,6 +14,7 @@
 #include <any>
 #include <exception>
 #include <map>
+#include <memory>
 #include <string>
 #include <utility>
 #include <vector>
@@ -68,6 +70,9 @@ QVariant anyToQVariant(const std::any& value)
 {
     if (!value.has_value())
         return {};
+
+    if (value.type() == typeid(std::shared_ptr<systems::job::Job>))
+        return QVariantMap { { "submitted", static_cast<bool>(std::any_cast<const std::shared_ptr<systems::job::Job>&>(value)) } };
 
     if (value.type() == typeid(std::string))
         return QString::fromStdString(std::any_cast<std::string>(value));

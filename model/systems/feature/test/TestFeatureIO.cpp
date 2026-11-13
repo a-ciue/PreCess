@@ -8,6 +8,7 @@
 #include "FeatureRegistrar.h"
 #include "FeatureSystem.h"
 #include "HandlerCreatorDestroyerFactory.h"
+#include "JobRunner.h"
 #include "MeshData.h"
 #include "ModelData.h"
 #include "ModelIOHandler.h"
@@ -17,10 +18,12 @@
 #include "PluginBase.h"
 #include "Selection.h"
 #include "UndoStack.h"
+#include "test/OwnerQueue.h"
 #include <QJsonArray>
 #include <catch2/catch_test_macros.hpp>
 #include <functional>
 #include <stdexcept>
+#include <thread>
 
 using namespace systems::feature;
 namespace {
@@ -48,9 +51,13 @@ public:
     const int id { ++next_id };
     inline static std::size_t exported_points { 0 };
     inline static bool exported_option { false };
+    inline static std::thread::id read_thread;
+    inline static std::thread::id write_thread;
+    inline static const ComponentData* exported_component { nullptr };
     std::optional<ModelPayload> read_model(const std::filesystem::path& path, const std::vector<std::any>& arguments) override
     {
         last_reader = id;
+        read_thread = std::this_thread::get_id();
         if (path == "fail.dat")
             return std::nullopt;
         if (std::any_cast<long long>(arguments.at(0)) != 7)
@@ -59,6 +66,8 @@ public:
     }
     void write_components(const ModelLayer& model, const std::vector<Index>& components, const std::filesystem::path&, const std::vector<std::any>& arguments) override
     {
+        write_thread = std::this_thread::get_id();
+        exported_component = model.findComponent(components.front());
         exported_points = model.findComponent(components.front())->mesh->vertex_positions_.size();
         exported_option = std::any_cast<bool>(arguments.at(0));
     }
@@ -181,6 +190,95 @@ TEST_CASE("Legacy IO registration supplies a Feature import with parameters and 
     CHECK(io_updates == 2);
     CHECK(system.getFileTypes(FileDirection::Import).empty());
     CHECK(io.registeredFileTypeInfos().empty());
+}
+
+TEST_CASE("Legacy file jobs preserve input and keep model ownership until completion", "[FeatureSystem][file][job]")
+{
+    OwnerQueue queue;
+    core::EventBus bus;
+    ImportModelObserver observer;
+    ModelLayer model(&observer);
+    const auto target = addTriangleComponent(model);
+    observer.added.clear();
+    UndoStack undo(model);
+    model.setUndoRecorder(&undo);
+    systems::io::ModelIOSystem io(model, &undo);
+    systems::job::JobRunner runner(model, &undo, queue.dispatcher());
+    FeatureSystem system(model, bus, &undo, &io);
+    FeatureIOSystemRegister bridge(system);
+    BridgeIOPlugin plugin;
+    const QJsonObject metadata { { "file_type", "Bridge job" } };
+    REQUIRE(bridge.registerPlugin(metadata, plugin));
+    system.setJobRunner(&runner); // 注册后装配仍然生效。
+    const auto importing = system.getFileTypes(FileDirection::Import).front().feature;
+    REQUIRE(system.setParameter(importing, 0, core::ArgObject::create<ArgTypeEnum::Paths>({ "first.dat", "second.dat" })));
+    REQUIRE(system.setParameter(importing, 1, core::ArgObject::create<ArgTypeEnum::Int>(7)));
+    SECTION("Import parses off thread and installs the batch as one undo operation")
+    {
+        auto job = std::any_cast<std::shared_ptr<systems::job::Job>>(system.invoke(importing));
+        REQUIRE(job);
+        CHECK(job->owner() == importing);
+        REQUIRE(system.setParameter(importing, 1, core::ArgObject::create<ArgTypeEnum::Int>(99)));
+        auto finish = queue.take();
+        CHECK(BridgeIOHandler::read_thread != std::this_thread::get_id());
+        CHECK(model.writesPending());
+        CHECK(observer.added.empty());
+        CHECK_THROWS_AS(bridge.unregisterPlugin(metadata), ModelOperationBusy);
+        CHECK_FALSE(undo.undo());
+        finish();
+        CHECK(job->state() == systems::job::JobState::Done);
+        REQUIRE(observer.added.size() == 2);
+        CHECK_FALSE(model.writesPending());
+        REQUIRE(undo.undo());
+        CHECK_FALSE(model.modelById(observer.added.front()));
+        CHECK_FALSE(model.modelById(observer.added.back()));
+        CHECK_FALSE(undo.canUndo());
+    }
+    SECTION("Export borrows the original component without copying or recording undo")
+    {
+        const auto exporting = system.getFileTypes(FileDirection::Export).front().feature;
+        auto selected = std::make_shared<Selection>();
+        selected->type = ElementEnum::Component;
+        selected->ids = { target };
+        REQUIRE(system.setParameter(exporting, 0, core::ArgObject::create<ArgTypeEnum::Path>("output.dat")));
+        REQUIRE(system.setParameter(exporting, 1, core::ArgObject::create<ArgTypeEnum::Selector>(selected)));
+        REQUIRE(system.setParameter(exporting, 2, core::ArgObject::create<ArgTypeEnum::Bool>(true)));
+        auto job = std::any_cast<std::shared_ptr<systems::job::Job>>(system.invoke(exporting));
+        REQUIRE(job);
+        selected->ids.clear();
+        auto finish = queue.take();
+        CHECK(BridgeIOHandler::write_thread != std::this_thread::get_id());
+        CHECK(BridgeIOHandler::exported_component == model.findComponent(target));
+        CHECK(BridgeIOHandler::exported_option);
+        CHECK(model.writesPending());
+        CHECK_THROWS_AS(model.removeComponent(target), ModelOperationBusy);
+        finish();
+        CHECK(job->state() == systems::job::JobState::Done);
+        CHECK_FALSE(undo.canUndo());
+        CHECK_FALSE(model.writesPending());
+    }
+    SECTION("Cancellation discards parsed input without installing models")
+    {
+        auto job = std::any_cast<std::shared_ptr<systems::job::Job>>(system.invoke(importing));
+        REQUIRE(job);
+        job->cancel();
+        queue.take()();
+        CHECK(job->state() == systems::job::JobState::Cancelled);
+        CHECK(observer.added.empty());
+        CHECK_FALSE(undo.canUndo());
+    }
+    SECTION("Rejected publication does not fall back to synchronous IO")
+    {
+        runner.stop();
+        BridgeIOHandler::read_thread = { };
+        auto job = std::any_cast<std::shared_ptr<systems::job::Job>>(system.invoke(importing));
+        CHECK_FALSE(job);
+        CHECK(BridgeIOHandler::read_thread == std::thread::id { });
+        CHECK(observer.added.empty());
+    }
+    runner.stop();
+    system.setJobRunner(nullptr);
+    bridge.unregisterPlugin(metadata);
 }
 
 TEST_CASE("Legacy IO bridge rejects conflicting Feature keys", "[FeatureSystem][file][io]")

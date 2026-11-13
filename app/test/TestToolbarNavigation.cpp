@@ -7,8 +7,10 @@
 #include "FeatureParams.h"
 #include "FeatureRegistrar.h"
 #include "FeatureSystem.h"
+#include "Job.h"
 #include "QAlgorithmInfo.h"
 #include "QFeatureInfo.h"
+#include "QFeatureSystemAdaptor.h"
 #include "QModelManager.h"
 #include "QSelection.h"
 #include "QTaskStatus.h"
@@ -66,6 +68,21 @@ public:
         : QFeatureInfo(std::move(name), std::move(display_name), std::move(description), std::move(icon),
               std::move(args), false, parent, std::move(categories), order, std::move(label), std::move(defaults))
     {
+    }
+};
+class FileCompletionFeature final : public systems::feature::FeatureHandler {
+public:
+    std::any result;
+    int calls { 0 };
+    void setup(systems::feature::FeatureRegistrar& registrar, systems::feature::FeatureContext&) override
+    {
+        registrar.setFileType({ systems::feature::FileDirection::Import, { "dat" } });
+        registrar.addParameter({ ArgTypeEnum::Paths, "Files", "", "" });
+    }
+    std::any execute(systems::feature::FeatureContext&) override
+    {
+        ++calls;
+        return result;
     }
 };
 QQuickItem* findItem(QQuickItem* root, const QString& name)
@@ -263,6 +280,87 @@ TEST_CASE("Qt feature information exposes navigation as JavaScript arrays", "[na
     )JS");
     REQUIRE_FALSE(result.isError());
     CHECK(result.toString() == "[\"feature:Ordinary\"]");
+}
+
+TEST_CASE("File completion follows accepted submission without creating windows", "[navigation][file][headless]")
+{
+    application();
+    const auto windows = QGuiApplication::allWindows().size();
+    core::EventBus bus;
+    ModelLayer model;
+    systems::feature::FeatureSystem system(model, bus);
+    auto handler = std::make_unique<FileCompletionFeature>();
+    auto& feature = *handler;
+    REQUIRE(system.registerHandler({ "Completion" }, systems::feature::FeatureSystem::SystemHandlerPtr { handler.release() }));
+    systems::feature::QFeatureSystemAdaptor adaptor(system);
+    QQmlEngine engine;
+    engine.rootContext()->setContextProperty("backend", &adaptor);
+    QQmlComponent component(&engine);
+    component.setData(R"QML(
+        import QtQuick
+        import app.core
+        import "qrc:/navigation-ui"
+        FileFeatureFlow {
+            id: flow
+            featureSystem: backend
+            property int resets: 0
+            property QtObject viewport: QtObject {
+                function resetCamera() { ++flow.resets }
+            }
+            taskStatus: QtObject {
+                property bool writePending: false
+                signal taskFinished()
+                signal taskFailed(string error)
+                signal taskCancelled()
+            }
+            Component.onCompleted: App.registry.renderWindow = viewport
+            function selectFile() { importFiles(["file:///C:/input%20one.dat", "file:///C:/input%20two.dat"]) }
+            function rejectBusyDrop() { taskStatus.writePending = true; importFiles(["file:///C:/busy.dat"]); taskStatus.writePending = false }
+            function executeFile() { return App.activeOperation.execute() }
+            function finishFile() { taskStatus.taskFinished() }
+            function failFile() { taskStatus.taskFailed("failed"); finishFile() }
+            function cancelFile() { taskStatus.taskCancelled(); finishFile() }
+            function clearFile() { App.activeOperation = null; App.registry.renderWindow = null }
+        }
+    )QML",
+        QUrl("qrc:/navigation-ui/CompletionHarness.qml"));
+    INFO(component.errorString().toStdString());
+    REQUIRE(component.isReady());
+    std::unique_ptr<QObject> flow(component.create());
+    REQUIRE(flow);
+    REQUIRE(QMetaObject::invokeMethod(flow.get(), "selectFile"));
+    const auto paths = adaptor.getParameterValues("Completion").front().toStringList();
+    CHECK(paths == QStringList { "C:/input one.dat", "C:/input two.dat" });
+    CHECK(feature.calls == 0); // 拖入只准备参数，执行仍由侧栏触发。
+    REQUIRE(QMetaObject::invokeMethod(flow.get(), "rejectBusyDrop"));
+    CHECK(adaptor.getParameterValues("Completion").front().toStringList() == paths);
+    const auto invoke = [&](const char* method) { REQUIRE(QMetaObject::invokeMethod(flow.get(), method)); };
+    const auto resets = [&] { return flow->property("resets").toInt(); };
+    feature.result = std::make_shared<systems::job::Job>("import");
+    invoke("executeFile");
+    CHECK(resets() == 0);
+    invoke("executeFile");
+    CHECK(feature.calls == 1); // 等待期间重复执行不能替换本次收尾。
+    invoke("finishFile");
+    CHECK(resets() == 1);
+    invoke("finishFile");
+    CHECK(resets() == 1);
+    feature.result = std::shared_ptr<systems::job::Job> { };
+    invoke("executeFile");
+    invoke("finishFile");
+    CHECK(resets() == 1); // 未提交不能消费其他任务的结束通知。
+    feature.result.reset();
+    invoke("executeFile");
+    CHECK(resets() == 2);
+    feature.result = std::make_shared<systems::job::Job>("import");
+    invoke("executeFile");
+    invoke("failFile");
+    CHECK(resets() == 2);
+    invoke("executeFile");
+    invoke("cancelFile");
+    CHECK(resets() == 2);
+    invoke("clearFile");
+    CHECK(QGuiApplication::allWindows().size() == windows);
 }
 
 TEST_CASE("Feature navigation aggregates generic entries and shares executable children", "[navigation][feature]")

@@ -43,6 +43,7 @@ public:
          * @param component_ids 要写出的组件 id 集合
          * @param path 写出文件目标路径
          * @param args 写出文件要传入参数
+         * @note 可在模型操作占用期间由工作线程调用；只读借用 mgr，不得修改共享数据或缓存。
          */
     virtual void write_components(const ModelLayer& mgr,
         const std::vector<Index>& component_ids,
