@@ -1,0 +1,7 @@
+<map id="app/QStartupSplashWindow.h" name="app/QStartupSplashWindow.h">
+<area shape="rect" id="Node000001" title="不依赖主 QML 和三维场景的轻量启动窗口" alt="" coords="122,5,335,33"/>
+<area shape="rect" id="Node000002" href="$QApplicationStartup_8cpp.html" title="管理主界面加载、启动顺序和窗口交接。" alt="" coords="5,81,212,109"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="197,41,131,83,129,78,192,42"/>
+<area shape="rect" id="Node000003" href="$QStartupSplashWindow_8cpp.html" title="原生栅格启动窗口，沿用 ZenithGrid 已确认设计稿" alt="" coords="236,81,464,109"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="264,39,331,81,326,81,262,44"/>
+</map>

@@ -1,0 +1,258 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="zh">
+<head>
+<meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=11"/>
+<meta name="generator" content="Doxygen 1.14.0"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>PreCess: app/QApplicationStartup.cpp 文件参考</title>
+<link href="tabs.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="jquery.js"></script>
+<script type="text/javascript" src="dynsections.js"></script>
+<script type="text/javascript" src="clipboard.js"></script>
+<script type="text/javascript" src="cookie.js"></script>
+<link href="search/search.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="search/searchdata.js"></script>
+<script type="text/javascript" src="search/search.js"></script>
+<link href="doxygen.css" rel="stylesheet" type="text/css" />
+</head>
+<body>
+<div id="top"><!-- do not remove this div, it is closed by doxygen! -->
+<div id="titlearea">
+<table cellspacing="0" cellpadding="0">
+ <tbody>
+ <tr id="projectrow">
+  <td id="projectlogo"><img alt="Logo" src="ZenithGrid.ico"/></td>
+  <td id="projectalign">
+   <div id="projectname">PreCess
+   </div>
+  </td>
+ </tr>
+ </tbody>
+</table>
+</div>
+<!-- end header part -->
+<!-- 制作者 Doxygen 1.14.0 -->
+<script type="text/javascript">
+var searchBox = new SearchBox("searchBox", "search/",'.html');
+</script>
+<script type="text/javascript">
+$(function() { codefold.init(); });
+</script>
+<script type="text/javascript" src="menudata.js"></script>
+<script type="text/javascript" src="menu.js"></script>
+<script type="text/javascript">
+$(function() {
+  initMenu('',true,false,'search.php','搜索',false);
+  $(function() { init_search(); });
+});
+</script>
+<div id="main-nav"></div>
+<!-- window showing the filter options -->
+<div id="MSearchSelectWindow"
+     onmouseover="return searchBox.OnSearchSelectShow()"
+     onmouseout="return searchBox.OnSearchSelectHide()"
+     onkeydown="return searchBox.OnSearchSelectKey(event)">
+</div>
+
+<!-- iframe showing the search results (closed by default) -->
+<div id="MSearchResultsWindow">
+<div id="MSearchResults">
+<div class="SRPage">
+<div id="SRIndex">
+<div id="SRResults"></div>
+<div class="SRStatus" id="Loading">载入中...</div>
+<div class="SRStatus" id="Searching">搜索中...</div>
+<div class="SRStatus" id="NoMatches">未找到</div>
+</div>
+</div>
+</div>
+</div>
+
+<div id="nav-path" class="navpath">
+  <ul>
+<li class="navelem"><a href="dir_d422163b96683743ed3963d4aac17747.html">app</a></li>  </ul>
+</div>
+</div><!-- top -->
+<div id="doc-content">
+<div class="header">
+  <div class="headertitle"><div class="title">QApplicationStartup.cpp 文件参考</div></div>
+</div><!--header-->
+<div class="contents">
+
+<p>管理主界面加载、启动顺序和窗口交接。  
+<a href="#details">更多...</a></p>
+<div class="textblock"><code>#include &quot;<a class="el" href="QApplicationStartup_8h_source.html">QApplicationStartup.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="Docking_8h_source.html">Docking.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="QFeatureSystemAdaptor_8h_source.html">QFeatureSystemAdaptor.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="QLogManager_8h_source.html">QLogManager.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="QModelManager_8h_source.html">QModelManager.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="WallpaperLibrary_8h_source.html">WallpaperLibrary.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="QStartupSplashWindow_8h_source.html">QStartupSplashWindow.h</a>&quot;</code><br />
+<code>#include &lt;QQuickItem&gt;</code><br />
+<code>#include &lt;QQuickVTKItem.h&gt;</code><br />
+<code>#include &lt;QQuickWindow&gt;</code><br />
+<code>#include &lt;QGuiApplication&gt;</code><br />
+<code>#include &lt;QKeyEvent&gt;</code><br />
+<code>#include &lt;QUrl&gt;</code><br />
+<code>#include &lt;QtQml/QQmlApplicationEngine&gt;</code><br />
+<code>#include &lt;QtQml/QQmlContext&gt;</code><br />
+<code>#include &lt;exception&gt;</code><br />
+<code>#include &lt;spdlog/spdlog.h&gt;</code><br />
+</div><div class="textblock"><div class="dynheader">
+QApplicationStartup.cpp 的引用(Include)关系图:</div>
+<div class="dyncontent">
+<div class="center"><img src="QApplicationStartup_8cpp__incl.png" border="0" usemap="#aapp_2QApplicationStartup_8cpp" loading="lazy" alt=""/></div>
+<map name="aapp_2QApplicationStartup_8cpp" id="aapp_2QApplicationStartup_8cpp">
+<area shape="rect" title="管理主界面加载、启动顺序和窗口交接。" alt="" coords="2830,5,3037,33"/>
+<area shape="rect" href="QApplicationStartup_8h.html" title="装配主界面并管理应用启动期间的窗口和回调。" alt="" coords="5,157,169,184"/>
+<area shape="poly" title=" " alt="" coords="2827,20,2495,24,2001,32,1420,51,1120,65,826,84,648,99,472,119,185,157,184,152,471,114,648,94,825,78,1120,60,1420,45,2001,27,2495,19,2833,20"/>
+<area shape="rect" href="Docking_8h.html" title="停靠组件公共入口头文件" alt="" coords="837,81,924,109"/>
+<area shape="poly" title=" " alt="" coords="2830,27,939,94,939,89,2830,22"/>
+<area shape="rect" href="QFeatureSystemAdaptor_8h.html" title=" " alt="" coords="373,157,564,184"/>
+<area shape="poly" title=" " alt="" coords="2827,23,2239,44,1842,61,1439,84,1011,116,580,159,579,154,1010,111,1439,78,1842,56,2239,39,2832,23"/>
+<area shape="rect" href="QLogManager_8h.html" title=" " alt="" coords="1155,157,1278,184"/>
+<area shape="poly" title=" " alt="" coords="2827,23,2198,44,1846,61,1701,72,1590,84,1504,98,1418,117,1275,154,1274,149,1417,112,1503,93,1589,78,1700,67,1846,56,2198,39,2833,22"/>
+<area shape="rect" href="QModelManager_8h.html" title=" " alt="" coords="1601,81,1741,109"/>
+<area shape="poly" title=" " alt="" coords="2828,27,1757,91,1756,86,2833,26"/>
+<area shape="rect" title=" " alt="" coords="2064,232,2115,260"/>
+<area shape="poly" title=" " alt="" coords="2905,33,2862,56,2819,83,2791,111,2774,138,2754,164,2722,187,2669,204,2601,215,2523,220,2439,223,2270,226,2194,229,2130,236,2130,231,2194,224,2270,221,2439,218,2523,215,2601,209,2668,199,2719,182,2751,160,2769,135,2787,108,2816,79,2859,52,2899,34"/>
+<area shape="rect" href="WallpaperLibrary_8h.html" title="自定义壁纸库：托管用户导入的壁纸并把文件名解析为图像" alt="" coords="2783,157,2924,184"/>
+<area shape="poly" title=" " alt="" coords="2893,33,2857,54,2842,67,2831,82,2826,97,2827,112,2839,145,2834,142,2822,113,2821,96,2826,80,2839,63,2854,50,2888,34"/>
+<area shape="rect" href="QStartupSplashWindow_8h.html" title="不依赖主 QML 和三维场景的轻量启动窗口" alt="" coords="2992,157,3176,184"/>
+<area shape="poly" title=" " alt="" coords="2916,33,2895,51,2878,69,2870,89,2870,98,2874,107,2891,120,2918,132,2989,153,2984,153,2916,137,2888,125,2870,110,2865,99,2864,88,2874,66,2892,47,2911,35"/>
+<area shape="rect" title=" " alt="" coords="2884,81,2983,109"/>
+<area shape="poly" title=" " alt="" coords="2935,32,2936,67,2932,64,2932,36"/>
+<area shape="rect" title=" " alt="" coords="3007,81,3143,109"/>
+<area shape="poly" title=" " alt="" coords="2959,31,3039,74,3034,73,2958,36"/>
+<area shape="rect" title=" " alt="" coords="3167,81,3287,109"/>
+<area shape="poly" title=" " alt="" coords="2987,31,3162,77,3157,77,2986,36"/>
+<area shape="rect" title=" " alt="" coords="3312,81,3438,109"/>
+<area shape="poly" title=" " alt="" coords="3013,31,3299,81,3294,80,3013,36"/>
+<area shape="rect" title=" " alt="" coords="3462,81,3554,109"/>
+<area shape="poly" title=" " alt="" coords="3037,27,3224,47,3449,81,3444,81,3223,52,3037,32"/>
+<area shape="rect" title=" " alt="" coords="3579,81,3800,109"/>
+<area shape="poly" title=" " alt="" coords="3037,28,3566,81,3561,81,3037,33"/>
+<area shape="rect" title=" " alt="" coords="3824,81,3979,109"/>
+<area shape="poly" title=" " alt="" coords="3037,23,3376,42,3590,58,3811,81,3806,81,3590,63,3376,48,3037,28"/>
+<area shape="rect" title=" " alt="" coords="4003,81,4088,109"/>
+<area shape="poly" title=" " alt="" coords="3037,18,3215,21,3450,30,3716,48,3991,81,3985,81,3716,54,3450,36,3215,26,3038,23"/>
+<area shape="rect" title=" " alt="" coords="4112,81,4235,109"/>
+<area shape="poly" title=" " alt="" coords="3037,19,3232,24,3493,34,3792,51,4100,81,4094,81,3791,56,3493,39,3232,29,3037,24"/>
+<area shape="rect" title=" " alt="" coords="1965,232,2038,260"/>
+<area shape="poly" title=" " alt="" coords="168,181,182,182,991,211,1951,242,1947,245,991,216,181,187,170,186"/>
+<area shape="rect" title=" " alt="" coords="48,232,126,260"/>
+<area shape="poly" title=" " alt="" coords="88,182,90,217,84,216,86,187"/>
+<area shape="rect" title=" " alt="" coords="1177,308,1253,336"/>
+<area shape="poly" title=" " alt="" coords="109,182,186,222,235,242,285,257,405,283,507,297,598,302,683,303,861,298,966,299,1089,305,1164,315,1159,315,1088,311,966,304,861,303,683,308,597,308,506,302,404,288,284,263,233,247,184,226,109,188"/>
+<area shape="rect" href="QmlRegistration_8h.html" title="停靠组件对外入口：QML 类型注册与环境初始化" alt="" coords="193,157,349,184"/>
+<area shape="poly" title=" " alt="" coords="836,103,364,159,363,154,838,98"/>
+<area shape="rect" title=" " alt="" coords="296,232,374,260"/>
+<area shape="poly" title=" " alt="" coords="283,182,316,221,311,220,282,187"/>
+<area shape="rect" href="Core_8h.html" title=" " alt="" coords="1015,232,1079,260"/>
+<area shape="poly" title=" " alt="" coords="565,181,1002,238,997,240,564,187"/>
+<area shape="rect" title=" " alt="" coords="1018,308,1076,336"/>
+<area shape="poly" title=" " alt="" coords="467,183,464,222,467,242,477,258,504,271,555,282,704,299,871,310,1005,319,1000,319,871,316,704,305,554,287,502,276,473,262,462,243,458,222,463,187"/>
+<area shape="rect" title=" " alt="" coords="728,232,806,260"/>
+<area shape="poly" title=" " alt="" coords="522,182,716,231,711,232,522,188"/>
+<area shape="rect" title=" " alt="" coords="1329,232,1584,260"/>
+<area shape="poly" title=" " alt="" coords="564,181,577,182,1315,233,1312,238,576,187,565,186"/>
+<area shape="rect" title=" " alt="" coords="487,232,556,260"/>
+<area shape="poly" title=" " alt="" coords="479,182,506,220,501,219,477,187"/>
+<area shape="rect" title=" " alt="" coords="580,232,655,260"/>
+<area shape="poly" title=" " alt="" coords="495,182,580,225,575,225,495,188"/>
+<area shape="poly" title=" " alt="" coords="1078,258,1174,302,1169,301,1076,263"/>
+<area shape="poly" title=" " alt="" coords="1049,259,1049,294,1045,291,1045,262"/>
+<area shape="poly" title=" " alt="" coords="1278,176,1341,182,1952,240,1947,240,1340,187,1278,181"/>
+<area shape="poly" title=" " alt="" coords="1197,184,1172,207,1152,233,1150,250,1156,267,1168,283,1184,299,1179,297,1164,286,1151,270,1144,251,1147,231,1168,203,1192,186"/>
+<area shape="rect" title=" " alt="" coords="1162,232,1254,260"/>
+<area shape="poly" title=" " alt="" coords="1217,183,1213,218,1209,215,1213,187"/>
+<area shape="poly" title=" " alt="" coords="1598,103,1455,126,1388,141,1342,159,1316,181,1301,204,1289,231,1269,262,1238,299,1236,294,1265,258,1284,228,1297,202,1312,178,1339,154,1386,136,1455,120,1604,102"/>
+<area shape="poly" title=" " alt="" coords="1598,99,1174,120,882,137,580,159,579,154,881,132,1174,115,1604,98"/>
+<area shape="poly" title=" " alt="" coords="1656,108,1634,132,1615,158,1610,172,1608,186,1611,212,1612,237,1607,249,1596,262,1092,318,1091,313,1594,258,1602,247,1606,236,1606,212,1603,186,1604,171,1610,155,1630,128,1651,110"/>
+<area shape="rect" href="EventBus_8h.html" title="类型安全的轻量级事件总线（发布/订阅）" alt="" coords="1624,157,1718,184"/>
+<area shape="poly" title=" " alt="" coords="1673,107,1673,143,1669,139,1669,111"/>
+<area shape="rect" href="QAlgorithmSystemAdaptor_8h.html" title="算法声明与调用的 Qt 适配；任务状态由 QTaskStatus 统一提供。" alt="" coords="733,157,940,184"/>
+<area shape="poly" title=" " alt="" coords="1598,102,1323,126,955,159,955,154,1322,121,1604,101"/>
+<area shape="rect" href="QEditSystemAdaptor_8h.html" title=" " alt="" coords="963,157,1131,184"/>
+<area shape="poly" title=" " alt="" coords="1598,104,1147,159,1146,154,1604,103"/>
+<area shape="rect" href="QModelIOSystemAdaptor_8h.html" title=" " alt="" coords="1353,157,1549,184"/>
+<area shape="poly" title=" " alt="" coords="1634,109,1505,154,1504,149,1629,110"/>
+<area shape="rect" href="QModelObserver_8h.html" title=" " alt="" coords="1742,157,1883,184"/>
+<area shape="poly" title=" " alt="" coords="1697,107,1776,150,1771,149,1696,112"/>
+<area shape="rect" href="QModelQuery_8h.html" title="模型层查询的 QML 适配器" alt="" coords="588,157,708,184"/>
+<area shape="poly" title=" " alt="" coords="1598,98,1231,117,982,134,724,159,724,154,981,129,1231,112,1604,98"/>
+<area shape="rect" href="QPythonRuntime_8h.html" title=" " alt="" coords="2445,157,2588,184"/>
+<area shape="poly" title=" " alt="" coords="1741,97,2036,117,2432,156,2427,156,2036,123,1741,103"/>
+<area shape="rect" href="QSystemPluginManager_8h.html" title=" " alt="" coords="1908,157,2096,184"/>
+<area shape="poly" title=" " alt="" coords="1731,107,1930,153,1924,153,1730,112"/>
+<area shape="rect" href="QTaskStatus_8h.html" title="全局单槽任务的 Qt 展示：唯一进度合流、忙状态、取消入口与终态反馈。" alt="" coords="2120,157,2233,184"/>
+<area shape="poly" title=" " alt="" coords="1741,102,2107,156,2102,156,1741,108"/>
+<area shape="rect" href="QUndoStackAdaptor_8h.html" title="undo 栈的 QML 适配器：暴露撤销/重做入口与栈状态" alt="" coords="2257,157,2421,184"/>
+<area shape="poly" title=" " alt="" coords="1741,100,2245,156,2240,156,1741,106"/>
+<area shape="rect" title=" " alt="" coords="2612,157,2708,184"/>
+<area shape="poly" title=" " alt="" coords="1741,95,1894,99,2104,109,2347,127,2600,156,2594,156,2347,132,2104,115,1894,105,1741,100"/>
+<area shape="poly" title=" " alt="" coords="1672,183,1665,224,1656,245,1641,262,1612,278,1573,291,1471,308,1362,318,1269,322,1269,317,1362,313,1471,303,1571,285,1610,273,1637,258,1651,242,1660,222,1668,187"/>
+<area shape="poly" title=" " alt="" coords="874,182,1003,229,998,229,874,188"/>
+<area shape="poly" title=" " alt="" coords="826,184,791,223,788,219,822,186"/>
+<area shape="poly" title=" " alt="" coords="940,181,1332,230,1327,230,940,187"/>
+<area shape="poly" title=" " alt="" coords="1049,183,1049,218,1045,215,1045,187"/>
+<area shape="poly" title=" " alt="" coords="1000,184,821,233,820,228,994,185"/>
+<area shape="poly" title=" " alt="" coords="1121,182,1370,229,1365,229,1120,188"/>
+<area shape="poly" title=" " alt="" coords="1381,185,1094,239,1093,234,1376,185"/>
+<area shape="poly" title=" " alt="" coords="1454,183,1456,218,1452,215,1450,187"/>
+<area shape="poly" title=" " alt="" coords="1550,178,1824,204,2052,233,2047,233,1823,209,1550,183"/>
+<area shape="poly" title=" " alt="" coords="1847,182,1957,227,1951,226,1846,188"/>
+<area shape="poly" title=" " alt="" coords="1744,183,1730,187,1567,203,1440,212,1313,221,1150,235,1095,241,1094,236,1149,230,1313,215,1440,207,1567,198,1729,182,1738,183"/>
+<area shape="rect" title=" " alt="" coords="2141,232,2278,260"/>
+<area shape="poly" title=" " alt="" coords="1884,182,2128,229,2123,229,1883,188"/>
+<area shape="poly" title=" " alt="" coords="709,180,722,182,987,201,1349,219,1952,243,1947,243,1349,224,987,206,721,187,709,185"/>
+<area shape="poly" title=" " alt="" coords="589,186,390,235,389,230,595,184"/>
+<area shape="poly" title=" " alt="" coords="709,180,1003,236,998,237,709,186"/>
+<area shape="poly" title=" " alt="" coords="670,182,736,224,731,224,669,187"/>
+<area shape="poly" title=" " alt="" coords="2447,182,2433,187,2245,208,2161,218,2054,235,2053,230,2161,212,2244,203,2432,182,2442,183"/>
+<area shape="poly" title=" " alt="" coords="2505,184,2455,226,2422,247,2386,263,2316,275,2197,286,1868,304,1269,322,1269,317,1868,299,2196,281,2316,270,2385,257,2420,242,2452,222,2500,186"/>
+<area shape="rect" title=" " alt="" coords="2304,232,2374,260"/>
+<area shape="poly" title=" " alt="" coords="2487,184,2385,229,2384,223,2482,185"/>
+<area shape="poly" title=" " alt="" coords="2004,183,2004,218,2000,215,2000,187"/>
+<area shape="poly" title=" " alt="" coords="1910,184,1570,232,1569,227,1905,185"/>
+<area shape="poly" title=" " alt="" coords="1910,183,1895,187,1607,211,1318,235,1270,240,1270,235,1317,230,1606,206,1895,182,1904,183"/>
+<area shape="poly" title=" " alt="" coords="2018,182,2065,223,2060,222,2017,187"/>
+<area shape="poly" title=" " alt="" coords="2069,182,2292,232,2287,232,2069,188"/>
+<area shape="poly" title=" " alt="" coords="2148,184,2047,229,2046,224,2143,185"/>
+<area shape="poly" title=" " alt="" coords="2122,182,2109,187,1838,218,1599,238,1599,233,1838,213,2108,182,2117,183"/>
+<area shape="poly" title=" " alt="" coords="2206,182,2299,226,2294,225,2205,187"/>
+<area shape="poly" title=" " alt="" coords="2277,185,2054,235,2053,230,2271,185"/>
+<area shape="poly" title=" " alt="" coords="2260,183,2246,187,1897,218,1599,239,1599,234,1897,213,2245,182,2254,183"/>
+<area shape="poly" title=" " alt="" coords="2341,183,2341,218,2337,215,2337,187"/>
+<area shape="poly" title=" " alt="" coords="2785,179,2721,187,2535,198,2388,203,2242,212,2054,235,2053,230,2241,206,2388,198,2535,193,2720,182,2780,179"/>
+<area shape="poly" title=" " alt="" coords="2785,182,2765,187,2588,200,2449,203,2309,210,2227,220,2130,236,2130,230,2226,214,2308,205,2448,197,2588,194,2764,182,2780,182"/>
+<area shape="poly" title=" " alt="" coords="2785,182,2765,187,2531,210,2294,235,2293,230,2531,205,2764,182,2780,182"/>
+<area shape="poly" title=" " alt="" coords="2785,182,2389,240,2388,235,2780,182"/>
+<area shape="rect" title=" " alt="" coords="2930,232,3002,260"/>
+<area shape="poly" title=" " alt="" coords="2874,182,2936,224,2931,223,2873,187"/>
+<area shape="rect" title=" " alt="" coords="2532,232,2695,260"/>
+<area shape="poly" title=" " alt="" coords="2813,184,2672,230,2671,225,2808,185"/>
+<area shape="rect" title=" " alt="" coords="2719,232,2778,260"/>
+<area shape="poly" title=" " alt="" coords="2837,184,2780,226,2778,221,2832,186"/>
+<area shape="rect" title=" " alt="" coords="2802,232,2906,260"/>
+<area shape="poly" title=" " alt="" coords="2856,183,2856,218,2852,215,2852,187"/>
+<area shape="poly" title=" " alt="" coords="3066,184,3000,227,2999,222,3061,186"/>
+<area shape="rect" title=" " alt="" coords="3026,232,3143,260"/>
+<area shape="poly" title=" " alt="" coords="3086,183,3086,218,3082,215,3082,187"/>
+<area shape="rect" title=" " alt="" coords="3167,232,3236,260"/>
+<area shape="poly" title=" " alt="" coords="3106,182,3171,225,3166,223,3105,187"/>
+<area shape="rect" title=" " alt="" coords="3260,232,3343,260"/>
+<area shape="poly" title=" " alt="" coords="3124,182,3251,227,3246,227,3123,188"/>
+</map>
+</div>
+</div><a name="details" id="details"></a><h2 id="header-details" class="groupheader">详细描述</h2>
+<div class="textblock"><p>管理主界面加载、启动顺序和窗口交接。 </p>
+</div></div><!-- contents -->
+<!-- start footer part -->
+<hr class="footer"/><address class="footer"><small>
+制作者&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.14.0
+</small></address>
+</div><!-- doc-content -->
+</body>
+</html>

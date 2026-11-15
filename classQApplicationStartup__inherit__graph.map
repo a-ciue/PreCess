@@ -1,0 +1,5 @@
+<map id="QApplicationStartup" name="QApplicationStartup">
+<area shape="rect" id="Node000001" title="由主程序持有的启动协调对象，生命周期覆盖 QML 引擎。" alt="" coords="5,81,157,109"/>
+<area shape="rect" id="Node000002" title=" " alt="" coords="44,5,118,33"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="83,47,84,81,78,80,79,51"/>
+</map>

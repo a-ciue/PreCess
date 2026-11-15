@@ -1,0 +1,15 @@
+<map id="QApplicationStartup" name="QApplicationStartup">
+<area shape="rect" id="Node000001" title="由主程序持有的启动协调对象，生命周期覆盖 QML 引擎。" alt="" coords="829,100,980,128"/>
+<area shape="rect" id="Node000002" title=" " alt="" coords="470,5,544,33"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="559,19,673,30,740,42,806,59,847,77,884,100,879,99,845,82,804,64,739,47,673,35,559,24"/>
+<area shape="rect" id="Node000003" title=" " alt="" coords="412,57,602,102"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="617,86,831,107,826,108,617,91"/>
+<area shape="rect" id="Node000004" href="$classQStartupSplashWindow.html" title="独立绘制启动封面与活动动画，不在插件构造中重入事件循环" alt="" coords="138,65,311,93"/>
+<area shape="poly" id="edge3_Node000003_Node000004" title=" " alt="" coords="326,77,414,78,409,80,327,82"/>
+<area shape="rect" id="Node000005" title=" " alt="" coords="5,65,89,93"/>
+<area shape="poly" id="edge4_Node000004_Node000005" title=" " alt="" coords="103,77,140,78,135,81,105,82"/>
+<area shape="rect" id="Node000006" title=" " alt="" coords="385,126,629,171"/>
+<area shape="poly" id="edge5_Node000001_Node000006" title=" " alt="" coords="644,144,723,140,804,132,840,129,846,128,805,137,724,145,644,150"/>
+<area shape="rect" id="Node000007" title=" " alt="" coords="407,195,607,222"/>
+<area shape="poly" id="edge6_Node000001_Node000007" title=" " alt="" coords="622,205,713,196,759,187,804,174,849,151,883,129,888,127,851,156,806,179,760,192,713,201,623,211"/>
+</map>

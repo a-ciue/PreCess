@@ -1,0 +1,146 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="zh">
+<head>
+<meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=11"/>
+<meta name="generator" content="Doxygen 1.14.0"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>PreCess: app/QStartupSplashWindow.cpp 文件参考</title>
+<link href="tabs.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="jquery.js"></script>
+<script type="text/javascript" src="dynsections.js"></script>
+<script type="text/javascript" src="clipboard.js"></script>
+<script type="text/javascript" src="cookie.js"></script>
+<link href="search/search.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="search/searchdata.js"></script>
+<script type="text/javascript" src="search/search.js"></script>
+<link href="doxygen.css" rel="stylesheet" type="text/css" />
+</head>
+<body>
+<div id="top"><!-- do not remove this div, it is closed by doxygen! -->
+<div id="titlearea">
+<table cellspacing="0" cellpadding="0">
+ <tbody>
+ <tr id="projectrow">
+  <td id="projectlogo"><img alt="Logo" src="ZenithGrid.ico"/></td>
+  <td id="projectalign">
+   <div id="projectname">PreCess
+   </div>
+  </td>
+ </tr>
+ </tbody>
+</table>
+</div>
+<!-- end header part -->
+<!-- 制作者 Doxygen 1.14.0 -->
+<script type="text/javascript">
+var searchBox = new SearchBox("searchBox", "search/",'.html');
+</script>
+<script type="text/javascript">
+$(function() { codefold.init(); });
+</script>
+<script type="text/javascript" src="menudata.js"></script>
+<script type="text/javascript" src="menu.js"></script>
+<script type="text/javascript">
+$(function() {
+  initMenu('',true,false,'search.php','搜索',false);
+  $(function() { init_search(); });
+});
+</script>
+<div id="main-nav"></div>
+<!-- window showing the filter options -->
+<div id="MSearchSelectWindow"
+     onmouseover="return searchBox.OnSearchSelectShow()"
+     onmouseout="return searchBox.OnSearchSelectHide()"
+     onkeydown="return searchBox.OnSearchSelectKey(event)">
+</div>
+
+<!-- iframe showing the search results (closed by default) -->
+<div id="MSearchResultsWindow">
+<div id="MSearchResults">
+<div class="SRPage">
+<div id="SRIndex">
+<div id="SRResults"></div>
+<div class="SRStatus" id="Loading">载入中...</div>
+<div class="SRStatus" id="Searching">搜索中...</div>
+<div class="SRStatus" id="NoMatches">未找到</div>
+</div>
+</div>
+</div>
+</div>
+
+<div id="nav-path" class="navpath">
+  <ul>
+<li class="navelem"><a href="dir_d422163b96683743ed3963d4aac17747.html">app</a></li>  </ul>
+</div>
+</div><!-- top -->
+<div id="doc-content">
+<div class="header">
+  <div class="headertitle"><div class="title">QStartupSplashWindow.cpp 文件参考</div></div>
+</div><!--header-->
+<div class="contents">
+
+<p>原生栅格启动窗口，沿用 ZenithGrid 已确认设计稿  
+<a href="#details">更多...</a></p>
+<div class="textblock"><code>#include &quot;<a class="el" href="QStartupSplashWindow_8h_source.html">QStartupSplashWindow.h</a>&quot;</code><br />
+<code>#include &lt;QCloseEvent&gt;</code><br />
+<code>#include &lt;QCursor&gt;</code><br />
+<code>#include &lt;QEvent&gt;</code><br />
+<code>#include &lt;QExposeEvent&gt;</code><br />
+<code>#include &lt;QFontMetricsF&gt;</code><br />
+<code>#include &lt;QGuiApplication&gt;</code><br />
+<code>#include &lt;QPainter&gt;</code><br />
+<code>#include &lt;QResizeEvent&gt;</code><br />
+<code>#include &lt;QScreen&gt;</code><br />
+<code>#include &lt;algorithm&gt;</code><br />
+<code>#include &lt;spdlog/spdlog.h&gt;</code><br />
+</div><div class="textblock"><div class="dynheader">
+QStartupSplashWindow.cpp 的引用(Include)关系图:</div>
+<div class="dyncontent">
+<div class="center"><img src="QStartupSplashWindow_8cpp__incl.png" border="0" usemap="#aapp_2QStartupSplashWindow_8cpp" loading="lazy" alt=""/></div>
+<map name="aapp_2QStartupSplashWindow_8cpp" id="aapp_2QStartupSplashWindow_8cpp">
+<area shape="rect" title="原生栅格启动窗口，沿用 ZenithGrid 已确认设计稿" alt="" coords="820,5,1047,33"/>
+<area shape="rect" href="QStartupSplashWindow_8h.html" title="不依赖主 QML 和三维场景的轻量启动窗口" alt="" coords="137,81,322,109"/>
+<area shape="poly" title=" " alt="" coords="819,34,337,83,336,78,820,29"/>
+<area shape="rect" title=" " alt="" coords="345,81,450,109"/>
+<area shape="poly" title=" " alt="" coords="817,34,657,56,465,83,465,78,656,51,822,33"/>
+<area shape="rect" title=" " alt="" coords="474,81,547,109"/>
+<area shape="poly" title=" " alt="" coords="833,34,710,56,563,83,562,78,709,51,838,33"/>
+<area shape="rect" title=" " alt="" coords="571,81,640,109"/>
+<area shape="poly" title=" " alt="" coords="870,33,655,83,654,78,865,34"/>
+<area shape="rect" title=" " alt="" coords="664,81,779,109"/>
+<area shape="poly" title=" " alt="" coords="898,33,774,78,773,73,893,34"/>
+<area shape="rect" title=" " alt="" coords="804,81,919,109"/>
+<area shape="poly" title=" " alt="" coords="923,32,886,72,883,68,918,35"/>
+<area shape="rect" title=" " alt="" coords="944,81,1070,109"/>
+<area shape="poly" title=" " alt="" coords="947,31,985,71,980,69,946,36"/>
+<area shape="rect" title=" " alt="" coords="1094,81,1170,109"/>
+<area shape="poly" title=" " alt="" coords="969,31,1085,75,1079,75,968,36"/>
+<area shape="rect" title=" " alt="" coords="1194,81,1305,109"/>
+<area shape="poly" title=" " alt="" coords="990,31,1181,77,1176,77,990,36"/>
+<area shape="rect" title=" " alt="" coords="1329,81,1404,109"/>
+<area shape="poly" title=" " alt="" coords="1033,31,1163,51,1317,81,1311,80,1162,56,1033,36"/>
+<area shape="rect" title=" " alt="" coords="1428,81,1513,109"/>
+<area shape="poly" title=" " alt="" coords="1047,29,1216,49,1416,81,1411,81,1216,54,1047,34"/>
+<area shape="rect" title=" " alt="" coords="1537,81,1660,109"/>
+<area shape="poly" title=" " alt="" coords="1048,27,1264,48,1524,81,1519,81,1263,53,1048,33"/>
+<area shape="rect" title=" " alt="" coords="5,157,123,184"/>
+<area shape="poly" title=" " alt="" coords="202,109,108,153,106,148,197,109"/>
+<area shape="rect" title=" " alt="" coords="146,157,219,184"/>
+<area shape="poly" title=" " alt="" coords="223,108,201,146,197,142,219,111"/>
+<area shape="rect" title=" " alt="" coords="243,157,312,184"/>
+<area shape="poly" title=" " alt="" coords="239,107,263,144,258,143,237,112"/>
+<area shape="rect" title=" " alt="" coords="336,157,419,184"/>
+<area shape="poly" title=" " alt="" coords="256,107,340,149,335,150,255,112"/>
+</map>
+</div>
+</div><a name="details" id="details"></a><h2 id="header-details" class="groupheader">详细描述</h2>
+<div class="textblock"><p>原生栅格启动窗口，沿用 ZenithGrid 已确认设计稿 </p>
+</div></div><!-- contents -->
+<!-- start footer part -->
+<hr class="footer"/><address class="footer"><small>
+制作者&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.14.0
+</small></address>
+</div><!-- doc-content -->
+</body>
+</html>

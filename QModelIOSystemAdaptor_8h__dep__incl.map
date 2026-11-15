@@ -1,17 +1,19 @@
 <map id="app/model/systems/io/QModelIOSystemAdaptor.h" name="app/model/systems/io/QModelIOSystemAdaptor.h">
-<area shape="rect" id="Node000001" title=" " alt="" coords="526,5,727,50"/>
-<area shape="rect" id="Node000002" href="$QModelManager_8h.html" title=" " alt="" coords="402,106,614,134"/>
-<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="589,58,526,108,524,104,584,60"/>
-<area shape="rect" id="Node000008" href="$QModelIOSystemAdaptor_8cpp.html" title=" " alt="" coords="638,98,853,143"/>
-<area shape="poly" id="edge7_Node000001_Node000008" title=" " alt="" coords="668,57,720,98,714,97,666,62"/>
-<area shape="rect" id="Node000003" href="$main_8cpp.html" title=" " alt="" coords="5,191,115,218"/>
-<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="420,140,127,193,116,195,115,190,126,188,419,135"/>
-<area shape="rect" id="Node000004" href="$QModelManager_8cpp.html" title=" " alt="" coords="138,191,366,218"/>
-<area shape="poly" id="edge3_Node000002_Node000004" title=" " alt="" coords="455,139,294,193,292,188,450,139"/>
-<area shape="rect" id="Node000005" href="$TestQModelDeletion_8cpp.html" title="Qt 删除入口的忙时拒绝与撤销状态通知回归测试" alt="" coords="390,191,626,218"/>
-<area shape="poly" id="edge4_Node000002_Node000005" title=" " alt="" coords="510,148,510,192,506,189,506,152"/>
-<area shape="rect" id="Node000006" href="$TestToolbarNavigation_8cpp.html" title="通用功能导航、旧算法列表兼容及实际工具栏加载测试" alt="" coords="650,191,899,218"/>
-<area shape="poly" id="edge5_Node000002_Node000006" title=" " alt="" coords="565,136,735,190,729,190,565,142"/>
-<area shape="rect" id="Node000007" href="$TestUndoQml_8cpp.html" title="实际 QML 删除与选择器失效路径回归测试" alt="" coords="924,191,1116,218"/>
-<area shape="poly" id="edge6_Node000002_Node000007" title=" " alt="" coords="594,135,626,140,933,190,928,190,625,145,594,140"/>
+<area shape="rect" id="Node000001" title=" " alt="" coords="628,5,829,50"/>
+<area shape="rect" id="Node000002" href="$QModelManager_8h.html" title=" " alt="" coords="504,106,716,134"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="691,58,628,108,626,104,686,60"/>
+<area shape="rect" id="Node000009" href="$QModelIOSystemAdaptor_8cpp.html" title=" " alt="" coords="740,98,955,143"/>
+<area shape="poly" id="edge8_Node000001_Node000009" title=" " alt="" coords="769,57,821,98,816,97,768,62"/>
+<area shape="rect" id="Node000003" href="$QApplicationStartup_8cpp.html" title="管理主界面加载、启动顺序和窗口交接。" alt="" coords="5,191,212,218"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="515,140,190,193,189,187,514,135"/>
+<area shape="rect" id="Node000004" href="$main_8cpp.html" title=" " alt="" coords="235,191,344,218"/>
+<area shape="poly" id="edge3_Node000002_Node000004" title=" " alt="" coords="546,138,342,193,341,187,541,139"/>
+<area shape="rect" id="Node000005" href="$QModelManager_8cpp.html" title=" " alt="" coords="368,191,596,218"/>
+<area shape="poly" id="edge4_Node000002_Node000005" title=" " alt="" coords="579,142,503,193,501,188,574,144"/>
+<area shape="rect" id="Node000006" href="$TestQModelDeletion_8cpp.html" title="Qt 删除入口的忙时拒绝与撤销状态通知回归测试" alt="" coords="620,191,856,218"/>
+<area shape="poly" id="edge5_Node000002_Node000006" title=" " alt="" coords="644,140,720,191,715,190,642,145"/>
+<area shape="rect" id="Node000007" href="$TestToolbarNavigation_8cpp.html" title="通用功能导航、旧算法列表兼容及实际工具栏加载测试" alt="" coords="880,191,1129,218"/>
+<area shape="poly" id="edge6_Node000002_Node000007" title=" " alt="" coords="688,135,944,190,939,190,688,140"/>
+<area shape="rect" id="Node000008" href="$TestUndoQml_8cpp.html" title="实际 QML 删除与选择器失效路径回归测试" alt="" coords="1154,191,1346,218"/>
+<area shape="poly" id="edge7_Node000002_Node000008" title=" " alt="" coords="694,135,728,140,1156,192,1151,192,727,145,694,140"/>
 </map>

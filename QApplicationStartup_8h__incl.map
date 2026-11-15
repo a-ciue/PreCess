@@ -1,0 +1,9 @@
+<map id="app/QApplicationStartup.h" name="app/QApplicationStartup.h">
+<area shape="rect" id="Node000001" title="装配主界面并管理应用启动期间的窗口和回调。" alt="" coords="46,5,238,33"/>
+<area shape="rect" id="Node000002" title=" " alt="" coords="5,81,79,109"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="127,33,73,74,70,70,122,34"/>
+<area shape="rect" id="Node000003" title=" " alt="" coords="103,81,181,109"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="144,32,144,66,140,64,140,36"/>
+<area shape="rect" id="Node000004" title=" " alt="" coords="205,81,282,109"/>
+<area shape="poly" id="edge3_Node000001_Node000004" title=" " alt="" coords="161,31,216,71,210,72,159,36"/>
+</map>

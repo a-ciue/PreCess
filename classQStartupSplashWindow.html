@@ -1,0 +1,527 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="zh">
+<head>
+<meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=11"/>
+<meta name="generator" content="Doxygen 1.14.0"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>PreCess: QStartupSplashWindow类 参考</title>
+<link href="tabs.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="jquery.js"></script>
+<script type="text/javascript" src="dynsections.js"></script>
+<script type="text/javascript" src="clipboard.js"></script>
+<script type="text/javascript" src="cookie.js"></script>
+<link href="search/search.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="search/searchdata.js"></script>
+<script type="text/javascript" src="search/search.js"></script>
+<link href="doxygen.css" rel="stylesheet" type="text/css" />
+</head>
+<body>
+<div id="top"><!-- do not remove this div, it is closed by doxygen! -->
+<div id="titlearea">
+<table cellspacing="0" cellpadding="0">
+ <tbody>
+ <tr id="projectrow">
+  <td id="projectlogo"><img alt="Logo" src="ZenithGrid.ico"/></td>
+  <td id="projectalign">
+   <div id="projectname">PreCess
+   </div>
+  </td>
+ </tr>
+ </tbody>
+</table>
+</div>
+<!-- end header part -->
+<!-- 制作者 Doxygen 1.14.0 -->
+<script type="text/javascript">
+var searchBox = new SearchBox("searchBox", "search/",'.html');
+</script>
+<script type="text/javascript">
+$(function() { codefold.init(); });
+</script>
+<script type="text/javascript" src="menudata.js"></script>
+<script type="text/javascript" src="menu.js"></script>
+<script type="text/javascript">
+$(function() {
+  initMenu('',true,false,'search.php','搜索',false);
+  $(function() { init_search(); });
+});
+</script>
+<div id="main-nav"></div>
+<!-- window showing the filter options -->
+<div id="MSearchSelectWindow"
+     onmouseover="return searchBox.OnSearchSelectShow()"
+     onmouseout="return searchBox.OnSearchSelectHide()"
+     onkeydown="return searchBox.OnSearchSelectKey(event)">
+</div>
+
+<!-- iframe showing the search results (closed by default) -->
+<div id="MSearchResultsWindow">
+<div id="MSearchResults">
+<div class="SRPage">
+<div id="SRIndex">
+<div id="SRResults"></div>
+<div class="SRStatus" id="Loading">载入中...</div>
+<div class="SRStatus" id="Searching">搜索中...</div>
+<div class="SRStatus" id="NoMatches">未找到</div>
+</div>
+</div>
+</div>
+</div>
+
+</div><!-- top -->
+<div id="doc-content">
+<div class="header">
+  <div class="summary">
+<a href="#signals">信号</a> &#124;
+<a href="#pub-methods">Public 成员函数</a> &#124;
+<a href="#pro-methods">Protected 成员函数</a> &#124;
+<a href="#pri-methods">Private 成员函数</a> &#124;
+<a href="#pri-attribs">Private 属性</a> &#124;
+<a href="classQStartupSplashWindow-members.html">所有成员列表</a>  </div>
+  <div class="headertitle"><div class="title">QStartupSplashWindow类 参考<span class="mlabels"><span class="mlabel final">final</span></span></div></div>
+</div><!--header-->
+<div class="contents">
+
+<p>独立绘制启动封面与活动动画，不在插件构造中重入事件循环  
+ <a href="#details">更多...</a></p>
+
+<p><code>#include &lt;<a class="el" href="QStartupSplashWindow_8h_source.html">QStartupSplashWindow.h</a>&gt;</code></p>
+<div class="dynheader">
+类 QStartupSplashWindow 继承关系图:</div>
+<div class="dyncontent">
+<div class="center"><img src="classQStartupSplashWindow__inherit__graph.png" border="0" usemap="#aQStartupSplashWindow_inherit__map" loading="lazy" alt="Inheritance graph"/></div>
+<map name="aQStartupSplashWindow_inherit__map" id="aQStartupSplashWindow_inherit__map">
+<area shape="rect" title="独立绘制启动封面与活动动画，不在插件构造中重入事件循环" alt="" coords="5,81,179,109"/>
+<area shape="rect" title=" " alt="" coords="50,5,134,33"/>
+<area shape="poly" title=" " alt="" coords="94,47,94,82,90,80,90,51"/>
+</map>
+<center><span class="legend">[<a href="graph_legend.html">图例</a>]</span></center></div>
+<div class="dynheader">
+QStartupSplashWindow 的协作图:</div>
+<div class="dyncontent">
+<div class="center"><img src="classQStartupSplashWindow__coll__graph.png" border="0" usemap="#aQStartupSplashWindow_coll__map" loading="lazy" alt="Collaboration graph"/></div>
+<map name="aQStartupSplashWindow_coll__map" id="aQStartupSplashWindow_coll__map">
+<area shape="rect" title="独立绘制启动封面与活动动画，不在插件构造中重入事件循环" alt="" coords="5,81,179,109"/>
+<area shape="rect" title=" " alt="" coords="50,5,134,33"/>
+<area shape="poly" title=" " alt="" coords="94,47,94,82,90,80,90,51"/>
+</map>
+<center><span class="legend">[<a href="graph_legend.html">图例</a>]</span></center></div>
+<table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 id="header-signals" class="groupheader"><a id="signals" name="signals"></a>
+信号</h2></td></tr>
+<tr class="memitem:a237ca5d93ff0071a7d5fb43eded6345b" id="r_a237ca5d93ff0071a7d5fb43eded6345b"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a237ca5d93ff0071a7d5fb43eded6345b">onFirstFrame</a> ()</td></tr>
+<tr class="memdesc:a237ca5d93ff0071a7d5fb43eded6345b"><td class="mdescLeft">&#160;</td><td class="mdescRight">启动页第一次绘制并提交后，允许排队开始主程序初始化  <br /></td></tr>
+<tr class="memitem:ad1005b132cdb9b391c9b6d2a4f04458d" id="r_ad1005b132cdb9b391c9b6d2a4f04458d"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ad1005b132cdb9b391c9b6d2a4f04458d">onCancelled</a> ()</td></tr>
+<tr class="memdesc:ad1005b132cdb9b391c9b6d2a4f04458d"><td class="mdescLeft">&#160;</td><td class="mdescRight">用户关闭启动窗口时取消本次启动  <br /></td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 id="header-pub-methods" class="groupheader"><a id="pub-methods" name="pub-methods"></a>
+Public 成员函数</h2></td></tr>
+<tr class="memitem:ab657a4744401403b5479d6fb070a24b7" id="r_ab657a4744401403b5479d6fb070a24b7"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ab657a4744401403b5479d6fb070a24b7">QStartupSplashWindow</a> (const QString &amp;version, const QString &amp;background_path=QStringLiteral(&quot;:/images/splash/ZenithGrid-splash-background@2x.png&quot;))</td></tr>
+<tr class="memdesc:ab657a4744401403b5479d6fb070a24b7"><td class="mdescLeft">&#160;</td><td class="mdescRight">背景不可用时沿用同一窗口的纯色绘制；路径可指定替代资源。  <br /></td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 id="header-pro-methods" class="groupheader"><a id="pro-methods" name="pro-methods"></a>
+Protected 成员函数</h2></td></tr>
+<tr class="memitem:aa719b903f7f9bd81a9a8514f8f8cefff" id="r_aa719b903f7f9bd81a9a8514f8f8cefff"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#aa719b903f7f9bd81a9a8514f8f8cefff">event</a> (QEvent *event) override</td></tr>
+<tr class="memitem:a558cf61c1fa8c806fbecd387ebb85b39" id="r_a558cf61c1fa8c806fbecd387ebb85b39"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a558cf61c1fa8c806fbecd387ebb85b39">exposeEvent</a> (QExposeEvent *<a class="el" href="#aa719b903f7f9bd81a9a8514f8f8cefff">event</a>) override</td></tr>
+<tr class="memitem:a2560d0ee370212241c95205179ebbf31" id="r_a2560d0ee370212241c95205179ebbf31"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a2560d0ee370212241c95205179ebbf31">resizeEvent</a> (QResizeEvent *<a class="el" href="#aa719b903f7f9bd81a9a8514f8f8cefff">event</a>) override</td></tr>
+<tr class="memitem:a7e7e17fec54be59c5095370f2095e6b3" id="r_a7e7e17fec54be59c5095370f2095e6b3"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a7e7e17fec54be59c5095370f2095e6b3">closeEvent</a> (QCloseEvent *<a class="el" href="#aa719b903f7f9bd81a9a8514f8f8cefff">event</a>) override</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 id="header-pri-methods" class="groupheader"><a id="pri-methods" name="pri-methods"></a>
+Private 成员函数</h2></td></tr>
+<tr class="memitem:a6186462636379cc785a80b628ccf64df" id="r_a6186462636379cc785a80b628ccf64df"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a6186462636379cc785a80b628ccf64df">renderNow</a> ()</td></tr>
+<tr class="memitem:a36749474cd91fcbfb8ae84314ee5b661" id="r_a36749474cd91fcbfb8ae84314ee5b661"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a36749474cd91fcbfb8ae84314ee5b661">paintContents</a> (QPainter &amp;painter) const</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 id="header-pri-attribs" class="groupheader"><a id="pri-attribs" name="pri-attribs"></a>
+Private 属性</h2></td></tr>
+<tr class="memitem:af02362cf5146dcc9f749ab6a4c336eb0" id="r_af02362cf5146dcc9f749ab6a4c336eb0"><td class="memItemLeft" align="right" valign="top">QBackingStore&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#af02362cf5146dcc9f749ab6a4c336eb0">backing_store_</a></td></tr>
+<tr class="memitem:aba540ecd788845ddf91afe2497ca92f9" id="r_aba540ecd788845ddf91afe2497ca92f9"><td class="memItemLeft" align="right" valign="top">QImage&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#aba540ecd788845ddf91afe2497ca92f9">background_</a></td></tr>
+<tr class="memitem:a71749f15cee9b8aa87ea027f07e7e49a" id="r_a71749f15cee9b8aa87ea027f07e7e49a"><td class="memItemLeft" align="right" valign="top">QTimer&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a71749f15cee9b8aa87ea027f07e7e49a">activity_timer_</a></td></tr>
+<tr class="memitem:acc4026ae5f4cb88002c391c31a09a385" id="r_acc4026ae5f4cb88002c391c31a09a385"><td class="memItemLeft" align="right" valign="top">QString&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#acc4026ae5f4cb88002c391c31a09a385">version_</a></td></tr>
+<tr class="memitem:a512ab48cda73c7d2cc72724d16d8a7a6" id="r_a512ab48cda73c7d2cc72724d16d8a7a6"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a512ab48cda73c7d2cc72724d16d8a7a6">activity_phase_</a></td></tr>
+<tr class="memitem:afa9b30dcb3028a61c29a29fbe1befd44" id="r_afa9b30dcb3028a61c29a29fbe1befd44"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#afa9b30dcb3028a61c29a29fbe1befd44">first_frame_</a> = false</td></tr>
+</table>
+<a name="details" id="details"></a><h2 id="header-details" class="groupheader">详细描述</h2>
+<div class="textblock"><p>独立绘制启动封面与活动动画，不在插件构造中重入事件循环 </p>
+</div><a name="doc-constructors" id="doc-constructors"></a><h2 id="header-doc-constructors" class="groupheader">构造及析构函数说明</h2>
+<a id="ab657a4744401403b5479d6fb070a24b7" name="ab657a4744401403b5479d6fb070a24b7"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ab657a4744401403b5479d6fb070a24b7">&#9670;&#160;</a></span>QStartupSplashWindow()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">QStartupSplashWindow::QStartupSplashWindow </td>
+          <td>(</td>
+          <td class="paramtype">const QString &amp;</td>          <td class="paramname"><span class="paramname"><em>version</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const QString &amp;</td>          <td class="paramname"><span class="paramname"><em>background_path</em></span><span class="paramdefsep"> = </span><span class="paramdefval">QStringLiteral(&quot;:/images/splash/ZenithGrid-splash-background@2x.png&quot;)</span>&#160;)</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel explicit">explicit</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>背景不可用时沿用同一窗口的纯色绘制；路径可指定替代资源。 </p>
+
+</div>
+</div>
+<a name="doc-func-members" id="doc-func-members"></a><h2 id="header-doc-func-members" class="groupheader">成员函数说明</h2>
+<a id="a7e7e17fec54be59c5095370f2095e6b3" name="a7e7e17fec54be59c5095370f2095e6b3"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a7e7e17fec54be59c5095370f2095e6b3">&#9670;&#160;</a></span>closeEvent()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void QStartupSplashWindow::closeEvent </td>
+          <td>(</td>
+          <td class="paramtype">QCloseEvent *</td>          <td class="paramname"><span class="paramname"><em>event</em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel override">override</span><span class="mlabel protected">protected</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="aa719b903f7f9bd81a9a8514f8f8cefff" name="aa719b903f7f9bd81a9a8514f8f8cefff"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aa719b903f7f9bd81a9a8514f8f8cefff">&#9670;&#160;</a></span>event()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool QStartupSplashWindow::event </td>
+          <td>(</td>
+          <td class="paramtype">QEvent *</td>          <td class="paramname"><span class="paramname"><em>event</em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel override">override</span><span class="mlabel protected">protected</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a558cf61c1fa8c806fbecd387ebb85b39" name="a558cf61c1fa8c806fbecd387ebb85b39"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a558cf61c1fa8c806fbecd387ebb85b39">&#9670;&#160;</a></span>exposeEvent()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void QStartupSplashWindow::exposeEvent </td>
+          <td>(</td>
+          <td class="paramtype">QExposeEvent *</td>          <td class="paramname"><span class="paramname"><em>event</em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel override">override</span><span class="mlabel protected">protected</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="ad1005b132cdb9b391c9b6d2a4f04458d" name="ad1005b132cdb9b391c9b6d2a4f04458d"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ad1005b132cdb9b391c9b6d2a4f04458d">&#9670;&#160;</a></span>onCancelled</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void QStartupSplashWindow::onCancelled </td>
+          <td>(</td>
+          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel signal">signal</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>用户关闭启动窗口时取消本次启动 </p>
+
+</div>
+</div>
+<a id="a237ca5d93ff0071a7d5fb43eded6345b" name="a237ca5d93ff0071a7d5fb43eded6345b"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a237ca5d93ff0071a7d5fb43eded6345b">&#9670;&#160;</a></span>onFirstFrame</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void QStartupSplashWindow::onFirstFrame </td>
+          <td>(</td>
+          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel signal">signal</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>启动页第一次绘制并提交后，允许排队开始主程序初始化 </p>
+
+</div>
+</div>
+<a id="a36749474cd91fcbfb8ae84314ee5b661" name="a36749474cd91fcbfb8ae84314ee5b661"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a36749474cd91fcbfb8ae84314ee5b661">&#9670;&#160;</a></span>paintContents()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void QStartupSplashWindow::paintContents </td>
+          <td>(</td>
+          <td class="paramtype">QPainter &amp;</td>          <td class="paramname"><span class="paramname"><em>painter</em></span></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel private">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a6186462636379cc785a80b628ccf64df" name="a6186462636379cc785a80b628ccf64df"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a6186462636379cc785a80b628ccf64df">&#9670;&#160;</a></span>renderNow()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void QStartupSplashWindow::renderNow </td>
+          <td>(</td>
+          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel private">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a2560d0ee370212241c95205179ebbf31" name="a2560d0ee370212241c95205179ebbf31"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a2560d0ee370212241c95205179ebbf31">&#9670;&#160;</a></span>resizeEvent()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void QStartupSplashWindow::resizeEvent </td>
+          <td>(</td>
+          <td class="paramtype">QResizeEvent *</td>          <td class="paramname"><span class="paramname"><em>event</em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel override">override</span><span class="mlabel protected">protected</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a name="doc-variable-members" id="doc-variable-members"></a><h2 id="header-doc-variable-members" class="groupheader">类成员变量说明</h2>
+<a id="a512ab48cda73c7d2cc72724d16d8a7a6" name="a512ab48cda73c7d2cc72724d16d8a7a6"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a512ab48cda73c7d2cc72724d16d8a7a6">&#9670;&#160;</a></span>activity_phase_</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">int QStartupSplashWindow::activity_phase_</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel private">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a71749f15cee9b8aa87ea027f07e7e49a" name="a71749f15cee9b8aa87ea027f07e7e49a"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a71749f15cee9b8aa87ea027f07e7e49a">&#9670;&#160;</a></span>activity_timer_</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">QTimer QStartupSplashWindow::activity_timer_</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel private">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="aba540ecd788845ddf91afe2497ca92f9" name="aba540ecd788845ddf91afe2497ca92f9"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aba540ecd788845ddf91afe2497ca92f9">&#9670;&#160;</a></span>background_</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">QImage QStartupSplashWindow::background_</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel private">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="af02362cf5146dcc9f749ab6a4c336eb0" name="af02362cf5146dcc9f749ab6a4c336eb0"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#af02362cf5146dcc9f749ab6a4c336eb0">&#9670;&#160;</a></span>backing_store_</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">QBackingStore QStartupSplashWindow::backing_store_</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel private">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="afa9b30dcb3028a61c29a29fbe1befd44" name="afa9b30dcb3028a61c29a29fbe1befd44"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#afa9b30dcb3028a61c29a29fbe1befd44">&#9670;&#160;</a></span>first_frame_</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool QStartupSplashWindow::first_frame_ = false</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel private">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="acc4026ae5f4cb88002c391c31a09a385" name="acc4026ae5f4cb88002c391c31a09a385"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#acc4026ae5f4cb88002c391c31a09a385">&#9670;&#160;</a></span>version_</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">QString QStartupSplashWindow::version_</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel private">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<hr/>该类的文档由以下文件生成:<ul>
+<li>app/<a class="el" href="QStartupSplashWindow_8h_source.html">QStartupSplashWindow.h</a></li>
+<li>app/<a class="el" href="QStartupSplashWindow_8cpp.html">QStartupSplashWindow.cpp</a></li>
+</ul>
+</div><!-- contents -->
+<!-- start footer part -->
+<hr class="footer"/><address class="footer"><small>
+制作者&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.14.0
+</small></address>
+</div><!-- doc-content -->
+</body>
+</html>

@@ -1,9 +1,9 @@
 <map id="app/QLogManager.h" name="app/QLogManager.h">
-<area shape="rect" id="Node000001" title=" " alt="" coords="174,5,324,33"/>
-<area shape="rect" id="Node000002" href="$QLogManager_8cpp.html" title=" " alt="" coords="5,81,171,109"/>
-<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="210,40,118,83,116,78,204,40"/>
-<area shape="rect" id="Node000003" href="$main_8cpp.html" title=" " alt="" coords="195,81,304,109"/>
-<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="251,47,252,82,247,79,247,51"/>
-<area shape="rect" id="Node000004" href="$TestQLogManager_8cpp.html" title="QLogManager Qt/QML 消息桥接测试" alt="" coords="328,81,549,109"/>
-<area shape="poly" id="edge3_Node000001_Node000004" title=" " alt="" coords="298,36,408,80,402,81,297,42"/>
+<area shape="rect" id="Node000001" title=" " alt="" coords="243,5,393,33"/>
+<area shape="rect" id="Node000002" href="$QApplicationStartup_8cpp.html" title="管理主界面加载、启动顺序和窗口交接。" alt="" coords="5,81,212,109"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="269,39,147,83,145,78,264,38"/>
+<area shape="rect" id="Node000003" href="$QLogManager_8cpp.html" title=" " alt="" coords="235,81,400,109"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="320,47,320,82,316,79,316,51"/>
+<area shape="rect" id="Node000004" href="$TestQLogManager_8cpp.html" title="QLogManager Qt/QML 消息桥接测试" alt="" coords="425,81,645,109"/>
+<area shape="poly" id="edge3_Node000001_Node000004" title=" " alt="" coords="371,36,499,80,494,81,370,41"/>
 </map>
