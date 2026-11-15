@@ -50,6 +50,7 @@ struct QRenderWindow : QQuickVTKItem { // 结构体继承QQuickVTKItem
     Q_PROPERTY(int geometryStyle READ getGeometryStyle WRITE setGeometryStyle NOTIFY geometryStyleChanged)
     Q_PROPERTY(int surfacePrecision READ getSurfacePrecision WRITE setSurfacePrecision NOTIFY surfacePrecisionChanged)
     Q_PROPERTY(int meshStyle READ getMeshStyle WRITE setMeshStyle NOTIFY meshStyleChanged)
+    Q_PROPERTY(bool darkBackground READ isDarkBackground WRITE setDarkBackground NOTIFY darkBackgroundChanged)
     QML_ELEMENT
 public:
     QRenderWindow();
@@ -142,6 +143,10 @@ public:
 
     Q_INVOKABLE void setMeshStyle(int style);
     int getMeshStyle();
+
+    //! @brief 设置视口背景及比例尺配色，切换时保留场景和相机。
+    void setDarkBackground(bool dark);
+    bool isDarkBackground() const { return dark_background_; }
 
     /**
      * @brief 启用或停用一种网格拓扑诊断类别
@@ -249,6 +254,7 @@ signals:
     void geometryStyleChanged();
     void surfacePrecisionChanged();
     void meshStyleChanged();
+    void darkBackgroundChanged();
     void clicked();
     void rightClicked();
     /** @brief 原始属性数据变化，通知界面重新查询元信息。 */
@@ -273,6 +279,7 @@ private:
     //! @brief GUI 线程保存 DPR，并将叠加层像素尺寸更新排入渲染队列。
     void updateOverlayScale(qreal ratio);
     qreal overlay_device_pixel_ratio_ { 1.0 };
+    bool dark_background_ { true }; //> 场景图重建时恢复 GUI 请求的配色
 
     /** @brief GUI 根据已发布选择执行面显隐，结果经渲染队列单向安装。 */
     enum class FaceOperation { Hide,

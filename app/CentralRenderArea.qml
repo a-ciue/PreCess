@@ -718,6 +718,7 @@ Page {
             anchors.margins: 1
             query: QModelManager.query
             selectionRevision: App.selection.selectionRevision
+            darkBackground: Theme.dark
 
             onSelectedChanged: {
                 // 非参数选择期间的视口刷新、清空只影响高亮，不回写操作参数。

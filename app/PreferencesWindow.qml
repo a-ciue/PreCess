@@ -328,7 +328,7 @@ Item {
                                 anchors.verticalCenter: parent.verticalCenter
                                 text: modelData
                                 elide: Text.ElideRight
-                                color: pluginListView.currentIndex === index ? Theme.primary : Theme.textPrimary
+                                color: !Theme.dark && pluginListView.currentIndex === index ? Theme.primary : Theme.textPrimary
                                 font.pixelSize: Theme.fontSizeBody
                                 font.weight: pluginListView.currentIndex === index ? Font.DemiBold : Font.Normal
                             }

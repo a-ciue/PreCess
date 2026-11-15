@@ -20,9 +20,14 @@ MeshActorManager::MeshActorManager()
     scalar_bar_->SetUnconstrainedFontSize(true); // 使用下面指定的固定字体大小。
     scalar_bar_->GetLabelTextProperty()->SetFontSize(13); // 刻度字体大小。
     scalar_bar_->GetTitleTextProperty()->SetFontSize(15); // 属性名标题字体大小。
-    scalar_bar_->GetLabelTextProperty()->SetColor(0.0, 0.0, 0.0); // 刻度文字使用黑色。
-    scalar_bar_->GetTitleTextProperty()->SetColor(0.0, 0.0, 0.0); // 属性名标题使用黑色。
+    setScalarBarTextColor(0.0, 0.0, 0.0);
     scalar_bar_->SetVisibility(false); // 默认隐藏，仅在标量渲染时显示。
+}
+
+void MeshActorManager::setScalarBarTextColor(double red, double green, double blue)
+{
+    scalar_bar_->GetLabelTextProperty()->SetColor(red, green, blue);
+    scalar_bar_->GetTitleTextProperty()->SetColor(red, green, blue);
 }
 
 std::shared_ptr<MeshActor> MeshActorManager::getComponentActor(Index component_id) const

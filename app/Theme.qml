@@ -71,13 +71,17 @@ QtObject {
             wallpaperReloadToken += 1
     }
 
-    // ---- 交互色（浅色保持原蓝，深色使用与启动页一致的青绿色）----
-    readonly property color primary: dark ? "#49C2C6" : "#1976D2"
-    readonly property color primaryHover: dark ? "#72D4D6" : "#1565C0"
-    readonly property color primaryPressed: dark ? "#35A9AD" : "#0F5AAD"
+    // ---- 交互色（浅色使用深青绿，深色使用与启动页一致的亮青绿）----
+    readonly property color primary: dark ? "#49C2C6" : "#276761"
+    readonly property color primaryHover: dark ? "#72D4D6" : "#205B55"
+    readonly property color primaryPressed: dark ? "#35A9AD" : "#194D48"
     //! 选中行 / 选中态着色
-    readonly property color primaryTint: dark ? "#28545B" : "#E3F0FB"
+    readonly property color primaryTint: dark ? "#28545B" : "#E1EFEB"
     readonly property color textOnPrimary: dark ? "#102B33" : "#FFFFFF"
+    // 大面积按钮填充比文字强调色更浅，悬停和按下仍逐级加深。
+    readonly property color primaryButtonFill: dark ? primary : "#3B7972"
+    readonly property color primaryButtonHoverFill: dark ? primaryHover : "#316E68"
+    readonly property color primaryButtonPressedFill: dark ? primaryPressed : primary
 
     // ---- 反馈色 ----
     readonly property color danger: dark ? "#F14C4C" : "#D32F2F"
@@ -120,6 +124,7 @@ QtObject {
     readonly property color textPrimary: dark ? "#DDE8E9" : "#2B2F36"
     readonly property color textSecondary: dark ? "#B1C1C5" : "#6B7280"
     readonly property color textDisabled: dark ? "#789397" : "#9CA3AF"
+    readonly property color textLink: dark ? primary : "#1976D2"
 
     // ---- 滚动条 ----
     readonly property color scrollBarIdle: dark ? "#35616A" : "#D5D9DF"
@@ -161,7 +166,7 @@ QtObject {
             light: surface,
             dark: borderStrong,
             shadow: scrollBarHover,
-            link: primary,
+            link: textLink,
             toolTipBase: menuSurface,
             toolTipText: textPrimary
         })
@@ -182,7 +187,7 @@ QtObject {
             light: menuSurface,
             dark: borderStrong,
             shadow: scrollBarHover,
-            link: primary,
+            link: textLink,
             toolTipBase: menuSurface,
             toolTipText: textPrimary
         })

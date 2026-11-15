@@ -112,12 +112,28 @@ TEST_CASE("Theme.qml exposes complete role maps and downgrades failed wallpaper"
     theme->setProperty("wallpaperReady", true);
     REQUIRE(QMetaObject::invokeMethod(theme, "setWallpaper", Q_ARG(QVariant, QString())));
 
-    // 浅色主题的白色界面保持不变；切换主题时普通控件与停靠外壳同步更新。
+    // 浅色主题在普通表面和选中行上保留青绿强调文字的可读性。
     REQUIRE(QMetaObject::invokeMethod(theme, "setMode", Q_ARG(QVariant, 0)));
     const QVariantMap light_control = theme->property("controlPalette").value<QVariantMap>();
+    const QColor light_primary = theme->property("primary").value<QColor>();
     REQUIRE(colorOf(light_control, "base") == QColor("#FFFFFF"));
     REQUIRE(colorOf(light_control, "window") == QColor("#F3F4F6"));
-    REQUIRE(colorOf(light_control, "highlight") == QColor("#1976D2"));
+    REQUIRE(light_primary == QColor("#276761"));
+    REQUIRE(colorOf(light_control, "highlight") == light_primary);
+    REQUIRE(colorOf(light_control, "link") == QColor("#1976D2"));
+    REQUIRE(contrastRatio(light_primary, colorOf(light_control, "window")) >= 4.5);
+    REQUIRE(contrastRatio(light_primary, theme->property("primaryTint").value<QColor>()) >= 4.5);
+    REQUIRE(contrastRatio(colorOf(light_control, "highlightedText"), light_primary) >= 4.5);
+    const QColor button_text = theme->property("textOnPrimary").value<QColor>();
+    const QColor button_fill = theme->property("primaryButtonFill").value<QColor>();
+    const QColor hover_fill = theme->property("primaryButtonHoverFill").value<QColor>();
+    const QColor pressed_fill = theme->property("primaryButtonPressedFill").value<QColor>();
+    const double button_contrast = contrastRatio(button_text, button_fill);
+    const double hover_contrast = contrastRatio(button_text, hover_fill);
+    const double pressed_contrast = contrastRatio(button_text, pressed_fill);
+    CHECK(button_contrast >= 4.5);
+    CHECK(hover_contrast > button_contrast);
+    CHECK(pressed_contrast > hover_contrast);
 
     REQUIRE(QMetaObject::invokeMethod(theme, "setMode", Q_ARG(QVariant, 1)));
     REQUIRE(theme->property("dark").toBool());
@@ -132,6 +148,9 @@ TEST_CASE("Theme.qml exposes complete role maps and downgrades failed wallpaper"
     REQUIRE(colorOf(dark_dock, "windowBackground") == background);
     REQUIRE(colorOf(dark_dock, "surface") == surface);
     REQUIRE(contrastRatio(colorOf(dark_control, "text"), surface) >= 4.5);
+    REQUIRE(contrastRatio(theme->property("textPrimary").value<QColor>(),
+                theme->property("primaryTint").value<QColor>())
+        >= 4.5);
     REQUIRE(contrastRatio(theme->property("textSecondary").value<QColor>(),
                 colorOf(dark_dock, "panelHeaderSurface"))
         >= 4.5);
