@@ -422,7 +422,7 @@ ApplicationWindow {
                     imported = true
                 }
             }
-            // 导入通知先排队加载 Actor，再重置相机；视口创建时的重置早于启动导入。
+            // 导入通知先排队加载 Actor，再重置相机。
             if (imported && App.registry.renderWindow)
                 App.registry.renderWindow.resetCamera()
         })
