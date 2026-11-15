@@ -472,7 +472,7 @@ void QRenderWindow::deleteComponent(Index component_id)
         scalar_bar_component_id_ = -1;
     mesh_pipeline_data_.erase(component_id);
     mesh_snapshots_.erase(component_id);
-    emit scalarRangeChanged();
+    emit scalarRangeChanged(component_id);
     geometry_visibility_.erase(component_id);
     dispatch_async([component_id, revision = selection_revision_, this](vtkRenderWindow*, vtkUserData user_data) {
         auto* vtk = Data::SafeDownCast(user_data);
@@ -555,7 +555,7 @@ void QRenderWindow::loadMeshData(Index component_id, const MeshDataVtk& data)
     // 管线自行恢复仍适用的配置，只发布最终结果。
     publishMeshUpdate(component_id, pipeline->createSnapshot());
     publishComponentVisibility(component_id);
-    emit scalarRangeChanged();
+    emit scalarRangeChanged(component_id);
 }
 
 void QRenderWindow::hideSelectedFaces() { applyFaceOperation(FaceOperation::Hide); }

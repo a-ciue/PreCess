@@ -18,8 +18,9 @@ ColumnLayout {
             rangeAvailable: false
         })
     property bool displayMode: false
-    // 分布开关只影响本编辑器显示，不进入范围参数和渲染配置。
-    property alias histogramEnabled: histogramToggle.checked
+    // 折叠和高度缩放只影响本编辑器显示，不进入范围参数和渲染配置。
+    property bool expanded: true
+    property alias histogramLogarithmic: histogramScaleButton.checked
     property var histogramCounts: []
     // 草稿与有效待发送请求各自携带目标身份，属性切换不会把旧值写入新属性。
     property var draft: null
@@ -46,6 +47,37 @@ ColumnLayout {
         let text = String(value);
         let point = text.indexOf(".");
         return point < 0 ? text : text.slice(0, point + 4).replace(/\.?0+$/, "");
+    }
+
+    // 悬停提示复用原始分箱计数，普通箱左闭右开，最后一箱包含上限。
+    function histogramBinText(index) {
+        let count = histogramCounts.length;
+        if (!metadata.valid || index < 0 || index >= count)
+            return "";
+        let minimum = metadata.minimum;
+        let maximum = metadata.maximum;
+        if (minimum === maximum && index !== Math.floor(count / 2))
+            return "";
+        let span = maximum - minimum;
+        let from = index === 0 ? minimum : Number.isFinite(span) ? minimum + span * (index / count) : minimum * (1 - index / count) + maximum * (index / count);
+        let to = index === count - 1 ? maximum : Number.isFinite(span) ? minimum + span * ((index + 1) / count) : minimum * (1 - (index + 1) / count) + maximum * ((index + 1) / count);
+        // 边界加回大基值后可能舍入为同一数值，改用偏移表达，保留真实箱宽。
+        if (minimum !== maximum && from === to)
+            return qsTr("相对 %1 的偏移：[%2, %3%4\n数量：%5").arg(String(minimum)).arg(String(span * (index / count))).arg(String(span * ((index + 1) / count))).arg(index === count - 1 ? "]" : ")").arg(histogramCounts[index]);
+        let lowerText = formatRangeValue(from);
+        let upperText = formatRangeValue(to);
+        // 分箱很窄时避免截断后两端看起来相同，输入框的显示规则仍保持原样。
+        if (from !== to && lowerText === upperText) {
+            lowerText = String(from);
+            upperText = String(to);
+        }
+        return qsTr("区间：[%1, %2%3\n数量：%4").arg(lowerText).arg(upperText).arg(index === count - 1 || minimum === maximum ? "]" : ")").arg(histogramCounts[index]);
+    }
+
+    // 将子区间归一化到滑条跨度；仅跨度溢出时减半，避免损失窄区间精度。
+    function normalizeSliderSpan(lower, upper) {
+        let span = sliderMaximum - sliderMinimum;
+        return Number.isFinite(span) ? (upper - lower) / span : (upper / 2 - lower / 2) / (sliderMaximum / 2 - sliderMinimum / 2);
     }
 
     // 空值保留策略默认值，未完成的文本不会被转换成零。
@@ -315,18 +347,67 @@ ColumnLayout {
         }
     }
 
-    CheckBox {
-        id: histogramToggle
-        objectName: "scalarHistogramToggle"
-        text: qsTr("显示分布直方图")
-        enabled: !!root.metadata.valid
-        focusPolicy: Qt.TabFocus
+    RowLayout {
+        Layout.fillWidth: true
+        spacing: Theme.spacingSm
+
+        ToolButton {
+            id: rangeSectionButton
+            objectName: "scalarRangeToggle"
+            text: (root.expanded ? "▾ " : "▸ ") + qsTr("分布与范围")
+            font.pixelSize: Theme.fontSizeBody
+            font.weight: Font.Medium
+            leftPadding: 0
+            rightPadding: Theme.spacingXs
+            focusPolicy: Qt.TabFocus
+            Accessible.name: root.expanded ? qsTr("收起分布与范围") : qsTr("展开分布与范围")
+            Accessible.checkable: true
+            Accessible.checked: root.expanded
+            onClicked: {
+                // 先完成已有草稿，非法输入仍留在展开区；收起本身不修改范围参数。
+                if (root.expanded && !root.finishEditing())
+                    return;
+                root.expanded = !root.expanded;
+                forceActiveFocus();
+            }
+        }
+        Label {
+            objectName: "scalarRangeSummary"
+            Layout.fillWidth: true
+            Layout.minimumWidth: 0
+            visible: !root.expanded
+            color: Theme.textSecondary
+            font.pixelSize: Theme.fontSizeCaption
+            horizontalAlignment: Text.AlignRight
+            elide: Text.ElideRight
+            text: !root.metadata.valid ? qsTr("暂无有效范围") : root.parameters.filtered && root.metadata.rangeAvailable ? qsTr("可见单元 %1–%2").arg(root.formatRangeValue(root.parameters.displayLower)).arg(root.formatRangeValue(root.parameters.displayUpper)) : qsTr("颜色映射 %1–%2").arg(root.formatRangeValue(root.parameters.mappingLower)).arg(root.formatRangeValue(root.parameters.mappingUpper))
+            ToolTip.visible: !root.expanded && (rangeSectionButton.hovered || rangeSectionButton.visualFocus)
+            ToolTip.text: text
+            ToolTip.delay: 400
+        }
+        ToolButton {
+            id: histogramScaleButton
+            objectName: "scalarHistogramScale"
+            text: checked ? qsTr("对数高度") : qsTr("线性高度")
+            checkable: true
+            checked: false
+            visible: root.expanded
+            enabled: !!root.metadata.valid
+            focusPolicy: Qt.TabFocus
+            ToolTip.visible: hovered || visualFocus
+            ToolTip.text: checked ? qsTr("当前为对数高度，点击切换为线性高度；数量不变") : qsTr("当前为线性高度，点击切换为对数高度；数量不变")
+            ToolTip.delay: 400
+        }
+        Item {
+            Layout.fillWidth: true
+            visible: root.expanded
+        }
     }
 
     RowLayout {
         objectName: "scalarOriginalRange"
         Layout.fillWidth: true
-        visible: !!root.metadata.valid
+        visible: root.expanded && !!root.metadata.valid
         spacing: Theme.spacingSm
 
         Label {
@@ -353,32 +434,49 @@ ColumnLayout {
         objectName: "scalarHistogramPlot"
         Layout.fillWidth: true
         Layout.preferredHeight: 48
-        visible: root.histogramEnabled && root.metadata.valid && root.histogramCounts.length > 0
+        visible: root.expanded && root.metadata.valid && root.histogramCounts.length > 0
         readonly property real peak: Math.max(1, ...root.histogramCounts)
+        readonly property real heightPeak: root.histogramLogarithmic ? Math.log1p(peak) : peak
         readonly property real handleWidth: Math.max(rangeSlider.first.handle.width, rangeSlider.second.handle.width)
         readonly property real trackWidth: Math.max(0, rangeSlider.availableWidth - handleWidth)
         // 手动范围可超出原始值域，柱子仍按原始值域定位到同一滑条坐标。
-        readonly property real dataMinimum: root.metadata.minimum === root.metadata.maximum ? root.sliderMinimum : root.metadata.minimum
-        readonly property real dataMaximum: root.metadata.minimum === root.metadata.maximum ? root.sliderMaximum : root.metadata.maximum
+        readonly property bool constant: root.metadata.minimum === root.metadata.maximum
+        readonly property real startPosition: root.metadata.valid ? root.normalizeSliderSpan(root.sliderMinimum, root.metadata.minimum) : 0
+        readonly property real spanFraction: root.metadata.valid ? root.normalizeSliderSpan(root.metadata.minimum, root.metadata.maximum) : 0
         Accessible.role: Accessible.Chart
         Accessible.name: qsTr("原始标量分布，共 %1 个有效值").arg(root.histogramCounts.reduce((sum, count) => sum + count, 0))
 
         Item {
             id: histogramBars
-            x: rangeSlider.leftPadding + histogramPlot.handleWidth / 2 + (histogramPlot.dataMinimum - root.sliderMinimum) / (root.sliderMaximum - root.sliderMinimum) * histogramPlot.trackWidth
-            width: (histogramPlot.dataMaximum - histogramPlot.dataMinimum) / (root.sliderMaximum - root.sliderMinimum) * histogramPlot.trackWidth
+            // 常量没有数值跨度，以固定可见宽度居中于真实值，不随编辑范围移到中间。
+            x: rangeSlider.leftPadding + histogramPlot.handleWidth / 2 + histogramPlot.startPosition * histogramPlot.trackWidth - (histogramPlot.constant ? width / 2 : 0)
+            width: histogramPlot.constant ? Math.min(8, histogramPlot.trackWidth) : histogramPlot.spanFraction * histogramPlot.trackWidth
             height: parent.height
             readonly property real binWidth: root.histogramCounts.length ? width / root.histogramCounts.length : 0
+            readonly property int hoveredBin: histogramHover.hovered && binWidth > 0 ? histogramPlot.constant ? Math.floor(root.histogramCounts.length / 2) : Math.min(root.histogramCounts.length - 1, Math.max(0, Math.floor(histogramHover.point.position.x / binWidth))) : -1
+            readonly property string hoverText: root.histogramBinText(hoveredBin)
+            ToolTip.visible: histogramHover.hovered && hoverText.length > 0
+            ToolTip.text: hoverText
+            ToolTip.delay: 150
+
+            HoverHandler {
+                id: histogramHover
+                objectName: "scalarHistogramHover"
+                enabled: histogramPlot.visible
+                blocking: false
+            }
+
             Repeater {
                 model: root.histogramCounts
                 Rectangle {
                     required property int index
                     required property real modelData
-                    x: index * histogramBars.binWidth
+                    x: histogramPlot.constant ? 0 : index * histogramBars.binWidth
                     y: histogramBars.height - height
                     // 窄箱缩小间距，避免手工扩大滑条范围后柱宽全部归零。
-                    width: Math.max(0, histogramBars.binWidth - Math.min(1, histogramBars.binWidth / 4))
-                    height: modelData / histogramPlot.peak * histogramBars.height
+                    width: histogramPlot.constant ? histogramBars.width : Math.max(0, histogramBars.binWidth - Math.min(1, histogramBars.binWidth / 4))
+                    // 对数高度突出稀少区间，仍保留 2px 下限；缩放不改写真实计数。
+                    height: modelData > 0 ? Math.min(histogramBars.height, Math.max(2, (root.histogramLogarithmic ? Math.log1p(modelData) : modelData) / histogramPlot.heightPeak * histogramBars.height)) : 0
                     color: Theme.textSecondary
                 }
             }
@@ -388,6 +486,7 @@ ColumnLayout {
     RangeSlider {
         id: rangeSlider
         objectName: "scalarRangeSlider"
+        visible: root.expanded
         Layout.fillWidth: true
         Layout.minimumWidth: 0
         enabled: !!root.metadata.valid
@@ -454,6 +553,7 @@ ColumnLayout {
 
     RowLayout {
         Layout.fillWidth: true
+        visible: root.expanded
         spacing: Theme.spacingSm
 
         TextField {
@@ -487,6 +587,7 @@ ColumnLayout {
     GridLayout {
         Layout.fillWidth: true
         Layout.minimumWidth: 0
+        visible: root.expanded
         columns: width >= rangeModeGroup.implicitWidth + rangeResetButton.implicitWidth + columnSpacing ? 2 : 1
         columnSpacing: Theme.spacingSm
         rowSpacing: Theme.spacingXs
@@ -599,7 +700,7 @@ ColumnLayout {
 
     Label {
         Layout.fillWidth: true
-        visible: root.rangeError.length > 0 || !root.metadata.valid
+        visible: root.expanded && (root.rangeError.length > 0 || !root.metadata.valid)
         wrapMode: Text.Wrap
         color: Theme.textSecondary
         text: root.rangeError || qsTr("请选择有效的标量属性")

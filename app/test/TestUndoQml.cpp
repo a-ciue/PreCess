@@ -31,6 +31,8 @@
 #include <QScopeGuard>
 #include <QTemporaryDir>
 #include <catch2/catch_test_macros.hpp>
+#include <cmath>
+#include <limits>
 #include <map>
 #include <utility>
 
@@ -141,7 +143,7 @@ TEST_CASE("Actual scalar editor completes range actions without intermediate req
     f.engine.globalObject().setProperty("ranges", f.engine.newQObject(ranges.get()));
     f.engine.globalObject().setProperty("panel", f.engine.newQObject(panel.get()));
     auto setup = f.engine.evaluate(R"JS(
-        var requests = [], cancellations = [], histogramRequests = 0, histogramValues = [1, 2, 1];
+        var requests = [], cancellations = [], histogramRequests = 0, histogramValues = Array(32).fill(1);
         ranges.query = {getComponentAttriInfo: function() {return [{name:'value', attrType:2, componentCount:1}, {name:'vector', attrType:2, componentCount:3}];}};
         ranges.renderWindow = {
             scalarRangeInfo: function(component) {return component === 8 ? [10, 20] : [0.25, 0.751234567];},
@@ -188,16 +190,134 @@ TEST_CASE("Actual scalar editor completes range actions without intermediate req
         REQUIRE_FALSE(value.isError());
         CHECK(value.toBool());
     };
+    SECTION("folding preserves active filtering and height mode through source refresh")
+    {
+        auto* toggle = panel->findChild<QObject*>("scalarRangeToggle");
+        auto* scale = panel->findChild<QObject*>("scalarHistogramScale");
+        auto* summary = panel->findChild<QObject*>("scalarRangeSummary");
+        REQUIRE(toggle);
+        REQUIRE(scale);
+        REQUIRE(summary);
+        CHECK(editor->property("expanded").toBool());
+        CHECK(toggle->property("text").toString().startsWith(QStringLiteral("▾")));
+        REQUIRE(QMetaObject::invokeMethod(display, "clicked"));
+        edit_lower("0.4");
+        REQUIRE(QMetaObject::invokeMethod(editor, "finishEditing"));
+        REQUIRE(QMetaObject::invokeMethod(scale, "toggle"));
+        check("requests.length === 1 && ranges.parameters(key).filtered && ranges.parameters(key).linked");
+        f.engine.evaluate("var beforeFold = JSON.stringify(ranges.parameters(key)); var beforeConfig = JSON.stringify(ranges.configuration(key)); var beforeActive = JSON.stringify(ranges.activeKeys)");
+        REQUIRE(QMetaObject::invokeMethod(toggle, "clicked"));
+        QCoreApplication::processEvents();
+        CHECK_FALSE(editor->property("expanded").toBool());
+        CHECK(toggle->property("text").toString().startsWith(QStringLiteral("▸")));
+        CHECK(summary->property("visible").toBool());
+        CHECK(summary->property("text").toString().contains(QStringLiteral("可见单元 0.4")));
+        for (const auto* name : { "scalarHistogramPlot", "scalarHistogramScale", "scalarOriginalRange", "scalarRangeSlider", "scalarRangeLower", "scalarRangeUpper", "scalarMappingMode", "scalarDisplayMode", "scalarRangeLink", "scalarRangeReset" }) {
+            auto* control = panel->findChild<QObject*>(name);
+            REQUIRE(control);
+            CHECK_FALSE(control->property("visible").toBool());
+        }
+        check("histogramRequests === 1 && editor.histogramCounts.length === 0 && requests.length === 1 && cancellations.length === 0"
+              " && JSON.stringify(ranges.parameters(key)) === beforeFold && JSON.stringify(ranges.configuration(key)) === beforeConfig"
+              " && JSON.stringify(ranges.activeKeys) === beforeActive && editor.displayMode && editor.histogramLogarithmic");
+        // 折叠期间更新源数据只刷新元信息，重新展开时才统计最新分布。
+        f.engine.evaluate("histogramValues = [2, 3, 4]");
+        auto* viewport = f.viewport->findChild<QRenderWindow*>();
+        REQUIRE(viewport);
+        REQUIRE(QMetaObject::invokeMethod(viewport, "scalarRangeChanged", Q_ARG(Index, 7)));
+        check("histogramRequests === 1 && editor.histogramCounts.length === 0");
+        REQUIRE(QMetaObject::invokeMethod(toggle, "clicked"));
+        QCoreApplication::processEvents();
+        CHECK(editor->property("expanded").toBool());
+        CHECK_FALSE(summary->property("visible").toBool());
+        CHECK(scale->property("visible").toBool());
+        CHECK(scale->property("text").toString() == QStringLiteral("对数高度"));
+        CHECK(lower->property("visible").toBool());
+        CHECK(reset->property("visible").toBool());
+        check("histogramRequests === 2 && JSON.stringify(editor.histogramCounts) === '[2,3,4]' && requests.length === 1"
+              " && JSON.stringify(ranges.parameters(key)) === beforeFold && JSON.stringify(ranges.configuration(key)) === beforeConfig"
+              " && JSON.stringify(ranges.activeKeys) === beforeActive && editor.displayMode && editor.histogramLogarithmic");
+    }
+    SECTION("folding completes a valid draft once and keeps invalid input visible")
+    {
+        auto* toggle = panel->findChild<QObject*>("scalarRangeToggle");
+        REQUIRE(toggle);
+        SECTION("valid draft is submitted once before folding")
+        {
+            edit_lower("0.333333333333");
+            REQUIRE(QMetaObject::invokeMethod(toggle, "clicked"));
+            QCoreApplication::processEvents();
+            CHECK_FALSE(editor->property("expanded").toBool());
+            check("requests.length === 1 && ranges.parameters(key).mappingLower === 0.333333333333 && !editor.draft");
+        }
+        SECTION("invalid draft prevents folding")
+        {
+            edit_lower("invalid");
+            REQUIRE(QMetaObject::invokeMethod(toggle, "clicked"));
+            QCoreApplication::processEvents();
+            CHECK(editor->property("expanded").toBool());
+            CHECK(lower->property("visible").toBool());
+            check("requests.length === 0 && editor.draft !== null && editor.rangeError.length > 0");
+        }
+    }
+    SECTION("folding returns height to the framed attribute list")
+    {
+        double panel_width = 360.0;
+        SECTION("narrow panel") { panel_width = 280.0; }
+        SECTION("regular panel") { }
+        auto* panel_item = qobject_cast<QQuickItem*>(panel.get());
+        auto* list = panel->findChild<QQuickItem*>("attributeRenderList");
+        auto* frame = panel->findChild<QQuickItem*>("attributeRenderListFrame");
+        auto* toggle = panel->findChild<QObject*>("scalarRangeToggle");
+        auto* apply = panel->findChild<QQuickItem*>("attributeRenderApply");
+        auto* cancel = panel->findChild<QQuickItem*>("attributeRenderCancel");
+        REQUIRE(panel_item);
+        REQUIRE(list);
+        REQUIRE(frame);
+        REQUIRE(toggle);
+        REQUIRE(apply);
+        REQUIRE(cancel);
+        panel_item->setWidth(panel_width);
+        panel_item->setHeight(700.0);
+        // 无窗口测试显式完成父子布局的 polish，使检查针对实际分配的空间。
+        auto settle_layout = [&] {
+            for (int pass = 0; pass < 2; ++pass) {
+                for (auto* item : panel->findChildren<QQuickItem*>())
+                    item->ensurePolished();
+                QCoreApplication::processEvents();
+            }
+        };
+        settle_layout();
+        REQUIRE(list->height() > 0);
+        const double expanded_height = list->height();
+        const double footer_y = apply->mapToItem(panel_item, QPointF()).y();
+        CHECK(list->width() < frame->width());
+        REQUIRE(QMetaObject::invokeMethod(toggle, "clicked"));
+        settle_layout();
+        CHECK(list->height() > expanded_height + 48);
+        CHECK(apply->isVisible());
+        CHECK(cancel->isVisible());
+        CHECK(std::abs(apply->mapToItem(panel_item, QPointF()).y() - footer_y) < 1e-6);
+        REQUIRE(QMetaObject::invokeMethod(toggle, "clicked"));
+        settle_layout();
+        CHECK(std::abs(list->height() - expanded_height) < 1e-6);
+        check("requests.length === 0 && cancellations.length === 0");
+    }
     SECTION("histogram only queries on enable and data refresh, never on range edits")
     {
         auto* histogram = panel->findChild<QObject*>("scalarHistogramPlot");
+        auto* scale = panel->findChild<QObject*>("scalarHistogramScale");
         REQUIRE(histogram);
-        CHECK_FALSE(histogram->property("visible").toBool());
-        check("histogramRequests === 0");
-        f.engine.evaluate("histogramValues = Array(32).fill(1)");
-        REQUIRE(editor->setProperty("histogramEnabled", true));
+        REQUIRE(scale);
+        CHECK_FALSE(scale->property("checked").toBool());
+        CHECK(scale->property("text").toString() == QStringLiteral("线性高度"));
         CHECK(histogram->property("visible").toBool());
         check("histogramRequests === 1 && editor.histogramCounts.length === 32");
+        check(R"JS(editor.histogramBinText(0) === '区间：[0.25, 0.265)\n数量：1'
+            && editor.histogramBinText(31) === '区间：[0.735, 0.751]\n数量：1')JS");
+        auto* hover = panel->findChild<QObject*>("scalarHistogramHover");
+        REQUIRE(hover);
+        CHECK_FALSE(hover->property("blocking").toBool());
         // 手工扩大范围后，即使每箱不足 1px，非空柱仍保留正宽度。
         auto* upper = panel->findChild<QObject*>("scalarRangeUpper");
         REQUIRE(upper);
@@ -223,14 +343,41 @@ TEST_CASE("Actual scalar editor completes range actions without intermediate req
         REQUIRE(QMetaObject::invokeMethod(editor, "finishEditing"));
         f.engine.evaluate("panel.refreshRangeMetadata(); panel.applySelectedAttribute(); panel.applySelectedAttribute()");
         check("histogramRequests === 1 && editor.histogramCounts.length === 32");
-        f.engine.evaluate("histogramValues = [0,3,2]");
+        f.engine.evaluate("histogramValues = [0,1,1000000]");
         auto* viewport = f.viewport->findChild<QRenderWindow*>();
         REQUIRE(viewport);
-        REQUIRE(QMetaObject::invokeMethod(viewport, "scalarRangeChanged"));
-        check("histogramRequests === 2 && JSON.stringify(editor.histogramCounts) === '[0,3,2]'");
-        REQUIRE(editor->setProperty("histogramEnabled", false));
+        // 无关组件的更新和删除共用同一通知，不得重新统计当前组件或替换结果。
+        REQUIRE(QMetaObject::invokeMethod(viewport, "scalarRangeChanged", Q_ARG(Index, 8)));
+        check("histogramRequests === 1 && editor.histogramCounts.length === 32");
+        REQUIRE(QMetaObject::invokeMethod(viewport, "scalarRangeChanged", Q_ARG(Index, 7)));
+        check("histogramRequests === 2 && JSON.stringify(editor.histogramCounts) === '[0,1,1000000]'");
+        QCoreApplication::processEvents();
+        for (auto* bar : plot->childItems().front()->childItems()) {
+            const auto count = bar->property("modelData");
+            if (count.isValid())
+                CHECK(bar->height() == (count.toDouble() == 0 ? 0 : count.toDouble() == 1 ? 2
+                                                                                          : plot->height()));
+        }
+        REQUIRE(QMetaObject::invokeMethod(scale, "toggle"));
+        CHECK(scale->property("checked").toBool());
+        CHECK(scale->property("text").toString() == QStringLiteral("对数高度"));
+        check("histogramRequests === 2 && editor.histogramBinText(1).endsWith('数量：1')");
+        for (auto* bar : plot->childItems().front()->childItems()) {
+            if (bar->property("modelData").toDouble() == 1) {
+                CHECK(bar->height() > 2);
+                CHECK(bar->height() < 3);
+            }
+        }
+        check(R"JS(editor.histogramBinText(0) === '区间：[0.25, 0.417)\n数量：0')JS");
+        // 当前组件的数据失效时仍须清空分布，不能被组件过滤遗漏。
+        f.engine.evaluate("ranges.renderWindow.scalarRangeInfo = function() { return []; }");
+        REQUIRE(QMetaObject::invokeMethod(viewport, "scalarRangeChanged", Q_ARG(Index, 7)));
+        check("histogramRequests === 2 && editor.histogramCounts.length === 0 && !panel.rangeMetadata.valid");
+        CHECK_FALSE(histogram->property("visible").toBool());
+        REQUIRE(editor->setProperty("expanded", false));
         CHECK_FALSE(histogram->property("visible").toBool());
         check("histogramRequests === 2 && editor.histogramCounts.length === 0");
+        check("editor.histogramBinText(0) === ''");
     }
     SECTION("linked reset discards draft and restores both ranges")
     {
@@ -362,6 +509,100 @@ TEST_CASE("Actual scalar editor completes range actions without intermediate req
     auto* panel_item = qobject_cast<QQuickItem*>(panel.get());
     REQUIRE(panel_item);
     CHECK(panel_item->window() == nullptr);
+}
+
+// 加载实际编辑器验证绘图坐标与提示，不依赖测试替身重写分箱或布局逻辑。
+TEST_CASE("Actual scalar histogram preserves constant positions and finite extreme plots", "[QML][scalar-range][histogram][no-window]")
+{
+    application();
+    QmlFixture f;
+    double minimum = 0.0;
+    double maximum = 1.0;
+    double lower = 0.0;
+    double upper = 1.0;
+    const double largest = std::numeric_limits<double>::max();
+    SECTION("constant stays at five percent after editing the range")
+    {
+        minimum = maximum = 5.0;
+        upper = 100.0;
+    }
+    SECTION("constant at the range endpoint remains centered on its value")
+    {
+        minimum = maximum = lower = 5.0;
+        upper = 100.0;
+    }
+    SECTION("opposite finite extremes retain the full track width")
+    {
+        minimum = lower = -largest;
+        maximum = upper = largest;
+    }
+    SECTION("small source interval remains visible inside an extreme edited range")
+    {
+        minimum = -1.0;
+        lower = -largest;
+        upper = largest;
+    }
+    SECTION("narrow large values describe unrepresentable bin edges as offsets")
+    {
+        minimum = lower = 1e16;
+        maximum = upper = 1e16 + 8.0;
+    }
+    QVariantList counts;
+    for (int bin = 0; bin < 32; ++bin)
+        counts.append(minimum == maximum ? (bin == 16 ? 5 : 0) : (bin % 8 == 0 || bin == 31 ? 1 : 0));
+    const QVariantMap parameters { { "mappingLower", lower }, { "mappingUpper", upper }, { "displayLower", minimum }, { "displayUpper", maximum } };
+    const QVariantMap metadata { { "valid", true }, { "rangeAvailable", true }, { "minimum", minimum }, { "maximum", maximum } };
+    auto editor = load(f.engine, "ScalarRangeEditor.qml", { { "parameters", parameters }, { "metadata", metadata }, { "histogramCounts", counts }, { "width", 320.0 } });
+    auto* item = qobject_cast<QQuickItem*>(editor.get());
+    REQUIRE(item);
+    item->setHeight(item->implicitHeight());
+    item->ensurePolished();
+    QCoreApplication::processEvents();
+    auto* plot = editor->findChild<QQuickItem*>("scalarHistogramPlot");
+    auto* slider = editor->findChild<QQuickItem*>("scalarRangeSlider");
+    REQUIRE(plot);
+    REQUIRE(slider);
+    REQUIRE_FALSE(plot->childItems().isEmpty());
+    auto* bars = plot->childItems().front();
+    const double track_width = plot->property("trackWidth").toDouble();
+    REQUIRE(track_width > 0);
+    CHECK(std::isfinite(bars->x()));
+    CHECK(std::isfinite(bars->width()));
+    CHECK(bars->width() > 0);
+    int populated_bins = 0;
+    // 检查真正参与绘制的柱子，防止容器有宽度而有效柱子仍不可见。
+    for (auto* bar : bars->childItems()) {
+        if (bar->property("modelData").toDouble() <= 0)
+            continue;
+        ++populated_bins;
+        CHECK(std::isfinite(bar->x()));
+        CHECK(std::isfinite(bar->width()));
+        CHECK(bar->width() > 0);
+        CHECK(bar->height() > 0);
+        if (minimum == maximum) {
+            const double track_start = slider->property("leftPadding").toDouble() + plot->property("handleWidth").toDouble() / 2;
+            const double center = bars->x() + bar->x() + bar->width() / 2;
+            const double expected = lower == minimum ? 0.0 : 0.05;
+            CHECK(std::abs((center - track_start) / track_width - expected) < 1e-9);
+        }
+    }
+    CHECK(populated_bins == (minimum == maximum ? 1 : 5));
+    f.engine.globalObject().setProperty("editor", f.engine.newQObject(editor.get()));
+    if (minimum == maximum) {
+        auto text = f.engine.evaluate("editor.histogramBinText(16) === '区间：[5, 5]\\n数量：5' && editor.histogramBinText(15) === ''");
+        REQUIRE_FALSE(text.isError());
+        CHECK(text.toBool());
+    }
+    if (minimum == -largest)
+        CHECK(std::abs(bars->width() - track_width) < 1e-9);
+    if (minimum == 1e16) {
+        auto text = f.engine.evaluate(R"JS(editor.histogramBinText(0) === '相对 10000000000000000 的偏移：[0, 0.25)\n数量：1'
+            && editor.histogramBinText(31) === '相对 10000000000000000 的偏移：[7.75, 8]\n数量：1')JS");
+        INFO(text.toString().toStdString());
+        REQUIRE_FALSE(text.isError());
+        CHECK(text.toBool());
+    }
+    CHECK(item->window() == nullptr);
 }
 
 TEST_CASE("Scalar UI skips unrenderable named attributes and applies the matching face range", "[QML][scalar-range][no-window]")

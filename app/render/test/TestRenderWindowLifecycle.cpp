@@ -109,6 +109,21 @@ bool renderUntil(QQuickWindow& window, const std::function<bool()>& ready)
 }
 }
 
+// 更新与删除都携带真实组件身份，使界面能够跳过无关组件的统计。
+TEST_CASE("Scalar data notifications identify updated and removed components", "[scalar-range][no-window]")
+{
+    testApplication();
+    QRenderWindow item;
+    std::vector<Index> changed_components;
+    QObject::connect(&item, &QRenderWindow::scalarRangeChanged, &item,
+        [&changed_components](Index component_id) { changed_components.push_back(component_id); });
+    auto mesh = MakeMeshDataWithAtri();
+    item.loadMeshData(7, MakeMeshDataVtk(mesh));
+    item.loadMeshData(8, MakeMeshDataVtk(mesh));
+    item.deleteComponent(8);
+    CHECK(changed_components == std::vector<Index> { 7, 8, 8 });
+}
+
 TEST_CASE("Scalar range arguments reject invalid input without changing active state", "[scalar-range]")
 {
     testApplication();
