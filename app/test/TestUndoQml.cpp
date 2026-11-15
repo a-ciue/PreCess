@@ -141,10 +141,11 @@ TEST_CASE("Actual scalar editor completes range actions without intermediate req
     f.engine.globalObject().setProperty("ranges", f.engine.newQObject(ranges.get()));
     f.engine.globalObject().setProperty("panel", f.engine.newQObject(panel.get()));
     auto setup = f.engine.evaluate(R"JS(
-        var requests = [], cancellations = [];
+        var requests = [], cancellations = [], histogramRequests = 0, histogramValues = [1, 2, 1];
         ranges.query = {getComponentAttriInfo: function() {return [{name:'value', attrType:2, componentCount:1}, {name:'vector', attrType:2, componentCount:3}];}};
         ranges.renderWindow = {
             scalarRangeInfo: function(component) {return component === 8 ? [10, 20] : [0.25, 0.751234567];},
+            scalarHistogramInfo: function() { ++histogramRequests; return histogramValues; },
             setAttriMode: function(component, attribute, mode, args) {
                 requests.push({component:component, attribute:attribute, mode:mode, configuration:args});
             },
@@ -187,6 +188,50 @@ TEST_CASE("Actual scalar editor completes range actions without intermediate req
         REQUIRE_FALSE(value.isError());
         CHECK(value.toBool());
     };
+    SECTION("histogram only queries on enable and data refresh, never on range edits")
+    {
+        auto* histogram = panel->findChild<QObject*>("scalarHistogramPlot");
+        REQUIRE(histogram);
+        CHECK_FALSE(histogram->property("visible").toBool());
+        check("histogramRequests === 0");
+        f.engine.evaluate("histogramValues = Array(32).fill(1)");
+        REQUIRE(editor->setProperty("histogramEnabled", true));
+        CHECK(histogram->property("visible").toBool());
+        check("histogramRequests === 1 && editor.histogramCounts.length === 32");
+        // 手工扩大范围后，即使每箱不足 1px，非空柱仍保留正宽度。
+        auto* upper = panel->findChild<QObject*>("scalarRangeUpper");
+        REQUIRE(upper);
+        REQUIRE(upper->setProperty("text", "10"));
+        REQUIRE(QMetaObject::invokeMethod(upper, "textEdited"));
+        REQUIRE(QMetaObject::invokeMethod(editor, "finishEditing"));
+        REQUIRE(editor->setProperty("width", 320.0));
+        QCoreApplication::processEvents();
+        auto* plot = qobject_cast<QQuickItem*>(histogram);
+        REQUIRE(plot);
+        REQUIRE(plot->property("trackWidth").toDouble() > 0);
+        REQUIRE_FALSE(plot->childItems().isEmpty());
+        int populated_bins = 0;
+        for (auto* bar : plot->childItems().front()->childItems()) {
+            if (bar->property("modelData").toDouble() > 0) {
+                ++populated_bins;
+                CHECK(bar->width() > 0);
+            }
+        }
+        CHECK(populated_bins == 32);
+        REQUIRE(QMetaObject::invokeMethod(display, "clicked"));
+        edit_lower("0.4");
+        REQUIRE(QMetaObject::invokeMethod(editor, "finishEditing"));
+        f.engine.evaluate("panel.refreshRangeMetadata(); panel.applySelectedAttribute(); panel.applySelectedAttribute()");
+        check("histogramRequests === 1 && editor.histogramCounts.length === 32");
+        f.engine.evaluate("histogramValues = [0,3,2]");
+        auto* viewport = f.viewport->findChild<QRenderWindow*>();
+        REQUIRE(viewport);
+        REQUIRE(QMetaObject::invokeMethod(viewport, "scalarRangeChanged"));
+        check("histogramRequests === 2 && JSON.stringify(editor.histogramCounts) === '[0,3,2]'");
+        REQUIRE(editor->setProperty("histogramEnabled", false));
+        CHECK_FALSE(histogram->property("visible").toBool());
+        check("histogramRequests === 2 && editor.histogramCounts.length === 0");
+    }
     SECTION("linked reset discards draft and restores both ranges")
     {
         edit_lower("0.3");

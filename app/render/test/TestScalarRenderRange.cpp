@@ -6,6 +6,7 @@
 #include "MeshPipelineData.h"
 #include <catch2/catch_test_macros.hpp>
 #include <limits>
+#include <numeric>
 #include <stdexcept>
 #include <vtkCellData.h>
 #include <vtkDataArray.h>
@@ -29,6 +30,57 @@ MeshData scalarMesh()
     fill_values(mesh.solid_attributes_["solid_value"], mesh.solid_types_.size());
     return mesh;
 }
+}
+
+TEST_CASE("Scalar histogram uses original finite values and refreshes with source data", "[scalar-range][histogram]")
+{
+    auto mesh = scalarMesh();
+    mesh.face_attributes_["value"] = { -1.0, 0.0, 1.0, std::numeric_limits<double>::quiet_NaN(), std::numeric_limits<double>::infinity() };
+    MeshPipelineData pipeline;
+    pipeline.loadModelData(MakeMeshDataVtk(mesh));
+    const auto counts = pipeline.scalarHistogram("value");
+    REQUIRE(counts.size() == 32);
+    CHECK(std::accumulate(counts.begin(), counts.end(), vtkIdType { 0 }) == 3);
+    CHECK(counts[0] == 1);
+    CHECK(counts[16] == 1);
+    CHECK(counts[31] == 1);
+    pipeline.setScalarConfig(ScalarDisplayConfig { "value", std::array { -2.0, 2.0 }, std::array { -0.1, 0.1 } });
+    pipeline.hideFaces({ 0 });
+    vtkNew<vtkPlane> plane;
+    plane->SetOrigin(100.0, 0.0, 0.0);
+    plane->SetNormal(1.0, 0.0, 0.0);
+    pipeline.setClipPlane(plane);
+    pipeline.createSnapshot();
+    CHECK(pipeline.scalarHistogram("value") == counts);
+    // 点、边、体同样统计原始数组，不限于质量指标或可筛选的实体域。
+    for (const auto* attribute : { "point_value", "edge_value", "solid_value" }) {
+        const auto histogram = pipeline.scalarHistogram(attribute);
+        REQUIRE(histogram.size() == 32);
+        CHECK(std::accumulate(histogram.begin(), histogram.end(), vtkIdType { 0 }) > 0);
+    }
+    CHECK(pipeline.scalarHistogram("missing").empty());
+    CHECK(pipeline.scalarHistogram("f_color_3").empty());
+    // 大数值窄区间保留分箱精度，跨正负极值时仍能避免差值溢出。
+    const double largest = std::numeric_limits<double>::max();
+    for (const auto& values : { std::vector { 1e16, 1e16 + 2, 1e16 + 4, 1e16 + 6, 1e16 + 8 },
+             std::vector { -largest, -largest / 2, 0.0, largest / 2, largest } }) {
+        mesh.face_attributes_["value"] = values;
+        pipeline.loadModelData(MakeMeshDataVtk(mesh));
+        std::vector<vtkIdType> expected(32, 0);
+        for (const auto bin : { 0, 8, 16, 24, 31 })
+            expected[bin] = 1;
+        CHECK(pipeline.scalarHistogram("value") == expected);
+    }
+    // 源数据更新后重新统计；常量集中到中间，全部缺失则没有可显示的分布。
+    mesh.face_attributes_["value"].assign(5, -7.0);
+    pipeline.loadModelData(MakeMeshDataVtk(mesh));
+    const auto constant = pipeline.scalarHistogram("value");
+    REQUIRE(constant.size() == 32);
+    CHECK(constant[16] == 5);
+    CHECK(std::accumulate(constant.begin(), constant.end(), vtkIdType { 0 }) == 5);
+    mesh.face_attributes_["value"].assign(5, std::numeric_limits<double>::quiet_NaN());
+    pipeline.loadModelData(MakeMeshDataVtk(mesh));
+    CHECK(pipeline.scalarHistogram("value").empty());
 }
 
 TEST_CASE("Scalar range filtering preserves original IDs and manual hiding", "[scalar-range]")

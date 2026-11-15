@@ -1032,6 +1032,19 @@ QVariantList QRenderWindow::scalarRangeInfo(Index component_id, const QString& a
     return { (*original)[0], (*original)[1] };
 }
 
+QVariantList QRenderWindow::scalarHistogramInfo(Index component_id, const QString& attribute)
+{
+    const auto pipeline = mesh_pipeline_data_.find(component_id);
+    if (pipeline == mesh_pipeline_data_.end())
+        return { };
+    const auto counts = pipeline->second->scalarHistogram(attribute.toStdString());
+    QVariantList result;
+    result.reserve(counts.size());
+    for (const auto count : counts)
+        result.append(QVariant::fromValue(static_cast<qlonglong>(count)));
+    return result;
+}
+
 void QRenderWindow::publishMeshUpdate(Index component_id, std::shared_ptr<const MeshDataSnapshot> snapshot, bool activate_scalar_bar)
 {
     const bool mesh_outputs_rebuilt = snapshot->mesh_outputs_rebuilt;

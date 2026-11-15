@@ -486,6 +486,30 @@ std::optional<std::array<double, 2>> MeshPipelineData::scalarRange(const std::st
     return range;
 }
 
+std::vector<vtkIdType> MeshPipelineData::scalarHistogram(const std::string& attribute)
+{
+    assertOwnerThread();
+    const auto range = scalarRange(attribute);
+    if (!range)
+        return { };
+    auto* values = scalarValues(attribute).values;
+    std::vector<vtkIdType> counts(32, 0);
+    const auto [lower, upper] = *range;
+    // 正常值域直接相减以保留窄区间精度；仅差值溢出时减半，常量集中在中间一箱。
+    const bool halve = !std::isfinite(upper - lower);
+    const double start = halve ? lower / 2 : lower;
+    const double span = halve ? upper / 2 - start : upper - lower;
+    for (vtkIdType id = 0; id < values->GetNumberOfTuples(); ++id) {
+        const double value = values->GetComponent(id, 0);
+        if (!std::isfinite(value))
+            continue;
+        const double position = lower == upper ? 0.5 : ((halve ? value / 2 : value) - start) / span;
+        const auto bin = std::min(counts.size() - 1, static_cast<size_t>(position * counts.size()));
+        ++counts[bin];
+    }
+    return counts;
+}
+
 void MeshPipelineData::setScalarConfig(std::optional<ScalarDisplayConfig> config)
 {
     assertOwnerThread();

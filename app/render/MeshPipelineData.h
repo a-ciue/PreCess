@@ -91,6 +91,8 @@ public:
     void setClipPlane(const MeshClipPlane& plane);
     /** @brief 查询完整单值属性的有限值域，缓存不受隐藏和裁剪影响。 */
     std::optional<std::array<double, 2>> scalarRange(const std::string& attribute);
+    /** @brief 将原始有限单值数据统计为 32 个等宽箱，不受显示范围、隐藏和裁剪影响。 */
+    std::vector<vtkIdType> scalarHistogram(const std::string& attribute);
     /** @brief 校验并保存完整显示配置，空值取消着色和筛选；无效参数不改变当前结果。 */
     void setScalarConfig(std::optional<ScalarDisplayConfig> config);
     /** @brief 按需生成可见网格输出，发布携带本次重建标记和递增版本的快照。 */

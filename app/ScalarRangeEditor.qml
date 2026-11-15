@@ -18,6 +18,9 @@ ColumnLayout {
             rangeAvailable: false
         })
     property bool displayMode: false
+    // 分布开关只影响本编辑器显示，不进入范围参数和渲染配置。
+    property alias histogramEnabled: histogramToggle.checked
+    property var histogramCounts: []
     // 草稿与有效待发送请求各自携带目标身份，属性切换不会把旧值写入新属性。
     property var draft: null
     property var pendingRange: null
@@ -312,6 +315,14 @@ ColumnLayout {
         }
     }
 
+    CheckBox {
+        id: histogramToggle
+        objectName: "scalarHistogramToggle"
+        text: qsTr("显示分布直方图")
+        enabled: !!root.metadata.valid
+        focusPolicy: Qt.TabFocus
+    }
+
     RowLayout {
         objectName: "scalarOriginalRange"
         Layout.fillWidth: true
@@ -334,6 +345,43 @@ ColumnLayout {
             color: Theme.textSecondary
             text: root.metadata.valid ? root.formatRangeValue(root.metadata.maximum) : ""
             Accessible.name: qsTr("原始范围上限：%1").arg(text)
+        }
+    }
+
+    Item {
+        id: histogramPlot
+        objectName: "scalarHistogramPlot"
+        Layout.fillWidth: true
+        Layout.preferredHeight: 48
+        visible: root.histogramEnabled && root.metadata.valid && root.histogramCounts.length > 0
+        readonly property real peak: Math.max(1, ...root.histogramCounts)
+        readonly property real handleWidth: Math.max(rangeSlider.first.handle.width, rangeSlider.second.handle.width)
+        readonly property real trackWidth: Math.max(0, rangeSlider.availableWidth - handleWidth)
+        // 手动范围可超出原始值域，柱子仍按原始值域定位到同一滑条坐标。
+        readonly property real dataMinimum: root.metadata.minimum === root.metadata.maximum ? root.sliderMinimum : root.metadata.minimum
+        readonly property real dataMaximum: root.metadata.minimum === root.metadata.maximum ? root.sliderMaximum : root.metadata.maximum
+        Accessible.role: Accessible.Chart
+        Accessible.name: qsTr("原始标量分布，共 %1 个有效值").arg(root.histogramCounts.reduce((sum, count) => sum + count, 0))
+
+        Item {
+            id: histogramBars
+            x: rangeSlider.leftPadding + histogramPlot.handleWidth / 2 + (histogramPlot.dataMinimum - root.sliderMinimum) / (root.sliderMaximum - root.sliderMinimum) * histogramPlot.trackWidth
+            width: (histogramPlot.dataMaximum - histogramPlot.dataMinimum) / (root.sliderMaximum - root.sliderMinimum) * histogramPlot.trackWidth
+            height: parent.height
+            readonly property real binWidth: root.histogramCounts.length ? width / root.histogramCounts.length : 0
+            Repeater {
+                model: root.histogramCounts
+                Rectangle {
+                    required property int index
+                    required property real modelData
+                    x: index * histogramBars.binWidth
+                    y: histogramBars.height - height
+                    // 窄箱缩小间距，避免手工扩大滑条范围后柱宽全部归零。
+                    width: Math.max(0, histogramBars.binWidth - Math.min(1, histogramBars.binWidth / 4))
+                    height: modelData / histogramPlot.peak * histogramBars.height
+                    color: Theme.textSecondary
+                }
+            }
         }
     }
 

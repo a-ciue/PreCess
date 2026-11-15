@@ -19,7 +19,11 @@ Item {
     property string selectedKey: ""
     property int confirmedMode: 1
     property var rememberedAttributes: ({})
-    property var rangeMetadata: ({ valid: false, rangeAvailable: false })
+    property var rangeMetadata: ({
+            valid: false,
+            rangeAvailable: false
+        })
+    property var histogramCounts: []
     readonly property var currentRange: rangeState ? rangeState.parameters(selectedKey) : ({
             valid: false
         })
@@ -27,8 +31,18 @@ Item {
     // 面板仅查询原始元信息，用户范围统一保存在界面参数对象中。
     function refreshRangeMetadata() {
         let attr = selectedAttribute();
-        rangeMetadata = attr && rangeState ? rangeState.rangeInfo(App.selection.activeComponentId, attr.name) : { valid: false, rangeAvailable: false };
+        rangeMetadata = attr && rangeState ? rangeState.rangeInfo(App.selection.activeComponentId, attr.name) : {
+            valid: false,
+            rangeAvailable: false
+        };
         selectedKey = attr && rangeState ? rangeState.ensure(App.selection.activeComponentId, attr.name, rangeMetadata) : "";
+    }
+
+    // 开关、属性身份和源数据通知触发查询，元信息刷新及重复应用不重新统计。
+    function refreshHistogram() {
+        let attr = selectedAttribute();
+        let window = rangeState ? rangeState.renderWindow : null;
+        histogramCounts = rangeEditor.histogramEnabled && rangeMetadata.valid && attr && window ? window.scalarHistogramInfo(App.selection.activeComponentId, attr.name) : [];
     }
 
     // 普通目录刷新恢复操作位置，同一属性的输入草稿由编辑器继续保留。
@@ -317,6 +331,8 @@ Item {
                 attributeKey: root.selectedKey
                 parameters: root.currentRange
                 metadata: root.rangeMetadata
+                histogramCounts: root.histogramCounts
+                onHistogramEnabledChanged: root.refreshHistogram()
                 onParametersEdited: function (key, parameters) {
                     if (root.rangeState)
                         root.rangeState.update(key, parameters);
@@ -453,6 +469,7 @@ Item {
         target: App.registry.renderWindow
         function onScalarRangeChanged() {
             root.refreshRangeMetadata();
+            root.refreshHistogram();
         }
     }
 
@@ -477,5 +494,6 @@ Item {
         }
     }
 
+    onSelectedKeyChanged: refreshHistogram()
     Component.onCompleted: refreshAttributes()
 }
