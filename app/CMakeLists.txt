@@ -15,8 +15,6 @@ qt_add_executable(${MYNAME} MACOSX_BUNDLE
     main.cpp
     QApplicationStartup.h
     QApplicationStartup.cpp
-    QNativeTitleBar.h
-    QNativeTitleBar.cpp
     QStartupSplashWindow.h
     QStartupSplashWindow.cpp
     ${app_resource}
@@ -72,6 +70,10 @@ target_link_libraries(${MYNAME}
 )
 
 if(WIN32)
+    target_sources(${MYNAME} PRIVATE
+        QNativeTitleBar.h
+        QNativeTitleBar.cpp
+    )
     target_link_libraries(${MYNAME} PRIVATE dwmapi)
 endif()
 

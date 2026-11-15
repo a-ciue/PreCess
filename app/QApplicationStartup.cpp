@@ -14,7 +14,9 @@
 #include "QWasmBridge.h"
 #include <QFontDatabase>
 #else
+#ifdef Q_OS_WIN
 #include "QNativeTitleBar.h"
+#endif
 #include "QStartupSplashWindow.h"
 #include <QQuickItem>
 #include <QQuickVTKItem.h>
@@ -175,8 +177,10 @@ bool QApplicationStartup::connectStartupReadiness()
         failStartup(QCoreApplication::translate("Startup", "未创建主窗口"));
         return false;
     }
+#ifdef Q_OS_WIN
     // 主窗口拥有标题栏适配器，并由 QML 主题属性驱动原生配色。
     new QNativeTitleBar(main_window_, main_window_);
+#endif
 
     auto* viewport = findViewport(main_window_->contentItem());
     if (!viewport) {

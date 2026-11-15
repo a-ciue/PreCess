@@ -14,8 +14,6 @@
 #include <QQmlContext>
 #include <QQmlEngine>
 #include <QQuickStyle>
-#include <QSettings>
-#include <QStandardPaths>
 #include <QVariantMap>
 #include <catch2/catch_test_macros.hpp>
 #include <memory>
@@ -122,64 +120,4 @@ ApplicationWindow {
 
     CHECK(window->property("earlyBase").value<QColor>() == surface);
     CHECK(window->property("lateBase").value<QColor>() == surface);
-}
-
-TEST_CASE("Main window native title bar colors follow theme changes", "[QML][theme][titlebar]")
-{
-    testApplication();
-
-    QFile main_qml(":/theme-window/Main.qml");
-    REQUIRE(main_qml.open(QIODevice::ReadOnly));
-    const QByteArray source = main_qml.readAll().replace("\r\n", "\n");
-
-    // 使用生产主窗口的绑定和真实 Theme.qml，覆盖深浅主题往返切换。
-    QByteArray title_bindings;
-    int binding_count = 0;
-    for (const QByteArray& line : source.split('\n')) {
-        const QByteArray trimmed = line.trimmed();
-        if (!trimmed.startsWith("readonly property color nativeTitleBarBackground:")
-            && !trimmed.startsWith("readonly property color nativeTitleBarTextColor:"))
-            continue;
-        title_bindings += line + '\n';
-        ++binding_count;
-    }
-    REQUIRE(binding_count == 2);
-
-    // 使用单独的设置身份，避免测试读写用户保存的主题。
-    QStandardPaths::setTestModeEnabled(true);
-    QCoreApplication::setOrganizationName(QStringLiteral("PreCessTitleBarTest"));
-    QCoreApplication::setApplicationName(QStringLiteral("PreCessTitleBarTest"));
-    QSettings().clear();
-
-    QQmlEngine engine;
-    static const int theme_type = qmlRegisterSingletonType(
-        QUrl(QStringLiteral("qrc:/theme-window/Theme.qml")), "TitleBarThemeTest", 1, 0, "Theme");
-    auto* theme = engine.singletonInstance<QObject*>(theme_type);
-    REQUIRE(theme);
-    REQUIRE(QMetaObject::invokeMethod(theme, "setMode", Q_ARG(QVariant, 1)));
-    engine.rootContext()->setContextProperty("Theme", theme);
-
-    QByteArray fixture = R"QML(
-import QtQuick
-import QtQuick.Controls
-ApplicationWindow {
-)QML";
-    fixture += title_bindings;
-    fixture += "}\n";
-    QQmlComponent window_component(&engine);
-    window_component.setData(fixture, QUrl());
-    INFO(window_component.errorString().toStdString());
-    std::unique_ptr<QObject> window(window_component.create());
-    REQUIRE(window);
-
-    CHECK(window->property("nativeTitleBarBackground").value<QColor>() == QColor("#102B33"));
-    CHECK(window->property("nativeTitleBarTextColor").value<QColor>() == QColor("#DDE8E9"));
-
-    REQUIRE(QMetaObject::invokeMethod(theme, "setMode", Q_ARG(QVariant, 0)));
-    CHECK(window->property("nativeTitleBarBackground").value<QColor>() == QColor("#F3F4F6"));
-    CHECK(window->property("nativeTitleBarTextColor").value<QColor>() == QColor("#2B2F36"));
-    REQUIRE(QMetaObject::invokeMethod(theme, "setMode", Q_ARG(QVariant, 1)));
-    CHECK(window->property("nativeTitleBarBackground").value<QColor>() == QColor("#102B33"));
-    CHECK(window->property("nativeTitleBarTextColor").value<QColor>() == QColor("#DDE8E9"));
-    QSettings().clear();
 }

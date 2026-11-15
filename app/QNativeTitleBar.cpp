@@ -13,7 +13,6 @@
 #include <QWindow>
 #include <spdlog/spdlog.h>
 
-#ifdef Q_OS_WIN
 #ifndef NOMINMAX
 #define NOMINMAX
 #endif
@@ -22,7 +21,6 @@
 #include <windows.h>
 #include <dwmapi.h>
 // clang-format on
-#endif
 
 QNativeTitleBar::QNativeTitleBar(QWindow* window, QObject* parent)
     : QObject(parent)
@@ -36,26 +34,21 @@ QNativeTitleBar::QNativeTitleBar(QWindow* window, QObject* parent)
     connect(window_, SIGNAL(nativeTitleBarBackgroundChanged()), this, SLOT(refresh()));
     connect(window_, SIGNAL(nativeTitleBarTextColorChanged()), this, SLOT(refresh()));
     window_->installEventFilter(this);
-#ifdef Q_OS_WIN
     if (auto* app = QCoreApplication::instance())
         app->installNativeEventFilter(this);
-#endif
     refresh();
 }
 
 QNativeTitleBar::~QNativeTitleBar()
 {
-#ifdef Q_OS_WIN
     if (auto* app = QCoreApplication::instance())
         app->removeNativeEventFilter(this);
-#endif
     if (window_)
         window_->removeEventFilter(this);
 }
 
 void QNativeTitleBar::refresh()
 {
-#ifdef Q_OS_WIN
     // 不在窗口未创建或销毁期间调用 winId()，避免意外创建新的平台窗口。
     if (!window_ || !surface_available_ || !window_->handle())
         return;
@@ -68,14 +61,14 @@ void QNativeTitleBar::refresh()
     constexpr DWORD caption_attribute = 35; // DWMWA_CAPTION_COLOR
     constexpr DWORD text_attribute = 36; // DWMWA_TEXT_COLOR
     constexpr COLORREF system_default = 0xffffffff; // DWMWA_COLOR_DEFAULT
-    const auto restore_defaults = [hwnd]() {
-        const COLORREF color = system_default;
-        const auto caption_result = DwmSetWindowAttribute(hwnd, caption_attribute, &color, sizeof(color));
-        const auto text_result = DwmSetWindowAttribute(hwnd, text_attribute, &color, sizeof(color));
-        if (FAILED(caption_result) || FAILED(text_result)) {
-            spdlog::debug("Failed to restore native title bar colors: caption HRESULT=0x{:08X}, text HRESULT=0x{:08X}",
-                static_cast<unsigned long>(caption_result), static_cast<unsigned long>(text_result));
-        }
+    const auto write_colors = [hwnd](COLORREF caption_color, COLORREF text_color, const char* action) {
+        const auto caption_result = DwmSetWindowAttribute(hwnd, caption_attribute, &caption_color, sizeof(caption_color));
+        const auto text_result = DwmSetWindowAttribute(hwnd, text_attribute, &text_color, sizeof(text_color));
+        if (SUCCEEDED(caption_result) && SUCCEEDED(text_result))
+            return true;
+        spdlog::debug("Failed to {} native title bar colors: caption HRESULT=0x{:08X}, text HRESULT=0x{:08X}",
+            action, static_cast<unsigned long>(caption_result), static_cast<unsigned long>(text_result));
+        return false;
     };
 
     HIGHCONTRASTW contrast {};
@@ -83,32 +76,16 @@ void QNativeTitleBar::refresh()
     if (!SystemParametersInfoW(SPI_GETHIGHCONTRAST, sizeof(contrast), &contrast, 0)) {
         const auto error = GetLastError();
         spdlog::warn("Failed to query high contrast state; using system title bar colors: Win32 error={}", error);
-        restore_defaults();
-        return;
+    } else if (!(contrast.dwFlags & HCF_HIGHCONTRASTON)) {
+        const QColor background = window_->property("nativeTitleBarBackground").value<QColor>();
+        const QColor text = window_->property("nativeTitleBarTextColor").value<QColor>();
+        if (background.isValid() && text.isValid()
+            && write_colors(RGB(background.red(), background.green(), background.blue()),
+                RGB(text.red(), text.green(), text.blue()), "apply"))
+            return;
     }
-    if (contrast.dwFlags & HCF_HIGHCONTRASTON) {
-        restore_defaults();
-        return;
-    }
-
-    const QColor background = window_->property("nativeTitleBarBackground").value<QColor>();
-    const QColor text = window_->property("nativeTitleBarTextColor").value<QColor>();
-    if (!background.isValid() || !text.isValid()) {
-        restore_defaults();
-        return;
-    }
-    const COLORREF caption_color = RGB(background.red(), background.green(), background.blue());
-    const COLORREF text_color = RGB(text.red(), text.green(), text.blue());
-    const auto caption_result = DwmSetWindowAttribute(hwnd, caption_attribute, &caption_color, sizeof(caption_color));
-    const auto text_result = DwmSetWindowAttribute(hwnd, text_attribute, &text_color, sizeof(text_color));
-    // 旧系统可能不支持这些属性；避免只应用了一半的颜色。
-    if (FAILED(caption_result) || FAILED(text_result)) {
-        // 旧系统不支持标题栏配色属于预期回退，只在调试日志中记录。
-        spdlog::debug("Failed to apply native title bar colors: caption HRESULT=0x{:08X}, text HRESULT=0x{:08X}",
-            static_cast<unsigned long>(caption_result), static_cast<unsigned long>(text_result));
-        restore_defaults();
-    }
-#endif
+    // 系统高对比度或写入未全部成功时，成对恢复系统配色。
+    write_colors(system_default, system_default, "restore");
 }
 
 bool QNativeTitleBar::eventFilter(QObject* watched, QEvent* event)
@@ -130,13 +107,9 @@ bool QNativeTitleBar::nativeEventFilter(const QByteArray& event_type, void* mess
 {
     Q_UNUSED(event_type);
     Q_UNUSED(result);
-#ifdef Q_OS_WIN
     const auto* msg = static_cast<const MSG*>(message);
     // 高对比度和系统主题是全局状态；不拦截通知，等待系统处理完后刷新。
     if (msg && (msg->message == WM_SETTINGCHANGE || msg->message == WM_THEMECHANGED))
         QMetaObject::invokeMethod(this, &QNativeTitleBar::refresh, Qt::QueuedConnection);
-#else
-    Q_UNUSED(message);
-#endif
     return false;
 }
