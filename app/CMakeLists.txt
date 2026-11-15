@@ -11,7 +11,14 @@ set(app_resource "")
 if(WIN32)
     set(app_resource "${CMAKE_SOURCE_DIR}/resource/PreCess.rc")
 endif()
-qt_add_executable(${MYNAME} MACOSX_BUNDLE main.cpp ${app_resource})
+qt_add_executable(${MYNAME} MACOSX_BUNDLE
+    main.cpp
+    QApplicationStartup.h
+    QApplicationStartup.cpp
+    QStartupSplashWindow.h
+    QStartupSplashWindow.cpp
+    ${app_resource}
+)
 # 设计令牌单例需在 qt_add_qml_module 之前显式标记（qmldir 生成时读取该属性）
 set_source_files_properties(Theme.qml PROPERTIES QT_QML_SINGLETON_TYPE TRUE)
 # 设置编译完成的组件在 qrc:/qt/qml
@@ -63,6 +70,7 @@ target_link_libraries(${MYNAME}
 )
 
 target_compile_definitions(${MYNAME} PRIVATE
+    PRECESS_APP_VERSION="${PROJECT_VERSION}"
     "$<$<OR:$<CONFIG:Debug>,$<CONFIG:RelWithDebInfo>>:QT_QML_DEBUG>"
 )
 
