@@ -64,12 +64,6 @@ ColumnLayout {
         return pluginIconMap[pluginName] || "qrc:/images/toolbar/precess_extra_plugin.svg"
     }
 
-    // 工具栏统一使用既有青银灰色阶，避免个别入口在深色主题中单独提亮。
-    readonly property var featureEntryIconMap: ({
-        "hybrid-volume": "qrc:/images/toolbar/Mesh/hybrid-meshing.svg",
-        "surface_reconstruction": "qrc:/images/toolbar/Mesh/nurbs-reconstruction.svg"
-    })
-
     function activatePlugin(systemList, pluginName, system) {
         for (var i = 0; i < systemList.length; i++) {
             if (systemList[i].name === pluginName) {
@@ -446,9 +440,7 @@ ColumnLayout {
                                 RibbonActionButton {
                                     required property var modelData
                                     objectName: "featureEntry_" + modelData.id
-                                    icon.source: root.featureEntryIconMap.hasOwnProperty(modelData.categoryId)
-                                        ? root.featureEntryIconMap[modelData.categoryId]
-                                        : modelData.icon || "qrc:/images/toolbar/precess_extra_plugin.svg"
+                                    icon.source: modelData.icon || "qrc:/images/toolbar/precess_extra_plugin.svg"
                                     icon.width: root.ribbonIconSize
                                     icon.height: root.ribbonIconSize
                                     icon.color: "transparent"

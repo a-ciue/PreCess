@@ -129,8 +129,6 @@ qt_add_resources(TestToolbarNavigation navigation_icons
         "${CMAKE_SOURCE_DIR}/resource/toolbar/Mesh/triangle-meshing.svg"
         "${CMAKE_SOURCE_DIR}/resource/toolbar/Mesh/quad-meshing.svg"
         "${CMAKE_SOURCE_DIR}/resource/toolbar/Mesh/hexa-meshing.svg"
-        "${CMAKE_SOURCE_DIR}/resource/toolbar/Mesh/hybrid-meshing.svg"
-        "${CMAKE_SOURCE_DIR}/resource/toolbar/Mesh/nurbs-reconstruction.svg"
         "${CMAKE_SOURCE_DIR}/resource/toolbar/Geometry/split-edge.svg"
         "${CMAKE_SOURCE_DIR}/resource/toolbar/Geometry/merge-edge.svg"
         "${CMAKE_SOURCE_DIR}/resource/toolbar/Geometry/split-face.svg"

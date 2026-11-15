@@ -46,7 +46,6 @@ qt_add_resources(${MYNAME} "images"
         toolbar/Common/run.svg
         toolbar/Common/undo.svg
         toolbar/Mesh/hexa-meshing.svg
-        toolbar/Mesh/hybrid-meshing.svg
         toolbar/Mesh/nurbs-reconstruction.svg
         toolbar/Mesh/quad-meshing.svg
         toolbar/Mesh/triangle-meshing.svg

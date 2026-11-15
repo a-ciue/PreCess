@@ -237,8 +237,6 @@ TEST_CASE("Designed feature resources render at toolbar sizes", "[navigation][ic
 {
     application();
     const auto path = GENERATE(
-        ":/images/toolbar/Mesh/hybrid-meshing.svg",
-        ":/images/toolbar/Mesh/nurbs-reconstruction.svg",
         ":/images/toolbar/Geometry/split-edge.svg",
         ":/images/toolbar/Geometry/merge-edge.svg",
         ":/images/toolbar/Geometry/split-face.svg",
@@ -252,65 +250,6 @@ TEST_CASE("Designed feature resources render at toolbar sizes", "[navigation][ic
         ":/images/toolbar/Panels/preview.svg");
     const auto size = GENERATE(16, 24, 32);
     checkSvgResource(QString::fromUtf8(path), size);
-}
-
-TEST_CASE("Product mesh icons retain toolbar brightness across theme changes", "[navigation][QML][icons]")
-{
-    application();
-    QTemporaryDir directory;
-    REQUIRE(directory.isValid());
-    const auto executable = (directory.path() + "/isolated/Test.exe").toStdString();
-    QModelManager::argv0 = executable;
-    QQmlEngine engine;
-    static const int theme_type = qmlRegisterSingletonType(QUrl("qrc:/navigation-ui/Theme.qml"), "ProductIconUi", 1, 0, "Theme");
-    auto* theme = engine.singletonInstance<QObject*>(theme_type);
-    REQUIRE(theme);
-    engine.rootContext()->setContextProperty("Theme", theme);
-    // 使用不同提供者和旧图标声明，验证入口身份与执行身份保持独立。
-    const auto provider = engine.evaluate(R"JS(({
-        featuresInfo: [
-            {name: "provider-a", entry_ids: ["hybrid-volume"]},
-            {name: "provider-b", entry_ids: ["surface_reconstruction"]},
-            {name: "provider-c", entry_ids: ["unrelated"]}
-        ],
-        navigationDefinitions: [
-            {id: "hybrid-volume", title: "混合体网格", icon: "qrc:/images/toolbar/Mesh/hexa-meshing.svg", menu_id: "icons", menu_title: "图标"},
-            {id: "surface_reconstruction", title: "曲面重建", menu_id: "icons", menu_title: "图标"},
-            {id: "unrelated", title: "其他", icon: "qrc:/images/toolbar/Geometry/split-edge.svg", menu_id: "icons", menu_title: "图标"}
-        ],
-        navigationOrder: []
-    }))JS");
-    REQUIRE_FALSE(provider.isError());
-    QQmlComponent component(&engine, QUrl("qrc:/navigation-ui/AppToolbar.qml"));
-    INFO(component.errorString().toStdString());
-    REQUIRE(component.isReady());
-    std::unique_ptr<QObject> toolbar(component.createWithInitialProperties({ { "featureSystem", QVariant::fromValue(provider) } }));
-    REQUIRE(toolbar);
-    auto* item = qobject_cast<QQuickItem*>(toolbar.get());
-    REQUIRE(item);
-    QQuickWindow window;
-    window.resize(900, 180);
-    item->setParentItem(window.contentItem());
-    item->setSize(QSizeF(900, 180));
-    window.show();
-    for (const int mode : { 0, 1, 0 }) {
-        REQUIRE(theme->setProperty("_settings", QVariantMap { { "mode", mode }, { "wallpaper", "" } }));
-        QCoreApplication::processEvents();
-        CHECK(theme->property("dark").toBool() == (mode == 1));
-        for (const auto& entry : QList<QPair<QString, QString>> {
-                 { "hybrid-volume", "qrc:/images/toolbar/Mesh/hybrid-meshing.svg" },
-                 { "surface_reconstruction", "qrc:/images/toolbar/Mesh/nurbs-reconstruction.svg" },
-                 { "unrelated", "qrc:/images/toolbar/Geometry/split-edge.svg" } }) {
-            auto* button = findItem(item, "featureEntry_category:" + entry.first);
-            REQUIRE(button);
-            const auto icon = engine.newQObject(button).property("icon");
-            CHECK(icon.property("source").toString() == entry.second);
-            CHECK(icon.property("color").toVariant().value<QColor>() == QColor(Qt::transparent));
-        }
-        const auto entries = toolbar->property("navigationEntries").value<QJSValue>();
-        CHECK(entries.property(0).property("items").property(0).property("name").toString() == "provider-a");
-        CHECK(entries.property(1).property("items").property(0).property("name").toString() == "provider-b");
-    }
 }
 
 TEST_CASE("Qt feature information exposes navigation as JavaScript arrays", "[navigation][Qt]")
