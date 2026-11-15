@@ -27,6 +27,10 @@
 class ModelLayer;
 class UndoStack;
 
+namespace systems::io {
+class ModelIOSystem;
+}
+
 namespace systems::job {
 class JobRunner;
 struct JobWork;
@@ -59,8 +63,16 @@ public:
     using SystemHandlerPtr = ::systems::SystemHandlerPtr<SystemHandler>; //> 兼容跨 dll 边界析构的智能指针
     static const std::string name; //> 系统唯一名称，用于插件注册时的识别
 
-    FeatureSystem(ModelLayer& model_layer, core::EventBus& event_bus, UndoStack* undo_stack = nullptr);
+    /**
+     * @brief 装配功能系统，可借用宿主的模型 IO 系统作为迁移入口
+     * @param io_system 非拥有指针，可空；宿主须保证其存活覆盖功能系统的生命周期
+     */
+    FeatureSystem(ModelLayer& model_layer, core::EventBus& event_bus, UndoStack* undo_stack = nullptr,
+        io::ModelIOSystem* io_system = nullptr);
     ~FeatureSystem();
+
+    /** @brief 获取宿主注入的模型 IO 系统；未注入时返回空指针。 */
+    io::ModelIOSystem* ioSystem() const noexcept { return io_system_; }
 
     /**
      * @brief 空闲时注册功能：装配上下文 → setup 收集声明 → 载入参数默认值；占用期拒绝
@@ -93,6 +105,8 @@ public:
      * @brief 获取已注册功能信息列表
      */
     std::vector<FeatureInfo*> getFeatureInfos();
+    /** @brief 从已注册 Feature 的声明枚举文件入口。 */
+    std::vector<FileFeatureInfo> getFileTypes(FileDirection direction) const;
     /** @brief 首次注册菜单；重复 ID 保留已有定义，操作占用期拒绝。 */
     bool tryRegisterNavigationMenu(FeatureNavigationMenu menu);
     /** @brief 首次注册分组；所属菜单必须存在，空 id/标题表示未分组区域布局。 */
@@ -159,6 +173,7 @@ public:
     void flushDeferredEvents();
 
 private:
+    friend class FeatureIOSystemRegister;
     friend struct FeatureContext;
     friend class UndoContext;
     friend class InteractionContext;
@@ -218,6 +233,7 @@ private:
     ModelLayer* model_layer_; //< 模型层引用，用于装配功能上下文
     core::EventBus* event_bus_; //< 事件总线引用
     UndoStack* undo_stack_ { nullptr }; //< undo 栈引用（可空：无栈时边界退化为仅 flush）
+    io::ModelIOSystem* io_system_ { nullptr }; //< 非拥有的 IO 系统指针，由宿主维护生命周期
     std::unordered_map<std::string, FeatureEntry> entries_; //< 功能条目，key 为功能唯一名称
     std::vector<FeatureNavigationMenu> navigation_menus_;
     std::vector<FeatureNavigationGroup> navigation_groups_;

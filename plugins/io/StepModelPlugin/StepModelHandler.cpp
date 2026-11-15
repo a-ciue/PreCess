@@ -14,6 +14,7 @@
 #include <TDocStd_Document.hxx>
 #include <XCAFApp_Application.hxx>
 #include <BRep_Builder.hxx>
+#include <BRepBuilderAPI_Copy.hxx>
 #include <TopoDS_Compound.hxx>
 #include <TopoDS_Shape.hxx>
 #include <spdlog/spdlog.h>
@@ -66,7 +67,8 @@ void StepModelHandler::write_components(const ModelLayer& mgr,
             spdlog::warn("StepModelHandler: component {} has no geometry(rootShape), skip", cid);
             continue;
         }
-        shapes.push_back(*comp->geometry->rootShape);
+        // 重建拓扑并复用只读曲线曲面；几何 BRep 不携带原离散缓存。
+        shapes.push_back(BRepBuilderAPI_Copy(*comp->geometry->rootShape, false, false).Shape());
     }
 
     if (shapes.empty()) {

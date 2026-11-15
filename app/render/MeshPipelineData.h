@@ -5,9 +5,13 @@
 #pragma once
 
 #include "Core.h"
+#include "renderStrategy/AttributeCommon.h"
 #include <array>
 #include <cstdint>
+#include <map>
 #include <memory>
+#include <optional>
+#include <string>
 #include <thread>
 #include <vector>
 #include <vtkSmartPointer.h>
@@ -25,6 +29,13 @@ struct MeshClipPlane {
     std::array<double, 3> normal { 1.0, 0.0, 0.0 };
 };
 
+/** @brief 当前组件采用的标量显示配置，不包含界面联动和历史偏好。 */
+struct ScalarDisplayConfig {
+    std::string attribute;
+    std::optional<std::array<double, 2>> mapping;
+    std::optional<std::array<double, 2>> display;
+};
+
 /**
  * @brief 已完成计算的网格快照；发布后不再改写，数组由源数据或 VTK 自持。
  *
@@ -33,8 +44,11 @@ struct MeshClipPlane {
 struct MeshDataSnapshot {
     std::uint64_t generation { };
     std::uint64_t revision { };
+    /** @brief 本次生成快照时是否重建可见网格输出；缓存重放不依据此标记。 */
+    bool mesh_outputs_rebuilt { false };
     bool visible { true };
     MeshClipPlane clip;
+    std::optional<ScalarDisplayConfig> scalar_config;
     std::shared_ptr<const MeshData> source;
     std::shared_ptr<const MeshDataVtk> model_data;
     vtkSmartPointer<vtkPolyData> original_faces;
@@ -75,7 +89,11 @@ public:
     void setClipPlane(vtkPlane* plane);
     /** @brief 应用来自渲染控件的裁剪值快照。 */
     void setClipPlane(const MeshClipPlane& plane);
-    /** @brief 主动计算需要更新的数据；每次发布递增版本，绝不重新执行旧输出管线。 */
+    /** @brief 查询完整单值属性的有限值域，缓存不受隐藏和裁剪影响。 */
+    std::optional<std::array<double, 2>> scalarRange(const std::string& attribute);
+    /** @brief 校验并保存完整显示配置，空值取消着色和筛选；无效参数不改变当前结果。 */
+    void setScalarConfig(std::optional<ScalarDisplayConfig> config);
+    /** @brief 按需生成可见网格输出，发布携带本次重建标记和递增版本的快照。 */
     std::shared_ptr<const MeshDataSnapshot> createSnapshot();
     /** @brief 返回原始网格代次，用于丢弃旧选择消息。 */
     std::uint64_t generation() const { return generation_; }
@@ -85,6 +103,8 @@ private:
     void assertOwnerThread() const;
     /** @brief 重建独立的计算实例，旧快照所引用的输出不再被修改。 */
     void rebuildOutputs();
+    /** @brief 按共用优先级读取首先命中的原始数组及实体域。 */
+    ScalarAttribute scalarValues(const std::string& attribute) const;
 
     std::thread::id owner_thread_;
     std::shared_ptr<const MeshData> source_;
@@ -95,6 +115,9 @@ private:
     std::shared_ptr<MeshDataSnapshot> prepared_;
     std::vector<vtkIdType> hidden_face_ids_;
     MeshClipPlane clip_;
+    // 值域缓存属于本次源数据；筛选仅保存条件，不修改原始属性和连通性。
+    std::map<std::string, std::optional<std::array<double, 2>>> scalar_ranges_;
+    std::optional<ScalarDisplayConfig> scalar_config_;
     bool visible_ { true };
     bool dirty_ { true };
     std::uint64_t generation_ { };

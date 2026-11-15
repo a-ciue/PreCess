@@ -3,6 +3,7 @@
 #include "Core.h"
 #include "GeometryActorManagerSelectOp.h"
 #include "GeometryTopologyDiagnosticCategory.h"
+#include "SurfacePrecision.h"
 #include <array>
 #include <memory>
 #include <string>
@@ -31,6 +32,9 @@ public:
     void setCurrentRenderStyle(GeometryRenderStyle style);
     GeometryRenderStyle getCurrentRenderStyle() const;
 
+    /** @brief 设置窗口精细度；调用侧保证档位有效，逐组件更新，失败时向外抛出。 */
+    void setSurfacePrecision(int precision);
+
     /** @brief 设置窗口级几何拓扑诊断类别是否启用。 */
     void setTopologyDiagnosticCategoryEnabled(int category, bool enabled);
     /** @brief 设置窗口级细小边长度阈值。 */
@@ -42,10 +46,11 @@ public:
     const GeometryActorManagerSelectOp& op() const { return op_; }
 
 private:
-    GeometryActorManagerSelectOp op_{*this};
+    GeometryActorManagerSelectOp op_ { *this };
     std::unordered_map<Index, std::shared_ptr<GeometryActor>> component_actors_;
     vtkRenderer* renderer_;
     GeometryRenderStyle current_style_ { GeometryRenderStyle::SurfaceWithEdges };
+    int surface_precision_ { surface_precision::kDefault };
     std::array<bool, kGeometryTopologyDiagnosticCategoryCount> topology_diagnostic_category_enabled_ {};
     double topology_diagnostic_small_edge_length_ { 0.01 };
     double topology_diagnostic_small_face_area_ { 0.01 };

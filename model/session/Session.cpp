@@ -8,11 +8,11 @@
 #include "EditSystem.h"
 #include "EditSystemRegister.h"
 #include "FeatureEvents.h"
+#include "FeatureIOSystemRegister.h"
 #include "FeatureSystem.h"
 #include "FeatureSystemRegister.h"
 #include "JobRunner.h"
 #include "ModelIOSystem.h"
-#include "ModelIOSystemRegister.h"
 #include "ModelObserver.h"
 #include "ModelScope.h"
 #include "SystemPluginManager.h"
@@ -95,7 +95,7 @@ Session::Session(ModelObserver* observer, std::function<void(std::function<void(
     , io_system_(std::make_unique<systems::io::ModelIOSystem>(model_, undo_stack_.get()))
     , algo_system_(std::make_unique<systems::algo::AlgorithmSystem>(*io_system_, model_, undo_stack_.get()))
     , edit_system_(std::make_unique<systems::edit::EditSystem>(model_, undo_stack_.get()))
-    , feature_system_(std::make_unique<systems::feature::FeatureSystem>(model_, event_bus_, undo_stack_.get()))
+    , feature_system_(std::make_unique<systems::feature::FeatureSystem>(model_, event_bus_, undo_stack_.get(), io_system_.get()))
     , plugin_manager_(std::make_unique<systems::SystemPluginManager>())
 {
     // undo 栈挂接模型层记录钩子（写前/结构操作时机回调）
@@ -109,7 +109,7 @@ Session::Session(ModelObserver* observer, std::function<void(std::function<void(
     }
 
     // 注册系统：插件按元数据的 system 字段路由到对应注册器
-    plugin_manager_->addSystemRegister(systems::io::ModelIOSystem::name, std::make_unique<systems::io::ModelIOSystemRegister>(*io_system_));
+    plugin_manager_->addSystemRegister(systems::io::ModelIOSystem::name, std::make_unique<systems::feature::FeatureIOSystemRegister>(*feature_system_));
     plugin_manager_->addSystemRegister(systems::algo::AlgorithmSystem::name, std::make_unique<systems::algo::AlgorithmSystemRegister>(*algo_system_));
     plugin_manager_->addSystemRegister(systems::edit::EditSystem::name, std::make_unique<systems::edit::EditSystemRegister>(*edit_system_));
     plugin_manager_->addSystemRegister(systems::feature::FeatureSystem::name, std::make_unique<systems::feature::FeatureSystemRegister>(*feature_system_));

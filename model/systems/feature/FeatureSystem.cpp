@@ -172,10 +172,12 @@ FeatureSystem::FeatureEntry::FeatureEntry(FeatureSystem& system, const HandlerMe
 {
 }
 
-FeatureSystem::FeatureSystem(ModelLayer& model_layer, core::EventBus& event_bus, UndoStack* undo_stack)
+FeatureSystem::FeatureSystem(ModelLayer& model_layer, core::EventBus& event_bus, UndoStack* undo_stack,
+    io::ModelIOSystem* io_system)
     : model_layer_(&model_layer)
     , event_bus_(&event_bus)
     , undo_stack_(undo_stack)
+    , io_system_(io_system)
 {
     on_feature_infos_changed_ = []() { };
 }
@@ -250,6 +252,7 @@ bool FeatureSystem::registerHandler(const HandlerMetaData& meta_data, SystemHand
             }))
             entry.params = std::move(*previous_params);
         entry.info.arg_types = registrar.argTypes();
+        entry.info.file_type = registrar.fileType();
         entry.info.navigation = registrar.navigation();
         entry.info.key_bindings = registrar.keyBindings();
 
@@ -279,6 +282,20 @@ bool FeatureSystem::registerHandler(const HandlerMetaData& meta_data, SystemHand
     spdlog::info("FeatureSystem::registerHandler: Registered feature '{}'", meta_data.name);
     on_feature_infos_changed_();
     return true;
+}
+
+std::vector<FileFeatureInfo> FeatureSystem::getFileTypes(FileDirection direction) const
+{
+    std::vector<FileFeatureInfo> result;
+    for (const auto& [name, entry] : entries_) {
+        const auto& declared = entry.info.file_type;
+        if (entry.handler && declared && declared->direction == direction)
+            result.push_back({ name, entry.info.display_name, declared->extensions });
+    }
+    std::sort(result.begin(), result.end(), [](const auto& left, const auto& right) {
+        return left.display_name != right.display_name ? left.display_name < right.display_name : left.feature < right.feature;
+    });
+    return result;
 }
 
 void FeatureSystem::unregisterHandler(const HandlerMetaData& meta_data)

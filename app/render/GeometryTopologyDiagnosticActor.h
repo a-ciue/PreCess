@@ -15,13 +15,12 @@
 #include <vtkPolyDataMapper.h>
 
 #include <array>
-#include <string>
 #include <memory>
+#include <string>
 
 class GeometryTopologyDiagnosticResult;
 struct GeometryTopologyDiagnosticOptions;
 class TopoDS_Shape;
-class vtkDataArray;
 class vtkPolyData;
 class vtkRenderer;
 
@@ -39,9 +38,10 @@ public:
     void loadShape(const TopoDS_Shape& shape,
         const GeometryDiagnosticOccShapeHandle& occ_shape,
         vtkPolyData* line_data,
-        vtkDataArray* line_sub_ids,
-        vtkPolyData* face_data,
-        vtkDataArray* face_sub_ids);
+        vtkPolyData* face_data);
+
+    /** @brief 复用当前 Shape 的诊断缓存，仅刷新已启用类别的线、面叠加。 */
+    void refreshDisplay();
 
     /** @brief 启用或停用一种几何拓扑诊断类别。 */
     void setCategoryEnabled(GeometryTopologyDiagnosticCategory category, bool enabled);
@@ -58,6 +58,7 @@ public:
     void setComponentLabel(std::string label) { component_label_ = std::move(label); }
 
 private:
+    void extractCategory(GeometryTopologyDiagnosticCategory category);
     /** @brief 保存一种诊断类别的独立静态数据、映射器和 Actor。 */
     struct DiagnosticPipeline {
         vtkNew<vtkPolyData> data;
@@ -103,8 +104,6 @@ private:
     GeometryDiagnosticOccShapeHandle occ_shape_;
     vtkPolyData* line_data_ {};
     vtkPolyData* face_data_ {};
-    vtkDataArray* line_sub_ids_ {};
-    vtkDataArray* face_sub_ids_ {};
     std::unique_ptr<GeometryTopologyDiagnosticResult> diagnostics_;
     //! 所属组件的显示标签（id + 名称），仅用于日志标注结果归属；空表示尚未设置。
     std::string component_label_;

@@ -7,10 +7,27 @@
 #include "ArgType.h"
 #include "FeatureNavigation.h"
 
+#include <optional>
 #include <string>
 #include <vector>
 
 namespace systems::feature {
+/** @brief 文件操作方向；功能身份由 Feature ID 表达。 */
+enum class FileDirection { Import,
+    Export };
+
+/** @brief 一个 Feature 的文件操作能力，扩展名仅用于文件框筛选。 */
+struct FileTypeDeclaration {
+    FileDirection direction { FileDirection::Import };
+    std::vector<std::string> extensions;
+};
+
+/** @brief 文件入口的 Feature ID、显示名称与扩展名，供界面查询。 */
+struct FileFeatureInfo {
+    std::string feature;
+    std::string display_name;
+    std::vector<std::string> extensions;
+};
 /**
  * @brief 按键绑定：明确声明正式 execute，或定向预览/非模型 onKeyEvent 回调
  */
@@ -31,6 +48,7 @@ struct FeatureInfo {
     std::vector<core::ArgType> arg_types; //> 功能参数类型列表
     FeatureNavigation navigation; //> setup 声明的统一功能入口
     std::vector<KeyBinding> key_bindings; //> 按键绑定列表
+    std::optional<FileTypeDeclaration> file_type; //> setup 声明的文件入口，参数由功能自行声明
 };
 }
 #endif // FEATURE_INFO_H

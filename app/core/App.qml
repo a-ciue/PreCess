@@ -16,8 +16,22 @@ QtObject {
 
     property var activeOperation: null
     property bool importDragActive: false
-    property var registry: ({})
+    // 注册表对象保持稳定，各控件引用通过属性变更通知各自的绑定。
+    readonly property QtObject registry: QtObject {
+        property var renderWindow: null
+        property var treeModel: null
+        property var objectTree: null
+        property var scalarRanges: null
+    }
 
-    signal modelVisibilityUpdated(int modelId, bool visible)
-    signal componentVisibilityUpdated(int componentId, bool meshVisible, bool geometryVisible)
+    // 将文件 URL 转为本地路径，保留盘符、网络共享路径和转义后的文件名。
+    function localFilePath(url) {
+        const text = String(url)
+        if (!text.startsWith("file://"))
+            return text
+        let path = decodeURIComponent(text.slice(7))
+        if (!path.startsWith("/"))
+            return "//" + path
+        return /^\/[A-Za-z]:\//.test(path) ? path.slice(1) : path
+    }
 }

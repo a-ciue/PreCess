@@ -1,4 +1,7 @@
 #include "AttriRenderStrategyScalar.h"
+#include "AttributeCommon.h"
+#include <cmath>
+#include <spdlog/spdlog.h>
 #include <vtkCellData.h>
 #include <vtkDataArray.h>
 #include <vtkPointData.h>
@@ -6,8 +9,6 @@
 #include <vtkPolyDataMapper.h>
 #include <vtkScalarBarActor.h>
 #include <vtkScalarsToColors.h>
-#include <spdlog/spdlog.h>
-#include <cmath>
 
 namespace {
 // 移除属性类型前缀和分量后缀，只用于颜色表标题显示。
@@ -60,17 +61,25 @@ void AttriRenderStrategyScalar::render(
     const std::string& attr_name,
     std::map<std::string, std::any> args)
 {
-    this->cancelActiveAttribute(op);
-    // 提取scalar_range参数
+    // 直接调用策略也先校验映射参数，非法输入不能清除原有着色。
     std::vector<double> scalar_range;
-    auto it = args.find("scalar_range");
-    if (it != args.end() ) {
-        const auto& vec = std::any_cast<const std::vector<double>&>(it->second);
-        if (vec.size() == 2) {
-            scalar_range = vec;
+    if (const auto it = args.find("scalar_range"); it != args.end()) {
+        const auto* values = std::any_cast<std::vector<double>>(&it->second);
+        if (!values || (!values->empty() && (values->size() != 2 || !std::isfinite((*values)[0]) || !std::isfinite((*values)[1]) || (*values)[0] > (*values)[1]))) {
+            spdlog::warn("标量映射范围必须为空或包含两个有序有限数值");
+            return;
         }
+        scalar_range = *values;
     }
-
+    // 查询、筛选与着色共用名称优先级；命中后不再向后寻找其他实体域。
+    const auto attribute = findScalarAttribute(attr_name, op.getFacePointData(), op.getEdgeCellData(),
+        op.getFaceCellData(), op.getSolidCellData());
+    auto* array = attribute.values;
+    if (!array) {
+        spdlog::error("Attribute {} not found in point, edge, face or solid data.", attr_name);
+        return;
+    }
+    this->cancelActiveAttribute(op);
     auto resolveRange = [&scalar_range](vtkDataArray* array, double range[2]) {
         // 不可用结果以 NaN 保留单元位置；全不可用时只着 NaN 色，不生成虚假色标。
         array->GetFiniteRange(range);
@@ -85,9 +94,7 @@ void AttriRenderStrategyScalar::render(
         }
         return true;
     };
-    // 判断是否是点属性
-    vtkDataArray* array = op.getFacePointData()->GetArray(attr_name.c_str());
-    if (array) {
+    if (attribute.type == ElementType::VERTEX) {
         double range[2];
         const bool has_range = resolveRange(array, range);
 
@@ -111,8 +118,7 @@ void AttriRenderStrategyScalar::render(
         return;
     }
     // 判断是否是边属性
-    array = op.getEdgeCellData()->GetArray(attr_name.c_str());
-    if (array) {
+    if (attribute.type == ElementType::EDGE) {
         double range[2];
         const bool has_range = resolveRange(array, range);
 
@@ -127,8 +133,7 @@ void AttriRenderStrategyScalar::render(
         return;
     }
     // 判断是否是面属性
-    array = op.getFaceCellData()->GetArray(attr_name.c_str());
-    if (array) {
+    if (attribute.type == ElementType::FACE) {
         op.enableFaceAttributeOffset();
         double range[2];
         const bool has_range = resolveRange(array, range);
@@ -144,8 +149,7 @@ void AttriRenderStrategyScalar::render(
         return;
     }
     // 判断是否是体属性
-    array = op.getSolidCellData()->GetArray(attr_name.c_str());
-    if (array) {
+    if (attribute.type == ElementType::SOLID) {
         op.disableFaceAttributeOffset();
         double range[2];
         const bool has_range = resolveRange(array, range);
@@ -160,6 +164,4 @@ void AttriRenderStrategyScalar::render(
             showScalarBar(solid_mapper, attr_name, range);
         return;
     }
-
-    spdlog::error("Attribute {} not found in point, edge, face or solid data.", attr_name);
 }

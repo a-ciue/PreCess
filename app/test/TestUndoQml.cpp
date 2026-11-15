@@ -6,14 +6,18 @@
 #include "FeatureHandler.h"
 #include "FeatureRegistrar.h"
 #include "FeatureSystem.h"
+#include "GeometryBuilder.h"
 #include "GeometryData.h"
 #include "MeshData.h"
 #include "ModelLayer.h"
 #include "QFeatureInfo.h"
 #include "QModelManager.h"
+#include "QModelQuery.h"
 #include "QRenderWindow.h"
 #include "QSelection.h"
+#include "SessionQuery.h"
 #include "TreeModel.h"
+#include "TreeModelTestHelpers.h"
 #include <QEventLoop>
 #include <QFile>
 #include <QGuiApplication>
@@ -22,10 +26,10 @@
 #include <QQmlEngine>
 #include <QQmlExtensionPlugin>
 #include <QQuickVTKItem.h>
+#include <QQuickItem>
 #include <QQuickWindow>
 #include <QScopeGuard>
 #include <QTemporaryDir>
-#include <QTimer>
 #include <catch2/catch_test_macros.hpp>
 #include <map>
 #include <utility>
@@ -119,23 +123,256 @@ struct QmlFixture {
     }
 };
 
-// 等实际模型刷新完成；定时器只限制失败等待，不依赖 UI 刷新周期。
-bool waitForRefresh(TreeModel& tree_model)
+// 结构事件即时同步；这里只泵一次事件循环，让实际 QML 链路完成收尾。
+void pumpEvents()
 {
-    QEventLoop loop;
-    bool refreshed = false;
-    QObject::connect(&tree_model, &QAbstractItemModel::modelReset, &loop, [&] {
-        refreshed = true;
-        loop.quit();
-    });
-    QTimer timeout;
-    timeout.setSingleShot(true);
-    QObject::connect(&timeout, &QTimer::timeout, &loop, &QEventLoop::quit);
-    timeout.start(2000);
-    loop.exec();
-    return refreshed;
+    QCoreApplication::processEvents();
 }
 
+}
+
+TEST_CASE("Actual scalar editor completes range actions without intermediate requests", "[QML][scalar-range][no-window]")
+{
+    application();
+    QmlFixture f;
+    auto ranges = load(f.engine, "ScalarRangeState.qml");
+    REQUIRE(f.selection_state->setProperty("activeComponentId", 7));
+    auto panel = load(f.engine, "AttributeRenderPanel.qml", { { "rangeState", QVariant::fromValue(ranges.get()) } });
+    f.engine.globalObject().setProperty("ranges", f.engine.newQObject(ranges.get()));
+    f.engine.globalObject().setProperty("panel", f.engine.newQObject(panel.get()));
+    auto setup = f.engine.evaluate(R"JS(
+        var requests = [], cancellations = [];
+        ranges.query = {getComponentAttriInfo: function() {return [{name:'value', attrType:2, componentCount:1}, {name:'vector', attrType:2, componentCount:3}];}};
+        ranges.renderWindow = {
+            scalarRangeInfo: function(component) {return component === 8 ? [10, 20] : [0.25, 0.751234567];},
+            setAttriMode: function(component, attribute, mode, args) {
+                requests.push({component:component, attribute:attribute, mode:mode, configuration:args});
+            },
+            cancelComponentAttri: function(component) {cancellations.push(component);}
+        };
+        var key = ranges.ensure(7, 'value');
+        panel.attributes = [{name:'value', displayName:'value', typeName:'面', attrType:2, componentCount:1}];
+        panel.selectedIndex = 0;
+        panel.rangeMetadata = ranges.rangeInfo(7, 'value');
+        panel.selectedKey = key;
+        ranges.apply(key);
+    )JS");
+    INFO(setup.toString().toStdString());
+    REQUIRE_FALSE(setup.isError());
+    auto* mode = panel->findChild<QObject*>("attributeRenderMode");
+    auto* lower = panel->findChild<QObject*>("scalarRangeLower");
+    auto* link = panel->findChild<QObject*>("scalarRangeLink");
+    REQUIRE(mode);
+    REQUIRE(lower);
+    REQUIRE(link);
+    REQUIRE(mode->setProperty("currentIndex", 1));
+    REQUIRE(link->property("enabled").toBool());
+    REQUIRE(QMetaObject::invokeMethod(link, "clicked"));
+    f.engine.evaluate("requests = []");
+    auto* editor = panel->findChild<QObject*>("scalarRangeEditor");
+    auto* reset = panel->findChild<QObject*>("scalarRangeReset");
+    auto* display = panel->findChild<QObject*>("scalarDisplayMode");
+    REQUIRE(editor);
+    REQUIRE(reset);
+    REQUIRE(display);
+    f.engine.globalObject().setProperty("editor", f.engine.newQObject(editor));
+    // 使用生产输入信号，不直接构造输入草稿。
+    auto edit_lower = [&](const char* text) {
+        REQUIRE(lower->setProperty("text", text));
+        REQUIRE(QMetaObject::invokeMethod(lower, "textEdited"));
+    };
+    auto check = [&](const char* script) {
+        auto value = f.engine.evaluate(QString::fromUtf8(script));
+        INFO(value.toString().toStdString());
+        REQUIRE_FALSE(value.isError());
+        CHECK(value.toBool());
+    };
+    SECTION("linked reset discards draft and restores both ranges")
+    {
+        edit_lower("0.3");
+        REQUIRE(QMetaObject::invokeMethod(editor, "finishEditing"));
+        f.engine.evaluate("requests = []");
+        edit_lower("0.4");
+        REQUIRE(QMetaObject::invokeMethod(reset, "clicked"));
+        QCoreApplication::processEvents();
+        check("requests.length === 1 && ranges.parameters(key).linked && !ranges.parameters(key).filtered"
+              " && ranges.parameters(key).mappingLower === 0.25 && ranges.parameters(key).displayLower === 0.25");
+    }
+    SECTION("independent reset keeps the other range")
+    {
+        REQUIRE(QMetaObject::invokeMethod(link, "clicked"));
+        edit_lower("0.3");
+        REQUIRE(QMetaObject::invokeMethod(editor, "finishEditing"));
+        REQUIRE(QMetaObject::invokeMethod(display, "clicked"));
+        edit_lower("0.4");
+        REQUIRE(QMetaObject::invokeMethod(editor, "finishEditing"));
+        f.engine.evaluate("requests = []");
+        REQUIRE(QMetaObject::invokeMethod(reset, "clicked"));
+        check("requests.length === 1 && !ranges.parameters(key).linked && !ranges.parameters(key).filtered"
+              " && ranges.parameters(key).mappingLower === 0.3 && ranges.parameters(key).displayLower === 0.25");
+    }
+    SECTION("explicit apply publishes only the final linked parameters")
+    {
+        edit_lower("0.333333333333");
+        auto* apply = panel->findChild<QObject*>("attributeRenderApply");
+        REQUIRE(apply);
+        REQUIRE(QMetaObject::invokeMethod(apply, "clicked"));
+        QCoreApplication::processEvents();
+        check("requests.length === 1 && requests[0].configuration.scalar_range[0] === 0.333333333333"
+              " && requests[0].configuration.display_range[0] === 0.333333333333");
+    }
+    SECTION("cancel saves parameters without applying and reapply restores them")
+    {
+        edit_lower("0.333333333333");
+        auto* cancel = panel->findChild<QObject*>("attributeRenderCancel");
+        REQUIRE(cancel);
+        REQUIRE(QMetaObject::invokeMethod(cancel, "clicked"));
+        QCoreApplication::processEvents();
+        check("requests.length === 0 && cancellations.length === 1 && cancellations[0] === 7"
+              " && !ranges.activeKeys['7'] && ranges.parameters(key).mappingLower === 0.333333333333");
+        REQUIRE(QMetaObject::invokeMethod(panel.get(), "applySelectedAttribute"));
+        check("requests.length === 1 && requests[0].configuration.display_range[0] === 0.333333333333");
+    }
+    SECTION("pending drag and late old gesture retain their captured property")
+    {
+        auto result = f.engine.evaluate(R"JS(
+            editor.handleEditTarget = {key:key, display:false};
+            editor.queueRange(0.3, 0.6);
+            var other = ranges.ensure(8, 'value');
+            panel.rangeMetadata = ranges.rangeInfo(8, 'value');
+            panel.selectedKey = other;
+            editor.queueRange(0.4, 0.5);
+        )JS");
+        REQUIRE_FALSE(result.isError());
+        QCoreApplication::processEvents();
+        check("requests.length === 1 && requests[0].component === 7 && ranges.parameters(key).mappingLower === 0.3"
+              " && ranges.parameters(other).mappingLower === 10 && ranges.parameters(other).mappingUpper === 20");
+    }
+    SECTION("multicomponent optional mapping retains precise endpoints")
+    {
+        auto value = f.engine.evaluate(R"JS(
+            ranges.renderWindow.scalarRangeInfo = function() {return [];};
+            var vector = ranges.ensure(7, 'vector');
+            panel.rangeMetadata = ranges.rangeInfo(7, 'vector');
+            panel.selectedKey = vector;
+        )JS");
+        REQUIRE_FALSE(value.isError());
+        edit_lower("100.123456789");
+        REQUIRE(QMetaObject::invokeMethod(editor, "finishEditing"));
+        check("ranges.parameters(vector).mappingLower === 100.123456789 && ranges.parameters(vector).mappingUpper === null"
+              " && requests.length === 0");
+        auto* upper = panel->findChild<QObject*>("scalarRangeUpper");
+        REQUIRE(upper);
+        REQUIRE(upper->setProperty("text", "200.987654321"));
+        REQUIRE(QMetaObject::invokeMethod(upper, "textEdited"));
+        REQUIRE(QMetaObject::invokeMethod(editor, "finishEditing"));
+        check("ranges.apply(vector) && requests.length === 1 && requests[0].configuration.scalar_range[0] === 100.123456789"
+              " && requests[0].configuration.scalar_range[1] === 200.987654321 && !('display_range' in requests[0].configuration)");
+        CHECK_FALSE(link->property("enabled").toBool());
+    }
+    SECTION("metadata refresh preserves draft and reset uses the latest original range")
+    {
+        edit_lower("0.333333333333");
+        auto value = f.engine.evaluate(R"JS(
+            ranges.renderWindow.scalarRangeInfo = function() {return [-5, 5];};
+            panel.rangeMetadata = ranges.rangeInfo(7, 'value');
+            ranges.ensure(7, 'value', panel.rangeMetadata);
+        )JS");
+        REQUIRE_FALSE(value.isError());
+        CHECK(lower->property("text").toString() == "0.333333333333");
+        REQUIRE(QMetaObject::invokeMethod(editor, "finishEditing"));
+        check("requests.length === 1 && ranges.parameters(key).mappingLower === 0.333333333333"
+              " && ranges.parameters(key).mappingUpper === 0.751234567");
+        f.engine.evaluate("requests = []");
+        REQUIRE(QMetaObject::invokeMethod(reset, "clicked"));
+        check("requests.length === 1 && ranges.parameters(key).mappingLower === -5 && ranges.parameters(key).mappingUpper === 5"
+              " && ranges.parameters(key).displayLower === -5 && !ranges.parameters(key).filtered");
+    }
+    SECTION("unlink merges the final draft once")
+    {
+        SECTION("color mapping draft") { }
+        SECTION("visible cells draft")
+        {
+            auto* display = panel->findChild<QObject*>("scalarDisplayMode");
+            REQUIRE(display);
+            REQUIRE(QMetaObject::invokeMethod(display, "clicked"));
+        }
+        // 触发生产输入框和按钮的处理链，不直接构造草稿，也不创建或显示窗口。
+        REQUIRE(lower->setProperty("text", "0.333333333333"));
+        REQUIRE(QMetaObject::invokeMethod(lower, "textEdited"));
+        REQUIRE(QMetaObject::invokeMethod(link, "clicked"));
+        QCoreApplication::processEvents();
+        auto result = f.engine.evaluate(R"JS(
+            var state = ranges.parameters(key);
+            var config = requests.length === 1 ? requests[0].configuration : null;
+            !state.linked && !panel.currentRange.linked && requests.length === 1
+                && requests[0].component === 7 && requests[0].attribute === 'value' && requests[0].mode === 1
+                && config.scalar_range[0] === 0.333333333333 && config.display_range[0] === 0.333333333333
+                && config.scalar_range[1] === 0.751234567 && config.display_range[1] === 0.751234567;
+        )JS");
+        INFO(result.toString().toStdString());
+        REQUIRE_FALSE(result.isError());
+        CHECK(result.toBool());
+    }
+    auto* panel_item = qobject_cast<QQuickItem*>(panel.get());
+    REQUIRE(panel_item);
+    CHECK(panel_item->window() == nullptr);
+}
+
+TEST_CASE("Scalar UI skips unrenderable named attributes and applies the matching face range", "[QML][scalar-range][no-window]")
+{
+    application();
+    ModelLayer model;
+    auto component = std::make_unique<ComponentData>();
+    component->mesh = std::make_unique<MeshData>();
+    auto& mesh = *component->mesh;
+    mesh.vertex_positions_ = { { 0, 0, 0 }, { 1, 0, 0 }, { 1, 1, 0 }, { 0, 1, 0 } };
+    mesh.vertex_count_ = 4;
+    mesh.face_vertices_ = { 0, 1, 2, 0, 2, 3 };
+    mesh.face_vertices_offset_ = { 0, 3, 6 };
+    mesh.face_attributes_["value"] = { 0.25, 0.75 };
+    mesh.vertex_attributes_["value"] = { };
+    SECTION("empty point attribute") { }
+    SECTION("point attribute length does not match the point count")
+    {
+        mesh.vertex_attributes_["value"] = { 1.0 };
+    }
+    ComponentDatas components;
+    components.push_back(std::move(component));
+    const auto model_id = model.addModel("scalar lookup", std::move(components));
+    const auto component_id = model.modelById(model_id)->componentIds().front();
+    session::SessionQuery source_query(model);
+    QModelQuery query(&source_query);
+    const auto catalog = query.getComponentAttriInfo(component_id);
+    REQUIRE(catalog.size() == 2);
+    CHECK(catalog[0].toMap().value("componentCount").toInt() == 0);
+    CHECK(catalog[1].toMap().value("componentCount").toInt() == 1);
+    QRenderWindow viewport;
+    const auto data = query.getMeshDataByComponent(component_id);
+    REQUIRE(data);
+    viewport.loadMeshData(component_id, *data);
+    QQmlEngine engine;
+    auto ranges = load(engine, "ScalarRangeState.qml", { { "query", QVariant::fromValue(&query) }, { "renderWindow", QVariant::fromValue(&viewport) } });
+    engine.globalObject().setProperty("ranges", engine.newQObject(ranges.get()));
+    engine.globalObject().setProperty("componentId", component_id);
+    // 真实目录、界面能力和参数入口保持一致；只验证接受配置，不创建渲染场景。
+    auto applied = engine.evaluate(R"JS(
+        var metadata = ranges.rangeInfo(componentId, 'value');
+        var key = ranges.ensure(componentId, 'value');
+        ranges.save(key, Object.assign({}, ranges.parameters(key), {
+            displayLower:0.5, displayUpper:1, filtered:true
+        }));
+        var config = ranges.configuration(key);
+        metadata.rangeAvailable && metadata.minimum === 0.25 && metadata.maximum === 0.75
+            && ranges.attributeInfo(componentId, 'value').attrType === 2
+            && JSON.stringify(config.display_range) === '[0.5,1]'
+            && ranges.renderWindow.setAttriMode(componentId, 'value', 1, config);
+    )JS");
+    INFO(applied.toString().toStdString());
+    REQUIRE_FALSE(applied.isError());
+    REQUIRE(applied.toBool());
+
+    CHECK(viewport.window() == nullptr);
 }
 
 TEST_CASE("Actual QML synchronizes reversed mesh and geometry visibility across tree refresh", "[QML][visibility]")
@@ -176,6 +413,221 @@ TEST_CASE("Actual QML synchronizes reversed mesh and geometry visibility across 
             // 树重建后仍需保留各子节点状态，不能退回统一的组件开关。
             REQUIRE(tree->refresh());
         }
+    }
+}
+
+TEST_CASE("Actual QML keeps reported visibility when a subtype re-enters the tree", "[QML][visibility]")
+{
+    application();
+    QmlFixture f;
+    auto& model = *f.manager->getModelManager();
+    model.setUndoRecorder(nullptr);
+    ComponentDatas components;
+    auto component = std::make_unique<ComponentData>();
+    component->mesh = std::make_unique<MeshData>();
+    component->geometry = std::make_unique<GeometryData>();
+    components.push_back(std::move(component));
+    const Index model_id = model.addModel("visibility restore", std::move(components));
+    const Index component_id = model.modelById(model_id)->componentIds()[0];
+    auto* tree = f.tree->findChild<TreeModel*>();
+    auto* viewport = f.viewport->findChild<QQuickVTKItem*>();
+    REQUIRE(tree);
+    REQUIRE(viewport);
+    REQUIRE(tree->refresh());
+
+    const auto report = [&](bool mesh_visible, bool geometry_visible) {
+        REQUIRE(QMetaObject::invokeMethod(viewport, "componentVisibilityChanged",
+            Q_ARG(Index, component_id), Q_ARG(bool, mesh_visible), Q_ARG(bool, geometry_visible)));
+    };
+    const auto subtype_visible = [&](TreeNode::NodeType type) {
+        const QModelIndex component_index = tree->findIndexByNodeId(component_id, 1);
+        REQUIRE(component_index.isValid());
+        for (int i = 0; i < tree->rowCount(component_index); ++i) {
+            const QModelIndex child = tree->index(i, 0, component_index);
+            if (tree->data(child, TreeModel::NodeTypeRole).toInt() == static_cast<int>(type))
+                return tree->data(child, TreeModel::IsVisibleRole).toBool();
+        }
+        return false;
+    };
+
+    // 隐藏几何：完整二元结果一次应用。
+    report(true, false);
+    CHECK(subtype_visible(TreeNode::NodeType::Mesh));
+    CHECK_FALSE(subtype_visible(TreeNode::NodeType::Geometry));
+
+    // 删除网格并等待结构同步完成，树中只剩隐藏的几何。
+    auto component_operator = model.getComponentOperator(component_id);
+    REQUIRE(component_operator);
+    component_operator->removeMesh();
+    model.flushNotifications();
+    REQUIRE(waitForCondition([&] {
+        const QModelIndex idx = tree->findIndexByNodeId(component_id, 1);
+        return idx.isValid() && !tree->data(idx, TreeModel::IsVisibleRole).toBool();
+    }));
+    CHECK_FALSE(tree->data(tree->findIndexByNodeId(component_id, 1), TreeModel::IsVisibleRole).toBool());
+
+    // 撤销恢复：结构同步尚未执行时回传"网格可见、几何隐藏"，创建后不得被默认值覆盖。
+    component_operator->replaceMesh(std::make_unique<MeshData>());
+    model.flushNotifications();
+    report(true, false);
+    REQUIRE(waitForCondition([&] {
+        const QModelIndex idx = tree->findIndexByNodeId(component_id, 1);
+        if (!idx.isValid())
+            return false;
+        for (int i = 0; i < tree->rowCount(idx); ++i) {
+            const QModelIndex child = tree->index(i, 0, idx);
+            if (tree->data(child, TreeModel::NodeTypeRole).toInt() == static_cast<int>(TreeNode::NodeType::Mesh))
+                return tree->data(child, TreeModel::IsVisibleRole).toBool();
+        }
+        return false;
+    }));
+
+    CHECK(subtype_visible(TreeNode::NodeType::Mesh));
+    CHECK_FALSE(subtype_visible(TreeNode::NodeType::Geometry));
+    CHECK(tree->data(tree->findIndexByNodeId(component_id, 1), TreeModel::IsVisibleRole).toBool());
+}
+
+TEST_CASE("Actual QML applies hidden state reported before a component enters the tree", "[QML][visibility]")
+{
+    application();
+    QmlFixture f;
+    auto& model = *f.manager->getModelManager();
+    model.setUndoRecorder(nullptr);
+    ComponentDatas components;
+    components.push_back(std::make_unique<ComponentData>());
+    const Index model_id = model.addModel("pending component", std::move(components));
+    auto* tree = f.tree->findChild<TreeModel*>();
+    REQUIRE(tree);
+    REQUIRE(tree->refresh());
+
+    // 组件已存在于模型与视口，但合并刷新尚未把它加入对象树。
+    auto model_operator = model.getModelOperator(model_id);
+    REQUIRE(model_operator);
+    auto created = std::make_unique<ComponentData>();
+    created->geometry = std::make_unique<GeometryData>();
+    const Index component_id = model_operator->addGeometryComponent(std::move(created));
+    REQUIRE_FALSE(tree->findIndexByNodeId(component_id, 1).isValid());
+
+    REQUIRE(QMetaObject::invokeMethod(f.tree.get(), "hideAllNodes"));
+    REQUIRE(waitForCondition([&] {
+        const QModelIndex idx = tree->findIndexByNodeId(component_id, 1);
+        return idx.isValid() && !tree->data(idx, TreeModel::IsVisibleRole).toBool();
+    }));
+
+    const QModelIndex component_index = tree->findIndexByNodeId(component_id, 1);
+    REQUIRE(component_index.isValid());
+    CHECK_FALSE(tree->data(component_index, TreeModel::IsVisibleRole).toBool());
+    REQUIRE(tree->rowCount(component_index) == 1);
+    CHECK_FALSE(tree->data(tree->index(0, 0, component_index), TreeModel::IsVisibleRole).toBool());
+}
+
+TEST_CASE("Actual QML refreshes component tri-state when one subtype changes", "[QML][visibility]")
+{
+    application();
+    QmlFixture f;
+    auto& model = *f.manager->getModelManager();
+    model.setUndoRecorder(nullptr);
+    ComponentDatas components;
+    auto component = std::make_unique<ComponentData>();
+    component->mesh = std::make_unique<MeshData>();
+    component->geometry = std::make_unique<GeometryData>();
+    component->geometry->setRootShape(GeometryBuilder::makeBox(0.0, 0.0, 0.0, 1.0, 1.0, 1.0));
+    components.push_back(std::move(component));
+    const Index model_id = model.addModel("tri-state fixture", std::move(components));
+    const Index component_id = model.modelById(model_id)->componentIds().front();
+
+    auto* tree = f.tree->findChild<TreeModel*>();
+    auto* viewport = f.viewport->findChild<QRenderWindow*>();
+    REQUIRE(tree);
+    REQUIRE(viewport);
+    REQUIRE(tree->refresh());
+    viewport->onComponentChanged(component_id);
+
+    const QModelIndex component_index = tree->findIndexByNodeId(component_id, 1);
+    REQUIRE(component_index.isValid());
+    int visibility_updates = 0;
+    QObject::connect(tree, &QAbstractItemModel::dataChanged, tree,
+        [&](const QModelIndex& first, const QModelIndex&, const QList<int>& roles) {
+            if (first == component_index && roles.contains(TreeModel::VisibilityStateRole))
+                ++visibility_updates;
+        });
+
+    // 只隐藏几何：组件布尔显隐仍为可见，但三态必须变为部分显示并通知组件行。
+    viewport->setGeometryVisibility(component_id, false);
+    CHECK(tree->data(component_index, TreeModel::IsVisibleRole).toBool());
+    CHECK(tree->data(component_index, TreeModel::VisibilityStateRole).toInt() == Qt::PartiallyChecked);
+    CHECK(visibility_updates >= 1);
+}
+
+TEST_CASE("Actual QML keeps all show/hide state consistent across repeated toggles", "[QML][visibility]")
+{
+    application();
+    QmlFixture f;
+    auto& model = *f.manager->getModelManager();
+    model.setUndoRecorder(nullptr);
+
+    ComponentDatas components;
+    auto mesh_geometry = std::make_unique<ComponentData>();
+    mesh_geometry->mesh = std::make_unique<MeshData>();
+    mesh_geometry->geometry = std::make_unique<GeometryData>();
+    mesh_geometry->geometry->setRootShape(GeometryBuilder::makeBox(0.0, 0.0, 0.0, 1.0, 1.0, 1.0));
+    components.push_back(std::move(mesh_geometry));
+
+    auto geometry_only = std::make_unique<ComponentData>();
+    geometry_only->geometry = std::make_unique<GeometryData>();
+    geometry_only->geometry->setRootShape(GeometryBuilder::makeBox(2.0, 0.0, 0.0, 1.0, 1.0, 1.0));
+    components.push_back(std::move(geometry_only));
+
+    auto mesh_only = std::make_unique<ComponentData>();
+    mesh_only->mesh = std::make_unique<MeshData>();
+    components.push_back(std::move(mesh_only));
+
+    const Index model_id = model.addModel("toggle fixture", std::move(components));
+    const auto component_ids = model.modelById(model_id)->componentIds();
+    REQUIRE(component_ids.size() == 3);
+
+    auto* tree = f.tree->findChild<TreeModel*>();
+    auto* viewport = f.viewport->findChild<QRenderWindow*>();
+    REQUIRE(tree);
+    REQUIRE(viewport);
+    REQUIRE(tree->refresh());
+    for (Index component_id : component_ids)
+        viewport->onComponentChanged(component_id);
+
+    std::map<Index, std::pair<bool, bool>> last;
+    QObject::connect(viewport, &QRenderWindow::componentVisibilityChanged, viewport,
+        [&last](Index component_id, bool mesh_visible, bool geometry_visible) {
+            last[component_id] = { mesh_visible, geometry_visible };
+        });
+
+    const auto check_state = [&](bool visible) {
+        const QModelIndex model_index = tree->findIndexByNodeId(model_id, 0);
+        REQUIRE(model_index.isValid());
+        CHECK(tree->data(model_index, TreeModel::IsVisibleRole).toBool() == visible);
+        CHECK(tree->data(model_index, TreeModel::VisibilityStateRole).toInt()
+            == (visible ? Qt::Checked : Qt::Unchecked));
+        for (Index component_id : component_ids) {
+            const QModelIndex component_index = tree->findIndexByNodeId(component_id, 1);
+            REQUIRE(component_index.isValid());
+            CHECK(tree->data(component_index, TreeModel::IsVisibleRole).toBool() == visible);
+            CHECK(tree->data(component_index, TreeModel::VisibilityStateRole).toInt()
+                == (visible ? Qt::Checked : Qt::Unchecked));
+            const ComponentData* component = model.findComponent(component_id);
+            REQUIRE(component);
+            REQUIRE(last.contains(component_id));
+            CHECK(last.at(component_id)
+                == std::make_pair(static_cast<bool>(component->mesh) && visible,
+                                  static_cast<bool>(component->geometry) && visible));
+        }
+    };
+
+    for (int cycle = 0; cycle < 4; ++cycle) {
+        REQUIRE(QMetaObject::invokeMethod(f.tree.get(), "hideAllNodes"));
+        pumpEvents();
+        check_state(false);
+        REQUIRE(QMetaObject::invokeMethod(f.tree.get(), "showAllNodes"));
+        pumpEvents();
+        check_state(true);
     }
 }
 
@@ -394,20 +846,20 @@ TEST_CASE("Actual QML follows successful deletion notifications and preserves se
     model.removeComponent(cid);
     CHECK(selection_state->property("activeModelId").toInt() == mid);
     CHECK(selection_state->property("activeComponentId").toInt() == remaining_cid);
-    REQUIRE(waitForRefresh(*tree_model));
+    pumpEvents();
     CHECK(selection_state->property("activeModelId").toInt() == mid);
     CHECK(selection_state->property("activeComponentId").toInt() == remaining_cid);
     // 删除最后一个组件仍保留模型选择。
     model.removeComponent(remaining_cid);
     CHECK(selection_state->property("activeModelId").toInt() == mid);
     CHECK(selection_state->property("activeComponentId").toInt() == -1);
-    REQUIRE(waitForRefresh(*tree_model));
+    pumpEvents();
     CHECK(selection_state->property("activeModelId").toInt() == mid);
     CHECK(selection_state->property("activeComponentId").toInt() == -1);
     model.removeModel(mid);
     CHECK(selection_state->property("activeModelId").toInt() == -1);
     CHECK(selection_state->property("activeComponentId").toInt() == -1);
-    REQUIRE(waitForRefresh(*tree_model));
+    pumpEvents();
     CHECK(selection_state->property("activeModelId").toInt() == -1);
     CHECK(selection_state->property("activeComponentId").toInt() == -1);
     // 整体删除带组件的当前模型同样清空选择。
@@ -420,9 +872,238 @@ TEST_CASE("Actual QML follows successful deletion notifications and preserves se
     model.removeModel(selected_mid);
     CHECK(selection_state->property("activeModelId").toInt() == -1);
     CHECK(selection_state->property("activeComponentId").toInt() == -1);
-    REQUIRE(waitForRefresh(*tree_model));
+    pumpEvents();
     CHECK(selection_state->property("activeModelId").toInt() == -1);
     CHECK(selection_state->property("activeComponentId").toInt() == -1);
+}
+
+TEST_CASE("Actual QML preserves expanded rows across incremental imports and deletes", "[QML][tree]")
+{
+    application();
+    QmlFixture f;
+    auto& model = *f.manager->getModelManager();
+    model.setUndoRecorder(nullptr);
+    auto* tree_model = f.tree->findChild<TreeModel*>();
+    auto* tree_view = f.tree->findChild<QObject*>("objectTreeView");
+    REQUIRE(tree_model);
+    REQUIRE(tree_view);
+
+    auto make_components = [] {
+        ComponentDatas components;
+        auto component = std::make_unique<ComponentData>();
+        component->mesh = std::make_unique<MeshData>();
+        components.push_back(std::move(component));
+        return components;
+    };
+
+    const Index first_model = model.addModel("first", make_components());
+    const Index second_model = model.addModel("second", make_components());
+    REQUIRE(tree_model->refresh());
+    REQUIRE(QMetaObject::invokeMethod(tree_view, "expandRecursively",
+        Q_ARG(int, -1), Q_ARG(int, -1)));
+    REQUIRE(QMetaObject::invokeMethod(tree_view, "forceLayout"));
+    QCoreApplication::processEvents();
+
+    const Index target_component = model.modelById(second_model)->componentIds().front();
+    auto row_of = [&](const QModelIndex& index) {
+        int row = -1;
+        REQUIRE(QMetaObject::invokeMethod(tree_view, "rowAtIndex",
+            Q_RETURN_ARG(int, row), Q_ARG(QModelIndex, index)));
+        return row;
+    };
+    auto is_expanded = [&](int row) {
+        bool expanded = false;
+        REQUIRE(QMetaObject::invokeMethod(tree_view, "isExpanded",
+            Q_RETURN_ARG(bool, expanded), Q_ARG(int, row)));
+        return expanded;
+    };
+
+    int resets = 0;
+    QObject::connect(tree_model, &QAbstractItemModel::modelReset, [&] { ++resets; });
+
+    const int initial_row = row_of(tree_model->findIndexByNodeId(target_component, 1));
+    REQUIRE(initial_row >= 0);
+    REQUIRE(is_expanded(initial_row));
+
+    const Index third_model = model.addModel("third", make_components());
+    QCoreApplication::processEvents();
+    CHECK(resets == 0);
+    int row = row_of(tree_model->findIndexByNodeId(target_component, 1));
+    REQUIRE(row >= 0);
+    CHECK(is_expanded(row));
+
+    model.removeModel(first_model);
+    QCoreApplication::processEvents();
+    CHECK(resets == 0);
+    row = row_of(tree_model->findIndexByNodeId(target_component, 1));
+    REQUIRE(row >= 0);
+    CHECK(is_expanded(row));
+
+    model.removeModel(third_model);
+    QCoreApplication::processEvents();
+    CHECK(resets == 0);
+    row = row_of(tree_model->findIndexByNodeId(target_component, 1));
+    REQUIRE(row >= 0);
+    CHECK(is_expanded(row));
+}
+
+TEST_CASE("Actual QML expands and collapses object tree subtrees", "[QML][tree]")
+{
+    application();
+    QmlFixture f;
+    auto& model = *f.manager->getModelManager();
+    model.setUndoRecorder(nullptr);
+    auto* tree_model = f.tree->findChild<TreeModel*>();
+    auto* tree_view = f.tree->findChild<QObject*>("objectTreeView");
+    REQUIRE(tree_model);
+    REQUIRE(tree_view);
+
+    auto make_component = [](bool with_solid, bool with_geometry) {
+        auto component = std::make_unique<ComponentData>();
+        component->mesh = std::make_unique<MeshData>();
+        component->mesh->vertex_positions_ = { { 0.0, 0.0, 0.0 }, { 1.0, 0.0, 0.0 }, { 0.0, 1.0, 0.0 } };
+        component->mesh->vertex_count_ = 3;
+        component->mesh->face_vertices_offset_.assign(2, 0);
+        if (with_solid)
+            component->mesh->solid_types_.assign(1, 0);
+        if (with_geometry)
+            component->geometry = std::make_unique<GeometryData>();
+        return component;
+    };
+
+    ComponentDatas components_a;
+    components_a.push_back(make_component(true, true));
+    const Index model_a = model.addModel("levels-a", std::move(components_a));
+    ComponentDatas components_b;
+    components_b.push_back(make_component(false, false));
+    const Index model_b = model.addModel("levels-b", std::move(components_b));
+    REQUIRE(tree_model->refresh());
+
+    const Index component_a = model.modelById(model_a)->componentIds().front();
+    const Index component_b = model.modelById(model_b)->componentIds().front();
+    const QModelIndex model_a_index = tree_model->findIndexByNodeId(model_a, 0);
+    const QModelIndex model_b_index = tree_model->findIndexByNodeId(model_b, 0);
+    const QModelIndex component_a_index = tree_model->findIndexByNodeId(component_a, 1);
+    const QModelIndex component_b_index = tree_model->findIndexByNodeId(component_b, 1);
+    REQUIRE(model_a_index.isValid());
+    REQUIRE(model_b_index.isValid());
+    REQUIRE(component_a_index.isValid());
+    REQUIRE(component_b_index.isValid());
+    const QModelIndex mesh_a_index = tree_model->index(0, 0, component_a_index);
+    const QModelIndex mesh_b_index = tree_model->index(0, 0, component_b_index);
+    REQUIRE(mesh_a_index.isValid());
+    REQUIRE(mesh_b_index.isValid());
+    const QModelIndex mesh_child_index = tree_model->index(0, 0, mesh_a_index);
+    REQUIRE(mesh_child_index.isValid());
+
+    auto settle = [&] {
+        REQUIRE(QMetaObject::invokeMethod(tree_view, "forceLayout"));
+        QCoreApplication::processEvents();
+    };
+    auto row_of = [&](const QModelIndex& index) {
+        int row = -1;
+        REQUIRE(QMetaObject::invokeMethod(tree_view, "rowAtIndex",
+            Q_RETURN_ARG(int, row), Q_ARG(QModelIndex, index)));
+        return row;
+    };
+    auto is_expanded = [&](int row) {
+        bool expanded = false;
+        REQUIRE(QMetaObject::invokeMethod(tree_view, "isExpanded",
+            Q_RETURN_ARG(bool, expanded), Q_ARG(int, row)));
+        return expanded;
+    };
+    auto rows = [&] { return tree_view->property("rows").toInt(); };
+    auto expand_subtree = [&](const QModelIndex& index) {
+        const int row = row_of(index);
+        REQUIRE(row >= 0);
+        REQUIRE(QMetaObject::invokeMethod(f.tree.get(), "expandSubtree", Q_ARG(QVariant, row)));
+        settle();
+    };
+    auto collapse_subtree = [&](const QModelIndex& index) {
+        const int row = row_of(index);
+        REQUIRE(row >= 0);
+        REQUIRE(QMetaObject::invokeMethod(f.tree.get(), "collapseSubtree", Q_ARG(QVariant, row)));
+        settle();
+    };
+    auto expand_all = [&] {
+        REQUIRE(QMetaObject::invokeMethod(f.tree.get(), "expandSubtree", Q_ARG(QVariant, -1)));
+        settle();
+    };
+    auto collapse_all = [&] {
+        REQUIRE(QMetaObject::invokeMethod(f.tree.get(), "collapseSubtree", Q_ARG(QVariant, -1)));
+        settle();
+    };
+
+    REQUIRE(QMetaObject::invokeMethod(tree_view, "collapseRecursively", Q_ARG(int, -1)));
+    settle();
+    CHECK(rows() == 2);
+
+    // 全部展开模型子树：递归到所有叶子，但不影响其他模型。
+    expand_subtree(model_a_index);
+    REQUIRE(row_of(model_a_index) >= 0);
+    CHECK(is_expanded(row_of(model_a_index)));
+    REQUIRE(row_of(component_a_index) >= 0);
+    CHECK(is_expanded(row_of(component_a_index)));
+    REQUIRE(row_of(mesh_a_index) >= 0);
+    CHECK(is_expanded(row_of(mesh_a_index)));
+    REQUIRE(row_of(mesh_child_index) >= 0);
+    CHECK_FALSE(is_expanded(row_of(mesh_child_index)));
+    REQUIRE(row_of(model_b_index) >= 0);
+    CHECK_FALSE(is_expanded(row_of(model_b_index)));
+    CHECK(rows() == 7);
+
+    // 折叠组件子树只收起该组件及其后代。
+    collapse_subtree(component_a_index);
+    REQUIRE(row_of(component_a_index) >= 0);
+    CHECK_FALSE(is_expanded(row_of(component_a_index)));
+    CHECK(row_of(mesh_a_index) == -1);
+    CHECK(rows() == 3);
+
+    expand_subtree(component_a_index);
+    REQUIRE(row_of(mesh_a_index) >= 0);
+    CHECK(is_expanded(row_of(mesh_a_index)));
+    CHECK(rows() == 7);
+
+    collapse_subtree(mesh_a_index);
+    REQUIRE(row_of(mesh_a_index) >= 0);
+    CHECK_FALSE(is_expanded(row_of(mesh_a_index)));
+    CHECK(row_of(mesh_child_index) == -1);
+    CHECK(rows() == 5);
+
+    expand_subtree(mesh_a_index);
+    REQUIRE(row_of(mesh_child_index) >= 0);
+    CHECK(rows() == 7);
+
+    collapse_subtree(model_a_index);
+    CHECK(row_of(component_a_index) == -1);
+    CHECK(rows() == 2);
+
+    expand_subtree(model_b_index);
+    REQUIRE(row_of(model_b_index) >= 0);
+    CHECK(is_expanded(row_of(model_b_index)));
+    REQUIRE(row_of(component_b_index) >= 0);
+    CHECK(is_expanded(row_of(component_b_index)));
+    REQUIRE(row_of(mesh_b_index) >= 0);
+    CHECK(is_expanded(row_of(mesh_b_index)));
+    CHECK(rows() == 5);
+
+    collapse_subtree(model_b_index);
+    CHECK(rows() == 2);
+
+    // 空白区全局展开/折叠作用于所有模型。
+    expand_all();
+    CHECK(rows() == 10);
+    CHECK(is_expanded(row_of(model_a_index)));
+    CHECK(is_expanded(row_of(model_b_index)));
+
+    collapse_all();
+    CHECK(rows() == 2);
+
+    model.removeModel(model_a);
+    model.removeModel(model_b);
+    REQUIRE(waitForCondition([&] { return tree_model->rowCount() == 0; }));
+    settle();
+    CHECK(rows() == 0);
 }
 
 TEST_CASE("Actual undo clears offscreen selectors only after successful restoration", "[QML][undo]")

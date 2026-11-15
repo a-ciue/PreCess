@@ -29,6 +29,15 @@ precess_test_link_libraries(TestQPythonRuntime
 precess_add_test(TestJobProgressSlot TestJobProgressSlot.cpp)
 target_include_directories(TestJobProgressSlot PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}/../model")
 
+# 参数规则使用纯 QtObject 与 Core 应用验证，不创建图形窗口。
+precess_add_test(TestScalarRangeState TestScalarRangeState.cpp)
+precess_test_link_libraries(TestScalarRangeState Qt6::Qml)
+qt_add_resources(TestScalarRangeState scalar_state
+    PREFIX "/scalar-state"
+    BASE "${CMAKE_CURRENT_SOURCE_DIR}/.."
+    FILES ../ScalarRangeState.qml
+)
+
 # 单槽任务的 Qt 状态合流，直接编译展示对象以避免链接应用目标。
 precess_add_test(TestQTaskStatus
     TestQTaskStatus.cpp
@@ -46,6 +55,12 @@ precess_test_link_libraries(TestSelectionParameter modelQml QArgType FeatureSyst
 precess_add_test(TestQModelDeletion TestQModelDeletion.cpp)
 precess_test_link_libraries(TestQModelDeletion modelQml Qt6::Qml)
 
+# 对象树增量更新：行信号、持久索引身份与数据事件合并
+precess_add_test(TestTreeModel TestTreeModel.cpp ../TreeModel.cpp ../TreeModel.h)
+set_target_properties(TestTreeModel PROPERTIES AUTOMOC ON)
+target_include_directories(TestTreeModel PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}/..")
+precess_test_link_libraries(TestTreeModel modelQml Session Qt6::Core Qt6::Qml)
+
 # 加载实际界面文件验证删除拒绝和 undo 后的选择器失效，不启动渲染窗口。
 precess_add_test(TestUndoQml TestUndoQml.cpp ../TreeModel.cpp ../TreeModel.h)
 set_target_properties(TestUndoQml PROPERTIES AUTOMOC ON)
@@ -54,7 +69,8 @@ precess_test_link_libraries(TestUndoQml modelQml modelQmlplugin SystemQmlplugin 
 qt_add_resources(TestUndoQml undo_ui
     PREFIX "/undo-ui"
     BASE "${CMAKE_CURRENT_SOURCE_DIR}/.."
-    FILES ../FeatureNavigation.js ../Theme.qml ../SideBar.qml ../OperationSession.qml ../OperationParameterModel.qml ../ObjectTree.qml ../CentralRenderArea.qml ../Selector.qml ../AppMenu.qml)
+    FILES ../FeatureNavigation.js ../Theme.qml ../SideBar.qml ../OperationSession.qml ../OperationParameterModel.qml ../ObjectTree.qml ../CentralRenderArea.qml ../Selector.qml ../AppMenu.qml
+        ../AttributeRenderPanel.qml ../ScalarRangeEditor.qml ../ScalarRangeState.qml)
 
 # 验证主窗口实际遮罩的覆盖范围和鼠标拦截，保留状态栏取消入口。
 precess_add_test(TestBusyMask TestBusyMask.cpp)
@@ -102,7 +118,7 @@ add_dependencies(TestToolbarNavigation SetupNavigationTestPlugin)
 qt_add_resources(TestToolbarNavigation navigation_ui
     PREFIX "/navigation-ui"
     BASE "${CMAKE_CURRENT_SOURCE_DIR}/.."
-    FILES ../SideBar.qml ../OperationSession.qml ../OperationParameterModel.qml ../AppToolbar.qml ../FeatureNavigation.js ../RibbonTabButton.qml ../RibbonActionButton.qml ../Theme.qml ../AppMenu.qml)
+    FILES ../SideBar.qml ../OperationSession.qml ../OperationParameterModel.qml ../AppToolbar.qml ../FileFeatureFlow.qml ../FeatureNavigation.js ../RibbonTabButton.qml ../RibbonActionButton.qml ../Theme.qml ../AppMenu.qml)
 # 实际工具栏读取产品与插件声明的图标；资源随真实 QML 一同加载。
 qt_add_resources(TestToolbarNavigation navigation_icons
     PREFIX "/images"

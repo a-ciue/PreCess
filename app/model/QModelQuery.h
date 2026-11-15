@@ -95,6 +95,7 @@ QML_ELEMENT // Qt6+: 导出为 QML 可用类型（Qt5 请使用 qmlRegisterType�
     Q_INVOKABLE QVariantList getComponentAttriInfo(Index component_id) const;
 
     Q_INVOKABLE QVariantList listModels() const;
+    //! @brief 模型内组件摘要；has_mesh/has_geometry 表示对象存在，不要求内容或 rootShape 非空
     Q_INVOKABLE QVariantList getComponentsSummary(Index model_id) const;
     Q_INVOKABLE QVariantMap getMeshSummary(Index component_id) const;
     Q_INVOKABLE QVariantMap getGeometrySummary(Index component_id) const;

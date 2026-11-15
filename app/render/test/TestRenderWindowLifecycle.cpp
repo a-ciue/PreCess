@@ -2,28 +2,68 @@
  * @file TestRenderWindowLifecycle.cpp
  * @brief 视口场景图销毁与重建的资源生命周期回归测试
  */
+#include "GeometryActor.h"
+#include "GeometryActorManager.h"
+#include "GeometryActorSelectOp.h"
+#include "GeometryData.h"
+#include "GeometryDataVtk.h"
+#include "MakeMeshData.h"
+#include "MakeMeshDataVtk.h"
+#include "MeshActorManager.h"
+#include "ModelLayer.h"
+#include "ModelObserver.h"
+#include "ModelScope.h"
+#include "QModelQuery.h"
 #include "QRenderWindow.h"
 #include "QRenderWindowStyle.h"
+#include "SessionQuery.h"
+#include "UndoStack.h"
 #include "ViewportOrientationRepresentation.h"
+#include "renderStrategy/AttributeOperator.h"
 #include <vtkActor2D.h>
 #include <vtkCallbackCommand.h>
 #include <vtkCamera.h>
+#include <vtkCubeSource.h>
+#include <vtkDisplaySizedImplicitPlaneRepresentation.h>
+#include <vtkDisplaySizedImplicitPlaneWidget.h>
+#include <vtkCellData.h>
+#include <vtkGenericOpenGLRenderWindow.h>
 #include <vtkImageData.h>
+#include <vtkIdTypeArray.h>
 #include <vtkObjectFactory.h>
 #include <vtkOpenGLTexture.h>
+#include <vtkPartitionedDataSet.h>
+#include <vtkPolyData.h>
+#include <vtkPolyDataMapper.h>
 #include <vtkPropCollection.h>
 #include <vtkTexturedActor2D.h>
 #include <vtkTransform.h>
 
+#include <BRepPrimAPI_MakeSphere.hxx>
+#include <QElapsedTimer>
+#include <QEventLoop>
 #include <QGuiApplication>
+#include <QQuickWindow>
+#include <catch2/catch_approx.hpp>
+#include <QQmlEngine>
+#include <QQmlExpression>
 #include <catch2/catch_test_macros.hpp>
+#include <gp_Pnt.hxx>
 #include <vtkActor.h>
 #include <vtkActorCollection.h>
 #include <vtkRenderWindowInteractor.h>
+#include <vtkScalarBarActor.h>
 #include <vtkTextProperty.h>
 #include <vtkWeakPointer.h>
 
+#include <array>
+#include <atomic>
 #include <cmath>
+#include <functional>
+#include <limits>
+#include <memory>
+#include <string>
+#include <vector>
 
 namespace {
 class CountingTexture : public vtkOpenGLTexture {
@@ -42,7 +82,13 @@ vtkStandardNewMacro(CountingTexture);
 
 QGuiApplication& testApplication()
 {
-    qputenv("QT_QPA_PLATFORM", "offscreen");
+    if (qEnvironmentVariableIsEmpty("QT_QPA_PLATFORM")) {
+#ifdef Q_OS_WIN
+        qputenv("QT_QPA_PLATFORM", "windows");
+#else
+        qputenv("QT_QPA_PLATFORM", "offscreen");
+#endif
+    }
     QQuickVTKItem::setGraphicsApi();
     static int argc = 1;
     static char app_name[] = "TestRenderWindowLifecycle";
@@ -50,6 +96,163 @@ QGuiApplication& testApplication()
     static QGuiApplication app(argc, argv);
     return app;
 }
+
+bool renderUntil(QQuickWindow& window, const std::function<bool()>& ready)
+{
+    QElapsedTimer timer;
+    timer.start();
+    while (!ready() && timer.elapsed() < 10000) {
+        window.requestUpdate();
+        QCoreApplication::processEvents(QEventLoop::AllEvents, 20);
+    }
+    return ready();
+}
+}
+
+TEST_CASE("Scalar range arguments reject invalid input without changing active state", "[scalar-range]")
+{
+    testApplication();
+    // 仅调用 GUI 参数入口，不创建 QQuickWindow，也不初始化或执行 VTK 渲染。
+    QRenderWindow item;
+    auto mesh = MakeMeshDataWithAtri();
+    item.loadMeshData(7, MakeMeshDataVtk(mesh));
+    const int scalar = static_cast<int>(Mode::SCALAR);
+    REQUIRE(item.setAttriMode(7, "f_scalar_1", scalar, { { "scalar_range", QVariantList { 0.25, 0.75 } }, { "display_range", QVariantList { 0.25, 0.75 } } }));
+    const auto original = item.scalarRangeInfo(7, "f_scalar_1");
+    REQUIRE(original.size() == 2);
+    const QVariantList invalid_limits {
+        QVariantList { 0.0 }, QVariantList { 0.0, 1.0, 2.0 },
+        QVariantList { std::numeric_limits<double>::quiet_NaN(), 1.0 },
+        QVariantList { 0.0, std::numeric_limits<double>::infinity() }, QVariantList { 2.0, 1.0 },
+        QVariantList { "0", 1.0 }, QVariantList { false, 1.0 }, QVariantList { QVariant(), 1.0 },
+        QString("0,1"), 1.0, QVariantMap { { "lower", 0.0 }, { "upper", 1.0 } }
+    };
+    // 字典入口先拒绝错误形状和非数值端点；数据侧继续校验有限性与顺序。
+    for (const auto& limits : invalid_limits) {
+        CHECK_FALSE(item.setAttriMode(7, "f_scalar_1", scalar, { { "scalar_range", limits } }));
+        CHECK_FALSE(item.setAttriMode(7, "f_scalar_1", scalar, { { "display_range", limits } }));
+    }
+    CHECK_FALSE(item.setAttriMode(7, "missing", scalar, { }));
+    CHECK_FALSE(item.setAttriMode(7, "f_normal_3", scalar, { { "display_range", QVariantList { 0.0, 1.0 } } }));
+    CHECK(item.scalarRangeInfo(7, "f_scalar_1") == original);
+    // 缺省映射、多分量、相等端点及超出原始值域继续支持。
+    REQUIRE(item.setAttriMode(7, "f_normal_3", scalar, { }));
+    REQUIRE(item.setAttriMode(7, "f_scalar_1", scalar, { { "scalar_range", QVariantList { -2.5, 3.5 } } }));
+    REQUIRE(item.setAttriMode(7, "f_scalar_1", scalar, { { "scalar_range", QVariantList { 0.0, 0.0 } } }));
+    // 真实 QML 字典和数值数组进入同一接口，省略及空列表均可采用默认配置。
+    QQmlEngine engine;
+    engine.rootContext()->setContextProperty("viewport", &item);
+    QQmlExpression defaults(engine.rootContext(), nullptr, "viewport.setAttriMode(7, 'f_normal_3', 1, {scalar_range: [], display_range: []})");
+    const auto accepted = defaults.evaluate();
+    INFO(defaults.error().toString().toStdString());
+    REQUIRE_FALSE(defaults.hasError());
+    REQUIRE(accepted.toBool());
+    item.cancelComponentAttri(7);
+    CHECK(item.scalarRangeInfo(7, "f_scalar_1") == original);
+}
+
+TEST_CASE("Scalar configs restore across source reload without stealing the shared bar", "[scalar-range][no-window]")
+{
+    testApplication();
+    auto mesh = MakeMeshDataWithAtri();
+    auto& values = mesh.face_attributes_["f_scalar_1"];
+    REQUIRE(values.size() > 3);
+    for (size_t id = 0; id < values.size(); ++id)
+        values[id] = static_cast<double>(id);
+    QRenderWindow item;
+    item.loadMeshData(7, MakeMeshDataVtk(mesh));
+    item.loadMeshData(8, MakeMeshDataVtk(mesh));
+    REQUIRE(item.setAttriMode(7, "f_scalar_1", static_cast<int>(Mode::SCALAR), { { "scalar_range", QVariantList { -2.0, 2.0 } }, { "display_range", QVariantList { 1.0, 3.0 } } }));
+    REQUIRE(item.setAttriMode(8, "f_normal_3", static_cast<int>(Mode::SCALAR), { { "scalar_range", QVariantList { 100.0, 200.0 } } }));
+    // 通过唯一参数入口传递完整范围，后续检查实际映射范围和筛选单元。
+    QQmlEngine engine;
+    engine.rootContext()->setContextProperty("viewport", &item);
+    QQmlExpression request(engine.rootContext(), nullptr, "viewport.setAttriMode(7, 'f_scalar_1', 1, {scalar_range: [-4, 4], display_range: [1, 3]})");
+    const auto accepted = request.evaluate();
+    INFO(request.error().toString().toStdString());
+    REQUIRE_FALSE(request.hasError());
+    REQUIRE(accepted.toBool());
+    // 无效请求不能替换任一组件配置，也不能改变场景重建后的共享色柱归属。
+    CHECK_FALSE(item.setAttriMode(7, "f_normal_3", static_cast<int>(Mode::SCALAR), { { "scalar_range", QVariantList { 3.0, 1.0 } } }));
+    CHECK_FALSE(item.setAttriMode(8, "f_scalar_1", static_cast<int>(Mode::SCALAR), { { "display_range", QVariantList { "bad", 1.0 } } }));
+    // 无效请求必须先被拒绝，不能清除当前筛选或破坏共享色柱的恢复依据。
+    SECTION("Invalid render modes retain the active scalar display")
+    {
+        for (const int invalid_mode : { -1, 4, 999 })
+            CHECK_FALSE(item.setAttriMode(7, "f_scalar_1", invalid_mode, { }));
+    }
+    SECTION("Unknown components retain another component's scalar bar")
+    {
+        CHECK_FALSE(item.setAttriMode(9999, "f_normal_3", static_cast<int>(Mode::RGB), { }));
+    }
+    std::uint64_t previous_generation = 0;
+    for (int cycle = 0; cycle < 3; ++cycle) {
+        // 通用窗口不创建原生窗口或 OpenGL 上下文，关闭交互器自动渲染以避免控件触发绘制。
+        vtkNew<vtkGenericOpenGLRenderWindow> window;
+        window->SetReadyForRendering(false);
+        window->SetSize(800, 600);
+        vtkNew<vtkRenderWindowInteractor> interactor;
+        interactor->EnableRenderOff();
+        interactor->SetRenderWindow(window);
+        auto user_data = item.initializeVTK(window);
+        auto* data = QRenderWindow::Data::SafeDownCast(user_data);
+        REQUIRE(data);
+        auto owner = data->mesh_actor_manager_->getComponentActor(7);
+        auto other = data->mesh_actor_manager_->getComponentActor(8);
+        REQUIRE(owner);
+        REQUIRE(other);
+        AttributeOperator owner_attributes(owner.get());
+        AttributeOperator other_attributes(other.get());
+        auto* mapper = owner_attributes.getFaceMapper();
+        mapper->Update();
+        auto* ids = vtkIdTypeArray::SafeDownCast(mapper->GetInput()->GetCellData()->GetArray("PrecessFaceIds"));
+        REQUIRE(ids);
+        std::vector<vtkIdType> actual_ids;
+        for (vtkIdType id = 0; id < ids->GetNumberOfValues(); ++id)
+            actual_ids.push_back(ids->GetValue(id));
+        std::vector<vtkIdType> expected_ids { 1, 2, 3 };
+        if (cycle == 1)
+            expected_ids = { 0, 1, 2 };
+        else if (cycle == 2) {
+            expected_ids.clear();
+            for (size_t id = 0; id < values.size(); ++id)
+                expected_ids.push_back(static_cast<vtkIdType>(id));
+        }
+        CHECK(actual_ids == expected_ids);
+        CHECK(static_cast<bool>(owner_attributes.getFaceMapper()->GetScalarVisibility()) == (cycle < 2));
+        if (cycle < 2) {
+            CHECK(owner_attributes.getFaceMapper()->GetScalarRange()[0] == -4.0);
+            CHECK(owner_attributes.getFaceMapper()->GetScalarRange()[1] == 4.0);
+        }
+        CHECK(other_attributes.getFaceMapper()->GetScalarRange()[0] == 100.0);
+        CHECK(other_attributes.getFaceMapper()->GetScalarRange()[1] == 200.0);
+        vtkScalarBarActor* scalar_bar = nullptr;
+        auto* props = data->renderer_->GetViewProps();
+        props->InitTraversal();
+        while (auto* prop = props->GetNextProp()) {
+            if (auto* bar = vtkScalarBarActor::SafeDownCast(prop))
+                scalar_bar = bar;
+        }
+        REQUIRE(scalar_bar);
+        CHECK(static_cast<bool>(scalar_bar->GetVisibility()) == (cycle < 2));
+        if (cycle < 2)
+            CHECK(scalar_bar->GetLookupTable() == owner_attributes.getFaceMapper()->GetLookupTable());
+        CHECK((other->dataGeneration() != previous_generation) == (cycle < 2));
+        previous_generation = other->dataGeneration();
+        CHECK(window->GetGenericWindowId() == nullptr);
+        item.destroyingVTK(window, user_data);
+        window->RemoveRenderer(data->overlay_renderer_);
+        window->RemoveRenderer(data->renderer_);
+        // 自动恢复非色柱归属组件，原归属组件的配置必须仍可在下一次场景重建中恢复。
+        if (cycle == 0) {
+            // 改变筛选结果后重载归属组件和另一组件，验证配置恢复及色柱归属。
+            for (auto& value : values)
+                value += 1.0;
+            item.loadMeshData(7, MakeMeshDataVtk(mesh));
+            item.loadMeshData(8, MakeMeshDataVtk(mesh));
+        } else if (cycle == 1)
+            item.cancelComponentAttri(7);
+    }
 }
 
 TEST_CASE("QRenderWindow keeps overlay logical sizes across DPR and VTK DPI changes")
@@ -300,6 +503,79 @@ TEST_CASE("Viewport orientation switches camera before and after dragging at a f
     item.destroyingVTK(window, user_data);
 }
 
+TEST_CASE("Clipping widget does not enlarge camera framing on reset or orientation clicks")
+{
+    testApplication();
+    QRenderWindow item;
+    vtkNew<vtkRenderWindow> window;
+    window->SetSize(600, 400);
+    vtkNew<vtkRenderWindowInteractor> interactor;
+    interactor->SetRenderWindow(window);
+    interactor->EnableRenderOff();
+    auto user_data = item.initializeVTK(window);
+    auto* data = QRenderWindow::Data::SafeDownCast(user_data);
+    REQUIRE(data != nullptr);
+
+    vtkNew<vtkCubeSource> source;
+    source->SetBounds(-0.05, 0.05, -0.05, 0.05, -0.05, 0.05);
+    vtkNew<vtkPolyDataMapper> mapper;
+    mapper->SetInputConnection(source->GetOutputPort());
+    vtkNew<vtkActor> actor;
+    actor->SetMapper(mapper);
+    data->renderer_->AddActor(actor);
+    data->renderer_->ResetCamera();
+    auto* camera = data->renderer_->GetActiveCamera();
+    const double expected_scale = camera->GetParallelScale();
+    double expected_bounds[6];
+    data->renderer_->ComputeVisiblePropBounds(expected_bounds);
+
+    // 使用实际视口初始化的控件；其屏幕尺寸自适应几何不应参与模型取景。
+    auto* plane = data->plane_widget_->GetDisplaySizedImplicitPlaneRepresentation();
+    plane->SetOrigin(0, 0, 0);
+    data->plane_widget_->On();
+    data->orientationWidget->SquareResize();
+    auto* orientation = ViewportOrientationRepresentation::SafeDownCast(data->orientationWidget->GetRepresentation());
+    REQUIRE(orientation != nullptr);
+
+    SECTION("repeated reset restores the model scale after zooming")
+    {
+        camera->SetParallelScale(expected_scale * 3);
+        for (int cycle = 0; cycle < 5; ++cycle) {
+            INFO("reset cycle=" << cycle);
+            plane->BuildRepresentation();
+            data->renderer_->ResetCamera();
+            CHECK(camera->GetParallelScale() == Catch::Approx(expected_scale));
+        }
+    }
+    SECTION("orientation clicks reset framing without including the clipping widget")
+    {
+        camera->SetParallelScale(expected_scale * 3);
+        for (int cycle = 0; cycle < 5; ++cycle) {
+            INFO("orientation cycle=" << cycle);
+            camera->SetPosition(0, 0, camera->GetDistance());
+            camera->SetViewUp(0, 1, 0);
+            orientation->GetTransform()->Identity();
+            orientation->BuildRepresentation();
+            const int* origin = orientation->GetRenderer()->GetOrigin();
+            interactor->SetEventPosition(origin[0] + 98, origin[1] + 60);
+            interactor->InvokeEvent(vtkCommand::MouseMoveEvent);
+            interactor->InvokeEvent(vtkCommand::LeftButtonPressEvent);
+            interactor->InvokeEvent(vtkCommand::LeftButtonReleaseEvent);
+            CHECK(std::abs(camera->GetDirectionOfProjection()[0]) == 1.0);
+            CHECK(camera->GetDirectionOfProjection()[1] == 0.0);
+            CHECK(camera->GetDirectionOfProjection()[2] == 0.0);
+            CHECK(camera->GetParallelScale() == Catch::Approx(expected_scale));
+        }
+    }
+
+    double bounds[6];
+    data->renderer_->ComputeVisiblePropBounds(bounds);
+    for (int i = 0; i < 6; ++i)
+        CHECK(bounds[i] == Catch::Approx(expected_bounds[i]));
+    CHECK(data->plane_widget_->GetEnabled());
+    item.destroyingVTK(window, user_data);
+}
+
 TEST_CASE("Viewport orientation reuses its image for unchanged rotation and hover")
 {
     testApplication();
@@ -400,4 +676,296 @@ TEST_CASE("Viewport orientation uploads its persistent texture only when pixels 
     orientation->ReleaseGraphicsResources(window);
     window->Render();
     CHECK(texture->uploads == 5);
+}
+
+TEST_CASE("QRenderWindow applies requested surface precision across scene rebuilds", "[precision]")
+{
+    testApplication();
+    QRenderWindow item;
+    int updates = 0;
+    QObject::connect(&item, &QRenderWindow::surfacePrecisionChanged, &item, [&updates] { ++updates; });
+    item.setSurfacePrecision(3);
+    CHECK(item.getSurfacePrecision() == 3);
+    CHECK(updates == 1);
+    item.setSurfacePrecision(3); // 同档设置无变化，不重复更新。
+    item.setSurfacePrecision(-1);
+    item.setSurfacePrecision(4);
+    CHECK(item.getSurfacePrecision() == 3);
+    CHECK(updates == 1);
+    const auto sphere = BRepPrimAPI_MakeSphere(10.0).Shape();
+
+    // 请求先于场景存在：初始化即把当前档位应用到新 manager 与后续加载的组件。
+    vtkNew<vtkRenderWindow> window;
+    vtkNew<vtkRenderWindowInteractor> interactor;
+    interactor->SetRenderWindow(window);
+    auto user_data = item.initializeVTK(window);
+    auto* data = QRenderWindow::Data::SafeDownCast(user_data);
+    data->geometry_actor_manager_->loadGeometry({ sphere, 123, nullptr });
+    auto actor = data->geometry_actor_manager_->getComponentActor(123);
+    REQUIRE(actor != nullptr);
+    auto* mapper = vtkPolyDataMapper::SafeDownCast(GeometryActorSelectOp(actor).getPolyActor().GetMapper());
+    REQUIRE(mapper != nullptr);
+    auto* polygons = mapper->GetInput();
+    REQUIRE(polygons != nullptr);
+    const auto triangle_count = polygons->GetNumberOfCells();
+    CHECK(triangle_count > 0);
+    actor.reset();
+    item.destroyingVTK(window, user_data);
+    window->RemoveRenderer(data->overlay_renderer_);
+    window->RemoveRenderer(data->renderer_);
+
+    // 场景重建沿用目标档位，并为真实几何恢复相同精度的显示数据。
+    vtkNew<vtkRenderWindow> rebuilt_window;
+    vtkNew<vtkRenderWindowInteractor> rebuilt_interactor;
+    rebuilt_interactor->SetRenderWindow(rebuilt_window);
+    user_data = item.initializeVTK(rebuilt_window);
+    auto* rebuilt = QRenderWindow::Data::SafeDownCast(user_data);
+    rebuilt->geometry_actor_manager_->loadGeometry({ sphere, 123, nullptr });
+    QCoreApplication::processEvents();
+    CHECK(item.getSurfacePrecision() == 3);
+    auto rebuilt_actor = rebuilt->geometry_actor_manager_->getComponentActor(123);
+    REQUIRE(rebuilt_actor != nullptr);
+    auto* rebuilt_mapper = vtkPolyDataMapper::SafeDownCast(GeometryActorSelectOp(rebuilt_actor).getPolyActor().GetMapper());
+    REQUIRE(rebuilt_mapper != nullptr);
+    auto* rebuilt_polygons = rebuilt_mapper->GetInput();
+    REQUIRE(rebuilt_polygons != nullptr);
+    CHECK(rebuilt_polygons->GetNumberOfCells() == triangle_count);
+    rebuilt_actor.reset();
+    item.destroyingVTK(rebuilt_window, user_data);
+    rebuilt_window->RemoveRenderer(rebuilt->overlay_renderer_);
+    rebuilt_window->RemoveRenderer(rebuilt->renderer_);
+}
+
+TEST_CASE("QRenderWindow precision survives geometry undo redo and scene recreation", "[precision][render][undo]")
+{
+    testApplication();
+    struct WindowObserver : ModelObserver {
+        QRenderWindow* item {};
+        void notifyModelChanged(Index) override { }
+        void notifyModelAdded(Index) override { }
+        void notifyModelRemoved(Index model_id) override
+        {
+            if (item)
+                item->deleteModel(model_id);
+        }
+        void notifyComponentRemoved(Index component_id) override
+        {
+            if (item)
+                item->deleteComponent(component_id);
+        }
+        void notifyComponentChanged(Index component_id) override
+        {
+            if (item)
+                item->onComponentChanged(component_id);
+        }
+        void notifyModelNameChanged(Index, const std::string&) override { }
+        void notifyGeometryLoadFailed(const std::string&) override { }
+    } observer;
+    ModelLayer layer(&observer);
+    const auto model_id = layer.addModel("precision undo test", {});
+    auto component = std::make_unique<ComponentData>();
+    component->geometry = std::make_unique<GeometryData>();
+    component->geometry->setRootShape(BRepPrimAPI_MakeSphere(10.0).Shape());
+    const auto component_id = layer.getModelOperator(model_id)->addGeometryComponent(std::move(component));
+    const auto original_face_id = layer.findComponent(component_id)->geometry->index.faceGlobalId(1);
+    const auto original_solid_id = layer.findComponent(component_id)->geometry->index.solidGlobalId(1);
+    UndoStack undo(layer);
+    layer.setUndoRecorder(&undo);
+    session::SessionQuery query(layer);
+    QModelQuery model_query(&query);
+    QQuickWindow quick_window;
+    quick_window.setFlags(Qt::Tool | Qt::FramelessWindowHint);
+    quick_window.resize(400, 400);
+    quick_window.setPosition(0, 0);
+    quick_window.setOpacity(0.01);
+    quick_window.setPersistentSceneGraph(false);
+    quick_window.setPersistentGraphics(false);
+    // 由窗口在场景图退出后销毁子项，保证 destroyingVTK 仍可访问派生类服务。
+    auto& item = *new QRenderWindow;
+    item.setParent(quick_window.contentItem());
+    item.setModelQuery(&model_query);
+    observer.item = &item;
+    item.onComponentChanged(component_id);
+    item.setParentItem(quick_window.contentItem());
+    item.setSize(QSizeF(400, 400));
+    item.setSelectComponent(component_id);
+    item.setSurfacePrecision(3);
+    int target_updates = 0;
+    int selection_updates = 0;
+    QObject::connect(&item, &QRenderWindow::surfacePrecisionChanged, &item, [&] { ++target_updates; });
+    QObject::connect(&item, &QRenderWindow::selectedChanged, &item, [&] { ++selection_updates; });
+    struct RenderState {
+        bool exists {};
+        bool visible {};
+        vtkIdType triangles {};
+        vtkIdType highlight_cells {};
+        std::array<double, 6> bounds {};
+    } state;
+    std::atomic_bool completed {};
+    auto read_scene = [&] {
+        completed = false;
+        item.dispatch_async([&](vtkRenderWindow*, QQuickVTKItem::vtkUserData user_data) {
+            auto* data = QRenderWindow::Data::SafeDownCast(user_data);
+            state = {};
+            if (auto actor = data->geometry_actor_manager_->getComponentActor(component_id)) {
+                auto& poly_actor = GeometryActorSelectOp(actor).getPolyActor();
+                auto* polygons = vtkPolyDataMapper::SafeDownCast(poly_actor.GetMapper())->GetInput();
+                state.exists = true;
+                state.visible = actor->isVisible();
+                state.triangles = polygons->GetNumberOfPolys();
+                polygons->GetBounds(state.bounds.data());
+            }
+            auto* actors = data->renderer_->GetActors();
+            actors->InitTraversal();
+            while (auto* actor = actors->GetNextActor()) {
+                if (actor->GetMapper()) {
+                    if (auto* highlight = vtkPartitionedDataSet::SafeDownCast(actor->GetMapper()->GetInputDataObject(0, 0)))
+                        state.highlight_cells += highlight->GetNumberOfCells();
+                }
+            }
+            completed = true;
+        });
+        return renderUntil(quick_window, [&] { return completed.load(); });
+    };
+    auto selection_ids = [&] {
+        const std::unique_ptr<QSelection> selected(item.selectedIDs());
+        return selected && selected->get() ? selected->get()->ids : std::vector<Index> {};
+    };
+    auto pick_sphere = [&](const QString& mode, double center_x, double radius, Index expected_id) {
+        item.clearSelection();
+        item.setSelectMode(mode);
+        completed = false;
+        item.dispatch_async([&](vtkRenderWindow* window, QQuickVTKItem::vtkUserData user_data) {
+            auto* data = QRenderWindow::Data::SafeDownCast(user_data);
+            auto* camera = data->renderer_->GetActiveCamera();
+            camera->SetPosition(center_x, 0.0, 100.0);
+            camera->SetFocalPoint(center_x, 0.0, 0.0);
+            camera->SetViewUp(0.0, 1.0, 0.0);
+            camera->ParallelProjectionOn();
+            data->renderer_->ResetCamera();
+            window->Render();
+            data->renderer_->SetWorldPoint(center_x + radius * 0.3, radius * 0.2,
+                radius * std::sqrt(0.87), 1.0);
+            data->renderer_->WorldToDisplay();
+            const auto* position = data->renderer_->GetDisplayPoint();
+            window->GetInteractor()->SetEventPosition(static_cast<int>(position[0]), static_cast<int>(position[1]));
+            data->style_->SetClick();
+            data->style_->OnLeftButtonUp();
+            completed = true;
+        });
+        return renderUntil(quick_window, [&] {
+            return completed.load() && selection_ids() == std::vector<Index> { expected_id };
+        });
+    };
+    quick_window.show();
+    REQUIRE(read_scene());
+    REQUIRE(state.exists);
+    CHECK(state.bounds[0] == Catch::Approx(-10.0).margin(0.1));
+    CHECK(state.bounds[1] == Catch::Approx(10.0).margin(0.1));
+    const auto fine_triangles = state.triangles;
+    REQUIRE(fine_triangles > 0);
+    REQUIRE(pick_sphere("GeometryFace", 0.0, 10.0, original_face_id));
+    REQUIRE(read_scene());
+    REQUIRE(state.highlight_cells > 0);
+
+    const int updates_before_same_level = target_updates;
+    item.setSurfacePrecision(3);
+    REQUIRE(read_scene());
+    CHECK(target_updates == updates_before_same_level);
+    CHECK(selection_ids() == std::vector<Index> { original_face_id });
+
+    // 正常清理入口发布空结果并清高亮；改变显示精度不生成模型历史。
+    const int selections_before_switch = selection_updates;
+    item.setSurfacePrecision(0);
+    REQUIRE(renderUntil(quick_window, [&] {
+        return selection_updates > selections_before_switch && selection_ids().empty();
+    }));
+    REQUIRE(read_scene());
+    CHECK(state.highlight_cells == 0);
+    REQUIRE(state.triangles < fine_triangles);
+    const auto coarse_triangles = state.triangles;
+    const auto coarse_bounds = state.bounds;
+    CHECK_FALSE(undo.canUndo());
+    REQUIRE(pick_sphere("GeometrySolid", 0.0, 10.0, original_solid_id));
+    item.setSurfacePrecision(3);
+    REQUIRE(read_scene());
+    CHECK(state.triangles == fine_triangles);
+    REQUIRE(pick_sphere("GeometryFace", 0.0, 10.0, original_face_id));
+
+    {
+        ModelScope operation(layer, &undo, "替换几何");
+        layer.getComponentOperator(component_id)->replaceGeometryRoot(BRepPrimAPI_MakeSphere(gp_Pnt(25.0, 0.0, 0.0), 6.0).Shape());
+    }
+    const auto replaced_face_id = layer.findComponent(component_id)->geometry->index.faceGlobalId(1);
+    const auto replaced_solid_id = layer.findComponent(component_id)->geometry->index.solidGlobalId(1);
+    REQUIRE(replaced_face_id != original_face_id);
+    REQUIRE(read_scene());
+    CHECK(state.bounds[0] == Catch::Approx(19.0).margin(0.1));
+    CHECK(state.bounds[1] == Catch::Approx(31.0).margin(0.1));
+    REQUIRE(pick_sphere("GeometryFace", 25.0, 6.0, replaced_face_id));
+
+    // 对真实历史执行 undo/redo：几何、gid 恢复，显示使用恢复时的窗口档位。
+    item.setSurfacePrecision(0);
+    REQUIRE(read_scene());
+    const auto replaced_coarse_triangles = state.triangles;
+    const auto replaced_coarse_bounds = state.bounds;
+    REQUIRE(undo.undoLabel() == "替换几何");
+    REQUIRE(undo.undo());
+    REQUIRE(read_scene());
+    // 显示边界由当前离散网格决定，与恢复前同几何、同档位的实际输出比较。
+    for (std::size_t axis = 0; axis < coarse_bounds.size(); ++axis)
+        CHECK(state.bounds[axis] == Catch::Approx(coarse_bounds[axis]).margin(1.0e-6));
+    CHECK(state.triangles == coarse_triangles);
+    CHECK(layer.findComponent(component_id)->geometry->index.faceGlobalId(1) == original_face_id);
+    CHECK(layer.findComponent(component_id)->geometry->index.solidGlobalId(1) == original_solid_id);
+    REQUIRE(pick_sphere("GeometryFace", 0.0, 10.0, original_face_id));
+    REQUIRE(undo.redo());
+    REQUIRE(read_scene());
+    for (std::size_t axis = 0; axis < replaced_coarse_bounds.size(); ++axis)
+        CHECK(state.bounds[axis] == Catch::Approx(replaced_coarse_bounds[axis]).margin(1.0e-6));
+    CHECK(state.triangles == replaced_coarse_triangles);
+    CHECK(layer.findComponent(component_id)->geometry->index.faceGlobalId(1) == replaced_face_id);
+    REQUIRE(pick_sphere("GeometrySolid", 25.0, 6.0, replaced_solid_id));
+    item.setSurfacePrecision(3);
+    REQUIRE(read_scene());
+    REQUIRE(undo.undo());
+    REQUIRE(read_scene());
+    CHECK(state.triangles == fine_triangles);
+    REQUIRE(pick_sphere("GeometryFace", 0.0, 10.0, original_face_id));
+
+    {
+        ModelScope operation(layer, &undo, "删除组件");
+        layer.removeComponent(component_id);
+    }
+    REQUIRE(read_scene());
+    CHECK_FALSE(state.exists);
+    REQUIRE(undo.undo());
+    REQUIRE(read_scene());
+    CHECK(state.exists);
+    CHECK(state.triangles == fine_triangles);
+    CHECK(layer.findComponent(component_id)->geometry->index.faceGlobalId(1) == original_face_id);
+    REQUIRE(pick_sphere("GeometryFace", 0.0, 10.0, original_face_id));
+
+    item.setComponentVisibility(component_id, false);
+    REQUIRE(read_scene());
+    CHECK_FALSE(state.visible);
+    item.setComponentVisibility(component_id, true);
+    REQUIRE(read_scene());
+    CHECK(state.visible);
+    REQUIRE(pick_sphere("GeometryFace", 0.0, 10.0, original_face_id));
+
+    std::atomic_bool scene_invalidated {};
+    const auto invalidated_connection = QObject::connect(&quick_window, &QQuickWindow::sceneGraphInvalidated, &quick_window, [&] { scene_invalidated = true; }, Qt::DirectConnection);
+    quick_window.hide();
+    quick_window.releaseResources();
+    REQUIRE(renderUntil(quick_window, [&] { return scene_invalidated.load(); }));
+    QObject::disconnect(invalidated_connection);
+    quick_window.show();
+    REQUIRE(read_scene());
+    CHECK(state.exists);
+    CHECK(state.triangles == fine_triangles);
+    CHECK(item.getSurfacePrecision() == 3);
+    REQUIRE(pick_sphere("GeometryFace", 0.0, 10.0, original_face_id));
+    observer.item = nullptr;
+    layer.setUndoRecorder(nullptr);
 }

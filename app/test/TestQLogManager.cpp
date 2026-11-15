@@ -102,6 +102,8 @@ TEST_CASE("QLogManager bridges Qt and QML messages into the log panel")
     REQUIRE(body_line.count(QStringLiteral("#1976d2")) == 1);
     REQUIRE(body_line.contains(QStringLiteral("[warning] [QML] qlog-test-body")));
 
+    // 同文件名的导入跟踪可先于绑定错误出现，定位错误时不能误选这条 debug 消息。
+    qDebug("qrc:/TestQLogManager.qml: qlog-test-import-trace");
     // QML 运行时报错（绑定表达式引用未定义标识符）经 qWarning 汇入日志面板
     QQmlEngine engine;
     QQmlComponent component(&engine);
@@ -112,10 +114,10 @@ TEST_CASE("QLogManager bridges Qt and QML messages into the log panel")
     QCoreApplication::processEvents();
 
     REQUIRE(qml_object != nullptr);
-    const QString qml_error = findMessage(mgr->messages(), "TestQLogManager.qml");
+    const QString qml_error = findMessage(mgr->messages(), "ReferenceError: no_such_identifier");
     REQUIRE_FALSE(qml_error.isEmpty());
     REQUIRE(qml_error.contains("[QML]"));
     REQUIRE(qml_error.contains("[warning]"));
     REQUIRE(qml_error.contains("#1976d2"));
-    REQUIRE(qml_error.contains("no_such_identifier"));
+    REQUIRE(qml_error.contains("TestQLogManager.qml"));
 }

@@ -14,11 +14,20 @@
 #include "ModelPayload.h"
 #include "TempFile.h"
 
+#include <BRepBuilderAPI_Copy.hxx>
+#include <BRepGProp.hxx>
+#include <BRepMesh_IncrementalMesh.hxx>
 #include <BRepPrimAPI_MakeBox.hxx>
 #include <BRepPrimAPI_MakeSphere.hxx>
+#include <BRepTools.hxx>
+#include <BRep_Tool.hxx>
+#include <GProp_GProps.hxx>
 #include <TopAbs_ShapeEnum.hxx>
+#include <TopExp_Explorer.hxx>
+#include <TopoDS.hxx>
 #include <TopoDS_Iterator.hxx>
 #include <TopoDS_Shape.hxx>
+#include <catch2/catch_approx.hpp>
 #include <catch2/catch_test_macros.hpp>
 
 #include <filesystem>
@@ -78,6 +87,52 @@ static void requireReadableGeometryModel(const ModelPayload& payload)
     }
 
     REQUIRE(hasValidGeometry);
+}
+
+TEST_CASE("CAD export topology copies share geometry and isolate BRep discretization")
+{
+    const TopoDS_Shape source = BRepPrimAPI_MakeSphere(10.0);
+    BRepMesh_IncrementalMesh mesh(source, 0.2);
+    REQUIRE(mesh.IsDone());
+    const TopoDS_Shape copy = BRepBuilderAPI_Copy(source, false, false).Shape();
+    CHECK_FALSE(copy.IsSame(source));
+    TopExp_Explorer source_faces(source, TopAbs_FACE), copy_faces(copy, TopAbs_FACE);
+    REQUIRE(source_faces.More());
+    REQUIRE(copy_faces.More());
+    const auto source_face = TopoDS::Face(source_faces.Current());
+    const auto copy_face = TopoDS::Face(copy_faces.Current());
+    CHECK_FALSE(copy_face.IsSame(source_face));
+    TopLoc_Location source_location, copy_location;
+    CHECK(BRep_Tool::Surface(source_face, source_location) == BRep_Tool::Surface(copy_face, copy_location));
+    const auto source_mesh = BRep_Tool::Triangulation(source_face, source_location);
+    REQUIRE_FALSE(source_mesh.IsNull());
+    CHECK(BRep_Tool::Triangulation(copy_face, copy_location).IsNull());
+    TopExp_Explorer source_edges(source_face, TopAbs_EDGE), copy_edges(copy_face, TopAbs_EDGE);
+    while (source_edges.More() && BRep_Tool::Degenerated(TopoDS::Edge(source_edges.Current()))) {
+        REQUIRE(copy_edges.More());
+        source_edges.Next();
+        copy_edges.Next();
+    }
+    REQUIRE(source_edges.More());
+    REQUIRE(copy_edges.More());
+    const auto source_edge = TopoDS::Edge(source_edges.Current());
+    const auto copy_edge = TopoDS::Edge(copy_edges.Current());
+    CHECK_FALSE(copy_edge.IsSame(source_edge));
+    double source_first, source_last, copy_first, copy_last;
+    REQUIRE_FALSE(BRep_Tool::Curve(source_edge, source_location, source_first, source_last).IsNull());
+    CHECK(BRep_Tool::Curve(source_edge, source_location, source_first, source_last)
+        == BRep_Tool::Curve(copy_edge, copy_location, copy_first, copy_last));
+    CHECK(BRep_Tool::CurveOnSurface(source_edge, source_face, source_first, source_last)
+        == BRep_Tool::CurveOnSurface(copy_edge, copy_face, copy_first, copy_last));
+    CHECK(source_first == copy_first);
+    CHECK(source_last == copy_last);
+    BRepMesh_IncrementalMesh copy_mesh(copy, 0.5);
+    REQUIRE(copy_mesh.IsDone());
+    CHECK_FALSE(BRep_Tool::Triangulation(copy_face, copy_location).IsNull());
+    CHECK(BRep_Tool::Triangulation(copy_face, copy_location) != source_mesh);
+    BRepTools::Clean(copy);
+    CHECK(BRep_Tool::Triangulation(copy_face, copy_location).IsNull());
+    CHECK(BRep_Tool::Triangulation(source_face, source_location) == source_mesh);
 }
 
 TEST_CASE("StepModelHandler::write_components()/read_model() - English path (box)")
@@ -167,6 +222,13 @@ TEST_CASE("StepModelHandler::write_components()/read_model() - sphere")
 
     TopoDS_Shape sphere = BRepPrimAPI_MakeSphere(50.0);
     REQUIRE(!sphere.IsNull());
+    GProp_GProps expected;
+    BRepGProp::VolumeProperties(sphere, expected);
+    BRepMesh_IncrementalMesh mesh(sphere, 0.5);
+    const auto face = TopoDS::Face(TopExp_Explorer(sphere, TopAbs_FACE).Current());
+    TopLoc_Location location;
+    const auto triangulation = BRep_Tool::Triangulation(face, location);
+    REQUIRE_FALSE(triangulation.IsNull());
 
     std::vector<Index> componentIds = addModelAndGetComponentIds(
         layer,
@@ -175,11 +237,24 @@ TEST_CASE("StepModelHandler::write_components()/read_model() - sphere")
     REQUIRE_NOTHROW(io.write_components(layer, componentIds, out, {}));
     REQUIRE(fs::exists(out));
 
+    CHECK(BRep_Tool::Triangulation(face, location) == triangulation);
+    GProp_GProps source_after;
+    BRepGProp::VolumeProperties(sphere, source_after);
+    CHECK(source_after.Mass() == Catch::Approx(expected.Mass()).epsilon(1e-12));
+
     std::optional<ModelPayload> payload;
     REQUIRE_NOTHROW(payload = io.read_model(out, {}));
     REQUIRE(payload.has_value());
 
     requireReadableGeometryModel(*payload);
+
+    double volume = 0.0;
+    for (const auto& component : payload->components) {
+        GProp_GProps actual;
+        BRepGProp::VolumeProperties(*component->geometry->rootShape, actual);
+        volume += actual.Mass();
+    }
+    CHECK(volume == Catch::Approx(expected.Mass()).epsilon(1e-6));
 }
 
 TEST_CASE("StepModelHandler::read_model() - non-existent file")

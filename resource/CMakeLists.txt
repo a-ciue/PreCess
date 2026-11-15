@@ -2,6 +2,7 @@ qt_add_resources(${MYNAME} "images"
     PREFIX /images
     FILES
         ZenithGrid.ico
+        splash/ZenithGrid-splash-background@2x.png
         toolbar/File/import.svg
         toolbar/File/export.svg
         toolbar/File/preference.svg
@@ -114,6 +115,8 @@ qt_add_resources(${MYNAME} "images"
         toolbar/Panels/plugin-unregister.svg
         toolbar/Panels/preview.svg
         toolbar/Panels/properties.svg
+        toolbar/Panels/range-linked.svg
+        toolbar/Panels/range-unlinked.svg
         toolbar/Panels/render-rgb.svg
         toolbar/Panels/render-scalar.svg
         toolbar/Panels/render-uv.svg

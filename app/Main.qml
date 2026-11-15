@@ -37,6 +37,24 @@ ApplicationWindow {
     readonly property color nativeTitleBarTextColor: Theme.textPrimary
     flags: Qt.platform.os === "wasm" ? (Qt.Window | Qt.FramelessWindowHint) : Qt.Window
 
+    // 范围偏好由窗口会话持有，编辑器和停靠面板重建不影响参数。
+    readonly property ScalarRangeState scalarRanges: ScalarRangeState {
+        query: QModelManager.query
+        renderWindow: App.registry.renderWindow
+        Component.onCompleted: App.registry.scalarRanges = this
+        Component.onDestruction: {
+            if (App.registry.scalarRanges === this)
+                App.registry.scalarRanges = null
+        }
+    }
+
+    Connections {
+        target: QModelManager.observer
+        function onComponentRemoved(componentId) {
+            root.scalarRanges.removeComponent(componentId)
+        }
+    }
+
     // Fusion 控件的默认调色板取自平台主题（Windows 系统色），不读取
     // QGuiApplication 应用调色板。窗口级绑定才能让启动后动态创建的控件
     // （功能参数面板、插件声明的参数控件、设置页下拉等）继承当前主题；
@@ -143,6 +161,7 @@ ApplicationWindow {
     onClosing: dockSettings.json = dockHost.saveLayout()
 
     header: AppToolbar {
+        id: toolbar
         windowHeight: root.height
         onResetLayoutRequested: {
             if (root.defaultDockLayout.length > 0)
@@ -340,37 +359,20 @@ ApplicationWindow {
     }
 
 
-    // 拖拽导入：一次可拖入多个文件，逐个交给 read；能否导入由 C++ 判定并写日志
+    // 拖入文件与工具栏共用类型选择、参数编辑和执行流程。
     DropArea {
         id: importDropArea
         anchors.fill: parent
         z: 1
         onContainsDragChanged: App.importDragActive = containsDrag
 
-        // 不做前置过滤：是否可导入由 C++ read 判定（失败会记 error 日志）
         onEntered: {
-            drag.accepted = drag.urls.length > 0
+            drag.accepted = drag.urls.length > 0 && !QModelManager.taskStatus.writePending
         }
         onDropped: {
-            drop.accepted = drop.urls.length > 0
-            if (drop.urls.length === 0)
-                return
-            // 算法执行期间拒绝导入：模型须保持冻结
-            if (root.frozenBusy) {
-                drop.accepted = false
-                return
-            }
-
-            // 逐个导入并记录失败项，全部导入结束后统一重置视角
-            let failed = 0
-            for (const url of drop.urls) {
-                if (!QModelManager.ioSystem.read("All files", url, []))
-                    ++failed
-            }
-            if (failed < drop.urls.length && App.registry.renderWindow)
-                App.registry.renderWindow.resetCamera()
-            if (failed > 0)
-                outputLogDock.showPanel() // 失败原因由日志面板承载，直接打开便于查看
+            drop.accepted = drop.urls.length > 0 && !QModelManager.taskStatus.writePending
+            if (drop.accepted)
+                toolbar.importFiles(drop.urls)
         }
     }
 
@@ -423,7 +425,7 @@ ApplicationWindow {
                     imported = true
                 }
             }
-            // 导入通知先排队加载 Actor，再重置相机；视口创建时的重置早于启动导入。
+            // 导入通知先排队加载 Actor，再重置相机。
             if (imported && App.registry.renderWindow)
                 App.registry.renderWindow.resetCamera()
         })

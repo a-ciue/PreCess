@@ -164,7 +164,7 @@ Item {
         } else if (cmd.trim() === "components") {
             outputText.text += "← 全局对象: App (App.selection, App.registry, App.activeOperation)\n"
             outputText.text += "← 系统对象: QModelManager (observer, query, algorithmSystem, ioSystem, editSystem)\n"
-            outputText.text += "← 注册控件: App.registry.renderWindow, App.registry.treeModel\n\n"
+            outputText.text += "← 注册控件: App.registry.renderWindow, App.registry.treeModel, App.registry.scalarRanges\n\n"
             return
         }
 
@@ -250,6 +250,9 @@ Item {
                        "• 通过 App.registry.xxx 访问注册控件\n" +
                        "• 例如: App.registry.renderWindow.resetCamera()\n" +
                        "• Tab 键查看对象子属性\n\n" +
+                       "🎨 标量显示示例:\n" +
+                       "• App.registry.scalarRanges.showAttribute(0, 'f_pressure_1')\n" +
+                       "• App.registry.scalarRanges.cancel(0)\n\n" +
                        "💡 提示: 直接输入表达式执行 JavaScript\n"
 
         outputText.text += helpText + "\n"

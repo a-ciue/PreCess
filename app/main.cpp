@@ -1,66 +1,20 @@
-#include "QLogManager.h"
+#include "QApplicationStartup.h"
 #include "QModelManager.h"
-#include "QFeatureSystemAdaptor.h"
-#include "Docking.h"
-#include "WallpaperLibrary.h"
-#include "QNativeTitleBar.h"
-#include <QWindow>
-#include <QCoreApplication>
+
+#include <QGuiApplication>
 #include <QIcon>
-#include <QKeyEvent>
-#include <QQuickVTKItem.h>
-#include <QtQml/QQmlApplicationEngine>
-#include <QtQml/QQmlContext>
 #include <QQuickStyle>
-#include <spdlog/cfg/env.h>
-#ifdef __EMSCRIPTEN__
-#include <QtGui/QFontDatabase>
-#include <QtQuick/QQuickWindow>
-#include <QtQuick/QSGRendererInterface>
-#include "QWasmBridge.h"
+#ifndef __EMSCRIPTEN__
+#include <QQuickVTKItem.h>
 #endif
+#include <spdlog/cfg/env.h>
 
 #ifdef __EMSCRIPTEN__
-// wasm 下将 Qt 相关对象提升为全局变量，避免在 main 函数返回后被销毁
+// 浏览器事件循环在 main 返回后运行，应用及启动对象须继续存活。
 #define WASM_GLOBAL static
 #else
 #define WASM_GLOBAL
 #endif
-
-namespace {
-
-/**
- * @brief 全局按键事件转发器：把按键事件投递到功能系统
- *
- * 事件被功能消费（如按键绑定命中）时立即 accept，不再向焦点控件传递，
- * 避免同一按键被重复消费。
- */
-class KeyEventForwarder : public QObject {
-public:
-    KeyEventForwarder(systems::feature::QFeatureSystemAdaptor& adaptor, QObject* parent = nullptr)
-        : QObject(parent)
-        , adaptor_(&adaptor)
-    {
-    }
-
-protected:
-    bool eventFilter(QObject* watched, QEvent* event) override
-    {
-        if (event->type() == QEvent::KeyPress || event->type() == QEvent::KeyRelease) {
-            const auto* key_event = static_cast<QKeyEvent*>(event);
-            if (!key_event->isAutoRepeat()
-                && adaptor_->postKeyEvent(key_event->key(), static_cast<int>(key_event->modifiers()),
-                    event->type() == QEvent::KeyPress)) {
-                return true; // 功能已消费该按键事件，阻止继续传递
-            }
-        }
-        return QObject::eventFilter(watched, event);
-    }
-
-private:
-    systems::feature::QFeatureSystemAdaptor* adaptor_;
-};
-}
 
 int main(int argc, char* argv[])
 {
@@ -76,60 +30,13 @@ int main(int argc, char* argv[])
     // 持久化身份（QSettings 存储位置）：布局快照等依赖明确的应用名/组织名
     QCoreApplication::setOrganizationName(QStringLiteral("PreCess"));
     QCoreApplication::setApplicationName(QStringLiteral("PreCess"));
+    QCoreApplication::setApplicationVersion(QStringLiteral(PRECESS_APP_VERSION));
     // 全平台统一 Fusion 运行时样式：QML 一律用运行时样式选择（裸 import
     // QtQuick.Controls），禁止文件内显式 import 特定样式，避免样式混用。
     // 控件调色板由 Main.qml 的 ApplicationWindow 绑定 Theme 令牌；Fusion 的
     // 默认控件调色板取自平台主题，应用调色板只覆盖 ToolTip 等弹窗。
     QQuickStyle::setStyle("Fusion");
-#ifdef __EMSCRIPTEN__
-    // wasm 平台需手动加载捆绑的字体，否则无法显示中文
-    int font_id = QFontDatabase::addApplicationFont(":/fonts/appfont.bin");
-    QStringList font_families = QFontDatabase::applicationFontFamilies(font_id);
-    if (!font_families.isEmpty()) {
-        app.setFont(QFont(font_families.first()));
-    }
-#endif
-    QLogManager::initialize();
 
-    WASM_GLOBAL QQmlApplicationEngine engine;
-    // 停靠组件：注册 PreCess.Docking 类型、注入 QML 引擎、安装全局鼠标过滤器
-    dock::init(&engine);
-    // 自定义壁纸：注册 image://wallpaper/ 提供者，从托管目录解析用户导入的背景
-    engine.addImageProvider(QStringLiteral("wallpaper"), new WallpaperProvider);
-
-    // 收集命令行参数（跳过第一个参数，它是程序路径）
-    QStringList arguments_str = app.arguments().mid(1);
-    QList<QUrl> arguments;
-    for (auto& argument_str : arguments_str) {
-        arguments << QUrl::fromLocalFile(argument_str);
-    }
-
-    engine.rootContext()->setContextProperty("QLogManager", QLogManager::instance());
-#ifdef __EMSCRIPTEN__
-    engine.rootContext()->setContextProperty("QWasmBridge", new QWasmBridge(&app));
-#endif
-    // 将参数列表暴露给QML
-    engine.rootContext()->setContextProperty("commandLineArgs", QVariant::fromValue(arguments));
-
-    engine.loadFromModule("app", "Main");
-    if (engine.rootObjects().isEmpty())
-        return -1;
-
-    // 保留系统标题栏，由主窗口主题色驱动其原生颜色。
-    if (auto* main_window = qobject_cast<QWindow*>(engine.rootObjects().first()))
-        new QNativeTitleBar(main_window, main_window);
-
-    // 安装全局按键事件过滤器，将按键事件转发给功能系统
-    if (auto* model_manager = engine.singletonInstance<QModelManager*>("app.model", "QModelManager")) {
-        if (auto* feature_adaptor = model_manager->getFeatureSystemAdaptor()) {
-            app.installEventFilter(new KeyEventForwarder(*feature_adaptor, &app));
-        }
-    }
-
-#ifdef __EMSCRIPTEN__
-    // wasm 平台由浏览器管理事件循环，main 函数直接返回即可
-    return 0;
-#else
-    return app.exec();
-#endif
+    WASM_GLOBAL QApplicationStartup startup(app);
+    return startup.run();
 }

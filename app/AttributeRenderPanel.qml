@@ -9,100 +9,162 @@ import app.model
 Item {
     id: root
     clip: true
+    // 宿主下限只保留可用视口和底部操作；完整内容高度独立用于滚动。
+    implicitHeight: parameterViewport.implicitHeight + footerLayout.implicitHeight + 2 * parameterViewport.anchors.margins + panelLayout.spacing
 
     property var attributes: []
     property int selectedIndex: -1
     property string componentName: ""
+    property var rangeState: App.registry.scalarRanges
+    property string selectedKey: ""
+    property int confirmedMode: 1
+    property var rememberedAttributes: ({})
+    property var rangeMetadata: ({ valid: false, rangeAvailable: false })
+    readonly property var currentRange: rangeState ? rangeState.parameters(selectedKey) : ({
+            valid: false
+        })
 
-    // 根据对象树当前选中组件重新读取属性列表，并清空已选属性。
+    // 面板仅查询原始元信息，用户范围统一保存在界面参数对象中。
+    function refreshRangeMetadata() {
+        let attr = selectedAttribute();
+        rangeMetadata = attr && rangeState ? rangeState.rangeInfo(App.selection.activeComponentId, attr.name) : { valid: false, rangeAvailable: false };
+        selectedKey = attr && rangeState ? rangeState.ensure(App.selection.activeComponentId, attr.name, rangeMetadata) : "";
+    }
+
+    // 普通目录刷新恢复操作位置，同一属性的输入草稿由编辑器继续保留。
     function refreshAttributes() {
-        selectedIndex = -1
-        if (App.selection.activeComponentId >= 0) {
-            componentName = QModelManager.query.getComponentName(App.selection.activeComponentId)
-            attributes = QModelManager.query.getComponentAttriInfo(App.selection.activeComponentId)
-        } else {
-            componentName = ""
-            attributes = []
+        selectedIndex = -1;
+        let component = App.selection.activeComponentId;
+        componentName = component >= 0 ? QModelManager.query.getComponentName(component) : "";
+        attributes = component >= 0 ? QModelManager.query.getComponentAttriInfo(component) : [];
+        let remembered = rememberedAttributes[String(component)];
+        if (remembered) {
+            for (let index = 0; index < attributes.length; ++index) {
+                if (attributes[index].name === remembered.name && attributes[index].attrType === remembered.type) {
+                    selectedIndex = index;
+                    modeCombo.currentIndex = remembered.mode;
+                    break;
+                }
+            }
         }
+        confirmedMode = modeCombo.currentIndex;
+        refreshRangeMetadata();
     }
 
-    // 返回当前选中的属性条目，未选中时返回 null。
+    // 返回当前属性，避免目录刷新或无选中项时使用旧条目。
     function selectedAttribute() {
-        if (selectedIndex < 0 || selectedIndex >= attributes.length)
-            return null
-        return attributes[selectedIndex]
+        return selectedIndex >= 0 && selectedIndex < attributes.length ? attributes[selectedIndex] : null;
     }
 
-    // 按属性分量数给一个常用默认模式，用户仍然可以手动切换。
+    // 保留多分量属性原有的默认渲染策略。
     function inferMode(attr) {
-        if (!attr)
-            return 1
-        if (attr.componentCount === 2)
-            return 2
-        if (attr.componentCount === 3)
-            return 0
-        return 1
+        return attr && attr.componentCount === 2 ? 2 : attr && attr.componentCount === 3 ? 0 : 1;
     }
 
-    // 只在输入框有内容时读取数值参数，空输入表示使用渲染策略默认值。
+    // 空输入沿用策略默认值，合法数值才作为可选参数发送。
     function optionalNumber(text) {
-        let trimmed = text.trim()
-        if (trimmed.length === 0)
-            return null
-        let value = Number(trimmed)
-        return Number.isFinite(value) ? value : null
+        let trimmed = text.trim();
+        let value = trimmed.length > 0 ? Number(trimmed) : NaN;
+        return Number.isFinite(value) ? value : null;
     }
 
-    // 组装 setAttriMode 的可选参数，保持和 QRenderWindow 控制台接口一致。
+    // 标量发送完整配置，其他策略保持已有参数入口。
     function renderArgs() {
-        let args = {}
-        if (modeCombo.currentIndex === 1) {
-            let minValue = optionalNumber(rangeMinField.text)
-            let maxValue = optionalNumber(rangeMaxField.text)
-            if (minValue !== null && maxValue !== null)
-                args["scalar_range"] = [minValue, maxValue]
-        } else if (modeCombo.currentIndex === 2) {
-            args["texture_path"] = texturePathField.text
-        } else if (modeCombo.currentIndex === 3) {
-            let scale = optionalNumber(glyphScaleField.text)
-            if (scale !== null)
-                args["glyph_scale"] = scale
+        if (modeCombo.currentIndex === 2)
+            return {
+                texture_path: texturePathField.text
+            };
+        if (modeCombo.currentIndex === 3) {
+            let scale = optionalNumber(glyphScaleField.text);
+            return scale !== null ? {
+                glyph_scale: scale
+            } : {};
         }
-        return args
+        return {};
     }
 
+    // 按属性分量和实体域限制原有 RGB、UV、向量策略。
     function canApply() {
-        let attr = selectedAttribute()
-        if (!attr || !App.registry.renderWindow)
-            return false
-
+        let attr = selectedAttribute();
+        if (!attr || !App.registry.renderWindow || (modeCombo.currentIndex === 1 && !rangeState))
+            return false;
         if (modeCombo.currentIndex === 0 && attr.componentCount !== 3)
-            return false
-        if (modeCombo.currentIndex === 2
-                && (attr.attrType !== 0 || attr.componentCount !== 2))
-            return false
+            return false;
+        if (modeCombo.currentIndex === 2 && (attr.attrType !== 0 || attr.componentCount !== 2))
+            return false;
         if (modeCombo.currentIndex === 3 && attr.componentCount !== 3)
-            return false
-
-        return modeCombo.currentIndex !== 2 || texturePathField.text.length > 0
+            return false;
+        return modeCombo.currentIndex !== 2 || texturePathField.text.length > 0;
     }
 
-    function urlToPath(url) {
-        let urlString = url.toString()
-        if (urlString.startsWith("file:///")) {
-            let start = urlString.charAt(9) === ":" ? 8 : 7
-            return decodeURIComponent(urlString.substring(start))
+    // 属性点击和应用共用入口，先完成草稿，再提交该属性的最终配置。
+    function applySelectedAttribute() {
+        if (!canApply())
+            return;
+        let edit = rangeEditor.takeParameters();
+        if (edit === false)
+            return;
+        let attr = selectedAttribute();
+        if (modeCombo.currentIndex === 1) {
+            refreshRangeMetadata();
+            rangeState.apply(selectedKey, edit ? edit.parameters : undefined);
+        } else {
+            if (rangeState) {
+                rangeState.setActive(App.selection.activeComponentId, "");
+                if (edit)
+                    rangeState.save(edit.key, edit.parameters);
+            }
+            App.registry.renderWindow.setAttriMode(App.selection.activeComponentId, attr.name, modeCombo.currentIndex, renderArgs());
         }
-        return decodeURIComponent(urlString)
+    }
+
+    // 将文件选择器的 URL 转为既有渲染接口使用的本地路径。
+    function urlToPath(url) {
+        let text = url.toString();
+        if (text.startsWith("file:///"))
+            return decodeURIComponent(text.substring(text.charAt(9) === ":" ? 8 : 7));
+        return decodeURIComponent(text);
+    }
+
+    FontMetrics {
+        id: attributeFontMetrics
+        font: Qt.application.font
+    }
+
+    Flickable {
+        id: parameterViewport
+        objectName: "attributeRenderScroll"
+        // 为滚动操作保留 120 逻辑像素，字体放大时至少容纳两行属性。
+        implicitHeight: Math.max(120, attributeList.implicitHeight)
+        anchors.left: parent.left
+        anchors.right: parent.right
+        anchors.top: parent.top
+        anchors.margins: 6
+        anchors.bottom: footerLayout.top
+        contentWidth: width
+        contentHeight: panelLayout.height
+        boundsBehavior: Flickable.StopAtBounds
+        clip: true
+        // 滚动条使用右侧留白，不挤压参数区，避免窄面板因滚动条出现而再次换行。
+        ScrollBar.vertical: ScrollBar {
+            parent: root
+            anchors.top: parameterViewport.top
+            anchors.bottom: parameterViewport.bottom
+            anchors.right: parent.right
+            width: parameterViewport.anchors.rightMargin
+        }
     }
 
     ColumnLayout {
-        anchors.fill: parent
-        anchors.margins: 6
+        id: panelLayout
+        parent: parameterViewport.contentItem
+        width: parameterViewport.width
+        height: Math.max(implicitHeight, parameterViewport.height)
         spacing: 6
 
         RowLayout {
             Layout.fillWidth: true
+            Layout.minimumHeight: implicitHeight
             spacing: Theme.spacingXs
             Label {
                 text: "组件"
@@ -121,13 +183,18 @@ Item {
 
         ListView {
             id: attributeList
+            objectName: "attributeRenderList"
+            // 两行使用与委托相同的行高，字体放大时不会只露出半行。
+            readonly property real rowHeight: Math.max(34, attributeFontMetrics.height + 16)
+            implicitHeight: 2 * rowHeight + spacing
             Layout.fillWidth: true
             Layout.fillHeight: true
-            Layout.minimumHeight: 60
+            Layout.minimumHeight: implicitHeight
             clip: true
             spacing: Theme.spacingXs
             model: root.attributes
             currentIndex: root.selectedIndex
+            interactive: contentHeight > height
             flickDeceleration: 100000
             boundsBehavior: Flickable.StopAtBounds
 
@@ -137,11 +204,9 @@ Item {
                 required property int index
 
                 width: attributeList.width
-                height: 34
+                height: attributeList.rowHeight
                 radius: Theme.radiusControl
-                color: root.selectedIndex === index ? Theme.primaryTint
-                     : attributeMouse.hovered ? Theme.hoverOverlay
-                     : Theme.surface
+                color: root.selectedIndex === index ? Theme.primaryTint : attributeMouse.hovered ? Theme.hoverOverlay : Theme.surface
                 border.color: root.selectedIndex === index ? Theme.primary : Theme.border
                 border.width: 1
 
@@ -163,7 +228,7 @@ Item {
                         Layout.minimumWidth: 0
 
                         ToolTip {
-                            visible: attrNameText.truncated && attributeMouse.hovered
+                            visible: attrNameText.truncated && attributeMouse.containsMouse
                             text: attrNameText.text
                             delay: 300
                         }
@@ -176,11 +241,22 @@ Item {
 
                 MouseArea {
                     id: attributeMouse
+                    objectName: "attributeRenderSelect"
                     anchors.fill: parent
                     hoverEnabled: true
                     onClicked: {
-                        root.selectedIndex = index
-                        modeCombo.currentIndex = root.inferMode(modelData)
+                        if (!rangeEditor.finishEditing())
+                            return;
+                        root.selectedIndex = index;
+                        modeCombo.currentIndex = root.inferMode(modelData);
+                        root.rememberedAttributes[String(App.selection.activeComponentId)] = {
+                            name: modelData.name,
+                            type: modelData.attrType,
+                            mode: modeCombo.currentIndex
+                        };
+                        root.confirmedMode = modeCombo.currentIndex;
+                        root.refreshRangeMetadata();
+                        root.applySelectedAttribute();
                     }
                 }
             }
@@ -202,6 +278,7 @@ Item {
 
         GridLayout {
             Layout.fillWidth: true
+            Layout.minimumHeight: implicitHeight
             columns: 2
             rowSpacing: 6
             columnSpacing: 6
@@ -211,32 +288,38 @@ Item {
             }
             ComboBox {
                 id: modeCombo
+                objectName: "attributeRenderMode"
                 Layout.fillWidth: true
                 model: ["RGB", "标量", "UV", "向量"]
+                onActivated: {
+                    if (!rangeEditor.finishEditing()) {
+                        currentIndex = root.confirmedMode;
+                        return;
+                    }
+                    root.confirmedMode = currentIndex;
+                    let attr = root.selectedAttribute();
+                    if (attr)
+                        root.rememberedAttributes[String(App.selection.activeComponentId)] = {
+                            name: attr.name,
+                            type: attr.attrType,
+                            mode: currentIndex
+                        };
+                    root.refreshRangeMetadata();
+                }
             }
 
-            Label {
-                text: "范围"
-                visible: modeCombo.currentIndex === 1
-                Layout.preferredWidth: 32
-            }
-            RowLayout {
+            ScalarRangeEditor {
+                id: rangeEditor
                 Layout.fillWidth: true
                 Layout.minimumWidth: 0
+                Layout.columnSpan: 2
                 visible: modeCombo.currentIndex === 1
-                TextField {
-                    id: rangeMinField
-                    Layout.fillWidth: true
-                    Layout.minimumWidth: 0
-                    placeholderText: "min"
-                    validator: DoubleValidator {}
-                }
-                TextField {
-                    id: rangeMaxField
-                    Layout.fillWidth: true
-                    Layout.minimumWidth: 0
-                    placeholderText: "max"
-                    validator: DoubleValidator {}
+                attributeKey: root.selectedKey
+                parameters: root.currentRange
+                metadata: root.rangeMetadata
+                onParametersEdited: function (key, parameters) {
+                    if (root.rangeState)
+                        root.rangeState.update(key, parameters);
                 }
             }
 
@@ -281,51 +364,80 @@ Item {
                 }
             }
         }
+    }
 
-        RowLayout {
+    RowLayout {
+        id: footerLayout
+        anchors.left: parent.left
+        anchors.right: parent.right
+        anchors.bottom: parent.bottom
+        anchors.margins: 6
+        height: implicitHeight
+        spacing: Theme.spacingSm
+
+        Item {
             Layout.fillWidth: true
-            spacing: Theme.spacingSm
+        }
 
-            Button {
-                id: applyButton
-                text: "应用"
-                enabled: root.canApply()
-                // 主操作：实心强调色按钮
-                background: Rectangle {
-                    radius: Theme.radiusControl
-                    color: !applyButton.enabled ? Theme.scrollBarIdle
-                         : applyButton.pressed ? Theme.primaryPressed
-                         : applyButton.hovered ? Theme.primaryHover
-                         : Theme.primary
-                }
-                contentItem: Text {
-                    text: applyButton.text
-                    color: applyButton.enabled ? Theme.textOnPrimary : Theme.textDisabled
-                    font.pixelSize: Theme.fontSizeBody
-                    horizontalAlignment: Text.AlignHCenter
-                    verticalAlignment: Text.AlignVCenter
-                }
-                onClicked: {
-                    let attr = root.selectedAttribute()
-                    if (attr)
-                        App.registry.renderWindow.setAttriMode(
-                            App.selection.activeComponentId,
-                            attr.name,
-                            modeCombo.currentIndex,
-                            root.renderArgs())
-                }
+        Button {
+            id: cancelButton
+            objectName: "attributeRenderCancel"
+            Layout.alignment: Qt.AlignRight
+            Layout.minimumHeight: 32
+            leftPadding: Theme.spacingXs
+            rightPadding: Theme.spacingXs
+            text: qsTr("取消属性渲染")
+            font.pixelSize: Theme.fontSizeBody
+            // 鼠标点击不抢输入焦点，由取消入口只保存草稿；键盘仍可 Tab 聚焦。
+            focusPolicy: Qt.TabFocus
+            palette.button: Theme.surfaceAlt
+            palette.buttonText: Theme.textPrimary
+            palette.mid: Theme.border
+            palette.light: Theme.surface
+            palette.dark: Theme.borderStrong
+            palette.highlight: Theme.primary
+            flat: true
+            enabled: App.selection.activeComponentId >= 0 && App.registry.renderWindow
+            ToolTip.visible: hovered || visualFocus
+            ToolTip.text: qsTr("关闭属性着色和范围筛选，保留参数")
+            ToolTip.delay: 400
+            onClicked: {
+                let edit = rangeEditor.takeParameters();
+                if (root.rangeState)
+                    root.rangeState.cancel(App.selection.activeComponentId, edit ? edit.key : "", edit ? edit.parameters : undefined);
             }
+        }
 
-            Button {
-                icon.source: "qrc:/images/toolbar/Panels/cancel-render.svg"
-                icon.width: 14
-                icon.height: 14
-                icon.color: "transparent"
-                text: "取消属性渲染"
-                flat: true
-                enabled: App.selection.activeComponentId >= 0 && App.registry.renderWindow
-                onClicked: App.registry.renderWindow.cancelComponentAttri(App.selection.activeComponentId)
+        Button {
+            id: applyButton
+            objectName: "attributeRenderApply"
+            Layout.alignment: Qt.AlignRight
+            implicitWidth: Math.max(64, implicitContentWidth + leftPadding + rightPadding)
+            implicitHeight: Math.max(32, implicitContentHeight + topPadding + bottomPadding)
+            padding: Theme.spacingSm
+            text: qsTr("应用")
+            font.pixelSize: Theme.fontSizeBody
+            // 避免鼠标按下时先失焦应用，点击入口统一完成一次最终提交。
+            focusPolicy: Qt.TabFocus
+            enabled: root.canApply()
+            ToolTip.visible: hovered || visualFocus
+            ToolTip.text: qsTr("重新应用当前属性和参数；选择属性时也会自动应用")
+            ToolTip.delay: 400
+            // 主操作保留明暗主题的对比度，同时显示键盘焦点。
+            background: Rectangle {
+                radius: Theme.radiusControl
+                color: !applyButton.enabled ? Theme.surfaceAlt : Theme.dark ? (applyButton.down ? Theme.hoverOverlay : Theme.primaryTint) : applyButton.down ? Theme.primaryPressed : applyButton.hovered ? Theme.primaryHover : Theme.primary
+                border.width: applyButton.visualFocus ? 2 : 1
+                border.color: applyButton.visualFocus ? Theme.textPrimary : applyButton.enabled ? Theme.primary : Theme.border
             }
+            contentItem: Text {
+                text: applyButton.text
+                color: !applyButton.enabled ? Theme.textDisabled : Theme.dark ? Theme.textPrimary : Theme.textOnPrimary
+                font: applyButton.font
+                horizontalAlignment: Text.AlignHCenter
+                verticalAlignment: Text.AlignVCenter
+            }
+            onClicked: root.applySelectedAttribute()
         }
     }
 
@@ -338,17 +450,30 @@ Item {
     }
 
     Connections {
+        target: App.registry.renderWindow
+        function onScalarRangeChanged() {
+            root.refreshRangeMetadata();
+        }
+    }
+
+    Connections {
         target: App.selection
         function onActiveComponentIdChanged() {
-            root.refreshAttributes()
+            rangeEditor.finishEditing();
+            root.refreshAttributes();
         }
     }
 
     Connections {
         target: QModelManager.observer
+        function onComponentRemoved(component_id) {
+            delete root.rememberedAttributes[String(component_id)];
+            if (component_id === App.selection.activeComponentId)
+                root.refreshAttributes();
+        }
         function onComponentChanged(component_id) {
             if (component_id === App.selection.activeComponentId)
-                root.refreshAttributes()
+                root.refreshAttributes();
         }
     }
 

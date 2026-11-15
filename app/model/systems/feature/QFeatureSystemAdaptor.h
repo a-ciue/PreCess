@@ -25,6 +25,8 @@ class QFeatureSystemAdaptor : public QObject {
     QML_UNCREATABLE("QFeatureSystemAdaptor is provided by C++")
     Q_PROPERTY(QList<QFeatureInfo*> featuresInfo READ getFeaturesInfo NOTIFY featuresInfoChanged)
     Q_PROPERTY(QVariantList navigationDefinitions READ getNavigationEntries NOTIFY featuresInfoChanged)
+    Q_PROPERTY(QVariantList importFileTypes READ getImportFileTypes NOTIFY featuresInfoChanged)
+    Q_PROPERTY(QVariantList exportFileTypes READ getExportFileTypes NOTIFY featuresInfoChanged)
     Q_PROPERTY(QVariantList navigationOrder READ getNavigationOrder NOTIFY featuresInfoChanged)
 public:
     QFeatureSystemAdaptor(FeatureSystem& feature_system);
@@ -70,6 +72,9 @@ public:
      */
     QList<QFeatureInfo*> getFeaturesInfo() const;
     QVariantList getNavigationEntries() const;
+    /** @brief 列举文件功能的 Feature ID、显示名称和扩展名。 */
+    QVariantList getImportFileTypes() const;
+    QVariantList getExportFileTypes() const;
     QVariantList getNavigationOrder() const;
 
     /**

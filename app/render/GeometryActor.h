@@ -4,18 +4,18 @@
 #include "GeometryDataVtk.h"
 #include "GeometrySubshapeIndex.h"
 #include <vtkActor.h>
-#include <vtkDataArray.h>
 #include <vtkNew.h>
 #include <vtkSmartPointer.h>
 
-#include <Standard_Handle.hxx>
 #include <IVtkOCC_Shape.hxx>
+#include <Standard_Handle.hxx>
 #include <memory>
 typedef Handle(IVtkOCC_Shape) OccShapeHandle;
 
 class GeometryActorSelectOp;
 class GeometryTopologyDiagnosticActor;
 class vtkPolyData;
+class vtkRenderer;
 
 class GeometryActor {
     friend GeometryActorSelectOp;
@@ -25,6 +25,8 @@ public:
     ~GeometryActor();
 
     void loadShape(const GeometryDataVtk& geometry_data);
+    /** @brief 按有效档位重建显示网格并刷新诊断覆盖层。 */
+    void setSurfacePrecision(int precision);
 
     void setVisibility(bool visibility);
     bool isVisible() const;
@@ -37,6 +39,8 @@ public:
 private:
     void deleteGeometryActor();
     void applyStyle();
+    void rebuildMesh(int precision);
+    void createActors();
 
     GeometryRenderStyle style_ { GeometryRenderStyle::SurfaceWithEdges };
     bool visibility_;
@@ -45,9 +49,8 @@ private:
 
     vtkNew<vtkActor> poly_actor_;
     vtkNew<vtkActor> line_actor_;
+    // 场景先销毁几何管理器，再释放 renderer。
     vtkRenderer* renderer_;
-    vtkSmartPointer<vtkDataArray> line_sub_id_array_;
-    vtkSmartPointer<vtkDataArray> poly_sub_id_array_;
 
     vtkSmartPointer<vtkPolyData> poly_only_;
     vtkSmartPointer<vtkPolyData> line_only_;
