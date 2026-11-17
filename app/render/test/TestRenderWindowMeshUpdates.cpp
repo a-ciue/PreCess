@@ -10,6 +10,7 @@
 
 #include <QGuiApplication>
 #include <QImage>
+#include <QImageWriter>
 #include <QQuickRenderControl>
 #include <QQuickWindow>
 #include <QTemporaryDir>
@@ -70,7 +71,11 @@ TEST_CASE("Mesh reload preserves non-scalar rendering and explicit scalar cancel
     const auto texture_path = directory.filePath("texture.png");
     QImage image(2, 2, QImage::Format_RGB32);
     image.fill(Qt::white);
-    REQUIRE(image.save(texture_path));
+    QImageWriter texture_writer(texture_path, "PNG");
+    const bool texture_saved = texture_writer.write(image);
+    INFO(texture_path.toStdString());
+    INFO(texture_writer.errorString().toStdString());
+    REQUIRE(texture_saved);
 
     auto mesh = MakeMeshDataWithAtri();
     MeshUpdateViewport viewport;
