@@ -329,9 +329,9 @@ TEST_CASE("Viewport palette follows theme changes and scene recreation", "[theme
     item.setSize(QSizeF(320, 240));
 
     auto check_palette = [&](bool dark) {
-        const Rgb lower = dark ? Rgb { 66, 99, 95 } : Rgb { 178, 195, 189 };
-        const Rgb upper = dark ? Rgb { 102, 132, 126 } : Rgb { 222, 231, 228 };
-        const Rgb labels = dark ? Rgb { 255, 255, 255 } : Rgb { 36, 63, 59 };
+        const Rgb lower = dark ? Rgb { 66, 99, 95 } : Rgb { 193, 235, 237 };
+        const Rgb upper = dark ? Rgb { 102, 132, 126 } : Rgb { 239, 250, 250 };
+        const Rgb labels = dark ? Rgb { 255, 255, 255 } : Rgb { 54, 84, 96 };
         const Rgb scalar_text = dark ? Rgb { 255, 255, 255 } : Rgb { 0, 0, 0 };
         completed = false;
         item.dispatch_async([&](vtkRenderWindow*, QQuickVTKItem::vtkUserData user_data) {

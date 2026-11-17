@@ -87,13 +87,13 @@ void applyViewportPalette(QRenderWindow::Data* data, bool dark)
         data->renderer_->SetBackground(66.0 / 255.0, 99.0 / 255.0, 95.0 / 255.0);
         data->renderer_->SetBackground2(102.0 / 255.0, 132.0 / 255.0, 126.0 / 255.0);
     } else {
-        // 保持两端的 CIELAB 明度和色相，降低 20% 色度后换算回 sRGB。
-        data->renderer_->SetBackground(177.524 / 255.0, 195.047 / 255.0, 189.417 / 255.0);
-        data->renderer_->SetBackground2(221.870 / 255.0, 231.454 / 255.0, 228.245 / 255.0);
+        // 图标亮青 #3CBFC6 与白色混合：下端保留 32%，上端保留 8%。
+        data->renderer_->SetBackground(193.0 / 255.0, 235.0 / 255.0, 237.0 / 255.0);
+        data->renderer_->SetBackground2(239.0 / 255.0, 250.0 / 255.0, 250.0 / 255.0);
     }
-    const double red = dark ? 1.0 : 36.0 / 255.0;
-    const double green = dark ? 1.0 : 63.0 / 255.0;
-    const double blue = dark ? 1.0 : 59.0 / 255.0;
+    const double red = dark ? 1.0 : 54.0 / 255.0;
+    const double green = dark ? 1.0 : 84.0 / 255.0;
+    const double blue = dark ? 1.0 : 96.0 / 255.0;
     data->scale_bar_axis_->GetProperty()->SetColor(red, green, blue);
     data->scale_bar_axis_->GetLabelTextProperty()->SetColor(red, green, blue);
     const double scalar_text = dark ? 1.0 : 0.0;

@@ -112,15 +112,15 @@ TEST_CASE("Theme.qml exposes complete role maps and downgrades failed wallpaper"
     theme->setProperty("wallpaperReady", true);
     REQUIRE(QMetaObject::invokeMethod(theme, "setWallpaper", Q_ARG(QVariant, QString())));
 
-    // 浅色主题在普通表面和选中行上保留青绿强调文字的可读性。
+    // 浅色主题在普通表面和选中行上保留图标同源强调文字的可读性。
     REQUIRE(QMetaObject::invokeMethod(theme, "setMode", Q_ARG(QVariant, 0)));
     const QVariantMap light_control = theme->property("controlPalette").value<QVariantMap>();
     const QColor light_primary = theme->property("primary").value<QColor>();
     REQUIRE(colorOf(light_control, "base") == QColor("#FFFFFF"));
-    REQUIRE(colorOf(light_control, "window") == QColor("#F3F4F6"));
-    REQUIRE(light_primary == QColor("#276761"));
+    REQUIRE(colorOf(light_control, "window") == QColor("#F5FAFB"));
+    REQUIRE(light_primary == QColor("#076E7C"));
     REQUIRE(colorOf(light_control, "highlight") == light_primary);
-    REQUIRE(colorOf(light_control, "link") == QColor("#1976D2"));
+    REQUIRE(colorOf(light_control, "link") == light_primary);
     REQUIRE(contrastRatio(light_primary, colorOf(light_control, "window")) >= 4.5);
     REQUIRE(contrastRatio(light_primary, theme->property("primaryTint").value<QColor>()) >= 4.5);
     REQUIRE(contrastRatio(colorOf(light_control, "highlightedText"), light_primary) >= 4.5);
