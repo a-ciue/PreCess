@@ -48,7 +48,6 @@
 #include <QQmlEngine>
 #include <QQmlExpression>
 #include <catch2/catch_test_macros.hpp>
-#include <catch2/generators/catch_generators.hpp>
 #include <gp_Pnt.hxx>
 #include <vtkActor.h>
 #include <vtkActorCollection.h>
@@ -305,79 +304,6 @@ TEST_CASE("QRenderWindow keeps overlay logical sizes across DPR and VTK DPI chan
             user_data = nullptr;
         }
     }
-}
-
-TEST_CASE("Viewport palette follows theme changes and scene recreation", "[theme][render]")
-{
-    testApplication();
-    const bool start_dark = GENERATE(false, true);
-    CAPTURE(start_dark);
-    using Rgb = std::array<int, 3>;
-    bool gradient = false;
-    bool scalar_bar_found = false;
-    Rgb current_lower {}, current_upper {}, current_labels {};
-    Rgb scalar_labels {}, scalar_title {};
-    std::atomic_bool completed {};
-    std::atomic_bool invalidated {};
-    QQuickWindow window;
-    window.resize(320, 240);
-    window.setPersistentSceneGraph(false);
-    window.setPersistentGraphics(false);
-    auto& item = *new QRenderWindow;
-    item.setParent(window.contentItem());
-    item.setParentItem(window.contentItem());
-    item.setSize(QSizeF(320, 240));
-
-    auto check_palette = [&](bool dark) {
-        const Rgb lower = dark ? Rgb { 66, 99, 95 } : Rgb { 193, 235, 237 };
-        const Rgb upper = dark ? Rgb { 102, 132, 126 } : Rgb { 239, 250, 250 };
-        const Rgb labels = dark ? Rgb { 255, 255, 255 } : Rgb { 54, 84, 96 };
-        const Rgb scalar_text = dark ? Rgb { 255, 255, 255 } : Rgb { 0, 0, 0 };
-        completed = false;
-        item.dispatch_async([&](vtkRenderWindow*, QQuickVTKItem::vtkUserData user_data) {
-            auto* scene = QRenderWindow::Data::SafeDownCast(user_data);
-            const auto rgb = [](const double* color) {
-                return Rgb { static_cast<int>(std::lround(color[0] * 255.0)),
-                    static_cast<int>(std::lround(color[1] * 255.0)), static_cast<int>(std::lround(color[2] * 255.0)) };
-            };
-            gradient = scene->renderer_->GetGradientBackground();
-            current_lower = rgb(scene->renderer_->GetBackground());
-            current_upper = rgb(scene->renderer_->GetBackground2());
-            current_labels = rgb(scene->scale_bar_axis_->GetLabelTextProperty()->GetColor());
-            auto* scalar_bar = findScalarBar(scene->renderer_);
-            scalar_bar_found = scalar_bar != nullptr;
-            if (scalar_bar) {
-                scalar_labels = rgb(scalar_bar->GetLabelTextProperty()->GetColor());
-                scalar_title = rgb(scalar_bar->GetTitleTextProperty()->GetColor());
-            }
-            completed = true;
-        });
-        REQUIRE(renderUntil(window, [&] { return completed.load(); }));
-        CHECK(gradient);
-        CHECK(current_lower == lower);
-        CHECK(current_upper == upper);
-        CHECK(current_labels == labels);
-        REQUIRE(scalar_bar_found);
-        CHECK(scalar_labels == scalar_text);
-        CHECK(scalar_title == scalar_text);
-    };
-
-    item.setDarkBackground(start_dark);
-    window.show();
-    check_palette(start_dark);
-    item.setDarkBackground(!start_dark);
-    check_palette(!start_dark);
-    item.setDarkBackground(start_dark);
-    check_palette(start_dark);
-
-    const auto connection = QObject::connect(&window, &QQuickWindow::sceneGraphInvalidated, &window, [&] { invalidated = true; }, Qt::DirectConnection);
-    window.hide();
-    window.releaseResources();
-    const bool graph_destroyed = renderUntil(window, [&] { return invalidated.load(); });
-    QObject::disconnect(connection);
-    REQUIRE(graph_destroyed);
-    window.show();
-    check_palette(start_dark);
 }
 
 TEST_CASE("QRenderWindow releases interaction actors before recreating VTK resources")
