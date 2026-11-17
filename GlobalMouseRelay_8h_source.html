@@ -84,30 +84,37 @@ $(function() {
 <div class="line"><a id="l00006" name="l00006"></a><span class="lineno">    6</span><span class="preprocessor">#pragma once</span></div>
 <div class="line"><a id="l00007" name="l00007"></a><span class="lineno">    7</span> </div>
 <div class="line"><a id="l00008" name="l00008"></a><span class="lineno">    8</span><span class="preprocessor">#include &lt;QObject&gt;</span></div>
-<div class="line"><a id="l00009" name="l00009"></a><span class="lineno">    9</span> </div>
-<div class="line"><a id="l00010" name="l00010"></a><span class="lineno">   10</span><span class="keyword">class </span>QKeyEvent;</div>
-<div class="line"><a id="l00011" name="l00011"></a><span class="lineno">   11</span> </div>
-<div class="line"><a id="l00012" name="l00012"></a><span class="lineno">   12</span><span class="keyword">namespace </span><a class="code hl_namespace" href="namespacedock_1_1ui.html">dock::ui</a> {</div>
-<div class="line"><a id="l00013" name="l00013"></a><span class="lineno">   13</span></div>
-<div class="foldopen" id="foldopen00022" data-start="{" data-end="};">
-<div class="line"><a id="l00022" name="l00022"></a><span class="lineno"><a class="line" href="classdock_1_1ui_1_1GlobalMouseRelay.html">   22</a></span><span class="keyword">class </span><a class="code hl_function" href="classdock_1_1ui_1_1GlobalMouseRelay.html#a6de9d2633ea4a54189b440439a61d6da">GlobalMouseRelay</a> : <span class="keyword">public</span> QObject</div>
-<div class="line"><a id="l00023" name="l00023"></a><span class="lineno">   23</span>{</div>
-<div class="line"><a id="l00024" name="l00024"></a><span class="lineno">   24</span>    Q_OBJECT</div>
-<div class="line"><a id="l00025" name="l00025"></a><span class="lineno">   25</span><span class="keyword">public</span>:</div>
-<div class="line"><a id="l00026" name="l00026"></a><span class="lineno">   26</span>    <span class="keyword">explicit</span> <a class="code hl_function" href="classdock_1_1ui_1_1GlobalMouseRelay.html#a6de9d2633ea4a54189b440439a61d6da">GlobalMouseRelay</a>(QObject* parent = <span class="keyword">nullptr</span>);</div>
-<div class="line"><a id="l00027" name="l00027"></a><span class="lineno">   27</span> </div>
-<div class="line"><a id="l00028" name="l00028"></a><span class="lineno">   28</span><span class="keyword">protected</span>:</div>
-<div class="line"><a id="l00029" name="l00029"></a><span class="lineno">   29</span>    <span class="keywordtype">bool</span> <a class="code hl_function" href="classdock_1_1ui_1_1GlobalMouseRelay.html#a91599b4ff6ee3744be816f8c1beaedc6">eventFilter</a>(QObject* watched, QEvent* event) <span class="keyword">override</span>;</div>
+<div class="line"><a id="l00009" name="l00009"></a><span class="lineno">    9</span><span class="preprocessor">#include &lt;QPointF&gt;</span></div>
+<div class="line"><a id="l00010" name="l00010"></a><span class="lineno">   10</span> </div>
+<div class="line"><a id="l00011" name="l00011"></a><span class="lineno">   11</span><span class="keyword">class </span>QKeyEvent;</div>
+<div class="line"><a id="l00012" name="l00012"></a><span class="lineno">   12</span> </div>
+<div class="line"><a id="l00013" name="l00013"></a><span class="lineno">   13</span><span class="keyword">namespace </span><a class="code hl_namespace" href="namespacedock_1_1ui.html">dock::ui</a> {</div>
+<div class="line"><a id="l00014" name="l00014"></a><span class="lineno">   14</span></div>
+<div class="foldopen" id="foldopen00023" data-start="{" data-end="};">
+<div class="line"><a id="l00023" name="l00023"></a><span class="lineno"><a class="line" href="classdock_1_1ui_1_1GlobalMouseRelay.html">   23</a></span><span class="keyword">class </span><a class="code hl_function" href="classdock_1_1ui_1_1GlobalMouseRelay.html#a6de9d2633ea4a54189b440439a61d6da">GlobalMouseRelay</a> : <span class="keyword">public</span> QObject</div>
+<div class="line"><a id="l00024" name="l00024"></a><span class="lineno">   24</span>{</div>
+<div class="line"><a id="l00025" name="l00025"></a><span class="lineno">   25</span>    Q_OBJECT</div>
+<div class="line"><a id="l00026" name="l00026"></a><span class="lineno">   26</span><span class="keyword">public</span>:</div>
+<div class="line"><a id="l00027" name="l00027"></a><span class="lineno">   27</span>    <span class="keyword">explicit</span> <a class="code hl_function" href="classdock_1_1ui_1_1GlobalMouseRelay.html#a6de9d2633ea4a54189b440439a61d6da">GlobalMouseRelay</a>(QObject* parent = <span class="keyword">nullptr</span>);</div>
+<div class="line"><a id="l00029" name="l00029"></a><span class="lineno">   29</span>    <span class="keyword">static</span> <a class="code hl_function" href="classdock_1_1ui_1_1GlobalMouseRelay.html#a6de9d2633ea4a54189b440439a61d6da">GlobalMouseRelay</a>* <a class="code hl_function" href="classdock_1_1ui_1_1GlobalMouseRelay.html#afa4457cddb16a76cd6584b7379ffe419">instance</a>();</div>
 <div class="line"><a id="l00030" name="l00030"></a><span class="lineno">   30</span> </div>
-<div class="line"><a id="l00031" name="l00031"></a><span class="lineno">   31</span><span class="keyword">private</span>:</div>
-<div class="line"><a id="l00033" name="l00033"></a><span class="lineno">   33</span>    <span class="keyword">static</span> <span class="keywordtype">bool</span> <a class="code hl_function" href="classdock_1_1ui_1_1GlobalMouseRelay.html#a040f7478b82ca5142e7f18050ecb3284">cyclePanels</a>(<span class="keywordtype">bool</span> forward);</div>
-<div class="line"><a id="l00034" name="l00034"></a><span class="lineno">   34</span>};</div>
+<div class="line"><a id="l00031" name="l00031"></a><span class="lineno">   31</span>signals:</div>
+<div class="line"><a id="l00033" name="l00033"></a><span class="lineno"><a class="line" href="classdock_1_1ui_1_1GlobalMouseRelay.html#a915cf0a12a7ca90b9e347c38e51cd2c5">   33</a></span>    <span class="keywordtype">void</span> <a class="code hl_signal" href="classdock_1_1ui_1_1GlobalMouseRelay.html#a915cf0a12a7ca90b9e347c38e51cd2c5">leftPressed</a>(<span class="keyword">const</span> QPointF&amp; global_pos);</div>
+<div class="line"><a id="l00034" name="l00034"></a><span class="lineno">   34</span> </div>
+<div class="line"><a id="l00035" name="l00035"></a><span class="lineno">   35</span><span class="keyword">protected</span>:</div>
+<div class="line"><a id="l00036" name="l00036"></a><span class="lineno">   36</span>    <span class="keywordtype">bool</span> <a class="code hl_function" href="classdock_1_1ui_1_1GlobalMouseRelay.html#a91599b4ff6ee3744be816f8c1beaedc6">eventFilter</a>(QObject* watched, QEvent* event) <span class="keyword">override</span>;</div>
+<div class="line"><a id="l00037" name="l00037"></a><span class="lineno">   37</span> </div>
+<div class="line"><a id="l00038" name="l00038"></a><span class="lineno">   38</span><span class="keyword">private</span>:</div>
+<div class="line"><a id="l00040" name="l00040"></a><span class="lineno">   40</span>    <span class="keyword">static</span> <span class="keywordtype">bool</span> <a class="code hl_function" href="classdock_1_1ui_1_1GlobalMouseRelay.html#a040f7478b82ca5142e7f18050ecb3284">cyclePanels</a>(<span class="keywordtype">bool</span> forward);</div>
+<div class="line"><a id="l00041" name="l00041"></a><span class="lineno">   41</span>};</div>
 </div>
-<div class="line"><a id="l00035" name="l00035"></a><span class="lineno">   35</span> </div>
-<div class="line"><a id="l00036" name="l00036"></a><span class="lineno">   36</span>}</div>
-<div class="ttc" id="aclassdock_1_1ui_1_1GlobalMouseRelay_html_a040f7478b82ca5142e7f18050ecb3284"><div class="ttname"><a href="classdock_1_1ui_1_1GlobalMouseRelay.html#a040f7478b82ca5142e7f18050ecb3284">dock::ui::GlobalMouseRelay::cyclePanels</a></div><div class="ttdeci">static bool cyclePanels(bool forward)</div><div class="ttdoc">处理 Ctrl+Tab / Ctrl+Shift+Tab：切换悬停分组的标签</div><div class="ttdef"><b>定义</b> GlobalMouseRelay.cpp:70</div></div>
-<div class="ttc" id="aclassdock_1_1ui_1_1GlobalMouseRelay_html_a6de9d2633ea4a54189b440439a61d6da"><div class="ttname"><a href="classdock_1_1ui_1_1GlobalMouseRelay.html#a6de9d2633ea4a54189b440439a61d6da">dock::ui::GlobalMouseRelay::GlobalMouseRelay</a></div><div class="ttdeci">GlobalMouseRelay(QObject *parent=nullptr)</div><div class="ttdef"><b>定义</b> GlobalMouseRelay.cpp:19</div></div>
-<div class="ttc" id="aclassdock_1_1ui_1_1GlobalMouseRelay_html_a91599b4ff6ee3744be816f8c1beaedc6"><div class="ttname"><a href="classdock_1_1ui_1_1GlobalMouseRelay.html#a91599b4ff6ee3744be816f8c1beaedc6">dock::ui::GlobalMouseRelay::eventFilter</a></div><div class="ttdeci">bool eventFilter(QObject *watched, QEvent *event) override</div><div class="ttdef"><b>定义</b> GlobalMouseRelay.cpp:24</div></div>
+<div class="line"><a id="l00042" name="l00042"></a><span class="lineno">   42</span> </div>
+<div class="line"><a id="l00043" name="l00043"></a><span class="lineno">   43</span>}</div>
+<div class="ttc" id="aclassdock_1_1ui_1_1GlobalMouseRelay_html_a040f7478b82ca5142e7f18050ecb3284"><div class="ttname"><a href="classdock_1_1ui_1_1GlobalMouseRelay.html#a040f7478b82ca5142e7f18050ecb3284">dock::ui::GlobalMouseRelay::cyclePanels</a></div><div class="ttdeci">static bool cyclePanels(bool forward)</div><div class="ttdoc">处理 Ctrl+Tab / Ctrl+Shift+Tab：切换悬停分组的标签</div><div class="ttdef"><b>定义</b> GlobalMouseRelay.cpp:84</div></div>
+<div class="ttc" id="aclassdock_1_1ui_1_1GlobalMouseRelay_html_a6de9d2633ea4a54189b440439a61d6da"><div class="ttname"><a href="classdock_1_1ui_1_1GlobalMouseRelay.html#a6de9d2633ea4a54189b440439a61d6da">dock::ui::GlobalMouseRelay::GlobalMouseRelay</a></div><div class="ttdeci">GlobalMouseRelay(QObject *parent=nullptr)</div><div class="ttdef"><b>定义</b> GlobalMouseRelay.cpp:20</div></div>
+<div class="ttc" id="aclassdock_1_1ui_1_1GlobalMouseRelay_html_a91599b4ff6ee3744be816f8c1beaedc6"><div class="ttname"><a href="classdock_1_1ui_1_1GlobalMouseRelay.html#a91599b4ff6ee3744be816f8c1beaedc6">dock::ui::GlobalMouseRelay::eventFilter</a></div><div class="ttdeci">bool eventFilter(QObject *watched, QEvent *event) override</div><div class="ttdef"><b>定义</b> GlobalMouseRelay.cpp:31</div></div>
+<div class="ttc" id="aclassdock_1_1ui_1_1GlobalMouseRelay_html_a915cf0a12a7ca90b9e347c38e51cd2c5"><div class="ttname"><a href="classdock_1_1ui_1_1GlobalMouseRelay.html#a915cf0a12a7ca90b9e347c38e51cd2c5">dock::ui::GlobalMouseRelay::leftPressed</a></div><div class="ttdeci">void leftPressed(const QPointF &amp;global_pos)</div><div class="ttdoc">全局左键按下（不拦截原事件），供应用层判断点击是否落在某个控件外。</div></div>
+<div class="ttc" id="aclassdock_1_1ui_1_1GlobalMouseRelay_html_afa4457cddb16a76cd6584b7379ffe419"><div class="ttname"><a href="classdock_1_1ui_1_1GlobalMouseRelay.html#afa4457cddb16a76cd6584b7379ffe419">dock::ui::GlobalMouseRelay::instance</a></div><div class="ttdeci">static GlobalMouseRelay * instance()</div><div class="ttdoc">进程级单例；同时作为 QML 单例与事件过滤器使用。</div><div class="ttdef"><b>定义</b> GlobalMouseRelay.cpp:25</div></div>
 <div class="ttc" id="anamespacedock_1_1ui_html"><div class="ttname"><a href="namespacedock_1_1ui.html">dock::ui</a></div><div class="ttdef"><b>定义</b> DividerItem.cpp:15</div></div>
 </div><!-- fragment --></div><!-- contents -->
 <!-- start footer part -->

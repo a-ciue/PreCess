@@ -77,7 +77,9 @@ $(function() {
 <div id="doc-content">
 <div class="header">
   <div class="summary">
+<a href="#signals">信号</a> &#124;
 <a href="#pub-methods">Public 成员函数</a> &#124;
+<a href="#pub-static-methods">静态 Public 成员函数</a> &#124;
 <a href="#pro-methods">Protected 成员函数</a> &#124;
 <a href="#pri-static-methods">静态 Private 成员函数</a> &#124;
 <a href="classdock_1_1ui_1_1GlobalMouseRelay-members.html">所有成员列表</a>  </div>
@@ -110,9 +112,19 @@ dock::ui::GlobalMouseRelay 的协作图:</div>
 </map>
 <center><span class="legend">[<a href="graph_legend.html">图例</a>]</span></center></div>
 <table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 id="header-signals" class="groupheader"><a id="signals" name="signals"></a>
+信号</h2></td></tr>
+<tr class="memitem:a915cf0a12a7ca90b9e347c38e51cd2c5" id="r_a915cf0a12a7ca90b9e347c38e51cd2c5"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a915cf0a12a7ca90b9e347c38e51cd2c5">leftPressed</a> (const QPointF &amp;global_pos)</td></tr>
+<tr class="memdesc:a915cf0a12a7ca90b9e347c38e51cd2c5"><td class="mdescLeft">&#160;</td><td class="mdescRight">全局左键按下（不拦截原事件），供应用层判断点击是否落在某个控件外。  <br /></td></tr>
+</table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 id="header-pub-methods" class="groupheader"><a id="pub-methods" name="pub-methods"></a>
 Public 成员函数</h2></td></tr>
 <tr class="memitem:a6de9d2633ea4a54189b440439a61d6da" id="r_a6de9d2633ea4a54189b440439a61d6da"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a6de9d2633ea4a54189b440439a61d6da">GlobalMouseRelay</a> (QObject *parent=nullptr)</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 id="header-pub-static-methods" class="groupheader"><a id="pub-static-methods" name="pub-static-methods"></a>
+静态 Public 成员函数</h2></td></tr>
+<tr class="memitem:afa4457cddb16a76cd6584b7379ffe419" id="r_afa4457cddb16a76cd6584b7379ffe419"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="classdock_1_1ui_1_1GlobalMouseRelay.html">GlobalMouseRelay</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#afa4457cddb16a76cd6584b7379ffe419">instance</a> ()</td></tr>
+<tr class="memdesc:afa4457cddb16a76cd6584b7379ffe419"><td class="mdescLeft">&#160;</td><td class="mdescRight">进程级单例；同时作为 QML 单例与事件过滤器使用。  <br /></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 id="header-pro-methods" class="groupheader"><a id="pro-methods" name="pro-methods"></a>
 Protected 成员函数</h2></td></tr>
@@ -206,6 +218,60 @@ Protected 成员函数</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+
+</div>
+</div>
+<a id="afa4457cddb16a76cd6584b7379ffe419" name="afa4457cddb16a76cd6584b7379ffe419"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#afa4457cddb16a76cd6584b7379ffe419">&#9670;&#160;</a></span>instance()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classdock_1_1ui_1_1GlobalMouseRelay.html">GlobalMouseRelay</a> * dock::ui::GlobalMouseRelay::instance </td>
+          <td>(</td>
+          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel static">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>进程级单例；同时作为 QML 单例与事件过滤器使用。 </p>
+
+</div>
+</div>
+<a id="a915cf0a12a7ca90b9e347c38e51cd2c5" name="a915cf0a12a7ca90b9e347c38e51cd2c5"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a915cf0a12a7ca90b9e347c38e51cd2c5">&#9670;&#160;</a></span>leftPressed</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void dock::ui::GlobalMouseRelay::leftPressed </td>
+          <td>(</td>
+          <td class="paramtype">const QPointF &amp;</td>          <td class="paramname"><span class="paramname"><em>global_pos</em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel signal">signal</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>全局左键按下（不拦截原事件），供应用层判断点击是否落在某个控件外。 </p>
 
 </div>
 </div>

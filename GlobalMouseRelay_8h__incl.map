@@ -1,5 +1,7 @@
 <map id="app/dock/ui/GlobalMouseRelay.h" name="app/dock/ui/GlobalMouseRelay.h">
 <area shape="rect" id="Node000001" title="全局输入事件过滤器：拖拽鼠标事件转发 + Esc 取消 + Ctrl+Tab 标签切换" alt="" coords="5,5,238,33"/>
-<area shape="rect" id="Node000002" title=" " alt="" coords="85,81,158,109"/>
-<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="123,32,124,66,119,64,120,36"/>
+<area shape="rect" id="Node000002" title=" " alt="" coords="37,81,110,109"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="115,32,92,70,88,66,111,35"/>
+<area shape="rect" id="Node000003" title=" " alt="" coords="135,81,207,109"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="132,31,156,68,151,68,129,36"/>
 </map>
