@@ -241,6 +241,17 @@ ApplicationWindow {
         onActivated: QModelManager.undoStack.redo()
     }
 
+    // 全局左键按下：点击对象树外部时清空行选择（活动组件保持不变）。
+    Connections {
+        target: Docking.GlobalInput
+
+        function onLeftPressed(globalPos) {
+            const tree = App.registry.objectTree
+            if (tree)
+                tree.handleGlobalLeftPress(globalPos.x, globalPos.y)
+        }
+    }
+
     Connections {
         target: App.selection
         function onActiveModelIdChanged() {

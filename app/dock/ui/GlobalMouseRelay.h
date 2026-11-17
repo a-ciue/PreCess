@@ -6,6 +6,7 @@
 #pragma once
 
 #include <QObject>
+#include <QPointF>
 
 class QKeyEvent;
 
@@ -24,6 +25,12 @@ class GlobalMouseRelay : public QObject
     Q_OBJECT
 public:
     explicit GlobalMouseRelay(QObject* parent = nullptr);
+    //! @brief 进程级单例；同时作为 QML 单例与事件过滤器使用。
+    static GlobalMouseRelay* instance();
+
+signals:
+    //! @brief 全局左键按下（不拦截原事件），供应用层判断点击是否落在某个控件外。
+    void leftPressed(const QPointF& global_pos);
 
 protected:
     bool eventFilter(QObject* watched, QEvent* event) override;

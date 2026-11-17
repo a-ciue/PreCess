@@ -32,6 +32,12 @@ void registerTypes()
     // 主题承载单例：app 侧把已解析的配色表推入，dock QML 只读取结果
     qmlRegisterSingletonType<DockTheme>("PreCess.Docking", 1, 0, "Theme",
         [](QQmlEngine*, QJSEngine*) -> QObject* { return new DockTheme; });
+    qmlRegisterSingletonType<GlobalMouseRelay>("PreCess.Docking", 1, 0, "GlobalInput",
+        [](QQmlEngine*, QJSEngine*) -> QObject* {
+            auto* relay = GlobalMouseRelay::instance();
+            QQmlEngine::setObjectOwnership(relay, QQmlEngine::CppOwnership);
+            return relay;
+        });
     qmlRegisterUncreatableMetaObject(dock::staticMetaObject, "PreCess.Docking", 1, 0, "Tokens",
         QStringLiteral("Enum access only"));
 }
@@ -49,8 +55,7 @@ void init(QQmlEngine* engine)
 
     if (QCoreApplication::instance()
         && !QCoreApplication::instance()->property("dockMouseRelayInstalled").toBool()) {
-        QCoreApplication::instance()->installEventFilter(new ui::GlobalMouseRelay(
-            QCoreApplication::instance()));
+        QCoreApplication::instance()->installEventFilter(ui::GlobalMouseRelay::instance());
         QCoreApplication::instance()->setProperty("dockMouseRelayInstalled", true);
     }
 }
