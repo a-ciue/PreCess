@@ -122,7 +122,9 @@ TEST_CASE("Theme.qml exposes complete role maps and downgrades failed wallpaper"
     REQUIRE(colorOf(light_control, "highlight") == light_primary);
     REQUIRE(colorOf(light_control, "link") == light_primary);
     REQUIRE(contrastRatio(light_primary, colorOf(light_control, "window")) >= 4.5);
-    REQUIRE(contrastRatio(light_primary, theme->property("primaryTint").value<QColor>()) >= 4.5);
+    REQUIRE(contrastRatio(theme->property("textOnPrimaryTint").value<QColor>(),
+                theme->property("primaryTint").value<QColor>())
+        >= 4.5);
     REQUIRE(contrastRatio(colorOf(light_control, "highlightedText"), light_primary) >= 4.5);
     const QColor button_text = theme->property("textOnPrimary").value<QColor>();
     const QColor button_fill = theme->property("primaryButtonFill").value<QColor>();
@@ -148,7 +150,7 @@ TEST_CASE("Theme.qml exposes complete role maps and downgrades failed wallpaper"
     REQUIRE(colorOf(dark_dock, "windowBackground") == background);
     REQUIRE(colorOf(dark_dock, "surface") == surface);
     REQUIRE(contrastRatio(colorOf(dark_control, "text"), surface) >= 4.5);
-    REQUIRE(contrastRatio(theme->property("textPrimary").value<QColor>(),
+    REQUIRE(contrastRatio(theme->property("textOnPrimaryTint").value<QColor>(),
                 theme->property("primaryTint").value<QColor>())
         >= 4.5);
     REQUIRE(contrastRatio(theme->property("textSecondary").value<QColor>(),

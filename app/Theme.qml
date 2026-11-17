@@ -78,6 +78,8 @@ QtObject {
     //! 选中行 / 选中态着色
     readonly property color primaryTint: dark ? "#28545B" : "#E4F6F7"
     readonly property color textOnPrimary: dark ? "#102B33" : "#FFFFFF"
+    //! 选中行与页签在淡强调底色上的文字。
+    readonly property color textOnPrimaryTint: dark ? textPrimary : primary
     // 浅色按钮直接使用图标深青 #087C8B；强调文字、悬停和按下逐级加深。
     readonly property color primaryButtonFill: dark ? primary : "#087C8B"
     readonly property color primaryButtonHoverFill: dark ? primaryHover : "#076E7C"
@@ -124,7 +126,6 @@ QtObject {
     readonly property color textPrimary: dark ? "#DDE8E9" : "#263E48"
     readonly property color textSecondary: dark ? "#B1C1C5" : "#536F7C"
     readonly property color textDisabled: dark ? "#789397" : "#8CA7B0"
-    readonly property color textLink: primary
 
     // ---- 滚动条 ----
     readonly property color scrollBarIdle: dark ? "#35616A" : "#CBDEE3"
@@ -166,7 +167,7 @@ QtObject {
             light: surface,
             dark: borderStrong,
             shadow: scrollBarHover,
-            link: textLink,
+            link: primary,
             toolTipBase: menuSurface,
             toolTipText: textPrimary
         })
@@ -187,7 +188,7 @@ QtObject {
             light: menuSurface,
             dark: borderStrong,
             shadow: scrollBarHover,
-            link: textLink,
+            link: primary,
             toolTipBase: menuSurface,
             toolTipText: textPrimary
         })

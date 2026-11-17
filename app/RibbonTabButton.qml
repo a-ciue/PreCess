@@ -38,9 +38,9 @@ ToolButton {
         font.pixelSize: Theme.fontSizeBody
         font.weight: control.checked ? Font.DemiBold : Font.Normal
         color: !control.enabled ? Theme.textDisabled
-             : Theme.dark && (control.down || control.checked) ? Theme.textPrimary
-             : control.down ? Theme.primaryPressed
-             : control.checked ? Theme.primary : control.hovered ? Theme.primaryHover : Theme.textPrimary
+             : control.down ? (Theme.dark ? Theme.textOnPrimaryTint : Theme.primaryPressed)
+             : control.checked ? Theme.textOnPrimaryTint
+             : control.hovered ? Theme.primaryHover : Theme.textPrimary
         horizontalAlignment: Text.AlignHCenter
         verticalAlignment: Text.AlignVCenter
         elide: Text.ElideRight
