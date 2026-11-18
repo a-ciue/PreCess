@@ -11,8 +11,14 @@ target_include_directories(TestQLogManager PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}/
 precess_test_link_libraries(TestQLogManager
     Qt${VTK_QT_VERSION}::Core
     Qt${VTK_QT_VERSION}::Qml
+    Qt${VTK_QT_VERSION}::QuickControls2
+    Qt${VTK_QT_VERSION}::Test
     spdlog::spdlog
 )
+qt_add_resources(TestQLogManager log_ui
+    PREFIX "/log-ui"
+    BASE "${CMAKE_CURRENT_SOURCE_DIR}/.."
+    FILES ../OutputLog.qml)
 
 # QPythonRuntime 主线程延时回调测试
 # QPythonRuntime 与 precess_app 模块注册均编入 pythonApp 静态库（真/桩按可用性
