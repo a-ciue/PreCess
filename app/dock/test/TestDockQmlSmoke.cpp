@@ -32,7 +32,9 @@
 #include <QGuiApplication>
 #include <QQmlComponent>
 #include <QQmlEngine>
+#include <QQmlError>
 #include <QQuickItem>
+#include <QStringList>
 #include <QTest>
 #include <QtQuickTest/quicktest.h>
 
@@ -61,8 +63,17 @@ TEST_CASE("DockQml: docking area loads from QML and lays out docks")
     // 断言失败提前退出时的兜底清理（共享单例：DockCatalog/DragSession）
     docktest::DockSessionCleanup cleanup;
 
+    QStringList drop_zone_warnings;
     QQmlEngine engine;
     dock::init(&engine);
+    QObject::connect(&engine, &QQmlEngine::warnings, &engine, [&drop_zone_warnings](const QList<QQmlError>& warnings) {
+        for (const QQmlError& warning : warnings) {
+            if (warning.url().fileName() == QStringLiteral("DropZones.qml")
+                && (warning.description().contains(QStringLiteral("to \"x\""))
+                    || warning.description().contains(QStringLiteral("to \"y\""))))
+                drop_zone_warnings.append(warning.toString());
+        }
+    });
 
     QQmlComponent component(&engine);
     component.setData(R"QML(
@@ -234,6 +245,8 @@ TEST_CASE("DockQml: docking area loads from QML and lays out docks")
 
     dock::ui::DropZoneOverlay* overlay = platform->zonesOverlay();
     REQUIRE(overlay != nullptr);
+    QQuickItem* overlay_root = overlay->contentItem()->childItems().value(0);
+    REQUIRE(overlay_root != nullptr);
     CHECK_FALSE(overlay->isActive());
 
     // 先悬停到面板间的分隔条（不属于任何分组，但位于停靠区域内）：
@@ -247,6 +260,8 @@ TEST_CASE("DockQml: docking area loads from QML and lays out docks")
     CHECK(drag.hoveredGroup() == nullptr);
     CHECK(overlay->isActive());
     CHECK(overlay->zoneCount() == 4);
+    CHECK(overlay_root->property("targetFrame").toRectF().isEmpty());
+    CHECK(overlay_root->property("tabInsert").toRectF().isEmpty());
 
     // 悬停中央持久分组：中心合并方框被抑制（内 4 - 1 + 外 4 = 8）
     const QRect central_rect = host->centralGroup()->node()->geometry();
@@ -264,6 +279,8 @@ TEST_CASE("DockQml: docking area loads from QML and lays out docks")
     CHECK(overlay->isActive());
     CHECK(overlay->isVisible());
     CHECK(overlay->zoneCount() == 9);
+    CHECK(overlay_root->property("targetFrame").toRectF() == QRectF(target_rect));
+    CHECK(overlay_root->property("tabInsert").toRectF().isEmpty());
 
     drag.endAt(target_center);
     QCoreApplication::processEvents();
@@ -274,6 +291,8 @@ TEST_CASE("DockQml: docking area loads from QML and lays out docks")
     CHECK(dock::DockCatalog::self().windows().isEmpty());
     CHECK_FALSE(overlay->isActive());
     CHECK(overlay->zoneCount() == 0);
+    CHECK(overlay_root->property("targetFrame").toRectF().isEmpty());
+    CHECK(overlay_root->property("tabInsert").toRectF().isEmpty());
 
     // 合并后成为选项卡：切换为当前页后 client 可见，且无悬空视图
     CHECK(panel_b->group()->panels().contains(panel_a));
@@ -364,6 +383,8 @@ TEST_CASE("DockQml: docking area loads from QML and lays out docks")
     CHECK(drag.hoveredTabIndex() == 1);
     CHECK(overlay->isActive());
     CHECK_FALSE(overlay->tabInsertRect().isEmpty());
+    CHECK(overlay_root->property("tabInsert").toRectF()
+        == QRectF(overlay->tabInsertRect().translated(-overlay->position())));
 
     drag.endAt(insert_point.toPoint());
     QCoreApplication::processEvents();
@@ -620,6 +641,8 @@ TEST_CASE("DockQml: docking area loads from QML and lays out docks")
     cleanup.clean();
     area_item->setParentItem(nullptr);
     delete root;
+    INFO(drop_zone_warnings.join('\n').toStdString());
+    CHECK(drop_zone_warnings.isEmpty());
 }
 
 TEST_CASE("DockQml: object tree remains usable after small startup and layout restore")

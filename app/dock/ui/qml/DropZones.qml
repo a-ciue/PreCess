@@ -13,10 +13,10 @@ Item {
 
     //! @brief 指示器列表：[{x, y, width, height, active}]
     property var zones: []
-    //! @brief 目标分组描边：[{x, y, width, height}]，无效时不描边
-    property var targetFrame: null
-    //! @brief 标签插入标记：[{x, y, width, height}]，无效时不显示
-    property var tabInsert: null
+    //! @brief 目标分组描边（浮层局部坐标），空矩形时不描边
+    property rect targetFrame: Qt.rect(0, 0, 0, 0)
+    //! @brief 标签插入标记（浮层局部坐标），空矩形时不显示
+    property rect tabInsert: Qt.rect(0, 0, 0, 0)
 
     // 落点配色：取自 app 侧推送的 Docking.Theme.colors
     readonly property color accent: Docking.Theme.colors.dropAccent
@@ -28,24 +28,22 @@ Item {
 
     // 标签插入标记（悬停目标分组的标题栏/标签栏条带时显示竖线）
     Rectangle {
-        visible: root.tabInsert !== null && root.tabInsert !== undefined
-            && root.tabInsert.width > 0
-        x: root.tabInsert ? root.tabInsert.x : 0
-        y: root.tabInsert ? root.tabInsert.y : 0
-        width: root.tabInsert ? root.tabInsert.width : 0
-        height: root.tabInsert ? root.tabInsert.height : 0
+        visible: root.tabInsert.width > 0
+        x: root.tabInsert.x
+        y: root.tabInsert.y
+        width: root.tabInsert.width
+        height: root.tabInsert.height
         color: root.accent
         radius: 1
     }
 
     // 目标分组描边（拖动悬停在哪一面板，哪一面板整体高亮）
     Rectangle {
-        visible: root.targetFrame !== null && root.targetFrame !== undefined
-            && root.targetFrame.width > 0
-        x: root.targetFrame ? root.targetFrame.x : 0
-        y: root.targetFrame ? root.targetFrame.y : 0
-        width: root.targetFrame ? root.targetFrame.width : 0
-        height: root.targetFrame ? root.targetFrame.height : 0
+        visible: root.targetFrame.width > 0
+        x: root.targetFrame.x
+        y: root.targetFrame.y
+        width: root.targetFrame.width
+        height: root.targetFrame.height
         color: "transparent"
         border.color: root.accent
         border.width: 2
