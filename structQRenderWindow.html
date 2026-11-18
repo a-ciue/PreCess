@@ -231,6 +231,7 @@ QRenderWindow 的协作图:</div>
 <tr class="memitem:a1c748e9f8ae2e140e5a1ef31e790cafe" id="r_a1c748e9f8ae2e140e5a1ef31e790cafe"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a1c748e9f8ae2e140e5a1ef31e790cafe">geometryStyleChanged</a> ()</td></tr>
 <tr class="memitem:accf7912565996aa78864d5dbb0ed4ffe" id="r_accf7912565996aa78864d5dbb0ed4ffe"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#accf7912565996aa78864d5dbb0ed4ffe">surfacePrecisionChanged</a> ()</td></tr>
 <tr class="memitem:ae6fb4f753fa79bb72d26fb25ad0cefc9" id="r_ae6fb4f753fa79bb72d26fb25ad0cefc9"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ae6fb4f753fa79bb72d26fb25ad0cefc9">meshStyleChanged</a> ()</td></tr>
+<tr class="memitem:a95800b036391b4c6f9a9c5680d0024b8" id="r_a95800b036391b4c6f9a9c5680d0024b8"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a95800b036391b4c6f9a9c5680d0024b8">darkBackgroundChanged</a> ()</td></tr>
 <tr class="memitem:abc3c5e233da3a03cb681e14438e44f05" id="r_abc3c5e233da3a03cb681e14438e44f05"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#abc3c5e233da3a03cb681e14438e44f05">clicked</a> ()</td></tr>
 <tr class="memitem:ad0d60d1889987252b7f0c6612597c780" id="r_ad0d60d1889987252b7f0c6612597c780"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ad0d60d1889987252b7f0c6612597c780">rightClicked</a> ()</td></tr>
 <tr class="memitem:a0e5f50ab9ec1547b976eb66331369894" id="r_a0e5f50ab9ec1547b976eb66331369894"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a0e5f50ab9ec1547b976eb66331369894">scalarRangeChanged</a> ()</td></tr>
@@ -275,6 +276,9 @@ Public 成员函数</h2></td></tr>
 <tr class="memitem:a8536ecf5a3a9f4828117beb2258244dd" id="r_a8536ecf5a3a9f4828117beb2258244dd"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a8536ecf5a3a9f4828117beb2258244dd">getSurfacePrecision</a> () const</td></tr>
 <tr class="memitem:a1e8b252c4dbe398efb9e156acfe6e67a" id="r_a1e8b252c4dbe398efb9e156acfe6e67a"><td class="memItemLeft" align="right" valign="top">Q_INVOKABLE void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a1e8b252c4dbe398efb9e156acfe6e67a">setMeshStyle</a> (int style)</td></tr>
 <tr class="memitem:abcc6e855d02bd0d854d3cd1073f967d5" id="r_abcc6e855d02bd0d854d3cd1073f967d5"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#abcc6e855d02bd0d854d3cd1073f967d5">getMeshStyle</a> ()</td></tr>
+<tr class="memitem:a21088cc686fe01b32ee87ef333b7dd87" id="r_a21088cc686fe01b32ee87ef333b7dd87"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a21088cc686fe01b32ee87ef333b7dd87">setDarkBackground</a> (bool dark)</td></tr>
+<tr class="memdesc:a21088cc686fe01b32ee87ef333b7dd87"><td class="mdescLeft">&#160;</td><td class="mdescRight">设置视口背景及比例尺配色，切换时保留场景和相机。  <br /></td></tr>
+<tr class="memitem:a55cd181c185b32053e4dec4a786ab68d" id="r_a55cd181c185b32053e4dec4a786ab68d"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a55cd181c185b32053e4dec4a786ab68d">isDarkBackground</a> () const</td></tr>
 <tr class="memitem:ac7bef67fe487932abf700fb03d55c349" id="r_ac7bef67fe487932abf700fb03d55c349"><td class="memItemLeft" align="right" valign="top">Q_INVOKABLE void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ac7bef67fe487932abf700fb03d55c349">setTopologyDiagnosticCategoryEnabled</a> (int category, bool enabled)</td></tr>
 <tr class="memdesc:ac7bef67fe487932abf700fb03d55c349"><td class="mdescLeft">&#160;</td><td class="mdescRight">启用或停用一种网格拓扑诊断类别  <br /></td></tr>
 <tr class="memitem:a90620d62046ea5a0b7da22909979a595" id="r_a90620d62046ea5a0b7da22909979a595"><td class="memItemLeft" align="right" valign="top">Q_INVOKABLE void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a90620d62046ea5a0b7da22909979a595">setDihedralAngleRange</a> (double minimum, double maximum)</td></tr>
@@ -326,6 +330,7 @@ Protected 成员函数</h2></td></tr>
 <tr class="memitem:aaac5964235fbcd41a954f36b7a9356a6" id="r_aaac5964235fbcd41a954f36b7a9356a6"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#aaac5964235fbcd41a954f36b7a9356a6">geometryStyle</a></td></tr>
 <tr class="memitem:a6e447433b144f6cf6cd0691e18515b4a" id="r_a6e447433b144f6cf6cd0691e18515b4a"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a6e447433b144f6cf6cd0691e18515b4a">surfacePrecision</a></td></tr>
 <tr class="memitem:af5948401ecbf8751b291aac90a900edc" id="r_af5948401ecbf8751b291aac90a900edc"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#af5948401ecbf8751b291aac90a900edc">meshStyle</a></td></tr>
+<tr class="memitem:aef6421eb3ee186ae1b0b2166bc50017d" id="r_aef6421eb3ee186ae1b0b2166bc50017d"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#aef6421eb3ee186ae1b0b2166bc50017d">darkBackground</a></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 id="header-pri-types" class="groupheader"><a id="pri-types" name="pri-types"></a>
 Private 类型</h2></td></tr>
@@ -375,6 +380,7 @@ Private 成员函数</h2></td></tr>
 Private 属性</h2></td></tr>
 <tr class="memitem:a1a3cc6a025cb9965e7753d028f596abb" id="r_a1a3cc6a025cb9965e7753d028f596abb"><td class="memItemLeft" align="right" valign="top"><a class="el" href="Core_8h.html#a1673229bf7fec9388ac2a829a52d69b3">Index</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a1a3cc6a025cb9965e7753d028f596abb">scalar_bar_component_id_</a> { -1 }</td></tr>
 <tr class="memitem:a0c83623634e6901493a5981f04243445" id="r_a0c83623634e6901493a5981f04243445"><td class="memItemLeft" align="right" valign="top">qreal&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a0c83623634e6901493a5981f04243445">overlay_device_pixel_ratio_</a> { 1.0 }</td></tr>
+<tr class="memitem:a2e979e1fcfe31ed96c68c75183eefc42" id="r_a2e979e1fcfe31ed96c68c75183eefc42"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a2e979e1fcfe31ed96c68c75183eefc42">dark_background_</a> { true }</td></tr>
 <tr class="memitem:a83e71d7a8823ba6480f57004cb9d0110" id="r_a83e71d7a8823ba6480f57004cb9d0110"><td class="memItemLeft" align="right" valign="top">std::unordered_map&lt; <a class="el" href="Core_8h.html#a1673229bf7fec9388ac2a829a52d69b3">Index</a>, std::unique_ptr&lt; <a class="el" href="classMeshPipelineData.html">MeshPipelineData</a> &gt; &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a83e71d7a8823ba6480f57004cb9d0110">mesh_pipeline_data_</a></td></tr>
 <tr class="memitem:aa27b26863ab1ecf106e4f504d5c95cf6" id="r_aa27b26863ab1ecf106e4f504d5c95cf6"><td class="memItemLeft" align="right" valign="top">std::unordered_map&lt; <a class="el" href="Core_8h.html#a1673229bf7fec9388ac2a829a52d69b3">Index</a>, std::shared_ptr&lt; const <a class="el" href="structMeshDataSnapshot.html">MeshDataSnapshot</a> &gt; &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#aa27b26863ab1ecf106e4f504d5c95cf6">mesh_snapshots_</a></td></tr>
 <tr class="memitem:aa2a239a28aaf05047e9f6d83f56eec3e" id="r_aa2a239a28aaf05047e9f6d83f56eec3e"><td class="memItemLeft" align="right" valign="top"><a class="el" href="#a5ca4cfcaa35a0330ba92c70da7044f1c">GeometryVisibility</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#aa2a239a28aaf05047e9f6d83f56eec3e">geometry_visibility_</a></td></tr>
@@ -773,6 +779,31 @@ Private 属性</h2></td></tr>
 
 </div>
 </div>
+<a id="a95800b036391b4c6f9a9c5680d0024b8" name="a95800b036391b4c6f9a9c5680d0024b8"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a95800b036391b4c6f9a9c5680d0024b8">&#9670;&#160;</a></span>darkBackgroundChanged</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void QRenderWindow::darkBackgroundChanged </td>
+          <td>(</td>
+          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel signal">signal</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
 <a id="a2692e1068cac523abce070d80a3d7106" name="a2692e1068cac523abce070d80a3d7106"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a2692e1068cac523abce070d80a3d7106">&#9670;&#160;</a></span>deactivateScalarRange()</h2>
 
@@ -1060,6 +1091,31 @@ Private 属性</h2></td></tr>
 </div><div class="memdoc">
 
 <p>注入渲染刷新回调到 FeatureSystem（initializeVTK 与 setFeatureAdaptor 各调一次，确保初始化顺序无关） </p>
+
+</div>
+</div>
+<a id="a55cd181c185b32053e4dec4a786ab68d" name="a55cd181c185b32053e4dec4a786ab68d"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a55cd181c185b32053e4dec4a786ab68d">&#9670;&#160;</a></span>isDarkBackground()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool QRenderWindow::isDarkBackground </td>
+          <td>(</td>
+          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel inline">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
 
 </div>
 </div>
@@ -1656,6 +1712,25 @@ Private 属性</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+</div>
+</div>
+<a id="a21088cc686fe01b32ee87ef333b7dd87" name="a21088cc686fe01b32ee87ef333b7dd87"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a21088cc686fe01b32ee87ef333b7dd87">&#9670;&#160;</a></span>setDarkBackground()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void QRenderWindow::setDarkBackground </td>
+          <td>(</td>
+          <td class="paramtype">bool</td>          <td class="paramname"><span class="paramname"><em>dark</em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>设置视口背景及比例尺配色，切换时保留场景和相机。 </p>
 
 </div>
 </div>
@@ -2274,6 +2349,28 @@ Private 属性</h2></td></tr>
 
 </div>
 </div>
+<a id="a2e979e1fcfe31ed96c68c75183eefc42" name="a2e979e1fcfe31ed96c68c75183eefc42"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a2e979e1fcfe31ed96c68c75183eefc42">&#9670;&#160;</a></span>dark_background_</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool QRenderWindow::dark_background_ { true }</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel private">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
 <a id="af36bc244b299907aa7fd3660c883bc38" name="af36bc244b299907aa7fd3660c883bc38"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#af36bc244b299907aa7fd3660c883bc38">&#9670;&#160;</a></span>data_</h2>
 
@@ -2737,6 +2834,28 @@ Private 属性</h2></td></tr>
 </div>
 </div>
 <a name="doc-property-members" id="doc-property-members"></a><h2 id="header-doc-property-members" class="groupheader">属性说明</h2>
+<a id="aef6421eb3ee186ae1b0b2166bc50017d" name="aef6421eb3ee186ae1b0b2166bc50017d"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aef6421eb3ee186ae1b0b2166bc50017d">&#9670;&#160;</a></span>darkBackground</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool QRenderWindow::darkBackground</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel read">read</span><span class="mlabel write">write</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
 <a id="aaac5964235fbcd41a954f36b7a9356a6" name="aaac5964235fbcd41a954f36b7a9356a6"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#aaac5964235fbcd41a954f36b7a9356a6">&#9670;&#160;</a></span>geometryStyle</h2>
 

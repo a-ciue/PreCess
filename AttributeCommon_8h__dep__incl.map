@@ -38,7 +38,7 @@
 <area shape="poly" id="edge9_Node000005_Node000010" title=" " alt="" coords="2230,305,2130,331,2090,345,2064,361,2049,381,2039,405,2032,453,2028,449,2034,404,2044,379,2060,357,2087,340,2128,326,2224,306"/>
 <area shape="rect" id="Node000011" href="$TestRenderWindowLifecycle_8cpp.html" title="视口场景图销毁与重建的资源生命周期回归测试" alt="" coords="2592,359,2788,404"/>
 <area shape="poly" id="edge10_Node000005_Node000011" title=" " alt="" coords="2400,304,2607,359,2601,358,2399,309"/>
-<area shape="rect" id="Node000012" href="$TestRenderWindowMeshUpdates_8cpp.html" title="不显示窗口地验证网格更新与属性渲染取消之间的边界。" alt="" coords="2372,359,2568,404"/>
+<area shape="rect" id="Node000012" href="$TestRenderWindowMeshUpdates_8cpp.html" title="不显示窗口地验证网格更新与属性渲染取消之间的边界，需要可用的 OpenGL 上下文。" alt="" coords="2372,359,2568,404"/>
 <area shape="poly" id="edge11_Node000005_Node000012" title=" " alt="" coords="2365,309,2440,359,2434,358,2364,314"/>
 <area shape="rect" id="Node000013" href="$TestSelectorHighlightDeselect_8cpp.html" title=" " alt="" coords="2826,452,3029,496"/>
 <area shape="poly" id="edge12_Node000005_Node000013" title=" " alt="" coords="2234,306,2172,324,2123,345,2106,357,2097,371,2097,385,2108,402,2121,411,2143,419,2209,433,2300,445,2405,453,2631,464,2828,472,2823,472,2631,470,2405,459,2299,450,2209,438,2141,424,2118,415,2104,406,2092,387,2092,369,2102,354,2120,340,2170,319,2228,307"/>

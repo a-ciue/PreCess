@@ -1,0 +1,126 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="zh">
+<head>
+<meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=11"/>
+<meta name="generator" content="Doxygen 1.14.0"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>PreCess: app/QNativeTitleBar.h 源文件</title>
+<link href="tabs.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="jquery.js"></script>
+<script type="text/javascript" src="dynsections.js"></script>
+<script type="text/javascript" src="clipboard.js"></script>
+<script type="text/javascript" src="cookie.js"></script>
+<link href="search/search.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="search/searchdata.js"></script>
+<script type="text/javascript" src="search/search.js"></script>
+<link href="doxygen.css" rel="stylesheet" type="text/css" />
+</head>
+<body>
+<div id="top"><!-- do not remove this div, it is closed by doxygen! -->
+<div id="titlearea">
+<table cellspacing="0" cellpadding="0">
+ <tbody>
+ <tr id="projectrow">
+  <td id="projectlogo"><img alt="Logo" src="ZenithGrid.ico"/></td>
+  <td id="projectalign">
+   <div id="projectname">PreCess
+   </div>
+  </td>
+ </tr>
+ </tbody>
+</table>
+</div>
+<!-- end header part -->
+<!-- 制作者 Doxygen 1.14.0 -->
+<script type="text/javascript">
+var searchBox = new SearchBox("searchBox", "search/",'.html');
+</script>
+<script type="text/javascript">
+$(function() { codefold.init(); });
+</script>
+<script type="text/javascript" src="menudata.js"></script>
+<script type="text/javascript" src="menu.js"></script>
+<script type="text/javascript">
+$(function() {
+  initMenu('',true,false,'search.php','搜索',false);
+  $(function() { init_search(); });
+});
+</script>
+<div id="main-nav"></div>
+<!-- window showing the filter options -->
+<div id="MSearchSelectWindow"
+     onmouseover="return searchBox.OnSearchSelectShow()"
+     onmouseout="return searchBox.OnSearchSelectHide()"
+     onkeydown="return searchBox.OnSearchSelectKey(event)">
+</div>
+
+<!-- iframe showing the search results (closed by default) -->
+<div id="MSearchResultsWindow">
+<div id="MSearchResults">
+<div class="SRPage">
+<div id="SRIndex">
+<div id="SRResults"></div>
+<div class="SRStatus" id="Loading">载入中...</div>
+<div class="SRStatus" id="Searching">搜索中...</div>
+<div class="SRStatus" id="NoMatches">未找到</div>
+</div>
+</div>
+</div>
+</div>
+
+<div id="nav-path" class="navpath">
+  <ul>
+<li class="navelem"><a href="dir_d422163b96683743ed3963d4aac17747.html">app</a></li>  </ul>
+</div>
+</div><!-- top -->
+<div id="doc-content">
+<div class="header">
+  <div class="headertitle"><div class="title">QNativeTitleBar.h</div></div>
+</div><!--header-->
+<div class="contents">
+<a href="QNativeTitleBar_8h.html">浏览该文件的文档.</a><div class="fragment"><div class="line"><a id="l00001" name="l00001"></a><span class="lineno">    1</span></div>
+<div class="line"><a id="l00005" name="l00005"></a><span class="lineno">    5</span><span class="preprocessor">#pragma once</span></div>
+<div class="line"><a id="l00006" name="l00006"></a><span class="lineno">    6</span> </div>
+<div class="line"><a id="l00007" name="l00007"></a><span class="lineno">    7</span><span class="preprocessor">#include &lt;QAbstractNativeEventFilter&gt;</span></div>
+<div class="line"><a id="l00008" name="l00008"></a><span class="lineno">    8</span><span class="preprocessor">#include &lt;QObject&gt;</span></div>
+<div class="line"><a id="l00009" name="l00009"></a><span class="lineno">    9</span><span class="preprocessor">#include &lt;QPointer&gt;</span></div>
+<div class="line"><a id="l00010" name="l00010"></a><span class="lineno">   10</span> </div>
+<div class="line"><a id="l00011" name="l00011"></a><span class="lineno">   11</span><span class="keyword">class </span>QEvent;</div>
+<div class="line"><a id="l00012" name="l00012"></a><span class="lineno">   12</span><span class="keyword">class </span>QWindow;</div>
+<div class="line"><a id="l00013" name="l00013"></a><span class="lineno">   13</span></div>
+<div class="foldopen" id="foldopen00019" data-start="{" data-end="};">
+<div class="line"><a id="l00019" name="l00019"></a><span class="lineno"><a class="line" href="classQNativeTitleBar.html">   19</a></span><span class="keyword">class </span><a class="code hl_function" href="classQNativeTitleBar.html#a309c2805056a2cf900388974384e15ac">QNativeTitleBar</a> : <span class="keyword">public</span> QObject, <span class="keyword">public</span> QAbstractNativeEventFilter {</div>
+<div class="line"><a id="l00020" name="l00020"></a><span class="lineno">   20</span>    Q_OBJECT</div>
+<div class="line"><a id="l00021" name="l00021"></a><span class="lineno">   21</span> </div>
+<div class="line"><a id="l00022" name="l00022"></a><span class="lineno">   22</span><span class="keyword">public</span>:</div>
+<div class="line"><a id="l00028" name="l00028"></a><span class="lineno">   28</span>    <span class="keyword">explicit</span> <a class="code hl_function" href="classQNativeTitleBar.html#a309c2805056a2cf900388974384e15ac">QNativeTitleBar</a>(QWindow* window, QObject* parent = <span class="keyword">nullptr</span>);</div>
+<div class="line"><a id="l00029" name="l00029"></a><span class="lineno">   29</span>    <a class="code hl_function" href="classQNativeTitleBar.html#a0adbfe79a9062738cca7056a377a6358">~QNativeTitleBar</a>() <span class="keyword">override</span>;</div>
+<div class="line"><a id="l00030" name="l00030"></a><span class="lineno">   30</span> </div>
+<div class="line"><a id="l00031" name="l00031"></a><span class="lineno">   31</span><span class="keyword">public</span> slots:</div>
+<div class="line"><a id="l00033" name="l00033"></a><span class="lineno">   33</span>    <span class="keywordtype">void</span> <a class="code hl_slot" href="classQNativeTitleBar.html#a88bf4cd62b2b3dd47c10ef2ec4123e09">refresh</a>();</div>
+<div class="line"><a id="l00034" name="l00034"></a><span class="lineno">   34</span> </div>
+<div class="line"><a id="l00035" name="l00035"></a><span class="lineno">   35</span><span class="keyword">protected</span>:</div>
+<div class="line"><a id="l00036" name="l00036"></a><span class="lineno">   36</span>    <span class="keywordtype">bool</span> <a class="code hl_function" href="classQNativeTitleBar.html#a237d9f3182ea6b3fee5574b5d163a6d1">eventFilter</a>(QObject* watched, QEvent* event) <span class="keyword">override</span>;</div>
+<div class="line"><a id="l00037" name="l00037"></a><span class="lineno">   37</span>    <span class="keywordtype">bool</span> <a class="code hl_function" href="classQNativeTitleBar.html#a8105afe2c1028478d955f314732a885e">nativeEventFilter</a>(<span class="keyword">const</span> QByteArray&amp; event_type, <span class="keywordtype">void</span>* message, qintptr* result) <span class="keyword">override</span>;</div>
+<div class="line"><a id="l00038" name="l00038"></a><span class="lineno">   38</span> </div>
+<div class="line"><a id="l00039" name="l00039"></a><span class="lineno">   39</span><span class="keyword">private</span>:</div>
+<div class="line"><a id="l00040" name="l00040"></a><span class="lineno"><a class="line" href="classQNativeTitleBar.html#a4efa7e30a4e3e7917a74f2178700ddb0">   40</a></span>    QPointer&lt;QWindow&gt; <a class="code hl_variable" href="classQNativeTitleBar.html#a4efa7e30a4e3e7917a74f2178700ddb0">window_</a>;</div>
+<div class="line"><a id="l00041" name="l00041"></a><span class="lineno"><a class="line" href="classQNativeTitleBar.html#a0916d04feeb3a70f61b779ae4130d5d5">   41</a></span>    <span class="keywordtype">bool</span> <a class="code hl_variable" href="classQNativeTitleBar.html#a0916d04feeb3a70f61b779ae4130d5d5">surface_available_</a> = <span class="keyword">false</span>;</div>
+<div class="line"><a id="l00042" name="l00042"></a><span class="lineno">   42</span>};</div>
+</div>
+<div class="ttc" id="aclassQNativeTitleBar_html_a0916d04feeb3a70f61b779ae4130d5d5"><div class="ttname"><a href="classQNativeTitleBar.html#a0916d04feeb3a70f61b779ae4130d5d5">QNativeTitleBar::surface_available_</a></div><div class="ttdeci">bool surface_available_</div><div class="ttdef"><b>定义</b> QNativeTitleBar.h:41</div></div>
+<div class="ttc" id="aclassQNativeTitleBar_html_a0adbfe79a9062738cca7056a377a6358"><div class="ttname"><a href="classQNativeTitleBar.html#a0adbfe79a9062738cca7056a377a6358">QNativeTitleBar::~QNativeTitleBar</a></div><div class="ttdeci">~QNativeTitleBar() override</div><div class="ttdef"><b>定义</b> QNativeTitleBar.cpp:42</div></div>
+<div class="ttc" id="aclassQNativeTitleBar_html_a237d9f3182ea6b3fee5574b5d163a6d1"><div class="ttname"><a href="classQNativeTitleBar.html#a237d9f3182ea6b3fee5574b5d163a6d1">QNativeTitleBar::eventFilter</a></div><div class="ttdeci">bool eventFilter(QObject *watched, QEvent *event) override</div><div class="ttdef"><b>定义</b> QNativeTitleBar.cpp:91</div></div>
+<div class="ttc" id="aclassQNativeTitleBar_html_a309c2805056a2cf900388974384e15ac"><div class="ttname"><a href="classQNativeTitleBar.html#a309c2805056a2cf900388974384e15ac">QNativeTitleBar::QNativeTitleBar</a></div><div class="ttdeci">QNativeTitleBar(QWindow *window, QObject *parent=nullptr)</div><div class="ttdoc">绑定主窗口并跟踪原生窗口和系统主题变化。</div><div class="ttdef"><b>定义</b> QNativeTitleBar.cpp:25</div></div>
+<div class="ttc" id="aclassQNativeTitleBar_html_a4efa7e30a4e3e7917a74f2178700ddb0"><div class="ttname"><a href="classQNativeTitleBar.html#a4efa7e30a4e3e7917a74f2178700ddb0">QNativeTitleBar::window_</a></div><div class="ttdeci">QPointer&lt; QWindow &gt; window_</div><div class="ttdef"><b>定义</b> QNativeTitleBar.h:40</div></div>
+<div class="ttc" id="aclassQNativeTitleBar_html_a8105afe2c1028478d955f314732a885e"><div class="ttname"><a href="classQNativeTitleBar.html#a8105afe2c1028478d955f314732a885e">QNativeTitleBar::nativeEventFilter</a></div><div class="ttdeci">bool nativeEventFilter(const QByteArray &amp;event_type, void *message, qintptr *result) override</div><div class="ttdef"><b>定义</b> QNativeTitleBar.cpp:106</div></div>
+<div class="ttc" id="aclassQNativeTitleBar_html_a88bf4cd62b2b3dd47c10ef2ec4123e09"><div class="ttname"><a href="classQNativeTitleBar.html#a88bf4cd62b2b3dd47c10ef2ec4123e09">QNativeTitleBar::refresh</a></div><div class="ttdeci">void refresh()</div><div class="ttdoc">按当前窗口主题与系统无障碍状态刷新标题栏。</div><div class="ttdef"><b>定义</b> QNativeTitleBar.cpp:50</div></div>
+</div><!-- fragment --></div><!-- contents -->
+<!-- start footer part -->
+<hr class="footer"/><address class="footer"><small>
+制作者&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.14.0
+</small></address>
+</div><!-- doc-content -->
+</body>
+</html>

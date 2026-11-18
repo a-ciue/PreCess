@@ -92,14 +92,8 @@ $(function() {
 <code>#include &quot;<a class="el" href="MakeMeshData_8h_source.html">MakeMeshData.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="MakeMeshDataVtk_8h_source.html">MakeMeshDataVtk.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="MeshActorManager_8h_source.html">MeshActorManager.h</a>&quot;</code><br />
-<code>#include &quot;<a class="el" href="ModelLayer_8h_source.html">ModelLayer.h</a>&quot;</code><br />
-<code>#include &quot;<a class="el" href="ModelObserver_8h_source.html">ModelObserver.h</a>&quot;</code><br />
-<code>#include &quot;<a class="el" href="ModelScope_8h_source.html">ModelScope.h</a>&quot;</code><br />
-<code>#include &quot;<a class="el" href="QModelQuery_8h_source.html">QModelQuery.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="QRenderWindow_8h_source.html">QRenderWindow.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="QRenderWindowStyle_8h_source.html">QRenderWindowStyle.h</a>&quot;</code><br />
-<code>#include &quot;<a class="el" href="SessionQuery_8h_source.html">SessionQuery.h</a>&quot;</code><br />
-<code>#include &quot;<a class="el" href="UndoStack_8h_source.html">UndoStack.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="ViewportOrientationRepresentation_8h_source.html">ViewportOrientationRepresentation.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="AttributeOperator_8h_source.html">renderStrategy/AttributeOperator.h</a>&quot;</code><br />
 <code>#include &lt;vtkActor2D.h&gt;</code><br />
@@ -121,29 +115,160 @@ $(function() {
 <code>#include &lt;vtkTexturedActor2D.h&gt;</code><br />
 <code>#include &lt;vtkTransform.h&gt;</code><br />
 <code>#include &lt;BRepPrimAPI_MakeSphere.hxx&gt;</code><br />
-<code>#include &lt;QElapsedTimer&gt;</code><br />
-<code>#include &lt;QEventLoop&gt;</code><br />
 <code>#include &lt;QGuiApplication&gt;</code><br />
-<code>#include &lt;QQuickWindow&gt;</code><br />
 <code>#include &lt;catch2/catch_approx.hpp&gt;</code><br />
 <code>#include &lt;QQmlEngine&gt;</code><br />
 <code>#include &lt;QQmlExpression&gt;</code><br />
 <code>#include &lt;catch2/catch_test_macros.hpp&gt;</code><br />
-<code>#include &lt;gp_Pnt.hxx&gt;</code><br />
 <code>#include &lt;vtkActor.h&gt;</code><br />
-<code>#include &lt;vtkActorCollection.h&gt;</code><br />
 <code>#include &lt;vtkRenderWindowInteractor.h&gt;</code><br />
 <code>#include &lt;vtkScalarBarActor.h&gt;</code><br />
 <code>#include &lt;vtkTextProperty.h&gt;</code><br />
 <code>#include &lt;vtkWeakPointer.h&gt;</code><br />
-<code>#include &lt;array&gt;</code><br />
-<code>#include &lt;atomic&gt;</code><br />
 <code>#include &lt;cmath&gt;</code><br />
-<code>#include &lt;functional&gt;</code><br />
 <code>#include &lt;limits&gt;</code><br />
 <code>#include &lt;memory&gt;</code><br />
 <code>#include &lt;string&gt;</code><br />
 <code>#include &lt;vector&gt;</code><br />
+</div><div class="textblock"><div class="dynheader">
+TestRenderWindowLifecycle.cpp 的引用(Include)关系图:</div>
+<div class="dyncontent">
+<div class="center"><img src="TestRenderWindowLifecycle_8cpp__incl.png" border="0" usemap="#aapp_2render_2test_2TestRenderWindowLifecycle_8cpp" loading="lazy" alt=""/></div>
+<map name="aapp_2render_2test_2TestRenderWindowLifecycle_8cpp" id="aapp_2render_2test_2TestRenderWindowLifecycle_8cpp">
+<area shape="rect" title="视口场景图销毁与重建的资源生命周期回归测试" alt="" coords="2524,5,2721,50"/>
+<area shape="rect" href="GeometryActor_8h.html" title=" " alt="" coords="1010,191,1142,218"/>
+<area shape="poly" title=" " alt="" coords="2521,28,2245,31,1880,39,1693,48,1521,60,1373,78,1262,101,1239,109,1222,119,1184,145,1113,185,1111,180,1181,140,1219,115,1237,105,1261,95,1372,72,1520,55,1693,43,1879,34,2245,26,2527,28"/>
+<area shape="rect" title=" " alt="" coords="540,418,617,445"/>
+<area shape="poly" title=" " alt="" coords="2522,30,2028,36,1339,47,1001,56,710,68,499,83,433,91,398,100,338,140,313,161,293,184,280,209,274,235,278,263,291,292,323,315,388,347,534,411,529,412,385,351,321,319,287,296,273,264,269,235,275,207,289,181,309,158,335,135,396,96,432,86,498,77,710,63,1001,51,1339,42,2028,31,2527,29"/>
+<area shape="rect" title=" " alt="" coords="27,418,85,445"/>
+<area shape="poly" title=" " alt="" coords="2521,30,2015,35,1293,45,930,54,608,66,358,81,270,90,211,101,137,113,71,124,45,134,25,149,13,171,8,203,8,281,11,315,20,348,44,403,39,405,15,349,6,316,3,282,3,203,8,169,21,145,43,129,70,119,136,108,210,95,269,85,357,76,608,60,930,48,1293,40,2015,30,2527,29"/>
+<area shape="rect" title=" " alt="" coords="1249,418,1311,445"/>
+<area shape="poly" title=" " alt="" coords="2521,34,2384,44,2228,58,2097,76,2053,88,2030,100,2023,110,2021,120,2024,130,2030,141,2053,160,2084,171,2152,178,2181,180,2202,185,2209,191,2212,199,2202,220,2176,246,2140,270,2096,292,2044,312,1923,347,1788,375,1651,396,1521,412,1327,430,1327,424,1521,407,1650,391,1788,369,1922,342,2042,307,2094,288,2138,266,2173,242,2198,217,2206,198,2205,194,2200,190,2180,185,2151,183,2083,176,2051,165,2026,144,2019,132,2016,120,2018,108,2026,96,2051,83,2096,71,2228,52,2383,39,2527,33"/>
+<area shape="rect" href="GeometryDataVtk_8h.html" title=" " alt="" coords="718,266,869,294"/>
+<area shape="poly" title=" " alt="" coords="2521,30,2143,38,1630,50,1153,71,979,84,918,92,878,101,828,115,789,129,757,152,728,192,724,209,730,225,743,241,761,258,756,257,740,245,726,228,719,209,723,190,753,148,786,125,826,110,877,95,918,87,979,79,1152,65,1630,45,2143,33,2527,30"/>
+<area shape="rect" title=" " alt="" coords="1368,266,1456,294"/>
+<area shape="poly" title=" " alt="" coords="2521,31,2219,40,1832,53,1493,73,1382,86,1348,93,1332,100,1321,117,1318,137,1322,158,1330,179,1358,220,1389,256,1384,255,1354,223,1326,181,1317,159,1313,137,1316,116,1329,96,1347,88,1381,80,1493,67,1832,47,2219,35,2527,30"/>
+<area shape="rect" href="GeometryActorManager_8h.html" title=" " alt="" coords="302,266,490,294"/>
+<area shape="poly" title=" " alt="" coords="2521,30,2042,39,1374,52,766,72,560,85,496,93,462,100,432,117,411,136,396,159,383,191,379,206,379,222,386,253,381,251,374,222,374,206,377,190,392,157,407,132,429,113,460,96,495,87,560,80,766,67,1374,46,2042,33,2527,30"/>
+<area shape="rect" href="GeometryActorSelectOp_8h.html" title=" " alt="" coords="981,106,1171,134"/>
+<area shape="poly" title=" " alt="" coords="2521,30,2289,37,1961,47,1583,68,1390,82,1200,101,1160,106,1159,101,1200,95,1389,77,1583,62,1961,42,2289,31,2527,29"/>
+<area shape="rect" href="GeometryData_8h.html" title=" " alt="" coords="737,191,866,218"/>
+<area shape="poly" title=" " alt="" coords="2521,30,2161,39,1677,51,1228,71,1065,85,970,101,929,117,891,138,829,183,826,178,888,134,927,112,969,95,1065,79,1228,66,1677,46,2161,34,2527,30"/>
+<area shape="rect" href="MakeMeshData_8h.html" title=" " alt="" coords="2040,106,2174,134"/>
+<area shape="poly" title=" " alt="" coords="2521,43,2368,69,2193,101,2172,105,2171,100,2191,95,2367,64,2527,42"/>
+<area shape="rect" href="MakeMeshDataVtk_8h.html" title=" " alt="" coords="1536,342,1693,370"/>
+<area shape="poly" title=" " alt="" coords="2521,30,2301,36,2032,47,1904,55,1794,67,1712,82,1684,91,1667,100,1646,124,1630,151,1619,182,1613,214,1609,276,1612,328,1608,325,1604,276,1608,213,1614,181,1625,149,1641,121,1664,96,1682,86,1711,77,1794,62,1904,50,2032,41,2301,31,2527,29"/>
+<area shape="rect" href="MeshActorManager_8h.html" title=" " alt="" coords="500,106,658,134"/>
+<area shape="poly" title=" " alt="" coords="2521,31,2141,39,1607,51,1070,72,846,85,676,101,647,105,645,100,676,95,845,80,1070,66,1607,46,2141,34,2527,30"/>
+<area shape="rect" title=" " alt="" coords="392,191,541,218"/>
+<area shape="poly" title=" " alt="" coords="2521,29,2044,33,1382,41,1059,50,782,62,582,79,520,89,490,100,477,116,470,135,466,177,461,174,465,134,472,113,486,96,519,84,581,73,781,56,1059,44,1382,36,2044,27,2527,28"/>
+<area shape="rect" href="QRenderWindow_8h.html" title=" " alt="" coords="1343,106,1484,134"/>
+<area shape="poly" title=" " alt="" coords="2521,31,2338,40,2089,51,1807,71,1523,101,1490,106,1489,100,1522,95,1807,66,2089,46,2338,34,2527,31"/>
+<area shape="rect" title=" " alt="" coords="1419,191,1581,218"/>
+<area shape="poly" title=" " alt="" coords="2521,31,2286,41,1994,53,1731,73,1638,86,1585,100,1563,116,1543,136,1514,179,1511,174,1539,133,1559,112,1583,96,1637,80,1731,68,1993,48,2286,35,2527,31"/>
+<area shape="rect" title=" " alt="" coords="1656,191,1870,218"/>
+<area shape="poly" title=" " alt="" coords="2521,29,2303,34,2036,43,1911,52,1803,64,1723,80,1696,90,1681,100,1674,110,1673,119,1681,141,1698,164,1722,183,1716,182,1694,167,1676,144,1668,119,1669,108,1677,96,1694,85,1721,75,1802,59,1910,47,2036,38,2303,29,2527,29"/>
+<area shape="rect" href="QRenderWindowStyle_8h.html" title=" " alt="" coords="1690,106,1864,134"/>
+<area shape="poly" title=" " alt="" coords="2521,35,2236,60,2060,78,1883,101,1853,106,1852,100,1882,95,2059,73,2236,55,2527,35"/>
+<area shape="rect" title=" " alt="" coords="1944,191,2050,218"/>
+<area shape="poly" title=" " alt="" coords="2521,33,2369,42,2196,55,2047,74,1997,86,1971,100,1963,117,1964,137,1971,157,1981,179,1977,177,1966,160,1959,138,1958,116,1967,96,1996,81,2046,69,2195,50,2369,37,2527,32"/>
+<area shape="rect" title=" " alt="" coords="2074,191,2187,218"/>
+<area shape="poly" title=" " alt="" coords="2521,33,2373,43,2204,56,2060,75,2011,87,1986,100,1979,110,1978,119,1986,141,1998,152,2018,163,2072,186,2067,185,2016,168,1995,156,1982,144,1972,120,1974,108,1982,96,2009,82,2059,70,2203,51,2373,38,2527,32"/>
+<area shape="rect" href="ViewportOrientationRepresentation_8h.html" title="圆点轴标：保留 VTK 视角切换与旋转交互，使用屏幕空间绘制。" alt="" coords="94,342,357,370"/>
+<area shape="poly" title=" " alt="" coords="2521,30,1987,40,1234,54,557,74,337,86,273,93,247,100,228,124,215,152,208,183,205,215,210,277,220,327,215,326,204,277,200,215,203,182,210,151,223,121,244,96,272,88,337,81,556,69,1234,48,1986,35,2527,30"/>
+<area shape="rect" href="AttributeOperator_8h.html" title=" " alt="" coords="2248,98,2427,143"/>
+<area shape="poly" title=" " alt="" coords="2557,50,2420,96,2419,90,2552,51"/>
+<area shape="rect" title=" " alt="" coords="2280,191,2390,218"/>
+<area shape="poly" title=" " alt="" coords="2521,33,2441,42,2356,54,2283,73,2256,85,2238,100,2232,110,2230,119,2238,141,2258,164,2285,184,2280,183,2254,168,2234,144,2225,120,2227,108,2234,96,2253,81,2281,68,2355,49,2441,37,2527,32"/>
+<area shape="rect" title=" " alt="" coords="2451,106,2629,134"/>
+<area shape="poly" title=" " alt="" coords="2605,49,2564,97,2561,92,2601,52"/>
+<area shape="rect" title=" " alt="" coords="2653,106,2758,134"/>
+<area shape="poly" title=" " alt="" coords="2643,48,2686,96,2681,94,2641,53"/>
+<area shape="rect" title=" " alt="" coords="2782,106,2914,134"/>
+<area shape="poly" title=" " alt="" coords="2677,48,2804,101,2799,100,2676,53"/>
+<area shape="rect" title=" " alt="" coords="2938,98,3150,143"/>
+<area shape="poly" title=" " alt="" coords="2722,47,2931,94,2925,94,2721,53"/>
+<area shape="rect" title=" " alt="" coords="3174,98,3386,143"/>
+<area shape="poly" title=" " alt="" coords="2721,38,2919,62,3162,98,3156,98,2918,67,2721,43"/>
+<area shape="rect" title=" " alt="" coords="3410,106,3662,134"/>
+<area shape="poly" title=" " alt="" coords="2721,33,3024,57,3398,95,3442,104,3437,104,3397,101,3023,63,2721,39"/>
+<area shape="rect" title=" " alt="" coords="3686,106,3812,134"/>
+<area shape="poly" title=" " alt="" coords="2721,26,2901,29,3138,39,3406,60,3542,75,3675,95,3697,102,3691,102,3674,101,3541,81,3405,65,3138,44,2900,34,2722,31"/>
+<area shape="rect" title=" " alt="" coords="3837,106,3966,134"/>
+<area shape="poly" title=" " alt="" coords="2721,29,3286,52,3597,72,3726,83,3824,95,3847,102,3842,102,3824,101,3726,88,3597,77,3286,58,2721,35"/>
+<area shape="rect" title=" " alt="" coords="3991,106,4132,134"/>
+<area shape="poly" title=" " alt="" coords="2721,29,3360,51,3718,71,3866,82,3979,95,4005,103,3999,102,3978,101,3866,88,3718,76,3360,56,2721,34"/>
+<area shape="rect" title=" " alt="" coords="4156,106,4308,134"/>
+<area shape="poly" title=" " alt="" coords="2721,28,3438,50,3846,69,4016,82,4144,95,4173,103,4167,103,4144,101,4015,87,3846,75,3438,55,2721,34"/>
+<area shape="rect" title=" " alt="" coords="4332,106,4508,134"/>
+<area shape="poly" title=" " alt="" coords="2721,28,3521,50,3983,69,4175,82,4320,95,4354,103,4348,103,4320,101,4174,87,3982,75,3521,55,2721,34"/>
+<area shape="rect" title=" " alt="" coords="4532,106,4681,134"/>
+<area shape="poly" title=" " alt="" coords="2721,27,3095,33,3615,44,4138,65,4356,79,4520,95,4548,103,4543,102,4520,101,4355,84,4138,70,3615,50,3095,38,2721,33"/>
+<area shape="rect" title=" " alt="" coords="4706,106,4868,134"/>
+<area shape="poly" title=" " alt="" coords="2721,27,3125,32,3695,44,4271,64,4512,78,4694,95,4725,103,4719,103,4693,101,4511,84,4271,69,3695,49,3125,38,2721,32"/>
+<area shape="rect" title=" " alt="" coords="4892,106,5012,134"/>
+<area shape="poly" title=" " alt="" coords="2721,26,3158,27,3783,35,4110,44,4417,56,4681,73,4880,95,4902,102,4896,102,4880,101,4680,78,4416,61,4110,49,3783,41,3158,32,2721,31"/>
+<area shape="rect" title=" " alt="" coords="5036,106,5257,134"/>
+<area shape="poly" title=" " alt="" coords="2721,27,3182,33,3848,46,4526,66,4810,80,5024,95,5068,103,5062,103,5024,101,4810,85,4526,71,3848,51,3182,39,2721,33"/>
+<area shape="rect" title=" " alt="" coords="5281,106,5407,134"/>
+<area shape="poly" title=" " alt="" coords="2721,27,3273,35,4068,49,4827,69,5105,82,5270,95,5292,102,5287,102,5269,101,5105,87,4827,75,4068,54,3273,40,2722,33"/>
+<area shape="rect" title=" " alt="" coords="5431,106,5614,134"/>
+<area shape="poly" title=" " alt="" coords="2721,26,3249,29,4030,39,4442,47,4831,59,5166,75,5419,95,5455,103,5449,103,5418,101,5166,80,4831,64,4442,52,4030,44,3249,34,2722,32"/>
+<area shape="rect" title=" " alt="" coords="5638,106,5740,134"/>
+<area shape="poly" title=" " alt="" coords="2721,27,3339,32,4247,43,4708,52,5118,64,5438,78,5552,86,5627,95,5645,102,5640,101,5626,101,5551,92,5438,83,5118,69,4707,57,4247,48,3339,37,2721,32"/>
+<area shape="rect" title=" " alt="" coords="5765,106,5894,134"/>
+<area shape="poly" title=" " alt="" coords="2721,27,3362,33,4309,46,5220,67,5555,80,5752,95,5776,102,5771,102,5752,101,5554,85,5220,72,4309,51,3362,39,2722,32"/>
+<area shape="rect" title=" " alt="" coords="5918,106,6136,134"/>
+<area shape="poly" title=" " alt="" coords="2721,26,3330,29,4252,38,4743,46,5206,58,5605,74,5907,95,5950,103,5945,103,5906,101,5605,80,5205,64,4743,52,4252,43,3330,34,2721,32"/>
+<area shape="rect" title=" " alt="" coords="6160,106,6294,134"/>
+<area shape="poly" title=" " alt="" coords="2721,27,3434,32,4505,44,5542,64,5923,78,6058,87,6148,95,6173,102,6167,102,6148,101,6058,92,5923,84,5541,70,4505,49,3434,37,2721,32"/>
+<area shape="rect" title=" " alt="" coords="6318,106,6453,134"/>
+<area shape="poly" title=" " alt="" coords="2721,27,3462,32,4583,43,5156,52,5669,64,6070,78,6211,86,6306,95,6331,102,6326,102,6305,101,6211,92,6069,83,5669,69,5156,58,4583,49,3462,37,2721,32"/>
+<area shape="rect" title=" " alt="" coords="6477,106,6539,134"/>
+<area shape="poly" title=" " alt="" coords="2721,27,3525,33,4741,45,5883,66,6275,80,6399,87,6466,95,6475,100,6470,100,6465,101,6399,92,6274,85,5883,71,4741,51,3525,38,2721,32"/>
+<area shape="rect" title=" " alt="" coords="6563,106,6621,134"/>
+<area shape="poly" title=" " alt="" coords="2721,27,3542,32,4786,44,5411,54,5955,65,6356,79,6483,87,6551,95,6560,100,6554,100,6550,101,6482,92,6355,84,5955,70,5411,59,4786,50,3542,37,2721,32"/>
+<area shape="rect" href="Core_8h.html" title=" " alt="" coords="667,342,730,370"/>
+<area shape="poly" title=" " alt="" coords="1045,218,933,269,882,296,811,323,746,344,745,339,810,318,880,292,931,264,1040,220"/>
+<area shape="poly" title=" " alt="" coords="1103,216,1127,232,1149,251,1161,272,1161,284,1155,296,1140,311,1119,325,1064,350,995,371,918,389,760,414,633,428,632,423,759,409,917,383,994,366,1062,345,1116,320,1137,307,1151,292,1156,283,1156,274,1145,254,1124,236,1101,222"/>
+<area shape="poly" title=" " alt="" coords="1028,218,859,265,858,259,1023,219"/>
+<area shape="rect" href="GeometrySubshapeIndex_8h.html" title=" " alt="" coords="944,266,1141,294"/>
+<area shape="poly" title=" " alt="" coords="1072,217,1057,254,1053,250,1068,220"/>
+<area shape="poly" title=" " alt="" coords="1137,216,1356,266,1351,266,1136,222"/>
+<area shape="rect" title=" " alt="" coords="1762,266,1844,294"/>
+<area shape="poly" title=" " alt="" coords="1142,210,1748,273,1743,274,1142,215"/>
+<area shape="poly" title=" " alt="" coords="680,370,614,412,612,407,675,371"/>
+<area shape="poly" title=" " alt="" coords="667,363,101,428,101,422,666,358"/>
+<area shape="poly" title=" " alt="" coords="731,359,1236,424,1231,425,731,364"/>
+<area shape="poly" title=" " alt="" coords="983,294,746,347,745,342,978,295"/>
+<area shape="poly" title=" " alt="" coords="1064,292,1249,409,1244,409,1063,297"/>
+<area shape="poly" title=" " alt="" coords="451,292,654,343,649,344,450,297"/>
+<area shape="poly" title=" " alt="" coords="413,292,554,408,548,408,411,297"/>
+<area shape="poly" title=" " alt="" coords="299,291,174,310,119,325,98,334,83,344,73,357,66,371,59,403,54,401,61,370,68,354,80,340,95,329,117,320,172,305,303,287"/>
+<area shape="poly" title=" " alt="" coords="427,292,528,330,591,350,655,367,821,395,985,413,1129,423,1236,429,1231,429,1129,428,985,418,820,401,654,372,589,356,526,335,426,297"/>
+<area shape="poly" title=" " alt="" coords="1078,133,1078,177,1074,174,1074,137"/>
+<area shape="poly" title=" " alt="" coords="1055,134,978,177,880,221,852,229,827,232,783,232,763,234,744,239,726,250,707,268,700,281,696,296,695,328,691,325,691,295,695,279,703,265,723,246,742,234,762,229,783,227,827,226,851,223,878,216,976,172,1050,136"/>
+<area shape="poly" title=" " alt="" coords="978,128,922,138,857,150,790,168,726,193,676,221,641,251,616,289,595,343,587,373,582,404,578,400,582,372,589,341,611,287,637,247,673,216,724,188,788,163,855,145,921,133,983,127"/>
+<area shape="poly" title=" " alt="" coords="1118,132,1164,151,1215,179,1263,217,1284,240,1301,265,1312,301,1312,339,1305,374,1294,405,1291,401,1300,373,1307,338,1307,302,1296,267,1280,243,1260,221,1212,184,1162,156,1117,137"/>
+<area shape="poly" title=" " alt="" coords="751,218,705,240,663,268,636,300,615,337,588,405,584,401,610,334,632,297,660,264,702,235,746,220"/>
+<area shape="poly" title=" " alt="" coords="845,216,988,261,982,261,844,222"/>
+<area shape="poly" title=" " alt="" coords="1557,370,1327,423,1326,417,1552,371"/>
+<area shape="poly" title=" " alt="" coords="585,132,618,202,664,293,685,330,680,328,659,295,613,204,583,137"/>
+<area shape="poly" title=" " alt="" coords="639,132,879,188,1018,222,1104,246,1155,264,1193,296,1225,333,1269,405,1264,403,1221,336,1189,300,1152,269,1103,251,1017,227,878,193,639,137"/>
+<area shape="poly" title=" " alt="" coords="563,133,498,183,496,179,558,136"/>
+<area shape="poly" title=" " alt="" coords="1401,134,1361,170,1303,214,1232,260,1154,296,1099,314,1042,328,929,347,825,356,746,358,746,352,825,350,928,342,1041,323,1098,309,1152,292,1229,255,1300,210,1358,166,1396,136"/>
+<area shape="poly" title=" " alt="" coords="1411,132,1404,173,1404,196,1410,217,1423,232,1439,240,1456,248,1470,265,1476,281,1470,295,1444,319,1410,339,1367,357,1317,372,1203,397,1076,414,945,424,822,430,632,433,632,428,821,425,945,419,1075,408,1202,391,1316,367,1365,352,1407,334,1441,315,1466,293,1470,281,1466,268,1453,252,1437,245,1420,237,1406,220,1399,197,1399,173,1407,136"/>
+<area shape="poly" title=" " alt="" coords="1402,133,1382,160,1365,192,1362,205,1365,217,1375,236,1389,256,1384,254,1370,239,1360,219,1357,205,1360,190,1377,158,1398,136"/>
+<area shape="poly" title=" " alt="" coords="1428,132,1478,181,1473,179,1426,137"/>
+<area shape="poly" title=" " alt="" coords="1470,132,1695,187,1689,187,1469,137"/>
+<area shape="poly" title=" " alt="" coords="1813,132,1852,154,1870,170,1884,190,1887,210,1879,229,1863,246,1843,261,1841,256,1860,242,1875,226,1882,210,1879,192,1866,174,1849,159,1812,137"/>
+<area shape="poly" title=" " alt="" coords="1777,133,1770,178,1766,174,1773,137"/>
+<area shape="poly" title=" " alt="" coords="1813,132,1950,185,1945,185,1812,137"/>
+<area shape="poly" title=" " alt="" coords="1834,132,2062,187,2056,187,1834,137"/>
+<area shape="poly" title=" " alt="" coords="289,368,528,418,523,420,289,373"/>
+<area shape="poly" title=" " alt="" coords="2338,141,2338,177,2334,173,2335,145"/>
+</map>
+</div>
 </div><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 id="header-func-members" class="groupheader"><a id="func-members" name="func-members"></a>
 函数</h2></td></tr>
@@ -158,13 +283,12 @@ $(function() {
 <tr class="memitem:adc03e703730ec9e5e995f5be42c56719" id="r_adc03e703730ec9e5e995f5be42c56719"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#adc03e703730ec9e5e995f5be42c56719">TEST_CASE</a> (&quot;Viewport orientation reuses its image <a class="el" href="TestComponentModel_8cpp.html#ae97f1c44740297fab404285a4388b17b">for</a> unchanged rotation and hover&quot;)</td></tr>
 <tr class="memitem:aa8c8399e23b28ac5ac3008454928e3db" id="r_aa8c8399e23b28ac5ac3008454928e3db"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#aa8c8399e23b28ac5ac3008454928e3db">TEST_CASE</a> (&quot;Viewport orientation uploads its persistent texture only when pixels change&quot;)</td></tr>
 <tr class="memitem:adefc30502b41eebbe586028cf16cbbd2" id="r_adefc30502b41eebbe586028cf16cbbd2"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#adefc30502b41eebbe586028cf16cbbd2">TEST_CASE</a> (&quot;QRenderWindow applies requested surface precision across scene rebuilds&quot;, &quot;[precision]&quot;)</td></tr>
-<tr class="memitem:ac1da30af33f8fa78594d9ce70aa88d04" id="r_ac1da30af33f8fa78594d9ce70aa88d04"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ac1da30af33f8fa78594d9ce70aa88d04">TEST_CASE</a> (&quot;QRenderWindow precision survives geometry undo redo and scene recreation&quot;, &quot;[precision][render][undo]&quot;)</td></tr>
 </table>
 <a name="details" id="details"></a><h2 id="header-details" class="groupheader">详细描述</h2>
 <div class="textblock"><p>视口场景图销毁与重建的资源生命周期回归测试 </p>
 </div><a name="doc-func-members" id="doc-func-members"></a><h2 id="header-doc-func-members" class="groupheader">函数说明</h2>
 <a id="aeceaf17b0c7b1ba001ce1b0a292742f2" name="aeceaf17b0c7b1ba001ce1b0a292742f2"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#aeceaf17b0c7b1ba001ce1b0a292742f2">&#9670;&#160;</a></span>TEST_CASE() <span class="overload">[1/12]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#aeceaf17b0c7b1ba001ce1b0a292742f2">&#9670;&#160;</a></span>TEST_CASE() <span class="overload">[1/11]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -181,7 +305,7 @@ $(function() {
 </div>
 </div>
 <a id="adefc30502b41eebbe586028cf16cbbd2" name="adefc30502b41eebbe586028cf16cbbd2"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#adefc30502b41eebbe586028cf16cbbd2">&#9670;&#160;</a></span>TEST_CASE() <span class="overload">[2/12]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#adefc30502b41eebbe586028cf16cbbd2">&#9670;&#160;</a></span>TEST_CASE() <span class="overload">[2/11]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -202,7 +326,7 @@ $(function() {
 </div>
 </div>
 <a id="af0c99b6f28e54a711f68aa7af43dbaa5" name="af0c99b6f28e54a711f68aa7af43dbaa5"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#af0c99b6f28e54a711f68aa7af43dbaa5">&#9670;&#160;</a></span>TEST_CASE() <span class="overload">[3/12]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#af0c99b6f28e54a711f68aa7af43dbaa5">&#9670;&#160;</a></span>TEST_CASE() <span class="overload">[3/11]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -218,29 +342,8 @@ $(function() {
 
 </div>
 </div>
-<a id="ac1da30af33f8fa78594d9ce70aa88d04" name="ac1da30af33f8fa78594d9ce70aa88d04"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ac1da30af33f8fa78594d9ce70aa88d04">&#9670;&#160;</a></span>TEST_CASE() <span class="overload">[4/12]</span></h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">TEST_CASE </td>
-          <td>(</td>
-          <td class="paramtype">&quot;QRenderWindow precision survives geometry undo redo and scene recreation&quot;</td>          <td class="paramname"><span class="paramname"><em></em></span>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">&quot;&quot;</td>          <td class="paramname"><span class="paramname"><em></em></span>[precision][render][undo]&#160;)</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
 <a id="a7ebc60db88c532b590624c49d1e9677c" name="a7ebc60db88c532b590624c49d1e9677c"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a7ebc60db88c532b590624c49d1e9677c">&#9670;&#160;</a></span>TEST_CASE() <span class="overload">[5/12]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#a7ebc60db88c532b590624c49d1e9677c">&#9670;&#160;</a></span>TEST_CASE() <span class="overload">[4/11]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -257,7 +360,7 @@ $(function() {
 </div>
 </div>
 <a id="aa6c7b17805e76f19b58ce01ab70bcb0b" name="aa6c7b17805e76f19b58ce01ab70bcb0b"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#aa6c7b17805e76f19b58ce01ab70bcb0b">&#9670;&#160;</a></span>TEST_CASE() <span class="overload">[6/12]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#aa6c7b17805e76f19b58ce01ab70bcb0b">&#9670;&#160;</a></span>TEST_CASE() <span class="overload">[5/11]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -274,7 +377,7 @@ $(function() {
 </div>
 </div>
 <a id="a24cecbb049f3acafb058b6c5f2041fbd" name="a24cecbb049f3acafb058b6c5f2041fbd"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a24cecbb049f3acafb058b6c5f2041fbd">&#9670;&#160;</a></span>TEST_CASE() <span class="overload">[7/12]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#a24cecbb049f3acafb058b6c5f2041fbd">&#9670;&#160;</a></span>TEST_CASE() <span class="overload">[6/11]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -295,7 +398,7 @@ $(function() {
 </div>
 </div>
 <a id="ab677d2832fee662798f383603f8133d3" name="ab677d2832fee662798f383603f8133d3"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ab677d2832fee662798f383603f8133d3">&#9670;&#160;</a></span>TEST_CASE() <span class="overload">[8/12]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#ab677d2832fee662798f383603f8133d3">&#9670;&#160;</a></span>TEST_CASE() <span class="overload">[7/11]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -316,7 +419,7 @@ $(function() {
 </div>
 </div>
 <a id="ac96a67dbb0081cf9938edc271fbeaf6b" name="ac96a67dbb0081cf9938edc271fbeaf6b"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ac96a67dbb0081cf9938edc271fbeaf6b">&#9670;&#160;</a></span>TEST_CASE() <span class="overload">[9/12]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#ac96a67dbb0081cf9938edc271fbeaf6b">&#9670;&#160;</a></span>TEST_CASE() <span class="overload">[8/11]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -333,7 +436,7 @@ $(function() {
 </div>
 </div>
 <a id="adc03e703730ec9e5e995f5be42c56719" name="adc03e703730ec9e5e995f5be42c56719"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#adc03e703730ec9e5e995f5be42c56719">&#9670;&#160;</a></span>TEST_CASE() <span class="overload">[10/12]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#adc03e703730ec9e5e995f5be42c56719">&#9670;&#160;</a></span>TEST_CASE() <span class="overload">[9/11]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -350,7 +453,7 @@ $(function() {
 </div>
 </div>
 <a id="aecb09a13e0fd57cc2358ba1364a0f752" name="aecb09a13e0fd57cc2358ba1364a0f752"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#aecb09a13e0fd57cc2358ba1364a0f752">&#9670;&#160;</a></span>TEST_CASE() <span class="overload">[11/12]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#aecb09a13e0fd57cc2358ba1364a0f752">&#9670;&#160;</a></span>TEST_CASE() <span class="overload">[10/11]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -367,7 +470,7 @@ $(function() {
 </div>
 </div>
 <a id="aa8c8399e23b28ac5ac3008454928e3db" name="aa8c8399e23b28ac5ac3008454928e3db"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#aa8c8399e23b28ac5ac3008454928e3db">&#9670;&#160;</a></span>TEST_CASE() <span class="overload">[12/12]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#aa8c8399e23b28ac5ac3008454928e3db">&#9670;&#160;</a></span>TEST_CASE() <span class="overload">[11/11]</span></h2>
 
 <div class="memitem">
 <div class="memproto">

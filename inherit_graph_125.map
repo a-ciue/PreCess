@@ -1,5 +1,5 @@
 <map id="类继承关系图" name="类继承关系图">
 <area shape="rect" id="Node000000" title=" " alt="" coords="5,5,89,33"/>
 <area shape="rect" id="Node000001" href="$classQStartupSplashWindow.html" title="独立绘制启动封面与活动动画，不在插件构造中重入事件循环" alt="" coords="137,5,310,33"/>
-<area shape="poly" id="edge69_Node000000_Node000001" title=" " alt="" coords="104,17,139,19,133,19,104,22"/>
+<area shape="poly" id="edge71_Node000000_Node000001" title=" " alt="" coords="104,17,139,19,133,19,104,22"/>
 </map>

@@ -199,6 +199,8 @@ Public 成员函数</h2></td></tr>
 <tr class="memdesc:ab65cb8d5199659aeeba9dcaba6abc109"><td class="mdescLeft">&#160;</td><td class="mdescRight">通过既有参数入口设置属性着色，并更新共享色柱。  <br /></td></tr>
 <tr class="memitem:a7312f65a9cf934e8bc0dd0ec5f1f52c9" id="r_a7312f65a9cf934e8bc0dd0ec5f1f52c9"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a7312f65a9cf934e8bc0dd0ec5f1f52c9">applyScalarConfig</a> (<a class="el" href="Core_8h.html#a1673229bf7fec9388ac2a829a52d69b3">Index</a> component_id, const <a class="el" href="structMeshDataSnapshot.html">MeshDataSnapshot</a> &amp;snapshot, bool update_scalar_bar=true)</td></tr>
 <tr class="memdesc:a7312f65a9cf934e8bc0dd0ec5f1f52c9"><td class="mdescLeft">&#160;</td><td class="mdescRight">按完成快照应用或恢复标量着色；非归属组件保留共享色柱。  <br /></td></tr>
+<tr class="memitem:a09945093d70b9869cada75c85ccbeca3" id="r_a09945093d70b9869cada75c85ccbeca3"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a09945093d70b9869cada75c85ccbeca3">setScalarBarTextColor</a> (double red, double green, double blue)</td></tr>
+<tr class="memdesc:a09945093d70b9869cada75c85ccbeca3"><td class="mdescLeft">&#160;</td><td class="mdescRight">设置共享色柱的标题和刻度文字颜色。  <br /></td></tr>
 <tr class="memitem:a7ba2baf88963bd2a0e8935d1ddf41b1e" id="r_a7ba2baf88963bd2a0e8935d1ddf41b1e"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a7ba2baf88963bd2a0e8935d1ddf41b1e">cancelAttri</a> (<a class="el" href="Core_8h.html#a1673229bf7fec9388ac2a829a52d69b3">Index</a> component_id)</td></tr>
 <tr class="memitem:a4fc614e62c8fb34ac11f64b9e004ac4b" id="r_a4fc614e62c8fb34ac11f64b9e004ac4b"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a4fc614e62c8fb34ac11f64b9e004ac4b">setTopologyDiagnosticCategoryEnabled</a> (int category, bool enabled)</td></tr>
 <tr class="memdesc:a4fc614e62c8fb34ac11f64b9e004ac4b"><td class="mdescLeft">&#160;</td><td class="mdescRight">设置窗口级拓扑诊断类别是否启用；Actor 最终显隐仍跟随所属 <a class="el" href="classMeshActor.html" title="负责管理Model的Actor">MeshActor</a>  <br /></td></tr>
@@ -533,6 +535,34 @@ Private 属性</h2></td></tr>
 </div><div class="memdoc">
 
 <p>设置二面角诊断边的筛选范围，单位为度 </p>
+
+</div>
+</div>
+<a id="a09945093d70b9869cada75c85ccbeca3" name="a09945093d70b9869cada75c85ccbeca3"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a09945093d70b9869cada75c85ccbeca3">&#9670;&#160;</a></span>setScalarBarTextColor()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void MeshActorManager::setScalarBarTextColor </td>
+          <td>(</td>
+          <td class="paramtype">double</td>          <td class="paramname"><span class="paramname"><em>red</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">double</td>          <td class="paramname"><span class="paramname"><em>green</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">double</td>          <td class="paramname"><span class="paramname"><em>blue</em></span>&#160;)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>设置共享色柱的标题和刻度文字颜色。 </p>
 
 </div>
 </div>

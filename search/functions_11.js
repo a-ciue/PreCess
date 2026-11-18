@@ -30,7 +30,7 @@ var searchData=
   ['redo_27',['redo',['../classQUndoStackAdaptor.html#aba221811ea86cd068b1cff24bb74fe48',1,'QUndoStackAdaptor::redo()'],['../classUndoStack.html#a52f3e8220159f3153816bfb328f180a4',1,'UndoStack::redo()']]],
   ['redocount_28',['redoCount',['../structUndoStackTestPeer.html#a3586e744f2e1a7caf5836a74b02cb5ce',1,'UndoStackTestPeer']]],
   ['redolabel_29',['redoLabel',['../classQUndoStackAdaptor.html#ac4b26fc73384bb0bb097aeb21a4bbab8',1,'QUndoStackAdaptor::redoLabel()'],['../classUndoStack.html#afa20922c6ea8c178521f40bfd2b6b266',1,'UndoStack::redoLabel()']]],
-  ['refresh_30',['refresh',['../classTreeModel.html#ae48786145852f8e1052a75450ab27e44',1,'TreeModel']]],
+  ['refresh_30',['refresh',['../classQNativeTitleBar.html#a88bf4cd62b2b3dd47c10ef2ec4123e09',1,'QNativeTitleBar::refresh()'],['../classTreeModel.html#ae48786145852f8e1052a75450ab27e44',1,'TreeModel::refresh()']]],
   ['refreshactivepanel_31',['refreshActivePanel',['../classdock_1_1PanelGroup.html#a7f84f08ce52eb8eee7e1cd8aac99126c',1,'dock::PanelGroup']]],
   ['refreshallfloatingwatchers_32',['refreshAllFloatingWatchers',['../classdock_1_1DragSession.html#a9d32a3331ca65aa15a5aace21a0bfc83',1,'dock::DragSession']]],
   ['refreshannotations_33',['refreshAnnotations',['../classInteractionService.html#a2e754518e42012ac0468b3c56d2c3f81',1,'InteractionService']]],

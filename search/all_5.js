@@ -94,7 +94,7 @@ var searchData=
   ['event_5fgateway_91',['event_gateway',['../structsystems_1_1feature_1_1FeatureSystem_1_1FeatureEntry.html#ac20bae75e4024346b3b2e282d281677f',1,'systems::feature::FeatureSystem::FeatureEntry']]],
   ['eventbus_92',['EventBus',['../classcore_1_1EventBus.html',1,'core::EventBus'],['../classEventBus.html',1,'EventBus'],['../classcore_1_1EventBus_1_1Subscription.html#afe4e553ef407bc9bbf2aadbf298be275',1,'core::EventBus::Subscription::EventBus()'],['../classEventBus_1_1Subscription.html#afe4e553ef407bc9bbf2aadbf298be275',1,'EventBus::Subscription::EventBus()']]],
   ['eventbus_2eh_93',['EventBus.h',['../EventBus_8h.html',1,'']]],
-  ['eventfilter_94',['eventFilter',['../classdock_1_1ui_1_1GlobalMouseRelay.html#a91599b4ff6ee3744be816f8c1beaedc6',1,'dock::ui::GlobalMouseRelay']]],
+  ['eventfilter_94',['eventFilter',['../classdock_1_1ui_1_1GlobalMouseRelay.html#a91599b4ff6ee3744be816f8c1beaedc6',1,'dock::ui::GlobalMouseRelay::eventFilter()'],['../classQNativeTitleBar.html#a237d9f3182ea6b3fee5574b5d163a6d1',1,'QNativeTitleBar::eventFilter()']]],
   ['events_95',['events',['../structsystems_1_1feature_1_1FeatureContext.html#a76998da867c9a37ea2c9721d24692256',1,'systems::feature::FeatureContext::events'],['../classsession_1_1Session.html#a130fb3959b74806163c442ab5f98b475',1,'session::Session::events()']]],
   ['exceeded_96',['Exceeded',['../namespacegeometry_1_1repair.html#a4b2363a5b4aab03c94cb5f618cf3db0fae2db06b840e9430b11fc2dcf488ba799',1,'geometry::repair']]],
   ['exceedsdragthreshold_97',['exceedsDragThreshold',['../structdock_1_1DockMetrics.html#afa1bd84b4d32ec54c2d1f5aaee1547a2',1,'dock::DockMetrics']]],

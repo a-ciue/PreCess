@@ -48,7 +48,7 @@ var searchData=
   ['redolabel_45',['redoLabel',['../classQUndoStackAdaptor.html#a59b8b69578d014c10408f17ab24b892b',1,'QUndoStackAdaptor::redoLabel'],['../classQUndoStackAdaptor.html#ac4b26fc73384bb0bb097aeb21a4bbab8',1,'QUndoStackAdaptor::redoLabel() const'],['../classUndoStack.html#afa20922c6ea8c178521f40bfd2b6b266',1,'UndoStack::redoLabel()']]],
   ['reflection_5ftexname_46',['reflection_texname',['../structtinyobj_1_1material__t.html#a111faaae52874d8715c7719acf60d726',1,'tinyobj::material_t']]],
   ['reflection_5ftexopt_47',['reflection_texopt',['../structtinyobj_1_1material__t.html#a8e9e796988061cf2446f65d79a6f6ae9',1,'tinyobj::material_t']]],
-  ['refresh_48',['refresh',['../classTreeModel.html#ae48786145852f8e1052a75450ab27e44',1,'TreeModel']]],
+  ['refresh_48',['refresh',['../classQNativeTitleBar.html#a88bf4cd62b2b3dd47c10ef2ec4123e09',1,'QNativeTitleBar::refresh()'],['../classTreeModel.html#ae48786145852f8e1052a75450ab27e44',1,'TreeModel::refresh()']]],
   ['refresh_5fpending_5f_49',['refresh_pending_',['../classTreeModel.html#ad48c668091fa72be57339bacf97af78c',1,'TreeModel']]],
   ['refresh_5ftimer_5f_50',['refresh_timer_',['../classTreeModel.html#a0f4e937149b316a4a8f3f113d67bfdd8',1,'TreeModel']]],
   ['refreshactivepanel_51',['refreshActivePanel',['../classdock_1_1PanelGroup.html#a7f84f08ce52eb8eee7e1cd8aac99126c',1,'dock::PanelGroup']]],
