@@ -95,9 +95,9 @@ Item{
             background: Rectangle {
                 radius: Theme.radiusControl
                 color: !commitButton.enabled ? Theme.scrollBarIdle
-                     : commitButton.pressed ? Theme.primaryPressed
-                     : commitButton.hovered ? Theme.primaryHover
-                     : Theme.primary
+                     : commitButton.pressed ? Theme.primaryButtonPressedFill
+                     : commitButton.hovered ? Theme.primaryButtonHoverFill
+                     : Theme.primaryButtonFill
             }
             contentItem: Text {
                 text: commitButton.text

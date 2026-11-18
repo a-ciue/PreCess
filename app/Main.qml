@@ -32,6 +32,9 @@ ApplicationWindow {
     visibility: Window.Maximized
     title: qsTr("ZenithGrid")
     color: Theme.windowBackground
+    // 窗口原生标题栏沿用主题色；原生平台适配在宿主层处理。
+    readonly property color nativeTitleBarBackground: Theme.windowBackground
+    readonly property color nativeTitleBarTextColor: Theme.textPrimary
     flags: Qt.platform.os === "wasm" ? (Qt.Window | Qt.FramelessWindowHint) : Qt.Window
 
     // 范围偏好由窗口会话持有，编辑器和停靠面板重建不影响参数。

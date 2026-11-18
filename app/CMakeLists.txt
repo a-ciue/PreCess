@@ -69,6 +69,14 @@ target_link_libraries(${MYNAME}
     "$<TARGET_NAME_IF_EXISTS:StaticPlugins>"
 )
 
+if(WIN32)
+    target_sources(${MYNAME} PRIVATE
+        QNativeTitleBar.h
+        QNativeTitleBar.cpp
+    )
+    target_link_libraries(${MYNAME} PRIVATE dwmapi)
+endif()
+
 target_compile_definitions(${MYNAME} PRIVATE
     PRECESS_APP_VERSION="${PROJECT_VERSION}"
     "$<$<OR:$<CONFIG:Debug>,$<CONFIG:RelWithDebInfo>>:QT_QML_DEBUG>"

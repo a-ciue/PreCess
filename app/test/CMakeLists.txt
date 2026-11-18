@@ -11,8 +11,14 @@ target_include_directories(TestQLogManager PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}/
 precess_test_link_libraries(TestQLogManager
     Qt${VTK_QT_VERSION}::Core
     Qt${VTK_QT_VERSION}::Qml
+    Qt${VTK_QT_VERSION}::QuickControls2
+    Qt${VTK_QT_VERSION}::Test
     spdlog::spdlog
 )
+qt_add_resources(TestQLogManager log_ui
+    PREFIX "/log-ui"
+    BASE "${CMAKE_CURRENT_SOURCE_DIR}/.."
+    FILES ../OutputLog.qml)
 
 # QPythonRuntime 主线程延时回调测试
 # QPythonRuntime 与 precess_app 模块注册均编入 pythonApp 静态库（真/桩按可用性
@@ -214,3 +220,16 @@ qt_add_resources(TestWallpaperBackground wallpaper_background
     PREFIX "/wallpaper-bg"
     BASE "${CMAKE_CURRENT_SOURCE_DIR}/.."
     FILES ../WallpaperBackground.qml)
+
+if(WIN32)
+    # 在 Windows 验证标题栏刷新不会隐式创建或重建平台窗口。
+    precess_add_test(TestNativeTitleBar
+        TestNativeTitleBar.cpp
+        ../QNativeTitleBar.h
+        ../QNativeTitleBar.cpp
+    )
+    set_target_properties(TestNativeTitleBar PROPERTIES AUTOMOC ON)
+    target_include_directories(TestNativeTitleBar PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}/..")
+    precess_test_link_libraries(TestNativeTitleBar Qt6::Gui)
+    target_link_libraries(TestNativeTitleBar PRIVATE dwmapi)
+endif()

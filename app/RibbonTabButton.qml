@@ -1,6 +1,6 @@
 /**
  * @file RibbonTabButton.qml
- * @brief ribbon 分类页签按钮：选中态为强调色文字 + 底部下划线
+ * @brief ribbon 分类页签按钮：用底部强调条标记选中态
  */
 
 import QtQuick
@@ -38,8 +38,9 @@ ToolButton {
         font.pixelSize: Theme.fontSizeBody
         font.weight: control.checked ? Font.DemiBold : Font.Normal
         color: !control.enabled ? Theme.textDisabled
-             : control.down ? Theme.primaryPressed
-             : control.checked ? Theme.primary : control.hovered ? Theme.primaryHover : Theme.textPrimary
+             : control.down ? (Theme.dark ? Theme.textOnPrimaryTint : Theme.primaryPressed)
+             : control.checked ? Theme.textOnPrimaryTint
+             : control.hovered ? Theme.primaryHover : Theme.textPrimary
         horizontalAlignment: Text.AlignHCenter
         verticalAlignment: Text.AlignVCenter
         elide: Text.ElideRight

@@ -27,6 +27,7 @@
 #include <vtkObjectFactory.h>
 #include <vtkPlane.h>
 #include <vtkPolyData.h>
+#include <vtkProperty2D.h>
 #include <vtkTextProperty.h>
 
 #include <algorithm>
@@ -78,6 +79,26 @@ std::optional<std::array<double, 2>> readScalarRange(const QVariant& value)
 constexpr double kOrientationSize = 120.0;
 constexpr double kOrientationPadding = 12.0;
 constexpr double kScaleBarFontPixels = 12.0;
+
+//! @brief 同步视口渐变、比例尺和标量色柱配色。
+void applyViewportPalette(QRenderWindow::Data* data, bool dark)
+{
+    if (dark) {
+        data->renderer_->SetBackground(66.0 / 255.0, 99.0 / 255.0, 95.0 / 255.0);
+        data->renderer_->SetBackground2(102.0 / 255.0, 132.0 / 255.0, 126.0 / 255.0);
+    } else {
+        // 图标亮青 #3CBFC6 与白色混合：下端保留 32%，上端保留 8%。
+        data->renderer_->SetBackground(193.0 / 255.0, 235.0 / 255.0, 237.0 / 255.0);
+        data->renderer_->SetBackground2(239.0 / 255.0, 250.0 / 255.0, 250.0 / 255.0);
+    }
+    const double red = dark ? 1.0 : 54.0 / 255.0;
+    const double green = dark ? 1.0 : 84.0 / 255.0;
+    const double blue = dark ? 1.0 : 96.0 / 255.0;
+    data->scale_bar_axis_->GetProperty()->SetColor(red, green, blue);
+    data->scale_bar_axis_->GetLabelTextProperty()->SetColor(red, green, blue);
+    const double scalar_text = dark ? 1.0 : 0.0;
+    data->mesh_actor_manager_->setScalarBarTextColor(scalar_text, scalar_text, scalar_text);
+}
 
 //! @brief 仅在渲染线程应用逻辑像素到 VTK 像素的换算，初建和跨屏更新共用此路径。
 void applyOverlayScale(vtkRenderWindow* window, QRenderWindow::Data* data, qreal ratio)
@@ -260,8 +281,6 @@ QQuickVTKItem::vtkUserData QRenderWindow::initializeVTK(vtkRenderWindow* renderW
     vtkMapper::SetResolveCoincidentTopologyToPolygonOffset();
     vtkMapper::SetResolveCoincidentTopologyPolygonOffsetParameters(0.0, 0.0);
 
-    vtk->renderer_->SetBackground(0.5, 0.5, 0.7);
-    vtk->renderer_->SetBackground2(0.7, 0.7, 0.7);
     vtk->renderer_->SetGradientBackground(true);
 
     vtk->style_->SetDefaultRenderer(vtk->renderer_);
@@ -301,6 +320,7 @@ QQuickVTKItem::vtkUserData QRenderWindow::initializeVTK(vtkRenderWindow* renderW
     this->data_ = vtk.GetPointer();
     vtk->mesh_actor_manager_ = std::make_unique<MeshActorManager>();
     vtk->mesh_actor_manager_->bindRender(vtk->renderer_);
+    applyViewportPalette(vtk.GetPointer(), dark_background_);
     vtk->geometry_actor_manager_ = std::make_unique<GeometryActorManager>();
     vtk->geometry_actor_manager_->bindRender(vtk->renderer_);
     vtk->geometry_actor_manager_->setSurfacePrecision(surface_precision_);
@@ -1138,6 +1158,17 @@ void QRenderWindow::setMeshStyle(int style)
 int QRenderWindow::getMeshStyle()
 {
     return static_cast<int>(mesh_style_);
+}
+
+void QRenderWindow::setDarkBackground(bool dark)
+{
+    if (dark_background_ == dark)
+        return;
+    dark_background_ = dark;
+    dispatch_async([dark](vtkRenderWindow*, vtkUserData user_data) {
+        applyViewportPalette(Data::SafeDownCast(user_data), dark);
+    });
+    emit darkBackgroundChanged();
 }
 
 void QRenderWindow::setTopologyDiagnosticCategoryEnabled(int category, bool enabled)
