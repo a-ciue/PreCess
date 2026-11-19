@@ -13,6 +13,7 @@
 #include "GeometryDataVtk.h"
 #include "Selection.h" // ElementEnum::Type
 
+#include <cstdint>
 #include <map>
 #include <memory>
 #include <optional>
@@ -67,6 +68,13 @@ struct AttributeInfo {
     int component_count { 0 }; //> 分量数（按元组大小换算）
 };
 
+/** @brief 原始分布的计数及归箱边界；必要时边界用相对原点的偏移表示。 */
+struct ScalarHistogram {
+    std::vector<double> edges;
+    std::vector<std::uint64_t> counts;
+    std::optional<double> origin;
+};
+
 /**
  * @brief 模型层只读查询（CQRS 查询端，读写分离中的读视图）
  *
@@ -108,6 +116,8 @@ public:
     GeometrySummary geometrySummary(Index component_id) const;
     //! @brief 组件网格的全部属性渲染条目（四张属性表顺序遍历；属性名/类型查询复用本条目）
     std::vector<AttributeInfo> componentAttributeInfos(Index component_id) const;
+    /** @brief 按点、边、面、体顺序统计首个有效同名单值属性；忽略非有限值，无有效值时返回空。 */
+    std::optional<ScalarHistogram> scalarHistogram(Index component_id, const std::string& attribute) const;
 
     // —— 几何局部 id -> 全局 id ——
     std::optional<GeomFaceId> resolveGeometryFaceLocalId(Index component_id, int local_face_id) const;

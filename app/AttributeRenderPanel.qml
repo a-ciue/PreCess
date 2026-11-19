@@ -41,8 +41,8 @@ Item {
     // 在选中项和显示状态稳定后统计，避免同一次切换触发多次查询。
     function refreshHistogram() {
         let attr = selectedAttribute();
-        let window = rangeState ? rangeState.renderWindow : null;
-        histogramData = rangeEditor.visible && rangeEditor.expanded && rangeMetadata.valid && attr && window ? window.scalarHistogramInfo(App.selection.activeComponentId, attr.name) : ({});
+        let query = rangeState ? rangeState.query : null;
+        histogramData = rangeEditor.visible && rangeEditor.expanded && rangeMetadata.valid && attr && query ? query.scalarHistogramInfo(App.selection.activeComponentId, attr.name) : ({});
     }
 
     // 普通目录刷新恢复操作位置，同一属性的输入草稿由编辑器继续保留。

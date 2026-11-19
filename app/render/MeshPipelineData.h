@@ -36,13 +36,6 @@ struct ScalarDisplayConfig {
     std::optional<std::array<double, 2>> display;
 };
 
-/** @brief 原始分布的计数及归箱边界；必要时边界用相对原点的偏移表示。 */
-struct ScalarHistogram {
-    std::vector<double> edges;
-    std::vector<vtkIdType> counts;
-    std::optional<double> origin;
-};
-
 /**
  * @brief 已完成计算的网格快照；发布后不再改写，数组由源数据或 VTK 自持。
  *
@@ -98,8 +91,6 @@ public:
     void setClipPlane(const MeshClipPlane& plane);
     /** @brief 查询完整单值属性的有限值域，缓存不受隐藏和裁剪影响。 */
     std::optional<std::array<double, 2>> scalarRange(const std::string& attribute);
-    /** @brief 统计原始有限单值数据，返回实际归箱边界和计数；常量为一箱，无有效数据时为空。 */
-    std::optional<ScalarHistogram> scalarHistogram(const std::string& attribute);
     /** @brief 校验并保存完整显示配置，空值取消着色和筛选；无效参数不改变当前结果。 */
     void setScalarConfig(std::optional<ScalarDisplayConfig> config);
     /** @brief 按需生成可见网格输出，发布携带本次重建标记和递增版本的快照。 */

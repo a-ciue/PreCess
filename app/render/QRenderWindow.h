@@ -245,8 +245,6 @@ public:
 
     /** @brief 查询完整原始值域的两个端点；没有有限单值值域时返回空列表。 */
     Q_INVOKABLE QVariantList scalarRangeInfo(Index component_id, const QString& attribute);
-    /** @brief 查询原始分布的计数与实际边界；没有有限单值数据时返回空对象。 */
-    Q_INVOKABLE QVariantMap scalarHistogramInfo(Index component_id, const QString& attribute);
 
     bool event(QEvent* ev) override;
 

@@ -150,10 +150,12 @@ TEST_CASE("Actual scalar editor completes range actions without intermediate req
     auto setup = f.engine.evaluate(R"JS(
         var requests = [], cancellations = [], histogramRequests = 0;
         var histogramData = {counts: Array(20).fill(1), edges: Array.from({length:21}, (_, i) => i / 20)};
-        ranges.query = {getComponentAttriInfo: function() {return [{name:'value', attrType:2, componentCount:1}, {name:'vector', attrType:2, componentCount:3}];}};
+        ranges.query = {
+            getComponentAttriInfo: function() {return [{name:'value', attrType:2, componentCount:1}, {name:'vector', attrType:2, componentCount:3}];},
+            scalarHistogramInfo: function() { ++histogramRequests; return histogramData; }
+        };
         ranges.renderWindow = {
             scalarRangeInfo: function(component) {return component === 8 ? [10, 20] : [0.25, 0.751234567];},
-            scalarHistogramInfo: function() { ++histogramRequests; return histogramData; },
             setAttriMode: function(component, attribute, mode, args) {
                 requests.push({component:component, attribute:attribute, mode:mode, configuration:args});
             },
@@ -735,6 +737,15 @@ TEST_CASE("Scalar UI skips unrenderable named attributes and applies the matchin
     REQUIRE(catalog.size() == 2);
     CHECK(catalog[0].toMap().value("componentCount").toInt() == 0);
     CHECK(catalog[1].toMap().value("componentCount").toInt() == 1);
+    // 无需创建渲染窗口即可从模型查询统计；显示筛选不能改变原始分布。
+    const auto histogram = query.scalarHistogramInfo(component_id, "value");
+    const auto counts = histogram.value("counts").toList();
+    REQUIRE_FALSE(counts.empty());
+    CHECK(counts.front().toLongLong() == 1);
+    CHECK(counts.back().toLongLong() == 1);
+    CHECK(histogram.value("edges").toList().front().toDouble() == 0.25);
+    CHECK(histogram.value("edges").toList().back().toDouble() == 0.75);
+    CHECK(query.scalarHistogramInfo(component_id, "missing").isEmpty());
     QRenderWindow viewport;
     const auto data = query.getMeshDataByComponent(component_id);
     REQUIRE(data);
@@ -760,6 +771,7 @@ TEST_CASE("Scalar UI skips unrenderable named attributes and applies the matchin
     REQUIRE_FALSE(applied.isError());
     REQUIRE(applied.toBool());
 
+    CHECK(query.scalarHistogramInfo(component_id, "value") == histogram);
     CHECK(viewport.window() == nullptr);
 }
 

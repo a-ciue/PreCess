@@ -11,10 +11,59 @@
 
 #include <TopAbs_ShapeEnum.hxx>
 
+#include <algorithm>
+#include <cmath>
+#include <cstdlib>
+#include <limits>
 #include <map>
+#include <numeric>
+#include <utility>
 
 namespace session {
 namespace {
+
+    /** @brief 保留原始两端值，内部选择三位有效数字的十进制等间隔刻度。 */
+    std::vector<double> decimalHistogramEdges(double lower, double upper, size_t max_bins)
+    {
+        const double step_hint = (upper - lower) / max_bins;
+        if (!std::isnormal(step_hint))
+            return { };
+        const int exponent = static_cast<int>(std::floor(std::log10(step_hint))) - 1;
+        const double unit = std::pow(10.0, exponent);
+        const double low_tick = lower / unit;
+        const double high_tick = upper / unit;
+        // 大基值上的窄分布改由调用方用相对偏移表示。
+        if (std::max(std::abs(low_tick), std::abs(high_tick)) > 1e15)
+            return { };
+
+        // 只要求内部刻度简短，两端直接采用真实值，首尾箱可以较短。
+        for (const int step : { 10, 20, 25, 50, 100 }) {
+            std::vector<double> edges { lower };
+            const double first = std::floor(low_tick / step);
+            const double last = std::ceil(high_tick / step);
+            for (double index = first; index <= last; ++index) {
+                const auto tick = static_cast<std::int64_t>(index) * step;
+                // 按十进制读取，避免浮点乘加产生冗长尾数。
+                const double edge = std::strtod((std::to_string(tick) + "e" + std::to_string(exponent)).c_str(), nullptr);
+                if (edge <= lower || edge >= upper)
+                    continue;
+                auto significant = tick;
+                while (significant != 0 && significant % 10 == 0)
+                    significant /= 10;
+                if (std::abs(significant) >= 1000) {
+                    edges.clear();
+                    break;
+                }
+                edges.push_back(edge);
+            }
+            if (edges.empty())
+                continue;
+            edges.push_back(upper);
+            if (edges.size() - 1 <= max_bins)
+                return edges;
+        }
+        return { };
+    }
 
     // 计算属性展示名：去除 v_/e_/f_/s_ 前缀与分量数后缀，前端只展示原始名以外的部分
     std::string attributeDisplayName(const std::string& name, int component_count)
@@ -324,6 +373,83 @@ std::vector<AttributeInfo> SessionQuery::componentAttributeInfos(Index component
     appendAttributeInfos(out, mesh.face_attributes_, ElementEnum::Type::Face, "面", 2, face_count);
     appendAttributeInfos(out, mesh.solid_attributes_, ElementEnum::Type::Solid, "体", 3, solid_count);
     return out;
+}
+
+std::optional<ScalarHistogram> SessionQuery::scalarHistogram(Index component_id, const std::string& attribute) const
+{
+    const auto* component = model_.findComponent(component_id);
+    if (!component || !component->mesh)
+        return std::nullopt;
+    const auto& mesh = *component->mesh;
+    const std::vector<double>* values = nullptr;
+    // 与渲染数组的构建和查找一致：跳过空、长度无效的数组，首个有效同名属性决定实体域。
+    for (const auto& [attributes, tuple_count] : {
+             std::pair { &mesh.vertex_attributes_, mesh.vertex_positions_.size() },
+             std::pair { &mesh.edge_attributes_, mesh.edge_vertices_.size() / 2 },
+             std::pair { &mesh.face_attributes_, mesh.face_vertices_offset_.empty() ? 0 : mesh.face_vertices_offset_.size() - 1 },
+             std::pair { &mesh.solid_attributes_, mesh.solid_vertices_offset_.empty() ? 0 : mesh.solid_vertices_offset_.size() - 1 } }) {
+        const auto found = attributes->find(attribute);
+        if (found == attributes->end() || found->second.empty() || tuple_count == 0 || found->second.size() % tuple_count != 0)
+            continue;
+        // 有效多分量属性仍占据查找优先级，不改用后面的同名单值属性。
+        if (found->second.size() != tuple_count)
+            return std::nullopt;
+        values = &found->second;
+        break;
+    }
+    if (!values)
+        return std::nullopt;
+
+    double lower = std::numeric_limits<double>::infinity();
+    double upper = -lower;
+    // 完整原始属性不受人工隐藏、显示范围和裁剪影响。
+    for (const double value : *values) {
+        if (std::isfinite(value)) {
+            lower = std::min(lower, value);
+            upper = std::max(upper, value);
+        }
+    }
+    if (lower > upper)
+        return std::nullopt;
+    constexpr size_t max_bins = 32;
+    ScalarHistogram result;
+    if (lower == upper) {
+        result.edges = { lower, upper };
+    } else {
+        result.edges = decimalHistogramEdges(lower, upper, max_bins);
+        const double span = upper - lower;
+        if (result.edges.empty() && std::isfinite(span)) {
+            result.edges = decimalHistogramEdges(0.0, span, max_bins);
+            if (!result.edges.empty())
+                result.origin = lower;
+        }
+
+        // 十进制刻度无法覆盖的极端值域保留可表示的边界。
+        if (result.edges.empty()) {
+            const double midpoint = std::midpoint(lower, upper);
+            result.edges.resize(max_bins + 1);
+            for (size_t i = 0; i <= max_bins; ++i) {
+                const double fraction = static_cast<double>(i) / max_bins;
+                result.edges[i] = fraction <= 0.5 ? std::lerp(lower, midpoint, fraction * 2)
+                                                  : std::lerp(midpoint, upper, fraction * 2 - 1);
+            }
+            result.edges.erase(std::unique(result.edges.begin(), result.edges.end()), result.edges.end());
+        }
+    }
+    result.counts.resize(result.edges.size() - 1);
+
+    // 比较同一套内部边界，等于边界的样本进入右箱；最大值留在最后一箱。
+    const auto first_boundary = result.edges.begin() + 1;
+    const auto last_boundary = result.edges.end() - 1;
+    for (double value : *values) {
+        if (!std::isfinite(value))
+            continue;
+        if (result.origin)
+            value -= *result.origin;
+        const auto bin = std::upper_bound(first_boundary, last_boundary, value) - first_boundary;
+        ++result.counts[bin];
+    }
+    return result;
 }
 
 std::optional<GeomFaceId> SessionQuery::resolveGeometryFaceLocalId(Index component_id, int local_face_id) const
