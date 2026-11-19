@@ -5,12 +5,23 @@ import QtQuick.Layouts
 Item {
     id: outputLog
 
+    function appendMessage(message) {
+        const viewport = logScroll.contentItem;
+        const followEnd = viewport.atYEnd;
+        const previousY = viewport.contentY;
+        outputText.append(message);
+        // append 会尝试显示旧光标，日志应以用户的滚动位置决定是否跟随。
+        viewport.contentY = followEnd ? viewport.originY + Math.max(0, viewport.contentHeight - viewport.height) : previousY;
+    }
+
     ColumnLayout {
         anchors.fill: parent
         anchors.margins: 6
         spacing: 0
 
         ScrollView {
+            id: logScroll
+            objectName: "outputLogScroll"
             Layout.fillWidth: true
             Layout.fillHeight: true
             clip: true
@@ -28,6 +39,7 @@ Item {
 
             TextArea {
                 id: outputText
+                objectName: "outputLogText"
                 readOnly: true
                 textFormat: TextEdit.RichText
                 color: Theme.textPrimary
@@ -37,9 +49,9 @@ Item {
                 text: ""
 
                 Component.onCompleted: {
-                    var msgs = QLogManager.messages
+                    var msgs = QLogManager.messages;
                     for (var i = 0; i < msgs.length; i++) {
-                        outputText.append(msgs[i])
+                        outputLog.appendMessage(msgs[i]);
                     }
                 }
             }
@@ -49,7 +61,7 @@ Item {
     Connections {
         target: QLogManager
         function onNewMessage(level, message) {
-            outputText.append(message)
+            outputLog.appendMessage(message);
         }
     }
 }

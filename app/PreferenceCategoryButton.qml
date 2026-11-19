@@ -51,7 +51,8 @@ ToolButton {
 
     contentItem: Text {
         text: control.text
-        color: control.active ? Theme.primary : control.hovered ? Theme.primaryHover : Theme.textPrimary
+        color: control.active ? Theme.textOnPrimaryTint
+             : control.hovered ? Theme.primaryHover : Theme.textPrimary
         font.pixelSize: Theme.fontSizeBody
         font.weight: control.active ? Font.DemiBold : Font.Normal
         horizontalAlignment: control.tabMode ? Text.AlignHCenter : Text.AlignLeft

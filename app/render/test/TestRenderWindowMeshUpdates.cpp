@@ -1,6 +1,6 @@
 /**
  * @file TestRenderWindowMeshUpdates.cpp
- * @brief 不显示窗口地验证网格更新与属性渲染取消之间的边界。
+ * @brief 不显示窗口地验证网格更新与属性渲染取消之间的边界，需要可用的 OpenGL 上下文。
  */
 #include "MakeMeshData.h"
 #include "MakeMeshDataVtk.h"
@@ -10,6 +10,7 @@
 
 #include <QGuiApplication>
 #include <QImage>
+#include <QImageWriter>
 #include <QQuickRenderControl>
 #include <QQuickWindow>
 #include <QTemporaryDir>
@@ -31,7 +32,9 @@ struct MeshUpdateViewport {
         window.resize(320, 240);
         item.setParentItem(window.contentItem());
         item.setSize(QSizeF(320, 240));
-        REQUIRE(control.initialize());
+        // 离屏测试仍需 OpenGL；无图形上下文的 CI 服务按环境条件跳过。
+        if (!control.initialize())
+            SKIP("No usable OpenGL scene graph; this viewport integration test requires OpenGL.");
     }
 
     /** @brief 在控件析构前释放场景图及其 VTK 资源。 */
@@ -68,9 +71,15 @@ TEST_CASE("Mesh reload preserves non-scalar rendering and explicit scalar cancel
     QTemporaryDir directory;
     REQUIRE(directory.isValid());
     const auto texture_path = directory.filePath("texture.png");
-    QImage image(2, 2, QImage::Format_RGB32);
-    image.fill(Qt::white);
-    REQUIRE(image.save(texture_path));
+    {
+        QImage image(2, 2, QImage::Format_RGB32);
+        image.fill(Qt::white);
+        QImageWriter texture_writer(texture_path, "PNG");
+        const bool texture_saved = texture_writer.write(image);
+        INFO(texture_path.toStdString());
+        INFO(texture_writer.errorString().toStdString());
+        REQUIRE(texture_saved);
+    }
 
     auto mesh = MakeMeshDataWithAtri();
     MeshUpdateViewport viewport;

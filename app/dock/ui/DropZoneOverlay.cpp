@@ -9,6 +9,7 @@
 
 #include <QJSValue>
 #include <QQuickItem>
+#include <QRectF>
 #include <QVariantList>
 #include <QVariantMap>
 
@@ -65,25 +66,15 @@ void DropZoneOverlay::showZoneRects(const QList<ZoneRectHit>& zones,
     }
 
     // 目标分组描边（浮层局部坐标）
-    QVariantMap target;
-    if (!target_frame_global.isEmpty()) {
-        const QRect local = target_frame_global.translated(-area_global_rect.topLeft());
-        target.insert(QStringLiteral("x"), local.x());
-        target.insert(QStringLiteral("y"), local.y());
-        target.insert(QStringLiteral("width"), local.width());
-        target.insert(QStringLiteral("height"), local.height());
-    }
+    const QRectF target = target_frame_global.isEmpty()
+        ? QRectF()
+        : QRectF(target_frame_global.translated(-area_global_rect.topLeft()));
 
     // 标签插入标记（浮层局部坐标）
-    QVariantMap tab_insert;
     tab_insert_rect_ = tab_insert_global;
-    if (!tab_insert_global.isEmpty()) {
-        const QRect local = tab_insert_global.translated(-area_global_rect.topLeft());
-        tab_insert.insert(QStringLiteral("x"), local.x());
-        tab_insert.insert(QStringLiteral("y"), local.y());
-        tab_insert.insert(QStringLiteral("width"), local.width());
-        tab_insert.insert(QStringLiteral("height"), local.height());
-    }
+    const QRectF tab_insert = tab_insert_global.isEmpty()
+        ? QRectF()
+        : QRectF(tab_insert_global.translated(-area_global_rect.topLeft()));
 
     root_item_->setProperty("zones", model);
     root_item_->setProperty("targetFrame", target);
@@ -104,8 +95,8 @@ void DropZoneOverlay::clear(QQuickItem* request_owner)
     tab_insert_rect_ = QRect();
     if (root_item_) {
         root_item_->setProperty("zones", QVariantList());
-        root_item_->setProperty("targetFrame", QVariantMap());
-        root_item_->setProperty("tabInsert", QVariantMap());
+        root_item_->setProperty("targetFrame", QRectF());
+        root_item_->setProperty("tabInsert", QRectF());
     }
     hide();
 }

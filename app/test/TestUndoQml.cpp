@@ -21,11 +21,15 @@
 #include <QEventLoop>
 #include <QFile>
 #include <QGuiApplication>
+#include <QItemSelectionModel>
+#include <QKeyEvent>
+#include <QMouseEvent>
 #include <QKeyEvent>
 #include <QQmlComponent>
 #include <QQmlContext>
 #include <QQmlEngine>
 #include <QQmlExtensionPlugin>
+#include <QQuickItem>
 #include <QQuickVTKItem.h>
 #include <QQuickItem>
 #include <QQuickWindow>
@@ -1106,6 +1110,9 @@ TEST_CASE("Actual QML visibility entries dispatch to the intended components", "
             node_index = node_index.parent();
         else if (show_entry.startsWith("showNode-2-"))
             node_index = tree->index(0, 0, node_index);
+        auto* selection_model = tree_view->property("selectionModel").value<QItemSelectionModel*>();
+        REQUIRE(selection_model);
+        selection_model->setCurrentIndex(node_index, QItemSelectionModel::ClearAndSelect);
         QQuickItem* delegate = nullptr;
         REQUIRE(QMetaObject::invokeMethod(tree_view, "itemAtIndex",
             Q_RETURN_ARG(QQuickItem*, delegate), Q_ARG(QModelIndex, node_index)));
@@ -1228,17 +1235,18 @@ TEST_CASE("Actual QML follows successful deletion notifications and preserves se
     CHECK(selection_state->property("activeComponentId").toInt() == cid);
     // 直接修改模型层，验证界面响应实际删除通知，独立于对象树命令入口。
     model.removeComponent(cid);
-    CHECK(selection_state->property("activeModelId").toInt() == mid);
-    CHECK(selection_state->property("activeComponentId").toInt() == remaining_cid);
-    pumpEvents();
-    CHECK(selection_state->property("activeModelId").toInt() == mid);
-    CHECK(selection_state->property("activeComponentId").toInt() == remaining_cid);
-    // 删除最后一个组件仍保留模型选择。
-    model.removeComponent(remaining_cid);
-    CHECK(selection_state->property("activeModelId").toInt() == mid);
+    // 删除当前选中组件后重置选中，不自动选中剩余组件。
+    CHECK(selection_state->property("activeModelId").toInt() == -1);
     CHECK(selection_state->property("activeComponentId").toInt() == -1);
     pumpEvents();
-    CHECK(selection_state->property("activeModelId").toInt() == mid);
+    CHECK(selection_state->property("activeModelId").toInt() == -1);
+    CHECK(selection_state->property("activeComponentId").toInt() == -1);
+    // 后续删除不改变已清空的选中。
+    model.removeComponent(remaining_cid);
+    CHECK(selection_state->property("activeModelId").toInt() == -1);
+    CHECK(selection_state->property("activeComponentId").toInt() == -1);
+    pumpEvents();
+    CHECK(selection_state->property("activeModelId").toInt() == -1);
     CHECK(selection_state->property("activeComponentId").toInt() == -1);
     model.removeModel(mid);
     CHECK(selection_state->property("activeModelId").toInt() == -1);
@@ -1259,6 +1267,708 @@ TEST_CASE("Actual QML follows successful deletion notifications and preserves se
     pumpEvents();
     CHECK(selection_state->property("activeModelId").toInt() == -1);
     CHECK(selection_state->property("activeComponentId").toInt() == -1);
+}
+
+TEST_CASE("Actual QML separates selection from make-current", "[QML][tree][selection]")
+{
+    application();
+    QmlFixture f;
+    auto& model = *f.manager->getModelManager();
+    model.setUndoRecorder(nullptr);
+    auto* tree_model = f.tree->findChild<TreeModel*>();
+    auto* tree_view_object = f.tree->findChild<QObject*>("objectTreeView");
+    auto* selection_state = f.selection_state;
+    REQUIRE(tree_model);
+    REQUIRE(tree_view_object);
+    REQUIRE(selection_state);
+
+    ComponentDatas components;
+    auto first = std::make_unique<ComponentData>();
+    first->mesh = std::make_unique<MeshData>();
+    components.push_back(std::move(first));
+    components.push_back(std::make_unique<ComponentData>());
+    const Index model_id = model.addModel("selection fixture", std::move(components));
+    const auto component_ids = model.modelById(model_id)->componentIds();
+    REQUIRE(component_ids.size() == 2);
+    REQUIRE(tree_model->refresh());
+
+    auto* selection_model = tree_view_object->property("selectionModel").value<QItemSelectionModel*>();
+    REQUIRE(selection_model);
+
+    QQuickWindow host;
+    host.resize(300, 600);
+    auto* tree_page = qobject_cast<QQuickItem*>(f.tree.get());
+    REQUIRE(tree_page);
+    tree_page->setParentItem(host.contentItem());
+    tree_page->setSize(QSizeF(300, 600));
+    const auto cleanup = qScopeGuard([&] {
+        host.hide();
+        tree_page->setParentItem(nullptr);
+    });
+    host.show();
+    QCoreApplication::processEvents();
+    REQUIRE(QMetaObject::invokeMethod(tree_view_object, "expandRecursively",
+        Q_ARG(int, -1), Q_ARG(int, -1)));
+    REQUIRE(QMetaObject::invokeMethod(tree_view_object, "forceLayout"));
+    QCoreApplication::processEvents();
+
+    const QModelIndex first_index = tree_model->findIndexByNodeId(component_ids[0], 1);
+    const QModelIndex second_index = tree_model->findIndexByNodeId(component_ids[1], 1);
+    REQUIRE(first_index.isValid());
+    REQUIRE(second_index.isValid());
+    QQuickItem* first_delegate = nullptr;
+    QQuickItem* second_delegate = nullptr;
+    REQUIRE(QMetaObject::invokeMethod(tree_view_object, "itemAtIndex",
+        Q_RETURN_ARG(QQuickItem*, first_delegate), Q_ARG(QModelIndex, first_index)));
+    REQUIRE(QMetaObject::invokeMethod(tree_view_object, "itemAtIndex",
+        Q_RETURN_ARG(QQuickItem*, second_delegate), Q_ARG(QModelIndex, second_index)));
+    REQUIRE(first_delegate);
+    REQUIRE(second_delegate);
+
+    const auto click = [&](QQuickItem* target, Qt::MouseButton button, Qt::KeyboardModifiers modifiers) {
+        const QPointF pos = host.contentItem()->mapFromItem(target,
+            target->width() / 2, target->height() / 2);
+        QMouseEvent press(QEvent::MouseButtonPress, pos, host.mapToGlobal(pos.toPoint()),
+            button, button, modifiers);
+        QCoreApplication::sendEvent(&host, &press);
+        QMouseEvent release(QEvent::MouseButtonRelease, pos, host.mapToGlobal(pos.toPoint()),
+            button, Qt::NoButton, modifiers);
+        QCoreApplication::sendEvent(&host, &release);
+        QCoreApplication::processEvents();
+    };
+    const auto find_menu_item = [](QQuickItem* delegate, const QString& text) -> QObject* {
+        for (auto* child : delegate->findChildren<QObject*>()) {
+            if (child->property("text").toString() == text
+                && child->property("menu").value<QObject*>())
+                return child;
+        }
+        return nullptr;
+    };
+    const auto selection_count = [&] {
+        return selection_model->selectedIndexes().size();
+    };
+
+    // 普通点击只改选中，不切换活动对象。
+    click(first_delegate, Qt::LeftButton, Qt::NoModifier);
+    CHECK(selection_count() == 1);
+    CHECK(selection_model->currentIndex() == first_index);
+    CHECK(selection_state->property("activeModelId").toInt() == -1);
+    CHECK(selection_state->property("activeComponentId").toInt() == -1);
+
+    // 再次点击同一行取消选中；再点击恢复。
+    click(first_delegate, Qt::LeftButton, Qt::NoModifier);
+    CHECK(selection_count() == 0);
+    CHECK(selection_state->property("activeComponentId").toInt() == -1);
+    click(first_delegate, Qt::LeftButton, Qt::NoModifier);
+    CHECK(selection_count() == 1);
+
+    // 再次普通点击另一行替换选中，活动对象仍不变。
+    click(second_delegate, Qt::LeftButton, Qt::NoModifier);
+    CHECK(selection_count() == 1);
+    CHECK_FALSE(selection_model->isSelected(first_index));
+    CHECK(selection_model->isSelected(second_index));
+    CHECK(selection_model->currentIndex() == second_index);
+    CHECK(selection_state->property("activeComponentId").toInt() == -1);
+
+    // 右键选中行打开菜单；单目标命令保持可用，设置活动组件只切换活动对象。
+    click(second_delegate, Qt::RightButton, Qt::NoModifier);
+    auto* make_current = second_delegate->findChild<QObject*>("activeComponentItem");
+    REQUIRE(make_current);
+    CHECK(make_current->property("text").toString() == "设置活动组件");
+    auto* menu = make_current->property("menu").value<QObject*>();
+    REQUIRE(menu);
+    CHECK(menu->property("visible").toBool());
+    auto* delete_item = find_menu_item(second_delegate, "删除");
+    REQUIRE(delete_item);
+    CHECK(delete_item->property("enabled").toBool());
+    REQUIRE(QMetaObject::invokeMethod(make_current, "triggered"));
+    QCoreApplication::processEvents();
+    CHECK(selection_state->property("activeModelId").toInt() == model_id);
+    CHECK(selection_state->property("activeComponentId").toInt() == component_ids[1]);
+    CHECK(selection_count() == 1);
+
+    // 再选中其他行不会改变活动对象与加粗目标。
+    click(first_delegate, Qt::LeftButton, Qt::NoModifier);
+    CHECK(selection_count() == 1);
+    CHECK(selection_state->property("activeComponentId").toInt() == component_ids[1]);
+    QVariant emphasized;
+    REQUIRE(QMetaObject::invokeMethod(f.tree.get(), "isNodeEmphasized",
+        Q_RETURN_ARG(QVariant, emphasized),
+        Q_ARG(QVariant, component_ids[1]), Q_ARG(QVariant, 1)));
+    CHECK(emphasized.toBool());
+
+    // undo/redo 应用后清空行选择；仍有效的活动对象保留。
+    auto* undo = f.manager->getUndoStackAdaptor();
+    REQUIRE(undo);
+    REQUIRE(QMetaObject::invokeMethod(undo, "applied"));
+    CHECK_FALSE(selection_model->hasSelection());
+    CHECK(selection_state->property("activeComponentId").toInt() == component_ids[1]);
+
+    // 重新左键选中当前活动 Component，右键菜单项切换为取消。
+    click(second_delegate, Qt::LeftButton, Qt::NoModifier);
+    click(second_delegate, Qt::RightButton, Qt::NoModifier);
+    auto* cancel_current = second_delegate->findChild<QObject*>("activeComponentItem");
+    REQUIRE(cancel_current);
+    CHECK(cancel_current->property("text").toString() == "取消活动组件");
+    REQUIRE(QMetaObject::invokeMethod(cancel_current, "triggered"));
+    QCoreApplication::processEvents();
+    CHECK(selection_state->property("activeModelId").toInt() == -1);
+    CHECK(selection_state->property("activeComponentId").toInt() == -1);
+    CHECK(selection_count() == 1);
+
+    // depth=2 的 Mesh 使用独立菜单：不出现设置/取消活动组件。
+    const QModelIndex mesh_index = tree_model->index(0, 0, first_index);
+    REQUIRE(mesh_index.isValid());
+    QQuickItem* mesh_delegate = nullptr;
+    REQUIRE(QMetaObject::invokeMethod(tree_view_object, "itemAtIndex",
+        Q_RETURN_ARG(QQuickItem*, mesh_delegate), Q_ARG(QModelIndex, mesh_index)));
+    REQUIRE(mesh_delegate);
+    click(mesh_delegate, Qt::LeftButton, Qt::NoModifier);
+    click(mesh_delegate, Qt::RightButton, Qt::NoModifier);
+    auto* mesh_menu = mesh_delegate->findChild<QObject*>("nodeActionsMenu");
+    REQUIRE(mesh_menu);
+    CHECK(mesh_menu->property("visible").toBool());
+    bool mesh_has_active_items = false;
+    for (auto* child : mesh_menu->findChildren<QObject*>()) {
+        const QString text = child->property("text").toString();
+        if (text == "设置活动组件" || text == "取消活动组件")
+            mesh_has_active_items = true;
+    }
+    CHECK_FALSE(mesh_has_active_items);
+    REQUIRE(QMetaObject::invokeMethod(mesh_menu, "close"));
+}
+
+TEST_CASE("Actual QML enforces set and cancel active component rules", "[QML][tree][selection]")
+{
+    application();
+    QmlFixture f;
+    auto& model = *f.manager->getModelManager();
+    model.setUndoRecorder(nullptr);
+    auto* tree_model = f.tree->findChild<TreeModel*>();
+    auto* tree_view_object = f.tree->findChild<QObject*>("objectTreeView");
+    auto* selection_state = f.selection_state;
+    REQUIRE(tree_model);
+    REQUIRE(tree_view_object);
+    REQUIRE(selection_state);
+    auto* selection_model = tree_view_object->property("selectionModel").value<QItemSelectionModel*>();
+    REQUIRE(selection_model);
+
+    ComponentDatas components;
+    components.push_back(std::make_unique<ComponentData>());
+    components.push_back(std::make_unique<ComponentData>());
+    const Index model_id = model.addModel("active fixture", std::move(components));
+    const auto component_ids = model.modelById(model_id)->componentIds();
+    REQUIRE(component_ids.size() == 2);
+    REQUIRE(tree_model->refresh());
+
+    QQuickWindow host;
+    host.resize(400, 600);
+    auto* tree_page = qobject_cast<QQuickItem*>(f.tree.get());
+    REQUIRE(tree_page);
+    tree_page->setParentItem(host.contentItem());
+    tree_page->setSize(QSizeF(300, 600));
+    const auto cleanup = qScopeGuard([&] {
+        host.hide();
+        tree_page->setParentItem(nullptr);
+    });
+    host.show();
+    QCoreApplication::processEvents();
+    REQUIRE(QMetaObject::invokeMethod(tree_view_object, "expandRecursively",
+        Q_ARG(int, -1), Q_ARG(int, -1)));
+    REQUIRE(QMetaObject::invokeMethod(tree_view_object, "forceLayout"));
+    QCoreApplication::processEvents();
+
+    const QModelIndex first_index = tree_model->findIndexByNodeId(component_ids[0], 1);
+    const QModelIndex second_index = tree_model->findIndexByNodeId(component_ids[1], 1);
+    REQUIRE(first_index.isValid());
+    REQUIRE(second_index.isValid());
+    QQuickItem* first_delegate = nullptr;
+    QQuickItem* second_delegate = nullptr;
+    REQUIRE(QMetaObject::invokeMethod(tree_view_object, "itemAtIndex",
+        Q_RETURN_ARG(QQuickItem*, first_delegate), Q_ARG(QModelIndex, first_index)));
+    REQUIRE(QMetaObject::invokeMethod(tree_view_object, "itemAtIndex",
+        Q_RETURN_ARG(QQuickItem*, second_delegate), Q_ARG(QModelIndex, second_index)));
+    REQUIRE(first_delegate);
+    REQUIRE(second_delegate);
+
+    const auto click = [&](QQuickItem* target, Qt::MouseButton button) {
+        const QPointF pos = host.contentItem()->mapFromItem(target,
+            target->width() / 2, target->height() / 2);
+        QMouseEvent press(QEvent::MouseButtonPress, pos, host.mapToGlobal(pos.toPoint()),
+            button, button, Qt::NoModifier);
+        QCoreApplication::sendEvent(&host, &press);
+        QMouseEvent release(QEvent::MouseButtonRelease, pos, host.mapToGlobal(pos.toPoint()),
+            button, Qt::NoButton, Qt::NoModifier);
+        QCoreApplication::sendEvent(&host, &release);
+        QCoreApplication::processEvents();
+    };
+    const auto active_item = [](QQuickItem* delegate) -> QObject* {
+        return delegate->findChild<QObject*>("activeComponentItem");
+    };
+    const auto open_menu = [&](QQuickItem* delegate, const QModelIndex& index) -> QObject* {
+        if (!selection_model->isSelected(index))
+            selection_model->setCurrentIndex(index, QItemSelectionModel::ClearAndSelect);
+        click(delegate, Qt::RightButton);
+        auto* item = active_item(delegate);
+        REQUIRE(item);
+        auto* menu = item->property("menu").value<QObject*>();
+        REQUIRE(menu);
+        REQUIRE(menu->property("visible").toBool());
+        return menu;
+    };
+    const auto close_menu = [](QObject* menu) {
+        REQUIRE(QMetaObject::invokeMethod(menu, "close"));
+        QCoreApplication::processEvents();
+    };
+
+    // 右键未选中行不改变选中，只打开全局菜单。
+    click(first_delegate, Qt::RightButton);
+    CHECK_FALSE(selection_model->hasSelection());
+    auto* global_menu = f.tree->findChild<QObject*>("blankContextMenu");
+    REQUIRE(global_menu);
+    CHECK(global_menu->property("visible").toBool());
+    close_menu(global_menu);
+
+    // 未设置活动组件：菜单项为设置。
+    auto* menu = open_menu(first_delegate, first_index);
+    auto* item = active_item(first_delegate);
+    REQUIRE(item);
+    CHECK(item->property("text").toString() == "设置活动组件");
+    REQUIRE(QMetaObject::invokeMethod(item, "triggered"));
+    QCoreApplication::processEvents();
+    CHECK(selection_state->property("activeComponentId").toInt() == component_ids[0]);
+
+    // 当前活动行：菜单项为取消。
+    menu = open_menu(first_delegate, first_index);
+    item = active_item(first_delegate);
+    REQUIRE(item);
+    CHECK(item->property("text").toString() == "取消活动组件");
+    close_menu(menu);
+
+    // 其他行：菜单项为设置，触发后直接切换活动组件。
+    menu = open_menu(second_delegate, second_index);
+    item = active_item(second_delegate);
+    REQUIRE(item);
+    CHECK(item->property("text").toString() == "设置活动组件");
+    REQUIRE(QMetaObject::invokeMethod(item, "triggered"));
+    QCoreApplication::processEvents();
+    CHECK(selection_state->property("activeComponentId").toInt() == component_ids[1]);
+
+    // 当前活动行取消后，恢复为设置文案。
+    menu = open_menu(second_delegate, second_index);
+    item = active_item(second_delegate);
+    REQUIRE(item);
+    CHECK(item->property("text").toString() == "取消活动组件");
+    REQUIRE(QMetaObject::invokeMethod(item, "triggered"));
+    QCoreApplication::processEvents();
+    CHECK(selection_state->property("activeModelId").toInt() == -1);
+    CHECK(selection_state->property("activeComponentId").toInt() == -1);
+
+    menu = open_menu(first_delegate, first_index);
+    item = active_item(first_delegate);
+    REQUIRE(item);
+    CHECK(item->property("text").toString() == "设置活动组件");
+    close_menu(menu);
+}
+
+TEST_CASE("Actual QML clears selection on outside left press", "[QML][tree][selection]")
+{
+    application();
+    QmlFixture f;
+    auto& model = *f.manager->getModelManager();
+    model.setUndoRecorder(nullptr);
+    auto* tree_model = f.tree->findChild<TreeModel*>();
+    auto* tree_view_object = f.tree->findChild<QObject*>("objectTreeView");
+    auto* selection_state = f.selection_state;
+    REQUIRE(tree_model);
+    REQUIRE(tree_view_object);
+    REQUIRE(selection_state);
+
+    ComponentDatas components;
+    components.push_back(std::make_unique<ComponentData>());
+    const Index model_id = model.addModel("outside click fixture", std::move(components));
+    const Index component_id = model.modelById(model_id)->componentIds().front();
+    REQUIRE(tree_model->refresh());
+
+    QQuickWindow host;
+    host.resize(400, 600);
+    auto* tree_page = qobject_cast<QQuickItem*>(f.tree.get());
+    REQUIRE(tree_page);
+    tree_page->setParentItem(host.contentItem());
+    tree_page->setSize(QSizeF(300, 600));
+    const auto cleanup = qScopeGuard([&] {
+        host.hide();
+        tree_page->setParentItem(nullptr);
+    });
+    host.show();
+    QCoreApplication::processEvents();
+    REQUIRE(QMetaObject::invokeMethod(tree_view_object, "expandRecursively",
+        Q_ARG(int, -1), Q_ARG(int, -1)));
+    REQUIRE(QMetaObject::invokeMethod(tree_view_object, "forceLayout"));
+    QCoreApplication::processEvents();
+
+    const QModelIndex component_index = tree_model->findIndexByNodeId(component_id, 1);
+    REQUIRE(component_index.isValid());
+    QQuickItem* delegate = nullptr;
+    REQUIRE(QMetaObject::invokeMethod(tree_view_object, "itemAtIndex",
+        Q_RETURN_ARG(QQuickItem*, delegate), Q_ARG(QModelIndex, component_index)));
+    REQUIRE(delegate);
+    auto* selection_model = tree_view_object->property("selectionModel").value<QItemSelectionModel*>();
+    REQUIRE(selection_model);
+    const QPointF inside_local = host.contentItem()->mapFromItem(delegate,
+        delegate->width() / 2, delegate->height() / 2);
+    const QPointF inside_global = host.mapToGlobal(inside_local.toPoint());
+    const QPointF outside_global = host.mapToGlobal(QPoint(380, 500));
+    const auto click = [&](Qt::MouseButton button) {
+        QMouseEvent press(QEvent::MouseButtonPress, inside_local,
+            host.mapToGlobal(inside_local.toPoint()), button, button, Qt::NoModifier);
+        QCoreApplication::sendEvent(&host, &press);
+        QMouseEvent release(QEvent::MouseButtonRelease, inside_local,
+            host.mapToGlobal(inside_local.toPoint()), button, Qt::NoButton, Qt::NoModifier);
+        QCoreApplication::sendEvent(&host, &release);
+        QCoreApplication::processEvents();
+    };
+    const auto press_outside = [&] {
+        REQUIRE(QMetaObject::invokeMethod(f.tree.get(), "handleGlobalLeftPress",
+            Q_ARG(QVariant, outside_global.x()), Q_ARG(QVariant, outside_global.y())));
+    };
+    const auto press_inside = [&] {
+        REQUIRE(QMetaObject::invokeMethod(f.tree.get(), "handleGlobalLeftPress",
+            Q_ARG(QVariant, inside_global.x()), Q_ARG(QVariant, inside_global.y())));
+    };
+
+    click(Qt::LeftButton);
+    REQUIRE(selection_model->selectedIndexes().size() == 1);
+    REQUIRE(QMetaObject::invokeMethod(f.tree.get(), "makeNodeCurrent",
+        Q_ARG(QVariant, component_id), Q_ARG(QVariant, 1), Q_ARG(QVariant, component_id)));
+    CHECK(selection_state->property("activeComponentId").toInt() == component_id);
+
+    // 点击对象树外部：清空行选择，保留活动组件。
+    press_outside();
+    CHECK_FALSE(selection_model->hasSelection());
+    CHECK(selection_state->property("activeModelId").toInt() == model_id);
+    CHECK(selection_state->property("activeComponentId").toInt() == component_id);
+
+    // 点击对象树内部：保持选择。
+    click(Qt::LeftButton);
+    REQUIRE(selection_model->selectedIndexes().size() == 1);
+    press_inside();
+    CHECK(selection_model->selectedIndexes().size() == 1);
+
+    // 自身菜单打开时，外部按下先只关闭菜单，不清选择。
+    click(Qt::RightButton);
+    pumpEvents();
+    REQUIRE(selection_model->selectedIndexes().size() == 1);
+    press_outside();
+    CHECK(selection_model->selectedIndexes().size() == 1);
+    auto* active_item = delegate->findChild<QObject*>("activeComponentItem");
+    REQUIRE(active_item);
+    auto* menu = active_item->property("menu").value<QObject*>();
+    REQUIRE(menu);
+    REQUIRE(QMetaObject::invokeMethod(menu, "close"));
+    pumpEvents();
+}
+
+TEST_CASE("Actual QML shows unavailable menu for deep rows", "[QML][tree][selection]")
+{
+    application();
+    QmlFixture f;
+    auto& model = *f.manager->getModelManager();
+    model.setUndoRecorder(nullptr);
+    auto* tree_model = f.tree->findChild<TreeModel*>();
+    auto* tree_view_object = f.tree->findChild<QObject*>("objectTreeView");
+    auto* selection_state = f.selection_state;
+    REQUIRE(tree_model);
+    REQUIRE(tree_view_object);
+    REQUIRE(selection_state);
+
+    ComponentDatas components;
+    auto component = std::make_unique<ComponentData>();
+    component->mesh = std::make_unique<MeshData>();
+    component->mesh->solid_types_.assign(1, 0);
+    components.push_back(std::move(component));
+    const Index model_id = model.addModel("deep menu fixture", std::move(components));
+    const Index component_id = model.modelById(model_id)->componentIds().front();
+    REQUIRE(tree_model->refresh());
+
+    QQuickWindow host;
+    host.resize(300, 600);
+    auto* tree_page = qobject_cast<QQuickItem*>(f.tree.get());
+    REQUIRE(tree_page);
+    tree_page->setParentItem(host.contentItem());
+    tree_page->setSize(QSizeF(300, 600));
+    const auto cleanup = qScopeGuard([&] {
+        host.hide();
+        tree_page->setParentItem(nullptr);
+    });
+    host.show();
+    QCoreApplication::processEvents();
+    REQUIRE(QMetaObject::invokeMethod(tree_view_object, "expandRecursively",
+        Q_ARG(int, -1), Q_ARG(int, -1)));
+    REQUIRE(QMetaObject::invokeMethod(tree_view_object, "forceLayout"));
+    QCoreApplication::processEvents();
+
+    const QModelIndex component_index = tree_model->findIndexByNodeId(component_id, 1);
+    REQUIRE(component_index.isValid());
+    const QModelIndex mesh_index = tree_model->index(0, 0, component_index);
+    REQUIRE(mesh_index.isValid());
+    const QModelIndex sub_index = tree_model->index(0, 0, mesh_index);
+    REQUIRE(sub_index.isValid());
+    QQuickItem* delegate = nullptr;
+    REQUIRE(QMetaObject::invokeMethod(tree_view_object, "itemAtIndex",
+        Q_RETURN_ARG(QQuickItem*, delegate), Q_ARG(QModelIndex, sub_index)));
+    REQUIRE(delegate);
+    auto* selection_model = tree_view_object->property("selectionModel").value<QItemSelectionModel*>();
+    REQUIRE(selection_model);
+
+    // 左键选中深层行后，右键打开深层菜单。
+    const QPointF pos = host.contentItem()->mapFromItem(delegate,
+        delegate->width() / 2, delegate->height() / 2);
+    QMouseEvent left_press(QEvent::MouseButtonPress, pos, host.mapToGlobal(pos.toPoint()),
+        Qt::LeftButton, Qt::LeftButton, Qt::NoModifier);
+    QCoreApplication::sendEvent(&host, &left_press);
+    QMouseEvent left_release(QEvent::MouseButtonRelease, pos, host.mapToGlobal(pos.toPoint()),
+        Qt::LeftButton, Qt::NoButton, Qt::NoModifier);
+    QCoreApplication::sendEvent(&host, &left_release);
+    QCoreApplication::processEvents();
+    CHECK(selection_model->isSelected(sub_index));
+    QMouseEvent press(QEvent::MouseButtonPress, pos, host.mapToGlobal(pos.toPoint()),
+        Qt::RightButton, Qt::RightButton, Qt::NoModifier);
+    QCoreApplication::sendEvent(&host, &press);
+    QMouseEvent release(QEvent::MouseButtonRelease, pos, host.mapToGlobal(pos.toPoint()),
+        Qt::RightButton, Qt::NoButton, Qt::NoModifier);
+    QCoreApplication::sendEvent(&host, &release);
+    QCoreApplication::processEvents();
+    CHECK(selection_state->property("activeModelId").toInt() == -1);
+
+    auto* menu = delegate->findChild<QObject*>("deepContextMenu");
+    REQUIRE(menu);
+    CHECK(menu->property("visible").toBool());
+    bool has_unavailable = false;
+    bool has_active_item = false;
+    for (auto* child : menu->findChildren<QObject*>()) {
+        const QString text = child->property("text").toString();
+        if (text == "功能开发中") {
+            has_unavailable = true;
+            CHECK_FALSE(child->property("enabled").toBool());
+        } else if (text == "设置活动组件" || text == "取消活动组件") {
+            has_active_item = true;
+        }
+    }
+    CHECK(has_unavailable);
+    CHECK_FALSE(has_active_item);
+    CHECK(selection_state->property("activeModelId").toInt() == -1);
+    CHECK(selection_state->property("activeComponentId").toInt() == -1);
+    CHECK(selection_model->isSelected(sub_index));
+    REQUIRE(QMetaObject::invokeMethod(menu, "close"));
+}
+
+TEST_CASE("Actual QML navigates object tree rows with keyboard", "[QML][tree][selection]")
+{
+    application();
+    QmlFixture f;
+    auto& model = *f.manager->getModelManager();
+    model.setUndoRecorder(nullptr);
+    auto* tree_model = f.tree->findChild<TreeModel*>();
+    auto* tree_view_object = f.tree->findChild<QObject*>("objectTreeView");
+    REQUIRE(tree_model);
+    REQUIRE(tree_view_object);
+    auto* selection_model = tree_view_object->property("selectionModel").value<QItemSelectionModel*>();
+    auto* tree_view = qobject_cast<QQuickItem*>(tree_view_object);
+    REQUIRE(selection_model);
+    REQUIRE(tree_view);
+
+    ComponentDatas components;
+    components.push_back(std::make_unique<ComponentData>());
+    components.push_back(std::make_unique<ComponentData>());
+    const Index model_id = model.addModel("keyboard fixture", std::move(components));
+    const auto component_ids = model.modelById(model_id)->componentIds();
+    REQUIRE(tree_model->refresh());
+
+    QQuickWindow host;
+    host.resize(300, 600);
+    auto* tree_page = qobject_cast<QQuickItem*>(f.tree.get());
+    REQUIRE(tree_page);
+    tree_page->setParentItem(host.contentItem());
+    tree_page->setSize(QSizeF(300, 600));
+    const auto cleanup = qScopeGuard([&] {
+        host.hide();
+        tree_page->setParentItem(nullptr);
+    });
+    host.show();
+    QCoreApplication::processEvents();
+    REQUIRE(QMetaObject::invokeMethod(tree_view_object, "expandRecursively",
+        Q_ARG(int, -1), Q_ARG(int, -1)));
+    REQUIRE(QMetaObject::invokeMethod(tree_view_object, "forceLayout"));
+    QCoreApplication::processEvents();
+
+    const QModelIndex first_index = tree_model->findIndexByNodeId(component_ids[0], 1);
+    const QModelIndex second_index = tree_model->findIndexByNodeId(component_ids[1], 1);
+    REQUIRE(first_index.isValid());
+    REQUIRE(second_index.isValid());
+    tree_view->forceActiveFocus();
+    const auto select_first = [&] {
+        REQUIRE(QMetaObject::invokeMethod(f.tree.get(), "selectRow",
+            Q_ARG(QVariant, QVariant::fromValue(first_index)),
+            Q_ARG(QVariant, false)));
+    };
+    const auto send_key = [&](int key, Qt::KeyboardModifiers modifiers) {
+        QKeyEvent press(QEvent::KeyPress, key, modifiers);
+        QCoreApplication::sendEvent(&host, &press);
+        QKeyEvent release(QEvent::KeyRelease, key, modifiers);
+        QCoreApplication::sendEvent(&host, &release);
+        QCoreApplication::processEvents();
+    };
+
+    // 普通方向键：移动并替换选中。
+    select_first();
+    send_key(Qt::Key_Down, Qt::NoModifier);
+    CHECK(selection_model->selectedIndexes().size() == 1);
+    CHECK(selection_model->isSelected(second_index));
+    CHECK(selection_model->currentIndex() == second_index);
+
+    // 带修饰键的方向键仍按单选处理，不产生多选。
+    select_first();
+    send_key(Qt::Key_Down, Qt::ControlModifier);
+    CHECK(selection_model->selectedIndexes().size() == 1);
+    CHECK(selection_model->isSelected(second_index));
+    CHECK(selection_model->currentIndex() == second_index);
+
+    select_first();
+    send_key(Qt::Key_Down, Qt::ShiftModifier);
+    CHECK(selection_model->selectedIndexes().size() == 1);
+    CHECK(selection_model->isSelected(second_index));
+    CHECK(selection_model->currentIndex() == second_index);
+}
+
+TEST_CASE("Actual QML emphasizes only model and component rows", "[QML][tree][selection]")
+{
+    application();
+    QmlFixture f;
+    auto& model = *f.manager->getModelManager();
+    model.setUndoRecorder(nullptr);
+    auto* tree_model = f.tree->findChild<TreeModel*>();
+    REQUIRE(tree_model);
+
+    ComponentDatas components;
+    auto component = std::make_unique<ComponentData>();
+    component->mesh = std::make_unique<MeshData>();
+    components.push_back(std::move(component));
+    const Index model_id = model.addModel("emphasis fixture", std::move(components));
+    const Index component_id = model.modelById(model_id)->componentIds().front();
+    REQUIRE(tree_model->refresh());
+
+    const QModelIndex component_index = tree_model->findIndexByNodeId(component_id, 1);
+    REQUIRE(component_index.isValid());
+    const QModelIndex mesh_index = tree_model->index(0, 0, component_index);
+    REQUIRE(mesh_index.isValid());
+    const Index mesh_node_id = tree_model->data(mesh_index, TreeModel::NodeIdRole).toInt();
+
+    const auto make_current = [&](Index node_id, int depth, Index owner_id) {
+        REQUIRE(QMetaObject::invokeMethod(f.tree.get(), "makeNodeCurrent",
+            Q_ARG(QVariant, node_id), Q_ARG(QVariant, depth), Q_ARG(QVariant, owner_id)));
+    };
+    const auto emphasized = [&](Index node_id, int depth) {
+        QVariant result;
+        REQUIRE(QMetaObject::invokeMethod(f.tree.get(), "isNodeEmphasized",
+            Q_RETURN_ARG(QVariant, result), Q_ARG(QVariant, node_id), Q_ARG(QVariant, depth)));
+        return result.toBool();
+    };
+
+    // depth>1 不能设置活动组件，调用不改变活动目标。
+    make_current(mesh_node_id, 2, component_id);
+    CHECK_FALSE(emphasized(model_id, 0));
+    CHECK_FALSE(emphasized(component_id, 1));
+    CHECK_FALSE(emphasized(mesh_node_id, 2));
+
+    // 设置活动组件到 Model：Model 与其首个 Component 加粗。
+    make_current(model_id, 0, -1);
+    CHECK(emphasized(model_id, 0));
+    CHECK(emphasized(component_id, 1));
+    CHECK_FALSE(emphasized(mesh_node_id, 2));
+
+    model.removeModel(model_id);
+    pumpEvents();
+}
+
+TEST_CASE("Actual QML deletes the selected object tree node", "[QML][tree][selection][delete]")
+{
+    application();
+    QmlFixture f;
+    auto& model = *f.manager->getModelManager();
+    model.setUndoRecorder(nullptr);
+    auto* tree_model = f.tree->findChild<TreeModel*>();
+    auto* tree_view_object = f.tree->findChild<QObject*>("objectTreeView");
+    auto* selection_state = f.selection_state;
+    REQUIRE(tree_model);
+    REQUIRE(tree_view_object);
+    REQUIRE(selection_state);
+    auto* selection_model = tree_view_object->property("selectionModel").value<QItemSelectionModel*>();
+    REQUIRE(selection_model);
+
+    ComponentDatas components;
+    auto first = std::make_unique<ComponentData>();
+    first->mesh = std::make_unique<MeshData>();
+    components.push_back(std::move(first));
+    components.push_back(std::make_unique<ComponentData>());
+    const Index model_id = model.addModel("delete fixture", std::move(components));
+    const auto component_ids = model.modelById(model_id)->componentIds();
+    const Index component_id = component_ids[0];
+    REQUIRE(tree_model->refresh());
+
+    const auto select_index = [&](const QModelIndex& index,
+                                  QItemSelectionModel::SelectionFlags flags
+                                  = QItemSelectionModel::ClearAndSelect) {
+        selection_model->setCurrentIndex(index, flags);
+    };
+    const auto delete_selected = [&] {
+        QVariant deleted;
+        REQUIRE(QMetaObject::invokeMethod(f.tree.get(), "deleteSelectedNode",
+            Q_RETURN_ARG(QVariant, deleted)));
+        return deleted.toBool();
+    };
+
+    // 无选中时不执行删除。
+    CHECK_FALSE(delete_selected());
+    const QModelIndex first_component_index = tree_model->findIndexByNodeId(component_ids[0], 1);
+    REQUIRE(first_component_index.isValid());
+    CHECK(model.findComponent(component_ids[0]));
+    CHECK(model.findComponent(component_ids[1]));
+
+    // make current 后删除 Mesh：组件保留，活动对象保留。
+    REQUIRE(QMetaObject::invokeMethod(f.tree.get(), "makeNodeCurrent",
+        Q_ARG(QVariant, component_id), Q_ARG(QVariant, 1), Q_ARG(QVariant, component_id)));
+    const QModelIndex mesh_index = tree_model->index(0, 0, first_component_index);
+    REQUIRE(mesh_index.isValid());
+    const Index mesh_node_id = tree_model->data(mesh_index, TreeModel::NodeIdRole).toInt();
+    select_index(mesh_index);
+    CHECK(delete_selected());
+    CHECK(model.findComponent(component_id));
+    CHECK(model.findComponent(component_id)->mesh == nullptr);
+    CHECK(selection_state->property("activeModelId").toInt() == model_id);
+    CHECK(selection_state->property("activeComponentId").toInt() == component_id);
+    // 等待树结构移除 Mesh 行后，行选择随之失效，重复 Delete 不会删除父组件。
+    REQUIRE(waitForCondition([&] {
+        return !tree_model->findIndexByNodeId(mesh_node_id, 2).isValid();
+    }));
+    CHECK_FALSE(delete_selected());
+    CHECK(model.findComponent(component_id));
+
+    // 删除活动 Component：所属模型保留，活动对象清理。
+    select_index(tree_model->findIndexByNodeId(component_id, 1));
+    CHECK(delete_selected());
+    CHECK(model.findComponent(component_id) == nullptr);
+    CHECK(selection_state->property("activeModelId").toInt() == -1);
+    CHECK(selection_state->property("activeComponentId").toInt() == -1);
+
+    // 删除 Model：模型移除。
+    select_index(tree_model->findIndexByNodeId(model_id, 0));
+    CHECK(delete_selected());
+    CHECK(model.modelById(model_id) == nullptr);
+    CHECK(selection_state->property("activeModelId").toInt() == -1);
+    CHECK(selection_state->property("activeComponentId").toInt() == -1);
+
+    pumpEvents();
 }
 
 TEST_CASE("Actual QML preserves expanded rows across incremental imports and deletes", "[QML][tree]")

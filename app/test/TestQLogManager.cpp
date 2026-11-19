@@ -7,15 +7,25 @@
  */
 #include "QLogManager.h"
 
+#include <QColor>
 #include <QCoreApplication>
+#include <QGuiApplication>
 #include <QLoggingCategory>
 #include <QQmlComponent>
+#include <QQmlContext>
 #include <QQmlEngine>
+#include <QQuickItem>
+#include <QQuickStyle>
 #include <QRegularExpression>
+#include <QTest>
+#include <QVariantMap>
 
+#include <catch2/catch_approx.hpp>
 #include <catch2/catch_test_macros.hpp>
 #include <spdlog/spdlog.h>
 
+#include <algorithm>
+#include <cmath>
 #include <memory>
 
 namespace {
@@ -30,13 +40,15 @@ QString findMessage(const QStringList& messages, const QString& text)
     return QString();
 }
 
-//! @brief 进程内唯一的 QCoreApplication：Catch2 单进程不可重复构造，静态化以兼容后续用例
-QCoreApplication& ensureApplication()
+//! @brief 进程内唯一的离屏 GUI 应用，不创建窗口或图形上下文。
+QGuiApplication& ensureApplication()
 {
+    qputenv("QT_QPA_PLATFORM", "offscreen");
+    qputenv("QT_QUICK_BACKEND", "software");
     static int argc = 1;
     static char app_name[] = "TestQLogManager";
     static char* argv[] = { app_name, nullptr };
-    static QCoreApplication app(argc, argv);
+    static QGuiApplication app(argc, argv);
     return app;
 }
 
@@ -120,4 +132,77 @@ TEST_CASE("QLogManager bridges Qt and QML messages into the log panel")
     REQUIRE(qml_error.contains("[warning]"));
     REQUIRE(qml_error.contains("#1976d2"));
     REQUIRE(qml_error.contains("TestQLogManager.qml"));
+}
+
+TEST_CASE("Output log follows new records only while scrolled to the bottom", "[QML][log][no-window]")
+{
+    ensureApplication();
+    QQuickStyle::setStyle("Fusion");
+    QLogManager manager;
+    for (int i = 0; i < 120; ++i)
+        manager.appendMessage("INFO", QStringLiteral("History record %1").arg(i));
+
+    QQmlEngine engine;
+    engine.rootContext()->setContextProperty("QLogManager", &manager);
+    engine.rootContext()->setContextProperty("Theme", QVariantMap { { "textPrimary", QColor("#263E48") }, { "monoFamily", QStringLiteral("Consolas") }, { "fontSizeCaption", 12 } });
+    QQmlComponent component(&engine, QUrl(QStringLiteral("qrc:/log-ui/OutputLog.qml")));
+    INFO(component.errorString().toStdString());
+    REQUIRE(component.isReady());
+    const std::unique_ptr<QObject> object(component.create());
+    auto* root = qobject_cast<QQuickItem*>(object.get());
+    REQUIRE(root);
+    root->setSize(QSizeF(420, 180));
+
+    // 仅执行布局，不创建窗口或图形上下文。
+    const auto polish = [&] {
+        root->ensurePolished();
+        for (auto* item : root->findChildren<QQuickItem*>())
+            item->ensurePolished();
+    };
+    polish();
+    auto* scroll = root->findChild<QQuickItem*>(QStringLiteral("outputLogScroll"));
+    REQUIRE(scroll);
+    auto* viewport = scroll->property("contentItem").value<QQuickItem*>();
+    REQUIRE(viewport);
+    REQUIRE(QTest::qWaitFor([&] {
+        polish();
+        return viewport->height() > 0 && viewport->property("contentHeight").toReal() > viewport->height();
+    }));
+    const auto bottom = [&] {
+        return viewport->property("originY").toReal()
+            + std::max<qreal>(0, viewport->property("contentHeight").toReal() - viewport->height());
+    };
+    const auto at_bottom = [&] {
+        polish();
+        return std::abs(viewport->property("contentY").toReal() - bottom()) < 1;
+    };
+    REQUIRE(QTest::qWaitFor(at_bottom));
+
+    // 历史文字中的光标位置不能把已滚到底部的日志拉回中间。
+    auto* text_area = root->findChild<QQuickItem*>(QStringLiteral("outputLogText"));
+    REQUIRE(text_area);
+    text_area->setProperty("cursorPosition", text_area->property("length").toInt() / 3);
+    viewport->setProperty("contentY", bottom());
+    REQUIRE(at_bottom());
+    const auto old_height = viewport->property("contentHeight").toReal();
+    manager.appendMessage("WARN", QStringLiteral("New record with wrapping text ").repeated(20));
+    REQUIRE(QTest::qWaitFor([&] {
+        polish();
+        return viewport->property("contentHeight").toReal() > old_height;
+    }));
+    REQUIRE(QTest::qWaitFor(at_bottom));
+
+    // 向上阅读历史时，新记录不应抢走阅读位置。
+    const auto reading_y = bottom() / 3;
+    viewport->setProperty("contentY", reading_y);
+    manager.appendMessage("INFO", "Record while reading history");
+    QCoreApplication::processEvents();
+    polish();
+    CHECK(viewport->property("contentY").toReal() == Catch::Approx(reading_y).margin(1));
+
+    // 回到底部后，连续追加及换行仍保持最新记录可见。
+    viewport->setProperty("contentY", bottom());
+    for (int i = 0; i < 20; ++i)
+        manager.appendMessage("INFO", QStringLiteral("Burst record %1 ").arg(i).repeated(15));
+    REQUIRE(QTest::qWaitFor(at_bottom));
 }
