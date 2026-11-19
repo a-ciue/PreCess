@@ -45,10 +45,17 @@ ColumnLayout {
         let count = histogramCounts.length;
         if (index < 0 || index >= count)
             return "";
-        let lower = formatRangeValue(histogramData.edges[index]);
-        let upper = formatRangeValue(histogramData.edges[index + 1]);
+        let lower = histogramData.edges[index];
+        let upper = histogramData.edges[index + 1];
+        let lowerText = formatRangeValue(lower);
+        let upperText = formatRangeValue(upper);
+        // 真实边界不同但三位显示相同时，提高提示精度以区分两端。
+        if (lower !== upper && lowerText === upperText) {
+            lowerText = String(lower);
+            upperText = String(upper);
+        }
         let closing = index === count - 1 ? "]" : ")";
-        let interval = "[" + lower + ", " + upper + closing;
+        let interval = "[" + lowerText + ", " + upperText + closing;
         if (histogramData.origin !== undefined)
             return qsTr("相对 %1 的偏移：%2\n数量：%3").arg(String(histogramData.origin)).arg(interval).arg(histogramCounts[index]);
         return qsTr("区间：%1\n数量：%2").arg(interval).arg(histogramCounts[index]);
@@ -83,7 +90,7 @@ ColumnLayout {
         return Number.isFinite(value) ? value : null;
     }
 
-    // 仅首次编辑捕获精确的另一端，不从已格式化的输入文本反推数值。
+    // 草稿只记录实际输入的端点，未编辑端从首次编辑时的参数快照取值。
     function editField(lowerField, text) {
         flushPendingRange();
         if (!attributeKey)
@@ -91,8 +98,6 @@ ColumnLayout {
         let edit = draft || {
             key: attributeKey,
             display: displayMode,
-            lower: displayMode ? parameters.displayLower : parameters.mappingLower,
-            upper: displayMode ? parameters.displayUpper : parameters.mappingUpper,
             hasRange: !!metadata.valid,
             minimum: metadata.minimum,
             maximum: metadata.maximum,
@@ -130,15 +135,22 @@ ColumnLayout {
             } : null;
         let lower = edit.lower;
         let upper = edit.upper;
+        // 只限制实际输入的数值，同一属性优先使用最新值域。
+        if (draft && edit.hasRange) {
+            let bounds = edit.key === attributeKey && metadata.valid ? metadata : edit;
+            if (Number.isFinite(lower))
+                lower = Math.min(bounds.maximum, Math.max(bounds.minimum, lower));
+            if (Number.isFinite(upper))
+                upper = Math.min(bounds.maximum, Math.max(bounds.minimum, upper));
+        }
+        // 缺少端点表示没有编辑，null 表示用户输入了无效文本。
+        if (lower === undefined)
+            lower = edit.display ? edit.parameters.displayLower : edit.parameters.mappingLower;
+        if (upper === undefined)
+            upper = edit.display ? edit.parameters.displayUpper : edit.parameters.mappingUpper;
         if (edit.hasRange && (!Number.isFinite(lower) || !Number.isFinite(upper))) {
             rangeError = qsTr("请输入有限数值");
             return false;
-        }
-        // 提交文本时按同一属性的原始值域限幅，属性切走时使用草稿捕获的值域。
-        if (draft && edit.hasRange) {
-            let bounds = edit.key === attributeKey && metadata.valid ? metadata : edit;
-            lower = Math.min(bounds.maximum, Math.max(bounds.minimum, lower));
-            upper = Math.min(bounds.maximum, Math.max(bounds.minimum, upper));
         }
         if (lower !== null && upper !== null && lower > upper) {
             let previous = lower;

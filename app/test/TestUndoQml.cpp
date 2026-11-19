@@ -271,6 +271,12 @@ TEST_CASE("Actual scalar editor completes range actions without intermediate req
         CHECK(upper->property("text").toString() == max_text);
         check(R"JS(editor.histogramBinText(0) === '区间：[0.378, 1]\n数量：1')JS");
 
+        // 三位有效数字发生重合时，悬停仍应区分两个实际边界。
+        check(R"JS(
+            panel.histogramData = {edges:[0.09999,0.1,0.123], counts:[1,2]};
+            editor.histogramBinText(0) === '区间：[0.09999, 0.1)\n数量：1'
+        )JS");
+
         // 只编辑一端时，未编辑端仍使用原始精确值。
         edit_lower("0.4");
         REQUIRE(QMetaObject::invokeMethod(editor,"finishEditing"));
@@ -326,7 +332,7 @@ TEST_CASE("Actual scalar editor completes range actions without intermediate req
               " && JSON.stringify(ranges.parameters(key)) === beforeFold && JSON.stringify(ranges.configuration(key)) === beforeConfig"
               " && JSON.stringify(ranges.activeKeys) === beforeActive && editor.displayMode && editor.histogramLogarithmic");
     }
-    SECTION("folding shifts focus and keeps invalid drafts for reopening")
+    SECTION("folding keeps invalid drafts and applying reveals their error")
     {
         QQuickWindow host;
         auto* panel_item = qobject_cast<QQuickItem*>(panel.get());
@@ -356,10 +362,14 @@ TEST_CASE("Actual scalar editor completes range actions without intermediate req
         settle_updates();
         CHECK_FALSE(editor->property("expanded").toBool());
         CHECK_FALSE(host.isVisible());
-        REQUIRE(QMetaObject::invokeMethod(toggle, "clicked"));
+        auto* apply = panel->findChild<QObject*>("attributeRenderApply");
+        REQUIRE(apply);
+        REQUIRE(apply->property("enabled").toBool());
+        REQUIRE(QMetaObject::invokeMethod(apply, "clicked"));
+        CHECK(editor->property("expanded").toBool());
         CHECK(lower->property("visible").toBool());
         CHECK(lower->property("text").toString() == "-");
-        check("requests.length === 1 && editor.draft !== null");
+        check("requests.length === 1 && editor.draft !== null && editor.rangeError.length > 0");
     }
     SECTION("folding returns height to the framed attribute list")
     {
@@ -493,6 +503,17 @@ TEST_CASE("Actual scalar editor completes range actions without intermediate req
         REQUIRE(QMetaObject::invokeMethod(editor, "finishEditing"));
         check("requests.length === 2 && JSON.stringify(requests[1].configuration.display_range) === '[0.4,0.751234567]'"
               " && JSON.stringify(requests[1].configuration.scalar_range) === '[0.25,0.6]'");
+
+        // 已保存的宽色标只限幅本次键入的一端。
+        REQUIRE(QMetaObject::invokeMethod(mapping, "clicked"));
+        auto saved = f.engine.evaluate(R"JS(
+            ranges.save(key, Object.assign({}, ranges.parameters(key), {mappingLower:-1, mappingUpper:2}));
+            requests = [];
+        )JS");
+        REQUIRE_FALSE(saved.isError());
+        edit_lower("-1");
+        REQUIRE(QMetaObject::invokeMethod(editor, "finishEditing"));
+        check("requests.length === 1 && JSON.stringify(requests[0].configuration.scalar_range) === '[0.25,2]'");
     }
     SECTION("linked reset discards draft and restores both ranges")
     {

@@ -116,8 +116,11 @@ Item {
         if (!canApply())
             return;
         let edit = rangeEditor.takeParameters();
-        if (edit === false)
+        if (edit === false) {
+            // 显式操作被无效草稿阻止时，让用户看到已有错误。
+            rangeEditor.expanded = true;
             return;
+        }
         let attr = selectedAttribute();
         if (modeCombo.currentIndex === 1) {
             refreshRangeMetadata();
@@ -270,8 +273,10 @@ Item {
                         anchors.fill: parent
                         hoverEnabled: true
                         onClicked: {
-                            if (!rangeEditor.finishEditing())
+                            if (!rangeEditor.finishEditing()) {
+                                rangeEditor.expanded = true;
                                 return;
+                            }
                             root.selectedIndex = index;
                             modeCombo.currentIndex = root.inferMode(modelData);
                             root.rememberedAttributes[String(App.selection.activeComponentId)] = {
@@ -320,6 +325,7 @@ Item {
                 onActivated: {
                     if (!rangeEditor.finishEditing()) {
                         currentIndex = root.confirmedMode;
+                        rangeEditor.expanded = true;
                         return;
                     }
                     root.confirmedMode = currentIndex;
