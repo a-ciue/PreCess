@@ -9,14 +9,15 @@
 class ObjMeshIO {
 public:
 	/**
-	 * @brief 从文件加载 OBJ 模型，按 shape(group) 分组拆分为多个组件。
+	 * @brief 从 OBJ 文件加载网格，可选按 g 分组拆分组件。
 	 *
-	 * 每个 shape 生成一个 ComponentData，其 MeshData 自包含：
-	 * 只携带本组面实际引用的顶点（全局点索引重映射为组件内局部点索引）。
+	 * 每个组件仅包含其面引用的顶点。组名末尾的数字保存为组号，前缀作为属性名。
+	 * 一个组件有该属性时，缺少该属性的面填 0。
 	 * @param filename 要加载的文件的路径。
+	 * @param split_groups 是否在各对象内继续按面分组拆分组件。
 	 * @return 加载的组件列表；文件解析失败时返回 std::nullopt。
 	 */
-	static std::optional<ComponentDatas> loadFromFile(const std::filesystem::path& filename);
+	static std::optional<ComponentDatas> loadFromFile(const std::filesystem::path& filename, bool split_groups = true);
 
 	/**
 	 * @brief 将单个 MeshData 保存到指定的输出流（如文件输出流）中。

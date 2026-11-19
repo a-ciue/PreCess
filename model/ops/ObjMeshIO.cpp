@@ -8,7 +8,11 @@
 #include "tiny_obj_loader.h"
 #undef tinyobj
 
+#include <charconv>
+#include <cstdint>
 #include <fstream>
+#include <limits>
+#include <map>
 #include <spdlog/spdlog.h>
 #include <streambuf>
 #include <string_view>
@@ -18,11 +22,47 @@
 static_assert(std::is_same_v<precess_tinyobj::real_t, double>);
 
 namespace {
+//! @brief 提取各组名的数字后缀，同一前缀对应多个编号时填 0。
+std::map<std::string, double> readGroupAttributes(std::string_view groups)
+{
+    constexpr auto max_group_id = std::uint64_t { 1 } << std::numeric_limits<double>::digits;
+    std::map<std::string, double> attributes;
+    // 组名已由读取器用单个空格连接，逐个提取数字后缀。
+    while (!groups.empty()) {
+        const auto name = groups.substr(0, groups.find(' '));
+        groups.remove_prefix(name.size() == groups.size() ? name.size() : name.size() + 1);
+        const auto last_prefix_char = name.find_last_not_of("0123456789");
+        if (last_prefix_char == std::string_view::npos || last_prefix_char + 1 == name.size())
+            continue;
+
+        // 只接受 double 可以连续精确表示的整数范围。
+        const auto suffix_start = last_prefix_char + 1;
+        std::uint64_t id = 0;
+        const auto parsed = std::from_chars(name.data() + suffix_start, name.data() + name.size(), id);
+        if (parsed.ec != std::errc {} || id > max_group_id)
+            continue;
+
+        const auto value = static_cast<double>(id);
+        auto [it, inserted] = attributes.try_emplace(std::string(name.substr(0, suffix_start)), value);
+        if (!inserted && it->second != value)
+            it->second = 0.0;
+    }
+    return attributes;
+}
+
+//! @brief g 分段的所属对象标识及各前缀的组号。
+struct ObjGroup {
+    std::string object_key;
+    std::map<std::string, double> attributes;
+};
+
 //! @brief 为当前对象内的同名组提供相同的解析标识，保留原始名称和行号。
 class ObjGroupInput : public std::streambuf {
 public:
-    explicit ObjGroupInput(std::streambuf& source)
+    //! @brief 包装 OBJ 输入流，按导入模式处理组与对象的归属。
+    ObjGroupInput(std::streambuf& source, bool split_groups)
         : source_(source)
+        , split_groups_(split_groups)
     {
     }
 
@@ -30,6 +70,13 @@ public:
     {
         const auto it = names_.find(key);
         return it == names_.end() ? key : it->second;
+    }
+
+    //! @brief 查询 g 分段的组信息，其他分段没有组信息。
+    const ObjGroup* group(const std::string& key) const
+    {
+        const auto it = groups_.find(key);
+        return it == groups_.end() ? nullptr : &it->second;
     }
 
 private:
@@ -72,7 +119,8 @@ private:
         if (record.front() == 'o') {
             group_keys_.clear();
             current_group_.clear();
-            setSectionLine('o', registerName(record.substr(2)));
+            current_object_ = registerName(record.substr(2));
+            setSectionLine('o', current_object_);
             return;
         }
         if (record.front() != 'g')
@@ -94,12 +142,17 @@ private:
 
         if (group_name.empty()) {
             current_group_.clear();
-            return; // 保留空组声明及 tinyobj 原有的诊断。
+            // 合并模式下，清空组名后的面仍属于当前对象。
+            if (!split_groups_ && !current_object_.empty())
+                setSectionLine('g', current_object_);
+            return;
         }
 
         auto [it, inserted] = group_keys_.try_emplace(std::move(group_name));
-        if (inserted)
+        if (inserted) {
             it->second = registerName(it->first);
+            groups_.emplace(it->second, ObjGroup { current_object_, readGroupAttributes(it->first) });
+        }
         if (it->second == current_group_) {
             line_.clear(); // 保留空行，使解析告警仍对应原始文件的行号。
             return;
@@ -127,11 +180,14 @@ private:
     std::unordered_map<std::string, std::string> names_; // 解析标识 -> 原始对象名或组名
     std::unordered_map<std::string, std::string> group_keys_; // 当前对象内组名 -> 解析标识
     std::string current_group_;
+    std::string current_object_;
+    std::unordered_map<std::string, ObjGroup> groups_; // g 分段的解析标识 -> 组信息
+    bool split_groups_;
     bool first_line_ = true;
 };
 } // namespace
 
-std::optional<ComponentDatas> ObjMeshIO::loadFromFile(const std::filesystem::path& filename)
+std::optional<ComponentDatas> ObjMeshIO::loadFromFile(const std::filesystem::path& filename, bool split_groups)
 {
     const auto file_name = filename.string();
     std::ifstream file(file_name);
@@ -140,7 +196,7 @@ std::optional<ComponentDatas> ObjMeshIO::loadFromFile(const std::filesystem::pat
         return std::nullopt;
     }
 
-    ObjGroupInput group_input(*file.rdbuf());
+    ObjGroupInput group_input(*file.rdbuf(), split_groups);
     std::istream input(&group_input);
     precess_tinyobj::attrib_t attrib;
     std::vector<precess_tinyobj::shape_t> shapes;
@@ -164,8 +220,12 @@ std::optional<ComponentDatas> ObjMeshIO::loadFromFile(const std::filesystem::pat
     for (const auto& shape : shapes) {
         if (shape.mesh.num_face_vertices.empty())
             continue;
-        if (!shape.name.empty()) {
-            auto [it, inserted] = component_by_key.try_emplace(shape.name, component_shapes.size());
+
+        const auto* group = group_input.group(shape.name);
+        // 合并时按已有对象标识归组，空标识代表首个 o 之前的面。
+        const auto& key = !split_groups && group ? group->object_key : shape.name;
+        if (!key.empty() || !split_groups) {
+            auto [it, inserted] = component_by_key.try_emplace(key, component_shapes.size());
             if (!inserted) {
                 component_shapes[it->second].push_back(&shape);
                 continue;
@@ -201,12 +261,29 @@ std::optional<ComponentDatas> ObjMeshIO::loadFromFile(const std::filesystem::pat
                 }
                 mesh_data->face_vertices_offset_.push_back(static_cast<Index>(mesh_data->face_vertices_.size()));
             }
+
+            // 将组号写入这段刚追加的面，属性列中的空档补 0。
+            if (const auto* group = group_input.group(fragment->name)) {
+                const size_t face_count = mesh_data->face_vertices_offset_.size() - 1;
+                const size_t first_face = face_count - mesh.num_face_vertices.size();
+                for (const auto& [name, value] : group->attributes) {
+                    auto& values = mesh_data->face_attributes_[name];
+                    values.resize(first_face);
+                    values.resize(face_count, value);
+                }
+            }
         }
         mesh_data->vertex_count_ = static_cast<Index>(mesh_data->vertex_positions_.size());
 
+        // 已出现的属性列补齐到组件面数。
+        for (auto& [name, values] : mesh_data->face_attributes_)
+            values.resize(mesh_data->face_vertices_offset_.size() - 1);
+
         auto component = std::make_unique<ComponentData>();
         component->id = -1; // 组件 id 由系统入池时分配
-        const auto name = group_input.originalName(fragments.front()->name);
+        const auto& key = fragments.front()->name;
+        const auto* group = group_input.group(key);
+        const auto name = group_input.originalName(!split_groups && group ? group->object_key : key);
         component->name = name.empty()
             ? "Comp_" + std::to_string(result.size())
             : std::string(name);
