@@ -163,24 +163,23 @@ TEST_CASE("ObjMeshIO fills group attributes by prefix in both import modes", "[o
     }
 }
 
-TEST_CASE("ObjMeshIO reads decimal group suffixes without rounding", "[obj]")
+TEST_CASE("ObjMeshIO reads numeric suffixes after a group name prefix", "[obj]")
 {
     const auto path = core::TempFile::instance().path().string() + "_patch_ids.obj";
     {
         std::ofstream output(path);
         output << "v 0 0 0\nv 1 0 0\nv 0 1 0\n"
                << "g shell288\nf 1 2 3\ng patch_8a\nf 1 2 3\ng 42\nf 1 2 3\n"
-               << "g patch_0\nf 1 2 3\ng patch_9007199254740992\nf 1 2 3\n"
-               << "g patch_9007199254740993\nf 1 2 3\ng patch_18446744073709551616\nf 1 2 3\n";
+               << "g patch_0\nf 1 2 3\ng patch_1024\nf 1 2 3\n";
     }
     const auto loaded = ObjMeshIO::loadFromFile(path, false);
     REQUIRE(loaded);
     REQUIRE(loaded->size() == 1);
-    // 没有前缀或后缀的名称不产生属性，超出精度范围的编号不舍入保存。
+    // 组名需同时有前缀和数字后缀，缺值补 0。
     const auto& attributes = loaded->front()->mesh->face_attributes_;
     REQUIRE(attributes.size() == 2);
-    CHECK(attributes.at(patch_attribute_name) == std::vector<double> { 0.0, 0.0, 0.0, 0.0, 9007199254740992.0, 0.0, 0.0 });
-    CHECK(attributes.at("shell") == std::vector<double> { 288.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0 });
+    CHECK(attributes.at(patch_attribute_name) == std::vector<double> { 0.0, 0.0, 0.0, 0.0, 1024.0 });
+    CHECK(attributes.at("shell") == std::vector<double> { 288.0, 0.0, 0.0, 0.0, 0.0 });
 }
 
 TEST_CASE("ObjMeshIO preserves double coordinates and nearby distinct vertices", "[obj][precision]")

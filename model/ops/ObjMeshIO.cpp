@@ -8,13 +8,11 @@
 #include "tiny_obj_loader.h"
 #undef tinyobj
 
-#include <charconv>
-#include <cstdint>
 #include <fstream>
-#include <limits>
 #include <map>
 #include <spdlog/spdlog.h>
 #include <streambuf>
+#include <string>
 #include <string_view>
 #include <type_traits>
 #include <unordered_map>
@@ -25,7 +23,6 @@ namespace {
 //! @brief 提取各组名的数字后缀，同一前缀对应多个编号时填 0。
 std::map<std::string, double> readGroupAttributes(std::string_view groups)
 {
-    constexpr auto max_group_id = std::uint64_t { 1 } << std::numeric_limits<double>::digits;
     std::map<std::string, double> attributes;
     // 组名已由读取器用单个空格连接，逐个提取数字后缀。
     while (!groups.empty()) {
@@ -35,14 +32,8 @@ std::map<std::string, double> readGroupAttributes(std::string_view groups)
         if (last_prefix_char == std::string_view::npos || last_prefix_char + 1 == name.size())
             continue;
 
-        // 只接受 double 可以连续精确表示的整数范围。
         const auto suffix_start = last_prefix_char + 1;
-        std::uint64_t id = 0;
-        const auto parsed = std::from_chars(name.data() + suffix_start, name.data() + name.size(), id);
-        if (parsed.ec != std::errc {} || id > max_group_id)
-            continue;
-
-        const auto value = static_cast<double>(id);
+        const auto value = std::stod(std::string(name.substr(suffix_start)));
         auto [it, inserted] = attributes.try_emplace(std::string(name.substr(0, suffix_start)), value);
         if (!inserted && it->second != value)
             it->second = 0.0;
