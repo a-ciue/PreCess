@@ -23,7 +23,7 @@ Item {
             valid: false,
             rangeAvailable: false
         })
-    property var histogramCounts: []
+    property var histogramData: ({})
     readonly property var currentRange: rangeState ? rangeState.parameters(selectedKey) : ({
             valid: false
         })
@@ -38,11 +38,11 @@ Item {
         selectedKey = attr && rangeState ? rangeState.ensure(App.selection.activeComponentId, attr.name, rangeMetadata) : "";
     }
 
-    // 开关、属性身份和源数据通知触发查询，元信息刷新及重复应用不重新统计。
+    // 在选中项和显示状态稳定后统计，避免同一次切换触发多次查询。
     function refreshHistogram() {
         let attr = selectedAttribute();
         let window = rangeState ? rangeState.renderWindow : null;
-        histogramCounts = rangeEditor.expanded && rangeMetadata.valid && attr && window ? window.scalarHistogramInfo(App.selection.activeComponentId, attr.name) : [];
+        histogramData = rangeEditor.visible && rangeEditor.expanded && rangeMetadata.valid && attr && window ? window.scalarHistogramInfo(App.selection.activeComponentId, attr.name) : ({});
     }
 
     // 普通目录刷新恢复操作位置，同一属性的输入草稿由编辑器继续保留。
@@ -343,8 +343,9 @@ Item {
                 attributeKey: root.selectedKey
                 parameters: root.currentRange
                 metadata: root.rangeMetadata
-                histogramCounts: root.histogramCounts
-                onExpandedChanged: root.refreshHistogram()
+                histogramData: root.histogramData
+                onExpandedChanged: Qt.callLater(root.refreshHistogram)
+                onVisibleChanged: Qt.callLater(root.refreshHistogram)
                 onParametersEdited: function (key, parameters) {
                     if (root.rangeState)
                         root.rangeState.update(key, parameters);
@@ -483,7 +484,7 @@ Item {
             if (component_id !== App.selection.activeComponentId)
                 return;
             root.refreshRangeMetadata();
-            root.refreshHistogram();
+            Qt.callLater(root.refreshHistogram);
         }
     }
 
@@ -508,6 +509,6 @@ Item {
         }
     }
 
-    onSelectedKeyChanged: refreshHistogram()
+    onSelectedKeyChanged: Qt.callLater(refreshHistogram)
     Component.onCompleted: refreshAttributes()
 }

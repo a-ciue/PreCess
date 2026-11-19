@@ -5,7 +5,9 @@
 #include <algorithm>
 #include <atomic>
 #include <cmath>
+#include <cstdlib>
 #include <limits>
+#include <numeric>
 #include <spdlog/spdlog.h>
 #include <stdexcept>
 #include <vtkAOSDataArrayTemplate.h>
@@ -29,6 +31,49 @@
 
 namespace {
 std::atomic_uint64_t next_mesh_generation { 0 };
+
+/** @brief 保留原始两端值，内部选择三位有效数字的十进制等间隔刻度。 */
+std::vector<double> decimalHistogramEdges(double lower, double upper, size_t max_bins)
+{
+    const double step_hint = (upper - lower) / max_bins;
+    if (!std::isnormal(step_hint))
+        return { };
+    const int exponent = static_cast<int>(std::floor(std::log10(step_hint))) - 1;
+    const double unit = std::pow(10.0, exponent);
+    const double low_tick = lower / unit;
+    const double high_tick = upper / unit;
+    // 大基值上的窄分布改由调用方用相对偏移表示。
+    if (std::max(std::abs(low_tick), std::abs(high_tick)) > 1e15)
+        return { };
+
+    // 只要求内部刻度简短，两端直接采用真实值，首尾箱可以较短。
+    for (const int step : { 10, 20, 25, 50, 100 }) {
+        std::vector<double> edges { lower };
+        const double first = std::floor(low_tick / step);
+        const double last = std::ceil(high_tick / step);
+        for (double index = first; index <= last; ++index) {
+            const auto tick = static_cast<std::int64_t>(index) * step;
+            // 按十进制读取，避免浮点乘加产生冗长尾数。
+            const double edge = std::strtod((std::to_string(tick) + "e" + std::to_string(exponent)).c_str(), nullptr);
+            if (edge <= lower || edge >= upper)
+                continue;
+            auto significant = tick;
+            while (significant != 0 && significant % 10 == 0)
+                significant /= 10;
+            if (std::abs(significant) >= 1000) {
+                edges.clear();
+                break;
+            }
+            edges.push_back(edge);
+        }
+        if (edges.empty())
+            continue;
+        edges.push_back(upper);
+        if (edges.size() - 1 <= max_bins)
+            return edges;
+    }
+    return { };
+}
 
 /** @brief 只复制数据集包装；坐标、属性和连通性数组在发布后只读共享。 */
 vtkSmartPointer<vtkPolyData> publishPolyData(vtkPolyData* input)
@@ -486,28 +531,54 @@ std::optional<std::array<double, 2>> MeshPipelineData::scalarRange(const std::st
     return range;
 }
 
-std::vector<vtkIdType> MeshPipelineData::scalarHistogram(const std::string& attribute)
+std::optional<ScalarHistogram> MeshPipelineData::scalarHistogram(const std::string& attribute)
 {
     assertOwnerThread();
     const auto range = scalarRange(attribute);
     if (!range)
-        return { };
+        return std::nullopt;
     auto* values = scalarValues(attribute).values;
-    std::vector<vtkIdType> counts(32, 0);
     const auto [lower, upper] = *range;
-    // 正常值域直接相减以保留窄区间精度；仅差值溢出时减半，常量集中在中间一箱。
-    const bool halve = !std::isfinite(upper - lower);
-    const double start = halve ? lower / 2 : lower;
-    const double span = halve ? upper / 2 - start : upper - lower;
+    constexpr size_t max_bins = 32;
+    ScalarHistogram result;
+    if (lower == upper) {
+        result.edges = { lower, upper };
+    } else {
+        result.edges = decimalHistogramEdges(lower, upper, max_bins);
+        const double span = upper - lower;
+        if (result.edges.empty() && std::isfinite(span)) {
+            result.edges = decimalHistogramEdges(0.0, span, max_bins);
+            if (!result.edges.empty())
+                result.origin = lower;
+        }
+
+        // 十进制刻度无法覆盖的极端值域保留可表示的边界。
+        if (result.edges.empty()) {
+            const double midpoint = std::midpoint(lower, upper);
+            result.edges.resize(max_bins + 1);
+            for (size_t i = 0; i <= max_bins; ++i) {
+                const double fraction = static_cast<double>(i) / max_bins;
+                result.edges[i] = fraction <= 0.5 ? std::lerp(lower, midpoint, fraction * 2)
+                                                 : std::lerp(midpoint, upper, fraction * 2 - 1);
+            }
+            result.edges.erase(std::unique(result.edges.begin(), result.edges.end()), result.edges.end());
+        }
+    }
+    result.counts.resize(result.edges.size() - 1);
+
+    // 比较同一套内部边界，等于边界的样本进入右箱；最大值留在最后一箱。
+    const auto first_boundary = result.edges.begin() + 1;
+    const auto last_boundary = result.edges.end() - 1;
     for (vtkIdType id = 0; id < values->GetNumberOfTuples(); ++id) {
-        const double value = values->GetComponent(id, 0);
+        double value = values->GetComponent(id, 0);
         if (!std::isfinite(value))
             continue;
-        const double position = lower == upper ? 0.5 : ((halve ? value / 2 : value) - start) / span;
-        const auto bin = std::min(counts.size() - 1, static_cast<size_t>(position * counts.size()));
-        ++counts[bin];
+        if (result.origin)
+            value -= *result.origin;
+        const auto bin = std::upper_bound(first_boundary, last_boundary, value) - first_boundary;
+        ++result.counts[bin];
     }
-    return counts;
+    return result;
 }
 
 void MeshPipelineData::setScalarConfig(std::optional<ScalarDisplayConfig> config)

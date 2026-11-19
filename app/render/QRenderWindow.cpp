@@ -1032,16 +1032,26 @@ QVariantList QRenderWindow::scalarRangeInfo(Index component_id, const QString& a
     return { (*original)[0], (*original)[1] };
 }
 
-QVariantList QRenderWindow::scalarHistogramInfo(Index component_id, const QString& attribute)
+QVariantMap QRenderWindow::scalarHistogramInfo(Index component_id, const QString& attribute)
 {
     const auto pipeline = mesh_pipeline_data_.find(component_id);
     if (pipeline == mesh_pipeline_data_.end())
         return { };
-    const auto counts = pipeline->second->scalarHistogram(attribute.toStdString());
-    QVariantList result;
-    result.reserve(counts.size());
-    for (const auto count : counts)
-        result.append(QVariant::fromValue(static_cast<qlonglong>(count)));
+    const auto histogram = pipeline->second->scalarHistogram(attribute.toStdString());
+    if (!histogram)
+        return { };
+
+    QVariantList counts;
+    counts.reserve(histogram->counts.size());
+    for (const auto count : histogram->counts)
+        counts.append(QVariant::fromValue(static_cast<qlonglong>(count)));
+    QVariantList edges;
+    edges.reserve(histogram->edges.size());
+    for (const auto edge : histogram->edges)
+        edges.append(edge);
+    QVariantMap result { { "counts", counts }, { "edges", edges } };
+    if (histogram->origin)
+        result.insert("origin", *histogram->origin);
     return result;
 }
 

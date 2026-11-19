@@ -5,6 +5,7 @@
 #include "MakeMeshDataVtk.h"
 #include "MeshPipelineData.h"
 #include <catch2/catch_test_macros.hpp>
+#include <cmath>
 #include <limits>
 #include <numeric>
 #include <stdexcept>
@@ -38,12 +39,14 @@ TEST_CASE("Scalar histogram uses original finite values and refreshes with sourc
     mesh.face_attributes_["value"] = { -1.0, 0.0, 1.0, std::numeric_limits<double>::quiet_NaN(), std::numeric_limits<double>::infinity() };
     MeshPipelineData pipeline;
     pipeline.loadModelData(MakeMeshDataVtk(mesh));
-    const auto counts = pipeline.scalarHistogram("value");
-    REQUIRE(counts.size() == 32);
+    const auto histogram = pipeline.scalarHistogram("value");
+    REQUIRE(histogram);
+    const auto& counts = histogram->counts;
+    REQUIRE(counts.size() == 20);
     CHECK(std::accumulate(counts.begin(), counts.end(), vtkIdType { 0 }) == 3);
-    CHECK(counts[0] == 1);
-    CHECK(counts[16] == 1);
-    CHECK(counts[31] == 1);
+    CHECK(counts.front() == 1);
+    CHECK(counts[10] == 1);
+    CHECK(counts.back() == 1);
     pipeline.setScalarConfig(ScalarDisplayConfig { "value", std::array { -2.0, 2.0 }, std::array { -0.1, 0.1 } });
     pipeline.hideFaces({ 0 });
     vtkNew<vtkPlane> plane;
@@ -51,15 +54,52 @@ TEST_CASE("Scalar histogram uses original finite values and refreshes with sourc
     plane->SetNormal(1.0, 0.0, 0.0);
     pipeline.setClipPlane(plane);
     pipeline.createSnapshot();
-    CHECK(pipeline.scalarHistogram("value") == counts);
+    const auto filtered = pipeline.scalarHistogram("value");
+    REQUIRE(filtered);
+    CHECK(filtered->counts == counts);
+    CHECK(filtered->edges == histogram->edges);
+
+    // 边界前后相邻的双精度值按实际提示边界归箱，最大值包含在最后一箱。
+    const double boundary = 0.05;
+    mesh.face_attributes_["value"] = { 0.0, std::nextafter(boundary, 0.0), boundary, std::nextafter(boundary, 1.0), 1.0 };
+    pipeline.loadModelData(MakeMeshDataVtk(mesh));
+    const auto boundary_histogram = pipeline.scalarHistogram("value");
+    REQUIRE(boundary_histogram);
+    CHECK(boundary_histogram->edges[1] == boundary);
+    CHECK(boundary_histogram->counts.front() == 2);
+    CHECK(boundary_histogram->counts[1] == 2);
+    CHECK(boundary_histogram->edges.back() == 1.0);
+    CHECK(boundary_histogram->counts.back() == 1);
+
+    // 两端使用原始极值，只有内部刻度等间隔，首尾箱允许较短。
+    mesh.face_attributes_["value"] = { -0.1234, 0.0, 0.23234, 0.45678, 0.87654 };
+    pipeline.loadModelData(MakeMeshDataVtk(mesh));
+    const auto expanded = pipeline.scalarHistogram("value");
+    REQUIRE(expanded);
+    CHECK(expanded->edges.front() == -0.1234);
+    CHECK(expanded->edges[1] == -0.1);
+    CHECK(expanded->edges[2] == -0.05);
+    CHECK(expanded->edges.back() == 0.87654);
+    CHECK(pipeline.scalarRange("value") == std::optional(std::array { -0.1234, 0.87654 }));
+    CHECK(std::accumulate(expanded->counts.begin(), expanded->counts.end(), vtkIdType { 0 }) == 5);
+
+    // 0.005 步长的中间边界需要四位有效数字，改用 0.01 后再按实际边界归箱。
+    mesh.face_attributes_["value"] = { 1.001, 1.009, 1.01, 1.02, 1.101 };
+    pipeline.loadModelData(MakeMeshDataVtk(mesh));
+    const auto short_edges = pipeline.scalarHistogram("value");
+    REQUIRE(short_edges);
+    CHECK(short_edges->edges.front() == 1.001);
+    CHECK(short_edges->edges[1] == 1.01);
+    CHECK(short_edges->edges.back() == 1.101);
+    CHECK(short_edges->counts.front() == 2);
     // 点、边、体同样统计原始数组，不限于质量指标或可筛选的实体域。
     for (const auto* attribute : { "point_value", "edge_value", "solid_value" }) {
         const auto histogram = pipeline.scalarHistogram(attribute);
-        REQUIRE(histogram.size() == 32);
-        CHECK(std::accumulate(histogram.begin(), histogram.end(), vtkIdType { 0 }) > 0);
+        REQUIRE(histogram);
+        CHECK(std::accumulate(histogram->counts.begin(), histogram->counts.end(), vtkIdType { 0 }) > 0);
     }
-    CHECK(pipeline.scalarHistogram("missing").empty());
-    CHECK(pipeline.scalarHistogram("f_color_3").empty());
+    CHECK_FALSE(pipeline.scalarHistogram("missing"));
+    CHECK_FALSE(pipeline.scalarHistogram("f_color_3"));
     // 大数值窄区间保留分箱精度，跨正负极值时仍能避免差值溢出。
     const double largest = std::numeric_limits<double>::max();
     for (const auto& values : { std::vector { 1e16, 1e16 + 2, 1e16 + 4, 1e16 + 6, 1e16 + 8 },
@@ -69,18 +109,31 @@ TEST_CASE("Scalar histogram uses original finite values and refreshes with sourc
         std::vector<vtkIdType> expected(32, 0);
         for (const auto bin : { 0, 8, 16, 24, 31 })
             expected[bin] = 1;
-        CHECK(pipeline.scalarHistogram("value") == expected);
+        const auto result = pipeline.scalarHistogram("value");
+        REQUIRE(result);
+        CHECK(result->counts == expected);
+        CHECK(result->origin.has_value() == (values.front() == 1e16));
+        if (result->origin)
+            CHECK(result->edges[1] == 0.25);
     }
-    // 源数据更新后重新统计；常量集中到中间，全部缺失则没有可显示的分布。
-    mesh.face_attributes_["value"].assign(5, -7.0);
+    const double tiny = std::numeric_limits<double>::denorm_min();
+    mesh.face_attributes_["value"] = { 0.0, 0.0, tiny, tiny, tiny };
+    pipeline.loadModelData(MakeMeshDataVtk(mesh));
+    const auto subnormal = pipeline.scalarHistogram("value");
+    REQUIRE(subnormal);
+    CHECK(subnormal->edges == std::vector<double> { 0.0, tiny });
+    CHECK(subnormal->counts == std::vector<vtkIdType> { 5 });
+
+    // 源数据更新后重新统计；常量只返回一箱，全部缺失则没有可显示的分布。
+    mesh.face_attributes_["value"].assign(5, -7.12345);
     pipeline.loadModelData(MakeMeshDataVtk(mesh));
     const auto constant = pipeline.scalarHistogram("value");
-    REQUIRE(constant.size() == 32);
-    CHECK(constant[16] == 5);
-    CHECK(std::accumulate(constant.begin(), constant.end(), vtkIdType { 0 }) == 5);
+    REQUIRE(constant);
+    CHECK(constant->edges == std::vector<double> { -7.12345, -7.12345 });
+    CHECK(constant->counts == std::vector<vtkIdType> { 5 });
     mesh.face_attributes_["value"].assign(5, std::numeric_limits<double>::quiet_NaN());
     pipeline.loadModelData(MakeMeshDataVtk(mesh));
-    CHECK(pipeline.scalarHistogram("value").empty());
+    CHECK_FALSE(pipeline.scalarHistogram("value"));
 }
 
 TEST_CASE("Scalar range filtering preserves original IDs and manual hiding", "[scalar-range]")
