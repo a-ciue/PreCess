@@ -171,6 +171,8 @@ TestObjMeshIO.cpp 的引用(Include)关系图:</div>
 <tr class="memitem:a7ae6c045462b3257d962995bd3a43e74" id="r_a7ae6c045462b3257d962995bd3a43e74"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a7ae6c045462b3257d962995bd3a43e74">REQUIRE</a> (loaded.has_value())</td></tr>
 <tr class="memitem:a75e2ee328f3181dcffb7abb0451c0510" id="r_a75e2ee328f3181dcffb7abb0451c0510"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a75e2ee328f3181dcffb7abb0451c0510">REQUIRE</a> (<a class="el" href="#a70067fb23f4ab19d70f4e53c9465eec9">loaded</a>-&gt;size()==1)</td></tr>
 <tr class="memitem:a924fe3c9b489f5f0cdcd711c65b43abd" id="r_a924fe3c9b489f5f0cdcd711c65b43abd"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a924fe3c9b489f5f0cdcd711c65b43abd">REQUIRE</a> ((*<a class="el" href="#a70067fb23f4ab19d70f4e53c9465eec9">loaded</a>)[0]-&gt;<a class="el" href="TestComponentModel_8cpp.html#a4f5452c5c19395231dec92c40e3d10e1">name</a>==&quot;alpha&quot;)</td></tr>
+<tr class="memitem:a7426063ec98c253ab005a450c6bc1d79" id="r_a7426063ec98c253ab005a450c6bc1d79"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a7426063ec98c253ab005a450c6bc1d79">TEST_CASE</a> (&quot;ObjMeshIO fills group attributes by prefix in both import modes&quot;, &quot;[obj]&quot;)</td></tr>
+<tr class="memitem:ad102076bcce0734c965ecb48a5ff54d1" id="r_ad102076bcce0734c965ecb48a5ff54d1"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ad102076bcce0734c965ecb48a5ff54d1">TEST_CASE</a> (&quot;ObjMeshIO reads numeric suffixes after a group <a class="el" href="TestComponentModel_8cpp.html#a4f5452c5c19395231dec92c40e3d10e1">name</a> prefix&quot;, &quot;[obj]&quot;)</td></tr>
 <tr class="memitem:ab1ba3dea37c25beab7f933bd561535b2" id="r_ab1ba3dea37c25beab7f933bd561535b2"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ab1ba3dea37c25beab7f933bd561535b2">TEST_CASE</a> (&quot;ObjMeshIO preserves double coordinates and nearby distinct vertices&quot;, &quot;[obj][precision]&quot;)</td></tr>
 <tr class="memitem:a1204aafd1302f21d1579def4e644f2ed" id="r_a1204aafd1302f21d1579def4e644f2ed"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a1204aafd1302f21d1579def4e644f2ed">TEST_CASE</a> (&quot;ObjMeshIO keeps repeated declarations of the active group in one component&quot;)</td></tr>
 <tr class="memitem:aa5dddfb40f9ca281b4e145f5f1984b29" id="r_aa5dddfb40f9ca281b4e145f5f1984b29"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#aa5dddfb40f9ca281b4e145f5f1984b29">TEST_CASE</a> (&quot;ObjMeshIO merges recurring groups within one object&quot;)</td></tr>
@@ -180,7 +182,7 @@ TestObjMeshIO.cpp 的引用(Include)关系图:</div>
 <tr class="heading"><td colspan="2"><h2 id="header-var-members" class="groupheader"><a id="var-members" name="var-members"></a>
 变量</h2></td></tr>
 <tr class="memitem:ab972f994f7bb41f885fdf2268e4a8799" id="r_ab972f994f7bb41f885fdf2268e4a8799"><td class="memItemLeft" align="right" valign="top">const auto&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ab972f994f7bb41f885fdf2268e4a8799">path</a> = <a class="el" href="classcore_1_1TempFile.html#ad7b165d514fabed96df608dab8622fd9">core::TempFile::instance</a>().path().string() + &quot;_skip.obj&quot;</td></tr>
-<tr class="memitem:a70067fb23f4ab19d70f4e53c9465eec9" id="r_a70067fb23f4ab19d70f4e53c9465eec9"><td class="memItemLeft" align="right" valign="top">auto&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a70067fb23f4ab19d70f4e53c9465eec9">loaded</a> = <a class="el" href="classObjMeshIO.html#a40e4e86597efe759ff1b4ff89a2279f9">ObjMeshIO::loadFromFile</a>(<a class="el" href="#ab972f994f7bb41f885fdf2268e4a8799">path</a>)</td></tr>
+<tr class="memitem:a70067fb23f4ab19d70f4e53c9465eec9" id="r_a70067fb23f4ab19d70f4e53c9465eec9"><td class="memItemLeft" align="right" valign="top">auto&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a70067fb23f4ab19d70f4e53c9465eec9">loaded</a> = <a class="el" href="classObjMeshIO.html#a13e1b9fe61bf1379935ffa841df40f3d">ObjMeshIO::loadFromFile</a>(<a class="el" href="#ab972f994f7bb41f885fdf2268e4a8799">path</a>)</td></tr>
 </table>
 <a name="details" id="details"></a><h2 id="header-details" class="groupheader">详细描述</h2>
 <div class="textblock"><p><a class="el" href="classObjMeshIO.html">ObjMeshIO</a> 组件级读写（ComponentDatas）回环测试 </p>
@@ -270,8 +272,29 @@ TestObjMeshIO.cpp 的引用(Include)关系图:</div>
 
 </div>
 </div>
+<a id="a7426063ec98c253ab005a450c6bc1d79" name="a7426063ec98c253ab005a450c6bc1d79"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a7426063ec98c253ab005a450c6bc1d79">&#9670;&#160;</a></span>TEST_CASE() <span class="overload">[1/8]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">TEST_CASE </td>
+          <td>(</td>
+          <td class="paramtype">&quot;ObjMeshIO fills group attributes by prefix in both import modes&quot;</td>          <td class="paramname"><span class="paramname"><em></em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">&quot;&quot;</td>          <td class="paramname"><span class="paramname"><em></em></span>[obj]&#160;)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
 <a id="afae8b704ae2fe4dd704cb8cdca18a1d4" name="afae8b704ae2fe4dd704cb8cdca18a1d4"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#afae8b704ae2fe4dd704cb8cdca18a1d4">&#9670;&#160;</a></span>TEST_CASE() <span class="overload">[1/6]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#afae8b704ae2fe4dd704cb8cdca18a1d4">&#9670;&#160;</a></span>TEST_CASE() <span class="overload">[2/8]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -288,7 +311,7 @@ TestObjMeshIO.cpp 的引用(Include)关系图:</div>
 </div>
 </div>
 <a id="a1204aafd1302f21d1579def4e644f2ed" name="a1204aafd1302f21d1579def4e644f2ed"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a1204aafd1302f21d1579def4e644f2ed">&#9670;&#160;</a></span>TEST_CASE() <span class="overload">[2/6]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#a1204aafd1302f21d1579def4e644f2ed">&#9670;&#160;</a></span>TEST_CASE() <span class="overload">[3/8]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -305,7 +328,7 @@ TestObjMeshIO.cpp 的引用(Include)关系图:</div>
 </div>
 </div>
 <a id="a8ed0268fee006e2f810dc9199c9c137e" name="a8ed0268fee006e2f810dc9199c9c137e"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a8ed0268fee006e2f810dc9199c9c137e">&#9670;&#160;</a></span>TEST_CASE() <span class="overload">[3/6]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#a8ed0268fee006e2f810dc9199c9c137e">&#9670;&#160;</a></span>TEST_CASE() <span class="overload">[4/8]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -322,7 +345,7 @@ TestObjMeshIO.cpp 的引用(Include)关系图:</div>
 </div>
 </div>
 <a id="aa5dddfb40f9ca281b4e145f5f1984b29" name="aa5dddfb40f9ca281b4e145f5f1984b29"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#aa5dddfb40f9ca281b4e145f5f1984b29">&#9670;&#160;</a></span>TEST_CASE() <span class="overload">[4/6]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#aa5dddfb40f9ca281b4e145f5f1984b29">&#9670;&#160;</a></span>TEST_CASE() <span class="overload">[5/8]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -339,7 +362,7 @@ TestObjMeshIO.cpp 的引用(Include)关系图:</div>
 </div>
 </div>
 <a id="ab1ba3dea37c25beab7f933bd561535b2" name="ab1ba3dea37c25beab7f933bd561535b2"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ab1ba3dea37c25beab7f933bd561535b2">&#9670;&#160;</a></span>TEST_CASE() <span class="overload">[5/6]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#ab1ba3dea37c25beab7f933bd561535b2">&#9670;&#160;</a></span>TEST_CASE() <span class="overload">[6/8]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -359,8 +382,29 @@ TestObjMeshIO.cpp 的引用(Include)关系图:</div>
 
 </div>
 </div>
+<a id="ad102076bcce0734c965ecb48a5ff54d1" name="ad102076bcce0734c965ecb48a5ff54d1"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ad102076bcce0734c965ecb48a5ff54d1">&#9670;&#160;</a></span>TEST_CASE() <span class="overload">[7/8]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">TEST_CASE </td>
+          <td>(</td>
+          <td class="paramtype">&quot;ObjMeshIO reads numeric suffixes after a group <a class="el" href="TestComponentModel_8cpp.html#a4f5452c5c19395231dec92c40e3d10e1">name</a> prefix&quot;</td>          <td class="paramname"><span class="paramname"><em></em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">&quot;&quot;</td>          <td class="paramname"><span class="paramname"><em></em></span>[obj]&#160;)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
 <a id="a46778bc5da5bf226874a103884abbe93" name="a46778bc5da5bf226874a103884abbe93"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a46778bc5da5bf226874a103884abbe93">&#9670;&#160;</a></span>TEST_CASE() <span class="overload">[6/6]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#a46778bc5da5bf226874a103884abbe93">&#9670;&#160;</a></span>TEST_CASE() <span class="overload">[8/8]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -384,7 +428,7 @@ TestObjMeshIO.cpp 的引用(Include)关系图:</div>
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">auto loaded = <a class="el" href="classObjMeshIO.html#a40e4e86597efe759ff1b4ff89a2279f9">ObjMeshIO::loadFromFile</a>(<a class="el" href="#ab972f994f7bb41f885fdf2268e4a8799">path</a>)</td>
+          <td class="memname">auto loaded = <a class="el" href="classObjMeshIO.html#a13e1b9fe61bf1379935ffa841df40f3d">ObjMeshIO::loadFromFile</a>(<a class="el" href="#ab972f994f7bb41f885fdf2268e4a8799">path</a>)</td>
         </tr>
       </table>
 </div><div class="memdoc">

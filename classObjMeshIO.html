@@ -83,8 +83,8 @@ $(function() {
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 id="header-pub-static-methods" class="groupheader"><a id="pub-static-methods" name="pub-static-methods"></a>
 静态 Public 成员函数</h2></td></tr>
-<tr class="memitem:a40e4e86597efe759ff1b4ff89a2279f9" id="r_a40e4e86597efe759ff1b4ff89a2279f9"><td class="memItemLeft" align="right" valign="top">static std::optional&lt; <a class="el" href="ComponentData_8h.html#a728074d968d490d75144bc04c1ef092d">ComponentDatas</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a40e4e86597efe759ff1b4ff89a2279f9">loadFromFile</a> (const std::filesystem::path &amp;filename)</td></tr>
-<tr class="memdesc:a40e4e86597efe759ff1b4ff89a2279f9"><td class="mdescLeft">&#160;</td><td class="mdescRight">从文件加载 OBJ 模型，按 shape(group) 分组拆分为多个组件。  <br /></td></tr>
+<tr class="memitem:a13e1b9fe61bf1379935ffa841df40f3d" id="r_a13e1b9fe61bf1379935ffa841df40f3d"><td class="memItemLeft" align="right" valign="top">static std::optional&lt; <a class="el" href="ComponentData_8h.html#a728074d968d490d75144bc04c1ef092d">ComponentDatas</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a13e1b9fe61bf1379935ffa841df40f3d">loadFromFile</a> (const std::filesystem::path &amp;filename, bool split_groups=true)</td></tr>
+<tr class="memdesc:a13e1b9fe61bf1379935ffa841df40f3d"><td class="mdescLeft">&#160;</td><td class="mdescRight">从 OBJ 文件加载网格，可选按 g 分组拆分组件。  <br /></td></tr>
 <tr class="memitem:a05a01fd73b8e8cbf8f5698395c281d98" id="r_a05a01fd73b8e8cbf8f5698395c281d98"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a05a01fd73b8e8cbf8f5698395c281d98">saveToFile</a> (const <a class="el" href="structMeshData.html">MeshData</a> &amp;mesh, std::ostream &amp;os)</td></tr>
 <tr class="memdesc:a05a01fd73b8e8cbf8f5698395c281d98"><td class="mdescLeft">&#160;</td><td class="mdescRight">将单个 <a class="el" href="structMeshData.html">MeshData</a> 保存到指定的输出流（如文件输出流）中。  <br /></td></tr>
 <tr class="memitem:a08ad07266dc7983359546e023d53cde3" id="r_a08ad07266dc7983359546e023d53cde3"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a08ad07266dc7983359546e023d53cde3">saveToFile</a> (const <a class="el" href="ComponentData_8h.html#a728074d968d490d75144bc04c1ef092d">ComponentDatas</a> &amp;components, std::ostream &amp;os)</td></tr>
@@ -93,8 +93,8 @@ $(function() {
 <tr class="memdesc:a33ef8d1bd3605aabfd23d538ae423326"><td class="mdescLeft">&#160;</td><td class="mdescRight">同上，入参为只读指针视图。  <br /></td></tr>
 </table>
 <a name="doc-func-members" id="doc-func-members"></a><h2 id="header-doc-func-members" class="groupheader">成员函数说明</h2>
-<a id="a40e4e86597efe759ff1b4ff89a2279f9" name="a40e4e86597efe759ff1b4ff89a2279f9"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a40e4e86597efe759ff1b4ff89a2279f9">&#9670;&#160;</a></span>loadFromFile()</h2>
+<a id="a13e1b9fe61bf1379935ffa841df40f3d" name="a13e1b9fe61bf1379935ffa841df40f3d"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a13e1b9fe61bf1379935ffa841df40f3d">&#9670;&#160;</a></span>loadFromFile()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -105,8 +105,12 @@ $(function() {
         <tr>
           <td class="memname">std::optional&lt; <a class="el" href="ComponentData_8h.html#a728074d968d490d75144bc04c1ef092d">ComponentDatas</a> &gt; ObjMeshIO::loadFromFile </td>
           <td>(</td>
-          <td class="paramtype">const std::filesystem::path &amp;</td>          <td class="paramname"><span class="paramname"><em>filename</em></span></td><td>)</td>
+          <td class="paramtype">const std::filesystem::path &amp;</td>          <td class="paramname"><span class="paramname"><em>filename</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
           <td></td>
+          <td class="paramtype">bool</td>          <td class="paramname"><span class="paramname"><em>split_groups</em></span><span class="paramdefsep"> = </span><span class="paramdefval">true</span>&#160;)</td>
         </tr>
       </table>
   </td>
@@ -116,10 +120,11 @@ $(function() {
 </table>
 </div><div class="memdoc">
 
-<p>从文件加载 OBJ 模型，按 shape(group) 分组拆分为多个组件。 </p>
-<p>每个 shape 生成一个 ComponentData，其 <a class="el" href="structMeshData.html">MeshData</a> 自包含： 只携带本组面实际引用的顶点（全局点索引重映射为组件内局部点索引）。 </p><dl class="params"><dt>参数</dt><dd>
+<p>从 OBJ 文件加载网格，可选按 g 分组拆分组件。 </p>
+<p>每个组件仅包含其面引用的顶点。组名末尾的数字保存为组号，前缀作为属性名。 一个组件有该属性时，缺少该属性的面填 0。 </p><dl class="params"><dt>参数</dt><dd>
   <table class="params">
     <tr><td class="paramname">filename</td><td>要加载的文件的路径。 </td></tr>
+    <tr><td class="paramname">split_groups</td><td>是否在各对象内继续按面分组拆分组件。 </td></tr>
   </table>
   </dd>
 </dl>
