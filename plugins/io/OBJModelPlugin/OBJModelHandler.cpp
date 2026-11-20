@@ -16,8 +16,9 @@ namespace systems::io {
 using core::ArgType;
 std::optional<ModelPayload> OBJModelHandler::read_model(const fs::path& path, const std::vector<std::any>& args)
 {
-    // 按 OBJ shape(group) 拆分好的组件列表，失败时返回 std::nullopt
-    auto comps = ObjMeshIO::loadFromFile(path);
+    // 默认合并 g 分组，调用方可显式开启拆分。
+    const bool split_groups = !args.empty() && std::any_cast<bool>(args.front());
+    auto comps = ObjMeshIO::loadFromFile(path, split_groups);
     if (!comps) {
         return std::nullopt;
     }
@@ -60,7 +61,8 @@ void OBJModelHandler::write_components(const ModelLayer& mgr,
 
 std::vector<ArgType> OBJModelHandler::read_args_type() const
 {
-    return {};
+    return { { ArgTypeEnum::Bool, "按 g 分组拆分组件", "false",
+        "关闭时合并分组的面。组名前缀作为面属性名，末尾的数字作为值，缺值填 0。" } };
 }
 
 std::vector<ArgType> OBJModelHandler::write_args_type() const

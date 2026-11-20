@@ -22,6 +22,9 @@
 namespace fs = std::filesystem;
 
 namespace {
+//! @brief OBJ 插件应发布的面组号属性名。
+constexpr char expected_group_attribute_name[] = "patch_";
+
 /**
  * @brief 构造一个仅含表面三角形的最小 MeshData
  *
@@ -148,34 +151,47 @@ TEST_CASE("OBJModelHandler::read_model() - model_name preserved")
     REQUIRE(payload->model_name == out.filename().u8string());
 }
 
-TEST_CASE("OBJModelHandler::read_model() - shapes split into components")
+TEST_CASE("OBJModelHandler::read_model() - optionally splits OBJ groups")
 {
-    // 按 shape(group) 拆分：每个组读为一个独立组件，MeshData 自包含（点索引重映射）
     systems::io::OBJModelHandler io;
     fs::path in = core::TempFile::instance().path().string() + "_groups.obj";
 
     {
         std::ofstream ofs(in);
         ofs << "v 0 0 0\nv 1 0 0\nv 0 1 0\nv 0 0 1\n";
-        ofs << "g first\nf 1 2 3\n";
-        ofs << "g second\nf 2 3 4\nf 1 2 4\n";
+        ofs << "g patch_288\nf 1 2 3\n";
+        ofs << "g patch_376\nf 2 3 4\nf 1 2 4\n";
     }
 
-    std::optional<ModelPayload> payload;
-    REQUIRE_NOTHROW(payload = io.read_model(in, {}));
-    REQUIRE(payload.has_value());
-    REQUIRE(payload->components.size() == 2);
+    SECTION("默认合并面分组并复用共享点")
+    {
+        const auto payload = io.read_model(in, {});
+        REQUIRE(payload.has_value());
+        REQUIRE(payload->components.size() == 1);
+        const auto& mesh = *payload->components[0]->mesh;
+        REQUIRE(mesh.vertex_count_ == 4);
+        REQUIRE(mesh.face_vertices_offset_.size() == 4);
+        CHECK(mesh.face_attributes_.at(expected_group_attribute_name) == std::vector<double> { 288.0, 376.0, 376.0 });
+    }
 
-    const auto& first = payload->components[0];
-    const auto& second = payload->components[1];
-    REQUIRE(first->name == "first");
-    REQUIRE(second->name == "second");
+    SECTION("显式指定按 g 拆分")
+    {
+        const auto payload = io.read_model(in, { true });
+        REQUIRE(payload.has_value());
+        REQUIRE(payload->components.size() == 2);
 
-    // first：1 个面、3 个顶点；second：2 个面、4 个顶点（均为组件内局部点索引）
-    REQUIRE(first->mesh->face_vertices_offset_.size() == 2);
-    REQUIRE(first->mesh->vertex_count_ == 3);
-    REQUIRE(second->mesh->face_vertices_offset_.size() == 3);
-    REQUIRE(second->mesh->vertex_count_ == 4);
+        // 每个组件只持有组内实际引用的顶点，面使用组件内局部索引。
+        const auto& first = payload->components[0];
+        const auto& second = payload->components[1];
+        REQUIRE(first->name == "patch_288");
+        REQUIRE(second->name == "patch_376");
+        REQUIRE(first->mesh->face_vertices_offset_.size() == 2);
+        REQUIRE(first->mesh->vertex_count_ == 3);
+        REQUIRE(second->mesh->face_vertices_offset_.size() == 3);
+        REQUIRE(second->mesh->vertex_count_ == 4);
+        CHECK(first->mesh->face_attributes_.at(expected_group_attribute_name) == std::vector<double> { 288.0 });
+        CHECK(second->mesh->face_attributes_.at(expected_group_attribute_name) == std::vector<double> { 376.0, 376.0 });
+    }
 }
 
 TEST_CASE("OBJModelHandler::write_components() - empty MeshData gracefully")
