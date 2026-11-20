@@ -149,7 +149,7 @@ TEST_CASE("Actual scalar editor completes range actions without intermediate req
     f.engine.globalObject().setProperty("panel", f.engine.newQObject(panel.get()));
     auto setup = f.engine.evaluate(R"JS(
         var requests = [], cancellations = [], histogramRequests = 0;
-        var histogramData = {counts: Array(20).fill(1), edges: Array.from({length:21}, (_, i) => i / 20)};
+        var histogramData = {counts: Array(32).fill(1), edges: Array.from({length:33}, (_, i) => i / 32)};
         ranges.query = {
             getComponentAttriInfo: function() {return [{name:'value', attrType:2, componentCount:1}, {name:'vector', attrType:2, componentCount:3}];},
             scalarHistogramInfo: function() { ++histogramRequests; return histogramData; }
@@ -242,7 +242,7 @@ TEST_CASE("Actual scalar editor completes range actions without intermediate req
         CHECK_FALSE(host.isVisible());
         check("requests.length === 0 && !ranges.parameters(key).filtered");
     }
-    SECTION("range labels fields and tooltips share scalar bar precision")
+    SECTION("range labels use scalar bar precision while hover shows actual edges")
     {
         const double minimum = 0.3777463502849451;
         const double maximum = 0.9998414807984265;
@@ -269,7 +269,7 @@ TEST_CASE("Actual scalar editor completes range actions without intermediate req
         CHECK(original_upper->property("text").toString() == max_text);
         CHECK(lower->property("text").toString() == min_text);
         CHECK(upper->property("text").toString() == max_text);
-        check(R"JS(editor.histogramBinText(0) === '区间：[0.378, 1]\n数量：1')JS");
+        check(R"JS(editor.histogramBinText(0) === '区间：[0.3777463502849451, 0.9998414807984265]\n数量：1')JS");
 
         // 三位有效数字发生重合时，悬停仍应区分两个实际边界。
         check(R"JS(
@@ -424,9 +424,9 @@ TEST_CASE("Actual scalar editor completes range actions without intermediate req
         REQUIRE(viewport);
         CHECK_FALSE(scale->property("checked").toBool());
         CHECK(plot->isVisible());
-        check("histogramRequests === 1 && editor.histogramCounts.length === 20");
-        check(R"JS(editor.histogramBinText(0) === '区间：[0, 0.05)\n数量：1'
-            && editor.histogramBinText(19) === '区间：[0.95, 1]\n数量：1')JS");
+        check("histogramRequests === 1 && editor.histogramCounts.length === 32");
+        check(R"JS(editor.histogramBinText(0) === '区间：[0, 0.03125)\n数量：1'
+            && editor.histogramBinText(31) === '区间：[0.96875, 1]\n数量：1')JS");
 
         REQUIRE(QMetaObject::invokeMethod(display, "clicked"));
         edit_lower("0.4");
@@ -472,48 +472,48 @@ TEST_CASE("Actual scalar editor completes range actions without intermediate req
             if (bar->property("modelData").toDouble() == 1)
                 CHECK(bar->height() > 2);
         }
-        // 窄箱用偏移显示共享边界，小于 0.0001 的刻度使用科学计数法。
+        // 大基值窄域仍按统计用的真实偏移显示相邻箱界。
         f.engine.evaluate("histogramData = {counts:[1,2], edges:[0,0.000025,0.00005], origin:1.234567}");
         REQUIRE(QMetaObject::invokeMethod(viewport, "scalarRangeChanged", Q_ARG(Index, 7)));
         settle_updates();
-        check(R"JS(editor.histogramBinText(0) === '相对 1.234567 的偏移：[0, 2.5e-05)\n数量：1'
-            && editor.histogramBinText(1) === '相对 1.234567 的偏移：[2.5e-05, 5e-05]\n数量：2')JS");
+        check(R"JS(editor.histogramBinText(0) === '相对 1.234567 的偏移：[0, 0.000025)\n数量：1'
+            && editor.histogramBinText(1) === '相对 1.234567 的偏移：[0.000025, 0.00005]\n数量：2')JS");
 
         f.engine.evaluate("histogramData = {}");
         REQUIRE(QMetaObject::invokeMethod(viewport, "scalarRangeChanged", Q_ARG(Index, 7)));
         settle_updates();
         CHECK_FALSE(plot->isVisible());
     }
-    SECTION("text input clamps both range modes to the precise source limits")
+    SECTION("text mapping can exceed the source range while visible cells clamp")
     {
         auto* upper = panel->findChild<QObject*>("scalarRangeUpper");
         REQUIRE(upper);
         REQUIRE(QMetaObject::invokeMethod(link, "clicked"));
         f.engine.evaluate("requests = []");
-        edit_lower("-100");
-        REQUIRE(upper->setProperty("text", "0.6"));
+        edit_lower("-1");
+        REQUIRE(upper->setProperty("text", "2"));
         REQUIRE(QMetaObject::invokeMethod(upper, "textEdited"));
         REQUIRE(QMetaObject::invokeMethod(editor, "finishEditing"));
-        check("requests.length === 1 && JSON.stringify(requests[0].configuration.scalar_range) === '[0.25,0.6]'");
+        check("requests.length === 1 && JSON.stringify(requests[0].configuration.scalar_range) === '[-1,2]'"
+              " && requests[0].configuration.display_range === undefined");
 
         REQUIRE(QMetaObject::invokeMethod(display, "clicked"));
-        edit_lower("0.4");
+        edit_lower("-100");
         REQUIRE(upper->setProperty("text", "10000"));
         REQUIRE(QMetaObject::invokeMethod(upper, "textEdited"));
         REQUIRE(QMetaObject::invokeMethod(editor, "finishEditing"));
-        check("requests.length === 2 && JSON.stringify(requests[1].configuration.display_range) === '[0.4,0.751234567]'"
-              " && JSON.stringify(requests[1].configuration.scalar_range) === '[0.25,0.6]'");
+        check("requests.length === 2 && JSON.stringify(requests[1].configuration.display_range) === '[0.25,0.751234567]'"
+              " && JSON.stringify(requests[1].configuration.scalar_range) === '[-1,2]'");
 
-        // 已保存的宽色标只限幅本次键入的一端。
-        REQUIRE(QMetaObject::invokeMethod(mapping, "clicked"));
+        // 原始值域变化后可能留下旧范围，未编辑的可见上限仍保留原值。
         auto saved = f.engine.evaluate(R"JS(
-            ranges.save(key, Object.assign({}, ranges.parameters(key), {mappingLower:-1, mappingUpper:2}));
+            ranges.save(key, Object.assign({}, ranges.parameters(key), {displayLower:0.4, displayUpper:2}));
             requests = [];
         )JS");
         REQUIRE_FALSE(saved.isError());
         edit_lower("-1");
         REQUIRE(QMetaObject::invokeMethod(editor, "finishEditing"));
-        check("requests.length === 1 && JSON.stringify(requests[0].configuration.scalar_range) === '[0.25,2]'");
+        check("requests.length === 1 && JSON.stringify(requests[0].configuration.display_range) === '[0.25,2]'");
     }
     SECTION("linked reset discards draft and restores both ranges")
     {
@@ -541,13 +541,14 @@ TEST_CASE("Actual scalar editor completes range actions without intermediate req
     }
     SECTION("explicit apply publishes only the final linked parameters")
     {
-        edit_lower("0.333333333333");
+        // 联动时沿用当前编辑目标的输入规则，两个范围仍提交同一份值。
+        edit_lower("-1");
         auto* apply = panel->findChild<QObject*>("attributeRenderApply");
         REQUIRE(apply);
         REQUIRE(QMetaObject::invokeMethod(apply, "clicked"));
         QCoreApplication::processEvents();
-        check("requests.length === 1 && requests[0].configuration.scalar_range[0] === 0.333333333333"
-              " && requests[0].configuration.display_range[0] === 0.333333333333");
+        check("requests.length === 1 && requests[0].configuration.scalar_range[0] === -1"
+              " && requests[0].configuration.display_range[0] === -1");
     }
     SECTION("cancel saves parameters without applying and reapply restores them")
     {
@@ -655,20 +656,20 @@ TEST_CASE("Actual scalar histogram fills its plot and centers a constant", "[QML
     QmlFixture f;
     bool constant = false;
     int bin_count = 32;
-    bool unequal_ends = false;
+    bool precise_hover = false;
     bool extreme = false;
     SECTION("original distribution remains readable with a wide saved mapping") { }
     SECTION("a single nonconstant bin still fills the plot") { bin_count = 1; }
     SECTION("constant is drawn as a single centered column") { constant = true; }
-    SECTION("short end bins use their actual widths and hover intervals") { unequal_ends = true; }
+    SECTION("hover shows an exact maximum independently of the range label") { precise_hover = true; }
     SECTION("opposite finite extremes have finite plot coordinates") { extreme = true; }
     QVariantList edges, counts;
     if (constant) {
-        edges = { 0.12345, 0.12345 };
+        edges = { -7.12345, -7.12345 };
         counts = { 5 };
-    } else if (unequal_ends) {
-        edges = { 0.0123, 0.05, 0.1, 0.1234 };
-        counts = { 1, 2, 3 };
+    } else if (precise_hover) {
+        edges = { 0.1, 0.1117, 0.1234 };
+        counts = { 1, 3 };
     } else if (extreme) {
         const double largest = std::numeric_limits<double>::max();
         edges = { -largest, 0.0, largest };
@@ -683,8 +684,7 @@ TEST_CASE("Actual scalar histogram fills its plot and centers a constant", "[QML
     const QVariantMap histogram { { "edges", edges }, { "counts", counts } };
     const QVariantMap parameters { { "mappingLower", 0.0 }, { "mappingUpper", 10000.0 } };
     const QVariantMap metadata { { "valid", true }, { "rangeAvailable", true },
-        { "minimum", constant ? QVariant(0.12345) : edges.front() },
-        { "maximum", constant ? QVariant(0.12345) : edges.back() } };
+        { "minimum", edges.front() }, { "maximum", edges.back() } };
     auto editor = load(f.engine, "ScalarRangeEditor.qml", { { "parameters", parameters }, { "metadata", metadata }, { "histogramData", histogram }, { "displayMode", false }, { "width", 320.0 } });
     auto* item = qobject_cast<QQuickItem*>(editor.get());
     REQUIRE(item);
@@ -696,30 +696,27 @@ TEST_CASE("Actual scalar histogram fills its plot and centers a constant", "[QML
     REQUIRE(plot->width() > 200);
     REQUIRE_FALSE(plot->childItems().isEmpty());
     auto* bars = plot->childItems().front();
+    f.engine.globalObject().setProperty("editor", f.engine.newQObject(editor.get()));
     if (constant) {
         CHECK(bars->width() == 8);
         CHECK(bars->x() + bars->width() / 2 == plot->width() / 2);
+        auto hover = f.engine.evaluate(R"JS(editor.histogramBinText(0) === '区间：[-7.12345, -7.12345]\n数量：5')JS");
+        REQUIRE_FALSE(hover.isError());
+        CHECK(hover.toBool());
     } else {
         CHECK(editor->property("sliderMaximum").toDouble() == (extreme ? std::numeric_limits<double>::max() : 10000.0));
         CHECK(bars->width() == plot->width());
         auto* first_bar = bars->childItems().front();
         CHECK(first_bar->width() >= 5);
         CHECK(first_bar->height() > 0);
-        if (unequal_ends) {
-            CHECK(editor->findChild<QObject*>("scalarOriginalLower")->property("text").toString() == "0.0123");
+        if (precise_hover) {
             CHECK(editor->findChild<QObject*>("scalarOriginalUpper")->property("text").toString() == "0.123");
-            auto* middle_bar = bars->childItems()[1];
-            auto* last_bar = bars->childItems()[2];
-            CHECK(first_bar->width() < middle_bar->width());
-            CHECK(last_bar->width() < middle_bar->width());
-            CHECK(std::abs(middle_bar->x() / bars->width() - (0.05 - 0.0123) / (0.1234 - 0.0123)) < 1e-12);
-            f.engine.globalObject().setProperty("editor", f.engine.newQObject(editor.get()));
             auto hover = f.engine.evaluate(R"JS(
                 editor.histogramBinAt(editor.histogramEdgePosition(1) - 0.001) === 0
                 && editor.histogramBinAt(editor.histogramEdgePosition(1) + 0.001) === 1
-                && editor.histogramBinAt(1) === 2
-                && editor.histogramBinText(0) === '区间：[0.0123, 0.05)\n数量：1'
-                && editor.histogramBinText(2) === '区间：[0.1, 0.123]\n数量：3'
+                && editor.histogramBinAt(1) === 1
+                && editor.histogramBinText(0) === '区间：[0.1, 0.1117)\n数量：1'
+                && editor.histogramBinText(1) === '区间：[0.1117, 0.1234]\n数量：3'
             )JS");
             REQUIRE_FALSE(hover.isError());
             CHECK(hover.toBool());

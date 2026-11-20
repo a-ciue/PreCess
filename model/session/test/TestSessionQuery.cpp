@@ -191,13 +191,13 @@ TEST_CASE("SessionQuery histogram uses original finite values and refreshes with
     const auto histogram = query.scalarHistogram(component_id, "value");
     REQUIRE(histogram);
     const auto& counts = histogram->counts;
-    REQUIRE(counts.size() == 20);
+    REQUIRE(counts.size() == 32);
     CHECK(std::accumulate(counts.begin(), counts.end(), std::uint64_t { 0 }) == 3);
     CHECK(counts.front() == 1);
-    CHECK(counts[10] == 1);
+    CHECK(counts[16] == 1);
     CHECK(counts.back() == 1);
     // 边界前后相邻的双精度值按实际提示边界归箱，最大值包含在最后一箱。
-    const double boundary = 0.05;
+    const double boundary = 1.0 / 32;
     mesh.face_attributes_["value"] = { 0.0, std::nextafter(boundary, 0.0), boundary, std::nextafter(boundary, 1.0), 1.0 };
     const auto boundary_histogram = query.scalarHistogram(component_id, "value");
     REQUIRE(boundary_histogram);
@@ -207,24 +207,17 @@ TEST_CASE("SessionQuery histogram uses original finite values and refreshes with
     CHECK(boundary_histogram->edges.back() == 1.0);
     CHECK(boundary_histogram->counts.back() == 1);
 
-    // 两端使用原始极值，只有内部刻度等间隔，首尾箱允许较短。
-    mesh.face_attributes_["value"] = { -0.1234, 0.0, 0.23234, 0.45678, 0.87654 };
-    const auto expanded = query.scalarHistogram(component_id, "value");
-    REQUIRE(expanded);
-    CHECK(expanded->edges.front() == -0.1234);
-    CHECK(expanded->edges[1] == -0.1);
-    CHECK(expanded->edges[2] == -0.05);
-    CHECK(expanded->edges.back() == 0.87654);
-    CHECK(std::accumulate(expanded->counts.begin(), expanded->counts.end(), std::uint64_t { 0 }) == 5);
-
-    // 0.005 步长的中间边界需要四位有效数字，改用 0.01 后再按实际边界归箱。
-    mesh.face_attributes_["value"] = { 1.001, 1.009, 1.01, 1.02, 1.101 };
-    const auto short_edges = query.scalarHistogram(component_id, "value");
-    REQUIRE(short_edges);
-    CHECK(short_edges->edges.front() == 1.001);
-    CHECK(short_edges->edges[1] == 1.01);
-    CHECK(short_edges->edges.back() == 1.101);
-    CHECK(short_edges->counts.front() == 2);
+    // 两端保留实际极值，首尾和内部使用同一箱宽。
+    mesh.face_attributes_["value"] = { 0.0123, 0.02, 0.07, 0.1, 0.1234 };
+    const auto updated = query.scalarHistogram(component_id, "value");
+    REQUIRE(updated);
+    REQUIRE(updated->edges.size() == 33);
+    CHECK(updated->edges.front() == 0.0123);
+    CHECK(updated->edges.back() == 0.1234);
+    const double width = (updated->edges.back() - updated->edges.front()) / 32;
+    for (size_t i = 1; i < updated->edges.size(); ++i)
+        CHECK(std::abs(updated->edges[i] - updated->edges[i - 1] - width) < 1e-16);
+    CHECK(std::accumulate(updated->counts.begin(), updated->counts.end(), std::uint64_t { 0 }) == 5);
     // 点、边、体同样统计原始数组，不限于质量指标或可筛选的实体域。
     for (const auto* attribute : { "point_value", "edge_value", "solid_value" }) {
         const auto histogram = query.scalarHistogram(component_id, attribute);

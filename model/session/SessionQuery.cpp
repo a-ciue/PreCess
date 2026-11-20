@@ -13,7 +13,6 @@
 
 #include <algorithm>
 #include <cmath>
-#include <cstdlib>
 #include <limits>
 #include <map>
 #include <numeric>
@@ -21,49 +20,6 @@
 
 namespace session {
 namespace {
-
-    /** @brief 保留原始两端值，内部选择三位有效数字的十进制等间隔刻度。 */
-    std::vector<double> decimalHistogramEdges(double lower, double upper, size_t max_bins)
-    {
-        const double step_hint = (upper - lower) / max_bins;
-        if (!std::isnormal(step_hint))
-            return { };
-        const int exponent = static_cast<int>(std::floor(std::log10(step_hint))) - 1;
-        const double unit = std::pow(10.0, exponent);
-        const double low_tick = lower / unit;
-        const double high_tick = upper / unit;
-        // 大基值上的窄分布改由调用方用相对偏移表示。
-        if (std::max(std::abs(low_tick), std::abs(high_tick)) > 1e15)
-            return { };
-
-        // 只要求内部刻度简短，两端直接采用真实值，首尾箱可以较短。
-        for (const int step : { 10, 20, 25, 50, 100 }) {
-            std::vector<double> edges { lower };
-            const double first = std::floor(low_tick / step);
-            const double last = std::ceil(high_tick / step);
-            for (double index = first; index <= last; ++index) {
-                const auto tick = static_cast<std::int64_t>(index) * step;
-                // 按十进制读取，避免浮点乘加产生冗长尾数。
-                const double edge = std::strtod((std::to_string(tick) + "e" + std::to_string(exponent)).c_str(), nullptr);
-                if (edge <= lower || edge >= upper)
-                    continue;
-                auto significant = tick;
-                while (significant != 0 && significant % 10 == 0)
-                    significant /= 10;
-                if (std::abs(significant) >= 1000) {
-                    edges.clear();
-                    break;
-                }
-                edges.push_back(edge);
-            }
-            if (edges.empty())
-                continue;
-            edges.push_back(upper);
-            if (edges.size() - 1 <= max_bins)
-                return edges;
-        }
-        return { };
-    }
 
     // 计算属性展示名：去除 v_/e_/f_/s_ 前缀与分量数后缀，前端只展示原始名以外的部分
     std::string attributeDisplayName(const std::string& name, int component_count)
@@ -411,30 +367,32 @@ std::optional<ScalarHistogram> SessionQuery::scalarHistogram(Index component_id,
     }
     if (lower > upper)
         return std::nullopt;
-    constexpr size_t max_bins = 32;
+    constexpr size_t bin_count = 32;
     ScalarHistogram result;
     if (lower == upper) {
         result.edges = { lower, upper };
     } else {
-        result.edges = decimalHistogramEdges(lower, upper, max_bins);
         const double span = upper - lower;
-        if (result.edges.empty() && std::isfinite(span)) {
-            result.edges = decimalHistogramEdges(0.0, span, max_bins);
-            if (!result.edges.empty())
-                result.origin = lower;
+        const double lower_spacing = std::nextafter(lower, upper) - lower;
+        const double upper_spacing = upper - std::nextafter(upper, lower);
+        const double spacing = std::max(lower_spacing, upper_spacing);
+        // 箱宽小于绝对端点的浮点间距时，用相对偏移保存可分辨的箱界。
+        if (span / bin_count < spacing && spacing > std::numeric_limits<double>::denorm_min()) {
+            result.origin = lower;
+            lower = 0.0;
+            upper = span;
         }
 
-        // 十进制刻度无法覆盖的极端值域保留可表示的边界。
-        if (result.edges.empty()) {
-            const double midpoint = std::midpoint(lower, upper);
-            result.edges.resize(max_bins + 1);
-            for (size_t i = 0; i <= max_bins; ++i) {
-                const double fraction = static_cast<double>(i) / max_bins;
-                result.edges[i] = fraction <= 0.5 ? std::lerp(lower, midpoint, fraction * 2)
-                                                  : std::lerp(midpoint, upper, fraction * 2 - 1);
-            }
-            result.edges.erase(std::unique(result.edges.begin(), result.edges.end()), result.edges.end());
+        // 使用固定间距插值，分用两半值域避免跨正负极值时跨度溢出。
+        const double midpoint = std::midpoint(lower, upper);
+        result.edges.resize(bin_count + 1);
+        for (size_t i = 0; i <= bin_count; ++i) {
+            const double fraction = static_cast<double>(i) / bin_count;
+            result.edges[i] = fraction <= 0.5 ? std::lerp(lower, midpoint, fraction * 2)
+                                              : std::lerp(midpoint, upper, fraction * 2 - 1);
         }
+        // 极小跨度下相邻箱界可能只能表示成同一个数，合并零宽箱。
+        result.edges.erase(std::unique(result.edges.begin(), result.edges.end()), result.edges.end());
     }
     result.counts.resize(result.edges.size() - 1);
 

@@ -45,15 +45,8 @@ ColumnLayout {
         let count = histogramCounts.length;
         if (index < 0 || index >= count)
             return "";
-        let lower = histogramData.edges[index];
-        let upper = histogramData.edges[index + 1];
-        let lowerText = formatRangeValue(lower);
-        let upperText = formatRangeValue(upper);
-        // 真实边界不同但三位显示相同时，提高提示精度以区分两端。
-        if (lower !== upper && lowerText === upperText) {
-            lowerText = String(lower);
-            upperText = String(upper);
-        }
+        let lowerText = String(histogramData.edges[index]);
+        let upperText = String(histogramData.edges[index + 1]);
         let closing = index === count - 1 ? "]" : ")";
         let interval = "[" + lowerText + ", " + upperText + closing;
         if (histogramData.origin !== undefined)
@@ -135,8 +128,8 @@ ColumnLayout {
             } : null;
         let lower = edit.lower;
         let upper = edit.upper;
-        // 只限制实际输入的数值，同一属性优先使用最新值域。
-        if (draft && edit.hasRange) {
+        // 仅在编辑可见单元时限制手输端点，颜色映射允许使用跨组件共用的值域。
+        if (draft && edit.display && edit.hasRange) {
             let bounds = edit.key === attributeKey && metadata.valid ? metadata : edit;
             if (Number.isFinite(lower))
                 lower = Math.min(bounds.maximum, Math.max(bounds.minimum, lower));
