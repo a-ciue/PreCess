@@ -24,7 +24,7 @@ var searchData=
   ['order_5f_21',['order_',['../classQFeatureInfo.html#ab4308bc76800aa783666b69f5f3ee533',1,'QFeatureInfo::order_'],['../classsystems_1_1feature_1_1FeatureNavigation.html#aaa03229a353a0208f130536bd4cb67d0',1,'systems::feature::FeatureNavigation::order_']]],
   ['orientation_5f_22',['orientation_',['../classdock_1_1BoxNode.html#a4f57121145342fd4f9bada80d6589e66',1,'dock::BoxNode']]],
   ['orientationwidget_23',['orientationWidget',['../structQRenderWindow_1_1Data.html#a1b12899f8c4642d55ac21f66906a33f2',1,'QRenderWindow::Data']]],
-  ['origin_24',['origin',['../structMeshClipPlane.html#ab17e0e9d7c633ea34b4dd773c0bed97a',1,'MeshClipPlane']]],
+  ['origin_24',['origin',['../structMeshClipPlane.html#ab17e0e9d7c633ea34b4dd773c0bed97a',1,'MeshClipPlane::origin'],['../structsession_1_1ScalarHistogram.html#addead1782fb46cdba66c4b568b43ffd2',1,'session::ScalarHistogram::origin']]],
   ['origin_5fgroup_25',['origin_group',['../structdock_1_1DragSession_1_1FloatOrigin.html#a4e29ccbf06723e5a955993031856a5fd',1,'dock::DragSession::FloatOrigin']]],
   ['origin_5fgroup_5f_26',['origin_group_',['../classdock_1_1DragSession.html#a8e0e7e3abff1172b9946a12b4e8c6c08',1,'dock::DragSession']]],
   ['origin_5findex_5f_27',['origin_index_',['../classdock_1_1DragSession.html#a488da0e74abee96f5a53fbefd8e23cf3',1,'dock::DragSession']]],

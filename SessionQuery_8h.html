@@ -88,6 +88,7 @@ $(function() {
 <div class="textblock"><code>#include &quot;<a class="el" href="Core_8h_source.html">Core.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="GeometryDataVtk_8h_source.html">GeometryDataVtk.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="Selection_8h_source.html">Selection.h</a>&quot;</code><br />
+<code>#include &lt;cstdint&gt;</code><br />
 <code>#include &lt;map&gt;</code><br />
 <code>#include &lt;memory&gt;</code><br />
 <code>#include &lt;optional&gt;</code><br />
@@ -98,23 +99,25 @@ SessionQuery.h 的引用(Include)关系图:</div>
 <div class="dyncontent">
 <div class="center"><img src="SessionQuery_8h__incl.png" border="0" usemap="#amodel_2session_2SessionQuery_8h" loading="lazy" alt=""/></div>
 <map name="amodel_2session_2SessionQuery_8h" id="amodel_2session_2SessionQuery_8h">
-<area shape="rect" title="会话层查询接口：模型层只读查询的原生（非 Qt）视图" alt="" coords="161,5,379,33"/>
+<area shape="rect" title="会话层查询接口：模型层只读查询的原生（非 Qt）视图" alt="" coords="186,5,404,33"/>
 <area shape="rect" href="Core_8h.html" title=" " alt="" coords="144,157,207,184"/>
-<area shape="poly" title=" " alt="" coords="262,31,228,82,191,145,187,141,224,80,258,35"/>
+<area shape="poly" title=" " alt="" coords="275,35,253,57,228,83,207,113,190,144,185,141,202,111,224,79,250,53,279,32"/>
 <area shape="rect" title=" " alt="" coords="171,232,222,260"/>
-<area shape="poly" title=" " alt="" coords="269,32,222,185,209,220,205,216,217,183,264,34"/>
+<area shape="poly" title=" " alt="" coords="292,33,211,219,206,216,287,34"/>
 <area shape="rect" title=" " alt="" coords="246,232,323,260"/>
-<area shape="poly" title=" " alt="" coords="273,32,285,217,280,216,268,35"/>
+<area shape="poly" title=" " alt="" coords="297,32,288,218,283,216,292,35"/>
 <area shape="rect" title=" " alt="" coords="347,232,406,260"/>
-<area shape="poly" title=" " alt="" coords="278,31,366,218,361,218,274,35"/>
+<area shape="poly" title=" " alt="" coords="302,31,369,218,364,218,298,35"/>
 <area shape="rect" title=" " alt="" coords="5,232,68,260"/>
-<area shape="poly" title=" " alt="" coords="184,36,106,56,73,68,53,83,36,114,29,150,29,186,33,217,28,217,24,186,24,150,31,112,49,79,71,64,104,51,188,32"/>
+<area shape="poly" title=" " alt="" coords="192,36,109,55,75,68,53,83,36,114,29,150,29,186,33,217,27,217,23,186,23,149,31,112,49,79,72,63,107,50,196,32"/>
 <area shape="rect" href="GeometryDataVtk_8h.html" title=" " alt="" coords="384,81,535,109"/>
-<area shape="poly" title=" " alt="" coords="304,31,414,74,409,76,304,36"/>
+<area shape="poly" title=" " alt="" coords="325,31,419,74,414,75,324,36"/>
 <area shape="rect" href="Selection_8h.html" title=" " alt="" coords="63,81,156,109"/>
-<area shape="poly" title=" " alt="" coords="239,35,153,76,151,72,243,32"/>
-<area shape="rect" title=" " alt="" coords="559,81,634,109"/>
-<area shape="poly" title=" " alt="" coords="333,31,546,79,542,82,333,36"/>
+<area shape="poly" title=" " alt="" coords="260,35,158,77,155,73,264,32"/>
+<area shape="rect" title=" " alt="" coords="558,81,624,109"/>
+<area shape="poly" title=" " alt="" coords="353,31,546,79,541,81,353,36"/>
+<area shape="rect" title=" " alt="" coords="647,81,722,109"/>
+<area shape="poly" title=" " alt="" coords="380,31,496,51,635,80,629,81,496,56,380,36"/>
 <area shape="rect" title=" " alt="" coords="92,232,147,260"/>
 <area shape="poly" title=" " alt="" coords="168,184,140,222,136,218,163,186"/>
 <area shape="poly" title=" " alt="" coords="181,183,191,218,186,216,177,187"/>
@@ -176,6 +179,8 @@ SessionQuery.h 的引用(Include)关系图:</div>
 <tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">几何拓扑规模摘要（ensureIndexBuilt 后统计）  <a href="structsession_1_1GeometrySummary.html#details">更多...</a><br /></td></tr>
 <tr class="memitem:session_3A_3AAttributeInfo" id="r_session_3A_3AAttributeInfo"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structsession_1_1AttributeInfo.html">session::AttributeInfo</a></td></tr>
 <tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">组件属性渲染条目（原始名、展示名、类型与分量数）  <a href="structsession_1_1AttributeInfo.html#details">更多...</a><br /></td></tr>
+<tr class="memitem:session_3A_3AScalarHistogram" id="r_session_3A_3AScalarHistogram"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structsession_1_1ScalarHistogram.html">session::ScalarHistogram</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">原始分布的计数及归箱边界；必要时边界用相对原点的偏移表示。  <a href="structsession_1_1ScalarHistogram.html#details">更多...</a><br /></td></tr>
 <tr class="memitem:session_3A_3ASessionQuery" id="r_session_3A_3ASessionQuery"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsession_1_1SessionQuery.html">session::SessionQuery</a></td></tr>
 <tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">模型层只读查询（CQRS 查询端，读写分离中的读视图）  <a href="classsession_1_1SessionQuery.html#details">更多...</a><br /></td></tr>
 </table><table class="memberdecls">

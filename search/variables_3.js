@@ -72,12 +72,13 @@ var searchData=
   ['count_69',['count',['../structTreeModel_1_1CountChildSpec.html#ae58762c2ee5631acfd98ff85165de33b',1,'TreeModel::CountChildSpec']]],
   ['count_5fa_70',['count_a',['../TestEventBus_8cpp.html#ad297f5935bd3cad22c28b70e70f0b422',1,'TestEventBus.cpp']]],
   ['count_5fb_71',['count_b',['../TestEventBus_8cpp.html#a57a65d84fada0138814368105b4bcd3a',1,'TestEventBus.cpp']]],
-  ['creator_72',['creator',['../structsystems_1_1HandlerCreatorDestroyer.html#a74a036761c1a6087ac1d909ae3f5f9bb',1,'systems::HandlerCreatorDestroyer']]],
-  ['cur_5factor_5f_73',['cur_actor_',['../structQRenderWindow.html#a3f810a45cdd8e37d3beb60229f40626a',1,'QRenderWindow']]],
-  ['cur_5fcomponent_74',['cur_component',['../structsystems_1_1algo_1_1HandlerContext.html#a44cba908ae4dc46b741e0bd284dde0c2',1,'systems::algo::HandlerContext']]],
-  ['cur_5fcomponent_5fid_5f_75',['cur_component_id_',['../structQRenderWindow.html#ab8603fd67111125e7e479b99a965f640',1,'QRenderWindow']]],
-  ['current_5f_76',['current_',['../classInteractionService.html#a63850f71db99f6655c7bdffb781afe46',1,'InteractionService']]],
-  ['current_5ffeature_5f_77',['current_feature_',['../classsystems_1_1feature_1_1FeatureSystem.html#ac20c7d6f717c274103574cd9c924f719',1,'systems::feature::FeatureSystem']]],
-  ['current_5fmode_5f_78',['current_mode_',['../classGeometryActorManagerSelectOp.html#a5a51339f1a3557c26bd194d6c702a7f7',1,'GeometryActorManagerSelectOp']]],
-  ['current_5fstyle_5f_79',['current_style_',['../classGeometryActorManager.html#a71391ddc3bafcdbae592c190bcb6a0d4',1,'GeometryActorManager::current_style_'],['../classMeshActorManager.html#af5b9b3955476d7252831a730a5aea1a1',1,'MeshActorManager::current_style_']]]
+  ['counts_72',['counts',['../structsession_1_1ScalarHistogram.html#a41a8879e489336af21f14dc3e3fc03a4',1,'session::ScalarHistogram']]],
+  ['creator_73',['creator',['../structsystems_1_1HandlerCreatorDestroyer.html#a74a036761c1a6087ac1d909ae3f5f9bb',1,'systems::HandlerCreatorDestroyer']]],
+  ['cur_5factor_5f_74',['cur_actor_',['../structQRenderWindow.html#a3f810a45cdd8e37d3beb60229f40626a',1,'QRenderWindow']]],
+  ['cur_5fcomponent_75',['cur_component',['../structsystems_1_1algo_1_1HandlerContext.html#a44cba908ae4dc46b741e0bd284dde0c2',1,'systems::algo::HandlerContext']]],
+  ['cur_5fcomponent_5fid_5f_76',['cur_component_id_',['../structQRenderWindow.html#ab8603fd67111125e7e479b99a965f640',1,'QRenderWindow']]],
+  ['current_5f_77',['current_',['../classInteractionService.html#a63850f71db99f6655c7bdffb781afe46',1,'InteractionService']]],
+  ['current_5ffeature_5f_78',['current_feature_',['../classsystems_1_1feature_1_1FeatureSystem.html#ac20c7d6f717c274103574cd9c924f719',1,'systems::feature::FeatureSystem']]],
+  ['current_5fmode_5f_79',['current_mode_',['../classGeometryActorManagerSelectOp.html#a5a51339f1a3557c26bd194d6c702a7f7',1,'GeometryActorManagerSelectOp']]],
+  ['current_5fstyle_5f_80',['current_style_',['../classGeometryActorManager.html#a71391ddc3bafcdbae592c190bcb6a0d4',1,'GeometryActorManager::current_style_'],['../classMeshActorManager.html#af5b9b3955476d7252831a730a5aea1a1',1,'MeshActorManager::current_style_']]]
 ];

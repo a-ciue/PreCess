@@ -1,0 +1,7 @@
+<map id="session::ScalarHistogram" name="session::ScalarHistogram">
+<area shape="rect" id="Node000001" title="原始分布的计数及归箱边界；必要时边界用相对原点的偏移表示。" alt="" coords="97,106,283,134"/>
+<area shape="rect" id="Node000002" title=" " alt="" coords="5,5,170,33"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="113,41,179,105,174,106,111,46"/>
+<area shape="rect" id="Node000003" title=" " alt="" coords="194,5,395,33"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="272,43,206,108,203,103,267,44"/>
+</map>

@@ -233,6 +233,8 @@ Public 成员函数</h2></td></tr>
 <tr class="memitem:a0d2f44d3ae9f080eecf7f509d600d441" id="r_a0d2f44d3ae9f080eecf7f509d600d441"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structsession_1_1GeometrySummary.html">GeometrySummary</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a0d2f44d3ae9f080eecf7f509d600d441">geometrySummary</a> (<a class="el" href="Core_8h.html#a1673229bf7fec9388ac2a829a52d69b3">Index</a> component_id) const</td></tr>
 <tr class="memitem:a78da2d1e9d06b39ad93b096902fb785b" id="r_a78da2d1e9d06b39ad93b096902fb785b"><td class="memItemLeft" align="right" valign="top">std::vector&lt; <a class="el" href="structsession_1_1AttributeInfo.html">AttributeInfo</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a78da2d1e9d06b39ad93b096902fb785b">componentAttributeInfos</a> (<a class="el" href="Core_8h.html#a1673229bf7fec9388ac2a829a52d69b3">Index</a> component_id) const</td></tr>
 <tr class="memdesc:a78da2d1e9d06b39ad93b096902fb785b"><td class="mdescLeft">&#160;</td><td class="mdescRight">组件网格的全部属性渲染条目（四张属性表顺序遍历；属性名/类型查询复用本条目）  <br /></td></tr>
+<tr class="memitem:ab63f621557106c418a9fac50cedf9fb3" id="r_ab63f621557106c418a9fac50cedf9fb3"><td class="memItemLeft" align="right" valign="top">std::optional&lt; <a class="el" href="structsession_1_1ScalarHistogram.html">ScalarHistogram</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ab63f621557106c418a9fac50cedf9fb3">scalarHistogram</a> (<a class="el" href="Core_8h.html#a1673229bf7fec9388ac2a829a52d69b3">Index</a> component_id, const std::string &amp;attribute) const</td></tr>
+<tr class="memdesc:ab63f621557106c418a9fac50cedf9fb3"><td class="mdescLeft">&#160;</td><td class="mdescRight">按点、边、面、体顺序统计首个有效同名单值属性；忽略非有限值，无有效值时返回空。  <br /></td></tr>
 <tr class="memitem:a0ed83f59240487d4cf30f76c6470170c" id="r_a0ed83f59240487d4cf30f76c6470170c"><td class="memItemLeft" align="right" valign="top">std::optional&lt; <a class="el" href="Core_8h.html#ab5877cbde257d16ef48544f6e31bca90">GeomFaceId</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a0ed83f59240487d4cf30f76c6470170c">resolveGeometryFaceLocalId</a> (<a class="el" href="Core_8h.html#a1673229bf7fec9388ac2a829a52d69b3">Index</a> component_id, int local_face_id) const</td></tr>
 <tr class="memitem:a934923a813498f932086ad2da716d69d" id="r_a934923a813498f932086ad2da716d69d"><td class="memItemLeft" align="right" valign="top">std::optional&lt; <a class="el" href="Core_8h.html#a2c620d553d3620740a24da5c348c7a70">GeomEdgeId</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a934923a813498f932086ad2da716d69d">resolveGeometryEdgeLocalId</a> (<a class="el" href="Core_8h.html#a1673229bf7fec9388ac2a829a52d69b3">Index</a> component_id, int local_edge_id) const</td></tr>
 <tr class="memitem:a38f59449d8fd06789a4a6ba890593207" id="r_a38f59449d8fd06789a4a6ba890593207"><td class="memItemLeft" align="right" valign="top">std::optional&lt; <a class="el" href="Core_8h.html#aefd45ef2a67b50be304576981920f50a">GeomVertexId</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a38f59449d8fd06789a4a6ba890593207">resolveGeometryVertexLocalId</a> (<a class="el" href="Core_8h.html#a1673229bf7fec9388ac2a829a52d69b3">Index</a> component_id, int local_vertex_id) const</td></tr>
@@ -694,6 +696,29 @@ Private 属性</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+</div>
+</div>
+<a id="ab63f621557106c418a9fac50cedf9fb3" name="ab63f621557106c418a9fac50cedf9fb3"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ab63f621557106c418a9fac50cedf9fb3">&#9670;&#160;</a></span>scalarHistogram()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::optional&lt; <a class="el" href="structsession_1_1ScalarHistogram.html">ScalarHistogram</a> &gt; session::SessionQuery::scalarHistogram </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="Core_8h.html#a1673229bf7fec9388ac2a829a52d69b3">Index</a></td>          <td class="paramname"><span class="paramname"><em>component_id</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const std::string &amp;</td>          <td class="paramname"><span class="paramname"><em>attribute</em></span>&#160;) const</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>按点、边、面、体顺序统计首个有效同名单值属性；忽略非有限值，无有效值时返回空。 </p>
 
 </div>
 </div>

@@ -24,7 +24,7 @@ var searchData=
   ['edgeidmap_21',['edgeIdMap',['../classModelLayer.html#aac41ee5efbd5dd1d517015e5490c75d9',1,'ModelLayer::edgeIdMap()'],['../classModelLayer.html#ac9e9da3f7a61a8684a087c11cb3bbb66',1,'ModelLayer::edgeIdMap() const']]],
   ['edgepickinteractorstyle_22',['EdgePickInteractorStyle',['../classEdgePickInteractorStyle.html',1,'']]],
   ['edgerow_23',['EdgeRow',['../structMeshAdjacency_1_1EdgeRow.html',1,'MeshAdjacency']]],
-  ['edges_24',['edges',['../structGeometryGapPartnerChain.html#ab7b2c50e864490b03313e3bc44908828',1,'GeometryGapPartnerChain']]],
+  ['edges_24',['edges',['../structGeometryGapPartnerChain.html#ab7b2c50e864490b03313e3bc44908828',1,'GeometryGapPartnerChain::edges'],['../structsession_1_1ScalarHistogram.html#a4b7a89680558be09f7a9fac69de4025d',1,'session::ScalarHistogram::edges']]],
   ['edges_5f_25',['edges_',['../classgeometry_1_1repair_1_1BoundaryAudit.html#a1d8f40085471a786290516f6e0c9d978',1,'geometry::repair::BoundaryAudit']]],
   ['edgeselectorhighlight_26',['EdgeSelectorHighlight',['../classEdgeSelectorHighlight.html',1,'EdgeSelectorHighlight'],['../classEdgeSelectorHighlight.html#a0fc8cf358cd6d58a8b43c8268b725c6b',1,'EdgeSelectorHighlight::EdgeSelectorHighlight()']]],
   ['edgeselectorhighlight_2ecpp_27',['EdgeSelectorHighlight.cpp',['../EdgeSelectorHighlight_8cpp.html',1,'']]],

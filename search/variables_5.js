@@ -14,7 +14,7 @@ var searchData=
   ['edge_5fsource_5f_11',['edge_source_',['../classMeshActor.html#a9a3772c927c5f540c4cbc3bbf86784ae',1,'MeshActor']]],
   ['edge_5ftopology_12',['edge_topology',['../structGeometryTopologyDiagnosticOptions.html#a90b107c75b07107a9c13e65cc2338567',1,'GeometryTopologyDiagnosticOptions']]],
   ['edge_5fvertices_5f_13',['edge_vertices_',['../structMeshData.html#a136ea84f40ad248a6c07043dda96e81c',1,'MeshData']]],
-  ['edges_14',['edges',['../structGeometryGapPartnerChain.html#ab7b2c50e864490b03313e3bc44908828',1,'GeometryGapPartnerChain']]],
+  ['edges_14',['edges',['../structGeometryGapPartnerChain.html#ab7b2c50e864490b03313e3bc44908828',1,'GeometryGapPartnerChain::edges'],['../structsession_1_1ScalarHistogram.html#a4b7a89680558be09f7a9fac69de4025d',1,'session::ScalarHistogram::edges']]],
   ['edges_5f_15',['edges_',['../classgeometry_1_1repair_1_1BoundaryAudit.html#a1d8f40085471a786290516f6e0c9d978',1,'geometry::repair::BoundaryAudit']]],
   ['edit_5fadaptor_5f_16',['edit_adaptor_',['../classQModelManager.html#af6dc0db7366b13c3707fb83accf5767b',1,'QModelManager']]],
   ['edit_5fsystem_5f_17',['edit_system_',['../classsystems_1_1edit_1_1QEditSystemAdaptor.html#add77e612b95d8ea6f246714e9487f4a8',1,'systems::edit::QEditSystemAdaptor::edit_system_'],['../classsession_1_1Session.html#aff6f230a9b27f7aca2f4db6c90778f85',1,'session::Session::edit_system_']]],

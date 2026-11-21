@@ -234,8 +234,8 @@ QRenderWindow 的协作图:</div>
 <tr class="memitem:a95800b036391b4c6f9a9c5680d0024b8" id="r_a95800b036391b4c6f9a9c5680d0024b8"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a95800b036391b4c6f9a9c5680d0024b8">darkBackgroundChanged</a> ()</td></tr>
 <tr class="memitem:abc3c5e233da3a03cb681e14438e44f05" id="r_abc3c5e233da3a03cb681e14438e44f05"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#abc3c5e233da3a03cb681e14438e44f05">clicked</a> ()</td></tr>
 <tr class="memitem:ad0d60d1889987252b7f0c6612597c780" id="r_ad0d60d1889987252b7f0c6612597c780"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ad0d60d1889987252b7f0c6612597c780">rightClicked</a> ()</td></tr>
-<tr class="memitem:a0e5f50ab9ec1547b976eb66331369894" id="r_a0e5f50ab9ec1547b976eb66331369894"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a0e5f50ab9ec1547b976eb66331369894">scalarRangeChanged</a> ()</td></tr>
-<tr class="memdesc:a0e5f50ab9ec1547b976eb66331369894"><td class="mdescLeft">&#160;</td><td class="mdescRight">原始属性数据变化，通知界面重新查询元信息。  <br /></td></tr>
+<tr class="memitem:acf4d9160f178725b8d654587facf9767" id="r_acf4d9160f178725b8d654587facf9767"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#acf4d9160f178725b8d654587facf9767">scalarRangeChanged</a> (<a class="el" href="Core_8h.html#a1673229bf7fec9388ac2a829a52d69b3">Index</a> component_id)</td></tr>
+<tr class="memdesc:acf4d9160f178725b8d654587facf9767"><td class="mdescLeft">&#160;</td><td class="mdescRight">原始属性数据变化，携带组件身份供界面仅刷新对应的元信息和分布。  <br /></td></tr>
 <tr class="memitem:a5a0128e77731bbcc15544be82089ce3c" id="r_a5a0128e77731bbcc15544be82089ce3c"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a5a0128e77731bbcc15544be82089ce3c">componentVisibilityChanged</a> (<a class="el" href="Core_8h.html#a1673229bf7fec9388ac2a829a52d69b3">Index</a> component_id, bool mesh_visible, bool geometry_visible)</td></tr>
 <tr class="memdesc:a5a0128e77731bbcc15544be82089ce3c"><td class="mdescLeft">&#160;</td><td class="mdescRight">在 GUI 决定显隐后同步通知对象树，渲染线程只安装结果。  <br /></td></tr>
 </table><table class="memberdecls">
@@ -1489,8 +1489,8 @@ Private 属性</h2></td></tr>
 
 </div>
 </div>
-<a id="a0e5f50ab9ec1547b976eb66331369894" name="a0e5f50ab9ec1547b976eb66331369894"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a0e5f50ab9ec1547b976eb66331369894">&#9670;&#160;</a></span>scalarRangeChanged</h2>
+<a id="acf4d9160f178725b8d654587facf9767" name="acf4d9160f178725b8d654587facf9767"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#acf4d9160f178725b8d654587facf9767">&#9670;&#160;</a></span>scalarRangeChanged</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -1501,7 +1501,7 @@ Private 属性</h2></td></tr>
         <tr>
           <td class="memname">void QRenderWindow::scalarRangeChanged </td>
           <td>(</td>
-          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td class="paramtype"><a class="el" href="Core_8h.html#a1673229bf7fec9388ac2a829a52d69b3">Index</a></td>          <td class="paramname"><span class="paramname"><em>component_id</em></span></td><td>)</td>
           <td></td>
         </tr>
       </table>
@@ -1512,7 +1512,7 @@ Private 属性</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p>原始属性数据变化，通知界面重新查询元信息。 </p>
+<p>原始属性数据变化，携带组件身份供界面仅刷新对应的元信息和分布。 </p>
 
 </div>
 </div>
