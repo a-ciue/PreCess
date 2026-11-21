@@ -9,14 +9,17 @@
 #include "Session.h"
 
 #include "FeatureInfo.h"
+#include "FeatureParams.h"
 #include "FeatureSystem.h"
 #include "JobRunner.h"
 #include "ModelIOSystem.h"
 #include "SystemPluginManager.h"
+#include "UndoStack.h"
 #include "test/OwnerQueue.h"
 
 #include <QCoreApplication>
 #include <QFile>
+#include <QFileInfo>
 #include <QLibrary>
 #include <QPluginLoader>
 #include <QScopeGuard>
@@ -31,6 +34,9 @@
 using namespace session;
 
 namespace {
+//! @brief OBJ 文件功能应发布的面组号属性名。
+constexpr char expected_group_attribute_name[] = "xxx";
+
 int static_standard_attempts = 0;
 int static_unknown_attempts = 0;
 QObject* failStaticStandardConstruction()
@@ -78,6 +84,56 @@ TEST_CASE("Session loads plugins and registers feature infos", "[session][plugin
             }
         }
         CHECK(has_geometry_menu);
+    }
+
+    SECTION("OBJ 文件功能提供分组选项并导入面属性")
+    {
+        auto& features = s.featureSystem();
+        const std::string importing = "LegacyIO.Import/Wavefront .obj file";
+        const auto* params = features.params(importing);
+        REQUIRE(params);
+        REQUIRE(params->count() == 2);
+        CHECK(params->types()[0].type == ArgTypeEnum::Paths);
+        CHECK(params->types()[1].type == ArgTypeEnum::Bool);
+        const auto* split_groups = params->value(1).get<ArgTypeEnum::Bool>();
+        REQUIRE(split_groups);
+        CHECK_FALSE(*split_groups);
+
+        // 两组共享点，切换开关后只改变组件划分。
+        QTemporaryDir directory;
+        REQUIRE(directory.isValid());
+        QFile obj(directory.filePath(QStringLiteral("face_groups.obj")));
+        REQUIRE(obj.open(QIODevice::WriteOnly));
+        REQUIRE(obj.write("v 0 0 0\nv 1 0 0\nv 0 1 0\nv 0 0 1\n"
+                          "g xxx123\nf 1 2 3\ng wall\nf 1 2 4\n") > 0);
+        obj.close();
+        REQUIRE(features.setParameter(importing, 0,
+            core::ArgObject::create<ArgTypeEnum::Paths>({ QFileInfo(obj).filesystemFilePath() })));
+
+        CHECK_FALSE(features.invoke(importing).has_value());
+        const auto merged = s.query().listModels();
+        REQUIRE(merged.size() == 1);
+        CHECK(merged.front().component_count == 1);
+        const auto merged_components = s.query().componentSummaries(merged.front().model_id);
+        REQUIRE(merged_components.size() == 1);
+        const auto* component = s.model().findComponent(merged_components.front().component_id);
+        REQUIRE(component);
+        REQUIRE(component->mesh);
+        CHECK(component->mesh->vertex_count_ == 4);
+        CHECK(component->mesh->face_attributes_.at(expected_group_attribute_name) == std::vector<double> { 123.0, 0.0 });
+        const auto attributes = s.query().componentAttributeInfos(merged_components.front().component_id);
+        REQUIRE(attributes.size() == 1);
+        CHECK(attributes.front().name == expected_group_attribute_name);
+        CHECK(attributes.front().type == ElementEnum::Type::Face);
+        CHECK(attributes.front().component_count == 1);
+        REQUIRE(s.undoStack().undo());
+        CHECK(s.query().listModels().empty());
+
+        REQUIRE(features.setParameter(importing, 1, core::ArgObject::create<ArgTypeEnum::Bool>(true)));
+        CHECK_FALSE(features.invoke(importing).has_value());
+        const auto split = s.query().listModels();
+        REQUIRE(split.size() == 1);
+        CHECK(split.front().component_count == 2);
     }
 }
 
