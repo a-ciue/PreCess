@@ -19,7 +19,11 @@ Item {
     property string selectedKey: ""
     property int confirmedMode: 1
     property var rememberedAttributes: ({})
-    property var rangeMetadata: ({ valid: false, rangeAvailable: false })
+    property var rangeMetadata: ({
+            valid: false,
+            rangeAvailable: false
+        })
+    property var histogramData: ({})
     readonly property var currentRange: rangeState ? rangeState.parameters(selectedKey) : ({
             valid: false
         })
@@ -27,8 +31,18 @@ Item {
     // 面板仅查询原始元信息，用户范围统一保存在界面参数对象中。
     function refreshRangeMetadata() {
         let attr = selectedAttribute();
-        rangeMetadata = attr && rangeState ? rangeState.rangeInfo(App.selection.activeComponentId, attr.name) : { valid: false, rangeAvailable: false };
+        rangeMetadata = attr && rangeState ? rangeState.rangeInfo(App.selection.activeComponentId, attr.name) : {
+            valid: false,
+            rangeAvailable: false
+        };
         selectedKey = attr && rangeState ? rangeState.ensure(App.selection.activeComponentId, attr.name, rangeMetadata) : "";
+    }
+
+    // 在选中项和显示状态稳定后统计，避免同一次切换触发多次查询。
+    function refreshHistogram() {
+        let attr = selectedAttribute();
+        let query = rangeState ? rangeState.query : null;
+        histogramData = rangeEditor.visible && rangeEditor.expanded && rangeMetadata.valid && attr && query ? query.scalarHistogramInfo(App.selection.activeComponentId, attr.name) : ({});
     }
 
     // 普通目录刷新恢复操作位置，同一属性的输入草稿由编辑器继续保留。
@@ -102,8 +116,11 @@ Item {
         if (!canApply())
             return;
         let edit = rangeEditor.takeParameters();
-        if (edit === false)
+        if (edit === false) {
+            // 显式操作被无效草稿阻止时，让用户看到已有错误。
+            rangeEditor.expanded = true;
             return;
+        }
         let attr = selectedAttribute();
         if (modeCombo.currentIndex === 1) {
             refreshRangeMetadata();
@@ -135,7 +152,7 @@ Item {
         id: parameterViewport
         objectName: "attributeRenderScroll"
         // 为滚动操作保留 120 逻辑像素，字体放大时至少容纳两行属性。
-        implicitHeight: Math.max(120, attributeList.implicitHeight)
+        implicitHeight: Math.max(120, attributeListFrame.implicitHeight)
         anchors.left: parent.left
         anchors.right: parent.right
         anchors.top: parent.top
@@ -157,6 +174,7 @@ Item {
 
     ColumnLayout {
         id: panelLayout
+        objectName: "attributeRenderLayout"
         parent: parameterViewport.contentItem
         width: parameterViewport.width
         height: Math.max(implicitHeight, parameterViewport.height)
@@ -181,97 +199,110 @@ Item {
             }
         }
 
-        ListView {
-            id: attributeList
-            objectName: "attributeRenderList"
-            // 两行使用与委托相同的行高，字体放大时不会只露出半行。
-            readonly property real rowHeight: Math.max(34, attributeFontMetrics.height + 16)
-            implicitHeight: 2 * rowHeight + spacing
+        Frame {
+            id: attributeListFrame
+            objectName: "attributeRenderListFrame"
             Layout.fillWidth: true
             Layout.fillHeight: true
             Layout.minimumHeight: implicitHeight
-            clip: true
-            spacing: Theme.spacingXs
-            model: root.attributes
-            currentIndex: root.selectedIndex
-            interactive: contentHeight > height
-            flickDeceleration: 100000
-            boundsBehavior: Flickable.StopAtBounds
-
-            delegate: Rectangle {
-                id: attrRow
-                required property var modelData
-                required property int index
-
-                width: attributeList.width
-                height: attributeList.rowHeight
+            padding: Theme.spacingXs
+            background: Rectangle {
+                color: Qt.darker(Theme.surfaceAlt, 1.04)
+                border.color: Theme.border
                 radius: Theme.radiusControl
-                color: root.selectedIndex === index ? Theme.primaryTint : attributeMouse.hovered ? Theme.hoverOverlay : Theme.surface
-                border.color: root.selectedIndex === index ? Theme.primary : Theme.border
-                border.width: 1
-
-                RowLayout {
-                    anchors.fill: parent
-                    anchors.leftMargin: 8
-                    anchors.rightMargin: 14
-                    spacing: 8
-
-                    Label {
-                        text: modelData.typeName
-                        Layout.preferredWidth: 24
-                    }
-                    Label {
-                        id: attrNameText
-                        text: modelData.displayName
-                        elide: Text.ElideRight
-                        Layout.fillWidth: true
-                        Layout.minimumWidth: 0
-
-                        ToolTip {
-                            visible: attrNameText.truncated && attributeMouse.containsMouse
-                            text: attrNameText.text
-                            delay: 300
-                        }
-                    }
-                    Label {
-                        text: modelData.componentCount > 0 ? modelData.componentCount + "分量" : ""
-                        elide: Text.ElideRight
-                    }
-                }
-
-                MouseArea {
-                    id: attributeMouse
-                    objectName: "attributeRenderSelect"
-                    anchors.fill: parent
-                    hoverEnabled: true
-                    onClicked: {
-                        if (!rangeEditor.finishEditing())
-                            return;
-                        root.selectedIndex = index;
-                        modeCombo.currentIndex = root.inferMode(modelData);
-                        root.rememberedAttributes[String(App.selection.activeComponentId)] = {
-                            name: modelData.name,
-                            type: modelData.attrType,
-                            mode: modeCombo.currentIndex
-                        };
-                        root.confirmedMode = modeCombo.currentIndex;
-                        root.refreshRangeMetadata();
-                        root.applySelectedAttribute();
-                    }
-                }
             }
 
-            ScrollBar.vertical: ScrollBar {
-                policy: ScrollBar.AsNeeded
-                padding: 0
-                background: Rectangle {
-                    implicitWidth: 8
-                    color: "transparent"
+            contentItem: ListView {
+                id: attributeList
+                objectName: "attributeRenderList"
+                // 两行使用与委托相同的行高，字体放大时不会只露出半行。
+                readonly property real rowHeight: Math.max(34, attributeFontMetrics.height + 16)
+                implicitHeight: 2 * rowHeight + spacing
+                clip: true
+                spacing: Theme.spacingXs
+                model: root.attributes
+                currentIndex: root.selectedIndex
+                interactive: contentHeight > height
+                flickDeceleration: 100000
+                boundsBehavior: Flickable.StopAtBounds
+
+                delegate: Rectangle {
+                    id: attrRow
+                    required property var modelData
+                    required property int index
+
+                    width: attributeList.width
+                    height: attributeList.rowHeight
+                    radius: Theme.radiusControl
+                    color: root.selectedIndex === index ? Theme.primaryTint : attributeMouse.hovered ? Theme.hoverOverlay : "transparent"
+                    border.color: Theme.primary
+                    border.width: root.selectedIndex === index ? 1 : 0
+
+                    RowLayout {
+                        anchors.fill: parent
+                        anchors.leftMargin: 8
+                        anchors.rightMargin: 14
+                        spacing: 8
+
+                        Label {
+                            text: modelData.typeName
+                            Layout.preferredWidth: 24
+                        }
+                        Label {
+                            id: attrNameText
+                            text: modelData.displayName
+                            elide: Text.ElideRight
+                            Layout.fillWidth: true
+                            Layout.minimumWidth: 0
+
+                            ToolTip {
+                                visible: attrNameText.truncated && attributeMouse.containsMouse
+                                text: attrNameText.text
+                                delay: 300
+                            }
+                        }
+                        Label {
+                            text: modelData.componentCount > 0 ? modelData.componentCount + "分量" : ""
+                            elide: Text.ElideRight
+                        }
+                    }
+
+                    MouseArea {
+                        id: attributeMouse
+                        objectName: "attributeRenderSelect"
+                        anchors.fill: parent
+                        hoverEnabled: true
+                        onClicked: {
+                            if (!rangeEditor.finishEditing()) {
+                                rangeEditor.expanded = true;
+                                return;
+                            }
+                            root.selectedIndex = index;
+                            modeCombo.currentIndex = root.inferMode(modelData);
+                            root.rememberedAttributes[String(App.selection.activeComponentId)] = {
+                                name: modelData.name,
+                                type: modelData.attrType,
+                                mode: modeCombo.currentIndex
+                            };
+                            root.confirmedMode = modeCombo.currentIndex;
+                            root.refreshRangeMetadata();
+                            root.applySelectedAttribute();
+                        }
+                    }
                 }
-                contentItem: Rectangle {
-                    implicitWidth: 8
-                    radius: 4
-                    color: parent.hovered ? Theme.scrollBarHover : Theme.scrollBarIdle
+
+                ScrollBar.vertical: ScrollBar {
+                    policy: ScrollBar.AsNeeded
+                    padding: 0
+                    background: Rectangle {
+                        implicitWidth: 8
+                        color: "transparent"
+                    }
+                    contentItem: Rectangle {
+                        implicitWidth: 8
+                        radius: 4
+                        color: parent.hovered ? Theme.scrollBarHover : Theme.scrollBarIdle
+                    }
                 }
             }
         }
@@ -294,6 +325,7 @@ Item {
                 onActivated: {
                     if (!rangeEditor.finishEditing()) {
                         currentIndex = root.confirmedMode;
+                        rangeEditor.expanded = true;
                         return;
                     }
                     root.confirmedMode = currentIndex;
@@ -317,6 +349,9 @@ Item {
                 attributeKey: root.selectedKey
                 parameters: root.currentRange
                 metadata: root.rangeMetadata
+                histogramData: root.histogramData
+                onExpandedChanged: Qt.callLater(root.refreshHistogram)
+                onVisibleChanged: Qt.callLater(root.refreshHistogram)
                 onParametersEdited: function (key, parameters) {
                     if (root.rangeState)
                         root.rangeState.update(key, parameters);
@@ -451,8 +486,11 @@ Item {
 
     Connections {
         target: App.registry.renderWindow
-        function onScalarRangeChanged() {
+        function onScalarRangeChanged(component_id) {
+            if (component_id !== App.selection.activeComponentId)
+                return;
             root.refreshRangeMetadata();
+            Qt.callLater(root.refreshHistogram);
         }
     }
 
@@ -477,5 +515,6 @@ Item {
         }
     }
 
+    onSelectedKeyChanged: Qt.callLater(refreshHistogram)
     Component.onCompleted: refreshAttributes()
 }

@@ -86,6 +86,26 @@ QVariantList QModelQuery::getComponentAttriInfo(Index component_id) const
     return out;
 }
 
+QVariantMap QModelQuery::scalarHistogramInfo(Index component_id, const QString& attribute) const
+{
+    const auto histogram = m_query->scalarHistogram(component_id, attribute.toStdString());
+    if (!histogram)
+        return { };
+
+    QVariantList counts;
+    counts.reserve(histogram->counts.size());
+    for (const auto count : histogram->counts)
+        counts.append(QVariant::fromValue(static_cast<qlonglong>(count)));
+    QVariantList edges;
+    edges.reserve(histogram->edges.size());
+    for (const auto edge : histogram->edges)
+        edges.append(edge);
+    QVariantMap result { { "counts", counts }, { "edges", edges } };
+    if (histogram->origin)
+        result.insert("origin", *histogram->origin);
+    return result;
+}
+
 QVariantList QModelQuery::listModels() const
 {
     QVariantList out;

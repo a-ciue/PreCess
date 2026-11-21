@@ -94,6 +94,9 @@ QML_ELEMENT // Qt6+: 导出为 QML 可用类型（Qt5 请使用 qmlRegisterType�
      */
     Q_INVOKABLE QVariantList getComponentAttriInfo(Index component_id) const;
 
+    /** @brief 查询原始单值属性的分布，返回归箱边界、计数及可选相对原点；无有效值时返回空。 */
+    Q_INVOKABLE QVariantMap scalarHistogramInfo(Index component_id, const QString& attribute) const;
+
     Q_INVOKABLE QVariantList listModels() const;
     //! @brief 模型内组件摘要；has_mesh/has_geometry 表示对象存在，不要求内容或 rootShape 非空
     Q_INVOKABLE QVariantList getComponentsSummary(Index model_id) const;

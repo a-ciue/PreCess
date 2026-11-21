@@ -17,7 +17,12 @@ ColumnLayout {
             valid: false,
             rangeAvailable: false
         })
-    property bool displayMode: false
+    property bool displayMode: true
+    // 折叠和高度缩放只影响本编辑器显示，不进入范围参数和渲染配置。
+    property bool expanded: true
+    property alias histogramLogarithmic: histogramScaleButton.checked
+    property var histogramData: ({})
+    readonly property var histogramCounts: histogramData.counts || []
     // 草稿与有效待发送请求各自携带目标身份，属性切换不会把旧值写入新属性。
     property var draft: null
     property var pendingRange: null
@@ -30,19 +35,76 @@ ColumnLayout {
 
     signal parametersEdited(string targetKey, var parameters)
 
-    // 普通值截断至三位小数，极值用四位有效数字，格式化不改写保存精度。
+    // 与色柱统一采用三位有效数字，显示格式不改写保存和提交的精确值。
     function formatRangeValue(value) {
-        if (!Number.isFinite(value))
+        return Number.isFinite(value) ? value.toLocaleString(Qt.locale("C"), "g", 3) : "";
+    }
+
+    // 悬停时简写箱界，点击后显示原始边界。
+    function histogramBinText(index, precise) {
+        let count = histogramCounts.length;
+        if (index < 0 || index >= count)
             return "";
-        let magnitude = Math.abs(value);
-        if (magnitude !== 0 && (magnitude < 0.001 || magnitude >= 10000)) {
-            let parts = magnitude.toExponential().split("e");
-            let digits = (parts[0].replace(".", "") + "000").slice(0, 4);
-            return (value < 0 ? "-" : "") + digits[0] + "." + digits.slice(1) + "e" + parts[1];
+
+        let lower = histogramData.edges[index];
+        let upper = histogramData.edges[index + 1];
+        let origin = histogramData.origin;
+        let lowerText = String(lower);
+        let upperText = String(upper);
+        let originText = origin === undefined ? "" : String(origin);
+        if (!precise) {
+            let locale = Qt.locale("C");
+            // 只在不同箱界简写重合时逐位提高精度，仍无法分辨则沿用完整值。
+            for (let digits = 4; digits < 17; ++digits) {
+                let shortLower = lower.toLocaleString(locale, "g", digits);
+                let shortUpper = upper.toLocaleString(locale, "g", digits);
+                if (lower === upper || shortLower !== shortUpper) {
+                    lowerText = shortLower;
+                    upperText = shortUpper;
+                    break;
+                }
+            }
+            if (origin !== undefined)
+                originText = origin.toLocaleString(locale, "g", 4);
         }
-        let text = String(value);
-        let point = text.indexOf(".");
-        return point < 0 ? text : text.slice(0, point + 4).replace(/\.?0+$/, "");
+
+        let quantity = qsTr("数量：%1").arg(histogramCounts[index]);
+        let shortened = Number(lowerText) !== lower || Number(upperText) !== upper
+            || (origin !== undefined && Number(originText) !== origin);
+        if (shortened) {
+            // 经过舍入的箱界以简写展示，精确开闭区间留给原值。
+            let label = origin === undefined ? qsTr("区间：%1–%2").arg(lowerText).arg(upperText)
+                : qsTr("相对 %1 的偏移简写：%2–%3").arg(originText).arg(lowerText).arg(upperText);
+            return label + "\n" + quantity ;
+        }
+
+        let closing = index === count - 1 ? "]" : ")";
+        let interval = "[" + lowerText + ", " + upperText + closing;
+        let label = origin === undefined ? qsTr("区间：%1").arg(interval)
+            : qsTr("相对 %1 的偏移：%2").arg(originText).arg(interval);
+        return label + "\n" + quantity;
+    }
+
+    // 图表独立使用统计边界归一化，跨正负极值时减半避免跨度溢出。
+    function histogramEdgePosition(index) {
+        if (!histogramCounts.length)
+            return 0;
+        let edges = histogramData.edges;
+        let lower = edges[0];
+        let upper = edges[edges.length - 1];
+        if (lower === upper)
+            return index === 0 ? 0 : 1;
+        let span = upper - lower;
+        return Number.isFinite(span) ? (edges[index] - lower) / span : (edges[index] / 2 - lower / 2) / (upper / 2 - lower / 2);
+    }
+
+    // 鼠标按实际边界选箱，内部端点属于右箱，最后一箱包含右端。
+    function histogramBinAt(position) {
+        for (let index = 0; index < histogramCounts.length; ++index) {
+            if (position < histogramEdgePosition(index + 1))
+                return index;
+        }
+        return histogramCounts.length - 1;
     }
 
     // 空值保留策略默认值，未完成的文本不会被转换成零。
@@ -52,7 +114,7 @@ ColumnLayout {
         return Number.isFinite(value) ? value : null;
     }
 
-    // 仅首次编辑捕获精确的另一端，不从已格式化的输入文本反推数值。
+    // 草稿只记录实际输入的端点，未编辑端从首次编辑时的参数快照取值。
     function editField(lowerField, text) {
         flushPendingRange();
         if (!attributeKey)
@@ -60,9 +122,9 @@ ColumnLayout {
         let edit = draft || {
             key: attributeKey,
             display: displayMode,
-            lower: displayMode ? parameters.displayLower : parameters.mappingLower,
-            upper: displayMode ? parameters.displayUpper : parameters.mappingUpper,
             hasRange: !!metadata.valid,
+            minimum: metadata.minimum,
+            maximum: metadata.maximum,
             rangeAvailable: !!metadata.rangeAvailable,
             parameters: Object.assign({}, parameters)
         };
@@ -97,6 +159,19 @@ ColumnLayout {
             } : null;
         let lower = edit.lower;
         let upper = edit.upper;
+        // 仅在编辑可见单元时限制手输端点，颜色映射允许使用跨组件共用的值域。
+        if (draft && edit.display && edit.hasRange) {
+            let bounds = edit.key === attributeKey && metadata.valid ? metadata : edit;
+            if (Number.isFinite(lower))
+                lower = Math.min(bounds.maximum, Math.max(bounds.minimum, lower));
+            if (Number.isFinite(upper))
+                upper = Math.min(bounds.maximum, Math.max(bounds.minimum, upper));
+        }
+        // 缺少端点表示没有编辑，null 表示用户输入了无效文本。
+        if (lower === undefined)
+            lower = edit.display ? edit.parameters.displayLower : edit.parameters.mappingLower;
+        if (upper === undefined)
+            upper = edit.display ? edit.parameters.displayUpper : edit.parameters.mappingUpper;
         if (edit.hasRange && (!Number.isFinite(lower) || !Number.isFinite(upper))) {
             rangeError = qsTr("请输入有限数值");
             return false;
@@ -261,6 +336,8 @@ ColumnLayout {
         rangeMaxField.focus = false;
         rangeMinField.text = "";
         rangeMaxField.text = "";
+        // 可筛选属性默认编辑可见单元，其他属性使用颜色映射。
+        displayMode = !!metadata.rangeAvailable;
         refreshValues();
     }
     onParametersChanged: refreshValues()
@@ -313,9 +390,64 @@ ColumnLayout {
     }
 
     RowLayout {
+        Layout.fillWidth: true
+        spacing: Theme.spacingSm
+
+        ToolButton {
+            id: rangeSectionButton
+            objectName: "scalarRangeToggle"
+            text: (root.expanded ? "▾ " : "▸ ") + qsTr("分布与范围")
+            font.pixelSize: Theme.fontSizeBody
+            font.weight: Font.Medium
+            leftPadding: 0
+            rightPadding: Theme.spacingXs
+            focusPolicy: Qt.TabFocus
+            Accessible.name: root.expanded ? qsTr("收起分布与范围") : qsTr("展开分布与范围")
+            Accessible.checkable: true
+            Accessible.checked: root.expanded
+            onClicked: {
+                // 先移交焦点，让输入框按原规则处理草稿，再收起内容。
+                forceActiveFocus();
+                root.expanded = !root.expanded;
+            }
+        }
+        Label {
+            objectName: "scalarRangeSummary"
+            Layout.fillWidth: true
+            Layout.minimumWidth: 0
+            visible: !root.expanded
+            color: Theme.textSecondary
+            font.pixelSize: Theme.fontSizeCaption
+            horizontalAlignment: Text.AlignRight
+            elide: Text.ElideRight
+            text: !root.metadata.valid ? qsTr("暂无有效范围") : root.parameters.filtered && root.metadata.rangeAvailable ? qsTr("可见单元 %1–%2").arg(root.formatRangeValue(root.parameters.displayLower)).arg(root.formatRangeValue(root.parameters.displayUpper)) : qsTr("颜色映射 %1–%2").arg(root.formatRangeValue(root.parameters.mappingLower)).arg(root.formatRangeValue(root.parameters.mappingUpper))
+            ToolTip.visible: !root.expanded && (rangeSectionButton.hovered || rangeSectionButton.visualFocus)
+            ToolTip.text: text
+            ToolTip.delay: 400
+        }
+        ToolButton {
+            id: histogramScaleButton
+            objectName: "scalarHistogramScale"
+            text: checked ? qsTr("对数高度") : qsTr("线性高度")
+            checkable: true
+            checked: false
+            visible: root.expanded
+            enabled: !!root.metadata.valid
+            focusPolicy: Qt.TabFocus
+            ToolTip.visible: hovered || visualFocus
+            ToolTip.text: checked ? qsTr("当前为对数高度，点击切换为线性高度；数量不变") : qsTr("当前为线性高度，点击切换为对数高度；数量不变")
+            ToolTip.delay: 400
+        }
+        Item {
+            Layout.fillWidth: true
+            visible: root.expanded
+        }
+    }
+
+    RowLayout {
         objectName: "scalarOriginalRange"
         Layout.fillWidth: true
-        visible: !!root.metadata.valid
+        visible: root.expanded && !!root.metadata.valid
         spacing: Theme.spacingSm
 
         Label {
@@ -337,9 +469,69 @@ ColumnLayout {
         }
     }
 
+    Item {
+        id: histogramPlot
+        objectName: "scalarHistogramPlot"
+        Layout.fillWidth: true
+        Layout.preferredHeight: 48
+        visible: root.expanded && root.metadata.valid && root.histogramCounts.length > 0
+        readonly property real peak: Math.max(1, ...root.histogramCounts)
+        readonly property real heightPeak: root.histogramLogarithmic ? Math.log1p(peak) : peak
+        readonly property bool constant: root.metadata.minimum === root.metadata.maximum
+        Accessible.role: Accessible.Chart
+        Accessible.name: qsTr("原始标量分布，共 %1 个有效值").arg(root.histogramCounts.reduce((sum, count) => sum + count, 0))
+
+        Item {
+            id: histogramBars
+            // 原始分布使用自己的横轴；常量只有一个值，居中绘制单柱。
+            x: (parent.width - width) / 2
+            width: histogramPlot.constant ? Math.min(8, parent.width) : parent.width
+            height: parent.height
+            readonly property int hoveredBin: histogramHover.hovered && width > 0 ? root.histogramBinAt(histogramHover.point.position.x / width) : -1
+            property bool preciseHover: false
+            readonly property string hoverText: root.histogramBinText(hoveredBin, preciseHover)
+            // 精确显示只属于本次悬停的箱，移开后恢复简写。
+            onHoveredBinChanged: preciseHover = false
+            ToolTip.visible: histogramHover.hovered && hoverText.length > 0
+            ToolTip.text: hoverText
+            ToolTip.delay: 150
+
+            HoverHandler {
+                id: histogramHover
+                objectName: "scalarHistogramHover"
+                enabled: histogramPlot.visible
+                blocking: false
+            }
+
+            TapHandler {
+                acceptedButtons: Qt.LeftButton
+                enabled: histogramBars.hoveredBin >= 0
+                onTapped: histogramBars.preciseHover = true
+            }
+
+            Repeater {
+                model: root.histogramCounts
+                Rectangle {
+                    required property int index
+                    required property real modelData
+                    readonly property real startPosition: root.histogramEdgePosition(index)
+                    readonly property real endPosition: root.histogramEdgePosition(index + 1)
+                    readonly property real intervalWidth: (endPosition - startPosition) * histogramBars.width
+                    x: startPosition * histogramBars.width
+                    y: histogramBars.height - height
+                    width: histogramPlot.constant ? intervalWidth : intervalWidth * 0.9
+                    // 对数高度突出稀少区间，仍保留 2px 下限；缩放不改写真实计数。
+                    height: modelData > 0 ? Math.min(histogramBars.height, Math.max(2, (root.histogramLogarithmic ? Math.log1p(modelData) : modelData) / histogramPlot.heightPeak * histogramBars.height)) : 0
+                    color: Theme.textSecondary
+                }
+            }
+        }
+    }
+
     RangeSlider {
         id: rangeSlider
         objectName: "scalarRangeSlider"
+        visible: root.expanded
         Layout.fillWidth: true
         Layout.minimumWidth: 0
         enabled: !!root.metadata.valid
@@ -406,6 +598,7 @@ ColumnLayout {
 
     RowLayout {
         Layout.fillWidth: true
+        visible: root.expanded
         spacing: Theme.spacingSm
 
         TextField {
@@ -439,6 +632,7 @@ ColumnLayout {
     GridLayout {
         Layout.fillWidth: true
         Layout.minimumWidth: 0
+        visible: root.expanded
         columns: width >= rangeModeGroup.implicitWidth + rangeResetButton.implicitWidth + columnSpacing ? 2 : 1
         columnSpacing: Theme.spacingSm
         rowSpacing: Theme.spacingXs
@@ -458,24 +652,22 @@ ColumnLayout {
                 spacing: 2
 
                 RangeModeButton {
-                    id: mappingModeButton
-                    objectName: "scalarMappingMode"
+                    id: displayModeButton
+                    objectName: "scalarDisplayMode"
                     Layout.fillWidth: true
                     Layout.minimumWidth: implicitWidth
                     Layout.preferredWidth: 1
-                    text: qsTr("颜色映射")
-                    // 联动时共同高亮，解绑后仍由当前编辑模式决定单选。
-                    selected: !!root.parameters.linked || !root.displayMode
-                    enabled: !!root.metadata.valid
-                    onClicked: root.changeRangeMode(false)
+                    text: qsTr("可见单元")
+                    selected: !!root.parameters.linked || root.displayMode
+                    enabled: !!root.metadata.rangeAvailable
+                    onClicked: root.changeRangeMode(true)
                     Keys.onRightPressed: {
-                        if (displayModeButton.enabled) {
-                            displayModeButton.forceActiveFocus();
-                            root.changeRangeMode(true);
-                        }
+                        mappingModeButton.forceActiveFocus();
+                        root.changeRangeMode(false);
                     }
+                    Accessible.description: qsTr("隐藏范围外的边、面或体单元；节点属性不支持此操作")
                     ToolTip.visible: hovered || visualFocus
-                    ToolTip.text: root.parameters.linked ? qsTr("编辑颜色映射范围，同步可见单元范围") : qsTr("编辑颜色映射范围，保留可见单元范围")
+                    ToolTip.text: root.parameters.linked ? qsTr("编辑可见单元范围，同步颜色映射范围") : qsTr("编辑可见单元范围，隐藏范围外的单元并保留颜色映射")
                     ToolTip.delay: 400
                 }
                 ToolButton {
@@ -501,22 +693,24 @@ ColumnLayout {
                     onClicked: root.toggleLinked()
                 }
                 RangeModeButton {
-                    id: displayModeButton
-                    objectName: "scalarDisplayMode"
+                    id: mappingModeButton
+                    objectName: "scalarMappingMode"
                     Layout.fillWidth: true
                     Layout.minimumWidth: implicitWidth
                     Layout.preferredWidth: 1
-                    text: qsTr("可见单元")
-                    selected: !!root.parameters.linked || root.displayMode
-                    enabled: !!root.metadata.rangeAvailable
-                    onClicked: root.changeRangeMode(true)
+                    text: qsTr("颜色映射")
+                    // 联动时共同高亮，解绑后仍由当前编辑模式决定单选。
+                    selected: !!root.parameters.linked || !root.displayMode
+                    enabled: !!root.metadata.valid
+                    onClicked: root.changeRangeMode(false)
                     Keys.onLeftPressed: {
-                        mappingModeButton.forceActiveFocus();
-                        root.changeRangeMode(false);
+                        if (displayModeButton.enabled) {
+                            displayModeButton.forceActiveFocus();
+                            root.changeRangeMode(true);
+                        }
                     }
-                    Accessible.description: qsTr("隐藏范围外的边、面或体单元；节点属性不支持此操作")
                     ToolTip.visible: hovered || visualFocus
-                    ToolTip.text: root.parameters.linked ? qsTr("编辑可见单元范围，同步颜色映射范围") : qsTr("编辑可见单元范围，隐藏范围外的单元并保留颜色映射")
+                    ToolTip.text: root.parameters.linked ? qsTr("编辑颜色映射范围，同步可见单元范围") : qsTr("编辑颜色映射范围，保留可见单元范围")
                     ToolTip.delay: 400
                 }
             }
@@ -551,7 +745,7 @@ ColumnLayout {
 
     Label {
         Layout.fillWidth: true
-        visible: root.rangeError.length > 0 || !root.metadata.valid
+        visible: root.expanded && (root.rangeError.length > 0 || !root.metadata.valid)
         wrapMode: Text.Wrap
         color: Theme.textSecondary
         text: root.rangeError || qsTr("请选择有效的标量属性")

@@ -257,8 +257,8 @@ signals:
     void darkBackgroundChanged();
     void clicked();
     void rightClicked();
-    /** @brief 原始属性数据变化，通知界面重新查询元信息。 */
-    void scalarRangeChanged();
+    /** @brief 原始属性数据变化，携带组件身份供界面仅刷新对应的元信息和分布。 */
+    void scalarRangeChanged(Index component_id);
     /** @brief 在 GUI 决定显隐后同步通知对象树，渲染线程只安装结果。 */
     void componentVisibilityChanged(Index component_id, bool mesh_visible, bool geometry_visible);
 

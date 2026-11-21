@@ -11,7 +11,12 @@
 
 #include <TopAbs_ShapeEnum.hxx>
 
+#include <algorithm>
+#include <cmath>
+#include <limits>
 #include <map>
+#include <numeric>
+#include <utility>
 
 namespace session {
 namespace {
@@ -324,6 +329,85 @@ std::vector<AttributeInfo> SessionQuery::componentAttributeInfos(Index component
     appendAttributeInfos(out, mesh.face_attributes_, ElementEnum::Type::Face, "面", 2, face_count);
     appendAttributeInfos(out, mesh.solid_attributes_, ElementEnum::Type::Solid, "体", 3, solid_count);
     return out;
+}
+
+std::optional<ScalarHistogram> SessionQuery::scalarHistogram(Index component_id, const std::string& attribute) const
+{
+    const auto* component = model_.findComponent(component_id);
+    if (!component || !component->mesh)
+        return std::nullopt;
+    const auto& mesh = *component->mesh;
+    const std::vector<double>* values = nullptr;
+    // 与渲染数组的构建和查找一致：跳过空、长度无效的数组，首个有效同名属性决定实体域。
+    for (const auto& [attributes, tuple_count] : {
+             std::pair { &mesh.vertex_attributes_, mesh.vertex_positions_.size() },
+             std::pair { &mesh.edge_attributes_, mesh.edge_vertices_.size() / 2 },
+             std::pair { &mesh.face_attributes_, mesh.face_vertices_offset_.empty() ? 0 : mesh.face_vertices_offset_.size() - 1 },
+             std::pair { &mesh.solid_attributes_, mesh.solid_vertices_offset_.empty() ? 0 : mesh.solid_vertices_offset_.size() - 1 } }) {
+        const auto found = attributes->find(attribute);
+        if (found == attributes->end() || found->second.empty() || tuple_count == 0 || found->second.size() % tuple_count != 0)
+            continue;
+        // 有效多分量属性仍占据查找优先级，不改用后面的同名单值属性。
+        if (found->second.size() != tuple_count)
+            return std::nullopt;
+        values = &found->second;
+        break;
+    }
+    if (!values)
+        return std::nullopt;
+
+    double lower = std::numeric_limits<double>::infinity();
+    double upper = -lower;
+    // 完整原始属性不受人工隐藏、显示范围和裁剪影响。
+    for (const double value : *values) {
+        if (std::isfinite(value)) {
+            lower = std::min(lower, value);
+            upper = std::max(upper, value);
+        }
+    }
+    if (lower > upper)
+        return std::nullopt;
+    constexpr size_t bin_count = 32;
+    ScalarHistogram result;
+    if (lower == upper) {
+        result.edges = { lower, upper };
+    } else {
+        const double span = upper - lower;
+        const double lower_spacing = std::nextafter(lower, upper) - lower;
+        const double upper_spacing = upper - std::nextafter(upper, lower);
+        const double spacing = std::max(lower_spacing, upper_spacing);
+        // 箱宽小于绝对端点的浮点间距时，用相对偏移保存可分辨的箱界。
+        if (span / bin_count < spacing && spacing > std::numeric_limits<double>::denorm_min()) {
+            result.origin = lower;
+            lower = 0.0;
+            upper = span;
+        }
+
+        // 使用固定间距插值，分用两半值域避免跨正负极值时跨度溢出。
+        const double midpoint = std::midpoint(lower, upper);
+        result.edges.resize(bin_count + 1);
+        for (size_t i = 0; i <= bin_count; ++i) {
+            const double fraction = static_cast<double>(i) / bin_count;
+            result.edges[i] = fraction <= 0.5 ? std::lerp(lower, midpoint, fraction * 2)
+                                              : std::lerp(midpoint, upper, fraction * 2 - 1);
+        }
+        // 极小跨度下相邻箱界可能只能表示成同一个数，合并零宽箱。
+        result.edges.erase(std::unique(result.edges.begin(), result.edges.end()), result.edges.end());
+    }
+    result.counts.resize(result.edges.size() - 1);
+
+    // 比较同一套内部边界，等于边界的样本进入右箱；最大值留在最后一箱。
+    const auto first_boundary = result.edges.begin() + 1;
+    const auto last_boundary = result.edges.end() - 1;
+    for (double value : *values) {
+        if (!std::isfinite(value))
+            continue;
+        if (result.origin)
+            value -= *result.origin;
+        const auto bin = std::upper_bound(first_boundary, last_boundary, value) - first_boundary;
+        ++result.counts[bin];
+    }
+    return result;
 }
 
 std::optional<GeomFaceId> SessionQuery::resolveGeometryFaceLocalId(Index component_id, int local_face_id) const
