@@ -68,8 +68,11 @@ struct AttributeInfo {
     int component_count { 0 }; //> 分量数（按元组大小换算）
 };
 
-/** @brief 原始分布的计数及归箱边界；必要时边界用相对原点的偏移表示。 */
+/** @brief 原始分布计数，按实际值或区间表示。 */
 struct ScalarHistogram {
+    /** @brief 离散分布的实际取值，与 counts 一一对应。 */
+    std::vector<double> values;
+    /** @brief 连续分布的箱界，必要时用相对 origin 的偏移表示。 */
     std::vector<double> edges;
     std::vector<std::uint64_t> counts;
     std::optional<double> origin;

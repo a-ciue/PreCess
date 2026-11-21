@@ -23,6 +23,7 @@ ColumnLayout {
     property alias histogramLogarithmic: histogramScaleButton.checked
     property var histogramData: ({})
     readonly property var histogramCounts: histogramData.counts || []
+    readonly property var histogramValues: histogramData.values || []
     // 草稿与有效待发送请求各自携带目标身份，属性切换不会把旧值写入新属性。
     property var draft: null
     property var pendingRange: null
@@ -40,25 +41,60 @@ ColumnLayout {
         return Number.isFinite(value) ? value.toLocaleString(Qt.locale("C"), "g", 3) : "";
     }
 
-    // 直接显示实际参与归箱的区间和数量。
-    function histogramBinText(index) {
+    // 离散柱直接显示实际值；连续箱悬停时简写，点击后显示原始边界。
+    function histogramBinText(index, precise) {
         let count = histogramCounts.length;
         if (index < 0 || index >= count)
             return "";
-        let lowerText = String(histogramData.edges[index]);
-        let upperText = String(histogramData.edges[index + 1]);
+        if (histogramValues.length)
+            return qsTr("值：%1\n数量：%2").arg(String(histogramValues[index])).arg(histogramCounts[index]);
+
+        let lower = histogramData.edges[index];
+        let upper = histogramData.edges[index + 1];
+        let origin = histogramData.origin;
+        let lowerText = String(lower);
+        let upperText = String(upper);
+        let originText = origin === undefined ? "" : String(origin);
+        if (!precise) {
+            let locale = Qt.locale("C");
+            // 只在不同箱界简写重合时逐位提高精度，仍无法分辨则沿用完整值。
+            for (let digits = 4; digits < 17; ++digits) {
+                let shortLower = lower.toLocaleString(locale, "g", digits);
+                let shortUpper = upper.toLocaleString(locale, "g", digits);
+                if (lower === upper || shortLower !== shortUpper) {
+                    lowerText = shortLower;
+                    upperText = shortUpper;
+                    break;
+                }
+            }
+            if (origin !== undefined)
+                originText = origin.toLocaleString(locale, "g", 4);
+        }
+
+        let quantity = qsTr("数量：%1").arg(histogramCounts[index]);
+        let shortened = Number(lowerText) !== lower || Number(upperText) !== upper
+            || (origin !== undefined && Number(originText) !== origin);
+        if (shortened) {
+            // 经过舍入的箱界以简写展示，精确开闭区间留给原值。
+            let label = origin === undefined ? qsTr("区间简写：%1–%2").arg(lowerText).arg(upperText)
+                : qsTr("相对 %1 的偏移简写：%2–%3").arg(originText).arg(lowerText).arg(upperText);
+            return label + "\n" + quantity + "\n" + qsTr("点击查看精确箱界");
+        }
+
         let closing = index === count - 1 ? "]" : ")";
         let interval = "[" + lowerText + ", " + upperText + closing;
-        if (histogramData.origin !== undefined)
-            return qsTr("相对 %1 的偏移：%2\n数量：%3").arg(String(histogramData.origin)).arg(interval).arg(histogramCounts[index]);
-        return qsTr("区间：%1\n数量：%2").arg(interval).arg(histogramCounts[index]);
+        let label = origin === undefined ? qsTr("区间：%1").arg(interval)
+            : qsTr("相对 %1 的偏移：%2").arg(originText).arg(interval);
+        return label + "\n" + quantity;
     }
 
-    // 图表独立使用统计边界归一化，跨正负极值时减半避免跨度溢出。
+    // 离散值按顺序分配等宽位置；连续箱跨正负极值时减半归一化。
     function histogramEdgePosition(index) {
-        let edges = histogramData.edges || [];
         if (!histogramCounts.length)
             return 0;
+        if (histogramValues.length)
+            return index / histogramValues.length;
+        let edges = histogramData.edges;
         let lower = edges[0];
         let upper = edges[edges.length - 1];
         if (lower === upper)
@@ -457,7 +493,10 @@ ColumnLayout {
             width: histogramPlot.constant ? Math.min(8, parent.width) : parent.width
             height: parent.height
             readonly property int hoveredBin: histogramHover.hovered && width > 0 ? root.histogramBinAt(histogramHover.point.position.x / width) : -1
-            readonly property string hoverText: root.histogramBinText(hoveredBin)
+            property bool preciseHover: false
+            readonly property string hoverText: root.histogramBinText(hoveredBin, preciseHover)
+            // 精确显示只属于本次悬停的箱，移开后恢复简写。
+            onHoveredBinChanged: preciseHover = false
             ToolTip.visible: histogramHover.hovered && hoverText.length > 0
             ToolTip.text: hoverText
             ToolTip.delay: 150
@@ -469,6 +508,12 @@ ColumnLayout {
                 blocking: false
             }
 
+            TapHandler {
+                acceptedButtons: Qt.LeftButton
+                enabled: histogramBars.hoveredBin >= 0 && !root.histogramValues.length
+                onTapped: histogramBars.preciseHover = true
+            }
+
             Repeater {
                 model: root.histogramCounts
                 Rectangle {
@@ -477,9 +522,9 @@ ColumnLayout {
                     readonly property real startPosition: root.histogramEdgePosition(index)
                     readonly property real endPosition: root.histogramEdgePosition(index + 1)
                     readonly property real intervalWidth: (endPosition - startPosition) * histogramBars.width
-                    x: startPosition * histogramBars.width
+                    x: startPosition * histogramBars.width + (root.histogramValues.length ? (intervalWidth - width) / 2 : 0)
                     y: histogramBars.height - height
-                    width: histogramPlot.constant ? intervalWidth : intervalWidth * 0.9
+                    width: histogramPlot.constant ? intervalWidth : root.histogramValues.length ? Math.min(intervalWidth * 0.8, 18) : intervalWidth * 0.9
                     // 对数高度突出稀少区间，仍保留 2px 下限；缩放不改写真实计数。
                     height: modelData > 0 ? Math.min(histogramBars.height, Math.max(2, (root.histogramLogarithmic ? Math.log1p(modelData) : modelData) / histogramPlot.heightPeak * histogramBars.height)) : 0
                     color: Theme.textSecondary

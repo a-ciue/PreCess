@@ -356,44 +356,53 @@ std::optional<ScalarHistogram> SessionQuery::scalarHistogram(Index component_id,
     if (!values)
         return std::nullopt;
 
+    constexpr size_t bin_count = 32;
+    std::map<double, std::uint64_t> value_counts;
     double lower = std::numeric_limits<double>::infinity();
     double upper = -lower;
-    // 完整原始属性不受人工隐藏、显示范围和裁剪影响。
+    // 同时求有限值域和逐值计数。超过图表容量后，只继续求值域。
     for (const double value : *values) {
-        if (std::isfinite(value)) {
-            lower = std::min(lower, value);
-            upper = std::max(upper, value);
-        }
+        if (!std::isfinite(value))
+            continue;
+        lower = std::min(lower, value);
+        upper = std::max(upper, value);
+        if (value_counts.size() <= bin_count)
+            ++value_counts[value];
     }
-    if (lower > upper)
+    if (value_counts.empty())
         return std::nullopt;
-    constexpr size_t bin_count = 32;
-    ScalarHistogram result;
-    if (lower == upper) {
-        result.edges = { lower, upper };
-    } else {
-        const double span = upper - lower;
-        const double lower_spacing = std::nextafter(lower, upper) - lower;
-        const double upper_spacing = upper - std::nextafter(upper, lower);
-        const double spacing = std::max(lower_spacing, upper_spacing);
-        // 箱宽小于绝对端点的浮点间距时，用相对偏移保存可分辨的箱界。
-        if (span / bin_count < spacing && spacing > std::numeric_limits<double>::denorm_min()) {
-            result.origin = lower;
-            lower = 0.0;
-            upper = span;
-        }
 
-        // 使用固定间距插值，分用两半值域避免跨正负极值时跨度溢出。
-        const double midpoint = std::midpoint(lower, upper);
-        result.edges.resize(bin_count + 1);
-        for (size_t i = 0; i <= bin_count; ++i) {
-            const double fraction = static_cast<double>(i) / bin_count;
-            result.edges[i] = fraction <= 0.5 ? std::lerp(lower, midpoint, fraction * 2)
-                                              : std::lerp(midpoint, upper, fraction * 2 - 1);
+    ScalarHistogram result;
+    if (value_counts.size() <= bin_count) {
+        // 少量不同值直接按实际取值排序统计，不产生没有数据的区间。
+        for (const auto& [value, count] : value_counts) {
+            result.values.push_back(value);
+            result.counts.push_back(count);
         }
-        // 极小跨度下相邻箱界可能只能表示成同一个数，合并零宽箱。
-        result.edges.erase(std::unique(result.edges.begin(), result.edges.end()), result.edges.end());
+        return result;
     }
+
+    const double span = upper - lower;
+    const double lower_spacing = std::nextafter(lower, upper) - lower;
+    const double upper_spacing = upper - std::nextafter(upper, lower);
+    const double spacing = std::max(lower_spacing, upper_spacing);
+    // 箱宽小于绝对端点的浮点间距时，用相对偏移保存可分辨的箱界。
+    if (span / bin_count < spacing && spacing > std::numeric_limits<double>::denorm_min()) {
+        result.origin = lower;
+        lower = 0.0;
+        upper = span;
+    }
+
+    // 使用固定间距插值，分用两半值域避免跨正负极值时跨度溢出。
+    const double midpoint = std::midpoint(lower, upper);
+    result.edges.resize(bin_count + 1);
+    for (size_t i = 0; i <= bin_count; ++i) {
+        const double fraction = static_cast<double>(i) / bin_count;
+        result.edges[i] = fraction <= 0.5 ? std::lerp(lower, midpoint, fraction * 2)
+                                          : std::lerp(midpoint, upper, fraction * 2 - 1);
+    }
+    // 极小跨度下相邻箱界可能只能表示成同一个数，合并零宽箱。
+    result.edges.erase(std::unique(result.edges.begin(), result.edges.end()), result.edges.end());
     result.counts.resize(result.edges.size() - 1);
 
     // 比较同一套内部边界，等于边界的样本进入右箱；最大值留在最后一箱。
