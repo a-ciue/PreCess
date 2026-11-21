@@ -96,13 +96,11 @@ QVariantMap QModelQuery::scalarHistogramInfo(Index component_id, const QString& 
     counts.reserve(histogram->counts.size());
     for (const auto count : histogram->counts)
         counts.append(QVariant::fromValue(static_cast<qlonglong>(count)));
-    const bool discrete = !histogram->values.empty();
-    const auto& positions = discrete ? histogram->values : histogram->edges;
-    QVariantList boundaries;
-    boundaries.reserve(positions.size());
-    for (const auto position : positions)
-        boundaries.append(position);
-    QVariantMap result { { "counts", counts }, { discrete ? "values" : "edges", boundaries } };
+    QVariantList edges;
+    edges.reserve(histogram->edges.size());
+    for (const auto edge : histogram->edges)
+        edges.append(edge);
+    QVariantMap result { { "counts", counts }, { "edges", edges } };
     if (histogram->origin)
         result.insert("origin", *histogram->origin);
     return result;

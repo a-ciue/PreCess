@@ -187,61 +187,28 @@ TEST_CASE("SessionQuery histogram uses original finite values and refreshes with
     components.push_back(std::move(component));
     const auto model_id = layer.addModel("histogram", std::move(components));
     const auto component_id = layer.modelById(model_id)->componentIds().front();
-    // 让每轮输入都有对应的合法面元组数，便于分别覆盖稀疏值和密集数据。
-    const auto set_face_values = [&mesh](std::vector<double> values) {
-        mesh.face_vertices_.clear();
-        mesh.face_vertices_offset_ = { 0 };
-        for (size_t i = 0; i < values.size(); ++i) {
-            mesh.face_vertices_.insert(mesh.face_vertices_.end(), { 0, 1, 2 });
-            mesh.face_vertices_offset_.push_back(static_cast<Index>(mesh.face_vertices_.size()));
-        }
-        mesh.face_attributes_["value"] = std::move(values);
-    };
-
-    // 234 条边属性记录只有五个 ID；记录数和值域大小都不决定柱数。
-    std::vector<double> loop_ids;
-    const std::vector<std::uint64_t> loop_counts { 58, 58, 30, 58, 30 };
-    for (size_t i = 0; i < loop_counts.size(); ++i)
-        loop_ids.insert(loop_ids.end(), loop_counts[i], static_cast<double>(i));
-    loop_ids.push_back(std::numeric_limits<double>::quiet_NaN());
-    loop_ids.push_back(std::numeric_limits<double>::infinity());
-    set_face_values(std::move(loop_ids));
-    const auto discrete = query.scalarHistogram(component_id, "value");
-    REQUIRE(discrete);
-    CHECK(discrete->values == std::vector<double> { 0, 1, 2, 3, 4 });
-    CHECK(discrete->counts == loop_counts);
-    CHECK(discrete->edges.empty());
-
-    // 大跨度或非整数也可以是逐值分布，空缺整数不补柱。
-    set_face_values({ 1000, -2.5, 1000, -2.5, 1000 });
-    const auto sparse = query.scalarHistogram(component_id, "value");
-    REQUIRE(sparse);
-    CHECK(sparse->values == std::vector<double> { -2.5, 1000 });
-    CHECK(sparse->counts == std::vector<std::uint64_t> { 2, 3 });
-
-    // 超过 32 个不同值后启用等宽箱，验证箱界两侧及最右端的归箱。
+    mesh.face_attributes_["value"] = { -1.0, 0.0, 1.0, std::numeric_limits<double>::quiet_NaN(), std::numeric_limits<double>::infinity() };
+    const auto histogram = query.scalarHistogram(component_id, "value");
+    REQUIRE(histogram);
+    const auto& counts = histogram->counts;
+    REQUIRE(counts.size() == 32);
+    CHECK(std::accumulate(counts.begin(), counts.end(), std::uint64_t { 0 }) == 3);
+    CHECK(counts.front() == 1);
+    CHECK(counts[16] == 1);
+    CHECK(counts.back() == 1);
+    // 边界前后相邻的双精度值按实际提示边界归箱，最大值包含在最后一箱。
     const double boundary = 1.0 / 32;
-    std::vector<double> sampled;
-    for (int i = 0; i <= 64; ++i)
-        sampled.push_back(i / 64.0);
-    sampled.push_back(std::nextafter(boundary, 0.0));
-    sampled.push_back(std::nextafter(boundary, 1.0));
-    set_face_values(std::move(sampled));
+    mesh.face_attributes_["value"] = { 0.0, std::nextafter(boundary, 0.0), boundary, std::nextafter(boundary, 1.0), 1.0 };
     const auto boundary_histogram = query.scalarHistogram(component_id, "value");
     REQUIRE(boundary_histogram);
-    CHECK(boundary_histogram->values.empty());
-    REQUIRE(boundary_histogram->counts.size() == 32);
     CHECK(boundary_histogram->edges[1] == boundary);
-    CHECK(boundary_histogram->counts.front() == 3);
-    CHECK(boundary_histogram->counts[1] == 3);
+    CHECK(boundary_histogram->counts.front() == 2);
+    CHECK(boundary_histogram->counts[1] == 2);
     CHECK(boundary_histogram->edges.back() == 1.0);
-    CHECK(boundary_histogram->counts.back() == 3);
+    CHECK(boundary_histogram->counts.back() == 1);
 
     // 两端保留实际极值，首尾和内部使用同一箱宽。
-    std::vector<double> irregular;
-    for (int i = 0; i <= 64; ++i)
-        irregular.push_back(std::lerp(0.0123, 0.1234, i / 64.0));
-    set_face_values(std::move(irregular));
+    mesh.face_attributes_["value"] = { 0.0123, 0.02, 0.07, 0.1, 0.1234 };
     const auto updated = query.scalarHistogram(component_id, "value");
     REQUIRE(updated);
     REQUIRE(updated->edges.size() == 33);
@@ -250,8 +217,7 @@ TEST_CASE("SessionQuery histogram uses original finite values and refreshes with
     const double width = (updated->edges.back() - updated->edges.front()) / 32;
     for (size_t i = 1; i < updated->edges.size(); ++i)
         CHECK(std::abs(updated->edges[i] - updated->edges[i - 1] - width) < 1e-16);
-    CHECK(std::accumulate(updated->counts.begin(), updated->counts.end(), std::uint64_t { 0 }) == 65);
-    set_face_values({ 0, 1, 2, 3, 4 });
+    CHECK(std::accumulate(updated->counts.begin(), updated->counts.end(), std::uint64_t { 0 }) == 5);
     // 点、边、体同样统计原始数组，不限于质量指标或可筛选的实体域。
     for (const auto* attribute : { "point_value", "edge_value", "solid_value" }) {
         const auto histogram = query.scalarHistogram(component_id, attribute);
@@ -260,53 +226,35 @@ TEST_CASE("SessionQuery histogram uses original finite values and refreshes with
     }
     CHECK_FALSE(query.scalarHistogram(component_id, "missing"));
     CHECK_FALSE(query.scalarHistogram(component_id, "vector"));
-    // 跨浮点间距变化处有超过 32 个值，偏移箱界仍能保留 3 的箱宽。
-    const double base = std::ldexp(1.0, 54);
-    std::vector<double> narrow;
-    for (int i = -64; i < 0; i += 2)
-        narrow.push_back(base + i);
-    for (int i = 0; i <= 32; i += 4)
-        narrow.push_back(base + i);
-    set_face_values(std::move(narrow));
-    const auto relative = query.scalarHistogram(component_id, "value");
-    REQUIRE(relative);
-    REQUIRE(relative->origin);
-    CHECK(*relative->origin == base - 64);
-    REQUIRE(relative->edges.size() == 33);
-    CHECK(relative->edges[1] == 3.0);
-    CHECK(relative->edges.back() == 96.0);
-    CHECK(std::accumulate(relative->counts.begin(), relative->counts.end(), std::uint64_t { 0 }) == 41);
-
-    // 跨正负极值时跨度溢出仍能产生有限边界，保留全部计数。
+    // 大数值窄区间保留分箱精度，跨正负极值时仍能避免差值溢出。
     const double largest = std::numeric_limits<double>::max();
-    std::vector<double> extremes;
-    for (int i = -32; i <= 32; ++i)
-        extremes.push_back(largest * (i / 32.0));
-    set_face_values(std::move(extremes));
-    const auto wide = query.scalarHistogram(component_id, "value");
-    REQUIRE(wide);
-    CHECK_FALSE(wide->origin);
-    REQUIRE(wide->edges.size() == 33);
-    CHECK(wide->edges.front() == -largest);
-    CHECK(wide->edges[8] == -largest / 2);
-    CHECK(wide->edges[24] == largest / 2);
-    CHECK(wide->edges.back() == largest);
-    CHECK(std::accumulate(wide->counts.begin(), wide->counts.end(), std::uint64_t { 0 }) == 65);
-
+    for (const auto& values : { std::vector { 1e16, 1e16 + 2, 1e16 + 4, 1e16 + 6, 1e16 + 8 },
+             std::vector { -largest, -largest / 2, 0.0, largest / 2, largest } }) {
+        mesh.face_attributes_["value"] = values;
+        std::vector<std::uint64_t> expected(32, 0);
+        for (const auto bin : { 0, 8, 16, 24, 31 })
+            expected[bin] = 1;
+        const auto result = query.scalarHistogram(component_id, "value");
+        REQUIRE(result);
+        CHECK(result->counts == expected);
+        CHECK(result->origin.has_value() == (values.front() == 1e16));
+        if (result->origin)
+            CHECK(result->edges[1] == 0.25);
+    }
     const double tiny = std::numeric_limits<double>::denorm_min();
-    set_face_values({ 0.0, 0.0, tiny, tiny, tiny });
+    mesh.face_attributes_["value"] = { 0.0, 0.0, tiny, tiny, tiny };
     const auto subnormal = query.scalarHistogram(component_id, "value");
     REQUIRE(subnormal);
-    CHECK(subnormal->values == std::vector<double> { 0.0, tiny });
-    CHECK(subnormal->counts == std::vector<std::uint64_t> { 2, 3 });
+    CHECK(subnormal->edges == std::vector<double> { 0.0, tiny });
+    CHECK(subnormal->counts == std::vector<std::uint64_t> { 5 });
 
-    // 常量按一个实际值显示，全部缺失时返回空。
-    set_face_values(std::vector<double>(5, -7.12345));
+    // 源数据更新后重新统计；常量只返回一箱，全部缺失则没有可显示的分布。
+    mesh.face_attributes_["value"].assign(5, -7.12345);
     const auto constant = query.scalarHistogram(component_id, "value");
     REQUIRE(constant);
-    CHECK(constant->values == std::vector<double> { -7.12345 });
+    CHECK(constant->edges == std::vector<double> { -7.12345, -7.12345 });
     CHECK(constant->counts == std::vector<std::uint64_t> { 5 });
-    set_face_values(std::vector<double>(5, std::numeric_limits<double>::quiet_NaN()));
+    mesh.face_attributes_["value"].assign(5, std::numeric_limits<double>::quiet_NaN());
     CHECK_FALSE(query.scalarHistogram(component_id, "value"));
     CHECK_FALSE(query.scalarHistogram(-1, "value"));
 
@@ -326,6 +274,6 @@ TEST_CASE("SessionQuery histogram uses original finite values and refreshes with
     mesh.vertex_attributes_["value"].assign(4, 2.0);
     const auto point = query.scalarHistogram(component_id, "value");
     REQUIRE(point);
-    CHECK(point->values == std::vector<double> { 2.0 });
+    CHECK(point->edges == std::vector<double> { 2.0, 2.0 });
     CHECK(point->counts == std::vector<std::uint64_t> { 4 });
 }

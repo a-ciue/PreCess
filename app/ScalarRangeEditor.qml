@@ -23,7 +23,6 @@ ColumnLayout {
     property alias histogramLogarithmic: histogramScaleButton.checked
     property var histogramData: ({})
     readonly property var histogramCounts: histogramData.counts || []
-    readonly property var histogramValues: histogramData.values || []
     // 草稿与有效待发送请求各自携带目标身份，属性切换不会把旧值写入新属性。
     property var draft: null
     property var pendingRange: null
@@ -41,13 +40,11 @@ ColumnLayout {
         return Number.isFinite(value) ? value.toLocaleString(Qt.locale("C"), "g", 3) : "";
     }
 
-    // 离散柱直接显示实际值；连续箱悬停时简写，点击后显示原始边界。
+    // 悬停时简写箱界，点击后显示原始边界。
     function histogramBinText(index, precise) {
         let count = histogramCounts.length;
         if (index < 0 || index >= count)
             return "";
-        if (histogramValues.length)
-            return qsTr("值：%1\n数量：%2").arg(String(histogramValues[index])).arg(histogramCounts[index]);
 
         let lower = histogramData.edges[index];
         let upper = histogramData.edges[index + 1];
@@ -76,9 +73,9 @@ ColumnLayout {
             || (origin !== undefined && Number(originText) !== origin);
         if (shortened) {
             // 经过舍入的箱界以简写展示，精确开闭区间留给原值。
-            let label = origin === undefined ? qsTr("区间简写：%1–%2").arg(lowerText).arg(upperText)
+            let label = origin === undefined ? qsTr("区间：%1–%2").arg(lowerText).arg(upperText)
                 : qsTr("相对 %1 的偏移简写：%2–%3").arg(originText).arg(lowerText).arg(upperText);
-            return label + "\n" + quantity + "\n" + qsTr("点击查看精确箱界");
+            return label + "\n" + quantity ;
         }
 
         let closing = index === count - 1 ? "]" : ")";
@@ -88,12 +85,10 @@ ColumnLayout {
         return label + "\n" + quantity;
     }
 
-    // 离散值按顺序分配等宽位置；连续箱跨正负极值时减半归一化。
+    // 图表独立使用统计边界归一化，跨正负极值时减半避免跨度溢出。
     function histogramEdgePosition(index) {
         if (!histogramCounts.length)
             return 0;
-        if (histogramValues.length)
-            return index / histogramValues.length;
         let edges = histogramData.edges;
         let lower = edges[0];
         let upper = edges[edges.length - 1];
@@ -510,7 +505,7 @@ ColumnLayout {
 
             TapHandler {
                 acceptedButtons: Qt.LeftButton
-                enabled: histogramBars.hoveredBin >= 0 && !root.histogramValues.length
+                enabled: histogramBars.hoveredBin >= 0
                 onTapped: histogramBars.preciseHover = true
             }
 
@@ -522,9 +517,9 @@ ColumnLayout {
                     readonly property real startPosition: root.histogramEdgePosition(index)
                     readonly property real endPosition: root.histogramEdgePosition(index + 1)
                     readonly property real intervalWidth: (endPosition - startPosition) * histogramBars.width
-                    x: startPosition * histogramBars.width + (root.histogramValues.length ? (intervalWidth - width) / 2 : 0)
+                    x: startPosition * histogramBars.width
                     y: histogramBars.height - height
-                    width: histogramPlot.constant ? intervalWidth : root.histogramValues.length ? Math.min(intervalWidth * 0.8, 18) : intervalWidth * 0.9
+                    width: histogramPlot.constant ? intervalWidth : intervalWidth * 0.9
                     // 对数高度突出稀少区间，仍保留 2px 下限；缩放不改写真实计数。
                     height: modelData > 0 ? Math.min(histogramBars.height, Math.max(2, (root.histogramLogarithmic ? Math.log1p(modelData) : modelData) / histogramPlot.heightPeak * histogramBars.height)) : 0
                     color: Theme.textSecondary
